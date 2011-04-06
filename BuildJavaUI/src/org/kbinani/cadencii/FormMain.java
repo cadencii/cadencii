@@ -314,6 +314,7 @@ public class FormMain extends BForm {
     private BPanel panel21 = null;
     private BMenuItem menuHelpManual = null;
     private BMenuItem menuFileRecentClear = null;
+    private BMenuItem menuLyricApplyUtauParameters = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -1643,6 +1644,7 @@ public class FormMain extends BForm {
             menuLyric.setText("Lyrics");
             menuLyric.add(getBMenuItem29());
             menuLyric.add(getMenuLyricVibratoProperty());
+            menuLyric.add(getMenuLyricApplyUtauParameters());
             menuLyric.add(getBMenuItem210());
             menuLyric.add(getBMenuItem35());
             menuLyric.add(getMenuLyricCopyVibratoToPreset());
@@ -4374,6 +4376,19 @@ public class FormMain extends BForm {
             menuFileRecentClear.setText("Clear Menu");
         }
         return menuFileRecentClear;
+    }
+
+    /**
+     * This method initializes menuLyricApplyUtauParameters	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuLyricApplyUtauParameters() {
+        if (menuLyricApplyUtauParameters == null) {
+            menuLyricApplyUtauParameters = new BMenuItem();
+            menuLyricApplyUtauParameters.setText("Apply UTAU Parameters");
+        }
+        return menuLyricApplyUtauParameters;
     }
 
     //SECTION-END-METHOD

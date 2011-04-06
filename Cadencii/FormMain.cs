@@ -564,7 +564,6 @@ namespace org.kbinani.cadencii
         /// 再生中にソングポジションが前進だけしてほしいので，逆行を防ぐために前回のソングポジションを覚えておく
         /// </summary>
         private int mLastClock = 0;
-        public BMenuItem menuLyricApplyUtauParameters;
         /// <summary>
         /// PositionIndicatorに表示しているポップアップのクロック位置
         /// </summary>
@@ -4813,6 +4812,8 @@ namespace org.kbinani.cadencii
             menuLyricExpressionProperty.setMnemonic( KeyEvent.VK_E );
             menuLyricVibratoProperty.setText( _( "Note vibrato property" ) );
             menuLyricVibratoProperty.setMnemonic( KeyEvent.VK_V );
+            menuLyricApplyUtauParameters.setText( _( "Apply UTAU Parameters" ) );
+            menuLyricApplyUtauParameters.setMnemonic( KeyEvent.VK_A );
             menuLyricPhonemeTransformation.setText( _( "Phoneme transformation" ) );
             menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
             menuLyricDictionary.setText( _( "User word dictionary" ) );
@@ -7505,7 +7506,7 @@ namespace org.kbinani.cadencii
             menuLyricDictionary.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuLyricDictionary.Click += new BEventHandler( menuLyricDictionary_Click );
             menuLyricPhonemeTransformation.Click += new BEventHandler( menuLyricPhonemeTransformation_Click );
-            menuLyricApplyUtauParameters.Click += new EventHandler( menuLyricApplyUtauParameters_Click );
+            menuLyricApplyUtauParameters.Click += new BEventHandler( menuLyricApplyUtauParameters_Click );
             menuScriptUpdate.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuScriptUpdate.Click += new BEventHandler( menuScriptUpdate_Click );
             menuSettingPreference.MouseEnter += new BEventHandler( handleMenuMouseEnter );
@@ -13441,7 +13442,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void menuLyricApplyUtauParameters_Click( object sender, EventArgs e )
+        public void menuLyricApplyUtauParameters_Click( Object sender, BEventArgs e )
         {
             // 選択されているトラックの番号
             int selected = AppManager.getSelected();
@@ -21396,6 +21397,7 @@ namespace org.kbinani.cadencii
         public BMenuItem menuHelpManual;
         public WaveView waveView;
         public BMenuItem menuFileRecentClear;
+        public BMenuItem menuLyricApplyUtauParameters;
 
 #endif
         #endregion
