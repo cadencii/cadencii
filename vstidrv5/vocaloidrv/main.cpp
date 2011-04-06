@@ -27,6 +27,8 @@ unsigned int __stdcall monitor_dir( void *args );
 HANDLE gThread = NULL;
 bool gAbortMonitorRequested = false;
 string gMonitorDir = "";
+const int WAIT_SHORT = 100;
+const int WAIT_LONG = 1000;
 
 unsigned int __stdcall monitor_dir( void *args )
 {
@@ -37,9 +39,9 @@ unsigned int __stdcall monitor_dir( void *args )
         if( !parent->isRendering() ){
 #ifdef TEST
             vocaloidrv::println( "::monitor_dir; driver is not rendering; continue" );
-            Sleep( 1000 );
+            Sleep( WAIT_LONG );
 #else
-            Sleep( 100 );
+            Sleep( WAIT_LONG );
 #endif
             continue;
         }
@@ -68,7 +70,7 @@ unsigned int __stdcall monitor_dir( void *args )
                     s += (rendering ? "True" : "False");
                     vocaloidrv::println( s );
 #endif
-                    Sleep( 100 );
+                    Sleep( WAIT_SHORT );
                     rendering = parent->isRendering();
                 }
 #ifdef TEST
@@ -76,7 +78,7 @@ unsigned int __stdcall monitor_dir( void *args )
 #endif
                 break;
             }else{
-                Sleep( 100 );
+                Sleep( WAIT_SHORT );
             }
         }
     }
@@ -91,14 +93,6 @@ uint64_t read_uint64_le( FILE *fp, FILE *debug )
     unsigned char buf[8];
     int a = 0;
     for( int k = 0; k < 8; k++ ){
-        /*if( fp == stdin ){
-#ifdef TEST
-            vocaloidrv::println( "::read_uint64_le; fp==stdin" );
-#endif
-            while( !_kbhit() ){
-                Sleep( 100 );
-            }
-        }*/
         int t = fgetc( fp );
         if( t == EOF ){
 #ifdef TEST
@@ -132,14 +126,6 @@ uint32_t read_uint32_le( FILE *fp, FILE *debug )
     unsigned char buf[4];
     int a = 0;
     for( int k = 0; k < 4; k++ ){
-        /*if( fp == stdin ){
-#ifdef TEST
-            vocaloidrv::println( "::read_uint32_le; fp==stdin" );
-#endif
-            while( !_kbhit() ){
-                Sleep( 100 );
-            }
-        }*/
         int t = fgetc( fp );
         if( t == EOF ){
 #ifdef TEST
@@ -180,14 +166,6 @@ void load_midi_from_file( FILE *fp, dataset *data, FILE *debug )
         // MIDI data 3 bytes
         int a = 0;
         for( int k = 0; k < 3; k++ ){
-            /*if( fp == stdin ){
-#ifdef TEST
-            vocaloidrv::println( "::load_midi_from_file; fp==stdin" );
-#endif
-                while( !_kbhit() ){
-                    Sleep( 100 );
-                }
-            }*/
             int t = fgetc( fp );
             if( t == EOF ){
 #ifdef TEST
@@ -201,8 +179,6 @@ void load_midi_from_file( FILE *fp, dataset *data, FILE *debug )
             a++;
             mid[k] = (unsigned char)(0xff & t);
         }
-        //fputc( 0, stdout );
-        //fflush( stdout );
         if( a < 3 ){
             break;
         }
@@ -255,7 +231,6 @@ int main( int argc, char* argv[] )
 		wav = argv[5];
 	}
 	bool use_stdout = wav.compare( "" ) == 0;
-    //cout << "dll_path=" << dll_path << endl;
     vocaloidrv drv( dll_path, wav );
     if( drv.open( sample_rate, sample_rate ) ){
         cerr << "drv.open; successed" << endl;

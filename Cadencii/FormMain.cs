@@ -564,6 +564,7 @@ namespace org.kbinani.cadencii
         /// 再生中にソングポジションが前進だけしてほしいので，逆行を防ぐために前回のソングポジションを覚えておく
         /// </summary>
         private int mLastClock = 0;
+        public BMenuItem menuLyricApplyUtauParameters;
         /// <summary>
         /// PositionIndicatorに表示しているポップアップのクロック位置
         /// </summary>
@@ -7504,6 +7505,7 @@ namespace org.kbinani.cadencii
             menuLyricDictionary.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuLyricDictionary.Click += new BEventHandler( menuLyricDictionary_Click );
             menuLyricPhonemeTransformation.Click += new BEventHandler( menuLyricPhonemeTransformation_Click );
+            menuLyricApplyUtauParameters.Click += new EventHandler( menuLyricApplyUtauParameters_Click );
             menuScriptUpdate.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuScriptUpdate.Click += new BEventHandler( menuScriptUpdate_Click );
             menuSettingPreference.MouseEnter += new BEventHandler( handleMenuMouseEnter );
@@ -13433,6 +13435,47 @@ namespace org.kbinani.cadencii
             setEdited( true );
         }
 
+        /// <summary>
+        /// 現在表示しているトラックの，選択状態の音符イベントについて，それぞれのイベントの
+        /// 時刻でのUTAU歌手に応じて，UTAUの各種パラメータを原音設定のものにリセットします
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void menuLyricApplyUtauParameters_Click( object sender, EventArgs e )
+        {
+            // 選択されているトラックの番号
+            int selected = AppManager.getSelected();
+            // シーケンス
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+
+            // 選択状態にあるイベントを取り出す
+            Vector<VsqEvent> replace = new Vector<VsqEvent>();
+            for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                SelectedEventEntry sel_item = itr.next();
+                VsqEvent item = sel_item.original;
+                if ( item.ID.type != VsqIDType.Anote ) {
+                    continue;
+                }
+                VsqEvent edit = (VsqEvent)item.clone();
+                // UTAUのパラメータを適用
+                AppManager.applyUtauParameter( vsq_track, edit );
+                // 合成したとき，意味のある変更が行われたか？
+                if ( edit.UstEvent.equalsForSynth( item.UstEvent ) ) {
+                    continue;
+                }
+                // 意味のある変更があったので，リストに登録
+                replace.add( edit );
+            }
+
+            // コマンドを発行
+            CadenciiCommand run = new CadenciiCommand(
+                VsqCommand.generateCommandEventReplaceRange( selected, replace.toArray( new VsqEvent[] { } ) ) );
+            // コマンドを実行
+            AppManager.register( vsq.executeCommand( run ) );
+            setEdited( true );
+        }
+
         public void menuLyricDictionary_Click( Object sender, EventArgs e )
         {
             FormWordDictionary dlg = null;
@@ -18471,6 +18514,7 @@ namespace org.kbinani.cadencii
             this.cMenuPositionIndicator = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPositionIndicatorStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.menuLyricApplyUtauParameters = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -19169,6 +19213,7 @@ namespace org.kbinani.cadencii
             this.menuLyric.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuLyricExpressionProperty,
             this.menuLyricVibratoProperty,
+            this.menuLyricApplyUtauParameters,
             this.menuLyricPhonemeTransformation,
             this.menuLyricDictionary,
             this.menuLyricCopyVibratoToPreset} );
@@ -20974,6 +21019,12 @@ namespace org.kbinani.cadencii
             this.cMenuPositionIndicatorEndMarker.Name = "cMenuPositionIndicatorEndMarker";
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size( 129, 22 );
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
+            // 
+            // menuLyricApplyUtauParameters
+            // 
+            this.menuLyricApplyUtauParameters.Name = "menuLyricApplyUtauParameters";
+            this.menuLyricApplyUtauParameters.Size = new System.Drawing.Size( 235, 22 );
+            this.menuLyricApplyUtauParameters.Text = "Apply UTAU Parameters(&A)";
             // 
             // FormMain
             // 
