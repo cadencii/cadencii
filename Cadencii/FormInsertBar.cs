@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormInsertBar.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormInsertBar.java
 
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -125,8 +125,8 @@ namespace org.kbinani.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormInsertBar.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormInsertBar.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormInsertBar.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormInsertBar.java
 #else
         private System.ComponentModel.IContainer components = null;
         private NumericUpDownEx numPosition;

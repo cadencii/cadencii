@@ -15,7 +15,7 @@
 
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormNoteProperty.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormNoteProperty.java
 
 import javax.swing.*;
 import org.kbinani.*;
@@ -127,8 +127,8 @@ namespace org.kbinani.cadencii
         #region UI implementation
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormNoteProperty.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormNoteProperty.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormNoteProperty.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormNoteProperty.java
         #endregion
 #else
         #region UI Impl for C#

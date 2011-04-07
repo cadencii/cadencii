@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormRealtimeConfig.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormRealtimeConfig.java
 
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -185,8 +185,8 @@ namespace org.kbinani.cadencii
         #region UI implementation
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormRealtimeConfig.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormRealtimeConfig.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormRealtimeConfig.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormRealtimeConfig.java
         #endregion
 #else
         #region UI Impl for C#

@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormGenerateKeySound.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
 
 import java.util.*;
 import org.kbinani.componentmodel.*;
@@ -376,8 +376,8 @@ namespace org.kbinani.cadencii {
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormGenerateKeySound.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormGenerateKeySound.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
 #else
         private void InitializeComponent() {
             this.btnExecute = new BButton();

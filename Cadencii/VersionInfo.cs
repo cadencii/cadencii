@@ -461,8 +461,8 @@ namespace org.kbinani.cadencii
 
         #region ui implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/VersionInfo.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/VersionInfo.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

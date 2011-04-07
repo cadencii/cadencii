@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormGameControlerConfig.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormGameControlerConfig.java
 
 import java.util.*;
 import org.kbinani.*;
@@ -324,8 +324,8 @@ namespace org.kbinani.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormGameControlerConfig.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormGameControlerConfig.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormGameControlerConfig.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormGameControlerConfig.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

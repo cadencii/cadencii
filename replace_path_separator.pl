@@ -64,12 +64,16 @@ my $djava_mac = "-DJAVA_MAC";
 my $to_devnull = "2>/dev/null";
 my $cp = "cp";
 my $rm = "rm";
-if( $ARGV[0] eq "MSWin32" ){
+my $plaf = $^O;
+if( $plaf eq "MSWin32" ){
     $djava_mac = "";
     $to_devnull = "";
     $cp = "copy";
     $rm = "rm";
+}elsif( $plaf eq "linux" ){
+    $djava_mac = "";
 }
+print "platform: $plaf\n";
 
 open( CFG, ">./Cadencii/Config.cs" );
 print CFG <<__EOD__;

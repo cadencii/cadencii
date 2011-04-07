@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormMain.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormMain.java
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18171,7 +18171,7 @@ namespace org.kbinani.cadencii
 
         #region ui implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormMain.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormMain.java
         BMenuItem stripDDBtnQuantize04 = null;
         BMenuItem stripDDBtnQuantize08 = null;
         BMenuItem stripDDBtnQuantize16 = null;
@@ -18179,7 +18179,7 @@ namespace org.kbinani.cadencii
         BMenuItem stripDDBtnQuantize64 = null;
         BMenuItem stripDDBtnQuantize128 = null;
         BMenuItem stripDDBtnQuantizeOff = null;
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormMain.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormMain.java
 #else
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
