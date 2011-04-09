@@ -75,8 +75,9 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	mkdir -p $(BUNDLE)
 	{ \
 	  wd=`pwd`; \
-	  cd wine-$(WINE_VERSION) && ./configure --prefix=$$wd/$(BUNDLE); \
+	  cd wine-$(WINE_VERSION) && ./configure --prefix=$$wd/$(BUNDLE) --disable-win16; \
 	}
+	cp patch_wine_workaround.diff wine-$(WINE_VERSION) && cd wine-$(WINE_VERSION) && patch -p0 < patch_wine_workaround.diff
 	cd wine-$(WINE_VERSION) && $(MAKE) depend && $(MAKE); \
 
 # prepare bundle
