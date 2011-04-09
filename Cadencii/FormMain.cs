@@ -7021,7 +7021,9 @@ namespace org.kbinani.cadencii
                 String dir = PortUtil.getDirectoryName( file );
                 String name = PortUtil.getFileNameWithoutExtension( file );
                 String estimatedCacheDir = fsys.combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
-                if ( cacheDir == null ) cacheDir = "";
+                if ( cacheDir == null ) {
+                    cacheDir = "";
+                }
                 if ( !str.compare( cacheDir, "" ) && 
                      fsys.isDirectoryExists( cacheDir ) &&
                      !str.compare( estimatedCacheDir, "" ) &&
@@ -7031,6 +7033,9 @@ namespace org.kbinani.cadencii
                     // cacheDirの必要な部分をestimatedCacheDirに移す
 
                     // estimatedCacheDirが存在しない場合、新しく作る
+#if DEBUG
+                    sout.println( "FormMain#openVsqCor;fsys.isDirectoryExists( estimatedCacheDir )=" + fsys.isDirectoryExists( estimatedCacheDir ) ); 
+#endif
                     if ( !fsys.isDirectoryExists( estimatedCacheDir ) ) {
                         try {
                             PortUtil.createDirectory( estimatedCacheDir );
