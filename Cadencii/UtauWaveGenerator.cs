@@ -173,7 +173,17 @@ namespace org.kbinani.cadencii
             mResampler = mConfig.getResamplerAt( resampler_index );
             mWavtool = mConfig.PathWavtool;
             mSampleRate = sample_rate;
-            mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            string temp = AppManager.getCadenciiTempDir();
+#if !JAVA
+            const int LEN = 260;
+            System.Text.StringBuilder sb_temp = new System.Text.StringBuilder( LEN );
+            win32.GetShortPathName( temp, sb_temp, LEN );
+            temp = sb_temp.ToString();
+#endif
+            mTempDir = fsys.combine( temp, AppManager.getID() );
+#if DEBUG
+            sout.println( "UtauWaveGenerator#init; mTempDir=" + mTempDir );
+#endif
             mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
             mWavtoolWithWine = mConfig.WavtoolWithWine;
             mWine = mConfig.getBuiltinWineMinimumExecutable();

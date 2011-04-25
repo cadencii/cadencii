@@ -1472,6 +1472,9 @@ namespace org.kbinani {
 
         #region kernel32.dll
         [DllImport( "kernel32.dll" )]
+        public static extern int GetShortPathName( string longPath, StringBuilder shortPathBuffer, int bufferSize );
+        
+        [DllImport( "kernel32.dll" )]
         public static extern IntPtr LoadLibraryExW( [MarshalAs( UnmanagedType.LPWStr )]string lpFileName, IntPtr hFile, uint dwFlags );
 
         [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "GetProcAddress", ExactSpelling = true )]

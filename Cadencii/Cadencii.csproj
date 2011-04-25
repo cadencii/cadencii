@@ -120,7 +120,6 @@
     <Compile Include="BezierPoint.cs" />
     <Compile Include="BgmFile.cs" />
     <Compile Include="BgmMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="BooleanEnum.cs" />
     <Compile Include="Cadencii.cs" />
@@ -139,17 +138,14 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCheckUnknownSingerAndResampler.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSequenceConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormVibratoPreset.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWorker.cs" />
     <Compile Include="FormWorkerUi.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="IAmplifierView.cs" />
     <Compile Include="IFormAskKeySoundGenerationControl.cs" />
@@ -158,21 +154,18 @@
     <Compile Include="ImageCachedComponentDrawer.cs" />
     <Compile Include="LineGraphDrawer.cs" />
     <Compile Include="PaletteToolMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PatchWorkQueue.cs" />
     <Compile Include="PictOverview.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Preference.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProgressBarWithLabel.cs" />
     <Compile Include="ProgressBarWithLabelUi.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="RecentFileMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SequenceConfig.cs" />
     <Compile Include="SynthesizeWorker.cs" />
@@ -215,26 +208,20 @@
     </Compile>
     <Compile Include="FormMidiImExportConfig.cs" />
     <Compile Include="FormNoteExpressionConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormPluginUi.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRandomize.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSplash.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWordDictionary.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IComparisonContext.cs" />
     <Compile Include="IconParader.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="LyricTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MemoryManager.cs" />
     <Compile Include="MouseTracer.cs" />
@@ -285,10 +272,8 @@
     <Compile Include="CommandTreeUnit.cs" />
     <Compile Include="CurveType.cs" />
     <Compile Include="FormNoteProperty.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormShortcutKeys.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="KanaDeRomanization.cs" />
     <Compile Include="MidiDeviceImp.cs" />
@@ -311,25 +296,20 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormDeleteBar.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGameControlerConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormImportLyric.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormInsertBar.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBeatConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExport.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMixer.cs">
       <SubType>Form</SubType>
@@ -337,13 +317,11 @@
     <Compile Include="AppManager.cs">
     </Compile>
     <Compile Include="FormTrackProperty.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRealtimeConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSingerStyleConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormTempoConfig.cs">
       <SubType>Form</SubType>
@@ -356,7 +334,6 @@
     <Compile Include="IPaletteTool.cs" />
     <Compile Include="KeySoundPlayer.cs" />
     <Compile Include="NumericUpDownEx.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PaletteToolServer.cs" />
     <Compile Include="PencilMode.cs" />
@@ -418,7 +395,6 @@
     <Compile Include="UtauFreq.cs" />
     <Compile Include="ValuePairOfStringBoolean.cs" />
     <Compile Include="VersionInfo.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="VibratoLengthEditingRule.cs" />
     <Compile Include="VibratoPointIteratorByClock.cs" />
@@ -440,7 +416,6 @@
     <Compile Include="WaveSender.cs" />
     <Compile Include="WaveSenderDriver.cs" />
     <Compile Include="WaveView.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WaveViewRealoadRequiredEventArgs.cs" />
     <Compile Include="WaveViewRealoadRequiredEventHandler.cs" />
@@ -1088,7 +1063,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)manual\manual.pdf" "$(TargetDir)manual.pdf"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)manual\manual_*.pdf" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>javac "$(SolutionDir)makeRes.java" -encoding UTF8
