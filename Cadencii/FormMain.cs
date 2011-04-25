@@ -15208,7 +15208,13 @@ namespace org.kbinani.cadencii
 
         public void menuHelpManual_Click( Object sender, BEventArgs e )
         {
-            String pdf = fsys.combine( PortUtil.getApplicationStartupPath(), "manual.pdf" );
+            // 現在のUI言語と同じ版のマニュアルファイルがあるかどうか探す
+            String lang = Messaging.getLanguage();
+            String pdf = fsys.combine( PortUtil.getApplicationStartupPath(), "manual_" + lang + ".pdf" );
+            if( !fsys.isFileExists( pdf ) ){
+                // 無ければ英語版のマニュアルを表示することにする
+                pdf = fsys.combine( PortUtil.getApplicationStartupPath(), "manual_en.pdf" );
+            }
             if( !fsys.isFileExists( pdf ) ){
                 AppManager.showMessageBox(
                     _( "file not found" ),
@@ -15219,6 +15225,7 @@ namespace org.kbinani.cadencii
             }
 #if JAVA
             try{
+                // TODO: manual_*.pdfを開く．Linux版ではどうする？
                 Runtime.getRuntime().exec( new String[]{ "open", pdf } );
             }catch( Exception ex ){
                 ex.printStackTrace();
