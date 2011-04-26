@@ -357,7 +357,7 @@ namespace org.kbinani.cadencii
                     // 音源のインストールディレクトリを，短いパス名に治す
                     if( str.length( singer ) > 0 && fsys.isDirectoryExists( singer ) ){
                         const int LEN = 260;
-                        System.Text.StringBuilder sb_singer = new StringBuilder( LEN );
+                        System.Text.StringBuilder sb_singer = new System.Text.StringBuilder( LEN );
                         if( win32.GetShortPathName( singer, sb_singer, LEN ) != 0 ){
                             // ↑変換に成功した場合は0以外を返すので
                             singer = sb_singer.ToString();
