@@ -173,12 +173,14 @@ namespace org.kbinani.cadencii
             mResampler = mConfig.getResamplerAt( resampler_index );
             mWavtool = mConfig.PathWavtool;
             mSampleRate = sample_rate;
-            string temp = AppManager.getCadenciiTempDir();
+            String temp = AppManager.getCadenciiTempDir();
 #if !JAVA
+            // 一時ディレクトリのパスを短い形式に直す
             const int LEN = 260;
             System.Text.StringBuilder sb_temp = new System.Text.StringBuilder( LEN );
-            win32.GetShortPathName( temp, sb_temp, LEN );
-            temp = sb_temp.ToString();
+            if( win32.GetShortPathName( temp, sb_temp, LEN ) != 0 ){
+                temp = sb_temp.ToString();
+            }
 #endif
             mTempDir = fsys.combine( temp, AppManager.getID() );
 #if DEBUG
@@ -351,6 +353,17 @@ namespace org.kbinani.cadencii
                     if ( 0 <= program_change && program_change < mConfig.UtauSingers.size() ) {
                         singer = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
                     }
+#if !JAVA
+                    // 音源のインストールディレクトリを，短いパス名に治す
+                    if( str.length( singer ) > 0 && fsys.isDirectoryExists( singer ) ){
+                        const int LEN = 260;
+                        System.Text.StringBuilder sb_singer = new StringBuilder( LEN );
+                        if( win32.GetShortPathName( singer, sb_singer, LEN ) != 0 ){
+                            // ↑変換に成功した場合は0以外を返すので
+                            singer = sb_singer.ToString();
+                        }
+                    }
+#endif
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
 #endif
