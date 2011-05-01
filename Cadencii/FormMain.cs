@@ -179,6 +179,8 @@ namespace org.kbinani.cadencii
             new AuthorListEntry( "Eji (zh-TW translation)", "@ejiwarp" ),
             new AuthorListEntry( "kankan (zh-TW translation)" ),
             new AuthorListEntry( "yxmline (zh-CN translation)" ),
+            new AuthorListEntry( "BuddyYoru (en translation)", "@BuddyYoru" ),
+            new AuthorListEntry( "BeForU (kr translation)", "@BeForU" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
             new AuthorListEntry( "Thanks to", 3 ),

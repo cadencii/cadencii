@@ -1471,8 +1471,8 @@ namespace org.kbinani {
 		public const uint CLR_DEFAULT = 0xFF000000U;
 
         #region kernel32.dll
-        [DllImport( "kernel32.dll" )]
-        public static extern int GetShortPathName( string longPath, StringBuilder shortPathBuffer, int bufferSize );
+        [DllImport( "kernel32.dll", CharSet = CharSet.Unicode )]
+        public static extern int GetShortPathNameW( string longPath, StringBuilder shortPathBuffer, int bufferSize );
         
         [DllImport( "kernel32.dll" )]
         public static extern IntPtr LoadLibraryExW( [MarshalAs( UnmanagedType.LPWStr )]string lpFileName, IntPtr hFile, uint dwFlags );

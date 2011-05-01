@@ -1693,7 +1693,9 @@ namespace org.kbinani.cadencii
             Vector<MidiDevice.Info> midiins = new Vector<MidiDevice.Info>();
             foreach( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ) {
 #if DEBUG
-                sout.println( "Preference#updateMidiDevice; info.getName()=" + info.getName() );
+                if ( info != null ) {
+                    sout.println( "Preference#updateMidiDevice; info.getName()=" + info.getName() );
+                }
 #endif
                 MidiDevice device = null;
                 try{

@@ -89,9 +89,22 @@ namespace org.kbinani.cadencii
         /// ログを出さない設定の時true
         /// </summary>
         private boolean mIsQuiet = false;
+
+        private boolean mUseShortTemp = false;
+        private boolean mUseShortResampler = false;
+        private boolean mUseShortWavtool = false;
+        private boolean mUseShortVoicebank = false;
 #endif
 
 #if DEBUG
+        public void setDebugCondition( boolean use_short_temp, boolean use_short_resampler, boolean use_short_wavtool, boolean use_short_voicebank )
+        {
+            mUseShortTemp = use_short_temp;
+            mUseShortResampler = use_short_resampler;
+            mUseShortWavtool = use_short_wavtool;
+            mUseShortVoicebank = use_short_voicebank;
+        }
+
         public void setQuiet( boolean value )
         {
             mIsQuiet = value;
@@ -170,21 +183,21 @@ namespace org.kbinani.cadencii
             if ( resampler_index < 0 ) {
                 resampler_index = 0;
             }
-            mResampler = mConfig.getResamplerAt( resampler_index );
-            mWavtool = mConfig.PathWavtool;
+            mResampler = mConfig.getResamplerAt( resampler_index );// getShortPathName( mConfig.getResamplerAt( resampler_index ) );
+            mWavtool = mConfig.PathWavtool;// getShortPathName( mConfig.PathWavtool );
+#if DEBUG
+            sout.println( "UtauWaveGenerator#init; mResampler=" + mResampler + "; exists=" + fsys.isFileExists( mResampler ) );
+            sout.println( "UtauWaveGenerator#init; mWavtool=" + mWavtool + "; exists=" + fsys.isFileExists( mWavtool ) );
+#endif
             mSampleRate = sample_rate;
-            String temp = AppManager.getCadenciiTempDir();
-#if !JAVA
-            // 一時ディレクトリのパスを短い形式に直す
-            const int LEN = 260;
-            System.Text.StringBuilder sb_temp = new System.Text.StringBuilder( LEN );
-            if( win32.GetShortPathName( temp, sb_temp, LEN ) != 0 ){
-                temp = sb_temp.ToString();
-            }
+            String temp = getShortPathName( AppManager.getCadenciiTempDir() );
+#if DEBUG
+            // 一時ディレクトリをヤバイ文字列にします
+            temp = "E:\\Configurações";
 #endif
             mTempDir = fsys.combine( temp, AppManager.getID() );
 #if DEBUG
-            sout.println( "UtauWaveGenerator#init; mTempDir=" + mTempDir );
+            sout.println( "UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + fsys.isDirectoryExists( mTempDir ) );
 #endif
             mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
             mWavtoolWithWine = mConfig.WavtoolWithWine;
@@ -235,6 +248,32 @@ namespace org.kbinani.cadencii
             mVsq.updateTotalClocks();
 
             mTrimRemainSeconds = trim_sec;
+        }
+
+        private static String getShortPathName( String path )
+        {
+#if DEBUG
+            String before = path;
+#endif
+#if !JAVA
+            if ( path == null ) {
+                return "";
+            }
+            if ( path == "" ) {
+                return path;
+            }
+            if ( fsys.isFileExists( path ) || fsys.isDirectoryExists( path ) ) {
+                const int LEN = 260;
+                System.Text.StringBuilder sb_path = new System.Text.StringBuilder( LEN );
+                if ( win32.GetShortPathNameW( path, sb_path, LEN ) != 0 ) {
+                    path = sb_path.ToString();
+                }
+            }
+#endif
+#if DEBUG
+            sout.println( "UtauWaveGenerator#getShortPathName; before=" + before + "; after=" + path );
+#endif
+            return path;
         }
 
         public void setReceiver( WaveReceiver r )
@@ -351,19 +390,9 @@ namespace org.kbinani.cadencii
                     }
                     String singer = "";
                     if ( 0 <= program_change && program_change < mConfig.UtauSingers.size() ) {
+                        //singer = getShortPathName( mConfig.UtauSingers.get( program_change ).VOICEIDSTR );
                         singer = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
                     }
-#if !JAVA
-                    // 音源のインストールディレクトリを，短いパス名に治す
-                    if( str.length( singer ) > 0 && fsys.isDirectoryExists( singer ) ){
-                        const int LEN = 260;
-                        System.Text.StringBuilder sb_singer = new System.Text.StringBuilder( LEN );
-                        if( win32.GetShortPathName( singer, sb_singer, LEN ) != 0 ){
-                            // ↑変換に成功した場合は0以外を返すので
-                            singer = sb_singer.ToString();
-                        }
-                    }
-#endif
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
 #endif
@@ -723,6 +752,10 @@ namespace org.kbinani.cadencii
                             process = new Process();
                             process.StartInfo.FileName = (mResamplerWithWine ? "wine \"" : "\"") + mResampler + "\"";
                             process.StartInfo.Arguments = rq.getResamplerArgString();
+#if DEBUG
+                            sout.println( "UtauWaveGenerator#begin; FileName=" + process.StartInfo.FileName );
+                            sout.println( "UtauWaveGenerator#begin; Arguments=" + process.StartInfo.Arguments );
+#endif
                             process.StartInfo.WorkingDirectory = mTempDir;
                             process.StartInfo.CreateNoWindow = true;
                             process.StartInfo.UseShellExecute = false;
@@ -735,6 +768,9 @@ namespace org.kbinani.cadencii
                             mCache.put( rq.hashSource, new ValuePair<String, Double>( rq.FileName, PortUtil.getCurrentTime() ) );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
+#if DEBUG
+                            sout.println( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex );
+#endif
                         } finally {
                             if ( process != null ) {
                                 process.Dispose();
@@ -1200,8 +1236,9 @@ namespace org.kbinani.cadencii
                 process.StartInfo.WorkingDirectory = temp_dir;
                 process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 #if DEBUG
-                debugWriteLine( "UtauWaveGenerator#processWavTool; invoke_with_wine=" + invoke_with_wine );
-                debugWriteLine( "UtauWaveGenerator#processWavTool; .FileName=" + process.StartInfo.FileName + "; .Arguments=" + process.StartInfo.Arguments );
+                sout.println( "UtauWaveGenerator#processWavTool; invoke_with_wine=" + invoke_with_wine );
+                sout.println( "UtauWaveGenerator#processWavTool; .FileName=" + process.StartInfo.FileName );
+                sout.println( "UtauWaveGenerator#processWavtool; .Arguments=" + process.StartInfo.Arguments );
 #endif
                 process.Start();
                 process.WaitForExit();
