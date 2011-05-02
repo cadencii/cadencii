@@ -123,8 +123,8 @@ namespace org.kbinani.cadencii {
             this.mIsValidForStraight = is_valid_for_straight;
             this.mVibDelay = vib_delay;
 
-            if ( vib_rate != null && vib_depth != null ) {
-                int viblength = length - vib_delay;
+            int viblength = length - vib_delay;
+            if ( viblength > 0 && vib_rate != null && vib_depth != null ) {
                 VibratoPointIteratorByClock itr =
                     new VibratoPointIteratorByClock( vsq,
                                                      vib_rate, vib_start_rate,
