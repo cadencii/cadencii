@@ -80,7 +80,7 @@ namespace org.kbinani.cadencii
         public Preference()
         {
 #if JAVA
-            //INCLUDE-SECTION CTOR ../BuildJavaUI/src/org/kbinani/Cadencii/Preference.java
+            //INCLUDE-SECTION CTOR ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
 #else
             InitializeComponent();
 #endif
