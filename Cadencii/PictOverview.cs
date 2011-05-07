@@ -749,6 +749,7 @@ namespace org.kbinani.cadencii
             int selected = AppManager.getSelected();
 
             int overview_dot_diam = 2;
+
             Vector<DrawObject> objs = AppManager.mDrawObjects.get( selected - 1 );
 
             // 平均ノートナンバーを調べる
@@ -779,6 +780,7 @@ namespace org.kbinani.cadencii
                 }
                 g.drawLine( x + xoffset, y, x + length + xoffset, y );
             }
+
             g.setStroke( getStrokeDefault() );
             //}
             int current_start = AppManager.clockFromXCoord( key_width );

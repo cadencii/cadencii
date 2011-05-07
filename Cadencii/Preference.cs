@@ -67,6 +67,7 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
+        private BCheckBox checkEnableWideCharacterWorkaround;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -211,6 +212,24 @@ namespace org.kbinani.cadencii
         }
 
         #region public methods
+        /// <summary>
+        /// UseWideCharacterWorkaroundに対する設定値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isEnableWideCharacterWorkaround()
+        {
+            return checkEnableWideCharacterWorkaround.isSelected();
+        }
+
+        /// <summary>
+        /// UseWideCharacterWorkaroundの設定値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setEnableWideCharacterWorkaround( boolean value )
+        {
+            checkEnableWideCharacterWorkaround.setSelected( value );
+        }
+
 #if JAVA
         public override BDialogResult showDialog( Component parent )
 #else
@@ -936,6 +955,7 @@ namespace org.kbinani.cadencii
             chkWavtoolWithWine.setText( _( "Invoke wavtool with Wine" ) );
             listResampler.setColumnHeaders( new String[] { _( "path" ) } );
             labelResamplerWithWine.setText( _( "Check the box to use Wine" ) );
+            checkEnableWideCharacterWorkaround.setText( _( "Enable Workaround for Wide-Character Path" ) );
             #endregion
 
             #region tabUtausingers
@@ -2044,6 +2064,7 @@ namespace org.kbinani.cadencii
             this.lblVOCALOID1 = new org.kbinani.windows.forms.BLabel();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.checkEnableWideCharacterWorkaround = new org.kbinani.windows.forms.BCheckBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
@@ -2092,7 +2113,7 @@ namespace org.kbinani.cadencii
             this.tabPreference.Multiline = true;
             this.tabPreference.Name = "tabPreference";
             this.tabPreference.SelectedIndex = 0;
-            this.tabPreference.Size = new System.Drawing.Size( 462, 483 );
+            this.tabPreference.Size = new System.Drawing.Size( 462, 515 );
             this.tabPreference.TabIndex = 0;
             // 
             // tabSequence
@@ -3202,7 +3223,7 @@ namespace org.kbinani.cadencii
             this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 441 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 473 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -3217,7 +3238,7 @@ namespace org.kbinani.cadencii
             this.groupWine.Controls.Add( this.labelWinePrefix );
             this.groupWine.Controls.Add( this.buttonWinePrefix );
             this.groupWine.Controls.Add( this.textWinePrefix );
-            this.groupWine.Location = new System.Drawing.Point( 23, 311 );
+            this.groupWine.Location = new System.Drawing.Point( 23, 333 );
             this.groupWine.Name = "groupWine";
             this.groupWine.Size = new System.Drawing.Size( 407, 124 );
             this.groupWine.TabIndex = 109;
@@ -3302,6 +3323,7 @@ namespace org.kbinani.cadencii
             // 
             // groupUtauCores
             // 
+            this.groupUtauCores.Controls.Add( this.checkEnableWideCharacterWorkaround );
             this.groupUtauCores.Controls.Add( this.labelResamplerWithWine );
             this.groupUtauCores.Controls.Add( this.labelWavtoolPath );
             this.groupUtauCores.Controls.Add( this.buttonResamplerUp );
@@ -3316,7 +3338,7 @@ namespace org.kbinani.cadencii
             this.groupUtauCores.Controls.Add( this.txtWavtool );
             this.groupUtauCores.Location = new System.Drawing.Point( 23, 9 );
             this.groupUtauCores.Name = "groupUtauCores";
-            this.groupUtauCores.Size = new System.Drawing.Size( 407, 296 );
+            this.groupUtauCores.Size = new System.Drawing.Size( 407, 318 );
             this.groupUtauCores.TabIndex = 108;
             this.groupUtauCores.TabStop = false;
             this.groupUtauCores.Text = "UTAU Cores";
@@ -3341,7 +3363,7 @@ namespace org.kbinani.cadencii
             // 
             // buttonResamplerUp
             // 
-            this.buttonResamplerUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResamplerUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonResamplerUp.Location = new System.Drawing.Point( 326, 211 );
             this.buttonResamplerUp.Name = "buttonResamplerUp";
             this.buttonResamplerUp.Size = new System.Drawing.Size( 75, 23 );
@@ -3351,7 +3373,7 @@ namespace org.kbinani.cadencii
             // 
             // buttonResamplerDown
             // 
-            this.buttonResamplerDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResamplerDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonResamplerDown.Location = new System.Drawing.Point( 326, 240 );
             this.buttonResamplerDown.Name = "buttonResamplerDown";
             this.buttonResamplerDown.Size = new System.Drawing.Size( 75, 23 );
@@ -3381,8 +3403,7 @@ namespace org.kbinani.cadencii
             // 
             // listResampler
             // 
-            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
+            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listResampler.CheckBoxes = true;
             this.listResampler.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
@@ -3414,7 +3435,6 @@ namespace org.kbinani.cadencii
             // 
             // chkWavtoolWithWine
             // 
-            this.chkWavtoolWithWine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkWavtoolWithWine.AutoSize = true;
             this.chkWavtoolWithWine.Location = new System.Drawing.Point( 46, 79 );
             this.chkWavtoolWithWine.Name = "chkWavtoolWithWine";
@@ -3897,7 +3917,7 @@ namespace org.kbinani.cadencii
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 374, 506 );
+            this.btnCancel.Location = new System.Drawing.Point( 374, 538 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
             this.btnCancel.TabIndex = 201;
@@ -3907,12 +3927,22 @@ namespace org.kbinani.cadencii
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 280, 506 );
+            this.btnOK.Location = new System.Drawing.Point( 280, 538 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 88, 23 );
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // checkEnableWideCharacterWorkaround
+            // 
+            this.checkEnableWideCharacterWorkaround.AutoSize = true;
+            this.checkEnableWideCharacterWorkaround.Location = new System.Drawing.Point( 19, 287 );
+            this.checkEnableWideCharacterWorkaround.Name = "checkEnableWideCharacterWorkaround";
+            this.checkEnableWideCharacterWorkaround.Size = new System.Drawing.Size( 205, 16 );
+            this.checkEnableWideCharacterWorkaround.TabIndex = 122;
+            this.checkEnableWideCharacterWorkaround.Text = "Enable Wide-Character Workaround";
+            this.checkEnableWideCharacterWorkaround.UseVisualStyleBackColor = true;
             // 
             // Preference
             // 
@@ -3920,7 +3950,7 @@ namespace org.kbinani.cadencii
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 475, 545 );
+            this.ClientSize = new System.Drawing.Size( 475, 577 );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.tabPreference );

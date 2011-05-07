@@ -1471,6 +1471,17 @@ namespace org.kbinani {
 		public const uint CLR_DEFAULT = 0xFF000000U;
 
         #region kernel32.dll
+        [DllImport( "kernel32.dll" )]
+        public static extern bool DeviceIoControl( 
+            IntPtr hDevice,
+            uint dwIoControlCode, 
+            byte[] lpInBuffer, 
+            uint nInBufferSize, 
+            [Out] byte[] lpOutBuffer, 
+            uint nOutBufferSize, 
+            IntPtr lpBytesReturned,
+            IntPtr lpOverlapped );
+        
         [DllImport( "kernel32.dll", CharSet = CharSet.Unicode )]
         public static extern int GetShortPathNameW( string longPath, StringBuilder shortPathBuffer, int bufferSize );
         

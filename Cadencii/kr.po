@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-17 17:52+0900\n"
+"POT-Creation-Date: 2011-05-07 20:40+0900\n"
 "PO-Revision-Date: \n"
-"Last-Translator: 이키나! <ljh565@gmail.com>\n"
+"Last-Translator: kbinani <kbinani@msn.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -248,747 +248,747 @@ msgstr "th 막대"
 msgid "bar"
 msgstr "막대"
 
-#: Cadencii/FormMain.cs:2248
-#: Cadencii/FormMain.cs:3685
-#: Cadencii/FormMain.cs:15237
+#: Cadencii/FormMain.cs:2251
+#: Cadencii/FormMain.cs:3688
+#: Cadencii/FormMain.cs:15246
 msgid "Disabled"
 msgstr "사용 안 함"
 
-#: Cadencii/FormMain.cs:2251
+#: Cadencii/FormMain.cs:2254
 msgid "Cursor"
 msgstr "커서"
 
-#: Cadencii/FormMain.cs:2254
+#: Cadencii/FormMain.cs:2257
 msgid "Keyboard"
 msgstr "키보드"
 
-#: Cadencii/FormMain.cs:2257
+#: Cadencii/FormMain.cs:2260
 msgid "Normal"
 msgstr "일반"
 
-#: Cadencii/FormMain.cs:2404
-#: Cadencii/FormMain.cs:4837
+#: Cadencii/FormMain.cs:2407
+#: Cadencii/FormMain.cs:4840
 msgid "Remove"
 msgstr "지우기"
 
-#: Cadencii/FormMain.cs:2410
+#: Cadencii/FormMain.cs:2413
 msgid "Start After Premeasure"
 msgstr "예비 소절 뒤 시작"
 
-#: Cadencii/FormMain.cs:2418
+#: Cadencii/FormMain.cs:2421
 msgid "Set Offset Seconds"
 msgstr "오프셋 초 설정"
 
-#: Cadencii/FormMain.cs:2419
-#: Cadencii/FormMain.cs:17677
+#: Cadencii/FormMain.cs:2422
+#: Cadencii/FormMain.cs:17686
 #: Cadencii/FormMidiImExport.cs:108
 #: Cadencii/FormMidiImExport.cs:342
 msgid "seconds"
 msgstr "초"
 
-#: Cadencii/FormMain.cs:2428
+#: Cadencii/FormMain.cs:2431
 msgid "Add"
 msgstr "더하기"
 
-#: Cadencii/FormMain.cs:3145
-#: Cadencii/FormMain.cs:10604
+#: Cadencii/FormMain.cs:3148
+#: Cadencii/FormMain.cs:10607
 msgid "Save this sequence?"
 msgstr "이 시퀀스를 저장하시겠습니까?"
 
-#: Cadencii/FormMain.cs:3146
-#: Cadencii/FormMain.cs:10605
+#: Cadencii/FormMain.cs:3149
+#: Cadencii/FormMain.cs:10608
 msgid "Affirmation"
 msgstr "확인"
 
-#: Cadencii/FormMain.cs:4571
-#: Cadencii/FormMain.cs:4581
+#: Cadencii/FormMain.cs:4574
+#: Cadencii/FormMain.cs:4584
 msgid "XML-VSQ Format(*.xvsq)|*.xvsq"
 msgstr "XML-VSQ 형식(*.xvsq)|*.xvsq"
 
-#: Cadencii/FormMain.cs:4572
-#: Cadencii/FormMain.cs:4582
-#: Cadencii/FormMain.cs:4592
-#: Cadencii/FormMain.cs:4603
-#: Cadencii/FormMain.cs:4615
-#: Cadencii/FormMain.cs:4626
-#: Cadencii/FormMain.cs:11479
-#: Cadencii/FormMain.cs:11610
-#: Cadencii/FormMain.cs:11670
-#: Cadencii/FormMain.cs:11722
-#: Cadencii/FormMain.cs:11803
+#: Cadencii/FormMain.cs:4575
+#: Cadencii/FormMain.cs:4585
+#: Cadencii/FormMain.cs:4595
+#: Cadencii/FormMain.cs:4606
+#: Cadencii/FormMain.cs:4618
+#: Cadencii/FormMain.cs:4629
+#: Cadencii/FormMain.cs:11482
+#: Cadencii/FormMain.cs:11613
+#: Cadencii/FormMain.cs:11673
+#: Cadencii/FormMain.cs:11725
+#: Cadencii/FormMain.cs:11806
 msgid "All Files(*.*)|*.*"
 msgstr "모든 파일(*.*)|*.*"
 
-#: Cadencii/FormMain.cs:4591
-#: Cadencii/FormMain.cs:11609
+#: Cadencii/FormMain.cs:4594
+#: Cadencii/FormMain.cs:11612
 msgid "UTAU Script Format(*.ust)|*.ust"
 msgstr "UTAU 스크립트 형식(*.ust)|*.ust"
 
-#: Cadencii/FormMain.cs:4601
-#: Cadencii/FormMain.cs:4613
+#: Cadencii/FormMain.cs:4604
+#: Cadencii/FormMain.cs:4616
 msgid "MIDI Format(*.mid)|*.mid"
 msgstr "MIDI 형식(*.mid)|*.mid"
 
-#: Cadencii/FormMain.cs:4602
-#: Cadencii/FormMain.cs:4614
-#: Cadencii/FormMain.cs:11669
+#: Cadencii/FormMain.cs:4605
+#: Cadencii/FormMain.cs:4617
+#: Cadencii/FormMain.cs:11672
 msgid "VSQ Format(*.vsq)|*.vsq"
 msgstr "VSQ 형식(*.vsq)|*.vsq"
 
-#: Cadencii/FormMain.cs:4625
-#: Cadencii/FormMain.cs:11802
+#: Cadencii/FormMain.cs:4628
+#: Cadencii/FormMain.cs:11805
 msgid "Wave File(*.wav)|*.wav"
 msgstr "웨이브 파일(*.wav)|*.wav"
 
-#: Cadencii/FormMain.cs:4634
-#: Cadencii/FormMain.cs:4833
+#: Cadencii/FormMain.cs:4637
+#: Cadencii/FormMain.cs:4836
 msgid "Game controler"
 msgstr "게임 컨트롤러"
 
-#: Cadencii/FormMain.cs:4644
-#: Cadencii/FormMain.cs:4645
-#: Cadencii/FormMain.cs:4662
-#: Cadencii/FormMain.cs:4663
+#: Cadencii/FormMain.cs:4647
+#: Cadencii/FormMain.cs:4648
+#: Cadencii/FormMain.cs:4665
+#: Cadencii/FormMain.cs:4666
 msgid "Pointer"
 msgstr "포인터"
 
-#: Cadencii/FormMain.cs:4646
-#: Cadencii/FormMain.cs:4647
-#: Cadencii/FormMain.cs:4664
-#: Cadencii/FormMain.cs:4665
-#: Cadencii/FormMain.cs:4902
-#: Cadencii/FormMain.cs:4973
+#: Cadencii/FormMain.cs:4649
+#: Cadencii/FormMain.cs:4650
+#: Cadencii/FormMain.cs:4667
+#: Cadencii/FormMain.cs:4668
+#: Cadencii/FormMain.cs:4905
+#: Cadencii/FormMain.cs:4976
 msgid "Pencil"
 msgstr "연필"
 
-#: Cadencii/FormMain.cs:4648
-#: Cadencii/FormMain.cs:4649
-#: Cadencii/FormMain.cs:4666
-#: Cadencii/FormMain.cs:4667
-#: Cadencii/FormMain.cs:4975
+#: Cadencii/FormMain.cs:4651
+#: Cadencii/FormMain.cs:4652
+#: Cadencii/FormMain.cs:4669
+#: Cadencii/FormMain.cs:4670
+#: Cadencii/FormMain.cs:4978
 msgid "Line"
 msgstr "선"
 
-#: Cadencii/FormMain.cs:4650
-#: Cadencii/FormMain.cs:4651
-#: Cadencii/FormMain.cs:4668
-#: Cadencii/FormMain.cs:4669
-#: Cadencii/FormMain.cs:4904
-#: Cadencii/FormMain.cs:4977
+#: Cadencii/FormMain.cs:4653
+#: Cadencii/FormMain.cs:4654
+#: Cadencii/FormMain.cs:4671
+#: Cadencii/FormMain.cs:4672
+#: Cadencii/FormMain.cs:4907
+#: Cadencii/FormMain.cs:4980
 msgid "Eraser"
 msgstr "지우개"
 
-#: Cadencii/FormMain.cs:4653
-#: Cadencii/FormMain.cs:4670
-#: Cadencii/FormMain.cs:4671
-#: Cadencii/FormMain.cs:4908
-#: Cadencii/FormMain.cs:4981
+#: Cadencii/FormMain.cs:4656
+#: Cadencii/FormMain.cs:4673
+#: Cadencii/FormMain.cs:4674
+#: Cadencii/FormMain.cs:4911
+#: Cadencii/FormMain.cs:4984
 msgid "Curve"
 msgstr "곡선"
 
-#: Cadencii/FormMain.cs:4655
-#: Cadencii/FormMain.cs:4672
-#: Cadencii/FormMain.cs:4673
+#: Cadencii/FormMain.cs:4658
+#: Cadencii/FormMain.cs:4675
+#: Cadencii/FormMain.cs:4676
 msgid "Grid"
 msgstr "눈금"
 
-#: Cadencii/FormMain.cs:4657
-#: Cadencii/FormMain.cs:4675
-#: Cadencii/FormMain.cs:8075
+#: Cadencii/FormMain.cs:4660
+#: Cadencii/FormMain.cs:4678
 #: Cadencii/FormMain.cs:8078
+#: Cadencii/FormMain.cs:8081
 msgid "Stop"
 msgstr "중지"
 
-#: Cadencii/FormMain.cs:4659
-#: Cadencii/FormMain.cs:4677
-#: Cadencii/FormMain.cs:8044
+#: Cadencii/FormMain.cs:4662
+#: Cadencii/FormMain.cs:4680
 #: Cadencii/FormMain.cs:8047
+#: Cadencii/FormMain.cs:8050
 msgid "Play"
 msgstr "재생"
 
-#: Cadencii/FormMain.cs:4682
+#: Cadencii/FormMain.cs:4685
 msgid "Move to beginning measure"
 msgstr "소절 시작으로 이동"
 
-#: Cadencii/FormMain.cs:4683
+#: Cadencii/FormMain.cs:4686
 msgid "Move to end measure"
 msgstr "소절 끝으로 이동"
 
-#: Cadencii/FormMain.cs:4684
+#: Cadencii/FormMain.cs:4687
 msgid "Move forward"
 msgstr "앞으로 이동"
 
-#: Cadencii/FormMain.cs:4685
+#: Cadencii/FormMain.cs:4688
 msgid "Move backwared"
 msgstr "뒤로 이동"
 
-#: Cadencii/FormMain.cs:4686
+#: Cadencii/FormMain.cs:4689
 msgid "Repeat"
 msgstr "반복"
 
-#: Cadencii/FormMain.cs:4687
+#: Cadencii/FormMain.cs:4690
 msgid "Auto scroll"
 msgstr "자동 스크롤"
 
-#: Cadencii/FormMain.cs:4691
+#: Cadencii/FormMain.cs:4694
 msgid "File"
 msgstr "파일"
 
-#: Cadencii/FormMain.cs:4693
+#: Cadencii/FormMain.cs:4696
 msgid "New"
 msgstr "새로 만들기"
 
-#: Cadencii/FormMain.cs:4695
-#: Cadencii/FormMain.cs:4869
+#: Cadencii/FormMain.cs:4698
+#: Cadencii/FormMain.cs:4872
 msgid "Open"
 msgstr "열기"
 
-#: Cadencii/FormMain.cs:4697
+#: Cadencii/FormMain.cs:4700
 msgid "Open VSQ/Vocaloid MIDI"
 msgstr "VSQ/보컬로이드 MIDI 열기"
 
-#: Cadencii/FormMain.cs:4699
+#: Cadencii/FormMain.cs:4702
 msgid "Open UTAU project file"
 msgstr "UTAU 프로젝트 파일 열기"
 
-#: Cadencii/FormMain.cs:4701
+#: Cadencii/FormMain.cs:4704
 msgid "Save"
 msgstr "저장"
 
-#: Cadencii/FormMain.cs:4703
+#: Cadencii/FormMain.cs:4706
 msgid "Save as"
 msgstr "다른 이름으로 저장"
 
-#: Cadencii/FormMain.cs:4705
+#: Cadencii/FormMain.cs:4708
 msgid "Import"
 msgstr "가져오기"
 
-#: Cadencii/FormMain.cs:4707
+#: Cadencii/FormMain.cs:4710
 msgid "VSQ / Vocaloid Midi"
 msgstr "VSQ/보컬로이드 MIDI"
 
-#: Cadencii/FormMain.cs:4708
+#: Cadencii/FormMain.cs:4711
 msgid "Export"
 msgstr "내보내기"
 
-#: Cadencii/FormMain.cs:4710
+#: Cadencii/FormMain.cs:4713
 msgid "WAVE"
 msgstr "WAVE"
 
-#: Cadencii/FormMain.cs:4711
+#: Cadencii/FormMain.cs:4714
 msgid "Serial numbered WAVEs"
 msgstr "일련번호가 매겨진 WAVE"
 
-#: Cadencii/FormMain.cs:4712
+#: Cadencii/FormMain.cs:4715
 msgid "UTAU project file"
 msgstr "UTAU 프로젝트 파일"
 
-#: Cadencii/FormMain.cs:4713
-#: Cadencii/FormMain.cs:11720
+#: Cadencii/FormMain.cs:4716
+#: Cadencii/FormMain.cs:11723
 msgid "Metatext for vConnect"
 msgstr "vConnect용 메타 텍스트"
 
-#: Cadencii/FormMain.cs:4714
+#: Cadencii/FormMain.cs:4717
 msgid "Open Recent"
 msgstr "최근 열어본 목록"
 
-#: Cadencii/FormMain.cs:4716
+#: Cadencii/FormMain.cs:4719
 msgid "Clear Menu"
 msgstr "메뉴 지우기"
 
-#: Cadencii/FormMain.cs:4717
+#: Cadencii/FormMain.cs:4720
 msgid "Quit"
 msgstr "끝내기"
 
-#: Cadencii/FormMain.cs:4720
+#: Cadencii/FormMain.cs:4723
 msgid "Edit"
 msgstr "편집"
 
-#: Cadencii/FormMain.cs:4722
-#: Cadencii/FormMain.cs:4923
-#: Cadencii/FormMain.cs:4984
+#: Cadencii/FormMain.cs:4725
+#: Cadencii/FormMain.cs:4926
+#: Cadencii/FormMain.cs:4987
 msgid "Undo"
 msgstr "되돌리기"
 
-#: Cadencii/FormMain.cs:4724
-#: Cadencii/FormMain.cs:4925
-#: Cadencii/FormMain.cs:4986
+#: Cadencii/FormMain.cs:4727
+#: Cadencii/FormMain.cs:4928
+#: Cadencii/FormMain.cs:4989
 msgid "Redo"
 msgstr "다시하기"
 
-#: Cadencii/FormMain.cs:4726
-#: Cadencii/FormMain.cs:4876
-#: Cadencii/FormMain.cs:4928
-#: Cadencii/FormMain.cs:4989
+#: Cadencii/FormMain.cs:4729
+#: Cadencii/FormMain.cs:4879
+#: Cadencii/FormMain.cs:4931
+#: Cadencii/FormMain.cs:4992
 msgid "Cut"
 msgstr "잘라내기"
 
-#: Cadencii/FormMain.cs:4728
-#: Cadencii/FormMain.cs:4875
-#: Cadencii/FormMain.cs:4932
-#: Cadencii/FormMain.cs:4991
+#: Cadencii/FormMain.cs:4731
+#: Cadencii/FormMain.cs:4878
+#: Cadencii/FormMain.cs:4935
+#: Cadencii/FormMain.cs:4994
 msgid "Copy"
 msgstr "복사"
 
-#: Cadencii/FormMain.cs:4730
-#: Cadencii/FormMain.cs:4887
-#: Cadencii/FormMain.cs:4930
-#: Cadencii/FormMain.cs:4993
+#: Cadencii/FormMain.cs:4733
+#: Cadencii/FormMain.cs:4890
+#: Cadencii/FormMain.cs:4933
+#: Cadencii/FormMain.cs:4996
 msgid "Paste"
 msgstr "붙여넣기"
 
-#: Cadencii/FormMain.cs:4732
-#: Cadencii/FormMain.cs:4934
-#: Cadencii/FormMain.cs:4995
+#: Cadencii/FormMain.cs:4735
+#: Cadencii/FormMain.cs:4937
+#: Cadencii/FormMain.cs:4998
 msgid "Delete"
 msgstr "지우기"
 
-#: Cadencii/FormMain.cs:4734
+#: Cadencii/FormMain.cs:4737
 msgid "Auto normalize mode"
 msgstr "자동 음표 고치기 모드"
 
-#: Cadencii/FormMain.cs:4736
-#: Cadencii/FormMain.cs:4937
+#: Cadencii/FormMain.cs:4739
+#: Cadencii/FormMain.cs:4940
 msgid "Select All"
 msgstr "모두 선택"
 
-#: Cadencii/FormMain.cs:4738
+#: Cadencii/FormMain.cs:4741
 msgid "Select all events"
 msgstr "모든 이벤트 선택"
 
-#: Cadencii/FormMain.cs:4741
+#: Cadencii/FormMain.cs:4744
 msgid "View"
 msgstr "보기"
 
-#: Cadencii/FormMain.cs:4743
+#: Cadencii/FormMain.cs:4746
 msgid "Control track"
 msgstr "트랙 제어"
 
-#: Cadencii/FormMain.cs:4745
+#: Cadencii/FormMain.cs:4748
 #: Cadencii/FormMixer.cs:229
 msgid "Mixer"
 msgstr "믹서"
 
-#: Cadencii/FormMain.cs:4747
+#: Cadencii/FormMain.cs:4750
 msgid "Waveform"
 msgstr "파형"
 
-#: Cadencii/FormMain.cs:4749
+#: Cadencii/FormMain.cs:4752
 msgid "Property window"
 msgstr "속성 창"
 
-#: Cadencii/FormMain.cs:4750
+#: Cadencii/FormMain.cs:4753
 msgid "Navigation"
 msgstr "탐색"
 
-#: Cadencii/FormMain.cs:4752
+#: Cadencii/FormMain.cs:4755
 msgid "Grid line"
 msgstr "눈금선"
 
-#: Cadencii/FormMain.cs:4754
+#: Cadencii/FormMain.cs:4757
 msgid "Start marker"
 msgstr "시작 표식"
 
-#: Cadencii/FormMain.cs:4756
+#: Cadencii/FormMain.cs:4759
 msgid "End marker"
 msgstr "끝 표식"
 
-#: Cadencii/FormMain.cs:4758
+#: Cadencii/FormMain.cs:4761
 msgid "Lyrics/Phoneme"
 msgstr "가사/독음"
 
-#: Cadencii/FormMain.cs:4760
+#: Cadencii/FormMain.cs:4763
 msgid "Note expression/vibrato"
 msgstr "음표 표현/떨림"
 
-#: Cadencii/FormMain.cs:4762
+#: Cadencii/FormMain.cs:4765
 msgid "Pitch line"
 msgstr "피치 선"
 
-#: Cadencii/FormMain.cs:4764
+#: Cadencii/FormMain.cs:4767
 msgid "VSTi plugin UI"
 msgstr "VSTi 플러그인 UI"
 
-#: Cadencii/FormMain.cs:4766
+#: Cadencii/FormMain.cs:4769
 msgid "Icon palette"
 msgstr "아이콘 팔레트"
 
-#: Cadencii/FormMain.cs:4769
+#: Cadencii/FormMain.cs:4772
 msgid "Job"
 msgstr "작업"
 
-#: Cadencii/FormMain.cs:4771
+#: Cadencii/FormMain.cs:4774
 msgid "Normalize notes"
 msgstr "겹친 음표 고치기"
 
-#: Cadencii/FormMain.cs:4773
+#: Cadencii/FormMain.cs:4776
 msgid "Insert bars"
 msgstr "막대 넣기"
 
-#: Cadencii/FormMain.cs:4775
+#: Cadencii/FormMain.cs:4778
 msgid "Delete bars"
 msgstr "막대 지우기"
 
-#: Cadencii/FormMain.cs:4777
+#: Cadencii/FormMain.cs:4780
 msgid "Randomize"
 msgstr "무작위"
 
-#: Cadencii/FormMain.cs:4779
+#: Cadencii/FormMain.cs:4782
 msgid "Connect notes"
 msgstr "음표 잇기"
 
-#: Cadencii/FormMain.cs:4781
+#: Cadencii/FormMain.cs:4784
 msgid "Insert lyrics"
 msgstr "가사 넣기"
 
-#: Cadencii/FormMain.cs:4784
+#: Cadencii/FormMain.cs:4787
 #: Cadencii/FormMidiImExport.cs:68
 #: Cadencii/FormMidiImExport.cs:93
 msgid "Track"
 msgstr "트랙"
 
-#: Cadencii/FormMain.cs:4786
+#: Cadencii/FormMain.cs:4789
 msgid "Track on"
 msgstr "트랙"
 
-#: Cadencii/FormMain.cs:4788
+#: Cadencii/FormMain.cs:4791
 msgid "Add track"
 msgstr "트랙 더하기"
 
-#: Cadencii/FormMain.cs:4790
+#: Cadencii/FormMain.cs:4793
 msgid "Copy track"
 msgstr "트랙 복사"
 
-#: Cadencii/FormMain.cs:4792
+#: Cadencii/FormMain.cs:4795
 msgid "Rename track"
 msgstr "트랙 이름 바꾸기"
 
-#: Cadencii/FormMain.cs:4793
+#: Cadencii/FormMain.cs:4796
 msgid "Delete track"
 msgstr "트랙 지우기"
 
-#: Cadencii/FormMain.cs:4795
+#: Cadencii/FormMain.cs:4798
 msgid "Render current track"
 msgstr "현재 트랙 렌더링"
 
-#: Cadencii/FormMain.cs:4797
+#: Cadencii/FormMain.cs:4800
 msgid "Render all tracks"
 msgstr "모든 트랙 렌더링"
 
-#: Cadencii/FormMain.cs:4799
-#: Cadencii/FormMain.cs:4964
+#: Cadencii/FormMain.cs:4802
+#: Cadencii/FormMain.cs:4967
 msgid "Overlay"
 msgstr "오버레이"
 
-#: Cadencii/FormMain.cs:4801
-#: Cadencii/FormMain.cs:4966
+#: Cadencii/FormMain.cs:4804
+#: Cadencii/FormMain.cs:4969
 msgid "Renderer"
 msgstr "렌더러"
 
-#: Cadencii/FormMain.cs:4809
+#: Cadencii/FormMain.cs:4812
 #: Cadencii/FormMidiImExport.cs:102
 msgid "Lyrics"
 msgstr "가사"
 
-#: Cadencii/FormMain.cs:4811
+#: Cadencii/FormMain.cs:4814
 msgid "Note expression property"
 msgstr "음표 표현 속성"
 
-#: Cadencii/FormMain.cs:4813
+#: Cadencii/FormMain.cs:4816
 msgid "Note vibrato property"
 msgstr "음표 떨림 속성"
 
-#: Cadencii/FormMain.cs:4815
+#: Cadencii/FormMain.cs:4818
 msgid "Apply UTAU Parameters"
 msgstr "UTAU 매개 변수 적용"
 
-#: Cadencii/FormMain.cs:4817
+#: Cadencii/FormMain.cs:4820
 msgid "Phoneme transformation"
 msgstr "독음 변환"
 
-#: Cadencii/FormMain.cs:4819
+#: Cadencii/FormMain.cs:4822
 msgid "User word dictionary"
 msgstr "사용자 단어 사전"
 
-#: Cadencii/FormMain.cs:4821
+#: Cadencii/FormMain.cs:4824
 msgid "Copy vibrato config to preset"
 msgstr "떨림 구성을 미리 설정으로 복사"
 
-#: Cadencii/FormMain.cs:4824
+#: Cadencii/FormMain.cs:4827
 msgid "Script"
 msgstr "스크립트"
 
-#: Cadencii/FormMain.cs:4826
+#: Cadencii/FormMain.cs:4829
 msgid "Update script list"
 msgstr "스크립트 목록 업데이트"
 
-#: Cadencii/FormMain.cs:4829
-#: Cadencii/FormMain.cs:4839
+#: Cadencii/FormMain.cs:4832
+#: Cadencii/FormMain.cs:4842
 msgid "Setting"
 msgstr "설정"
 
-#: Cadencii/FormMain.cs:4831
+#: Cadencii/FormMain.cs:4834
 msgid "Preference"
 msgstr "기본 설정"
 
-#: Cadencii/FormMain.cs:4835
+#: Cadencii/FormMain.cs:4838
 msgid "Load"
 msgstr "불러오기"
 
-#: Cadencii/FormMain.cs:4841
+#: Cadencii/FormMain.cs:4844
 msgid "Sequence config"
 msgstr "시퀀스 구성"
 
-#: Cadencii/FormMain.cs:4843
+#: Cadencii/FormMain.cs:4846
 msgid "Shortcut key"
 msgstr "바로 가기 키"
 
-#: Cadencii/FormMain.cs:4845
+#: Cadencii/FormMain.cs:4848
 msgid "Singing style defaults"
 msgstr "노래 스타일 기본값"
 
-#: Cadencii/FormMain.cs:4847
-#: Cadencii/FormMain.cs:4916
+#: Cadencii/FormMain.cs:4850
+#: Cadencii/FormMain.cs:4919
 msgid "Quantize"
 msgstr "끊어적기"
 
-#: Cadencii/FormMain.cs:4849
-#: Cadencii/FormMain.cs:4914
-#: Cadencii/FormMain.cs:4919
+#: Cadencii/FormMain.cs:4852
+#: Cadencii/FormMain.cs:4917
+#: Cadencii/FormMain.cs:4922
 msgid "Off"
 msgstr "해제"
 
-#: Cadencii/FormMain.cs:4850
-#: Cadencii/FormMain.cs:4913
-#: Cadencii/FormMain.cs:4918
+#: Cadencii/FormMain.cs:4853
+#: Cadencii/FormMain.cs:4916
+#: Cadencii/FormMain.cs:4921
 msgid "Triplet"
 msgstr "셋잇단음표"
 
-#: Cadencii/FormMain.cs:4853
-#: Cadencii/FormMain.cs:4906
-#: Cadencii/FormMain.cs:4979
+#: Cadencii/FormMain.cs:4856
+#: Cadencii/FormMain.cs:4909
+#: Cadencii/FormMain.cs:4982
 msgid "Palette Tool"
 msgstr "팔레트 도구"
 
-#: Cadencii/FormMain.cs:4855
+#: Cadencii/FormMain.cs:4858
 msgid "Vibrato preset"
 msgstr "떨림 미리 설정"
 
-#: Cadencii/FormMain.cs:4859
+#: Cadencii/FormMain.cs:4862
 msgid "Window"
 msgstr "창"
 
-#: Cadencii/FormMain.cs:4860
+#: Cadencii/FormMain.cs:4863
 msgid "Minimize"
 msgstr "최소화"
 
-#: Cadencii/FormMain.cs:4863
+#: Cadencii/FormMain.cs:4866
 msgid "Help"
 msgstr "도움말"
 
-#: Cadencii/FormMain.cs:4865
+#: Cadencii/FormMain.cs:4868
 msgid "Log"
 msgstr "기록"
 
-#: Cadencii/FormMain.cs:4867
+#: Cadencii/FormMain.cs:4870
 msgid "Disable"
 msgstr "사용 안 함"
 
-#: Cadencii/FormMain.cs:4867
+#: Cadencii/FormMain.cs:4870
 msgid "Enable"
 msgstr "사용"
 
-#: Cadencii/FormMain.cs:4871
+#: Cadencii/FormMain.cs:4874
 msgid "About Cadencii"
 msgstr "Cadencii에 대하여"
 
-#: Cadencii/FormMain.cs:4873
+#: Cadencii/FormMain.cs:4876
 msgid "Manual"
 msgstr "설명서"
 
-#: Cadencii/FormMain.cs:4877
+#: Cadencii/FormMain.cs:4880
 msgid "Chagne tool pointer / eraser"
 msgstr "도구 포인터 바꾸기/지우개"
 
-#: Cadencii/FormMain.cs:4878
+#: Cadencii/FormMain.cs:4881
 msgid "Change tool pointer / pencil"
 msgstr "도구 포인터 바꾸기/연필"
 
-#: Cadencii/FormMain.cs:4879
+#: Cadencii/FormMain.cs:4882
 msgid "Start lyric input"
 msgstr "가사 입력 시작"
 
-#: Cadencii/FormMain.cs:4880
+#: Cadencii/FormMain.cs:4883
 msgid "GoTo end marker"
 msgstr "끝 표식으로 이동"
 
-#: Cadencii/FormMain.cs:4881
+#: Cadencii/FormMain.cs:4884
 msgid "Goto start marker"
 msgstr "시작 표식으로 이동"
 
-#: Cadencii/FormMain.cs:4882
+#: Cadencii/FormMain.cs:4885
 msgid "Lengthen"
 msgstr "늘이기"
 
-#: Cadencii/FormMain.cs:4883
+#: Cadencii/FormMain.cs:4886
 msgid "Move down"
 msgstr "아래로 이동"
 
-#: Cadencii/FormMain.cs:4884
+#: Cadencii/FormMain.cs:4887
 msgid "Move left"
 msgstr "왼쪽으로 이동"
 
-#: Cadencii/FormMain.cs:4885
+#: Cadencii/FormMain.cs:4888
 msgid "Move right"
 msgstr "오른쪽으로 이동"
 
-#: Cadencii/FormMain.cs:4886
+#: Cadencii/FormMain.cs:4889
 msgid "Move up"
 msgstr "위로 이동"
 
-#: Cadencii/FormMain.cs:4888
+#: Cadencii/FormMain.cs:4891
 msgid "Play from start marker"
 msgstr "시작 표식에서 재생"
 
-#: Cadencii/FormMain.cs:4889
+#: Cadencii/FormMain.cs:4892
 msgid "Select backward"
 msgstr "이전 선택"
 
-#: Cadencii/FormMain.cs:4890
+#: Cadencii/FormMain.cs:4893
 msgid "Select forward"
 msgstr "이후 선택"
 
-#: Cadencii/FormMain.cs:4891
+#: Cadencii/FormMain.cs:4894
 msgid "Shorten"
 msgstr "짧은"
 
-#: Cadencii/FormMain.cs:4892
+#: Cadencii/FormMain.cs:4895
 msgid "Previous track"
 msgstr "이전 트랙"
 
-#: Cadencii/FormMain.cs:4893
+#: Cadencii/FormMain.cs:4896
 msgid "Next track"
 msgstr "다음 트랙"
 
-#: Cadencii/FormMain.cs:4894
+#: Cadencii/FormMain.cs:4897
 msgid "Previous control curve"
 msgstr "이전 제어 곡선"
 
-#: Cadencii/FormMain.cs:4895
+#: Cadencii/FormMain.cs:4898
 msgid "Next control curve"
 msgstr "다음 제어 곡선"
 
-#: Cadencii/FormMain.cs:4896
+#: Cadencii/FormMain.cs:4899
 msgid "Change pitch drawing mode"
 msgstr "피치 그리기 모드 바꾸기"
 
-#: Cadencii/FormMain.cs:4900
-#: Cadencii/FormMain.cs:4971
+#: Cadencii/FormMain.cs:4903
+#: Cadencii/FormMain.cs:4974
 msgid "Arrow"
 msgstr "화살표"
 
-#: Cadencii/FormMain.cs:4911
+#: Cadencii/FormMain.cs:4914
 msgid "Note Fixed Length"
 msgstr "음표 고정 길이"
 
-#: Cadencii/FormMain.cs:4915
+#: Cadencii/FormMain.cs:4918
 msgid "Dot"
 msgstr "도트"
 
-#: Cadencii/FormMain.cs:4920
+#: Cadencii/FormMain.cs:4923
 msgid "Show/Hide Grid Line"
 msgstr "눈금선 보이기/숨기기"
 
-#: Cadencii/FormMain.cs:4939
-#: Cadencii/FormMain.cs:5000
+#: Cadencii/FormMain.cs:4942
+#: Cadencii/FormMain.cs:5003
 msgid "Select All Events"
 msgstr "모든 이벤트 선택"
 
-#: Cadencii/FormMain.cs:4942
+#: Cadencii/FormMain.cs:4945
 msgid "Note Expression Property"
 msgstr "음표 표현 속성"
 
-#: Cadencii/FormMain.cs:4944
+#: Cadencii/FormMain.cs:4947
 msgid "Note Vibrato Property"
 msgstr "음표 떨림 속성"
 
-#: Cadencii/FormMain.cs:4945
+#: Cadencii/FormMain.cs:4948
 msgid "Insert Lyrics"
 msgstr "가사 넣기"
 
-#: Cadencii/FormMain.cs:4950
+#: Cadencii/FormMain.cs:4953
 msgid "Track On"
 msgstr "트랙"
 
-#: Cadencii/FormMain.cs:4952
+#: Cadencii/FormMain.cs:4955
 msgid "Add Track"
 msgstr "트랙 더하기"
 
-#: Cadencii/FormMain.cs:4954
+#: Cadencii/FormMain.cs:4957
 msgid "Copy Track"
 msgstr "트랙 복사"
 
-#: Cadencii/FormMain.cs:4956
+#: Cadencii/FormMain.cs:4959
 msgid "Rename Track"
 msgstr "트랙 이름 바꾸기"
 
-#: Cadencii/FormMain.cs:4957
+#: Cadencii/FormMain.cs:4960
 msgid "Delete Track"
 msgstr "트랙 지우기"
 
-#: Cadencii/FormMain.cs:4960
+#: Cadencii/FormMain.cs:4963
 msgid "Render Current Track"
 msgstr "현재 트랙 렌더링"
 
-#: Cadencii/FormMain.cs:4962
+#: Cadencii/FormMain.cs:4965
 msgid "Render All Tracks"
 msgstr "모든 트랙 렌더링"
 
-#: Cadencii/FormMain.cs:4997
+#: Cadencii/FormMain.cs:5000
 msgid "Delete Bezier Point"
 msgstr "베지어 포인트 지우기"
 
-#: Cadencii/FormMain.cs:5005
+#: Cadencii/FormMain.cs:5008
 msgid "Set start marker"
 msgstr "시작 표식 설정"
 
-#: Cadencii/FormMain.cs:5006
+#: Cadencii/FormMain.cs:5009
 msgid "Set end marker"
 msgstr "끝 표식 설정"
 
-#: Cadencii/FormMain.cs:5010
+#: Cadencii/FormMain.cs:5013
 msgid "Game Controler"
 msgstr "게임 컨트롤러"
 
-#: Cadencii/FormMain.cs:5483
-#: Cadencii/FormMain.cs:14379
-#: Cadencii/FormMain.cs:14535
-#: Cadencii/FormMain.cs:14906
-#: Cadencii/FormMain.cs:14946
+#: Cadencii/FormMain.cs:5486
+#: Cadencii/FormMain.cs:14384
+#: Cadencii/FormMain.cs:14540
+#: Cadencii/FormMain.cs:14911
+#: Cadencii/FormMain.cs:14951
 msgid "Cannot remove first symbol of track!"
 msgstr "트랙의 첫 번째 기호를 지울 수 없습니다!"
 
-#: Cadencii/FormMain.cs:6176
+#: Cadencii/FormMain.cs:6179
 msgid "Input new name of track"
 msgstr "트랙 새 이름 입력"
 
-#: Cadencii/FormMain.cs:6234
+#: Cadencii/FormMain.cs:6237
 #, csharp-format
 msgid "Do you wish to remove track? {0} : '{1}'"
 msgstr "트랙을 지우시겠습니까? {0} : '{1}'"
 
-#: Cadencii/FormMain.cs:6799
+#: Cadencii/FormMain.cs:6802
 msgid "[file not found]"
 msgstr "[파일을 찾을 수 없습니다]"
 
-#: Cadencii/FormMain.cs:7045
-#: Cadencii/FormMain.cs:7087
+#: Cadencii/FormMain.cs:7048
+#: Cadencii/FormMain.cs:7090
 #, csharp-format
 msgid "cannot create cache directory: '{0}'"
 msgstr "캐시 디렉터리를 만들 수 없습니다: '{0}'"
 
-#: Cadencii/FormMain.cs:11186
-#: Cadencii/FormMain.cs:17089
+#: Cadencii/FormMain.cs:11189
+#: Cadencii/FormMain.cs:17098
 #, csharp-format
 msgid ""
 "Invalid note data.\n"
@@ -1001,28 +1001,28 @@ msgstr ""
 "\n"
 "-> 피아노 롤 : 빈 시퀀스."
 
-#: Cadencii/FormMain.cs:11478
+#: Cadencii/FormMain.cs:11481
 msgid "MusicXML(*.xml)|*.xml"
 msgstr "음악XML(*.xml)|*.xml"
 
-#: Cadencii/FormMain.cs:11513
+#: Cadencii/FormMain.cs:11516
 msgid "Choose destination directory"
 msgstr "대상 디렉터리 선택"
 
-#: Cadencii/FormMain.cs:11547
-#: Cadencii/FormMain.cs:11829
+#: Cadencii/FormMain.cs:11550
+#: Cadencii/FormMain.cs:11832
 msgid "invalid rendering region; start>=end"
 msgstr "잘못된 렌더링 영역; 시작>=끝"
 
-#: Cadencii/FormMain.cs:11608
+#: Cadencii/FormMain.cs:11611
 msgid "Export UTAU (*.ust)"
 msgstr "UTAU(*.ust) 내보내기"
 
-#: Cadencii/FormMain.cs:11668
+#: Cadencii/FormMain.cs:11671
 msgid "Export VSQ (*.vsq)"
 msgstr "VSQ(*.vsq) 내보내기"
 
-#: Cadencii/FormMain.cs:11701
+#: Cadencii/FormMain.cs:11704
 msgid ""
 "UTAU singer not registered yet.\n"
 "Continue ?"
@@ -1030,393 +1030,393 @@ msgstr ""
 "UTAU 가수가 아직 등록되지 않았습니다.\n"
 "계속하시겠습니까?"
 
-#: Cadencii/FormMain.cs:11702
-#: Cadencii/FormMain.cs:15248
+#: Cadencii/FormMain.cs:11705
+#: Cadencii/FormMain.cs:15257
 msgid "Info"
 msgstr "정보"
 
-#: Cadencii/FormMain.cs:11721
+#: Cadencii/FormMain.cs:11724
 msgid "Text File(*.txt)|*.txt"
 msgstr "텍스트 파일(*.txt)|*.txt"
 
-#: Cadencii/FormMain.cs:11801
+#: Cadencii/FormMain.cs:11804
 msgid "Wave Export"
 msgstr "웨이브 내보내기"
 
-#: Cadencii/FormMain.cs:11907
-#: Cadencii/FormMain.cs:11915
+#: Cadencii/FormMain.cs:11910
+#: Cadencii/FormMain.cs:11918
 msgid "Invalid MIDI file."
 msgstr "잘못된 MIDI 파일입니다."
 
-#: Cadencii/FormMain.cs:12403
-#: Cadencii/FormMain.cs:12681
+#: Cadencii/FormMain.cs:12406
+#: Cadencii/FormMain.cs:12684
 msgid "Invalid VSQ/VOCALOID MIDI file"
 msgstr "잘못된 VSQ/보컬로이드 MIDI 파일"
 
-#: Cadencii/FormMain.cs:13243
+#: Cadencii/FormMain.cs:13248
 msgid "Go to the first"
 msgstr "처음으로 이동"
 
-#: Cadencii/FormMain.cs:13746
+#: Cadencii/FormMain.cs:13751
 msgid "input pre-measure"
 msgstr "예비 소절 입력"
 
-#: Cadencii/FormMain.cs:15214
+#: Cadencii/FormMain.cs:15222
 msgid "file not found"
 msgstr "파일 찾을 수 없음"
 
-#: Cadencii/FormMain.cs:15235
+#: Cadencii/FormMain.cs:15244
 msgid "Enabled"
 msgstr "사용"
 
-#: Cadencii/FormMain.cs:15247
+#: Cadencii/FormMain.cs:15256
 msgid "Log file has not generated yet."
 msgstr "기록 파일이 아직 만들어지지 않았습니다."
 
-#: Cadencii/FormMain.cs:17136
+#: Cadencii/FormMain.cs:17145
 msgid "Invalid XVSQ file"
 msgstr "잘못된 XVSQ 파일"
 
-#: Cadencii/FormMain.cs:17299
+#: Cadencii/FormMain.cs:17308
 msgid "Undo."
 msgstr "이전 작업을 되돌립니다."
 
-#: Cadencii/FormMain.cs:17301
+#: Cadencii/FormMain.cs:17310
 msgid "Redo."
 msgstr "다시 실행합니다."
 
-#: Cadencii/FormMain.cs:17303
+#: Cadencii/FormMain.cs:17312
 msgid "Cut selected items."
 msgstr "선택한 항목을 잘라냅니다."
 
-#: Cadencii/FormMain.cs:17305
+#: Cadencii/FormMain.cs:17314
 msgid "Copy selected items."
 msgstr "선택한 항목을 복사합니다."
 
-#: Cadencii/FormMain.cs:17307
+#: Cadencii/FormMain.cs:17316
 msgid "Paste copied items to current song position."
 msgstr "복사된 항목을 현재 노래 위치에 붙여 넣습니다."
 
-#: Cadencii/FormMain.cs:17309
+#: Cadencii/FormMain.cs:17318
 msgid "Delete selected items."
 msgstr "선택한 항목을 지웁니다."
 
-#: Cadencii/FormMain.cs:17311
+#: Cadencii/FormMain.cs:17320
 msgid "Avoid automaticaly polyphonic editing."
 msgstr "자동으로 화음을 편집하지 않습니다."
 
-#: Cadencii/FormMain.cs:17313
+#: Cadencii/FormMain.cs:17322
 msgid "Select all items and control curves of current track."
 msgstr "현재 트랙의 모든 항목 및 제어 곡선을 선택합니다."
 
-#: Cadencii/FormMain.cs:17315
+#: Cadencii/FormMain.cs:17324
 msgid "Select all items of current track."
 msgstr "현재 트랙의 모든 항목을 선택합니다."
 
-#: Cadencii/FormMain.cs:17317
+#: Cadencii/FormMain.cs:17326
 msgid "Show/Hide control curves."
 msgstr "제어 곡선을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17319
+#: Cadencii/FormMain.cs:17328
 msgid "Enable/Disable end marker."
 msgstr "끝 표식을 활성화 또는 비활성화합니다."
 
-#: Cadencii/FormMain.cs:17321
+#: Cadencii/FormMain.cs:17330
 msgid "Show/Hide grid line."
 msgstr "눈금선을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17323
+#: Cadencii/FormMain.cs:17332
 msgid "Show/Hide icon palette"
 msgstr "아이콘 팔레트를 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17325
+#: Cadencii/FormMain.cs:17334
 msgid "Show/Hide lyrics."
 msgstr "가사를 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17327
+#: Cadencii/FormMain.cs:17336
 msgid "Show/Hide mixer window."
 msgstr "믹서 창을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17329
+#: Cadencii/FormMain.cs:17338
 msgid "Show/Hide expression lines."
 msgstr "표현 선을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17331
+#: Cadencii/FormMain.cs:17340
 msgid "Show/Hide navigation view"
 msgstr "탐색을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17333
+#: Cadencii/FormMain.cs:17342
 msgid "Show/Hide pitch bend lines."
 msgstr "피치 벤드 선을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17335
+#: Cadencii/FormMain.cs:17344
 msgid "Open VSTi plugin window"
 msgstr "VSTi 플러그인 창을 엽니다."
 
-#: Cadencii/FormMain.cs:17337
+#: Cadencii/FormMain.cs:17346
 msgid "Show/Hide property window."
 msgstr "속성 창을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17339
+#: Cadencii/FormMain.cs:17348
 msgid "Enable/Disable start marker."
 msgstr "시작 표식을 활성화 또는 비활성화합니다."
 
-#: Cadencii/FormMain.cs:17341
+#: Cadencii/FormMain.cs:17350
 msgid "Show/Hide waveform."
 msgstr "파형을 보이거나 숨깁니다."
 
-#: Cadencii/FormMain.cs:17343
+#: Cadencii/FormMain.cs:17352
 msgid "Create new project."
 msgstr "새 프로젝트를 만듭니다."
 
-#: Cadencii/FormMain.cs:17345
+#: Cadencii/FormMain.cs:17354
 msgid "Open Cadencii project."
 msgstr "Cadencii 프로젝트를 엽니다."
 
-#: Cadencii/FormMain.cs:17347
+#: Cadencii/FormMain.cs:17356
 msgid "Save current project."
 msgstr "현재 프로젝트를 저장합니다."
 
-#: Cadencii/FormMain.cs:17349
+#: Cadencii/FormMain.cs:17358
 msgid "Save current project with new name."
 msgstr "현재 프로젝트를 새 이름으로 저장합니다."
 
-#: Cadencii/FormMain.cs:17351
+#: Cadencii/FormMain.cs:17360
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "VSQ 또는 보컬로이드 MIDI를 열고 새 프로젝트를 만듭니다."
 
-#: Cadencii/FormMain.cs:17353
+#: Cadencii/FormMain.cs:17362
 msgid "Open UTAU project and create new project."
 msgstr "UTAU 프로젝트를 열고 새 프로젝트를 만듭니다."
 
-#: Cadencii/FormMain.cs:17355
+#: Cadencii/FormMain.cs:17364
 msgid "Import."
 msgstr "가져옵니다."
 
-#: Cadencii/FormMain.cs:17357
+#: Cadencii/FormMain.cs:17366
 msgid "Import Standard MIDI."
 msgstr "표준 MIDI를 가져옵니다."
 
-#: Cadencii/FormMain.cs:17359
+#: Cadencii/FormMain.cs:17368
 msgid "Import UTAU project"
 msgstr "UTAU 프로젝트를 가져옵니다."
 
-#: Cadencii/FormMain.cs:17361
+#: Cadencii/FormMain.cs:17370
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr "VSQ 또는 보컬로이드 MIDI를 가져옵니다."
 
-#: Cadencii/FormMain.cs:17363
+#: Cadencii/FormMain.cs:17372
 msgid "Export."
 msgstr "내보냅니다."
 
-#: Cadencii/FormMain.cs:17365
+#: Cadencii/FormMain.cs:17374
 msgid "Export all tracks to serial numbered WAVEs"
 msgstr "일련번호가 매겨진 WAVE의 모든 트랙을 내보냅니다."
 
-#: Cadencii/FormMain.cs:17367
+#: Cadencii/FormMain.cs:17376
 msgid "Export to WAVE file."
 msgstr "WAVE 파일로 내보냅니다."
 
-#: Cadencii/FormMain.cs:17369
+#: Cadencii/FormMain.cs:17378
 msgid "Export current track as Music XML"
 msgstr "현재 트랙을 음악 XML로 내보냅니다."
 
-#: Cadencii/FormMain.cs:17371
+#: Cadencii/FormMain.cs:17380
 msgid "Export to Standard MIDI."
 msgstr "표준 MIDI로 내보냅니다."
 
-#: Cadencii/FormMain.cs:17373
+#: Cadencii/FormMain.cs:17382
 msgid "Export current track as UTAU project file"
 msgstr "현재 트랙을 UTAU 프로젝트 파일로 내보냅니다."
 
-#: Cadencii/FormMain.cs:17375
+#: Cadencii/FormMain.cs:17384
 msgid "Export to VSQ"
 msgstr "VSQ로 내보냅니다."
 
-#: Cadencii/FormMain.cs:17377
+#: Cadencii/FormMain.cs:17386
 msgid "Export current track as Meta-text for vConnect"
 msgstr "현재 트랙을 vConnect용 메타 텍스트로 내보냅니다."
 
-#: Cadencii/FormMain.cs:17379
+#: Cadencii/FormMain.cs:17388
 msgid "Recent projects."
 msgstr "최근 프로젝트입니다."
 
-#: Cadencii/FormMain.cs:17381
+#: Cadencii/FormMain.cs:17390
 msgid "Close this window."
 msgstr "이 창을 닫습니다."
 
-#: Cadencii/FormMain.cs:17383
+#: Cadencii/FormMain.cs:17392
 msgid "Lengthen note end to neighboring note."
 msgstr "음표의 끝을 다음 음표의 바로 앞까지 늘입니다."
 
-#: Cadencii/FormMain.cs:17385
+#: Cadencii/FormMain.cs:17394
 msgid "Import lyric."
 msgstr "가사를 가져옵니다."
 
-#: Cadencii/FormMain.cs:17388
+#: Cadencii/FormMain.cs:17397
 msgid "Import tempo from ReWire host."
 msgstr "ReWire 호스트에서 템포를 가져옵니다."
 
-#: Cadencii/FormMain.cs:17388
-#: Cadencii/FormMain.cs:17390
+#: Cadencii/FormMain.cs:17397
+#: Cadencii/FormMain.cs:17399
 msgid "(not implemented)"
 msgstr "(구현되지 않음)"
 
-#: Cadencii/FormMain.cs:17390
+#: Cadencii/FormMain.cs:17399
 msgid "Reload VSTi dll."
 msgstr "VSTi dll을 다시 불러옵니다."
 
-#: Cadencii/FormMain.cs:17393
+#: Cadencii/FormMain.cs:17402
 msgid "Correct overlapped item."
 msgstr "겹쳐진 음표를 앞 음표 길이를 줄여 고칩니다."
 
-#: Cadencii/FormMain.cs:17395
+#: Cadencii/FormMain.cs:17404
 msgid "Insert bar."
 msgstr "막대를 넣습니다."
 
-#: Cadencii/FormMain.cs:17397
+#: Cadencii/FormMain.cs:17406
 msgid "Delete bar."
 msgstr "막대를 지웁니다."
 
-#: Cadencii/FormMain.cs:17399
+#: Cadencii/FormMain.cs:17408
 msgid "Randomize items."
 msgstr "항목을 무작위로 섞습니다."
 
-#: Cadencii/FormMain.cs:17401
+#: Cadencii/FormMain.cs:17410
 msgid "Edit portamento/accent/decay of selected item"
 msgstr "선택한 항목의 포르타멘토, 강조, 감소를 편집합니다."
 
-#: Cadencii/FormMain.cs:17403
+#: Cadencii/FormMain.cs:17412
 msgid "Edit vibrato length and type of selected item"
 msgstr "선택한 항목의 떨림 길이와 형식을 편집합니다."
 
-#: Cadencii/FormMain.cs:17405
+#: Cadencii/FormMain.cs:17414
 msgid "Translate all phrase into phonetic symbol"
 msgstr "발음 기호로 모든 문구를 번역합니다."
 
-#: Cadencii/FormMain.cs:17407
+#: Cadencii/FormMain.cs:17416
 msgid "Open configuration dialog for phonetic symnol dictionaries"
 msgstr "발음 기호 사전을 구성하는 대화 상자를 엽니다."
 
-#: Cadencii/FormMain.cs:17409
+#: Cadencii/FormMain.cs:17418
 msgid "Copy vibrato config of selected item into vibrato preset"
 msgstr "선택한 항목의 떨림 구성을 떨림 미리 설정으로 복사합니다."
 
-#: Cadencii/FormMain.cs:17411
+#: Cadencii/FormMain.cs:17420
 msgid "Read and compile all scripts and update the list of them"
 msgstr "모든 스크립트를 읽고 컴파일한 뒤 목록을 업데이트합니다."
 
-#: Cadencii/FormMain.cs:17413
+#: Cadencii/FormMain.cs:17422
 msgid "Open configuration dialog for editor configs"
 msgstr "Cadencii의 구성을 위한 대화 상자를 엽니다."
 
-#: Cadencii/FormMain.cs:17415
+#: Cadencii/FormMain.cs:17424
 msgid "Change quantize resolution"
 msgstr "끊어적기 해상도를 바꿉니다."
 
-#: Cadencii/FormMain.cs:17417
+#: Cadencii/FormMain.cs:17426
 msgid "Connect/Remove/Configure game controler"
 msgstr "게임 컨트롤러를 연결하거나 지우고 구성합니다."
 
-#: Cadencii/FormMain.cs:17419
+#: Cadencii/FormMain.cs:17428
 msgid "Configuration of palette tool"
 msgstr "팔레트 도구를 구성합니다."
 
-#: Cadencii/FormMain.cs:17421
+#: Cadencii/FormMain.cs:17430
 msgid "Open configuration dialog for shortcut key"
 msgstr "바로 가기 키를 구성하는 대화 상자를 엽니다."
 
-#: Cadencii/FormMain.cs:17423
+#: Cadencii/FormMain.cs:17432
 msgid "Open configuration dialog for vibrato preset"
 msgstr "떨림 미리 설정을 구성하는 대화 상자를 엽니다."
 
-#: Cadencii/FormMain.cs:17425
+#: Cadencii/FormMain.cs:17434
 msgid "Edit default singer style"
 msgstr "가수의 기본 노래 스타일을 편집합니다."
 
-#: Cadencii/FormMain.cs:17427
+#: Cadencii/FormMain.cs:17436
 msgid "Configuration of this sequence."
 msgstr "이 시퀀스를 구성합니다."
 
-#: Cadencii/FormMain.cs:17429
+#: Cadencii/FormMain.cs:17438
 msgid "Add new track."
 msgstr "새 트랙을 더합니다."
 
-#: Cadencii/FormMain.cs:17431
+#: Cadencii/FormMain.cs:17440
 msgid "Add/Remove/Edit background music"
 msgstr "배경음악을 더하거나 지우고 편집합니다."
 
-#: Cadencii/FormMain.cs:17433
+#: Cadencii/FormMain.cs:17442
 msgid "Enable current track."
 msgstr "현재 트랙을 사용합니다."
 
-#: Cadencii/FormMain.cs:17435
+#: Cadencii/FormMain.cs:17444
 msgid "Copy current track."
 msgstr "현재 트랙을 복사합니다."
 
-#: Cadencii/FormMain.cs:17437
+#: Cadencii/FormMain.cs:17446
 msgid "Change track name."
 msgstr "트랙 이름을 바꿉니다."
 
-#: Cadencii/FormMain.cs:17439
+#: Cadencii/FormMain.cs:17448
 msgid "Delete current track."
 msgstr "현재 트랙을 지웁니다."
 
-#: Cadencii/FormMain.cs:17441
+#: Cadencii/FormMain.cs:17450
 msgid "Render current track."
 msgstr "현재 트랙을 렌더링합니다."
 
-#: Cadencii/FormMain.cs:17443
+#: Cadencii/FormMain.cs:17452
 msgid "Render all tracks."
 msgstr "모든 트랙을 렌더링합니다."
 
-#: Cadencii/FormMain.cs:17445
+#: Cadencii/FormMain.cs:17454
 msgid "Show background items."
 msgstr "배경 항목을 보여줍니다."
 
-#: Cadencii/FormMain.cs:17447
+#: Cadencii/FormMain.cs:17456
 msgid "Select voice synthesis engine."
 msgstr "음성 합성 엔진을 선택합니다."
 
-#: Cadencii/FormMain.cs:17449
+#: Cadencii/FormMain.cs:17458
 msgid "AquesTone"
 msgstr "AquesTone"
 
-#: Cadencii/FormMain.cs:17451
+#: Cadencii/FormMain.cs:17460
 msgid "UTAU"
 msgstr "UTAU"
 
-#: Cadencii/FormMain.cs:17453
+#: Cadencii/FormMain.cs:17462
 msgid "vConnect-STAND"
 msgstr "vConnect-STAND"
 
-#: Cadencii/FormMain.cs:17455
+#: Cadencii/FormMain.cs:17464
 msgid "VOCALOID1"
 msgstr "VOCALOID1"
 
-#: Cadencii/FormMain.cs:17457
+#: Cadencii/FormMain.cs:17466
 msgid "VOCALOID2"
 msgstr "VOCALOID2"
 
-#: Cadencii/FormMain.cs:17459
+#: Cadencii/FormMain.cs:17468
 msgid "Clear menu items"
 msgstr "메뉴의 항목들을 지웁니다."
 
-#: Cadencii/FormMain.cs:17655
+#: Cadencii/FormMain.cs:17664
 msgid "Input Offset Seconds"
 msgstr "오프셋 초 입력"
 
-#: Cadencii/FormMain.cs:17746
+#: Cadencii/FormMain.cs:17755
 #, csharp-format
 msgid "file '{0}' is already registered as BGM."
 msgstr "'{0}' 파일은 이미 BGM으로 등록되었습니다."
 
-#: Cadencii/FormMain.cs:17767
+#: Cadencii/FormMain.cs:17776
 #, csharp-format
 msgid "remove '{0}'?"
 msgstr "'{0}'을 지우시겠습니까?"
 
-#: Cadencii/FormMain.cs:17852
+#: Cadencii/FormMain.cs:17861
 msgid "Failed loading script."
 msgstr "스크립트를 불러오지 못했습니다."
 
@@ -1762,238 +1762,242 @@ msgstr "트랙"
 msgid "sec"
 msgstr "초"
 
-#: Cadencii/Preference.cs:807
+#: Cadencii/Preference.cs:826
 msgid "Executable(*.exe)|*.exe"
 msgstr "실행 파일(*.exe)|*.exe"
 
-#: Cadencii/Preference.cs:815
-#: Cadencii/Preference.cs:818
-#: Cadencii/Preference.cs:820
+#: Cadencii/Preference.cs:834
+#: Cadencii/Preference.cs:837
+#: Cadencii/Preference.cs:839
 msgid "Select Singer Directory"
 msgstr "가수 디렉터리 선택"
 
-#: Cadencii/Preference.cs:838
-#: Cadencii/Preference.cs:854
+#: Cadencii/Preference.cs:857
+#: Cadencii/Preference.cs:873
 msgid "Appearance"
 msgstr "모양"
 
-#: Cadencii/Preference.cs:840
-#: Cadencii/Preference.cs:855
+#: Cadencii/Preference.cs:859
+#: Cadencii/Preference.cs:874
 msgid "Operation"
 msgstr "작업"
 
-#: Cadencii/Preference.cs:842
-#: Cadencii/Preference.cs:856
+#: Cadencii/Preference.cs:861
+#: Cadencii/Preference.cs:875
 msgid "Platform"
 msgstr "플랫폼"
 
-#: Cadencii/Preference.cs:844
-#: Cadencii/Preference.cs:857
+#: Cadencii/Preference.cs:863
+#: Cadencii/Preference.cs:876
 msgid "UTAU Singers"
 msgstr "UTAU 가수"
 
-#: Cadencii/Preference.cs:848
-#: Cadencii/Preference.cs:859
+#: Cadencii/Preference.cs:867
+#: Cadencii/Preference.cs:878
 msgid "Synthesizer"
 msgstr "신디사이저"
 
-#: Cadencii/Preference.cs:864
+#: Cadencii/Preference.cs:883
 msgid "Resolution(VSTi)"
 msgstr "해상도(VSTi)"
 
-#: Cadencii/Preference.cs:865
+#: Cadencii/Preference.cs:884
 msgid "Control Curve"
 msgstr "제어 곡선"
 
-#: Cadencii/Preference.cs:868
-#: Cadencii/Preference.cs:880
+#: Cadencii/Preference.cs:887
+#: Cadencii/Preference.cs:899
 msgid "Enable Automatic Vibrato"
 msgstr "자동 떨림 사용"
 
-#: Cadencii/Preference.cs:870
+#: Cadencii/Preference.cs:889
 msgid "Default Vibrato Length"
 msgstr "기본 떨림 길이"
 
-#: Cadencii/Preference.cs:872
+#: Cadencii/Preference.cs:891
 msgid "Minimum note length for Automatic Vibrato"
 msgstr "자동 떨림의 최소 음표 길이"
 
-#: Cadencii/Preference.cs:875
+#: Cadencii/Preference.cs:894
 msgid "Auto Vibrato Type"
 msgstr "자동 떨림 유형"
 
-#: Cadencii/Preference.cs:876
-#: Cadencii/Preference.cs:878
+#: Cadencii/Preference.cs:895
+#: Cadencii/Preference.cs:897
 msgid "VOCALOID Editor Compatible"
 msgstr "보컬로이드 에디터 호환"
 
-#: Cadencii/Preference.cs:877
-#: Cadencii/Preference.cs:879
+#: Cadencii/Preference.cs:896
+#: Cadencii/Preference.cs:898
 msgid "User Defined"
 msgstr "사용자 정의"
 
-#: Cadencii/Preference.cs:889
+#: Cadencii/Preference.cs:908
 msgid "Default Singer"
 msgstr "기본 가수"
 
-#: Cadencii/Preference.cs:891
+#: Cadencii/Preference.cs:910
 msgid "Pre-Send time"
 msgstr "예비 발음 시간"
 
-#: Cadencii/Preference.cs:893
+#: Cadencii/Preference.cs:912
 msgid "Waiting Time"
 msgstr "대기 시간"
 
-#: Cadencii/Preference.cs:895
+#: Cadencii/Preference.cs:914
 msgid "Chase Event"
 msgstr "이벤트 추적"
 
-#: Cadencii/Preference.cs:897
+#: Cadencii/Preference.cs:916
 msgid "Buffer Size"
 msgstr "버퍼 크기"
 
-#: Cadencii/Preference.cs:903
+#: Cadencii/Preference.cs:922
 msgid "Font"
 msgstr "글꼴"
 
-#: Cadencii/Preference.cs:904
+#: Cadencii/Preference.cs:923
 msgid "Menu / Lyrics"
 msgstr "메뉴/가사"
 
-#: Cadencii/Preference.cs:905
+#: Cadencii/Preference.cs:924
 msgid "Screen"
 msgstr "화면"
 
-#: Cadencii/Preference.cs:906
+#: Cadencii/Preference.cs:925
 msgid "UI Language"
 msgstr "UI 언어"
 
-#: Cadencii/Preference.cs:907
-#: Cadencii/Preference.cs:908
+#: Cadencii/Preference.cs:926
+#: Cadencii/Preference.cs:927
 msgid "Change"
 msgstr "바꾸기"
 
-#: Cadencii/Preference.cs:909
+#: Cadencii/Preference.cs:928
 msgid "Track Height (pixel)"
 msgstr "트랙 높이 (픽셀)"
 
-#: Cadencii/Preference.cs:910
+#: Cadencii/Preference.cs:929
 msgid "Visible Control Curve"
 msgstr "보이는 제어 곡선"
 
-#: Cadencii/Preference.cs:914
+#: Cadencii/Preference.cs:933
 msgid "Piano Roll"
 msgstr "피아노 롤"
 
-#: Cadencii/Preference.cs:915
+#: Cadencii/Preference.cs:934
 msgid "Mouse wheel Rate"
 msgstr "마우스 휠 속도"
 
-#: Cadencii/Preference.cs:917
+#: Cadencii/Preference.cs:936
 msgid "Fix Song position to Center"
 msgstr "노래 위치를 가운데로 수정"
 
-#: Cadencii/Preference.cs:918
+#: Cadencii/Preference.cs:937
 msgid "Horizontal Scroll when Mouse wheel"
 msgstr "마우스 휠로 가로 스크롤"
 
-#: Cadencii/Preference.cs:919
+#: Cadencii/Preference.cs:938
 msgid "Keep Lyric Input Mode"
 msgstr "가사 입력 모드 유지"
 
-#: Cadencii/Preference.cs:920
+#: Cadencii/Preference.cs:939
 msgid "Play Preview On Right Click"
 msgstr "오른쪽 누르기로 미리 보기 재생"
 
-#: Cadencii/Preference.cs:921
+#: Cadencii/Preference.cs:940
 msgid "Enable Quantize for Curve Selecting"
 msgstr "커브 선택에 끊어적기 사용"
 
-#: Cadencii/Preference.cs:922
+#: Cadencii/Preference.cs:941
 msgid "Use space key as Middle button modifier"
 msgstr "스페이스 키를 마우스 가운데 버튼의 보조키로 사용"
 
-#: Cadencii/Preference.cs:924
+#: Cadencii/Preference.cs:943
 msgid "Misc"
 msgstr "기타"
 
-#: Cadencii/Preference.cs:925
+#: Cadencii/Preference.cs:944
 msgid "Maximum Frame Rate"
 msgstr "최대 프레임 속도"
 
-#: Cadencii/Preference.cs:926
+#: Cadencii/Preference.cs:945
 msgid "frame per second"
 msgstr "초당 프레임"
 
-#: Cadencii/Preference.cs:927
+#: Cadencii/Preference.cs:946
 msgid "Waiting Time for Preview"
 msgstr "미리 보기 대기 시간"
 
-#: Cadencii/Preference.cs:928
+#: Cadencii/Preference.cs:947
 msgid "MIDI In Port Number"
 msgstr "MIDI In 포트 번호"
 
-#: Cadencii/Preference.cs:929
+#: Cadencii/Preference.cs:948
 msgid "MTC MIDI In Port Number"
 msgstr "MTC MIDI In 포트 번호"
 
-#: Cadencii/Preference.cs:930
+#: Cadencii/Preference.cs:949
 msgid "Translate Roman letters into Kana"
 msgstr "로마자를 가나로 번역"
 
-#: Cadencii/Preference.cs:934
+#: Cadencii/Preference.cs:953
 msgid "UTAU Cores"
 msgstr "UTAU 코어"
 
-#: Cadencii/Preference.cs:935
+#: Cadencii/Preference.cs:954
 msgid "Path:"
 msgstr "경로:"
 
-#: Cadencii/Preference.cs:936
+#: Cadencii/Preference.cs:955
 msgid "Invoke wavtool with Wine"
 msgstr "와인으로 wavtool 호출"
 
-#: Cadencii/Preference.cs:937
+#: Cadencii/Preference.cs:956
 msgid "path"
 msgstr "경로"
 
-#: Cadencii/Preference.cs:938
+#: Cadencii/Preference.cs:957
 msgid "Check the box to use Wine"
 msgstr "와인을 사용하려면 확인란 선택"
 
-#: Cadencii/Preference.cs:942
+#: Cadencii/Preference.cs:958
+msgid "Enable Workaround for Wide-Character Path"
+msgstr ""
+
+#: Cadencii/Preference.cs:962
 msgid "Program Change"
 msgstr "프로그램 바꾸기"
 
-#: Cadencii/Preference.cs:942
+#: Cadencii/Preference.cs:962
 msgid "Path"
 msgstr "경로"
 
-#: Cadencii/Preference.cs:950
+#: Cadencii/Preference.cs:970
 msgid "Automatical Backup"
 msgstr "자동 백업"
 
-#: Cadencii/Preference.cs:951
+#: Cadencii/Preference.cs:971
 msgid "interval"
 msgstr "간격"
 
-#: Cadencii/Preference.cs:952
+#: Cadencii/Preference.cs:972
 msgid "minute(s)"
 msgstr "분"
 
-#: Cadencii/Preference.cs:953
+#: Cadencii/Preference.cs:973
 msgid "Keep Project Cache"
 msgstr "프로젝트 캐시 유지"
 
-#: Cadencii/Preference.cs:957
+#: Cadencii/Preference.cs:977
 msgid "Synthesizer DLL Usage"
 msgstr "신디사이저 DLL 사용"
 
-#: Cadencii/Preference.cs:959
+#: Cadencii/Preference.cs:979
 msgid "Default Synthesizer"
 msgstr "기본 신디사이저"
 
-#: Cadencii/Preference.cs:1332
+#: Cadencii/Preference.cs:1352
 msgid ""
 "Restart Cadencii to complete your changes\n"
 "(restart will NOT be automatically done)"
@@ -2227,96 +2231,67 @@ msgstr "이 설정을 저장하시겠습니까?"
 
 #~ msgid "Singer Properties"
 #~ msgstr "歌手のプロパティ"
-
 #~ msgid "milli second"
 #~ msgstr "ミリ秒"
-
 #~ msgid "Recent files"
 #~ msgstr "最近使ったファイル"
-
 #~ msgid "VOCALOID1 [1.0]"
 #~ msgstr "VOCALOID1 [1.0]"
-
 #~ msgid "VOCALOID1 [1.1]"
 #~ msgstr "VOCALOID1 [1.1]"
-
 #~ msgid "primary"
 #~ msgstr "プライマリ"
-
 #~ msgid "secondary"
 #~ msgstr "セカンダリ"
-
 #~ msgid "Load secondary VOCALOID1 DLL"
 #~ msgstr "セカンダリVOCALOID1 DLLを読み込む"
-
 #~ msgid "Other Settings"
 #~ msgstr "その他の設定"
-
 #~ msgid ""
 #~ "Select command and hit key(s) you want to set.\n"
 #~ "Hit Backspace if you want to remove shortcut key."
 #~ msgstr "やり直し"
-
 #~ msgid "Current Platform"
 #~ msgstr "現在の実行環境"
-
 #~ msgid "Use Command key as Control key"
 #~ msgstr "コマンドキーをコントロールキーとして使う"
-
 #~ msgid "with Wine"
 #~ msgstr "wineを使う"
-
 #~ msgid "Invoke UTAU cores with Wine"
 #~ msgstr "Wine経由でUTAUコアを起動する"
-
 #~ msgid "Select category of menu"
 #~ msgstr "メニューのカテゴリを選択してください"
-
 #~ msgid "Singer"
 #~ msgstr "原音"
-
 #~ msgid "Import ReWire host tempo"
 #~ msgstr "ReWireホストからテンポを取得"
-
 #~ msgid "Reload VSTi"
 #~ msgstr "VSTiをリロード"
-
 #~ msgid "Top Most"
 #~ msgstr "手前に表示"
-
 #~ msgid "UTAU voice DB"
 #~ msgstr "UTAU音源"
-
 #~ msgid "Open configuration window for UTAU voice DB (oto.ini)"
 #~ msgstr "UTAU原音の設定ファイル(oto.ini)の編集画面を開きます"
-
 #~ msgid "UTAU project file (current track)"
 #~ msgstr "UTAUプロジェクトファイル (現在のトラック)"
-
 #~ msgid "Table of contents"
 #~ msgstr "目次"
-
 #~ msgid "Preface"
 #~ msgstr "はじめに"
-
 #~ msgid "How to install"
 #~ msgstr "インストール"
-
 #~ msgid "How to use"
 #~ msgstr "使い方"
-
 #~ msgid "FAQ"
 #~ msgstr "よくある質問"
-
 #~ msgid "License"
 #~ msgstr "ライセンス"
-
 #~ msgid ""
 #~ "Cadenncii is a free software for editing scores for several singing "
 #~ "synthesis systems."
 #~ msgstr ""
 #~ "Cadenciiは歌声合成システムのための、フリーの楽譜編集ソフトウェアです。"
-
 #~ msgid ""
 #~ "At this time, <a href=\"%s\">VOCALOID</a>, <a href=\"%s\">VOCALOID2</a>, "
 #~ "<a href=\"%s\">UTAU</a>, STRAIGHT with UTAU, and <a href=\"%s"
@@ -2325,271 +2300,187 @@ msgstr "이 설정을 저장하시겠습니까?"
 #~ "今のところ、<a href=\"%s\">VOCALOID</a>、<a href=\"%s\">VOCALOID2</a>、<a "
 #~ "href=\"%s\">UTAU</a>、STRAIGHT with UTAU、および<a href=\"%s\">AquesTone</"
 #~ "a>を合成システムとして利用できます。"
-
 #~ msgid "screen shot of Cadencii"
 #~ msgstr "Cadencii のスクリーンショット"
-
 #~ msgid "Operating System"
 #~ msgstr "オペレーティングシステム"
-
 #~ msgid "with .NET Framework 2.0 or later"
 #~ msgstr ""
 #~ "ただし.NET Framework 2.0またはこれより新しい.NET Frameworkがインストールし"
 #~ "てあること"
-
 #~ msgid "Install"
 #~ msgstr "インストール"
-
 #~ msgid "Change pre-measure"
 #~ msgstr "プリメジャーを変更"
-
 #~ msgid "Change WAVE format"
 #~ msgstr "WAVEフォーマットを変更"
-
 #~ msgid "WAVE format"
 #~ msgstr "WAVEフォーマット"
-
 #~ msgid "Cannot convert '{0}' to number"
 #~ msgstr "'{0}'を数値に変換できません"
-
 #~ msgid "Set this vibrato as default"
 #~ msgstr "この音符のビブラートをデフォルトにする"
-
 #~ msgid "Default Vibrato Rate"
 #~ msgstr "デフォルトビブラート速度"
-
 #~ msgid "Default Vibrato Depth"
 #~ msgstr "デフォルトビブラート振幅"
-
 #~ msgid ""
 #~ "(Rate/Depth curve should be set from [Lyric] -> [Set this vibrato as "
 #~ "default])"
 #~ msgstr ""
 #~ "(Rate/Depthカーブの設定は[歌詞] -> [この音符のビブラートをデフォルトにす"
 #~ "る]により行ってください)"
-
 #~ msgid "Game controler instanceof not available"
 #~ msgstr "ゲームコントローラが接続されていません"
-
 #~ msgid "Start Realtime Input"
 #~ msgstr "リアルタイム入力を開始"
-
 #~ msgid "Play After Synth"
 #~ msgstr "合成後に再生する"
-
 #~ msgid "Stop Realtime Input"
 #~ msgstr "リアルタイム入力を停止"
-
 #~ msgid "Start realtime input."
 #~ msgstr "リアルタイム入力を開始"
-
 #~ msgid "Set global pitch shift."
 #~ msgstr "グローバル・ピッチシフトを設定"
-
 #~ msgid "file '{0}' instanceof already registered as BGM."
 #~ msgstr "ファイル '{0}' は既にBGMに指定されています"
-
 #~ msgid "Speed"
 #~ msgstr "速度"
-
 #~ msgid "Metronome Config"
 #~ msgstr "メトロノームの設定"
-
 #~ msgid "MIDI Device"
 #~ msgstr "MIDIデバイス"
-
 #~ msgid "Metronome"
 #~ msgstr "メトロノーム"
-
 #~ msgid "Note# (Bell)"
 #~ msgstr "ノートナンバー(ベル)"
-
 #~ msgid "Program#"
 #~ msgstr "プログラムナンバー"
-
 #~ msgid "Program# (Bell)"
 #~ msgstr "プログラムナンバー(ベル)"
-
 #~ msgid "Ring Bell"
 #~ msgstr "ベルを鳴らす"
-
 #~ msgid "Vibrato Depth"
 #~ msgstr "ビブラートの振幅"
-
 #~ msgid "Mouse wheel speed"
 #~ msgstr "マウスホイール時の移動速度"
-
 #~ msgid "Drawing lyrics to screen or not"
 #~ msgstr "歌詞をピアノロールに表示するかどうか"
-
 #~ msgid "Generate STF file"
 #~ msgstr "STFを作成する"
-
 #~ msgid "Whether scroll horizontally with mouse-wheel"
 #~ msgstr "マウスホイール時に水平方向にスクロールする"
-
 #~ msgid "Tolerance of mouse operation (in pixel)"
 #~ msgstr "マウス操作の許容範囲(pixel)"
-
 #~ msgid "VST dll(*.dll)|*.dll"
 #~ msgstr "VSTプラグイン(*.dll)|*.dll"
-
 #~ msgid "Original Format(*.evsq)|*.evsq"
 #~ msgstr "Original Format(*.evsq)|*.evsq"
-
 #~ msgid "note"
 #~ msgstr "音符"
-
 #~ msgid "whether scroll horizontally with mouse-wheel"
 #~ msgstr "whether scroll horizontally with mouse-wheel"
-
 #~ msgid ""
 #~ "Select command and hit key(s) you want to set.\n"
 #~ "Hit Delete or Backspace if you want to remove shortcut key."
 #~ msgstr ""
 #~ "コマンドを選択し、設定したいキーの組み合わせを入力してください\n"
 #~ "設定を消去する場合DeleteまたはBackspaceを入力してください"
-
 #~ msgid "Reload"
 #~ msgstr "リロード"
-
 #~ msgid "Show actual pitch line or not"
 #~ msgstr "ピッチ曲線を表示するかどうか"
-
 #~ msgid "Keey Project Cache"
 #~ msgstr "Keey Project Cache"
-
 #~ msgid "Playback Sample Sound"
 #~ msgstr "合成音のサンプル出力"
-
 #~ msgid "mio"
 #~ msgstr "mio"
-
 #~ msgid "Dynamics"
 #~ msgstr "ダイナミクス"
-
 #~ msgid "Vibrato type"
 #~ msgstr "ビブラートの種類"
-
 #~ msgid "Vibrato Settings"
 #~ msgstr "ビブラートの設定"
-
 #~ msgid "list of files recentry used"
 #~ msgstr "list of files recentry used"
-
 #~ msgid "maximum frame rate(in frames per second)"
 #~ msgstr "maximum frame rate(in frames per second)"
-
 #~ msgid "Run"
 #~ msgstr "実行"
-
 #~ msgid "MP3 File(*.mp3)|*.mp3"
 #~ msgstr "MP3ファイル(*.mp3)|*.mp3"
-
 #~ msgid "Program change of default singer"
 #~ msgstr "デフォルト歌手のプログラムチェンジ"
-
 #~ msgid "Fix play cursor to the center of screen"
 #~ msgstr "マーカーを画面中心に固定"
-
 #~ msgid "Place Tempo/Beat Dialog to appropriate Position"
 #~ msgstr "テンポ/拍子ダイアログを使いやすい位置に出す"
-
 #~ msgid "Current"
 #~ msgstr "現在のトラック"
-
 #~ msgid "name"
 #~ msgstr "トラック名"
-
 #~ msgid "Mute"
 #~ msgstr "ミュート"
-
 #~ msgid "vocaloid meta text"
 #~ msgstr "vocaloidメタテキスト"
-
 #~ msgid "start"
 #~ msgstr "start"
-
 #~ msgid "Auto Vibrato Settings"
 #~ msgstr "オートビブラートの設定"
-
 #~ msgid "Vibrato Rate"
 #~ msgstr "ビブラートの周期"
-
 #~ msgid "notes"
 #~ msgstr "音符の数"
-
 #~ msgid "Timing"
 #~ msgstr "タイミング"
-
 #~ msgid "tolerance of mouse operation (in pixel)"
 #~ msgstr "tolerance of mouse operation (in pixel)"
-
 #~ msgid "List of files recentry used"
 #~ msgstr "最近使用したファイルのリスト"
-
 #~ msgid "capacity of RecentFiles"
 #~ msgstr "最近使用したファイルリストのリスト長"
-
 #~ msgid "Convert Tempo"
 #~ msgstr "Convert Tempo"
-
 #~ msgid ""
 #~ "If checked, convert gate-time of notes in order to match the base-tempo"
 #~ msgstr ""
 #~ "チェックを入れると、全音符のゲートタイムを曲頭のテンポでの演奏時刻と合致す"
 #~ "るよう変換します"
-
 #~ msgid "Exit without save？"
 #~ msgstr "保存せずに終了しますか？"
-
 #~ msgid "Project Property"
 #~ msgstr "プロジェクトのプロパティ"
-
 #~ msgid "Capacity of RecentFiles"
 #~ msgstr "最近使用したファイルのリスト長"
-
 #~ msgid "Maximum frame rate(in frames per second)"
 #~ msgstr "画面描画の最大フレームレート(fps)"
-
 #~ msgid "Convert Gate-time"
 #~ msgstr "ゲートタイムを変換"
-
 #~ msgid "Default value of pre-measure"
 #~ msgstr "デフォルトプリメジャー"
-
 #~ msgid "Default scale for width direction in pixel/clock"
 #~ msgstr "横方向のデフォルトの表示倍率(pixel/clock)"
-
 #~ msgid "Pre-Send Time for sample sound"
 #~ msgstr "サンプル音出力までのプリセンドタイム"
-
 #~ msgid "Font size in GraphicsUnit.Point unit"
 #~ msgstr "メニュー項目のフォントサイズ(ポイント)"
-
 #~ msgid "tempo"
 #~ msgstr "テンポ"
-
 #~ msgid "Set Sound File"
 #~ msgstr "音声ファイルを指定"
-
 #~ msgid "lyric"
 #~ msgstr "歌詞"
-
 #~ msgid "Counter"
 #~ msgstr "カウンター"
-
 #~ msgid "Project Proeprty"
 #~ msgstr "Project Proeprty"
-
 #~ msgid "end"
 #~ msgstr "end"
-
 #~ msgid "Shortcut Keys"
 #~ msgstr "ショートカットキー"
-
 #~ msgid "Use Custom File Dialog"
 #~ msgstr "monoのファイルダイアログを使用しない"
-
 #~ msgid "Master Tuning"
 #~ msgstr "マスターチューニング"
+

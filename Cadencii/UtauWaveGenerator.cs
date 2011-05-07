@@ -84,6 +84,9 @@ namespace org.kbinani.cadencii
         private int mThisSampleRate = 44100;
         private RateConvertContext mContext = null;
         private WorkerState mState;
+        private boolean mUseWideCharacterWorkaround = false;
+        // 作成したジャンクションのリスト
+        private Vector<String> mJunctions = new Vector<String>();
 #if DEBUG
         /// <summary>
         /// ログを出さない設定の時true
@@ -183,19 +186,26 @@ namespace org.kbinani.cadencii
             if ( resampler_index < 0 ) {
                 resampler_index = 0;
             }
-            mResampler = mConfig.getResamplerAt( resampler_index );// getShortPathName( mConfig.getResamplerAt( resampler_index ) );
-            mWavtool = mConfig.PathWavtool;// getShortPathName( mConfig.PathWavtool );
+            mUseWideCharacterWorkaround = mConfig.UseWideCharacterWorkaround;
+            mResampler = mConfig.getResamplerAt( resampler_index );
+            mWavtool = mConfig.PathWavtool;
 #if DEBUG
             sout.println( "UtauWaveGenerator#init; mResampler=" + mResampler + "; exists=" + fsys.isFileExists( mResampler ) );
             sout.println( "UtauWaveGenerator#init; mWavtool=" + mWavtool + "; exists=" + fsys.isFileExists( mWavtool ) );
 #endif
             mSampleRate = sample_rate;
-            String temp = getShortPathName( AppManager.getCadenciiTempDir() );
-#if DEBUG
-            // 一時ディレクトリをヤバイ文字列にします
-            temp = "E:\\Configurações";
+            String id = AppManager.getID();
+            mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), id );
+#if !JAVA
+            if ( mUseWideCharacterWorkaround ) {
+                String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
+                if ( !fsys.isDirectoryExists( junction_path ) ) {
+                    org.kbinani.cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
+                    mJunctions.add( junction_path );
+                }
+                mTempDir = junction_path;
+            }
 #endif
-            mTempDir = fsys.combine( temp, AppManager.getID() );
 #if DEBUG
             sout.println( "UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + fsys.isDirectoryExists( mTempDir ) );
 #endif
@@ -250,7 +260,15 @@ namespace org.kbinani.cadencii
             mTrimRemainSeconds = trim_sec;
         }
 
-        private static String getShortPathName( String path )
+#if !JAVA
+        private static String getSystemRoot()
+        {
+            String system = System.Environment.GetFolderPath( Environment.SpecialFolder.System );
+            return System.IO.Path.GetPathRoot( system );
+        }
+#endif
+
+        /*private static String getShortPathName( String path )
         {
 #if DEBUG
             String before = path;
@@ -274,7 +292,7 @@ namespace org.kbinani.cadencii
             sout.println( "UtauWaveGenerator#getShortPathName; before=" + before + "; after=" + path );
 #endif
             return path;
-        }
+        }*/
 
         public void setReceiver( WaveReceiver r )
         {
@@ -388,11 +406,25 @@ namespace org.kbinani.cadencii
                     } else {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
+                    String singer_raw = "";
                     String singer = "";
                     if ( 0 <= program_change && program_change < mConfig.UtauSingers.size() ) {
-                        //singer = getShortPathName( mConfig.UtauSingers.get( program_change ).VOICEIDSTR );
-                        singer = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
+                        singer_raw = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
+                        singer = singer_raw;
+#if !JAVA
+                        if ( mUseWideCharacterWorkaround ) {
+                            String junction = fsys.combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
+                            if ( !fsys.isDirectoryExists( junction ) ) {
+                                org.kbinani.cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
+                                mJunctions.add( junction );
+                            }
+                            singer = junction;
+                        }
+#endif
                     }
+#if DEBUG
+                    sout.println( "UtauWaveGenerator#begin; singer=" + singer + "; singer_raw=" + singer_raw );
+#endif
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
 #endif
@@ -454,8 +486,8 @@ namespace org.kbinani.cadencii
                     int millisec = (int)((sec_end_act - sec_start_act) * 1000) + 50;
 
                     OtoArgs oa = new OtoArgs();
-                    if ( AppManager.mUtauVoiceDB.containsKey( singer ) ) {
-                        UtauVoiceDB db = AppManager.mUtauVoiceDB.get( singer );
+                    if ( AppManager.mUtauVoiceDB.containsKey( singer_raw ) ) {
+                        UtauVoiceDB db = AppManager.mUtauVoiceDB.get( singer_raw );
                         oa = db.attachFileNameFromLyric( lyric );
                     }
 #if MAKEBAT_SP
@@ -1179,6 +1211,11 @@ namespace org.kbinani.cadencii
             mRunning = false;
             //mAbortRequired = false;
             mReceiver.end();
+
+            // ジャンクションを消す
+            foreach ( String junction in mJunctions ) {
+                PortUtil.deleteDirectory( junction );
+            }
         }
 
         private void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )

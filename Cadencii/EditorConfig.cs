@@ -571,6 +571,11 @@ namespace org.kbinani.cadencii
         /// version 3.3+
         /// </summary>
         public boolean WineTopBuiltin = true;
+        /// <summary>
+        /// UTAUのresampler用に，ジャンクション機能を使うかどうか
+        /// version 3.3+
+        /// </summary>
+        public boolean UseWideCharacterWorkaround = false;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値

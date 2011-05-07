@@ -179,7 +179,7 @@ namespace org.kbinani.cadencii
             new AuthorListEntry( "Eji (zh-TW translation)", "@ejiwarp" ),
             new AuthorListEntry( "kankan (zh-TW translation)" ),
             new AuthorListEntry( "yxmline (zh-CN translation)" ),
-            new AuthorListEntry( "BuddyYoru (en translation)", "@BuddyYoru" ),
+            new AuthorListEntry( "BubblyYoru (en translation)", "@BubblyYoru" ),
             new AuthorListEntry( "BeForU (kr translation)", "@BeForU" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
@@ -214,8 +214,9 @@ namespace org.kbinani.cadencii
             new AuthorListEntry( "空耳P", "@soramiku" ),
             new AuthorListEntry( "kotoi" ),
             new AuthorListEntry( "げっぺータロー", "@geppeitaro" ),
-            new AuthorListEntry( "みけCAT" ),
+            new AuthorListEntry( "みけCAT", "@mikecat_mixc" ),
             new AuthorListEntry( "ぎんじ" ),
+            new AuthorListEntry( "BeForU", "@BeForU" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -12879,6 +12880,7 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setWinePrefix( AppManager.editorConfig.WinePrefix );
                 mDialogPreference.setWineTop( AppManager.editorConfig.WineTop );
                 mDialogPreference.setWineBuiltin( AppManager.editorConfig.WineTopBuiltin );
+                mDialogPreference.setEnableWideCharacterWorkaround( AppManager.editorConfig.UseWideCharacterWorkaround );
 
                 String old_wine_prefix = AppManager.editorConfig.WinePrefix;
                 String old_wine_top = AppManager.editorConfig.getWineTop();
@@ -13112,6 +13114,7 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.WinePrefix = mDialogPreference.getWinePrefix();
                     AppManager.editorConfig.WineTop = mDialogPreference.getWineTop();
                     AppManager.editorConfig.WineTopBuiltin = mDialogPreference.isWineBuiltin();
+                    AppManager.editorConfig.UseWideCharacterWorkaround = mDialogPreference.isEnableWideCharacterWorkaround();
 
 #if JAVA
                     // WinePrefix, WineTopのどちらかが変わっていたら，ドライバー・デーモンを再起動する
@@ -15178,33 +15181,30 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
 
-            TestFormWorker.run();
+            String junction = "E:\\temp\\link";
+            boolean ret = org.kbinani.cadencii.helper.Utils.MountPointCreate( junction, "E:\\Configurações" );
+            PortUtil.deleteDirectory( junction );
+            //uint ret = org.kbinani.cadencii.helper.Utils.MountPointCreate( "E:\\temp\\link\\", "E:\\msys\\" );
+            //sout.println( "FormMain#menuHelpDebug_Click; ret=0x" + str.format( ret, 10, 16 ) );
 
-#if ENABLE_VOCALOID
-            /*BFileChooser dlg_fout = new BFileChooser();
-            if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String fout = dlg_fout.getSelectedFile();
+            /*Process process = null;
+            try {
+                process = new Process();
+                process.StartInfo.FileName = "E:\\Configurações\\foo.exe";
+                process.StartInfo.Arguments = "";
+                process.StartInfo.WorkingDirectory = "E:\\Configurações";
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 
-                org.kbinani.cadencii.draft.VocaloidWaveGenerator vwg = new org.kbinani.cadencii.draft.VocaloidWaveGenerator();
-                org.kbinani.cadencii.draft.Mixer m = new org.kbinani.cadencii.draft.Mixer();
-                org.kbinani.cadencii.draft.Separator s = new org.kbinani.cadencii.draft.Separator();
-                org.kbinani.cadencii.draft.FileWaveReceiver fwr = new org.kbinani.cadencii.draft.FileWaveReceiver();
-
-                vwg.setGlobalConfig( AppManager.editorConfig );
-                m.setGlobalConfig( AppManager.editorConfig );
-
-                vwg.setReceiver( m );
-                m.setReceiver( s );
-                s.addReceiver( fwr );
-                s.addReceiver( org.kbinani.cadencii.draft.MonitorWaveReceiver.getInstance() );
-
-                VsqFileEx vsq = AppManager.getVsqFile();
-                vwg.init( vsq, AppManager.getSelected(), AppManager.getCurrentClock(), vsq.TotalClocks );
-                fwr.init( "\n" + fout + "\n" + 2 + "\n" + 16 + "\n" + 44100 );
-                vwg.begin( (long)(vsq.getSecFromClock( vsq.TotalClocks ) * 44100.0) );
+                process.Start();
+                process.WaitForExit();
+                sout.println( "FormMain#menuHelpDebug_Click; exitCode=" + process.ExitCode );
+            } catch ( Exception ex ) {
+                sout.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
+            } finally {
+                process.Dispose();
             }*/
-#endif
-
 #endif
         }
 
