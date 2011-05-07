@@ -15180,31 +15180,6 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
-
-            String junction = "E:\\temp\\link";
-            boolean ret = org.kbinani.cadencii.helper.Utils.MountPointCreate( junction, "E:\\Configurações" );
-            PortUtil.deleteDirectory( junction );
-            //uint ret = org.kbinani.cadencii.helper.Utils.MountPointCreate( "E:\\temp\\link\\", "E:\\msys\\" );
-            //sout.println( "FormMain#menuHelpDebug_Click; ret=0x" + str.format( ret, 10, 16 ) );
-
-            /*Process process = null;
-            try {
-                process = new Process();
-                process.StartInfo.FileName = "E:\\Configurações\\foo.exe";
-                process.StartInfo.Arguments = "";
-                process.StartInfo.WorkingDirectory = "E:\\Configurações";
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-
-                process.Start();
-                process.WaitForExit();
-                sout.println( "FormMain#menuHelpDebug_Click; exitCode=" + process.ExitCode );
-            } catch ( Exception ex ) {
-                sout.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
-            } finally {
-                process.Dispose();
-            }*/
 #endif
         }
 

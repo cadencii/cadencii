@@ -114,7 +114,7 @@ public class Preference extends BDialog {
 	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
-	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-96,607"
+	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-88,656"
 	private BCheckBox chkTranslateRoman = null;
 	private BGroupBox groupVsti = null;
 	private BLabel lblVOCALOID1 = null;
@@ -204,6 +204,7 @@ public class Preference extends BDialog {
     private BRadioButton radioWineCustom = null;
     private BPanel BPanel1 = null;
     private BRadioButton radioWineBuiltin = null;
+    private BCheckBox checkEnableWideCharacterWorkaround = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -247,7 +248,7 @@ public class Preference extends BDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(520, 591);
+		this.setSize(520, 636);
 		this.setResizable(true);
 		this.setContentPane(getJPanel5());
 		this.setTitle("Preference");
@@ -1821,6 +1822,12 @@ public class Preference extends BDialog {
 	 */
 	private BGroupBox getGroupUtauCores() {
 		if (groupUtauCores == null) {
+			GridBagConstraints gridBagConstraints138 = new GridBagConstraints();
+			gridBagConstraints138.gridx = 0;
+			gridBagConstraints138.insets = new Insets(12, 12, 0, 0);
+			gridBagConstraints138.gridwidth = 3;
+			gridBagConstraints138.anchor = GridBagConstraints.WEST;
+			gridBagConstraints138.gridy = 6;
 			GridBagConstraints gridBagConstraints134 = new GridBagConstraints();
 			gridBagConstraints134.gridx = 0;
 			gridBagConstraints134.anchor = GridBagConstraints.WEST;
@@ -1903,6 +1910,7 @@ public class Preference extends BDialog {
 			groupUtauCores.add(getChkWavtoolWithWine(), gridBagConstraints105);
 			groupUtauCores.add(labelWavtoolPath, gridBagConstraints129);
 			groupUtauCores.add(labelResamplerWithWine, gridBagConstraints134);
+			groupUtauCores.add(getCheckEnableWideCharacterWorkaround(), gridBagConstraints138);
 		}
 		return groupUtauCores;
 	}
@@ -3105,6 +3113,19 @@ public class Preference extends BDialog {
             radioWineBuiltin.setPreferredSize(new Dimension(4, 29));
         }
         return radioWineBuiltin;
+    }
+
+    /**
+     * This method initializes checkEnableWideCharacterWorkaround	
+     * 	
+     * @return org.kbinani.windows.forms.BCheckBox	
+     */
+    private BCheckBox getCheckEnableWideCharacterWorkaround() {
+        if (checkEnableWideCharacterWorkaround == null) {
+            checkEnableWideCharacterWorkaround = new BCheckBox();
+            checkEnableWideCharacterWorkaround.setText("Enable Workaround for Wide-Character Path");
+        }
+        return checkEnableWideCharacterWorkaround;
     }
 
 	//SECTION-END-METHOD

@@ -48,8 +48,8 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	perl copy_with_ext.pl ./Cadencii/resources/ $(APP)/Resources/Java/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ $(APP)/Resources/Java/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/ $(APP)/Resources/Java/ .po $(TO_DEVNULL)
-	cd ../../vConnect/stand && $(MAKE)
-	cp ../../vConnect/stand/vConnect-STAND.exe $(APP)/Resources/Java/vConnect-STAND.exe
+	cd ../../vConnect/trunk/stand2.0 && $(MAKE)
+	cp ../../vConnect/trunk/stand2.0/vConnect-STAND.exe $(APP)/Resources/Java/vConnect-STAND.exe
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
 	cp ./build/java/vocaloidrv.sh $(APP)/Resources/Java
 	cp ./build/java/vocaloidrv.exe $(APP)/Resources/Java

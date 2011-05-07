@@ -67,7 +67,6 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
-        private BCheckBox checkEnableWideCharacterWorkaround;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -206,6 +205,10 @@ namespace org.kbinani.cadencii
 
             numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
             numBuffer.setMinimum( EditorConfig.MIN_BUFFER_MILLIXEC );
+
+#if !JAVA
+            checkEnableWideCharacterWorkaround.setEnabled( false );
+#endif
 
             registerEventHandlers();
             setResources();
@@ -4158,6 +4161,7 @@ namespace org.kbinani.cadencii
         private BTextBox textWineTop;
         private BRadioButton radioWineCustom;
         private BRadioButton radioWineBuiltin;
+        private BCheckBox checkEnableWideCharacterWorkaround;
 #endif
         #endregion
 
