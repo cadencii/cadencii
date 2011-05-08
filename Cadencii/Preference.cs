@@ -206,7 +206,7 @@ namespace org.kbinani.cadencii
             numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
             numBuffer.setMinimum( EditorConfig.MIN_BUFFER_MILLIXEC );
 
-#if !JAVA
+#if JAVA
             checkEnableWideCharacterWorkaround.setEnabled( false );
 #endif
 

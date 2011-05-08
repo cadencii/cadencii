@@ -1099,7 +1099,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>javac "$(SolutionDir)makeRes.java" -encoding UTF8
-java -classpath "$(SolutionDir)..\trunk" makeRes -i "$(ProjectDir)Resources.list" -o "$(ProjectDir)Resources.cs" -p "org.kbinani.cadencii" -n "org.kbinani.cadencii"
+java -classpath "$(SolutionDir)..\3.4" makeRes -i "$(ProjectDir)Resources.list" -o "$(ProjectDir)Resources.cs" -p "org.kbinani.cadencii" -n "org.kbinani.cadencii"
 </PreBuildEvent>
   </PropertyGroup>
 </Project>
