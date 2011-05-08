@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CadenciiHelper", "CadenciiHelper\CadenciiHelper.vcproj", "{5B7732B0-3322-4B24-9ED2-15B2E5D39432}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B7732B0-3322-4B24-9ED2-15B2E5D39432}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B7732B0-3322-4B24-9ED2-15B2E5D39432}.Debug|Win32.Build.0 = Debug|Win32
+		{5B7732B0-3322-4B24-9ED2-15B2E5D39432}.Release|Win32.ActiveCfg = Release|Win32
+		{5B7732B0-3322-4B24-9ED2-15B2E5D39432}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
