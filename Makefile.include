@@ -24,6 +24,7 @@ JAVAC=javac
 BUNDLE=build/java/Wine.bundle/Contents/SharedSupport
 MIN_BUNDLE=build/java/WineMinimum.bundle/Contents/SharedSupport
 APP=build/java/Cadencii.app/Contents
+STAND_SRC=../../../vConnect/trunk/stand2.0
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
 SRC_JCORLIB=@SRC_JCORLIB@
@@ -48,8 +49,8 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	perl copy_with_ext.pl ./Cadencii/resources/ $(APP)/Resources/Java/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ $(APP)/Resources/Java/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/ $(APP)/Resources/Java/ .po $(TO_DEVNULL)
-	cd ../../vConnect/trunk/stand2.0 && $(MAKE)
-	cp ../../vConnect/trunk/stand2.0/vConnect-STAND.exe $(APP)/Resources/Java/vConnect-STAND.exe
+	cd $(STAND_SRC) && $(MAKE)
+	cp $(STAND_SRC)/vConnect-STAND.exe $(APP)/Resources/Java/vConnect-STAND.exe
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
 	cp ./build/java/vocaloidrv.sh $(APP)/Resources/Java
 	cp ./build/java/vocaloidrv.exe $(APP)/Resources/Java
