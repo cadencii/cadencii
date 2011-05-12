@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-07 20:41+0900\n"
 "PO-Revision-Date: \n"
-"Last-Translator: kbinani <kbinani@msn.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -73,11 +73,11 @@ msgstr ""
 
 #: Cadencii/FormAskKeySoundGenerationUi.cs:48
 msgid "Yes"
-msgstr ""
+msgstr "是"
 
 #: Cadencii/FormAskKeySoundGenerationUi.cs:49
 msgid "No"
-msgstr ""
+msgstr "否"
 
 #: Cadencii/FormBeatConfig.cs:111
 msgid "Beat Change"
@@ -154,7 +154,7 @@ msgstr "整数格式错误"
 
 #: Cadencii/FormCheckUnknownSingerAndResampler.cs:149
 msgid "Unknown singers and resamplers"
-msgstr ""
+msgstr "未知歌手和采样"
 
 #: Cadencii/FormCheckUnknownSingerAndResampler.cs:150
 msgid ""
@@ -164,11 +164,11 @@ msgstr ""
 
 #: Cadencii/FormCheckUnknownSingerAndResampler.cs:151
 msgid "Import singer"
-msgstr ""
+msgstr "导入歌手"
 
 #: Cadencii/FormCheckUnknownSingerAndResampler.cs:152
 msgid "Import resampler"
-msgstr ""
+msgstr "导入采样"
 
 #: Cadencii/FormCompileResult.cs:59
 msgid "Script Compilation Result"
@@ -176,15 +176,15 @@ msgstr "脚本编译结果"
 
 #: Cadencii/FormCurvePointEdit.cs:80
 msgid "Edit Value"
-msgstr ""
+msgstr "编辑值"
 
 #: Cadencii/FormCurvePointEdit.cs:83
 msgid "Apply"
-msgstr ""
+msgstr "应用"
 
 #: Cadencii/FormCurvePointEdit.cs:84
 msgid "Exit"
-msgstr ""
+msgstr "退出"
 
 #: Cadencii/FormDeleteBar.cs:59
 msgid "Delete Bars"
@@ -395,14 +395,14 @@ msgstr "网格"
 #: Cadencii/FormMain.cs:8078
 #: Cadencii/FormMain.cs:8081
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: Cadencii/FormMain.cs:4662
 #: Cadencii/FormMain.cs:4680
 #: Cadencii/FormMain.cs:8047
 #: Cadencii/FormMain.cs:8050
 msgid "Play"
-msgstr ""
+msgstr "播放"
 
 #: Cadencii/FormMain.cs:4685
 msgid "Move to beginning measure"
@@ -488,11 +488,11 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:4717
 msgid "Open Recent"
-msgstr ""
+msgstr "最近打开"
 
 #: Cadencii/FormMain.cs:4719
 msgid "Clear Menu"
-msgstr ""
+msgstr "清除历史"
 
 #: Cadencii/FormMain.cs:4720
 msgid "Quit"
@@ -667,11 +667,11 @@ msgstr "刪除音轨"
 
 #: Cadencii/FormMain.cs:4798
 msgid "Render current track"
-msgstr "合并当前音轨."
+msgstr "合并当前音轨"
 
 #: Cadencii/FormMain.cs:4800
 msgid "Render all tracks"
-msgstr "合并所有音轨 ."
+msgstr "合并所有音轨"
 
 #: Cadencii/FormMain.cs:4802
 #: Cadencii/FormMain.cs:4967
@@ -698,7 +698,7 @@ msgstr "音符颤音属性"
 
 #: Cadencii/FormMain.cs:4818
 msgid "Apply UTAU Parameters"
-msgstr ""
+msgstr "使用UTAU参数"
 
 #: Cadencii/FormMain.cs:4820
 msgid "Phoneme transformation"
@@ -710,7 +710,7 @@ msgstr "用户字典"
 
 #: Cadencii/FormMain.cs:4824
 msgid "Copy vibrato config to preset"
-msgstr ""
+msgstr "颤音配置复制到预设"
 
 #: Cadencii/FormMain.cs:4827
 msgid "Script"
@@ -735,7 +735,7 @@ msgstr "载入"
 
 #: Cadencii/FormMain.cs:4844
 msgid "Sequence config"
-msgstr ""
+msgstr "音序配置"
 
 #: Cadencii/FormMain.cs:4846
 msgid "Shortcut key"
@@ -770,7 +770,7 @@ msgstr "调音板"
 
 #: Cadencii/FormMain.cs:4858
 msgid "Vibrato preset"
-msgstr ""
+msgstr "颤音预置"
 
 #: Cadencii/FormMain.cs:4862
 msgid "Window"
@@ -786,15 +786,15 @@ msgstr "帮助"
 
 #: Cadencii/FormMain.cs:4868
 msgid "Log"
-msgstr ""
+msgstr "日志"
 
 #: Cadencii/FormMain.cs:4870
 msgid "Disable"
-msgstr ""
+msgstr "禁用"
 
 #: Cadencii/FormMain.cs:4870
 msgid "Enable"
-msgstr ""
+msgstr "启用"
 
 #: Cadencii/FormMain.cs:4874
 msgid "About Cadencii"
@@ -802,7 +802,7 @@ msgstr "关于Cadencii"
 
 #: Cadencii/FormMain.cs:4876
 msgid "Manual"
-msgstr ""
+msgstr "手册"
 
 #: Cadencii/FormMain.cs:4880
 msgid "Chagne tool pointer / eraser"
@@ -846,7 +846,7 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:4891
 msgid "Play from start marker"
-msgstr "启用/禁用起始标记."
+msgstr "启用/禁用起始标记"
 
 #: Cadencii/FormMain.cs:4892
 msgid "Select backward"
@@ -878,7 +878,7 @@ msgstr "下一曲线"
 
 #: Cadencii/FormMain.cs:4899
 msgid "Change pitch drawing mode"
-msgstr "更改音轨名."
+msgstr "更改音轨名"
 
 #: Cadencii/FormMain.cs:4903
 #: Cadencii/FormMain.cs:4974
@@ -1010,11 +1010,11 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:11611
 msgid "Export UTAU (*.ust)"
-msgstr ""
+msgstr "导入UTAU(*.ust)"
 
 #: Cadencii/FormMain.cs:11671
 msgid "Export VSQ (*.vsq)"
-msgstr ""
+msgstr "导入VSQ(*.vsq)"
 
 #: Cadencii/FormMain.cs:11704
 msgid ""
@@ -1029,7 +1029,7 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:11724
 msgid "Text File(*.txt)|*.txt"
-msgstr ""
+msgstr "文本文件(*.txt)|*.txt"
 
 #: Cadencii/FormMain.cs:11804
 msgid "Wave Export"
@@ -1055,11 +1055,11 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:15222
 msgid "file not found"
-msgstr ""
+msgstr "文件未找到"
 
 #: Cadencii/FormMain.cs:15244
 msgid "Enabled"
-msgstr ""
+msgstr "启用"
 
 #: Cadencii/FormMain.cs:15256
 msgid "Log file has not generated yet."
@@ -1067,7 +1067,7 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:17145
 msgid "Invalid XVSQ file"
-msgstr ""
+msgstr "无效XVSQ文件"
 
 #: Cadencii/FormMain.cs:17308
 msgid "Undo."
@@ -1143,7 +1143,7 @@ msgstr "显示/隐藏高音弯曲(PIT)线."
 
 #: Cadencii/FormMain.cs:17344
 msgid "Open VSTi plugin window"
-msgstr ""
+msgstr "打开VSTi插件窗口"
 
 #: Cadencii/FormMain.cs:17346
 msgid "Show/Hide property window."
@@ -1199,7 +1199,7 @@ msgstr "导入 VSQ / VOCALOID MIDI."
 
 #: Cadencii/FormMain.cs:17372
 msgid "Export."
-msgstr ""
+msgstr "导出."
 
 #: Cadencii/FormMain.cs:17374
 msgid "Export all tracks to serial numbered WAVEs"
@@ -1360,7 +1360,7 @@ msgstr "合并当前音轨."
 
 #: Cadencii/FormMain.cs:17452
 msgid "Render all tracks."
-msgstr "合并所有音轨 ."
+msgstr "合并所有音轨."
 
 #: Cadencii/FormMain.cs:17454
 msgid "Show background items."
@@ -1640,7 +1640,7 @@ msgstr ""
 
 #: Cadencii/FormShortcutKeys.cs:182
 msgid "Other"
-msgstr ""
+msgstr "其它"
 
 #: Cadencii/FormShortcutKeys.cs:193
 msgid "Key:"
@@ -1881,7 +1881,7 @@ msgstr "鼠标滚动比率"
 
 #: Cadencii/Preference.cs:936
 msgid "Fix Song position to Center"
-msgstr ""
+msgstr "修复歌曲位置至中心"
 
 #: Cadencii/Preference.cs:937
 msgid "Horizontal Scroll when Mouse wheel"
@@ -2111,15 +2111,15 @@ msgstr ""
 
 #: EditOtoIni/FormGenerateStf.cs:376
 msgid "day"
-msgstr ""
+msgstr "天"
 
 #: EditOtoIni/FormGenerateStf.cs:382
 msgid "hour"
-msgstr ""
+msgstr "小时"
 
 #: EditOtoIni/FormGenerateStf.cs:388
 msgid "min"
-msgstr ""
+msgstr "分"
 
 #: EditOtoIni/FormUtauVoiceConfig.cs:308
 msgid "Save As"
@@ -2219,172 +2219,251 @@ msgstr ""
 
 #~ msgid "Top Most"
 #~ msgstr "Top Most"
+
 #~ msgid "Recent files"
 #~ msgstr "最近打开过文件"
+
 #~ msgid "Import ReWire host tempo"
 #~ msgstr "从ReWire Host导入曲速(tempo)"
+
 #~ msgid "Reload VSTi"
 #~ msgstr "重新载入VSTi"
+
 #~ msgid "Singer Properties"
 #~ msgstr "歌手属性"
+
 #~ msgid "VOCALOID1 [1.0]"
 #~ msgstr "VOCALOID1 [1.0]"
+
 #~ msgid "VOCALOID1 [1.1]"
 #~ msgstr "VOCALOID1 [1.1]"
+
 #~ msgid ""
 #~ "Select command and hit key(s) you want to set.\n"
 #~ "Hit Backspace if you want to remove shortcut key."
 #~ msgstr ""
 #~ "选择命令并按按键.\n"
 #~ "按Backspace键移除快捷键."
+
 #~ msgid "Other Settings"
 #~ msgstr "其他设置"
+
 #~ msgid "milli second"
 #~ msgstr "毫秒"
+
 #~ msgid "Current Platform"
 #~ msgstr "当前执行环境"
+
 #~ msgid "Use Command key as Control key"
 #~ msgstr "把命令键作为控制键使用"
+
 #~ msgid "Invoke UTAU cores with Wine"
 #~ msgstr "由Wine启动UTAU核心"
+
 #~ msgid "Load secondary VOCALOID1 DLL"
 #~ msgstr "载入次级VOCALOID1 DLL"
+
 #~ msgid "UTAU project file (current track)"
 #~ msgstr "删除当前音轨."
+
 #~ msgid "UTAU voice DB"
 #~ msgstr "UTAU声音库"
+
 #~ msgid "Default Vibrato Rate"
 #~ msgstr "默认颤音周期"
+
 #~ msgid "Default Vibrato Depth"
 #~ msgstr "默认颤音振幅"
+
 #~ msgid "capacity of RecentFiles"
 #~ msgstr "最近文件容量"
+
 #~ msgid "list of files recentry used"
 #~ msgstr "列出最近使用的文件"
+
 #~ msgid "tolerance of mouse operation (in pixel)"
 #~ msgstr "鼠标操作偏差(/像素)"
+
 #~ msgid "whether scroll horizontally with mouse-wheel"
 #~ msgstr "是否用鼠标滚轮水平滚动"
+
 #~ msgid "maximum frame rate(in frames per second)"
 #~ msgstr "最大帧速(/帧每秒)"
+
 #~ msgid "MP3 File(*.mp3)|*.mp3"
 #~ msgstr "MP3文件(*.mp3)|*.mp3"
+
 #~ msgid "Run"
 #~ msgstr "运行"
+
 #~ msgid "Original Format(*.evsq)|*.evsq"
 #~ msgstr "旧版本格式(*.evsq)|*.evsq"
+
 #~ msgid "Start Realtime Input"
 #~ msgstr "开始即时输出"
+
 #~ msgid "Set Sound File"
 #~ msgstr "指定音频文件"
+
 #~ msgid "Mute"
 #~ msgstr "静音"
+
 #~ msgid "Vibrato type"
 #~ msgstr "颤音类型"
+
 #~ msgid "VST dll(*.dll)|*.dll"
 #~ msgstr "VST dll(*.dll)|*.dll"
+
 #~ msgid "Dynamics"
 #~ msgstr "力度(DYN)"
+
 #~ msgid "Vibrato Depth"
 #~ msgstr "颤音振幅"
+
 #~ msgid "Vibrato Rate"
 #~ msgstr "颤音周期"
+
 #~ msgid "Vibrato Settings"
 #~ msgstr "颤音设置"
+
 #~ msgid "Auto Vibrato Settings"
 #~ msgstr "自动颤音设置"
+
 #~ msgid "Playback Sample Sound"
 #~ msgstr "合成音样本输出"
+
 #~ msgid "Pre-Send Time for sample sound"
 #~ msgstr "样本声音的预置输送时间"
+
 #~ msgid "Counter"
 #~ msgstr "计数器"
+
 #~ msgid "Place Tempo/Beat Dialog to appropriate Position"
 #~ msgstr "让曲速/拍子对话框以适当位置显示"
+
 #~ msgid "mio"
 #~ msgstr "mio"
+
 #~ msgid "Capacity of RecentFiles"
 #~ msgstr "「最近使用的文件列表」大小"
+
 #~ msgid "Default scale for width direction in pixel/clock"
 #~ msgstr "横向默认表示比例(像素/时钟)"
+
 #~ msgid "Default value of pre-measure"
 #~ msgstr "默认前置拍"
+
 #~ msgid "Drawing lyrics to screen or not"
 #~ msgstr "是否在屏幕上描绘歌词"
+
 #~ msgid "Fix play cursor to the center of screen"
 #~ msgstr "校准播放指针至当前屏幕"
+
 #~ msgid "List of files recentry used"
 #~ msgstr "最近使用的文件"
+
 #~ msgid "Maximum frame rate(in frames per second)"
 #~ msgstr "最大帧数(/帧每秒)"
+
 #~ msgid "Mouse wheel speed"
 #~ msgstr "鼠标滚动速度"
+
 #~ msgid "Program change of default singer"
 #~ msgstr "默认歌手程序改变"
+
 #~ msgid "Show actual pitch line or not"
 #~ msgstr "是否显示高音曲线"
+
 #~ msgid "Tolerance of mouse operation (in pixel)"
 #~ msgstr "鼠标操作允许范围(/像素)"
+
 #~ msgid "Whether scroll horizontally with mouse-wheel"
 #~ msgstr "是否用鼠标滚轮水平滚动"
+
 #~ msgid "lyric"
 #~ msgstr "歌词"
+
 #~ msgid "Master Tuning"
 #~ msgstr "精细调音"
+
 #~ msgid "note"
 #~ msgstr "音符"
+
 #~ msgid "notes"
 #~ msgstr "音符"
+
 #~ msgid "tempo"
 #~ msgstr "节奏"
+
 #~ msgid "vocaloid meta text"
 #~ msgstr "vocaloid meta text"
+
 #~ msgid "Font size in GraphicsUnit.Point unit"
 #~ msgstr "Font size in GraphicsUnit.Point unit"
+
 #~ msgid "Use Custom File Dialog"
 #~ msgstr "使用自定义文件对话框"
+
 #~ msgid "Metronome"
 #~ msgstr "节拍器"
+
 #~ msgid "Metronome Config"
 #~ msgstr "节拍器设置"
+
 #~ msgid "MIDI Device"
 #~ msgstr "MIDI设备"
+
 #~ msgid "Note# (Bell)"
 #~ msgstr "音符# (Bell)"
+
 #~ msgid "Program#"
 #~ msgstr "工程#"
+
 #~ msgid "Program# (Bell)"
 #~ msgstr "工程# (Bell)"
+
 #~ msgid "Ring Bell"
 #~ msgstr "Ring Bell"
+
 #~ msgid ""
 #~ "Select command and hit key(s) you want to set.\n"
 #~ "Hit Delete or Backspace if you want to remove shortcut key."
 #~ msgstr ""
 #~ "选择命令按下要设置的按键.\n"
 #~ "按DEL或backspace移除快捷键."
+
 #~ msgid "Speed"
 #~ msgstr "速度"
+
 #~ msgid "Stop Realtime Input"
 #~ msgstr "结束实时输入"
+
 #~ msgid "Devide Note"
 #~ msgstr "音符分割"
+
 #~ msgid "Devide Note."
 #~ msgstr "音符分割."
+
 #~ msgid "Set global pitch shift."
 #~ msgstr "设定全局高音移位"
+
 #~ msgid "Start realtime input."
 #~ msgstr "开始实时输入."
+
 #~ msgid "Transpose Plus 1 Degree"
 #~ msgstr "音调升高一度"
+
 #~ msgid "Transpose Plus 1 Degree."
 #~ msgstr "音调升高一度."
+
 #~ msgid "Generate VLF."
 #~ msgstr "生成VLF."
+
 #~ msgid "Render As UTAU."
 #~ msgstr "用UTAU演奏."
+
 #~ msgid "Render As UTAU"
 #~ msgstr "用UTAU演奏"
+
 #~ msgid "Play After Synth"
 #~ msgstr "合成后播放"
-
