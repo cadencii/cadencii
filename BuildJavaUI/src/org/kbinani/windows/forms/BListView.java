@@ -38,6 +38,7 @@ class TestBListView extends JFrame
         b.addRow( new String[]{ "I", "II" } );
         b.setColumnWidth( 0, 120 );
         b.setColumnHeaders( new String[]{ "1B", "2B" } );
+        b.setCheckBoxes( true );
         JScrollPane sp = new JScrollPane(b);
         //sp.setPreferredSize(new Dimension(250, 90));
 
@@ -68,10 +69,36 @@ public class BListView extends JTable
             private static final long serialVersionUID = 1444372218140865006L;
 
             public Class<?> getColumnClass( int column ){
-                if( mCheckBoxes && (column == 0) ){
-                    return Boolean.class;
+                if( column == 0 ){
+                    if( mCheckBoxes )
+                    {
+                        return Boolean.class;
+                    }
+                    else
+                    {
+                        return Object.class;
+                    }
                 }else{
                     return String.class;
+                }
+            }
+
+            public Object getValueAt( int row, int column )
+            {
+                if( column == 0 )
+                {
+                    if( mCheckBoxes )
+                    {
+                        return super.getValueAt( row, column );
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+                else
+                {
+                    return super.getValueAt( row, column );
                 }
             }
             
@@ -90,7 +117,7 @@ public class BListView extends JTable
         showVerticalLines = false;
     }
 
-    public Component prepareEditor( TableCellEditor editor, int row, int column )
+    /*public Component prepareEditor( TableCellEditor editor, int row, int column )
     {
         if( !mCheckBoxes && convertColumnIndexToModel( column ) == 0 ){
             return null;
@@ -106,7 +133,7 @@ public class BListView extends JTable
         }else{
             return super.prepareRenderer( renderer, row, column );
         }
-    }
+    }*/
     
     public int getItemCountRow()
     {
