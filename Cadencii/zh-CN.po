@@ -33,16 +33,16 @@ msgstr ""
 #: Cadencii/AppManager.cs:3290
 #, csharp-format
 msgid "failed creating cache directory, '{0}'."
-msgstr ""
+msgstr "创建缓存目录失败, '{0}'."
 
 #: Cadencii/AppManager.cs:3291
 msgid "Info."
-msgstr ""
+msgstr "信息."
 
 #: Cadencii/AppManager.cs:3317
 #, csharp-format
 msgid "failed copying WAVE cache file, '{0}'."
-msgstr ""
+msgstr "WAVE缓存文件复制失败, '{0}'."
 
 #: Cadencii/AppManager.cs:3318
 #: Cadencii/AppManager.cs:3342
@@ -52,16 +52,16 @@ msgstr "错误"
 #: Cadencii/AppManager.cs:3341
 #, csharp-format
 msgid "failed copying XML cache file, '{0}'."
-msgstr ""
+msgstr "XML缓存文件复制失败, '{0}'."
 
 #: Cadencii/Cadencii.cs:144
 #, csharp-format
 msgid "Info: This is test version of Cadencii version {0}"
-msgstr ""
+msgstr "提示：这是测试Cadencii版本{0}版本"
 
 #: Cadencii/Cadencii.cs:179
 msgid "Failed to launch Cadencii. Please send the exception report to developer"
-msgstr ""
+msgstr "无法启动Cadencii。请将异常报告给开发人员"
 
 #: Cadencii/FormAskKeySoundGenerationUi.cs:46
 msgid "It seems some key-board sounds are missing. Do you want to re-generate them now?"
@@ -69,7 +69,7 @@ msgstr ""
 
 #: Cadencii/FormAskKeySoundGenerationUi.cs:47
 msgid "Always perform this check when starting Cadencii."
-msgstr ""
+msgstr "始终执行此检查启动时Cadencii。"
 
 #: Cadencii/FormAskKeySoundGenerationUi.cs:48
 msgid "Yes"
@@ -1001,26 +1001,28 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:11516
 msgid "Choose destination directory"
-msgstr ""
+msgstr "选择目标目录"
 
 #: Cadencii/FormMain.cs:11550
 #: Cadencii/FormMain.cs:11832
 msgid "invalid rendering region; start>=end"
-msgstr ""
+msgstr "无效渲染区域;开始>=结束"
 
 #: Cadencii/FormMain.cs:11611
 msgid "Export UTAU (*.ust)"
-msgstr "导入UTAU(*.ust)"
+msgstr "导出UTAU(*.ust)"
 
 #: Cadencii/FormMain.cs:11671
 msgid "Export VSQ (*.vsq)"
-msgstr "导入VSQ(*.vsq)"
+msgstr "导出VSQ(*.vsq)"
 
 #: Cadencii/FormMain.cs:11704
 msgid ""
 "UTAU singer not registered yet.\n"
 "Continue ?"
 msgstr ""
+"UTAU歌手尚未注册.\n"
+"是否继续?"
 
 #: Cadencii/FormMain.cs:11705
 #: Cadencii/FormMain.cs:15257
@@ -1119,7 +1121,7 @@ msgstr "显示/隐藏网格线."
 
 #: Cadencii/FormMain.cs:17332
 msgid "Show/Hide icon palette"
-msgstr ""
+msgstr "显示/隐藏图标调色板"
 
 #: Cadencii/FormMain.cs:17334
 msgid "Show/Hide lyrics."
@@ -1135,7 +1137,7 @@ msgstr "显示/隐藏表情(expression)线."
 
 #: Cadencii/FormMain.cs:17340
 msgid "Show/Hide navigation view"
-msgstr ""
+msgstr "显示/隐藏导航视图"
 
 #: Cadencii/FormMain.cs:17342
 msgid "Show/Hide pitch bend lines."
@@ -1203,7 +1205,7 @@ msgstr "导出."
 
 #: Cadencii/FormMain.cs:17374
 msgid "Export all tracks to serial numbered WAVEs"
-msgstr ""
+msgstr "导出所有音轨到serial numbered WAVEs"
 
 #: Cadencii/FormMain.cs:17376
 msgid "Export to WAVE file."
@@ -1308,7 +1310,7 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:17426
 msgid "Connect/Remove/Configure game controler"
-msgstr ""
+msgstr "连接/删除/配置游戏控制器"
 
 #: Cadencii/FormMain.cs:17428
 msgid "Configuration of palette tool"
@@ -1328,7 +1330,7 @@ msgstr ""
 
 #: Cadencii/FormMain.cs:17436
 msgid "Configuration of this sequence."
-msgstr ""
+msgstr "配置这个音序."
 
 #: Cadencii/FormMain.cs:17438
 msgid "Add new track."
@@ -1336,7 +1338,7 @@ msgstr "添加新音轨."
 
 #: Cadencii/FormMain.cs:17440
 msgid "Add/Remove/Edit background music"
-msgstr ""
+msgstr "添加/删除/编辑背景音乐"
 
 #: Cadencii/FormMain.cs:17442
 msgid "Enable current track."
@@ -1439,7 +1441,7 @@ msgstr "导入VSQ/Vocaloid Midi"
 
 #: Cadencii/FormMidiImExport.cs:90
 msgid "Import Basis"
-msgstr "歌词输入"
+msgstr "导入Basis"
 
 #: Cadencii/FormMidiImExport.cs:91
 msgid "gate-time"
@@ -1636,7 +1638,7 @@ msgstr ""
 
 #: Cadencii/FormShortcutKeys.cs:172
 msgid "Lyric"
-msgstr ""
+msgstr "歌词"
 
 #: Cadencii/FormShortcutKeys.cs:182
 msgid "Other"
@@ -1913,7 +1915,7 @@ msgstr "最大帧数"
 
 #: Cadencii/Preference.cs:945
 msgid "frame per second"
-msgstr ""
+msgstr "帧/秒"
 
 #: Cadencii/Preference.cs:946
 msgid "Waiting Time for Preview"
@@ -1941,7 +1943,7 @@ msgstr ""
 
 #: Cadencii/Preference.cs:955
 msgid "Invoke wavtool with Wine"
-msgstr ""
+msgstr "在wine中调用wavtool"
 
 #: Cadencii/Preference.cs:956
 msgid "path"
@@ -2099,7 +2101,7 @@ msgstr ""
 
 #: EditOtoIni/FormGenerateStf.cs:216
 msgid "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii."
-msgstr ""
+msgstr "无法确认'resampler.exe'的路径。请检查Cadencii配置。"
 
 #: EditOtoIni/FormGenerateStf.cs:342
 msgid "Remaining"
@@ -2215,7 +2217,7 @@ msgstr "另存为Voice DB设置文件."
 
 #: EditOtoIni/FormUtauVoiceConfig.cs:1152
 msgid "Do you want to save this config?"
-msgstr ""
+msgstr "是否保存设置？"
 
 #~ msgid "Top Most"
 #~ msgstr "Top Most"
