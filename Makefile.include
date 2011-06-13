@@ -38,6 +38,11 @@ SRC_JXML=@SRC_JXML@
 all: jcadencii_mac
 
 jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/Wine.bundle ./build/java/WineMinimum.bundle
+	cp ./Cadencii/vocaloidrv.sh ./build/java
+	cp ./vstidrv5/Release/vocaloidrv.exe ./build/java
+	cp ./vstidrv5/Release/getvocaloidinfo.exe ./build/java
+	cp ./vstidrv5/Release/createtempdir.exe ./build/java
+	cp ./Cadencii/manual/manual_*.pdf ./build/java
 	rm -rf ./build/java/Cadencii.app
 	mkdir -p $(APP)/Resources/Java
 	mkdir -p $(APP)/MacOS
@@ -214,11 +219,6 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	$(MAKE) jpostprocess
 	$(JAVAC) ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
-	cp ./Cadencii/vocaloidrv.sh ./build/java
-	cp ./vstidrv5/Release/vocaloidrv.exe ./build/java
-	cp ./vstidrv5/Release/getvocaloidinfo.exe ./build/java
-	cp ./vstidrv5/Release/createtempdir.exe ./build/java
-	cp ./Cadencii/manual/manual_*.pdf ./build/java
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico $(TO_DEVNULL)

@@ -26,11 +26,21 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Text;
 using org.kbinani;
 
-namespace org.kbinani.apputil {
+namespace org.kbinani.apputil
+{
     using java = org.kbinani.java;
     using boolean = System.Boolean;
+    using WORD = System.UInt16;
+    using DWORD = System.UInt32;
+    using LONG = System.Int32;
+    using BYTE = System.Byte;
+    using HANDLE = System.IntPtr;
+    using WCHAR = Char;
+    using ULONG = System.UInt32;
 #endif
 
 #if JAVA
@@ -44,6 +54,183 @@ namespace org.kbinani.apputil {
         /// デフォルトではtrue
         /// </summary>
         public static boolean isApplyFontRecurseEnabled = true;
+
+        [StructLayout( LayoutKind.Explicit )]
+        struct REPARSE_DATA_BUFFER {
+            [FieldOffset( 0 )]
+            public DWORD  ReparseTag;
+            [FieldOffset( 4 )]
+            public WORD ReparseDataLength;
+            [FieldOffset( 6 )]
+            public WORD Reserved;
+            [FieldOffset( 8 )]
+            public REPARSE_DATA_BUFFER_SymbolicLinkReparseBuffer SymbolicLinkReparseBuffer;
+            [FieldOffset( 8 )]
+            public REPARSE_DATA_BUFFER_MountPointReparseBuffer MountPointReparseBuffer;
+            [FieldOffset( 8 )]
+            public REPARSE_DATA_BUFFER_GenericReparseBuffer GenericReparseBuffer;
+        }
+
+        unsafe struct REPARSE_DATA_BUFFER_SymbolicLinkReparseBuffer{
+            public WORD   SubstituteNameOffset;
+            public WORD   SubstituteNameLength;
+            public WORD   PrintNameOffset;
+            public WORD   PrintNameLength;
+            public ULONG  Flags; /* 0=絶対パス, 1=相対パス */
+            public WCHAR *PathBuffer;
+        }
+
+        unsafe struct REPARSE_DATA_BUFFER_MountPointReparseBuffer{
+            public WORD   SubstituteNameOffset;
+            public WORD   SubstituteNameLength;
+            public WORD   PrintNameOffset;
+            public WORD   PrintNameLength;
+            public WCHAR *PathBuffer;
+        }
+
+        unsafe struct REPARSE_DATA_BUFFER_GenericReparseBuffer{
+            public BYTE *DataBuffer;
+        }
+
+        [StructLayout( LayoutKind.Explicit )]
+        unsafe struct REPARSE_DATA_BUFFER_Internal {
+            [FieldOffset( 0 )]
+            public REPARSE_DATA_BUFFER iobuf;
+            [FieldOffset( 0 )]
+            public fixed WCHAR dummy[16384/*MAXIMUM_REPARSE_DATA_BUFFER_SIZE*/];
+        }
+
+#if FOOOOOOOOOOOOOO
+        public static bool createJunction( String mount_point_path, String target )
+        {
+#if JAVA
+            return true;
+#else
+            unsafe {
+                /*union
+                {
+                    REPARSE_DATA_BUFFER iobuf;
+                    TCHAR dummy[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
+                } u;*/
+
+                WCHAR* lpLinkName;
+                WCHAR* lpTargetName;
+
+                //lpLinkName = (char *)Marshal.StringToHGlobalUni( mount_point_path ).ToPointer();
+                //lpTargetName = (char *)Marshal.StringToHGlobalUni( target ).ToPointer();
+
+                HANDLE hFile;
+                //WCHAR *namebuf = (WCHAR *)Marshal.AllocHGlobal( sizeof( WCHAR ) * MAX_PATH + 4 ).ToPointer();
+                DWORD cb;
+                DWORD attr;
+                bool isDirectory;
+
+                attr = win32.GetFileAttributesW( target );
+                if ( win32.INVALID_FILE_ATTRIBUTES == attr ) {
+                    return false;
+                }
+                isDirectory = (attr & win32.FILE_ATTRIBUTE_DIRECTORY) == win32.FILE_ATTRIBUTE_DIRECTORY;
+
+                //
+                // リンク先をフルパスにする
+                //
+                //IntPtr ptr_pre_namebuf = Marshal.StringToHGlobalUni( "\\??\\" ); //wcscpy( namebuf, L"\\?\?\\" );
+                //WCHAR *namebuf = (WCHAR *)Marshal.ReAllocHGlobal( ptr_namebuf, new IntPtr( sizeof( WCHAR ) * (win32.MAX_PATH + 4) ) ).ToPointer();
+                //int ptr_pre_namebuf_size = sizeof( WCHAR ) * (win32.MAX_PATH + 4);
+                //IntPtr ptr_namebuf = Marshal.AllocHGlobal( ptr_namebuf_size );
+                StringBuilder namebuf = new StringBuilder( win32.MAX_PATH + 4 );
+                if ( win32.GetFullPathNameW( target, sizeof( WCHAR ) * (win32.MAX_PATH ), namebuf, IntPtr.Zero ) == 0 ) {
+                    return false;
+                }
+                namebuf.Insert( 0, "\\??\\" );
+
+                // わけがわからないよ！
+                /*if ( !lstrcpyn( u.iobuf.MountPointReparseBuffer.PathBuffer, namebuf, MAXIMUM_REPARSE_DATA_BUFFER_SIZE ) ) {
+                    return false;
+                }*/
+                // 最初の8は，REPARSE_DATA_BUFFERのunionの直前の部分のサイズ
+                // 最後の2*3は，2バイトの間隙を3箇所設定するから（仮）
+                IntPtr ptr_u = Marshal.AllocHGlobal( 8 + sizeof( WCHAR ) * (namebuf.Length + 1) + 2 * 3);
+                REPARSE_DATA_BUFFER_Internal u = (REPARSE_DATA_BUFFER_Internal)Marshal.PtrToStructure( ptr_u, typeof( REPARSE_DATA_BUFFER_Internal ) );
+                int imax = sizeof( WCHAR ) * (win32.MAX_PATH + 4);
+                IntPtr ptr_namebuf = Marshal.StringToHGlobalUni( namebuf.ToString() );
+                for ( int i = 0; i < imax; i++ ) {
+                    // 8+8の意味は，先頭からMountPointReparseBufferまでに8バイト，PathBufferまでに8バイトあるから
+                    Marshal.WriteByte( ptr_u, 8 + 8 + i, 0 );
+                }
+                for ( int i = 0; i < namebuf.Length; i++ ) {
+                    Marshal.WriteInt16( ptr_u, 8 + 8 + i, namebuf[i] );
+                }
+                Marshal.WriteInt16( ptr_u, 8 + 8 + imax - 1, 0 );
+                Marshal.FreeHGlobal( ptr_namebuf );
+                
+                //
+                // リンクファイルを作成
+                //
+                if ( isDirectory ) {
+                    if ( !win32.CreateDirectoryW( mount_point_path, IntPtr.Zero ) ) {
+                        return false;
+                    }
+                    hFile =
+                        win32.CreateFileW(
+                            mount_point_path,
+                            win32.GENERIC_WRITE,
+                            win32.FILE_SHARE_READ | win32.FILE_SHARE_WRITE,
+                            IntPtr.Zero,
+                            win32.OPEN_EXISTING,
+                            win32.FILE_FLAG_BACKUP_SEMANTICS,
+                            IntPtr.Zero );
+                } else {
+                    hFile =
+                        win32.CreateFileW(
+                            mount_point_path,
+                            win32.GENERIC_WRITE,
+                            win32.FILE_SHARE_READ | win32.FILE_SHARE_WRITE,
+                            IntPtr.Zero,
+                            win32.CREATE_NEW,
+                            0,
+                            IntPtr.Zero );
+                }
+                if ( win32.INVALID_HANDLE_VALUE == hFile ) {
+                    return false;
+                }
+
+                //
+                // リパースデータを設定
+                //
+                u.iobuf.ReparseTag = win32.IO_REPARSE_TAG_MOUNT_POINT;
+                u.iobuf.Reserved = 0;
+                u.iobuf.MountPointReparseBuffer.SubstituteNameOffset = 0;
+                u.iobuf.MountPointReparseBuffer.SubstituteNameLength = wcslen( u.iobuf.MountPointReparseBuffer.PathBuffer ) * 2;
+                u.iobuf.MountPointReparseBuffer.PrintNameOffset = u.iobuf.MountPointReparseBuffer.SubstituteNameLength + 2;
+                u.iobuf.MountPointReparseBuffer.PrintNameLength = 0;
+                memset(
+                    (char*)u.iobuf.MountPointReparseBuffer.PathBuffer + u.iobuf.MountPointReparseBuffer.SubstituteNameLength,
+                    0,
+                    4 );
+                u.iobuf.ReparseDataLength =
+                    8 +
+                    u.iobuf.MountPointReparseBuffer.PrintNameOffset +
+                    u.iobuf.MountPointReparseBuffer.PrintNameLength + 2;
+                cb = 8 + u.iobuf.ReparseDataLength;
+                if ( !win32.DeviceIoControl( hFile, win32.FSCTL_SET_REPARSE_POINT,
+                                &u.iobuf, cb, NULL, 0, &cb, NULL ) ) {
+                    win32.CloseHandle( hFile );
+                    if ( isDirectory ) {
+                        win32.RemoveDirectory( lpLinkName );
+                    } else {
+                        win32.DeleteFile( lpLinkName );
+                    }
+                    //deletefunc(lpLinkName);
+                    return false;
+                }
+
+                win32.CloseHandle( hFile );
+                return true;
+            }
+#endif
+        }
+#endif
 
 #if JAVA
         public static void applyContextMenuFontRecurse( MenuElement item, Font font ){

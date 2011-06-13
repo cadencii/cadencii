@@ -27,6 +27,27 @@ namespace org.kbinani {
 
     public static partial class win32 {
         #region winbase.h
+        public static readonly HANDLE INVALID_HANDLE_VALUE = new HANDLE( -1 );
+
+        public const DWORD CONSOLE_TEXTMODE_BUFFER = 1;
+        public const DWORD  CREATE_NEW = 1;
+        public const DWORD  CREATE_ALWAYS = 2;
+        public const DWORD  OPEN_EXISTING = 3;
+        public const DWORD  OPEN_ALWAYS = 4;
+        public const DWORD  TRUNCATE_EXISTING = 5;
+
+        public const DWORD  FILE_FLAG_WRITE_THROUGH = 0x80000000;
+        public const DWORD  FILE_FLAG_OVERLAPPED = 1073741824;
+        public const DWORD  FILE_FLAG_NO_BUFFERING = 536870912;
+        public const DWORD  FILE_FLAG_RANDOM_ACCESS = 268435456;
+        public const DWORD  FILE_FLAG_SEQUENTIAL_SCAN = 134217728;
+        public const DWORD  FILE_FLAG_DELETE_ON_CLOSE = 67108864;
+        public const DWORD  FILE_FLAG_BACKUP_SEMANTICS = 33554432;
+        public const DWORD  FILE_FLAG_POSIX_SEMANTICS = 16777216;
+        public const DWORD  FILE_FLAG_OPEN_REPARSE_POINT = 2097152;
+        public const DWORD  FILE_FLAG_OPEN_NO_RECALL = 1048576;
+        public const DWORD FILE_FLAG_FIRST_PIPE_INSTANCE = 524288;
+
         public const int OF_READ = 0;
         public const int OF_READWRITE = 2;
         public const int OF_WRITE = 1;
@@ -129,6 +150,15 @@ namespace org.kbinani {
         #endregion
 
         #region winnt.h
+        public const DWORD MAXIMUM_REPARSE_DATA_BUFFER_SIZE = 16384;
+        public const DWORD IO_REPARSE_TAG_RESERVED_ZERO = 0;
+        public const DWORD IO_REPARSE_TAG_RESERVED_ONE = 1;
+        public const DWORD IO_REPARSE_TAG_RESERVED_RANGE = IO_REPARSE_TAG_RESERVED_ONE;
+        public const DWORD IO_REPARSE_TAG_VALID_VALUES = 0xE000FFFF;
+        public const DWORD IO_REPARSE_TAG_SYMBOLIC_LINK = IO_REPARSE_TAG_RESERVED_ZERO;
+        public const DWORD IO_REPARSE_TAG_MOUNT_POINT = 0xA0000003;
+        public const DWORD IO_REPARSE_TAG_SYMLINK = 0xA000000C;
+
         public const uint KEY_QUERY_VALUE = 1;
         public const uint KEY_SET_VALUE = 2;
         public const uint KEY_CREATE_SUB_KEY = 4;
@@ -214,6 +244,37 @@ namespace org.kbinani {
         public const int IMAGE_FILE_MACHINE_SH5 = 0x01a8;
         public const int IMAGE_FILE_MACHINE_THUMB = 0x01c2;
         public const int IMAGE_FILE_MACHINE_WCEMIPSV2 = 0x0169;
+
+        public const DWORD MAXIMUM_ALLOWED = 0x2000000;
+        public const DWORD GENERIC_READ = 0x80000000;
+        public const DWORD GENERIC_WRITE = 0x40000000;
+        public const DWORD GENERIC_EXECUTE = 0x20000000;
+        public const DWORD GENERIC_ALL = 0x10000000;
+
+        public const DWORD INVALID_FILE_ATTRIBUTES = unchecked( (DWORD)(-1) );
+
+        public const DWORD FILE_ATTRIBUTE_READONLY = 0x00000001;
+        public const DWORD FILE_ATTRIBUTE_HIDDEN = 0x00000002;
+        public const DWORD FILE_ATTRIBUTE_SYSTEM = 0x00000004;
+        public const DWORD FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
+        public const DWORD FILE_ATTRIBUTE_ARCHIVE = 0x00000020;
+        public const DWORD FILE_ATTRIBUTE_DEVICE = 0x00000040;
+        public const DWORD FILE_ATTRIBUTE_NORMAL = 0x00000080;
+        public const DWORD FILE_ATTRIBUTE_TEMPORARY = 0x00000100;
+        public const DWORD FILE_ATTRIBUTE_SPARSE_FILE = 0x00000200;
+        public const DWORD FILE_ATTRIBUTE_REPARSE_POINT = 0x00000400;
+        public const DWORD FILE_ATTRIBUTE_COMPRESSED = 0x00000800;
+        public const DWORD FILE_ATTRIBUTE_OFFLINE = 0x00001000;
+        public const DWORD FILE_ATTRIBUTE_NOT_CONTENT_INDEXED = 0x00002000;
+        public const DWORD FILE_ATTRIBUTE_ENCRYPTED = 0x00004000;
+        public const DWORD FILE_ATTRIBUTE_VALID_FLAGS = 0x00007fb7;
+        public const DWORD FILE_ATTRIBUTE_VALID_SET_FLAGS = 0x000031a7;
+
+        public const DWORD FILE_SHARE_READ = 0x00000001;
+        public const DWORD FILE_SHARE_WRITE = 0x00000002;
+        public const DWORD FILE_SHARE_DELETE = 0x00000004;
+        public const DWORD FILE_SHARE_VALID_FLAGS = 0x00000007;
+			
         #endregion
 
         #region windef.h
@@ -1471,6 +1532,74 @@ namespace org.kbinani {
 		public const uint CLR_DEFAULT = 0xFF000000U;
 
         #region kernel32.dll
+        private const string kernel32 = "kernel32.dll";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lpFileName">ファイル名(LPCTSTR)</param>
+        /// <param name="dwDesiredAccess">アクセスモード(DWORD)</param>
+        /// <param name="dwShareMode">共有モード(DWORD)</param>
+        /// <param name="lpSecurityAttributes">セキュリティ記述子(LPSECURITY_ATTRIBUTES)</param>
+        /// <param name="dwCreationDisposition">作成方法(DWORD)</param>
+        /// <param name="dwFlagsAndAttributes">ファイル属性(DWORD)</param>
+        /// <param name="hTemplateFile">テンプレートファイルのハンドル(HANDLE)</param>
+        /// <returns></returns>
+        [DllImport( kernel32 )]
+        public static extern HANDLE CreateFileW(
+            [MarshalAs( UnmanagedType.LPWStr )]
+            string lpFileName,
+            DWORD dwDesiredAccess,
+            DWORD dwShareMode,
+            IntPtr lpSecurityAttributes,
+            DWORD dwCreationDisposition,
+            DWORD dwFlagsAndAttributes,
+            HANDLE hTemplateFile
+        );
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lpPathName">ディレクトリ名(LPCTSTR)</param>
+        /// <param name="lpSecurityAttributes">セキュリティ識別子(LPSECURITY_ATTRIBUTES)</param>
+        /// <returns></returns>
+        [DllImport( kernel32 )]
+        public static extern bool CreateDirectoryW(
+            [MarshalAs( UnmanagedType.LPWStr )]
+            string lpPathName,
+            IntPtr lpSecurityAttributes
+        );
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lpFileName">ファイルまたはディレクトリの名前(LPCWSTR)</param>
+        /// <returns></returns>
+        [DllImport( "kernel32.dll" )]
+        public static extern DWORD GetFileAttributesW(
+            [MarshalAs(UnmanagedType.LPWStr)]
+            string lpFileName
+        );
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lpFileName">ファイル名(LPCTSTR)</param>
+        /// <param name="nBufferLength">パス名を格納するバッファのサイズ(DWORD)</param>
+        /// <param name="lpBuffer">パス名を格納するバッファ(LPTSTR)</param>
+        /// <param name="lpFilePart">パス内のファイル名のアドレス(LPTSTR*)</param>
+        /// <returns></returns>
+        [DllImport( "kernel32.dll" )]
+        public static extern DWORD GetFullPathNameW(
+            [MarshalAs( UnmanagedType.LPWStr )]
+            string lpFileName,
+            DWORD nBufferLength,
+            [MarshalAs( UnmanagedType.LPWStr )][Out]
+            StringBuilder lpBuffer,
+            [Out]
+            IntPtr lpFilePart
+        );
+        
         [DllImport( "kernel32.dll" )]
         public static extern bool DeviceIoControl( 
             IntPtr hDevice,
