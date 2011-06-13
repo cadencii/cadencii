@@ -46,7 +46,8 @@ namespace org.kbinani.apputil
 #if JAVA
     public class Util{
 #else
-    public static partial class Util {
+    public static partial class Util
+    {
 #endif
         public static readonly String PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
         /// <summary>
@@ -55,10 +56,12 @@ namespace org.kbinani.apputil
         /// </summary>
         public static boolean isApplyFontRecurseEnabled = true;
 
+#if FOOOOOOOOOOOOOO
         [StructLayout( LayoutKind.Explicit )]
-        struct REPARSE_DATA_BUFFER {
+        struct REPARSE_DATA_BUFFER
+        {
             [FieldOffset( 0 )]
-            public DWORD  ReparseTag;
+            public DWORD ReparseTag;
             [FieldOffset( 4 )]
             public WORD ReparseDataLength;
             [FieldOffset( 6 )]
@@ -71,36 +74,39 @@ namespace org.kbinani.apputil
             public REPARSE_DATA_BUFFER_GenericReparseBuffer GenericReparseBuffer;
         }
 
-        unsafe struct REPARSE_DATA_BUFFER_SymbolicLinkReparseBuffer{
-            public WORD   SubstituteNameOffset;
-            public WORD   SubstituteNameLength;
-            public WORD   PrintNameOffset;
-            public WORD   PrintNameLength;
-            public ULONG  Flags; /* 0=絶対パス, 1=相対パス */
-            public WCHAR *PathBuffer;
+        unsafe struct REPARSE_DATA_BUFFER_SymbolicLinkReparseBuffer
+        {
+            public WORD SubstituteNameOffset;
+            public WORD SubstituteNameLength;
+            public WORD PrintNameOffset;
+            public WORD PrintNameLength;
+            public ULONG Flags; /* 0=絶対パス, 1=相対パス */
+            public WCHAR* PathBuffer;
         }
 
-        unsafe struct REPARSE_DATA_BUFFER_MountPointReparseBuffer{
-            public WORD   SubstituteNameOffset;
-            public WORD   SubstituteNameLength;
-            public WORD   PrintNameOffset;
-            public WORD   PrintNameLength;
-            public WCHAR *PathBuffer;
+        unsafe struct REPARSE_DATA_BUFFER_MountPointReparseBuffer
+        {
+            public WORD SubstituteNameOffset;
+            public WORD SubstituteNameLength;
+            public WORD PrintNameOffset;
+            public WORD PrintNameLength;
+            public WCHAR* PathBuffer;
         }
 
-        unsafe struct REPARSE_DATA_BUFFER_GenericReparseBuffer{
-            public BYTE *DataBuffer;
+        unsafe struct REPARSE_DATA_BUFFER_GenericReparseBuffer
+        {
+            public BYTE* DataBuffer;
         }
 
         [StructLayout( LayoutKind.Explicit )]
-        unsafe struct REPARSE_DATA_BUFFER_Internal {
+        unsafe struct REPARSE_DATA_BUFFER_Internal
+        {
             [FieldOffset( 0 )]
             public REPARSE_DATA_BUFFER iobuf;
             [FieldOffset( 0 )]
             public fixed WCHAR dummy[16384/*MAXIMUM_REPARSE_DATA_BUFFER_SIZE*/];
         }
 
-#if FOOOOOOOOOOOOOO
         public static bool createJunction( String mount_point_path, String target )
         {
 #if JAVA
@@ -240,12 +246,15 @@ namespace org.kbinani.apputil
             applyToolStripFontRecurse( item, font );
         }
 #else
-        public static void applyContextMenuFontRecurse( ContextMenuStrip item, org.kbinani.java.awt.Font font ) {
-            if ( !isApplyFontRecurseEnabled ) {
+        public static void applyContextMenuFontRecurse( ContextMenuStrip item, org.kbinani.java.awt.Font font )
+        {
+            if ( !isApplyFontRecurseEnabled )
+            {
                 return;
             }
             item.Font = font.font;
-            foreach ( ToolStripItem tsi in item.Items ) {
+            foreach ( ToolStripItem tsi in item.Items )
+            {
                 applyToolStripFontRecurse( tsi, font );
             }
         }
@@ -264,19 +273,26 @@ namespace org.kbinani.apputil
             }
         }
 #else
-        public static void applyToolStripFontRecurse( ToolStripItem item, org.kbinani.java.awt.Font font ) {
-            if ( !isApplyFontRecurseEnabled ) {
+        public static void applyToolStripFontRecurse( ToolStripItem item, org.kbinani.java.awt.Font font )
+        {
+            if ( !isApplyFontRecurseEnabled )
+            {
                 return;
             }
             item.Font = font.font;
-            if ( item is ToolStripMenuItem ) {
+            if ( item is ToolStripMenuItem )
+            {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
-                foreach ( ToolStripItem tsi in tsmi.DropDownItems ) {
+                foreach ( ToolStripItem tsi in tsmi.DropDownItems )
+                {
                     applyToolStripFontRecurse( tsi, font );
                 }
-            } else if ( item is ToolStripDropDownItem ) {
+            }
+            else if ( item is ToolStripDropDownItem )
+            {
                 ToolStripDropDownItem tsdd = (ToolStripDropDownItem)item;
-                foreach ( ToolStripItem tsi in tsdd.DropDownItems ) {
+                foreach ( ToolStripItem tsi in tsdd.DropDownItems )
+                {
                     applyToolStripFontRecurse( tsi, font );
                 }
             }
@@ -288,10 +304,12 @@ namespace org.kbinani.apputil
         /// </summary>
         /// <param name="font"></param>
         /// <returns></returns>
-        public static int getStringDrawOffset( java.awt.Font font ) {
+        public static int getStringDrawOffset( java.awt.Font font )
+        {
             int ret = 0;
             java.awt.Dimension size = measureString( PANGRAM, font );
-            if ( size.height <= 0 ) {
+            if ( size.height <= 0 )
+            {
                 return 0;
             }
             java.awt.image.BufferedImage b = null;
@@ -301,7 +319,8 @@ namespace org.kbinani.apputil
 #else
             BitmapEx b2 = null;
 #endif
-            try {
+            try
+            {
                 int string_desty = size.height * 2; // 文字列が書き込まれるy座標
                 int w = size.width * 4;
                 int h = size.height * 4;
@@ -321,21 +340,25 @@ namespace org.kbinani.apputil
                 // 上端に最初に現れる色つきピクセルを探す
                 int firsty = 0;
                 boolean found = false;
-                for ( int y = 0; y < h; y++ ) {
-                    for ( int x = 0; x < w; x++ ) {
+                for ( int y = 0; y < h; y++ )
+                {
+                    for ( int x = 0; x < w; x++ )
+                    {
 #if JAVA
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
                         java.awt.Color c = new org.kbinani.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
-                        if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 ) {
+                        if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
+                        {
                             found = true;
                             firsty = y;
                             break;
                         }
                     }
-                    if ( found ) {
+                    if ( found )
+                    {
                         break;
                     }
                 }
@@ -343,39 +366,50 @@ namespace org.kbinani.apputil
                 // 下端
                 int endy = h - 1;
                 found = false;
-                for ( int y = h - 1; y >= 0; y-- ) {
-                    for ( int x = 0; x < w; x++ ) {
+                for ( int y = h - 1; y >= 0; y-- )
+                {
+                    for ( int x = 0; x < w; x++ )
+                    {
 #if JAVA
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
                         java.awt.Color c = new org.kbinani.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
-                        if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 ) {
+                        if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
+                        {
                             found = true;
                             endy = y;
                             break;
                         }
                     }
-                    if ( found ) {
+                    if ( found )
+                    {
                         break;
                     }
                 }
 
                 int center = (firsty + endy) / 2;
                 ret = center - string_desty;
-            } catch ( Exception ex ) {
+            }
+            catch ( Exception ex )
+            {
                 serr.println( "Util#getStringDrawOffset; ex=" + ex );
-            } finally {
+            }
+            finally
+            {
 #if JAVA
 #else
-                if ( b != null && b.image != null ) {
+                if ( b != null && b.image != null )
+                {
                     b.image.Dispose();
                 }
-                if ( g != null ) {
+                if ( g != null )
+                {
                     g.nativeGraphics.Dispose();
                 }
-                if ( b2 != null && b2 != null ) {
+                if ( b2 != null && b2 != null )
+                {
                     b2.Dispose();
                 }
 #endif
@@ -388,15 +422,19 @@ namespace org.kbinani.apputil
         /// </summary>
         /// <param name="language_code"></param>
         /// <returns></returns>
-        public static boolean isRightToLeftLanguage( String language_code ) {
+        public static boolean isRightToLeftLanguage( String language_code )
+        {
             language_code = language_code.ToLower();
             if ( language_code.Equals( "ar" ) ||
                  language_code.Equals( "he" ) ||
                  language_code.Equals( "iw" ) ||
                  language_code.Equals( "fa" ) ||
-                 language_code.Equals( "ur" ) ) {
+                 language_code.Equals( "ur" ) )
+            {
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
@@ -407,10 +445,13 @@ namespace org.kbinani.apputil
         /// </summary>
         /// <param name="directory">ディレクトリ</param>
         /// <returns></returns>
-        public static string GetTempFileNameIn( string directory ) {
-            for ( uint i = uint.MinValue; i <= uint.MaxValue; i++ ) {
+        public static string GetTempFileNameIn( string directory )
+        {
+            for ( uint i = uint.MinValue; i <= uint.MaxValue; i++ )
+            {
                 string file = Path.Combine( directory, "temp" + i );
-                if ( !File.Exists( file ) ) {
+                if ( !File.Exists( file ) )
+                {
                     return file;
                 }
             }
@@ -425,10 +466,13 @@ namespace org.kbinani.apputil
         /// <param name="directory">ディレクトリ</param>
         /// <param name="extention">拡張子（ex. ".txt"）</param>
         /// <returns></returns>
-        public static string GetTempFileNameIn( string directory, string extention ){
-            for ( uint i = uint.MinValue; i <= uint.MaxValue; i++ ) {
+        public static string GetTempFileNameIn( string directory, string extention )
+        {
+            for ( uint i = uint.MinValue; i <= uint.MaxValue; i++ )
+            {
                 string file = Path.Combine( directory, "temp" + i + extention );
-                if ( !File.Exists( file ) ) {
+                if ( !File.Exists( file ) )
+                {
                     return file;
                 }
             }
@@ -442,8 +486,10 @@ namespace org.kbinani.apputil
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static Bitmap BitmapFromStream( string file ) {
-            if ( !File.Exists( file ) ) {
+        public static Bitmap BitmapFromStream( string file )
+        {
+            if ( !File.Exists( file ) )
+            {
                 return null;
             }
             FileStream fs = new FileStream( file, FileMode.Open );
@@ -459,8 +505,10 @@ namespace org.kbinani.apputil
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static Image ImageFromStream( string file ) {
-            if ( !File.Exists( file ) ) {
+        public static Image ImageFromStream( string file )
+        {
+            if ( !File.Exists( file ) )
+            {
                 return null;
             }
             FileStream fs = new FileStream( file, FileMode.Open );
@@ -476,24 +524,26 @@ namespace org.kbinani.apputil
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public static string GetExtensionFromImageFormat( ImageFormat format ) {
-            switch ( format.ToString().ToLower() ) {
+        public static string GetExtensionFromImageFormat( ImageFormat format )
+        {
+            switch ( format.ToString().ToLower() )
+            {
                 case "bmp":
-                    return ".bmp";
+                return ".bmp";
                 case "emf":
-                    return ".emf";
+                return ".emf";
                 case "gif":
-                    return ".gif";
+                return ".gif";
                 case "jpeg":
-                    return ".jpg";
+                return ".jpg";
                 case "png":
-                    return ".png";
+                return ".png";
                 case "tiff":
-                    return ".tiff";
+                return ".tiff";
                 case "wmf":
-                    return ".wmf";
+                return ".wmf";
                 default:
-                    return "";
+                return "";
 
             }
         }
@@ -504,14 +554,17 @@ namespace org.kbinani.apputil
         /// System.Drawimg.Imaging.ImageFormatで使用可能なフォーマットの一覧を取得します
         /// </summary>
         /// <returns></returns>
-        public static ImageFormat[] GetImageFormats() {
+        public static ImageFormat[] GetImageFormats()
+        {
 #if DEBUG
             Console.WriteLine( "GetImageFormats()" );
 #endif
             PropertyInfo[] properties = typeof( System.Drawing.Imaging.ImageFormat ).GetProperties();
             List<ImageFormat> ret = new List<ImageFormat>();
-            foreach ( PropertyInfo pi in properties ) {
-                if ( pi.PropertyType.Equals( typeof( System.Drawing.Imaging.ImageFormat ) ) ) {
+            foreach ( PropertyInfo pi in properties )
+            {
+                if ( pi.PropertyType.Equals( typeof( System.Drawing.Imaging.ImageFormat ) ) )
+                {
                     ImageFormat ifmt = (System.Drawing.Imaging.ImageFormat)pi.GetValue( null, null );
 #if DEBUG
                     Console.WriteLine( ifmt.ToString() );
@@ -524,35 +577,49 @@ namespace org.kbinani.apputil
 #endif
 
 #if !JAVA
-        public static void RgbToHsv( int r, int g, int b, out double h, out double s, out double v ) {
+        public static void RgbToHsv( int r, int g, int b, out double h, out double s, out double v )
+        {
             RgbToHsv( r / 255.0, g / 255.0, b / 255.0, out h, out s, out v );
         }
 
-        public static void RgbToHsv( double r, double g, double b, out double h, out double s, out double v ) {
+        public static void RgbToHsv( double r, double g, double b, out double h, out double s, out double v )
+        {
             double tmph, imax, imin;
             const double sqrt3 = 1.7320508075688772935274463415059;
             imax = Math.Max( r, Math.Max( g, b ) );
             imin = Math.Min( r, Math.Min( g, b ) );
-            if ( imax == 0.0 ) {
+            if ( imax == 0.0 )
+            {
                 h = 0;
                 s = 0;
                 v = 0;
                 return;
-            } else if ( imax == imin ) {
+            }
+            else if ( imax == imin )
+            {
                 tmph = 0;
-            } else {
-                if ( r == imax ) {
+            }
+            else
+            {
+                if ( r == imax )
+                {
                     tmph = 60.0 * (g - b) / (imax - imin);
-                } else if ( g == imax ) {
+                }
+                else if ( g == imax )
+                {
                     tmph = 60.0 * (b - r) / (imax - imin) + 120.0;
-                } else {
+                }
+                else
+                {
                     tmph = 60.0 * (r - g) / (imax - imin) + 240.0;
                 }
             }
-            while ( tmph < 0.0 ) {
+            while ( tmph < 0.0 )
+            {
                 tmph = tmph + 360.0;
             }
-            while ( tmph >= 360.0 ) {
+            while ( tmph >= 360.0 )
+            {
                 tmph = tmph - 360.0;
             }
             h = tmph / 360.0;
@@ -560,13 +627,15 @@ namespace org.kbinani.apputil
             v = imax;
         }
 
-        public static Color HsvToColor( double h, double s, double v ) {
+        public static Color HsvToColor( double h, double s, double v )
+        {
             double dr, dg, db;
             HsvToRgb( h, s, v, out dr, out dg, out db );
             return Color.FromArgb( (int)(dr * 255), (int)(dg * 255), (int)(db * 255) );
         }
 
-        public static void HsvToRgb( double h, double s, double v, out byte r, out byte g, out byte b ) {
+        public static void HsvToRgb( double h, double s, double v, out byte r, out byte g, out byte b )
+        {
             double dr, dg, db;
             HsvToRgb( h, s, v, out dr, out dg, out db );
             r = (byte)(dr * 255);
@@ -574,52 +643,57 @@ namespace org.kbinani.apputil
             b = (byte)(db * 255);
         }
 
-        public static void HsvToRgb( double h, double s, double v, out double r, out double g, out double b ) {
+        public static void HsvToRgb( double h, double s, double v, out double r, out double g, out double b )
+        {
             double f, p, q, t, hh;
             int hi;
             r = g = b = 0.0;
-            if ( s == 0 ) {
+            if ( s == 0 )
+            {
                 r = v;
                 g = v;
                 b = v;
-            } else {
+            }
+            else
+            {
                 hh = h * 360.0;
                 hi = (int)(hh / 60.0) % 6;
                 f = hh / 60.0 - (double)(hi);
                 p = v * (1.0 - s);
                 q = v * (1.0 - f * s);
                 t = v * (1.0 - (1.0 - f) * s);
-                switch ( hi ) {
+                switch ( hi )
+                {
                     case 0:
-                        r = v;
-                        g = t;
-                        b = p;
-                        break;
+                    r = v;
+                    g = t;
+                    b = p;
+                    break;
                     case 1:
-                        r = q;
-                        g = v;
-                        b = p;
-                        break;
+                    r = q;
+                    g = v;
+                    b = p;
+                    break;
                     case 2:
-                        r = p;
-                        g = v;
-                        b = t;
-                        break;
+                    r = p;
+                    g = v;
+                    b = t;
+                    break;
                     case 3:
-                        r = p;
-                        g = q;
-                        b = v;
-                        break;
+                    r = p;
+                    g = q;
+                    b = v;
+                    break;
                     case 4:
-                        r = t;
-                        g = p;
-                        b = v;
-                        break;
+                    r = t;
+                    g = p;
+                    b = v;
+                    break;
                     case 5:
-                        r = v;
-                        g = p;
-                        b = q;
-                        break;
+                    r = v;
+                    g = p;
+                    b = q;
+                    break;
                 }
             }
         }
@@ -643,9 +717,11 @@ namespace org.kbinani.apputil
             return ret;
         }
 #else
-        public static java.awt.Dimension measureString( string text, java.awt.Font font ) {
+        public static java.awt.Dimension measureString( string text, java.awt.Font font )
+        {
             using ( Bitmap dumy = new Bitmap( 1, 1 ) )
-            using ( Graphics g = Graphics.FromImage( dumy ) ) {
+            using ( Graphics g = Graphics.FromImage( dumy ) )
+            {
                 SizeF tmp = g.MeasureString( text, font.font );
                 return new java.awt.Dimension( (int)tmp.Width, (int)tmp.Height );
             }
@@ -660,9 +736,11 @@ namespace org.kbinani.apputil
 #if JAVA
         public static void applyFontRecurse( Component c, Font font ){
 #else
-        public static void applyFontRecurse( Control c, java.awt.Font font ) {
+        public static void applyFontRecurse( Control c, java.awt.Font font )
+        {
 #endif
-            if ( !isApplyFontRecurseEnabled ) {
+            if ( !isApplyFontRecurseEnabled )
+            {
                 return;
             }
 #if JAVA
@@ -677,7 +755,8 @@ namespace org.kbinani.apputil
             }
 #else
             c.Font = font.font;
-            for ( int i = 0; i < c.Controls.Count; i++ ) {
+            for ( int i = 0; i < c.Controls.Count; i++ )
+            {
                 applyFontRecurse( c.Controls[i], font );
             }
 #endif
@@ -692,17 +771,28 @@ namespace org.kbinani.apputil
         /// <param name="start2"></param>
         /// <param name="end2"></param>
         /// <returns></returns>
-        public static bool IsOverwrapped( double start1, double end1, double start2, double end2 ) {
-            if ( start2 <= start1 && start1 < end2 ) {
+        public static bool IsOverwrapped( double start1, double end1, double start2, double end2 )
+        {
+            if ( start2 <= start1 && start1 < end2 )
+            {
                 return true;
-            } else if ( start2 < end1 && end1 < end2 ) {
+            }
+            else if ( start2 < end1 && end1 < end2 )
+            {
                 return true;
-            } else {
-                if ( start1 <= start2 && start2 < end1 ) {
+            }
+            else
+            {
+                if ( start1 <= start2 && start2 < end1 )
+                {
                     return true;
-                } else if ( start1 < end2 && end2 < end1 ) {
+                }
+                else if ( start1 < end2 && end2 < end1 )
+                {
                     return true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
