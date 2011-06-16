@@ -135,6 +135,7 @@
     <Compile Include="ClockResolutionUtility.cs" />
     <Compile Include="CommandExecuteRequiredEventHandler.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="EditedStateChangedEventHandler.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -191,6 +192,10 @@
     <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
+    <Compile Include="WaveformZoomController.cs" />
+    <Compile Include="WaveformZoomPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="WaveUnit.cs" />
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />

@@ -335,10 +335,6 @@ namespace org.kbinani.cadencii
         /// WAVE再生時のバッファーサイズの最小値
         /// </summary>
         const int MIN_WAVE_MSEC_RESOLUTION = 100;
-        /// <summary>
-        /// Wave表示部等のボタンと他のコンポーネントの間のスペース
-        /// </summary>
-        const int SPACE = 4;
         #endregion
 
         #region static field
@@ -525,33 +521,9 @@ namespace org.kbinani.cadencii
         /// </summary>
         private BasicStroke mStroke2px = null;
         /// <summary>
-        /// 波形表示部分のズーム時に，マウスが下りた瞬間のY座標
-        /// </summary>
-        private int mWaveViewMouseDownedLocationY;
-        /// <summary>
-        /// 波形表示部の縦軸の拡大率を自動最大化するかどうか
-        /// </summary>
-        private boolean mWaveViewAutoMaximize = false;
-        /// <summary>
-        /// 波形表示部のAutoMaximizeボタン上でマウスが下りた状態かどうか
-        /// </summary>
-        private boolean mWaveViewButtonAutoMaximizeMouseDowned = false;
-        /// <summary>
-        /// 波形表示部の拡大ボタン上でマウスが下りた状態かどうか
-        /// </summary>
-        private boolean mWaveViewButtonZoomMouseDowned = false;
-        /// <summary>
-        /// 波形表示部の拡大ボタン上でマウスが下りた瞬間の，波形表示部の縦軸拡大率．
-        /// </summary>
-        private float mWaveViewInitScale;
-        /// <summary>
         /// pictureBox2の描画ループで使うグラフィックス
         /// </summary>
         private Graphics2D mGraphicsPictureBox2 = null;
-        /// <summary>
-        /// panel2の描画ループで使うグラフィックス
-        /// </summary>
-        private Graphics2D mGraphicsPanel2 = null;
 #if !JAVA
         /// <summary>
         /// ピアノロールの縦方向の拡大率を変更するパネル上でのマウスの状態。
@@ -635,6 +607,13 @@ namespace org.kbinani.cadencii
             AppManager.setVsqFile( tvsq );
 
             trackSelector = new TrackSelector( this ); // initializeで引数なしのコンストラクタが呼ばれるのを予防
+#if !JAVA
+            //TODO: javaのwaveViewはどこで作られるんだっけ？
+            waveView = new WaveView();
+#endif
+            //TODO: これはひどい
+            panelWaveformZoom = (new WaveformZoomController( this, waveView )).getUi();
+
 #if JAVA
             initialize();
             timer = new BTimer();
@@ -646,15 +625,15 @@ namespace org.kbinani.cadencii
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
-            waveView = new WaveView();
 #endif
 
             panelOverview.setMainForm( this );
             pictPianoRoll.setMainForm( this );
             bgWorkScreen = new BBackgroundWorker();
+
 #if JAVA
 #else
-            this.panel2.Controls.Add( this.waveView );
+            this.panelWaveformZoom.Controls.Add( this.waveView );
             this.waveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -745,11 +724,11 @@ namespace org.kbinani.cadencii
             splitContainer1.BackColor = System.Drawing.Color.FromArgb( 212, 212, 212 );
             splitContainer2.Panel1.Controls.Add( panel1 );
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            splitContainer2.Panel2.Controls.Add( panel2 );
+            splitContainer2.Panel2.Controls.Add( panelWaveformZoom );
             //splitContainer2.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             splitContainer2.Panel2.BorderColor = System.Drawing.Color.FromArgb( 112, 112, 112 );
             splitContainer1.Panel1.Controls.Add( splitContainer2 );
-            panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelWaveformZoom.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Panel2.Controls.Add( trackSelector );
             trackSelector.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1638,19 +1617,6 @@ namespace org.kbinani.cadencii
                 new_clock += unit;
             }
             return new_clock;
-        }
-
-        /// <summary>
-        /// 波形表示部のズームボタンの形を取得します
-        /// </summary>
-        /// <returns></returns>
-        private Rectangle getButtonBoundsWaveViewZoom()
-        {
-            int width = AppManager.keyWidth - 1;
-            int height = panel2.getHeight() - 1;
-
-            int y = SPACE + 16 + SPACE;
-            return new Rectangle( SPACE, y, width - SPACE - SPACE, height - SPACE - y );
         }
 
         /// <summary>
@@ -7671,10 +7637,6 @@ namespace org.kbinani.cadencii
             pictPianoRoll.MouseDown += new BMouseEventHandler( pictPianoRoll_MouseDown );
             pictPianoRoll.MouseUp += new BMouseEventHandler( pictPianoRoll_MouseUp );
             pictPianoRoll.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            panel2.Paint += new BPaintEventHandler( panel2_Paint );
-            panel2.MouseDown += new BMouseEventHandler( panel2_MouseDown );
-            panel2.MouseMove += new BMouseEventHandler( panel2_MouseMove );
-            panel2.MouseUp += new BMouseEventHandler( panel2_MouseUp );
             waveView.MouseDoubleClick += new BMouseEventHandler( waveView_MouseDoubleClick );
             waveView.MouseDown += new BMouseEventHandler( waveView_MouseDown );
             waveView.MouseUp += new BMouseEventHandler( waveView_MouseUp );
@@ -16243,134 +16205,6 @@ namespace org.kbinani.cadencii
         }
         #endregion
 
-        //BOOKMARK: panel2
-        #region panel2
-        public void panel2_MouseDown( Object sender, BMouseEventArgs e )
-        {
-            Point p = new Point( e.X, e.Y );
-
-            int width = AppManager.keyWidth - 1;
-            int height = panel2.getHeight();
-
-            // AutoMaximizeボタン
-            Rectangle rc = new Rectangle( SPACE, SPACE, width - SPACE - SPACE, 16 );
-            if ( Utility.isInRect( p, rc ) ) {
-                mWaveViewButtonAutoMaximizeMouseDowned = true;
-                mWaveViewButtonZoomMouseDowned = false;
-
-                panel2.repaint();
-                return;
-            }
-
-            if ( !mWaveViewAutoMaximize ) {
-                // Zoomボタン
-                rc = getButtonBoundsWaveViewZoom();
-                if ( Utility.isInRect( p, rc ) ) {
-                    mWaveViewMouseDownedLocationY = p.y;
-                    mWaveViewButtonZoomMouseDowned = true;
-                    mWaveViewButtonAutoMaximizeMouseDowned = false;
-                    mWaveViewInitScale = waveView.getScale();
-
-                    panel2.repaint();
-                    return;
-                }
-            }
-
-            mWaveViewButtonAutoMaximizeMouseDowned = false;
-            mWaveViewButtonZoomMouseDowned = false;
-            panel2.repaint();
-            return;
-        }
-
-        public void panel2_MouseMove( Object sender, BMouseEventArgs e )
-        {
-            if ( !mWaveViewButtonZoomMouseDowned ) {
-                return;
-            }
-
-            int height = panel2.getHeight();
-            int delta = mWaveViewMouseDownedLocationY - e.Y;
-            float scale = mWaveViewInitScale + delta * 3.0f / height * mWaveViewInitScale;
-            waveView.setScale( scale );
-
-            refreshScreen();
-        }
-
-        public void panel2_MouseUp( Object sender, BMouseEventArgs e )
-        {
-            int width = AppManager.keyWidth - 1;
-            int height = panel2.getHeight();
-
-            // AutoMaximizeボタン
-            if ( Utility.isInRect( e.X, e.Y, SPACE, SPACE, width - SPACE - SPACE, 16 ) ) {
-                if ( mWaveViewButtonAutoMaximizeMouseDowned ) {
-                    mWaveViewAutoMaximize = !mWaveViewAutoMaximize;
-                    waveView.setAutoMaximize( mWaveViewAutoMaximize );
-                }
-            }
-
-            mWaveViewButtonAutoMaximizeMouseDowned = false;
-            mWaveViewButtonZoomMouseDowned = false;
-#if JAVA
-            refreshScreen();
-#else
-            panel2.repaint();
-#endif
-        }
-
-        public void panel2_Paint( Object sender, BPaintEventArgs e )
-        {
-#if JAVA
-            Graphics g = e.Graphics;
-#else
-            if ( mGraphicsPanel2 == null ) {
-                mGraphicsPanel2 = new Graphics2D( null );
-            }
-            mGraphicsPanel2.nativeGraphics = e.Graphics;
-            Graphics g = mGraphicsPanel2;
-#endif
-            int key_width = AppManager.keyWidth;
-            int width = key_width - 1;
-            int height = panel2.getHeight() - 1;
-
-            // 背景を塗る
-            g.setColor( PortUtil.DarkGray );
-            g.fillRect( 0, 0, width, height );
-
-            // AutoMaximizeのチェックボックスを描く
-            g.setColor( mWaveViewButtonAutoMaximizeMouseDowned ? PortUtil.Gray : PortUtil.LightGray );
-            g.fillRect( SPACE, SPACE, 16, 16 );
-            g.setColor( PortUtil.Gray );
-            g.drawRect( SPACE, SPACE, 16, 16 );
-            if ( mWaveViewAutoMaximize ) {
-                g.setColor( PortUtil.Gray );
-                g.fillRect( SPACE + 3, SPACE + 3, 11, 11 );
-            }
-            g.setColor( Color.black );
-            g.setFont( AppManager.baseFont8 );
-            g.drawString(
-                "Auto Maximize",
-                SPACE + 16 + SPACE,
-                SPACE + AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1 );
-
-            // ズーム用ボタンを描く
-            int zoom_button_y = SPACE + 16 + SPACE;
-            int zoom_button_height = height - SPACE - zoom_button_y;
-            Rectangle rc = getButtonBoundsWaveViewZoom();
-            if ( !mWaveViewAutoMaximize ) {
-                g.setColor( mWaveViewButtonZoomMouseDowned ? PortUtil.Gray : PortUtil.LightGray );
-                g.fillRect( rc.x, rc.y, rc.width, rc.height );
-            }
-            g.setColor( PortUtil.Gray );
-            g.drawRect( rc.x, rc.y, rc.width, rc.height );
-            g.setColor( mWaveViewAutoMaximize ? PortUtil.Gray : Color.black );
-            rc.y = rc.y + 1;
-            PortUtil.drawStringEx(
-                g, (mWaveViewButtonZoomMouseDowned ? "↑Move Mouse↓" : "Zoom"), AppManager.baseFont9,
-                rc, PortUtil.STRING_ALIGN_CENTER, PortUtil.STRING_ALIGN_CENTER );
-        }
-        #endregion
-
         #region buttonVZoom & buttonVMooz
         public void buttonVZoom_Click( Object sender, BEventArgs e )
         {
@@ -18441,7 +18275,6 @@ namespace org.kbinani.cadencii
             this.stripBtnStepSequencer = new System.Windows.Forms.ToolStripButton();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
-            this.panel2 = new org.kbinani.windows.forms.BPanel();
             this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnQuantize = new System.Windows.Forms.ContextMenu();
@@ -20454,12 +20287,12 @@ namespace org.kbinani.cadencii
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.DarkGray;
-            this.panel2.Location = new System.Drawing.Point( 15, 295 );
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size( 421, 59 );
-            this.panel2.TabIndex = 19;
-            this.panel2.TabStop = false;
+            this.panelWaveformZoom.BackColor = System.Drawing.Color.DarkGray;
+            this.panelWaveformZoom.Location = new System.Drawing.Point( 15, 295 );
+            this.panelWaveformZoom.Name = "panel2";
+            this.panelWaveformZoom.Size = new System.Drawing.Size( 421, 59 );
+            this.panelWaveformZoom.TabIndex = 19;
+            this.panelWaveformZoom.TabStop = false;
             // 
             // splitContainer1
             // 
@@ -20959,7 +20792,7 @@ namespace org.kbinani.cadencii
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add( this.panel1 );
-            this.toolStripContainer1.ContentPanel.Controls.Add( this.panel2 );
+            this.toolStripContainer1.ContentPanel.Controls.Add( this.panelWaveformZoom );
             this.toolStripContainer1.ContentPanel.Controls.Add( this.splitContainerProperty );
             this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 614 );
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -21268,7 +21101,7 @@ namespace org.kbinani.cadencii
         public BMenuItem cMenuPianoQuantize128;
         public BMenuItem cMenuPianoFixed128;
         public BMenuItem menuVisualWaveform;
-        public BPanel panel2;
+        private WaveformZoomPanel panelWaveformZoom;
         public BMenuItem cMenuTrackSelectorDeleteBezier;
         public BStatusLabel stripLblMidiIn;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
