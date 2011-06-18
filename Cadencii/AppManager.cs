@@ -1948,6 +1948,24 @@ namespace org.kbinani.cadencii
         /// <param name="main_form"></param>
         /// <returns></returns>
 #if JAVA
+        public static BDialogResult showModalDialog( UiBase dialog, Component parent_form )
+#else
+        public static BDialogResult showModalDialog( UiBase dialog, System.Windows.Forms.Form parent_form )
+#endif
+        {
+            beginShowDialog();
+            BDialogResult ret = dialog.showDialog( parent_form );
+            endShowDialog();
+            return ret;
+        }
+
+        /// <summary>
+        /// ダイアログを，メインウィンドウに対してモーダルに表示し，ダイアログの結果を取得します
+        /// </summary>
+        /// <param name="dialog"></param>
+        /// <param name="main_form"></param>
+        /// <returns></returns>
+#if JAVA
         public static BDialogResult showModalDialog( BFolderBrowser dialog, Frame main_form )
 #else
         public static BDialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )

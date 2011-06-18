@@ -55,7 +55,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>DEBUG;__TEMPORALY_DISABLED__USE_OLD_SYNTH_IMPL,ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE, ENABLE_GENERAL_VST, MONITOR_FPS</DefineConstants>
+    <DefineConstants>DEBUG;__TEMPORALY_DISABLED__USE_OLD_SYNTH_IMPL,ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE, ENABLE_GENERAL_VST, MONITOR_FPS, CSHARP</DefineConstants>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>bin\x86\Debug\Cadencii.XML</DocumentationFile>
   </PropertyGroup>
@@ -64,14 +64,14 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DefineConstants>ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MOUSEHOVER, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE</DefineConstants>
+    <DefineConstants>ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MOUSEHOVER, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE, CSHARP</DefineConstants>
     <Optimize>true</Optimize>
     <DocumentationFile>bin\x86\Release\Cadencii.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\DebugMinimal\</OutputPath>
-    <DefineConstants>DEBUG;ENABLE_PROPERTY</DefineConstants>
+    <DefineConstants>DEBUG;ENABLE_PROPERTY, CSHARP</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Debug\Cadencii.XML</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseMinimal|x86' ">
     <OutputPath>bin\x86\ReleaseMinimal\</OutputPath>
-    <DefineConstants>ENABLE_PROPERTY</DefineConstants>
+    <DefineConstants>ENABLE_PROPERTY, CSHARP</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Release\Cadencii.XML</DocumentationFile>
     <Optimize>true</Optimize>
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
     <OutputPath>bin\x86\MonoRelease\</OutputPath>
-    <DefineConstants>MONO, ENABLE_PROPERTY, ENABLE_SCRIPT, ENABLE_MOUSEHOVER, ENABLE_STRIP_DROPDOWN</DefineConstants>
+    <DefineConstants>MONO, ENABLE_PROPERTY, ENABLE_SCRIPT, ENABLE_MOUSEHOVER, ENABLE_STRIP_DROPDOWN, CSHARP</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Release\Cadencii.XML</DocumentationFile>
     <Optimize>true</Optimize>
@@ -124,7 +124,6 @@
     <Compile Include="BezierPoint.cs" />
     <Compile Include="BgmFile.cs" />
     <Compile Include="BgmMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="BooleanEnum.cs" />
     <Compile Include="Cadencii.cs" />
@@ -135,67 +134,60 @@
     <Compile Include="ClockResolutionUtility.cs" />
     <Compile Include="CommandExecuteRequiredEventHandler.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="Controller.cs" />
+    <Compile Include="ControllerBase.cs" />
     <Compile Include="EditedStateChangedEventHandler.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EmptyWaveGenerator.cs" />
+    <Compile Include="FormAskKeySoundGenerationController.cs" />
     <Compile Include="FormAskKeySoundGenerationUi.cs">
-      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAskKeySoundGenerationUiImpl.cs">
     </Compile>
     <Compile Include="FormCheckUnknownSingerAndResampler.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSequenceConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormVibratoPreset.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWorker.cs" />
     <Compile Include="FormWorkerUi.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="IAmplifierView.cs" />
-    <Compile Include="IFormAskKeySoundGenerationControl.cs" />
     <Compile Include="IFormWorkerControl.cs" />
     <Compile Include="IImageCachedComponentDrawer.cs" />
     <Compile Include="ImageCachedComponentDrawer.cs" />
     <Compile Include="LineGraphDrawer.cs" />
     <Compile Include="PaletteToolMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PatchWorkQueue.cs" />
     <Compile Include="PictOverview.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Preference.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProgressBarWithLabel.cs" />
     <Compile Include="ProgressBarWithLabelUi.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="RecentFileMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SequenceConfig.cs" />
     <Compile Include="SynthesizeWorker.cs" />
     <Compile Include="TestFormWorker.cs" />
     <Compile Include="TrackSelectorSingerDropdownMenuItem.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="TrackSelectorSingerPopupMenu.cs">
-      <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UiBase.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
     <Compile Include="WaveformZoomController.cs" />
-    <Compile Include="WaveformZoomPanel.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="WaveformZoomUi.cs">
     </Compile>
+    <Compile Include="WaveformZoomUiImpl.cs" />
+    <Compile Include="WaveformZoomUiListener.cs" />
     <Compile Include="WaveUnit.cs" />
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
@@ -211,51 +203,37 @@
     <Compile Include="FederChangedEventHandler.cs" />
     <Compile Include="FileWaveReceiver.cs" />
     <Compile Include="FileWaveSender.cs" />
-    <Compile Include="FormAskKeySoundGeneration.cs">
-    </Compile>
     <Compile Include="FormCurvePointEdit.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGenerateKeySound.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormIconPalette.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="FormMidiImExportConfig.cs" />
     <Compile Include="FormNoteExpressionConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormPluginUi.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRandomize.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSplash.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWordDictionary.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="IComparisonContext.cs" />
     <Compile Include="IconParader.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="LyricTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MemoryManager.cs" />
     <Compile Include="MouseTracer.cs" />
     <Compile Include="MuteChangedEventHandler.cs" />
     <Compile Include="NumberTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
     <Compile Include="PanpotChangedEventHandler.cs" />
     <Compile Include="PictPianoRoll.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PlatformEnum.cs" />
     <Compile Include="PointD.cs" />
@@ -294,10 +272,8 @@
     <Compile Include="CommandTreeUnit.cs" />
     <Compile Include="CurveType.cs" />
     <Compile Include="FormNoteProperty.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormShortcutKeys.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="KanaDeRomanization.cs" />
     <Compile Include="MidiDeviceImp.cs" />
@@ -314,58 +290,42 @@
     <Compile Include="EditorConfig.cs" />
     <Compile Include="EditTool.cs" />
     <Compile Include="FormBezierPointEdit.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCompileResult.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormDeleteBar.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGameControlerConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormImportLyric.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormInsertBar.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBeatConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExport.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMixer.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="AppManager.cs">
     </Compile>
     <Compile Include="FormTrackProperty.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRealtimeConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSingerStyleConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormTempoConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormVibratoConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandRunnable.cs" />
     <Compile Include="IPaletteTool.cs" />
     <Compile Include="KeySoundPlayer.cs" />
     <Compile Include="NumericUpDownEx.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PaletteToolServer.cs" />
     <Compile Include="PencilMode.cs" />
@@ -422,12 +382,10 @@
     </Compile>
     <Compile Include="ToolStripLocation.cs" />
     <Compile Include="TrackSelector.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UtauFreq.cs" />
     <Compile Include="ValuePairOfStringBoolean.cs" />
     <Compile Include="VersionInfo.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="VibratoLengthEditingRule.cs" />
     <Compile Include="VibratoPointIteratorByClock.cs" />
@@ -449,7 +407,6 @@
     <Compile Include="WaveSender.cs" />
     <Compile Include="WaveSenderDriver.cs" />
     <Compile Include="WaveView.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WaveViewRealoadRequiredEventArgs.cs" />
     <Compile Include="WaveViewRealoadRequiredEventHandler.cs" />

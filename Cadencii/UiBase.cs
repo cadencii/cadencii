@@ -1,5 +1,5 @@
 /*
- * IFormAskKeySoundGenerationControl.cs
+ * UiBase.cs
  * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -15,19 +15,36 @@
 
 package org.kbinani.cadencii;
 
+import org.kbinani.windows.forms.*;
+
+#elif __cplusplus
+
+namespace org{ namespace kbinani{ namespace cadencii{
+
 #else
-﻿
+
+using System;
+
+using org.kbinani.windows.forms;
+
 namespace org.kbinani.cadencii
 {
 
 #endif
 
-    public interface IFormAskKeySoundGenerationControl
+    public interface UiBase
     {
-        void buttonCancelClickedSlot();
-        void buttonOkClickedSlot();
+        BDialogResult showDialog( Object parent_form );
     }
 
-#if !JAVA
+#if JAVA
+
+#elif __cplusplus
+
+} } }
+
+#else
+
 }
+
 #endif

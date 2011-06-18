@@ -612,7 +612,7 @@ namespace org.kbinani.cadencii
             waveView = new WaveView();
 #endif
             //TODO: これはひどい
-            panelWaveformZoom = (new WaveformZoomController( this, waveView )).getUi();
+            panelWaveformZoom = (WaveformZoomUiImpl)(new WaveformZoomController( this, waveView )).getUi();
 
 #if JAVA
             initialize();
@@ -1812,59 +1812,6 @@ namespace org.kbinani.cadencii
             refreshScreen();
         }
 
-        private VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect )
-        {
-            rect.value = new Rectangle();
-            if ( mouse_position.x < AppManager.keyWidth || pictPianoRoll.getWidth() < mouse_position.x ) {
-                return null;
-            }
-            if ( mouse_position.y < 0 || pictPianoRoll.getHeight() < mouse_position.y ) {
-                return null;
-            }
-            int selected = AppManager.getSelected();
-            if ( selected < 1 ) {
-                return null;
-            }
-            lock ( AppManager.mDrawObjects ) {
-                Vector<DrawObject> dobj_list = AppManager.mDrawObjects.get( selected - 1 );
-                int count = dobj_list.size();
-                int start_to_draw_x = AppManager.getStartToDrawX();
-                int start_to_draw_y = AppManager.getStartToDrawY();
-                int key_width = AppManager.keyWidth;
-                int pianoroll_width = pictPianoRoll.getWidth();
-                for ( int i = 0; i < count; i++ ) {
-                    DrawObject dobj = dobj_list.get( i );
-                    int x = dobj.mRectangleInPixel.x + key_width - start_to_draw_x;
-                    int y = dobj.mRectangleInPixel.y - start_to_draw_y;
-                    if ( mouse_position.x < x ) {
-                        continue;
-                    }
-                    if ( x + dobj.mRectangleInPixel.width < mouse_position.x ) {
-                        continue;
-                    }
-                    if ( pianoroll_width < x ) {
-                        break;
-                    }
-                    if ( mouse_position.y < y ) {
-                        continue;
-                    }
-                    if ( y + dobj.mRectangleInPixel.height < mouse_position.y ) {
-                        continue;
-                    }
-                    int internal_id = dobj.mInternalID;
-                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
-                    for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                        VsqEvent item = itr.next();
-                        if ( item.InternalID == internal_id ) {
-                            rect.value = new Rectangle( x, y, dobj.mRectangleInPixel.width, dobj.mRectangleInPixel.height );
-                            return item;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
         /// <summary>
         /// マウス位置におけるIDを返します。該当するIDが無ければnullを返します
         /// rectには、該当するIDがあればその画面上での形状を、該当するIDがなければ、
@@ -1872,53 +1819,71 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="mouse_position"></param>
         /// <returns></returns>
-        private VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect )
+        private VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect )
         {
             rect.value = new Rectangle();
-            if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.getWidth() ) {
-                if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.getHeight() ) {
-                    int selected = AppManager.getSelected();
-                    if ( selected >= 1 ) {
-                        VsqFileEx vsq = AppManager.getVsqFile();
-                        VsqTrack vsq_track = vsq.Track.get( selected );
-                        int track_height = (int)(AppManager.getScaleY() * 100);
-                        int count = vsq_track.getEventCount();
-                        for ( int j = 0; j < count; j++ ) {
-                            VsqEvent itemj = vsq_track.getEvent( j );
-                            int clock = itemj.Clock;
-                            int internal_id = itemj.InternalID;
-                            // イベントで指定されたIDがLyricであった場合
-                            if ( itemj.ID.type == VsqIDType.Anote ) {
-                                if ( itemj.ID.LyricHandle == null ) {
-                                    continue;
-                                }
-                                // 発音長を取得
-                                int length = itemj.ID.getLength();
-                                int note = itemj.ID.Note;
-                                int x = AppManager.xCoordFromClocks( clock );
-                                int y = AppManager.yCoordFromNote( note );
-                                int lyric_width = (int)(length * AppManager.getScaleX());
-                                if ( x + lyric_width < 0 ) {
-                                    continue;
-                                } else if ( pictPianoRoll.getWidth() < x ) {
-                                    break;
-                                }
-                                if ( x <= mouse_position.x && mouse_position.x <= x + lyric_width ) {
-                                    if ( y + 1 <= mouse_position.y && mouse_position.y <= y + track_height ) {
-                                        rect.value = new Rectangle( x, y + 1, lyric_width, track_height );
-                                        return itemj;
-                                    }
-                                }
-                            } else if ( itemj.ID.type == VsqIDType.Aicon ) {
-                                if ( itemj.ID.IconDynamicsHandle == null ) {
-                                    continue;
-                                }
-                                int length = itemj.ID.getLength();
-                                int note = itemj.ID.Note;
-                                int x = AppManager.xCoordFromClocks( clock );
-                                int y = AppManager.yCoordFromNote( note );
-                                //int lyric_width = 
-                            }
+            int width = pictPianoRoll.getWidth();
+            int height = pictPianoRoll.getHeight();
+            int key_width = AppManager.keyWidth;
+
+            // マウスが可視範囲になければ死ぬ
+            if ( mouse_position.x < key_width || width < mouse_position.x )
+            {
+                return null;
+            }
+            if ( mouse_position.y < 0 || height < mouse_position.y )
+            {
+                return null;
+            }
+
+            // 表示中のトラック番号が異常だったら死ぬ
+            int selected = AppManager.getSelected();
+            if ( selected < 1 )
+            {
+                return null;
+            }
+            lock ( AppManager.mDrawObjects )
+            {
+                Vector<DrawObject> dobj_list = AppManager.mDrawObjects.get( selected - 1 );
+                int count = dobj_list.size();
+                int start_to_draw_x = AppManager.getStartToDrawX();
+                int start_to_draw_y = AppManager.getStartToDrawY();
+                VsqFileEx vsq = AppManager.getVsqFile();
+                VsqTrack vsq_track = vsq.Track.get( selected );
+
+                for ( int i = 0; i < count; i++ )
+                {
+                    DrawObject dobj = dobj_list.get( i );
+                    int x = dobj.mRectangleInPixel.x + key_width - start_to_draw_x;
+                    int y = dobj.mRectangleInPixel.y - start_to_draw_y;
+                    if ( mouse_position.x < x )
+                    {
+                        continue;
+                    }
+                    if ( x + dobj.mRectangleInPixel.width < mouse_position.x )
+                    {
+                        continue;
+                    }
+                    if ( width < x )
+                    {
+                        break;
+                    }
+                    if ( mouse_position.y < y )
+                    {
+                        continue;
+                    }
+                    if ( y + dobj.mRectangleInPixel.height < mouse_position.y )
+                    {
+                        continue;
+                    }
+                    int internal_id = dobj.mInternalID;
+                    for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); )
+                    {
+                        VsqEvent item = itr.next();
+                        if ( item.InternalID == internal_id )
+                        {
+                            rect.value = new Rectangle( x, y, dobj.mRectangleInPixel.width, dobj.mRectangleInPixel.height );
+                            return item;
                         }
                     }
                 }
@@ -10784,12 +10749,12 @@ namespace org.kbinani.cadencii
             boolean init_key_sound_player_immediately = true; //FormGenerateKeySoundの終了を待たずにKeySoundPlayer.initするかどうか。
 #if !JAVA
             if ( !AppManager.editorConfig.DoNotAskKeySoundGeneration && cache_is_incomplete ) {
-                FormAskKeySoundGeneration dialog = null;
+                FormAskKeySoundGenerationController dialog = null;
                 BDialogResult dialog_result = BDialogResult.NO;
                 boolean always_check_this = !AppManager.editorConfig.DoNotAskKeySoundGeneration;
                 try {
-                    dialog = new FormAskKeySoundGeneration();
-                    dialog.setupUi( new FormAskKeySoundGenerationUi( dialog ) );
+                    dialog = new FormAskKeySoundGenerationController();
+                    dialog.setupUi( new FormAskKeySoundGenerationUiImpl( dialog ) );
                     dialog.getUi().setAlwaysPerformThisCheck( always_check_this );
                     dialog_result = AppManager.showModalDialog( dialog.getUi(), this );
                     always_check_this = dialog.getUi().isAlwaysPerformThisCheck();
@@ -10799,7 +10764,7 @@ namespace org.kbinani.cadencii
                 } finally {
                     if ( dialog != null ) {
                         try {
-                            dialog.getUi().close();
+                            dialog.getUi().close( true );
                         } catch ( Exception ex2 ) {
                             Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex2 + "\n" );
                             serr.println( "FormMain#FormMain_Load; ex2=" + ex2 );
@@ -21101,7 +21066,7 @@ namespace org.kbinani.cadencii
         public BMenuItem cMenuPianoQuantize128;
         public BMenuItem cMenuPianoFixed128;
         public BMenuItem menuVisualWaveform;
-        private WaveformZoomPanel panelWaveformZoom;
+        private WaveformZoomUiImpl panelWaveformZoom;
         public BMenuItem cMenuTrackSelectorDeleteBezier;
         public BStatusLabel stripLblMidiIn;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
