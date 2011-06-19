@@ -109,6 +109,8 @@ class pp_cs2java {
         {"conv.", "conv::"},
         {"fsys.", "fsys::"},
         {"str.", "str::"},
+        {"List<", "vector<"},
+        {"this.", "this->"},
     };
     //private static Regex reg_eventhandler = new Regex( @"(?<pre>.*?)(?<instance>\w*)[.]*(?<event>\w*)\s*(?<operator>[\+\-]\=)\s*new\s*(?<handler>\w*)EventHandler\s*\(\s*(?<method>.*)\s*\)" );
 

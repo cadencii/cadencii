@@ -34,6 +34,8 @@ SRC_JVSQ=@SRC_JVSQ@
 SRC_JCADENCII=@SRC_JCADENCII@
 SRC_JCOMPONENTMODEL=@SRC_JCOMPONENTMODEL@
 SRC_JXML=@SRC_JXML@
+SRC_CPP_CORE=@SRC_CPP_CORE@
+SRC_CPP_VSQ=@SRC_CPP_VSQ@
 
 all: jcadencii_mac
 
@@ -195,19 +197,32 @@ first:
 	$(MKDIR) build/java/org/kbinani/xml $(TO_DEVNULL)
 
 ########################################################################
-# cpp/vsq
+# cpp_all
 #
+DRAFTMODE=
 
-DRAFTMODE=__DRAFT__
+cpp_all: cpp_core cpp_vsq
 
-cpp_vsq: pp_cs2java.jar
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqUtility.cs -o ./build/cpp/vsq/VsqUtility.h
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/RandomAccessFile.cs -o ./build/cpp/vsq/RandomAccessFile.h
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/Lyric.cs -o ./build/cpp/vsq/Lyric.h
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/BPPair.cs -o ./build/cpp/vsq/BPPair.h
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/IconHandle.cs -o ./build/cpp/vsq/IconHandle.h
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/LyricHandle.cs -o ./build/cpp/vsq/LyricHandle.h
-	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqHandleType.cs -o ./build/cpp/vsq/VsqHandleType.h
+########################################################################
+# cpp_core
+#
+cpp_core: pp_cs2java.jar $(SRC_CPP_CORE)
+
+########################################################################
+# cpp_vsq
+#
+cpp_vsq: pp_cs2java.jar $(SRC_CPP_CORE) $(SRC_CPP_VSQ)
+
+########################################################################
+# cpp_all_test
+#
+cpp_all_test: cpp_vsq_test
+
+########################################################################
+# cpp_vsq_test
+#
+cpp_vsq_test: cpp_vsq
+	cd $(DRAFTMODE)org.kbinani.vsq/test & g++ -c CompileTest.cpp
 
 ########################################################################
 # jcadencii
@@ -290,8 +305,14 @@ jpostprocess:
 	$(CP) ./build/java/org/kbinani/apputil/MessageBody.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBody.java
 	perl safe_mkdir.pl ./BuildJavaUI/src/org/kbinani/apputil
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java $(TO_DEVNULL)
-	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
-
+	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java                        ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
+	$(CP) ./build/java/org/kbinani/cadencii/UiBase.java                                 ./BuildJavaUI/src/org/kbinani/cadencii/UiBase.java
+	$(CP) ./build/java/org/kbinani/cadencii/ControllerBase.java                         ./BuildJavaUI/src/org/kbinani/cadencii/ControllerBase.java
+	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationController.java    ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationController.java
+	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java            ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java
+	$(CP) ./build/java/org/kbinani/cadencii/WaveformZoomUi.java                         ./BuildJavaUI/src/org/kbinani/cadencii/WaveformZoomUi.java
+	$(CP) ./build/java/org/kbinani/cadencii/WaveformZoomController.java                 ./BuildJavaUI/src/org/kbinani/cadencii/WaveformZoomController.java
+	$(CP) ./build/java/org/kbinani/cadencii/AppManager.java                             ./BuildJavaUI/src/org/kbinani/cadencii/AppManager.java
 
 ########################################################################
 # jcomponentmodel
@@ -361,3 +382,15 @@ clean:
 @DEP_JCADENCII@
 @DEP_JCOMPONENTMODEL@
 @DEP_JXML@
+
+########################################################################
+# dependency definition
+# [cpp_core]
+#
+@DEP_CPP_CORE@
+
+########################################################################
+# dependency definition
+# [cpp_vsq]
+#
+@DEP_CPP_VSQ@

@@ -26,7 +26,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;CSHARP</DefineConstants>
     <DocumentationFile>bin\x86\Debug\org.kbinani.apputil.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -34,11 +34,12 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Release\org.kbinani.apputil.xml</DocumentationFile>
+    <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\DebugMinimal\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;CSHARP</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Debug\org.kbinani.apputil.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
@@ -48,12 +49,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Release\org.kbinani.apputil.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
     <OutputPath>bin\x86\MonoRelease\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86\Release\org.kbinani.apputil.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

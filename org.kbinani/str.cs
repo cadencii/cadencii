@@ -88,7 +88,7 @@ namespace org
                 }
 #elif __cplusplus
                 string s1 = s;
-                transform( s1.begin(), s1.end(), s1.begin(), tolower );
+                transform( s1.begin(), s1.end(), s1.begin(), toupper );
                 return s1;
 #else
                 if ( s == null ) {
@@ -115,7 +115,7 @@ namespace org
                 }
 #elif __cplusplus
                 string s1 = s;
-                transform( s1.begin(), s1.end(), s1.begin(), toupper );
+                transform( s1.begin(), s1.end(), s1.begin(), tolower );
                 return s1;
 #else
                 if ( s == null ){

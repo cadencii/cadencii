@@ -46,11 +46,16 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public int compareTo( BPPair item )
         {
-            if ( Clock > item.Clock ) {
+            if ( Clock > item.Clock )
+            {
                 return 1;
-            } else if ( Clock < item.Clock ) {
+            }
+            else if ( Clock < item.Clock )
+            {
                 return -1;
-            } else {
+            }
+            else
+            {
                 return 0;
             }
 #if __cplusplus

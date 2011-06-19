@@ -147,6 +147,9 @@ close( CFG );
 &getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml, $dep_xml );
 &getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii, $dep_cadencii );
 
+&getSrcListCpp( "./org.kbinani", "./org.kbinani/", $cpp_src_core, $cpp_dep_core );
+&getSrcListCpp( "./org.kbinani.vsq", "./org.kbinani.vsq/", $cpp_src_vsq, $cpp_dep_vsq );
+
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
     $line =~ s/\@SRC_JCORLIB\@/$src_corlib/g;
@@ -156,6 +159,8 @@ while( $line = <FILE> ){
     $line =~ s/\@SRC_JCADENCII\@/$src_cadencii/g;
     $line =~ s/\@SRC_JCOMPONENTMODEL\@/$src_componentmodel/g;
     $line =~ s/\@SRC_JXML\@/$src_xml/g;
+    $line =~ s/\@SRC_CPP_CORE\@/$cpp_src_core/g;
+    $line =~ s/\@SRC_CPP_VSQ\@/$cpp_src_vsq/g;
 
     $line =~ s/\@DEP_JAPPUTIL\@/$dep_apputil/g;
     $line =~ s/\@DEP_JCORLIB\@/$dep_corlib/g;
@@ -166,6 +171,9 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_componentmodel/g;
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
+    $line =~ s/\@DEP_CPP_CORE\@/$cpp_dep_core/g;
+    $line =~ s/\@DEP_CPP_VSQ\@/$cpp_dep_vsq/g;
+
     foreach $key ( keys %directive ){
         my $search = "\@DENABLE_" . (uc $key) . "\@";
         my $rep_draft = "-DENABLE_" . (uc $key);
@@ -208,6 +216,73 @@ while( $line = <FILE> ){
 close( FILE );
 close( OUT );
 
+##
+# @param  string  search path
+# @param  string  prefix of file-name for copy
+# @param  string  list of converted sources
+# @param  string  definition of dependencies: .cs -> .h
+# @return  void
+#
+sub getSrcListCpp
+{
+    my $DIR;
+    my $search_path = $_[0];
+    my $prefix = $_[1];
+    my @files = ();
+
+    # search all files in specified search path
+    #opendir( DIR, $search_path );
+    #my @files = readdir( DIR );
+    #closedir( DIR );
+    if( $search_path eq "./org.kbinani" )
+    {
+        @files = ( "vec.cs", "str.cs", "dic.cs", "sout.cs", "serr.cs" );
+    }
+    elsif( $search_path eq "./org.kbinani.vsq" )
+    {
+        @files = ( "Lyric.cs", "BPPair.cs", "IconHandle.cs", "LyricHandle.cs", "VsqHandleType.cs" );
+    }
+
+    # check file names
+    $_[2] = "";
+    $_[3] = "";
+    my $count = 0;
+    foreach my $name ( @files )
+    {
+        # skip file with name shorter than ".cs"
+        if( length( $name ) <= 3 )
+        {
+            next;
+        }
+
+        # skip non .cs files
+        if( rindex( $name, ".cs" ) != length( $name ) - 3 )
+        {
+            next;
+        }
+
+        # name without extension
+        my $cname = substr( $name, 0, length( $name ) - 3 );
+
+        # concatenate source files
+        if( $count > 0 )
+        {
+            $_[2] .= " \\" . "\n        ";
+        }
+        $_[2] .= $prefix . $cname . ".h";
+
+        # concatenate dependency definitions
+        $_[3] .= $search_path . "/" . $cname . ".h: " . $prefix . $name . "\n";
+        $_[3] .= "\tjava -jar pp_cs2java.jar \$(PPCS2CPP_OPT) -i $search_path/$name -o $prefix$cname.h\n";
+        $count++;
+    }
+}
+
+##
+# @param string search path
+# @param string destination path
+# @param array naniyattennnoka wakannnaiwa-
+#
 sub getSrcList
 {
     my $dir = $_[0];
@@ -218,26 +293,43 @@ sub getSrcList
     closedir( DIR );
     my @src = ();
     my @srcall = ();
-    foreach $v ( @file ){
-        if( length( $v ) <= 3 ){
+    foreach my $v ( @file )
+    {
+        if( length( $v ) <= 3 )
+        {
             next;
         }
-        if( rindex( $v, ".cs" ) == length( $v ) - 3 ){
-            my $s1 = substr( $v, 0, length( $v ) - 3 );
-            my $search = $dir . "/" . $s1 . ".java";
-            my $found = 0;
-            foreach my $s ( @special_dependencies ){
-                if( $s eq $search ){
-                    $found = 1;
-                    last;
-                }
-            }
-            if( $s1 eq "Resources" ){
+        if( rindex( $v, ".cs" ) != length( $v ) - 3 )
+        {
+            next;
+        }
+        my $s1 = substr( $v, 0, length( $v ) - 3 );
+        my $search = $dir . "/" . $s1 . ".java";
+        my $found = 0;
+        foreach my $s ( @special_dependencies )
+        {
+            if( $s eq $search )
+            {
                 $found = 1;
+                last;
             }
-            if( $found == 0 ){
-                push( @src, $s1 );
-            }
+        }
+        if( $s1 eq "Resources" )
+        {
+            $found = 1;
+        }
+        
+        if( index( $v, "Form" ) == 0 && rindex( $v, "Impl.cs" ) == length( $v ) - length( "Impl.cs" ) )
+        {
+            $found = 2;
+        }
+        
+        if( $found == 0 )
+        {
+            push( @src, $s1 );
+        }
+        if( $found != 2 )
+        {
             push( @srcall, $s1 );
         }
     }
@@ -245,53 +337,78 @@ sub getSrcList
     $_[3] = ""; #cp
     $_[4] = ""; #dep
     my $count = @srcall;
-    for( $i = 0; $i < $count; $i++ ){
+    for( my $i = 0; $i < $count; $i++ )
+    {
         my $cname = $srcall[$i];
         my $s = $cname . ".java";
-        if( $i == 0 ){
+        if( $i == 0 )
+        {
             $_[2] = $prefix . $s;
-        }else{
+        }
+        else
+        {
             $_[2] = $_[2] . " \\" . "\n        " . $prefix . $s;
         }
     }
 
     # check BuildJavaUI
     $build_java_ui_prefix = "";
-    if( index( $dir, "./Cadencii" ) == 0 ){
+    if( index( $dir, "./Cadencii" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/cadencii/";
-    }elsif( index( $dir, "./org.kbinani.windows.forms" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani.windows.forms" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/windows/forms/";
-    }elsif( index( $dir, "./org.kbinani.xml" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani.xml" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/xml/";
-    }elsif( index( $dir, "./org.kbinani.vsq" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani.vsq" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/vsq/";
-    }elsif( index( $dir, "./org.kbinani.media" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani.media" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/media/";
-    }elsif( index( $dir, "./org.kbinani.apputil" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani.apputil" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/apputil/";
-    }elsif( index( $dir, "./org.kbinani.componentmodel" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani.componentmodel" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/componentmodel/";
-    }elsif( index( $dir, "./org.kbinani" ) == 0 ){
+    }
+    elsif( index( $dir, "./org.kbinani" ) == 0 )
+    {
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/";
     }
 
     $count = @src;
-    for( $i = 0; $i < $count; $i++ ){
+    for( my $i = 0; $i < $count; $i++ )
+    {
         my $cname = $src[$i];
         my $s = $cname . ".java";
         $_[3] = $_[3] . "$prefix$s:$dir/$s\n\t\$(CP) $dir/$s $prefix$s\n";
         $_[4] .= "$prefix$cname.java: $dir/$cname.cs";
         $add_to = 1;
         my $c = @special_dependencies;
-        for( my $j = 0; $j < $c; $j++ ){
-            if( "$build_java_ui_prefix$cname.java" eq $special_dependencies[$j] ){
+        for( my $j = 0; $j < $c; $j++ )
+        {
+            if( "$build_java_ui_prefix$cname.java" eq $special_dependencies[$j] )
+            {
                 $add_to = 0;
                 last;
             }
         }
-        if( (-e "$build_java_ui_prefix$cname.java") && $add_to == 1 ){
+        if( (-e "$build_java_ui_prefix$cname.java") && $add_to == 1 )
+        {
             $_[4] .= " $build_java_ui_prefix$cname.java\n";
-        }else{
+        }
+        else
+        {
             $_[4] .= "\n";
         }
         $_[4] .= "\tjava -jar pp_cs2java.jar \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
