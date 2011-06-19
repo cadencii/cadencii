@@ -499,12 +499,9 @@ sub getSrcList
     # UI実装に必要なインターフェース定義ファイルをコピー
     foreach my $name ( @view_impl )
     {
-#	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationController.java    ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationController.java
-#	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java            ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java
-        #$build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/componentmodel/";
         my $com_dirname_part = substr( $build_java_ui_prefix, length( "./BuildJavaUI/src/" ) );
 
-        $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "Controller.java  ./BuildJavaUI/src/" . $com_dirname_part . $name . "Controller.java\n";
+        $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "UiListener.java  ./BuildJavaUI/src/" . $com_dirname_part . $name . "Listener.java\n";
         $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "Ui.java          ./BuildJavaUI/src/" . $com_dirname_part . $name . "Ui.java\n";
     }
 }

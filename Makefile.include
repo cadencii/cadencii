@@ -305,9 +305,9 @@ jpostprocess:
 	$(CP) ./build/java/org/kbinani/apputil/MessageBody.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBody.java
 	perl safe_mkdir.pl ./BuildJavaUI/src/org/kbinani/apputil
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java $(TO_DEVNULL)
-	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java                        ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
-	$(CP) ./build/java/org/kbinani/cadencii/UiBase.java                                 ./BuildJavaUI/src/org/kbinani/cadencii/UiBase.java
-	$(CP) ./build/java/org/kbinani/cadencii/ControllerBase.java                         ./BuildJavaUI/src/org/kbinani/cadencii/ControllerBase.java
+	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
+	$(CP) ./build/java/org/kbinani/cadencii/UiBase.java          ./BuildJavaUI/src/org/kbinani/cadencii/UiBase.java
+	$(CP) ./build/java/org/kbinani/cadencii/ControllerBase.java  ./BuildJavaUI/src/org/kbinani/cadencii/ControllerBase.java
 @POST_PROCESS_JAVA@
 
 ########################################################################
