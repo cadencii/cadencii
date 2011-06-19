@@ -138,41 +138,44 @@ print CFG <<__EOD__;
 __EOD__
 close( CFG );
 
-&getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
-&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_apputil, $cp_apputil, $dep_apputil );
-&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_componentmodel, $cp_componentmodel, $dep_componentmodel );
-&getSrcList( "./org.kbinani.media", "./build/java/org/kbinani/media/", $src_media, $cp_media, $dep_media );
-&getSrcList( "./org.kbinani.vsq", "./build/java/org/kbinani/vsq/", $src_vsq, $cp_vsq, $dep_vsq );
-&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_winforms, $cp_winforms, $dep_winforms );
-&getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml, $dep_xml );
-&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii, $dep_cadencii );
+&getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_java_core, $dep_java_core );
+&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_java_apputil, $dep_java_apputil );
+&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_java_componentmodel, $dep_java_componentmodel );
+&getSrcList( "./org.kbinani.media", "./build/java/org/kbinani/media/", $src_java_media, $dep_java_media );
+&getSrcList( "./org.kbinani.vsq", "./build/java/org/kbinani/vsq/", $src_java_vsq, $dep_java_vsq );
+&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_java_winforms, $dep_java_winforms );
+&getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_java_xml, $dep_java_xml );
+&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_java_cadencii, $dep_java_cadencii, $post_process_java_cadencii );
+$post_process_java .= $post_process_java_cadencii;
 
-&getSrcListCpp( "./org.kbinani", "./org.kbinani/", $cpp_src_core, $cpp_dep_core );
-&getSrcListCpp( "./org.kbinani.vsq", "./org.kbinani.vsq/", $cpp_src_vsq, $cpp_dep_vsq );
+&getSrcListCpp( "./org.kbinani", "./org.kbinani/", $src_cpp_core, $dep_cpp_core );
+&getSrcListCpp( "./org.kbinani.vsq", "./org.kbinani.vsq/", $src_cpp_vsq, $dep_cpp_vsq );
 
 while( $line = <FILE> ){
-    $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
-    $line =~ s/\@SRC_JCORLIB\@/$src_corlib/g;
-    $line =~ s/\@SRC_JWINFORMS\@/$src_winforms/g;
-    $line =~ s/\@SRC_JMEDIA\@/$src_media/g;
-    $line =~ s/\@SRC_JVSQ\@/$src_vsq/g;
-    $line =~ s/\@SRC_JCADENCII\@/$src_cadencii/g;
-    $line =~ s/\@SRC_JCOMPONENTMODEL\@/$src_componentmodel/g;
-    $line =~ s/\@SRC_JXML\@/$src_xml/g;
-    $line =~ s/\@SRC_CPP_CORE\@/$cpp_src_core/g;
-    $line =~ s/\@SRC_CPP_VSQ\@/$cpp_src_vsq/g;
+    $line =~ s/\@SRC_JAPPUTIL\@/$src_java_apputil/g;
+    $line =~ s/\@SRC_JCORLIB\@/$src_java_core/g;
+    $line =~ s/\@SRC_JWINFORMS\@/$src_java_winforms/g;
+    $line =~ s/\@SRC_JMEDIA\@/$src_java_media/g;
+    $line =~ s/\@SRC_JVSQ\@/$src_java_vsq/g;
+    $line =~ s/\@SRC_JCADENCII\@/$src_java_cadencii/g;
+    $line =~ s/\@SRC_JCOMPONENTMODEL\@/$src_java_componentmodel/g;
+    $line =~ s/\@SRC_JXML\@/$src_java_xml/g;
+    $line =~ s/\@SRC_CPP_CORE\@/$src_cpp_core/g;
+    $line =~ s/\@SRC_CPP_VSQ\@/$src_cpp_vsq/g;
 
-    $line =~ s/\@DEP_JAPPUTIL\@/$dep_apputil/g;
-    $line =~ s/\@DEP_JCORLIB\@/$dep_corlib/g;
-    $line =~ s/\@DEP_JWINFORMS\@/$dep_winforms/g;
-    $line =~ s/\@DEP_JMEDIA\@/$dep_media/g;
-    $line =~ s/\@DEP_JVSQ\@/$dep_vsq/g;
-    $line =~ s/\@DEP_JCADENCII\@/$dep_cadencii/g;
-    $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_componentmodel/g;
-    $line =~ s/\@DEP_JXML\@/$dep_xml/g;
+    $line =~ s/\@DEP_JAPPUTIL\@/$dep_java_apputil/g;
+    $line =~ s/\@DEP_JCORLIB\@/$dep_java_core/g;
+    $line =~ s/\@DEP_JWINFORMS\@/$dep_java_winforms/g;
+    $line =~ s/\@DEP_JMEDIA\@/$dep_java_media/g;
+    $line =~ s/\@DEP_JVSQ\@/$dep_java_vsq/g;
+    $line =~ s/\@DEP_JCADENCII\@/$dep_java_cadencii/g;
+    $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_java_componentmodel/g;
+    $line =~ s/\@DEP_JXML\@/$dep_java_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
-    $line =~ s/\@DEP_CPP_CORE\@/$cpp_dep_core/g;
-    $line =~ s/\@DEP_CPP_VSQ\@/$cpp_dep_vsq/g;
+    $line =~ s/\@DEP_CPP_CORE\@/$dep_cpp_core/g;
+    $line =~ s/\@DEP_CPP_VSQ\@/$dep_cpp_vsq/g;
+
+    $line =~ s/\@POST_PROCESS_JAVA\@/$post_process_java/g;
 
     foreach $key ( keys %directive ){
         my $search = "\@DENABLE_" . (uc $key) . "\@";
@@ -279,9 +282,11 @@ sub getSrcListCpp
 }
 
 ##
-# @param string search path
-# @param string destination path
-# @param array naniyattennnoka wakannnaiwa-
+# @param string [in] ファイルを検索するディレクトリのパス
+# @param string [in] ファイル名の先頭に付ける接頭句
+# @param string [out] プリプロセッサで変換元となるファイルのリスト
+# @param string [out] プリプロセッサにより変換するファイルの依存関係を定義したリスト
+# @param string [out] BuildJavaUIへのコピー操作を定義した文字列
 #
 sub getSrcList
 {
@@ -293,6 +298,84 @@ sub getSrcList
     closedir( DIR );
     my @src = ();
     my @srcall = ();
+
+    # 拡張子が.csでないファイルを除外する
+    my $changed = 1;
+    while( $changed )
+    {
+        $changed = 0;
+        for( my $i = 0; $i < @file; $i++ )
+        {
+            my $v = $file[$i];
+            my $ext = ".cs";
+            if( length( $v ) <= length( $ext ) )
+            {
+                splice @file, $i, 1;
+                $changed = 1;
+                last;
+            }
+            
+            if( rindex( $v, $ext ) != length( $v ) - length( $ext ) )
+            {
+                splice @file, $i, 1;
+                $changed = 1;
+                last;
+            }
+        }
+    }
+
+    # ファイル名が以下の規則に当てはまっているものを抽出する
+    # @view_implには，*の部分が重複無く入るようにする
+    # *UiImpl.cs
+    # *.cs
+    # *Ui.cs
+    # *Controller.cs
+    # *UiListener.cs
+    my @view_impl = ();
+    my @suffix_rule = ( "UiImpl.cs", "Ui.cs", "Controller.cs", "UiListener.cs" );
+    {
+        # rule_map["FormFoo"] = "(UiImpl.cs)(Ui.cs)";
+        my %rule_map = ();
+
+        foreach my $name ( @file )
+        {
+            foreach my $rule ( @suffix_rule )
+            {
+                my $indx = rindex( $name, $rule );
+                if( $indx < 0 ){
+                    next;
+                }
+                if( $indx != length( $name ) - length( $rule ) )
+                {
+                    next;
+                }
+                my $prefix_name = substr( $name, 0, length( $name ) - length( $rule ) );
+                $rule_map{$prefix_name} .= "(" . $rule . ")";
+            }
+        }
+
+        # suffix_rulesの全てが付いているファイルは，V-C分離済みの画面実装とみなす
+        foreach my $key ( keys( %rule_map ) )
+        {
+            my $value = $rule_map{$key};
+            my $contains_all_rules = 1;
+            foreach my $rule ( @suffix_rule )
+            {
+                if( index( $value, "(" . $rule . ")" ) < 0 )
+                {
+                    $contains_all_rules = 0;
+                    last;
+                }
+            }
+            
+            # suffix_rulesが全て含まれているので，チェックリストに追加するよ
+            if( $contains_all_rules )
+            {
+                push( @view_impl, $key );
+            }
+        }
+    }
+
     foreach my $v ( @file )
     {
         if( length( $v ) <= 3 )
@@ -334,8 +417,8 @@ sub getSrcList
         }
     }
     $_[2] = ""; #src
-    $_[3] = ""; #cp
-    $_[4] = ""; #dep
+    $_[3] = ""; #dep
+    $_[4] = ""; # UIのインターフェース定義をBuildJavaUIにコピーするお
     my $count = @srcall;
     for( my $i = 0; $i < $count; $i++ )
     {
@@ -391,8 +474,7 @@ sub getSrcList
     {
         my $cname = $src[$i];
         my $s = $cname . ".java";
-        $_[3] = $_[3] . "$prefix$s:$dir/$s\n\t\$(CP) $dir/$s $prefix$s\n";
-        $_[4] .= "$prefix$cname.java: $dir/$cname.cs";
+        $_[3] .= "$prefix$cname.java: $dir/$cname.cs";
         $add_to = 1;
         my $c = @special_dependencies;
         for( my $j = 0; $j < $c; $j++ )
@@ -405,12 +487,24 @@ sub getSrcList
         }
         if( (-e "$build_java_ui_prefix$cname.java") && $add_to == 1 )
         {
-            $_[4] .= " $build_java_ui_prefix$cname.java\n";
+            $_[3] .= " $build_java_ui_prefix$cname.java\n";
         }
         else
         {
-            $_[4] .= "\n";
+            $_[3] .= "\n";
         }
-        $_[4] .= "\tjava -jar pp_cs2java.jar \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
+        $_[3] .= "\tjava -jar pp_cs2java.jar \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
+    }
+
+    # UI実装に必要なインターフェース定義ファイルをコピー
+    foreach my $name ( @view_impl )
+    {
+#	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationController.java    ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationController.java
+#	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java            ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java
+        #$build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/componentmodel/";
+        my $com_dirname_part = substr( $build_java_ui_prefix, length( "./BuildJavaUI/src/" ) );
+
+        $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "Controller.java  ./BuildJavaUI/src/" . $com_dirname_part . $name . "Controller.java\n";
+        $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "Ui.java          ./BuildJavaUI/src/" . $com_dirname_part . $name . "Ui.java\n";
     }
 }

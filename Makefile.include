@@ -308,11 +308,7 @@ jpostprocess:
 	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java                        ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
 	$(CP) ./build/java/org/kbinani/cadencii/UiBase.java                                 ./BuildJavaUI/src/org/kbinani/cadencii/UiBase.java
 	$(CP) ./build/java/org/kbinani/cadencii/ControllerBase.java                         ./BuildJavaUI/src/org/kbinani/cadencii/ControllerBase.java
-	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationController.java    ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationController.java
-	$(CP) ./build/java/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java            ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java
-	$(CP) ./build/java/org/kbinani/cadencii/WaveformZoomUi.java                         ./BuildJavaUI/src/org/kbinani/cadencii/WaveformZoomUi.java
-	$(CP) ./build/java/org/kbinani/cadencii/WaveformZoomController.java                 ./BuildJavaUI/src/org/kbinani/cadencii/WaveformZoomController.java
-	$(CP) ./build/java/org/kbinani/cadencii/AppManager.java                             ./BuildJavaUI/src/org/kbinani/cadencii/AppManager.java
+@POST_PROCESS_JAVA@
 
 ########################################################################
 # jcomponentmodel
