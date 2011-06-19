@@ -26,7 +26,11 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
 #endif
 
-    class WaveformZoomController : WaveformZoomUiListener
+#if JAVA
+    class WaveformZoomController extends ControllerBase implements WaveformZoomUiListener
+#else
+    class WaveformZoomController : ControllerBase, WaveformZoomUiListener
+#endif
     {
         /// <summary>
         /// 波形表示部の拡大ボタン上でマウスが下りた状態かどうか

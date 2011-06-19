@@ -13,8 +13,11 @@ import org.kbinani.windows.forms.BDialogResult;
 import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
-public class FormAskKeySoundGenerationUi extends BDialog {
-//SECTION-BEGIN-FIELD
+public class FormAskKeySoundGenerationUiImpl 
+extends BDialog 
+implements FormAskKeySoundGenerationUi
+{
+    //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
@@ -25,9 +28,9 @@ public class FormAskKeySoundGenerationUi extends BDialog {
     private BCheckBox chkAlwaysPerformThisCheck = null;
 
     //SECTION-END-FIELD
-    public FormAskKeySoundGenerationUi() {
-    	super();
-    	initialize();
+    public FormAskKeySoundGenerationUiImpl() {
+        super();
+        initialize();
     }
     //SECTION-BEGIN-METHOD
 
@@ -49,7 +52,7 @@ public class FormAskKeySoundGenerationUi extends BDialog {
             super.setDialogResult( BDialogResult.OK );
         }
     }
-    
+
     /**
      * This method initializes jPanel	
      * 	
@@ -155,5 +158,54 @@ public class FormAskKeySoundGenerationUi extends BDialog {
         return chkAlwaysPerformThisCheck;
     }
 
+    @Override
+    public BDialogResult showDialog( Object parent_form )
+    {
+        if ( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) )
+        {
+            return super.showDialog( null );
+        }
+        else
+        {
+            BDialog form = (BDialog)parent_form;
+            return super.showDialog( form );
+        }
+    }
+
+    @Override
+    public void setAlwaysPerformThisCheck( boolean value )
+    {
+        chkAlwaysPerformThisCheck.setSelected( value );
+    }
+
+    @Override
+    public boolean isAlwaysPerformThisCheck()
+    {
+        return chkAlwaysPerformThisCheck.isSelected();
+    }
     //SECTION-END-METHOD
+
+    @Override
+    public void setMessageLabelText( String value )
+    {
+        lblMessage.setText( value );
+    }
+
+    @Override
+    public void setAlwaysPerformThisCheckCheckboxText( String value )
+    {
+        chkAlwaysPerformThisCheck.setText( value );
+    }
+
+    @Override
+    public void setYesButtonText( String value )
+    {
+        btnYes.setText( value );
+    }
+
+    @Override
+    public void setNoButtonText( String value )
+    {
+        btnNo.setText( value );
+    }
 }  //  @jve:decl-index=0:visual-constraint="10,10"

@@ -307,7 +307,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPositionIndicatorEndMarker = null;
     private BButton buttonVZoom = null;
     private BButton buttonVMooz = null;
-    private BPanel panel2 = null;
+    private WaveformZoomUiImpl panelWaveformZoom = null;
     private WaveView waveView = null;
     private BMenu menuWindow = null;
     private BMenuItem menuWindowMinimize = null;
@@ -4272,14 +4272,14 @@ public class FormMain extends BForm {
      * 	
      * @return org.kbinani.windows.forms.BPanel	
      */
-    private BPanel getPanel2() {
-        if (panel2 == null) {
-            panel2 = new BPanel();
-            panel2.setLayout(new GridBagLayout());
-            panel2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            panel2.setPreferredSize(new Dimension(68, 4));
+    private WaveformZoomUiImpl getPanel2() {
+        if (panelWaveformZoom == null) {
+            panelWaveformZoom = new WaveformZoomUiImpl();
+            panelWaveformZoom.setLayout(new GridBagLayout());
+            panelWaveformZoom.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            panelWaveformZoom.setPreferredSize(new Dimension(68, 4));
         }
-        return panel2;
+        return panelWaveformZoom;
     }
 
     /**
