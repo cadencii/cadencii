@@ -10750,7 +10750,7 @@ namespace org.kbinani.cadencii
 #if !JAVA
             if ( !AppManager.editorConfig.DoNotAskKeySoundGeneration && cache_is_incomplete ) {
                 FormAskKeySoundGenerationController dialog = null;
-                BDialogResult dialog_result = BDialogResult.NO;
+                int dialog_result = 0;
                 boolean always_check_this = !AppManager.editorConfig.DoNotAskKeySoundGeneration;
                 try {
                     dialog = new FormAskKeySoundGenerationController();
@@ -10773,7 +10773,7 @@ namespace org.kbinani.cadencii
                 }
                 AppManager.editorConfig.DoNotAskKeySoundGeneration = !always_check_this;
 
-                if ( dialog_result == BDialogResult.YES ) {
+                if ( dialog_result == 1 ) {
                     FormGenerateKeySound form = null;
                     try {
                         form = new FormGenerateKeySound( true );

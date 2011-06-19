@@ -19,29 +19,55 @@ import java.awt.*;
 
 #else
 
-using System;
-
-using org.kbinani.java.awt;
-
-namespace org.kbinani.cadencii
+namespace org
 {
+    namespace kbinani
+    {
+        namespace cadencii
+        {
+#if CSHARP
+            using System;
+            using org.kbinani.java.awt;
+#endif
 #endif
 
-    interface WaveformZoomUiListener
-    {
-        void receivePaintSignal( Graphics g );
+#if __cplusplus
+            class WaveformZoomUiListener
+#else
+            interface WaveformZoomUiListener
+#endif
+            {
+#if __cplusplus
+                virtual void receivePaintSignal( QPainter *g ){}
+#else
+                void receivePaintSignal( Graphics g );
+#endif
 
-        void receiveMouseDownSignal( int x, int y );
+#if __cplusplus
+                virtual void receiveMouseDownSignal( int x, int y ){}
+#else
+                void receiveMouseDownSignal( int x, int y );
+#endif
 
-        void receiveMouseMoveSignal( int x, int y );
+#if __cplusplus
+                virtual void receiveMouseMoveSignal( int x, int y ){}
+#else
+                void receiveMouseMoveSignal( int x, int y );
+#endif
 
-        void receiveMouseUpSignal( int x, int y );
-    }
+#if __cplusplus
+                virtual void receiveMouseUpSignal( int x, int y ){}
+#else
+                void receiveMouseUpSignal( int x, int y );
+#endif
+            };
 
 #if JAVA
 
 #else
 
+        }
+    }
 }
 
 #endif

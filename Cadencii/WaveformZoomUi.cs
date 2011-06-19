@@ -21,30 +21,59 @@ import org.kbinani.windows.forms.*;
 
 #else
 
-using System;
-
-using org.kbinani.java.awt;
-using org.kbinani.windows.forms;
-
-namespace org.kbinani.cadencii
+namespace org
 {
+    namespace kbinani
+    {
+        namespace cadencii
+        {
+
+#if CSHARP
+            using System;
+            using org.kbinani.java.awt;
+            using org.kbinani.windows.forms;
+#else
+            using namespace org::kbinani::cadencii;
+#endif
 #endif
 
-    interface WaveformZoomUi
-    {
-        int getWidth();
+#if __cplusplus
+            class WaveformZoomUi
+#else
+            interface WaveformZoomUi
+#endif
+            {
+#if __cplusplus
+                virtual int getWidth(){}
+#else
+                int getWidth();
+#endif
 
-        int getHeight();
+#if __cplusplus
+                virtual int getHeight(){}
+#else
+                int getHeight();
+#endif
 
-        void setListener( WaveformZoomUiListener listener );
+#if __cplusplus
+                virtual void setListener( WaveformZoomUiListener listener ){}
+#else
+                void setListener( WaveformZoomUiListener listener );
+#endif
 
-        void repaint();
-    }
+#if __cplusplus
+                virtual void repaint(){}
+#else
+                void repaint();
+#endif
+            };
 
 #if JAVA
 
 #else
 
+        }
+    }
 }
 
 #endif

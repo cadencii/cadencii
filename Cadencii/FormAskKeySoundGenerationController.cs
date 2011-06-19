@@ -73,6 +73,13 @@ namespace org.kbinani.cadencii
             mUi.close( false );
         }
         #endregion
+
+        #region private methods
+        private static String _( String message )
+        {
+            return Messaging.getMessage( message );
+        }
+        #endregion
     }
 
 #if !JAVA

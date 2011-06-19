@@ -1948,13 +1948,13 @@ namespace org.kbinani.cadencii
         /// <param name="main_form"></param>
         /// <returns></returns>
 #if JAVA
-        public static BDialogResult showModalDialog( UiBase dialog, Component parent_form )
+        public static int showModalDialog( UiBase dialog, Component parent_form )
 #else
-        public static BDialogResult showModalDialog( UiBase dialog, System.Windows.Forms.Form parent_form )
+        public static int showModalDialog( UiBase dialog, System.Windows.Forms.Form parent_form )
 #endif
         {
             beginShowDialog();
-            BDialogResult ret = dialog.showDialog( parent_form );
+            int ret = dialog.showDialog( parent_form );
             endShowDialog();
             return ret;
         }

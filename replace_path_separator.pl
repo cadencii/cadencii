@@ -138,6 +138,7 @@ print CFG <<__EOD__;
 __EOD__
 close( CFG );
 
+my $java_post_process = "";
 &getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_java_core, $dep_java_core );
 &getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_java_apputil, $dep_java_apputil );
 &getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_java_componentmodel, $dep_java_componentmodel );
@@ -146,10 +147,13 @@ close( CFG );
 &getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_java_winforms, $dep_java_winforms );
 &getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_java_xml, $dep_java_xml );
 &getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_java_cadencii, $dep_java_cadencii, $post_process_java_cadencii );
-$post_process_java .= $post_process_java_cadencii;
+$java_post_process .= $post_process_java_cadencii;
 
-&getSrcListCpp( "./org.kbinani", "./org.kbinani/", $src_cpp_core, $dep_cpp_core );
-&getSrcListCpp( "./org.kbinani.vsq", "./org.kbinani.vsq/", $src_cpp_vsq, $dep_cpp_vsq );
+my $cpp_post_process = "";
+&getSrcListCpp( "./org.kbinani", "./build/cpp/org/kbinani/", $src_cpp_core, $dep_cpp_core );
+&getSrcListCpp( "./org.kbinani.vsq", "./build/cpp/org/kbinani/vsq/", $src_cpp_vsq, $dep_cpp_vsq );
+&getSrcListCpp( "./Cadencii", "./build/cpp/org/kbinani/cadencii/", $src_cpp_cadencii, $dep_cpp_cadencii, $post_process_cpp_cadencii );
+$cpp_post_process .= $post_process_cpp_cadencii;
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_java_apputil/g;
@@ -162,6 +166,7 @@ while( $line = <FILE> ){
     $line =~ s/\@SRC_JXML\@/$src_java_xml/g;
     $line =~ s/\@SRC_CPP_CORE\@/$src_cpp_core/g;
     $line =~ s/\@SRC_CPP_VSQ\@/$src_cpp_vsq/g;
+    $line =~ s/\@SRC_CPP_CADENCII\@/$src_cpp_cadencii/g;
 
     $line =~ s/\@DEP_JAPPUTIL\@/$dep_java_apputil/g;
     $line =~ s/\@DEP_JCORLIB\@/$dep_java_core/g;
@@ -174,8 +179,10 @@ while( $line = <FILE> ){
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
     $line =~ s/\@DEP_CPP_CORE\@/$dep_cpp_core/g;
     $line =~ s/\@DEP_CPP_VSQ\@/$dep_cpp_vsq/g;
+    $line =~ s/\@DEP_CPP_CADENCII\@/$dep_cpp_cadencii/g;
 
-    $line =~ s/\@POST_PROCESS_JAVA\@/$post_process_java/g;
+    $line =~ s/\@JAVA_POST_PROCESS\@/$java_post_process/g;
+    $line =~ s/\@CPP_POST_PROCESS\@/$cpp_post_process/g;
 
     foreach $key ( keys %directive ){
         my $search = "\@DENABLE_" . (uc $key) . "\@";
@@ -220,87 +227,15 @@ close( FILE );
 close( OUT );
 
 ##
-# @param  string  search path
-# @param  string  prefix of file-name for copy
-# @param  string  list of converted sources
-# @param  string  definition of dependencies: .cs -> .h
-# @return  void
+# ファイルリストのうち，拡張子が.csであるファイルのみを抽出します．
+# @param array [in] ファイル名のリスト
+# @return array 抽出したファイルのリスト
 #
-sub getSrcListCpp
+sub extractCsFiles
 {
-    my $DIR;
-    my $search_path = $_[0];
-    my $prefix = $_[1];
-    my @files = ();
-
-    # search all files in specified search path
-    #opendir( DIR, $search_path );
-    #my @files = readdir( DIR );
-    #closedir( DIR );
-    if( $search_path eq "./org.kbinani" )
-    {
-        @files = ( "vec.cs", "str.cs", "dic.cs", "sout.cs", "serr.cs" );
-    }
-    elsif( $search_path eq "./org.kbinani.vsq" )
-    {
-        @files = ( "Lyric.cs", "BPPair.cs", "IconHandle.cs", "LyricHandle.cs", "VsqHandleType.cs" );
-    }
-
-    # check file names
-    $_[2] = "";
-    $_[3] = "";
-    my $count = 0;
-    foreach my $name ( @files )
-    {
-        # skip file with name shorter than ".cs"
-        if( length( $name ) <= 3 )
-        {
-            next;
-        }
-
-        # skip non .cs files
-        if( rindex( $name, ".cs" ) != length( $name ) - 3 )
-        {
-            next;
-        }
-
-        # name without extension
-        my $cname = substr( $name, 0, length( $name ) - 3 );
-
-        # concatenate source files
-        if( $count > 0 )
-        {
-            $_[2] .= " \\" . "\n        ";
-        }
-        $_[2] .= $prefix . $cname . ".h";
-
-        # concatenate dependency definitions
-        $_[3] .= $search_path . "/" . $cname . ".h: " . $prefix . $name . "\n";
-        $_[3] .= "\tjava -jar pp_cs2java.jar \$(PPCS2CPP_OPT) -i $search_path/$name -o $prefix$cname.h\n";
-        $count++;
-    }
-}
-
-##
-# @param string [in] ファイルを検索するディレクトリのパス
-# @param string [in] ファイル名の先頭に付ける接頭句
-# @param string [out] プリプロセッサで変換元となるファイルのリスト
-# @param string [out] プリプロセッサにより変換するファイルの依存関係を定義したリスト
-# @param string [out] BuildJavaUIへのコピー操作を定義した文字列
-#
-sub getSrcList
-{
-    my $dir = $_[0];
-    my $prefix = $_[1];
-    my $DIR;
-    opendir( DIR, $dir );
-    my @file = readdir( DIR );
-    closedir( DIR );
-    my @src = ();
-    my @srcall = ();
-
     # 拡張子が.csでないファイルを除外する
     my $changed = 1;
+    local( @file ) = @_;
     while( $changed )
     {
         $changed = 0;
@@ -323,7 +258,16 @@ sub getSrcList
             }
         }
     }
+    @file;
+}
 
+##
+# ファイル一覧から，V-C分離が行われているファイルを抽出します．
+# @param array [in] ファイルのリスト
+# @return array 抽出結果
+#
+sub extractViewImplementation
+{
     # ファイル名が以下の規則に当てはまっているものを抽出する
     # @view_implには，*の部分が重複無く入るようにする
     # *UiImpl.cs
@@ -331,6 +275,7 @@ sub getSrcList
     # *Ui.cs
     # *Controller.cs
     # *UiListener.cs
+    local( @file ) = @_;
     my @view_impl = ();
     my @suffix_rule = ( "UiImpl.cs", "Ui.cs", "Controller.cs", "UiListener.cs" );
     {
@@ -375,6 +320,149 @@ sub getSrcList
             }
         }
     }
+
+    @view_impl;
+}
+
+##
+# @param  string  search path
+# @param  string  prefix of file-name for copy
+# @param  string  list of converted sources
+# @param  string  definition of dependencies: .cs -> .h
+# @param  string  Makefileのcpp_post_process用のコマンド文字列
+# @return  void
+#
+sub getSrcListCpp
+{
+    my $DIR;
+    my $search_path = $_[0];
+    my $prefix = $_[1];
+    my @files = ();
+
+    # search all files in specified search path
+    opendir( DIR, $search_path );
+    my @files = readdir( DIR );
+    closedir( DIR );
+#    if( $search_path eq "./org.kbinani" )
+#    {
+#        @files = ( "vec.cs", "str.cs", "dic.cs", "sout.cs", "serr.cs" );
+#    }
+#    elsif( $search_path eq "./org.kbinani.vsq" )
+#    {
+#        @files = ( "Lyric.cs", "BPPair.cs", "IconHandle.cs", "LyricHandle.cs", "VsqHandleType.cs" );
+#    }
+#    elsif( $search_path eq "./Cadencii" )
+#    {
+#        @files = ( "FormAskKeySoundGenerationController.cs", "FormAskKeySoundGenerationUi.cs", "FormAskKeySoundGenerationUiListener.cs", "FormAskKeySoundGenerationUiImpl.cs" );
+#    }
+
+    @files = &extractCsFiles( @files );
+    my @view_impl = &extractViewImplementation( @files );
+
+    # check file names
+    $_[2] = "";
+    $_[3] = "";
+    my $count = 0;
+    foreach my $name ( @files )
+    {
+        # name without extension
+        my $cname = substr( $name, 0, length( $name ) - 3 );
+
+        # concatenate source files
+        if( $count > 0 )
+        {
+            $_[2] .= " \\" . "\n        ";
+        }
+        $_[2] .= $prefix . $cname . ".h";
+
+        # concatenate dependency definitions
+        $_[3] .= $prefix . $cname . ".h: " . $search_path . "/" . $name . "\n";
+        $_[3] .= "\tjava -jar pp_cs2java.jar \$(PPCS2CPP_OPT) -i $search_path/$name -o $prefix$cname.h\n";
+        $count++;
+    }
+
+    $_[4] = "";
+    $com_dirname_part = &getDirectoryForPackageName( $search_path );
+    foreach my $name ( @view_impl )
+    {
+        # build/cpp => buildQtUI
+        $_[4] .= "\t\$(CP) build/cpp/" . $com_dirname_part . "/" . $name . "UiListener.h   buildQtUI/" . $com_dirname_part . "/" . $name . "UiListener.h\n";
+        $_[4] .= "\t\$(CP) build/cpp/" . $com_dirname_part . "/" . $name . "Ui.h           buildQtUI/" . $com_dirname_part . "/" . $name . "Ui.h\n";
+
+        # buildQtUI => build/cpp
+    }
+}
+
+##
+# C#で実装しているディレクトリ構造から，javaのパッケージ構造に準拠したパスを取得します．
+# @param  string  C#で使ってるパス
+# @return  string  パスの文字列
+# @example
+# ex. 1)   引数が"./Cadencii"の場合"org/kbinani/cadencii"を返す．
+# ex. 2)   引数が"./org.kbinani.windows.forms"の場合"org/kbinani/windows/forms"を返す．
+#
+sub getDirectoryForPackageName
+{
+    my $dir = $_[0];
+    my $ret = "";
+    if( index( $dir, "./Cadencii" ) == 0 )
+    {
+        $ret = "org/kbinani/cadencii";
+    }
+    elsif( index( $dir, "./org.kbinani.windows.forms" ) == 0 )
+    {
+        $ret = "org/kbinani/windows/forms";
+    }
+    elsif( index( $dir, "./org.kbinani.xml" ) == 0 )
+    {
+        $ret = "org/kbinani/xml";
+    }
+    elsif( index( $dir, "./org.kbinani.vsq" ) == 0 )
+    {
+        $ret = "org/kbinani/vsq";
+    }
+    elsif( index( $dir, "./org.kbinani.media" ) == 0 )
+    {
+        $ret = "org/kbinani/media";
+    }
+    elsif( index( $dir, "./org.kbinani.apputil" ) == 0 )
+    {
+        $ret = "org/kbinani/apputil";
+    }
+    elsif( index( $dir, "./org.kbinani.componentmodel" ) == 0 )
+    {
+        $ret = "org/kbinani/componentmodel";
+    }
+    elsif( index( $dir, "./org.kbinani" ) == 0 )
+    {
+        $ret = "org/kbinani";
+    }
+
+    $ret;
+}
+
+##
+# @param string [in] ファイルを検索するディレクトリのパス
+# @param string [in] ファイル名の先頭に付ける接頭句
+# @param string [out] プリプロセッサで変換元となるファイルのリスト
+# @param string [out] プリプロセッサにより変換するファイルの依存関係を定義したリスト
+# @param string [out] BuildJavaUIへのコピー操作を定義した文字列
+#
+sub getSrcList
+{
+    my $dir = $_[0];
+    my $prefix = $_[1];
+    my $DIR;
+    opendir( DIR, $dir );
+    my @file = readdir( DIR );
+    closedir( DIR );
+    my @src = ();
+    my @srcall = ();
+
+    # .csファイルだけにする
+    @file = &extractCsFiles( @file );
+
+    my @view_impl = &extractViewImplementation( @file );
 
     foreach my $v ( @file )
     {
@@ -435,39 +523,7 @@ sub getSrcList
     }
 
     # check BuildJavaUI
-    $build_java_ui_prefix = "";
-    if( index( $dir, "./Cadencii" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/cadencii/";
-    }
-    elsif( index( $dir, "./org.kbinani.windows.forms" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/windows/forms/";
-    }
-    elsif( index( $dir, "./org.kbinani.xml" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/xml/";
-    }
-    elsif( index( $dir, "./org.kbinani.vsq" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/vsq/";
-    }
-    elsif( index( $dir, "./org.kbinani.media" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/media/";
-    }
-    elsif( index( $dir, "./org.kbinani.apputil" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/apputil/";
-    }
-    elsif( index( $dir, "./org.kbinani.componentmodel" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/componentmodel/";
-    }
-    elsif( index( $dir, "./org.kbinani" ) == 0 )
-    {
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/";
-    }
+    $build_java_ui_prefix = "./BuildJavaUI/src/" . &getDirectoryForPackageName( $dir ) . "/";
 
     $count = @src;
     for( my $i = 0; $i < $count; $i++ )

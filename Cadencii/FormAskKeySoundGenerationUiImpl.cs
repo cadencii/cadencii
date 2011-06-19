@@ -56,16 +56,25 @@ namespace org.kbinani.cadencii
             btnNo.Text = value;
         }
 
-        public BDialogResult showDialog( Object parent_form )
+        public int showDialog( Object parent_form )
         {
+            BDialogResult ret;
             if ( parent_form == null || (parent_form != null && !(parent_form is System.Windows.Forms.Form)) )
             {
-                return base.showDialog();
+                ret = base.showDialog();
             }
             else
             {
                 System.Windows.Forms.Form form = (System.Windows.Forms.Form)parent_form;
-                return base.showDialog( form );
+                ret = base.showDialog( form );
+            }
+            if ( ret == BDialogResult.OK || ret == BDialogResult.YES )
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
             }
         }
 

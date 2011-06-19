@@ -1,3 +1,5 @@
+#if !__UiBase__
+#define __UiBase__
 /*
  * UiBase.cs
  * Copyright © 2011 kbinani
@@ -32,10 +34,18 @@ namespace org.kbinani.cadencii
 
 #endif
 
+#if __cplusplus
+    class UiBase
+#else
     public interface UiBase
+#endif
     {
-        BDialogResult showDialog( Object parent_form );
-    }
+#if __cplusplus
+        virtual int showDialog( QObject *parent_form ){}
+#else
+        int showDialog( Object parent_form );
+#endif
+    };
 
 #if JAVA
 
@@ -46,5 +56,7 @@ namespace org.kbinani.cadencii
 #else
 
 }
+
+#endif
 
 #endif

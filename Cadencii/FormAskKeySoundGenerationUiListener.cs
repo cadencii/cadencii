@@ -36,9 +36,13 @@ namespace org
 
 #endif
 
+#if __cplusplus
+            class FormAskKeySoundGenerationUiListener
+#else
             interface FormAskKeySoundGenerationUiListener
+#endif
             {
-            }
+            };
 
 #if JAVA
 

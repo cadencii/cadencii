@@ -36,6 +36,7 @@ SRC_JCOMPONENTMODEL=@SRC_JCOMPONENTMODEL@
 SRC_JXML=@SRC_JXML@
 SRC_CPP_CORE=@SRC_CPP_CORE@
 SRC_CPP_VSQ=@SRC_CPP_VSQ@
+SRC_CPP_CADENCII=@SRC_CPP_CADENCII@
 
 all: jcadencii_mac
 
@@ -201,7 +202,32 @@ first:
 #
 DRAFTMODE=
 
-cpp_all: cpp_core cpp_vsq
+cpp_all: cpp_pre_process cpp_core cpp_vsq cpp_cadencii
+	$(MAKE) cpp_post_process
+
+########################################################################
+# cpp_all
+#
+cpp_pre_process:
+	perl safe_mkdir.pl build/cpp
+	perl safe_mkdir.pl build/cpp/org
+	perl safe_mkdir.pl build/cpp/org/kbinani
+	perl safe_mkdir.pl build/cpp/org/kbinani/cadencii
+	perl safe_mkdir.pl build/cpp/org/kbinani/vsq
+	perl safe_mkdir.pl build/cpp/org/kbinani/apputil
+	perl safe_mkdir.pl build/cpp/org/kbinani/media
+	perl safe_mkdir.pl build/cpp/org/kbinani/componentmodel
+	perl safe_mkdir.pl build/cpp/org/kbinani/windows
+	perl safe_mkdir.pl build/cpp/org/kbinani/windows/forms
+	perl safe_mkdir.pl buildQtUI/org
+	perl safe_mkdir.pl buildQtUI/org/kbinani
+	perl safe_mkdir.pl buildQtUI/org/kbinani/cadencii
+	perl safe_mkdir.pl buildQtUI/org/kbinani/vsq
+	perl safe_mkdir.pl buildQtUI/org/kbinani/apputil
+	perl safe_mkdir.pl buildQtUI/org/kbinani/media
+	perl safe_mkdir.pl buildQtUI/org/kbinani/componentmodel
+	perl safe_mkdir.pl buildQtUI/org/kbinani/windows
+	perl safe_mkdir.pl buildQtUI/org/kbinani/windows/forms
 
 ########################################################################
 # cpp_core
@@ -214,6 +240,11 @@ cpp_core: pp_cs2java.jar $(SRC_CPP_CORE)
 cpp_vsq: pp_cs2java.jar $(SRC_CPP_CORE) $(SRC_CPP_VSQ)
 
 ########################################################################
+# cpp_cadencii
+#
+cpp_cadencii: pp_cs2java.jar $(SRC_CPP_CADENCII)
+
+########################################################################
 # cpp_all_test
 #
 cpp_all_test: cpp_vsq_test
@@ -223,6 +254,11 @@ cpp_all_test: cpp_vsq_test
 #
 cpp_vsq_test: cpp_vsq
 	cd $(DRAFTMODE)org.kbinani.vsq/test & g++ -c CompileTest.cpp
+
+cpp_post_process:
+	$(CP) ./build/cpp/org/kbinani/cadencii/UiBase.h          ./buildQtUI/org/kbinani/cadencii/UiBase.h
+	$(CP) ./build/cpp/org/kbinani/cadencii/ControllerBase.h  ./buildQtUI/org/kbinani/cadencii/ControllerBase.h
+@CPP_POST_PROCESS@
 
 ########################################################################
 # jcadencii
@@ -308,7 +344,7 @@ jpostprocess:
 	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
 	$(CP) ./build/java/org/kbinani/cadencii/UiBase.java          ./BuildJavaUI/src/org/kbinani/cadencii/UiBase.java
 	$(CP) ./build/java/org/kbinani/cadencii/ControllerBase.java  ./BuildJavaUI/src/org/kbinani/cadencii/ControllerBase.java
-@POST_PROCESS_JAVA@
+@JAVA_POST_PROCESS@
 
 ########################################################################
 # jcomponentmodel
@@ -325,7 +361,7 @@ jxml: pp_cs2java.jar $(SRC_JXML)
 ########################################################################
 # preprocessor
 #
-pp_cs2java.jar: ./pp_cs2java/pp_cs2java.java
+pp_cs2java.jar:
 	cd pp_cs2java && $(MAKE)
 #	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT)
 #	$(RM) ./org.kbinani.dll
@@ -390,3 +426,9 @@ clean:
 # [cpp_vsq]
 #
 @DEP_CPP_VSQ@
+
+########################################################################
+# dependency definition
+# [cpp_cadencii]
+#
+@DEP_CPP_CADENCII@
