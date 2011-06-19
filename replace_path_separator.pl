@@ -501,7 +501,11 @@ sub getSrcList
     {
         my $com_dirname_part = substr( $build_java_ui_prefix, length( "./BuildJavaUI/src/" ) );
 
-        $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "UiListener.java  ./BuildJavaUI/src/" . $com_dirname_part . $name . "Listener.java\n";
-        $_[4] .= "\t\$(CP) ./build/java/" . $com_dirname_part . $name . "Ui.java          ./BuildJavaUI/src/" . $com_dirname_part . $name . "Ui.java\n";
+        # build/java => BuildJavaUI/src
+        $_[4] .= "\t\$(CP) build/java/" . $com_dirname_part . $name . "UiListener.java    BuildJavaUI/src/" . $com_dirname_part . $name . "Listener.java\n";
+        $_[4] .= "\t\$(CP) build/java/" . $com_dirname_part . $name . "Ui.java            BuildJavaUI/src/" . $com_dirname_part . $name . "Ui.java\n";
+
+        # BuildJavaUI/src => build/java
+        $_[4] .= "\t\$(CP) BuildJavaUI/src/" . $com_dirname_part . $name . "UiImpl.java   build/java/" . $com_dirname_part . $name . "UiImpl.java\n";
     }
 }

@@ -149,7 +149,7 @@ namespace org.kbinani.vsq
                 int v = 64;
                 try
                 {
-                    v = str.toi( spl[i] );
+                    v = str.toi( vec.get( spl, i ) );
                 }
                 catch ( Exception ex )
                 {

@@ -2607,8 +2607,8 @@ namespace org.kbinani.cadencii
             int keywidth = AppManager.keyWidth;
             pictureBox3.setPreferredSize( new Dimension( keywidth, 4 ) );
             pictureBox3.setSize( new Dimension( keywidth, pictureBox3.getHeight() ) );
-            panel2.setPreferredSize( new Dimension( keywidth, 4 ) );
-            panel2.setSize( new Dimension( keywidth, panel2.getHeight() ) );
+            panelWaveformZoom.setPreferredSize( new Dimension( keywidth, 4 ) );
+            panelWaveformZoom.setSize( new Dimension( keywidth, panelWaveformZoom.getHeight() ) );
             
             Dimension overview_pref_size = panelOverview.getPreferredSize();
             if( AppManager.editorConfig.OverviewEnabled ){
