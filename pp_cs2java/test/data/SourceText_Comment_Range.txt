@@ -1,0 +1,14 @@
+int a;
+/*
+ * range comment
+ */
+int b;
+
+/*
+ * range comment, contains single comment
+ * //
+ */
+
+/**//*
+
+*/
