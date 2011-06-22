@@ -11,13 +11,24 @@ import org.junit.Test;
  */
 public class SourceTextTest extends SourceText
 {
-    static SourceText mSingleLine = null;
+    /**
+     * 行コメントのテストデータを保持します．
+     */
+    static SourceText mSingle = null;
+    /**
+     * 範囲コメントのテストデータを保持します．
+     */
     static SourceText mRange = null;
+    /**
+     * 行コメントと範囲コメントを組み合わせたテストデータを保持します．
+     */
+    static SourceText mComplex = null;    
 
     static
     {
-        mSingleLine = loadData( "test/data/SourceText_Comment_Single.txt" );
+        mSingle = loadData( "test/data/SourceText_Comment_Single.txt" );
         mRange = loadData( "test/data/SourceText_Comment_Range.txt" );
+        mComplex = loadData( "test/data/SourceText_Comment_Complex.cs" );
     }
     
     public SourceTextTest()
@@ -25,11 +36,66 @@ public class SourceTextTest extends SourceText
     }
 
     /**
+     * 範囲と行コメントの組み合わせのテスト．
+     * テストデータの行数
+     */
+    @Test
+    public void testComplexLines()
+    {
+        assertEquals( 6, mComplex.mLines.size() );
+    }
+    
+    /**
+     * 範囲と行コメントの組み合わせのテスト．
+     * コメント箇所の個数
+     */
+    @Test
+    public void testComplexComments()
+    {
+        assertEquals( 2, mComplex.mComments.size() );
+    }
+    
+    /**
+     * 範囲と行コメントの組み合わせのテスト．
+     * コメント範囲
+     */
+    @Test
+    public void testComplexPosition()
+    {
+        CommentPosition pos = mComplex.mComments.get( 0 );
+        assertEquals( 1, pos.getStartLine() );
+        assertEquals( 0, pos.getStartColumn() );
+        assertEquals( 1, pos.getEndLine() );
+        assertEquals( 44, pos.getEndColumn() );
+        
+        pos = mComplex.mComments.get( 1 );
+        assertEquals( 3, pos.getStartLine() );
+        assertEquals( 0, pos.getStartColumn() );
+        assertEquals( 5, pos.getEndLine() );
+        assertEquals( 2, pos.getEndColumn() );
+    }
+    
+    /**
+     * 範囲コメントのテスト．
+     * 何箇所かについて，isInCommentメソッドのテストを行います．
+     */
+    @Test
+    public void testRangeIsInComment()
+    {
+        assertEquals( false, mRange.isInComment( 0, 0 ) );
+        assertEquals( true, mRange.isInComment( 2, 0 ) );
+        assertEquals( true, mRange.isInComment( 8, 4 ) );
+        assertEquals( true, mRange.isInComment( 12, 0 ) );
+        assertEquals( false, mRange.isInComment( 10, 0 ) );
+        assertEquals( true, mRange.isInComment( 3, 0 ) );
+    }
+    
+    /**
      * 範囲コメントのテスト．
      * データの行数が14であることをテストします．
      */
     @Test
-    public void testMultiLines()
+    public void testRangeLines()
     {
         assertEquals( 14, mRange.mLines.size() );
     }
@@ -39,7 +105,7 @@ public class SourceTextTest extends SourceText
      * コメントの個数が4であることをテストします．
      */
     @Test
-    public void testMultiComments()
+    public void testRangeComments()
     {
         assertEquals( 4, mRange.mComments.size() );
     }
@@ -49,7 +115,7 @@ public class SourceTextTest extends SourceText
      * 各コメントの開始行等をテストします．
      */
     @Test
-    public void testMultiPosition()
+    public void testRangePosition()
     {
         // 1個目のコメント
         // 2行1カラム～4行4カラム
@@ -91,42 +157,54 @@ public class SourceTextTest extends SourceText
     @Test
     public void testSingleLines()
     {
-        assertEquals( 1, mSingleLine.mLines.size() );
+        assertEquals( 1, mSingle.mLines.size() );
+    }
+    
+    /**
+     * 行コメントのテスト．
+     * 何箇所か場所を指定してisInCommentメソッドをテストします
+     */
+    @Test
+    public void testSingleIsInComment()
+    {
+        assertEquals( false, mSingle.isInComment( 0, 0 ) );
+        assertEquals( true, mSingle.isInComment( 0, 1 ) );
+        assertEquals( true, mSingle.isInComment( 0, 2 ) );
     }
     
     @Test
-    public void testSingleLineCommentCount()
+    public void testSingleComments()
     {
         // 1個のコメントがあることをテスト
-        assertEquals( 1, mSingleLine.mComments.size() );
+        assertEquals( 1, mSingle.mComments.size() );
     }
     
     @Test
-    public void testSingleLineStartColumn()
+    public void testSingleStartColumn()
     {
         // 開始カラムが2であることをテスト．2カラム目はインデックスにすると1であることに注意
-        assertEquals( 1, mSingleLine.mComments.get( 0 ).getStartColumn() );
+        assertEquals( 1, mSingle.mComments.get( 0 ).getStartColumn() );
     }
     
     @Test
-    public void testSingleLineEndColumn()
+    public void testSingleEndColumn()
     {
         // 終了カラムが-1であることをテスト
-        assertEquals( -1, mSingleLine.mComments.get( 0 ).getEndColumn() );
+        assertEquals( 3, mSingle.mComments.get( 0 ).getEndColumn() );
     }
     
     @Test
-    public void testSingleLineStartLine()
+    public void testSingleStartLine()
     {        
         // 開始行が1であることをテスト
-        assertEquals( 0, mSingleLine.mComments.get( 0 ).getStartLine() );
+        assertEquals( 0, mSingle.mComments.get( 0 ).getStartLine() );
     }
      
     @Test
-    public void testSingleLineEndLine()
+    public void testSingleEndLine()
     {
         // 終了行が1であることをテスト．
-        assertEquals( 0, mSingleLine.mComments.get( 0 ).getEndLine() );
+        assertEquals( 0, mSingle.mComments.get( 0 ).getEndLine() );
     }
     
     /**
