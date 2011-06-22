@@ -22,19 +22,43 @@ public class SourceTextTest extends SourceText
     /**
      * 行コメントと範囲コメントを組み合わせたテストデータを保持します．
      */
-    static SourceText mComplex = null;    
-
+    static SourceText mComplex = null; 
+    /**
+     * #if構文の検索テストのためのデータを保持します．
+     */
+    static SourceText mIfSyntax = null;
+    
     static
     {
         mSingle = loadData( "test/data/SourceText_Comment_Single.txt" );
         mRange = loadData( "test/data/SourceText_Comment_Range.txt" );
         mComplex = loadData( "test/data/SourceText_Comment_Complex.cs" );
+        mIfSyntax = loadData( "test/data/SourceText_IfSyntax.cs" );
     }
     
     public SourceTextTest()
     {
     }
 
+    /**
+     * #if構文の検索テスト
+     */
+    @Test
+    public void findIfSyntax()
+    {
+    	// 最初の#if文
+    	assertEquals( 6, mIfSyntax.findIfSyntax( 0 ) );
+    	
+    	// ネストされた#if文
+    	assertEquals( 17, mIfSyntax.findIfSyntax( 8 ) );
+    	
+    	// ネストされた#if文のうち，途中から検索開始した場合
+    	assertEquals( 15, mIfSyntax.findIfSyntax( 9 ) );
+    	
+    	// #ifで始まっていない行の行番号を渡された場合
+    	assertEquals( -1, mIfSyntax.findIfSyntax( 19 ) );
+    }
+    
     /**
      * 範囲と行コメントの組み合わせのテスト．
      * テストデータの行数

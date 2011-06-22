@@ -15,18 +15,7 @@ public class SourceText
     public SourceText( BufferedReader reader )
     {
         // 読み込む
-        try
-        {
-            String line;
-            while( (line = reader.readLine()) != null )
-            {
-                mLines.add( line );
-            }
-        }
-        catch( Exception ex )
-        {
-            
-        }
+    	load( reader );
         
         // コメントの範囲を調べる
         CommentPosition pos = null;
@@ -86,7 +75,7 @@ public class SourceText
             }
         }
     }
-    
+
     /**
      * 指定した位置の文字がコメント文に属するものかどうかをチェックします．
      * コメントの開始・終了を指定する文字列もコメント文と判定します．
@@ -133,9 +122,72 @@ public class SourceText
         }
         return false;
     }
-    
+
+    /**
+     * 読み込んだファイルの行数を取得します．
+     * @return  行数
+     */
     public int getLineCount()
     {
         return mLines.size();
     }
+
+    /**
+     * 指定した行の#ifについて，対応する#endifの行番号を調べます．
+     * @param start 検索開始する行番号
+     * @return start行目にある#if文に対応する#endif文の行番号を返します．start行目に#ifが見つからなければ-1を返します．
+     */
+    public int findIfSyntax( int start )
+    {
+    	int num_lines = mLines.size();
+    	
+    	// 行が範囲外の場合
+    	if( start < 0 || num_lines <= start )
+    	{
+    		return -1;
+    	}
+    	
+    	String line = mLines.get( start ).trim();
+    	if( !line.startsWith( "#if" ) )
+    	{
+    		return -1;
+    	}
+    	
+    	// #ifまたは#endifにぶち当たるまで読み飛ばします
+    	for( int i = start + 1; i < num_lines; i++ )
+    	{
+    		line = mLines.get( i ).trim();
+    		if( line.startsWith( "#if" ) )
+    		{
+    			i = findIfSyntax( i );
+    		}
+    		else if( line.startsWith( "#endif" ) )
+    		{
+    			return i;
+    		}
+    	}
+    	
+    	return -1;
+    }
+    
+    /**
+     * ファイルをロードします．
+     * @param  path  ロードするファイルのパス．
+     */
+    private void load( BufferedReader reader )
+    {
+        try
+        {
+            String line;
+            while( (line = reader.readLine()) != null )
+            {
+                mLines.add( line );
+            }
+        }
+        catch( Exception ex )
+        {
+            
+        }
+    }
+    
 }

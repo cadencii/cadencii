@@ -6,4 +6,3 @@ enum ReplaceMode
     JAVA,
     CPP,
 }
-

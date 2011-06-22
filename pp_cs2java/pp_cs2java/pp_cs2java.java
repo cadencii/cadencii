@@ -46,26 +46,26 @@ class pp_cs2java
     /**
      * インデント解除する桁数
      */
-    static int s_shift_indent = 0;
-    static boolean s_parse_comment = false;
-    static Vector<String> s_packages = new Vector<String>();
-    static Vector<String> s_classes = new Vector<String>();
-    static String s_main_class_path = "";
-    static Vector<String> s_defines = new Vector<String>();
+    static int mShiftIndent = 0;
+    static boolean mParseComment = false;
+    static Vector<String> mPackages = new Vector<String>();
+    static Vector<String> mClasses = new Vector<String>();
+    static String mMainClassPath = "";
+    static Vector<String> mDefines = new Vector<String>();
     /**
      * ログファイルの名前
      */
-    static String s_logfile = "";
+    static String mLogfile = "";
     /**
      * ログファイルを上書きするかどうか(trueなら上書きする、falseなら末尾に追加)
      */
-    static boolean s_logfile_overwrite = false;
+    static boolean mLogfileOverwrite = false;
     /**
      * インクルードされたファイルのリスト
      */
-    static Vector<String> s_included = new Vector<String>();
+    static Vector<String> mIncluded = new Vector<String>();
     static String[][] REPLACE = new String[0][2];
-    static ReplaceMode s_mode = ReplaceMode.NONE;
+    static ReplaceMode mMode = ReplaceMode.NONE;
     static final String[][] REPLACE_JAVA = new String[][]{
         // {"string", "String"},
         // {" bool ", " boolean "},
@@ -232,23 +232,23 @@ class pp_cs2java
             }
         }
 
-        if( !str.compare( s_main_class_path, "" ) )
+        if( !str.compare( mMainClassPath, "" ) )
         {
             BufferedWriter sw = null;
             try
             {
-                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( s_main_class_path ) ) );
-                for( String pkg : s_packages )
+                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( mMainClassPath ) ) );
+                for( String pkg : mPackages )
                 {
                     sw.write( "import " + pkg + ".*;" );
                     sw.newLine();
                 }
-                sw.write( "class " + util.getFileNameWithoutExtension( s_main_class_path ) + "{" );
+                sw.write( "class " + util.getFileNameWithoutExtension( mMainClassPath ) + "{" );
                 sw.newLine();
                 sw.write( "    public static void main( String[] args ){" );
                 sw.newLine();
                 int count = 0;
-                for( String cls : s_classes )
+                for( String cls : mClasses )
                 {
                     count++;
                     sw.write( "        " + cls + " a" + count + ";" );
@@ -281,18 +281,18 @@ class pp_cs2java
             }
         }
 
-        if( !str.compare( s_logfile, "" ) )
+        if( !str.compare( mLogfile, "" ) )
         {
             BufferedWriter sw = null;
             try
             {
-                boolean append = s_logfile_overwrite;
-                if( !util.isFileExists( s_logfile ) )
+                boolean append = mLogfileOverwrite;
+                if( !util.isFileExists( mLogfile ) )
                 {
                     append = false;
                 }
-                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( s_logfile, append ) ) );
-                for( String s : s_included )
+                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( mLogfile, append ) ) );
+                for( String s : mIncluded )
                 {
                     sw.write( s );
                     sw.newLine();
@@ -354,7 +354,7 @@ class pp_cs2java
                 }
                 else if( str.compare( current_parse, "-c" ) )
                 {
-                    s_parse_comment = true;
+                    mParseComment = true;
                     current_parse = "";
                 }
                 else if( str.compare( current_parse, "-u" ) )
@@ -365,9 +365,9 @@ class pp_cs2java
                 else if( current_parse.startsWith( "-D" ) )
                 {
                     String def = current_parse.substring( 2 );
-                    if( !s_defines.contains( def ) )
+                    if( !mDefines.contains( def ) )
                     {
-                        s_defines.add( def );
+                        mDefines.add( def );
                     }
                     current_parse = "";
                 }
@@ -377,7 +377,7 @@ class pp_cs2java
                 }
                 else if( str.compare( current_parse, "-ly" ) )
                 {
-                    s_logfile_overwrite = true;
+                    mLogfileOverwrite = true;
                 }
                 else if( current_parse.startsWith( "--replace-" ) )
                 {
@@ -385,12 +385,12 @@ class pp_cs2java
                     if( str.compare( type, "java" ) )
                     {
                         REPLACE = REPLACE_JAVA;
-                        s_mode = ReplaceMode.JAVA;
+                        mMode = ReplaceMode.JAVA;
                     }
                     else if( str.compare( type, "cpp" ) )
                     {
                         REPLACE = REPLACE_CPP;
-                        s_mode = ReplaceMode.CPP;
+                        mMode = ReplaceMode.CPP;
                     }
                 }
             }
@@ -413,12 +413,12 @@ class pp_cs2java
                 }
                 else if( str.compare( current_parse, "-s" ) )
                 {
-                    s_shift_indent = Integer.parseInt( args[i] );
+                    mShiftIndent = Integer.parseInt( args[i] );
                     current_parse = "";
                 }
                 else if( str.compare( current_parse, "-m" ) )
                 {
-                    s_main_class_path = args[i];
+                    mMainClassPath = args[i];
                     current_parse = "";
                 }
                 else if( str.compare( current_parse, "-i" ) )
@@ -433,7 +433,7 @@ class pp_cs2java
                 }
                 else if( str.compare( current_parse, "-l" ) )
                 {
-                    s_logfile = args[i];
+                    mLogfile = args[i];
                     current_parse = "";
                 }
             }
@@ -509,9 +509,9 @@ class pp_cs2java
 
         String tmp2 = File.createTempFile( "pp_cs2java", ".txt" ).getAbsolutePath();
         String indent = "";
-        if( -s_shift_indent > 0 )
+        if( -mShiftIndent > 0 )
         {
-            for( int i = 0; i < -s_shift_indent; i++ )
+            for( int i = 0; i < -mShiftIndent; i++ )
             {
                 indent += " ";
             }
@@ -520,6 +520,13 @@ class pp_cs2java
         // INCLUDEの処理
         doInclude( path, tmp2, indent );
 
+        // ファイルをロード
+        BufferedReader reader =
+        	new BufferedReader(
+        		new InputStreamReader( new BOMSkipFileInputStream( tmp2 ), mEncoding ) );
+        SourceText src = new SourceText( reader );
+        
+        //TODO: このへんから書き始めよう
     }
 
     /**
@@ -615,9 +622,9 @@ class pp_cs2java
         String section_name = spl[0];
         String p = spl[1];
         String include_path = util.combine( util.getDirectoryName( path ), p );
-        if( !s_included.contains( p ) )
+        if( !mIncluded.contains( p ) )
         {
-            s_included.add( p );
+            mIncluded.add( p );
         }
         if( (new File( include_path )).exists() )
         {
@@ -700,9 +707,9 @@ class pp_cs2java
     {
         String p = linetrim.substring( 10 );
         String include_path = util.combine( util.getDirectoryName( path ), p );
-        if( !s_included.contains( p ) )
+        if( !mIncluded.contains( p ) )
         {
-            s_included.add( p );
+            mIncluded.add( p );
         }
         if( (new File( include_path )).exists() )
         {
@@ -756,9 +763,9 @@ class pp_cs2java
 
         String tmp2 = File.createTempFile( "pp_cs2java", ".txt" ).getAbsolutePath();
         String indent = "";
-        if( -s_shift_indent > 0 )
+        if( -mShiftIndent > 0 )
         {
-            for( int i = 0; i < -s_shift_indent; i++ )
+            for( int i = 0; i < -mShiftIndent; i++ )
             {
                 indent += " ";
             }
@@ -870,9 +877,9 @@ class pp_cs2java
                         trim = trim.substring( 0, index );
                     }
                     str_package = trim.replace( ";", "" );
-                    if( !s_packages.contains( str_package ) )
+                    if( !mPackages.contains( str_package ) )
                     {
-                        s_packages.add( str_package );
+                        mPackages.add( str_package );
                     }
                 }
 
@@ -897,7 +904,7 @@ class pp_cs2java
                 line = adjustIndent( line );
 
                 // コメント処理
-                if( s_parse_comment )
+                if( mParseComment )
                 {
                     boolean draft_comment_mode;
                     int ind = line.indexOf( "///" );
@@ -1052,7 +1059,7 @@ class pp_cs2java
             if( !str.compare( str_package, "" ) || !mIgnoreUnknownPackage )
             {
                 String class_name = util.getFileNameWithoutExtension( path );
-                s_classes.add( class_name );
+                mClasses.add( class_name );
                 util.copyFile( tmp, out_path );
             }
         }
@@ -1086,7 +1093,7 @@ class pp_cs2java
             // defsのアイテムについて，s_definesとlocal_definesに全て入ってるかどうかチェック
             for( DirectiveUnit d : defs )
             {
-                if( (!s_defines.contains( d.name )) && (!local_defines.contains( d.name )) )
+                if( (!mDefines.contains( d.name )) && (!local_defines.contains( d.name )) )
                 {
                     print_this_line = false;
                     break;
@@ -1097,7 +1104,7 @@ class pp_cs2java
             {
                 for( DirectiveUnit d : defs_not )
                 {
-                    if( s_defines.contains( d.name ) )
+                    if( mDefines.contains( d.name ) )
                     {
                         print_this_line = false;
                         break;
@@ -1120,22 +1127,22 @@ class pp_cs2java
     private static String adjustIndent(
         String line )
     {
-        if( s_shift_indent < 0 )
+        if( mShiftIndent < 0 )
         {
             String search = "";
-            for( int i = 0; i < -s_shift_indent; i++ )
+            for( int i = 0; i < -mShiftIndent; i++ )
             {
                 search += " ";// new String( ' ', -s_shift_indent );
             }
             if( line.startsWith( search ) )
             {
-                line = line.substring( -s_shift_indent );
+                line = line.substring( -mShiftIndent );
             }
         }
-        else if( s_shift_indent > 0 )
+        else if( mShiftIndent > 0 )
         {
             String s = "";
-            for( int i = 0; i < s_shift_indent; i++ )
+            for( int i = 0; i < mShiftIndent; i++ )
             {
                 s += " ";
             }
