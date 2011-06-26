@@ -61,6 +61,10 @@ namespace org
                 boolean isAlwaysPerformThisCheck();
 #endif
 
+                /// <summary>
+                /// フォームを閉じます．
+                /// valueがtrueのときダイアログの結果をCancelに，それ以外の場合はOKとなるようにします．
+                /// </summary>
 #if __cplusplus
                 virtual void close( bool value ) = 0;
 #else

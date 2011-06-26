@@ -60,3 +60,5 @@ namespace org
     }
 }
 #endif
+#if !!JAVA
+#endif

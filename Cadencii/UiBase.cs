@@ -1,5 +1,5 @@
-#if !__UiBase__
-#define __UiBase__
+#if !__UiBase_h__
+#define __UiBase_h__
 /*
  * UiBase.cs
  * Copyright © 2011 kbinani
@@ -58,5 +58,4 @@ namespace org.kbinani.cadencii
 }
 
 #endif
-
 #endif

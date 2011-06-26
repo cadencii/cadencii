@@ -159,16 +159,22 @@ implements FormAskKeySoundGenerationUi
     }
 
     @Override
-    public BDialogResult showDialog( Object parent_form )
+    public int showDialog( Object parent_form )
     {
+        BDialogResult ret = BDialogResult.CANCEL;
         if ( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) )
         {
-            return super.showDialog( null );
+            ret = super.showDialog( null );
         }
         else
         {
             BDialog form = (BDialog)parent_form;
-            return super.showDialog( form );
+            ret = super.showDialog( form );
+        }
+        if( ret == BDialogResult.OK || ret == BDialogResult.YES ){
+            return 1;
+        }else{
+            return 0;
         }
     }
 
