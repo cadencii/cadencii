@@ -483,9 +483,23 @@ class Preprocessor{
             if( src.isContainsPreprocessorDirective( i, "#define" ) ){
                 // ローカルのディレクティブ定義を検出
                 int indx = line.indexOf( "#define" );
-                String directive =
-                    line.substring( indx + "#define".length() ).trim();
+                String directive = "";
+                String suffix = "";
+                int j = indx + "#define".length();
+                while( j < line.length() ){
+                    if( src.isInComment( i, j ) ){
+                        suffix = line.substring( j );
+                        break;
+                    }
+                    directive = directive + String.valueOf( line.charAt( j ) );
+                    j++;
+                }
+                directive = directive.trim();
                 local_defines.add( directive );
+                if( mMode == ReplaceMode.CPP ){
+                    writer.write( "#define " + directive + " 1" + suffix  );
+                    writer.newLine();
+                }
             }else if( src.isContainsPreprocessorDirective( i, "#if" )
                 || src.isContainsPreprocessorDirective( i, "#elif" ) ){
                 // #ifまたは#elifが来た場合，式を評価して内部に入るかどうかを決めなければならない
@@ -501,6 +515,12 @@ class Preprocessor{
                 readin = Evaluator.eval( equation, local_defines );
                 int end_if = src.findEndIfSentence( i );
                 int else_if = src.findElseSentence( i );
+                
+                if( mMode == ReplaceMode.CPP ){
+                    writer.write( line );
+                    writer.newLine();
+                }
+                
                 if( readin ){
                     // #if, #elifの判定がtrueなためブロックの中身を読みに行く場合，
                     // ブロックの中身がどこまでかを検出
@@ -510,6 +530,10 @@ class Preprocessor{
                     }
                     processFileRecursive( src, writer, i + 1, end_line - 1, local_defines, context );
                     i = end_if;
+                    if( mMode == ReplaceMode.CPP ){
+                        writer.write( "#endif" );
+                        writer.newLine();
+                    }
                     continue;
                 }else{
                     // #if, #elifの判定がfalseなため，次の#else, #elifまでスキップする．
@@ -518,17 +542,30 @@ class Preprocessor{
                         i = else_if - 1;
                     }else{
                         i = end_if;
+                        if( mMode == ReplaceMode.CPP ){
+                            writer.write( "#endif" );
+                            writer.newLine();
+                        }
                     }
                     continue;
                 }
             }else if( src.isContainsPreprocessorDirective( i, "#else" ) ){
+                if( mMode == ReplaceMode.CPP ){
+                    writer.write( line );
+                    writer.newLine();
+                }
                 // elseが来た場合，中身を読み込まなくてはいけない
                 int end_if = src.findEndIfSentence( i );
                 processFileRecursive( src, writer, i + 1, end_if - 1, local_defines, context );
                 i = end_if;
             }else if( src.isContainsPreprocessorDirective( i, "#region" )
-                || src.isContainsPreprocessorDirective( i, "#endregion" )
-                || src.isContainsPreprocessorDirective( i, "#endif" ) ){
+                || src.isContainsPreprocessorDirective( i, "#endregion" ) ){
+                continue;
+            }else if( src.isContainsPreprocessorDirective( i, "#endif" ) ){
+                if( mMode == ReplaceMode.CPP ){
+                    writer.write( line );
+                    writer.newLine();
+                }
                 continue;
             }else{
                 context.mLines++;
