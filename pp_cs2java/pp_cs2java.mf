@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: pp_cs2java.pp_cs2java
+Main-Class: pp_cs2java.Preprocessor

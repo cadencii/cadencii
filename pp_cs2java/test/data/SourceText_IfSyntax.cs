@@ -19,3 +19,12 @@
 
 int a;
 int b;
+/*
+#if
+*/
+#if
+/*
+#endif
+*/
+
+#endif
