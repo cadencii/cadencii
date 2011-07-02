@@ -557,7 +557,7 @@ class Preprocessor{
                 // elseが来た場合，中身を読み込まなくてはいけない
                 int end_if = src.findEndIfSentence( i );
                 processFileRecursive( src, writer, i + 1, end_if - 1, local_defines, context );
-                i = end_if;
+                i = end_if - 1;
             }else if( src.isContainsPreprocessorDirective( i, "#region" )
                 || src.isContainsPreprocessorDirective( i, "#endregion" ) ){
                 continue;
