@@ -112,12 +112,48 @@ class Preprocessor{
     // );
 
     static class ProcessFileContext{
-        public int mLines;
-        public String mPackageName;
+        public int lines;
+        public String packageName;
 
-        public ProcessFileContext(){
-            mLines = 0;
-            mPackageName = "";
+        private BufferedWriter writer;
+        /**
+         * 直前の行に[PureVirtualFunction]属性が指定されていた場合にtrue
+         */
+        private boolean previousLineContainsPureVirtualFunctionAttribute = false;
+
+        public ProcessFileContext( BufferedWriter writer ){
+            lines = 0;
+            packageName = "";
+            this.writer = writer;
+        }
+        
+        public void writeLine( String line ){
+            int indx = line.indexOf( "[PureVirtualFunction]" );
+            if( indx >= 0 ){
+                previousLineContainsPureVirtualFunctionAttribute = true;
+                return;
+            }
+            if( previousLineContainsPureVirtualFunctionAttribute ){
+                previousLineContainsPureVirtualFunctionAttribute = false;
+                String trimmed = line.trim();
+                int first = line.indexOf( trimmed );
+                if( first < 0 ){
+                    first = 0;
+                }
+                int indexSemicolon = line.indexOf( ";" );
+                String suffix = trimmed;
+                if( indexSemicolon >= 0 ){
+                    suffix = trimmed.replace( ";", " = 0;" );
+                }
+                String newLine = line.substring( 0, first ) + "virtual " + suffix;
+                line = newLine;
+            }
+            try{
+                writer.write( line );
+                writer.newLine();
+            }catch( Exception ex ){
+                ex.printStackTrace( System.err );
+            }
         }
     }
 
@@ -449,13 +485,14 @@ class Preprocessor{
 
         // 書きこむ
         BufferedWriter writer = null;
-        ProcessFileContext context = new ProcessFileContext();
+        ProcessFileContext context = null;
         try{
             writer =
                 new BufferedWriter( new OutputStreamWriter(
                         new FileOutputStream( out_path ), mEncoding ) );
             int count = src.getLineCount();
-            processFileRecursive( src, writer, 0, count - 1, local_defines, context );
+            context = new ProcessFileContext( writer );
+            processFileRecursive( src, context, 0, count - 1, local_defines );
         }catch( Exception ex ){
             ex.printStackTrace( System.err );
         }finally{
@@ -468,16 +505,18 @@ class Preprocessor{
             }
         }
 
-        copyResultFile( in_path, out_path, context.mPackageName, context.mLines );
+        copyResultFile( in_path, out_path, context.packageName, context.lines );
     }
 
     private static void processFileRecursive(
         SourceText src,
-        BufferedWriter writer,
+        ProcessFileContext context,
         int start_line_number,
         int end_line_number,
-        Vector<String> local_defines,
-        ProcessFileContext context ) throws Exception{
+        Vector<String> local_defines
+    )
+        throws Exception
+    {
         for( int i = start_line_number; i <= end_line_number; i++ ){
             String line = src.getLine( i );
             if( src.isContainsPreprocessorDirective( i, "#define" ) ){
@@ -497,8 +536,7 @@ class Preprocessor{
                 directive = directive.trim();
                 local_defines.add( directive );
                 if( mMode == ReplaceMode.CPP ){
-                    writer.write( "#define " + directive + " 1" + suffix  );
-                    writer.newLine();
+                    context.writeLine( "#define " + directive + " 1" + suffix  );
                 }
             }else if( src.isContainsPreprocessorDirective( i, "#if" )
                 || src.isContainsPreprocessorDirective( i, "#elif" ) ){
@@ -517,8 +555,7 @@ class Preprocessor{
                 int else_if = src.findElseSentence( i );
                 
                 if( mMode == ReplaceMode.CPP ){
-                    writer.write( line );
-                    writer.newLine();
+                    context.writeLine( line );
                 }
                 
                 if( readin ){
@@ -528,11 +565,10 @@ class Preprocessor{
                     if( end_line < 0 ){
                         end_line = end_if;
                     }
-                    processFileRecursive( src, writer, i + 1, end_line - 1, local_defines, context );
+                    processFileRecursive( src, context, i + 1, end_line - 1, local_defines );
                     i = end_if;
                     if( mMode == ReplaceMode.CPP ){
-                        writer.write( "#endif" );
-                        writer.newLine();
+                        context.writeLine( "#endif" );
                     }
                     continue;
                 }else{
@@ -543,32 +579,29 @@ class Preprocessor{
                     }else{
                         i = end_if;
                         if( mMode == ReplaceMode.CPP ){
-                            writer.write( "#endif" );
-                            writer.newLine();
+                            context.writeLine( "#endif" );
                         }
                     }
                     continue;
                 }
             }else if( src.isContainsPreprocessorDirective( i, "#else" ) ){
                 if( mMode == ReplaceMode.CPP ){
-                    writer.write( line );
-                    writer.newLine();
+                    context.writeLine( line );
                 }
                 // elseが来た場合，中身を読み込まなくてはいけない
                 int end_if = src.findEndIfSentence( i );
-                processFileRecursive( src, writer, i + 1, end_if - 1, local_defines, context );
+                processFileRecursive( src, context, i + 1, end_if - 1, local_defines );
                 i = end_if - 1;
             }else if( src.isContainsPreprocessorDirective( i, "#region" )
                 || src.isContainsPreprocessorDirective( i, "#endregion" ) ){
                 continue;
             }else if( src.isContainsPreprocessorDirective( i, "#endif" ) ){
                 if( mMode == ReplaceMode.CPP ){
-                    writer.write( line );
-                    writer.newLine();
+                    context.writeLine( line );
                 }
                 continue;
             }else{
-                context.mLines++;
+                context.lines++;
 
                 line = replaceText( i, src );
 
@@ -581,12 +614,11 @@ class Preprocessor{
                 // インデントの処理
                 line = adjustIndent( line );
 
-                writer.write( line );
-                writer.newLine();
+                context.writeLine( line );
                 // パッケージ名を検出
                 int index_package = line.indexOf( "package " );
                 if( index_package >= 0 ){
-                    context.mPackageName =
+                    context.packageName =
                         line.substring( index_package ).trim();
                 }
             }
