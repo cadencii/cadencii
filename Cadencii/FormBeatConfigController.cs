@@ -1,6 +1,6 @@
 /*
- * FormBeatConfig.cs
- * Copyright © 2008-2011 kbinani
+ * FormBeatConfigController.cs
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -13,8 +13,6 @@
  */
 #if JAVA
 package org.kbinani.cadencii;
-
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBeatConfig.java
 
 import java.awt.event.*;
 import org.kbinani.*;
@@ -34,7 +32,11 @@ namespace org.kbinani.cadencii
     using BEventHandler = System.EventHandler;
 #endif
 
+#if JAVA
+    public class FormBeatConfigController extends ControllerBase implements FormBeatConfigUiListener
+#else
     public class FormBeatConfigController : ControllerBase, FormBeatConfigUiListener
+#endif
     {
         private FormBeatConfigUi mUi;
 
@@ -129,7 +131,7 @@ namespace org.kbinani.cadencii
 
         public void checkboxEndCheckedChangedSlot()
         {
-            mUi.setEnabledEndCheckbox( mUi.isCheckedEndCheckbox() );
+            mUi.setEnabledEndNum( mUi.isCheckedEndCheckbox() );
         }
 
         #endregion

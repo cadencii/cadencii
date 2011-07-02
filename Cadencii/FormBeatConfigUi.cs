@@ -1,6 +1,6 @@
 /*
- * FormBeatConfig.cs
- * Copyright © 2008-2011 kbinani
+ * FormBeatConfigUi.cs
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -12,123 +12,163 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBeatConfig.java
-
-import java.awt.event.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.windows.forms.*;
 #else
-using System;
-using org.kbinani.java.awt.event_;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace org
 {
-    using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
+    namespace kbinani
+    {
+        namespace cadencii
+        {
+
+#if __cplusplus
+            using namespace std;
+            using namespace org::kbinani::cadencii;
+#endif
+
 #endif
 
 #if JAVA
-    public interface FormBeatConfigUi extends UiBase
+            public interface FormBeatConfigUi extends UiBase
+#elif __cplusplus
+            class FormBeatConfigUi : UiBase
 #else
-    public interface FormBeatConfigUi : UiBase
+            public interface FormBeatConfigUi : UiBase
 #endif
-    {
-        void setFont( string fontName, float fontSize );
+            {
+                [PureVirtualFunction]
+                void setFont( string fontName, float fontSize );
 
-        void setTitle( string value );
+                [PureVirtualFunction]
+                void setTitle( string value );
 
-        void setDialogResult( bool value );
+                [PureVirtualFunction]
+                void setDialogResult( bool value );
 
-        void setLocation( int x, int y );
+                [PureVirtualFunction]
+                void setLocation( int x, int y );
 
-        int getWidth();
+                [PureVirtualFunction]
+                int getWidth();
 
-        int getHeight();
+                [PureVirtualFunction]
+                int getHeight();
 
-        void close();
-
-
-        void setTextBar1Label( string value );
-
-        void setTextBar2Label( string value );
-
-        void setTextStartLabel( string value );
-
-        void setTextOkButton( string value );
-
-        void setTextCancelButton( string value );
-
-        void setTextBeatGroup( string value );
-
-        void setTextPositionGroup( string value );
+                [PureVirtualFunction]
+                void close();
 
 
-        void setEnabledStartNum( bool value );
+                [PureVirtualFunction]
+                void setTextBar1Label( string value );
 
-        void setMinimumStartNum( int value );
+                [PureVirtualFunction]
+                void setTextBar2Label( string value );
 
-        void setMaximumStartNum( int value );
+                [PureVirtualFunction]
+                void setTextStartLabel( string value );
 
-        float getMaximumStartNum();
+                [PureVirtualFunction]
+                void setTextOkButton( string value );
 
-        float getMinimumStartNum();
+                [PureVirtualFunction]
+                void setTextCancelButton( string value );
 
-        void setValueStartNum( float value );
+                [PureVirtualFunction]
+                void setTextBeatGroup( string value );
 
-        float getValueStartNum();
-
-
-
-        void setEnabledEndNum( bool value );
-
-        void setMinimumEndNum( int value );
-
-        void setMaximumEndNum( int value );
-
-        float getMaximumEndNum();
-
-        float getMinimumEndNum();
-
-        void setValueEndNum( float value );
-
-        float getValueEndNum();
+                [PureVirtualFunction]
+                void setTextPositionGroup( string value );
 
 
-        bool isCheckedEndCheckbox();
+                [PureVirtualFunction]
+                void setEnabledStartNum( bool value );
 
-        void setEnabledEndCheckbox( bool value );
+                [PureVirtualFunction]
+                void setMinimumStartNum( int value );
 
-        bool isEnabledEndCheckbox();
+                [PureVirtualFunction]
+                void setMaximumStartNum( int value );
 
-        void setTextEndCheckbox( string value );
+                [PureVirtualFunction]
+                int getMaximumStartNum();
+
+                [PureVirtualFunction]
+                int getMinimumStartNum();
+
+                [PureVirtualFunction]
+                void setValueStartNum( int value );
+
+                [PureVirtualFunction]
+                int getValueStartNum();
 
 
-        void removeAllItemsDenominatorCombobox();
 
-        void addItemDenominatorCombobox( string value );
+                [PureVirtualFunction]
+                void setEnabledEndNum( bool value );
 
-        void setSelectedIndexDenominatorCombobox( int value );
+                [PureVirtualFunction]
+                void setMinimumEndNum( int value );
 
-        int getSelectedIndexDenominatorCombobox();
+                [PureVirtualFunction]
+                void setMaximumEndNum( int value );
+
+                [PureVirtualFunction]
+                int getMaximumEndNum();
+
+                [PureVirtualFunction]
+                int getMinimumEndNum();
+
+                [PureVirtualFunction]
+                void setValueEndNum( int value );
+
+                [PureVirtualFunction]
+                int getValueEndNum();
 
 
-        float getMaximumNumeratorNum();
+                [PureVirtualFunction]
+                bool isCheckedEndCheckbox();
 
-        float getMinimumNumeratorNum();
+                [PureVirtualFunction]
+                void setEnabledEndCheckbox( bool value );
 
-        void setValueNumeratorNum( float value );
+                [PureVirtualFunction]
+                bool isEnabledEndCheckbox();
 
-        float getValueNumeratorNum();
-    }
+                [PureVirtualFunction]
+                void setTextEndCheckbox( string value );
+
+
+                [PureVirtualFunction]
+                void removeAllItemsDenominatorCombobox();
+
+                [PureVirtualFunction]
+                void addItemDenominatorCombobox( string value );
+
+                [PureVirtualFunction]
+                void setSelectedIndexDenominatorCombobox( int value );
+
+                [PureVirtualFunction]
+                int getSelectedIndexDenominatorCombobox();
+
+
+                [PureVirtualFunction]
+                int getMaximumNumeratorNum();
+
+                [PureVirtualFunction]
+                int getMinimumNumeratorNum();
+
+                [PureVirtualFunction]
+                void setValueNumeratorNum( int value );
+
+                [PureVirtualFunction]
+                int getValueNumeratorNum();
+            };
 
 #if !JAVA
+        }
+    }
 }
 #endif
-

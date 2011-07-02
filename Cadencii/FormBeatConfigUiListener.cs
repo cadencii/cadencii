@@ -1,6 +1,8 @@
+#if !__FormBeatConfigUiListener__
+#define __FormBeatConfigUiListener__
 /*
- * FormBeatConfig.cs
- * Copyright © 2008-2011 kbinani
+ * FormBeatConfigUiListener.cs
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -12,37 +14,42 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBeatConfig.java
-
-import java.awt.event.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.windows.forms.*;
 #else
-using System;
-using org.kbinani.java.awt.event_;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace org
 {
-    using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
+    namespace kbinani
+    {
+        namespace cadencii
+        {
+
 #endif
 
-    public interface FormBeatConfigUiListener
-    {
-        void buttonCancelClickedSlot();
+#if __cplusplus
+            class FormBeatConfigUiListener
+#else
+            public interface FormBeatConfigUiListener
+#endif
+            {
+#if __cplusplus
+            public:
+#endif
+                [PureVirtualFunction]
+                void buttonCancelClickedSlot();
 
-        void buttonOkClickedSlot();
+                [PureVirtualFunction]
+                void buttonOkClickedSlot();
 
-        void checkboxEndCheckedChangedSlot();
-    }
+                [PureVirtualFunction]
+                void checkboxEndCheckedChangedSlot();
+            };
 
 #if !JAVA
+        }
+    }
 }
+#endif
 #endif

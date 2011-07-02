@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FormBeatConfigUiImpl</class>
+ <widget class="QDialog" name="FormBeatConfigUiImpl">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>284</width>
+    <height>207</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QGroupBox" name="groupPosition">
+   <property name="geometry">
+    <rect>
+     <x>7</x>
+     <y>7</y>
+     <width>261</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Position</string>
+   </property>
+   <widget class="QLabel" name="lblStart">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>20</y>
+      <width>46</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>From</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblBar1">
+    <property name="geometry">
+     <rect>
+      <x>176</x>
+      <y>20</y>
+      <width>48</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Measure</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblBar2">
+    <property name="geometry">
+     <rect>
+      <x>176</x>
+      <y>46</y>
+      <width>48</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Measure</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="numStart">
+    <property name="geometry">
+     <rect>
+      <x>97</x>
+      <y>18</y>
+      <width>73</width>
+      <height>19</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="numEnd">
+    <property name="geometry">
+     <rect>
+      <x>97</x>
+      <y>44</y>
+      <width>73</width>
+      <height>19</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chkEnd">
+    <property name="geometry">
+     <rect>
+      <x>23</x>
+      <y>45</y>
+      <width>52</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>To</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBeat">
+   <property name="geometry">
+    <rect>
+     <x>7</x>
+     <y>84</y>
+     <width>261</width>
+     <height>55</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Beat</string>
+   </property>
+   <widget class="QLabel" name="label1">
+    <property name="geometry">
+     <rect>
+      <x>102</x>
+      <y>23</y>
+      <width>51</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>(1 - 255)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label2">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>23</y>
+      <width>11</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>/</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="numNumerator">
+    <property name="geometry">
+     <rect>
+      <x>23</x>
+      <y>21</y>
+      <width>73</width>
+      <height>19</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboDenominator">
+    <property name="geometry">
+     <rect>
+      <x>182</x>
+      <y>20</y>
+      <width>73</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="btnOK">
+   <property name="geometry">
+    <rect>
+     <x>113</x>
+     <y>150</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnCancel">
+   <property name="geometry">
+    <rect>
+     <x>194</x>
+     <y>150</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

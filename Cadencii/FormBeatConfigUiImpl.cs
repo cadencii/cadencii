@@ -1,5 +1,5 @@
 /*
- * FormBeatConfig.cs
+ * FormBeatConfigUiImpl.cs
  * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -104,9 +104,9 @@ namespace org.kbinani.cadencii
             groupBeat.Text = value;
         }
 
-        public float getValueEndNum()
+        public int getValueEndNum()
         {
-            return (float)numEnd.Value;
+            return (int)numEnd.Value;
         }
 
         public bool isEnabledEndCheckbox()
@@ -119,9 +119,9 @@ namespace org.kbinani.cadencii
             chkEnd.Text = value;
         }
 
-        public float getValueNumeratorNum()
+        public int getValueNumeratorNum()
         {
-            return (float)numNumerator.Value;
+            return (int)numNumerator.Value;
         }
 
         public void setFont( string fontName, float fontSize )
@@ -134,37 +134,37 @@ namespace org.kbinani.cadencii
             groupPosition.Text = value;
         }
 
-        public float getMaximumStartNum()
+        public int getMaximumStartNum()
         {
-            return (float)numStart.Maximum;
+            return (int)numStart.Maximum;
         }
 
-        public float getMinimumStartNum()
+        public int getMinimumStartNum()
         {
-            return (float)numStart.Minimum;
+            return (int)numStart.Minimum;
         }
 
-        public void setValueStartNum( float value )
+        public void setValueStartNum( int value )
         {
             numStart.Value = new decimal( value );
         }
 
-        public float getValueStartNum()
+        public int getValueStartNum()
         {
-            return (float)numStart.Value;
+            return (int)numStart.Value;
         }
 
-        public float getMinimumNumeratorNum()
+        public int getMinimumNumeratorNum()
         {
-            return (float)numNumerator.Minimum;
+            return (int)numNumerator.Minimum;
         }
 
-        public float getMaximumNumeratorNum()
+        public int getMaximumNumeratorNum()
         {
-            return (float)numNumerator.Maximum;
+            return (int)numNumerator.Maximum;
         }
 
-        public void setValueNumeratorNum( float value )
+        public void setValueNumeratorNum( int value )
         {
             numNumerator.Value = new decimal( value );
         }
@@ -199,19 +199,19 @@ namespace org.kbinani.cadencii
             numEnd.Maximum = value;
         }
 
-        public void setValueEndNum( float value )
+        public void setValueEndNum( int value )
         {
             numEnd.Value = new decimal( value );
         }
 
-        public float getMinimumEndNum()
+        public int getMinimumEndNum()
         {
-            return (float)numEnd.Minimum;
+            return (int)numEnd.Minimum;
         }
 
-        public float getMaximumEndNum()
+        public int getMaximumEndNum()
         {
-            return (float)numEnd.Maximum;
+            return (int)numEnd.Maximum;
         }
 
         public void setTitle( string value )
@@ -221,7 +221,24 @@ namespace org.kbinani.cadencii
 
         public int showDialog( object parent )
         {
-            throw new NotImplementedException();
+            DialogResult ret;
+            if ( parent == null || (parent != null && !(parent is Form)) )
+            {
+                ret = base.ShowDialog();
+            }
+            else
+            {
+                Form form = (Form)parent;
+                ret = base.ShowDialog( form );
+            }
+            if ( ret == DialogResult.OK || ret == DialogResult.Yes )
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public void removeAllItemsDenominatorCombobox()
@@ -295,20 +312,20 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPosition = new GroupBox();
-            this.lblBar2 = new Label();
-            this.lblBar1 = new Label();
+            this.groupPosition = new System.Windows.Forms.GroupBox();
+            this.lblBar2 = new System.Windows.Forms.Label();
+            this.lblBar1 = new System.Windows.Forms.Label();
             this.numEnd = new org.kbinani.cadencii.NumericUpDownEx();
             this.numStart = new org.kbinani.cadencii.NumericUpDownEx();
-            this.chkEnd = new CheckBox();
-            this.lblStart = new Label();
-            this.groupBeat = new GroupBox();
-            this.comboDenominator = new ComboBox();
-            this.label2 = new Label();
-            this.label1 = new Label();
+            this.chkEnd = new System.Windows.Forms.CheckBox();
+            this.lblStart = new System.Windows.Forms.Label();
+            this.groupBeat = new System.Windows.Forms.GroupBox();
+            this.comboDenominator = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.numNumerator = new org.kbinani.cadencii.NumericUpDownEx();
-            this.btnOK = new Button();
-            this.btnCancel = new Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();
@@ -353,48 +370,17 @@ namespace org.kbinani.cadencii
             // 
             // numEnd
             // 
-            this.numEnd.Enabled = false;
             this.numEnd.Location = new System.Drawing.Point( 97, 44 );
-            this.numEnd.Maximum = new decimal( new int[] {
-            999,
-            0,
-            0,
-            0} );
-            this.numEnd.Minimum = new decimal( new int[] {
-            2,
-            0,
-            0,
-            0} );
             this.numEnd.Name = "numEnd";
             this.numEnd.Size = new System.Drawing.Size( 73, 19 );
-            this.numEnd.TabIndex = 3;
-            this.numEnd.Value = new decimal( new int[] {
-            2,
-            0,
-            0,
-            0} );
+            this.numEnd.TabIndex = 6;
             // 
             // numStart
             // 
             this.numStart.Location = new System.Drawing.Point( 97, 18 );
-            this.numStart.Maximum = new decimal( new int[] {
-            999,
-            0,
-            0,
-            0} );
-            this.numStart.Minimum = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
             this.numStart.Name = "numStart";
             this.numStart.Size = new System.Drawing.Size( 73, 19 );
-            this.numStart.TabIndex = 2;
-            this.numStart.Value = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
+            this.numStart.TabIndex = 7;
             // 
             // chkEnd
             // 
@@ -405,7 +391,7 @@ namespace org.kbinani.cadencii
             this.chkEnd.TabIndex = 1;
             this.chkEnd.Text = "To(&T)";
             this.chkEnd.UseVisualStyleBackColor = true;
-            this.chkEnd.CheckedChanged += new EventHandler( chkEnd_CheckedChanged );
+            this.chkEnd.CheckedChanged += new System.EventHandler( this.chkEnd_CheckedChanged );
             // 
             // lblStart
             // 
@@ -460,24 +446,9 @@ namespace org.kbinani.cadencii
             // numNumerator
             // 
             this.numNumerator.Location = new System.Drawing.Point( 23, 21 );
-            this.numNumerator.Maximum = new decimal( new int[] {
-            255,
-            0,
-            0,
-            0} );
-            this.numNumerator.Minimum = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
             this.numNumerator.Name = "numNumerator";
             this.numNumerator.Size = new System.Drawing.Size( 73, 19 );
-            this.numNumerator.TabIndex = 4;
-            this.numNumerator.Value = new decimal( new int[] {
-            4,
-            0,
-            0,
-            0} );
+            this.numNumerator.TabIndex = 9;
             // 
             // btnOK
             // 
@@ -487,7 +458,7 @@ namespace org.kbinani.cadencii
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new EventHandler( btnOK_Click );
+            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
             // 
             // btnCancel
             // 
@@ -498,9 +469,9 @@ namespace org.kbinani.cadencii
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new EventHandler( btnCancel_Click );
+            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
             // 
-            // FormBeatConfig
+            // FormBeatConfigUiImpl
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
@@ -514,7 +485,7 @@ namespace org.kbinani.cadencii
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormBeatConfig";
+            this.Name = "FormBeatConfigUiImpl";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
