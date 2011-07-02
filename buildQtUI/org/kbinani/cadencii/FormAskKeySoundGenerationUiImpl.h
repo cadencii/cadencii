@@ -33,6 +33,11 @@ public:
 
     int showDialog( QObject *parent_form );
 
+public slots:
+    void receiveButtonCancelClicked();
+
+    void receiveButtonOkClicked();
+
 protected:
     void changeEvent(QEvent *e);
 

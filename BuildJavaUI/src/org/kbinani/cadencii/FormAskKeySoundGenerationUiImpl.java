@@ -1,38 +1,34 @@
 package org.kbinani.cadencii;
 
-//SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BDialogResult;
 import org.kbinani.windows.forms.BLabel;
 
-//SECTION-END-IMPORT
 public class FormAskKeySoundGenerationUiImpl 
 extends BDialog 
 implements FormAskKeySoundGenerationUi
 {
-    //SECTION-BEGIN-FIELD
-
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BLabel lblMessage = null;
     private JPanel jPanel1 = null;
-    private BButton btnYes = null;
-    private BButton btnNo = null;
-    private BCheckBox chkAlwaysPerformThisCheck = null;
+    private JButton btnYes = null;
+    private JButton btnNo = null;
+    private JCheckBox chkAlwaysPerformThisCheck = null;
+    private FormAskKeySoundGenerationUiListener mListener;
 
-    //SECTION-END-FIELD
-    public FormAskKeySoundGenerationUiImpl() {
+    public FormAskKeySoundGenerationUiImpl( FormAskKeySoundGenerationUiListener listener ) {
         super();
+        mListener = listener;
         initialize();
     }
-    //SECTION-BEGIN-METHOD
 
     /**
      * This method initializes this
@@ -122,11 +118,18 @@ implements FormAskKeySoundGenerationUi
      * 	
      * @return javax.swing.JButton	
      */
-    private BButton getJButton() {
+    private JButton getJButton() {
         if (btnYes == null) {
-            btnYes = new BButton();
+            btnYes = new JButton();
             btnYes.setText("Yes");
             btnYes.setPreferredSize(new Dimension(100, 29));
+            btnYes.addActionListener( new java.awt.event.ActionListener()
+            {
+                public void actionPerformed( java.awt.event.ActionEvent e )
+                {
+                    mListener.buttonOkClickedSlot();
+                }
+            } );
         }
         return btnYes;
     }
@@ -136,11 +139,18 @@ implements FormAskKeySoundGenerationUi
      * 	
      * @return javax.swing.JButton	
      */
-    private BButton getJButton1() {
+    private JButton getJButton1() {
         if (btnNo == null) {
-            btnNo = new BButton();
+            btnNo = new JButton();
             btnNo.setText("No");
             btnNo.setPreferredSize(new Dimension(100, 29));
+            btnNo.addActionListener( new java.awt.event.ActionListener()
+            {
+                public void actionPerformed( java.awt.event.ActionEvent e )
+                {
+                    mListener.buttonCancelClickedSlot();
+                }
+            } );
         }
         return btnNo;
     }
@@ -150,9 +160,9 @@ implements FormAskKeySoundGenerationUi
      * 	
      * @return javax.swing.JCheckBox	
      */
-    private BCheckBox getJCheckBox() {
+    private JCheckBox getJCheckBox() {
         if (chkAlwaysPerformThisCheck == null) {
-            chkAlwaysPerformThisCheck = new BCheckBox();
+            chkAlwaysPerformThisCheck = new JCheckBox();
             chkAlwaysPerformThisCheck.setText("Always perform this check when starting Cadencii.");
         }
         return chkAlwaysPerformThisCheck;

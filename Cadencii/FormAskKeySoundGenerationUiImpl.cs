@@ -13,25 +13,27 @@
  */
 using System;
 
+using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii
 {
 
-    public class FormAskKeySoundGenerationUiImpl : BDialog, FormAskKeySoundGenerationUi
+    public class FormAskKeySoundGenerationUiImpl : Form, FormAskKeySoundGenerationUi
     {
-        private FormAskKeySoundGenerationController mController;
+        private FormAskKeySoundGenerationUiListener mListener;
 
-        public FormAskKeySoundGenerationUiImpl( FormAskKeySoundGenerationController controller )
+        public FormAskKeySoundGenerationUiImpl( FormAskKeySoundGenerationUiListener controller )
         {
             InitializeComponent();
-            mController = controller;
+            mListener = controller;
             registerEventHandlers();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        #region public methods
+
+        #region FormAskKeySoundGenerationUiインターフェースの実装
+        
         /// <summary>
         /// メッセージの文字列を設定します．
         /// </summary>
@@ -50,25 +52,41 @@ namespace org.kbinani.cadencii
         {
             btnYes.Text = value;
         }
-        
+
         public void setNoButtonText( string value )
         {
             btnNo.Text = value;
         }
 
+        public void setAlwaysPerformThisCheck( bool value )
+        {
+            chkAlwaysPerformThisCheck.Checked = value;
+        }
+
+        public bool isAlwaysPerformThisCheck()
+        {
+            return chkAlwaysPerformThisCheck.Checked;
+        }
+
+        #endregion
+
+
+
+        #region UiBaseインターフェースの実装
+        
         public int showDialog( Object parent_form )
         {
-            BDialogResult ret;
-            if ( parent_form == null || (parent_form != null && !(parent_form is System.Windows.Forms.Form)) )
+            DialogResult ret;
+            if ( parent_form == null || (parent_form != null && !(parent_form is Form)) )
             {
-                ret = base.showDialog();
+                ret = base.ShowDialog();
             }
             else
             {
-                System.Windows.Forms.Form form = (System.Windows.Forms.Form)parent_form;
-                ret = base.showDialog( form );
+                Form form = (Form)parent_form;
+                ret = base.ShowDialog( form );
             }
-            if ( ret == BDialogResult.OK || ret == BDialogResult.YES )
+            if ( ret == DialogResult.OK || ret == DialogResult.Yes )
             {
                 return 1;
             }
@@ -78,16 +96,11 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void setAlwaysPerformThisCheck( bool value )
-        {
-            chkAlwaysPerformThisCheck.setSelected( value );
-        }
+        #endregion
 
-        public bool isAlwaysPerformThisCheck()
-        {
-            return chkAlwaysPerformThisCheck.isSelected();
-        }
 
+
+        #region public methods
         /// <summary>
         /// フォームを閉じます．
         /// valueがtrueのときダイアログの結果をCancelに，それ以外の場合はOKとなるようにします．
@@ -96,16 +109,19 @@ namespace org.kbinani.cadencii
         {
             if ( value )
             {
-                setDialogResult( BDialogResult.CANCEL );
+                this.DialogResult = DialogResult.Cancel;
             }
             else
             {
-                setDialogResult( BDialogResult.OK );
+                this.DialogResult = DialogResult.OK;
             }
         }
         #endregion
 
+
+
         #region helper methods
+        
         private static String _( String id )
         {
             return Messaging.getMessage( id );
@@ -116,27 +132,34 @@ namespace org.kbinani.cadencii
             btnYes.Click += new EventHandler( btnYes_Click );
             btnNo.Click += new EventHandler( btnNo_Click );
         }
+        
         #endregion
+
+
 
         #region event handlers
-        public void btnYes_Click( Object sender, EventArgs e )
+
+        private void btnYes_Click( Object sender, EventArgs e )
         {
-            mController.buttonOkClickedSlot();
+            mListener.buttonOkClickedSlot();
         }
 
-        public void btnNo_Click( Object sender, EventArgs e )
+        private void btnNo_Click( Object sender, EventArgs e )
         {
-            mController.buttonCancelClickedSlot();
+            mListener.buttonCancelClickedSlot();
         }
         #endregion
 
+
+
         #region UI implementation
+        
         private void InitializeComponent()
         {
-            this.btnNo = new org.kbinani.windows.forms.BButton();
-            this.btnYes = new org.kbinani.windows.forms.BButton();
-            this.chkAlwaysPerformThisCheck = new org.kbinani.windows.forms.BCheckBox();
-            this.lblMessage = new org.kbinani.windows.forms.BLabel();
+            this.btnNo = new Button();
+            this.btnYes = new Button();
+            this.chkAlwaysPerformThisCheck = new CheckBox();
+            this.lblMessage = new Label();
             this.SuspendLayout();
             // 
             // btnNo
@@ -206,10 +229,10 @@ namespace org.kbinani.cadencii
 
         }
 
-        private BButton btnNo;
-        private BCheckBox chkAlwaysPerformThisCheck;
-        private BLabel lblMessage;
-        private BButton btnYes;
+        private Button btnNo;
+        private CheckBox chkAlwaysPerformThisCheck;
+        private Label lblMessage;
+        private Button btnYes;
 
         #endregion
     }

@@ -6,6 +6,9 @@ FormAskKeySoundGenerationUiImpl::FormAskKeySoundGenerationUiImpl(QWidget *parent
     ui( new Ui::FormAskKeySoundGenerationUiImpl ){
     ui->setupUi( this );
     mDialogResult = 0;
+
+    connect( ui->btnYes, SIGNAL(clicked()), this, SLOT(receiveButtonOkClicked()) );
+    connect( ui->btnNo, SIGNAL(clicked()), this, SLOT(receiveButtonCancelClicked()) );
 }
 
 FormAskKeySoundGenerationUiImpl::~FormAskKeySoundGenerationUiImpl(){
@@ -62,4 +65,11 @@ int FormAskKeySoundGenerationUiImpl::showDialog( QObject *parent_form ){
         }
     }
     return this->exec();
+}
+
+void FormAskKeySoundGenerationUiImpl::receiveButtonCancelClicked(){
+
+}
+
+void FormAskKeySoundGenerationUiImpl::receiveButtonOkClicked(){
 }

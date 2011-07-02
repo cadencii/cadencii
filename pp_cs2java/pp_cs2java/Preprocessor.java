@@ -1,6 +1,6 @@
 /*
  * pp_cs2java
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -60,9 +60,9 @@ class Preprocessor{
     static Vector<String> mIncluded = new Vector<String>();
     static String[][] REPLACE = new String[0][2];
     static ReplaceMode mMode = ReplaceMode.NONE;
-    static final String[][] REPLACE_JAVA = new String[][]{
-        // {"string", "String"},
-        // {" bool ", " boolean "},
+    static final String[][] REPLACE_CS2JAVA = new String[][]{
+        {"string", "String"},
+        {" bool ", " boolean "},
         { ".Equals(", ".equals(" }, { ".ToString(", ".toString(" },
         { ".StartsWith(", ".startsWith(" }, { ".EndsWith(", ".endsWith(" },
         { ".Substring(", ".substring(" }, { " const ", " static final " },
@@ -101,7 +101,7 @@ class Preprocessor{
         { " KeyPressEventArgs", " BKeyPressEventArgs" },
         { " Type ", " Class " }, { " List<", " Vector<" },
         { ".Count", ".size()" }, { ".Clear()", ".clear()" }, };
-    static String[][] REPLACE_CPP = new String[][]{ { "public ", "public: " },
+    static String[][] REPLACE_CS2CPP = new String[][]{ { "public ", "public: " },
         { "private ", "private: " }, { "vec.", "vec::" }, { "dic.", "dic::" },
         { "sout.", "sout::" }, { "serr.", "serr::" }, { "conv.", "conv::" },
         { "fsys.", "fsys::" }, { "str.", "str::" }, { "List<", "vector<" },
@@ -322,10 +322,10 @@ class Preprocessor{
                     String type =
                         current_parse.substring( "--replace-".length() );
                     if( str.compare( type, "java" ) ){
-                        REPLACE = REPLACE_JAVA;
+                        REPLACE = REPLACE_CS2JAVA;
                         mMode = ReplaceMode.JAVA;
                     }else if( str.compare( type, "cpp" ) ){
-                        REPLACE = REPLACE_CPP;
+                        REPLACE = REPLACE_CS2CPP;
                         mMode = ReplaceMode.CPP;
                     }
                 }

@@ -36,9 +36,9 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class FormAskKeySoundGenerationController extends ControllerBase
+    public class FormAskKeySoundGenerationController extends ControllerBase implements FormAskKeySoundGenerationUiListener
 #else
-    public class FormAskKeySoundGenerationController : ControllerBase
+    public class FormAskKeySoundGenerationController : ControllerBase, FormAskKeySoundGenerationUiListener
 #endif
     {
         private FormAskKeySoundGenerationUi mUi = null;
