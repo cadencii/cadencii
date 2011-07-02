@@ -11,186 +11,266 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package org.kbinani.cadencii;
-
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBeatConfig.java
-
-import java.awt.event.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.windows.forms.*;
-#else
 using System;
-using org.kbinani.java.awt.event_;
+using System.Windows.Forms;
 using org.kbinani.apputil;
 using org.kbinani;
-using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii
 {
-    using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
-#endif
 
-#if JAVA
-    public class FormBeatConfig extends BDialog {
-#else
-    public class FormBeatConfig : BDialog
+    public class FormBeatConfigUiImpl : Form, FormBeatConfigUi
     {
-#endif
-        public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure )
+        private FormBeatConfigUiListener mListener;
+
+        public FormBeatConfigUiImpl( FormBeatConfigUiListener listener )
         {
-#if JAVA
-            super();
-            initialize();
-#else
+            mListener = listener;
             InitializeComponent();
-#endif
-            registerEventHandlers();
-            setResources();
-            applyLanguage();
-            //ClientSize = new Size( 278, 182 );
-
-            numStart.setEnabled( num_enabled );
-            numEnd.setEnabled( num_enabled );
-            chkEnd.setEnabled( num_enabled );
-            numStart.setMinimum( -pre_measure + 1 );
-            numStart.setMaximum( int.MaxValue );
-            numEnd.setMinimum( -pre_measure + 1 );
-            numEnd.setMaximum( int.MaxValue );
-
-            // 拍子の分母
-            comboDenominator.removeAllItems();
-            comboDenominator.addItem( "1" );
-            int count = 1;
-            for ( int i = 1; i <= 5; i++ ) {
-                count *= 2;
-                comboDenominator.addItem( count + "" );
-            }
-            count = 0;
-            while ( denominator > 1 ) {
-                count++;
-                denominator /= 2;
-            }
-            comboDenominator.setSelectedItem( comboDenominator.getItemAt( count ) );
-
-            // 拍子の分子
-            if ( numerator < numNumerator.getMinimum() ) {
-                numNumerator.setFloatValue( numNumerator.getMinimum() );
-            } else if ( numNumerator.getMaximum() < numerator ) {
-                numNumerator.setFloatValue( numNumerator.getMaximum() );
-            } else {
-                numNumerator.setFloatValue( numerator );
-            }
-
-            // 始点
-            if ( bar_count < numStart.getMinimum() ) {
-                numStart.setFloatValue( numStart.getMinimum() );
-            } else if ( numStart.getMaximum() < bar_count ) {
-                numStart.setFloatValue( numStart.getMaximum() );
-            } else {
-                numStart.setFloatValue( bar_count );
-            }
-
-            // 終点
-            if ( bar_count < numEnd.getMinimum() ) {
-                numEnd.setFloatValue( numEnd.getMinimum() );
-            } else if ( numEnd.getMaximum() < bar_count ) {
-                numEnd.setFloatValue( numEnd.getMaximum() );
-            } else {
-                numEnd.setFloatValue( bar_count );
-            }
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        #region public methods
-        public void applyLanguage()
+
+        #region FormBeatConfigUiインターフェースの実装
+
+        public void close()
         {
-            setTitle( _( "Beat Change" ) );
-            groupPosition.setTitle( _( "Position" ) );
-            groupBeat.setTitle( _( "Beat" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            lblStart.setText( _( "From" ) );
-            lblStart.setMnemonic( KeyEvent.VK_F, numStart );
-            chkEnd.setText( _( "To" ) );
-            chkEnd.setDisplayedMnemonicIndex( 0 );
-            lblBar1.setText( _( "Measure" ) );
-            lblBar2.setText( _( "Measure" ) );
+            this.Close();
         }
 
-        public int getStart()
+        public int getWidth()
         {
-            return (int)numStart.getFloatValue();
+            return this.Width;
         }
 
-        public boolean isEndSpecified()
+        public int getHeight()
         {
-            return chkEnd.isSelected();
+            return this.Height;
         }
 
-        public int getEnd()
+        public void setLocation( int x, int y )
         {
-            return (int)numEnd.getFloatValue();
+            this.Location = new System.Drawing.Point( x, y );
         }
 
-        public int getNumerator()
+        public void setDialogResult( bool value )
         {
-            return (int)numNumerator.getFloatValue();
-        }
-
-        public int getDenominator()
-        {
-            int ret = 1;
-            for ( int i = 0; i < comboDenominator.getSelectedIndex(); i++ ) {
-                ret *= 2;
+            if ( value )
+            {
+                this.DialogResult = DialogResult.OK;
             }
-            return ret;
+            else
+            {
+                this.DialogResult = DialogResult.Cancel;
+            }
         }
+
+        public int getSelectedIndexDenominatorCombobox()
+        {
+            return comboDenominator.SelectedIndex;
+        }
+
+        public bool isCheckedEndCheckbox()
+        {
+            return chkEnd.Checked;
+        }
+
+        public void setTextBar2Label( string value )
+        {
+            lblBar2.Text = value;
+        }
+
+        public void setTextBar1Label( string value )
+        {
+            lblBar1.Text = value;
+        }
+
+        public void setTextStartLabel( string value )
+        {
+            lblStart.Text = value;
+        }
+
+        public void setTextOkButton( string value )
+        {
+            btnOK.Text = value;
+        }
+
+        public void setTextCancelButton( string value )
+        {
+            btnCancel.Text = value;
+        }
+
+        public void setTextBeatGroup( string value )
+        {
+            groupBeat.Text = value;
+        }
+
+        public float getValueEndNum()
+        {
+            return (float)numEnd.Value;
+        }
+
+        public bool isEnabledEndCheckbox()
+        {
+            return chkEnd.Enabled;
+        }
+
+        public void setTextEndCheckbox( string value )
+        {
+            chkEnd.Text = value;
+        }
+
+        public float getValueNumeratorNum()
+        {
+            return (float)numNumerator.Value;
+        }
+
+        public void setFont( string fontName, float fontSize )
+        {
+            Util.applyFontRecurse( this, new org.kbinani.java.awt.Font( new System.Drawing.Font( fontName, fontSize ) ) );
+        }
+
+        public void setTextPositionGroup( string value )
+        {
+            groupPosition.Text = value;
+        }
+
+        public float getMaximumStartNum()
+        {
+            return (float)numStart.Maximum;
+        }
+
+        public float getMinimumStartNum()
+        {
+            return (float)numStart.Minimum;
+        }
+
+        public void setValueStartNum( float value )
+        {
+            numStart.Value = new decimal( value );
+        }
+
+        public float getValueStartNum()
+        {
+            return (float)numStart.Value;
+        }
+
+        public float getMinimumNumeratorNum()
+        {
+            return (float)numNumerator.Minimum;
+        }
+
+        public float getMaximumNumeratorNum()
+        {
+            return (float)numNumerator.Maximum;
+        }
+
+        public void setValueNumeratorNum( float value )
+        {
+            numNumerator.Value = new decimal( value );
+        }
+
+        public void setSelectedIndexDenominatorCombobox( int value )
+        {
+            comboDenominator.SelectedIndex = value;
+        }
+
+        public void addItemDenominatorCombobox( string value )
+        {
+            comboDenominator.Items.Add( value );
+        }
+
+        public void setMinimumStartNum( int value )
+        {
+            numStart.Minimum = value;
+        }
+
+        public void setMaximumStartNum( int value )
+        {
+            numStart.Maximum = value;
+        }
+
+        public void setMinimumEndNum( int value )
+        {
+            numEnd.Minimum = value;
+        }
+
+        public void setMaximumEndNum( int value )
+        {
+            numEnd.Maximum = value;
+        }
+
+        public void setValueEndNum( float value )
+        {
+            numEnd.Value = new decimal( value );
+        }
+
+        public float getMinimumEndNum()
+        {
+            return (float)numEnd.Minimum;
+        }
+
+        public float getMaximumEndNum()
+        {
+            return (float)numEnd.Maximum;
+        }
+
+        public void setTitle( string value )
+        {
+            this.Text = value;
+        }
+
+        public int showDialog( object parent )
+        {
+            throw new NotImplementedException();
+        }
+
+        public void removeAllItemsDenominatorCombobox()
+        {
+            comboDenominator.Items.Clear();
+        }
+
+        public void setEnabledEndCheckbox( bool value )
+        {
+            chkEnd.Enabled = value;
+        }
+
+        public void setEnabledStartNum( bool value )
+        {
+            numStart.Enabled = value;
+        }
+
+        public void setEnabledEndNum( bool value )
+        {
+            numEnd.Enabled = value;
+        }
+
         #endregion
 
-        #region helper methods
-        private static String _( String id )
+
+
+        #region イベントハンドラーの実装
+
+        public void chkEnd_CheckedChanged( Object sender, EventArgs e )
         {
-            return Messaging.getMessage( id );
+            mListener.checkboxEndCheckedChangedSlot();
         }
 
-        private void registerEventHandlers()
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            chkEnd.CheckedChanged += new BEventHandler( chkEnd_CheckedChanged );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            mListener.buttonOkClickedSlot();
         }
 
-        private void setResources()
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
+            mListener.buttonCancelClickedSlot();
         }
+
         #endregion
 
-        #region event handlers
-        public void chkEnd_CheckedChanged( Object sender, BEventArgs e )
-        {
-            numEnd.setEnabled( chkEnd.isSelected() );
-        }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
-        {
-            setDialogResult( BDialogResult.OK );
-        }
-
-        public void btnCancel_Click( Object sender, BEventArgs e )
-        {
-            setDialogResult( BDialogResult.CANCEL );
-        }
-        #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormBeatConfig.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormBeatConfig.java
-#else
+
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -200,9 +280,10 @@ namespace org.kbinani.cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
-            if ( disposing && (components != null) ) {
+            if ( disposing && (components != null) )
+            {
                 components.Dispose();
             }
             base.Dispose( disposing );
@@ -214,20 +295,20 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPosition = new org.kbinani.windows.forms.BGroupBox();
-            this.lblBar2 = new org.kbinani.windows.forms.BLabel();
-            this.lblBar1 = new org.kbinani.windows.forms.BLabel();
+            this.groupPosition = new GroupBox();
+            this.lblBar2 = new Label();
+            this.lblBar1 = new Label();
             this.numEnd = new org.kbinani.cadencii.NumericUpDownEx();
             this.numStart = new org.kbinani.cadencii.NumericUpDownEx();
-            this.chkEnd = new org.kbinani.windows.forms.BCheckBox();
-            this.lblStart = new org.kbinani.windows.forms.BLabel();
-            this.groupBeat = new org.kbinani.windows.forms.BGroupBox();
-            this.comboDenominator = new org.kbinani.windows.forms.BComboBox();
-            this.label2 = new org.kbinani.windows.forms.BLabel();
-            this.label1 = new org.kbinani.windows.forms.BLabel();
+            this.chkEnd = new CheckBox();
+            this.lblStart = new Label();
+            this.groupBeat = new GroupBox();
+            this.comboDenominator = new ComboBox();
+            this.label2 = new Label();
+            this.label1 = new Label();
             this.numNumerator = new org.kbinani.cadencii.NumericUpDownEx();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new Button();
+            this.btnCancel = new Button();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();
@@ -324,6 +405,7 @@ namespace org.kbinani.cadencii
             this.chkEnd.TabIndex = 1;
             this.chkEnd.Text = "To(&T)";
             this.chkEnd.UseVisualStyleBackColor = true;
+            this.chkEnd.CheckedChanged += new EventHandler( chkEnd_CheckedChanged );
             // 
             // lblStart
             // 
@@ -405,6 +487,7 @@ namespace org.kbinani.cadencii
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new EventHandler( btnOK_Click );
             // 
             // btnCancel
             // 
@@ -415,6 +498,7 @@ namespace org.kbinani.cadencii
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new EventHandler( btnCancel_Click );
             // 
             // FormBeatConfig
             // 
@@ -446,21 +530,21 @@ namespace org.kbinani.cadencii
 
         }
 
-        private BGroupBox groupPosition;
-        private BGroupBox groupBeat;
-        private BButton btnOK;
-        private BButton btnCancel;
+        private GroupBox groupPosition;
+        private GroupBox groupBeat;
+        private Button btnOK;
+        private Button btnCancel;
         private NumericUpDownEx numStart;
-        private BCheckBox chkEnd;
-        private BLabel lblStart;
-        private BLabel lblBar2;
-        private BLabel lblBar1;
+        private CheckBox chkEnd;
+        private Label lblStart;
+        private Label lblBar2;
+        private Label lblBar1;
         private NumericUpDownEx numEnd;
-        private BLabel label1;
+        private Label label1;
         private NumericUpDownEx numNumerator;
-        private BLabel label2;
-        private BComboBox comboDenominator;
-#endif
+        private Label label2;
+        private ComboBox comboDenominator;
+
         #endregion
     }
 

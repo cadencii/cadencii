@@ -2576,29 +2576,43 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="dlg"></param>
         /// <returns></returns>
-        public Point getFormPreferedLocation( BDialog dlg )
+        public Point getFormPreferedLocation( int dialogWidth, int dialogHeight )
         {
             Point mouse = PortUtil.getMousePosition();
             Rectangle rcScreen = PortUtil.getWorkingArea( this );
-            int top = mouse.y - dlg.getHeight() / 2;
-            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
+            int top = mouse.y - dialogHeight / 2;
+            if ( top + dialogHeight > rcScreen.y + rcScreen.height )
+            {
                 // ダイアログの下端が隠れる場合、位置をずらす
-                top = rcScreen.y + rcScreen.height - dlg.getHeight();
+                top = rcScreen.y + rcScreen.height - dialogHeight;
             }
-            if ( top < rcScreen.y ) {
+            if ( top < rcScreen.y )
+            {
                 // ダイアログの上端が隠れる場合、位置をずらす
                 top = rcScreen.y;
             }
-            int left = mouse.x - dlg.getWidth() / 2;
-            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
+            int left = mouse.x - dialogWidth / 2;
+            if ( left + dialogWidth > rcScreen.x + rcScreen.width )
+            {
                 // ダイアログの右端が隠れる場合，位置をずらす
-                left = rcScreen.x + rcScreen.width - dlg.getWidth();
+                left = rcScreen.x + rcScreen.width - dialogWidth;
             }
-            if ( left < rcScreen.x ) {
+            if ( left < rcScreen.x )
+            {
                 // ダイアログの左端が隠れる場合，位置をずらす
                 left = rcScreen.x;
             }
             return new Point( left, top );
+        }
+
+        /// <summary>
+        /// フォームをマウス位置に出す場合に推奨されるフォーム位置を計算します
+        /// </summary>
+        /// <param name="dlg"></param>
+        /// <returns></returns>
+        public Point getFormPreferedLocation( BDialog dlg )
+        {
+            return getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
         }
 
         public void updateLayout()
@@ -14488,12 +14502,13 @@ namespace org.kbinani.cadencii
                             int total_clock = vsq.TotalClocks;
                             Timesig timesig = vsq.getTimesigAt( clock );
                             boolean num_enabled = !(bar_count == 0);
-                            FormBeatConfig dlg = null;
+                            FormBeatConfigController dlg = null;
                             try {
-                                dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
-                                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                if ( dr == BDialogResult.OK ) {
+                                dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
+                                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                                dlg.setLocation( p.x, p.y );
+                                int dr = AppManager.showModalDialog( dlg.getUi(), this );
+                                if ( dr == 1 ) {
                                     if ( dlg.isEndSpecified() ) {
                                         int[] new_barcounts = new int[2];
                                         int[] numerators = new int[2];
@@ -14561,12 +14576,13 @@ namespace org.kbinani.cadencii
 #if DEBUG
                             AppManager.debugWriteLine( "FormMain.picturePositionIndicator_MouseClick; bar_count=" + (bar_count - pre_measure + 1) );
 #endif
-                            FormBeatConfig dlg = null;
+                            FormBeatConfigController dlg = null;
                             try {
-                                dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
-                                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                if ( dr == BDialogResult.OK ) {
+                                dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
+                                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                                dlg.setLocation( p.x, p.y );
+                                int dr = AppManager.showModalDialog( dlg.getUi(), this );
+                                if ( dr == 1 ) {
                                     if ( dlg.isEndSpecified() ) {
                                         int[] new_barcounts = new int[2];
                                         int[] numerators = new int[2];
