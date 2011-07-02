@@ -470,7 +470,7 @@ sub getSrcList
         {
             next;
         }
-        if( rindex( $v, ".cs" ) != length( $v ) - 3 )
+        if( !&stringEndsWith( $v, ".cs" ) )
         {
             next;
         }
@@ -490,7 +490,7 @@ sub getSrcList
             $found = 1;
         }
         
-        if( index( $v, "Form" ) == 0 && rindex( $v, "Impl.cs" ) == length( $v ) - length( "Impl.cs" ) )
+        if( index( $v, "Form" ) == 0 && &stringEndsWith( $v, "Impl.cs" ) )
         {
             $found = 2;
         }
@@ -541,6 +541,12 @@ sub getSrcList
                 last;
             }
         }
+        if( &stringEndsWith( $cname, "Ui" ) ){
+            $add_to = 0;
+        }
+        if( &stringEndsWith( $cname, "UiListener" ) ){
+            $add_to = 0;
+        }
         if( (-e "$build_java_ui_prefix$cname.java") && $add_to == 1 )
         {
             $_[3] .= " $build_java_ui_prefix$cname.java\n";
@@ -563,5 +569,15 @@ sub getSrcList
 
         # BuildJavaUI/src => build/java
         $_[4] .= "\t\$(CP) BuildJavaUI/src/" . $com_dirname_part . $name . "UiImpl.java   build/java/" . $com_dirname_part . $name . "UiImpl.java\n";
+    }
+}
+
+sub stringEndsWith{
+    my $target = $_[0];
+    my $search = $_[1];
+    if( rindex( $target, $search ) == length( $target ) - length( $search ) ){
+        return 1;
+    }else{
+        return 0;
     }
 }

@@ -135,18 +135,20 @@ class Preprocessor{
             }
             if( previousLineContainsPureVirtualFunctionAttribute ){
                 previousLineContainsPureVirtualFunctionAttribute = false;
-                String trimmed = line.trim();
-                int first = line.indexOf( trimmed );
-                if( first < 0 ){
-                    first = 0;
+                if( Preprocessor.mMode == ReplaceMode.CPP ){
+                    String trimmed = line.trim();
+                    int first = line.indexOf( trimmed );
+                    if( first < 0 ){
+                        first = 0;
+                    }
+                    int indexSemicolon = line.indexOf( ";" );
+                    String suffix = trimmed;
+                    if( indexSemicolon >= 0 ){
+                        suffix = trimmed.replace( ";", " = 0;" );
+                    }
+                    String newLine = line.substring( 0, first ) + "virtual " + suffix;
+                    line = newLine;
                 }
-                int indexSemicolon = line.indexOf( ";" );
-                String suffix = trimmed;
-                if( indexSemicolon >= 0 ){
-                    suffix = trimmed.replace( ";", " = 0;" );
-                }
-                String newLine = line.substring( 0, first ) + "virtual " + suffix;
-                line = newLine;
             }
             try{
                 writer.write( line );

@@ -25,16 +25,10 @@ namespace org
         {
 
 #if __cplusplus
+            using namespace std;
             using namespace org::kbinani::cadencii;      
 #else
-
             using System;
-            using org.kbinani.windows.forms;
-            using org.kbinani.apputil;
-
-            using boolean = System.Boolean;
-            using BEventArgs = System.EventArgs;
-            using BEventHandler = System.EventHandler;
 #endif
 #endif
 
@@ -49,71 +43,52 @@ namespace org
             public interface FormAskKeySoundGenerationUi : UiBase
 #endif
             {
-#if __cplusplus
-                virtual void setAlwaysPerformThisCheck( bool value ) = 0;
-#else
-                void setAlwaysPerformThisCheck( boolean value );
-#endif
+                [PureVirtualFunction]
+                void setAlwaysPerformThisCheck( bool value );
 
-#if __cplusplus
-                virtual bool isAlwaysPerformThisCheck() = 0;
-#else
-                boolean isAlwaysPerformThisCheck();
-#endif
+                [PureVirtualFunction]
+                bool isAlwaysPerformThisCheck();
 
                 /// <summary>
                 /// フォームを閉じます．
                 /// valueがtrueのときダイアログの結果をCancelに，それ以外の場合はOKとなるようにします．
                 /// </summary>
-#if __cplusplus
-                virtual void close( bool value ) = 0;
-#else
-                void close( boolean value );
-#endif
+                [PureVirtualFunction]
+                void close( bool value );
 
                 /// <summary>
                 /// メッセージの文字列を設定します．
                 /// </summary>
                 /// <param name="value">設定する文字列．</param>
-#if __cplusplus
-                virtual void setMessageLabelText( QString value ) = 0;
-#else
-                void setMessageLabelText( String value );
-#endif
+                [PureVirtualFunction]
+                void setMessageLabelText( string value );
 
                 /// <summary>
                 /// チェックボックスの文字列を設定します．
                 /// </summary>
                 /// <param name="value">設定する文字列．</param>
-#if __cplusplus
-                virtual void setAlwaysPerformThisCheckCheckboxText( QString value ) = 0;
-#else
-                void setAlwaysPerformThisCheckCheckboxText( String value );
-#endif
+                [PureVirtualFunction]
+                void setAlwaysPerformThisCheckCheckboxText( string value );
 
                 /// <summary>
                 /// 「はい」ボタンの文字列を設定します．
                 /// </summary>
                 /// <param name="value">設定する文字列．</param>
-#if __cplusplus
-                virtual void setYesButtonText( QString value ) = 0;
-#else
-                void setYesButtonText( String value );
-#endif
+                [PureVirtualFunction]
+                void setYesButtonText( string value );
 
                 /// <summary>
                 /// 「いいえ」ボタンの文字列を設定します．
                 /// </summary>
                 /// <param name="value">設定する文字列．</param>
-#if __cplusplus
-                virtual void setNoButtonText( QString value ) = 0;
-#else
-                void setNoButtonText( String value );
-#endif
+                [PureVirtualFunction]
+                void setNoButtonText( string value );
             };
 
 #if !JAVA
+
         }
     }
 }
+
 #endif

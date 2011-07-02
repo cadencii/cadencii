@@ -1,6 +1,8 @@
+#if !__FormAskKeySoundGenerationUiListener__
+#define __FormAskKeySoundGenerationUiListener__
 /*
- * FormAskKeySoundGeneration.cs
- * Copyright © 2010-2011 kbinani
+ * FormAskKeySoundGenerationUiListener.cs
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -42,8 +44,13 @@ namespace org
             public interface FormAskKeySoundGenerationUiListener
 #endif
             {
+#if __cplusplus
+            public:
+#endif
+                [PureVirtualFunction]
                 void buttonCancelClickedSlot();
 
+                [PureVirtualFunction]
                 void buttonOkClickedSlot();
             };
 
@@ -57,3 +64,4 @@ namespace org
 
 #endif
 
+#endif

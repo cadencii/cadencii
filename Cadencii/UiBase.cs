@@ -17,45 +17,39 @@
 
 package org.kbinani.cadencii;
 
-import org.kbinani.windows.forms.*;
-
-#elif __cplusplus
-
-namespace org{ namespace kbinani{ namespace cadencii{
-
 #else
 
-using System;
-
-using org.kbinani.windows.forms;
-
-namespace org.kbinani.cadencii
+namespace org
 {
-
-#endif
-
-#if __cplusplus
-    class UiBase
-#else
-    public interface UiBase
-#endif
+    namespace kbinani
     {
+        namespace cadencii
+        {
+
 #if __cplusplus
-        virtual int showDialog( QObject *parent_form ){}
 #else
-        int showDialog( Object parent_form );
+            using System;
 #endif
-    };
 
-#if JAVA
+#endif
 
-#elif __cplusplus
-
-} } }
-
+#if __cplusplus
+            class UiBase
 #else
+            public interface UiBase
+#endif
+            {
+#if __cplusplus
+                virtual int showDialog( QObject *parent_form );
+#else
+                int showDialog( Object parent_form );
+#endif
+            };
 
+#if !JAVA
+        }
+    }
 }
-
 #endif
+
 #endif

@@ -1,6 +1,6 @@
 /*
  * FormAskKeySoundGenerationUiImpl.cs
- * Copyright © 2011 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *

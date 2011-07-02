@@ -1,9 +1,14 @@
 #include "FormAskKeySoundGenerationUiImpl.h"
 #include "ui_FormAskKeySoundGenerationUiImpl.h"
 
-FormAskKeySoundGenerationUiImpl::FormAskKeySoundGenerationUiImpl(QWidget *parent) :
+void FormAskKeySoundGenerationUiListener::buttonCancelClickedSlot(){}
+void FormAskKeySoundGenerationUiListener::buttonOkClickedSlot(){}
+
+FormAskKeySoundGenerationUiImpl::FormAskKeySoundGenerationUiImpl(FormAskKeySoundGenerationUiListener *listener, QWidget *parent) :
     QDialog(parent),
-    ui( new Ui::FormAskKeySoundGenerationUiImpl ){
+    ui( new Ui::FormAskKeySoundGenerationUiImpl )
+{
+    this->listener = listener;
     ui->setupUi( this );
     mDialogResult = 0;
 
@@ -41,20 +46,20 @@ void FormAskKeySoundGenerationUiImpl::close( bool value ){
     this->QDialog::close();
 }
 
-void FormAskKeySoundGenerationUiImpl::setMessageLabelText( QString value ){
-    ui->lblMessage->setText( value );
+void FormAskKeySoundGenerationUiImpl::setMessageLabelText( string value ){
+    ui->lblMessage->setText( QString( value.c_str() ) );
 }
 
-void FormAskKeySoundGenerationUiImpl::setAlwaysPerformThisCheckCheckboxText( QString value ){
-    ui->chkAlwaysPerformThisCheck->setText( value );
+void FormAskKeySoundGenerationUiImpl::setAlwaysPerformThisCheckCheckboxText( string value ){
+    ui->chkAlwaysPerformThisCheck->setText( QString( value.c_str() ) );
 }
 
-void FormAskKeySoundGenerationUiImpl::setYesButtonText( QString value ){
-    ui->btnYes->setText( value );
+void FormAskKeySoundGenerationUiImpl::setYesButtonText( string value ){
+    ui->btnYes->setText( QString( value.c_str() ) );
 }
 
-void FormAskKeySoundGenerationUiImpl::setNoButtonText( QString value ){
-    ui->btnNo->setText( value );
+void FormAskKeySoundGenerationUiImpl::setNoButtonText( string value ){
+    ui->btnNo->setText( QString( value.c_str() ) );
 }
 
 int FormAskKeySoundGenerationUiImpl::showDialog( QObject *parent_form ){
@@ -64,12 +69,17 @@ int FormAskKeySoundGenerationUiImpl::showDialog( QObject *parent_form ){
             this->setParent( newParent );
         }
     }
-    return this->exec();
+    return QDialog::exec();
 }
 
 void FormAskKeySoundGenerationUiImpl::receiveButtonCancelClicked(){
-
+    if( listener ){
+        listener->buttonCancelClickedSlot();
+    }
 }
 
 void FormAskKeySoundGenerationUiImpl::receiveButtonOkClicked(){
+    if( listener ){
+        listener->buttonOkClickedSlot();
+    }
 }

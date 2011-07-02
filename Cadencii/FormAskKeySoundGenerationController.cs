@@ -1,6 +1,6 @@
 /*
- * FormAskKeySoundGeneration.cs
- * Copyright © 2010-2011 kbinani
+ * FormAskKeySoundGenerationController.cs
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
