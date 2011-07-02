@@ -94,12 +94,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         public const int MAX_PRE_MEASURE = 8;
         private const String CONFIG_FILE_NAME = "config.xml";
-#if CLIPBOARD_AS_TEXT
-        /// <summary>
-        /// OSのクリップボードに貼り付ける文字列の接頭辞．これがついていた場合，クリップボードの文字列をCadenciiが使用できると判断する．
-        /// </summary>
-        public const String CLIP_PREFIX = "CADENCIIOBJ";
-#endif
         /// <summary>
         /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
         /// </summary>
@@ -212,6 +206,7 @@ namespace org.kbinani.cadencii
         /// アイコンパレット・ウィンドウのインスタンス
         /// </summary>
         public static FormIconPalette iconPalette = null;
+        public static ClipboardModel clipboard = null;
 
         #region Static Readonly Fields
         /// <summary>
@@ -3545,6 +3540,7 @@ namespace org.kbinani.cadencii
         public static void init()
         {
             loadConfig();
+            clipboard = new ClipboardModel();
 #if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
             int c = editorConfig.UtauSingers.size();
@@ -3805,203 +3801,6 @@ namespace org.kbinani.cadencii
                 }
             }
         }
-
-        #region クリップボードの管理
-#if CLIPBOARD_AS_TEXT
-        /// <summary>
-        /// オブジェクトをシリアライズし，クリップボードに格納するための文字列を作成します
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        private static String getSerializedText( Object obj ) 
-#if JAVA
-            throws IOException
-#endif
-        {
-            String str = "";
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream( outputStream );
-            objectOutputStream.writeObject( obj );
-
-            byte[] arr = outputStream.toByteArray();
-#if JAVA
-            str = CLIP_PREFIX + ":" + obj.getClass().getName() + ":" + Base64.encode( arr );
-#else
-            str = CLIP_PREFIX + ":" + obj.GetType().FullName + ":" + Base64.encode( arr );
-#endif
-            return str;
-        }
-
-        /// <summary>
-        /// クリップボードに格納された文字列を元に，デシリアライズされたオブジェクトを取得します
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        private static Object getDeserializedObjectFromText( String s ) {
-            if ( s.StartsWith( CLIP_PREFIX ) ) {
-                int index = s.IndexOf( ":" );
-                index = s.IndexOf( ":", index + 1 );
-                Object ret = null;
-                try {
-                    ByteArrayInputStream bais = new ByteArrayInputStream( Base64.decode( str.sub( s, index + 1 ) ) );
-                    ObjectInputStream ois = new ObjectInputStream( bais );
-                    ret = ois.readObject();
-                } catch ( Exception ex ) {
-                    ret = null;
-                    Logger.write( typeof( AppManager ) + ".getDeserializedObjectFromText; ex=" + ex + "\n" );
-                }
-                return ret;
-            } else {
-                return null;
-            }
-        }
-#endif
-
-        public static void setClipboard( ClipboardEntry item )
-        {
-#if CLIPBOARD_AS_TEXT
-            String clip = "";
-            try {
-                clip = getSerializedText( item );
-#if DEBUG
-                sout.println( "AppManager#setClipboard; clip=" + clip );
-#endif
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#setClipboard; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
-                return;
-            }
-            PortUtil.setClipboardText( clip );
-#else
-            Clipboard.SetDataObject( item, false );
-#endif
-        }
-
-        public static ClipboardEntry getCopiedItems()
-        {
-            ClipboardEntry ce = null;
-#if CLIPBOARD_AS_TEXT
-            String clip = PortUtil.getClipboardText();
-            if ( clip != null && str.startsWith( clip, CLIP_PREFIX ) ) {
-                int index1 = clip.IndexOf( ":" );
-                int index2 = clip.IndexOf( ":", index1 + 1 );
-                String typename = str.sub( clip, index1 + 1, index2 - index1 - 1 );
-#if DEBUG
-                sout.println( "AppManager#getCopiedItems; typename=" + typename );
-#endif
-#if JAVA
-                if ( typename.Equals( ClipboardEntry.class.getName() ) ) {
-#else
-                if ( typename.Equals( typeof( ClipboardEntry ).FullName ) ) {
-#endif
-                    try {
-                        ce = (ClipboardEntry)getDeserializedObjectFromText( clip );
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( AppManager ) + ".getCopiedItems; ex=" + ex + "\n" );
-                    }
-                }
-            }
-#else
-            IDataObject dobj = Clipboard.GetDataObject();
-            if ( dobj != null ) {
-                Object obj = dobj.GetData( typeof( ClipboardEntry ) );
-                if ( obj != null && obj is ClipboardEntry ) {
-                    ce = (ClipboardEntry)obj;
-                }
-            }
-#endif
-            if ( ce == null ) {
-                ce = new ClipboardEntry();
-            }
-            if ( ce.beziers == null ) {
-                ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
-            }
-            if ( ce.events == null ) {
-                ce.events = new Vector<VsqEvent>();
-            }
-            if ( ce.points == null ) {
-                ce.points = new TreeMap<CurveType, VsqBPList>();
-            }
-            if ( ce.tempo == null ) {
-                ce.tempo = new Vector<TempoTableEntry>();
-            }
-            if ( ce.timesig == null ) {
-                ce.timesig = new Vector<TimeSigTableEntry>();
-            }
-            return ce;
-        }
-
-        private static void setClipboard(
-            Vector<VsqEvent> events,
-            Vector<TempoTableEntry> tempo,
-            Vector<TimeSigTableEntry> timesig,
-            TreeMap<CurveType, VsqBPList> curve,
-            TreeMap<CurveType, Vector<BezierChain>> bezier,
-            int copy_started_clock )
-        {
-            ClipboardEntry ce = new ClipboardEntry();
-            ce.events = events;
-            ce.tempo = tempo;
-            ce.timesig = timesig;
-            ce.points = curve;
-            ce.beziers = bezier;
-            ce.copyStartedClock = copy_started_clock;
-#if CLIPBOARD_AS_TEXT
-            String clip = "";
-            try {
-                clip = getSerializedText( ce );
-#if DEBUG
-                sout.println( "AppManager#setClipboard; clip=" + clip );
-#endif
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#setClipboard; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
-                return;
-            }
-            PortUtil.setClipboardText( clip );
-#else // CLIPBOARD_AS_TEXT
-#if DEBUG
-            // ClipboardEntryがシリアライズ可能かどうかを試すため，
-            // この部分のコードは残しておくこと
-            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = null;
-            System.IO.MemoryStream ms = null;
-            try {
-                bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                ms = new System.IO.MemoryStream();
-                bf.Serialize( ms, ce );
-            } catch ( Exception ex ) {
-                sout.println( "AppManager#setClipboard; ex=" + ex );
-            }
-#endif // DEBUG
-            Clipboard.SetDataObject( ce, false );
-#endif // CLIPBOARD_AS_TEXT
-        }
-
-        public static void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock )
-        {
-            setClipboard( item, null, null, null, null, copy_started_clock );
-        }
-
-        public static void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock )
-        {
-            setClipboard( null, item, null, null, null, copy_started_clock );
-        }
-
-        public static void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock )
-        {
-            setClipboard( null, null, item, null, null, copy_started_clock );
-        }
-
-        public static void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock )
-        {
-            setClipboard( null, null, null, item, null, copy_started_clock );
-        }
-
-        public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock )
-        {
-            setClipboard( null, null, null, null, item, copy_started_clock );
-        }
-        #endregion
 
         /// <summary>
         /// 位置クオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します

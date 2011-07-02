@@ -49,7 +49,7 @@ namespace org
                 /// OSのクリップボードに貼り付ける文字列の接頭辞．
                 /// これがついていた場合，クリップボードの文字列をCadenciiが使用できると判断する．
                 /// </summary>
-                private const String CLIP_PREFIX = "CADENCIIOBJ";
+                public const String CLIP_PREFIX = "CADENCIIOBJ";
 #endif
 
 #if CLIPBOARD_AS_TEXT

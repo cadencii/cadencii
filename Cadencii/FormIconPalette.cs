@@ -74,7 +74,7 @@ namespace org.kbinani.cadencii
                             return;
                         }
                         String icon_id = mHandle.IconID;
-                        StringSelection transferable = new StringSelection( AppManager.CLIP_PREFIX + ":" + icon_id );
+                        StringSelection transferable = new StringSelection( ClipboardModel.CLIP_PREFIX + ":" + icon_id );
     
                         // 3) start drag
                         e.startDrag( dragCursor, transferable );
@@ -82,7 +82,7 @@ namespace org.kbinani.cadencii
                 } );
         }
 #endif
-        
+
         public IconDynamicsHandle getHandle()
         {
             return mHandle;

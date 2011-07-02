@@ -157,7 +157,7 @@ namespace org.kbinani.cadencii {
                             String icon_id = null;
                             if ( e.isDataFlavorSupported( DataFlavor.stringFlavor ) ) { 
                                 String s = (String)tr.getTransferData( DataFlavor.stringFlavor );
-                                String prefix = AppManager.CLIP_PREFIX + ":";
+                                String prefix = ClipboardModel.CLIP_PREFIX + ":";
                                 if( str.startsWith( s, prefix ) ){
                                     icon_id = str.sub( s, str.length( prefix ) );
                                 }

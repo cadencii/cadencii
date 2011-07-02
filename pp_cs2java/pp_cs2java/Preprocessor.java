@@ -62,6 +62,7 @@ class Preprocessor{
     static ReplaceMode mMode = ReplaceMode.NONE;
     static final String[][] REPLACE_CS2JAVA = new String[][]{
         {"string", "String"},
+        {".StringFlavor", ".stringFlavor"},
         {" bool ", " boolean "},
         { ".Equals(", ".equals(" }, { ".ToString(", ".toString(" },
         { ".StartsWith(", ".startsWith(" }, { ".EndsWith(", ".endsWith(" },

@@ -3007,7 +3007,7 @@ namespace org.kbinani.cadencii
             menuEditCut.setEnabled( !selected_is_null );
             menuEditDelete.setEnabled( !selected_is_null );
 
-            ClipboardEntry ce = AppManager.getCopiedItems();
+            ClipboardEntry ce = AppManager.clipboard.getCopiedItems();
             int copy_started_clock = ce.copyStartedClock;
             TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
             TreeMap<CurveType, Vector<BezierChain>> copied_bezier = ce.beziers;
@@ -5532,7 +5532,7 @@ namespace org.kbinani.cadencii
 
             VsqCommand add_event = null; // VsqEventを追加するコマンド
 
-            ClipboardEntry ce = AppManager.getCopiedItems();
+            ClipboardEntry ce = AppManager.clipboard.getCopiedItems();
             int copy_started_clock = ce.copyStartedClock;
             Vector<VsqEvent> copied_events = ce.events;
 #if DEBUG
@@ -5813,7 +5813,7 @@ namespace org.kbinani.cadencii
                     }
                     ce.events = list;
                 }
-                AppManager.setClipboard( ce );
+                AppManager.clipboard.setClipboard( ce );
             } else if ( AppManager.getSelectedEventCount() > 0 ) {
                 Vector<VsqEvent> list = new Vector<VsqEvent>();
                 for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
@@ -5821,7 +5821,7 @@ namespace org.kbinani.cadencii
                     min = Math.Min( item.original.Clock, min );
                     list.add( (VsqEvent)item.original.clone() );
                 }
-                AppManager.setCopiedEvent( list, min );
+                AppManager.clipboard.setCopiedEvent( list, min );
             } else if ( AppManager.getSelectedTempoCount() > 0 ) {
                 Vector<TempoTableEntry> list = new Vector<TempoTableEntry>();
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
@@ -5831,7 +5831,7 @@ namespace org.kbinani.cadencii
                     min = Math.Min( value.original.Clock, min );
                     list.add( (TempoTableEntry)value.original.clone() );
                 }
-                AppManager.setCopiedTempo( list, min );
+                AppManager.clipboard.setCopiedTempo( list, min );
             } else if ( AppManager.getSelectedTimesigCount() > 0 ) {
                 Vector<TimeSigTableEntry> list = new Vector<TimeSigTableEntry>();
                 for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
@@ -5841,7 +5841,7 @@ namespace org.kbinani.cadencii
                     min = Math.Min( value.original.Clock, min );
                     list.add( (TimeSigTableEntry)value.original.clone() );
                 }
-                AppManager.setCopiedTimesig( list, min );
+                AppManager.clipboard.setCopiedTimesig( list, min );
             } else if ( AppManager.getSelectedPointIDCount() > 0 ) {
                 ClipboardEntry ce = new ClipboardEntry();
                 ce.points = new TreeMap<CurveType, VsqBPList>();
@@ -5896,7 +5896,7 @@ namespace org.kbinani.cadencii
                         }
                     }
                 }
-                AppManager.setClipboard( ce );
+                AppManager.clipboard.setClipboard( ce );
             }
         }
 
@@ -8235,7 +8235,7 @@ namespace org.kbinani.cadencii
                     cMenuPianoExpressionProperty.setEnabled( !item_is_null );
 
                     int clock = AppManager.clockFromXCoord( e.X );
-                    cMenuPianoPaste.setEnabled( ((AppManager.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks())) );
+                    cMenuPianoPaste.setEnabled( ((AppManager.clipboard.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks())) );
                     refreshScreen();
 
                     mContextMenuOpenedPosition = new Point( e.X, e.Y );
