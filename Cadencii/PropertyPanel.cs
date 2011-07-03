@@ -166,9 +166,9 @@ namespace org.kbinani.cadencii
             // 現在のGridItemの展開状態を取得
             pushGridItemExpandStatus();
 
-            Object[] objs = new Object[AppManager.itemSelection.getSelectedEventCount()];
+            Object[] objs = new Object[AppManager.itemSelection.getEventCount()];
             int i = -1;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
+            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = itr.next();
                 i++;
                 objs[i] = item;
@@ -209,7 +209,7 @@ namespace org.kbinani.cadencii
             }
 #endif
             for ( int i = 0; i < len; i++ ) {
-                AppManager.itemSelection.addSelectedEvent( items[i].InternalID );
+                AppManager.itemSelection.addEvent( items[i].InternalID );
             }
 #if JAVA
             propertyGrid.repaint();//.Refresh();

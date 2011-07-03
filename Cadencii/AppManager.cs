@@ -2350,7 +2350,7 @@ namespace org.kbinani.cadencii
         {
             if ( isUndoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
@@ -2397,7 +2397,7 @@ namespace org.kbinani.cadencii
         {
             if ( isRedoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
@@ -2458,7 +2458,7 @@ namespace org.kbinani.cadencii
                     }
                 }
                 if ( !found ) {
-                    AppManager.itemSelection.removeSelectedEvent( internal_id );
+                    AppManager.itemSelection.removeEvent( internal_id );
                 }
             }
         }

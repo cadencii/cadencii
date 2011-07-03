@@ -368,8 +368,8 @@ namespace org.kbinani.cadencii {
                 float scalex = AppManager.getScaleX();
                 float inv_scalex = AppManager.getScaleXInv();
 
-                if ( AppManager.itemSelection.getSelectedEventCount() > 0 && AppManager.mInputTextBox.isVisible() ) {
-                    VsqEvent original = AppManager.itemSelection.getLastSelectedEvent().original;
+                if ( AppManager.itemSelection.getEventCount() > 0 && AppManager.mInputTextBox.isVisible() ) {
+                    VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                     int event_x = (int)(original.Clock * scalex + xoffset);
                     int event_y = -original.ID.Note * track_height + yoffset;
 #if JAVA
@@ -538,7 +538,7 @@ namespace org.kbinani.cadencii {
                             hilighted_note = i;
                         }
                     } else if ( edit_mode == EditMode.EDIT_LEFT_EDGE || edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
-                        if ( AppManager.itemSelection.getLastSelectedEvent().original.ID.Note == i ) { //TODO: ここでNullpointer exception
+                        if ( AppManager.itemSelection.getLastEvent().original.ID.Note == i ) { //TODO: ここでNullpointer exception
                             hilighted = true;
                             hilighted_note = i;
                         }
@@ -708,8 +708,8 @@ namespace org.kbinani.cadencii {
                                              (!dobj.mIsValidForStraight && renderer == RendererKind.VCNT) ) {
                                             id_fill = AppManager.getAlertColor();
                                         }
-                                        if ( AppManager.itemSelection.getSelectedEventCount() > 0 ) {
-                                            boolean found = AppManager.itemSelection.isSelectedEventContains( selected, dobj.mInternalID );
+                                        if ( AppManager.itemSelection.getEventCount() > 0 ) {
+                                            boolean found = AppManager.itemSelection.isEventContains( selected, dobj.mInternalID );
                                             if ( found ) {
                                                 id_fill = AppManager.getHilightColor();
                                                 if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
@@ -878,7 +878,7 @@ namespace org.kbinani.cadencii {
                                     } else if ( dobj.mType == DrawObjectType.Dynaff ) {
                                         #region Dynaff
                                         Color fill = COLOR_DYNAFF_FILL;
-                                        if ( AppManager.itemSelection.isSelectedEventContains( selected, dobj.mInternalID ) ) {
+                                        if ( AppManager.itemSelection.isEventContains( selected, dobj.mInternalID ) ) {
                                             fill = COLOR_DYNAFF_FILL_HIGHLIGHT;
                                         }
                                         g.setColor( fill );
@@ -900,7 +900,7 @@ namespace org.kbinani.cadencii {
                                         #region Crescend and Descrescend
                                         int xend = x + lyric_width;
                                         Color fill = COLOR_DYNAFF_FILL;
-                                        if ( AppManager.itemSelection.isSelectedEventContains( selected, dobj.mInternalID ) ) {
+                                        if ( AppManager.itemSelection.isEventContains( selected, dobj.mInternalID ) ) {
                                             fill = COLOR_DYNAFF_FILL_HIGHLIGHT;
                                         }
                                         g.setColor( fill );
@@ -976,8 +976,8 @@ namespace org.kbinani.cadencii {
                     } else if ( (edit_mode == EditMode.MOVE_ENTRY ||
                                  edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
                                  edit_mode == EditMode.EDIT_LEFT_EDGE ||
-                                 edit_mode == EditMode.EDIT_RIGHT_EDGE) && AppManager.itemSelection.getSelectedEventCount() > 0 ) {
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
+                                 edit_mode == EditMode.EDIT_RIGHT_EDGE) && AppManager.itemSelection.getEventCount() > 0 ) {
+                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry ev = itr.next();
                             int x = (int)(ev.editing.Clock * scalex + xoffset);
                             y = -ev.editing.ID.Note * track_height + yoffset + 1;
@@ -1045,8 +1045,8 @@ namespace org.kbinani.cadencii {
                     #endregion
                 } else if ( edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.MOVE_ENTRY_WAIT_MOVE ) {
                     #region EditMode.MoveEntry || EditMode.MoveEntryWaitMove
-                    if ( AppManager.itemSelection.getSelectedEventCount() > 0 ) {
-                        VsqEvent last = AppManager.itemSelection.getLastSelectedEvent().editing;
+                    if ( AppManager.itemSelection.getEventCount() > 0 ) {
+                        VsqEvent last = AppManager.itemSelection.getLastEvent().editing;
                         int x = (int)(last.Clock * scalex + xoffset);
                         y = -last.ID.Note * track_height + yoffset + 1;
                         int length = (int)(last.ID.getLength() * scalex);
@@ -1111,7 +1111,7 @@ namespace org.kbinani.cadencii {
                     #endregion
                 } else if ( edit_mode == EditMode.EDIT_LEFT_EDGE ) {
                     #region EditMode.EditLeftEdge
-                    VsqEvent last = AppManager.itemSelection.getLastSelectedEvent().editing;
+                    VsqEvent last = AppManager.itemSelection.getLastEvent().editing;
                     int x = (int)(last.Clock * scalex + xoffset);
                     y = -last.ID.Note * track_height + yoffset + 1;
                     g.setColor( COLOR_LINE_LU );
@@ -1123,7 +1123,7 @@ namespace org.kbinani.cadencii {
                     #endregion
                 } else if ( edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
                     #region EditMode.EditRightEdge
-                    VsqEvent last = AppManager.itemSelection.getLastSelectedEvent().editing;
+                    VsqEvent last = AppManager.itemSelection.getLastEvent().editing;
                     int x = (int)(last.Clock * scalex + xoffset);
                     y = -last.ID.Note * track_height + yoffset + 1;
                     int length = (int)(last.ID.getLength() * scalex);

@@ -110,7 +110,7 @@ public class Hamori : System.Windows.Forms.Form {
 
         int note;
         Dictionary<int, int> target_ids = new Dictionary<int, int>();
-        for ( org.kbinani.java.util.Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ){
+        for ( org.kbinani.java.util.Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ){
             SelectedEventEntry see = itr.next();
             target_ids.Add( see.original.InternalID, 0 );
         }
