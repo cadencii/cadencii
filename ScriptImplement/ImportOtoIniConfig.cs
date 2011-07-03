@@ -20,7 +20,7 @@ public class ImportOtoIniConfig
             return ScriptReturnStatus.NOT_EDITED;
         }
         bool edited = false;
-        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
             SelectedEventEntry item = itr.next();
             VsqEvent original = item.original;
             if ( original.ID.type != VsqIDType.Anote ) {

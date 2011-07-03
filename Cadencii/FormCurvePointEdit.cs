@@ -242,8 +242,8 @@ namespace org.kbinani.cadencii
             txtDataPointValue.requestFocus();
             txtDataPointValue.selectAll();
 
-            AppManager.clearSelectedPoint();
-            AppManager.addSelectedPoint( m_curve, bp.id );
+            AppManager.itemSelection.clearSelectedPoint();
+            AppManager.itemSelection.addSelectedPoint( m_curve, bp.id );
             if ( mMainWindow != null ) {
                 mMainWindow.ensureVisible( clock );
                 mMainWindow.refreshScreen();
@@ -288,8 +288,8 @@ namespace org.kbinani.cadencii
             btnForward3.setEnabled( exists );
 
             if ( exists ) {
-                AppManager.clearSelectedPoint();
-                AppManager.addSelectedPoint( m_curve, m_editing_id );
+                AppManager.itemSelection.clearSelectedPoint();
+                AppManager.itemSelection.addSelectedPoint( m_curve, m_editing_id );
             }
 
             if ( mMainWindow != null ) {

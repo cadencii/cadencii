@@ -206,7 +206,14 @@ namespace org.kbinani.cadencii
         /// アイコンパレット・ウィンドウのインスタンス
         /// </summary>
         public static FormIconPalette iconPalette = null;
+        /// <summary>
+        /// クリップボード管理クラスのインスタンス
+        /// </summary>
         public static ClipboardModel clipboard = null;
+        /// <summary>
+        /// 選択アイテムの管理クラスのインスタンス
+        /// </summary>
+        public static ItemSelectionModel itemSelection = null;
 
         #region Static Readonly Fields
         /// <summary>
@@ -394,48 +401,12 @@ namespace org.kbinani.cadencii
         /// トラックのオーバーレイ表示
         /// </summary>
         private static boolean mOverlay = true;
-        /// <summary>
-        /// 選択されているイベントのリスト
-        /// </summary>
-        [Obsolete]
-        private static Vector<SelectedEventEntry> mSelectedEvents = new Vector<SelectedEventEntry>();
-        /// <summary>
-        /// 選択されているテンポ変更イベントのリスト
-        /// </summary>
-        [Obsolete]
-        private static TreeMap<Integer, SelectedTempoEntry> mSelectedTempo = new TreeMap<Integer, SelectedTempoEntry>();
-        [Obsolete]
-        private static int mLastSelectedTempo = -1;
-        /// <summary>
-        /// 選択されている拍子変更イベントのリスト
-        /// </summary>
-        [Obsolete]
-        private static TreeMap<Integer, SelectedTimesigEntry> mSelectedTimesig = new TreeMap<Integer, SelectedTimesigEntry>();
-        [Obsolete]
-        private static int mLastSelectedTimesig = -1;
         private static EditTool mSelectedTool = EditTool.PENCIL;
 #if !TREECOM
         private static Vector<ICommand> mCommands = new Vector<ICommand>();
         private static int mCommandIndex = -1;
 #endif
-        /// <summary>
-        /// 選択されているベジエ点のリスト
-        /// </summary>
-        [Obsolete]
-        private static Vector<SelectedBezierPoint> mSelectedBezier = new Vector<SelectedBezierPoint>();
-        /// <summary>
-        /// 最後に選択されたベジエ点
-        /// </summary>
-        [Obsolete]
-        private static SelectedBezierPoint mLastSelectedBezier = new SelectedBezierPoint();
 
-        /// <summary>
-        /// selectedPointIDsに格納されているデータ点の，CurveType
-        /// </summary>
-        [Obsolete]
-        private static CurveType mSelectedPointCurveType = CurveType.Empty;
-        [Obsolete]
-        private static Vector<Long> mSelectedPointIDs = new Vector<Long>();
         /// <summary>
         /// Playingプロパティにロックをかけるためのオブジェクト
         /// </summary>
@@ -655,18 +626,6 @@ namespace org.kbinani.cadencii
         public: signals: void previewAborted( QObject sender, QObject e );
 #else
         public static event BEventHandler PreviewAborted;
-#endif
-
-        /// <summary>
-        /// 選択状態のアイテムが変化した時発生するイベント
-        /// </summary>
-        [Obsolete]
-#if JAVA
-        public static BEvent<SelectedEventChangedEventHandler> selectedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
-#elif QT_VERSION
-        public: signals: void selectedEventChanged( QObject sender, bool foo );
-#else
-        public static event SelectedEventChangedEventHandler SelectedEventChanged;
 #endif
 
         /// <summary>
@@ -2391,7 +2350,7 @@ namespace org.kbinani.cadencii
         {
             if ( isUndoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<SelectedEventEntry> itr = itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
@@ -2427,7 +2386,7 @@ namespace org.kbinani.cadencii
                 mCommandIndex--;
 
                 cleanupDeadSelection( before_ids );
-                updateSelectedEventInstance();
+                itemSelection.updateSelectedEventInstance();
             }
         }
 
@@ -2438,7 +2397,7 @@ namespace org.kbinani.cadencii
         {
             if ( isRedoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<SelectedEventEntry> itr = itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
@@ -2474,34 +2433,7 @@ namespace org.kbinani.cadencii
                 mCommandIndex++;
 
                 cleanupDeadSelection( before_ids );
-                updateSelectedEventInstance();
-            }
-        }
-
-        /// <summary>
-        /// 選択中のアイテムが編集された場合、編集にあわせてオブジェクトを更新する。
-        /// </summary>
-        public static void updateSelectedEventInstance()
-        {
-            if ( mVsq == null ) {
-                return;
-            }
-            int selected = getSelected();
-            VsqTrack vsq_track = mVsq.Track.get( selected );
-
-            for ( int i = 0; i < mSelectedEvents.size(); i++ ) {
-                SelectedEventEntry item = mSelectedEvents.get( i );
-                VsqEvent ev = null;
-                if ( item.track == selected ) {
-                    int internal_id = item.original.InternalID;
-                    ev = vsq_track.findEventFromID( internal_id );
-                }
-                if ( ev != null ){
-                    mSelectedEvents.set( i, new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
-                } else {
-                    mSelectedEvents.removeElementAt( i );
-                    i--;
-                }
+                itemSelection.updateSelectedEventInstance();
             }
         }
 
@@ -2526,7 +2458,7 @@ namespace org.kbinani.cadencii
                     }
                 }
                 if ( !found ) {
-                    AppManager.removeSelectedEvent( internal_id );
+                    AppManager.itemSelection.removeSelectedEvent( internal_id );
                 }
             }
         }
@@ -2611,535 +2543,6 @@ namespace org.kbinani.cadencii
                     serr.println( "AppManager#setSelectedTool; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
                 }
-            }
-        }
-
-        #region SelectedBezier
-        /// <summary>
-        /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete]
-        public static Iterator<SelectedBezierPoint> getSelectedBezierIterator()
-        {
-            return mSelectedBezier.iterator();
-        }
-
-        /// <summary>
-        /// 最後に選択状態となったベジエ曲線のデータ点を取得します。
-        /// </summary>
-        /// <returns>最後に選択状態となったベジエ曲線のデータ点を返します。選択状態となっているベジエ曲線がなければnullを返します。</returns>
-        [Obsolete]
-        public static SelectedBezierPoint getLastSelectedBezier()
-        {
-            if ( mLastSelectedBezier.chainID < 0 || mLastSelectedBezier.pointID < 0 ) {
-                return null;
-            } else {
-                return mLastSelectedBezier;
-            }
-        }
-
-        /// <summary>
-        /// 指定されたベジエ曲線のデータ点を選択状態にします。
-        /// </summary>
-        /// <param name="selected">選択状態にするデータ点。</param>
-        [Obsolete]
-        public static void addSelectedBezier( SelectedBezierPoint selected )
-        {
-            mLastSelectedBezier = selected;
-            int index = -1;
-            for ( int i = 0; i < mSelectedBezier.size(); i++ ) {
-                if ( mSelectedBezier.get( i ).chainID == selected.chainID &&
-                    mSelectedBezier.get( i ).pointID == selected.pointID ) {
-                    index = i;
-                    break;
-                }
-            }
-            if ( index >= 0 ) {
-                mSelectedBezier.set( index, selected );
-            } else {
-                mSelectedBezier.add( selected );
-            }
-            checkSelectedItemExistence();
-        }
-
-        /// <summary>
-        /// すべてのベジエ曲線のデータ点の選択状態を解除します。
-        /// </summary>
-        [Obsolete]
-        public static void clearSelectedBezier()
-        {
-            mSelectedBezier.clear();
-            mLastSelectedBezier.chainID = -1;
-            mLastSelectedBezier.pointID = -1;
-            checkSelectedItemExistence();
-        }
-        #endregion
-
-        #region SelectedTimesig
-        /// <summary>
-        /// 最後に選択状態となった拍子変更設定を取得します。
-        /// </summary>
-        /// <returns>最後に選択状態となった拍子変更設定を返します。選択状態となっている拍子変更設定が無ければnullを返します。</returns>
-        [Obsolete]
-        public static SelectedTimesigEntry getLastSelectedTimesig()
-        {
-            if ( mSelectedTimesig.containsKey( mLastSelectedTimesig ) ) {
-                return mSelectedTimesig.get( mLastSelectedTimesig );
-            } else {
-                return null;
-            }
-        }
-
-        [Obsolete]
-        public static int getLastSelectedTimesigBarcount()
-        {
-            return mLastSelectedTimesig;
-        }
-
-        [Obsolete]
-        public static void addSelectedTimesig( int barcount )
-        {
-            clearSelectedEvent(); //ここ注意！
-            clearSelectedTempo();
-            mLastSelectedTimesig = barcount;
-            if ( !mSelectedTimesig.containsKey( barcount ) ) {
-                for ( Iterator<TimeSigTableEntry> itr = mVsq.TimesigTable.iterator(); itr.hasNext(); ) {
-                    TimeSigTableEntry tte = itr.next();
-                    if ( tte.BarCount == barcount ) {
-                        mSelectedTimesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() ) );
-                        break;
-                    }
-                }
-            }
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void clearSelectedTimesig()
-        {
-            mSelectedTimesig.clear();
-            mLastSelectedTimesig = -1;
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static int getSelectedTimesigCount()
-        {
-            return mSelectedTimesig.size();
-        }
-
-        [Obsolete]
-        public static Iterator<ValuePair<Integer, SelectedTimesigEntry>> getSelectedTimesigIterator()
-        {
-            Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
-            for ( Iterator<Integer> itr = mSelectedTimesig.keySet().iterator(); itr.hasNext(); ) {
-                int clock = itr.next();
-                list.add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mSelectedTimesig.get( clock ) ) );
-            }
-            return list.iterator();
-        }
-
-        [Obsolete]
-        public static boolean isSelectedTimesigContains( int barcount )
-        {
-            return mSelectedTimesig.containsKey( barcount );
-        }
-
-        [Obsolete]
-        public static SelectedTimesigEntry getSelectedTimesig( int barcount )
-        {
-            if ( mSelectedTimesig.containsKey( barcount ) ) {
-                return mSelectedTimesig.get( barcount );
-            } else {
-                return null;
-            }
-        }
-
-        [Obsolete]
-        public static void removeSelectedTimesig( int barcount )
-        {
-            if ( mSelectedTimesig.containsKey( barcount ) ) {
-                mSelectedTimesig.remove( barcount );
-                checkSelectedItemExistence();
-            }
-        }
-        #endregion
-
-        #region SelectedTempo
-        [Obsolete]
-        public static SelectedTempoEntry getLastSelectedTempo()
-        {
-            if ( mSelectedTempo.containsKey( mLastSelectedTempo ) ) {
-                return mSelectedTempo.get( mLastSelectedTempo );
-            } else {
-                return null;
-            }
-        }
-
-        [Obsolete]
-        public static int getLastSelectedTempoClock()
-        {
-            return mLastSelectedTempo;
-        }
-
-        [Obsolete]
-        public static void addSelectedTempo( int clock )
-        {
-            clearSelectedEvent(); //ここ注意！
-            clearSelectedTimesig();
-            mLastSelectedTempo = clock;
-            if ( !mSelectedTempo.containsKey( clock ) ) {
-                for ( Iterator<TempoTableEntry> itr = mVsq.TempoTable.iterator(); itr.hasNext(); ) {
-                    TempoTableEntry tte = itr.next();
-                    if ( tte.Clock == clock ) {
-                        mSelectedTempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() ) );
-                        break;
-                    }
-                }
-            }
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void clearSelectedTempo()
-        {
-            mSelectedTempo.clear();
-            mLastSelectedTempo = -1;
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static int getSelectedTempoCount()
-        {
-            return mSelectedTempo.size();
-        }
-
-        [Obsolete]
-        public static Iterator<ValuePair<Integer, SelectedTempoEntry>> getSelectedTempoIterator()
-        {
-            Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
-            for ( Iterator<Integer> itr = mSelectedTempo.keySet().iterator(); itr.hasNext(); ) {
-                int clock = itr.next();
-                list.add( new ValuePair<Integer, SelectedTempoEntry>( clock, mSelectedTempo.get( clock ) ) );
-            }
-            return list.iterator();
-        }
-
-        [Obsolete]
-        public static boolean isSelectedTempoContains( int clock )
-        {
-            return mSelectedTempo.containsKey( clock );
-        }
-
-        [Obsolete]
-        public static SelectedTempoEntry getSelectedTempo( int clock )
-        {
-            if ( mSelectedTempo.containsKey( clock ) ) {
-                return mSelectedTempo.get( clock );
-            } else {
-                return null;
-            }
-        }
-
-        [Obsolete]
-        public static void removeSelectedTempo( int clock )
-        {
-            if ( mSelectedTempo.containsKey( clock ) ) {
-                mSelectedTempo.remove( clock );
-                checkSelectedItemExistence();
-            }
-        }
-        #endregion
-
-        #region SelectedEvent
-        [Obsolete]
-        public static void removeSelectedEvent( int id )
-        {
-            removeSelectedEventCor( id, false );
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void removeSelectedEventSilent( int id )
-        {
-            removeSelectedEventCor( id, true );
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        private static void removeSelectedEventCor( int id, boolean silent )
-        {
-            int count = mSelectedEvents.size();
-            for ( int i = 0; i < count; i++ ) {
-                if ( mSelectedEvents.get( i ).original.InternalID == id ) {
-                    mSelectedEvents.removeElementAt( i );
-                    break;
-                }
-            }
-            if ( !silent ) {
-#if ENABLE_PROPERTY
-                propertyPanel.updateValue( mSelected );
-#endif
-            }
-        }
-
-        [Obsolete]
-        public static void removeSelectedEventRange( int[] ids )
-        {
-            Vector<Integer> v_ids = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
-            Vector<Integer> index = new Vector<Integer>();
-            int count = mSelectedEvents.size();
-            for ( int i = 0; i < count; i++ ) {
-                if ( v_ids.contains( mSelectedEvents.get( i ).original.InternalID ) ) {
-                    index.add( i );
-                    if ( index.size() == ids.Length ) {
-                        break;
-                    }
-                }
-            }
-            count = index.size();
-            for ( int i = count - 1; i >= 0; i-- ) {
-                mSelectedEvents.removeElementAt( i );
-            }
-#if ENABLE_PROPERTY
-            propertyPanel.updateValue( mSelected );
-#endif
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void addSelectedEventAll( Vector<Integer> list )
-        {
-            clearSelectedTempo();
-            clearSelectedTimesig();
-            VsqEvent[] index = new VsqEvent[list.size()];
-            int count = 0;
-            int c = list.size();
-            int selected = getSelected();
-            for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
-                VsqEvent ev = itr.next();
-                int find = -1;
-                for ( int i = 0; i < c; i++ ) {
-                    if ( list.get( i ) == ev.InternalID ) {
-                        find = i;
-                        break;
-                    }
-                }
-                if ( 0 <= find ) {
-                    index[find] = ev;
-                    count++;
-                }
-                if ( count == list.size() ) {
-                    break;
-                }
-            }
-            for ( int i = 0; i < index.Length; i++ ) {
-                if ( !isSelectedEventContains( mSelected, index[i].InternalID ) ) {
-                    mSelectedEvents.add( new SelectedEventEntry( mSelected, index[i], (VsqEvent)index[i].clone() ) );
-                }
-            }
-#if ENABLE_PROPERTY
-            propertyPanel.updateValue( mSelected );
-#endif
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void addSelectedEvent( int id )
-        {
-            addSelectedEventCor( id, false );
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void addSelectedEventSilent( int id )
-        {
-            addSelectedEventCor( id, true );
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        private static void addSelectedEventCor( int id, boolean silent )
-        {
-            clearSelectedTempo();
-            clearSelectedTimesig();
-            int selected = getSelected();
-            for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
-                VsqEvent ev = itr.next();
-                if ( ev.InternalID == id ) {
-                    if ( isSelectedEventContains( selected, id ) ) {
-                        // すでに選択されていた場合
-                        int count = mSelectedEvents.size();
-                        for ( int i = 0; i < count; i++ ) {
-                            SelectedEventEntry item = mSelectedEvents.get( i );
-                            if ( item.original.InternalID == id ) {
-                                mSelectedEvents.removeElementAt( i );
-                                break;
-                            }
-                        }
-                    }
-
-                    mSelectedEvents.add( new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
-                    if ( !silent ) {
-                        try {
-#if JAVA
-                            selectedEventChangedEvent.raise( typeof( AppManager ), false );
-#elif QT_VERSION
-                            selectedEventChanged( this, false );
-#else
-                            if ( SelectedEventChanged != null ) {
-                                SelectedEventChanged.Invoke( typeof( AppManager ), false );
-                            }
-#endif
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#addSelectedEventCor; ex=" + ex );
-                            Logger.write( typeof( AppManager ) + ".addSelectedCurveCor; ex=" + ex + "\n" );
-                        }
-                    }
-                    break;
-                }
-            }
-            if ( !silent ) {
-#if ENABLE_PROPERTY
-                propertyPanel.updateValue( selected );
-#endif
-            }
-        }
-
-        [Obsolete]
-        public static void clearSelectedEvent()
-        {
-            mSelectedEvents.clear();
-#if ENABLE_PROPERTY
-            propertyPanel.updateValue( mSelected );
-#endif
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static boolean isSelectedEventContains( int track, int id )
-        {
-            int count = mSelectedEvents.size();
-            for ( int i = 0; i < count; i++ ) {
-                SelectedEventEntry item = mSelectedEvents.get( i );
-                if ( item.original.InternalID == id && item.track == track ) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        [Obsolete]
-        public static Iterator<SelectedEventEntry> getSelectedEventIterator()
-        {
-            return mSelectedEvents.iterator();
-        }
-
-        [Obsolete]
-        public static SelectedEventEntry getLastSelectedEvent()
-        {
-            if ( mSelectedEvents.size() <= 0 ) {
-                return null;
-            } else {
-                return mSelectedEvents.get( mSelectedEvents.size() - 1 );
-            }
-        }
-
-        [Obsolete]
-        public static int getSelectedEventCount()
-        {
-            return mSelectedEvents.size();
-        }
-        #endregion
-
-        #region SelectedPoint
-        [Obsolete]
-        public static void clearSelectedPoint()
-        {
-            mSelectedPointIDs.clear();
-            mSelectedPointCurveType = CurveType.Empty;
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void addSelectedPoint( CurveType curve, long id )
-        {
-            addSelectedPointAll( curve, new long[] { id } );
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static void addSelectedPointAll( CurveType curve, long[] ids )
-        {
-            if ( !curve.equals( mSelectedPointCurveType ) ) {
-                mSelectedPointIDs.clear();
-                mSelectedPointCurveType = curve;
-            }
-            for ( int i = 0; i < ids.Length; i++ ) {
-                if ( !mSelectedPointIDs.contains( ids[i] ) ) {
-                    mSelectedPointIDs.add( ids[i] );
-                }
-            }
-            checkSelectedItemExistence();
-        }
-
-        [Obsolete]
-        public static boolean isSelectedPointContains( long id )
-        {
-            return mSelectedPointIDs.contains( id );
-        }
-
-        [Obsolete]
-        public static CurveType getSelectedPointCurveType()
-        {
-            return mSelectedPointCurveType;
-        }
-
-        [Obsolete]
-        public static Iterator<Long> getSelectedPointIDIterator()
-        {
-            return mSelectedPointIDs.iterator();
-        }
-
-        [Obsolete]
-        public static int getSelectedPointIDCount()
-        {
-            return mSelectedPointIDs.size();
-        }
-
-        [Obsolete]
-        public static void removeSelectedPoint( long id )
-        {
-            mSelectedPointIDs.removeElement( id );
-            checkSelectedItemExistence();
-        }
-        #endregion
-
-        /// <summary>
-        /// 現在選択されたアイテムが存在するかどうかを調べ，必要であればSelectedEventChangedイベントを発生させます
-        /// </summary>
-        [Obsolete]
-        private static void checkSelectedItemExistence()
-        {
-            boolean ret = mSelectedBezier.size() == 0 &&
-                          mSelectedEvents.size() == 0 &&
-                          mSelectedTempo.size() == 0 &&
-                          mSelectedTimesig.size() == 0 &&
-                          mSelectedPointIDs.size() == 0;
-            try {
-#if JAVA
-                selectedEventChangedEvent.raise( typeof( AppManager ), ret );
-#elif QT_VERSION
-                selectedEventChanged( this, ret );
-#else
-                if ( SelectedEventChanged != null ) {
-                    SelectedEventChanged.Invoke( typeof( AppManager ), ret );
-                }
-#endif
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".checkSelectedItemExistence; ex=" + ex + "\n" );
             }
         }
 
@@ -3595,6 +2998,7 @@ namespace org.kbinani.cadencii
         {
             loadConfig();
             clipboard = new ClipboardModel();
+            itemSelection = new ItemSelectionModel();
 #if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
             int c = editorConfig.UtauSingers.size();

@@ -88,7 +88,7 @@ public static class AutoBRI {
     public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ
         System.Collections.Generic.List<int> ids = new System.Collections.Generic.List<int>();
-        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ){
+        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ){
             SelectedEventEntry entry = itr.next();
             ids.Add( entry.original.InternalID );
         }

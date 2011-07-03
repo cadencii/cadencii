@@ -602,6 +602,40 @@ namespace org{
                 #endregion
 
                 /// <summary>
+                /// 選択中のアイテムが編集された場合、編集にあわせてオブジェクトを更新する。
+                /// </summary>
+                public void updateSelectedEventInstance()
+                {
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    if ( vsq == null )
+                    {
+                        return;
+                    }
+                    int selected = AppManager.getSelected();
+                    VsqTrack vsq_track = vsq.Track.get( selected );
+
+                    for ( int i = 0; i < mSelectedEvents.size(); i++ )
+                    {
+                        SelectedEventEntry item = mSelectedEvents.get( i );
+                        VsqEvent ev = null;
+                        if ( item.track == selected )
+                        {
+                            int internal_id = item.original.InternalID;
+                            ev = vsq_track.findEventFromID( internal_id );
+                        }
+                        if ( ev != null )
+                        {
+                            mSelectedEvents.set( i, new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
+                        }
+                        else
+                        {
+                            mSelectedEvents.removeElementAt( i );
+                            i--;
+                        }
+                    }
+                }
+
+                /// <summary>
                 /// 現在選択されたアイテムが存在するかどうかを調べ，必要であればSelectedEventChangedイベントを発生させます
                 /// </summary>
                 private void checkSelectedItemExistence()

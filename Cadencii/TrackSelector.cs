@@ -1165,7 +1165,7 @@ namespace org.kbinani.cadencii
                         Rectangle rc =
                             new Rectangle( x, ycoord,
                                            SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
-                        if ( AppManager.isSelectedEventContains( selected, ve.InternalID ) ) {
+                        if ( AppManager.itemSelection.isSelectedEventContains( selected, ve.InternalID ) ) {
                             g.setColor( AppManager.getHilightColor() );
                         } else {
                             g.setColor( Color.white );
@@ -1519,7 +1519,7 @@ namespace org.kbinani.cadencii
                             }
                         }
                         if ( mMouseDownMode == MouseDownMode.SINGER_LIST && AppManager.getSelectedTool() != EditTool.ERASER ) {
-                            for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                                 SelectedEventEntry item = itr.next();
                                 int x = AppManager.xCoordFromClocks( item.editing.Clock );
                                 g.setColor( COLOR_SINGERBOX_BORDER_HILIGHT );
@@ -1661,7 +1661,7 @@ namespace org.kbinani.cadencii
             int dotwid = DOT_WID * 2 + 1;
             int tolerance = AppManager.editorConfig.PxTolerance;
             // 選択アイテムが1個以上あるので，検索するときtrue
-            boolean search_sel = AppManager.getSelectedEventCount() > 0;
+            boolean search_sel = AppManager.itemSelection.getSelectedEventCount() > 0;
             while ( true ) {
                 boolean draw_env_points = false;
                 itr_prev = itr_item;
@@ -1737,7 +1737,7 @@ namespace org.kbinani.cadencii
 
                 // 選択されてたら描く
                 if ( !draw_env_points && search_sel ) {
-                    if ( AppManager.isSelectedEventContains( track_index, item.InternalID ) ) {
+                    if ( AppManager.itemSelection.isSelectedEventContains( track_index, item.InternalID ) ) {
                         draw_env_points = true;
                     }
                 }
@@ -2284,7 +2284,7 @@ namespace org.kbinani.cadencii
                         //float order = (type.equals( CurveType.VEL )) ? graph_height / 127f : graph_height / 100f;
 
                         int y = oy - graph_height * (value - min) / (max - min);
-                        if ( is_front && AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
+                        if ( is_front && AppManager.itemSelection.isSelectedEventContains( selected, dobj.mInternalID ) ) {
                             g.setColor( COLOR_A127R008G166B172 );
                             g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
                             if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
@@ -2660,7 +2660,7 @@ namespace org.kbinani.cadencii
             // 選択されているデータ点をハイライト表示する
             int w = DOT_WID * 2 + 1;
             g.setColor( COLOR_DOT_HILIGHT );
-            for ( Iterator<Long> itr = AppManager.getSelectedPointIDIterator(); itr.hasNext(); ) {
+            for ( Iterator<Long> itr = AppManager.itemSelection.getSelectedPointIDIterator(); itr.hasNext(); ) {
                 long id = itr.next();
                 VsqBPPairSearchContext ret = list.findElement( id );
                 if ( ret.index < 0 ) {
@@ -2932,8 +2932,8 @@ namespace org.kbinani.cadencii
 
         public BezierPoint HandleMouseMoveForBezierMove( int clock, int value, int value_raw, BezierPickedSide picked )
         {
-            BezierChain target = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, AppManager.getLastSelectedBezier().chainID );
-            int point_id = AppManager.getLastSelectedBezier().pointID;
+            BezierChain target = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, AppManager.itemSelection.getLastSelectedBezier().chainID );
+            int point_id = AppManager.itemSelection.getLastSelectedBezier().pointID;
             int index = -1;
             for ( int i = 0; i < target.points.size(); i++ ) {
                 if ( target.points.get( i ).getID() == point_id ) {
@@ -3177,7 +3177,7 @@ namespace org.kbinani.cadencii
                 }
             } else if ( mMouseDownMode == MouseDownMode.SINGER_LIST ) {
                 int dclock = clock - mSingerMoveStartedClock;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     item.editing.Clock = item.original.Clock + dclock;
                 }
@@ -3237,10 +3237,10 @@ namespace org.kbinani.cadencii
                     }
                 }
             } else if ( mMouseDownMode == MouseDownMode.BEZIER_MODE ) {
-                HandleMouseMoveForBezierMove( clock, value, value_raw, AppManager.getLastSelectedBezier().picked );
+                HandleMouseMoveForBezierMove( clock, value, value_raw, AppManager.itemSelection.getLastSelectedBezier().picked );
             } else if ( mMouseDownMode == MouseDownMode.BEZIER_ADD_NEW || mMouseDownMode == MouseDownMode.BEZIER_EDIT ) {
-                BezierChain target = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, AppManager.getLastSelectedBezier().chainID );
-                int point_id = AppManager.getLastSelectedBezier().pointID;
+                BezierChain target = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, AppManager.itemSelection.getLastSelectedBezier().chainID );
+                int point_id = AppManager.itemSelection.getLastSelectedBezier().pointID;
                 int index = -1;
                 for ( int i = 0; i < target.points.size(); i++ ) {
                     if ( target.points.get( i ).getID() == point_id ) {
@@ -3383,7 +3383,7 @@ namespace org.kbinani.cadencii
         private void processMouseDownSelectRegion( BMouseEventArgs e )
         {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
-                AppManager.clearSelectedPoint();
+                AppManager.itemSelection.clearSelectedPoint();
             }
 
             int clock = AppManager.clockFromXCoord( e.X );
@@ -3496,7 +3496,7 @@ namespace org.kbinani.cadencii
             } else if ( height - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y < height - OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on singer tab
                 mMouseDownMode = MouseDownMode.SINGER_LIST;
-                AppManager.clearSelectedPoint();
+                AppManager.itemSelection.clearSelectedPoint();
                 mMouseTracer.clear();
                 VsqEvent ve = null;
                 if ( key_width <= e.X && e.X <= width ){
@@ -3512,22 +3512,22 @@ namespace org.kbinani.cadencii
                 } else {
                     if ( ve != null ) {
                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
-                            if ( AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
+                            if ( AppManager.itemSelection.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
                                 Vector<Integer> old = new Vector<Integer>();
-                                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                                     SelectedEventEntry item = itr.next();
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
                                         old.add( id );
                                     }
                                 }
-                                AppManager.clearSelectedEvent();
-                                AppManager.addSelectedEventAll( old );
+                                AppManager.itemSelection.clearSelectedEvent();
+                                AppManager.itemSelection.addSelectedEventAll( old );
                             } else {
-                                AppManager.addSelectedEvent( ve.InternalID );
+                                AppManager.itemSelection.addSelectedEvent( ve.InternalID );
                             }
                         } else if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                            int last_clock = AppManager.getLastSelectedEvent().original.Clock;
+                            int last_clock = AppManager.itemSelection.getLastSelectedEvent().original.Clock;
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
                             Vector<Integer> add_required = new Vector<Integer>();
@@ -3539,16 +3539,16 @@ namespace org.kbinani.cadencii
                                 }
                             }
                             add_required.add( ve.InternalID );
-                            AppManager.addSelectedEventAll( add_required );
+                            AppManager.itemSelection.addSelectedEventAll( add_required );
                         } else {
-                            if ( !AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
-                                AppManager.clearSelectedEvent();
+                            if ( !AppManager.itemSelection.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
+                                AppManager.itemSelection.clearSelectedEvent();
                             }
-                            AppManager.addSelectedEvent( ve.InternalID );
+                            AppManager.itemSelection.addSelectedEvent( ve.InternalID );
                         }
                         mSingerMoveStartedClock = clock;
                     } else {
-                        AppManager.clearSelectedEvent();
+                        AppManager.itemSelection.clearSelectedEvent();
                     }
                 }
                 #endregion
@@ -3699,7 +3699,7 @@ namespace org.kbinani.cadencii
                             } else {
                                 // まずベジエ曲線の点にヒットしてないかどうかを検査
                                 Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
-                                AppManager.clearSelectedBezier();
+                                AppManager.itemSelection.clearSelectedBezier();
                                 for ( int i = 0; i < dict.size(); i++ ) {
                                     BezierChain bc = dict.get( i );
                                     for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
@@ -3707,7 +3707,7 @@ namespace org.kbinani.cadencii
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
-                                            AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.BASE, bp ) );
+                                            AppManager.itemSelection.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.BASE, bp ) );
                                             mEditingBezierOriginal = (BezierChain)bc.clone();
                                             found = true;
                                             break;
@@ -3717,7 +3717,7 @@ namespace org.kbinani.cadencii
                                             pt = getScreenCoord( bp.getControlLeft() );
                                             rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                             if ( isInRect( e.X, e.Y, rc ) ) {
-                                                AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.LEFT, bp ) );
+                                                AppManager.itemSelection.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.LEFT, bp ) );
                                                 mEditingBezierOriginal = (BezierChain)bc.clone();
                                                 found = true;
                                                 break;
@@ -3728,7 +3728,7 @@ namespace org.kbinani.cadencii
                                             pt = getScreenCoord( bp.getControlRight() );
                                             rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                             if ( isInRect( e.X, e.Y, rc ) ) {
-                                                AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.RIGHT, bp ) );
+                                                AppManager.itemSelection.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.RIGHT, bp ) );
                                                 mEditingBezierOriginal = (BezierChain)bc.clone();
                                                 found = true;
                                                 break;
@@ -3754,7 +3754,7 @@ namespace org.kbinani.cadencii
                                     if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                         // clicked with CTRL key
                                         Vector<Integer> list = new Vector<Integer>();
-                                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                                             SelectedEventEntry item = itr.next();
                                             VsqEvent ve2 = item.original;
                                             if ( ve.InternalID == ve2.InternalID ) {
@@ -3763,11 +3763,11 @@ namespace org.kbinani.cadencii
                                                 list.add( ve2.InternalID );
                                             }
                                         }
-                                        AppManager.clearSelectedEvent();
-                                        AppManager.addSelectedEventAll( list );
+                                        AppManager.itemSelection.clearSelectedEvent();
+                                        AppManager.itemSelection.addSelectedEventAll( list );
                                     } else if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                                         // clicked with Shift key
-                                        SelectedEventEntry last_selected = AppManager.getLastSelectedEvent();
+                                        SelectedEventEntry last_selected = AppManager.itemSelection.getLastSelectedEvent();
                                         if ( last_selected != null ) {
                                             int last_clock = last_selected.original.Clock;
                                             int tmin = Math.Min( ve.Clock, last_clock );
@@ -3779,16 +3779,16 @@ namespace org.kbinani.cadencii
                                                     add_required.add( item.InternalID );
                                                 }
                                             }
-                                            AppManager.addSelectedEventAll( add_required );
+                                            AppManager.itemSelection.addSelectedEventAll( add_required );
                                         }
                                     } else {
                                         // no modefier key
-                                        if ( !AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
-                                            AppManager.clearSelectedEvent();
+                                        if ( !AppManager.itemSelection.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
+                                            AppManager.itemSelection.clearSelectedEvent();
                                         }
                                     }
                                     if ( !found2 ) {
-                                        AppManager.addSelectedEvent( ve.InternalID );
+                                        AppManager.itemSelection.addSelectedEvent( ve.InternalID );
                                     }
 
                                     mMouseDownMode = MouseDownMode.VEL_WAIT_HOVER;
@@ -3805,8 +3805,8 @@ namespace org.kbinani.cadencii
                                         mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.DEMdecGainRate );
                                     }
                                     mVelEditSelected.clear();
-                                    if ( AppManager.isSelectedEventContains( AppManager.getSelected(), mVelEditLastSelectedID ) ) {
-                                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                    if ( AppManager.itemSelection.isSelectedEventContains( AppManager.getSelected(), mVelEditLastSelectedID ) ) {
+                                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                                             SelectedEventEntry item = itr.next();
                                             mVelEditSelected.put( item.original.InternalID,
                                                                     new SelectedEventEntry( AppManager.getSelected(),
@@ -3833,18 +3833,18 @@ namespace org.kbinani.cadencii
                                 // マウス位置のデータポイントを検索
                                 long id = findDataPointAt( e.X, e.Y );
                                 if ( id > 0 ) {
-                                    if ( AppManager.isSelectedPointContains( id ) ) {
+                                    if ( AppManager.itemSelection.isSelectedPointContains( id ) ) {
                                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
-                                            AppManager.removeSelectedPoint( id );
+                                            AppManager.itemSelection.removeSelectedPoint( id );
                                             mMouseDownMode = MouseDownMode.NONE;
                                             invalidate();
                                             return;
                                         }
                                     } else {
                                         if ( (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
-                                            AppManager.clearSelectedPoint();
+                                            AppManager.itemSelection.clearSelectedPoint();
                                         }
-                                        AppManager.addSelectedPoint( mSelectedCurve, id );
+                                        AppManager.itemSelection.addSelectedPoint( mSelectedCurve, id );
                                     }
 
                                     mMouseDownMode = MouseDownMode.POINT_MOVE;
@@ -3854,7 +3854,7 @@ namespace org.kbinani.cadencii
                                         int count = list.size();
                                         for ( int i = 0; i < count; i++ ) {
                                             VsqBPPair item = list.getElementB( i );
-                                            if ( AppManager.isSelectedPointContains( item.id ) ) {
+                                            if ( AppManager.itemSelection.isSelectedPointContains( item.id ) ) {
                                                 mMovingPoints.add( new BPPair( list.getKeyClock( i ), item.value ) );
                                             }
                                         }
@@ -3863,10 +3863,10 @@ namespace org.kbinani.cadencii
                                     }
                                 } else {
                                     if ( (mModifierOnMouseDown & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
-                                        AppManager.clearSelectedPoint();
+                                        AppManager.itemSelection.clearSelectedPoint();
                                     }
                                     if ( (mModifierOnMouseDown & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
-                                        AppManager.clearSelectedPoint();
+                                        AppManager.itemSelection.clearSelectedPoint();
                                     }
                                 }
 
@@ -3885,7 +3885,7 @@ namespace org.kbinani.cadencii
                             #region Eraser
                             VsqEvent ve3 = findItemAt( e.X, e.Y );
                             if ( ve3 != null ) {
-                                AppManager.clearSelectedEvent();
+                                AppManager.itemSelection.clearSelectedEvent();
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventDelete( selected,
                                                                                                                   ve3.InternalID ) );
                                 executeCommand( run, true );
@@ -3978,7 +3978,7 @@ namespace org.kbinani.cadencii
                                 }
 
                                 if ( (mModifierOnMouseDown & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
-                                    AppManager.clearSelectedPoint();
+                                    AppManager.itemSelection.clearSelectedPoint();
                                 }
                                 if ( AppManager.editorConfig.CurveSelectingQuantized ) {
                                     AppManager.mCurveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
@@ -3992,7 +3992,7 @@ namespace org.kbinani.cadencii
                         if ( AppManager.isCurveMode() ) {
                             if ( !mSelectedCurve.equals( CurveType.VEL ) && !mSelectedCurve.equals( CurveType.Env ) ) {
                                 Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
-                                AppManager.clearSelectedBezier();
+                                AppManager.itemSelection.clearSelectedBezier();
                                 boolean found = false;
                                 for ( int i = 0; i < dict.size(); i++ ) {
                                     BezierChain bc = dict.get( i );
@@ -4001,7 +4001,7 @@ namespace org.kbinani.cadencii
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
-                                            AppManager.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.BASE, bp ) );
+                                            AppManager.itemSelection.addSelectedBezier( new SelectedBezierPoint( bc.id, bp.getID(), BezierPickedSide.BASE, bp ) );
                                             found = true;
                                             break;
                                         }
@@ -4057,7 +4057,7 @@ namespace org.kbinani.cadencii
 #endif
 
             if ( found_chain.value != null ) {
-                AppManager.addSelectedBezier(
+                AppManager.itemSelection.addSelectedBezier(
                     new SelectedBezierPoint(
                         found_chain.value.id, found_point.value.getID(),
                         found_side.value, found_point.value ) );
@@ -4150,8 +4150,8 @@ namespace org.kbinani.cadencii
                         executeCommand( run, false );
                         mMouseDownMode = MouseDownMode.BEZIER_EDIT;
                     }
-                    AppManager.clearSelectedBezier();
-                    AppManager.addSelectedBezier( new SelectedBezierPoint( chain_id, point_id, BezierPickedSide.BASE, bp ) );
+                    AppManager.itemSelection.clearSelectedBezier();
+                    AppManager.itemSelection.addSelectedBezier( new SelectedBezierPoint( chain_id, point_id, BezierPickedSide.BASE, bp ) );
                 } else {
                     mMouseDownMode = MouseDownMode.NONE;
                 }
@@ -4403,7 +4403,7 @@ namespace org.kbinani.cadencii
                  mMouseDownMode == MouseDownMode.BEZIER_MODE ||
                  mMouseDownMode == MouseDownMode.BEZIER_EDIT ) {
                 if ( e.Button == BMouseButtons.Left && sender is TrackSelector ) {
-                    int chain_id = AppManager.getLastSelectedBezier().chainID;
+                    int chain_id = AppManager.itemSelection.getLastSelectedBezier().chainID;
                     BezierChain edited = (BezierChain)vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, chain_id ).clone();
                     if ( mMouseDownMode == MouseDownMode.BEZIER_ADD_NEW ) {
                         edited.id = chain_id;
@@ -4479,7 +4479,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                                     sout.println( "TrackSelector#TrackSelector_MouseUp; CTRL was not pressed" );
 #endif
-                                    AppManager.clearSelectedPoint();
+                                    AppManager.itemSelection.clearSelectedPoint();
                                 }
                                 if ( !mSelectedCurve.equals( CurveType.Accent ) &&
                                      !mSelectedCurve.equals( CurveType.Decay ) &&
@@ -4503,7 +4503,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                                             sout.println( "TrackSelector#TrackSelectro_MosueUp; selected; clock=" + clock + "; id=" + item.id );
 #endif
-                                            AppManager.addSelectedPoint( mSelectedCurve, item.id );
+                                            AppManager.itemSelection.addSelectedPoint( mSelectedCurve, item.id );
                                         }
                                     }
                                 }
@@ -4575,7 +4575,7 @@ namespace org.kbinani.cadencii
                                 int old_end = AppManager.mCurveSelectedInterval.getEnd();
                                 AppManager.mCurveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
                                 AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
-                                AppManager.clearSelectedEvent();
+                                AppManager.itemSelection.clearSelectedEvent();
                                 Vector<Integer> deleting = new Vector<Integer>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ev = itr.next();
@@ -5021,7 +5021,7 @@ namespace org.kbinani.cadencii
                 mMouseDowned = false;
             } else if ( mMouseDownMode == MouseDownMode.SINGER_LIST ) {
                 if ( mMouseMoved ) {
-                    int count = AppManager.getSelectedEventCount();
+                    int count = AppManager.itemSelection.getSelectedEventCount();
                     if ( count > 0 ) {
                         int[] ids = new int[count];
                         int[] clocks = new int[count];
@@ -5030,7 +5030,7 @@ namespace org.kbinani.cadencii
                         boolean is_valid = true;
                         boolean contains_first_singer = false;
                         int premeasure = vsq.getPreMeasureClocks();
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry item = itr.next();
                             i++;
                             ids[i] = item.original.InternalID;
@@ -5065,7 +5065,7 @@ namespace org.kbinani.cadencii
                             }
                             boolean changed = false;
                             for ( int j = 0; j < ids.Length; j++ ) {
-                                for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+                                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getSelectedEventIterator(); itr.hasNext(); ) {
                                     SelectedEventEntry item = itr.next();
                                     if ( item.original.InternalID == ids[j] && item.original.Clock != clocks[j] ) {
                                         changed = true;
@@ -5117,8 +5117,8 @@ namespace org.kbinani.cadencii
                     executeCommand( run, true );
                 }
                 if ( mVelEditSelected.size() == 1 ) {
-                    AppManager.clearSelectedEvent();
-                    AppManager.addSelectedEvent( mVelEditLastSelectedID );
+                    AppManager.itemSelection.clearSelectedEvent();
+                    AppManager.itemSelection.addSelectedEvent( mVelEditLastSelectedID );
                 }
             } else if ( mMouseDownMode == MouseDownMode.ENVELOPE_MOVE ) {
                 mMouseDownMode = MouseDownMode.NONE;
@@ -5201,7 +5201,7 @@ namespace org.kbinani.cadencii
                     for ( int i = 0; i < count; i++ ) {
                         int clock = list.getKeyClock( i );
                         VsqBPPair item = list.getElementB( i );
-                        if ( AppManager.isSelectedPointContains( item.id ) ) {
+                        if ( AppManager.itemSelection.isSelectedPointContains( item.id ) ) {
                             int x = AppManager.xCoordFromClocks( clock ) + dx + 1;
                             int y = yCoordFromValue( item.value ) + dy - 1;
 
@@ -5579,8 +5579,8 @@ namespace org.kbinani.cadencii
                                 }
 
                                 if ( bp_found ) {
-                                    AppManager.clearSelectedPoint();
-                                    AppManager.addSelectedPoint( mSelectedCurve, bp_id );
+                                    AppManager.itemSelection.clearSelectedPoint();
+                                    AppManager.itemSelection.addSelectedPoint( mSelectedCurve, bp_id );
                                     FormCurvePointEdit dialog =
                                         new FormCurvePointEdit( mMainWindow, bp_id, mSelectedCurve );
                                     int tx = AppManager.xCoordFromClocks( tclock );
