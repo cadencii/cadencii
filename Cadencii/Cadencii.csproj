@@ -171,6 +171,7 @@
     <Compile Include="IFormWorkerControl.cs" />
     <Compile Include="IImageCachedComponentDrawer.cs" />
     <Compile Include="ImageCachedComponentDrawer.cs" />
+    <Compile Include="ItemSelectionModel.cs" />
     <Compile Include="LineGraphDrawer.cs" />
     <Compile Include="PaletteToolMenuItem.cs">
       <SubType>Component</SubType>

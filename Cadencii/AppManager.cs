@@ -397,16 +397,21 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 選択されているイベントのリスト
         /// </summary>
+        [Obsolete]
         private static Vector<SelectedEventEntry> mSelectedEvents = new Vector<SelectedEventEntry>();
         /// <summary>
         /// 選択されているテンポ変更イベントのリスト
         /// </summary>
+        [Obsolete]
         private static TreeMap<Integer, SelectedTempoEntry> mSelectedTempo = new TreeMap<Integer, SelectedTempoEntry>();
+        [Obsolete]
         private static int mLastSelectedTempo = -1;
         /// <summary>
         /// 選択されている拍子変更イベントのリスト
         /// </summary>
+        [Obsolete]
         private static TreeMap<Integer, SelectedTimesigEntry> mSelectedTimesig = new TreeMap<Integer, SelectedTimesigEntry>();
+        [Obsolete]
         private static int mLastSelectedTimesig = -1;
         private static EditTool mSelectedTool = EditTool.PENCIL;
 #if !TREECOM
@@ -416,16 +421,20 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 選択されているベジエ点のリスト
         /// </summary>
+        [Obsolete]
         private static Vector<SelectedBezierPoint> mSelectedBezier = new Vector<SelectedBezierPoint>();
         /// <summary>
         /// 最後に選択されたベジエ点
         /// </summary>
+        [Obsolete]
         private static SelectedBezierPoint mLastSelectedBezier = new SelectedBezierPoint();
 
         /// <summary>
         /// selectedPointIDsに格納されているデータ点の，CurveType
         /// </summary>
+        [Obsolete]
         private static CurveType mSelectedPointCurveType = CurveType.Empty;
+        [Obsolete]
         private static Vector<Long> mSelectedPointIDs = new Vector<Long>();
         /// <summary>
         /// Playingプロパティにロックをかけるためのオブジェクト
@@ -651,6 +660,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 選択状態のアイテムが変化した時発生するイベント
         /// </summary>
+        [Obsolete]
 #if JAVA
         public static BEvent<SelectedEventChangedEventHandler> selectedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
 #elif QT_VERSION
@@ -2609,6 +2619,7 @@ namespace org.kbinani.cadencii
         /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
+        [Obsolete]
         public static Iterator<SelectedBezierPoint> getSelectedBezierIterator()
         {
             return mSelectedBezier.iterator();
@@ -2618,6 +2629,7 @@ namespace org.kbinani.cadencii
         /// 最後に選択状態となったベジエ曲線のデータ点を取得します。
         /// </summary>
         /// <returns>最後に選択状態となったベジエ曲線のデータ点を返します。選択状態となっているベジエ曲線がなければnullを返します。</returns>
+        [Obsolete]
         public static SelectedBezierPoint getLastSelectedBezier()
         {
             if ( mLastSelectedBezier.chainID < 0 || mLastSelectedBezier.pointID < 0 ) {
@@ -2631,6 +2643,7 @@ namespace org.kbinani.cadencii
         /// 指定されたベジエ曲線のデータ点を選択状態にします。
         /// </summary>
         /// <param name="selected">選択状態にするデータ点。</param>
+        [Obsolete]
         public static void addSelectedBezier( SelectedBezierPoint selected )
         {
             mLastSelectedBezier = selected;
@@ -2653,6 +2666,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// すべてのベジエ曲線のデータ点の選択状態を解除します。
         /// </summary>
+        [Obsolete]
         public static void clearSelectedBezier()
         {
             mSelectedBezier.clear();
@@ -2667,6 +2681,7 @@ namespace org.kbinani.cadencii
         /// 最後に選択状態となった拍子変更設定を取得します。
         /// </summary>
         /// <returns>最後に選択状態となった拍子変更設定を返します。選択状態となっている拍子変更設定が無ければnullを返します。</returns>
+        [Obsolete]
         public static SelectedTimesigEntry getLastSelectedTimesig()
         {
             if ( mSelectedTimesig.containsKey( mLastSelectedTimesig ) ) {
@@ -2676,11 +2691,13 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static int getLastSelectedTimesigBarcount()
         {
             return mLastSelectedTimesig;
         }
 
+        [Obsolete]
         public static void addSelectedTimesig( int barcount )
         {
             clearSelectedEvent(); //ここ注意！
@@ -2698,6 +2715,7 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void clearSelectedTimesig()
         {
             mSelectedTimesig.clear();
@@ -2705,11 +2723,13 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static int getSelectedTimesigCount()
         {
             return mSelectedTimesig.size();
         }
 
+        [Obsolete]
         public static Iterator<ValuePair<Integer, SelectedTimesigEntry>> getSelectedTimesigIterator()
         {
             Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
@@ -2720,11 +2740,13 @@ namespace org.kbinani.cadencii
             return list.iterator();
         }
 
+        [Obsolete]
         public static boolean isSelectedTimesigContains( int barcount )
         {
             return mSelectedTimesig.containsKey( barcount );
         }
 
+        [Obsolete]
         public static SelectedTimesigEntry getSelectedTimesig( int barcount )
         {
             if ( mSelectedTimesig.containsKey( barcount ) ) {
@@ -2734,6 +2756,7 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static void removeSelectedTimesig( int barcount )
         {
             if ( mSelectedTimesig.containsKey( barcount ) ) {
@@ -2744,6 +2767,7 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region SelectedTempo
+        [Obsolete]
         public static SelectedTempoEntry getLastSelectedTempo()
         {
             if ( mSelectedTempo.containsKey( mLastSelectedTempo ) ) {
@@ -2753,11 +2777,13 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static int getLastSelectedTempoClock()
         {
             return mLastSelectedTempo;
         }
 
+        [Obsolete]
         public static void addSelectedTempo( int clock )
         {
             clearSelectedEvent(); //ここ注意！
@@ -2775,6 +2801,7 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void clearSelectedTempo()
         {
             mSelectedTempo.clear();
@@ -2782,11 +2809,13 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static int getSelectedTempoCount()
         {
             return mSelectedTempo.size();
         }
 
+        [Obsolete]
         public static Iterator<ValuePair<Integer, SelectedTempoEntry>> getSelectedTempoIterator()
         {
             Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
@@ -2797,11 +2826,13 @@ namespace org.kbinani.cadencii
             return list.iterator();
         }
 
+        [Obsolete]
         public static boolean isSelectedTempoContains( int clock )
         {
             return mSelectedTempo.containsKey( clock );
         }
 
+        [Obsolete]
         public static SelectedTempoEntry getSelectedTempo( int clock )
         {
             if ( mSelectedTempo.containsKey( clock ) ) {
@@ -2811,6 +2842,7 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static void removeSelectedTempo( int clock )
         {
             if ( mSelectedTempo.containsKey( clock ) ) {
@@ -2821,18 +2853,21 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region SelectedEvent
+        [Obsolete]
         public static void removeSelectedEvent( int id )
         {
             removeSelectedEventCor( id, false );
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void removeSelectedEventSilent( int id )
         {
             removeSelectedEventCor( id, true );
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         private static void removeSelectedEventCor( int id, boolean silent )
         {
             int count = mSelectedEvents.size();
@@ -2849,6 +2884,7 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static void removeSelectedEventRange( int[] ids )
         {
             Vector<Integer> v_ids = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
@@ -2872,6 +2908,7 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void addSelectedEventAll( Vector<Integer> list )
         {
             clearSelectedTempo();
@@ -2908,18 +2945,21 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void addSelectedEvent( int id )
         {
             addSelectedEventCor( id, false );
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void addSelectedEventSilent( int id )
         {
             addSelectedEventCor( id, true );
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         private static void addSelectedEventCor( int id, boolean silent )
         {
             clearSelectedTempo();
@@ -2967,6 +3007,7 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static void clearSelectedEvent()
         {
             mSelectedEvents.clear();
@@ -2976,6 +3017,7 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static boolean isSelectedEventContains( int track, int id )
         {
             int count = mSelectedEvents.size();
@@ -2988,11 +3030,13 @@ namespace org.kbinani.cadencii
             return false;
         }
 
+        [Obsolete]
         public static Iterator<SelectedEventEntry> getSelectedEventIterator()
         {
             return mSelectedEvents.iterator();
         }
 
+        [Obsolete]
         public static SelectedEventEntry getLastSelectedEvent()
         {
             if ( mSelectedEvents.size() <= 0 ) {
@@ -3002,6 +3046,7 @@ namespace org.kbinani.cadencii
             }
         }
 
+        [Obsolete]
         public static int getSelectedEventCount()
         {
             return mSelectedEvents.size();
@@ -3009,6 +3054,7 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region SelectedPoint
+        [Obsolete]
         public static void clearSelectedPoint()
         {
             mSelectedPointIDs.clear();
@@ -3016,12 +3062,14 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void addSelectedPoint( CurveType curve, long id )
         {
             addSelectedPointAll( curve, new long[] { id } );
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static void addSelectedPointAll( CurveType curve, long[] ids )
         {
             if ( !curve.equals( mSelectedPointCurveType ) ) {
@@ -3036,26 +3084,31 @@ namespace org.kbinani.cadencii
             checkSelectedItemExistence();
         }
 
+        [Obsolete]
         public static boolean isSelectedPointContains( long id )
         {
             return mSelectedPointIDs.contains( id );
         }
 
+        [Obsolete]
         public static CurveType getSelectedPointCurveType()
         {
             return mSelectedPointCurveType;
         }
 
+        [Obsolete]
         public static Iterator<Long> getSelectedPointIDIterator()
         {
             return mSelectedPointIDs.iterator();
         }
 
+        [Obsolete]
         public static int getSelectedPointIDCount()
         {
             return mSelectedPointIDs.size();
         }
 
+        [Obsolete]
         public static void removeSelectedPoint( long id )
         {
             mSelectedPointIDs.removeElement( id );
@@ -3066,6 +3119,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 現在選択されたアイテムが存在するかどうかを調べ，必要であればSelectedEventChangedイベントを発生させます
         /// </summary>
+        [Obsolete]
         private static void checkSelectedItemExistence()
         {
             boolean ret = mSelectedBezier.size() == 0 &&
