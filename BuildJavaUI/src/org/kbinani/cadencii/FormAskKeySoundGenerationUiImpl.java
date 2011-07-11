@@ -11,9 +11,7 @@ import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BDialogResult;
 import org.kbinani.windows.forms.BLabel;
 
-public class FormAskKeySoundGenerationUiImpl 
-extends BDialog 
-implements FormAskKeySoundGenerationUi
+public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskKeySoundGenerationUi
 {
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
@@ -24,7 +22,9 @@ implements FormAskKeySoundGenerationUi
     private JCheckBox chkAlwaysPerformThisCheck = null;
     private FormAskKeySoundGenerationUiListener mListener;
 
-    public FormAskKeySoundGenerationUiImpl( FormAskKeySoundGenerationUiListener listener ) {
+    public FormAskKeySoundGenerationUiImpl(
+        FormAskKeySoundGenerationUiListener listener )
+    {
         super();
         mListener = listener;
         initialize();
@@ -34,13 +34,15 @@ implements FormAskKeySoundGenerationUi
      * This method initializes this
      * 
      */
-    private void initialize() {
-        this.setSize(new Dimension(376, 190));
-        this.setContentPane(getJPanel());
+    private void initialize()
+    {
+        this.setSize( new Dimension( 376, 190 ) );
+        this.setContentPane( getJPanel() );
         setCancelButton( btnNo );
     }
 
-    public void close( boolean value )
+    public void close(
+        boolean value )
     {
         if( value ){
             super.setDialogResult( BDialogResult.CANCEL );
@@ -50,25 +52,26 @@ implements FormAskKeySoundGenerationUi
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel
+     * 
+     * @return javax.swing.JPanel
      */
-    private JPanel getJPanel() {
-        if (jPanel == null) {
+    private JPanel getJPanel()
+    {
+        if( jPanel == null ){
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.weightx = 1.0D;
             gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints4.ipadx = 0;
             gridBagConstraints4.ipady = 16;
-            gridBagConstraints4.insets = new Insets(0, 0, 16, 0);
+            gridBagConstraints4.insets = new Insets( 0, 0, 16, 0 );
             gridBagConstraints4.gridy = 2;
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.ipady = 16;
             gridBagConstraints1.anchor = GridBagConstraints.WEST;
-            gridBagConstraints1.insets = new Insets(0, 16, 0, 0);
+            gridBagConstraints1.insets = new Insets( 0, 16, 0, 0 );
             gridBagConstraints1.gridy = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 0;
@@ -76,27 +79,28 @@ implements FormAskKeySoundGenerationUi
             gridBagConstraints.weighty = 1.0D;
             gridBagConstraints.fill = GridBagConstraints.BOTH;
             gridBagConstraints.ipadx = 0;
-            gridBagConstraints.insets = new Insets(16, 16, 8, 16);
+            gridBagConstraints.insets = new Insets( 16, 16, 8, 16 );
             gridBagConstraints.gridy = 0;
             lblMessage = new BLabel();
-            lblMessage.setText("It seems some key-board sounds are missing.\nDo you want to re-generate them now?");
-            lblMessage.setAutoEllipsis(true);
+            lblMessage.setText( "It seems some key-board sounds are missing.\nDo you want to re-generate them now?" );
+            lblMessage.setAutoEllipsis( true );
             jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            jPanel.add(lblMessage, gridBagConstraints);
-            jPanel.add(getJCheckBox(), gridBagConstraints1);
-            jPanel.add(getJPanel1(), gridBagConstraints4);
+            jPanel.setLayout( new GridBagLayout() );
+            jPanel.add( lblMessage, gridBagConstraints );
+            jPanel.add( getJCheckBox(), gridBagConstraints1 );
+            jPanel.add( getJPanel1(), gridBagConstraints4 );
         }
         return jPanel;
     }
 
     /**
-     * This method initializes jPanel1	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel1
+     * 
+     * @return javax.swing.JPanel
      */
-    private JPanel getJPanel1() {
-        if (jPanel1 == null) {
+    private JPanel getJPanel1()
+    {
+        if( jPanel1 == null ){
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 0;
             gridBagConstraints3.weightx = 1.0D;
@@ -106,26 +110,28 @@ implements FormAskKeySoundGenerationUi
             gridBagConstraints2.weightx = 1.0D;
             gridBagConstraints2.gridy = 0;
             jPanel1 = new JPanel();
-            jPanel1.setLayout(new GridBagLayout());
-            jPanel1.add(getJButton(), gridBagConstraints2);
-            jPanel1.add(getJButton1(), gridBagConstraints3);
+            jPanel1.setLayout( new GridBagLayout() );
+            jPanel1.add( getJButton(), gridBagConstraints2 );
+            jPanel1.add( getJButton1(), gridBagConstraints3 );
         }
         return jPanel1;
     }
 
     /**
-     * This method initializes jButton	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes jButton
+     * 
+     * @return javax.swing.JButton
      */
-    private JButton getJButton() {
-        if (btnYes == null) {
+    private JButton getJButton()
+    {
+        if( btnYes == null ){
             btnYes = new JButton();
-            btnYes.setText("Yes");
-            btnYes.setPreferredSize(new Dimension(100, 29));
+            btnYes.setText( "Yes" );
+            btnYes.setPreferredSize( new Dimension( 100, 29 ) );
             btnYes.addActionListener( new java.awt.event.ActionListener()
             {
-                public void actionPerformed( java.awt.event.ActionEvent e )
+                public void actionPerformed(
+                    java.awt.event.ActionEvent e )
                 {
                     mListener.buttonOkClickedSlot();
                 }
@@ -135,18 +141,20 @@ implements FormAskKeySoundGenerationUi
     }
 
     /**
-     * This method initializes jButton1	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes jButton1
+     * 
+     * @return javax.swing.JButton
      */
-    private JButton getJButton1() {
-        if (btnNo == null) {
+    private JButton getJButton1()
+    {
+        if( btnNo == null ){
             btnNo = new JButton();
-            btnNo.setText("No");
-            btnNo.setPreferredSize(new Dimension(100, 29));
+            btnNo.setText( "No" );
+            btnNo.setPreferredSize( new Dimension( 100, 29 ) );
             btnNo.addActionListener( new java.awt.event.ActionListener()
             {
-                public void actionPerformed( java.awt.event.ActionEvent e )
+                public void actionPerformed(
+                    java.awt.event.ActionEvent e )
                 {
                     mListener.buttonCancelClickedSlot();
                 }
@@ -156,28 +164,27 @@ implements FormAskKeySoundGenerationUi
     }
 
     /**
-     * This method initializes jCheckBox	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes jCheckBox
+     * 
+     * @return javax.swing.JCheckBox
      */
-    private JCheckBox getJCheckBox() {
-        if (chkAlwaysPerformThisCheck == null) {
+    private JCheckBox getJCheckBox()
+    {
+        if( chkAlwaysPerformThisCheck == null ){
             chkAlwaysPerformThisCheck = new JCheckBox();
-            chkAlwaysPerformThisCheck.setText("Always perform this check when starting Cadencii.");
+            chkAlwaysPerformThisCheck.setText( "Always perform this check when starting Cadencii." );
         }
         return chkAlwaysPerformThisCheck;
     }
 
     @Override
-    public int showDialog( Object parent_form )
+    public int showDialog(
+        Object parent_form )
     {
         BDialogResult ret = BDialogResult.CANCEL;
-        if ( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) )
-        {
+        if( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) ){
             ret = super.showDialog( null );
-        }
-        else
-        {
+        }else{
             BDialog form = (BDialog)parent_form;
             ret = super.showDialog( form );
         }
@@ -189,7 +196,8 @@ implements FormAskKeySoundGenerationUi
     }
 
     @Override
-    public void setAlwaysPerformThisCheck( boolean value )
+    public void setAlwaysPerformThisCheck(
+        boolean value )
     {
         chkAlwaysPerformThisCheck.setSelected( value );
     }
@@ -199,29 +207,34 @@ implements FormAskKeySoundGenerationUi
     {
         return chkAlwaysPerformThisCheck.isSelected();
     }
-    //SECTION-END-METHOD
+
+    // SECTION-END-METHOD
 
     @Override
-    public void setMessageLabelText( String value )
+    public void setMessageLabelText(
+        String value )
     {
         lblMessage.setText( value );
     }
 
     @Override
-    public void setAlwaysPerformThisCheckCheckboxText( String value )
+    public void setAlwaysPerformThisCheckCheckboxText(
+        String value )
     {
         chkAlwaysPerformThisCheck.setText( value );
     }
 
     @Override
-    public void setYesButtonText( String value )
+    public void setYesButtonText(
+        String value )
     {
         btnYes.setText( value );
     }
 
     @Override
-    public void setNoButtonText( String value )
+    public void setNoButtonText(
+        String value )
     {
         btnNo.setText( value );
     }
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+} // @jve:decl-index=0:visual-constraint="10,10"

@@ -73,7 +73,7 @@ namespace org.kbinani.cadencii
 
 
         #region UiBaseインターフェースの実装
-        
+
         public int showDialog( Object parent_form )
         {
             DialogResult ret;
