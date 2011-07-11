@@ -1,4 +1,4 @@
-/*
+﻿/*
  * PureVirtualFunctionAttribute.cs
  * Copyright © 2011 kbinani
  *
@@ -21,9 +21,22 @@ namespace org.kbinani.cadencii
     /// メソッドが純粋仮想関数であることをpp_cs2javaに通知するための属性です．
     /// 通知したいメソッドの直前の行にこの属性を記述してください．
     /// </summary>
-    public class PureVirtualFunctionAttribute : Attribute
-    {
-    }
+    /// <example>
+    /// C#のコードに以下のように記述したとします．
+    /// <code>
+    /// interface Foo{
+    ///     [PureVirtualFunction]
+    ///     void someMethod();
+    /// }
+    /// </code>
+    /// すると，pp_cs2javaに--replace-cppオプションを付けて処理させると次のようになります．
+    /// <code>
+    /// interface Foo{
+    ///     virtual void someMethod() = 0;
+    /// }
+    /// </code>
+    /// </example>
+    public class PureVirtualFunctionAttribute : Attribute { }
 
 }
 #endif

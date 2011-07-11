@@ -13430,12 +13430,13 @@ namespace org.kbinani.cadencii
 
         public void menuLyricDictionary_Click( Object sender, EventArgs e )
         {
-            FormWordDictionary dlg = null;
+            FormWordDictionaryController dlg = null;
             try {
-                dlg = new FormWordDictionary();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg = new FormWordDictionaryController();
+                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                dlg.setLocation( p.x, p.y );
+                int dr = AppManager.showModalDialog( dlg.getUi(), this );
+                if ( dr == 1 ) {
                     Vector<ValuePair<String, Boolean>> result = dlg.getResult();
                     SymbolTable.changeOrder( result );
                 }
