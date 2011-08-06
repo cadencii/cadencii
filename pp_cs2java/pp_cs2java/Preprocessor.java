@@ -121,16 +121,18 @@ class Preprocessor{
          * 直前の行に[PureVirtualFunction]属性が指定されていた場合にtrue
          */
         private boolean previousLineContainsPureVirtualFunctionAttribute = false;
+        private SourceText source = null;
 
-        public ProcessFileContext( BufferedWriter writer ){
+        public ProcessFileContext( BufferedWriter writer, SourceText src ){
             lines = 0;
             packageName = "";
             this.writer = writer;
+            source = src;
         }
         
-        public void writeLine( String line ){
+        public void writeLine( String line, int lineNumber ){
             int indx = line.indexOf( "[PureVirtualFunction]" );
-            if( indx >= 0 ){
+            if( indx >= 0 && false == source.isInComment( lineNumber, indx ) ){
                 previousLineContainsPureVirtualFunctionAttribute = true;
                 return;
             }
@@ -494,7 +496,7 @@ class Preprocessor{
                 new BufferedWriter( new OutputStreamWriter(
                         new FileOutputStream( out_path ), mEncoding ) );
             int count = src.getLineCount();
-            context = new ProcessFileContext( writer );
+            context = new ProcessFileContext( writer, src );
             processFileRecursive( src, context, 0, count - 1, local_defines );
         }catch( Exception ex ){
             ex.printStackTrace( System.err );
@@ -539,7 +541,7 @@ class Preprocessor{
                 directive = directive.trim();
                 local_defines.add( directive );
                 if( mMode == ReplaceMode.CPP ){
-                    context.writeLine( "#define " + directive + " 1" + suffix  );
+                    context.writeLine( "#define " + directive + " 1" + suffix, i );
                 }
             }else if( src.isContainsPreprocessorDirective( i, "#if" )
                 || src.isContainsPreprocessorDirective( i, "#elif" ) ){
@@ -558,7 +560,7 @@ class Preprocessor{
                 int else_if = src.findElseSentence( i );
                 
                 if( mMode == ReplaceMode.CPP ){
-                    context.writeLine( line );
+                    context.writeLine( line, i );
                 }
                 
                 if( readin ){
@@ -571,7 +573,7 @@ class Preprocessor{
                     processFileRecursive( src, context, i + 1, end_line - 1, local_defines );
                     i = end_if;
                     if( mMode == ReplaceMode.CPP ){
-                        context.writeLine( "#endif" );
+                        context.writeLine( "#endif", i );
                     }
                     continue;
                 }else{
@@ -582,14 +584,14 @@ class Preprocessor{
                     }else{
                         i = end_if;
                         if( mMode == ReplaceMode.CPP ){
-                            context.writeLine( "#endif" );
+                            context.writeLine( "#endif", i );
                         }
                     }
                     continue;
                 }
             }else if( src.isContainsPreprocessorDirective( i, "#else" ) ){
                 if( mMode == ReplaceMode.CPP ){
-                    context.writeLine( line );
+                    context.writeLine( line, i );
                 }
                 // elseが来た場合，中身を読み込まなくてはいけない
                 int end_if = src.findEndIfSentence( i );
@@ -600,7 +602,7 @@ class Preprocessor{
                 continue;
             }else if( src.isContainsPreprocessorDirective( i, "#endif" ) ){
                 if( mMode == ReplaceMode.CPP ){
-                    context.writeLine( line );
+                    context.writeLine( line, i );
                 }
                 continue;
             }else{
@@ -617,7 +619,7 @@ class Preprocessor{
                 // インデントの処理
                 line = adjustIndent( line );
 
-                context.writeLine( line );
+                context.writeLine( line, i );
                 // パッケージ名を検出
                 int index_package = line.indexOf( "package " );
                 if( index_package >= 0 ){

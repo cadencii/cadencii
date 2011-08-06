@@ -1,10 +1,6 @@
 #include "FormBeatConfigUiImpl.h"
 #include "ui_FormBeatConfigUiImpl.h"
 
-void FormBeatConfigUiListener::buttonCancelClickedSlot(){}
-void FormBeatConfigUiListener::buttonOkClickedSlot(){}
-void FormBeatConfigUiListener::checkboxEndCheckedChangedSlot(){}
-
 FormBeatConfigUiImpl::FormBeatConfigUiImpl(FormBeatConfigUiListener *listener, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FormBeatConfigUiImpl)

@@ -30,14 +30,16 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     private JScrollPane jScrollPane = null;
     private BLabel lblSpacer = null;
     private BLabel lblSpacer1 = null;
+    private FormWordDictionaryUiListener listener;
 
     /**
      * This method initializes
      * 
      */
-    public FormWordDictionaryUiImpl()
+    public FormWordDictionaryUiImpl( FormWordDictionaryUiListener listener )
     {
         super();
+        this.listener = listener;
         initialize();
     }
 

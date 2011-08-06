@@ -15,6 +15,11 @@
 
 package org.kbinani.cadencii;
 
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+
 #else
 
 namespace org
@@ -57,7 +62,9 @@ namespace org
                     ui = new FormWordDictionaryUiImpl( this );
                     applyLanguage();
                     ui.setSize( mWidth, mHeight );
+#if CSHARP
                     ui.listDictionariesSetColumnWidth( mColumnWidth );
+#endif
                 }
 
 
@@ -140,7 +147,9 @@ namespace org
 
                 public void formClosing()
                 {
+#if CSHARP
                     mColumnWidth = ui.listDictionariesGetColumnWidth();
+#endif
                     mWidth = ui.getWidth();
                     mHeight = ui.getHeight();
                 }
@@ -183,7 +192,6 @@ namespace org
                     ui.buttonCancelSetText( _( "Cancel" ) );
                     ui.buttonUpSetText( _( "Up" ) );
                     ui.buttonDownSetText( _( "Down" ) );
-                    //ui.listDictionariesSetColumnHeader( _( "Name of dictionary" ) );
                 }
 
                 public Vector<ValuePair<String, Boolean>> getResult()

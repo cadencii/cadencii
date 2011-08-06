@@ -1,9 +1,6 @@
 #include "FormAskKeySoundGenerationUiImpl.h"
 #include "ui_FormAskKeySoundGenerationUiImpl.h"
 
-void FormAskKeySoundGenerationUiListener::buttonCancelClickedSlot(){}
-void FormAskKeySoundGenerationUiListener::buttonOkClickedSlot(){}
-
 FormAskKeySoundGenerationUiImpl::FormAskKeySoundGenerationUiImpl(FormAskKeySoundGenerationUiListener *listener, QWidget *parent) :
     QDialog(parent),
     ui( new Ui::FormAskKeySoundGenerationUiImpl )
