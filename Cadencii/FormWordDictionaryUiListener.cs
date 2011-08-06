@@ -51,7 +51,7 @@ namespace org
 
                 [PureVirtualFunction]
                 void buttonCancelClick();
-            }
+            };
 
 #if !JAVA
         }

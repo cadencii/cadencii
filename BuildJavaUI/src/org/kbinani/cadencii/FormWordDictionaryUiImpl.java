@@ -284,14 +284,6 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     }
 
     @Override
-    public void listDictionariesSetColumnWidth(
-        int columnIndex,
-        int columnWidth )
-    {
-        this.listDictionaries.setColumnWidth( columnIndex, columnWidth );
-    }
-
-    @Override
     public int listDictionariesGetSelectedRow()
     {
         return this.listDictionaries.getSelectedRow();
@@ -311,10 +303,9 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     @Override
     public String listDictionariesGetItemAt(
-        int row,
-        int column )
+        int row )
     {
-        return this.listDictionaries.getItemAt( row, column );
+        return this.listDictionaries.getItemAt( row, 0 );
     }
 
     @Override
@@ -327,10 +318,9 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     @Override
     public void listDictionariesSetItemAt(
         int row,
-        int column,
         String value )
     {
-        this.listDictionaries.setItemAt( row, column, value );
+        this.listDictionaries.setItemAt( row, 0, value );
     }
 
     @Override
@@ -356,24 +346,10 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     @Override
     public void listDictionariesAddRow(
-        String[] values,
+        String value,
         boolean selected )
     {
-        this.listDictionaries.addRow( values, selected );
-    }
-
-    @Override
-    public int listDictionariesGetColumnWidth(
-        int column )
-    {
-        return this.listDictionaries.getColumnWidth( column );
-    }
-
-    @Override
-    public void listDictionariesSetColumnHeaders(
-        String[] headers )
-    {
-        this.listDictionaries.setColumnHeaders( headers );
+        this.listDictionaries.addRow( new String[]{ value }, selected );
     }
 
     @Override

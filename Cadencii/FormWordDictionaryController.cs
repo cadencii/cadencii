@@ -57,7 +57,7 @@ namespace org
                     ui = new FormWordDictionaryUiImpl( this );
                     applyLanguage();
                     ui.setSize( mWidth, mHeight );
-                    ui.listDictionariesSetColumnWidth( 0, mColumnWidth );
+                    ui.listDictionariesSetColumnWidth( mColumnWidth );
                 }
 
 
@@ -76,14 +76,14 @@ namespace org
                         try
                         {
                             ui.listDictionariesClear();
-                            String upper_name = ui.listDictionariesGetItemAt( index, 0 );
+                            String upper_name = ui.listDictionariesGetItemAt( index );
                             boolean upper_enabled = ui.listDictionariesIsRowChecked( index );
-                            String lower_name = ui.listDictionariesGetItemAt( index + 1, 0 );
+                            String lower_name = ui.listDictionariesGetItemAt( index + 1 );
                             boolean lower_enabled = ui.listDictionariesIsRowChecked( index + 1 );
 
-                            ui.listDictionariesSetItemAt( index + 1, 0, upper_name );
+                            ui.listDictionariesSetItemAt( index + 1, upper_name );
                             ui.listDictionariesSetRowChecked( index + 1, upper_enabled );
-                            ui.listDictionariesSetItemAt( index, 0, lower_name );
+                            ui.listDictionariesSetItemAt( index, lower_name );
                             ui.listDictionariesSetRowChecked( index, lower_enabled );
 
                             ui.listDictionariesSetSelectedRow( index + 1 );
@@ -103,14 +103,14 @@ namespace org
                         try
                         {
                             ui.listDictionariesClearSelection();
-                            String upper_name = ui.listDictionariesGetItemAt( index - 1, 0 );
+                            String upper_name = ui.listDictionariesGetItemAt( index - 1 );
                             boolean upper_enabled = ui.listDictionariesIsRowChecked( index - 1 );
-                            String lower_name = ui.listDictionariesGetItemAt( index, 0 );
+                            String lower_name = ui.listDictionariesGetItemAt( index );
                             boolean lower_enabled = ui.listDictionariesIsRowChecked( index );
 
-                            ui.listDictionariesSetItemAt( index - 1, 0, lower_name );
+                            ui.listDictionariesSetItemAt( index - 1, lower_name );
                             ui.listDictionariesSetRowChecked( index - 1, lower_enabled );
-                            ui.listDictionariesSetItemAt( index, 0, upper_name );
+                            ui.listDictionariesSetItemAt( index, upper_name );
                             ui.listDictionariesSetRowChecked( index, upper_enabled );
 
                             ui.listDictionariesSetSelectedRow( index - 1 );
@@ -134,13 +134,13 @@ namespace org
                     {
                         String name = SymbolTable.getSymbolTable( i ).getName();
                         boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
-                        ui.listDictionariesAddRow( new String[] { name }, enabled );
+                        ui.listDictionariesAddRow( name, enabled );
                     }
                 }
 
                 public void formClosing()
                 {
-                    mColumnWidth = ui.listDictionariesGetColumnWidth( 0 );
+                    mColumnWidth = ui.listDictionariesGetColumnWidth();
                     mWidth = ui.getWidth();
                     mHeight = ui.getHeight();
                 }
@@ -183,7 +183,7 @@ namespace org
                     ui.buttonCancelSetText( _( "Cancel" ) );
                     ui.buttonUpSetText( _( "Up" ) );
                     ui.buttonDownSetText( _( "Down" ) );
-                    ui.listDictionariesSetColumnHeaders( new String[] { _( "Name of dictionary" ) } );
+                    //ui.listDictionariesSetColumnHeader( _( "Name of dictionary" ) );
                 }
 
                 public Vector<ValuePair<String, Boolean>> getResult()
@@ -195,10 +195,10 @@ namespace org
 #endif
                     for ( int i = 0; i < count; i++ )
                     {
-                        String name = ui.listDictionariesGetItemAt( i, 0 );
+                        String name = ui.listDictionariesGetItemAt( i );
 
                         ret.add( new ValuePair<String, Boolean>(
-                            ui.listDictionariesGetItemAt( i, 0 ), ui.listDictionariesIsRowChecked( i ) ) );
+                            ui.listDictionariesGetItemAt( i ), ui.listDictionariesIsRowChecked( i ) ) );
                     }
                     return ret;
                 }

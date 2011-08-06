@@ -38,6 +38,16 @@ namespace org.kbinani.cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
+        public void listDictionariesSetColumnWidth( int columnWidth )
+        {
+            listDictionaries.Columns[0].Width = columnWidth;
+        }
+
+        public int listDictionariesGetColumnWidth()
+        {
+            return listDictionaries.Columns[0].Width;
+        }
+
 
         #region FormWordDictionaryUiの実装
 
@@ -66,45 +76,31 @@ namespace org.kbinani.cadencii
             this.Close();
         }
 
-        public void listDictionariesSetColumnHeaders( string[] headers )
+        /*public void listDictionariesSetColumnHeader( string header )
         {
-            if ( listDictionaries.Columns.Count < headers.Length )
+            if ( listDictionaries.Columns.Count < 1 )
             {
-                for ( int i = listDictionaries.Columns.Count; i < headers.Length; i++ )
-                {
-                    listDictionaries.Columns.Add( "" );
-                }
+                listDictionaries.Columns.Add( "" );
             }
-            for ( int i = 0; i < headers.Length; i++ )
-            {
-                listDictionaries.Columns[i].Text = headers[i];
-            }
-        }
+            listDictionaries.Columns[0].Text = header;
+        }*/
 
         public void listDictionariesClearSelection()
         {
             listDictionaries.SelectedIndices.Clear();
         }
 
-        public void listDictionariesAddRow( string[] values, bool selected )
+        public void listDictionariesAddRow( string value, bool selected )
         {
-            ListViewItem item = new ListViewItem( values );
-            if ( listDictionaries.Columns.Count < values.Length )
+            ListViewItem item = new ListViewItem( new string[]{ value } );
+            if ( listDictionaries.Columns.Count < 1 )
             {
-                for ( int i = listDictionaries.Columns.Count; i < values.Length; i++ )
-                {
-                    listDictionaries.Columns.Add( "" );
-                }
+                listDictionaries.Columns.Add( "" );
             }
             item.Selected = selected;
             listDictionaries.Items.Add( item );
         }
         
-        public int listDictionariesGetColumnWidth( int column )
-        {
-            return listDictionaries.Columns[column].Width;
-        }
-
         public void listDictionariesSetRowChecked( int row, bool value )
         {
             listDictionaries.Items[row].Checked = value;
@@ -118,9 +114,9 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void listDictionariesSetItemAt( int row, int column, string value )
+        public void listDictionariesSetItemAt( int row, string value )
         {
-            listDictionaries.Items[row].SubItems[column].Text = value;
+            listDictionaries.Items[row].SubItems[0].Text = value;
         }
 
         public bool listDictionariesIsRowChecked( int row )
@@ -128,9 +124,9 @@ namespace org.kbinani.cadencii
             return listDictionaries.Items[row].Checked;
         }
 
-        public string listDictionariesGetItemAt( int row, int column )
+        public string listDictionariesGetItemAt( int row )
         {
-            return listDictionaries.Items[row].SubItems[column].Text;
+            return listDictionaries.Items[row].SubItems[0].Text;
         }
 
         public int listDictionariesGetSelectedRow()
@@ -153,11 +149,6 @@ namespace org.kbinani.cadencii
         public void listDictionariesClear()
         {
             listDictionaries.Items.Clear();
-        }
-
-        public void listDictionariesSetColumnWidth( int columnIndex, int columnWidth )
-        {
-            listDictionaries.Columns[columnIndex].Width = columnWidth;
         }
 
         public void buttonDownSetText( string value )
@@ -284,6 +275,8 @@ namespace org.kbinani.cadencii
 
         #endregion
 
+        private ColumnHeader columnHeader1;
+
 
         #region UI implementation
 
@@ -312,16 +305,17 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
             this.listDictionaries = new org.kbinani.windows.forms.BListView();
             this.lblAvailableDictionaries = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUp = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // listDictionaries
@@ -330,22 +324,24 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listDictionaries.CheckBoxes = true;
-            listViewGroup10.Header = "ListViewGroup";
-            listViewGroup10.Name = null;
-            listViewGroup11.Header = "ListViewGroup";
-            listViewGroup11.Name = null;
-            listViewGroup12.Header = "ListViewGroup";
-            listViewGroup12.Name = null;
+            this.listDictionaries.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1} );
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup1.Name = null;
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "ListViewGroup";
+            listViewGroup3.Name = null;
             this.listDictionaries.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup10,
-            listViewGroup11,
-            listViewGroup12} );
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3} );
             this.listDictionaries.HideSelection = false;
-            listViewItem4.Checked = true;
-            listViewItem4.Group = listViewGroup12;
-            listViewItem4.StateImageIndex = 1;
+            listViewItem1.Checked = true;
+            listViewItem1.Group = listViewGroup3;
+            listViewItem1.StateImageIndex = 1;
             this.listDictionaries.Items.AddRange( new System.Windows.Forms.ListViewItem[] {
-            listViewItem4} );
+            listViewItem1} );
             this.listDictionaries.Location = new System.Drawing.Point( 12, 33 );
             this.listDictionaries.Name = "listDictionaries";
             this.listDictionaries.Size = new System.Drawing.Size( 248, 186 );

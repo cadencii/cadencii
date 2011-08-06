@@ -23,6 +23,10 @@ namespace org
     {
         namespace cadencii
         {
+#if __cplusplus
+            using namespace std;
+            using namespace org::kbinani::cadencii;
+#endif
 
 #endif
 
@@ -87,15 +91,6 @@ namespace org
                 [PureVirtualFunction]
                 void close();
 
-
-                /// <summary>
-                /// TODO: comment
-                /// </summary>
-                /// <param name="columIndex"></param>
-                /// <param name="columnWidth"></param>
-                [PureVirtualFunction]
-                void listDictionariesSetColumnWidth( int columIndex, int columnWidth );
-
                 /// <summary>
                 /// TODO: comment
                 /// </summary>
@@ -123,7 +118,7 @@ namespace org
                 /// <param name="column"></param>
                 /// <returns></returns>
                 [PureVirtualFunction]
-                string listDictionariesGetItemAt( int row, int column );
+                string listDictionariesGetItemAt( int row );
 
                 /// <summary>
                 /// TODO: 
@@ -140,7 +135,7 @@ namespace org
                 /// <param name="column"></param>
                 /// <param name="value"></param>
                 [PureVirtualFunction]
-                void listDictionariesSetItemAt( int row, int column, string value );
+                void listDictionariesSetItemAt( int row, string value );
 
                 /// <summary>
                 /// TODO:
@@ -148,7 +143,7 @@ namespace org
                 /// <param name="row"></param>
                 /// <param name="value"></param>
                 [PureVirtualFunction]
-                void listDictionariesSetRowChecked( int row, bool value );
+                void listDictionariesSetRowChecked( int row, bool isChecked );
 
                 /// <summary>
                 /// TODO:
@@ -166,26 +161,10 @@ namespace org
                 /// <summary>
                 /// TODO: comment
                 /// </summary>
-                /// <param name="values"></param>
+                /// <param name="value"></param>
                 /// <param name="selected"></param>
                 [PureVirtualFunction]
-                void listDictionariesAddRow( string[] values, bool selected );
-
-                /// <summary>
-                /// TODO: comment
-                /// </summary>
-                /// <param name="column"></param>
-                /// <returns></returns>
-                [PureVirtualFunction]
-                int listDictionariesGetColumnWidth( int column );
-
-                /// <summary>
-                /// リストのヘッダーの文字列を一括設定します
-                /// </summary>
-                /// <param name="headers">リストのヘッダー文字列のリスト</param>
-                [PureVirtualFunction]
-                void listDictionariesSetColumnHeaders( string[] headers );
-
+                void listDictionariesAddRow( string value, bool isChecked );
 
                 /// <summary>
                 /// 「利用可能な辞書」という意味の説明文の文字列を設定します．
@@ -221,7 +200,7 @@ namespace org
                 /// <param name="value">設定する文字列</param>
                 [PureVirtualFunction]
                 void buttonDownSetText( string value );
-            }
+            };
 
 #if !JAVA
         }
