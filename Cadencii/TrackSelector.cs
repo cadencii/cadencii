@@ -876,7 +876,7 @@ namespace org.kbinani.cadencii
         private void executeCommand( CadenciiCommand command, boolean register )
         {
             if ( register ) {
-                AppManager.register( AppManager.getVsqFile().executeCommand( command ) );
+                AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( command ) );
             } else {
                 AppManager.getVsqFile().executeCommand( command );
             }

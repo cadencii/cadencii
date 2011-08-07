@@ -19,6 +19,8 @@ import java.util.*;
 
 #else
 
+using org.kbinani.java.util;
+
 namespace org
 {
     namespace kbinani
@@ -57,10 +59,19 @@ namespace org
                 }
 
                 /// <summary>
+                /// 編集履歴を消去する
+                /// </summary>
+                public void clear()
+                {
+                    mCommands.clear();
+                    mCommandIndex = -1;
+                }
+
+                /// <summary>
                 /// UNDO用のヒストリーを取得できるかどうか調べる
                 /// </summary>
                 /// <returns>UNDO用のヒストリーを取得できる場合trueを，そうでなければfalseを返す</returns>
-                public bool hasUndoHistroy()
+                public bool hasUndoHistory()
                 {
                     if( mCommands.size() > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.size() ) {
                         return true;

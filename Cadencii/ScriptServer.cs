@@ -134,7 +134,7 @@ namespace org.kbinani.cadencii {
                         AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                        AppManager.register( vsq.executeCommand( run ) );
+                        AppManager.editHistory.register( vsq.executeCommand( run ) );
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;

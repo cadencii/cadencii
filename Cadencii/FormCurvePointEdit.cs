@@ -70,8 +70,8 @@ namespace org.kbinani.cadencii
             txtDataPointValue.setText( context.point.value + "" );
             txtDataPointValue.selectAll();
 
-            btnUndo.setEnabled( AppManager.isUndoAvailable() );
-            btnRedo.setEnabled( AppManager.isRedoAvailable() );
+            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
         }
 
         #region public methods
@@ -133,7 +133,7 @@ namespace org.kbinani.cadencii
             for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
                 zoneUnits.add( itr.next() );
             }
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+            AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
 
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( value + "" );
@@ -150,8 +150,8 @@ namespace org.kbinani.cadencii
                 txtDataPointValue.selectAll();
             }
 
-            btnUndo.setEnabled( AppManager.isUndoAvailable() );
-            btnRedo.setEnabled( AppManager.isRedoAvailable() );
+            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
             m_changed = false;
         }
 
@@ -296,8 +296,8 @@ namespace org.kbinani.cadencii
                 mMainWindow.updateDrawObjectList();
                 mMainWindow.refreshScreen();
             }
-            btnUndo.setEnabled( AppManager.isUndoAvailable() );
-            btnRedo.setEnabled( AppManager.isRedoAvailable() );
+            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
         }
 
         public void btnExit_Click( Object sender, BEventArgs e )

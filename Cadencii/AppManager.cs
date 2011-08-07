@@ -214,6 +214,10 @@ namespace org.kbinani.cadencii
         /// 選択アイテムの管理クラスのインスタンス
         /// </summary>
         public static ItemSelectionModel itemSelection = null;
+        /// <summary>
+        /// 編集履歴を管理するmodel
+        /// </summary>
+        public static EditHistoryModel editHistory = null;
 
         #region Static Readonly Fields
         /// <summary>
@@ -402,10 +406,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         private static boolean mOverlay = true;
         private static EditTool mSelectedTool = EditTool.PENCIL;
-#if !TREECOM
-        private static Vector<ICommand> mCommands = new Vector<ICommand>();
-        private static int mCommandIndex = -1;
-#endif
 
         /// <summary>
         /// Playingプロパティにロックをかけるためのオブジェクト
@@ -2102,7 +2102,7 @@ namespace org.kbinani.cadencii
                 }
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( mVsq.executeCommand( run ) );
+            editHistory.register( mVsq.executeCommand( run ) );
             try {
 #if JAVA
                 editedStateChangedEvent.raise( typeof( AppManager ), true );
@@ -2127,7 +2127,7 @@ namespace org.kbinani.cadencii
             }
             Vector<BgmFile> list = new Vector<BgmFile>();
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( mVsq.executeCommand( run ) );
+            editHistory.register( mVsq.executeCommand( run ) );
             try {
 #if JAVA
                 editedStateChangedEvent.raise( typeof( AppManager ), true );
@@ -2161,7 +2161,7 @@ namespace org.kbinani.cadencii
             item.panpot = 0;
             list.add( item );
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            register( mVsq.executeCommand( run ) );
+            editHistory.register( mVsq.executeCommand( run ) );
             try {
 #if JAVA
                 editedStateChangedEvent.raise( typeof( AppManager ), true );
@@ -2335,27 +2335,18 @@ namespace org.kbinani.cadencii
 
 #if !TREECOM
         /// <summary>
-        /// アンドゥ・リドゥ用のコマンド履歴を削除します。
-        /// </summary>
-        public static void clearCommandBuffer()
-        {
-            mCommands.clear();
-            mCommandIndex = -1;
-        }
-
-        /// <summary>
         /// アンドゥ処理を行います。
         /// </summary>
         public static void undo()
         {
-            if ( isUndoAvailable() ) {
+            if ( editHistory.hasUndoHistory() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
-                ICommand run_src = mCommands.get( mCommandIndex );
+                ICommand run_src = editHistory.getUndo();
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
@@ -2382,8 +2373,7 @@ namespace org.kbinani.cadencii
                         serr.println( typeof( AppManager ) + ".undo; ex=" + ex );
                     }
                 }
-                mCommands.set( mCommandIndex, inv );
-                mCommandIndex--;
+                editHistory.registerAfterUndo( inv );
 
                 cleanupDeadSelection( before_ids );
                 itemSelection.updateSelectedEventInstance();
@@ -2395,14 +2385,14 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static void redo()
         {
-            if ( isRedoAvailable() ) {
+            if ( editHistory.hasRedoHistory() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
-                ICommand run_src = mCommands.get( mCommandIndex + 1 );
+                ICommand run_src = editHistory.getRedo();
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
@@ -2429,8 +2419,7 @@ namespace org.kbinani.cadencii
                         serr.println( typeof( AppManager ) + ".redo; ex=" + ex );
                     }
                 }
-                mCommands.set( mCommandIndex + 1, inv );
-                mCommandIndex++;
+                editHistory.registerAfterRedo( inv );
 
                 cleanupDeadSelection( before_ids );
                 itemSelection.updateSelectedEventInstance();
@@ -2460,52 +2449,6 @@ namespace org.kbinani.cadencii
                 if ( !found ) {
                     AppManager.itemSelection.removeEvent( internal_id );
                 }
-            }
-        }
-
-        /// <summary>
-        /// アンドゥ・リドゥ用のコマンドバッファに、指定されたコマンドを登録します。
-        /// </summary>
-        /// <param name="command"></param>
-        public static void register( ICommand command )
-        {
-            if ( mCommandIndex == mCommands.size() - 1 ) {
-                // 新しいコマンドバッファを追加する場合
-                mCommands.add( command );
-                mCommandIndex = mCommands.size() - 1;
-            } else {
-                // 既にあるコマンドバッファを上書きする場合
-                mCommands.set( mCommandIndex + 1, command );
-                for ( int i = mCommands.size() - 1; i >= mCommandIndex + 2; i-- ) {
-                    mCommands.removeElementAt( i );
-                }
-                mCommandIndex++;
-            }
-        }
-
-        /// <summary>
-        /// リドゥ操作が可能かどうかを取得します。
-        /// </summary>
-        /// <returns>リドゥ操作が可能ならtrue、そうでなければfalseを返します。</returns>
-        public static boolean isRedoAvailable()
-        {
-            if ( mCommands.size() > 0 && 0 <= mCommandIndex + 1 && mCommandIndex + 1 < mCommands.size() ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// アンドゥ操作が可能かどうかを取得します。
-        /// </summary>
-        /// <returns>アンドゥ操作が可能ならtrue、そうでなければfalseを返します。</returns>
-        public static boolean isUndoAvailable()
-        {
-            if ( mCommands.size() > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.size() ) {
-                return true;
-            } else {
-                return false;
             }
         }
 #endif
@@ -2999,6 +2942,7 @@ namespace org.kbinani.cadencii
             loadConfig();
             clipboard = new ClipboardModel();
             itemSelection = new ItemSelectionModel();
+            editHistory = new EditHistoryModel();
 #if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
             int c = editorConfig.UtauSingers.size();
