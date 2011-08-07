@@ -599,7 +599,6 @@ namespace org.kbinani.cadencii {
         /// <param name="chain"></param>
         public void addBezierChain( CurveType curve_type, BezierChain chain, int chain_id )
         {
-            int index = curve_type.getIndex();
             BezierChain add = (BezierChain)chain.clone();
             add.id = chain_id;
             this.get( curve_type ).add( add );
@@ -629,12 +628,8 @@ namespace org.kbinani.cadencii {
 
         public int getNextId( CurveType curve_type )
         {
-            int index = curve_type.getIndex();
             Vector<BezierChain> bc = this.get( curve_type );
-            int ret = bc.size();// m_curves[index].Count;
-            /*while ( m_curves[index].ContainsKey( ret ) ) {
-                ret++;
-            }*/
+            int ret = bc.size();
             boolean found = true;
             while ( found ) {
                 found = false;

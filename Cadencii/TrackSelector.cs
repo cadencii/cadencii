@@ -483,9 +483,9 @@ namespace org.kbinani.cadencii
             setResources();
             mModifierKey =
 #if JAVA_MAC
-                InputEvent.META_MASK;
+            InputEvent.META_MASK;
 #else
-                InputEvent.CTRL_MASK;
+            InputEvent.CTRL_MASK;
 #endif
             mMenuMap.put( CurveType.VEL, cmenuCurveVelocity );
             mMenuMap.put( CurveType.Accent, cmenuCurveAccent );
@@ -528,191 +528,77 @@ namespace org.kbinani.cadencii
         /// </summary>
         public void updateVisibleCurves()
         {
-            if ( AppManager.editorConfig.CurveVisibleVelocity )
-            {
-                addViewingCurve( CurveType.VEL );
-            }
-            if ( AppManager.editorConfig.CurveVisibleAccent )
-            {
-                addViewingCurve( CurveType.Accent );
-            }
-            if ( AppManager.editorConfig.CurveVisibleDecay )
-            {
-                addViewingCurve( CurveType.Decay );
-            }
-            if ( AppManager.editorConfig.CurveVisibleVibratoRate )
-            {
-                addViewingCurve( CurveType.VibratoRate );
-            }
-            if ( AppManager.editorConfig.CurveVisibleVibratoDepth )
-            {
-                addViewingCurve( CurveType.VibratoDepth );
-            }
-            if ( AppManager.editorConfig.CurveVisibleDynamics )
-            {
-                addViewingCurve( CurveType.DYN );
-            }
-            if ( AppManager.editorConfig.CurveVisibleBreathiness )
-            {
-                addViewingCurve( CurveType.BRE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleBrightness )
-            {
-                addViewingCurve( CurveType.BRI );
-            }
-            if ( AppManager.editorConfig.CurveVisibleClearness )
-            {
-                addViewingCurve( CurveType.CLE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleOpening )
-            {
-                addViewingCurve( CurveType.OPE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleGendorfactor )
-            {
-                addViewingCurve( CurveType.GEN );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePortamento )
-            {
-                addViewingCurve( CurveType.POR );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePit )
-            {
-                addViewingCurve( CurveType.PIT );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePbs )
-            {
-                addViewingCurve( CurveType.PBS );
-            }
-            if ( AppManager.editorConfig.CurveVisibleHarmonics )
-            {
-                addViewingCurve( CurveType.harmonics );
-            }
-            if ( AppManager.editorConfig.CurveVisibleFx2Depth )
-            {
-                addViewingCurve( CurveType.fx2depth );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso1 )
-            {
-                addViewingCurve( CurveType.reso1freq );
-                addViewingCurve( CurveType.reso1bw );
-                addViewingCurve( CurveType.reso1amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso2 )
-            {
-                addViewingCurve( CurveType.reso2freq );
-                addViewingCurve( CurveType.reso2bw );
-                addViewingCurve( CurveType.reso2amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso3 )
-            {
-                addViewingCurve( CurveType.reso3freq );
-                addViewingCurve( CurveType.reso3bw );
-                addViewingCurve( CurveType.reso3amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso4 )
-            {
-                addViewingCurve( CurveType.reso4freq );
-                addViewingCurve( CurveType.reso4bw );
-                addViewingCurve( CurveType.reso4amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleEnvelope )
-            {
-                addViewingCurve( CurveType.Env );
-            }
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類の個数を取得します．
-        /// </summary>
-        /// <returns></returns>
-        private int getViewingCurveCount()
-        {
-            return mViewingCurves.size();
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示している，第index番目のカーブ種類を取得します．
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private CurveType getViewingCurveElement( int index )
-        {
-            return mViewingCurves.get( index );
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類のリストに，カーブ種類を追加します．
-        /// </summary>
-        /// <param name="curve"></param>
-        private void addViewingCurveRange( CurveType[] curve )
-        {
-            for ( int j = 0; j < curve.Length; j++ )
-            {
-                boolean found = false;
-                for ( int i = 0; i < mViewingCurves.size(); i++ )
-                {
-                    if ( mViewingCurves.get( i ).equals( curve[j] ) )
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found )
-                {
-                    mViewingCurves.add( curve[j] );
-                }
-            }
-            if ( mViewingCurves.size() >= 2 )
-            {
-                boolean changed = true;
-                while ( changed )
-                {
-                    changed = false;
-                    for ( int i = 0; i < mViewingCurves.size() - 1; i++ )
-                    {
-                        if ( mViewingCurves.get( i ).getIndex() > mViewingCurves.get( i + 1 ).getIndex() )
-                        {
-                            CurveType b = (CurveType)mViewingCurves.get( i ).clone();
-                            mViewingCurves.set( i, (CurveType)mViewingCurves.get( i + 1 ).clone() );
-                            mViewingCurves.set( i + 1, b );
-                            changed = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類のリストに，カーブ種類を追加します．
-        /// </summary>
-        /// <param name="curve"></param>
-        public void addViewingCurve( CurveType curve )
-        {
-            addViewingCurveRange( new CurveType[] { curve } );
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類のリストをクリアします．
-        /// </summary>
-        public void clearViewingCurve()
-        {
             mViewingCurves.clear();
-        }
-
-        /// <summary>
-        /// このコントロールに担当させるカーブを削除します
-        /// </summary>
-        /// <param name="curve"></param>
-        private void removeViewingCurve( CurveType curve )
-        {
-            for ( int i = 0; i < mViewingCurves.size(); i++ )
-            {
-                if ( mViewingCurves.get( i ).equals( curve ) )
-                {
-                    mViewingCurves.removeElementAt( i );
-                    break;
-                }
+            if ( AppManager.editorConfig.CurveVisibleVelocity ) {
+                mViewingCurves.add( CurveType.VEL );
+            }
+            if ( AppManager.editorConfig.CurveVisibleAccent ) {
+                mViewingCurves.add( CurveType.Accent );
+            }
+            if ( AppManager.editorConfig.CurveVisibleDecay ) {
+                mViewingCurves.add( CurveType.Decay );
+            }
+            if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
+                mViewingCurves.add( CurveType.Env );
+            }
+            if ( AppManager.editorConfig.CurveVisibleDynamics ) {
+                mViewingCurves.add( CurveType.DYN );
+            }
+            if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
+                mViewingCurves.add( CurveType.BRE );
+            }
+            if ( AppManager.editorConfig.CurveVisibleBrightness ) {
+                mViewingCurves.add( CurveType.BRI );
+            }
+            if ( AppManager.editorConfig.CurveVisibleClearness ) {
+                mViewingCurves.add( CurveType.CLE );
+            }
+            if ( AppManager.editorConfig.CurveVisibleOpening ) {
+                mViewingCurves.add( CurveType.OPE );
+            }
+            if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
+                mViewingCurves.add( CurveType.GEN );
+            }
+            if ( AppManager.editorConfig.CurveVisiblePortamento ) {
+                mViewingCurves.add( CurveType.POR );
+            }
+            if ( AppManager.editorConfig.CurveVisiblePit ) {
+                mViewingCurves.add( CurveType.PIT );
+            }
+            if ( AppManager.editorConfig.CurveVisiblePbs ) {
+                mViewingCurves.add( CurveType.PBS );
+            }
+            if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
+                mViewingCurves.add( CurveType.VibratoRate );
+            }
+            if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
+                mViewingCurves.add( CurveType.VibratoDepth );
+            }
+            if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
+                mViewingCurves.add( CurveType.harmonics );
+            }
+            if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
+                mViewingCurves.add( CurveType.fx2depth );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso1 ) {
+                mViewingCurves.add( CurveType.reso1freq );
+                mViewingCurves.add( CurveType.reso1bw );
+                mViewingCurves.add( CurveType.reso1amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso2 ) {
+                mViewingCurves.add( CurveType.reso2freq );
+                mViewingCurves.add( CurveType.reso2bw );
+                mViewingCurves.add( CurveType.reso2amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso3 ) {
+                mViewingCurves.add( CurveType.reso3freq );
+                mViewingCurves.add( CurveType.reso3bw );
+                mViewingCurves.add( CurveType.reso3amp );
+            }
+            if ( AppManager.editorConfig.CurveVisibleReso4 ) {
+                mViewingCurves.add( CurveType.reso4freq );
+                mViewingCurves.add( CurveType.reso4bw );
+                mViewingCurves.add( CurveType.reso4amp );
             }
         }
 
@@ -1041,8 +927,8 @@ namespace org.kbinani.cadencii
         public int getRowsPerColumn()
         {
             int max_columns = getMaxColumns();
-            int row_per_column = getViewingCurveCount() / max_columns;
-            if ( row_per_column * max_columns < getViewingCurveCount() ) {
+            int row_per_column = mViewingCurves.size() / max_columns;
+            if ( row_per_column * max_columns < mViewingCurves.size() ) {
                 row_per_column++;
             }
             return row_per_column;
@@ -1250,8 +1136,8 @@ namespace org.kbinani.cadencii
 
             int centre = (getGraphHeight() + UNIT_HEIGHT_PER_CURVE) / 2 + 3;
             int index = 100;
-            for ( int i = 0; i < getViewingCurveCount(); i++ ) {
-                if ( getViewingCurveElement( i ).equals( curve ) ) {
+            for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                if ( mViewingCurves.get( i ).equals( curve ) ) {
                     index = i;
                     break;
                 }
@@ -1751,8 +1637,8 @@ namespace org.kbinani.cadencii
                     String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
                     g.drawString( name, 7, text_font_height / 2 - text_font_offset + 1 );
 
-                    for ( int i = 0; i < getViewingCurveCount(); i++ ) {
-                        CurveType curve = getViewingCurveElement( i );
+                    for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                        CurveType curve = mViewingCurves.get( i );
                         Rectangle rc = getRectFromCurveType( curve );
                         if ( curve.equals( mSelectedCurve ) || curve.equals( mLastSelectedCurve ) ) {
                             g.setColor( new Color( 108, 108, 108 ) );
@@ -2920,8 +2806,8 @@ namespace org.kbinani.cadencii
             if ( mCurveVisible ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
-                    for ( int i = 0; i < getViewingCurveCount(); i++ ) {
-                        CurveType curve = getViewingCurveElement( i );
+                    for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                        CurveType curve = mViewingCurves.get( i );
                         Rectangle r = getRectFromCurveType( curve );
                         if ( isInRect( e.X, e.Y, r ) ) {
                             changeCurve( curve );
@@ -3094,36 +2980,36 @@ namespace org.kbinani.cadencii
         public void SelectNextCurve()
         {
             int index = 0;
-            if ( getViewingCurveCount() >= 2 ) {
-                for ( int i = 0; i < getViewingCurveCount(); i++ ) {
-                    if ( getViewingCurveElement( i ).equals( mSelectedCurve ) ) {
+            if ( mViewingCurves.size() >= 2 ) {
+                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                    if ( mViewingCurves.get( i ).equals( mSelectedCurve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index++;
-                if ( getViewingCurveCount() <= index ) {
+                if ( mViewingCurves.size() <= index ) {
                     index = 0;
                 }
-                changeCurve( getViewingCurveElement( index ) );
+                changeCurve( mViewingCurves.get( index ) );
             }
         }
 
         public void SelectPreviousCurve()
         {
             int index = 0;
-            if ( getViewingCurveCount() >= 2 ) {
-                for ( int i = 0; i < getViewingCurveCount(); i++ ) {
-                    if ( getViewingCurveElement( i ).equals( mSelectedCurve ) ) {
+            if ( mViewingCurves.size() >= 2 ) {
+                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                    if ( mViewingCurves.get( i ).equals( mSelectedCurve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index--;
                 if ( index < 0 ) {
-                    index = getViewingCurveCount() - 1;
+                    index = mViewingCurves.size() - 1;
                 }
-                changeCurve( getViewingCurveElement( index ) );
+                changeCurve( mViewingCurves.get( index ) );
             }
         }
 
@@ -4480,7 +4366,7 @@ namespace org.kbinani.cadencii
         private void changeCurve( CurveType curve )
         {
 #if DEBUG
-            sout.println( "TrackSelector#changCurve; getViewingCurveCount()=" + getViewingCurveCount() );
+            sout.println( "TrackSelector#changCurve; getViewingCurveCount()=" + mViewingCurves.size() );
 #endif
             if ( !mSelectedCurve.equals( curve ) ) {
                 mLastSelectedCurve = mSelectedCurve;

@@ -12984,7 +12984,6 @@ namespace org.kbinani.cadencii
                     }
 #endif
 
-                    trackSelector.clearViewingCurve();
                     trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
                     trackSelector.updateVisibleCurves();
 

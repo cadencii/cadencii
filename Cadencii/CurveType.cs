@@ -81,9 +81,9 @@ namespace org.kbinani.cadencii
         private CurveTypeImpl mType;
 
         /// <summary>
-        /// ベロシティ(index=-1)
+        /// ベロシティ(index=-4)
         /// </summary>
-        public static readonly CurveType VEL = new CurveType( CurveTypeImpl.VEL, true, true, 0, 127, 64, -1 );
+        public static readonly CurveType VEL = new CurveType( CurveTypeImpl.VEL, true, true, 0, 127, 64, -4 );
         /// <summary>
         /// ダイナミクス　64(index=0)
         /// </summary>
@@ -123,13 +123,13 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static readonly CurveType VibratoDepth = new CurveType( CurveTypeImpl.VibratoDepth, false, true, 0, 127, 50, 10 );
         /// <summary>
-        /// Accent(index=-1)
+        /// Accent(index=-3)
         /// </summary>
-        public static readonly CurveType Accent = new CurveType( CurveTypeImpl.Accent, true, true, 0, 100, 50, -1 );
+        public static readonly CurveType Accent = new CurveType( CurveTypeImpl.Accent, true, true, 0, 100, 50, -3 );
         /// <summary>
-        /// Decay(index=-1)
+        /// Decay(index=-2)
         /// </summary>
-        public static readonly CurveType Decay = new CurveType( CurveTypeImpl.Decay, true, true, 0, 100, 50, -1 );
+        public static readonly CurveType Decay = new CurveType( CurveTypeImpl.Decay, true, true, 0, 100, 50, -2 );
         /// <summary>
         /// Harmonics(index=11)
         /// </summary>
@@ -272,8 +272,8 @@ namespace org.kbinani.cadencii
 
         public int compareTo( CurveType item )
         {
-            if ( mIndex == -1 ) {
-                if ( item.mIndex == -1 ) {
+            if ( mIndex < 0 ) {
+                if ( item.mIndex < 0 ) {
 #if JAVA
                     return mType.compareTo( item.mType );
 #else
@@ -283,7 +283,7 @@ namespace org.kbinani.cadencii
                     return 1;
                 }
             } else {
-                if ( item.mIndex == -1 ) {
+                if ( item.mIndex < 0 ) {
                     return -1;
                 } else {
                     return mIndex - item.mIndex;
