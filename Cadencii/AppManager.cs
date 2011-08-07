@@ -549,10 +549,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static boolean mCurveOnPianoroll = false;
         /// <summary>
-        /// TrackSelectorで表示させているカーブの一覧
-        /// </summary>
-        private static Vector<CurveType> mViewingCurves = new Vector<CurveType>();
-        /// <summary>
         /// 直接再生モード時の、再生開始した位置の曲頭からの秒数
         /// </summary>
         public static float mDirectPlayShift = 0.0f;
@@ -1435,90 +1431,6 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".runGeneratorCore; ex=" + ex + "\n" );
                 sout.println( "AppManager#runGeneratorCore; ex=" + ex );
-            }
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類の個数を取得します．
-        /// </summary>
-        /// <returns></returns>
-        public static int getViewingCurveCount()
-        {
-            return mViewingCurves.size();
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示している，第index番目のカーブ種類を取得します．
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static CurveType getViewingCurveElement( int index )
-        {
-            return mViewingCurves.get( index );
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類のリストに，カーブ種類を追加します．
-        /// </summary>
-        /// <param name="curve"></param>
-        public static void addViewingCurveRange( CurveType[] curve )
-        {
-            for ( int j = 0; j < curve.Length; j++ ) {
-                boolean found = false;
-                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                    if ( mViewingCurves.get( i ).equals( curve[j] ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    mViewingCurves.add( curve[j] );
-                }
-            }
-            if ( mViewingCurves.size() >= 2 ) {
-                boolean changed = true;
-                while ( changed ) {
-                    changed = false;
-                    for ( int i = 0; i < mViewingCurves.size() - 1; i++ ) {
-                        if ( mViewingCurves.get( i ).getIndex() > mViewingCurves.get( i + 1 ).getIndex() ) {
-                            CurveType b = (CurveType)mViewingCurves.get( i ).clone();
-                            mViewingCurves.set( i, (CurveType)mViewingCurves.get( i + 1 ).clone() );
-                            mViewingCurves.set( i + 1, b );
-                            changed = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類のリストに，カーブ種類を追加します．
-        /// </summary>
-        /// <param name="curve"></param>
-        public static void addViewingCurve( CurveType curve )
-        {
-            addViewingCurveRange( new CurveType[] { curve } );
-        }
-
-        /// <summary>
-        /// コントロールトラックに表示しているカーブ種類のリストをクリアします．
-        /// </summary>
-        public static void clearViewingCurve()
-        {
-            mViewingCurves.clear();
-        }
-
-        /// <summary>
-        /// このコントロールに担当させるカーブを削除します
-        /// </summary>
-        /// <param name="curve"></param>
-        public void removeViewingCurve( CurveType curve )
-        {
-            for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                if ( mViewingCurves.get( i ).equals( curve ) ) {
-                    mViewingCurves.removeElementAt( i );
-                    break;
-                }
             }
         }
 

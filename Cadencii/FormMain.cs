@@ -676,7 +676,7 @@ namespace org.kbinani.cadencii
             menuSettingPaletteTool.setVisible( false );
             menuScript.setVisible( false );
 #endif
-            updateTrackSelectorVisibleCurve();
+            trackSelector.updateVisibleCurves();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
             trackSelector.setCurveVisible( true );
             trackSelector.setSelectedCurve( CurveType.VEL );
@@ -3175,87 +3175,6 @@ namespace org.kbinani.cadencii
                 splitContainer2.setDividerSize( 0 );
                 splitContainer2.setDividerLocation( splitContainer2.getHeight() );
                 splitContainer2.setSplitterFixed( true );
-            }
-        }
-
-        /// <summary>
-        /// trackSelectorに表示するコントロールのカーブの種類を、AppManager.EditorConfigの設定に応じて更新します
-        /// </summary>
-        public void updateTrackSelectorVisibleCurve()
-        {
-#if DEBUG
-            sout.println( "FormMain#updateTrackSelectorVisibleCurve; before; AppManager.getViewingCurveCount()" + AppManager.getViewingCurveCount() );
-#endif
-            if ( AppManager.editorConfig.CurveVisibleVelocity ) {
-                AppManager.addViewingCurve( CurveType.VEL );
-            }
-            if ( AppManager.editorConfig.CurveVisibleAccent ) {
-                AppManager.addViewingCurve( CurveType.Accent );
-            }
-            if ( AppManager.editorConfig.CurveVisibleDecay ) {
-                AppManager.addViewingCurve( CurveType.Decay );
-            }
-            if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
-                AppManager.addViewingCurve( CurveType.VibratoRate );
-            }
-            if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
-                AppManager.addViewingCurve( CurveType.VibratoDepth );
-            }
-            if ( AppManager.editorConfig.CurveVisibleDynamics ) {
-                AppManager.addViewingCurve( CurveType.DYN );
-            }
-            if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
-                AppManager.addViewingCurve( CurveType.BRE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleBrightness ) {
-                AppManager.addViewingCurve( CurveType.BRI );
-            }
-            if ( AppManager.editorConfig.CurveVisibleClearness ) {
-                AppManager.addViewingCurve( CurveType.CLE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleOpening ) {
-                AppManager.addViewingCurve( CurveType.OPE );
-            }
-            if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
-                AppManager.addViewingCurve( CurveType.GEN );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePortamento ) {
-                AppManager.addViewingCurve( CurveType.POR );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePit ) {
-                AppManager.addViewingCurve( CurveType.PIT );
-            }
-            if ( AppManager.editorConfig.CurveVisiblePbs ) {
-                AppManager.addViewingCurve( CurveType.PBS );
-            }
-            if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
-                AppManager.addViewingCurve( CurveType.harmonics );
-            }
-            if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
-                AppManager.addViewingCurve( CurveType.fx2depth );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso1 ) {
-                AppManager.addViewingCurve( CurveType.reso1freq );
-                AppManager.addViewingCurve( CurveType.reso1bw );
-                AppManager.addViewingCurve( CurveType.reso1amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso2 ) {
-                AppManager.addViewingCurve( CurveType.reso2freq );
-                AppManager.addViewingCurve( CurveType.reso2bw );
-                AppManager.addViewingCurve( CurveType.reso2amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso3 ) {
-                AppManager.addViewingCurve( CurveType.reso3freq );
-                AppManager.addViewingCurve( CurveType.reso3bw );
-                AppManager.addViewingCurve( CurveType.reso3amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleReso4 ) {
-                AppManager.addViewingCurve( CurveType.reso4freq );
-                AppManager.addViewingCurve( CurveType.reso4bw );
-                AppManager.addViewingCurve( CurveType.reso4amp );
-            }
-            if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
-                AppManager.addViewingCurve( CurveType.Env );
             }
         }
 
@@ -13065,10 +12984,10 @@ namespace org.kbinani.cadencii
                     }
 #endif
 
-                    AppManager.clearViewingCurve();
+                    trackSelector.clearViewingCurve();
                     trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
+                    trackSelector.updateVisibleCurves();
 
-                    updateTrackSelectorVisibleCurve();
                     updateRendererMenu();
                     AppManager.updateAutoBackupTimerStatus();
 
