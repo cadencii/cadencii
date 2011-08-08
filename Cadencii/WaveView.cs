@@ -161,7 +161,7 @@ namespace org.kbinani.cadencii {
                         AppManager.clockFromXCoord( AppManager.keyWidth ),
                         AppManager.clockFromXCoord( AppManager.keyWidth + width ),
                         AppManager.getVsqFile().TempoTable,
-                        AppManager.getScaleX() );
+                        AppManager.mMainWindowController.getScaleX() );
                 } else {
                     context.draw(
                         g,
@@ -170,7 +170,7 @@ namespace org.kbinani.cadencii {
                         AppManager.clockFromXCoord( AppManager.keyWidth ),
                         AppManager.clockFromXCoord( AppManager.keyWidth + width ),
                         AppManager.getVsqFile().TempoTable,
-                        AppManager.getScaleX(),
+                        AppManager.mMainWindowController.getScaleX(),
                         mScale );
                 }
             }

@@ -2324,7 +2324,7 @@ namespace org.kbinani.cadencii
             int key_width = AppManager.keyWidth;
             int xoffset = key_width - stdx;
             g.clipRect( key_width, HEADER, width - key_width, graph_height );
-            float scale = AppManager.getScaleX();
+            float scale = AppManager.mMainWindowController.getScaleX();
             int selected = AppManager.getSelected();
 
             g.setFont( AppManager.baseFont10Bold );
@@ -3024,7 +3024,7 @@ namespace org.kbinani.cadencii
                     break;
                 }
             }
-            float scale_x = AppManager.getScaleX();
+            float scale_x = AppManager.mMainWindowController.getScaleX();
             float scale_y = getScaleY();
             BezierPoint ret = new BezierPoint( 0, 0 );
             if ( index >= 0 ) {
@@ -4900,7 +4900,7 @@ namespace org.kbinani.cadencii
                             } else if ( mSelectedCurve.equals( CurveType.VibratoRate ) || mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
                                 #region VibratoRate || VibratoDepth
                                 int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
-                                int step_px = (int)(step_clock * AppManager.getScaleX());
+                                int step_px = (int)(step_clock * AppManager.mMainWindowController.getScaleX());
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
                                 }
@@ -5023,7 +5023,7 @@ namespace org.kbinani.cadencii
                                 #region Other Curves
                                 int track = selected;
                                 int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
-                                int step_px = (int)(step_clock * AppManager.getScaleX());
+                                int step_px = (int)(step_clock * AppManager.mMainWindowController.getScaleX());
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
                                 }

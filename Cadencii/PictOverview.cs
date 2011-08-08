@@ -414,8 +414,8 @@ namespace org.kbinani.cadencii
         public int getOverviewStartToDrawX( int mouse_x )
         {
             float clock = mouse_x / mOverviewPixelPerClock + mOverviewStartToDrawClock;
-            int clock_at_left = (int)(clock - (mMainForm.pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv() / 2);
-            return (int)(clock_at_left * AppManager.getScaleX());
+            int clock_at_left = (int)(clock - (mMainForm.pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.mMainWindowController.getScaleXInv() / 2);
+            return (int)(clock_at_left * AppManager.mMainWindowController.getScaleX());
         }
 
         public int getOverviewXCoordFromClock( int clock )
@@ -468,7 +468,7 @@ namespace org.kbinani.cadencii
             if ( AppManager.keyWidth < e.X && e.X < getWidth() - 19 ) {
                 mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
                 int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
-                int draft = (int)(draft_stdx * AppManager.getScaleXInv());
+                int draft = (int)(draft_stdx * AppManager.mMainWindowController.getScaleXInv());
                 if ( draft < mMainForm.hScroll.getMinimum() ) {
                     draft = mMainForm.hScroll.getMinimum();
                 } else if ( mMainForm.hScroll.getMaximum() < draft ) {
@@ -626,7 +626,7 @@ namespace org.kbinani.cadencii
 
             // 移動中している最中に，移動開始直前の部分を影付で表示する
             int stdx = AppManager.getStartToDrawX();
-            int act_start_to_draw_x = (int)(mMainForm.hScroll.getValue() * AppManager.getScaleX());
+            int act_start_to_draw_x = (int)(mMainForm.hScroll.getValue() * AppManager.mMainWindowController.getScaleX());
             if ( act_start_to_draw_x != stdx ) {
                 int act_start_clock = AppManager.clockFromXCoord( key_width - stdx + act_start_to_draw_x );
                 int act_end_clock = AppManager.clockFromXCoord( mMainForm.pictPianoRoll.getWidth() - stdx + act_start_to_draw_x );

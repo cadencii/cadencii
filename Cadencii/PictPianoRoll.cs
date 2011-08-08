@@ -365,8 +365,8 @@ namespace org.kbinani.cadencii {
                 // [screen_x] = [clock] * _scalex + xoffset
                 // [screen_y] = -[note] * TRACK_HEIGHT + yoffset
                 int y, dy;
-                float scalex = AppManager.getScaleX();
-                float inv_scalex = AppManager.getScaleXInv();
+                float scalex = AppManager.mMainWindowController.getScaleX();
+                float inv_scalex = AppManager.mMainWindowController.getScaleXInv();
 
                 if ( AppManager.itemSelection.getEventCount() > 0 && AppManager.mInputTextBox.isVisible() ) {
                     VsqEvent original = AppManager.itemSelection.getLastEvent().original;

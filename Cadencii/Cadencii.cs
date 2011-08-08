@@ -167,7 +167,8 @@ namespace org.kbinani.cadencii
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
-            AppManager.mMainWindow = new FormMain( file );
+            AppManager.mMainWindowController = new FormMainController();
+            AppManager.mMainWindow = new FormMain( AppManager.mMainWindowController, file );
 #if !MONO
             AppManager.mMainWindow.Load += mainWindow_Load;
 #endif

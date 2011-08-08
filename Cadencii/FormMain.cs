@@ -349,6 +349,10 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region fields
+        /// <summary>
+        /// コントローラ
+        /// </summary>
+        private FormMainController controller = null;
         public VersionInfo mVersionInfo = null;
 #if !JAVA
         public System.Windows.Forms.Cursor HAND;
@@ -563,11 +567,12 @@ namespace org.kbinani.cadencii
         /// コンストラクタ
         /// </summary>
         /// <param name="file">最初に開くxvsq，vsqファイルのパス</param>
-        public FormMain( String file )
+        public FormMain( FormMainController controller, String file )
         {
 #if JAVA
 		    super();
 #endif
+            this.controller = controller;
 
             // 言語設定を反映させる
             Messaging.setLanguage( AppManager.editorConfig.Language );
@@ -936,7 +941,7 @@ namespace org.kbinani.cadencii
 
             // x=97がプリメジャークロックになるように調整
             int cp = AppManager.getVsqFile().getPreMeasureClocks();
-            int draft_hscroll_value = (int)(cp - 24.0 * AppManager.getScaleXInv());
+            int draft_hscroll_value = (int)(cp - 24.0 * controller.getScaleXInv());
             try {
                 hScroll.setValue( draft_hscroll_value );
             } catch ( Exception ex ) {
@@ -1921,7 +1926,7 @@ namespace org.kbinani.cadencii
             int dx = mouse_x - mButtonInitial.x;
             int max = hScroll.getMaximum() - hScroll.getVisibleAmount();
             int min = hScroll.getMinimum();
-            double new_hscroll_value = (double)mMiddleButtonHScroll - (double)dx * AppManager.getScaleXInv();
+            double new_hscroll_value = (double)mMiddleButtonHScroll - (double)dx * controller.getScaleXInv();
             int value = (int)new_hscroll_value;
             if ( value < min ) {
                 value = min;
@@ -2196,7 +2201,7 @@ namespace org.kbinani.cadencii
 
         public int calculateStartToDrawX()
         {
-            return (int)(hScroll.getValue() * AppManager.getScaleX());
+            return (int)(hScroll.getValue() * controller.getScaleX());
         }
 
         /// <summary>
@@ -3654,7 +3659,7 @@ namespace org.kbinani.cadencii
             int uwidth = clock_right - clock_left;
             if ( clock < clock_left || clock_right < clock ) {
                 int cl_new_center = (clock / uwidth) * uwidth + uwidth / 2;
-                float f_draft = cl_new_center - (pictPianoRoll.getWidth() / 2 + 34 - 70) * AppManager.getScaleXInv();
+                float f_draft = cl_new_center - (pictPianoRoll.getWidth() / 2 + 34 - 70) * controller.getScaleXInv();
                 if ( f_draft < 0f ) {
                     f_draft = 0;
                 }
@@ -3878,7 +3883,7 @@ namespace org.kbinani.cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) return;
             int l = vsq.TotalClocks;
-            float scalex = AppManager.getScaleX();
+            float scalex = controller.getScaleX();
             int key_width = AppManager.keyWidth;
             int pict_piano_roll_width = pwidth - key_width;
             int large_change = (int)(pict_piano_roll_width / scalex);
@@ -4265,7 +4270,7 @@ namespace org.kbinani.cadencii
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
             int cl_new = doQuantize( cl_clock + unit, unit );
 
-            if ( cl_new <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv() ) {
+            if ( cl_new <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) * controller.getScaleXInv() ) {
                 // 表示の更新など
                 AppManager.setCurrentClock( cl_new );
 
@@ -5164,7 +5169,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public int computeScrollValueFromWheelDelta( int delta )
         {
-            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * AppManager.getScaleX());
+            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * controller.getScaleX());
             if ( new_val < 0.0 ) {
                 new_val = 0;
             }
@@ -6391,7 +6396,7 @@ namespace org.kbinani.cadencii
 
                 int xoffset = AppManager.keyOffset;// 6 + AppManager.keyWidth;
                 int yoffset = (int)(127 * (int)(100 * AppManager.getScaleY()));
-                float scalex = AppManager.getScaleX();
+                float scalex = controller.getScaleX();
                 Font SMALL_FONT = null;
                 try {
                     SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
@@ -7154,7 +7159,7 @@ namespace org.kbinani.cadencii
                 #region 現在のマーカー
                 // ソングポジション
                 float xoffset = key_width + AppManager.keyOffset - AppManager.getStartToDrawX();
-                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.getScaleX() + xoffset);
+                int marker_x = (int)(AppManager.getCurrentClock() * controller.getScaleX() + xoffset);
                 if ( key_width <= marker_x && marker_x <= width ) {
                     g.setStroke( new BasicStroke( 2.0f ) );
                     g.setColor( Color.white );
@@ -7767,7 +7772,7 @@ namespace org.kbinani.cadencii
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
                         new Point( x, y ),
                         phonetic_symbol_edit_mode );
-                    int clWidth = (int)(AppManager.mInputTextBox.getWidth() * AppManager.getScaleXInv());
+                    int clWidth = (int)(AppManager.mInputTextBox.getWidth() * controller.getScaleXInv());
 
                     // 画面上にAppManager.mInputTextBoxが見えるように，移動
                     int SPACE = 20;
@@ -7791,7 +7796,7 @@ namespace org.kbinani.cadencii
                             // 右方向に移動していた場合
                             clock_x = key_width + (width - key_width) / 3;
                         }
-                        double draft_d = (key_width + AppManager.keyOffset - clock_x) * AppManager.getScaleXInv() + clock;
+                        double draft_d = (key_width + AppManager.keyOffset - clock_x) * controller.getScaleXInv() + clock;
                         if ( draft_d < 0.0 ) {
                             draft_d = 0.0;
                         }
@@ -8554,7 +8559,7 @@ namespace org.kbinani.cadencii
                             AppManager.mAddingEvent.ID.Note = note;
                             AppManager.mAddingEvent.ID.setLength( length );
                             AppManager.mAddingEventLength = vibrato_dobj.mLength;
-                            AppManager.mAddingEvent.ID.VibratoDelay = length - (int)(px_vibrato_length * AppManager.getScaleXInv());
+                            AppManager.mAddingEvent.ID.VibratoDelay = length - (int)(px_vibrato_length * controller.getScaleXInv());
                             AppManager.setEditMode( EditMode.EDIT_VIBRATO_DELAY );
                             start_mouse_hover_generator = false;
                         }
@@ -8564,7 +8569,7 @@ namespace org.kbinani.cadencii
                             e.Button == BMouseButtons.Left &&
                             e.X >= key_width ) {
                             int clock = AppManager.clockFromXCoord( e.X );
-                            if ( AppManager.getVsqFile().getPreMeasureClocks() - AppManager.editorConfig.PxTolerance * AppManager.getScaleXInv() <= clock ) {
+                            if ( AppManager.getVsqFile().getPreMeasureClocks() - AppManager.editorConfig.PxTolerance * controller.getScaleXInv() <= clock ) {
                                 //10ピクセルまでは許容範囲
                                 if ( AppManager.getVsqFile().getPreMeasureClocks() > clock ) { //だけど矯正するよ。
                                     clock = AppManager.getVsqFile().getPreMeasureClocks();
@@ -8912,7 +8917,7 @@ namespace org.kbinani.cadencii
                     px_move *= -1;
                 }
                 int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
-                float inv_scale_x = AppManager.getScaleXInv();
+                float inv_scale_x = controller.getScaleXInv();
                 int dclock = (int)(px_move * inv_scale_x);
                 d_draft = 5 * inv_scale_x + left_clock + dclock;
                 if ( d_draft < 0.0 ) {
@@ -9085,7 +9090,7 @@ namespace org.kbinani.cadencii
                 int odd = length % unit;
                 int new_length = length - odd;
 
-                if ( unit * AppManager.getScaleX() > 10 ) { //これをしないと、グリッド2個分増えることがある
+                if ( unit * controller.getScaleX() > 10 ) { //これをしないと、グリッド2個分増えることがある
                     int next_clock = AppManager.clockFromXCoord( e.X + 10 );
                     int next_length = next_clock - AppManager.mAddingEvent.Clock;
                     int next_new_length = next_length - (next_length % unit);
@@ -9188,7 +9193,7 @@ namespace org.kbinani.cadencii
                 int new_vibrato_start = clock;
                 int old_vibrato_end = AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength();
                 int new_vibrato_length = old_vibrato_end - new_vibrato_start;
-                int max_length = (int)(AppManager.mAddingEventLength - _PX_ACCENT_HEADER * AppManager.getScaleXInv());
+                int max_length = (int)(AppManager.mAddingEventLength - _PX_ACCENT_HEADER * controller.getScaleXInv());
                 if ( max_length < 0 ) {
                     max_length = 0;
                 }
@@ -9605,7 +9610,7 @@ namespace org.kbinani.cadencii
             } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                 #region EditVibratoDelay
                 if ( mMouseMoved ) {
-                    double max_length = AppManager.mAddingEventLength - _PX_ACCENT_HEADER * AppManager.getScaleXInv();
+                    double max_length = AppManager.mAddingEventLength - _PX_ACCENT_HEADER * controller.getScaleXInv();
                     double rate = AppManager.mAddingEvent.ID.getLength() / max_length;
                     if ( rate > 0.99 ) {
                         rate = 1.0;
@@ -9809,7 +9814,7 @@ namespace org.kbinani.cadencii
                         // マウス位置でのクロック -> こいつが保存される
                         int clock_at_mouse = AppManager.clockFromXCoord( x_at_mouse );
                         // 古い拡大率
-                        float scale0 = AppManager.getScaleX();
+                        float scale0 = controller.getScaleX();
                         // 新しい拡大率
                         float scale1 = getScaleXFromTrackBarValue( draft );
                         // 古いstdx
@@ -9824,7 +9829,7 @@ namespace org.kbinani.cadencii
                             hscroll_value = hScroll.getMaximum();
                         }
 
-                        AppManager.setScaleX( scale1 );
+                        controller.setScaleX( scale1 );
                         AppManager.setStartToDrawX( stdx1 );
                         hScroll.setValue( hscroll_value );
                         trackBar.setValue( draft );
@@ -14999,7 +15004,7 @@ namespace org.kbinani.cadencii
 
         public void trackBar_ValueChanged( Object sender, EventArgs e )
         {
-            AppManager.setScaleX( getScaleXFromTrackBarValue( trackBar.getValue() ) );
+            controller.setScaleX( getScaleXFromTrackBarValue( trackBar.getValue() ) );
             AppManager.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
             repaint();
@@ -15227,7 +15232,7 @@ namespace org.kbinani.cadencii
                     if ( mExtDragXTrackSelector == ExtDragXMode.LEFT ) {
                         px_move *= -1;
                     }
-                    double d_draft = hScroll.getValue() + px_move * AppManager.getScaleXInv();
+                    double d_draft = hScroll.getValue() + px_move * controller.getScaleXInv();
                     if ( d_draft < 0.0 ) {
                         d_draft = 0.0;
                     }

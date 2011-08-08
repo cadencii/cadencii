@@ -445,14 +445,6 @@ namespace org.kbinani.cadencii
         /// </summary> 
         public static boolean mAutoNormalize = false;
         /// <summary>
-        /// x方向の表示倍率(pixel/clock)
-        /// </summary>
-        private static float mScaleX = 0.1f;
-        /// <summary>
-        /// _scaleXの逆数
-        /// </summary>
-        private static float mInvScaleX = 1.0f / mScaleX;
-        /// <summary>
         /// Bezierカーブ編集モードが有効かどうかを表す
         /// </summary>
         private static boolean mIsCurveMode = false;
@@ -490,6 +482,10 @@ namespace org.kbinani.cadencii
         /// メインの編集画面のインスタンス
         /// </summary>
         public static FormMain mMainWindow = null;
+        /// <summary>
+        /// メイン画面のコントローラ
+        /// </summary>
+        public static FormMainController mMainWindowController = null;
         /// <summary>
         /// ミキサーダイアログ
         /// </summary>
@@ -1435,34 +1431,6 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// ピアノロールの，X方向のスケールを取得します(pixel/clock)
-        /// </summary>
-        /// <returns></returns>
-        public static float getScaleX()
-        {
-            return mScaleX;
-        }
-
-        /// <summary>
-        /// ピアノロールの，X方向のスケールの逆数を取得します(clock/pixel)
-        /// </summary>
-        /// <returns></returns>
-        public static float getScaleXInv()
-        {
-            return mInvScaleX;
-        }
-
-        /// <summary>
-        /// ピアノロールの，X方向のスケールを設定します
-        /// </summary>
-        /// <param name="scale_x"></param>
-        public static void setScaleX( float scale_x )
-        {
-            mScaleX = scale_x;
-            mInvScaleX = 1.0f / mScaleX;
-        }
-
-        /// <summary>
         /// ピアノロールの，Y方向のスケールを取得します(pixel/cent)
         /// </summary>
         /// <returns></returns>
@@ -1732,7 +1700,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static int xCoordFromClocks( double clocks )
         {
-            return xCoordFromClocks( clocks, mScaleX, mStartToDrawX );
+            return xCoordFromClocks( clocks, mMainWindowController.getScaleX(), mStartToDrawX );
         }
 
         /// <summary>
@@ -1752,7 +1720,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static int clockFromXCoord( int x )
         {
-            return (int)((x + mStartToDrawX - keyOffset - keyWidth) * mInvScaleX);
+            return (int)((x + mStartToDrawX - keyOffset - keyWidth) * mMainWindowController.getScaleXInv());
         }
 
         #region 選択範囲の管理
