@@ -1189,7 +1189,7 @@ namespace org.kbinani.cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
             int key_width = AppManager.keyWidth;
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = AppManager.mMainWindowController.getStartToDrawX();
             int graph_max_y = HEADER + graph_height;
             int graph_min_y = HEADER;
 
@@ -2320,7 +2320,7 @@ namespace org.kbinani.cadencii
             int width = getWidth();
             int oy = height - 42;
             Shape last_clip = g.getClip();
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = AppManager.mMainWindowController.getStartToDrawX();
             int key_width = AppManager.keyWidth;
             int xoffset = key_width - stdx;
             g.clipRect( key_width, HEADER, width - key_width, graph_height );
@@ -2764,7 +2764,7 @@ namespace org.kbinani.cadencii
 
             // 移動中のデータ点をハイライト表示する
             if ( mMouseDownMode == MouseDownMode.POINT_MOVE ) {
-                int dx = pmouse.x + AppManager.getStartToDrawX() - mMouseDownLocation.x;
+                int dx = pmouse.x + AppManager.mMainWindowController.getStartToDrawX() - mMouseDownLocation.x;
                 int dy = pmouse.y - mMouseDownLocation.y;
                 for ( Iterator<BPPair> itr = mMovingPoints.iterator(); itr.hasNext(); ) {
                     BPPair item = itr.next();
@@ -3205,7 +3205,7 @@ namespace org.kbinani.cadencii
             if ( e.Button == BMouseButtons.None ) {
                 return;
             }
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = AppManager.mMainWindowController.getStartToDrawX();
             if ( (e.X + stdx != mMouseDownLocation.x || e.Y != mMouseDownLocation.y) ) {
 #if JAVA
                 if( mMouseHoverThread != null && mMouseHoverThread.isAlive() ){
@@ -3500,7 +3500,7 @@ namespace org.kbinani.cadencii
             AppManager.debugWriteLine( "TrackSelector_MouseDown" );
 #endif
             VsqFileEx vsq = AppManager.getVsqFile();
-            mMouseDownLocation.x = e.X + AppManager.getStartToDrawX();
+            mMouseDownLocation.x = e.X + AppManager.mMainWindowController.getStartToDrawX();
             mMouseDownLocation.y = e.Y;
             int clock = AppManager.clockFromXCoord( e.X );
             int selected = AppManager.getSelected();
@@ -3516,7 +3516,7 @@ namespace org.kbinani.cadencii
 #endif
                 return;
             }
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = AppManager.mMainWindowController.getStartToDrawX();
             mModifierOnMouseDown = PortUtil.getCurrentModifierKey();
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
@@ -3750,7 +3750,7 @@ namespace org.kbinani.cadencii
                                     }
                                 }
                                 mMouseTracer.clear();
-                                int x = e.X + AppManager.getStartToDrawX();
+                                int x = e.X + AppManager.mMainWindowController.getStartToDrawX();
                                 mMouseTracer.appendFirst( x, e.Y );
                                 mPencilMoved = false;
 
@@ -4473,7 +4473,7 @@ namespace org.kbinani.cadencii
 
             int selected = AppManager.getSelected();
             boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = AppManager.mMainWindowController.getStartToDrawX();
 
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
@@ -5271,7 +5271,7 @@ namespace org.kbinani.cadencii
                 if ( mMouseMoved ) {
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
-                    int dx = mouse.x + AppManager.getStartToDrawX() - mMouseDownLocation.x;
+                    int dx = mouse.x + AppManager.mMainWindowController.getStartToDrawX() - mMouseDownLocation.x;
                     int dy = mouse.y - mMouseDownLocation.y;
 
                     String curve = mSelectedCurve.getName();

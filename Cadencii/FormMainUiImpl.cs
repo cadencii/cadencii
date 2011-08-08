@@ -1851,7 +1851,7 @@ namespace org.kbinani.cadencii
             {
                 Vector<DrawObject> dobj_list = AppManager.mDrawObjects.get( selected - 1 );
                 int count = dobj_list.size();
-                int start_to_draw_x = AppManager.getStartToDrawX();
+                int start_to_draw_x = controller.getStartToDrawX();
                 int start_to_draw_y = AppManager.getStartToDrawY();
                 VsqFileEx vsq = AppManager.getVsqFile();
                 VsqTrack vsq_track = vsq.Track.get( selected );
@@ -5299,7 +5299,7 @@ namespace org.kbinani.cadencii
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     VsqFileEx work = (VsqFileEx)vsq.clone();
                     work.executeCommand( run );
-                    int stdx = AppManager.getStartToDrawX();
+                    int stdx = controller.getStartToDrawX();
                     int start_clock = AppManager.mWholeSelectedInterval.getStart();
                     int end_clock = AppManager.mWholeSelectedInterval.getEnd();
                     Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
@@ -5693,7 +5693,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 sout.println( "FormMain#copyEvent; selected with CTRL key" );
 #endif
-                int stdx = AppManager.getStartToDrawX();
+                int stdx = controller.getStartToDrawX();
                 int start_clock = AppManager.mWholeSelectedInterval.getStart();
                 int end_clock = AppManager.mWholeSelectedInterval.getEnd();
                 ClipboardEntry ce = new ClipboardEntry();
@@ -5845,7 +5845,7 @@ namespace org.kbinani.cadencii
 
             // Ctrlキーを押しながらドラッグしたか、そうでないかで分岐
             if ( AppManager.isWholeSelectedIntervalEnabled() || AppManager.itemSelection.getPointIDCount() > 0 ) {
-                int stdx = AppManager.getStartToDrawX();
+                int stdx = controller.getStartToDrawX();
                 int start_clock, end_clock;
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     start_clock = AppManager.mWholeSelectedInterval.getStart();
@@ -7158,7 +7158,7 @@ namespace org.kbinani.cadencii
 
                 #region 現在のマーカー
                 // ソングポジション
-                float xoffset = key_width + AppManager.keyOffset - AppManager.getStartToDrawX();
+                float xoffset = key_width + AppManager.keyOffset - controller.getStartToDrawX();
                 int marker_x = (int)(AppManager.getCurrentClock() * controller.getScaleX() + xoffset);
                 if ( key_width <= marker_x && marker_x <= width ) {
                     g.setStroke( new BasicStroke( 2.0f ) );
@@ -8081,11 +8081,11 @@ namespace org.kbinani.cadencii
                     }
                     if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         // マウス位置にビブラートの波波があったら削除する
-                        int stdx = AppManager.getStartToDrawX();
+                        int stdx = controller.getStartToDrawX();
                         int stdy = AppManager.getStartToDrawY();
                         for ( int i = 0; i < AppManager.mDrawObjects.get( selected - 1 ).size(); i++ ) {
                             DrawObject dobj = AppManager.mDrawObjects.get( selected - 1 ).get( i );
-                            if ( dobj.mRectangleInPixel.x + AppManager.getStartToDrawX() + dobj.mRectangleInPixel.width - stdx < 0 ) {
+                            if ( dobj.mRectangleInPixel.x + controller.getStartToDrawX() + dobj.mRectangleInPixel.width - stdx < 0 ) {
                                 continue;
                             } else if ( pictPianoRoll.getWidth() < dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx ) {
                                 break;
@@ -8241,7 +8241,7 @@ namespace org.kbinani.cadencii
                 AppManager.itemSelection.clearEvent();
                 hideInputTextBox();
                 if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
-                    int stdx = AppManager.getStartToDrawX();
+                    int stdx = controller.getStartToDrawX();
                     int stdy = AppManager.getStartToDrawY();
                     for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = itr.next();
@@ -8459,7 +8459,7 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = controller.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
             if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mMouseTracer.clear();
@@ -8818,7 +8818,7 @@ namespace org.kbinani.cadencii
             }
 
             EditMode edit_mode = AppManager.getEditMode();
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = controller.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
             int selected = AppManager.getSelected();
             EditTool selected_tool = AppManager.getSelectedTool();
@@ -9335,7 +9335,7 @@ namespace org.kbinani.cadencii
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
             CurveType selected_curve = trackSelector.getSelectedCurve();
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = controller.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
             double d2_13 = 8192; // = 2^13
             int track_height = (int)(100 * AppManager.getScaleY());
@@ -9818,7 +9818,7 @@ namespace org.kbinani.cadencii
                         // 新しい拡大率
                         float scale1 = getScaleXFromTrackBarValue( draft );
                         // 古いstdx
-                        int stdx0 = AppManager.getStartToDrawX();
+                        int stdx0 = controller.getStartToDrawX();
                         int stdx1 = (int)(clock_at_mouse * (scale1 - scale0) + stdx0);
                         // 新しいhScroll.Value
                         int hscroll_value = (int)(stdx1 / scale1);
@@ -9830,7 +9830,7 @@ namespace org.kbinani.cadencii
                         }
 
                         controller.setScaleX( scale1 );
-                        AppManager.setStartToDrawX( stdx1 );
+                        controller.setStartToDrawX( stdx1 );
                         hScroll.setValue( hscroll_value );
                         trackBar.setValue( draft );
                     }
@@ -14184,7 +14184,7 @@ namespace org.kbinani.cadencii
         public void hScroll_ValueChanged( Object sender, EventArgs e )
         {
             int stdx = calculateStartToDrawX();
-            AppManager.setStartToDrawX( stdx );
+            controller.setStartToDrawX( stdx );
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -15005,7 +15005,7 @@ namespace org.kbinani.cadencii
         public void trackBar_ValueChanged( Object sender, EventArgs e )
         {
             controller.setScaleX( getScaleXFromTrackBarValue( trackBar.getValue() ) );
-            AppManager.setStartToDrawX( calculateStartToDrawX() );
+            controller.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
             repaint();
         }

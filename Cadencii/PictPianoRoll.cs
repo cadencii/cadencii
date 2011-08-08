@@ -348,7 +348,7 @@ namespace org.kbinani.cadencii {
                 VsqTrack vsq_track = vsq.Track.get( selected );
 
                 Point mouse_position = pointToClient( PortUtil.getMousePosition() );
-                int stdx = AppManager.getStartToDrawX();
+                int stdx = AppManager.mMainWindowController.getStartToDrawX();
                 int stdy = AppManager.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
 

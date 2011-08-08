@@ -22,10 +22,17 @@ namespace org
                 /// x方向の表示倍率(pixel/clock)
                 /// </summary>
                 private float mScaleX;
+                
                 /// <summary>
                 /// mScaleXの逆数
                 /// </summary>
                 private float mInvScaleX;
+                
+                /// <summary>
+                /// 画面左端位置での、仮想画面上の画面左端から測ったピクセル数．
+                /// FormMain.hScroll.ValueとFormMain.trackBar.Valueで決まる．
+                /// </summary>
+                private int mStartToDrawX;
 
                 public FormMainController()
                 {
@@ -59,6 +66,24 @@ namespace org
                 {
                     mScaleX = scale_x;
                     mInvScaleX = 1.0f / mScaleX;
+                }
+
+                /// <summary>
+                /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを取得します
+                /// </summary>
+                /// <returns></returns>
+                public int getStartToDrawX()
+                {
+                    return mStartToDrawX;
+                }
+
+                /// <summary>
+                /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを設定します
+                /// </summary>
+                /// <param name="value"></param>
+                public void setStartToDrawX( int value )
+                {
+                    mStartToDrawX = value;
                 }
             }
 

@@ -581,7 +581,7 @@ namespace org.kbinani.cadencii
                 }
 
                 // 
-                int xoffset = (int)(cStart * pixel_per_clock) - AppManager.getStartToDrawX() + AppManager.keyOffset;
+                int xoffset = (int)(cStart * pixel_per_clock) - AppManager.mMainWindowController.getStartToDrawX() + AppManager.keyOffset;
                 double sec_per_clock = lastTempo * 1e-6 / 480.0;
                 lastTempo = tempo;
                 double pixel_per_sample = 1.0 / mSampleRate / sec_per_clock * pixel_per_clock;

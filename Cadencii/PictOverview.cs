@@ -519,7 +519,7 @@ namespace org.kbinani.cadencii
                         if ( draft < 0 ) {
                             draft = 0;
                         }
-                        AppManager.setStartToDrawX( draft );
+                        AppManager.mMainWindowController.setStartToDrawX( draft );
                         mMainForm.refreshScreen();
                         return;
                     }
@@ -546,7 +546,7 @@ namespace org.kbinani.cadencii
             mOverviewButtonZoomMouseDowned = false;
             mOverviewButtonMoozMouseDowned = false;
             if ( mOverviewMouseDownMode == OverviewMouseDownMode.LEFT ) {
-                AppManager.setStartToDrawX( mMainForm.calculateStartToDrawX() );
+                AppManager.mMainWindowController.setStartToDrawX( mMainForm.calculateStartToDrawX() );
             }
             mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
             mMainForm.refreshScreen();
@@ -560,7 +560,7 @@ namespace org.kbinani.cadencii
                 if ( draft < 0 ) {
                     draft = 0;
                 }
-                AppManager.setStartToDrawX( draft );
+                AppManager.mMainWindowController.setStartToDrawX( draft );
                 mMainForm.refreshScreen();
             } else if ( mOverviewMouseDownMode == OverviewMouseDownMode.MIDDLE ) {
                 int dx = e.X - mOverviewMouseDownedLocationX;
@@ -625,7 +625,7 @@ namespace org.kbinani.cadencii
             int x_end = getOverviewXCoordFromClock( current_end );
 
             // 移動中している最中に，移動開始直前の部分を影付で表示する
-            int stdx = AppManager.getStartToDrawX();
+            int stdx = AppManager.mMainWindowController.getStartToDrawX();
             int act_start_to_draw_x = (int)(mMainForm.hScroll.getValue() * AppManager.mMainWindowController.getScaleX());
             if ( act_start_to_draw_x != stdx ) {
                 int act_start_clock = AppManager.clockFromXCoord( key_width - stdx + act_start_to_draw_x );

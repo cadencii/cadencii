@@ -457,11 +457,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static double mPreviewStartedTime;
         /// <summary>
-        /// 画面左端位置での、仮想画面上の画面左端から測ったピクセル数．
-        /// FormMain.hScroll.ValueとFormMain.trackBar.Valueで決まる．
-        /// </summary>
-        private static int mStartToDrawX;
-        /// <summary>
         /// 画面上端位置での、仮想画面上の画面上端から図ったピクセル数．
         /// FormMain.vScroll.Value，FormMain.vScroll.Height，FormMain.vScroll.Maximum,AppManager.editorConfig.PxTrackHeightによって決まる
         /// </summary>
@@ -1451,24 +1446,6 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを取得します
-        /// </summary>
-        /// <returns></returns>
-        public static int getStartToDrawX()
-        {
-            return mStartToDrawX;
-        }
-
-        /// <summary>
-        /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを設定します
-        /// </summary>
-        /// <param name="value"></param>
-        public static void setStartToDrawX( int value )
-        {
-            mStartToDrawX = value;
-        }
-
-        /// <summary>
         /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを取得します
         /// </summary>
         /// <returns></returns>
@@ -1700,7 +1677,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static int xCoordFromClocks( double clocks )
         {
-            return xCoordFromClocks( clocks, mMainWindowController.getScaleX(), mStartToDrawX );
+            return xCoordFromClocks( clocks, mMainWindowController.getScaleX(), mMainWindowController.getStartToDrawX() );
         }
 
         /// <summary>
@@ -1720,7 +1697,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static int clockFromXCoord( int x )
         {
-            return (int)((x + mStartToDrawX - keyOffset - keyWidth) * mMainWindowController.getScaleXInv());
+            return (int)((x + mMainWindowController.getStartToDrawX() - keyOffset - keyWidth) * mMainWindowController.getScaleXInv());
         }
 
         #region 選択範囲の管理
