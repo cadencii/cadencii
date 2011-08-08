@@ -48,9 +48,9 @@ namespace org.kbinani.cadencii
         private long m_editing_id = -1;
         private CurveType m_curve;
         private boolean m_changed = false;
-        private FormMain mMainWindow = null;
+        private FormMainUiImpl mMainWindow = null;
 
-        public FormCurvePointEdit( FormMain main_window, long editing_id, CurveType curve )
+        public FormCurvePointEdit( FormMainUiImpl main_window, long editing_id, CurveType curve )
         {
 #if JAVA
             super();

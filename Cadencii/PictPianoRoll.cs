@@ -136,7 +136,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// メイン画面への参照
         /// </summary>
-        private FormMain mMainForm = null;
+        private FormMainUiImpl mMainForm = null;
 
         public PictPianoRoll()
         {
@@ -215,7 +215,7 @@ namespace org.kbinani.cadencii {
         /// メイン画面への参照を設定します
         /// </summary>
         /// <param name="form"></param>
-        public void setMainForm( FormMain form )
+        public void setMainForm( FormMainUiImpl form )
         {
             mMainForm = form;
         }

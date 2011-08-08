@@ -100,7 +100,7 @@ namespace org.kbinani.cadencii {
         /// メインウィンドウへの参照を設定します
         /// </summary>
         /// <param name="main_window"></param>
-        void setMainWindow( FormMain main_window );
+        void setMainWindow( FormMainUiImpl main_window );
     }
 
 #if !JAVA

@@ -43,9 +43,9 @@ namespace org.kbinani.cadencii
     public class SynthesizeWorker
     {
         private WaveGenerator mGenerator = null;
-        private FormMain mMainWindow = null;
+        private FormMainUiImpl mMainWindow = null;
 
-        public SynthesizeWorker( FormMain main_window )
+        public SynthesizeWorker( FormMainUiImpl main_window )
         {
             mMainWindow = main_window;
         }

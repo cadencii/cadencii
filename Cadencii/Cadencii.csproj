@@ -353,7 +353,7 @@
     <Compile Include="FormInsertBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="FormMainUiImpl.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExport.cs">
@@ -405,8 +405,8 @@
     <EmbeddedResource Include="FormCheckUnknownSingerAndResampler.resx">
       <DependentUpon>FormCheckUnknownSingerAndResampler.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <EmbeddedResource Include="FormMainUiImpl.resx">
+      <DependentUpon>FormMainUiImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSequenceConfig.resx">
       <DependentUpon>FormSequenceConfig.cs</DependentUpon>

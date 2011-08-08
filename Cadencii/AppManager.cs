@@ -481,7 +481,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// メインの編集画面のインスタンス
         /// </summary>
-        public static FormMain mMainWindow = null;
+        public static FormMainUiImpl mMainWindow = null;
         /// <summary>
         /// メイン画面のコントローラ
         /// </summary>
@@ -705,7 +705,7 @@ namespace org.kbinani.cadencii
         /// プレビュー再生を開始します．
         /// 合成処理などが途中でキャンセルされた場合にtrue，それ以外の場合にfalseを返します
         /// </summary>
-        private static boolean previewStart( FormMain form )
+        private static boolean previewStart( FormMainUiImpl form )
         {
             int selected = mSelected;
             RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
@@ -848,7 +848,7 @@ namespace org.kbinani.cadencii
         /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
         /// </summary>
         /// <param name="tracks"></param>
-        public static boolean patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
+        public static boolean patchWorkToFreeze( FormMainUiImpl main_window, Vector<Integer> tracks )
         {
             mVsq.updateTotalClocks();
             Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
@@ -1075,14 +1075,14 @@ namespace org.kbinani.cadencii
                             zone.add( exStart, exEnd );
                         }
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMainUiImpl ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                         serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                     } finally {
                         if ( wr != null ) {
                             try {
                                 wr.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                Logger.write( typeof( FormMainUiImpl ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                                 serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
                             }
                         }
@@ -2475,7 +2475,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="value"></param>
         /// <param name="form"></param>
-        public static void setPlaying( boolean value, FormMain form )
+        public static void setPlaying( boolean value, FormMainUiImpl form )
         {
 #if DEBUG
             sout.println( "AppManager#setPlaying; value=" + value );

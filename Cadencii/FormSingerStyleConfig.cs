@@ -344,7 +344,7 @@ namespace org.kbinani.cadencii
         public void btnApply_Click( Object sender, EventArgs e )
         {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
-                                  FormMain._APP_NAME,
+                                  FormMainUiImpl._APP_NAME,
                                   org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
                                   org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;

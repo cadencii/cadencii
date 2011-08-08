@@ -385,7 +385,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// メイン画面への参照
         /// </summary>
-        private FormMain mMainWindow = null;
+        private FormMainUiImpl mMainWindow = null;
         /// <summary>
         /// Overlap, Presendを描画するときに使うフォントで，一文字あたり何ピクセルになるか
         /// </summary>
@@ -466,7 +466,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// コンストラクタ．
         /// </summary>
-        public TrackSelector( FormMain main_window )
+        public TrackSelector( FormMainUiImpl main_window )
         {
 #if JAVA
             super();
@@ -946,7 +946,7 @@ namespace org.kbinani.cadencii
         /// このコントロールの親ウィンドウを取得します
         /// </summary>
         /// <returns></returns>
-        public FormMain getMainForm()
+        public FormMainUiImpl getMainForm()
         {
             return mMainWindow;
         }

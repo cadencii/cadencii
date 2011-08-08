@@ -115,7 +115,7 @@ namespace org.kbinani.cadencii
         /// ミニチュアピアノロールの縮小ボタン上でマウスが下りている状態かどうか
         /// </summary>
         private boolean mOverviewButtonMoozMouseDowned = false;
-        private FormMain mMainForm = null;
+        private FormMainUiImpl mMainForm = null;
         private Color mBackgroundColor = new Color( 106, 108, 108 );
         private Object mDrawerSyncRoot;
 
@@ -126,11 +126,11 @@ namespace org.kbinani.cadencii
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
 #endif
             mDrawerSyncRoot = new Object();
-            mDrawer = new ImageCachedComponentDrawer( 100, FormMain._OVERVIEW_HEIGHT );
+            mDrawer = new ImageCachedComponentDrawer( 100, FormMainUiImpl._OVERVIEW_HEIGHT );
             registerEventHandlers();
         }
 
-        public void setMainForm( FormMain form )
+        public void setMainForm( FormMainUiImpl form )
         {
             mMainForm = form;
         }
@@ -156,7 +156,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMain ) + ".overviewStopThread; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMainUiImpl ) + ".overviewStopThread; ex=" + ex + "\n" );
                 }
                 mOverviewUpdateThread = null;
             }
@@ -181,7 +181,7 @@ namespace org.kbinani.cadencii
 #endif
                 } catch ( Exception ex ) {
                     serr.println( "FormMain#btnLeft_MouseDown; ex=" + ex );
-                    Logger.write( typeof( FormMain ) + ".btnLeft_MouseDown; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMainUiImpl ) + ".btnLeft_MouseDown; ex=" + ex + "\n" );
                 }
                 mOverviewUpdateThread = null;
             }
@@ -217,7 +217,7 @@ namespace org.kbinani.cadencii
 #endif
                 } catch ( Exception ex ) {
                     serr.println( "FormMain#btnRight_MouseDown; ex=" + ex );
-                    Logger.write( typeof( FormMain ) + ".btnRight_MouseDown; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMainUiImpl ) + ".btnRight_MouseDown; ex=" + ex + "\n" );
                 }
                 mOverviewUpdateThread = null;
             }
@@ -742,7 +742,7 @@ namespace org.kbinani.cadencii
             g.fillRect( 0, 0, width, height );
 
             g.setStroke( getStroke2px() );
-            g.setColor( FormMain.mColorNoteFill );
+            g.setColor( FormMainUiImpl.mColorNoteFill );
             int key_width = AppManager.keyWidth;
             int xoffset = key_width + AppManager.keyOffset;
             VsqFileEx vsq = AppManager.getVsqFile();

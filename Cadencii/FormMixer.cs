@@ -53,7 +53,7 @@ namespace org.kbinani.cadencii
 #if JAVA
         final int SCROLL_HEIGHT = 15;
 #endif
-        private FormMain m_parent;
+        private FormMainUiImpl m_parent;
         private Vector<VolumeTracker> m_tracker = null;
         private boolean mPreviousAlwaysOnTop;
 
@@ -89,7 +89,7 @@ namespace org.kbinani.cadencii
         public event MuteChangedEventHandler MuteChanged;
 #endif
 
-        public FormMixer( FormMain parent )
+        public FormMixer( FormMainUiImpl parent )
         {
 #if JAVA
             super();
