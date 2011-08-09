@@ -457,11 +457,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static double mPreviewStartedTime;
         /// <summary>
-        /// 画面上端位置での、仮想画面上の画面上端から図ったピクセル数．
-        /// FormMain.vScroll.Value，FormMain.vScroll.Height，FormMain.vScroll.Maximum,AppManager.editorConfig.PxTrackHeightによって決まる
-        /// </summary>
-        private static int mStartToDrawY;
-        /// <summary>
         /// 現在選択中のパレットアイテムの名前
         /// </summary>
         public static String mSelectedPaletteTool = "";
@@ -1446,31 +1441,13 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを取得します
-        /// </summary>
-        /// <returns></returns>
-        public static int getStartToDrawY()
-        {
-            return mStartToDrawY;
-        }
-
-        /// <summary>
-        /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを設定します
-        /// </summary>
-        /// <param name="value"></param>
-        public static void setStartToDrawY( int value )
-        {
-            mStartToDrawY = value;
-        }
-
-        /// <summary>
         /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
         public static int yCoordFromNote( float note )
         {
-            return yCoordFromNote( note, mStartToDrawY );
+            return yCoordFromNote( note, mMainWindowController.getStartToDrawY() );
         }
 
         /// <summary>
@@ -1506,7 +1483,7 @@ namespace org.kbinani.cadencii
 
         private static double noteFromYCoordCore( int y )
         {
-            return (double)(mStartToDrawY + y) / (double)((int)(getScaleY() * 100));
+            return (double)(mMainWindowController.getStartToDrawY() + y) / (double)((int)(getScaleY() * 100));
         }
 
         /// <summary>

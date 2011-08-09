@@ -349,7 +349,7 @@ namespace org.kbinani.cadencii {
 
                 Point mouse_position = pointToClient( PortUtil.getMousePosition() );
                 int stdx = AppManager.mMainWindowController.getStartToDrawX();
-                int stdy = AppManager.getStartToDrawY();
+                int stdy = AppManager.mMainWindowController.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
 
                 int track_height = (int)(AppManager.getScaleY() * 100);
@@ -944,7 +944,7 @@ namespace org.kbinani.cadencii {
                     if ( edit_mode == EditMode.ADD_ENTRY ||
                          edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
                          edit_mode == EditMode.DRAG_DROP ||
-                         mMainForm.isStepSequencerEnabled() ) {
+                        AppManager.mMainWindowController.isStepSequencerEnabled() ) {
                         if ( AppManager.mAddingEvent != null ) {
 #if DEBUG
                             sout.println( "PictPianoRoll#paint; drawing mAddingEvent" );

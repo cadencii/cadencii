@@ -159,6 +159,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMainController.cs" />
+    <Compile Include="FormMainUi.cs" />
+    <Compile Include="FormMainUiListener.cs" />
     <Compile Include="FormSequenceConfig.cs">
       <SubType>Form</SubType>
     </Compile>

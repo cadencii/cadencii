@@ -90,7 +90,7 @@ namespace org.kbinani.cadencii
 #if JAVA
     public class FormMainUiImpl extends BForm
 #else
-    public class FormMainUiImpl : BForm
+    public class FormMainUiImpl : BForm, FormMainUi
 #endif
     {
         /// <summary>
@@ -536,10 +536,6 @@ namespace org.kbinani.cadencii
         private int mPianoRollScaleYMouseStatus = 0;
 #endif
         /// <summary>
-        /// MIDIステップ入力モードがONかどうか
-        /// </summary>
-        private boolean mStepSequencerEnabled = false;
-        /// <summary>
         /// 再生中にソングポジションが前進だけしてほしいので，逆行を防ぐために前回のソングポジションを覚えておく
         /// </summary>
         private int mLastClock = 0;
@@ -573,6 +569,7 @@ namespace org.kbinani.cadencii
 		    super();
 #endif
             this.controller = controller;
+            this.controller.setupUi( this );
 
             // 言語設定を反映させる
             Messaging.setLanguage( AppManager.editorConfig.Language );
@@ -1212,6 +1209,15 @@ namespace org.kbinani.cadencii
         }
         #endregion
 
+        #region FormMainUiの実装
+
+        public void focusPianoRoll()
+        {
+            pictPianoRoll.Focus();
+        }
+
+        #endregion
+
         #region helper methods
         /// <summary>
         /// 指定した歌手とリサンプラーについて，設定値に登録されていないものだったら登録する．
@@ -1336,7 +1342,7 @@ namespace org.kbinani.cadencii
             if ( scaley != draft ) {
                 AppManager.editorConfig.PianoRollScaleY = draft;
                 updateScrollRangeVertical();
-                AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
                 updateDrawObjectList();
             }
         }
@@ -1403,7 +1409,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void updateNoteLengthStepSequencer()
         {
-            if ( !isStepSequencerEnabled() ) {
+            if ( !controller.isStepSequencerEnabled() ) {
                 return;
             }
 
@@ -1852,7 +1858,7 @@ namespace org.kbinani.cadencii
                 Vector<DrawObject> dobj_list = AppManager.mDrawObjects.get( selected - 1 );
                 int count = dobj_list.size();
                 int start_to_draw_x = controller.getStartToDrawX();
-                int start_to_draw_y = AppManager.getStartToDrawY();
+                int start_to_draw_y = controller.getStartToDrawY();
                 VsqFileEx vsq = AppManager.getVsqFile();
                 VsqTrack vsq_track = vsq.Track.get( selected );
 
@@ -2056,15 +2062,6 @@ namespace org.kbinani.cadencii
                 new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.getName(), new BKeys[]{ BKeys.Tab } ),
             } ) );
             return ret;
-        }
-
-        /// <summary>
-        /// MIDIステップ入力モードがONかどうかを取得します
-        /// </summary>
-        /// <returns></returns>
-        public boolean isStepSequencerEnabled()
-        {
-            return mStepSequencerEnabled;
         }
 
         /// <summary>
@@ -3636,12 +3633,12 @@ namespace org.kbinani.cadencii
             if ( note < noteBottom ) {
                 // ノートナンバーnoteBottomの現在のy座標が新しいnoteのy座標と同一になるよう，startToDrawYを変える
                 // startToDrawYを次の値にする必要がある
-                int new_start_to_draw_y = AppManager.getStartToDrawY() + (note_y - height);
+                int new_start_to_draw_y = controller.getStartToDrawY() + (note_y - height);
                 int value = calculateVScrollValueFromStartToDrawY( new_start_to_draw_y );
                 vScroll.setValue( value );
             } else if ( noteTop < note ) {
                 // ノートナンバーnoteTopの現在のy座標が，ノートナンバーnoteの新しいy座標と同一になるよう，startToDrawYを変える
-                int new_start_to_draw_y = AppManager.getStartToDrawY() + (note_y - 0);
+                int new_start_to_draw_y = controller.getStartToDrawY() + (note_y - 0);
                 int value = calculateVScrollValueFromStartToDrawY( new_start_to_draw_y );
                 vScroll.setValue( value );
             }
@@ -3736,7 +3733,7 @@ namespace org.kbinani.cadencii
 #else
                         if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
 #endif
-                            pictPianoRoll.requestFocus();
+                            focusPianoRoll();
                         }
                         return;
                     }
@@ -3758,7 +3755,7 @@ namespace org.kbinani.cadencii
             if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
                 // MIDIステップ入力のときの処理
-                if ( isStepSequencerEnabled() ) {
+                if ( controller.isStepSequencerEnabled() ) {
                     if ( AppManager.mAddingEvent != null ) {
                         fixAddingEvent();
                         AppManager.mAddingEvent = null;
@@ -3815,7 +3812,7 @@ namespace org.kbinani.cadencii
 #endif
                 // ステップ入力中の場合，入力中の音符をクリアする
                 VsqEvent item = AppManager.mAddingEvent;
-                if ( isStepSequencerEnabled() && item != null ) {
+                if ( controller.isStepSequencerEnabled() && item != null ) {
                     // 入力中だった音符の長さを取得し，
                     int length = item.ID.getLength();
                     AppManager.mAddingEvent = null;
@@ -3867,7 +3864,7 @@ namespace org.kbinani.cadencii
 #else
             if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
 #endif
-                pictPianoRoll.requestFocus();
+                focusPianoRoll();
             }
         }
 
@@ -6798,7 +6795,7 @@ namespace org.kbinani.cadencii
             AppManager.mInputTextBox.Parent = null;
 #endif
             AppManager.mInputTextBox.setEnabled( false );
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         /// <summary>
@@ -7692,7 +7689,7 @@ namespace org.kbinani.cadencii
         #region panelOverview
         public void panelOverview_Enter( Object sender, EventArgs e )
         {
-            pictPianoRoll.requestFocus();
+            controller.navigationPanelGotFocus();
         }
         #endregion
 
@@ -8082,7 +8079,7 @@ namespace org.kbinani.cadencii
                     if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         // マウス位置にビブラートの波波があったら削除する
                         int stdx = controller.getStartToDrawX();
-                        int stdy = AppManager.getStartToDrawY();
+                        int stdy = controller.getStartToDrawY();
                         for ( int i = 0; i < AppManager.mDrawObjects.get( selected - 1 ).size(); i++ ) {
                             DrawObject dobj = AppManager.mDrawObjects.get( selected - 1 ).get( i );
                             if ( dobj.mRectangleInPixel.x + controller.getStartToDrawX() + dobj.mRectangleInPixel.width - stdx < 0 ) {
@@ -8242,7 +8239,7 @@ namespace org.kbinani.cadencii
                 hideInputTextBox();
                 if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
                     int stdx = controller.getStartToDrawX();
-                    int stdy = AppManager.getStartToDrawY();
+                    int stdy = controller.getStartToDrawY();
                     for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = itr.next();
                         // 表情コントロールプロパティを表示するかどうかを決める
@@ -8460,7 +8457,7 @@ namespace org.kbinani.cadencii
             }
 
             int stdx = controller.getStartToDrawX();
-            int stdy = AppManager.getStartToDrawY();
+            int stdy = controller.getStartToDrawY();
             if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mMouseTracer.clear();
                 pictPianoRoll.mMouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
@@ -8813,13 +8810,13 @@ namespace org.kbinani.cadencii
                 if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() ) {
 #endif
 #endif
-                    pictPianoRoll.requestFocus();
+                    focusPianoRoll();
                 }
             }
 
             EditMode edit_mode = AppManager.getEditMode();
             int stdx = controller.getStartToDrawX();
-            int stdy = AppManager.getStartToDrawY();
+            int stdy = controller.getStartToDrawY();
             int selected = AppManager.getSelected();
             EditTool selected_tool = AppManager.getSelectedTool();
 
@@ -9336,7 +9333,7 @@ namespace org.kbinani.cadencii
             VsqTrack vsq_track = vsq.Track.get( selected );
             CurveType selected_curve = trackSelector.getSelectedCurve();
             int stdx = controller.getStartToDrawX();
-            int stdy = AppManager.getStartToDrawY();
+            int stdy = controller.getStartToDrawY();
             double d2_13 = 8192; // = 2^13
             int track_height = (int)(100 * AppManager.getScaleY());
             int half_track_height = track_height / 2;
@@ -10838,7 +10835,7 @@ namespace org.kbinani.cadencii
         {
             if ( getExtendedState() != BForm.ICONIFIED ) {
                 updateScrollRangeVertical();
-                AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
             }
         }
 
@@ -12996,7 +12993,7 @@ namespace org.kbinani.cadencii
                     AppManager.updateAutoBackupTimerStatus();
 
                     // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
-                    AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                    controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
 
                     if ( menuVisualControlTrack.isSelected() ) {
                         splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
@@ -14104,12 +14101,12 @@ namespace org.kbinani.cadencii
         #region vScroll
         public void vScroll_Enter( Object sender, EventArgs e )
         {
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void vScroll_ValueChanged( Object sender, EventArgs e )
         {
-            AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+            controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -14171,7 +14168,7 @@ namespace org.kbinani.cadencii
         #region hScroll
         public void hScroll_Enter( Object sender, EventArgs e )
         {
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void hScroll_Resize( Object sender, EventArgs e )
@@ -14999,7 +14996,7 @@ namespace org.kbinani.cadencii
         #region trackBar
         public void trackBar_Enter( Object sender, EventArgs e )
         {
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void trackBar_ValueChanged( Object sender, EventArgs e )
@@ -16242,7 +16239,7 @@ namespace org.kbinani.cadencii
         public void stripBtnPlay_Click( Object sender, EventArgs e )
         {
             AppManager.setPlaying( !AppManager.isPlaying(), this );
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void stripBtnScroll_CheckedChanged( Object sender, EventArgs e )
@@ -16256,7 +16253,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMain#stripBtnScroll_CheckedChanged; pushed=" + pushed );
 #endif
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void stripBtnLoop_CheckedChanged( Object sender, EventArgs e )
@@ -16267,7 +16264,7 @@ namespace org.kbinani.cadencii
             boolean pushed = stripBtnLoop.Pushed;
 #endif
             AppManager.setRepeatMode( pushed );
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void stripBtnStepSequencer_CheckedChanged( Object sender, EventArgs e )
@@ -16278,12 +16275,12 @@ namespace org.kbinani.cadencii
 #if JAVA
             mStepSequencerEnabled = stripBtnStepSequencer.isSelected();
 #else
-            mStepSequencerEnabled = stripBtnStepSequencer.Checked;
+            controller.setStepSequencerEnabled( stripBtnStepSequencer.Checked );
 #endif
 
             // MIDIの受信を開始
 #if ENABLE_MIDI
-            if ( mStepSequencerEnabled ) {
+            if ( controller.isStepSequencerEnabled() ) {
                 mMidiIn.start();
             } else {
                 mMidiIn.stop();
@@ -16295,7 +16292,7 @@ namespace org.kbinani.cadencii
         {
             AppManager.setPlaying( false, this );
             timer.stop();
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void stripBtnMoveEnd_Click( Object sender, EventArgs e )
@@ -16873,7 +16870,7 @@ namespace org.kbinani.cadencii
 
         public void handleStripButton_Enter( Object sender, EventArgs e )
         {
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
         }
 
         public void handleFileNew_Click( Object sender, EventArgs e )
@@ -16988,7 +16985,7 @@ namespace org.kbinani.cadencii
             vsq.config.StartMarkerEnabled = !vsq.config.StartMarkerEnabled;
             menuVisualStartMarker.setSelected( vsq.config.StartMarkerEnabled );
             setEdited( true );
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
             refreshScreen();
         }
 
@@ -17001,7 +16998,7 @@ namespace org.kbinani.cadencii
 #endif
             menuVisualEndMarker.setSelected( vsq.config.EndMarkerEnabled );
             setEdited( true );
-            pictPianoRoll.requestFocus();
+            focusPianoRoll();
             refreshScreen();
         }
 
@@ -17677,9 +17674,9 @@ namespace org.kbinani.cadencii
                 return;
             }
 #if DEBUG
-            sout.println( "FormMain#mMidiIn_MidiReceived; isStepSequencerEnabeld()=" + isStepSequencerEnabled() );
+            sout.println( "FormMain#mMidiIn_MidiReceived; isStepSequencerEnabeld()=" + controller.isStepSequencerEnabled() );
 #endif
-            if ( !isStepSequencerEnabled() ) {
+            if ( false == controller.isStepSequencerEnabled() ) {
                 return;
             }
             int code = data[0] & 0xf0;
