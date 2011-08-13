@@ -105,6 +105,7 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -142,6 +143,15 @@
     </Compile>
     <Compile Include="EditHistoryModel.cs" />
     <Compile Include="EmptyWaveGenerator.cs" />
+    <Compile Include="ExceptionNotifyFormController.cs" />
+    <Compile Include="ExceptionNotifyFormUi.cs" />
+    <Compile Include="ExceptionNotifyFormUiImpl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExceptionNotifyFormUiImpl.Designer.cs">
+      <DependentUpon>ExceptionNotifyFormUiImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExceptionNotifyFormUiListener.cs" />
     <Compile Include="FormAskKeySoundGenerationController.cs" />
     <Compile Include="FormAskKeySoundGenerationUi.cs">
     </Compile>
@@ -401,6 +411,9 @@
     <Compile Include="SelectedRegion.cs" />
     <Compile Include="SelectedTempoEntry.cs" />
     <Compile Include="SelectedTimesigEntry.cs" />
+    <EmbeddedResource Include="ExceptionNotifyFormUiImpl.resx">
+      <DependentUpon>ExceptionNotifyFormUiImpl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormBeatConfigUiImpl.resx">
       <DependentUpon>FormBeatConfigUiImpl.cs</DependentUpon>
     </EmbeddedResource>

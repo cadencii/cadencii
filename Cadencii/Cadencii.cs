@@ -93,6 +93,9 @@ namespace org.kbinani.cadencii
         [STAThread]
         public static void Main( String[] args )
         {
+            Application.ThreadException += new ThreadExceptionEventHandler( Application_ThreadException );
+            Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler( Cadencii_UnhandledException );
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
 
@@ -192,6 +195,29 @@ namespace org.kbinani.cadencii
 #endif
         }
 
+#if CSHARP
+        private static void Cadencii_UnhandledException( object sender, UnhandledExceptionEventArgs e )
+        {
+            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
+            if ( e.ExceptionObject != null && e.ExceptionObject is Exception ) {
+                ex = (Exception)e.ExceptionObject;
+            }
+            handleUnhandledException( ex );
+        }
+
+        private static void Application_ThreadException( object sender, ThreadExceptionEventArgs e )
+        {
+            handleUnhandledException( e.Exception );
+        }
+#endif
+
+        private static void handleUnhandledException( Exception ex )
+        {
+            ExceptionNotifyFormController controller = new ExceptionNotifyFormController();
+            controller.setReportTarget( ex );
+            controller.getUi().showDialog( null );
+        }
+        
         /// <summary>
         /// 内部例外を含めた例外テキストを再帰的に取得します。
         /// </summary>
