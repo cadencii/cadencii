@@ -104,10 +104,10 @@ namespace org.kbinani.cadencii
         private Vector<BButton> crescendButtons = new Vector<BButton>();
         private Vector<BButton> decrescendButtons = new Vector<BButton>();
         private int buttonWidth = 40;
-        private FormMainUiImpl mMainWindow = null;
+        private FormMain mMainWindow = null;
         private boolean mPreviousAlwaysOnTop;
 
-        public FormIconPalette( FormMainUiImpl main_window )
+        public FormIconPalette( FormMain main_window )
         {
 #if JAVA
             super();

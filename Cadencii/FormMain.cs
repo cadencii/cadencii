@@ -88,9 +88,9 @@ namespace org.kbinani.cadencii
     /// エディタのメイン画面クラス
     /// </summary>
 #if JAVA
-    public class FormMainUiImpl extends BForm
+    public class FormMain extends BForm
 #else
-    public class FormMainUiImpl : BForm, FormMainUi
+    public class FormMain : BForm, FormMainUi
 #endif
     {
         /// <summary>
@@ -563,7 +563,7 @@ namespace org.kbinani.cadencii
         /// コンストラクタ
         /// </summary>
         /// <param name="file">最初に開くxvsq，vsqファイルのパス</param>
-        public FormMainUiImpl( FormMainController controller, String file )
+        public FormMain( FormMainController controller, String file )
         {
 #if JAVA
 		    super();
@@ -805,7 +805,7 @@ namespace org.kbinani.cadencii
             hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
             hScroll.setVisibleAmount( 240 * 4 );
 
-            vScroll.setMaximum( (int)(AppManager.getScaleY() * 100 * 128) );
+            vScroll.setMaximum( (int)(controller.getScaleY() * 100 * 128) );
             vScroll.setVisibleAmount( 24 * 4 );
 #if !JAVA
             hScroll.SmallChange = 240;
@@ -867,13 +867,13 @@ namespace org.kbinani.cadencii
                 ms = new System.IO.MemoryStream( Base64.decode( _HAND ) );
                 HAND = new System.Windows.Forms.Cursor( ms );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".ctor; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
             } finally {
                 if ( ms != null ) {
                     try {
                         ms.Close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".ctor; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -899,7 +899,7 @@ namespace org.kbinani.cadencii
                             AppManager.setVsqFile( vsq );
                             updateBgmMenuState();
                         } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".ctor; ex=" + ex + "\n" );
+                            Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
                             serr.println( "FormMain#.ctor; ex=" + ex );
                         }
                     }
@@ -928,12 +928,12 @@ namespace org.kbinani.cadencii
             updateRecentFileMenu();
 
             // C3が画面中央に来るように調整
-            int draft_start_to_draw_y = 68 * (int)(100 * AppManager.getScaleY()) - pictPianoRoll.getHeight() / 2;
-            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * (int)(100 * AppManager.getScaleY()) - vScroll.getHeight()));
+            int draft_start_to_draw_y = 68 * (int)(100 * controller.getScaleY()) - pictPianoRoll.getHeight() / 2;
+            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * (int)(100 * controller.getScaleY()) - vScroll.getHeight()));
             try {
                 vScroll.setValue( draft_vscroll_value );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
 
             // x=97がプリメジャークロックになるように調整
@@ -942,7 +942,7 @@ namespace org.kbinani.cadencii
             try {
                 hScroll.setValue( draft_hscroll_value );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
 
             //s_pen_dashed_171_171_171.DashPattern = new float[] { 3, 3 };
@@ -1314,7 +1314,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".checkUnknownResamplerAndSinger; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".checkUnknownResamplerAndSinger; ex=" + ex + "\n" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -1912,7 +1912,7 @@ namespace org.kbinani.cadencii
             int dy = mouse_y - mButtonInitial.y;
             int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
             int min = vScroll.getMinimum();
-            double new_vscroll_value = (double)mMiddleButtonVScroll - dy * max / (128.0 * (int)(100.0 * AppManager.getScaleY()) - (double)pictPianoRoll.getHeight());
+            double new_vscroll_value = (double)mMiddleButtonVScroll - dy * max / (128.0 * (int)(100.0 * controller.getScaleY()) - (double)pictPianoRoll.getHeight());
             int value = (int)new_vscroll_value;
             if ( value < min ) {
                 value = min;
@@ -1948,7 +1948,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private int calculateVScrollValueFromStartToDrawY( int start_to_draw_y )
         {
-            return (int)(start_to_draw_y / AppManager.getScaleY());
+            return (int)(start_to_draw_y / controller.getScaleY());
         }
 
         /// <summary>
@@ -1964,7 +1964,7 @@ namespace org.kbinani.cadencii
             } else if ( max < value ) {
                 value = max;
             }
-            return (int)(value * AppManager.getScaleY());
+            return (int)(value * controller.getScaleY());
         }
         #endregion
 
@@ -2809,8 +2809,8 @@ namespace org.kbinani.cadencii
             int y0 = AppManager.yCoordFromNote( note - 0.5f );
             int x0 = AppManager.xCoordFromClocks( clock_start );
             int px_width = AppManager.xCoordFromClocks( clock_start + clock_width ) - x0;
-            int boxheight = (int)(vibrato.Depth * 2 / 100.0 * (int)(100.0 * AppManager.getScaleY()));
-            int px_shift = (int)(vibrato.Shift / 100.0 * vibrato.Depth / 100.0 * (int)(100.0 * AppManager.getScaleY()));
+            int boxheight = (int)(vibrato.Depth * 2 / 100.0 * (int)(100.0 * controller.getScaleY()));
+            int px_shift = (int)(vibrato.Shift / 100.0 * vibrato.Depth / 100.0 * (int)(100.0 * controller.getScaleY()));
 
             // vibrato in
             int cl_vibin_end = clock_start + (int)(clock_width * vibrato.In / 100.0);
@@ -2868,7 +2868,7 @@ namespace org.kbinani.cadencii
                 double phase = 2.0 * Math.PI * vibrato.Phase / 100.0;
                 double omega = 2.0 * Math.PI / vibrato.Period;   //角速度(rad/msec)
                 double msec = AppManager.getVsqFile().getSecFromClock( clock_start - 1 ) * 1000.0;
-                float px_track_height = (int)(AppManager.getScaleY() * 100.0f);
+                float px_track_height = (int)(controller.getScaleY() * 100.0f);
                 phase -= (AppManager.getVsqFile().getSecFromClock( clock_start ) * 1000.0 - msec) * omega;
                 for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
                     int i = clock - clock_start;
@@ -2890,7 +2890,7 @@ namespace org.kbinani.cadencii
                 }
                 //g.SmoothingMode = old;
             } catch ( Exception oex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".drawUtauVibato; ex=" + oex + "\n" );
+                Logger.write( typeof( FormMain ) + ".drawUtauVibato; ex=" + oex + "\n" );
 #if DEBUG
                 AppManager.debugWriteLine( "DrawUtauVibrato; oex=" + oex );
 #endif
@@ -3454,7 +3454,7 @@ namespace org.kbinani.cadencii
                     mGameMode = GameControlMode.DISABLED;
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".loadGameControler; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".loadGameControler; ex=" + ex + "\n" );
                 mGameMode = GameControlMode.DISABLED;
 #if DEBUG
                 AppManager.debugWriteLine( "FormMain+ReloadGameControler" );
@@ -3502,7 +3502,7 @@ namespace org.kbinani.cadencii
 #if JAVA
                 ex.printStackTrace();
 #endif
-                Logger.write( typeof( FormMainUiImpl ) + ".reloadMidiIn; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".reloadMidiIn; ex=" + ex + "\n" );
                 serr.println( "FormMain#reloadMidiIn; ex=" + ex );
             }
 
@@ -3627,7 +3627,7 @@ namespace org.kbinani.cadencii
             int noteBottom = AppManager.noteFromYCoord( height ); // 画面下端でのノートナンバー
 
             int maximum = vScroll.getMaximum();
-            int track_height = (int)(100 * AppManager.getScaleY());
+            int track_height = (int)(100 * controller.getScaleY());
             // ノートナンバーnoteの現在のy座標がいくらか？
             int note_y = AppManager.yCoordFromNote( note );
             if ( note < noteBottom ) {
@@ -3725,7 +3725,7 @@ namespace org.kbinani.cadencii
                             holder.menu.PerformClick();
 #endif
                         } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
+                            Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
                             serr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
                         }
 #if JAVA
@@ -3928,7 +3928,7 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            float scaley = AppManager.getScaleY();
+            float scaley = controller.getScaleY();
 
             int maximum = (int)(128 * (int)(100 * scaley) / scaley);
             int large_change = (int)(pheight / scaley);
@@ -4243,7 +4243,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyMenuItemShortcut; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyMenuItemShortcut; ex=" + ex + "\n" );
             }
 #endif // else JAVA
         }
@@ -4371,7 +4371,7 @@ namespace org.kbinani.cadencii
                             PortUtil.deleteFile( file );
                             break;
                         } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".clearTempWave; ex=" + ex + "\n" );
+                            Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
 #if !JAVA
 #if DEBUG
                             org.kbinani.debug.push_log( "FormMain+ClearTempWave()" );
@@ -4398,7 +4398,7 @@ namespace org.kbinani.cadencii
                 try {
                     PortUtil.deleteFile( whd );
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".clearTempWave; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
                 }
             }
             String dat = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
@@ -4406,7 +4406,7 @@ namespace org.kbinani.cadencii
                 try {
                     PortUtil.deleteFile( dat );
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".clearTempWave; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
                 }
             }
         }
@@ -4440,7 +4440,7 @@ namespace org.kbinani.cadencii
                 openXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
                 openXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyLanguage; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
                 openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
@@ -4450,7 +4450,7 @@ namespace org.kbinani.cadencii
                 saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
                 saveXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyLanguage; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
                 saveXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
@@ -4460,7 +4460,7 @@ namespace org.kbinani.cadencii
                 openUstDialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
                 openUstDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyLanguage; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 openUstDialog.addFileFilter( "UTAU Script Format(*.ust)|*.ust" );
                 openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
@@ -4471,7 +4471,7 @@ namespace org.kbinani.cadencii
                 openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
                 openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyLanguage; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
                 openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
                 openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
@@ -4483,7 +4483,7 @@ namespace org.kbinani.cadencii
                 saveMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
                 saveMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyLanguage; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 saveMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
                 saveMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
                 saveMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
@@ -4494,7 +4494,7 @@ namespace org.kbinani.cadencii
                 openWaveDialog.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
                 openWaveDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".applyLanguage; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 openWaveDialog.addFileFilter( "Wave File(*.wav)|*.wav" );
                 openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
@@ -5040,7 +5040,7 @@ namespace org.kbinani.cadencii
                     repaint();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".importLyric; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".importLyric; ex=" + ex + "\n" );
             } finally {
                 mDialogImportLyric.setVisible( false );
             }
@@ -5091,13 +5091,13 @@ namespace org.kbinani.cadencii
                     refreshScreen();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".editNoteVibratoProperty; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".editNoteVibratoProperty; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".editNoteVibratoProperty; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".editNoteVibratoProperty; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -5147,13 +5147,13 @@ namespace org.kbinani.cadencii
                     refreshScreen();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".editNoteExpressionProperty; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".editNoteExpressionProperty; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".editNoteExpressionProperty; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".editNoteExpressionProperty; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -5983,7 +5983,7 @@ namespace org.kbinani.cadencii
                     try {
                         add = bc.extractPartialBezier( chain_start, end );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".copyCurveCor; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".copyCurveCor; ex=" + ex + "\n" );
                         add = null;
                     }
                 } else if ( chain_start <= start && end <= chain_end ) {
@@ -5991,7 +5991,7 @@ namespace org.kbinani.cadencii
                     try {
                         add = bc.extractPartialBezier( start, end );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".copyCurveCor; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".copyCurveCor; ex=" + ex + "\n" );
                         add = null;
                     }
                 } else if ( chain_start < start && start < chain_end && chain_end <= end ) {
@@ -5999,7 +5999,7 @@ namespace org.kbinani.cadencii
                     try {
                         add = bc.extractPartialBezier( start, chain_end );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".copyCurveCor; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".copyCurveCor; ex=" + ex + "\n" );
                         add = null;
                     }
                 } else if ( start <= chain_start && chain_end <= end ) {
@@ -6392,12 +6392,12 @@ namespace org.kbinani.cadencii
                 }
 
                 int xoffset = AppManager.keyOffset;// 6 + AppManager.keyWidth;
-                int yoffset = (int)(127 * (int)(100 * AppManager.getScaleY()));
+                int yoffset = (int)(127 * (int)(100 * controller.getScaleY()));
                 float scalex = controller.getScaleX();
                 Font SMALL_FONT = null;
                 try {
                     SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
-                    int track_height = (int)(100 * AppManager.getScaleY());
+                    int track_height = (int)(100 * controller.getScaleY());
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int track_count = vsq.Track.size();
                     Polygon env = new Polygon( new int[7], new int[7], 7 );
@@ -6560,7 +6560,7 @@ namespace org.kbinani.cadencii
                             }
                             int note = item_itr.ID.Note;
                             int x = (int)(clock * scalex + xoffset);
-                            int y = -note * (int)(100 * AppManager.getScaleY()) + yoffset;
+                            int y = -note * (int)(100 * controller.getScaleY()) + yoffset;
                             tmp.add( new DrawObject( type,
                                                      vsq,
                                                      new Rectangle( x, y, width, track_height ),
@@ -6630,7 +6630,7 @@ namespace org.kbinani.cadencii
                         AppManager.mDrawObjects.add( tmp );
                     }
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".updateDrawObjectList; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".updateDrawObjectList; ex=" + ex + "\n" );
                     serr.println( "FormMain#updateDrawObjectList; ex=" + ex );
 #if JAVA
                     ex.printStackTrace();
@@ -6909,7 +6909,7 @@ namespace org.kbinani.cadencii
                         try {
                             PortUtil.createDirectory( estimatedCacheDir );
                         } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".openVsqCor; ex=" + ex + "\n" );
+                            Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
                             serr.println( "FormMain#openVsqCor; ex=" + ex );
                             AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                        _( "Info." ),
@@ -6930,7 +6930,7 @@ namespace org.kbinani.cadencii
                             try {
                                 PortUtil.moveFile( wavFrom, wavTo );
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".openVsqCor; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
                                 serr.println( "FormMain#openVsqCor; ex=" + ex );
                             }
                         }
@@ -6938,7 +6938,7 @@ namespace org.kbinani.cadencii
                             try {
                                 PortUtil.moveFile( xmlFrom, xmlTo );
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".openVsqCor; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
                                 serr.println( "FormMain#openVsqCor; ex=" + ex );
                             }
                         }
@@ -6951,7 +6951,7 @@ namespace org.kbinani.cadencii
                     try {
                         PortUtil.createDirectory( cacheDir );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".openVsqCor; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
                         serr.println( "FormMain#openVsqCor; ex=" + ex );
                         AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                    _( "Info." ),
@@ -7228,7 +7228,7 @@ namespace org.kbinani.cadencii
                 g.drawString( "BEAT", 11, 40 - small_font_offset + 1 );
                 #endregion
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicatorDrawTo; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".picturePositionIndicatorDrawTo; ex=" + ex + "\n" );
                 serr.println( "FormMain#picturePositionIndicatorDrawTo; ex=" + ex );
             }
         }
@@ -7670,7 +7670,7 @@ namespace org.kbinani.cadencii
 #endif
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".setResources; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
                 serr.println( "FormMain#setResources; ex=" + ex );
             }
         }
@@ -7807,7 +7807,7 @@ namespace org.kbinani.cadencii
                         hScroll.setValue( draft );
                     }
                     // y軸方向について，見えるように移動
-                    int track_height = (int)(100 * AppManager.getScaleY());
+                    int track_height = (int)(100 * controller.getScaleY());
                     if( y <= 0 || height - track_height  <= y ){
                         int note = item.ID.Note;
                         if( y <= 0 ){
@@ -8088,9 +8088,9 @@ namespace org.kbinani.cadencii
                                 break;
                             }
                             Rectangle rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mVibratoDelayInPixel - stdx,
-                                                          dobj.mRectangleInPixel.y + (int)(100 * AppManager.getScaleY()) - stdy,
+                                                          dobj.mRectangleInPixel.y + (int)(100 * controller.getScaleY()) - stdy,
                                                           dobj.mRectangleInPixel.width - dobj.mVibratoDelayInPixel,
-                                                          (int)(100 * AppManager.getScaleY()) );
+                                                          (int)(100 * controller.getScaleY()) );
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 //ビブラートの範囲なのでビブラートを消す
                                 VsqEvent item3 = null;
@@ -8245,9 +8245,9 @@ namespace org.kbinani.cadencii
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
                             dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
-                            dobj.mRectangleInPixel.y - stdy + (int)(100 * AppManager.getScaleY()),
+                            dobj.mRectangleInPixel.y - stdy + (int)(100 * controller.getScaleY()),
                             21,
-                            (int)(100 * AppManager.getScaleY()) );
+                            (int)(100 * controller.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
                             for ( Iterator<VsqEvent> itr2 = vsq.Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
@@ -8293,15 +8293,15 @@ namespace org.kbinani.cadencii
                                         refreshScreen();
                                     }
                                 } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMainUiImpl ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex + "\n" );
-                                    serr.println( typeof( FormMainUiImpl ) + ".pictPianoRoll_MouseDoubleClick" + ex );
+                                    Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex + "\n" );
+                                    serr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" + ex );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
-                                            Logger.write( typeof( FormMainUiImpl ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
-                                            serr.println( typeof( FormMainUiImpl ) + ".pictPianoRoll_MouseDoubleClick" );
+                                            Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
+                                            serr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" );
                                         }
                                     }
                                 }
@@ -8313,9 +8313,9 @@ namespace org.kbinani.cadencii
                         // ビブラートプロパティダイアログを表示するかどうかを決める
                         rect = new Rectangle(
                             dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx + 21,
-                            dobj.mRectangleInPixel.y - stdy + (int)(100 * AppManager.getScaleY()),
+                            dobj.mRectangleInPixel.y - stdy + (int)(100 * controller.getScaleY()),
                             dobj.mRectangleInPixel.width - 21,
-                            (int)(100 * AppManager.getScaleY()) );
+                            (int)(100 * controller.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
                             for ( Iterator<VsqEvent> itr2 = vsq.Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
@@ -8374,13 +8374,13 @@ namespace org.kbinani.cadencii
                                         refreshScreen();
                                     }
                                 } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMainUiImpl ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex + "\n" );
+                                    Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex + "\n" );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
-                                            Logger.write( typeof( FormMainUiImpl ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
+                                            Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
                                         }
                                     }
                                 }
@@ -8531,9 +8531,9 @@ namespace org.kbinani.cadencii
                                 break;
                             }
                             Rectangle rc = new Rectangle( dobj.mRectangleInPixel.x + key_width + dobj.mVibratoDelayInPixel - stdx - _EDIT_HANDLE_WIDTH / 2,
-                                                dobj.mRectangleInPixel.y + (int)(100 * AppManager.getScaleY()) - stdy,
+                                                dobj.mRectangleInPixel.y + (int)(100 * controller.getScaleY()) - stdy,
                                                 _EDIT_HANDLE_WIDTH,
-                                                (int)(100 * AppManager.getScaleY()) );
+                                                (int)(100 * controller.getScaleY()) );
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 vibrato_dobj = dobj;
                                 //vibrato_found = true;
@@ -9241,7 +9241,7 @@ namespace org.kbinani.cadencii
                                             dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
                                             dobj.mRectangleInPixel.y - stdy,
                                             edit_handle_width,
-                                            (int)(100 * AppManager.getScaleY()) );
+                                            (int)(100 * controller.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                             split_cursor = true;
                             break;
@@ -9251,7 +9251,7 @@ namespace org.kbinani.cadencii
                         rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width - stdx - edit_handle_width,
                                             dobj.mRectangleInPixel.y - stdy,
                                             edit_handle_width,
-                                            (int)(100 * AppManager.getScaleY()) );
+                                            (int)(100 * controller.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                             split_cursor = true;
                             break;
@@ -9269,9 +9269,9 @@ namespace org.kbinani.cadencii
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 // ビブラートの開始位置
                                 rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mVibratoDelayInPixel - stdx - _EDIT_HANDLE_WIDTH / 2,
-                                                    dobj.mRectangleInPixel.y + (int)(100 * AppManager.getScaleY()) - stdy,
+                                                    dobj.mRectangleInPixel.y + (int)(100 * controller.getScaleY()) - stdy,
                                                     _EDIT_HANDLE_WIDTH,
-                                                    (int)(100 * AppManager.getScaleY()) );
+                                                    (int)(100 * controller.getScaleY()) );
                                 if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                     split_cursor = true;
                                     break;
@@ -9335,7 +9335,7 @@ namespace org.kbinani.cadencii
             int stdx = controller.getStartToDrawX();
             int stdy = controller.getStartToDrawY();
             double d2_13 = 8192; // = 2^13
-            int track_height = (int)(100 * AppManager.getScaleY());
+            int track_height = (int)(100 * controller.getScaleY());
             int half_track_height = track_height / 2;
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL ) {
@@ -10406,7 +10406,7 @@ namespace org.kbinani.cadencii
                 }
                 PortUtil.deleteDirectory( tempdir, true );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".FormMain_FormClosed; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".FormMain_FormClosed; ex=" + ex + "\n" );
                 serr.println( "FormMain#FormMain_FormClosed; ex=" + ex );
             }
             AppManager.stopGenerator();
@@ -10662,7 +10662,7 @@ namespace org.kbinani.cadencii
                                 PortUtil.copyFile( wav_from, wav_to );
                                 PortUtil.deleteFile( wav_from );
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                                 serr.println( "FormMain#FormMain_Load; ex=" + ex );
                             }
                         }
@@ -10694,14 +10694,14 @@ namespace org.kbinani.cadencii
                     dialog_result = AppManager.showModalDialog( dialog.getUi(), this );
                     always_check_this = dialog.getUi().isAlwaysPerformThisCheck();
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                     serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 } finally {
                     if ( dialog != null ) {
                         try {
                             dialog.getUi().close( true );
                         } catch ( Exception ex2 ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex2 + "\n" );
+                            Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex2 + "\n" );
                             serr.println( "FormMain#FormMain_Load; ex2=" + ex2 );
                         }
                     }
@@ -10715,7 +10715,7 @@ namespace org.kbinani.cadencii
                         form.FormClosed += new BFormClosedEventHandler( FormGenerateKeySound_FormClosed );
                         form.setVisible( true );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                         serr.println( "FormMain#FormMain_Load; ex=" + ex );
                     }
                     init_key_sound_player_immediately = false;
@@ -10727,7 +10727,7 @@ namespace org.kbinani.cadencii
                 try {
                     KeySoundPlayer.init();
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".FormMain_Load; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                     serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 }
             }
@@ -10738,7 +10738,7 @@ namespace org.kbinani.cadencii
             try {
                 KeySoundPlayer.init();
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".FormGenerateKeySound_FormClosed; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".FormGenerateKeySound_FormClosed; ex=" + ex + "\n" );
                 serr.println( "FormMain#FormGenerateKeySound_FormClosed; ex=" + ex );
             }
         }
@@ -10909,7 +10909,7 @@ namespace org.kbinani.cadencii
                     mLastPovL = pov_l;
 
                     if ( !event_processed && pov_u && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() - (int)(100 * AppManager.getScaleY()) * 3;
+                        int draft_vscroll = vScroll.getValue() - (int)(100 * controller.getScaleY()) * 3;
                         if ( draft_vscroll < vScroll.getMinimum() ) {
                             draft_vscroll = vScroll.getMinimum();
                         }
@@ -10920,7 +10920,7 @@ namespace org.kbinani.cadencii
                     }
 
                     if ( !event_processed && pov_d && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() + (int)(100 * AppManager.getScaleY()) * 3;
+                        int draft_vscroll = vScroll.getValue() + (int)(100 * controller.getScaleY()) * 3;
                         if ( draft_vscroll > vScroll.getMaximum() ) {
                             draft_vscroll = vScroll.getMaximum();
                         }
@@ -11020,7 +11020,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".mTimer_Tick; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".mTimer_Tick; ex=" + ex + "\n" );
 #if DEBUG
                 AppManager.debugWriteLine( "    ex=" + ex );
 #endif
@@ -11315,13 +11315,13 @@ namespace org.kbinani.cadencii
                             fs.seek( pos );
                         }
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportMidi_Click; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportMidi_Click; ex=" + ex + "\n" );
                     } finally {
                         if ( fs != null ) {
                             try {
                                 fs.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportMidi_Click; ex=" + ex2 + "\n" );
+                                Logger.write( typeof( FormMain ) + ".menuFileExportMidi_Click; ex=" + ex2 + "\n" );
                             }
                         }
                     }
@@ -11351,7 +11351,7 @@ namespace org.kbinani.cadencii
                 vsq.printAsMusicXml( file, "UTF-8", software );
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xml" );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
                 serr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
             } finally {
                 if ( dialog != null ) {
@@ -11360,7 +11360,7 @@ namespace org.kbinani.cadencii
                         dialog.Dispose();
 #endif
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportMusicXml_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex2 + "\n" );
                         serr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
                     }
                 }
@@ -11444,7 +11444,7 @@ namespace org.kbinani.cadencii
                 fw.startJob();
                 AppManager.showModalDialog( fw.getUi(), this );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportParaWave; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportParaWave; ex=" + ex + "\n" );
             } finally {
                 if ( fw != null ) {
                     try {
@@ -11480,7 +11480,7 @@ namespace org.kbinani.cadencii
                 file_name = dialog.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".ust" );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -11488,7 +11488,7 @@ namespace org.kbinani.cadencii
                         dialog.Dispose();
 #endif
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportUst_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -11540,7 +11540,7 @@ namespace org.kbinani.cadencii
                 file_name = dialog.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".vsq" );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -11548,7 +11548,7 @@ namespace org.kbinani.cadencii
                         dialog.Dispose();
 #endif
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportVsq_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -11592,7 +11592,7 @@ namespace org.kbinani.cadencii
                 file_name = dialog.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".txt" );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -11600,7 +11600,7 @@ namespace org.kbinani.cadencii
                         dialog.Dispose();
 #endif
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportVxt_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -11639,8 +11639,8 @@ namespace org.kbinani.cadencii
                 VConnectWaveGenerator.prepareMetaText(
                     bw, vsq_track, oto_ini, vsq.TotalClocks, false );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
-                serr.println( typeof( FormMainUiImpl ) + ".menuFileExportVxt_Click; ex=" + ex );
+                Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
+                serr.println( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex );
             } finally {
                 if ( bw != null ) {
                     try {
@@ -11673,7 +11673,7 @@ namespace org.kbinani.cadencii
                 filename = sfd.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathOut( filename, ".wav" );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
             } finally {
                 if ( sfd != null ) {
                     try {
@@ -11681,7 +11681,7 @@ namespace org.kbinani.cadencii
                         sfd.Dispose();
 #endif
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportWave_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -11733,13 +11733,13 @@ namespace org.kbinani.cadencii
                 fs.startJob();
                 AppManager.showModalDialog( fs.getUi(), this );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.getUi().close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuFileExportWave_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -11767,7 +11767,7 @@ namespace org.kbinani.cadencii
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".mid" );
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileImportMidi_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileImportMidi_Click; ex=" + ex + "\n" );
                 AppManager.showMessageBox(
                     _( "Invalid MIDI file." ),
                     _( "Error" ),
@@ -12236,7 +12236,7 @@ namespace org.kbinani.cadencii
                 setEdited( true );
                 refreshScreen( true );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileImportUst_Click; ex=" + ex + "\t" );
+                Logger.write( typeof( FormMain ) + ".menuFileImportUst_Click; ex=" + ex + "\t" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -12264,7 +12264,7 @@ namespace org.kbinani.cadencii
             try {
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileImportVsq_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileImportVsq_Click; ex=" + ex + "\n" );
                 AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
@@ -12491,7 +12491,7 @@ namespace org.kbinani.cadencii
                 refreshScreen();
 
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileOpenUst_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileOpenUst_Click; ex=" + ex + "\n" );
 #if DEBUG
                 sout.println( "FormMain#menuFileOpenUst_Click; ex=" + ex );
 #endif
@@ -12538,7 +12538,7 @@ namespace org.kbinani.cadencii
                 AppManager.editorConfig.setLastUsedPathIn( filename, ext );
                 AppManager.setVsqFile( vsq );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
 #if DEBUG
                 sout.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
 #endif
@@ -12605,13 +12605,13 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -12651,13 +12651,13 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.GameControlPovRight = dlg.getPovRight();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuSettingGrameControlerSetting_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuSettingGrameControlerSetting_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuSettingGameControlerSetting_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuSettingGameControlerSetting_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -12915,7 +12915,7 @@ namespace org.kbinani.cadencii
                                         try {
                                             PortUtil.deleteFile( wavTo );
                                         } catch ( Exception ex ) {
-                                            Logger.write( typeof( FormMainUiImpl ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
+                                            Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                                             serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                             continue;
                                         }
@@ -12923,7 +12923,7 @@ namespace org.kbinani.cadencii
                                     try {
                                         PortUtil.moveFile( wavFrom, wavTo );
                                     } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMainUiImpl ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                                         serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                     }
 
@@ -12937,7 +12937,7 @@ namespace org.kbinani.cadencii
                                         try {
                                             PortUtil.deleteFile( xmlTo );
                                         } catch ( Exception ex ) {
-                                            Logger.write( typeof( FormMainUiImpl ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
+                                            Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                                             serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                             continue;
                                         }
@@ -12945,7 +12945,7 @@ namespace org.kbinani.cadencii
                                     try {
                                         PortUtil.moveFile( xmlFrom, xmlTo );
                                     } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMainUiImpl ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                                         serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                     }
                                 }
@@ -12956,7 +12956,7 @@ namespace org.kbinani.cadencii
                                     try {
                                         PortUtil.deleteDirectory( projectCacheDir );
                                     } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMainUiImpl ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                                         serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                     }
                                 }
@@ -13009,7 +13009,7 @@ namespace org.kbinani.cadencii
                     refreshScreen();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                 AppManager.debugWriteLine( "FormMain#menuSettingPreference_Click; ex=" + ex );
 #if JAVA
                 ex.printStackTrace();
@@ -13138,13 +13138,13 @@ namespace org.kbinani.cadencii
                     applyShortcut();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuSettingShortcut_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuSettingShortcut_Click; ex=" + ex + "\n" );
             } finally {
                 if ( form != null ) {
                     try {
                         form.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuSettingSHortcut_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuSettingSHortcut_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -13175,7 +13175,7 @@ namespace org.kbinani.cadencii
                 // メニューの表示状態を更新
                 updateVibratoPresetMenu();
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuSettingVibratoPreset_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuSettingVibratoPreset_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -13361,14 +13361,14 @@ namespace org.kbinani.cadencii
                     SymbolTable.changeOrder( result );
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuLyricDictionary_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuLyricDictionary_Click; ex=" + ex + "\n" );
                 serr.println( "FormMain#menuLyricDictionary_Click; ex=" + ex );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuLyricDictionary_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuLyricDictionary_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -13594,13 +13594,13 @@ namespace org.kbinani.cadencii
                     repaint();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuJobInsertBar_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuJobInsertBar_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuJobInsertBar_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuJobInsertBar_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -13781,13 +13781,13 @@ namespace org.kbinani.cadencii
                     repaint();
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuJobDeleteBar_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuJobDeleteBar_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuJobDeleteBar_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuJobDeleteBar_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -14067,7 +14067,7 @@ namespace org.kbinani.cadencii
                     setEdited( true );
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuJobRandomize_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex + "\n" );
                 serr.println( "FormMain#menuJobRandomize_Click; ex=" + ex );
 #if JAVA
                 ex.printStackTrace();
@@ -14077,7 +14077,7 @@ namespace org.kbinani.cadencii
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".menuJobRandomize_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex2 + "\n" );
                         serr.println( "FormMain#menuJobRandomize; ex2=" + ex2 );
                     }
                 }
@@ -14290,14 +14290,14 @@ namespace org.kbinani.cadencii
                                         refreshScreen();
                                     }
                                 } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
+                                    Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
                                     serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
-                                            Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
+                                            Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                             serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex2=" + ex2 );
                                         }
                                     }
@@ -14367,13 +14367,13 @@ namespace org.kbinani.cadencii
                                     refreshScreen();
                                 }
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
                             } finally {
                                 if ( dlg != null ) {
                                     try {
                                         dlg.close();
                                     } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                     }
                                 }
                             }
@@ -14463,14 +14463,14 @@ namespace org.kbinani.cadencii
                                     }
                                 }
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
                                 serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
                             } finally {
                                 if ( dlg != null ) {
                                     try {
                                         dlg.close();
                                     } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                         serr.println( "FormMain#picturePositionIndicator_MouseDoubleClic; ex2=" + ex2 );
                                     }
                                 }
@@ -14534,13 +14534,13 @@ namespace org.kbinani.cadencii
                                     }
                                 }
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".picutrePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".picutrePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
                             } finally {
                                 if ( dlg != null ) {
                                     try {
                                         dlg.close();
                                     } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMainUiImpl ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                     }
                                 }
                             }
@@ -15043,6 +15043,7 @@ namespace org.kbinani.cadencii
         public void menuHelpDebug_Click( Object sender, EventArgs e )
         {
 #if DEBUG
+            int.Parse( "X" );
             sout.println( "FormMain#menuHelpDebug_Click" );
 #endif
         }
@@ -15110,7 +15111,7 @@ namespace org.kbinani.cadencii
             try {
                 System.Diagnostics.Process.Start( file );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".menuHelpLogOpen_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".menuHelpLogOpen_Click; ex=" + ex + "\n" );
             }
 #endif
         }
@@ -15398,13 +15399,13 @@ namespace org.kbinani.cadencii
                         setEdited( true );
                     }
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".cMenuPianoExpression_Click; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".cMenuPianoExpression_Click; ex=" + ex + "\n" );
                 } finally {
                     if ( dlg != null ) {
                         try {
                             dlg.close();
                         } catch ( Exception ex2 ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".cMenuPianoExpression_Click; ex=" + ex2 + "\n" );
+                            Logger.write( typeof( FormMain ) + ".cMenuPianoExpression_Click; ex=" + ex2 + "\n" );
                         }
                     }
                 }
@@ -16604,7 +16605,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 serr.println( "FormMain#bgWorkScreen_DoWork; ex=" + ex );
-                Logger.write( typeof( FormMainUiImpl ) + ".bgWorkScreen_DoWork; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".bgWorkScreen_DoWork; ex=" + ex + "\n" );
             }
         }
 
@@ -17396,13 +17397,13 @@ namespace org.kbinani.cadencii
                     item.readOffsetSeconds = draft;
                     menu.setToolTipText( draft + " " + _( "seconds" ) );
                 } catch ( Exception ex3 ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".handleBgmOffsetSeconds_Click; ex=" + ex3 + "\n" );
+                    Logger.write( typeof( FormMain ) + ".handleBgmOffsetSeconds_Click; ex=" + ex3 + "\n" );
                 }
                 CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
                 AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".handleBgmOffsetSeconds_Click; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".handleBgmOffsetSeconds_Click; ex=" + ex + "\n" );
             } finally {
                 if ( ib != null ) {
                     try {
@@ -17410,7 +17411,7 @@ namespace org.kbinani.cadencii
                         ib.Dispose();
 #endif
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".handleBgmOffsetSeconds_Click; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".handleBgmOffsetSeconds_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -17521,13 +17522,13 @@ namespace org.kbinani.cadencii
                     fs = new FileOutputStream( config );
                     xsms.serialize( fs, null );
                 } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMainUiImpl ) + ".handleSettingPaletteTool; ex=" + ex + "\n" );
+                    Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex + "\n" );
                 } finally {
                     if ( fs != null ) {
                         try {
                             fs.close();
                         } catch ( Exception ex2 ) {
-                            Logger.write( typeof( FormMainUiImpl ) + ".handleSettingPaletteTool; ex=" + ex2 + "\n" );
+                            Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex2 + "\n" );
                         }
                     }
                 }
@@ -17572,19 +17573,19 @@ namespace org.kbinani.cadencii
                         dlg = new FormCompileResult( _( "Failed loading script." ), ScriptServer.getCompileMessage( id ) );
                         AppManager.showModalDialog( dlg, this );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".handleScriptMenuItem_Click; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex + "\n" );
                     } finally {
                         if ( dlg != null ) {
                             try {
                                 dlg.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".handleScriptMenuItem_Click; ex=" + ex2 + "\n" );
+                                Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex2 + "\n" );
                             }
                         }
                     }
                 }
             } catch ( Exception ex3 ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".handleScriptMenuItem_Click; ex=" + ex3 + "\n" );
+                Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex3 + "\n" );
 #if DEBUG
                 sout.println( "AppManager#dd_run_Click; ex3=" + ex3 );
 #endif
@@ -17925,7 +17926,7 @@ namespace org.kbinani.cadencii
         public void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormMainUiImpl ) );
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormMain ) );
             this.menuStripMain = new org.kbinani.windows.forms.BMenuBar();
             this.menuFile = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileNew = new org.kbinani.windows.forms.BMenuItem();

@@ -471,7 +471,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// メインの編集画面のインスタンス
         /// </summary>
-        public static FormMainUiImpl mMainWindow = null;
+        public static FormMain mMainWindow = null;
         /// <summary>
         /// メイン画面のコントローラ
         /// </summary>
@@ -695,7 +695,7 @@ namespace org.kbinani.cadencii
         /// プレビュー再生を開始します．
         /// 合成処理などが途中でキャンセルされた場合にtrue，それ以外の場合にfalseを返します
         /// </summary>
-        private static boolean previewStart( FormMainUiImpl form )
+        private static boolean previewStart( FormMain form )
         {
             int selected = mSelected;
             RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
@@ -838,7 +838,7 @@ namespace org.kbinani.cadencii
         /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
         /// </summary>
         /// <param name="tracks"></param>
-        public static boolean patchWorkToFreeze( FormMainUiImpl main_window, Vector<Integer> tracks )
+        public static boolean patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
         {
             mVsq.updateTotalClocks();
             Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
@@ -1065,14 +1065,14 @@ namespace org.kbinani.cadencii
                             zone.add( exStart, exEnd );
                         }
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                         serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                     } finally {
                         if ( wr != null ) {
                             try {
                                 wr.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMainUiImpl ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                                 serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
                             }
                         }
@@ -1421,26 +1421,6 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// ピアノロールの，Y方向のスケールを取得します(pixel/cent)
-        /// </summary>
-        /// <returns></returns>
-        public static float getScaleY()
-        {
-            if ( editorConfig.PianoRollScaleY < EditorConfig.MIN_PIANOROLL_SCALEY ) {
-                editorConfig.PianoRollScaleY = EditorConfig.MIN_PIANOROLL_SCALEY;
-            } else if ( EditorConfig.MAX_PIANOROLL_SCALEY < editorConfig.PianoRollScaleY ) {
-                editorConfig.PianoRollScaleY = EditorConfig.MAX_PIANOROLL_SCALEY;
-            }
-            if ( editorConfig.PianoRollScaleY == 0 ) {
-                return editorConfig.PxTrackHeight / 100.0f;
-            } else if ( editorConfig.PianoRollScaleY > 0 ) {
-                return (2 * editorConfig.PianoRollScaleY + 5) * editorConfig.PxTrackHeight / 5 / 100.0f;
-            } else {
-                return (editorConfig.PianoRollScaleY + 8) * editorConfig.PxTrackHeight / 8 / 100.0f;
-            }
-        }
-
-        /// <summary>
         /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
         /// </summary>
         /// <param name="note"></param>
@@ -1458,7 +1438,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static int yCoordFromNote( float note, int start_to_draw_y )
         {
-            return (int)(-1 * (note - 127.0f) * (int)(getScaleY() * 100)) - start_to_draw_y;
+            return (int)(-1 * (note - 127.0f) * (int)(mMainWindowController.getScaleY() * 100)) - start_to_draw_y;
         }
 
         /// <summary>
@@ -1483,7 +1463,7 @@ namespace org.kbinani.cadencii
 
         private static double noteFromYCoordCore( int y )
         {
-            return (double)(mMainWindowController.getStartToDrawY() + y) / (double)((int)(getScaleY() * 100));
+            return (double)(mMainWindowController.getStartToDrawY() + y) / (double)((int)(mMainWindowController.getScaleY() * 100));
         }
 
         /// <summary>
@@ -2429,7 +2409,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="value"></param>
         /// <param name="form"></param>
-        public static void setPlaying( boolean value, FormMainUiImpl form )
+        public static void setPlaying( boolean value, FormMain form )
         {
 #if DEBUG
             sout.println( "AppManager#setPlaying; value=" + value );

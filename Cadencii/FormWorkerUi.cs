@@ -202,7 +202,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="main_window"></param>
         /// <returns></returns>
-        public bool showDialog( FormMainUiImpl main_window )
+        public bool showDialog( FormMain main_window )
         {
             if ( ShowDialog( main_window ) == DialogResult.Cancel ) {
                 return true;

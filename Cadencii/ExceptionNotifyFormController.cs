@@ -15,7 +15,7 @@
 
 package org.kbinani.cadencii;
 
-import org.kbinani.apputil;
+import org.kbinani.apputil.*;
 
 #else
 

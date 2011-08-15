@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// メインウィンドウへの参照
         /// </summary>
-        protected FormMainUiImpl mMainWindow;
+        protected FormMain mMainWindow;
 
         /// <summary>
         /// 描画用のストローク
@@ -112,7 +112,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// メインウィンドウへの参照を設定します
         /// </summary>
-        public virtual void setMainWindow( FormMainUiImpl main_window )
+        public virtual void setMainWindow( FormMain main_window )
         {
             mMainWindow = main_window;
         }

@@ -352,7 +352,7 @@ namespace org.kbinani.cadencii
                 m_parent.invalidate();
 
                 // スクリーン上でデータ点が見えるようにする
-                FormMainUiImpl main = m_parent.getMainForm();
+                FormMain main = m_parent.getMainForm();
                 if ( main != null ) {
                     main.ensureVisible( (int)m_point.getBase().getX() );
                 }

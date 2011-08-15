@@ -127,6 +127,26 @@ namespace org
                 }
 
                 /// <summary>
+                /// ピアノロールの，Y方向のスケールを取得します(pixel/cent)
+                /// </summary>
+                /// <returns></returns>
+                public float getScaleY()
+                {
+                    if ( AppManager.editorConfig.PianoRollScaleY < EditorConfig.MIN_PIANOROLL_SCALEY ) {
+                         AppManager.editorConfig.PianoRollScaleY = EditorConfig.MIN_PIANOROLL_SCALEY;
+                    } else if ( EditorConfig.MAX_PIANOROLL_SCALEY < AppManager.editorConfig.PianoRollScaleY ) {
+                        AppManager.editorConfig.PianoRollScaleY = EditorConfig.MAX_PIANOROLL_SCALEY;
+                    }
+                    if ( AppManager.editorConfig.PianoRollScaleY == 0 ) {
+                        return AppManager.editorConfig.PxTrackHeight / 100.0f;
+                    } else if ( AppManager.editorConfig.PianoRollScaleY > 0 ) {
+                        return (2 * AppManager.editorConfig.PianoRollScaleY + 5) * AppManager.editorConfig.PxTrackHeight / 5 / 100.0f;
+                    } else {
+                        return (AppManager.editorConfig.PianoRollScaleY + 8) * AppManager.editorConfig.PxTrackHeight / 8 / 100.0f;
+                    }
+                }
+
+                /// <summary>
                 /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを取得します
                 /// </summary>
                 /// <returns></returns>

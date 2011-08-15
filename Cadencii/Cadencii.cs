@@ -130,7 +130,7 @@ namespace org.kbinani.cadencii
                 EditorConfig ec = new EditorConfig();
                 Messaging.setLanguage( ec.Language );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".ctor; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
                 serr.println( "FormMain#.ctor; ex=" + ex );
             }
 
@@ -171,7 +171,7 @@ namespace org.kbinani.cadencii
             }
 #endif
             AppManager.mMainWindowController = new FormMainController();
-            AppManager.mMainWindow = new FormMainUiImpl( AppManager.mMainWindowController, file );
+            AppManager.mMainWindow = new FormMain( AppManager.mMainWindowController, file );
 #if !MONO
             AppManager.mMainWindow.Load += mainWindow_Load;
 #endif

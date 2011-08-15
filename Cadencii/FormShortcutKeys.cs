@@ -65,13 +65,13 @@ namespace org.kbinani.cadencii
         private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
         private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
         private Vector<String> mFieldName = new Vector<String>();
-        private FormMainUiImpl mMainForm = null;
+        private FormMain mMainForm = null;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
-        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict, FormMainUiImpl main_form )
+        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict, FormMain main_form )
         {
 #if JAVA
             super();

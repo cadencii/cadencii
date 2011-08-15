@@ -136,7 +136,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// メイン画面への参照
         /// </summary>
-        private FormMainUiImpl mMainForm = null;
+        private FormMain mMainForm = null;
 
         public PictPianoRoll()
         {
@@ -215,7 +215,7 @@ namespace org.kbinani.cadencii {
         /// メイン画面への参照を設定します
         /// </summary>
         /// <param name="form"></param>
-        public void setMainForm( FormMainUiImpl form )
+        public void setMainForm( FormMain form )
         {
             mMainForm = form;
         }
@@ -352,7 +352,7 @@ namespace org.kbinani.cadencii {
                 int stdy = AppManager.mMainWindowController.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
 
-                int track_height = (int)(AppManager.getScaleY() * 100);
+                int track_height = (int)(AppManager.mMainWindowController.getScaleY() * 100);
                 int half_track_height = track_height / 2;
                 // [screen_x] = 67 + [clock] * ScaleX - StartToDrawX + 6
                 // [screen_y] = -1 * ([note] - 127) * TRACK_HEIGHT - StartToDrawY
@@ -1440,7 +1440,7 @@ namespace org.kbinani.cadencii {
                 return;
             }
             int y0 = AppManager.yCoordFromNote( note - 0.5f );
-            float px_track_height = (int)(AppManager.getScaleY() * 100);
+            float px_track_height = (int)(AppManager.mMainWindowController.getScaleY() * 100);
             VsqFileEx vsq = AppManager.getVsqFile();
             int clock_start = AppManager.clockFromXCoord( x_start );
             int clock_end = AppManager.clockFromXCoord( x_start + px_width );
