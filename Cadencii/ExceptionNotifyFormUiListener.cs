@@ -26,7 +26,7 @@ namespace org
 
 #endif
 
-            interface ExceptionNotifyFormUiListener
+            public interface ExceptionNotifyFormUiListener
             {
                 /// <summary>
                 /// 例外情報を送信するボタンが押された
