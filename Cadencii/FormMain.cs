@@ -1,5 +1,5 @@
 /*
- * FormMain.cs
+ * FormMainUiImpl.cs
  * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -88,7 +88,7 @@ namespace org.kbinani.cadencii
     /// エディタのメイン画面クラス
     /// </summary>
 #if JAVA
-    public class FormMain extends BForm
+    public class FormMain extends BForm implements FormMainUi
 #else
     public class FormMain : BForm, FormMainUi
 #endif
@@ -1213,7 +1213,11 @@ namespace org.kbinani.cadencii
 
         public void focusPianoRoll()
         {
+#if JAVA
+            pictPianoRoll.requestFocus();
+#else
             pictPianoRoll.Focus();
+#endif
         }
 
         #endregion
@@ -15043,7 +15047,11 @@ namespace org.kbinani.cadencii
         public void menuHelpDebug_Click( Object sender, EventArgs e )
         {
 #if DEBUG
+#if JAVA
+			Integer.parseInt( "X" );
+#else
             int.Parse( "X" );
+#endif
             sout.println( "FormMain#menuHelpDebug_Click" );
 #endif
         }
@@ -16274,7 +16282,7 @@ namespace org.kbinani.cadencii
             AppManager.mAddingEvent = null;
             // モードを切り替える
 #if JAVA
-            mStepSequencerEnabled = stripBtnStepSequencer.isSelected();
+            controller.setStepSequencerEnabled( stripBtnStepSequencer.isSelected() );
 #else
             controller.setStepSequencerEnabled( stripBtnStepSequencer.Checked );
 #endif
@@ -17182,7 +17190,7 @@ namespace org.kbinani.cadencii
                 notfound = true;
             }
 
-#if DEBUG
+#if DEBUG && !JAVA
             if ( notfound && sender is BMenuItem ) {
                 BMenuItem item = (BMenuItem)sender;
                 Logger.write( typeof( FormMainUiImpl ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );

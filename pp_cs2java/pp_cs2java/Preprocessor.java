@@ -14,6 +14,8 @@
 package pp_cs2java;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.*;
 
 class Preprocessor{
@@ -58,59 +60,84 @@ class Preprocessor{
      * インクルードされたファイルのリスト
      */
     static Vector<String> mIncluded = new Vector<String>();
-    static String[][] REPLACE = new String[0][2];
+    static Replacement[] REPLACE = new Replacement[0];
     static ReplaceMode mMode = ReplaceMode.NONE;
-    static final String[][] REPLACE_CS2JAVA = new String[][]{
-        {"string", "String"},
-        {".StringFlavor", ".stringFlavor"},
-        {" bool ", " boolean "},
-        { ".Equals(", ".equals(" }, { ".ToString(", ".toString(" },
-        { ".StartsWith(", ".startsWith(" }, { ".EndsWith(", ".endsWith(" },
-        { ".Substring(", ".substring(" }, { " const ", " static final " },
-        { " readonly ", " final " }, { " struct ", " class " },
-        { "base.", "super." }, { " override ", " " }, { " virtual ", " " },
-        { " is ", " instanceof " }, { ".Length", ".length" },
-        { "int.MaxValue", "Integer.MAX_VALUE" },
-        { "int.MinValue", "Integer.MIN_VALUE" },
-        { "double.MaxValue", "Double.MAX_VALUE" },
-        { "double.MinValue", "Double.MIN_VALUE" },
-        { " lock", " synchronized" }, { ".Trim()", ".trim()" },
-        { ".Replace(", ".replace(" }, { ".ToCharArray()", ".toCharArray()" },
-        { "Math.Min(", "Math.min(" }, { "Math.Max(", "Math.max(" },
-        { "Math.Log(", "Math.log(" }, { "Math.Exp(", "Math.exp(" },
-        { "Math.Ceiling(", "Math.ceil(" }, { "Math.Floor(", "Math.floor(" },
-        { "Math.Abs(", "Math.abs(" }, { "Math.Pow(", "Math.pow(" },
-        { "Math.Sin(", "Math.sin(" }, { "Math.Cos(", "Math.cos(" },
-        { "Math.Tan(", "Math.tan(" }, { "Math.Sqrt(", "Math.sqrt(" },
-        { "Math.Asin(", "Math.asin(" }, { "Math.Acos(", "Math.acos(" },
-        { "Math.Atan2(", "Math.atan2(" }, { "Math.Atan(", "Math.atan(" },
-        { ".ToLower()", ".toLowerCase()" }, { ".ToUpper()", ".toUpperCase()" },
-        { ".IndexOf(", ".indexOf(" },
-        { " : ICloneable", " implements Cloneable" },
-        { " : Iterator", " implements Iterator" },
-        { ".LastIndexOf(", ".lastIndexOf(" }, { "base", "super" },
-        { " EventArgs", " BEventArgs" },
-        { " MouseEventArgs", " BMouseEventArgs" },
-        { " KeyEventArgs", " BKeyEventArgs" },
-        { " CancelEventArgs", " BCancelEventArgs" },
-        { " DoWorkEventArgs", " BDoWorkEventArgs" },
-        { " PaintEventArgs", " BPaintEventArgs" },
-        { " PreviewKeyDownEventArgs", " BPreviewKeyDownEventArgs" },
-        { " FormClosedEventArgs", " BFormClosedEventArgs" },
-        { " FormClosingEventArgs", " BFormClosingEventArgs" },
-        { " PaintEventArgs", " BPaintEventArgs" },
-        { " KeyPressEventArgs", " BKeyPressEventArgs" },
-        { " Type ", " Class " }, { " List<", " Vector<" },
-        { ".Count", ".size()" }, { ".Clear()", ".clear()" }, };
-    static String[][] REPLACE_CS2CPP = new String[][]{ { "public ", "public: " },
-        { "private ", "private: " }, { "vec.", "vec::" }, { "dic.", "dic::" },
-        { "sout.", "sout::" }, { "serr.", "serr::" }, { "conv.", "conv::" },
-        { "fsys.", "fsys::" }, { "str.", "str::" }, { "List<", "vector<" },
-        { "this.", "this->" }, };
-
-    // private static Regex reg_eventhandler = new Regex(
-    // @"(?<pre>.*?)(?<instance>\w*)[.]*(?<event>\w*)\s*(?<operator>[\+\-]\=)\s*new\s*(?<handler>\w*)EventHandler\s*\(\s*(?<method>.*)\s*\)"
-    // );
+    static final Replacement[] REPLACE_CS2JAVA = new Replacement[]{
+        new Replacement( "string", "String", true ),
+        new Replacement( ".StringFlavor", ".stringFlavor", false ),
+        new Replacement( "bool", "boolean", true ),
+        new Replacement( ".Equals(", ".equals(" , false ),
+        new Replacement( ".ToString(", ".toString(" , false ),
+        new Replacement( ".StartsWith(", ".startsWith(" , false ),
+        new Replacement( ".EndsWith(", ".endsWith(" , false ),
+        new Replacement( ".Substring(", ".substring(" , false ),
+        new Replacement( "const ", "static final " , false ),
+        new Replacement( "readonly", "final" , true ),
+        new Replacement( "struct", "class" , true ),
+        new Replacement( "base.", "super." , false ),
+        new Replacement( " override ", " " , false ),
+        new Replacement( " virtual ", " " , false ),
+        new Replacement( "is", "instanceof" , true ),
+        new Replacement( ".Length", ".length" , false ),
+        new Replacement( "int.MaxValue", "Integer.MAX_VALUE" , false ),
+        new Replacement( "int.MinValue", "Integer.MIN_VALUE" , false ),
+        new Replacement( "double.MaxValue", "Double.MAX_VALUE" , false ),
+        new Replacement( "double.MinValue", "Double.MIN_VALUE" , false ),
+        new Replacement( "lock", "synchronized" , true ),
+        new Replacement( ".Trim()", ".trim()" , false ),
+        new Replacement( ".Replace(", ".replace(" , false ),
+        new Replacement( ".ToCharArray()", ".toCharArray()" , false ),
+        new Replacement( "Math.Min(", "Math.min(" , false ),
+        new Replacement( "Math.Max(", "Math.max(" , false ),
+        new Replacement( "Math.Log(", "Math.log(" , false ),
+        new Replacement( "Math.Exp(", "Math.exp(" , false ),
+        new Replacement( "Math.Ceiling(", "Math.ceil(" , false ), 
+        new Replacement( "Math.Floor(", "Math.floor(" , false ),
+        new Replacement( "Math.Abs(", "Math.abs(" , false ),
+        new Replacement( "Math.Pow(", "Math.pow(" , false ),
+        new Replacement( "Math.Sin(", "Math.sin(" , false ),
+        new Replacement( "Math.Cos(", "Math.cos(" , false ),
+        new Replacement( "Math.Tan(", "Math.tan(" , false ),
+        new Replacement( "Math.Sqrt(", "Math.sqrt(" , false ),
+        new Replacement( "Math.Asin(", "Math.asin(" , false ),
+        new Replacement( "Math.Acos(", "Math.acos(" , false ),
+        new Replacement( "Math.Atan2(", "Math.atan2(" , false ),
+        new Replacement( "Math.Atan(", "Math.atan(" , false ),
+        new Replacement( ".ToLower()", ".toLowerCase()" , false ),
+        new Replacement( ".ToUpper()", ".toUpperCase()" , false ),
+        new Replacement( ".IndexOf(", ".indexOf(" , false ),
+        new Replacement( " : ICloneable", " implements Cloneable" , false ),
+        new Replacement( " : Iterator", " implements Iterator" , false ),
+        new Replacement( ".LastIndexOf(", ".lastIndexOf(" , false ),
+        new Replacement( "base", "super" , false ),
+        new Replacement( " EventArgs", " BEventArgs" , false ),
+        new Replacement( " MouseEventArgs", " BMouseEventArgs" , false ),
+        new Replacement( " KeyEventArgs", " BKeyEventArgs" , false ),
+        new Replacement( " CancelEventArgs", " BCancelEventArgs" , false ),
+        new Replacement( " DoWorkEventArgs", " BDoWorkEventArgs" , false ),
+        new Replacement( " PaintEventArgs", " BPaintEventArgs" , false ),
+        new Replacement( " PreviewKeyDownEventArgs", " BPreviewKeyDownEventArgs" , false ),
+        new Replacement( " FormClosedEventArgs", " BFormClosedEventArgs" , false ),
+        new Replacement( " FormClosingEventArgs", " BFormClosingEventArgs" , false ),
+        new Replacement( " PaintEventArgs", " BPaintEventArgs" , false ),
+        new Replacement( " KeyPressEventArgs", " BKeyPressEventArgs" , false ),
+        new Replacement( " Type ", " Class " , false ),
+        new Replacement( " List<", " Vector<" , false ),
+        new Replacement( ".Count", ".size()" , false ),
+        new Replacement( ".Clear()", ".clear()" , false ), };
+    static Replacement[] REPLACE_CS2CPP = new Replacement[]{
+    	new Replacement( "public ", "public: ", false ),
+        new Replacement( "private ", "private: " , false ),
+        new Replacement( "vec.", "vec::" , false ),
+        new Replacement( "dic.", "dic::" , false ),
+        new Replacement( "sout.", "sout::" , false ),
+        new Replacement( "serr.", "serr::" , false ),
+        new Replacement( "conv.", "conv::" , false ),
+        new Replacement( "fsys.", "fsys::" , false ),
+        new Replacement( "str.", "str::" , false ),
+        new Replacement( "List<", "vector<" , false ),
+        new Replacement( "this.", "this->" , false ),
+    };
 
     static class ProcessFileContext{
         public int lines;
@@ -1062,11 +1089,13 @@ class Preprocessor{
         SourceText src ){
         String line = src.getLine( line_number );
         for( int i = 0; i < REPLACE.length; i++ ){
-            String search = REPLACE[i][0];
-            String replace = REPLACE[i][1];
+        	Replacement replacement = REPLACE[i];
+            String search = replacement.getSearch();
+            String replace = replacement.getReplace();
             boolean changed = true;
             int start = 0;
-            int indx = line.indexOf( search, start );
+            //int indx = line.indexOf( search, start );
+            int indx = replacement.findFrom( line, start );
             while( changed || indx >= 0 ){
                 changed = false;
                 if( indx >= 0 ){
@@ -1084,13 +1113,13 @@ class Preprocessor{
                             (indx > 0 ? line.substring( 0, indx ) : "")
                                 + replace
                                 + line.substring( indx + search.length() );
-                        start = indx + 1;
+                        start = indx + replace.length();
                         changed = true;
                     }else{
                         start++;
                     }
                 }
-                indx = line.indexOf( search, start );
+                indx = replacement.findFrom( line, start );
             }
         }
         return line;

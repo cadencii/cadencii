@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -59,6 +61,48 @@ public class PreprocessorTest{
         byte[] actual = loadFile( "/tmp/Preprocessor.tmp" );
         byte[] expected = loadFile( "test/expected/Preprocessor_Simple_B.cs" );
         assertArrayEquals( expected, actual );
+    }
+
+    @Test
+    public void testWithRegion() throws Exception{
+        System.out.println( "PreprocessorTest#testWithRegion" );
+        String[] args =
+            new String[]{ "-i", "test/data/Preprocessor_Region.cs", "-o",
+                "/tmp/Preprocessor.tmp" };
+        Preprocessor.main( args );
+
+        byte[] actual = loadFile( "/tmp/Preprocessor.tmp" );
+        byte[] expected = loadFile( "test/expected/Preprocessor_Region.cs" );
+        assertArrayEquals( expected, actual );
+    }
+    
+    @Test
+    public void testRegex()
+    {
+    	Pattern pattern = Pattern.compile( "\\bstring\\b" );
+    	assertTrue( pattern.matcher( "(string)" ).find() );
+    	assertTrue( pattern.matcher( " string" ).find() );
+    	assertFalse( pattern.matcher( "substring" ).find() );
+
+        pattern = Pattern.compile( ".ToLower()" );
+        assertTrue( pattern.matcher( "foo.ToLower()" ).find() );
+    }
+
+    @Test
+    public void testIncludeAll() throws Exception
+    {
+    	String[] args =
+    			new String[]{ "-i", "test/data/Preprocessor_Include.cs", "-o",
+    	"/tmp/Preprocessor.tmp" };
+    	Preprocessor.main( args );
+
+    	byte[] actual = loadFile( "/tmp/Preprocessor.tmp" );
+    	byte[] expected = loadFile( "test/expected/Preprocessor_Include.cs" );
+    	{//TODO:debug
+    		String l = new String( actual );
+    		System.out.println( "actual=" + l );
+    	}
+    	assertArrayEquals( expected, actual );
     }
 
     /**

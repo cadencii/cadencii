@@ -15,7 +15,10 @@
 
 package org.kbinani.cadencii;
 
+import java.io.*;
+import java.net.*;
 import org.kbinani.apputil.*;
+import org.kbinani.*;
 
 #else
 
@@ -32,14 +35,18 @@ namespace org
 
 #endif
 
+#if JAVA
+            public class ExceptionNotifyFormController extends ControllerBase implements ExceptionNotifyFormUiListener
+#else
             public class ExceptionNotifyFormController : ControllerBase, ExceptionNotifyFormUiListener
+#endif
             {
                 protected ExceptionNotifyFormUi ui;
                 protected string exceptionMessage = "";
 
                 public ExceptionNotifyFormController()
                 {
-                    ui = new ExceptionNotifyFormUiImpl( this );
+                    ui = (ExceptionNotifyFormUi)new ExceptionNotifyFormUiImpl( this );
                     this.applyLanguage();
                 }
 
@@ -68,6 +75,9 @@ namespace org
 
                 public void sendButtonClick()
                 {
+#if DEBUG
+					sout.println( "ExceptionNotifyFormController::sendButtonClick" );
+#endif
                     string url = "http://www.kbinani.info/cadenciiProblemReport.php";
 #if CSHARP
                     try {
@@ -80,8 +90,31 @@ namespace org
                     } catch ( Exception ex ) {
                     }
 #elif JAVA
+                    try{
+                        URL urlObj = new URL( url );
+                        URLConnection connection = urlObj.openConnection();
+                        connection.setDoOutput( true );
+                        OutputStream stream = connection.getOutputStream();
+                        String postData = "message=" + URLEncoder.encode( this.exceptionMessage, "UTF-8" );
+                        PrintStream printStream = new PrintStream( stream );
+                        printStream.print( postData );
+                        printStream.close();
+                        
+                        InputStream inputStream = connection.getInputStream();
+                        BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
+                        String str = "";
+                        String s;
+                        while( (s = reader.readLine()) != null ){
+                        	str += s;
+                        }
+                        reader.close();
+#if DEBUG
+                        sout.println( "ExceptionNotifyFormController::sendButtonClick; str=" + str );
 #endif
-                    
+                    }catch( Exception ex ){
+                    	ex.printStackTrace();
+                    }
+#endif
                 }
 
                 #endregion
@@ -94,11 +127,22 @@ namespace org
                 /// <returns></returns>
                 protected string extractMessageString( Exception ex, int count )
                 {
+#if JAVA
+                    String str = "[exception-" + count + "] " + ex.getMessage() + "\r\n";
+                    StringWriter stream = new StringWriter();
+                    ex.printStackTrace( new PrintWriter( stream ) );
+                    str += stream.toString() + "\r\n";
+                    Throwable t = ex.getCause();
+                    if ( t != null && t instanceof Exception ) {
+                        str += extractMessageString( (Exception)t, ++count );
+                    }
+#else
                     string str = "[exception-" + count + "] " + ex.Message + "\r\n";
                     str += ex.StackTrace + "\r\n";
                     if ( ex.InnerException != null ) {
                         str += extractMessageString( ex.InnerException, ++count );
                     }
+#endif
                     return str;
                 }
 
@@ -108,7 +152,11 @@ namespace org
                 /// <returns></returns>
                 protected string getSystemInfo()
                 {
-                    return Environment.OSVersion.ToString();
+#if JAVA
+					return "OSVersion=" + System.getProperty("os.name") + "\njavaVersion=" + System.getProperty("java.version");
+#else
+                    return "OSVersion=" + Environment.OSVersion.ToString() + "\ndotNetVersion=" + System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
+#endif
                 }
 
                 protected void applyLanguage()

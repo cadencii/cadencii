@@ -12,10 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.cadencii.*;
+
 #else
+
 using System;
 using System.Threading;
 using System.Windows.Forms;
@@ -27,7 +30,11 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
 #endif
 
+#if JAVA
+    public class Cadencii implements Thread.UncaughtExceptionHandler
+#else
     public class Cadencii
+#endif
     {
 #if !JAVA
         delegate void VoidDelegate();
@@ -66,8 +73,21 @@ namespace org.kbinani.cadencii
             }
         }
 
+        private static void handleUnhandledException( Exception ex )
+        {
+            ExceptionNotifyFormController controller = new ExceptionNotifyFormController();
+            controller.setReportTarget( ex );
+            controller.getUi().showDialog( null );
+        }
+        
 #if JAVA
-        public static void main( String[] args ){
+        public static void main( String[] args )
+#if DEBUG
+            throws Exception
+#endif
+        {
+            Thread.setDefaultUncaughtExceptionHandler( new Cadencii() );
+
             // 引数を解釈
             parseArguments( args );
             if( mPrintVersion ){
@@ -85,9 +105,24 @@ namespace org.kbinani.cadencii
                 serr.println( "Cadencii.main; ex=" + ex );
             }
             AppManager.init();
-            AppManager.mMainWindow = new FormMain( file );
+            AppManager.mMainWindowController = new FormMainController();
+            AppManager.mMainWindow = new FormMain( AppManager.mMainWindowController, file );
             AppManager.mMainWindow.setVisible( true );
+#if DEBUG
+            throw new Exception( "foo" );
+#endif
         }
+
+        @Override
+        public void uncaughtException( Thread arg0, Throwable arg1 )
+        {
+            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
+            if( arg1 != null && arg1 instanceof Exception ){
+                ex = (Exception)arg1;
+            }
+            handleUnhandledException( ex );
+        }
+
 #else
 
         [STAThread]
@@ -195,7 +230,6 @@ namespace org.kbinani.cadencii
 #endif
         }
 
-#if CSHARP
         private static void Cadencii_UnhandledException( object sender, UnhandledExceptionEventArgs e )
         {
             Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
@@ -209,15 +243,7 @@ namespace org.kbinani.cadencii
         {
             handleUnhandledException( e.Exception );
         }
-#endif
 
-        private static void handleUnhandledException( Exception ex )
-        {
-            ExceptionNotifyFormController controller = new ExceptionNotifyFormController();
-            controller.setReportTarget( ex );
-            controller.getUi().showDialog( null );
-        }
-        
         /// <summary>
         /// 内部例外を含めた例外テキストを再帰的に取得します。
         /// </summary>

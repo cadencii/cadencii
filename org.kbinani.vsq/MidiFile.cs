@@ -101,7 +101,7 @@ namespace org.kbinani.vsq
                     m_events.add( track_events );
                 }
                 m_time_format = 480;
-#if DEBUG && MIDI_PRINT_TO_FILE
+#if DEBUG && MIDI_PRINT_TO_FILE && !JAVA
                 String dbg = fsys.combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
                 BufferedWriter sw = null;
                 try {

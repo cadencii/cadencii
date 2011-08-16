@@ -1,3 +1,4 @@
+#if CSHARP
 namespace org.kbinani.cadencii
 {
     partial class ExceptionNotifyFormUiImpl
@@ -110,3 +111,4 @@ namespace org.kbinani.cadencii
 
     }
 }
+#endif

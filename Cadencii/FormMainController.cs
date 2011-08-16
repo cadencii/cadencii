@@ -29,7 +29,11 @@ namespace org
             /// <summary>
             /// メイン画面のコントローラ
             /// </summary>
+#if JAVA
+            public class FormMainController extends ControllerBase implements FormMainUiListener
+#else
             public class FormMainController : ControllerBase, FormMainUiListener
+#endif
             {
                 /// <summary>
                 /// x方向の表示倍率(pixel/clock)

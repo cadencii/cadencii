@@ -263,7 +263,7 @@ cpp_post_process:
 ########################################################################
 # jcadencii
 #
-jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./build/java/org/kbinani/cadencii/Resources.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./build/java/Cadencii.mf ./build/java/ja.po ./build/java/zh-CN.po ./build/java/zh-TW.po ./build/java/kr.po
+jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./build/java/org/kbinani/cadencii/Resources.java ./build/java/Cadencii.mf ./build/java/ja.po ./build/java/zh-CN.po ./build/java/zh-TW.po ./build/java/kr.po
 	perl safe_rm.pl ./build/java/Cadencii.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/Cadencii.java ./build/java/Cadencii.java
 	perl safe_rm.pl ./build/java/org/kbinani/cadencii/Cadencii.java $(TO_DEVNULL)

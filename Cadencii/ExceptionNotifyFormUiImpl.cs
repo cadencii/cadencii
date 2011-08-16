@@ -23,12 +23,12 @@ namespace org.kbinani.cadencii
 {
     public partial class ExceptionNotifyFormUiImpl : Form, ExceptionNotifyFormUi
     {
-        protected ExceptionNotifyFormController controller;
+        protected ExceptionNotifyFormUiListener uiListener;
 
-        public ExceptionNotifyFormUiImpl( ExceptionNotifyFormController controller )
+        public ExceptionNotifyFormUiImpl( ExceptionNotifyFormUiListener listener )
         {
             InitializeComponent();
-            this.controller = controller;
+            this.uiListener = listener;
         }
 
         #region ExceptionNotifyFormUiの実装
@@ -78,7 +78,7 @@ namespace org.kbinani.cadencii
 
         private void buttonSend_Click( object sender, EventArgs e )
         {
-            controller.sendButtonClick();
+            uiListener.sendButtonClick();
         }
 
     }

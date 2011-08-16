@@ -26,7 +26,11 @@ namespace org
 
 #endif
 
+#if JAVA
+            public interface ExceptionNotifyFormUi extends UiBase
+#else
             public interface ExceptionNotifyFormUi : UiBase
+#endif
             {
                 /// <summary>
                 /// ウィンドウのタイトルを設定する
