@@ -2345,7 +2345,9 @@ namespace org.kbinani.cadencii
 #if DEBUG
             try {
 #endif
-                Color hilight = Color.blue;// AppManager.getHilightColor();
+                int visibleMinX = AppManager.keyWidth;
+                int visibleMaxX = mMainWindow.pictPianoRoll.getWidth() + AppManager.keyWidth + AppManager.keyOffset;
+                Color hilight = Color.blue;
                 int chains_count = chains.size();
                 for ( int i = 0; i < chains_count; i++ ) {
                     BezierChain target_chain = chains.get( i );
@@ -2358,6 +2360,7 @@ namespace org.kbinani.cadencii
                     Point pxNext;
                     Point pxCurrent = getScreenCoord( current.getBase() );
                     int target_chain_points_count = target_chain.points.size();
+                    boolean breaked = false;
                     for ( int j = 0; j < target_chain_points_count; j++ ) {
                         next = target_chain.points.get( j );
                         int next_x = AppManager.xCoordFromClocks( (int)next.getBase().getX() );
@@ -2366,30 +2369,45 @@ namespace org.kbinani.cadencii
                         Point pxControlNext = getScreenCoord( next.getControlLeft() );
 
                         // ベジエ曲線本体を描く
-                        //g.SmoothingMode = SmoothingMode.AntiAlias;
-                        if ( current.getControlRightType() == BezierControlType.None &&
-                             next.getControlLeftType() == BezierControlType.None ) {
-                            g.setColor( COLOR_BEZIER_CURVE );
-                            g.drawLine( pxCurrent.x, pxCurrent.y, pxNext.x, pxNext.y );
-                        } else {
-                            Point ctrl1 = (current.getControlRightType() == BezierControlType.None) ? pxCurrent : pxControlCurrent;
-                            Point ctrl2 = (next.getControlLeftType() == BezierControlType.None) ? pxNext : pxControlNext;
-                            g.setColor( COLOR_BEZIER_CURVE );
-                            PortUtil.drawBezier( g, pxCurrent.x, pxCurrent.y,
-                                                    ctrl1.x, ctrl1.y,
-                                                    ctrl2.x, ctrl2.y,
-                                                    pxNext.x, pxNext.y );
+                        if ( isVisibleOnScreen( visibleMinX, visibleMaxX, pxCurrent.x, pxNext.x ) ) {
+                            if ( current.getControlRightType() == BezierControlType.None &&
+                                 next.getControlLeftType() == BezierControlType.None ) {
+                                g.setColor( COLOR_BEZIER_CURVE );
+                                g.drawLine( pxCurrent.x, pxCurrent.y, pxNext.x, pxNext.y );
+                            } else {
+                                Point ctrl1 = (current.getControlRightType() == BezierControlType.None) ? pxCurrent : pxControlCurrent;
+                                Point ctrl2 = (next.getControlLeftType() == BezierControlType.None) ? pxNext : pxControlNext;
+                                g.setColor( COLOR_BEZIER_CURVE );
+                                PortUtil.drawBezier( g, pxCurrent.x, pxCurrent.y,
+                                                        ctrl1.x, ctrl1.y,
+                                                        ctrl2.x, ctrl2.y,
+                                                        pxNext.x, pxNext.y );
+                            }
                         }
+                        int minX = pxCurrent.x;
+                        int maxX = pxNext.x;
 
                         if ( current.getControlRightType() != BezierControlType.None ) {
-                            g.setColor( COLOR_BEZIER_AUXILIARY );
-                            g.drawLine( pxCurrent.x, pxCurrent.y, pxControlCurrent.x, pxControlCurrent.y );
+                            if ( isVisibleOnScreen( visibleMinX, visibleMaxX, pxCurrent.x, pxControlCurrent.x ) ) {
+                                g.setColor( COLOR_BEZIER_AUXILIARY );
+                                g.drawLine( pxCurrent.x, pxCurrent.y, pxControlCurrent.x, pxControlCurrent.y );
+                            }
+                            minX = Math.Min( minX, pxCurrent.x );
+                            maxX = Math.Max( maxX, pxControlCurrent.x );
                         }
                         if ( next.getControlLeftType() != BezierControlType.None ) {
-                            g.setColor( COLOR_BEZIER_AUXILIARY );
-                            g.drawLine( pxNext.x, pxNext.y, pxControlNext.x, pxControlNext.y );
+                            if ( isVisibleOnScreen( visibleMinX, visibleMaxX, pxControlNext.x, pxNext.x ) ) {
+                                g.setColor( COLOR_BEZIER_AUXILIARY );
+                                g.drawLine( pxNext.x, pxNext.y, pxControlNext.x, pxControlNext.y );
+                            }
+                            minX = Math.Min( minX, pxControlNext.x );
+                            maxX = Math.Max( maxX, pxNext.x );
                         }
-                        //g.SmoothingMode = SmoothingMode.Default;
+
+                        if ( visibleMaxX < minX ) {
+                            breaked = true;
+                            break;
+                        }
 
                         // 右コントロール点
                         if ( current.getControlRightType() == BezierControlType.Normal ) {
@@ -2442,21 +2460,23 @@ namespace org.kbinani.cadencii
                         pxCurrent = pxNext;
                         current = next;
                     }
-                    next = target_chain.points.get( target_chain.points.size() - 1 );
-                    pxNext = getScreenCoord( next.getBase() );
-                    Rectangle rc_last = new Rectangle( pxNext.x - DOT_WID,
-                                                       pxNext.y - DOT_WID,
-                                                       DOT_WID * 2 + 1,
-                                                       DOT_WID * 2 + 1 );
-                    if ( chain_id == mEditingChainID && next.getID() == mEditingPointID ) {
-                        g.setColor( hilight );
-                        g.fillRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
-                    } else {
-                        g.setColor( COLOR_BEZIER_DOT_BASE );
-                        g.fillRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
+                    if ( !breaked ) {
+                        next = target_chain.points.get( target_chain.points.size() - 1 );
+                        pxNext = getScreenCoord( next.getBase() );
+                        Rectangle rc_last = new Rectangle( pxNext.x - DOT_WID,
+                                                           pxNext.y - DOT_WID,
+                                                           DOT_WID * 2 + 1,
+                                                           DOT_WID * 2 + 1 );
+                        if ( chain_id == mEditingChainID && next.getID() == mEditingPointID ) {
+                            g.setColor( hilight );
+                            g.fillRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
+                        } else {
+                            g.setColor( COLOR_BEZIER_DOT_BASE );
+                            g.fillRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
+                        }
+                        g.setColor( COLOR_BEZIER_DOT_BASE_DARK );
+                        g.drawRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
                     }
-                    g.setColor( COLOR_BEZIER_DOT_BASE_DARK );
-                    g.drawRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
                 }
 #if DEBUG
             } catch ( Exception ex ) {
@@ -2464,6 +2484,19 @@ namespace org.kbinani.cadencii
                 AppManager.debugWriteLine( "    ex=" + ex );
             }
 #endif
+        }
+
+        /// <summary>
+        /// スクリーンの範囲に直線が可視状態となるかを判定する
+        /// </summary>
+        /// <param name="visibleMinX"></param>
+        /// <param name="visibleMaxX"></param>
+        /// <param name="startX"></param>
+        /// <param name="endX"></param>
+        /// <returns></returns>
+        private boolean isVisibleOnScreen( int visibleMinX, int visibleMaxX, int startX, int endX )
+        {
+            return ((visibleMinX <= startX && startX <= visibleMaxX) || (visibleMinX <= endX && endX <= visibleMaxX) || (startX < visibleMinX && visibleMaxX <= endX));
         }
 
         private Point getScreenCoord( PointD pt )
