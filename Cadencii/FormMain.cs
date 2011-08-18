@@ -1194,13 +1194,13 @@ namespace org.kbinani.cadencii
                     sw.WriteLine( s.Value + "\t" + s.Key + ";" );
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMainUiImpl ) + ".ctor; ex=" + ex + "\n" );
+                Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.Close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMainUiImpl ) + ".ctor; ex=" + ex2 + "\n" );
+                        Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -17193,7 +17193,7 @@ namespace org.kbinani.cadencii
 #if DEBUG && !JAVA
             if ( notfound && sender is BMenuItem ) {
                 BMenuItem item = (BMenuItem)sender;
-                Logger.write( typeof( FormMainUiImpl ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
+                Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
             }
 #endif
 #if JAVA

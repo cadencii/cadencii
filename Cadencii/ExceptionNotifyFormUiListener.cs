@@ -33,6 +33,12 @@ namespace org
                 /// </summary>
                 [PureVirtualFunction]
                 void sendButtonClick();
+
+                /// <summary>
+                /// キャンセルボタンが押された
+                /// </summary>
+                [PureVirtualFunction]
+                void cancelButtonClick();
             }
 
 #if !JAVA

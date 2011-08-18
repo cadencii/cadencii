@@ -74,11 +74,21 @@ namespace org.kbinani.cadencii
             labelDescription.Text = value;
         }
 
+        public void close()
+        {
+            this.Close();
+        }
+
         #endregion
 
         private void buttonSend_Click( object sender, EventArgs e )
         {
             uiListener.sendButtonClick();
+        }
+
+        private void buttonCancel_Click( object sender, EventArgs e )
+        {
+            uiListener.cancelButtonClick();
         }
 
     }

@@ -56,8 +56,8 @@ namespace org
                 {
                     int count = 0;
                     string message = "";
-                    message += "[version]" + Utility.getVersion() + "\r\n";
-                    message += "[system]" + this.getSystemInfo() + "\r\n";
+                    message += "[version]\r\n" + str.replace( Utility.getVersion(), "\n\n", "\n" ) + "\r\n";
+                    message += "[system]\r\n" + this.getSystemInfo() + "\r\n";
                     message += this.extractMessageString( ex, count );
                     this.exceptionMessage = message;
                     this.ui.setExceptionMessage( this.exceptionMessage );
@@ -115,6 +115,12 @@ namespace org
                     	ex.printStackTrace();
                     }
 #endif
+                    ui.close();
+                }
+
+                public void cancelButtonClick()
+                {
+                    ui.close();
                 }
 
                 #endregion
@@ -128,7 +134,7 @@ namespace org
                 protected string extractMessageString( Exception ex, int count )
                 {
 #if JAVA
-                    String str = "[exception-" + count + "] " + ex.getMessage() + "\r\n";
+                    String str = "[exception-" + count + "]\r\n" + ex.getMessage() + "\r\n";
                     StringWriter stream = new StringWriter();
                     ex.printStackTrace( new PrintWriter( stream ) );
                     str += stream.toString() + "\r\n";
@@ -137,7 +143,7 @@ namespace org
                         str += extractMessageString( (Exception)t, ++count );
                     }
 #else
-                    string str = "[exception-" + count + "] " + ex.Message + "\r\n";
+                    string str = "[exception-" + count + "]\r\n" + ex.Message + "\r\n";
                     str += ex.StackTrace + "\r\n";
                     if ( ex.InnerException != null ) {
                         str += extractMessageString( ex.InnerException, ++count );

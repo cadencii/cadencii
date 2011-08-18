@@ -408,6 +408,36 @@ namespace org
                 return value.ToString( format );
 #endif
             }
+
+#if JAVA
+            public static String replace( String value, String before, String after )
+#elif __cplusplus
+            static string replace( string value, string before, string after )
+#else
+            public static string replace( string value, string before, string after )
+#endif
+            {
+#if JAVA
+                if( value == null ){
+                    return null;
+                }else{
+                    return value.replace( before, after );
+                }
+#elif __cplusplus
+                string::size_type pos = 0;
+                while( pos = value.find( before, pos ), pos != string::npos ){
+                    value.replace( pos, before.length(), after );
+                    pos += after.length();
+                }
+                return value;
+#else
+                if ( value == null ) {
+                    return null;
+                } else {
+                    return value.Replace( before, after );
+                }
+#endif
+            }
         };
 
 #if !JAVA

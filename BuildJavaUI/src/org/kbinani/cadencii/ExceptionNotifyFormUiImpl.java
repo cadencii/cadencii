@@ -4,16 +4,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BDialogResult;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Dialog.ModalityType;
+import javax.swing.JScrollPane;
 
 public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotifyFormUi
 {
@@ -23,7 +22,8 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
     private JTextArea textMessage;
     private final JButton buttonCancel = new JButton();
     private JButton buttonSend;
-    private JLabel lblNewLabel_1;
+    private JScrollPane scrollPane;
+    private JLabel lblNewLabel;
     
     public ExceptionNotifyFormUiImpl( ExceptionNotifyFormUiListener listener )
     {
@@ -38,7 +38,7 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
         gridBagLayout.rowHeights = new int[]{0, 0, 0};
         gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0};
         getContentPane().setLayout(gridBagLayout);
-        
+
         this.labelDescription = new JLabel("New label");
         this.labelDescription.setHorizontalAlignment(SwingConstants.RIGHT);
         GridBagConstraints gbc_labelDescription = new GridBagConstraints();
@@ -52,26 +52,28 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
         gbc_buttonCancel.insets = new Insets(22, 22, 30, 5);
         gbc_buttonCancel.gridx = 0;
         gbc_buttonCancel.gridy = 2;
+        buttonCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                uiListener.cancelButtonClick();
+            }
+        });
+        
+        this.scrollPane = new JScrollPane();
+        GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+        gbc_scrollPane.gridwidth = 3;
+        gbc_scrollPane.weighty = 1.0;
+        gbc_scrollPane.weightx = 1.0;
+        gbc_scrollPane.insets = new Insets(0, 22, 5, 22);
+        gbc_scrollPane.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane.gridx = 0;
+        gbc_scrollPane.gridy = 1;
+        getContentPane().add(this.scrollPane, gbc_scrollPane);
+        
+        this.textMessage = new JTextArea();
+        this.scrollPane.setViewportView(this.textMessage);
         getContentPane().add(buttonCancel, gbc_buttonCancel);
         buttonCancel.setText("Cancel");
         buttonCancel.setPreferredSize(new Dimension(100, 29));
-        
-        this.textMessage = new JTextArea();
-        GridBagConstraints gbc_textMessage = new GridBagConstraints();
-        gbc_textMessage.gridwidth = 3;
-        gbc_textMessage.insets = new Insets(0, 22, 5, 22);
-        gbc_textMessage.ipady = 1;
-        gbc_textMessage.fill = GridBagConstraints.BOTH;
-        gbc_textMessage.gridx = 0;
-        gbc_textMessage.gridy = 1;
-        getContentPane().add(this.textMessage, gbc_textMessage);
-        
-        this.lblNewLabel_1 = new JLabel(" ");
-        GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-        gbc_lblNewLabel_1.insets = new Insets(0, 0, 0, 5);
-        gbc_lblNewLabel_1.gridx = 1;
-        gbc_lblNewLabel_1.gridy = 2;
-        getContentPane().add(this.lblNewLabel_1, gbc_lblNewLabel_1);
         
         this.buttonSend = new JButton();
         this.buttonSend.addActionListener(new ActionListener() {
@@ -79,6 +81,15 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
                 uiListener.sendButtonClick();
             }
         });
+        
+        this.lblNewLabel = new JLabel(" ");
+        GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+        gbc_lblNewLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_lblNewLabel.weightx = 1.0;
+        gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_lblNewLabel.gridx = 1;
+        gbc_lblNewLabel.gridy = 2;
+        getContentPane().add(this.lblNewLabel, gbc_lblNewLabel);
         this.buttonSend.setText("Send");
         this.buttonSend.setPreferredSize(new Dimension(150, 29));
         GridBagConstraints gbc_buttonSend = new GridBagConstraints();
@@ -119,7 +130,6 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
         String value )
     {
         this.textMessage.setText( value );
-        
     }
 
     @Override
@@ -134,5 +144,11 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
         String value )
     {
         this.buttonSend.setText( value );
+    }
+
+    @Override
+    public void close()
+    {
+        super.close();
     }
 }

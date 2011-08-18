@@ -12,12 +12,15 @@ HEADERS += org/kbinani/cadencii/FormAskKeySoundGenerationUiListener.h \
     org/kbinani/cadencii/FormWordDictionaryUiImpl.h \
     org/kbinani/cadencii/FormWordDictionaryUiListener.h \
     org/kbinani/cadencii/FormWordDictionaryUi.h \
-    FormWordDictionaryUiImplTest.h
+    FormWordDictionaryUiImplTest.h \
+    org/kbinani/cadencii/ExceptionNotifyFormUiImpl.h
 FORMS += org/kbinani/cadencii/FormAskKeySoundGenerationUiImpl.ui \
     org/kbinani/cadencii/FormBeatConfigUiImpl.ui \
-    org/kbinani/cadencii/FormWordDictionaryUiImpl.ui
+    org/kbinani/cadencii/FormWordDictionaryUiImpl.ui \
+    org/kbinani/cadencii/ExceptionNotifyFormUiImpl.ui
 SOURCES += main.cpp \
     org/kbinani/cadencii/FormAskKeySoundGenerationUiImpl.cpp \
     org/kbinani/cadencii/FormBeatConfigUiImpl.cpp \
     org/kbinani/cadencii/FormWordDictionaryUiImpl.cpp \
-    FormWordDictionaryUiImplTest.cpp
+    FormWordDictionaryUiImplTest.cpp \
+    org/kbinani/cadencii/ExceptionNotifyFormUiImpl.cpp

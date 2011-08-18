@@ -58,6 +58,12 @@ namespace org
 
                 [PureVirtualFunction]
                 void setSendButtonText( string value );
+
+                /// <summary>
+                /// ダイアログを閉じる
+                /// </summary>
+                [PureVirtualFunction]
+                void close();
             }
 
 #if !JAVA

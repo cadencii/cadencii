@@ -11,7 +11,8 @@ namespace org.kbinani.cadencii
         [Test]
         public void testSetReportTarget()
         {
-            Assert.AreEqual( Environment.OSVersion.ToString(), base.getSystemInfo() );
+            string expected = "OSVersion=" + Environment.OSVersion.ToString() + "\ndotNetVersion=" + System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
+            Assert.AreEqual( expected, base.getSystemInfo() );
         }
 
         [Test]
@@ -19,7 +20,7 @@ namespace org.kbinani.cadencii
         {
             Exception ex = this.prepareException();
             string actual = base.extractMessageString( ex, 0 );
-            Assert.AreEqual( "[exception-0] " + ex.Message + "\r\n" + ex.StackTrace + "\r\n", actual );
+            Assert.AreEqual( "[exception-0]\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n", actual );
         }
 
         //[Test]
