@@ -42,7 +42,7 @@ namespace org
 #endif
             {
                 protected ExceptionNotifyFormUi ui;
-                protected string exceptionMessage = "";
+                protected String exceptionMessage = "";
 
                 public ExceptionNotifyFormController()
                 {
@@ -55,8 +55,12 @@ namespace org
                 public void setReportTarget( Exception ex )
                 {
                     int count = 0;
-                    string message = "";
-                    message += "[version]\r\n" + str.replace( Utility.getVersion(), "\n\n", "\n" ) + "\r\n";
+                    String message = "";
+#if JAVA
+                    message += "[version]\r\n" + Utility.getVersion().replace( "\n\n", "\n" ) + "\r\n";
+#else
+                    message += "[version]\r\n" + Utility.getVersion().Replace( "\n\n", "\n" ) + "\r\n";
+#endif
                     message += "[system]\r\n" + this.getSystemInfo() + "\r\n";
                     message += this.extractMessageString( ex, count );
                     this.exceptionMessage = message;
@@ -78,7 +82,7 @@ namespace org
 #if DEBUG
 					sout.println( "ExceptionNotifyFormController::sendButtonClick" );
 #endif
-                    string url = "http://www.kbinani.info/cadenciiProblemReport.php";
+                    String url = "http://www.kbinani.info/cadenciiProblemReport.php";
 #if CSHARP
                     try {
                         System.Text.Encoding enc = System.Text.Encoding.GetEncoding( "UTF-8" );
@@ -131,7 +135,7 @@ namespace org
                 /// </summary>
                 /// <param name="ex"></param>
                 /// <returns></returns>
-                protected string extractMessageString( Exception ex, int count )
+                protected String extractMessageString( Exception ex, int count )
                 {
 #if JAVA
                     String str = "[exception-" + count + "]\r\n" + ex.getMessage() + "\r\n";
@@ -156,7 +160,7 @@ namespace org
                 /// システムの情報を取得する
                 /// </summary>
                 /// <returns></returns>
-                protected string getSystemInfo()
+                protected String getSystemInfo()
                 {
 #if JAVA
 					return "OSVersion=" + System.getProperty("os.name") + "\njavaVersion=" + System.getProperty("java.version");
@@ -173,7 +177,7 @@ namespace org
                     this.ui.setSendButtonText( _( "Send to Developper" ) );
                 }
 
-                protected string _( string id )
+                protected String _( String id )
                 {
                     return Messaging.getMessage( id );
                 }

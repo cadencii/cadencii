@@ -36,33 +36,27 @@ namespace org
                 /// ウィンドウのタイトルを設定する
                 /// </summary>
                 /// <param name="vlaue"></param>
-                [PureVirtualFunction]
-                void setTitle( string vlaue );
+                void setTitle( String vlaue );
 
                 /// <summary>
                 /// 説明文を設定する
                 /// </summary>
                 /// <param name="value"></param>
-                [PureVirtualFunction]
-                void setDescription( string value );
+                void setDescription( String value );
 
                 /// <summary>
                 /// 例外情報を設定する
                 /// </summary>
                 /// <param name="value"></param>
-                [PureVirtualFunction]
-                void setExceptionMessage( string value );
+                void setExceptionMessage( String value );
 
-                [PureVirtualFunction]
-                void setCancelButtonText( string value );
+                void setCancelButtonText( String value );
 
-                [PureVirtualFunction]
-                void setSendButtonText( string value );
+                void setSendButtonText( String value );
 
                 /// <summary>
                 /// ダイアログを閉じる
                 /// </summary>
-                [PureVirtualFunction]
                 void close();
             }
 

@@ -31,13 +31,11 @@ namespace org
                 /// <summary>
                 /// 例外情報を送信するボタンが押された
                 /// </summary>
-                [PureVirtualFunction]
                 void sendButtonClick();
 
                 /// <summary>
                 /// キャンセルボタンが押された
                 /// </summary>
-                [PureVirtualFunction]
                 void cancelButtonClick();
             }
 

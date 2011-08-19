@@ -1,4 +1,5 @@
-﻿/*
+﻿#if CSHARP
+/*
  * ExceptionNotifyFormUiImpl.cs
  * Copyright © 2011 kbinani
  *
@@ -93,3 +94,6 @@ namespace org.kbinani.cadencii
 
     }
 }
+#else
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/ExceptionNotifyFormUiImpl.java
+#endif

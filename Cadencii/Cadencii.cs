@@ -27,7 +27,11 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
 #endif
 
+#if JAVA
+    public class Cadencii implements Thread.UncaughtExceptionHandler
+#else
     public class Cadencii
+#endif
     {
 #if !JAVA
         delegate void VoidDelegate();
@@ -66,8 +70,18 @@ namespace org.kbinani.cadencii
             }
         }
 
+        private static void handleUnhandledException( Exception ex )
+        {
+            ExceptionNotifyFormController controller = new ExceptionNotifyFormController();
+            controller.setReportTarget( ex );
+            controller.getUi().showDialog( null );
+        }
+
 #if JAVA
-        public static void main( String[] args ){
+        public static void main( String[] args )
+        {
+            Thread.setDefaultUncaughtExceptionHandler( new Cadencii() );
+
             // 引数を解釈
             parseArguments( args );
             if( mPrintVersion ){
@@ -88,11 +102,24 @@ namespace org.kbinani.cadencii
             AppManager.mMainWindow = new FormMain( file );
             AppManager.mMainWindow.setVisible( true );
         }
+
+        @Override
+        public void uncaughtException( Thread arg0, Throwable arg1 )
+        {
+            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
+            if( arg1 != null && arg1 instanceof Exception ){
+                ex = (Exception)arg1;
+            }
+            handleUnhandledException( ex );
+        }
 #else
 
         [STAThread]
         public static void Main( String[] args )
         {
+            Application.ThreadException += new ThreadExceptionEventHandler( Application_ThreadException );
+            Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler( Cadencii_UnhandledException );
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
 
@@ -190,6 +217,22 @@ namespace org.kbinani.cadencii
             }
 #endif
         }
+
+#if CSHARP
+        private static void Cadencii_UnhandledException( object sender, UnhandledExceptionEventArgs e )
+        {
+            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
+            if ( e.ExceptionObject != null && e.ExceptionObject is Exception ) {
+                ex = (Exception)e.ExceptionObject;
+            }
+            handleUnhandledException( ex );
+        }
+
+        private static void Application_ThreadException( object sender, ThreadExceptionEventArgs e )
+        {
+            handleUnhandledException( e.Exception );
+        }
+#endif
 
         /// <summary>
         /// 内部例外を含めた例外テキストを再帰的に取得します。

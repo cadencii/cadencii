@@ -1,5 +1,3 @@
-#if !__UiBase_h__
-#define __UiBase_h__
 /*
  * UiBase.cs
  * Copyright © 2011 kbinani
@@ -50,6 +48,4 @@ namespace org
         }
     }
 }
-#endif
-
 #endif

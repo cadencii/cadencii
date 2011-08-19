@@ -36,7 +36,7 @@ namespace org.kbinani.cadencii
     /// }
     /// </code>
     /// </example>
-    public class PureVirtualFunctionAttribute : Attribute { }
+    //public class PureVirtualFunctionAttribute : Attribute { }
 
 }
 #endif
