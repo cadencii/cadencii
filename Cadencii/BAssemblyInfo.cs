@@ -40,7 +40,7 @@ namespace org.kbinani.cadencii {
         public const String id = "$Id$";
         public const String fileVersionMeasure = "3";
         public const String fileVersionMinor = "4";
-        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".0";
+        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".1";
     }
 
 #if !JAVA
