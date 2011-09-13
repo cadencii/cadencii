@@ -45,6 +45,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="strTest.cs" />
+    <Compile Include="WaveUnitConfigElementTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cadencii\Cadencii.csproj">
@@ -57,6 +58,7 @@
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>nunit-console "$(TargetDir)$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

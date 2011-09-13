@@ -488,6 +488,8 @@
     <Compile Include="WaveReceiver.cs" />
     <Compile Include="WaveSender.cs" />
     <Compile Include="WaveSenderDriver.cs" />
+    <Compile Include="WaveUnitConfig.cs" />
+    <Compile Include="WaveUnitConfigElement.cs" />
     <Compile Include="WaveView.cs">
       <SubType>UserControl</SubType>
     </Compile>
