@@ -52,16 +52,18 @@ namespace org.kbinani.cadencii
             Assert.AreEqual( "Bar", e.getNakedKey() );
         }
 
-        [Test]
+        [Test, ExpectedException( ExpectedMessage = "key must not be empty" )]
+        public void testSetKeyWithEmpty()
+        {
+            WaveUnitConfigElement e = new WaveUnitConfigElement();
+            e.setKey( "" );
+        }
+
+        [Test, ExpectedException( ExpectedMessage = "key must not be null" )]
         public void testSetKeyWithNull()
         {
             WaveUnitConfigElement e = new WaveUnitConfigElement();
-            try {
-                e.setKey( null );
-                Assert.Fail();
-            } catch( Exception ex ) {
-                Assert.AreEqual( "key must not be null", ex.Message );
-            }
+            e.setKey( null );
         }
 
         [Test, ExpectedException( ExpectedMessage = "key must not contain \"" + WaveUnitConfigElement.SEPARATOR + "\"")]
@@ -70,6 +72,7 @@ namespace org.kbinani.cadencii
             WaveUnitConfigElement e = new WaveUnitConfigElement();
             e.setKey( "A" + WaveUnitConfigElement.SEPARATOR );
         }
+
         #endregion
 
 

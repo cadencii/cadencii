@@ -46,11 +46,16 @@
     </Compile>
     <Compile Include="strTest.cs" />
     <Compile Include="WaveUnitConfigElementTest.cs" />
+    <Compile Include="WaveUnitConfigTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cadencii\Cadencii.csproj">
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
+      <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
+      <Name>org.kbinani.xml</Name>
     </ProjectReference>
     <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
@@ -61,4 +66,9 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="expected\WaveUnitConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

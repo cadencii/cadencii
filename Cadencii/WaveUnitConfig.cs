@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 import org.kbinani.vsq.*;
 #else
 
+using System.Collections.Generic;
 using System.Text;
 using org.kbinani.vsq;
 
@@ -31,11 +32,22 @@ namespace org.kbinani.cadencii
     {
         public const string SEPARATOR = "\n";
 
-        public WaveUnitConfigElement[] Elements;
+        /// <summary>
+        /// WaveUnitの設定値のキーと値の組のリストを保持する
+        /// </summary>
+#if JAVA
+        public Vector<WaveUnitConfigElement> Elements;
+#else
+        public List<WaveUnitConfigElement> Elements;
+#endif
 
         public WaveUnitConfig()
         {
-            this.Elements = new WaveUnitConfigElement[] { };
+#if JAVA
+            this.Elements = new Vector<WaveUnitConfigElement>();
+#else
+            this.Elements = new List<WaveUnitConfigElement>();
+#endif
         }
 
         public string getConfigString()
@@ -46,6 +58,40 @@ namespace org.kbinani.cadencii
                 sb.Append( item.toString() );
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 設定値のキーと値の組を追加する
+        /// </summary>
+        /// <param name="key">キー</param>
+        /// <param name="value">値</param>
+        public void putElement( string key, string value )
+        {
+            foreach( WaveUnitConfigElement item in this.Elements ) {
+                if( str.compare( key, item.getKey() ) ) {
+                    item.setValue( value );
+                    return;
+                }
+            }
+            WaveUnitConfigElement newItem = new WaveUnitConfigElement();
+            newItem.setKey( key );
+            newItem.setValue( value );
+            vec.add( this.Elements, newItem );
+        }
+
+        /// <summary>
+        /// 指定したキーに対応する値を取得する
+        /// </summary>
+        /// <param name="key">キー</param>
+        /// <returns>値．存在しないキーを指定した場合空文字を返す</returns>
+        public string getElement( string key )
+        {
+            foreach( WaveUnitConfigElement item in this.Elements ) {
+                if( str.compare( key, item.getKey() ) ) {
+                    return item.getValue();
+                }
+            }
+            return "";
         }
     }
 

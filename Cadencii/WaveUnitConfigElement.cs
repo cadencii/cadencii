@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WaveUnitConfig.cs
  * Copyright © 2011 kbinani
  *
@@ -67,6 +67,9 @@ namespace org.kbinani.cadencii
             if( value == null ) {
                 throw new Exception( "key must not be null" );
             }
+            if( str.length( value ) == 0 ) {
+                throw new Exception( "key must not be empty" );
+            }
             if( str.find( value, SEPARATOR ) >= 0 ) {
                 throw new Exception( "key must not contain \":\"" );
             }
@@ -111,6 +114,31 @@ namespace org.kbinani.cadencii
         }
 
 #if CSHARP
+
+        public string Key
+        {
+            get
+            {
+                return getKey();
+            }
+            set
+            {
+                setKey( value );
+            }
+        }
+
+        public string Value
+        {
+            get
+            {
+                return getValue();
+            }
+            set
+            {
+                setValue( value );
+            }
+        }
+
         /// <summary>
         /// オーバーライドされる
         /// 設定項目のキーと値をつなげた文字列を返す
