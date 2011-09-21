@@ -1389,8 +1389,15 @@ namespace org.kbinani.cadencii
                 }
             } else {
                 String home = System.getenv( "HOME" );
-                if ( home != null ) {
-                    appdata = fsys.combine( fsys.combine( home, "Library" ), "Preferences" );
+                if ( home != null && osname != null ) {
+                    if ( osname.indexOf( "nix") >= 0 || osname.indexOf( "nux" ) >= 0 ) {
+                        // for Unix-like system which have desktop
+                        // based on freedesktop.org spec
+                        appdata = fsys.combine( fsys.combine( home, ".local" ), "share" );
+                    } else {
+                        // for MacOSX
+                        appdata = fsys.combine( fsys.combine( home, "Library" ), "Preferences" );
+                    }
                 }
             }
             String dir = fsys.combine( appdata, "Boare" );
@@ -1400,10 +1407,13 @@ namespace org.kbinani.cadencii
             if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
+
             String dir2 = fsys.combine( dir, CONFIG_DIR_NAME );
             if ( !fsys.isDirectoryExists( dir2 ) ) {
                 PortUtil.createDirectory( dir2 );
             }
+            sout.println( "Cadencii accesses ApplicationData at" + dir2 + "\n" );//Keep this line for debuging.
+	    
             return dir2;
         }
 
