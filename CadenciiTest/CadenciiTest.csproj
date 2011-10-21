@@ -45,6 +45,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="strTest.cs" />
+    <Compile Include="VsqFileExTest.cs" />
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
   </ItemGroup>
@@ -52,6 +53,10 @@
     <ProjectReference Include="..\Cadencii\Cadencii.csproj">
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
+      <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
+      <Name>org.kbinani.vsq</Name>
     </ProjectReference>
     <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
       <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
@@ -70,5 +75,8 @@
     <Content Include="expected\WaveUnitConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fixture\track1.vsqx" />
   </ItemGroup>
 </Project>
