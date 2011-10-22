@@ -42,6 +42,8 @@ namespace org.kbinani.vsq
         /// ミリ秒で表した、音符の最大長さ
         /// </summary>
         public const int MAX_NOTE_MILLISEC_LENGTH = 16383;
+        private const int RISE_PORTAMENTO_FLAG = 0x1;
+        private const int FALL_PORTAMENTO_FLAG = 0x2;
 #if JAVA
         @XmlIgnore
         public int value;
@@ -81,6 +83,50 @@ namespace org.kbinani.vsq
         public IconDynamicsHandle IconDynamicsHandle;
 
         public static VsqID EOS = new VsqID( -1 );
+
+        /// <summary>
+        /// 下行形でポルタメントを付加するかどうかを取得する
+        /// </summary>
+        /// <returns>下行形でポルタメントを付加するかどうか</returns>
+        public bool isFallPortamento()
+        {
+            return (PMbPortamentoUse & FALL_PORTAMENTO_FLAG) == FALL_PORTAMENTO_FLAG;
+        }
+
+        /// <summary>
+        /// 下行形でポルタメントを付加するかどうかを設定する
+        /// </summary>
+        /// <param name="value">下行形でポルタメントを付加するかどうか</param>
+        public void setFallPortamento( bool value )
+        {
+            if ( value ) {
+                PMbPortamentoUse |= FALL_PORTAMENTO_FLAG;
+            } else {
+                PMbPortamentoUse &= ~FALL_PORTAMENTO_FLAG; 
+            }
+        }
+
+        /// <summary>
+        /// 上行形でポルタメントを付加するかどうかを取得する
+        /// </summary>
+        /// <returns>上行形でポルタメントを付加するかどうか</returns>
+        public bool isRisePortamento()
+        {
+            return (PMbPortamentoUse & RISE_PORTAMENTO_FLAG) == RISE_PORTAMENTO_FLAG;
+        }
+
+        /// <summary>
+        /// 上行形でポルタメントを付加するかどうかを設定する
+        /// </summary>
+        /// <param name="value">上行形でポルタメントを付加するかどうか</param>
+        public void setRisePortamento( bool value )
+        {
+            if ( value ) {
+                PMbPortamentoUse |= RISE_PORTAMENTO_FLAG;
+            } else {
+                PMbPortamentoUse &= ~RISE_PORTAMENTO_FLAG;
+            }
+        }
 
         public int getLength()
         {

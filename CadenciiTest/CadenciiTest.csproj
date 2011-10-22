@@ -45,7 +45,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="strTest.cs" />
-    <Compile Include="VsqFileExTest.cs" />
+    <Compile Include="VsqIDTest.cs" />
+    <Compile Include="VsqxConverterTest.cs" />
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
   </ItemGroup>
@@ -77,6 +78,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fixture\track1.vsqx" />
+    <None Include="fixture\track1.vsqx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

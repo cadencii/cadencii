@@ -1487,54 +1487,6 @@ namespace org.kbinani.cadencii
             }
             return ret;
         }
-
-        /// <summary>
-        /// vsqxファイルを読み込み，新しいシーケンスオブジェクトを生成する
-        /// </summary>
-        /// <param name="filePath">ファイルパス</param>
-        /// <exception cref="System.Exception">読み込みに失敗した時スローされる</exception>
-        /// <returns>生成したシーケンスオブジェクト</returns>
-        public static VsqFileEx readFromVsqx( string filePath )
-        {
-            if( filePath == null ) {
-                throw new ArgumentNullException( "filePath" );
-            }
-
-            if( false == fsys.isFileExists( filePath ) ) {
-                throw new Exception( "file not found" );
-            }
-
-            var xml = new System.Xml.XmlDocument();
-            xml.Load( filePath );
-
-            VsqFileEx result = new VsqFileEx( "", 4, 4, 4, 500000 );
-
-            // マスタートラックを解釈
-            System.Xml.XmlNode masterTrack = xml.DocumentElement["masterTrack"];
-
-            // マスター以外のトラックを解釈
-            foreach( System.Xml.XmlNode node in xml.DocumentElement.GetElementsByTagName( "vsTrack" ) ){
-                int trackNo = str.toi( node["vsTrackNo"].InnerText ) + 1;
-                VsqTrack track = null;
-                if( result.Track.size() <= trackNo ) {
-                    track = new VsqTrack();
-                } else {
-                    track = result.Track.get( trackNo );
-                }
-                System.Xml.XmlElement musicalPart = node["musicalPart"];
-                foreach( System.Xml.XmlNode note in musicalPart.GetElementsByTagName( "note" ) ) {
-                    int posTick = str.toi( note["posTick"].InnerText );
-                    VsqEvent item = new VsqEvent();
-                    item.Clock = posTick;
-                    item.ID = new VsqID();
-                    item.ID.LyricHandle = new LyricHandle();
-                    track.addEvent( item );
-                }
-            }
-//            throw new NotImplementedException();
-
-            return result;
-        }
     }
 
 #if !JAVA
