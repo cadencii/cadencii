@@ -79,7 +79,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fixture\track1.vsqx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\track2.vsqx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>

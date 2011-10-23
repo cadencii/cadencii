@@ -73,54 +73,26 @@ namespace org.kbinani.vsq
 
             // マスター以外のトラックを解釈
             foreach ( XmlNode node in xml.DocumentElement.GetElementsByTagName( "vsTrack" ) ) {
-                int trackNo = str.toi( node["vsTrackNo"].InnerText ) + 1;
+                int trackIndex = str.toi( node["vsTrackNo"].InnerText ) + 1;
                 VsqTrack track = null;
-                if ( result.Track.size() <= trackNo ) {
-                    track = new VsqTrack();
-                    result.Track.add( track );
-                } else {
-                    track = result.Track.get( trackNo );
-                }
-                track.setName( node["trackName"].InnerText );
-
-                XmlElement musicalPart = node["musicalPart"];
-                int offset = str.toi( musicalPart["posTick"].InnerText );
-
-                // 歌手切り替え情報をパース
-                foreach ( XmlNode singer in musicalPart.GetElementsByTagName( "singer" ) ) {
-                    int posTick = str.toi( singer["posTick"].InnerText );
-                    int bankSelect = str.toi( singer["vBS"].InnerText );
-                    int programChange = str.toi( singer["vPC"].InnerText );
-                    if ( voiceTable.ContainsKey( bankSelect ) && voiceTable[bankSelect].ContainsKey( programChange ) ) {
-                        var iconHandle = voiceTable[bankSelect][programChange];
-                        var item = new VsqEvent();
-                        item.ID.IconHandle = iconHandle;
-                        item.Clock = offset + posTick;
-                        track.addEvent( item );
-                    } else {
-                        throw new Exception( "音源情報のparseに失敗しました。" );
+                if ( result.Track.size() <= trackIndex ) {
+                    int amount = trackIndex + 1 - result.Track.size();
+                    {//TODO:debug
+                        Console.WriteLine( "trackIndex=" + trackIndex + "; size()=" + result.Track.size() + "; amount=" + amount );
+                    }
+                    for ( int i = 0; i < amount; i++ ) {
+                        result.Track.add( new VsqTrack( "", "" ) );
                     }
                 }
-                
-                // ノート情報をパース
-                foreach ( XmlNode note in musicalPart.GetElementsByTagName( "note" ) ) {
-                    var item = createNoteEvent( note, offset );
-                    track.addEvent( item );
+                track = result.Track.get( trackIndex );
+                track.setName( node["trackName"].InnerText );
 
-                    // OPEカーブを更新
-                    int ope = getOpening( note );
-                    var list = track.getCurve( "OPE" );
-                    list.add( item.Clock, ope );
-                }
-
-                // OPE以外のコントロールカーブをパース
-                foreach ( XmlNode ctrl in musicalPart.GetElementsByTagName( "mCtrl" ) ) {
-                    int posTick = str.toi( ctrl["posTick"].InnerText );
-                    string id = ctrl["attr"].Attributes["id"].Value;
-                    int value = str.toi( ctrl["attr"].InnerText );
-                    var list = track.getCurve( id );
-                    if ( list != null ) {
-                        list.add( posTick, value );
+                foreach ( XmlNode child in node.ChildNodes ) {
+                    if ( str.compare( child.Name, "musicalPart" ) ) {
+                        {//TODO:debug
+                            Console.WriteLine( "trackIndex=" + trackIndex );
+                        }
+                        parseMusicalPart( voiceTable, track, child );
                     }
                 }
             }
@@ -134,7 +106,7 @@ namespace org.kbinani.vsq
 
             // SlaveMixerをパース
             result.Mixer.Slave.clear();
-            for( int i = 1; i < result.Track.size(); i++ ){
+            for ( int i = 1; i < result.Track.size(); i++ ) {
                 result.Mixer.Slave.add( null );
             }
             foreach ( XmlNode vsUnit in mixer.GetElementsByTagName( "vsUnit" ) ) {
@@ -148,6 +120,65 @@ namespace org.kbinani.vsq
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// musicalPartを解釈し、パート内の情報をtrackに追加する
+        /// </summary>
+        /// <param name="voiceTable">音源情報のテーブル</param>
+        /// <param name="track">追加先のトラック</param>
+        /// <param name="musicalPart">解釈対象のmusicalPart</param>
+        private static void parseMusicalPart( Dictionary<int, Dictionary<int, IconHandle>> voiceTable, VsqTrack track, XmlNode musicalPart )
+        {
+            int offset = str.toi( musicalPart["posTick"].InnerText );
+
+            // 歌手切り替え情報をパース
+            foreach ( XmlNode singer in musicalPart.ChildNodes ) {
+                if ( false == str.compare( singer.Name, "singer" ) ) {
+                    continue;
+                }
+                int posTick = str.toi( singer["posTick"].InnerText );
+                int bankSelect = str.toi( singer["vBS"].InnerText );
+                int programChange = str.toi( singer["vPC"].InnerText );
+                if ( voiceTable.ContainsKey( bankSelect ) && voiceTable[bankSelect].ContainsKey( programChange ) ) {
+                    var iconHandle = voiceTable[bankSelect][programChange];
+                    var item = new VsqEvent();
+                    item.ID.IconHandle = (IconHandle)iconHandle.clone();
+                    item.ID.type = VsqIDType.Singer;
+                    item.Clock = offset + posTick;
+                    track.addEvent( item );
+                } else {
+                    throw new Exception( "音源情報のparseに失敗しました。" );
+                }
+            }
+
+            // ノート情報をパース
+            foreach ( XmlNode note in musicalPart.ChildNodes ) {
+                if ( false == str.compare( note.Name, "note" ) ) {
+                    continue;
+                }
+                var item = createNoteEvent( note, offset );
+                track.addEvent( item );
+
+                // OPEカーブを更新
+                int ope = getOpening( note );
+                var list = track.getCurve( "OPE" );
+                list.add( item.Clock, ope );
+            }
+
+            // OPE以外のコントロールカーブをパース
+            foreach ( XmlNode ctrl in musicalPart.ChildNodes ) {
+                if ( false == str.compare( ctrl.Name, "mCtrl" ) ) {
+                    continue;
+                }
+                int posTick = str.toi( ctrl["posTick"].InnerText );
+                string id = ctrl["attr"].Attributes["id"].Value;
+                int value = str.toi( ctrl["attr"].InnerText );
+                var list = track.getCurve( id );
+                if ( list != null ) {
+                    list.add( posTick, value );
+                }
+            }
         }
 
         /// <summary>
@@ -194,6 +225,7 @@ namespace org.kbinani.vsq
             VsqEvent item = new VsqEvent();
             item.Clock = posTick + tickOffset;
             item.ID = new VsqID();
+            item.ID.type = VsqIDType.Anote;
 
             item.ID.LyricHandle = new LyricHandle();
             string lyric = note["lyric"].InnerText;
