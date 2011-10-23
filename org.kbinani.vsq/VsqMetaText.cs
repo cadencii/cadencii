@@ -626,7 +626,7 @@ namespace org.kbinani.vsq
                     int clock = vec.get( temp, i ).Clock;
                     while ( i + 1 < vec.size( temp ) && clock == vec.get( temp, i + 1 ).Clock ) {
                         i++;
-                        ids += ",ID#" + PortUtil.formatDecimal( "0000", vec.get( temp, i + 1 ).ID.value );
+                        ids += ",ID#" + PortUtil.formatDecimal( "0000", vec.get( temp, i ).ID.value );
                     }
                     writer.writeLine( clock + "=" + ids );
                 }

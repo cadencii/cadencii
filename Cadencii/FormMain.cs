@@ -2708,6 +2708,7 @@ namespace org.kbinani.cadencii
             waveView.Top = 0;
             waveView.Left = key_width;
             waveView.Width = width - key_width;
+            waveView.Height = panelWaveformZoom.Height;
 #endif
         }
 
@@ -4473,11 +4474,13 @@ namespace org.kbinani.cadencii
             try {
                 openMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
                 openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
+                openMidiDialog.addFileFilter( _( "VSQX Format(*.vsqx)|*.vsqx" ) );
                 openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
                 openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
                 openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
+                openMidiDialog.addFileFilter( "VSQX Format(*.vsqx)|*.vsqx" );
                 openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
 
@@ -4567,7 +4570,7 @@ namespace org.kbinani.cadencii
             menuFileNew.setMnemonic( KeyEvent.VK_N );
             menuFileOpen.setText( _( "Open" ) );
             menuFileOpen.setMnemonic( KeyEvent.VK_O );
-            menuFileOpenVsq.setText( _( "Open VSQ/Vocaloid MIDI" ) );
+            menuFileOpenVsq.setText( _( "Open VSQX/VSQ/Vocaloid MIDI" ) );
             menuFileOpenVsq.setMnemonic( KeyEvent.VK_V );
             menuFileOpenUst.setText( _( "Open UTAU project file" ) );
             menuFileOpenUst.setMnemonic( KeyEvent.VK_U );
@@ -12532,13 +12535,26 @@ namespace org.kbinani.cadencii
                 } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".vsq";
                     ext = ".vsq";
+                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsqx" ) ) {
+                    AppManager.editorConfig.LastUsedExtension = ".vsqx";
+                    ext = ".vsqx";
                 }
             } else {
                 return;
             }
             try {
                 String filename = openMidiDialog.getSelectedFile();
-                VsqFileEx vsq = new VsqFileEx( filename, "Shift_JIS" );
+                String actualReadFile = filename;
+                bool isVsqx = str.endsWith( filename, ".vsqx" );
+                if ( isVsqx ) {
+                    actualReadFile = PortUtil.createTempFile();
+                    VsqFile temporarySequence = VsqxConverter.readFromVsqx( filename );
+                    temporarySequence.write( actualReadFile );
+                }
+                VsqFileEx vsq = new VsqFileEx( actualReadFile, "Shift_JIS" );
+                if ( isVsqx ) {
+                    PortUtil.deleteFile( actualReadFile );
+                }
                 AppManager.editorConfig.setLastUsedPathIn( filename, ext );
                 AppManager.setVsqFile( vsq );
             } catch ( Exception ex ) {
@@ -18026,6 +18042,7 @@ namespace org.kbinani.cadencii
             this.menuLyric = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricExpressionProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricVibratoProperty = new org.kbinani.windows.forms.BMenuItem();
+            this.menuLyricApplyUtauParameters = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricPhonemeTransformation = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricDictionary = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricCopyVibratoToPreset = new org.kbinani.windows.forms.BMenuItem();
@@ -18248,7 +18265,6 @@ namespace org.kbinani.cadencii
             this.cMenuPositionIndicator = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPositionIndicatorStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricApplyUtauParameters = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -18353,8 +18369,8 @@ namespace org.kbinani.cadencii
             // 
             this.menuFileOpenVsq.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpenVsq.Name = "menuFileOpenVsq";
-            this.menuFileOpenVsq.Size = new System.Drawing.Size( 214, 22 );
-            this.menuFileOpenVsq.Text = "Open VSQ/Vocaloid Midi(&V)";
+            this.menuFileOpenVsq.Size = new System.Drawing.Size( 250, 22 );
+            this.menuFileOpenVsq.Text = "Open VSQX/VSQ/Vocaloid Midi(&V)";
             this.menuFileOpenVsq.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileOpenUst
@@ -18966,6 +18982,12 @@ namespace org.kbinani.cadencii
             this.menuLyricVibratoProperty.Name = "menuLyricVibratoProperty";
             this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 235, 22 );
             this.menuLyricVibratoProperty.Text = "Note Vibrato Property(&V)";
+            // 
+            // menuLyricApplyUtauParameters
+            // 
+            this.menuLyricApplyUtauParameters.Name = "menuLyricApplyUtauParameters";
+            this.menuLyricApplyUtauParameters.Size = new System.Drawing.Size( 235, 22 );
+            this.menuLyricApplyUtauParameters.Text = "Apply UTAU Parameters(&A)";
             // 
             // menuLyricPhonemeTransformation
             // 
@@ -20196,15 +20218,6 @@ namespace org.kbinani.cadencii
             this.splitContainer2.TabStop = false;
             this.splitContainer2.Text = "bSplitContainer1";
             // 
-            // panel2
-            // 
-            this.panelWaveformZoom.BackColor = System.Drawing.Color.DarkGray;
-            this.panelWaveformZoom.Location = new System.Drawing.Point( 15, 295 );
-            this.panelWaveformZoom.Name = "panel2";
-            this.panelWaveformZoom.Size = new System.Drawing.Size( 421, 59 );
-            this.panelWaveformZoom.TabIndex = 19;
-            this.panelWaveformZoom.TabStop = false;
-            // 
             // splitContainer1
             // 
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
@@ -20703,7 +20716,6 @@ namespace org.kbinani.cadencii
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add( this.panel1 );
-            this.toolStripContainer1.ContentPanel.Controls.Add( this.panelWaveformZoom );
             this.toolStripContainer1.ContentPanel.Controls.Add( this.splitContainerProperty );
             this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 614 );
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -20753,12 +20765,6 @@ namespace org.kbinani.cadencii
             this.cMenuPositionIndicatorEndMarker.Name = "cMenuPositionIndicatorEndMarker";
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size( 129, 22 );
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
-            // 
-            // menuLyricApplyUtauParameters
-            // 
-            this.menuLyricApplyUtauParameters.Name = "menuLyricApplyUtauParameters";
-            this.menuLyricApplyUtauParameters.Size = new System.Drawing.Size( 235, 22 );
-            this.menuLyricApplyUtauParameters.Text = "Apply UTAU Parameters(&A)";
             // 
             // FormMain
             // 

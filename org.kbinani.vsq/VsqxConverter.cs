@@ -77,9 +77,6 @@ namespace org.kbinani.vsq
                 VsqTrack track = null;
                 if ( result.Track.size() <= trackIndex ) {
                     int amount = trackIndex + 1 - result.Track.size();
-                    {//TODO:debug
-                        Console.WriteLine( "trackIndex=" + trackIndex + "; size()=" + result.Track.size() + "; amount=" + amount );
-                    }
                     for ( int i = 0; i < amount; i++ ) {
                         result.Track.add( new VsqTrack( "", "" ) );
                     }
@@ -89,9 +86,6 @@ namespace org.kbinani.vsq
 
                 foreach ( XmlNode child in node.ChildNodes ) {
                     if ( str.compare( child.Name, "musicalPart" ) ) {
-                        {//TODO:debug
-                            Console.WriteLine( "trackIndex=" + trackIndex );
-                        }
                         parseMusicalPart( voiceTable, track, child );
                     }
                 }
