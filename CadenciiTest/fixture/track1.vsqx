@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<vsq3 xmlns="http://www.yamaha.co.jp/vocaloid/schema/vsq3/"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.yamaha.co.jp/vocaloid/schema/vsq3/ vsq3.xsd">
+	<vender><![CDATA[Yamaha corporation]]></vender>
+	<version><![CDATA[3.0.0.11]]></version>
+	<vVoiceTable>
+		<vVoice>
+			<vBS>0</vBS>
+			<vPC>0</vPC>
+			<compID><![CDATA[AAAAAAAAAAAAAAAA]]></compID>
+			<vVoiceName><![CDATA[VY1V3]]></vVoiceName>
+			<vVoiceParam>
+				<bre>0</bre>
+				<bri>0</bri>
+				<cle>0</cle>
+				<gen>0</gen>
+				<ope>0</ope>
+			</vVoiceParam>
+		</vVoice>
+		<vVoice>
+			<vBS>0</vBS>
+			<vPC>1</vPC>
+			<compID><![CDATA[BBBBBBBBBBBBBBBBBB]]></compID>
+			<vVoiceName><![CDATA[Miku(V2)]]></vVoiceName>
+			<vVoiceParam>
+				<bre>0</bre>
+				<bri>0</bri>
+				<cle>0</cle>
+				<gen>0</gen>
+				<ope>0</ope>
+			</vVoiceParam>
+		</vVoice>
+	</vVoiceTable>
+	<mixer>
+		<masterUnit>
+			<outDev>0</outDev>
+			<retLevel>0</retLevel>
+			<vol>2</vol>
+		</masterUnit>
+		<vsUnit>
+			<vsTrackNo>0</vsTrackNo>
+			<inGain>0</inGain>
+			<sendLevel>-898</sendLevel>
+			<sendEnable>0</sendEnable>
+			<mute>0</mute>
+			<solo>1</solo>
+			<pan>64</pan>
+			<vol>1</vol>
+		</vsUnit>
+		<seUnit>
+			<inGain>0</inGain>
+			<sendLevel>-898</sendLevel>
+			<sendEnable>0</sendEnable>
+			<mute>0</mute>
+			<solo>0</solo>
+			<pan>64</pan>
+			<vol>0</vol>
+		</seUnit>
+		<karaokeUnit>
+			<inGain>0</inGain>
+			<mute>0</mute>
+			<solo>0</solo>
+			<vol>-129</vol>
+		</karaokeUnit>
+	</mixer>
+	<masterTrack>
+		<seqName><![CDATA[Untitled1]]></seqName>
+		<comment><![CDATA[New VSQ File]]></comment>
+		<resolution>480</resolution>
+		<preMeasure>4</preMeasure>
+		<timeSig>
+			<posMes>0</posMes>
+			<nume>4</nume>
+			<denomi>4</denomi>
+		</timeSig>
+		<timeSig>
+			<posMes>5</posMes>
+			<nume>3</nume>
+			<denomi>4</denomi>
+		</timeSig>
+		<tempo>
+			<posTick>0</posTick>
+			<bpm>12000</bpm>
+		</tempo>
+		<tempo>
+			<posTick>8640</posTick>
+			<bpm>5001</bpm>
+		</tempo>
+	</masterTrack>
+	<vsTrack>
+		<vsTrackNo>0</vsTrackNo>
+		<trackName><![CDATA[Track]]></trackName>
+		<comment><![CDATA[Track]]></comment>
+		<musicalPart>
+			<posTick>7680</posTick>
+			<playTime>1920</playTime>
+			<partName><![CDATA[NewPart]]></partName>
+			<comment><![CDATA[New Musical Part]]></comment>
+			<stylePlugin>
+				<stylePluginID><![CDATA[ACA9C502-A04B-42b5-B2EB-5CEA36D16FCE]]></stylePluginID>
+				<stylePluginName><![CDATA[VOCALOID2 Compatible Style]]></stylePluginName>
+				<version><![CDATA[3.0.0.1]]></version>
+			</stylePlugin>
+			<partStyle>
+				<attr id="accent">50</attr>
+				<attr id="bendDep">8</attr>
+				<attr id="bendLen">0</attr>
+				<attr id="decay">50</attr>
+				<attr id="fallPort">0</attr>
+				<attr id="opening">127</attr>
+				<attr id="risePort">0</attr>
+			</partStyle>
+			<singer>
+				<posTick>0</posTick>
+				<vBS>0</vBS>
+				<vPC>0</vPC>
+			</singer>
+			<mCtrl>
+				<posTick>720</posTick>
+				<attr id="DYN">96</attr>
+			</mCtrl>
+			<mCtrl>
+				<posTick>720</posTick>
+				<attr id="BRE">102</attr>
+			</mCtrl>
+			<note>
+				<posTick>0</posTick>
+				<durTick>480</durTick>
+				<noteNum>48</noteNum>
+				<velocity>62</velocity>
+				<lyric><![CDATA[わ]]></lyric>
+				<phnms lock="1"><![CDATA[w a]]></phnms>
+				<noteStyle>
+					<attr id="accent">50</attr>
+					<attr id="bendDep">8</attr>
+					<attr id="bendLen">0</attr>
+					<attr id="decay">50</attr>
+					<attr id="fallPort">0</attr>
+					<attr id="opening">127</attr>
+					<attr id="risePort">0</attr>
+					<attr id="vibLen">66</attr>
+					<attr id="vibType">1</attr>
+					<seqAttr id="vibDep">
+						<elem>
+							<posNrm>22391</posNrm>
+							<elv>64</elv>
+						</elem>
+					</seqAttr>
+					<seqAttr id="vibRate">
+						<elem>
+							<posNrm>22391</posNrm>
+							<elv>50</elv>
+						</elem>
+					</seqAttr>
+				</noteStyle>
+			</note>
+			<note>
+				<posTick>480</posTick>
+				<durTick>960</durTick>
+				<noteNum>50</noteNum>
+				<velocity>63</velocity>
+				<lyric><![CDATA[は]]></lyric>
+				<phnms><![CDATA[h a]]></phnms>
+				<noteStyle>
+					<attr id="accent">50</attr>
+					<attr id="bendDep">8</attr>
+					<attr id="bendLen">0</attr>
+					<attr id="decay">50</attr>
+					<attr id="fallPort">1</attr>
+					<attr id="opening">127</attr>
+					<attr id="risePort">0</attr>
+					<attr id="vibLen">65</attr>
+					<attr id="vibType">5</attr>
+					<seqAttr id="vibDep">
+						<elem>
+							<posNrm>22937</posNrm>
+							<elv>64</elv>
+						</elem>
+					</seqAttr>
+					<seqAttr id="vibRate">
+						<elem>
+							<posNrm>22937</posNrm>
+							<elv>64</elv>
+						</elem>
+					</seqAttr>
+				</noteStyle>
+			</note>
+		</musicalPart>
+		<musicalPart>
+			<posTick>10560</posTick>
+			<playTime>1920</playTime>
+			<partName><![CDATA[NewPart]]></partName>
+			<comment><![CDATA[New Musical Part]]></comment>
+			<stylePlugin>
+				<stylePluginID><![CDATA[ACA9C502-A04B-42b5-B2EB-5CEA36D16FCE]]></stylePluginID>
+				<stylePluginName><![CDATA[VOCALOID2 Compatible Style]]></stylePluginName>
+				<version><![CDATA[3.0.0.1]]></version>
+			</stylePlugin>
+			<partStyle>
+				<attr id="accent">50</attr>
+				<attr id="bendDep">8</attr>
+				<attr id="bendLen">0</attr>
+				<attr id="decay">50</attr>
+				<attr id="fallPort">0</attr>
+				<attr id="opening">127</attr>
+				<attr id="risePort">0</attr>
+			</partStyle>
+			<singer>
+				<posTick>0</posTick>
+				<vBS>0</vBS>
+				<vPC>1</vPC>
+			</singer>
+			<note>
+				<posTick>665</posTick>
+				<durTick>480</durTick>
+				<noteNum>60</noteNum>
+				<velocity>64</velocity>
+				<lyric><![CDATA[a]]></lyric>
+				<phnms><![CDATA[a]]></phnms>
+				<noteStyle>
+					<attr id="accent">50</attr>
+					<attr id="bendDep">8</attr>
+					<attr id="bendLen">0</attr>
+					<attr id="decay">50</attr>
+					<attr id="fallPort">0</attr>
+					<attr id="opening">127</attr>
+					<attr id="risePort">0</attr>
+					<attr id="vibLen">66</attr>
+					<attr id="vibType">1</attr>
+					<seqAttr id="vibDep">
+						<elem>
+							<posNrm>22391</posNrm>
+							<elv>64</elv>
+						</elem>
+					</seqAttr>
+					<seqAttr id="vibRate">
+						<elem>
+							<posNrm>22391</posNrm>
+							<elv>50</elv>
+						</elem>
+					</seqAttr>
+				</noteStyle>
+			</note>
+		</musicalPart>
+	</vsTrack>
+	<seTrack>
+	</seTrack>
+	<karaokeTrack>
+	</karaokeTrack>
+	<aux>
+		<auxID><![CDATA[AUX_VST_HOST_CHUNK_INFO]]></auxID>
+		<content><![CDATA[VlNDSwAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=]]></content>
+	</aux>
+</vsq3>

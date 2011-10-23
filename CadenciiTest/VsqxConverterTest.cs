@@ -30,7 +30,7 @@ namespace org.kbinani.cadencii
             Assert.AreEqual( 3, track.getEventCount() );
             Assert.AreEqual( VsqIDType.Singer, track.getEvent( 1 ).ID.type );
             Assert.AreEqual( "VY1V3", track.getEvent( 1 ).ID.IconHandle.IDS );
-            Assert.AreEqual( VsqIDType, track.getEvent( 2 ).ID.type );
+            Assert.AreEqual( VsqIDType.Anote, track.getEvent( 2 ).ID.type );
             Assert.AreEqual( "み", track.getEvent( 2 ).ID.LyricHandle.L0.Phrase );
         }
 
