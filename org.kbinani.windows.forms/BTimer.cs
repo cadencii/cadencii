@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BTimer.java
+//INCLUDE ./BTimer.java
 #else
 using System;
 

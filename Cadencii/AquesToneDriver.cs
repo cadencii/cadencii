@@ -13,10 +13,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
-import org.kbinani.*;
-import org.kbinani.vsq.*;
+import com.github.cadencii.*;
+import com.github.cadencii.vsq.*;
 
 #else
 

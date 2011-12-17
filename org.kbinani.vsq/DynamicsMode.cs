@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 #if JAVA
-package org.kbinani.vsq;
+package com.github.cadencii.vsq;
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else

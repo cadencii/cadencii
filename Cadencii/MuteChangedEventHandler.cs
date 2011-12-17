@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class MuteChangedEventHandler extends BEventHandler{
     public MuteChangedEventHandler( Object sender, String method_name ){

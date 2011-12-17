@@ -12,10 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.lang.reflect.*;
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 public class SoloChangedEventHandler extends BEventHandler{
     public SoloChangedEventHandler( Object sender, String method_name ){

@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.componentmodel;
+package com.github.cadencii.componentmodel;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
     public class BCancelEventHandler extends BEventHandler{
         public BCancelEventHandler( Object sender, String method_name )

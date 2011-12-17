@@ -16,7 +16,7 @@ package org.kbinani.windows.forms;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 #else
 

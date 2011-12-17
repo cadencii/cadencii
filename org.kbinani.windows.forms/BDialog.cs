@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BDialog.java
+//INCLUDE ./BDialog.java
 #else
 #define COMPONENT_ENABLE_LOCATION
 #define COMPONENT_ENABLE_Y

@@ -12,5 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/PropertyDescriptor.java
+//INCLUDE ./PropertyDescriptor.java
 #endif

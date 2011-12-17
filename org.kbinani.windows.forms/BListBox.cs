@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BListBox.java
+//INCLUDE ./BListBox.java
 #else
 using System;
 using System.Windows.Forms;

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/xml/XmlSerializer.java
+//INCLUDE ./XmlSerializer.java
 #else
 using System;
 using System.IO;

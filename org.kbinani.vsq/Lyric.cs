@@ -13,12 +13,12 @@
  */
 #if JAVA
 
-package org.kbinani.vsq;
+package com.github.cadencii.vsq;
 
 import java.io.*;
 import java.util.*;
-import org.kbinani.*;
-import org.kbinani.xml.*;
+import com.github.cadencii.*;
+import com.github.cadencii.xml.*;
 
 #elif __cplusplus
 

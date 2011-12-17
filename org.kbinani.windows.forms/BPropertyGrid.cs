@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BPropertyGrid.java
+//INCLUDE ./BPropertyGrid.java
 #else
 using System;
 using System.Windows.Forms;

@@ -12,15 +12,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.awt.*;
 import java.util.*;
 import java.io.*;
-import org.kbinani.*;
-import org.kbinani.vsq.*;
-import org.kbinani.xml.*;
-import org.kbinani.windows.forms.*;
+import com.github.cadencii.*;
+import com.github.cadencii.vsq.*;
+import com.github.cadencii.xml.*;
+import com.github.cadencii.windows.forms.*;
 
 #else
 

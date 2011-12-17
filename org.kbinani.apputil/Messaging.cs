@@ -13,9 +13,9 @@
  */
 #if JAVA
 
-package org.kbinani.apputil;
+package com.github.cadencii.apputil;
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 import java.util.Vector;
 import java.util.Iterator;
 
@@ -32,7 +32,7 @@ namespace com.github.cadencii.apputil
     public class Messaging {
         private static String s_lang = "";
         private static Vector<MessageBody> s_messages = new Vector<MessageBody>();
-        
+
         public static String[] getKeys( String lang ) {
             for( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
                 MessageBody dict = itr.next();

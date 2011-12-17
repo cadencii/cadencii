@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BDialogResult.java
+//INCLUDE ./BDialogResult.java
 #else
 namespace com.github.cadencii.windows.forms {
 

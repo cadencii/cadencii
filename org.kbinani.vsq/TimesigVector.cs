@@ -13,11 +13,11 @@
  */
 #if JAVA
 
-package org.kbinani.vsq;
+package com.github.cadencii.vsq;
 
 import java.io.*;
 import java.util.*;
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 #else
 

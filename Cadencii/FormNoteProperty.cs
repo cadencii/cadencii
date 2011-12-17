@@ -13,14 +13,14 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormNoteProperty.java
 
 import javax.swing.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.windows.forms.*;
+import com.github.cadencii.*;
+import com.github.cadencii.apputil.*;
+import com.github.cadencii.windows.forms.*;
 
 #else
 

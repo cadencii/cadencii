@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
+package com.github.cadencii;
 
 public class Base64{
     static final char TABLE[] = {

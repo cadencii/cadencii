@@ -12,12 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.apputil;
+package com.github.cadencii.apputil;
 
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
-import org.kbinani.*;
+import com.github.cadencii.*;
 #else
 using System;
 using System.Collections.Generic;
@@ -169,7 +169,7 @@ namespace com.github.cadencii.apputil
                 }
                 Marshal.WriteInt16( ptr_u, 8 + 8 + imax - 1, 0 );
                 Marshal.FreeHGlobal( ptr_namebuf );
-                
+
                 //
                 // リンクファイルを作成
                 //
@@ -764,7 +764,7 @@ namespace com.github.cadencii.apputil
 
 #if !JAVA
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="start1"></param>
         /// <param name="end1"></param>

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BToolStripButton.java
+//INCLUDE ./BToolStripButton.java
 #else
 #define COMPONENT_PARENT_AS_OWNERITEM
 #define COMPONENT_ENABLE_TOOL_TIP_TEXT

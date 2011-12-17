@@ -13,9 +13,9 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
-import org.kbinani.windows.forms.BMenuItem;
+import com.github.cadencii.windows.forms.BMenuItem;
 
 #else
 

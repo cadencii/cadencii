@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.awt.*;
 

@@ -13,9 +13,9 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
-import org.kbinani.apputil.*;
+import com.github.cadencii.apputil.*;
 
 #else
 

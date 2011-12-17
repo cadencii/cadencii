@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.windows.forms;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
     public class BKeyEventHandler extends BEventHandler{
         public BKeyEventHandler( Object sender, String method_name )

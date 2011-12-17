@@ -14,10 +14,10 @@
 #define USE_PLAYSOUND_DLL
 
 #if JAVA
-package org.kbinani.media;
+package com.github.cadencii.media;
 
 import javax.sound.sampled.*;
-import org.kbinani.*;
+import com.github.cadencii.*;
 #else
 using System;
 using System.Runtime.InteropServices;

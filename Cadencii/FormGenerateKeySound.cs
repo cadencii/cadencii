@@ -12,16 +12,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
 
 import java.util.*;
-import org.kbinani.componentmodel.*;
-import org.kbinani.media.*;
-import org.kbinani.vsq.*;
-import org.kbinani.windows.forms.*;
-import org.kbinani.*;
+import com.github.cadencii.componentmodel.*;
+import com.github.cadencii.media.*;
+import com.github.cadencii.vsq.*;
+import com.github.cadencii.windows.forms.*;
+import com.github.cadencii.*;
 #else
 using System;
 using System.Windows.Forms;

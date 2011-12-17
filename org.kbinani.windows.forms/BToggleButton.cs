@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BToggleButton.java
+//INCLUDE ./BToggleButton.java
 #else
 namespace com.github.cadencii.windows.forms
 {

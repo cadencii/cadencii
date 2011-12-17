@@ -139,14 +139,14 @@ __EOD__
 close( CFG );
 
 my $java_post_process = "";
-&getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_java_core, $dep_java_core );
-&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_java_apputil, $dep_java_apputil );
-&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_java_componentmodel, $dep_java_componentmodel );
-&getSrcList( "./org.kbinani.media", "./build/java/org/kbinani/media/", $src_java_media, $dep_java_media );
-&getSrcList( "./org.kbinani.vsq", "./build/java/org/kbinani/vsq/", $src_java_vsq, $dep_java_vsq );
-&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_java_winforms, $dep_java_winforms );
-&getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_java_xml, $dep_java_xml );
-&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_java_cadencii, $dep_java_cadencii, $post_process_java_cadencii );
+&getSrcList( "./org.kbinani", "./build/java/com/github/cadencii/", $src_java_core, $dep_java_core );
+&getSrcList( "./org.kbinani.apputil", "./build/java/com/github/cadencii/apputil/", $src_java_apputil, $dep_java_apputil );
+&getSrcList( "./org.kbinani.componentmodel", "./build/java/com/github/cadencii/componentmodel/", $src_java_componentmodel, $dep_java_componentmodel );
+&getSrcList( "./org.kbinani.media", "./build/java/com/github/cadencii/media/", $src_java_media, $dep_java_media );
+&getSrcList( "./org.kbinani.vsq", "./build/java/com/github/cadencii/vsq/", $src_java_vsq, $dep_java_vsq );
+&getSrcList( "./org.kbinani.windows.forms", "./build/java/com/github/cadencii/windows/forms/", $src_java_winforms, $dep_java_winforms );
+&getSrcList( "./org.kbinani.xml", "./build/java/com/github/cadencii/xml/", $src_java_xml, $dep_java_xml );
+&getSrcList( "./Cadencii", "./build/java/com/github/cadencii/", $src_java_cadencii, $dep_java_cadencii, $post_process_java_cadencii );
 $java_post_process .= $post_process_java_cadencii;
 
 my $cpp_post_process = "";

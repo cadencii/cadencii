@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.apputil;
+package com.github.cadencii.apputil;
 
 import java.util.Vector;
 

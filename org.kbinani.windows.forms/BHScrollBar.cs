@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BHScrollBar.java
+//INCLUDE ./BHScrollBar.java
 #else
 #define COMPONENT_ENABLE_LOCATION
 namespace com.github.cadencii.windows.forms{

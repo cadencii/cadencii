@@ -13,14 +13,14 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.awt.*;
 import java.util.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.media.*;
-import org.kbinani.vsq.*;
+import com.github.cadencii.*;
+import com.github.cadencii.apputil.*;
+import com.github.cadencii.media.*;
+import com.github.cadencii.vsq.*;
 
 #else
 

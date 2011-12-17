@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package org.kbinani;
+package com.github.cadencii;
 
 import java.text.DecimalFormat;
 import java.util.Vector;
@@ -66,11 +66,11 @@ namespace com.github
 #endif
             {
 #if JAVA
-                return s.charAt( index ); 
+                return s.charAt( index );
 #else
                 return s[index];
 #endif
-            }                                    
+            }
 
 #if JAVA
             public static String toUpper( String s )

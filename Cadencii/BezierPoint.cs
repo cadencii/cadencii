@@ -13,10 +13,10 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.io.*;
-import org.kbinani.xml.*;
+import com.github.cadencii.xml.*;
 
 #else
 

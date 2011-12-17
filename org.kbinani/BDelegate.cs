@@ -12,5 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/BDelegate.java
+//INCLUDE ./BDelegate.java
 #endif

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
+package com.github.cadencii;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
@@ -1027,7 +1027,7 @@ namespace com.github.cadencii {
 #endif
         }
 
-        public static void moveFile( String pathBefore, String pathAfter ) 
+        public static void moveFile( String pathBefore, String pathAfter )
 #if JAVA
             throws java.io.FileNotFoundException, java.io.IOException
 #endif
@@ -1050,7 +1050,7 @@ namespace com.github.cadencii {
 
 #if !JAVA
         [Obsolete]
-        public static boolean isFileExists( String path ) 
+        public static boolean isFileExists( String path )
         {
             return System.IO.File.Exists( path );
         }
@@ -1395,7 +1395,7 @@ namespace com.github.cadencii {
 #if JAVA
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] gs = ge.getScreenDevices();
-            for (int j = 0; j < gs.length; j++) { 
+            for (int j = 0; j < gs.length; j++) {
                 GraphicsDevice gd = gs[j];
                 Rectangle rc = gd.getDefaultConfiguration().getBounds();
                 if( rc.x <= p.x && p.x <= rc.x + rc.width ){

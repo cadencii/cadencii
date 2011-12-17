@@ -13,19 +13,19 @@
  */
 //#define ENABLE_OBSOLUTE_COMMAND
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import javax.swing.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.vsq.*;
-import org.kbinani.windows.forms.*;
-import org.kbinani.xml.*;
-import org.kbinani.media.*;
+import com.github.cadencii.*;
+import com.github.cadencii.apputil.*;
+import com.github.cadencii.vsq.*;
+import com.github.cadencii.windows.forms.*;
+import com.github.cadencii.xml.*;
+import com.github.cadencii.media.*;
 
 #else
 
@@ -223,7 +223,7 @@ namespace com.github.cadencii
         /// <summary>
         /// トラックの背景部分の塗りつぶし色。16トラックそれぞれで異なる
         /// </summary>
-        public static readonly Color[] HILIGHT = new Color[] { 
+        public static readonly Color[] HILIGHT = new Color[] {
             new Color( 181, 220, 16 ),
             new Color( 231, 244, 49 ),
             new Color( 252, 230, 29 ),
@@ -442,7 +442,7 @@ namespace com.github.cadencii
 
         /// <summary>
         /// 自動ノーマライズモードかどうかを表す値を取得、または設定します。
-        /// </summary> 
+        /// </summary>
         public static boolean mAutoNormalize = false;
         /// <summary>
         /// Bezierカーブ編集モードが有効かどうかを表す
@@ -680,15 +680,15 @@ namespace com.github.cadencii
             String vocaloidrv_sh =
                 Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
             ret.add( vocaloidrv_sh );
-            
-            String wine_prefix = 
+
+            String wine_prefix =
                 Utility.normalizePath( editorConfig.WinePrefix );
             ret.add( wine_prefix );
 
             String wine_top =
                 Utility.normalizePath( editorConfig.WineTop );
             ret.add( wine_top );
-            return ret;            
+            return ret;
         }
 
         /// <summary>
@@ -1611,7 +1611,7 @@ namespace com.github.cadencii
                     }
                 }
             }
-            
+
             // シリアライズに失敗した場合，該当するxmlを削除する
             if( failed ){
                 if( fsys.isFileExists( xml ) ){
@@ -1770,7 +1770,7 @@ namespace com.github.cadencii
         {
             beginShowDialog();
             int ret = 0;
-            
+
             if ( open_mode ) {
 #if JAVA
                 if( main_form instanceof Frame ){
@@ -2791,7 +2791,7 @@ namespace com.github.cadencii
             // wine経由でユーティリティを呼ぶ
             String vocaloidrv_sh = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" );
             String winetop = Utility.normalizePath( editorConfig.WineTop );
-            String getvocaloidinfo = 
+            String getvocaloidinfo =
                 fsys.combine( PortUtil.getApplicationStartupPath(), "getvocaloidinfo.exe" );
 #if DEBUG
             sout.println( "AppManager#init; isFileExists(getvocaloidinfo)=" + fsys.isFileExists( getvocaloidinfo ) );
@@ -2800,8 +2800,8 @@ namespace com.github.cadencii
             sout.println( "AppManager#init; isDirectoryExists(prefix)=" + fsys.isDirectoryExists( prefix ) );
 #endif // DEBUG
             try{
-                Process p = Runtime.getRuntime().exec( 
-                    new String[]{ 
+                Process p = Runtime.getRuntime().exec(
+                    new String[]{
                         "/bin/sh",
                         vocaloidrv_sh,
                         prefix,
@@ -2823,7 +2823,7 @@ namespace com.github.cadencii
 #else // JAVA_MAC
             //TODO:
 #endif // JAVA_MAC
-            
+
             // 戻りのテキストファイルを読み込む
             Vector<String> reg_list = new Vector<String>();
             BufferedReader br = null;
@@ -3191,7 +3191,7 @@ namespace com.github.cadencii
                             num_period++;
                         } else {
 #if JAVA
-                            if ( Character.isDigit( c ) ) { 
+                            if ( Character.isDigit( c ) ) {
 #else
                             if ( !char.IsNumber( c ) ) {
 #endif

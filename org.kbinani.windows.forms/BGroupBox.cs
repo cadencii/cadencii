@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BGroupBox.java
+//INCLUDE ./BGroupBox.java
 #else
 namespace com.github.cadencii.windows.forms{
     public class BGroupBox : System.Windows.Forms.GroupBox {

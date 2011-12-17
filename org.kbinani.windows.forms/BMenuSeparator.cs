@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BMenuSeparator.java
+//INCLUDE ./BMenuSeparator.java
 #else
 using System;
 using System.Windows.Forms;

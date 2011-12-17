@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.vsq;
+package com.github.cadencii.vsq;
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 #else
 using System;
 using com.github.cadencii;

@@ -12,14 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-import org.kbinani.*;
-import org.kbinani.media.*;
-import org.kbinani.vsq.*;
+import com.github.cadencii.*;
+import com.github.cadencii.media.*;
+import com.github.cadencii.vsq.*;
 #else
 using System;
 using System.Diagnostics;

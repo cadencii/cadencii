@@ -13,9 +13,9 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
-import org.kbinani.componentmodel.*;
+import com.github.cadencii.componentmodel.*;
 
 #else
 

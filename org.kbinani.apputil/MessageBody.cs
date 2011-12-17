@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package org.kbinani.apputil;
+package com.github.cadencii.apputil;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import org.kbinani.ByRef;
-import org.kbinani.PortUtil;
-import org.kbinani.str;
+import com.github.cadencii.ByRef;
+import com.github.cadencii.PortUtil;
+import com.github.cadencii.str;
 
 #else
 

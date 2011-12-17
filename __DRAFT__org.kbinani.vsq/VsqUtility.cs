@@ -1,6 +1,6 @@
 
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 #else
 #if !__cplusplus
 using System;

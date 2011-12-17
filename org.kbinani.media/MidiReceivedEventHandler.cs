@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/media/MidiReceivedEventHandler.java
+//INCLUDE ./MidiReceivedEventHandler.java
 #else
 using System;
 using com.github.cadencii;

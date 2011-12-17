@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BVScrollBar.java
+//INCLUDE ./BVScrollBar.java
 #else
 namespace com.github.cadencii.windows.forms {
 

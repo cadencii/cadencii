@@ -12,5 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BFormClosedEventHandler.java
+//INCLUDE ./BFormClosedEventHandler.java
 #endif

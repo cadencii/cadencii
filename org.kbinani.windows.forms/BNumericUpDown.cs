@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BNumericUpDown.java
+//INCLUDE ./BNumericUpDown.java
 #else
 #define COMPONENT_ENABLE_FOCUS
 #define COMPONENT_ENABLE_REPAINT

@@ -13,13 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
 import javax.swing.*;
 import java.awt.*;
-import org.kbinani.*;
-import org.kbinani.windows.forms.*;
+import com.github.cadencii.*;
+import com.github.cadencii.windows.forms.*;
 #else
 
 using System;

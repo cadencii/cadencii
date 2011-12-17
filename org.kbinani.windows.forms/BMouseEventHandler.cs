@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.windows.forms;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
     public class BMouseEventHandler extends BEventHandler{
         public BMouseEventHandler( Object sender, String method_name )

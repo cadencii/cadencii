@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package org.kbinani.apputil;
+package com.github.cadencii.apputil;
 
 import java.awt.Font;
 

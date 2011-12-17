@@ -47,9 +47,9 @@ namespace com.github.cadencii.apputil {
             this.timer = new System.Windows.Forms.Timer( this.components );
             this.btnSaveAuthorList = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
+            //
             // btnFlip
-            // 
+            //
             this.btnFlip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnFlip.Location = new System.Drawing.Point( 13, 391 );
             this.btnFlip.Name = "btnFlip";
@@ -58,9 +58,9 @@ namespace com.github.cadencii.apputil {
             this.btnFlip.Text = "クレジット";
             this.btnFlip.UseVisualStyleBackColor = true;
             this.btnFlip.Click += new System.EventHandler( this.btnFlip_Click );
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point( 211, 391 );
@@ -70,14 +70,14 @@ namespace com.github.cadencii.apputil {
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            // 
+            //
             // timer
-            // 
+            //
             this.timer.Interval = 30;
             this.timer.Tick += new System.EventHandler( this.timer_Tick );
-            // 
+            //
             // btnSaveAuthorList
-            // 
+            //
             this.btnSaveAuthorList.Location = new System.Drawing.Point( 123, 391 );
             this.btnSaveAuthorList.Name = "btnSaveAuthorList";
             this.btnSaveAuthorList.Size = new System.Drawing.Size( 43, 21 );
@@ -85,9 +85,9 @@ namespace com.github.cadencii.apputil {
             this.btnSaveAuthorList.Text = "button1";
             this.btnSaveAuthorList.UseVisualStyleBackColor = true;
             this.btnSaveAuthorList.Visible = false;
-            // 
+            //
             // VersionInfoEx
-            // 
+            //
             this.AcceptButton = this.btnOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size( 300, 426 );

@@ -12,24 +12,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBezierPointEdit.java
 
 import java.awt.*;
 import java.util.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.windows.forms.*;
+import com.github.cadencii.*;
+import com.github.cadencii.apputil.*;
+import com.github.cadencii.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;

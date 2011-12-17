@@ -13,16 +13,16 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import org.kbinani.*;
-import org.kbinani.windows.forms.*;
-import org.kbinani.apputil.*;
+import com.github.cadencii.*;
+import com.github.cadencii.windows.forms.*;
+import com.github.cadencii.apputil.*;
 
 #else
 

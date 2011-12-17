@@ -13,10 +13,10 @@
  */
 #if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.util.*;
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 #elif __cplusplus
 

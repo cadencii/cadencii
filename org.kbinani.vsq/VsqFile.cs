@@ -14,12 +14,12 @@
 #define NEW_IMPL
 #if JAVA
 
-package org.kbinani.vsq;
+package com.github.cadencii.vsq;
 
 import java.util.*;
 import java.io.*;
-import org.kbinani.*;
-import org.kbinani.xml.*;
+import com.github.cadencii.*;
+import com.github.cadencii.xml.*;
 
 #else
 

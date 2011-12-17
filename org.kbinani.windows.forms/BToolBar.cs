@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BToolBar.java
+//INCLUDE ./BToolBar.java
 #else
 #define COMPONENT_ENABLE_X
 #define COMPONENT_ENABLE_Y

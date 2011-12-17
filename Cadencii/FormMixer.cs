@@ -12,17 +12,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormMixer.java
 
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
-import org.kbinani.*;
-import org.kbinani.apputil.*;
-import org.kbinani.vsq.*;
-import org.kbinani.windows.forms.*;
+import com.github.cadencii.*;
+import com.github.cadencii.apputil.*;
+import com.github.cadencii.vsq.*;
+import com.github.cadencii.windows.forms.*;
 #else
 using System;
 using System.Drawing;
