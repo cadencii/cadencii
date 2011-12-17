@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace org.kbinani.java.io {
+namespace com.github.cadencii.java.io {
 
     public class FileReader{
         public StreamReader m_reader;

@@ -22,10 +22,10 @@ import org.kbinani.cadencii.*;
 using System;
 using System.Threading;
 using System.Windows.Forms;
-using org.kbinani;
-using org.kbinani.apputil;
+using com.github.cadencii;
+using com.github.cadencii.apputil;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif
@@ -182,8 +182,8 @@ namespace org.kbinani.cadencii
                         _( "Info: This is test version of Cadencii version {0}" ),
                         BAssemblyInfo.fileVersionMeasure + "." + (minor + 1) ),
                     "Cadencii",
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
             // スプラッシュを表示するスレッドを開始

@@ -19,12 +19,10 @@ package org.kbinani.cadencii;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #if __cplusplus
 #else
@@ -47,7 +45,6 @@ namespace org
             };
 
 #if !JAVA
-        }
     }
 }
 #endif

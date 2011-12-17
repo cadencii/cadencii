@@ -29,7 +29,7 @@ public class SoloChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void SoloChangedEventHandler( int track, bool solo );
 

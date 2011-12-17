@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 
     public class cp932reader : IDisposable {
         private Stream m_stream;

@@ -17,7 +17,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 
     /// <summary>
     /// Sound player using mciSendSring command operation
@@ -230,7 +230,7 @@ namespace org.kbinani.media {
                 Close();
             }
             this.m_filename = filename;
-            m_alias = org.kbinani.Misc.getmd5( m_filename );
+            m_alias = com.github.cadencii.Misc.getmd5( m_filename );
 #if DEBUG
             Console.WriteLine( "    m_alias=" + m_alias );
 #endif

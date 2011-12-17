@@ -16,9 +16,9 @@
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.java.awt;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BFontChooser {
         public FontDialog dialog = null;

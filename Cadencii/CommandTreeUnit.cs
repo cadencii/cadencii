@@ -14,11 +14,11 @@
  */
 using System;
 using System.Collections.Generic;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     [Serializable]
     public class CommandTreeUnit {

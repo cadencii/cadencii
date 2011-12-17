@@ -30,15 +30,15 @@ import org.kbinani.windows.forms.*;
 //#define OLD_IMPL_MOUSE_TRACER
 using System;
 using System.Threading;
-using org.kbinani;
-using org.kbinani.apputil;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.event_;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -51,7 +51,7 @@ namespace org.kbinani.cadencii
 
     using boolean = System.Boolean;
     using Float = System.Single;
-    using Graphics = org.kbinani.java.awt.Graphics2D;
+    using Graphics = com.github.cadencii.java.awt.Graphics2D;
     using Integer = System.Int32;
     using Long = System.Int64;
 #endif
@@ -624,51 +624,51 @@ namespace org.kbinani.cadencii
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
 
-        public void setBounds( org.kbinani.java.awt.Rectangle rc )
+        public void setBounds( com.github.cadencii.java.awt.Rectangle rc )
         {
             base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
         }
 
-        public org.kbinani.java.awt.Cursor getCursor()
+        public com.github.cadencii.java.awt.Cursor getCursor()
         {
             System.Windows.Forms.Cursor c = base.Cursor;
-            org.kbinani.java.awt.Cursor ret = null;
+            com.github.cadencii.java.awt.Cursor ret = null;
             if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.DEFAULT_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.DEFAULT_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.CROSSHAIR_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.CROSSHAIR_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.DEFAULT_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.DEFAULT_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.HAND_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.TEXT_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.TEXT_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanEast ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.E_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.E_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanNE ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.NE_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.NE_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanNorth ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.N_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.N_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanNW ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.NW_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.NW_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanSE ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.SE_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.SE_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanSouth ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.S_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.S_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanSW ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.SW_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.SW_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanWest ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.W_RESIZE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.W_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.SizeAll ) ) {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.MOVE_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.MOVE_CURSOR );
             } else {
-                ret = new org.kbinani.java.awt.Cursor( org.kbinani.java.awt.Cursor.CUSTOM_CURSOR );
+                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.CUSTOM_CURSOR );
             }
             ret.cursor = c;
             return ret;
         }
 
-        public void setCursor( org.kbinani.java.awt.Cursor value )
+        public void setCursor( com.github.cadencii.java.awt.Cursor value )
         {
             base.Cursor = value.cursor;
         }
@@ -707,16 +707,16 @@ namespace org.kbinani.cadencii
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public org.kbinani.java.awt.Point getLocationOnScreen()
+        public com.github.cadencii.java.awt.Point getLocationOnScreen()
         {
             System.Drawing.Point p = base.PointToScreen( base.Location );
-            return new org.kbinani.java.awt.Point( p.X, p.Y );
+            return new com.github.cadencii.java.awt.Point( p.X, p.Y );
         }
 
-        public org.kbinani.java.awt.Point getLocation()
+        public com.github.cadencii.java.awt.Point getLocation()
         {
             System.Drawing.Point loc = this.Location;
-            return new org.kbinani.java.awt.Point( loc.X, loc.Y );
+            return new com.github.cadencii.java.awt.Point( loc.X, loc.Y );
         }
 
         public void setLocation( int x, int y )
@@ -724,16 +724,16 @@ namespace org.kbinani.cadencii
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( org.kbinani.java.awt.Point p )
+        public void setLocation( com.github.cadencii.java.awt.Point p )
         {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public org.kbinani.java.awt.Rectangle getBounds()
+        public com.github.cadencii.java.awt.Rectangle getBounds()
         {
             System.Drawing.Rectangle r = base.Bounds;
-            return new org.kbinani.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new com.github.cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
@@ -758,9 +758,9 @@ namespace org.kbinani.cadencii
             return base.Height;
         }
 
-        public org.kbinani.java.awt.Dimension getSize()
+        public com.github.cadencii.java.awt.Dimension getSize()
         {
-            return new org.kbinani.java.awt.Dimension( base.Size.Width, base.Size.Height );
+            return new com.github.cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
         public void setSize( int width, int height )
@@ -768,29 +768,29 @@ namespace org.kbinani.cadencii
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( org.kbinani.java.awt.Dimension d )
+        public void setSize( com.github.cadencii.java.awt.Dimension d )
         {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( org.kbinani.java.awt.Color color )
+        public void setBackground( com.github.cadencii.java.awt.Color color )
         {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public org.kbinani.java.awt.Color getBackground()
+        public com.github.cadencii.java.awt.Color getBackground()
         {
-            return new org.kbinani.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+            return new com.github.cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( org.kbinani.java.awt.Color color )
+        public void setForeground( com.github.cadencii.java.awt.Color color )
         {
             base.ForeColor = color.color;
         }
 
-        public org.kbinani.java.awt.Color getForeground()
+        public com.github.cadencii.java.awt.Color getForeground()
         {
-            return new org.kbinani.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+            return new com.github.cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
         public bool isEnabled()
@@ -813,17 +813,17 @@ namespace org.kbinani.cadencii
             return base.Focused;
         }
 
-        public void setPreferredSize( org.kbinani.java.awt.Dimension size )
+        public void setPreferredSize( com.github.cadencii.java.awt.Dimension size )
         {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public org.kbinani.java.awt.Font getFont()
+        public com.github.cadencii.java.awt.Font getFont()
         {
-            return new org.kbinani.java.awt.Font( base.Font );
+            return new com.github.cadencii.java.awt.Font( base.Font );
         }
 
-        public void setFont( org.kbinani.java.awt.Font font )
+        public void setFont( com.github.cadencii.java.awt.Font font )
         {
             if ( font == null ) {
                 return;
@@ -6123,45 +6123,45 @@ namespace org.kbinani.cadencii
             this.components = new System.ComponentModel.Container();
             this.cmenuSinger = new TrackSelectorSingerPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.cmenuCurve = new org.kbinani.windows.forms.BPopupMenu( this.components );
-            this.cmenuCurveVelocity = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveAccent = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveDecay = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator1 = new org.kbinani.windows.forms.BMenuSeparator();
-            this.cmenuCurveDynamics = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveVibratoRate = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveVibratoDepth = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator2 = new org.kbinani.windows.forms.BMenuSeparator();
-            this.cmenuCurveReso1 = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso1Freq = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso1BW = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso1Amp = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso2 = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso2Freq = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso2BW = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso2Amp = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso3 = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso3Freq = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso3BW = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso3Amp = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso4 = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso4Freq = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso4BW = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveReso4Amp = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator3 = new org.kbinani.windows.forms.BMenuSeparator();
-            this.cmenuCurveHarmonics = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveBreathiness = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveBrightness = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveClearness = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveOpening = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveGenderFactor = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator4 = new org.kbinani.windows.forms.BMenuSeparator();
-            this.cmenuCurvePortamentoTiming = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurvePitchBend = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurvePitchBendSensitivity = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator5 = new org.kbinani.windows.forms.BMenuSeparator();
-            this.cmenuCurveEffect2Depth = new org.kbinani.windows.forms.BMenuItem();
-            this.cmenuCurveEnvelope = new org.kbinani.windows.forms.BMenuItem();
+            this.cmenuCurve = new com.github.cadencii.windows.forms.BPopupMenu( this.components );
+            this.cmenuCurveVelocity = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveAccent = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveDecay = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator1 = new com.github.cadencii.windows.forms.BMenuSeparator();
+            this.cmenuCurveDynamics = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveVibratoRate = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveVibratoDepth = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator2 = new com.github.cadencii.windows.forms.BMenuSeparator();
+            this.cmenuCurveReso1 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso1Freq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso1BW = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso1Amp = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso2 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso2Freq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso2BW = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso2Amp = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso3 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso3Freq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso3BW = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso3Amp = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso4 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso4Freq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso4BW = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveReso4Amp = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator3 = new com.github.cadencii.windows.forms.BMenuSeparator();
+            this.cmenuCurveHarmonics = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveBreathiness = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveBrightness = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveClearness = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveOpening = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveGenderFactor = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator4 = new com.github.cadencii.windows.forms.BMenuSeparator();
+            this.cmenuCurvePortamentoTiming = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurvePitchBend = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurvePitchBendSensitivity = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveSeparator5 = new com.github.cadencii.windows.forms.BMenuSeparator();
+            this.cmenuCurveEffect2Depth = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cmenuCurveEnvelope = new com.github.cadencii.windows.forms.BMenuItem();
             this.cmenuCurve.SuspendLayout();
             this.SuspendLayout();
             // 

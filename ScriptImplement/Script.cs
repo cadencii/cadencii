@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using org.kbinani.cadencii;
+using com.github.cadencii;
 
 static class Script {
     /*private static EditorManager s_manager;

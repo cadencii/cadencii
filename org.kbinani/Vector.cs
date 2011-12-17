@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace org.kbinani.java.util {
+namespace com.github.cadencii.java.util {
 
     [Serializable]
 #if VECTOR_TEST

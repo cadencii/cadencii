@@ -19,9 +19,9 @@ import org.kbinani.vsq.*;
 
 using System.Collections.Generic;
 using System.Text;
-using org.kbinani.vsq;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 #endif
 

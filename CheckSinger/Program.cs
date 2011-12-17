@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using org.kbinani;
-using org.kbinani.vsq;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
+using com.github.cadencii;
+using com.github.cadencii.vsq;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
 
 namespace CheckSinger {
     using boolean = System.Boolean;

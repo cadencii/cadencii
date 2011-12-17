@@ -19,14 +19,12 @@ import java.util.*;
 
 #else
 
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #endif
 
@@ -133,7 +131,6 @@ namespace org
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

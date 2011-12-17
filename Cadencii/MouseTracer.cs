@@ -18,10 +18,10 @@ import java.awt.*;
 import java.util.*;
 #else
 using System;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using Integer = System.Int32;
     using boolean = System.Boolean;
 #endif

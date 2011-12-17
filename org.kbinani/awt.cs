@@ -13,10 +13,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.geom;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.geom;
 
-namespace org.kbinani.java.awt {
+namespace com.github.cadencii.java.awt {
 
     public class Icon {
         public System.Drawing.Image image;
@@ -215,7 +215,7 @@ namespace org.kbinani.java.awt {
             nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( x, y, width, height ) );
         }
 
-        public void drawImage( org.kbinani.java.awt.Image img, int x, int y, object obs ) {
+        public void drawImage( com.github.cadencii.java.awt.Image img, int x, int y, object obs ) {
             if ( img == null ) {
                 return;
             }
@@ -591,7 +591,7 @@ namespace org.kbinani.java.awt {
 
 }
 
-namespace org.kbinani.java.awt.geom
+namespace com.github.cadencii.java.awt.geom
 {
     public class Area : Shape
     {

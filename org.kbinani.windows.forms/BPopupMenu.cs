@@ -18,9 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using org.kbinani.javax.swing;
+using com.github.cadencii.javax.swing;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BPopupMenu : System.Windows.Forms.ContextMenuStrip, MenuElement {
         public BPopupMenu( System.ComponentModel.IContainer container )
@@ -65,7 +65,7 @@ namespace org.kbinani.windows.forms {
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {
-            return new org.kbinani.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+            return new com.github.cadencii.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
         }
 
         public void setMinimumSize( java.awt.Dimension value ) {
@@ -73,7 +73,7 @@ namespace org.kbinani.windows.forms {
         }
 
         public java.awt.Dimension getMaximumSize() {
-            return new org.kbinani.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+            return new com.github.cadencii.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
         }
 
         public void setMaximumSize( java.awt.Dimension value ) {
@@ -177,32 +177,32 @@ namespace org.kbinani.windows.forms {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
 
-        public void setBounds( org.kbinani.java.awt.Rectangle rc ) {
+        public void setBounds( com.github.cadencii.java.awt.Rectangle rc ) {
             base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
         }
 
-        public org.kbinani.java.awt.Point getLocationOnScreen() {
+        public com.github.cadencii.java.awt.Point getLocationOnScreen() {
             System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
-            return new org.kbinani.java.awt.Point( p.X, p.Y );
+            return new com.github.cadencii.java.awt.Point( p.X, p.Y );
         }
 
-        public org.kbinani.java.awt.Point getLocation() {
+        public com.github.cadencii.java.awt.Point getLocation() {
             System.Drawing.Point loc = this.Location;
-            return new org.kbinani.java.awt.Point( loc.X, loc.Y );
+            return new com.github.cadencii.java.awt.Point( loc.X, loc.Y );
         }
 
         public void setLocation( int x, int y ) {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( org.kbinani.java.awt.Point p ) {
+        public void setLocation( com.github.cadencii.java.awt.Point p ) {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public org.kbinani.java.awt.Rectangle getBounds() {
+        public com.github.cadencii.java.awt.Rectangle getBounds() {
             System.Drawing.Rectangle r = base.Bounds;
-            return new org.kbinani.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new com.github.cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
@@ -225,32 +225,32 @@ namespace org.kbinani.windows.forms {
             return base.Height;
         }
 
-        public org.kbinani.java.awt.Dimension getSize() {
-            return new org.kbinani.java.awt.Dimension( base.Size.Width, base.Size.Height );
+        public com.github.cadencii.java.awt.Dimension getSize() {
+            return new com.github.cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
         public void setSize( int width, int height ) {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( org.kbinani.java.awt.Dimension d ) {
+        public void setSize( com.github.cadencii.java.awt.Dimension d ) {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( org.kbinani.java.awt.Color color ) {
+        public void setBackground( com.github.cadencii.java.awt.Color color ) {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public org.kbinani.java.awt.Color getBackground() {
-            return new org.kbinani.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+        public com.github.cadencii.java.awt.Color getBackground() {
+            return new com.github.cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( org.kbinani.java.awt.Color color ) {
+        public void setForeground( com.github.cadencii.java.awt.Color color ) {
             base.ForeColor = color.color;
         }
 
-        public org.kbinani.java.awt.Color getForeground() {
-            return new org.kbinani.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+        public com.github.cadencii.java.awt.Color getForeground() {
+            return new com.github.cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
         public bool isEnabled() {
@@ -271,15 +271,15 @@ namespace org.kbinani.windows.forms {
         }
 #endif
 
-        public void setPreferredSize( org.kbinani.java.awt.Dimension size ) {
+        public void setPreferredSize( com.github.cadencii.java.awt.Dimension size ) {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public org.kbinani.java.awt.Font getFont() {
-            return new org.kbinani.java.awt.Font( base.Font );
+        public com.github.cadencii.java.awt.Font getFont() {
+            return new com.github.cadencii.java.awt.Font( base.Font );
         }
 
-        public void setFont( org.kbinani.java.awt.Font font ) {
+        public void setFont( com.github.cadencii.java.awt.Font font ) {
             if ( font == null ) {
                 return;
             }
@@ -292,14 +292,14 @@ namespace org.kbinani.windows.forms {
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public org.kbinani.java.awt.Point pointToScreen( org.kbinani.java.awt.Point point_on_client ) {
-            org.kbinani.java.awt.Point p = getLocationOnScreen();
-            return new org.kbinani.java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
+        public com.github.cadencii.java.awt.Point pointToScreen( com.github.cadencii.java.awt.Point point_on_client ) {
+            com.github.cadencii.java.awt.Point p = getLocationOnScreen();
+            return new com.github.cadencii.java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
         }
 
-        public org.kbinani.java.awt.Point pointToClient( org.kbinani.java.awt.Point point_on_screen ) {
-            org.kbinani.java.awt.Point p = getLocationOnScreen();
-            return new org.kbinani.java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
+        public com.github.cadencii.java.awt.Point pointToClient( com.github.cadencii.java.awt.Point point_on_screen ) {
+            com.github.cadencii.java.awt.Point p = getLocationOnScreen();
+            return new com.github.cadencii.java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
 
         public object getTag() {

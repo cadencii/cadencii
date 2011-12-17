@@ -28,7 +28,7 @@ public class SelectedTrackChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void SelectedTrackChangedEventHandler( Object sender, int track );
 

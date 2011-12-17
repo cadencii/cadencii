@@ -23,7 +23,7 @@ import org.kbinani.*;
 using System;
 using System.Threading;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using Integer = System.Int32;
 #endif

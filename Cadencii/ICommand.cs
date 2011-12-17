@@ -17,10 +17,10 @@ package org.kbinani.cadencii;
 import java.util.*;
 #else
 using System.Collections.Generic;
-using org.kbinani;
-using org.kbinani.java.util;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     public interface ICommand {

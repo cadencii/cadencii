@@ -17,7 +17,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 
     public class cp932 {
 

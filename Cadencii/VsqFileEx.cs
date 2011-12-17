@@ -24,13 +24,13 @@ import org.kbinani.xml.*;
 #else
 
 using System;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.xml;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;

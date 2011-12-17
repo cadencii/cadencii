@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BStatusLabel.java
 #else
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BStatusLabel : System.Windows.Forms.ToolStripStatusLabel {
         public void setText( string value ) {
@@ -33,11 +33,11 @@ namespace org.kbinani.windows.forms {
             return base.ToolTipText;
         }
 
-        public org.kbinani.java.awt.Icon getIcon() {
-            return new org.kbinani.java.awt.ImageIcon( base.Image );
+        public com.github.cadencii.java.awt.Icon getIcon() {
+            return new com.github.cadencii.java.awt.ImageIcon( base.Image );
         }
 
-        public void setIcon( org.kbinani.java.awt.Icon value ) {
+        public void setIcon( com.github.cadencii.java.awt.Icon value ) {
             if ( value == null ) {
                 base.Image = null;
             } else {

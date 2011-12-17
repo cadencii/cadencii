@@ -22,9 +22,9 @@ import org.kbinani.xml.*;
 namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
     using boolean = System.Boolean;
 #endif

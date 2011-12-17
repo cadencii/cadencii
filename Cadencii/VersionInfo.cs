@@ -28,20 +28,20 @@ import org.kbinani.apputil.*;
 
 using System;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.image;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.image;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BEventHandler = System.EventHandler;
-    using Graphics = org.kbinani.java.awt.Graphics2D;
+    using Graphics = com.github.cadencii.java.awt.Graphics2D;
 #endif
 
 #if JAVA
@@ -489,11 +489,11 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnFlip = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.lblVstLogo = new org.kbinani.windows.forms.BLabel();
-            this.pictVstLogo = new org.kbinani.windows.forms.BPictureBox();
-            this.chkTwitterID = new org.kbinani.windows.forms.BCheckBox();
+            this.btnFlip = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.lblVstLogo = new com.github.cadencii.windows.forms.BLabel();
+            this.pictVstLogo = new com.github.cadencii.windows.forms.BPictureBox();
+            this.chkTwitterID = new com.github.cadencii.windows.forms.BCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 

@@ -25,11 +25,11 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;

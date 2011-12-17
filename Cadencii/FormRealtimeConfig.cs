@@ -21,11 +21,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.windows.forms;
-using org.kbinani.apputil;
+using com.github.cadencii;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.apputil;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;

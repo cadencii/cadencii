@@ -19,11 +19,11 @@ import java.awt.image.*;
 import org.kbinani.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.image;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.image;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     /// <summary>

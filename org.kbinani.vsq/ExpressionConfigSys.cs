@@ -21,10 +21,10 @@ import org.kbinani.*;
 namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 #endif
 

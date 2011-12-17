@@ -20,9 +20,9 @@ import org.kbinani.xml.*;
 
 #else
 using System;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
     using Integer = Int32;
 #endif

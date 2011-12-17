@@ -22,21 +22,19 @@ import org.kbinani.vsq.*;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 #if __cplusplus
 #else
             using System;
             using System.Windows.Forms;
-            using org.kbinani.apputil;
-            using org.kbinani.vsq;
-            using org.kbinani;
-            using org.kbinani.java.util;
-            using org.kbinani.windows.forms;
+            using com.github.cadencii.apputil;
+            using com.github.cadencii.vsq;
+            using com.github.cadencii;
+            using com.github.cadencii.java.util;
+            using com.github.cadencii.windows.forms;
             using BEventArgs = System.EventArgs;
             using boolean = System.Boolean;
             using BEventHandler = System.EventHandler;
@@ -225,7 +223,6 @@ namespace org
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

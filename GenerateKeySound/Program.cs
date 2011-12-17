@@ -14,13 +14,13 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using org.kbinani;
-using org.kbinani.cadencii;
-using org.kbinani.java.util;
-using org.kbinani.media;
-using org.kbinani.vsq;
+using com.github.cadencii;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.generatekeysound {
+namespace com.github.cadencii.generatekeysound {
 
     class Program {
         #region static members

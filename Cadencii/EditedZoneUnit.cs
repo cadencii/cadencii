@@ -19,7 +19,7 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
 #if JAVA

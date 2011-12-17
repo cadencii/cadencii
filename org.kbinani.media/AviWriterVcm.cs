@@ -18,9 +18,9 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 
     public unsafe class AviWriterVcm : IAviWriter {
         private const long _THRESHOLD = 1000000000L; //AVIXリストの最大サイズ(byte)

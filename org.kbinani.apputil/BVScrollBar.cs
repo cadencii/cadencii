@@ -15,7 +15,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
 
     /// <summary>
     /// Valueの値が正しくMinimumからMaximumの間を動くスクロールバー

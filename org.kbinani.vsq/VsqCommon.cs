@@ -18,10 +18,10 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.java.io;
+using com.github.cadencii;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 
     using boolean = System.Boolean;
@@ -43,15 +43,15 @@ namespace org.kbinani.vsq
         /// <summary>
         /// Dynamicsカーブを表示するモード(Expert)なら1、しない(Standard)なら0。
         /// </summary>
-        public int DynamicsMode = org.kbinani.vsq.DynamicsMode.Expert;
+        public int DynamicsMode = com.github.cadencii.vsq.DynamicsMode.Expert;
         /// <summary>
         /// Play With Synthesisなら1、Play After Synthesiなら0、Offなら-1。
         /// </summary>
-        public int PlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
+        public int PlayMode = com.github.cadencii.vsq.PlayMode.PlayWithSynth;
         /// <summary>
         /// PlayModeがOff(-1)にされる直前に，PlayAfterSynthかPlayWithSynthのどちらが指定されていたかを記憶しておく．
         /// </summary>
-        public int LastPlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
+        public int LastPlayMode = com.github.cadencii.vsq.PlayMode.PlayWithSynth;
 
 #if !JAVA
         public object Clone()

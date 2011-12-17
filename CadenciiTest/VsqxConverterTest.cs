@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using org.kbinani.vsq;
-using org.kbinani.cadencii;
-using org.kbinani.xml;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.xml;
 using NUnit.Framework;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     [TestFixture]
     class VsqxConverterTest

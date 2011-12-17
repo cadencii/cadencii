@@ -17,9 +17,9 @@ package org.kbinani.cadencii;
 import org.kbinani.vsq.*;
 #else
 using System;
-using org.kbinani.vsq;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     public class VConnectRenderingQueue {

@@ -17,9 +17,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-using org.kbinani.vsq;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     using boolean = Boolean;
 

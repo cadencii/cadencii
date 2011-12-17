@@ -18,7 +18,7 @@ import javax.swing.*;
 #else
 using System;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 #endif
 
     public class Utility {

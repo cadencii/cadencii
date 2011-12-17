@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using org.kbinani.cadencii;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.java.util;
+using com.github.cadencii;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.java.util;
 
 using System;
 using System.Collections.Generic;
@@ -85,7 +85,7 @@ public class SmartHtml {
 }*/
 
 public static class AutoBRI {
-    public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
+    public static bool Edit( com.github.cadencii.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ
         System.Collections.Generic.List<int> ids = new System.Collections.Generic.List<int>();
         for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ){
@@ -93,7 +93,7 @@ public static class AutoBRI {
             ids.Add( entry.original.InternalID );
         }
 
-        org.kbinani.vsq.VsqTrack track = vsq.Track.get( AppManager.getSelected() );
+        com.github.cadencii.vsq.VsqTrack track = vsq.Track.get( AppManager.getSelected() );
 
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
         int resol = AppManager.editorConfig.getControlCurveResolutionValue();
@@ -101,11 +101,11 @@ public static class AutoBRI {
             int internal_id = ids[i];
 
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = itr.next();
+                com.github.cadencii.vsq.VsqEvent item = itr.next();
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
-                    org.kbinani.vsq.VsqBPList bri = track.getCurve( "BRI" );
+                    com.github.cadencii.vsq.VsqBPList bri = track.getCurve( "BRI" );
 
                     // 音符の最後の位置でのBRIを取得．処理の最後で追加
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
@@ -166,18 +166,18 @@ public class AutoBRITool : IPaletteTool {
     /// <param name="ids">クリックされたイベントのInternalIDが格納された配列</param>
     /// <param name="button">クリックされたときのマウスボタン</param>
     /// <returns></returns>
-    public bool edit( org.kbinani.vsq.VsqTrack track, int[] ids, System.Windows.Forms.MouseButtons button ) {
+    public bool edit( com.github.cadencii.vsq.VsqTrack track, int[] ids, System.Windows.Forms.MouseButtons button ) {
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
         int resol = AppManager.editorConfig.getControlCurveResolutionValue();
         for ( int i = 0; i < ids.Length; i++ ) {
             int internal_id = ids[i];
             
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = itr.next();
+                com.github.cadencii.vsq.VsqEvent item = itr.next();
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
-                    org.kbinani.vsq.VsqBPList bri = track.getCurve( "BRI" );
+                    com.github.cadencii.vsq.VsqBPList bri = track.getCurve( "BRI" );
                     
                     // 音符の最後の位置でのBRIを取得．処理の最後で追加
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
@@ -281,19 +281,19 @@ public class AutoBRITool : IPaletteTool {
 
 
 public static class SaveMetaText {
-    public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
+    public static bool Edit( com.github.cadencii.vsq.VsqFile vsq ) {
         vsq.Track.get( 1 ).printMetaText( @"c:\meta_text.txt", "Shift_JIS" );
         return true;
     }
 }
 
 public static class PrintLyric {
-    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
+    public static bool Edit( com.github.cadencii.vsq.VsqFile Vsq ) {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
             for ( Iterator<VsqEvent> itr = Vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = itr.next();
+                com.github.cadencii.vsq.VsqEvent item = itr.next();
                 int clStart = item.Clock;
                 int clEnd = clStart + item.ID.Length;
                 double secStart = Vsq.getSecFromClock( clStart );
@@ -312,10 +312,10 @@ public static class PrintLyric {
 }
 
 public static class UpHalfStep {
-    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
+    public static bool Edit( com.github.cadencii.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
             for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = itr.next();
+                com.github.cadencii.vsq.VsqEvent item = itr.next();
                 if ( item.ID.Note < 127 ) {
                     item.ID.Note++;
                 }
@@ -326,10 +326,10 @@ public static class UpHalfStep {
 }
 
 public static class Trim32 {
-    public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
+    public static bool Edit( com.github.cadencii.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
             for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
-                org.kbinani.vsq.VsqEvent item = itr.next();
+                com.github.cadencii.vsq.VsqEvent item = itr.next();
                 // 32分音符の長さは，クロック数に直すと60クロック
                 if ( item.ID.Length > 60 ) {
                     item.ID.Length -= 60;

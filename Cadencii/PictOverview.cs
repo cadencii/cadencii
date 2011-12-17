@@ -23,12 +23,12 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Threading;
 using System.Windows.Forms;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;

@@ -8,7 +8,7 @@
     <ProjectGuid>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.kbinani.apputil</RootNamespace>
+    <RootNamespace>com_github.cadencii.apputil</RootNamespace>
     <AssemblyName>org.kbinani.apputil</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

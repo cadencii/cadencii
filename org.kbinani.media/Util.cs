@@ -15,9 +15,9 @@
 using System;
 using System.IO;
 
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 
     internal static class Util {
         public const byte AVI_INDEX_OF_INDEXES = 0x00; //when each entry in aIndex

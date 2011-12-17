@@ -58,12 +58,12 @@ import java.util.Vector;
 using System;
 using System.IO;
 using System.Text;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.event_;
-using org.kbinani.java.util;
-using org.kbinani.javax.swing;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.java.util;
+using com.github.cadencii.javax.swing;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
     using Float = System.Single;
     using Integer = System.Int32;

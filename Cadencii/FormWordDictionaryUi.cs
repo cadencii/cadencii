@@ -17,12 +17,10 @@ package org.kbinani.cadencii;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 #if __cplusplus
             using namespace std;
             using namespace org::kbinani::cadencii;
@@ -121,7 +119,7 @@ namespace org
                 string listDictionariesGetItemAt( int row );
 
                 /// <summary>
-                /// TODO: 
+                /// TODO:
                 /// </summary>
                 /// <param name="row"></param>
                 /// <returns></returns>
@@ -203,7 +201,6 @@ namespace org
             };
 
 #if !JAVA
-        }
     }
 }
 #endif

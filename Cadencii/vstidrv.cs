@@ -19,12 +19,12 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
 using VstSdk;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using VstInt32 = Int32;
@@ -304,7 +304,7 @@ namespace org.kbinani.cadencii
             return result;
         }
 
-        public FormPluginUi getUi( org.kbinani.windows.forms.BForm main_window )
+        public FormPluginUi getUi( com.github.cadencii.windows.forms.BForm main_window )
         {
             if ( ui == null ) {
                 if ( main_window != null ) {

@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace org.kbinani.java.lang
+namespace com.github.cadencii.java.lang
 {
 
     public interface Runnable

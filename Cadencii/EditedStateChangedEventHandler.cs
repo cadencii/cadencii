@@ -16,7 +16,7 @@
 #else
 using System;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 
     public delegate void EditedStateChangedEventHandler( Object sender, bool edited );

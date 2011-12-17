@@ -22,9 +22,9 @@ import org.kbinani.*;
 
 using System;
 using System.Windows.Forms;
-using org.kbinani.windows.forms;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.windows.forms
+namespace com.github.cadencii.windows.forms
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -104,10 +104,10 @@ namespace org.kbinani.windows.forms
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtInput = new org.kbinani.windows.forms.BTextBox();
-            this.btnOk = new org.kbinani.windows.forms.BButton();
-            this.lblMessage = new org.kbinani.windows.forms.BLabel();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.txtInput = new com.github.cadencii.windows.forms.BTextBox();
+            this.btnOk = new com.github.cadencii.windows.forms.BButton();
+            this.lblMessage = new com.github.cadencii.windows.forms.BLabel();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // txtInput

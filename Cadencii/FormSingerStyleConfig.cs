@@ -24,13 +24,13 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.event_;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
@@ -345,8 +345,8 @@ namespace org.kbinani.cadencii
         {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
-                                  org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                                  com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 setDialogResult( BDialogResult.OK );
             }
@@ -394,8 +394,8 @@ namespace org.kbinani.cadencii
             this.groupPitchControl = new BGroupBox();
             this.label5 = new BLabel();
             this.label4 = new BLabel();
-            this.txtBendLength = new org.kbinani.cadencii.NumberTextBox();
-            this.txtBendDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.txtBendLength = new com.github.cadencii.NumberTextBox();
+            this.txtBendDepth = new com.github.cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
             this.trackBendDepth = new BSlider();
             this.chkDownPortamento = new BCheckBox();
@@ -405,8 +405,8 @@ namespace org.kbinani.cadencii
             this.groupDynamicsControl = new BGroupBox();
             this.label7 = new BLabel();
             this.label6 = new BLabel();
-            this.txtAccent = new org.kbinani.cadencii.NumberTextBox();
-            this.txtDecay = new org.kbinani.cadencii.NumberTextBox();
+            this.txtAccent = new com.github.cadencii.NumberTextBox();
+            this.txtDecay = new com.github.cadencii.NumberTextBox();
             this.trackAccent = new BSlider();
             this.trackDecay = new BSlider();
             this.lblAccent = new BLabel();
@@ -471,7 +471,7 @@ namespace org.kbinani.cadencii
             this.txtBendLength.TabIndex = 5;
             this.txtBendLength.Text = "0";
             this.txtBendLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBendLength.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtBendLength.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtBendDepth
             // 
@@ -483,7 +483,7 @@ namespace org.kbinani.cadencii
             this.txtBendDepth.TabIndex = 2;
             this.txtBendDepth.Text = "8";
             this.txtBendDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBendDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtBendDepth.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackBendLength
             // 
@@ -589,7 +589,7 @@ namespace org.kbinani.cadencii
             this.txtAccent.TabIndex = 13;
             this.txtAccent.Text = "50";
             this.txtAccent.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtAccent.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtAccent.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDecay
             // 
@@ -601,7 +601,7 @@ namespace org.kbinani.cadencii
             this.txtDecay.TabIndex = 10;
             this.txtDecay.Text = "50";
             this.txtDecay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDecay.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDecay.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackAccent
             // 

@@ -30,9 +30,9 @@ using System;
 using System.Threading;
 using System.ComponentModel;
 using System.Reflection;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 #endif
 

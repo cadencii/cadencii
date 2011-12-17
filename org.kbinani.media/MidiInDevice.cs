@@ -22,9 +22,9 @@ import org.kbinani.*;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media
+namespace com.github.cadencii.media
 {
     using boolean = System.Boolean;
 #endif
@@ -247,7 +247,7 @@ namespace org.kbinani.media
                             case 0xe0: {
                                 if ( MidiReceived != null ) {
                                     javax.sound.midi.MidiMessage msg = 
-                                        new org.kbinani.javax.sound.midi.MidiMessage( 
+                                        new com.github.cadencii.javax.sound.midi.MidiMessage( 
                                             new byte[] { (byte)(receive & 0xff),
                                                          (byte)((receive & 0xffff) >> 8),
                                                          (byte)((receive & ((2 << 24) - 1)) >> 16) } );
@@ -259,7 +259,7 @@ namespace org.kbinani.media
                             case 0xd0: {
                                 if ( MidiReceived != null ) {
                                     javax.sound.midi.MidiMessage msg =
-                                        new org.kbinani.javax.sound.midi.MidiMessage(
+                                        new com.github.cadencii.javax.sound.midi.MidiMessage(
                                             new byte[] { (byte)( receive & 0xff ),
                                                          (byte)((receive & 0xffff) >> 8) } );
                                     MidiReceived.Invoke( this, msg );
@@ -276,7 +276,7 @@ namespace org.kbinani.media
                                         // MTC quater frame message
                                         if ( MidiReceived != null ) {
                                             javax.sound.midi.MidiMessage msg =
-                                                new org.kbinani.javax.sound.midi.MidiMessage( new byte[] { b0, b1, b2 } );
+                                                new com.github.cadencii.javax.sound.midi.MidiMessage( new byte[] { b0, b1, b2 } );
                                             MidiReceived.Invoke( this, msg );
                                         }
                                     } else if ( b0 == 0xf2 ) {

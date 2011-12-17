@@ -23,13 +23,13 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -194,8 +194,8 @@ namespace org.kbinani.cadencii
                     AppManager.showMessageBox( 
                         _( "Invalid value" ), 
                         _( "Error" ), 
-                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, 
-                        org.kbinani.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, 
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
                 if ( chkEnableSmooth.isSelected() ) {
@@ -206,7 +206,7 @@ namespace org.kbinani.cadencii
                 }
                 setDialogResult( BDialogResult.OK );
             } catch ( Exception ex ) {
-                AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
+                AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
                 setDialogResult( BDialogResult.CANCEL );
                 Logger.write( typeof( FormBezierPointEdit ) + ".btnOK_Click; ex=" + ex + "\n" );
             }
@@ -393,29 +393,29 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.chkEnableSmooth = new org.kbinani.windows.forms.BCheckBox();
-            this.lblLeftValue = new org.kbinani.windows.forms.BLabel();
-            this.lblLeftClock = new org.kbinani.windows.forms.BLabel();
-            this.groupLeft = new org.kbinani.windows.forms.BGroupBox();
-            this.btnLeft = new org.kbinani.windows.forms.BButton();
-            this.txtLeftClock = new org.kbinani.cadencii.NumberTextBox();
-            this.txtLeftValue = new org.kbinani.cadencii.NumberTextBox();
-            this.groupDataPoint = new org.kbinani.windows.forms.BGroupBox();
-            this.btnDataPoint = new org.kbinani.windows.forms.BButton();
-            this.lblDataPointValue = new org.kbinani.windows.forms.BLabel();
-            this.txtDataPointClock = new org.kbinani.cadencii.NumberTextBox();
-            this.lblDataPointClock = new org.kbinani.windows.forms.BLabel();
-            this.txtDataPointValue = new org.kbinani.cadencii.NumberTextBox();
-            this.groupRight = new org.kbinani.windows.forms.BGroupBox();
-            this.btnRight = new org.kbinani.windows.forms.BButton();
-            this.lblRightValue = new org.kbinani.windows.forms.BLabel();
-            this.txtRightClock = new org.kbinani.cadencii.NumberTextBox();
-            this.lblRightClock = new org.kbinani.windows.forms.BLabel();
-            this.txtRightValue = new org.kbinani.cadencii.NumberTextBox();
-            this.btnBackward = new org.kbinani.windows.forms.BButton();
-            this.btnForward = new org.kbinani.windows.forms.BButton();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.chkEnableSmooth = new com.github.cadencii.windows.forms.BCheckBox();
+            this.lblLeftValue = new com.github.cadencii.windows.forms.BLabel();
+            this.lblLeftClock = new com.github.cadencii.windows.forms.BLabel();
+            this.groupLeft = new com.github.cadencii.windows.forms.BGroupBox();
+            this.btnLeft = new com.github.cadencii.windows.forms.BButton();
+            this.txtLeftClock = new com.github.cadencii.NumberTextBox();
+            this.txtLeftValue = new com.github.cadencii.NumberTextBox();
+            this.groupDataPoint = new com.github.cadencii.windows.forms.BGroupBox();
+            this.btnDataPoint = new com.github.cadencii.windows.forms.BButton();
+            this.lblDataPointValue = new com.github.cadencii.windows.forms.BLabel();
+            this.txtDataPointClock = new com.github.cadencii.NumberTextBox();
+            this.lblDataPointClock = new com.github.cadencii.windows.forms.BLabel();
+            this.txtDataPointValue = new com.github.cadencii.NumberTextBox();
+            this.groupRight = new com.github.cadencii.windows.forms.BGroupBox();
+            this.btnRight = new com.github.cadencii.windows.forms.BButton();
+            this.lblRightValue = new com.github.cadencii.windows.forms.BLabel();
+            this.txtRightClock = new com.github.cadencii.NumberTextBox();
+            this.lblRightClock = new com.github.cadencii.windows.forms.BLabel();
+            this.txtRightValue = new com.github.cadencii.NumberTextBox();
+            this.btnBackward = new com.github.cadencii.windows.forms.BButton();
+            this.btnForward = new com.github.cadencii.windows.forms.BButton();
             this.groupLeft.SuspendLayout();
             this.groupDataPoint.SuspendLayout();
             this.groupRight.SuspendLayout();
@@ -507,7 +507,7 @@ namespace org.kbinani.cadencii
             this.txtLeftClock.Size = new System.Drawing.Size( 61, 19 );
             this.txtLeftClock.TabIndex = 4;
             this.txtLeftClock.Text = "0";
-            this.txtLeftClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtLeftClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtLeftValue
             // 
@@ -519,7 +519,7 @@ namespace org.kbinani.cadencii
             this.txtLeftValue.Size = new System.Drawing.Size( 61, 19 );
             this.txtLeftValue.TabIndex = 5;
             this.txtLeftValue.Text = "0";
-            this.txtLeftValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtLeftValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // groupDataPoint
             // 
@@ -561,7 +561,7 @@ namespace org.kbinani.cadencii
             this.txtDataPointClock.Name = "txtDataPointClock";
             this.txtDataPointClock.Size = new System.Drawing.Size( 61, 19 );
             this.txtDataPointClock.TabIndex = 7;
-            this.txtDataPointClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // lblDataPointClock
             // 
@@ -578,7 +578,7 @@ namespace org.kbinani.cadencii
             this.txtDataPointValue.Name = "txtDataPointValue";
             this.txtDataPointValue.Size = new System.Drawing.Size( 61, 19 );
             this.txtDataPointValue.TabIndex = 8;
-            this.txtDataPointValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // groupRight
             // 
@@ -621,7 +621,7 @@ namespace org.kbinani.cadencii
             this.txtRightClock.Name = "txtRightClock";
             this.txtRightClock.Size = new System.Drawing.Size( 61, 19 );
             this.txtRightClock.TabIndex = 10;
-            this.txtRightClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtRightClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // lblRightClock
             // 
@@ -639,7 +639,7 @@ namespace org.kbinani.cadencii
             this.txtRightValue.Name = "txtRightValue";
             this.txtRightValue.Size = new System.Drawing.Size( 61, 19 );
             this.txtRightValue.TabIndex = 11;
-            this.txtRightValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtRightValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // btnBackward
             // 

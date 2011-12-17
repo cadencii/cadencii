@@ -18,10 +18,10 @@ import org.kbinani.vsq.*;
 import java.awt.*;
 #else
 using System;
-using org.kbinani.vsq;
-using org.kbinani.java.awt;
+using com.github.cadencii.vsq;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

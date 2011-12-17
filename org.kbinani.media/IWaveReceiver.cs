@@ -15,7 +15,7 @@
 package org.kbinani.media;
 
 #else
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 #endif
 
     public interface IWaveReceiver {

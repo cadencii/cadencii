@@ -14,9 +14,9 @@
  */
 using System;
 using System.Runtime.InteropServices;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 
     using MMRESULT = System.UInt32;
     using HMIDIIN = System.Int32;

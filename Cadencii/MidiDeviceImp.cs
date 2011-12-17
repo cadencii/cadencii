@@ -14,9 +14,9 @@
  */
 using System;
 using System.Collections.Generic;
-using org.kbinani.media;
+using com.github.cadencii.media;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     using boolean = Boolean;
 

@@ -21,9 +21,9 @@ import java.io.*;
 #else
 
 using System;
-using org.kbinani.java.awt;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 #endif
 

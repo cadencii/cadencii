@@ -20,10 +20,10 @@ import org.kbinani.*;
 #else
 using System;
 using System.Threading;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

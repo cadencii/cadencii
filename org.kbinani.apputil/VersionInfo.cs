@@ -16,14 +16,14 @@ using System;
 //using System.Drawing;
 //using System.Drawing.Drawing2D;
 //using System.Windows.Forms;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.image;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.image;
 
-namespace org.kbinani.apputil {
-    using java = org.kbinani.java;
-    using javax = org.kbinani.javax;
-    using Graphics = org.kbinani.java.awt.Graphics2D;
+namespace com.github.cadencii.apputil {
+    using java = com.github.cadencii.java;
+    using javax = com.github.cadencii.javax;
+    using Graphics = com.github.cadencii.java.awt.Graphics2D;
 
     public partial class VersionInfo : System.Windows.Forms.Form {
         DateTime m_scroll_started;
@@ -126,7 +126,7 @@ namespace org.kbinani.apputil {
             const string font_name = "Arial";
             const int font_size = 10;
             Font font = new Font( font_name, java.awt.Font.PLAIN, font_size );
-            Dimension size = org.kbinani.apputil.Util.measureString( "Qjqp", font );
+            Dimension size = com.github.cadencii.apputil.Util.measureString( "Qjqp", font );
             float width = this.Width;
             float height = size.height;
             //StringFormat sf = new StringFormat();
@@ -206,7 +206,7 @@ namespace org.kbinani.apputil {
             g.clearRect( 0, 0, this.Width, this.Height );
             if ( m_credit_mode ) {
                 float times = (float)(((DateTime.Now).Subtract( m_scroll_started )).TotalSeconds) - 3f;
-                float speed = (float)((2.0 - org.kbinani.math.erfc( times * 0.8 )) / 2.0) * m_speed;
+                float speed = (float)((2.0 - com.github.cadencii.math.erfc( times * 0.8 )) / 2.0) * m_speed;
                 float dt = times - m_last_t;
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;

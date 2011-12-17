@@ -20,7 +20,7 @@ import org.kbinani.*;
 using System;
 using System.Drawing;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

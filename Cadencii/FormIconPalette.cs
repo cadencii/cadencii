@@ -29,14 +29,14 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.javax.swing;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.javax.swing;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -377,9 +377,9 @@ namespace org.kbinani.cadencii
 #else
         private void InitializeComponent()
         {
-            this.menuBar = new org.kbinani.windows.forms.BMenuBar();
-            this.menuWindow = new org.kbinani.windows.forms.BMenuItem();
-            this.menuWindowHide = new org.kbinani.windows.forms.BMenuItem();
+            this.menuBar = new com.github.cadencii.windows.forms.BMenuBar();
+            this.menuWindow = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuWindowHide = new com.github.cadencii.windows.forms.BMenuItem();
             this.menuBar.SuspendLayout();
             this.SuspendLayout();
             // 

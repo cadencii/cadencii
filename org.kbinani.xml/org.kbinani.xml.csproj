@@ -8,7 +8,7 @@
     <ProjectGuid>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.kbinani.xml</RootNamespace>
+    <RootNamespace>com_github.cadencii.xml</RootNamespace>
     <AssemblyName>org.kbinani.xml</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

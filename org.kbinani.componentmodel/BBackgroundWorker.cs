@@ -14,9 +14,9 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/BBackgroundWorker.java
 #else
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.componentmodel {
+namespace com.github.cadencii.componentmodel {
     public class BBackgroundWorker : System.ComponentModel.BackgroundWorker {
         public bool isWorkerReportsProgress() {
             return base.WorkerReportsProgress;

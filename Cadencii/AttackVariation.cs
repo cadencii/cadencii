@@ -23,7 +23,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
     using LONG = System.Int32;

@@ -25,13 +25,13 @@ import org.kbinani.vsq.*;
 
 using System;
 using System.Threading;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.java.io;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

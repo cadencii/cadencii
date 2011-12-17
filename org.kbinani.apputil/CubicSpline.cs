@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
 
     public class CubicSpline : ICloneable, IDisposable {
         int m_num_key;

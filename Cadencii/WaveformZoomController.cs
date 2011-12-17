@@ -21,9 +21,9 @@ import org.kbinani.*;
 
 #else
 
-using org.kbinani.java.awt;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

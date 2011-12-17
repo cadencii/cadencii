@@ -28,7 +28,7 @@ public class PanpotChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void PanpotChangedEventHandler( int track, int panpot );
 

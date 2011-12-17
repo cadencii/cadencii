@@ -17,12 +17,10 @@ package org.kbinani.cadencii;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #endif
 
@@ -39,12 +37,12 @@ namespace org
                 /// x方向の表示倍率(pixel/clock)
                 /// </summary>
                 private float mScaleX;
-                
+
                 /// <summary>
                 /// mScaleXの逆数
                 /// </summary>
                 private float mInvScaleX;
-                
+
                 /// <summary>
                 /// 画面左端位置での、仮想画面上の画面左端から測ったピクセル数．
                 /// FormMain.hScroll.ValueとFormMain.trackBar.Valueで決まる．
@@ -188,7 +186,6 @@ namespace org
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

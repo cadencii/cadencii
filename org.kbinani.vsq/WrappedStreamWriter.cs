@@ -17,10 +17,10 @@ package org.kbinani.vsq;
 import java.io.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.java.io;
+using com.github.cadencii;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 #endif
 

@@ -19,7 +19,7 @@
  */
 using System;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 
     public static unsafe class fft_test {
         const int NMAXSQRT = 64;

@@ -8,7 +8,7 @@
     <ProjectGuid>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.kbinani.media</RootNamespace>
+    <RootNamespace>com_github.cadencii.media</RootNamespace>
     <AssemblyName>org.kbinani.media</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

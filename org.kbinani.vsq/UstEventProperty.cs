@@ -20,7 +20,7 @@ import java.io.*;
 
 using System;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 #endif
 

@@ -18,9 +18,9 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 
     public class VCM {
         public const uint ICMODE_QUERY = 4;

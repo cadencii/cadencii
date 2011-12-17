@@ -17,9 +17,9 @@ package org.kbinani.cadencii;
 import java.util.*;
 #else
 using System;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 #endif
 

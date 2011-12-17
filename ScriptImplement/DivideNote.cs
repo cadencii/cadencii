@@ -4,13 +4,13 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using org.kbinani.cadencii;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
+using com.github.cadencii;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public partial class DivideNote : Form, IPaletteTool {
         public static int Numerator = 1;

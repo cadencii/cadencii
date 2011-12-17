@@ -1,9 +1,9 @@
 using System;
 using System.Windows.Forms;
 using NUnit.Framework;
-using org.kbinani.cadencii;
+using com.github.cadencii;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     [TestFixture]
     public class ExceptionNotifyFormControllerTest : ExceptionNotifyFormController

@@ -22,11 +22,11 @@ import org.kbinani.xml.*;
 #else
 
 using System;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.java.io;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 #endif
 

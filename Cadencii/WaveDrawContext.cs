@@ -25,14 +25,14 @@ import org.kbinani.vsq.*;
 #else
 
 using System;
-using org.kbinani.media;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
-using org.kbinani.apputil;
+using com.github.cadencii.media;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii.apputil;
 
-namespace org.kbinani.cadencii.new_
+namespace com.github.cadencii.new_
 {
     using boolean = System.Boolean;
 
@@ -132,7 +132,7 @@ namespace org.kbinani.cadencii.new_
 
 }
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

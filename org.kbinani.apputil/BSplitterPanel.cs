@@ -17,7 +17,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
 
     public class BSplitterPanel : Panel {
         private BorderStyle m_border_style = BorderStyle.None;

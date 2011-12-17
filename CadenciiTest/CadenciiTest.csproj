@@ -42,7 +42,6 @@
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
     </Compile>
     <Compile Include="ExceptionNotifyFormUiImplTest.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="strTest.cs" />
     <Compile Include="VsqIDTest.cs" />

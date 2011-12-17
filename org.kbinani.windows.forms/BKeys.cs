@@ -230,7 +230,7 @@ public enum BKeys{
     
 }
 #else
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public enum BKeys {
         Modifiers = -65536,

@@ -117,9 +117,9 @@ class makeRes{
 			sw.newLine();
 			sw.write( "using System.IO;" );
 			sw.newLine();
-			sw.write( "using org.kbinani;" );
+			sw.write( "using com.github.cadencii;" );
 			sw.newLine();
-			sw.write( "using org.kbinani.java.awt;" );
+			sw.write( "using com.github.cadencii.java.awt;" );
 			sw.newLine();
 			sw.newLine();
 			if( !name_space.equals( "" ) ){

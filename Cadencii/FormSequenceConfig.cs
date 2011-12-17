@@ -27,16 +27,16 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.event_;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -289,18 +289,18 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupWaveFileOutput = new org.kbinani.windows.forms.BGroupBox();
-            this.comboSampleRate = new org.kbinani.windows.forms.BComboBox();
-            this.labelSampleRate = new org.kbinani.windows.forms.BLabel();
-            this.radioCurrentTrack = new org.kbinani.windows.forms.BRadioButton();
-            this.radioMasterTrack = new org.kbinani.windows.forms.BRadioButton();
-            this.lblChannel = new org.kbinani.windows.forms.BLabel();
-            this.comboChannel = new org.kbinani.windows.forms.BComboBox();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.groupSequence = new org.kbinani.windows.forms.BGroupBox();
-            this.labelPreMeasure = new org.kbinani.windows.forms.BLabel();
-            this.comboPreMeasure = new org.kbinani.windows.forms.BComboBox();
+            this.groupWaveFileOutput = new com.github.cadencii.windows.forms.BGroupBox();
+            this.comboSampleRate = new com.github.cadencii.windows.forms.BComboBox();
+            this.labelSampleRate = new com.github.cadencii.windows.forms.BLabel();
+            this.radioCurrentTrack = new com.github.cadencii.windows.forms.BRadioButton();
+            this.radioMasterTrack = new com.github.cadencii.windows.forms.BRadioButton();
+            this.lblChannel = new com.github.cadencii.windows.forms.BLabel();
+            this.comboChannel = new com.github.cadencii.windows.forms.BComboBox();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.groupSequence = new com.github.cadencii.windows.forms.BGroupBox();
+            this.labelPreMeasure = new com.github.cadencii.windows.forms.BLabel();
+            this.comboPreMeasure = new com.github.cadencii.windows.forms.BComboBox();
             this.groupWaveFileOutput.SuspendLayout();
             this.groupSequence.SuspendLayout();
             this.SuspendLayout();

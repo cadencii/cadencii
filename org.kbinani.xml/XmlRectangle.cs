@@ -17,9 +17,9 @@ package org.kbinani.xml;
 import java.awt.*;
 #else
 using System.Xml.Serialization;
-using org.kbinani.java.awt;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.xml{
+namespace com.github.cadencii.xml{
 #endif
 
     public class XmlRectangle{

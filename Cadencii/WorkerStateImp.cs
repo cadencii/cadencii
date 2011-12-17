@@ -23,7 +23,7 @@ namespace cadencii{
 
 #else
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

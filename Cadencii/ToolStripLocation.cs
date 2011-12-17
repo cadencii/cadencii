@@ -18,11 +18,11 @@ import java.awt.*;
 import org.kbinani.*;
 import org.kbinani.xml.*;
 #else
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.xml;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     /// <summary>

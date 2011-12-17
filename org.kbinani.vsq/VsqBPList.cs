@@ -20,11 +20,11 @@ import org.kbinani.*;
 #else
 using System;
 using System.Text;
-using org.kbinani;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
+using com.github.cadencii;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;

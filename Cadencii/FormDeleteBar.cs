@@ -21,11 +21,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -141,14 +141,14 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.label4 = new org.kbinani.windows.forms.BLabel();
-            this.label3 = new org.kbinani.windows.forms.BLabel();
-            this.lblEnd = new org.kbinani.windows.forms.BLabel();
-            this.lblStart = new org.kbinani.windows.forms.BLabel();
-            this.numEnd = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numStart = new org.kbinani.cadencii.NumericUpDownEx();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.label4 = new com.github.cadencii.windows.forms.BLabel();
+            this.label3 = new com.github.cadencii.windows.forms.BLabel();
+            this.lblEnd = new com.github.cadencii.windows.forms.BLabel();
+            this.lblStart = new com.github.cadencii.windows.forms.BLabel();
+            this.numEnd = new com.github.cadencii.NumericUpDownEx();
+            this.numStart = new com.github.cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();
             this.SuspendLayout();

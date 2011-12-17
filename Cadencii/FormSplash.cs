@@ -22,11 +22,11 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.java.awt;
-using org.kbinani.javax.imageio;
-using org.kbinani.windows.forms;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.javax.imageio;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;

@@ -24,10 +24,10 @@ import org.kbinani.windows.forms.*;
 
 using System;
 using System.Windows.Forms;
-using org.kbinani.java.awt;
-using org.kbinani.windows.forms;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventHandler = System.EventHandler;

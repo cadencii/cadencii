@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace org.kbinani.java.awt.image
+namespace com.github.cadencii.java.awt.image
 {
 
     public class BufferedImage : java.awt.Image

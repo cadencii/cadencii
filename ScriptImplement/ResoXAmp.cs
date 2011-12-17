@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
-using org.kbinani.vsq;
-using org.kbinani.cadencii;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
 using System.Drawing;
 
 class ResoXAmp : Form {

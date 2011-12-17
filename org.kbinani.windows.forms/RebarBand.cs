@@ -18,9 +18,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
     /// <summary>
     /// Summary description for BandWrapper.
     /// </summary>

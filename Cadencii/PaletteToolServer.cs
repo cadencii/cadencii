@@ -17,12 +17,12 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
-using org.kbinani.xml;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 
     /// <summary>
@@ -160,8 +160,8 @@ namespace org.kbinani.cadencii {
                     AppManager.showMessageBox(
                         PortUtil.formatMessage( _( "Palette tool '{0}' reported an error.\nPlease copy the exception text and report it to developper." ), id ),
                         "Error",
-                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        org.kbinani.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
                     serr.println( typeof( PaletteToolServer ) + ".invokePaletteTool; ex=" + ex );
                     edited = false;
                 }

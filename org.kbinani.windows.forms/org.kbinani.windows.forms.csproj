@@ -8,7 +8,7 @@
     <ProjectGuid>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.kbinani.windows.forms</RootNamespace>
+    <RootNamespace>com_github.cadencii.windows.forms</RootNamespace>
     <AssemblyName>org.kbinani.windows.forms</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

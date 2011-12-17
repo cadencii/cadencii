@@ -20,11 +20,11 @@ import org.kbinani.*;
 import org.kbinani.media.*;
 #else
 using System;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.media;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 #endif
 

@@ -25,9 +25,9 @@ using System.IO;
 using System.Collections.Generic;
 
 #endif
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
 #if !__cplusplus
         using int8_t = System.SByte;

@@ -23,7 +23,7 @@ import org.kbinani.componentmodel.*;
 using System;
 using System.ComponentModel;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = Boolean;
 #endif

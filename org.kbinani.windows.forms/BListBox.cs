@@ -17,7 +17,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace org.kbinani.windows.forms
+namespace com.github.cadencii.windows.forms
 {
 
     public class BListBox : ListBox

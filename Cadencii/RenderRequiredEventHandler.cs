@@ -28,7 +28,7 @@ public class RenderRequiredEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void RenderRequiredEventHandler( Object sender, int tracks );
 

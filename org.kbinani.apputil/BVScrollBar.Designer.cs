@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
     partial class OBSOLUTE_BVScrollBar {
         /// <summary> 
         /// 必要なデザイナ変数です。

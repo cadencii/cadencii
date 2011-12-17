@@ -8,7 +8,7 @@
     <ProjectGuid>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.kbinani.vsq</RootNamespace>
+    <RootNamespace>com_github.cadencii.vsq</RootNamespace>
     <AssemblyName>org.kbinani.vsq</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

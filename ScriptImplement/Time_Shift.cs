@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using org.kbinani.vsq;
+using com.github.cadencii.vsq;
 
 public class Time_Shift : Form {
     public Time_Shift() {

@@ -17,7 +17,7 @@
 #else
 using System;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 
     public delegate void WaveViewRealoadRequiredEventHandler( Object sender, WaveViewRealoadRequiredEventArgs arg );

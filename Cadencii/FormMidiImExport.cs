@@ -22,11 +22,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.java.awt;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -377,25 +377,25 @@ namespace org.kbinani.cadencii
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.listTrack = new org.kbinani.windows.forms.BListView();
-            this.btnCheckAll = new org.kbinani.windows.forms.BButton();
-            this.btnUncheckAll = new org.kbinani.windows.forms.BButton();
-            this.chkBeat = new org.kbinani.windows.forms.BCheckBox();
-            this.chkTempo = new org.kbinani.windows.forms.BCheckBox();
-            this.chkNote = new org.kbinani.windows.forms.BCheckBox();
-            this.chkLyric = new org.kbinani.windows.forms.BCheckBox();
-            this.groupCommonOption = new org.kbinani.windows.forms.BGroupBox();
-            this.chkMetaText = new org.kbinani.windows.forms.BCheckBox();
-            this.chkPreMeasure = new org.kbinani.windows.forms.BCheckBox();
-            this.chkExportVocaloidNrpn = new org.kbinani.windows.forms.BCheckBox();
-            this.groupMode = new org.kbinani.windows.forms.BGroupBox();
-            this.lblOffsetUnit = new org.kbinani.windows.forms.BLabel();
-            this.txtOffset = new org.kbinani.cadencii.NumberTextBox();
-            this.lblOffset = new org.kbinani.windows.forms.BLabel();
-            this.radioPlayTime = new org.kbinani.windows.forms.BRadioButton();
-            this.radioGateTime = new org.kbinani.windows.forms.BRadioButton();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.listTrack = new com.github.cadencii.windows.forms.BListView();
+            this.btnCheckAll = new com.github.cadencii.windows.forms.BButton();
+            this.btnUncheckAll = new com.github.cadencii.windows.forms.BButton();
+            this.chkBeat = new com.github.cadencii.windows.forms.BCheckBox();
+            this.chkTempo = new com.github.cadencii.windows.forms.BCheckBox();
+            this.chkNote = new com.github.cadencii.windows.forms.BCheckBox();
+            this.chkLyric = new com.github.cadencii.windows.forms.BCheckBox();
+            this.groupCommonOption = new com.github.cadencii.windows.forms.BGroupBox();
+            this.chkMetaText = new com.github.cadencii.windows.forms.BCheckBox();
+            this.chkPreMeasure = new com.github.cadencii.windows.forms.BCheckBox();
+            this.chkExportVocaloidNrpn = new com.github.cadencii.windows.forms.BCheckBox();
+            this.groupMode = new com.github.cadencii.windows.forms.BGroupBox();
+            this.lblOffsetUnit = new com.github.cadencii.windows.forms.BLabel();
+            this.txtOffset = new com.github.cadencii.NumberTextBox();
+            this.lblOffset = new com.github.cadencii.windows.forms.BLabel();
+            this.radioPlayTime = new com.github.cadencii.windows.forms.BRadioButton();
+            this.radioGateTime = new com.github.cadencii.windows.forms.BRadioButton();
             this.groupCommonOption.SuspendLayout();
             this.groupMode.SuspendLayout();
             this.SuspendLayout();
@@ -612,7 +612,7 @@ namespace org.kbinani.cadencii
             this.txtOffset.TabIndex = 3;
             this.txtOffset.Text = "0";
             this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOffset.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtOffset.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // lblOffset
             // 

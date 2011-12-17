@@ -15,9 +15,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = Boolean;
 
     public unsafe static class winmmhelp {
@@ -66,8 +66,8 @@ namespace org.kbinani.cadencii {
             s_initialized = true;
             int num_joydev = (int)win32.joyGetNumDevs();
 #if DEBUG
-            org.kbinani.debug.push_log( "winmmhelp.JoyInit" );
-            org.kbinani.debug.push_log( "    num_joydev=" + num_joydev );
+            com.github.cadencii.debug.push_log( "winmmhelp.JoyInit" );
+            com.github.cadencii.debug.push_log( "    num_joydev=" + num_joydev );
 #endif
             if ( num_joydev <= 0 ) {
                 num_joydev = 0;

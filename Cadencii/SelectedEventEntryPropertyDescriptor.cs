@@ -24,9 +24,9 @@ import org.kbinani.componentmodel.*;
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using org.kbinani.apputil;
+using com.github.cadencii.apputil;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

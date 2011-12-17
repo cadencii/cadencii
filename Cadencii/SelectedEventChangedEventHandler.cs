@@ -15,9 +15,9 @@
 //INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/SelectedEventChangedEventHandler.java
 #else
 using System;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void SelectedEventChangedEventHandler( Object sender, bool foo );
 

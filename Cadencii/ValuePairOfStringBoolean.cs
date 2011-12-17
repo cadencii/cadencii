@@ -17,7 +17,7 @@ package org.kbinani.cadencii;
 #else
 using System;
 
-namespace org.kbinani.cadencii{
+namespace com.github.cadencii{
 #endif
 
     /// <summary>

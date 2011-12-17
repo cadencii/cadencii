@@ -22,11 +22,11 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.vsq;
-using org.kbinani.apputil;
-using org.kbinani.windows.forms;
+using com.github.cadencii.vsq;
+using com.github.cadencii.apputil;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
@@ -369,29 +369,29 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblStart = new org.kbinani.windows.forms.BLabel();
-            this.lblStartBar = new org.kbinani.windows.forms.BLabel();
-            this.lblStartBeat = new org.kbinani.windows.forms.BLabel();
-            this.bLabel1 = new org.kbinani.windows.forms.BLabel();
-            this.lblEndBeat = new org.kbinani.windows.forms.BLabel();
-            this.lblEndBar = new org.kbinani.windows.forms.BLabel();
-            this.lblEnd = new org.kbinani.windows.forms.BLabel();
-            this.chkShift = new org.kbinani.windows.forms.BCheckBox();
-            this.lblShiftValue = new org.kbinani.windows.forms.BLabel();
-            this.comboShiftValue = new org.kbinani.windows.forms.BComboBox();
-            this.comboPitPattern = new org.kbinani.windows.forms.BComboBox();
-            this.lblPitPattern = new org.kbinani.windows.forms.BLabel();
-            this.chkPit = new org.kbinani.windows.forms.BCheckBox();
-            this.comboPitValue = new org.kbinani.windows.forms.BComboBox();
-            this.lblPitValue = new org.kbinani.windows.forms.BLabel();
-            this.lblResolution = new org.kbinani.windows.forms.BLabel();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.numResolution = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numEndBeat = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numEndBar = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numStartBeat = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numStartBar = new org.kbinani.cadencii.NumericUpDownEx();
+            this.lblStart = new com.github.cadencii.windows.forms.BLabel();
+            this.lblStartBar = new com.github.cadencii.windows.forms.BLabel();
+            this.lblStartBeat = new com.github.cadencii.windows.forms.BLabel();
+            this.bLabel1 = new com.github.cadencii.windows.forms.BLabel();
+            this.lblEndBeat = new com.github.cadencii.windows.forms.BLabel();
+            this.lblEndBar = new com.github.cadencii.windows.forms.BLabel();
+            this.lblEnd = new com.github.cadencii.windows.forms.BLabel();
+            this.chkShift = new com.github.cadencii.windows.forms.BCheckBox();
+            this.lblShiftValue = new com.github.cadencii.windows.forms.BLabel();
+            this.comboShiftValue = new com.github.cadencii.windows.forms.BComboBox();
+            this.comboPitPattern = new com.github.cadencii.windows.forms.BComboBox();
+            this.lblPitPattern = new com.github.cadencii.windows.forms.BLabel();
+            this.chkPit = new com.github.cadencii.windows.forms.BCheckBox();
+            this.comboPitValue = new com.github.cadencii.windows.forms.BComboBox();
+            this.lblPitValue = new com.github.cadencii.windows.forms.BLabel();
+            this.lblResolution = new com.github.cadencii.windows.forms.BLabel();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.numResolution = new com.github.cadencii.NumericUpDownEx();
+            this.numEndBeat = new com.github.cadencii.NumericUpDownEx();
+            this.numEndBar = new com.github.cadencii.NumericUpDownEx();
+            this.numStartBeat = new com.github.cadencii.NumericUpDownEx();
+            this.numStartBar = new com.github.cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numResolution)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBeat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBar)).BeginInit();

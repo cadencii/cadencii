@@ -21,11 +21,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -111,9 +111,9 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new org.kbinani.windows.forms.BLabel();
-            this.textBox1 = new org.kbinani.windows.forms.BTextBox();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.label1 = new com.github.cadencii.windows.forms.BLabel();
+            this.textBox1 = new com.github.cadencii.windows.forms.BTextBox();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // label1

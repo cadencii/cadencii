@@ -18,9 +18,9 @@ import java.util.Vector;
 
 #else
 using System;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
 #endif
 
     public class MessageBodyEntry {

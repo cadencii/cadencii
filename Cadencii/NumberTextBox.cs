@@ -21,11 +21,11 @@ import org.kbinani.windows.forms.*;
 #else
 #define COMPONENT_ENABLE_LOCATION
 using System;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.windows.forms;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

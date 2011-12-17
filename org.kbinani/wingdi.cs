@@ -16,7 +16,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 
     [StructLayout( LayoutKind.Sequential, Pack = 1 )]
     public struct BITMAPINFOHEADER {

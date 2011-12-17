@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace org.kbinani.java.util {
+namespace com.github.cadencii.java.util {
 
     public interface Iterator<E> {
         bool hasNext();

@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BToolStripDropDownButton : System.Windows.Forms.ToolStripDropDownButton {
         public void setText( string value ) {

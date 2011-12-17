@@ -19,9 +19,9 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows.Forms;
 
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 
     /// <summary>
     /// Extract bitmaps from AVI files

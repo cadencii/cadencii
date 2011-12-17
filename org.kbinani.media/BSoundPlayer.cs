@@ -116,7 +116,7 @@ public class BSoundPlayer{
     }
 }
 #else
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
 
     public class BSoundPlayer : System.Media.SoundPlayer {
         public BSoundPlayer( string sound_location )

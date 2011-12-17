@@ -19,15 +19,13 @@ import org.kbinani.apputil.*;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 #if CSHARP
             using System;
-            using org.kbinani.apputil;
+            using com.github.cadencii.apputil;
 #endif // CSHARP
 
 #endif
@@ -56,7 +54,6 @@ namespace org
 
 #if JAVA
 #else
-        }
     }
 }
 #endif

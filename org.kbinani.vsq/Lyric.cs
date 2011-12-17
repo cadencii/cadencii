@@ -29,9 +29,9 @@ namespace org{ namespace kbinani{ namespace vsq{
 using System;
 using System.Collections.Generic;
 
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 
 #endif

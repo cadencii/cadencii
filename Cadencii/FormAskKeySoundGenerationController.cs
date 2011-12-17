@@ -24,10 +24,10 @@ import org.kbinani.apputil.*;
 #else
 
 using System;
-using org.kbinani.windows.forms;
-using org.kbinani.apputil;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.apputil;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;

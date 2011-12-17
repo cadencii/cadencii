@@ -17,7 +17,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
 
     [Serializable]
     public partial class BSplitContainer : ContainerControl {
@@ -160,8 +160,8 @@ namespace org.kbinani.apputil {
         /// </summary>
         private void InitializeComponent() {
             this.m_lbl_splitter = new System.Windows.Forms.PictureBox();
-            this.m_panel2 = new org.kbinani.apputil.BSplitterPanel();
-            this.m_panel1 = new org.kbinani.apputil.BSplitterPanel();
+            this.m_panel2 = new com.github.cadencii.apputil.BSplitterPanel();
+            this.m_panel1 = new com.github.cadencii.apputil.BSplitterPanel();
             ((System.ComponentModel.ISupportInitialize)(this.m_lbl_splitter)).BeginInit();
             this.SuspendLayout();
             // 

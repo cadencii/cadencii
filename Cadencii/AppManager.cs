@@ -35,16 +35,16 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.CSharp;
-using org.kbinani.apputil;
-using org.kbinani.java.awt;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
-using org.kbinani.xml;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -1688,17 +1688,17 @@ namespace org.kbinani.cadencii
         #region MessageBoxのラッパー
         public static BDialogResult showMessageBox( String text )
         {
-            return showMessageBox( text, "", org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, "", com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption )
         {
-            return showMessageBox( text, caption, org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, caption, com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType )
         {
-            return showMessageBox( text, caption, optionType, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, caption, optionType, com.github.cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
         /// <summary>
@@ -1879,7 +1879,7 @@ namespace org.kbinani.cadencii
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType )
         {
             beginShowDialog();
-            BDialogResult ret = org.kbinani.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
+            BDialogResult ret = com.github.cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
             endShowDialog();
             return ret;
         }
@@ -2517,7 +2517,7 @@ namespace org.kbinani.cadencii
                             showMessageBox( PortUtil.formatMessage( _( "failed creating cache directory, '{0}'." ), cacheDir ),
                                             _( "Info." ),
                                             PortUtil.OK_OPTION,
-                                            org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                            com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                             Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                             return;
                         }
@@ -2544,7 +2544,7 @@ namespace org.kbinani.cadencii
                                     showMessageBox( PortUtil.formatMessage( _( "failed copying WAVE cache file, '{0}'." ), wavFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
-                                                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                                                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                                     Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                                     break;
                                 }
@@ -2568,7 +2568,7 @@ namespace org.kbinani.cadencii
                                     showMessageBox( PortUtil.formatMessage( _( "failed copying XML cache file, '{0}'." ), xmlFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
-                                                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                                                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                                     Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                                     break;
                                 }

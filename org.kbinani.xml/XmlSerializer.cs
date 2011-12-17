@@ -16,9 +16,9 @@
 #else
 using System;
 using System.IO;
-using org.kbinani.xml;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.xml {
+namespace com.github.cadencii.xml {
 
     public class XmlSerializer {
         private bool m_serialize_static_mode = false;

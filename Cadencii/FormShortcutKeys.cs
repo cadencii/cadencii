@@ -25,14 +25,14 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.awt.event_;
-using org.kbinani.java.util;
-using org.kbinani.javax.swing;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.java.util;
+using com.github.cadencii.javax.swing;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -42,7 +42,6 @@ namespace org.kbinani.cadencii
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
-    using java = org.kbinani.java;
 #endif
 
 #if JAVA
@@ -533,23 +532,23 @@ namespace org.kbinani.cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.list = new org.kbinani.windows.forms.BListView();
-            this.btnLoadDefault = new org.kbinani.windows.forms.BButton();
-            this.btnRevert = new org.kbinani.windows.forms.BButton();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.list = new com.github.cadencii.windows.forms.BListView();
+            this.btnLoadDefault = new com.github.cadencii.windows.forms.BButton();
+            this.btnRevert = new com.github.cadencii.windows.forms.BButton();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.labelCategory = new org.kbinani.windows.forms.BLabel();
-            this.comboCategory = new org.kbinani.windows.forms.BComboBox();
-            this.labelCommand = new org.kbinani.windows.forms.BLabel();
-            this.labelEdit = new org.kbinani.windows.forms.BLabel();
-            this.labelEditKey = new org.kbinani.windows.forms.BLabel();
-            this.labelEditModifier = new org.kbinani.windows.forms.BLabel();
-            this.comboEditKey = new org.kbinani.windows.forms.BComboBox();
-            this.checkCommand = new org.kbinani.windows.forms.BCheckBox();
-            this.checkShift = new org.kbinani.windows.forms.BCheckBox();
-            this.checkControl = new org.kbinani.windows.forms.BCheckBox();
-            this.checkOption = new org.kbinani.windows.forms.BCheckBox();
+            this.labelCategory = new com.github.cadencii.windows.forms.BLabel();
+            this.comboCategory = new com.github.cadencii.windows.forms.BComboBox();
+            this.labelCommand = new com.github.cadencii.windows.forms.BLabel();
+            this.labelEdit = new com.github.cadencii.windows.forms.BLabel();
+            this.labelEditKey = new com.github.cadencii.windows.forms.BLabel();
+            this.labelEditModifier = new com.github.cadencii.windows.forms.BLabel();
+            this.comboEditKey = new com.github.cadencii.windows.forms.BComboBox();
+            this.checkCommand = new com.github.cadencii.windows.forms.BCheckBox();
+            this.checkShift = new com.github.cadencii.windows.forms.BCheckBox();
+            this.checkControl = new com.github.cadencii.windows.forms.BCheckBox();
+            this.checkOption = new com.github.cadencii.windows.forms.BCheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -769,11 +768,11 @@ namespace org.kbinani.cadencii
         private System.Windows.Forms.ToolTip toolTip;
         private BLabel labelCategory;
         private BComboBox comboCategory;
-        private org.kbinani.windows.forms.BLabel labelCommand;
-        private org.kbinani.windows.forms.BLabel labelEdit;
-        private org.kbinani.windows.forms.BLabel labelEditKey;
-        private org.kbinani.windows.forms.BLabel labelEditModifier;
-        private org.kbinani.windows.forms.BComboBox comboEditKey;
+        private com.github.cadencii.windows.forms.BLabel labelCommand;
+        private com.github.cadencii.windows.forms.BLabel labelEdit;
+        private com.github.cadencii.windows.forms.BLabel labelEditKey;
+        private com.github.cadencii.windows.forms.BLabel labelEditModifier;
+        private com.github.cadencii.windows.forms.BComboBox comboEditKey;
         private BCheckBox checkCommand;
         private BCheckBox checkShift;
         private BCheckBox checkControl;

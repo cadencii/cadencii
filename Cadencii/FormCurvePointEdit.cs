@@ -24,13 +24,13 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.windows.forms;
-using org.kbinani.java.util;
+using com.github.cadencii.apputil;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -334,20 +334,20 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnForward = new org.kbinani.windows.forms.BButton();
-            this.btnBackward = new org.kbinani.windows.forms.BButton();
-            this.lblDataPointValue = new org.kbinani.windows.forms.BLabel();
-            this.lblDataPointClock = new org.kbinani.windows.forms.BLabel();
-            this.btnExit = new org.kbinani.windows.forms.BButton();
-            this.btnBackward2 = new org.kbinani.windows.forms.BButton();
-            this.btnForward2 = new org.kbinani.windows.forms.BButton();
-            this.btnApply = new org.kbinani.windows.forms.BButton();
-            this.txtDataPointClock = new org.kbinani.cadencii.NumberTextBox();
-            this.txtDataPointValue = new org.kbinani.cadencii.NumberTextBox();
-            this.btnBackward3 = new org.kbinani.windows.forms.BButton();
-            this.btnForward3 = new org.kbinani.windows.forms.BButton();
-            this.btnUndo = new org.kbinani.windows.forms.BButton();
-            this.btnRedo = new org.kbinani.windows.forms.BButton();
+            this.btnForward = new com.github.cadencii.windows.forms.BButton();
+            this.btnBackward = new com.github.cadencii.windows.forms.BButton();
+            this.lblDataPointValue = new com.github.cadencii.windows.forms.BLabel();
+            this.lblDataPointClock = new com.github.cadencii.windows.forms.BLabel();
+            this.btnExit = new com.github.cadencii.windows.forms.BButton();
+            this.btnBackward2 = new com.github.cadencii.windows.forms.BButton();
+            this.btnForward2 = new com.github.cadencii.windows.forms.BButton();
+            this.btnApply = new com.github.cadencii.windows.forms.BButton();
+            this.txtDataPointClock = new com.github.cadencii.NumberTextBox();
+            this.txtDataPointValue = new com.github.cadencii.NumberTextBox();
+            this.btnBackward3 = new com.github.cadencii.windows.forms.BButton();
+            this.btnForward3 = new com.github.cadencii.windows.forms.BButton();
+            this.btnUndo = new com.github.cadencii.windows.forms.BButton();
+            this.btnRedo = new com.github.cadencii.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // btnForward
@@ -431,7 +431,7 @@ namespace org.kbinani.cadencii
             this.txtDataPointClock.Name = "txtDataPointClock";
             this.txtDataPointClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointClock.TabIndex = 2;
-            this.txtDataPointClock.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDataPointValue
             // 
@@ -439,7 +439,7 @@ namespace org.kbinani.cadencii
             this.txtDataPointValue.Name = "txtDataPointValue";
             this.txtDataPointValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointValue.TabIndex = 1;
-            this.txtDataPointValue.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // btnBackward3
             // 

@@ -14,7 +14,7 @@
 #if CSHARP
 using System;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 
     /// <summary>

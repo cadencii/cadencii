@@ -23,12 +23,12 @@ import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani;
-using org.kbinani.windows.forms;
-using org.kbinani.java.awt;
-using org.kbinani.vsq;
+using com.github.cadencii;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -618,13 +618,13 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.trackFeder = new org.kbinani.windows.forms.BSlider();
-            this.trackPanpot = new org.kbinani.windows.forms.BSlider();
-            this.txtPanpot = new org.kbinani.windows.forms.BTextBox();
-            this.lblTitle = new org.kbinani.windows.forms.BLabel();
-            this.txtFeder = new org.kbinani.windows.forms.BTextBox();
-            this.chkMute = new org.kbinani.windows.forms.BCheckBox();
-            this.chkSolo = new org.kbinani.windows.forms.BCheckBox();
+            this.trackFeder = new com.github.cadencii.windows.forms.BSlider();
+            this.trackPanpot = new com.github.cadencii.windows.forms.BSlider();
+            this.txtPanpot = new com.github.cadencii.windows.forms.BTextBox();
+            this.lblTitle = new com.github.cadencii.windows.forms.BLabel();
+            this.txtFeder = new com.github.cadencii.windows.forms.BTextBox();
+            this.chkMute = new com.github.cadencii.windows.forms.BCheckBox();
+            this.chkSolo = new com.github.cadencii.windows.forms.BCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).BeginInit();
             this.SuspendLayout();

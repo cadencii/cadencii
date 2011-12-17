@@ -86,9 +86,9 @@ import java.util.*;
 \#else
 
 using System;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 
 \#endif
@@ -249,7 +249,7 @@ sub extractCsFiles
                 $changed = 1;
                 last;
             }
-            
+
             if( rindex( $v, $ext ) != length( $v ) - length( $ext ) )
             {
                 splice @file, $i, 1;
@@ -312,7 +312,7 @@ sub extractViewImplementation
                     last;
                 }
             }
-            
+
             # suffix_rulesが全て含まれているので，チェックリストに追加するよ
             if( $contains_all_rules )
             {
@@ -489,12 +489,12 @@ sub getSrcList
         {
             $found = 1;
         }
-        
+
         if( index( $v, "Form" ) == 0 && &stringEndsWith( $v, "Impl.cs" ) )
         {
             $found = 2;
         }
-        
+
         if( $found == 0 )
         {
             push( @src, $s1 );

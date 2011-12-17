@@ -8,7 +8,7 @@
     <ProjectGuid>{A0B35F11-5790-4473-A508-5868FFA67D70}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.CadenciiScript</RootNamespace>
+    <RootNamespace>com_github.CadenciiScript</RootNamespace>
     <AssemblyName>SampleScript1</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

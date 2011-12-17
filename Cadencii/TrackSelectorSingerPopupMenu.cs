@@ -19,9 +19,9 @@ import org.kbinani.windows.forms.*;
 
 #else
 
-using org.kbinani.windows.forms;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

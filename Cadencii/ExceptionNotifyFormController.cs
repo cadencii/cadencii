@@ -22,15 +22,13 @@ import org.kbinani.*;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 #if CSHARP
             using System;
-            using org.kbinani.apputil;
+            using com.github.cadencii.apputil;
 #endif
 
 #endif
@@ -99,7 +97,7 @@ namespace org
                         PrintStream printStream = new PrintStream( stream );
                         printStream.print( postData );
                         printStream.close();
-                        
+
                         InputStream inputStream = connection.getInputStream();
                         BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream ) );
                         String str = "";
@@ -180,7 +178,6 @@ namespace org
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

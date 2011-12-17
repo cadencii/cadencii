@@ -22,11 +22,11 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.java.awt.event_;
-using org.kbinani.apputil;
-using org.kbinani.windows.forms;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.apputil;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
@@ -156,15 +156,15 @@ namespace org.kbinani.cadencii
         private void InitializeComponent()
         {
             this.groupPosition = new BGroupBox();
-            this.numClock = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numBeat = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numBar = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numClock = new com.github.cadencii.NumericUpDownEx();
+            this.numBeat = new com.github.cadencii.NumericUpDownEx();
+            this.numBar = new com.github.cadencii.NumericUpDownEx();
             this.lblClock = new BLabel();
             this.lblBeat = new BLabel();
             this.lblBar = new BLabel();
             this.groupTempo = new BGroupBox();
             this.lblTempoRange = new BLabel();
-            this.numTempo = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numTempo = new com.github.cadencii.NumericUpDownEx();
             this.btnOK = new BButton();
             this.btnCancel = new BButton();
             this.groupPosition.SuspendLayout();

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using org.kbinani.cadencii;
-using org.kbinani.xml;
+using com.github.cadencii;
+using com.github.cadencii.xml;
 using NUnit.Framework;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     [TestFixture]
     class WaveUnitConfigTest

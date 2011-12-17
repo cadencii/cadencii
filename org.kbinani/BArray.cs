@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 
     /// <summary>
     /// インデックスを使ってアクセスできる、型指定されたリストを表します。

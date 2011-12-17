@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using org.kbinani.vsq;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.cadencii;
+using com.github.cadencii.vsq;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii;
 
 public class RenderAsUtau : Form {
     private System.ComponentModel.IContainer components = null;

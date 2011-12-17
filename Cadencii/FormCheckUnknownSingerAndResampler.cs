@@ -24,14 +24,14 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
-using org.kbinani.java.awt;
+using com.github.cadencii.apputil;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
@@ -185,15 +185,15 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new org.kbinani.windows.forms.BButton();
-            this.buttonOk = new org.kbinani.windows.forms.BButton();
-            this.labelMessage = new org.kbinani.windows.forms.BLabel();
-            this.checkSingerImport = new org.kbinani.windows.forms.BCheckBox();
-            this.pictureSinger = new org.kbinani.cadencii.IconParader();
-            this.labelSingerName = new org.kbinani.windows.forms.BLabel();
-            this.textSingerPath = new org.kbinani.windows.forms.BTextBox();
-            this.checkResamplerImport = new org.kbinani.windows.forms.BCheckBox();
-            this.textResamplerPath = new org.kbinani.windows.forms.BTextBox();
+            this.buttonCancel = new com.github.cadencii.windows.forms.BButton();
+            this.buttonOk = new com.github.cadencii.windows.forms.BButton();
+            this.labelMessage = new com.github.cadencii.windows.forms.BLabel();
+            this.checkSingerImport = new com.github.cadencii.windows.forms.BCheckBox();
+            this.pictureSinger = new com.github.cadencii.IconParader();
+            this.labelSingerName = new com.github.cadencii.windows.forms.BLabel();
+            this.textSingerPath = new com.github.cadencii.windows.forms.BTextBox();
+            this.checkResamplerImport = new com.github.cadencii.windows.forms.BCheckBox();
+            this.textResamplerPath = new com.github.cadencii.windows.forms.BTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).BeginInit();
             this.SuspendLayout();
             // 
@@ -327,7 +327,7 @@ namespace org.kbinani.cadencii
 
         private BButton buttonCancel;
         private BButton buttonOk;
-        private org.kbinani.windows.forms.BLabel labelMessage;
+        private com.github.cadencii.windows.forms.BLabel labelMessage;
         private BCheckBox checkSingerImport;
         private BLabel labelSingerName;
         private BTextBox textSingerPath;

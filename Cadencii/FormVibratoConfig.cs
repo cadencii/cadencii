@@ -24,14 +24,14 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
-using org.kbinani.java.awt.event_;
-using org.kbinani.java.util;
+using com.github.cadencii;
+using com.github.cadencii.apputil;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
@@ -358,13 +358,13 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblVibratoLength = new org.kbinani.windows.forms.BLabel();
-            this.lblVibratoType = new org.kbinani.windows.forms.BLabel();
-            this.txtVibratoLength = new org.kbinani.cadencii.NumberTextBox();
-            this.label3 = new org.kbinani.windows.forms.BLabel();
-            this.comboVibratoType = new org.kbinani.windows.forms.BComboBox();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.lblVibratoLength = new com.github.cadencii.windows.forms.BLabel();
+            this.lblVibratoType = new com.github.cadencii.windows.forms.BLabel();
+            this.txtVibratoLength = new com.github.cadencii.NumberTextBox();
+            this.label3 = new com.github.cadencii.windows.forms.BLabel();
+            this.comboVibratoType = new com.github.cadencii.windows.forms.BComboBox();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
             this.groupSelect = new BGroupBox();
             this.radioUserDefined = new BRadioButton();
             this.radioVocaloid2 = new BRadioButton();
@@ -397,7 +397,7 @@ namespace org.kbinani.cadencii
             this.txtVibratoLength.Name = "txtVibratoLength";
             this.txtVibratoLength.Size = new System.Drawing.Size( 61, 19 );
             this.txtVibratoLength.TabIndex = 2;
-            this.txtVibratoLength.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtVibratoLength.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // label3
             // 

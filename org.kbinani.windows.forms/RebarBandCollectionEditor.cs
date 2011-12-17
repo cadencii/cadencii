@@ -21,7 +21,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
     /// <summary>
     /// Summary description for BandCollectionEditor.
     /// </summary>

@@ -19,7 +19,7 @@ package org.kbinani.cadencii;
 
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

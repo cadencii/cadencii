@@ -25,10 +25,10 @@ import org.kbinani.vsq.*;
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using org.kbinani;
-using org.kbinani.vsq;
+using com.github.cadencii;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = Boolean;
 #endif

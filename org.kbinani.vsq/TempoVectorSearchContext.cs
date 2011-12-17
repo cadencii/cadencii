@@ -17,7 +17,7 @@ package org.kbinani.vsq;
 
 #else
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 #endif
 

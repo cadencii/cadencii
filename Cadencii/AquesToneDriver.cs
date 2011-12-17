@@ -22,11 +22,11 @@ import org.kbinani.vsq.*;
 
 using System;
 using System.Text;
-using org.kbinani;
-using org.kbinani.java.io;
-using org.kbinani.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.io;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

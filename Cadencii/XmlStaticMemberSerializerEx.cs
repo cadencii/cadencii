@@ -13,10 +13,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using org.kbinani.java.util;
-using org.kbinani.xml;
+using com.github.cadencii.java.util;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public class XmlStaticMemberSerializerEx : XmlStaticMemberSerializer {
         public XmlStaticMemberSerializerEx( Type item )

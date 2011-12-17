@@ -12,10 +12,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using org.kbinani.java.awt.image;
-using org.kbinani.java.io;
+using com.github.cadencii.java.awt.image;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.javax.imageio
+namespace com.github.cadencii.javax.imageio
 {
 
     public class ImageIO

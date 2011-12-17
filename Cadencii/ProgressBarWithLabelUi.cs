@@ -25,7 +25,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 
     public class ProgressBarWithLabelUi : UserControl

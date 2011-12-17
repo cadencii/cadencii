@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BTextArea.java
 #else
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BTextArea : System.Windows.Forms.TextBox {
         public BTextArea() {

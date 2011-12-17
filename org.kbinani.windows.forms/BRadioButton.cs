@@ -16,7 +16,7 @@
 #else
 #define ABSTRACT_BUTTON_ENABLE_IS_SELECTED
 
-namespace org.kbinani.windows.forms{
+namespace com.github.cadencii.windows.forms{
 
     public class BRadioButton : System.Windows.Forms.RadioButton {
         #region javax.swing.AbstractButton
@@ -37,13 +37,13 @@ namespace org.kbinani.windows.forms{
             base.Checked = value;
         }
 #endif
-        public org.kbinani.java.awt.Icon getIcon() {
-            org.kbinani.java.awt.Icon ret = new org.kbinani.java.awt.Icon();
+        public com.github.cadencii.java.awt.Icon getIcon() {
+            com.github.cadencii.java.awt.Icon ret = new com.github.cadencii.java.awt.Icon();
             ret.image = base.Image;
             return ret;
         }
 
-        public void setIcon( org.kbinani.java.awt.Icon value ) {
+        public void setIcon( com.github.cadencii.java.awt.Icon value ) {
             if ( value == null ) {
                 base.Image = null;
             } else {

@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BProgressBar.java
 #else
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BProgressBar : System.Windows.Forms.ProgressBar {
         public int getMaximum() {

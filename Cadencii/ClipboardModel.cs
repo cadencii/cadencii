@@ -22,18 +22,16 @@ import org.kbinani.vsq.*;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #if __cplusplus
 #else
             using System;
-            using org.kbinani.vsq;
-            using org.kbinani.java.util;
+            using com.github.cadencii.vsq;
+            using com.github.cadencii.java.util;
             using System.Windows.Forms;
 #endif
 
@@ -312,7 +310,6 @@ namespace org
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

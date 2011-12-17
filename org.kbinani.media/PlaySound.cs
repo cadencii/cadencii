@@ -21,9 +21,9 @@ import org.kbinani.*;
 #else
 using System;
 using System.Runtime.InteropServices;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media {
+namespace com.github.cadencii.media {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
@@ -278,7 +278,7 @@ namespace org.kbinani.media {
 #if !JAVA
 }
 
-namespace org.kbinani.media.impl {
+namespace com.github.cadencii.media.impl {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;

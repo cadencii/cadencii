@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 #else
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     /// <summary>

@@ -16,9 +16,9 @@ package org.kbinani.cadencii;
 
 import java.awt.*;
 #else
-using org.kbinani.java.awt;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     public struct RgbColor {

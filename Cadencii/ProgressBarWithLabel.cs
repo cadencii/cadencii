@@ -21,7 +21,7 @@ import org.kbinani.*;
 
 using System;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
 
 #endif

@@ -8,7 +8,7 @@ namespace kbinani{
 
 #else
 
-namespace org.kbinani
+namespace com.github.cadencii
 {
 #endif
 

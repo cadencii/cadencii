@@ -19,7 +19,7 @@ import org.kbinani.*;
 #else
 using System;
 
-namespace org.kbinani.media
+namespace com.github.cadencii.media
 {
 #endif
 

@@ -18,7 +18,7 @@ package org.kbinani.cadencii;
 using System;
 using System.Threading;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

@@ -17,11 +17,11 @@
 //#define TEST
 #endif
 using System;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
 using VstSdk;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;

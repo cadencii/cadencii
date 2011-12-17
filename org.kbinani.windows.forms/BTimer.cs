@@ -16,7 +16,7 @@
 #else
 using System;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     public class BTimer : System.Windows.Forms.Timer {
         public void start() {

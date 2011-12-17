@@ -21,17 +21,15 @@ import org.kbinani.windows.forms.*;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #if CSHARP
             using System;
-            using org.kbinani.java.awt;
-            using org.kbinani.windows.forms;
+            using com.github.cadencii.java.awt;
+            using com.github.cadencii.windows.forms;
 #else
             using namespace org::kbinani::cadencii;
 #endif
@@ -72,7 +70,6 @@ namespace org
 
 #else
 
-        }
     }
 }
 

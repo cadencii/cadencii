@@ -4,10 +4,10 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
-using org.kbinani.cadencii;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
-using org.kbinani;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
 
 public class Utau_Plugin_Invoker : Form {
     class StartPluginArgs {

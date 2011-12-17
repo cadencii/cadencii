@@ -15,7 +15,7 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 
     /// <summary>

@@ -19,15 +19,13 @@ import java.awt.*;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 #if CSHARP
             using System;
-            using org.kbinani.java.awt;
+            using com.github.cadencii.java.awt;
 #endif
 #endif
 
@@ -66,7 +64,6 @@ namespace org
 
 #else
 
-        }
     }
 }
 

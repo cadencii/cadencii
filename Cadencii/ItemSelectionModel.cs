@@ -21,15 +21,14 @@ import org.kbinani.vsq.*;
 
 #else
 
-namespace org{
-    namespace kbinani{
-        namespace cadencii{
+namespace com.github{
+    namespace cadencii{
 
 #if __cplusplus
 #else
             using System;
-            using org.kbinani.java.util;
-            using org.kbinani.vsq;
+            using com.github.cadencii.java.util;
+            using com.github.cadencii.vsq;
             using Integer = System.Int32;
             using Long = System.Int64;
 #endif
@@ -661,7 +660,6 @@ namespace org{
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

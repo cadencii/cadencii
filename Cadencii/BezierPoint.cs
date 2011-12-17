@@ -25,7 +25,7 @@ using System.Drawing;
 using System.Xml.Serialization;
 using System.ComponentModel;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
 #endif

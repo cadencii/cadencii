@@ -26,14 +26,14 @@ import org.kbinani.vsq.*;
 using System;
 using System.Diagnostics;
 using System.Threading;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;
@@ -200,7 +200,7 @@ namespace org.kbinani.cadencii
             if ( mUseWideCharacterWorkaround ) {
                 String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
                 if ( !fsys.isDirectoryExists( junction_path ) ) {
-                    org.kbinani.cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
+                    com.github.cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
                     mJunctions.add( junction_path );
                 }
                 mTempDir = junction_path;
@@ -415,7 +415,7 @@ namespace org.kbinani.cadencii
                         if ( mUseWideCharacterWorkaround ) {
                             String junction = fsys.combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
                             if ( !fsys.isDirectoryExists( junction ) ) {
-                                org.kbinani.cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
+                                com.github.cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
                                 mJunctions.add( junction );
                             }
                             singer = junction;

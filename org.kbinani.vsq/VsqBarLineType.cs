@@ -17,7 +17,7 @@ package org.kbinani.vsq;
 #else
 using System;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
     using boolean = System.Boolean;
 #endif

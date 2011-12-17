@@ -16,7 +16,7 @@
 using System;
 using System.ComponentModel;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 
     public class SelectedEventEntryTypeConverter : TypeConverter {

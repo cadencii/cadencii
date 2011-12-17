@@ -20,12 +20,12 @@ import org.kbinani.*;
 #else
 using System;
 using System.Collections.Generic;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
         namespace vsq
         {

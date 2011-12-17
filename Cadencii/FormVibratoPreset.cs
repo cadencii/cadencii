@@ -24,13 +24,13 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
@@ -687,30 +687,30 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new org.kbinani.windows.forms.BButton();
-            this.buttonOk = new org.kbinani.windows.forms.BButton();
-            this.buttonRemove = new org.kbinani.windows.forms.BButton();
-            this.buttonAdd = new org.kbinani.windows.forms.BButton();
-            this.buttonUp = new org.kbinani.windows.forms.BButton();
-            this.buttonDown = new org.kbinani.windows.forms.BButton();
-            this.labelRate = new org.kbinani.windows.forms.BLabel();
-            this.labelDepth = new org.kbinani.windows.forms.BLabel();
-            this.labelPresets = new org.kbinani.windows.forms.BLabel();
-            this.pictureRate = new org.kbinani.windows.forms.BPictureBox();
-            this.labelRateCurve = new org.kbinani.windows.forms.BLabel();
-            this.labelDepthCurve = new org.kbinani.windows.forms.BLabel();
-            this.pictureDepth = new org.kbinani.windows.forms.BPictureBox();
+            this.buttonCancel = new com.github.cadencii.windows.forms.BButton();
+            this.buttonOk = new com.github.cadencii.windows.forms.BButton();
+            this.buttonRemove = new com.github.cadencii.windows.forms.BButton();
+            this.buttonAdd = new com.github.cadencii.windows.forms.BButton();
+            this.buttonUp = new com.github.cadencii.windows.forms.BButton();
+            this.buttonDown = new com.github.cadencii.windows.forms.BButton();
+            this.labelRate = new com.github.cadencii.windows.forms.BLabel();
+            this.labelDepth = new com.github.cadencii.windows.forms.BLabel();
+            this.labelPresets = new com.github.cadencii.windows.forms.BLabel();
+            this.pictureRate = new com.github.cadencii.windows.forms.BPictureBox();
+            this.labelRateCurve = new com.github.cadencii.windows.forms.BLabel();
+            this.labelDepthCurve = new com.github.cadencii.windows.forms.BLabel();
+            this.pictureDepth = new com.github.cadencii.windows.forms.BPictureBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.labelResulting = new org.kbinani.windows.forms.BLabel();
-            this.pictureResulting = new org.kbinani.windows.forms.BPictureBox();
-            this.groupEdit = new org.kbinani.windows.forms.BGroupBox();
-            this.textName = new org.kbinani.windows.forms.BTextBox();
-            this.labelName = new org.kbinani.windows.forms.BLabel();
-            this.groupPreview = new org.kbinani.windows.forms.BGroupBox();
+            this.labelResulting = new com.github.cadencii.windows.forms.BLabel();
+            this.pictureResulting = new com.github.cadencii.windows.forms.BPictureBox();
+            this.groupEdit = new com.github.cadencii.windows.forms.BGroupBox();
+            this.textName = new com.github.cadencii.windows.forms.BTextBox();
+            this.labelName = new com.github.cadencii.windows.forms.BLabel();
+            this.groupPreview = new com.github.cadencii.windows.forms.BGroupBox();
             this.listPresets = new BListBox();
-            this.textDepth = new org.kbinani.cadencii.NumberTextBox();
-            this.textRate = new org.kbinani.cadencii.NumberTextBox();
+            this.textDepth = new com.github.cadencii.NumberTextBox();
+            this.textRate = new com.github.cadencii.NumberTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureRate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureDepth)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -983,7 +983,7 @@ namespace org.kbinani.cadencii
             this.textDepth.Name = "textDepth";
             this.textDepth.Size = new System.Drawing.Size( 72, 19 );
             this.textDepth.TabIndex = 8;
-            this.textDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.textDepth.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // textRate
             // 
@@ -993,7 +993,7 @@ namespace org.kbinani.cadencii
             this.textRate.Name = "textRate";
             this.textRate.Size = new System.Drawing.Size( 72, 19 );
             this.textRate.TabIndex = 7;
-            this.textRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.textRate.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // FormVibratoPreset
             // 
@@ -1042,11 +1042,11 @@ namespace org.kbinani.cadencii
 
         private BButton buttonCancel;
         private BButton buttonOk;
-        private org.kbinani.windows.forms.BButton buttonRemove;
-        private org.kbinani.windows.forms.BButton buttonAdd;
-        private org.kbinani.windows.forms.BButton buttonUp;
-        private org.kbinani.windows.forms.BLabel labelRate;
-        private org.kbinani.windows.forms.BLabel labelDepth;
+        private com.github.cadencii.windows.forms.BButton buttonRemove;
+        private com.github.cadencii.windows.forms.BButton buttonAdd;
+        private com.github.cadencii.windows.forms.BButton buttonUp;
+        private com.github.cadencii.windows.forms.BLabel labelRate;
+        private com.github.cadencii.windows.forms.BLabel labelDepth;
         private NumberTextBox textRate;
         private NumberTextBox textDepth;
         private BLabel labelPresets;
@@ -1063,7 +1063,7 @@ namespace org.kbinani.cadencii
         private BTextBox textName;
         private BGroupBox groupPreview;
         private BListBox listPresets;
-        private org.kbinani.windows.forms.BButton buttonDown;
+        private com.github.cadencii.windows.forms.BButton buttonDown;
         #endregion
 #endif
     }

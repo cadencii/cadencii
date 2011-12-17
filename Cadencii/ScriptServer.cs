@@ -13,11 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using org.kbinani.apputil;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 
     /// <summary>
@@ -131,7 +131,7 @@ namespace org.kbinani.cadencii {
                         ret = ScriptReturnStatus.ERROR;
                     }
                     if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         AppManager.editHistory.register( vsq.executeCommand( run ) );
@@ -159,11 +159,11 @@ namespace org.kbinani.cadencii {
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     serr.println( "AppManager#invokeScript; ex=" + ex );
                 }
             } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
             }
             return false;
         }

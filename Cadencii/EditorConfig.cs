@@ -25,15 +25,15 @@ import org.kbinani.windows.forms.*;
 #else
 
 using System;
-using org.kbinani;
-using org.kbinani.java.awt;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
-using org.kbinani.xml;
-using org.kbinani.vsq;
+using com.github.cadencii;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.xml;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;

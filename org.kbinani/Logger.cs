@@ -25,7 +25,7 @@ import java.io.FileWriter;
 using System;
 using System.IO;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

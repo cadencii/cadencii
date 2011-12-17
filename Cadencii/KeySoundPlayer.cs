@@ -18,10 +18,10 @@ import org.kbinani.*;
 import org.kbinani.media.*;
 #else
 using System;
-using org.kbinani.media;
-using org.kbinani;
+using com.github.cadencii.media;
+using com.github.cadencii;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

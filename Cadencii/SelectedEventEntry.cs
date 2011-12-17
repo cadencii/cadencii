@@ -23,10 +23,10 @@ import org.kbinani.xml.*;
 #else
 using System;
 using System.ComponentModel;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using Integer = System.Int32;
 #endif

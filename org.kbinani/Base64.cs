@@ -142,7 +142,7 @@ public class Base64{
 #else
 using System;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
     public static class Base64 {
         public static string encode( byte[] value ) {
             return Convert.ToBase64String( value );

@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     /// <summary>
     /// 

@@ -22,10 +22,10 @@ import java.util.Iterator;
 #else
 
 using System;
-using org.kbinani;
-using org.kbinani.java.util;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.apputil
+namespace com.github.cadencii.apputil
 {
 #endif
 

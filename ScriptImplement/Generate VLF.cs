@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
 public class GenerateVLF{
     public static bool Edit( VsqFile vsq ){

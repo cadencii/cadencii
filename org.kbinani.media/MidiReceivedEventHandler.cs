@@ -15,12 +15,12 @@
 //INCLUDE ../BuildJavaUI/src/org/kbinani/media/MidiReceivedEventHandler.java
 #else
 using System;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.media
+namespace com.github.cadencii.media
 {
 
-    public delegate void MidiReceivedEventHandler( Object sender, org.kbinani.javax.sound.midi.MidiMessage message );
+    public delegate void MidiReceivedEventHandler( Object sender, com.github.cadencii.javax.sound.midi.MidiMessage message );
 
 }
 #endif

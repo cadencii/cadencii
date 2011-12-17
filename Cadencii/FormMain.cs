@@ -42,20 +42,20 @@ using System.Diagnostics;
 using System.Media;
 using System.Text;
 using System.Threading;
-using org.kbinani.apputil;
-using org.kbinani.componentmodel;
-using org.kbinani.java.awt;
-using org.kbinani.java.awt.event_;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.javax.swing;
-using org.kbinani.javax.sound.midi;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
-using org.kbinani.xml;
+using com.github.cadencii.apputil;
+using com.github.cadencii.componentmodel;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.javax.swing;
+using com.github.cadencii.javax.sound.midi;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.xml;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
@@ -3099,8 +3099,8 @@ namespace org.kbinani.cadencii
                 }
                 BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                               _( "Affirmation" ),
-                                                              org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                              org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
+                                                              com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                              com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == BDialogResult.YES ) {
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
                         int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
@@ -4379,9 +4379,9 @@ namespace org.kbinani.cadencii
                             Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
 #if !JAVA
 #if DEBUG
-                            org.kbinani.debug.push_log( "FormMain+ClearTempWave()" );
-                            org.kbinani.debug.push_log( "    ex=" + ex.ToString() );
-                            org.kbinani.debug.push_log( "    error_count=" + error );
+                            com.github.cadencii.debug.push_log( "FormMain+ClearTempWave()" );
+                            com.github.cadencii.debug.push_log( "    ex=" + ex.ToString() );
+                            com.github.cadencii.debug.push_log( "    error_count=" + error );
 #endif
 #endif
 
@@ -6109,8 +6109,8 @@ namespace org.kbinani.cadencii
             if ( AppManager.showMessageBox(
                     PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
                     _APP_NAME,
-                    org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
                 if ( selected >= 2 ) {
                     AppManager.setSelected( selected - 1 );
@@ -6921,7 +6921,7 @@ namespace org.kbinani.cadencii
                             AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                        _( "Info." ),
                                                        PortUtil.OK_OPTION,
-                                                       org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                                       com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                             return true;
                         }
                     }
@@ -6963,7 +6963,7 @@ namespace org.kbinani.cadencii
                         AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                    _( "Info." ),
                                                    PortUtil.OK_OPTION,
-                                                   org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                                   com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                         return true;
                     }
                 }
@@ -10405,7 +10405,7 @@ namespace org.kbinani.cadencii
             }
             String log = fsys.combine( tempdir, "run.log" );
 #if !JAVA
-            org.kbinani.debug.close();
+            com.github.cadencii.debug.close();
 #endif
             try {
                 if ( fsys.isFileExists( log ) ) {
@@ -10475,8 +10475,8 @@ namespace org.kbinani.cadencii
                 }
                 BDialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                                _( "Affirmation" ),
-                                                               org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                               org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
+                                                               com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                               com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( ret == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
@@ -11058,8 +11058,8 @@ namespace org.kbinani.cadencii
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
-                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -11419,7 +11419,7 @@ namespace org.kbinani.cadencii
                     _( "invalid rendering region; start>=end" ),
                     _( "Error" ),
                     PortUtil.OK_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
             for ( int i = 1; i < size; i++ ) {
@@ -11572,8 +11572,8 @@ namespace org.kbinani.cadencii
                 BDialogResult dr = AppManager.showMessageBox(
                     _( "UTAU singer not registered yet.\nContinue ?" ),
                     _( "Info" ),
-                    org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 if ( dr != BDialogResult.YES ) {
                     return;
                 }
@@ -11701,7 +11701,7 @@ namespace org.kbinani.cadencii
                     _( "invalid rendering region; start>=end" ),
                     _( "Error" ),
                     PortUtil.OK_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
             Vector<Integer> other_tracks = new Vector<Integer>();
@@ -11778,16 +11778,16 @@ namespace org.kbinani.cadencii
                 AppManager.showMessageBox(
                     _( "Invalid MIDI file." ),
                     _( "Error" ),
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mf == null ) {
                 AppManager.showMessageBox(
                     _( "Invalid MIDI file." ),
                     _( "Error" ),
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             int count = mf.getTrackCount();
@@ -12272,7 +12272,7 @@ namespace org.kbinani.cadencii
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportVsq_Click; ex=" + ex + "\n" );
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mDialogMidiImportAndExport == null ) {
@@ -12565,8 +12565,8 @@ namespace org.kbinani.cadencii
                 AppManager.showMessageBox(
                     _( "Invalid VSQ/VOCALOID MIDI file" ),
                     _( "Error" ),
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             AppManager.setSelected( 1 );
@@ -15040,10 +15040,10 @@ namespace org.kbinani.cadencii
             String version_str = Utility.getVersion();
 #else
             String version_str = Utility.getVersion() + "\n\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.apputil.Util ) ) + "\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.media.Wave ) ) + "\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.vsq.VsqFile ) ) + "\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( org.kbinani.math ) );
+                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.apputil.Util ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.media.Wave ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.vsq.VsqFile ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.math ) );
 #endif
             if ( mVersionInfo == null ) {
                 mVersionInfo = new VersionInfo( _APP_NAME, version_str );
@@ -15085,8 +15085,8 @@ namespace org.kbinani.cadencii
                 AppManager.showMessageBox(
                     _( "file not found" ),
                     _APP_NAME,
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 #if JAVA
@@ -15120,7 +15120,7 @@ namespace org.kbinani.cadencii
                     _( "Log file has not generated yet." ),
                     _( "Info" ),
                     PortUtil.OK_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
 
@@ -16835,8 +16835,8 @@ namespace org.kbinani.cadencii
                             track,
                             AppManager.getVsqFile().Track.get( track ).getName() ),
                         _APP_NAME,
-                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -16880,8 +16880,8 @@ namespace org.kbinani.cadencii
                 AppManager.showMessageBox(
                     _( "Invalid XVSQ file" ),
                     _( "Error" ),
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             clearExistingData();
@@ -17490,8 +17490,8 @@ namespace org.kbinani.cadencii
                 AppManager.showMessageBox(
                     PortUtil.formatMessage( _( "file '{0}' is already registered as BGM." ), file ),
                     _( "Error" ),
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 
@@ -17511,8 +17511,8 @@ namespace org.kbinani.cadencii
             BgmFile bgm = AppManager.getBgm( index );
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
-                                  org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
+                                  com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                                  com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
                 return;
             }
             AppManager.removeBgm( index );
@@ -17951,259 +17951,259 @@ namespace org.kbinani.cadencii
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormMain ) );
-            this.menuStripMain = new org.kbinani.windows.forms.BMenuBar();
-            this.menuFile = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileNew = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileOpen = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileSave = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileSaveNamed = new org.kbinani.windows.forms.BMenuItem();
+            this.menuStripMain = new com.github.cadencii.windows.forms.BMenuBar();
+            this.menuFile = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileNew = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileOpen = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileSave = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileSaveNamed = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuFileOpenVsq = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileOpenUst = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileImport = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileImportVsq = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileImportMidi = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileImportUst = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExport = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportWave = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportParaWave = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportVsq = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportMidi = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportMusicXml = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportUst = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportVxt = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileOpenVsq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileOpenUst = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileImport = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileImportVsq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileImportMidi = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileImportUst = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExport = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportWave = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportParaWave = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportVsq = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportMidi = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportMusicXml = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportUst = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuFileExportVxt = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuFileRecent = new org.kbinani.windows.forms.BMenu();
-            this.menuFileRecentClear = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileRecent = new com.github.cadencii.windows.forms.BMenu();
+            this.menuFileRecentClear = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuFileQuit = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEdit = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEditUndo = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEditRedo = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileQuit = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEdit = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEditUndo = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEditRedo = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuEditCut = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEditCopy = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEditPaste = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEditDelete = new org.kbinani.windows.forms.BMenuItem();
+            this.menuEditCut = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEditCopy = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEditPaste = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEditDelete = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem19 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuEditAutoNormalizeMode = new org.kbinani.windows.forms.BMenuItem();
+            this.menuEditAutoNormalizeMode = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem20 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuEditSelectAll = new org.kbinani.windows.forms.BMenuItem();
-            this.menuEditSelectAllEvents = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualControlTrack = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualMixer = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualWaveform = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualIconPalette = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualProperty = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualOverview = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPluginUi = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPluginUiVocaloid1 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPluginUiVocaloid2 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPluginUiAquesTone = new org.kbinani.windows.forms.BMenuItem();
+            this.menuEditSelectAll = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuEditSelectAllEvents = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisual = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualControlTrack = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualMixer = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualWaveform = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualIconPalette = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualProperty = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualOverview = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPluginUi = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPluginUiVocaloid1 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPluginUiVocaloid2 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPluginUiAquesTone = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuVisualGridline = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualGridline = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuVisualStartMarker = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualEndMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualStartMarker = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualEndMarker = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuVisualLyrics = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualNoteProperty = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPitchLine = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJob = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobNormalize = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobInsertBar = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobDeleteBar = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobRandomize = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobConnect = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobLyric = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobRewire = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobReloadVsti = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrack = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackOn = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualLyrics = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualNoteProperty = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPitchLine = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJob = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobNormalize = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobInsertBar = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobDeleteBar = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobRandomize = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobConnect = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobLyric = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobRewire = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuJobReloadVsti = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrack = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackOn = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem21 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuTrackAdd = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackCopy = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackChangeName = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackDelete = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackAdd = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackCopy = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackChangeName = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackDelete = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem22 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuTrackRenderCurrent = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRenderAll = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackRenderCurrent = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRenderAll = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuTrackOverlay = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRenderer = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererVOCALOID1 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererVOCALOID2 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererUtau = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererVCNT = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererAquesTone = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackOverlay = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRenderer = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRendererVOCALOID1 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRendererVOCALOID2 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRendererUtau = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRendererVCNT = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRendererAquesTone = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuTrackBgm = new org.kbinani.windows.forms.BMenu();
-            this.menuLyric = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricExpressionProperty = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricVibratoProperty = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricApplyUtauParameters = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricPhonemeTransformation = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricDictionary = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricCopyVibratoToPreset = new org.kbinani.windows.forms.BMenuItem();
-            this.menuScript = new org.kbinani.windows.forms.BMenuItem();
-            this.menuScriptUpdate = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSetting = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPreference = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingSequence = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize04 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize08 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize16 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize32 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize64 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantize128 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPositionQuantizeOff = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackBgm = new com.github.cadencii.windows.forms.BMenu();
+            this.menuLyric = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuLyricExpressionProperty = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuLyricVibratoProperty = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuLyricApplyUtauParameters = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuLyricPhonemeTransformation = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuLyricDictionary = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuLyricCopyVibratoToPreset = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuScript = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuScriptUpdate = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSetting = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPreference = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingSequence = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize04 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize08 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize16 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize32 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize64 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantize128 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantizeOff = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuSettingPositionQuantizeTriplet = new org.kbinani.windows.forms.BMenuItem();
+            this.menuSettingPositionQuantizeTriplet = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuSettingGameControler = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingGameControlerSetting = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingGameControlerLoad = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingGameControlerRemove = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingPaletteTool = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingShortcut = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingVibratoPreset = new org.kbinani.windows.forms.BMenuItem();
+            this.menuSettingGameControler = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingGameControlerSetting = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingGameControlerLoad = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingGameControlerRemove = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingPaletteTool = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingShortcut = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuSettingVibratoPreset = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuSettingDefaultSingerStyle = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelp = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelpAbout = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelpManual = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelpLog = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelpLogSwitch = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelpLogOpen = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHelpDebug = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHidden = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenEditLyric = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenEditFlipToolPointerPencil = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenEditFlipToolPointerEraser = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenVisualForwardParameter = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenVisualBackwardParameter = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenTrackNext = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenTrackBack = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenCopy = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenPaste = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenCut = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenSelectForward = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenSelectBackward = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenMoveUp = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenMoveDown = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenMoveLeft = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenMoveRight = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenLengthen = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenShorten = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenGoToStartMarker = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenGoToEndMarker = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenPlayFromStartMarker = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenFlipCurveOnPianorollMode = new org.kbinani.windows.forms.BMenuItem();
-            this.menuHiddenPrintPoToCSV = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
-            this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoEraser = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoPaletteTool = new org.kbinani.windows.forms.BMenuItem();
+            this.menuSettingDefaultSingerStyle = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelp = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelpAbout = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelpManual = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelpLog = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelpLogSwitch = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelpLogOpen = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHelpDebug = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHidden = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenEditLyric = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenEditFlipToolPointerPencil = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenEditFlipToolPointerEraser = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenVisualForwardParameter = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenVisualBackwardParameter = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenTrackNext = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenTrackBack = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenCopy = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenPaste = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenCut = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenSelectForward = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenSelectBackward = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenMoveUp = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenMoveDown = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenMoveLeft = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenMoveRight = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenLengthen = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenShorten = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenGoToStartMarker = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenGoToEndMarker = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenPlayFromStartMarker = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenFlipCurveOnPianorollMode = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuHiddenPrintPoToCSV = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPiano = new com.github.cadencii.windows.forms.BPopupMenu( this.components );
+            this.cMenuPianoPointer = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoPencil = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoEraser = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoPaletteTool = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoCurve = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoCurve = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoFixed = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed01 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed02 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed04 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed08 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed16 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed32 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed64 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixed128 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixedOff = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoFixed = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed01 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed02 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed04 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed08 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed16 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed32 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed64 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixed128 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixedOff = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem18 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoFixedTriplet = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoFixedDotted = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize04 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize08 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize16 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize32 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize64 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantize128 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoQuantizeOff = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoFixedTriplet = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoFixedDotted = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize04 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize08 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize16 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize32 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize64 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantize128 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoQuantizeOff = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem26 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoQuantizeTriplet = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoGrid = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoQuantizeTriplet = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoGrid = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoUndo = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoRedo = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoUndo = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoRedo = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoCut = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoCopy = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoPaste = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoDelete = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoCut = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoCopy = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoPaste = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoDelete = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoSelectAll = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoSelectAllEvents = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoSelectAll = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoSelectAllEvents = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem17 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoImportLyric = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoExpressionProperty = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoVibratoProperty = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPianoImportLyric = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoExpressionProperty = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPianoVibratoProperty = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.cMenuTrackTab = new org.kbinani.windows.forms.BPopupMenu( this.components );
-            this.cMenuTrackTabTrackOn = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackTab = new com.github.cadencii.windows.forms.BPopupMenu( this.components );
+            this.cMenuTrackTabTrackOn = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem24 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackTabAdd = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabCopy = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabChangeName = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabDelete = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackTabAdd = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabCopy = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabChangeName = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabDelete = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem25 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackTabRenderCurrent = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRenderAll = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackTabRenderCurrent = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRenderAll = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem27 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackTabOverlay = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRenderer = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererVOCALOID1 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererVOCALOID2 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererUtau = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererStraight = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererAquesTone = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelector = new org.kbinani.windows.forms.BPopupMenu( this.components );
-            this.cMenuTrackSelectorPointer = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorPencil = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorLine = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorEraser = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorPaletteTool = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackTabOverlay = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRenderer = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererVOCALOID1 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererVOCALOID2 = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererUtau = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererStraight = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererAquesTone = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelector = new com.github.cadencii.windows.forms.BPopupMenu( this.components );
+            this.cMenuTrackSelectorPointer = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorPencil = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorLine = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorEraser = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorPaletteTool = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackSelectorCurve = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorCurve = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem28 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackSelectorUndo = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorRedo = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorUndo = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorRedo = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem29 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackSelectorCut = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorCopy = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorPaste = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorDelete = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackSelectorDeleteBezier = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorCut = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorCopy = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorPaste = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorDelete = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackSelectorDeleteBezier = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
-            this.trackBar = new org.kbinani.windows.forms.BSlider();
-            this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
-            this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
-            this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
-            this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
-            this.toolStripBottom = new org.kbinani.windows.forms.BToolBar();
-            this.toolStripStatusLabel1 = new org.kbinani.windows.forms.BStatusLabel();
-            this.stripLblGameCtrlMode = new org.kbinani.windows.forms.BStatusLabel();
+            this.cMenuTrackSelectorSelectAll = new com.github.cadencii.windows.forms.BMenuItem();
+            this.trackBar = new com.github.cadencii.windows.forms.BSlider();
+            this.pictureBox3 = new com.github.cadencii.windows.forms.BPictureBox();
+            this.pictKeyLengthSplitter = new com.github.cadencii.windows.forms.BPictureBox();
+            this.pictureBox2 = new com.github.cadencii.windows.forms.BPictureBox();
+            this.vScroll = new com.github.cadencii.windows.forms.BVScrollBar();
+            this.picturePositionIndicator = new com.github.cadencii.windows.forms.BPictureBox();
+            this.toolStripBottom = new com.github.cadencii.windows.forms.BToolBar();
+            this.toolStripStatusLabel1 = new com.github.cadencii.windows.forms.BStatusLabel();
+            this.stripLblGameCtrlMode = new com.github.cadencii.windows.forms.BStatusLabel();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel2 = new org.kbinani.windows.forms.BStatusLabel();
-            this.stripLblMidiIn = new org.kbinani.windows.forms.BStatusLabel();
+            this.toolStripStatusLabel2 = new com.github.cadencii.windows.forms.BStatusLabel();
+            this.stripLblMidiIn = new com.github.cadencii.windows.forms.BStatusLabel();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStepSequencer = new System.Windows.Forms.ToolStripButton();
-            this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
-            this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
-            this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
+            this.splitContainerProperty = new com.github.cadencii.apputil.BSplitContainer();
+            this.splitContainer2 = new com.github.cadencii.apputil.BSplitContainer();
+            this.splitContainer1 = new com.github.cadencii.apputil.BSplitContainer();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnQuantize = new System.Windows.Forms.ContextMenu();
             this.stripDDBtnQuantize04 = new System.Windows.Forms.MenuItem();
@@ -18221,22 +18221,22 @@ namespace org.kbinani.cadencii
             this.imageListMeasure = new System.Windows.Forms.ImageList( this.components );
             this.imageListTool = new System.Windows.Forms.ImageList( this.components );
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panelOverview = new org.kbinani.cadencii.PictOverview();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
-            this.rebar = new org.kbinani.windows.forms.Rebar();
+            this.panelOverview = new com.github.cadencii.PictOverview();
+            this.pictPianoRoll = new com.github.cadencii.PictPianoRoll();
+            this.hScroll = new com.github.cadencii.windows.forms.BHScrollBar();
+            this.rebar = new com.github.cadencii.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList( this.components );
             this.toolBarFile = new System.Windows.Forms.ToolBar();
-            this.stripBtnFileNew = new org.kbinani.windows.forms.BToolBarButton();
-            this.stripBtnFileOpen = new org.kbinani.windows.forms.BToolBarButton();
-            this.stripBtnFileSave = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnFileNew = new com.github.cadencii.windows.forms.BToolBarButton();
+            this.stripBtnFileOpen = new com.github.cadencii.windows.forms.BToolBarButton();
+            this.stripBtnFileSave = new com.github.cadencii.windows.forms.BToolBarButton();
             this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnCut = new org.kbinani.windows.forms.BToolBarButton();
-            this.stripBtnCopy = new org.kbinani.windows.forms.BToolBarButton();
-            this.stripBtnPaste = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnCut = new com.github.cadencii.windows.forms.BToolBarButton();
+            this.stripBtnCopy = new com.github.cadencii.windows.forms.BToolBarButton();
+            this.stripBtnPaste = new com.github.cadencii.windows.forms.BToolBarButton();
             this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnUndo = new org.kbinani.windows.forms.BToolBarButton();
-            this.stripBtnRedo = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnUndo = new com.github.cadencii.windows.forms.BToolBarButton();
+            this.stripBtnRedo = new com.github.cadencii.windows.forms.BToolBarButton();
             this.toolBarPosition = new System.Windows.Forms.ToolBar();
             this.stripBtnMoveTop = new System.Windows.Forms.ToolBarButton();
             this.stripBtnRewind = new System.Windows.Forms.ToolBarButton();
@@ -18262,9 +18262,9 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.cMenuPositionIndicator = new org.kbinani.windows.forms.BPopupMenu( this.components );
-            this.cMenuPositionIndicatorStartMarker = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPositionIndicatorEndMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPositionIndicator = new com.github.cadencii.windows.forms.BPopupMenu( this.components );
+            this.cMenuPositionIndicatorStartMarker = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuPositionIndicatorEndMarker = new com.github.cadencii.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -21058,10 +21058,10 @@ namespace org.kbinani.cadencii
         public BMenuItem menuHiddenPaste;
         public BMenuItem menuHiddenCut;
         public BToolBar toolStripBottom;
-        public org.kbinani.apputil.BSplitContainer splitContainerProperty;
+        public com.github.cadencii.apputil.BSplitContainer splitContainerProperty;
         public BMenuItem menuVisualOverview;
         public PictOverview panelOverview;
-        public org.kbinani.apputil.BSplitContainer splitContainer1;
+        public com.github.cadencii.apputil.BSplitContainer splitContainer1;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         public BMenu menuTrackBgm;
         public BMenuItem menuTrackRendererVCNT;
@@ -21092,15 +21092,15 @@ namespace org.kbinani.cadencii
         public BMenuItem menuHiddenFlipCurveOnPianorollMode;
         //public CircuitView pictCircuit;
         private BMenuItem menuFileExportUst;
-        private org.kbinani.windows.forms.BMenuItem menuHelpLog;
-        private org.kbinani.windows.forms.BMenuItem menuHelpLogSwitch;
-        private org.kbinani.windows.forms.BMenuItem menuHelpLogOpen;
+        private com.github.cadencii.windows.forms.BMenuItem menuHelpLog;
+        private com.github.cadencii.windows.forms.BMenuItem menuHelpLogSwitch;
+        private com.github.cadencii.windows.forms.BMenuItem menuHelpLogOpen;
         private Rebar rebar;
         private RebarBand bandFile;
         private RebarBand bandPosition;
         private RebarBand bandMeasure;
         private RebarBand bandTool;
-        public org.kbinani.apputil.BSplitContainer splitContainer2;
+        public com.github.cadencii.apputil.BSplitContainer splitContainer2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolBar toolBarFile;
         private System.Windows.Forms.ImageList imageListFile;

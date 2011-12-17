@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BToolBarButton.java
 #else
-namespace org.kbinani.windows.forms
+namespace com.github.cadencii.windows.forms
 {
 
     public class BToolBarButton : System.Windows.Forms.ToolBarButton

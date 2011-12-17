@@ -22,12 +22,12 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -207,10 +207,10 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtLyrics = new org.kbinani.windows.forms.BTextArea();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.lblNotes = new org.kbinani.windows.forms.BLabel();
+            this.txtLyrics = new com.github.cadencii.windows.forms.BTextArea();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.lblNotes = new com.github.cadencii.windows.forms.BLabel();
             this.SuspendLayout();
             // 
             // txtLyrics

@@ -16,7 +16,7 @@ package org.kbinani.vsq;
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 #endif
 

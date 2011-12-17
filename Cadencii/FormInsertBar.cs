@@ -21,10 +21,10 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
-using org.kbinani.apputil;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
@@ -157,15 +157,15 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblPosition = new org.kbinani.windows.forms.BLabel();
-            this.lblLength = new org.kbinani.windows.forms.BLabel();
-            this.lblThBar = new org.kbinani.windows.forms.BLabel();
-            this.lblBar = new org.kbinani.windows.forms.BLabel();
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.lblPositionPrefix = new org.kbinani.windows.forms.BLabel();
-            this.numLength = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numPosition = new org.kbinani.cadencii.NumericUpDownEx();
+            this.lblPosition = new com.github.cadencii.windows.forms.BLabel();
+            this.lblLength = new com.github.cadencii.windows.forms.BLabel();
+            this.lblThBar = new com.github.cadencii.windows.forms.BLabel();
+            this.lblBar = new com.github.cadencii.windows.forms.BLabel();
+            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.lblPositionPrefix = new com.github.cadencii.windows.forms.BLabel();
+            this.numLength = new com.github.cadencii.NumericUpDownEx();
+            this.numPosition = new com.github.cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPosition)).BeginInit();
             this.SuspendLayout();

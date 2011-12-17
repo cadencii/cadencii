@@ -1,9 +1,9 @@
 using System;
 using System.Windows.Forms;
 using NUnit.Framework;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani
+namespace com.github.cadencii
 {
     [TestFixture]
     public class strTest

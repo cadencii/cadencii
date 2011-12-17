@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace org.kbinani.java.util {
+namespace com.github.cadencii.java.util {
 
     public class ListIterator<T> : Iterator<T> {
         private List<T> m_list;

@@ -18,10 +18,10 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
-using org.kbinani;
-using org.kbinani.java.io;
+using com.github.cadencii;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 #endif
 
     public class UtauFreq {

@@ -27,14 +27,14 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using org.kbinani.apputil;
-using org.kbinani.java.awt;
-using org.kbinani.java.util;
-using org.kbinani.javax.swing;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.util;
+using com.github.cadencii.javax.swing;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -679,12 +679,12 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuMain = new org.kbinani.windows.forms.BMenuBar();
-            this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();
-            this.panelSlaves = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
-            this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
+            this.menuMain = new com.github.cadencii.windows.forms.BMenuBar();
+            this.menuVisual = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualReturn = new com.github.cadencii.windows.forms.BMenuItem();
+            this.panelSlaves = new com.github.cadencii.windows.forms.BPanel();
+            this.hScroll = new com.github.cadencii.windows.forms.BHScrollBar();
+            this.volumeMaster = new com.github.cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
             // 

@@ -21,11 +21,11 @@ import org.kbinani.*;
 using System;
 using System.Collections.Generic;
 using Microsoft.Win32;
-using org.kbinani;
-using org.kbinani.java.util;
-using org.kbinani.java.io;
+using com.github.cadencii;
+using com.github.cadencii.java.util;
+using com.github.cadencii.java.io;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
     using boolean = System.Boolean;
 #endif

@@ -18,12 +18,10 @@ import org.kbinani.*;
 #else
 using System;
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 #endif
 
             /// <summary>
@@ -133,7 +131,6 @@ namespace org
             }
 
 #if !JAVA
-        }
     }
 }
 #endif

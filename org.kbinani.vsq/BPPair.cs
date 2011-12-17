@@ -20,7 +20,7 @@ namespace org{ namespace kbinani{ namespace vsq{
 #else
 using System;
 
-namespace org.kbinani.vsq
+namespace com.github.cadencii.vsq
 {
 #endif
 

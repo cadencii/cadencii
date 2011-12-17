@@ -19,17 +19,15 @@ package org.kbinani.cadencii;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #if CSHARP
             using System;
-            using org.kbinani.windows.forms;
-            using org.kbinani.apputil;
+            using com.github.cadencii.windows.forms;
+            using com.github.cadencii.apputil;
 
             using boolean = System.Boolean;
             using BEventArgs = System.EventArgs;
@@ -58,7 +56,6 @@ namespace org
 
 #else
 
-        }
     }
 }
 

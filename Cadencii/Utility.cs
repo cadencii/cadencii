@@ -27,15 +27,15 @@ using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using Microsoft.CSharp;
-using org.kbinani.apputil;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
-using org.kbinani.xml;
-using org.kbinani.java.awt;
+using com.github.cadencii.apputil;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
+using com.github.cadencii.xml;
+using com.github.cadencii.java.awt;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;

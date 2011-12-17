@@ -24,13 +24,13 @@ import org.kbinani.vsq.*;
 using System;
 using System.Diagnostics;
 using System.Threading;
-using org.kbinani.java.awt;
-using org.kbinani.java.io;
-using org.kbinani.java.util;
-using org.kbinani.media;
-using org.kbinani.vsq;
+using com.github.cadencii.java.awt;
+using com.github.cadencii.java.io;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;

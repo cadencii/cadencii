@@ -28,11 +28,11 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.apputil
+namespace com.github.cadencii.apputil
 {
-    using java = org.kbinani.java;
+    using java = com.github.cadencii.java;
     using boolean = System.Boolean;
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
@@ -246,7 +246,7 @@ namespace org.kbinani.apputil
             applyToolStripFontRecurse( item, font );
         }
 #else
-        public static void applyContextMenuFontRecurse( ContextMenuStrip item, org.kbinani.java.awt.Font font )
+        public static void applyContextMenuFontRecurse( ContextMenuStrip item, com.github.cadencii.java.awt.Font font )
         {
             if ( !isApplyFontRecurseEnabled )
             {
@@ -273,7 +273,7 @@ namespace org.kbinani.apputil
             }
         }
 #else
-        public static void applyToolStripFontRecurse( ToolStripItem item, org.kbinani.java.awt.Font font )
+        public static void applyToolStripFontRecurse( ToolStripItem item, com.github.cadencii.java.awt.Font font )
         {
             if ( !isApplyFontRecurseEnabled )
             {
@@ -348,7 +348,7 @@ namespace org.kbinani.apputil
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new org.kbinani.java.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new com.github.cadencii.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
                         {
@@ -374,7 +374,7 @@ namespace org.kbinani.apputil
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new org.kbinani.java.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new com.github.cadencii.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
                         {

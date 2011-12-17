@@ -28,7 +28,7 @@ public class MuteChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void MuteChangedEventHandler( int track, bool mute );
 

@@ -28,7 +28,7 @@ public class StateChangeRequiredEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     public delegate void StateChangeRequiredEventHandler( Object sender, PanelState state );
 

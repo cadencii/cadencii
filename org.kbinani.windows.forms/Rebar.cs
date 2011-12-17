@@ -20,9 +20,9 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
 
     /// <summary>
     /// Summary description for UserControl1.
@@ -30,7 +30,7 @@ namespace org.kbinani.windows.forms {
 #if !MONO
     [ToolboxItem( true ),
     DefaultProperty( "Bands" ),
-    Designer( typeof( org.kbinani.windows.forms.RebarDesigner ) ),
+    Designer( typeof( com.github.cadencii.windows.forms.RebarDesigner ) ),
     DesignTimeVisible( true )]
 #endif
     public class Rebar : System.Windows.Forms.Control {
@@ -146,7 +146,7 @@ namespace org.kbinani.windows.forms {
 #if !MONO
         [Category( "Behavior" ),
         DesignerSerializationVisibility( DesignerSerializationVisibility.Content ),
-        Editor( typeof( org.kbinani.windows.forms.BandCollectionEditor ),
+        Editor( typeof( com.github.cadencii.windows.forms.BandCollectionEditor ),
         typeof( System.Drawing.Design.UITypeEditor ) ),
         NotifyParentProperty( true )]
 #endif

@@ -14,9 +14,9 @@
  */
 using System;
 using System.Runtime.InteropServices;
-using org.kbinani.java.util;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
 
     /// <summary>
     /// アンマネージドなメモリーの確保・解放を行うマネージャです。

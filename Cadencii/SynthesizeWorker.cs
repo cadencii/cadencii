@@ -30,11 +30,11 @@ namespace cadencii{
 #else
 
 using System;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.java.util;
 
-namespace org.kbinani.cadencii
+namespace com.github.cadencii
 {
     using Integer = System.Int32;
     using boolean = System.Boolean;

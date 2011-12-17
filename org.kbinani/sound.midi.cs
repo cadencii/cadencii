@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace org.kbinani.javax.sound.midi
+namespace com.github.cadencii.javax.sound.midi
 {
 
     // 本来ならinterface

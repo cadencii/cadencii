@@ -16,7 +16,7 @@ package org.kbinani;
 #else
 using System;
 
-namespace org.kbinani {
+namespace com.github.cadencii {
 #endif
 
 #if JAVA

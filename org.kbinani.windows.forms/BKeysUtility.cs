@@ -18,11 +18,11 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 #else
-using org.kbinani.java.util;
-using org.kbinani.java.awt.event_;
-using org.kbinani.javax.swing;
+using com.github.cadencii.java.util;
+using com.github.cadencii.java.awt.event_;
+using com.github.cadencii.javax.swing;
 
-namespace org.kbinani.windows.forms{
+namespace com.github.cadencii.windows.forms{
 #endif
 
     public class BKeysUtility{

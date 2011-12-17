@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using org.kbinani.javax.swing;
+using com.github.cadencii.javax.swing;
 
-namespace org.kbinani.windows.forms {
+namespace com.github.cadencii.windows.forms {
     public class BMenuItem : System.Windows.Forms.ToolStripMenuItem, MenuElement {
         // root implementation of javax.swing.AbstractButton
         #region javax.swing.AbstractButton
@@ -122,13 +122,13 @@ namespace org.kbinani.windows.forms {
         }
 #endif
 
-        public org.kbinani.java.awt.Icon getIcon() {
-            org.kbinani.java.awt.Icon ret = new org.kbinani.java.awt.Icon();
+        public com.github.cadencii.java.awt.Icon getIcon() {
+            com.github.cadencii.java.awt.Icon ret = new com.github.cadencii.java.awt.Icon();
             ret.image = base.Image;
             return ret;
         }
 
-        public void setIcon( org.kbinani.java.awt.Icon value ) {
+        public void setIcon( com.github.cadencii.java.awt.Icon value ) {
             if ( value == null ) {
                 base.Image = null;
             } else {
@@ -147,7 +147,7 @@ namespace org.kbinani.windows.forms {
             int w = 0;
             int h = 0;
 #endif
-            return new org.kbinani.java.awt.Dimension( w, h );
+            return new com.github.cadencii.java.awt.Dimension( w, h );
         }
 
         public void setMinimumSize( java.awt.Dimension value ) {
@@ -164,7 +164,7 @@ namespace org.kbinani.windows.forms {
             int w = int.MaxValue;
             int h = int.MaxValue;
 #endif
-            return new org.kbinani.java.awt.Dimension( w, h );
+            return new com.github.cadencii.java.awt.Dimension( w, h );
         }
 
         public void setMaximumSize( java.awt.Dimension value ) {
@@ -291,9 +291,9 @@ namespace org.kbinani.windows.forms {
         }
 #endif
 
-        public org.kbinani.java.awt.Rectangle getBounds() {
+        public com.github.cadencii.java.awt.Rectangle getBounds() {
             System.Drawing.Rectangle r = base.Bounds;
-            return new org.kbinani.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new com.github.cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
@@ -316,32 +316,32 @@ namespace org.kbinani.windows.forms {
             return base.Height;
         }
 
-        public org.kbinani.java.awt.Dimension getSize() {
-            return new org.kbinani.java.awt.Dimension( base.Size.Width, base.Size.Height );
+        public com.github.cadencii.java.awt.Dimension getSize() {
+            return new com.github.cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
         public void setSize( int width, int height ) {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( org.kbinani.java.awt.Dimension d ) {
+        public void setSize( com.github.cadencii.java.awt.Dimension d ) {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( org.kbinani.java.awt.Color color ) {
+        public void setBackground( com.github.cadencii.java.awt.Color color ) {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public org.kbinani.java.awt.Color getBackground() {
-            return new org.kbinani.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+        public com.github.cadencii.java.awt.Color getBackground() {
+            return new com.github.cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( org.kbinani.java.awt.Color color ) {
+        public void setForeground( com.github.cadencii.java.awt.Color color ) {
             base.ForeColor = color.color;
         }
 
-        public org.kbinani.java.awt.Color getForeground() {
-            return new org.kbinani.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+        public com.github.cadencii.java.awt.Color getForeground() {
+            return new com.github.cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
         public bool isEnabled() {
@@ -362,15 +362,15 @@ namespace org.kbinani.windows.forms {
         }
 #endif
 
-        public void setPreferredSize( org.kbinani.java.awt.Dimension size ) {
+        public void setPreferredSize( com.github.cadencii.java.awt.Dimension size ) {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public org.kbinani.java.awt.Font getFont() {
-            return new org.kbinani.java.awt.Font( base.Font );
+        public com.github.cadencii.java.awt.Font getFont() {
+            return new com.github.cadencii.java.awt.Font( base.Font );
         }
 
-        public void setFont( org.kbinani.java.awt.Font font ) {
+        public void setFont( com.github.cadencii.java.awt.Font font ) {
             if ( font == null ) {
                 return;
             }

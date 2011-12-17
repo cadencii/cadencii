@@ -14,7 +14,7 @@
  */
 using System.Globalization;
 
-namespace org.kbinani.apputil {
+namespace com.github.cadencii.apputil {
 
     internal class iso639 {
         public static bool CheckValidity( string code_string ) {

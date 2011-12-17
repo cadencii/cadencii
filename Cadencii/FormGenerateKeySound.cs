@@ -25,13 +25,13 @@ import org.kbinani.*;
 #else
 using System;
 using System.Windows.Forms;
-using org.kbinani.componentmodel;
-using org.kbinani.java.util;
-using org.kbinani.media;
-using org.kbinani.vsq;
-using org.kbinani.windows.forms;
+using com.github.cadencii.componentmodel;
+using com.github.cadencii.java.util;
+using com.github.cadencii.media;
+using com.github.cadencii.vsq;
+using com.github.cadencii.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;

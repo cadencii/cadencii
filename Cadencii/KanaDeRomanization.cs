@@ -17,9 +17,9 @@ package org.kbinani.cadencii;
 import org.kbinani.*;
 #else
 using System;
-using org.kbinani;
+using com.github.cadencii;
 
-namespace org.kbinani.cadencii {
+namespace com.github.cadencii {
     using boolean = System.Boolean;
 #endif
 

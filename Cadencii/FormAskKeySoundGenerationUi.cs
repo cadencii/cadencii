@@ -17,16 +17,14 @@ package org.kbinani.cadencii;
 
 #else
 
-namespace org
+namespace com.github
 {
-    namespace kbinani
+    namespace cadencii
     {
-        namespace cadencii
-        {
 
 #if __cplusplus
             using namespace std;
-            using namespace org::kbinani::cadencii;      
+            using namespace org::kbinani::cadencii;
 #else
             using System;
 #endif
@@ -87,7 +85,6 @@ namespace org
 
 #if !JAVA
 
-        }
     }
 }
 
