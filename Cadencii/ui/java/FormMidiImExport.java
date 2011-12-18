@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Color;
@@ -13,14 +13,16 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BListView;
-import org.kbinani.windows.forms.BRadioButton;
-import org.kbinani.windows.forms.RadioButtonManager;
+
+import com.github.cadencii.NumberTextBox;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BGroupBox;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BListView;
+import com.github.cadencii.windows.forms.BRadioButton;
+import com.github.cadencii.windows.forms.RadioButtonManager;
 
 //SECTION-END-IMPORT
 public class FormMidiImExport extends BDialog {
@@ -63,7 +65,7 @@ public class FormMidiImExport extends BDialog {
     private JScrollPane jScrollPane = null;
     private RadioButtonManager mButtonManager = null;  //  @jve:decl-index=0:
     private BLabel lblRightValue = null;
-	
+
 	//SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -76,7 +78,7 @@ public class FormMidiImExport extends BDialog {
 	//SECTION-BEGIN-METHOD
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
@@ -91,7 +93,7 @@ public class FormMidiImExport extends BDialog {
 
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJContentPane() {
@@ -142,9 +144,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
@@ -177,9 +179,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes btnCheckAll	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnCheckAll
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnCheckAll() {
 		if (btnCheckAll == null) {
@@ -192,9 +194,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes btnUncheckAll	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnUncheckAll
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnUncheckAll() {
 		if (btnUncheckAll == null) {
@@ -207,9 +209,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes listTrack	
-	 * 	
-	 * @return javax.swing.JTable	
+	 * This method initializes listTrack
+	 *
+	 * @return javax.swing.JTable
 	 */
 	private BListView getListTrack() {
 		if (listTrack == null) {
@@ -219,9 +221,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes groupCommonOption	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes groupCommonOption
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getGroupCommonOption() {
 		if (groupCommonOption == null) {
@@ -254,9 +256,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkTempo	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkTempo
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkTempo() {
 		if (chkTempo == null) {
@@ -268,9 +270,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel2
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
@@ -299,9 +301,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes btnOK	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnOK
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnOK() {
 		if (btnOK == null) {
@@ -313,9 +315,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes btnCancel	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnCancel
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnCancel() {
 		if (btnCancel == null) {
@@ -327,9 +329,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes jPanel3	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel3
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel3() {
 		if (jPanel3 == null) {
@@ -361,9 +363,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkBeat	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkBeat
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkBeat() {
 		if (chkBeat == null) {
@@ -374,9 +376,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkLyric	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkLyric
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkLyric() {
 		if (chkLyric == null) {
@@ -387,9 +389,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes panel2	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes panel2
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getPanel2() {
 		if (panel2 == null) {
@@ -417,9 +419,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkNote	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkNote
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkNote() {
 		if (chkNote == null) {
@@ -430,9 +432,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkMetaText	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkMetaText
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkMetaText() {
 		if (chkMetaText == null) {
@@ -443,9 +445,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes jPanel32	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel32
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel32() {
 		if (jPanel32 == null) {
@@ -473,9 +475,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkExportVocaloidNrpn	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkExportVocaloidNrpn
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkExportVocaloidNrpn() {
 		if (chkExportVocaloidNrpn == null) {
@@ -486,9 +488,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkPreMeasure	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkPreMeasure
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkPreMeasure() {
 		if (chkPreMeasure == null) {
@@ -499,9 +501,9 @@ public class FormMidiImExport extends BDialog {
 	}
 
     /**
-     * This method initializes groupMode	
-     * 	
-     * @return org.kbinani.windows.forms.BGroupBox	
+     * This method initializes groupMode
+     *
+     * @return org.kbinani.windows.forms.BGroupBox
      */
     private BGroupBox getGroupMode() {
         if (groupMode == null) {
@@ -528,9 +530,9 @@ public class FormMidiImExport extends BDialog {
     }
 
     /**
-     * This method initializes jPanel31	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel31
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel31() {
         if (jPanel31 == null) {
@@ -568,9 +570,9 @@ public class FormMidiImExport extends BDialog {
     }
 
     /**
-     * This method initializes panel21	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes panel21
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getPanel21() {
         if (panel21 == null) {
@@ -597,9 +599,9 @@ public class FormMidiImExport extends BDialog {
     }
 
     /**
-     * This method initializes radioGateTime	
-     * 	
-     * @return javax.swing.JRadioButton	
+     * This method initializes radioGateTime
+     *
+     * @return javax.swing.JRadioButton
      */
     private JRadioButton getRadioGateTime() {
         if (radioGateTime == null) {
@@ -611,9 +613,9 @@ public class FormMidiImExport extends BDialog {
     }
 
     /**
-     * This method initializes radioPlayTime	
-     * 	
-     * @return javax.swing.JRadioButton	
+     * This method initializes radioPlayTime
+     *
+     * @return javax.swing.JRadioButton
      */
     private JRadioButton getRadioPlayTime() {
         if (radioPlayTime == null) {
@@ -624,9 +626,9 @@ public class FormMidiImExport extends BDialog {
     }
 
     /**
-     * This method initializes txtOffset	
-     * 	
-     * @return javax.swing.JTextField	
+     * This method initializes txtOffset
+     *
+     * @return javax.swing.JTextField
      */
     private NumberTextBox getTxtOffset() {
         if (txtOffset == null) {
@@ -636,9 +638,9 @@ public class FormMidiImExport extends BDialog {
     }
 
     /**
-     * This method initializes jScrollPane	
-     * 	
-     * @return javax.swing.JScrollPane	
+     * This method initializes jScrollPane
+     *
+     * @return javax.swing.JScrollPane
      */
     private JScrollPane getJScrollPane() {
         if (jScrollPane == null) {

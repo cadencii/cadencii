@@ -15,9 +15,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
 
 public class BPictureBox extends JPanel
                          implements MouseListener,

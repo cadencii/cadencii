@@ -5,9 +5,9 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JMenu;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
 
 public class BMenu extends JMenu
                    implements MouseListener, ItemListener

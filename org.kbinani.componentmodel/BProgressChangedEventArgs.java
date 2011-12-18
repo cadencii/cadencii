@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 public class BProgressChangedEventArgs extends BEventArgs{
     public int ProgressPercentage = 0;

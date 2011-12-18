@@ -14,9 +14,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
 
 class TestBListView extends JFrame
 {

@@ -3,9 +3,9 @@
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
 
 public class BComboBox extends JComboBox implements ItemListener{
     private static final long serialVersionUID = -7617550549292777417L;

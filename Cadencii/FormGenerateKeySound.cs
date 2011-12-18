@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormGenerateKeySound.java
 
 import java.util.*;
 import com.github.cadencii.componentmodel.*;
@@ -376,8 +376,8 @@ namespace com.github.cadencii {
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormGenerateKeySound.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormGenerateKeySound.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormGenerateKeySound.java
 #else
         private void InitializeComponent() {
             this.btnExecute = new BButton();

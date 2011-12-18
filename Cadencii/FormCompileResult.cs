@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormCompileResult.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormCompileResult.java
 
 import com.github.cadencii.*;
 import com.github.cadencii.apputil.*;
@@ -85,8 +85,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormCompileResult.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormCompileResult.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormCompileResult.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormCompileResult.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -115,9 +115,9 @@ namespace com.github.cadencii
             this.textBox1 = new com.github.cadencii.windows.forms.BTextBox();
             this.btnOK = new com.github.cadencii.windows.forms.BButton();
             this.SuspendLayout();
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoEllipsis = true;
@@ -126,9 +126,9 @@ namespace com.github.cadencii
             this.label1.Size = new System.Drawing.Size( 354, 41 );
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
-            // 
+            //
             // textBox1
-            // 
+            //
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -139,9 +139,9 @@ namespace com.github.cadencii
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size( 354, 174 );
             this.textBox1.TabIndex = 1;
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point( 291, 240 );
@@ -150,9 +150,9 @@ namespace com.github.cadencii
             this.btnOK.TabIndex = 10;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
+            //
             // FormCompileResult
-            // 
+            //
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

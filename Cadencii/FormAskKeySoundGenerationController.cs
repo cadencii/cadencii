@@ -15,7 +15,7 @@
 
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormAskKeySoundGeneration.java
 
 import com.github.cadencii.*;
 import com.github.cadencii.windows.forms.*;

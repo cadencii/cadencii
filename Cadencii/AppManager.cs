@@ -26,6 +26,7 @@ import com.github.cadencii.vsq.*;
 import com.github.cadencii.windows.forms.*;
 import com.github.cadencii.xml.*;
 import com.github.cadencii.media.*;
+import com.github.cadencii.ui.*;
 
 #else
 

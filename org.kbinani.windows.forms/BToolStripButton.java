@@ -3,9 +3,9 @@ package com.github.cadencii.windows.forms;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JToggleButton;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
 
 public class BToolStripButton extends JToggleButton implements ActionListener{
     private static final long serialVersionUID = -9098464491775550703L;

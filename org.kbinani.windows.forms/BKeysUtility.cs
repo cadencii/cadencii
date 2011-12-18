@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
+package com.github.cadencii.windows.forms;
 
 import java.awt.event.*;
 import javax.swing.*;

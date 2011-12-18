@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 //SECTION-BEGIN-IMPORT
 
 import java.awt.Dimension;
@@ -7,11 +7,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BComboBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BLabel;
+
+import com.github.cadencii.NumericUpDownEx;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BComboBox;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
 public class FormRandomize extends BDialog {
@@ -64,9 +66,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
@@ -147,9 +149,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes numStartBar	
-     * 	
-     * @return javax.swing.JTextField	
+     * This method initializes numStartBar
+     *
+     * @return javax.swing.JTextField
      */
     private NumericUpDownEx getNumStartBar() {
         if (numStartBar == null) {
@@ -160,9 +162,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes numStartBeat	
-     * 	
-     * @return org.kbinani.cadencii.NumericUpDownEx	
+     * This method initializes numStartBeat
+     *
+     * @return org.kbinani.cadencii.NumericUpDownEx
      */
     private NumericUpDownEx getNumStartBeat() {
         if (numStartBeat == null) {
@@ -175,9 +177,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes numEndBar	
-     * 	
-     * @return org.kbinani.cadencii.NumericUpDownEx	
+     * This method initializes numEndBar
+     *
+     * @return org.kbinani.cadencii.NumericUpDownEx
      */
     private NumericUpDownEx getNumEndBar() {
         if (numEndBar == null) {
@@ -191,9 +193,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes numEndBeat	
-     * 	
-     * @return org.kbinani.cadencii.NumericUpDownEx	
+     * This method initializes numEndBeat
+     *
+     * @return org.kbinani.cadencii.NumericUpDownEx
      */
     private NumericUpDownEx getNumEndBeat() {
         if (numEndBeat == null) {
@@ -204,9 +206,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes chkShift	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes chkShift
+     *
+     * @return javax.swing.JCheckBox
      */
     private BCheckBox getChkShift() {
         if (chkShift == null) {
@@ -217,9 +219,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes jPanel1	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel1
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
@@ -302,9 +304,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes jPanel2	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel2
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel2() {
         if (jPanel2 == null) {
@@ -331,9 +333,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes comboShiftValue	
-     * 	
-     * @return javax.swing.JComboBox	
+     * This method initializes comboShiftValue
+     *
+     * @return javax.swing.JComboBox
      */
     private BComboBox getComboShiftValue() {
         if (comboShiftValue == null) {
@@ -344,9 +346,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes chkPit	
-     * 	
-     * @return javax.swing.JCheckBox	
+     * This method initializes chkPit
+     *
+     * @return javax.swing.JCheckBox
      */
     private BCheckBox getChkPit() {
         if (chkPit == null) {
@@ -357,9 +359,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes numResolution	
-     * 	
-     * @return org.kbinani.cadencii.NumericUpDownEx	
+     * This method initializes numResolution
+     *
+     * @return org.kbinani.cadencii.NumericUpDownEx
      */
     private NumericUpDownEx getNumResolution() {
         if (numResolution == null) {
@@ -370,9 +372,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes jPanel21	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel21
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel21() {
         if (jPanel21 == null) {
@@ -399,9 +401,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes comboPitPattern	
-     * 	
-     * @return javax.swing.JComboBox	
+     * This method initializes comboPitPattern
+     *
+     * @return javax.swing.JComboBox
      */
     private BComboBox getComboPitPattern() {
         if (comboPitPattern == null) {
@@ -412,9 +414,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes jPanel22	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel22
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel22() {
         if (jPanel22 == null) {
@@ -441,9 +443,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes comboPitValue	
-     * 	
-     * @return javax.swing.JComboBox	
+     * This method initializes comboPitValue
+     *
+     * @return javax.swing.JComboBox
      */
     private BComboBox getComboPitValue() {
         if (comboPitValue == null) {
@@ -454,9 +456,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes jPanel3	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel3
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
@@ -485,9 +487,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes btnCancel	
-     * 	
-     * @return org.kbinani.windows.forms.BButton	
+     * This method initializes btnCancel
+     *
+     * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnCancel() {
         if (btnCancel == null) {
@@ -499,9 +501,9 @@ public class FormRandomize extends BDialog {
     }
 
     /**
-     * This method initializes btnOK	
-     * 	
-     * @return org.kbinani.windows.forms.BButton	
+     * This method initializes btnOK
+     *
+     * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnOK() {
         if (btnOK == null) {

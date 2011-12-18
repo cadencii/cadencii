@@ -1,8 +1,8 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
-import org.kbinani.apputil.Messaging;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BDialogResult;
+import com.github.cadencii.apputil.Messaging;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BDialogResult;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -31,8 +31,8 @@ public class FormWorkerUi extends BDialog
     private JPanel jPanel1 = null;
     private JLabel labelSpacer = null;
     /**
-     * This method initializes 
-     * 
+     * This method initializes
+     *
      */
     private FormWorkerUi() {
     	super();
@@ -45,7 +45,7 @@ public class FormWorkerUi extends BDialog
         mControl = control;
         updateDetail();
     }
-    
+
     private void updateDetail() {
         if( mDetailVisible ){
             GridBagConstraints g = new GridBagConstraints();
@@ -69,18 +69,18 @@ public class FormWorkerUi extends BDialog
         buttonCancel.setText( _( "Cancel" ) );
         buttonDetail.setText( _( "detail" ) );
     }
-    
+
     private static String _( String id )
     {
         return Messaging.getMessage( id );
     }
-    
+
     public void repaint()
     {
         super.repaint();
         jScrollPane.revalidate();
     }
-    
+
     public void close( boolean value )
     {
         if( value ){
@@ -89,24 +89,24 @@ public class FormWorkerUi extends BDialog
             setDialogResult( BDialogResult.OK );
         }
     }
-    
+
     public void removeProgressBar( ProgressBarWithLabelUi ui )
     {
         jPanel1.remove( ui );
     }
-    
+
     public void setTotalProgress( int value )
     {
         if( value < jProgressBar.getMinimum() ) value = jProgressBar.getMinimum();
         if( jProgressBar.getMaximum() < value ) value = jProgressBar.getMaximum();
         jProgressBar.setValue( value );
     }
-    
+
     public void setText( String value )
     {
         jLabel.setText( value );
     }
-    
+
     public boolean showDialog( FormMain main_form )
     {
         if( super.showDialog( main_form ) == BDialogResult.CANCEL ){
@@ -115,16 +115,16 @@ public class FormWorkerUi extends BDialog
             return false;
         }
     }
-    
+
     public void show( Component comp )
     {
         super.showDialog( comp );
     }
-    
+
     public void addProgressBar( ProgressBarWithLabelUi ui )
     {
         jPanel1.remove( labelSpacer );
-        int count = jPanel1.getComponentCount(); 
+        int count = jPanel1.getComponentCount();
         GridBagConstraints g = new GridBagConstraints();
         g.fill = GridBagConstraints.HORIZONTAL;
         g.weightx = 1.0D;
@@ -137,21 +137,21 @@ public class FormWorkerUi extends BDialog
         g.gridy = count + 1;
         jPanel1.add( labelSpacer, g );
     }
-    
+
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize() {
         this.setSize(new Dimension(494, 296));
         this.setContentPane(getJPanel());
-    		
+
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
@@ -201,9 +201,9 @@ public class FormWorkerUi extends BDialog
     }
 
     /**
-     * This method initializes jProgressBar	
-     * 	
-     * @return javax.swing.JProgressBar	
+     * This method initializes jProgressBar
+     *
+     * @return javax.swing.JProgressBar
      */
     private JProgressBar getJProgressBar() {
         if (jProgressBar == null) {
@@ -213,9 +213,9 @@ public class FormWorkerUi extends BDialog
     }
 
     /**
-     * This method initializes buttonDetail	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes buttonDetail
+     *
+     * @return javax.swing.JButton
      */
     private JButton getButtonDetail() {
         if (buttonDetail == null) {
@@ -233,9 +233,9 @@ public class FormWorkerUi extends BDialog
     }
 
     /**
-     * This method initializes buttonCancel	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes buttonCancel
+     *
+     * @return javax.swing.JButton
      */
     private JButton getButtonCancel() {
         if (buttonCancel == null) {
@@ -253,9 +253,9 @@ public class FormWorkerUi extends BDialog
     }
 
     /**
-     * This method initializes jScrollPane	
-     * 	
-     * @return javax.swing.JScrollPane	
+     * This method initializes jScrollPane
+     *
+     * @return javax.swing.JScrollPane
      */
     private JScrollPane getJScrollPane() {
         if (jScrollPane == null) {
@@ -270,9 +270,9 @@ public class FormWorkerUi extends BDialog
     }
 
     /**
-     * This method initializes jPanel1	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel1
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {

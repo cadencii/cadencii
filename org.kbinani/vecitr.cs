@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package org.kbinani;
+package com.github.cadencii;
 
 import java.util.Vector;
 

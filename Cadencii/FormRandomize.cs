@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormRandomize.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormRandomize.java
 
 import com.github.cadencii.*;
 import com.github.cadencii.apputil.*;
@@ -340,8 +340,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormRandomize.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormRandomize.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormRandomize.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormRandomize.java
 #else
         #region UI impl for C#
         /// <summary>

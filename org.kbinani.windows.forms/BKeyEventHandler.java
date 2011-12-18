@@ -1,6 +1,6 @@
 package com.github.cadencii.windows.forms;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class BKeyEventHandler extends BEventHandler{
     public BKeyEventHandler( Object invoker, String method_name ){

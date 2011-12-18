@@ -109,7 +109,7 @@ class makeRes{
 			sw.newLine();
 			sw.write( "import javax.swing.*;" );
 			sw.newLine();
-			sw.write( "import org.kbinani.*;" );
+			sw.write( "import com.github.cadencii.*;" );
 			sw.newLine();
 			sw.write( "#" + "else" );
 			sw.newLine();

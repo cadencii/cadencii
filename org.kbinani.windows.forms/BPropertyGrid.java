@@ -55,15 +55,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-import org.kbinani.BEvent;
-import org.kbinani.str;
-import org.kbinani.componentmodel.Category;
-import org.kbinani.componentmodel.IPropertyDescriptor;
-import org.kbinani.componentmodel.PropertyDescriptor;
-import org.kbinani.componentmodel.TypeConverter;
-import org.kbinani.componentmodel.TypeConverterAnnotation;
-import org.kbinani.xml.XmlMember;
-import org.kbinani.xml.XmlSerializer;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.str;
+import com.github.cadencii.componentmodel.Category;
+import com.github.cadencii.componentmodel.IPropertyDescriptor;
+import com.github.cadencii.componentmodel.PropertyDescriptor;
+import com.github.cadencii.componentmodel.TypeConverter;
+import com.github.cadencii.componentmodel.TypeConverterAnnotation;
+import com.github.cadencii.xml.XmlMember;
+import com.github.cadencii.xml.XmlSerializer;
 
 public class BPropertyGrid extends BPanel
 {

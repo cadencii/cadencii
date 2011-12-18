@@ -1,6 +1,6 @@
 package com.github.cadencii.windows.forms;
 
-import org.kbinani.BEventArgs;
+import com.github.cadencii.BEventArgs;
 
 public class BPropertyValueChangedEventArgs extends BEventArgs
 {

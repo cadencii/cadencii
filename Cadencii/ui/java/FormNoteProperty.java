@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Component;
@@ -8,10 +8,10 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BMenu;
-import org.kbinani.windows.forms.BMenuBar;
-import org.kbinani.windows.forms.BMenuItem;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BMenu;
+import com.github.cadencii.windows.forms.BMenuBar;
+import com.github.cadencii.windows.forms.BMenuItem;
 
 //SECTION-END-IMPORT
 public class FormNoteProperty extends BDialog {

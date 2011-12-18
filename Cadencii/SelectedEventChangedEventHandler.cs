@@ -12,7 +12,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/SelectedEventChangedEventHandler.java
+package com.github.cadencii;
+
+import com.github.cadencii.BEventHandler;
+
+public class SelectedEventChangedEventHandler extends BEventHandler{
+    public SelectedEventChangedEventHandler( Object invoker, String method_name ){
+        super( invoker, method_name, Void.TYPE, Object.class, Boolean.TYPE );
+    }
+
+    public SelectedEventChangedEventHandler( Class<?> invoker, String method_name ){
+        super( invoker, method_name, Void.TYPE, Object.class, Boolean.TYPE );
+    }
+}
 #else
 using System;
 using com.github.cadencii;

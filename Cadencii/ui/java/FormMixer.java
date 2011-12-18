@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Color;
@@ -10,10 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BMenu;
-import org.kbinani.windows.forms.BMenuItem;
-import org.kbinani.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BMenu;
+import com.github.cadencii.windows.forms.BMenuItem;
+import com.github.cadencii.windows.forms.BPanel;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BDialog {

@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Color;
@@ -8,10 +8,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BSlider;
-import org.kbinani.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BSlider;
+import com.github.cadencii.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class VolumeTracker extends JPanel {

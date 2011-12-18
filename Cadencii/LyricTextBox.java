@@ -17,11 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.border.EmptyBorder;
-import org.kbinani.BEvent;
-import org.kbinani.windows.forms.BKeyEventArgs;
-import org.kbinani.windows.forms.BKeyEventHandler;
-import org.kbinani.windows.forms.BKeyPressEventArgs;
-import org.kbinani.windows.forms.BKeyPressEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.windows.forms.BKeyEventArgs;
+import com.github.cadencii.windows.forms.BKeyEventHandler;
+import com.github.cadencii.windows.forms.BKeyPressEventArgs;
+import com.github.cadencii.windows.forms.BKeyPressEventHandler;
 
 public class LyricTextBox extends JWindow
                           implements WindowFocusListener, ComponentListener, KeyListener

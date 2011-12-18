@@ -15,7 +15,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
+//INCLUDE-SECTION IMPORT ./ui/java/PropertyPanelContainer.java
 import javax.swing.*;
 import java.awt.*;
 import com.github.cadencii.*;
@@ -152,8 +152,8 @@ namespace com.github.cadencii
 
 #if JAVA
         #region ui impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
+        //INCLUDE-SECTION FIELD ./ui/java/PropertyPanelContainer.java
+        //INCLUDE-SECTION METHOD ./ui/java/PropertyPanelContainer.java
         #endregion
 #else
         #region ui impl for C#

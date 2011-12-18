@@ -1,11 +1,11 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
-import org.kbinani.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BDialog;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
-import org.kbinani.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JLabel;

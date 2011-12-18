@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/TrackSelector.java
+//INCLUDE-SECTION IMPORT ./ui/java/TrackSelector.java
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6090,8 +6090,8 @@ namespace com.github.cadencii
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/TrackSelector.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/TrackSelector.java
+        //INCLUDE-SECTION FIELD ./ui/java/TrackSelector.java
+        //INCLUDE-SECTION METHOD ./ui/java/TrackSelector.java
         #endregion
 #else
         #region UI Impl for C#

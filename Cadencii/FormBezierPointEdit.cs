@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBezierPointEdit.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormBezierPointEdit.java
 
 import java.awt.*;
 import java.util.*;
@@ -102,7 +102,7 @@ namespace com.github.cadencii
                 BezierPoint bp = itr.next();
                 if ( bp.getID() == m_point_id ) {
                     m_point = bp;
-                    smooth = 
+                    smooth =
                         (bp.getControlLeftType() != BezierControlType.None) ||
                         (bp.getControlRightType() != BezierControlType.None);
                     break;
@@ -142,7 +142,7 @@ namespace com.github.cadencii
             txtLeftValue.setText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())) + "" );
             txtRightClock.setText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())) + "" );
             txtRightValue.setText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())) + "" );
-            boolean smooth = 
+            boolean smooth =
                 (m_point.getControlLeftType() != BezierControlType.None) ||
                 (m_point.getControlRightType() != BezierControlType.None);
             chkEnableSmooth.setSelected( smooth );
@@ -191,10 +191,10 @@ namespace com.github.cadencii
                 x = str.toi( txtDataPointClock.getText() );
                 y = str.toi( txtDataPointValue.getText() );
                 if ( y < m_min || m_max < y ) {
-                    AppManager.showMessageBox( 
-                        _( "Invalid value" ), 
-                        _( "Error" ), 
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, 
+                    AppManager.showMessageBox(
+                        _( "Invalid value" ),
+                        _( "Error" ),
+                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
                         com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
                     return;
                 }
@@ -222,7 +222,7 @@ namespace com.github.cadencii
             txtRightValue.setEnabled( value );
             btnRight.setEnabled( value );
 
-            boolean old = 
+            boolean old =
                 (m_point.getControlLeftType() != BezierControlType.None) ||
                 (m_point.getControlRightType() != BezierControlType.None);
             if ( value ) {
@@ -256,8 +256,8 @@ namespace com.github.cadencii
 #endif
             m_last_mouse_global_location = PortUtil.getMousePosition();
             PointD pd = m_point.getPosition( side );
-            Point loc_on_trackselector = 
-                new Point( 
+            Point loc_on_trackselector =
+                new Point(
                     AppManager.xCoordFromClocks( (int)pd.getX() ),
                     m_parent.yCoordFromValue( (int)pd.getY() ) );
             Point loc_topleft = m_parent.getLocationOnScreen();
@@ -285,9 +285,9 @@ namespace com.github.cadencii
 #endif
             Point loc_on_screen = PortUtil.getMousePosition();
             Point loc_trackselector = m_parent.getLocationOnScreen();
-            Point loc_on_trackselector = 
+            Point loc_on_trackselector =
                 new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
-            BMouseEventArgs event_arg = 
+            BMouseEventArgs event_arg =
                 new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
             PortUtil.setMousePosition( m_last_mouse_global_location );
@@ -306,9 +306,9 @@ namespace com.github.cadencii
                 }
 
                 Point loc_trackselector = m_parent.getLocationOnScreen();
-                Point loc_on_trackselector = 
+                Point loc_on_trackselector =
                     new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
-                BMouseEventArgs event_arg = 
+                BMouseEventArgs event_arg =
                     new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
                 BezierPoint ret = m_parent.HandleMouseMoveForBezierMove( event_arg, m_picked_side );
 
@@ -367,8 +367,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormBezierPointEdit.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormBezierPointEdit.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormBezierPointEdit.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormBezierPointEdit.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -420,9 +420,9 @@ namespace com.github.cadencii
             this.groupDataPoint.SuspendLayout();
             this.groupRight.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // btnCancel
-            // 
+            //
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.AutoSize = true;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -432,9 +432,9 @@ namespace com.github.cadencii
             this.btnCancel.TabIndex = 14;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
+            //
             // btnOK
-            // 
+            //
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.AutoSize = true;
             this.btnOK.Location = new System.Drawing.Point( 293, 170 );
@@ -443,9 +443,9 @@ namespace com.github.cadencii
             this.btnOK.TabIndex = 13;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkEnableSmooth
-            // 
+            //
             this.chkEnableSmooth.AutoSize = true;
             this.chkEnableSmooth.Location = new System.Drawing.Point( 196, 12 );
             this.chkEnableSmooth.Name = "chkEnableSmooth";
@@ -453,27 +453,27 @@ namespace com.github.cadencii
             this.chkEnableSmooth.TabIndex = 2;
             this.chkEnableSmooth.Text = "Smooth";
             this.chkEnableSmooth.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblLeftValue
-            // 
+            //
             this.lblLeftValue.AutoSize = true;
             this.lblLeftValue.Location = new System.Drawing.Point( 12, 54 );
             this.lblLeftValue.Name = "lblLeftValue";
             this.lblLeftValue.Size = new System.Drawing.Size( 34, 12 );
             this.lblLeftValue.TabIndex = 16;
             this.lblLeftValue.Text = "Value";
-            // 
+            //
             // lblLeftClock
-            // 
+            //
             this.lblLeftClock.AutoSize = true;
             this.lblLeftClock.Location = new System.Drawing.Point( 12, 29 );
             this.lblLeftClock.Name = "lblLeftClock";
             this.lblLeftClock.Size = new System.Drawing.Size( 34, 12 );
             this.lblLeftClock.TabIndex = 15;
             this.lblLeftClock.Text = "Clock";
-            // 
+            //
             // groupLeft
-            // 
+            //
             this.groupLeft.AutoSize = true;
             this.groupLeft.Controls.Add( this.btnLeft );
             this.groupLeft.Controls.Add( this.lblLeftValue );
@@ -486,9 +486,9 @@ namespace com.github.cadencii
             this.groupLeft.TabIndex = 17;
             this.groupLeft.TabStop = false;
             this.groupLeft.Text = "Left Control Point";
-            // 
+            //
             // btnLeft
-            // 
+            //
             this.btnLeft.AutoSize = true;
             this.btnLeft.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnLeft.Location = new System.Drawing.Point( 14, 76 );
@@ -496,9 +496,9 @@ namespace com.github.cadencii
             this.btnLeft.Size = new System.Drawing.Size( 113, 27 );
             this.btnLeft.TabIndex = 6;
             this.btnLeft.UseVisualStyleBackColor = true;
-            // 
+            //
             // txtLeftClock
-            // 
+            //
             this.txtLeftClock.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))) );
             this.txtLeftClock.Enabled = false;
             this.txtLeftClock.ForeColor = System.Drawing.Color.Black;
@@ -508,9 +508,9 @@ namespace com.github.cadencii
             this.txtLeftClock.TabIndex = 4;
             this.txtLeftClock.Text = "0";
             this.txtLeftClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
-            // 
+            //
             // txtLeftValue
-            // 
+            //
             this.txtLeftValue.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))) );
             this.txtLeftValue.Enabled = false;
             this.txtLeftValue.ForeColor = System.Drawing.Color.Black;
@@ -520,9 +520,9 @@ namespace com.github.cadencii
             this.txtLeftValue.TabIndex = 5;
             this.txtLeftValue.Text = "0";
             this.txtLeftValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
-            // 
+            //
             // groupDataPoint
-            // 
+            //
             this.groupDataPoint.AutoSize = true;
             this.groupDataPoint.Controls.Add( this.btnDataPoint );
             this.groupDataPoint.Controls.Add( this.lblDataPointValue );
@@ -535,9 +535,9 @@ namespace com.github.cadencii
             this.groupDataPoint.TabIndex = 18;
             this.groupDataPoint.TabStop = false;
             this.groupDataPoint.Text = "Data Point";
-            // 
+            //
             // btnDataPoint
-            // 
+            //
             this.btnDataPoint.AutoSize = true;
             this.btnDataPoint.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnDataPoint.Location = new System.Drawing.Point( 14, 76 );
@@ -545,43 +545,43 @@ namespace com.github.cadencii
             this.btnDataPoint.Size = new System.Drawing.Size( 113, 27 );
             this.btnDataPoint.TabIndex = 9;
             this.btnDataPoint.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblDataPointValue
-            // 
+            //
             this.lblDataPointValue.AutoSize = true;
             this.lblDataPointValue.Location = new System.Drawing.Point( 12, 54 );
             this.lblDataPointValue.Name = "lblDataPointValue";
             this.lblDataPointValue.Size = new System.Drawing.Size( 34, 12 );
             this.lblDataPointValue.TabIndex = 16;
             this.lblDataPointValue.Text = "Value";
-            // 
+            //
             // txtDataPointClock
-            // 
+            //
             this.txtDataPointClock.Location = new System.Drawing.Point( 66, 26 );
             this.txtDataPointClock.Name = "txtDataPointClock";
             this.txtDataPointClock.Size = new System.Drawing.Size( 61, 19 );
             this.txtDataPointClock.TabIndex = 7;
             this.txtDataPointClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
-            // 
+            //
             // lblDataPointClock
-            // 
+            //
             this.lblDataPointClock.AutoSize = true;
             this.lblDataPointClock.Location = new System.Drawing.Point( 12, 29 );
             this.lblDataPointClock.Name = "lblDataPointClock";
             this.lblDataPointClock.Size = new System.Drawing.Size( 34, 12 );
             this.lblDataPointClock.TabIndex = 15;
             this.lblDataPointClock.Text = "Clock";
-            // 
+            //
             // txtDataPointValue
-            // 
+            //
             this.txtDataPointValue.Location = new System.Drawing.Point( 66, 51 );
             this.txtDataPointValue.Name = "txtDataPointValue";
             this.txtDataPointValue.Size = new System.Drawing.Size( 61, 19 );
             this.txtDataPointValue.TabIndex = 8;
             this.txtDataPointValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
-            // 
+            //
             // groupRight
-            // 
+            //
             this.groupRight.AutoSize = true;
             this.groupRight.Controls.Add( this.btnRight );
             this.groupRight.Controls.Add( this.lblRightValue );
@@ -594,9 +594,9 @@ namespace com.github.cadencii
             this.groupRight.TabIndex = 19;
             this.groupRight.TabStop = false;
             this.groupRight.Text = "Right Control Point";
-            // 
+            //
             // btnRight
-            // 
+            //
             this.btnRight.AutoSize = true;
             this.btnRight.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnRight.Location = new System.Drawing.Point( 14, 76 );
@@ -604,45 +604,45 @@ namespace com.github.cadencii
             this.btnRight.Size = new System.Drawing.Size( 113, 27 );
             this.btnRight.TabIndex = 12;
             this.btnRight.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblRightValue
-            // 
+            //
             this.lblRightValue.AutoSize = true;
             this.lblRightValue.Location = new System.Drawing.Point( 12, 54 );
             this.lblRightValue.Name = "lblRightValue";
             this.lblRightValue.Size = new System.Drawing.Size( 34, 12 );
             this.lblRightValue.TabIndex = 16;
             this.lblRightValue.Text = "Value";
-            // 
+            //
             // txtRightClock
-            // 
+            //
             this.txtRightClock.Enabled = false;
             this.txtRightClock.Location = new System.Drawing.Point( 66, 26 );
             this.txtRightClock.Name = "txtRightClock";
             this.txtRightClock.Size = new System.Drawing.Size( 61, 19 );
             this.txtRightClock.TabIndex = 10;
             this.txtRightClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
-            // 
+            //
             // lblRightClock
-            // 
+            //
             this.lblRightClock.AutoSize = true;
             this.lblRightClock.Location = new System.Drawing.Point( 12, 29 );
             this.lblRightClock.Name = "lblRightClock";
             this.lblRightClock.Size = new System.Drawing.Size( 34, 12 );
             this.lblRightClock.TabIndex = 15;
             this.lblRightClock.Text = "Clock";
-            // 
+            //
             // txtRightValue
-            // 
+            //
             this.txtRightValue.Enabled = false;
             this.txtRightValue.Location = new System.Drawing.Point( 66, 51 );
             this.txtRightValue.Name = "txtRightValue";
             this.txtRightValue.Size = new System.Drawing.Size( 61, 19 );
             this.txtRightValue.TabIndex = 11;
             this.txtRightValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
-            // 
+            //
             // btnBackward
-            // 
+            //
             this.btnBackward.AutoSize = true;
             this.btnBackward.Location = new System.Drawing.Point( 99, 8 );
             this.btnBackward.Name = "btnBackward";
@@ -650,9 +650,9 @@ namespace com.github.cadencii
             this.btnBackward.TabIndex = 1;
             this.btnBackward.Text = "<<";
             this.btnBackward.UseVisualStyleBackColor = true;
-            // 
+            //
             // btnForward
-            // 
+            //
             this.btnForward.AutoSize = true;
             this.btnForward.Location = new System.Drawing.Point( 290, 9 );
             this.btnForward.Name = "btnForward";
@@ -660,9 +660,9 @@ namespace com.github.cadencii
             this.btnForward.TabIndex = 3;
             this.btnForward.Text = ">>";
             this.btnForward.UseVisualStyleBackColor = true;
-            // 
+            //
             // FormBezierPointEdit
-            // 
+            //
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;

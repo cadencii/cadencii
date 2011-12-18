@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class BDoWorkEventHandler extends BEventHandler{
     public BDoWorkEventHandler( Object sender, String method_name ){

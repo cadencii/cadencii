@@ -1,4 +1,4 @@
-package com.github.cadencii.ui.java;
+package com.github.cadencii.ui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -10,8 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BDialogResult;
+
+import com.github.cadencii.ExceptionNotifyFormUi;
+import com.github.cadencii.ExceptionNotifyFormUiListener;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BDialogResult;
 import javax.swing.JScrollPane;
 
 public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotifyFormUi

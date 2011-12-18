@@ -1,13 +1,16 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
-import org.kbinani.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.*;
 
 public class WaveformZoomUiImpl
     extends BPanel
     implements WaveformZoomUi
 {
+    public WaveformZoomUiImpl() {
+    }
     private WaveformZoomUiListener mListener;
-    
+
     @Override
     public int getWidth()
     {

@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.BEventArgs;
+import com.github.cadencii.BEventArgs;
 
 public class BCancelEventArgs extends BEventArgs{
     public boolean Cancel = false;

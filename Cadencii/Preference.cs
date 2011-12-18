@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
+//INCLUDE-SECTION IMPORT ./ui/java/Preference.java
 
 import java.awt.*;
 import java.awt.event.*;
@@ -80,7 +80,7 @@ namespace com.github.cadencii
         public Preference()
         {
 #if JAVA
-            //INCLUDE-SECTION CTOR ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
+            //INCLUDE-SECTION CTOR ./ui/java/Preference.java
 #else
             InitializeComponent();
 #endif
@@ -1847,8 +1847,8 @@ namespace com.github.cadencii
 
         #region ui implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
+        //INCLUDE-SECTION FIELD ./ui/java/Preference.java
+        //INCLUDE-SECTION METHOD ./ui/java/Preference.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

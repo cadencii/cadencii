@@ -12,22 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import com.github.cadencii.BEventHandler;
-
-    public class BKeyEventHandler extends BEventHandler{
-        public BKeyEventHandler( Object sender, String method_name )
-        {
- base( sender, method_name, typeof( void ), typeof( Object ), typeof( KeyEventArgs ) )
-            ;
-        }
-
-        public BKeyEventHandler( Type sender, String method_name )
-        {
- base( sender, method_name, typeof( void ), typeof( Object ), typeof( KeyEventArgs ) )
-            ;
-        }
-    }
-
+//INCLUDE ./BKeyEventHandler.java
 #endif

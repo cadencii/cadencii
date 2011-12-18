@@ -1,5 +1,5 @@
 #if JAVA
-package org.kbinani;
+package com.github.cadencii;
 
 #elif __cplusplus
 

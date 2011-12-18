@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 public class BRunWorkerCompletedEventHandler extends BEventHandler{
     public BRunWorkerCompletedEventHandler( Object sender, String method_name ){

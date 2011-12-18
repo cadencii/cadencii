@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormBezierPointEdit.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormBezierPointEdit.java
 
 import java.awt.*;
 import java.util.*;

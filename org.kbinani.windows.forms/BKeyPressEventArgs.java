@@ -1,7 +1,7 @@
 package com.github.cadencii.windows.forms;
 
 import java.awt.event.KeyEvent;
-import org.kbinani.BEventArgs;
+import com.github.cadencii.BEventArgs;
 
 public class BKeyPressEventArgs extends BEventArgs{
     private KeyEvent m_original = null;

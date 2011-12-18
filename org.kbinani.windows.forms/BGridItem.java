@@ -2,8 +2,8 @@ package com.github.cadencii.windows.forms;
 
 import java.awt.Component;
 import java.util.Vector;
-import org.kbinani.componentmodel.TypeConverter;
-import org.kbinani.xml.XmlMember;
+import com.github.cadencii.componentmodel.TypeConverter;
+import com.github.cadencii.xml.XmlMember;
 
 public class BGridItem
 {

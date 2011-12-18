@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/WaveViewRealoadRequiredEventHandler.java
+//INCLUDE ./WaveViewRealoadRequiredEventHandler.java
 
 #else
 using System;

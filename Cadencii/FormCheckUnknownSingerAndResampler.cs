@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormCheckUnknownSingerAndResampler.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormCheckUnknownSingerAndResampler.java
 
 import java.awt.*;
 import java.util.*;
@@ -63,7 +63,7 @@ namespace com.github.cadencii
 #endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            
+
             // singers
             checkSingerImport.setSelected( apply_singer );
             checkSingerImport.setEnabled( apply_singer );
@@ -155,8 +155,8 @@ namespace com.github.cadencii
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormCheckUnknownSingerAndResampler.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormCheckUnknownSingerAndResampler.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormCheckUnknownSingerAndResampler.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormCheckUnknownSingerAndResampler.java
         #endregion
 #else
         #region UI Impl for C#
@@ -196,9 +196,9 @@ namespace com.github.cadencii
             this.textResamplerPath = new com.github.cadencii.windows.forms.BTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).BeginInit();
             this.SuspendLayout();
-            // 
+            //
             // buttonCancel
-            // 
+            //
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point( 300, 254 );
@@ -207,9 +207,9 @@ namespace com.github.cadencii
             this.buttonCancel.TabIndex = 11;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            // 
+            //
             // buttonOk
-            // 
+            //
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOk.Location = new System.Drawing.Point( 219, 254 );
@@ -218,9 +218,9 @@ namespace com.github.cadencii
             this.buttonOk.TabIndex = 10;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
-            // 
+            //
             // labelMessage
-            // 
+            //
             this.labelMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMessage.Location = new System.Drawing.Point( 12, 12 );
@@ -229,9 +229,9 @@ namespace com.github.cadencii
             this.labelMessage.TabIndex = 146;
             this.labelMessage.Text = "These singers and resamplers are not registered to Cadencii.\r\nCheck the box if yo" +
                 "u want to register them.";
-            // 
+            //
             // checkSingerImport
-            // 
+            //
             this.checkSingerImport.AutoSize = true;
             this.checkSingerImport.Checked = true;
             this.checkSingerImport.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -242,9 +242,9 @@ namespace com.github.cadencii
             this.checkSingerImport.TabIndex = 148;
             this.checkSingerImport.Text = "Import singer";
             this.checkSingerImport.UseVisualStyleBackColor = true;
-            // 
+            //
             // pictureSinger
-            // 
+            //
             this.pictureSinger.Location = new System.Drawing.Point( 38, 105 );
             this.pictureSinger.MaximumSize = new System.Drawing.Size( 48, 48 );
             this.pictureSinger.MinimumSize = new System.Drawing.Size( 48, 48 );
@@ -253,27 +253,27 @@ namespace com.github.cadencii
             this.pictureSinger.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureSinger.TabIndex = 149;
             this.pictureSinger.TabStop = false;
-            // 
+            //
             // labelSingerName
-            // 
+            //
             this.labelSingerName.AutoSize = true;
             this.labelSingerName.Location = new System.Drawing.Point( 103, 111 );
             this.labelSingerName.Name = "labelSingerName";
             this.labelSingerName.Size = new System.Drawing.Size( 40, 12 );
             this.labelSingerName.TabIndex = 150;
             this.labelSingerName.Text = "(name)";
-            // 
+            //
             // textSingerPath
-            // 
+            //
             this.textSingerPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.textSingerPath.Location = new System.Drawing.Point( 99, 130 );
             this.textSingerPath.Name = "textSingerPath";
             this.textSingerPath.Size = new System.Drawing.Size( 270, 19 );
             this.textSingerPath.TabIndex = 151;
-            // 
+            //
             // checkResamplerImport
-            // 
+            //
             this.checkResamplerImport.AutoSize = true;
             this.checkResamplerImport.Checked = true;
             this.checkResamplerImport.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -284,18 +284,18 @@ namespace com.github.cadencii
             this.checkResamplerImport.TabIndex = 152;
             this.checkResamplerImport.Text = "Import resampler";
             this.checkResamplerImport.UseVisualStyleBackColor = true;
-            // 
+            //
             // textResamplerPath
-            // 
+            //
             this.textResamplerPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.textResamplerPath.Location = new System.Drawing.Point( 38, 214 );
             this.textResamplerPath.Name = "textResamplerPath";
             this.textResamplerPath.Size = new System.Drawing.Size( 331, 19 );
             this.textResamplerPath.TabIndex = 153;
-            // 
+            //
             // FormCheckUnknownSingerAndResampler
-            // 
+            //
             this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;

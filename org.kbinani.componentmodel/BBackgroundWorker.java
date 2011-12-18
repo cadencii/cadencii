@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.BEvent;
+import com.github.cadencii.BEvent;
 
 public class BBackgroundWorker
 {

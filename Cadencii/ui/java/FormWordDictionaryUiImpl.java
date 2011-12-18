@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -8,12 +8,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BDialogResult;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BListView;
-import org.kbinani.windows.forms.BPanel;
+
+import com.github.cadencii.FormWordDictionaryUi;
+import com.github.cadencii.FormWordDictionaryUiListener;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BDialogResult;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BListView;
+import com.github.cadencii.windows.forms.BPanel;
 
 public class FormWordDictionaryUiImpl extends BDialog implements FormWordDictionaryUi
 {
@@ -34,7 +37,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes
-     * 
+     *
      */
     public FormWordDictionaryUiImpl( FormWordDictionaryUiListener listener )
     {
@@ -45,7 +48,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {
@@ -57,7 +60,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes jPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getJPanel()
@@ -101,7 +104,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes jPanel2
-     * 
+     *
      * @return org.kbinani.windows.forms.BPanel
      */
     private BPanel getJPanel2()
@@ -135,7 +138,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes btnOK
-     * 
+     *
      * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnOK()
@@ -150,7 +153,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes btnCancel
-     * 
+     *
      * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnCancel()
@@ -165,7 +168,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes jPanel21
-     * 
+     *
      * @return org.kbinani.windows.forms.BPanel
      */
     private BPanel getJPanel21()
@@ -199,7 +202,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes btnUp
-     * 
+     *
      * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnUp()
@@ -214,7 +217,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes btnDown
-     * 
+     *
      * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnDown()
@@ -229,7 +232,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes listDictionaries
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private BListView getListDictionaries()
@@ -244,7 +247,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     /**
      * This method initializes jScrollPane
-     * 
+     *
      * @return javax.swing.JScrollPane
      */
     private JScrollPane getJScrollPane()

@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormDeleteBar.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormDeleteBar.java
 
 import com.github.cadencii.*;
 import com.github.cadencii.apputil.*;
@@ -115,8 +115,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormDeleteBar.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormDeleteBar.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormDeleteBar.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormDeleteBar.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

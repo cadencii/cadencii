@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormTempoConfig.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormTempoConfig.java
 
 import java.awt.event.*;
 import com.github.cadencii.*;
@@ -127,8 +127,8 @@ namespace com.github.cadencii
 
         #region ui implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormTempoConfig.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormTempoConfig.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormTempoConfig.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormTempoConfig.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

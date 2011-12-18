@@ -1,7 +1,7 @@
 package com.github.cadencii.windows.forms;
 
 import java.awt.Graphics;
-import org.kbinani.BEventArgs;
+import com.github.cadencii.BEventArgs;
 
 public class BPaintEventArgs extends BEventArgs{
     public Graphics Graphics;

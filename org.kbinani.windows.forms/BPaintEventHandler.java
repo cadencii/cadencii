@@ -1,6 +1,6 @@
 package com.github.cadencii.windows.forms;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class BPaintEventHandler extends BEventHandler{
     public BPaintEventHandler( Object sender, String method_name ){

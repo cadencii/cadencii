@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 public class BProgressChangedEventHandler extends BEventHandler{
     public BProgressChangedEventHandler( Object sender, String method_name ){

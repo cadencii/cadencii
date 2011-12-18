@@ -38,7 +38,7 @@ namespace com.github
 #if __cplusplus
             class WaveformZoomUi
 #else
-            interface WaveformZoomUi
+            public interface WaveformZoomUi
 #endif
             {
 #if __cplusplus

@@ -1,16 +1,16 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BPanel;
-import org.kbinani.windows.forms.BPictureBox;
-import org.kbinani.windows.forms.BProgressBar;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BPictureBox;
+import com.github.cadencii.windows.forms.BProgressBar;
 
 //SECTION-END-IMPORT
 public class FormGameControlerConfig extends BDialog

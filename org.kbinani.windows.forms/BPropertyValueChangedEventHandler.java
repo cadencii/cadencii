@@ -1,6 +1,6 @@
 package com.github.cadencii.windows.forms;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class BPropertyValueChangedEventHandler extends BEventHandler{
     public BPropertyValueChangedEventHandler( Object sender, String method_name ){

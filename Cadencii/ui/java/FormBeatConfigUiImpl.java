@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -11,10 +11,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BDialogResult;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BNumericUpDown;
+
+import com.github.cadencii.FormBeatConfigUi;
+import com.github.cadencii.FormBeatConfigUiListener;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BDialogResult;
+import com.github.cadencii.windows.forms.BGroupBox;
+import com.github.cadencii.windows.forms.BNumericUpDown;
 
 public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 {
@@ -46,10 +49,10 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
         listener = l;
         initialize();
     }
-    
+
     /**
      * This method initializes this
-     * 
+     *
      * @return void
      */
     private void initialize() {
@@ -62,7 +65,7 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 
     /**
      * This method initializes jContentPane
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getJContentPane() {
@@ -107,9 +110,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes groupPosition    
-     *  
-     * @return javax.swing.BPanel   
+     * This method initializes groupPosition
+     *
+     * @return javax.swing.BPanel
      */
     private BGroupBox getGroupPosition() {
         if (groupPosition == null) {
@@ -180,9 +183,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes numStart 
-     *  
-     * @return javax.swing.BComboBox    
+     * This method initializes numStart
+     *
+     * @return javax.swing.BComboBox
      */
     private BNumericUpDown getNumStart() {
         if (numStart == null) {
@@ -193,9 +196,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes chkEnd   
-     *  
-     * @return javax.swing.JCheckBox    
+     * This method initializes chkEnd
+     *
+     * @return javax.swing.JCheckBox
      */
     private JCheckBox getChkEnd() {
         if (chkEnd == null) {
@@ -215,9 +218,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes numEnd   
-     *  
-     * @return javax.swing.BComboBox    
+     * This method initializes numEnd
+     *
+     * @return javax.swing.BComboBox
      */
     private BNumericUpDown getNumEnd() {
         if (numEnd == null) {
@@ -229,9 +232,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes groupBeat    
-     *  
-     * @return javax.swing.BPanel   
+     * This method initializes groupBeat
+     *
+     * @return javax.swing.BPanel
      */
     private BGroupBox getGroupBeat() {
         if (groupBeat == null) {
@@ -275,9 +278,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes numNumerator 
-     *  
-     * @return javax.swing.BComboBox    
+     * This method initializes numNumerator
+     *
+     * @return javax.swing.BComboBox
      */
     private BNumericUpDown getNumNumerator() {
         if (numNumerator == null) {
@@ -288,9 +291,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes comboDenominator   
-     *  
-     * @return javax.swing.JComboBox    
+     * This method initializes comboDenominator
+     *
+     * @return javax.swing.JComboBox
      */
     private JComboBox getComboDenominator() {
         if (comboDenominator == null) {
@@ -301,9 +304,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes jPanel1  
-     *  
-     * @return javax.swing.JPanel   
+     * This method initializes jPanel1
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getBPanel1() {
         if (jPanel1 == null) {
@@ -334,9 +337,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes btnOk    
-     *  
-     * @return javax.swing.JButton  
+     * This method initializes btnOk
+     *
+     * @return javax.swing.JButton
      */
     private JButton getBtnOk() {
         if (btnOK == null) {
@@ -357,9 +360,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     /**
-     * This method initializes btnCancel    
-     *  
-     * @return javax.swing.JButton  
+     * This method initializes btnCancel
+     *
+     * @return javax.swing.JButton
      */
     private JButton getBtnCancel() {
         if (btnCancel == null) {

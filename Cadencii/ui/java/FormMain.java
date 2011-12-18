@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
@@ -18,21 +18,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BHScrollBar;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BMenu;
-import org.kbinani.windows.forms.BMenuBar;
-import org.kbinani.windows.forms.BMenuItem;
-import org.kbinani.windows.forms.BPanel;
-import org.kbinani.windows.forms.BPopupMenu;
-import org.kbinani.windows.forms.BSlider;
-import org.kbinani.windows.forms.BSplitPane;
-import org.kbinani.windows.forms.BToggleButton;
-import org.kbinani.windows.forms.BToolBar;
-import org.kbinani.windows.forms.BToolBarButton;
-import org.kbinani.windows.forms.BVScrollBar;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BForm;
+import com.github.cadencii.windows.forms.BHScrollBar;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BMenu;
+import com.github.cadencii.windows.forms.BMenuBar;
+import com.github.cadencii.windows.forms.BMenuItem;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BPopupMenu;
+import com.github.cadencii.windows.forms.BSlider;
+import com.github.cadencii.windows.forms.BSplitPane;
+import com.github.cadencii.windows.forms.BToggleButton;
+import com.github.cadencii.windows.forms.BToolBar;
+import com.github.cadencii.windows.forms.BToolBarButton;
+import com.github.cadencii.windows.forms.BVScrollBar;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {

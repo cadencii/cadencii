@@ -1,5 +1,5 @@
 /*
- * vec.cs
+ * dic.cs
  * Copyright c 2011 kbinani
  *
  * This file is part of org.kbinani.
@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
+package com.github.cadencii;
 
 import java.util.*;
 #else

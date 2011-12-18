@@ -18,7 +18,7 @@ package com.github.cadencii;
 import java.io.*;
 import java.net.*;
 import com.github.cadencii.apputil.*;
-import com.github.cadencii.*;
+import com.github.cadencii.ui.*;
 
 #else
 

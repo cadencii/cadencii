@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 //SECTION-BEGIN-IMPORT
 
 import java.awt.BorderLayout;
@@ -7,9 +7,11 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JToolTip;
-import org.kbinani.windows.forms.BMenu;
-import org.kbinani.windows.forms.BMenuItem;
-import org.kbinani.windows.forms.BPopupMenu;
+
+import com.github.cadencii.TrackSelectorSingerPopupMenu;
+import com.github.cadencii.windows.forms.BMenu;
+import com.github.cadencii.windows.forms.BMenuItem;
+import com.github.cadencii.windows.forms.BPopupMenu;
 
 //SECTION-END-IMPORT
 public class TrackSelector extends JPanel {
@@ -60,8 +62,8 @@ public class TrackSelector extends JPanel {
 
     //SECTION-END-FIELD
     /**
-     * This method initializes 
-     * 
+     * This method initializes
+     *
      */
     public TrackSelector() {
     	super();
@@ -74,7 +76,7 @@ public class TrackSelector extends JPanel {
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize() {
         this.setLayout(new BorderLayout());
@@ -83,9 +85,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurve	
-     * 	
-     * @return javax.swing.JPopupMenu	
+     * This method initializes cmenuCurve
+     *
+     * @return javax.swing.JPopupMenu
      */
     private BPopupMenu getCmenuCurve() {
         if (cmenuCurve == null) {
@@ -121,9 +123,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveVelocity	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveVelocity
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveVelocity() {
         if (cmenuCurveVelocity == null) {
@@ -134,9 +136,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveAccent	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveAccent
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveAccent() {
         if (cmenuCurveAccent == null) {
@@ -147,9 +149,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveDecay	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveDecay
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveDecay() {
         if (cmenuCurveDecay == null) {
@@ -160,9 +162,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveDynamics	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveDynamics
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveDynamics() {
         if (cmenuCurveDynamics == null) {
@@ -173,9 +175,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveVibratoRate	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveVibratoRate
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveVibratoRate() {
         if (cmenuCurveVibratoRate == null) {
@@ -186,9 +188,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveVibratoDepth	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveVibratoDepth
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveVibratoDepth() {
         if (cmenuCurveVibratoDepth == null) {
@@ -199,9 +201,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso1	
-     * 	
-     * @return javax.swing.JMenu	
+     * This method initializes cmenuCurveReso1
+     *
+     * @return javax.swing.JMenu
      */
     private BMenu getCmenuCurveReso1() {
         if (cmenuCurveReso1 == null) {
@@ -215,9 +217,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso1Freq	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso1Freq
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso1Freq() {
         if (cmenuCurveReso1Freq == null) {
@@ -228,9 +230,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso1BW	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso1BW
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso1BW() {
         if (cmenuCurveReso1BW == null) {
@@ -241,9 +243,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso1Amp	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso1Amp
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso1Amp() {
         if (cmenuCurveReso1Amp == null) {
@@ -254,9 +256,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso4	
-     * 	
-     * @return javax.swing.JMenu	
+     * This method initializes cmenuCurveReso4
+     *
+     * @return javax.swing.JMenu
      */
     private BMenu getCmenuCurveReso4() {
         if (cmenuCurveReso4 == null) {
@@ -270,9 +272,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso4Freq	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso4Freq
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso4Freq() {
         if (cmenuCurveReso4Freq == null) {
@@ -283,9 +285,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso4BW	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso4BW
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso4BW() {
         if (cmenuCurveReso4BW == null) {
@@ -296,9 +298,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso4Amp	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso4Amp
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso4Amp() {
         if (cmenuCurveReso4Amp == null) {
@@ -309,9 +311,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso3	
-     * 	
-     * @return javax.swing.JMenu	
+     * This method initializes cmenuCurveReso3
+     *
+     * @return javax.swing.JMenu
      */
     private BMenu getCmenuCurveReso3() {
         if (cmenuCurveReso3 == null) {
@@ -325,9 +327,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso3Freq	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso3Freq
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso3Freq() {
         if (cmenuCurveReso3Freq == null) {
@@ -338,9 +340,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso3BW	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso3BW
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso3BW() {
         if (cmenuCurveReso3BW == null) {
@@ -351,9 +353,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso3Amp	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso3Amp
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso3Amp() {
         if (cmenuCurveReso3Amp == null) {
@@ -364,9 +366,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso2	
-     * 	
-     * @return javax.swing.JMenu	
+     * This method initializes cmenuCurveReso2
+     *
+     * @return javax.swing.JMenu
      */
     private BMenu getCmenuCurveReso2() {
         if (cmenuCurveReso2 == null) {
@@ -380,9 +382,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso2Freq	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso2Freq
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso2Freq() {
         if (cmenuCurveReso2Freq == null) {
@@ -393,9 +395,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso2BW	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso2BW
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso2BW() {
         if (cmenuCurveReso2BW == null) {
@@ -406,9 +408,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveReso2Amp	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveReso2Amp
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveReso2Amp() {
         if (cmenuCurveReso2Amp == null) {
@@ -419,9 +421,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveHarmonics	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveHarmonics
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveHarmonics() {
         if (cmenuCurveHarmonics == null) {
@@ -432,9 +434,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveBreathiness	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveBreathiness
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveBreathiness() {
         if (cmenuCurveBreathiness == null) {
@@ -445,9 +447,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveBrightness	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveBrightness
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveBrightness() {
         if (cmenuCurveBrightness == null) {
@@ -458,9 +460,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveClearness	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveClearness
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveClearness() {
         if (cmenuCurveClearness == null) {
@@ -471,9 +473,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveOpening	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveOpening
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveOpening() {
         if (cmenuCurveOpening == null) {
@@ -484,9 +486,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveGenderFactor	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveGenderFactor
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveGenderFactor() {
         if (cmenuCurveGenderFactor == null) {
@@ -497,9 +499,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurvePortamentoTiming	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurvePortamentoTiming
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurvePortamentoTiming() {
         if (cmenuCurvePortamentoTiming == null) {
@@ -510,9 +512,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurvePitchBend	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurvePitchBend
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurvePitchBend() {
         if (cmenuCurvePitchBend == null) {
@@ -523,9 +525,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurvePitchBendSensitivity	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurvePitchBendSensitivity
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurvePitchBendSensitivity() {
         if (cmenuCurvePitchBendSensitivity == null) {
@@ -536,9 +538,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveEffect2Depth	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveEffect2Depth
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveEffect2Depth() {
         if (cmenuCurveEffect2Depth == null) {
@@ -549,9 +551,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveEnvelope	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveEnvelope
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getCmenuCurveEnvelope() {
         if (cmenuCurveEnvelope == null) {
@@ -562,9 +564,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveSeparator1	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveSeparator1
+     *
+     * @return javax.swing.JMenuItem
      */
     private JSeparator getCmenuCurveSeparator1() {
         if (cmenuCurveSeparator1 == null) {
@@ -574,9 +576,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveSeparator2	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveSeparator2
+     *
+     * @return javax.swing.JMenuItem
      */
     private JSeparator getCmenuCurveSeparator2() {
         if (cmenuCurveSeparator2 == null) {
@@ -586,9 +588,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveSeparator3	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveSeparator3
+     *
+     * @return javax.swing.JMenuItem
      */
     private JSeparator getCmenuCurveSeparator3() {
         if (cmenuCurveSeparator3 == null) {
@@ -598,9 +600,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveSeparator4	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveSeparator4
+     *
+     * @return javax.swing.JMenuItem
      */
     private JSeparator getCmenuCurveSeparator4() {
         if (cmenuCurveSeparator4 == null) {
@@ -610,9 +612,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuCurveSeparator5	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes cmenuCurveSeparator5
+     *
+     * @return javax.swing.JMenuItem
      */
     private JSeparator getCmenuCurveSeparator5() {
         if (cmenuCurveSeparator5 == null) {
@@ -622,8 +624,8 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes cmenuSinger	
-     * 	
+     * This method initializes cmenuSinger
+     *
      * @return org.kbinani.cadencii.TrackSelectorSingerPopupMenu
      */
     private TrackSelectorSingerPopupMenu getCmenuSinger() {
@@ -634,9 +636,9 @@ public class TrackSelector extends JPanel {
     }
 
     /**
-     * This method initializes jLabel	
-     * 	
-     * @return javax.swing.JLabel	
+     * This method initializes jLabel
+     *
+     * @return javax.swing.JLabel
      */
     private JToolTip getJLabel() {
         if (toolTip == null) {

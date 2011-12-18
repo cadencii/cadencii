@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -6,12 +6,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BNumericUpDown;
-import org.kbinani.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BGroupBox;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BNumericUpDown;
+import com.github.cadencii.windows.forms.BPanel;
 
 //SECTION-END-IMPORT
 public class FormTempoConfig extends BDialog {

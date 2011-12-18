@@ -2,7 +2,7 @@ package com.github.cadencii.windows.forms;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import org.kbinani.BEventArgs;
+import com.github.cadencii.BEventArgs;
 
 public class BMouseEventArgs extends BEventArgs{
     public BMouseButtons Button;

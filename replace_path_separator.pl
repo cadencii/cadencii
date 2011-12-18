@@ -79,7 +79,7 @@ open( CFG, ">./Cadencii/Config.cs" );
 print CFG <<__EOD__;
 \#if JAVA
 
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 import java.util.*;
 

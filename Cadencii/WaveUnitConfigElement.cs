@@ -63,6 +63,9 @@ namespace com.github.cadencii
         /// </summary>
         /// <param name="value">設定項目のキー</param>
         public void setKey( string value )
+#if JAVA
+            throws Exception
+#endif
         {
             if( value == null ) {
                 throw new Exception( "key must not be null" );
@@ -94,6 +97,9 @@ namespace com.github.cadencii
         /// </summary>
         /// <param name="value">設定項目の値</param>
         public void setValue( string value )
+#if JAVA
+            throws Exception
+#endif
         {
             if( value == null ) {
                 value = "";

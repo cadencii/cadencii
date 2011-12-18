@@ -374,7 +374,7 @@ makeRes.class: ./makeRes.java
 	$(JAVAC) makeRes.java -encoding UTF8
 
 ./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.class
-	java makeRes -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
+	java makeRes -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p com.github.cadencii -n com.github.cadencii
 
 doc: jcadencii
 	perl safe_mkdir.pl ./build/docwork

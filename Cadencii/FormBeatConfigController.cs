@@ -15,7 +15,7 @@
 package com.github.cadencii;
 
 import java.awt.event.*;
-import com.github.cadencii.*;
+import com.github.cadencii.ui.*;
 import com.github.cadencii.apputil.*;
 import com.github.cadencii.windows.forms.*;
 #else

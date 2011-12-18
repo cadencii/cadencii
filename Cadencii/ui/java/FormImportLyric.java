@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -6,10 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BTextArea;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BTextArea;
 
 //SECTION-END-IMPORT
 public class FormImportLyric extends BDialog

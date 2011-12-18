@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -6,10 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BTextArea;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BTextArea;
 
 //SECTION-END-IMPORT
 public class FormCompileResult extends BDialog
@@ -34,7 +34,7 @@ public class FormCompileResult extends BDialog
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
@@ -45,7 +45,7 @@ public class FormCompileResult extends BDialog
 
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJContentPane() {
@@ -79,9 +79,9 @@ public class FormCompileResult extends BDialog
 	}
 
 	/**
-	 * This method initializes textBox1	
-	 * 	
-	 * @return javax.swing.BTextArea	
+	 * This method initializes textBox1
+	 *
+	 * @return javax.swing.BTextArea
 	 */
 	private BTextArea getTextBox1() {
 		if (textBox1 == null) {
@@ -92,9 +92,9 @@ public class FormCompileResult extends BDialog
 	}
 
 	/**
-	 * This method initializes btnOK	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnOK
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnOK() {
 		if (btnOK == null) {

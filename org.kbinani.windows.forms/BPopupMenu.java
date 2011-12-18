@@ -5,11 +5,11 @@ import java.awt.event.ComponentListener;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
-import org.kbinani.componentmodel.BCancelEventArgs;
-import org.kbinani.componentmodel.BCancelEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
+import com.github.cadencii.componentmodel.BCancelEventArgs;
+import com.github.cadencii.componentmodel.BCancelEventHandler;
 
 public class BPopupMenu extends JPopupMenu 
                         implements ComponentListener,

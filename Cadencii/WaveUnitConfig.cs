@@ -14,6 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
+import java.util.*;
 import com.github.cadencii.vsq.*;
 #else
 
@@ -54,8 +55,13 @@ namespace com.github.cadencii
         {
             StringBuilder sb = new StringBuilder();
             foreach( WaveUnitConfigElement item in this.Elements ) {
+#if JAVA
+                sb.append( SEPARATOR );
+                sb.append( item.toString() );
+#else
                 sb.Append( SEPARATOR );
                 sb.Append( item.toString() );
+#endif
             }
             return sb.ToString();
         }
@@ -66,6 +72,9 @@ namespace com.github.cadencii
         /// <param name="key">キー</param>
         /// <param name="value">値</param>
         public void putElement( string key, string value )
+#if JAVA
+            throws Exception
+#endif
         {
             foreach( WaveUnitConfigElement item in this.Elements ) {
                 if( str.compare( key, item.getKey() ) ) {

@@ -3,9 +3,9 @@ package com.github.cadencii.windows.forms;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import org.kbinani.BEvent;
-import org.kbinani.BEventArgs;
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEvent;
+import com.github.cadencii.BEventArgs;
+import com.github.cadencii.BEventHandler;
 
 public class BTimer extends Timer implements ActionListener {
     private static final long serialVersionUID = 9174919033610117641L;

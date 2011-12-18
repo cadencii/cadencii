@@ -1,6 +1,6 @@
 package com.github.cadencii.windows.forms;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class BFormClosingEventHandler extends BEventHandler{
     public BFormClosingEventHandler( Object invoker, String method_name ){

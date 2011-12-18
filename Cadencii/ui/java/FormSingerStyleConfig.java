@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -6,15 +6,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BComboBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BPanel;
-import org.kbinani.windows.forms.BSlider;
-import org.kbinani.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BComboBox;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BGroupBox;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BSlider;
+import com.github.cadencii.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class FormSingerStyleConfig extends BDialog {

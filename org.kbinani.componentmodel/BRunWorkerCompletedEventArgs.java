@@ -1,6 +1,6 @@
 ﻿package com.github.cadencii.componentmodel;
 
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 public class BRunWorkerCompletedEventArgs extends BEventArgs{
     private Object m_result = null;

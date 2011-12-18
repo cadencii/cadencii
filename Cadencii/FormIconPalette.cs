@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormIconPalette.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormIconPalette.java
 
 import java.util.*;
 import java.awt.*;
@@ -372,8 +372,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormIconPalette.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormIconPalette.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormIconPalette.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormIconPalette.java
 #else
         private void InitializeComponent()
         {

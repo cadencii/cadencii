@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
+package com.github.cadencii.windows.forms;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
+//INCLUDE-SECTION IMPORT ./InputBox.java
 
 import com.github.cadencii.*;
 
@@ -52,7 +52,7 @@ namespace com.github.cadencii.windows.forms
         {
             return txtInput.getText();
         }
-        
+
         public void setResult( String value )
         {
             txtInput.setText( value );
@@ -78,8 +78,8 @@ namespace com.github.cadencii.windows.forms
         }
 
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
+        //INCLUDE-SECTION FIELD ./InputBox.java
+        //INCLUDE-SECTION METHOD ./InputBox.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -109,18 +109,18 @@ namespace com.github.cadencii.windows.forms
             this.lblMessage = new com.github.cadencii.windows.forms.BLabel();
             this.btnCancel = new com.github.cadencii.windows.forms.BButton();
             this.SuspendLayout();
-            // 
+            //
             // txtInput
-            // 
+            //
             this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInput.Location = new System.Drawing.Point( 12, 24 );
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size( 309, 19 );
             this.txtInput.TabIndex = 0;
-            // 
+            //
             // btnOk
-            // 
+            //
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.Location = new System.Drawing.Point( 165, 49 );
             this.btnOk.Name = "btnOk";
@@ -128,17 +128,17 @@ namespace com.github.cadencii.windows.forms
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblMessage
-            // 
+            //
             this.lblMessage.AutoSize = true;
             this.lblMessage.Location = new System.Drawing.Point( 12, 9 );
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size( 0, 12 );
             this.lblMessage.TabIndex = 2;
-            // 
+            //
             // btnCancel
-            // 
+            //
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point( 246, 49 );
             this.btnCancel.Name = "btnCancel";
@@ -146,9 +146,9 @@ namespace com.github.cadencii.windows.forms
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
+            //
             // InputBox
-            // 
+            //
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

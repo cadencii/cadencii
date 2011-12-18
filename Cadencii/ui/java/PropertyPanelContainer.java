@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 //SECTION-BEGIN-IMPORT
 
 import java.awt.Component;
@@ -10,11 +10,11 @@ import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
-import org.kbinani.windows.forms.BMouseEventArgs;
-import org.kbinani.windows.forms.BMouseEventHandler;
-import org.kbinani.windows.forms.BPaintEventArgs;
-import org.kbinani.windows.forms.BPaintEventHandler;
-import org.kbinani.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BMouseEventArgs;
+import com.github.cadencii.windows.forms.BMouseEventHandler;
+import com.github.cadencii.windows.forms.BPaintEventArgs;
+import com.github.cadencii.windows.forms.BPaintEventHandler;
+import com.github.cadencii.windows.forms.BPanel;
 
 //SECTION-END-IMPORT
 public class PropertyPanelContainer extends BPanel {

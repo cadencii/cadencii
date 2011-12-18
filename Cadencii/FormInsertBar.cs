@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormInsertBar.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormInsertBar.java
 
 import com.github.cadencii.*;
 import com.github.cadencii.apputil.*;
@@ -125,8 +125,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormInsertBar.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormInsertBar.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormInsertBar.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormInsertBar.java
 #else
         private System.ComponentModel.IContainer components = null;
         private NumericUpDownEx numPosition;

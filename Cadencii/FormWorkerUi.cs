@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/FormWorkerUi.java
+//INCLUDE ./ui/java/FormWorkerUi.java
 
 #else
 

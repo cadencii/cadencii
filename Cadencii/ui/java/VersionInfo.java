@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.CardLayout;
@@ -10,11 +10,11 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BPanel;
-import org.kbinani.windows.forms.BPictureBox;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BPictureBox;
 
 //SECTION-END-IMPORT
 public class VersionInfo extends BDialog {

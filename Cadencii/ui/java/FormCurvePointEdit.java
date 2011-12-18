@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -7,16 +7,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class FormCurvePointEdit extends BDialog
 {
     //SECTION-BEGIN-FIELD
-    
+
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
     private BButton btnBackward3 = null;
@@ -39,8 +39,8 @@ public class FormCurvePointEdit extends BDialog
 
     //SECTION-END-FIELD
     /**
-     * This method initializes 
-     * 
+     * This method initializes
+     *
      */
     public FormCurvePointEdit() {
     	super();
@@ -50,7 +50,7 @@ public class FormCurvePointEdit extends BDialog
     //SECTION-BEGIN-METHOD
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize() {
         this.setSize(new Dimension(328, 195));
@@ -60,9 +60,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
@@ -103,9 +103,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnBackward3	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnBackward3
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnBackward3() {
         if (btnBackward3 == null) {
@@ -117,9 +117,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnBackward2	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnBackward2
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnBackward2() {
         if (btnBackward2 == null) {
@@ -131,9 +131,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnBackward	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnBackward
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnBackward() {
         if (btnBackward == null) {
@@ -145,9 +145,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnForward	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnForward
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnForward() {
         if (btnForward == null) {
@@ -159,9 +159,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnForward2	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnForward2
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnForward2() {
         if (btnForward2 == null) {
@@ -173,9 +173,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnForward3	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnForward3
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnForward3() {
         if (btnForward3 == null) {
@@ -187,9 +187,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes jPanel1	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel1
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
@@ -256,9 +256,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes txtDataPointValue	
-     * 	
-     * @return javax.swing.JTextField	
+     * This method initializes txtDataPointValue
+     *
+     * @return javax.swing.JTextField
      */
     private BTextBox getTxtDataPointValue() {
         if (txtDataPointValue == null) {
@@ -269,9 +269,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnUndo	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnUndo
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnUndo() {
         if (btnUndo == null) {
@@ -283,9 +283,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes txtDataPointClock	
-     * 	
-     * @return javax.swing.JTextField	
+     * This method initializes txtDataPointClock
+     *
+     * @return javax.swing.JTextField
      */
     private BTextBox getTxtDataPointClock() {
         if (txtDataPointClock == null) {
@@ -296,9 +296,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnRedo	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes btnRedo
+     *
+     * @return javax.swing.JButton
      */
     private BButton getBtnRedo() {
         if (btnRedo == null) {
@@ -310,9 +310,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes jPanel3	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel3
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
@@ -341,9 +341,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnExit	
-     * 	
-     * @return org.kbinani.windows.forms.BButton	
+     * This method initializes btnExit
+     *
+     * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnExit() {
         if (btnExit == null) {
@@ -355,9 +355,9 @@ public class FormCurvePointEdit extends BDialog
     }
 
     /**
-     * This method initializes btnApply	
-     * 	
-     * @return org.kbinani.windows.forms.BButton	
+     * This method initializes btnApply
+     *
+     * @return org.kbinani.windows.forms.BButton
      */
     private BButton getBtnApply() {
         if (btnApply == null) {

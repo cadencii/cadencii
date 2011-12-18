@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.xml;
+package com.github.cadencii.xml;
 
 import java.awt.*;
 #else

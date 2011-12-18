@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -7,9 +7,12 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BDialogResult;
-import org.kbinani.windows.forms.BLabel;
+
+import com.github.cadencii.FormAskKeySoundGenerationUi;
+import com.github.cadencii.FormAskKeySoundGenerationUiListener;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BDialogResult;
+import com.github.cadencii.windows.forms.BLabel;
 
 public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskKeySoundGenerationUi
 {
@@ -32,7 +35,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize()
     {
@@ -53,7 +56,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     /**
      * This method initializes jPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getJPanel()
@@ -95,7 +98,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     /**
      * This method initializes jPanel1
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getJPanel1()
@@ -119,7 +122,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     /**
      * This method initializes jButton
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getJButton()
@@ -142,7 +145,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     /**
      * This method initializes jButton1
-     * 
+     *
      * @return javax.swing.JButton
      */
     private JButton getJButton1()
@@ -165,7 +168,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     /**
      * This method initializes jCheckBox
-     * 
+     *
      * @return javax.swing.JCheckBox
      */
     private JCheckBox getJCheckBox()

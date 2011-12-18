@@ -17,7 +17,7 @@ package com.github.cadencii;
 
 import java.awt.*;
 
-import com.github.cadencii.*;
+import com.github.cadencii.ui.*;
 
 #else
 
@@ -29,7 +29,7 @@ namespace com.github.cadencii
 #endif
 
 #if JAVA
-    class WaveformZoomController extends ControllerBase implements WaveformZoomUiListener
+    public class WaveformZoomController extends ControllerBase implements WaveformZoomUiListener
 #else
     class WaveformZoomController : ControllerBase, WaveformZoomUiListener
 #endif

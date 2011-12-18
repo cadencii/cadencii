@@ -3,11 +3,11 @@ package com.github.cadencii.windows.forms;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Vector;
-import org.kbinani.componentmodel.Category;
-import org.kbinani.componentmodel.IPropertyDescriptor;
-import org.kbinani.componentmodel.PropertyDescriptor;
-import org.kbinani.componentmodel.TypeConverter;
-import org.kbinani.componentmodel.TypeConverterAnnotation;
+import com.github.cadencii.componentmodel.Category;
+import com.github.cadencii.componentmodel.IPropertyDescriptor;
+import com.github.cadencii.componentmodel.PropertyDescriptor;
+import com.github.cadencii.componentmodel.TypeConverter;
+import com.github.cadencii.componentmodel.TypeConverterAnnotation;
 
 public class BPropertyGridTestItem implements IPropertyDescriptor {
     public String B = "text";

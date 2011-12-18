@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 //SECTION-BEGIN-IMPORT
 
 import java.awt.Color;
@@ -9,11 +9,13 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BTextBox;
+
+import com.github.cadencii.IconParader;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class FormCheckUnknownSingerAndResampler extends BDialog
@@ -50,9 +52,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes jPanel1	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel1
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
@@ -114,9 +116,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes jPanel3	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel3
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
@@ -145,9 +147,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes buttonCancel	
-     * 	
-     * @return org.kbinani.windows.forms.BButton	
+     * This method initializes buttonCancel
+     *
+     * @return org.kbinani.windows.forms.BButton
      */
     private BButton getButtonCancel() {
         if (buttonCancel == null) {
@@ -159,9 +161,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes buttonOk	
-     * 	
-     * @return org.kbinani.windows.forms.BButton	
+     * This method initializes buttonOk
+     *
+     * @return org.kbinani.windows.forms.BButton
      */
     private BButton getButtonOk() {
         if (buttonOk == null) {
@@ -173,9 +175,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes jPanel2	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel2
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getJPanel2() {
         if (jPanel2 == null) {
@@ -212,9 +214,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes checkSingerImport	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
+     * This method initializes checkSingerImport
+     *
+     * @return org.kbinani.windows.forms.BCheckBox
      */
     private BCheckBox getCheckSingerImport() {
         if (checkSingerImport == null) {
@@ -225,9 +227,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes pictureSinger	
-     * 	
-     * @return org.kbinani.cadencii.IconParader	
+     * This method initializes pictureSinger
+     *
+     * @return org.kbinani.cadencii.IconParader
      */
     private IconParader getPictureSinger() {
         if (pictureSinger == null) {
@@ -239,9 +241,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes textSingerPath	
-     * 	
-     * @return org.kbinani.windows.forms.BTextBox	
+     * This method initializes textSingerPath
+     *
+     * @return org.kbinani.windows.forms.BTextBox
      */
     private BTextBox getTextSingerPath() {
         if (textSingerPath == null) {
@@ -252,9 +254,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes checkResamplerImport	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
+     * This method initializes checkResamplerImport
+     *
+     * @return org.kbinani.windows.forms.BCheckBox
      */
     private BCheckBox getCheckResamplerImport() {
         if (checkResamplerImport == null) {
@@ -265,9 +267,9 @@ public class FormCheckUnknownSingerAndResampler extends BDialog
     }
 
     /**
-     * This method initializes textResamplerPath	
-     * 	
-     * @return org.kbinani.windows.forms.BTextBox	
+     * This method initializes textResamplerPath
+     *
+     * @return org.kbinani.windows.forms.BTextBox
      */
     private BTextBox getTextResamplerPath() {
         if (textResamplerPath == null) {

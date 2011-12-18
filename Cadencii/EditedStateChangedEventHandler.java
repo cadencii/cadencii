@@ -1,6 +1,6 @@
-package com.github.cadencii.ui.java;
+package com.github.cadencii;
 
-import org.kbinani.BEventHandler;
+import com.github.cadencii.BEventHandler;
 
 public class EditedStateChangedEventHandler extends BEventHandler{
     public EditedStateChangedEventHandler( Object invoker, String method_name ){

@@ -15,7 +15,7 @@
 
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
+//INCLUDE-SECTION IMPORT ./ui/java/VersionInfo.java
 
 import java.awt.*;
 import java.awt.event.*;
@@ -461,8 +461,8 @@ namespace com.github.cadencii
 
         #region ui implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
+        //INCLUDE-SECTION FIELD ./ui/java/VersionInfo.java
+        //INCLUDE-SECTION METHOD ./ui/java/VersionInfo.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

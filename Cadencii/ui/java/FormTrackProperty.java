@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -6,11 +6,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BPanel;
-import org.kbinani.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BForm;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class FormTrackProperty extends BForm {

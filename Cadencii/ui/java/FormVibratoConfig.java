@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -10,15 +10,15 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BComboBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BPanel;
-import org.kbinani.windows.forms.BRadioButton;
-import org.kbinani.windows.forms.BTextBox;
-import org.kbinani.windows.forms.RadioButtonManager;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BComboBox;
+import com.github.cadencii.windows.forms.BDialog;
+import com.github.cadencii.windows.forms.BGroupBox;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BRadioButton;
+import com.github.cadencii.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.RadioButtonManager;
 
 //SECTION-END-IMPORT
 public class FormVibratoConfig extends BDialog {

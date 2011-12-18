@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+package com.github.cadencii;
 
 public class WaveViewRealoadRequiredEventArgs
 {

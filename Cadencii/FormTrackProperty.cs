@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormTrackProperty.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormTrackProperty.java
 
 import com.github.cadencii.*;
 import com.github.cadencii.apputil.*;
@@ -115,8 +115,8 @@ namespace com.github.cadencii
         #region UI implementation
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormTrackProperty.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormTrackProperty.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormTrackProperty.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormTrackProperty.java
         #endregion
 #else
         #region UI Impl for C#

@@ -1,6 +1,6 @@
-package org.kbinani.cadencii;
+package com.github.cadencii.ui;
 
-import org.kbinani.windows.forms.BPanel;
+import com.github.cadencii.windows.forms.BPanel;
 import java.awt.Dimension;
 import javax.swing.JProgressBar;
 import javax.swing.JLabel;

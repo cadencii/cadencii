@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormCurvePointEdit.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormCurvePointEdit.java
 
 import java.util.*;
 import java.awt.event.*;
@@ -308,8 +308,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormCurvePointEdit.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormCurvePointEdit.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormCurvePointEdit.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormCurvePointEdit.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

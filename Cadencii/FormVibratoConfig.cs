@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormVibratoConfig.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormVibratoConfig.java
 
 import java.awt.event.*;
 import java.util.*;
@@ -328,8 +328,8 @@ namespace com.github.cadencii
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormVibratoConfig.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormVibratoConfig.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormVibratoConfig.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormVibratoConfig.java
         #endregion
 #else
         #region UI Impl for C#

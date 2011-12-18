@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormMidiImExport.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormMidiImExport.java
 
 import java.awt.*;
 import com.github.cadencii.*;
@@ -347,8 +347,8 @@ namespace com.github.cadencii
 
         #region UI implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormMidiImExport.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormMidiImExport.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormMidiImExport.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormMidiImExport.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。

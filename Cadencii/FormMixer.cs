@@ -14,7 +14,7 @@
 #if JAVA
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormMixer.java
+//INCLUDE-SECTION IMPORT ./ui/java/FormMixer.java
 
 import java.awt.*;
 import java.util.*;
@@ -649,8 +649,8 @@ namespace com.github.cadencii
         #region UI implementation
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormMixer.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormMixer.java
+        //INCLUDE-SECTION FIELD ./ui/java/FormMixer.java
+        //INCLUDE-SECTION METHOD ./ui/java/FormMixer.java
         #endregion
 #else
         #region UI Impl for C#

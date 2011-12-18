@@ -6,9 +6,9 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Vector;
-import org.kbinani.PortUtil;
-import org.kbinani.fsys;
-import org.kbinani.str;
+import com.github.cadencii.PortUtil;
+import com.github.cadencii.fsys;
+import com.github.cadencii.str;
 
 public class BFileChooser{
     public static final int APPROVE_OPTION = 0;

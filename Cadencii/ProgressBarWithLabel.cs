@@ -15,7 +15,7 @@
 
 package com.github.cadencii;
 
-import com.github.cadencii.*;
+import com.github.cadencii.ui.*;
 
 #else
 

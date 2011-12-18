@@ -32,7 +32,7 @@ namespace com.github
 #if __cplusplus
             class WaveformZoomUiListener
 #else
-            interface WaveformZoomUiListener
+            public interface WaveformZoomUiListener
 #endif
             {
 #if __cplusplus

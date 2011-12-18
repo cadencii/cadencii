@@ -4,7 +4,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.kbinani.*;
+import com.github.cadencii.*;
 
 public class BListBox extends JList
                       implements ListSelectionListener

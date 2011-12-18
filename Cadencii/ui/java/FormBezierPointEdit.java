@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+﻿package com.github.cadencii.ui;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -7,12 +7,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.BTextBox;
+import com.github.cadencii.windows.forms.BLabel;
+import com.github.cadencii.windows.forms.BGroupBox;
+import com.github.cadencii.windows.forms.BCheckBox;
+import com.github.cadencii.windows.forms.BButton;
+import com.github.cadencii.windows.forms.BDialog;
 
 //SECTION-END-IMPORT
 public class FormBezierPointEdit extends BDialog
@@ -61,7 +61,7 @@ public class FormBezierPointEdit extends BDialog
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
@@ -73,7 +73,7 @@ public class FormBezierPointEdit extends BDialog
 
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJContentPane() {
@@ -147,9 +147,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnBackward	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnBackward
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnBackward() {
 		if (btnBackward == null) {
@@ -160,9 +160,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes chkEnableSmooth	
-	 * 	
-	 * @return javax.swing.BCheckBox	
+	 * This method initializes chkEnableSmooth
+	 *
+	 * @return javax.swing.BCheckBox
 	 */
 	private BCheckBox getChkEnableSmooth() {
 		if (chkEnableSmooth == null) {
@@ -173,9 +173,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnForward	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnForward
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnForward() {
 		if (btnForward == null) {
@@ -186,9 +186,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes groupLeft	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes groupLeft
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getGroupLeft() {
 		if (groupLeft == null) {
@@ -238,9 +238,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes BTextBox	
-	 * 	
-	 * @return javax.swing.BTextBox	
+	 * This method initializes BTextBox
+	 *
+	 * @return javax.swing.BTextBox
 	 */
 	private BTextBox getJTextField() {
 		if (txtLeftClock == null) {
@@ -250,9 +250,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes txtLeftValue	
-	 * 	
-	 * @return javax.swing.BTextBox	
+	 * This method initializes txtLeftValue
+	 *
+	 * @return javax.swing.BTextBox
 	 */
 	private BTextBox getTxtLeftValue() {
 		if (txtLeftValue == null) {
@@ -262,9 +262,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnLeft	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnLeft
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnLeft() {
 		if (btnLeft == null) {
@@ -276,9 +276,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes groupDataPoint	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes groupDataPoint
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getGroupDataPoint() {
 		if (groupDataPoint == null) {
@@ -328,9 +328,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes txtDataPointClock	
-	 * 	
-	 * @return javax.swing.BTextBox	
+	 * This method initializes txtDataPointClock
+	 *
+	 * @return javax.swing.BTextBox
 	 */
 	private BTextBox getTxtDataPointClock() {
 		if (txtDataPointClock == null) {
@@ -340,9 +340,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes txtDataPointValue	
-	 * 	
-	 * @return javax.swing.BTextBox	
+	 * This method initializes txtDataPointValue
+	 *
+	 * @return javax.swing.BTextBox
 	 */
 	private BTextBox getTxtDataPointValue() {
 		if (txtDataPointValue == null) {
@@ -352,9 +352,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnDataPoint	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnDataPoint
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnDataPoint() {
 		if (btnDataPoint == null) {
@@ -366,9 +366,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes groupRight	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes groupRight
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getGroupRight() {
 		if (groupRight == null) {
@@ -416,9 +416,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes txtRightClock	
-	 * 	
-	 * @return javax.swing.BTextBox	
+	 * This method initializes txtRightClock
+	 *
+	 * @return javax.swing.BTextBox
 	 */
 	private BTextBox getTxtRightClock() {
 		if (txtRightClock == null) {
@@ -428,9 +428,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes txtRightValue	
-	 * 	
-	 * @return javax.swing.BTextBox	
+	 * This method initializes txtRightValue
+	 *
+	 * @return javax.swing.BTextBox
 	 */
 	private BTextBox getTxtRightValue() {
 		if (txtRightValue == null) {
@@ -440,9 +440,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnRight	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnRight
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnRight() {
 		if (btnRight == null) {
@@ -454,9 +454,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnOK	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnOK
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnOK() {
 		if (btnOK == null) {
@@ -468,9 +468,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes btnCancel	
-	 * 	
-	 * @return javax.swing.BButton	
+	 * This method initializes btnCancel
+	 *
+	 * @return javax.swing.BButton
 	 */
 	private BButton getBtnCancel() {
 		if (btnCancel == null) {
@@ -482,9 +482,9 @@ public class FormBezierPointEdit extends BDialog
 	}
 
 	/**
-	 * This method initializes jPanel3	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes jPanel3
+	 *
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel3() {
 		if (jPanel3 == null) {
