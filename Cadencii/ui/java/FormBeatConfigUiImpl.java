@@ -382,7 +382,6 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
         return btnCancel;
     }
 
-    @Override
     public int showDialog( Object parent_form )
     {
         if( parent_form == null ){
@@ -401,7 +400,6 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
         }
     }
 
-    @Override
     public void setFont( String fontName, float fontSize )
     {
         super.setFont( new Font( fontName, Font.PLAIN, (int)fontSize ) );
@@ -413,7 +411,6 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
         super.setTitle( value );
     }
 
-    @Override
     public void setDialogResult( boolean value )
     {
         BDialogResult res = BDialogResult.CANCEL;
@@ -447,199 +444,166 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
         super.close();
     }
 
-    @Override
     public void setTextBar1Label( String value )
     {
         this.lblBar1.setText( value );
     }
 
-    @Override
     public void setTextBar2Label( String value )
     {
         this.lblBar2.setText( value );
     }
 
-    @Override
     public void setTextStartLabel( String value )
     {
         this.lblStart.setText( value );
     }
 
-    @Override
     public void setTextOkButton( String value )
     {
         this.btnOK.setText( value );
     }
 
-    @Override
     public void setTextCancelButton( String value )
     {
         this.btnCancel.setText( value );
     }
 
-    @Override
     public void setTextBeatGroup( String value )
     {
         this.groupBeat.setTitle( value );
     }
 
-    @Override
     public void setTextPositionGroup( String value )
     {
         this.groupPosition.setTitle( value );
     }
 
-    @Override
     public void setEnabledStartNum( boolean value )
     {
         this.numStart.setEnabled( value );
     }
 
-    @Override
     public void setMinimumStartNum( int value )
     {
         this.numStart.setMinimum( value );
     }
 
-    @Override
     public void setMaximumStartNum( int value )
     {
         this.numStart.setMaximum( value );
     }
 
-    @Override
     public int getMaximumStartNum()
     {
         return (int)this.numStart.getMaximum();
     }
 
-    @Override
     public int getMinimumStartNum()
     {
         return (int)this.numStart.getMinimum();
     }
 
-    @Override
     public void setValueStartNum( int value )
     {
         this.numStart.setFloatValue( value );
     }
 
-    @Override
     public int getValueStartNum()
     {
         return (int)this.numStart.getFloatValue();
     }
 
-    @Override
     public void setEnabledEndNum( boolean value )
     {
         this.numEnd.setEnabled( value );
     }
 
-    @Override
     public void setMinimumEndNum( int value )
     {
         this.numEnd.setMinimum( value );
     }
 
-    @Override
     public void setMaximumEndNum( int value )
     {
         this.numEnd.setMaximum( value );
     }
 
-    @Override
     public int getMaximumEndNum()
     {
         return (int)this.numEnd.getMaximum();
     }
 
-    @Override
     public int getMinimumEndNum()
     {
         return (int)this.numEnd.getMinimum();
     }
 
-    @Override
     public void setValueEndNum( int value )
     {
         this.numEnd.setFloatValue( value );
     }
 
-    @Override
     public int getValueEndNum()
     {
         return (int)this.numEnd.getFloatValue();
     }
 
-    @Override
     public boolean isCheckedEndCheckbox()
     {
         return this.chkEnd.isSelected();
     }
 
-    @Override
     public void setEnabledEndCheckbox( boolean value )
     {
         this.chkEnd.setEnabled( value );
     }
 
-    @Override
     public boolean isEnabledEndCheckbox()
     {
         return this.chkEnd.isEnabled();
     }
 
-    @Override
     public void setTextEndCheckbox( String value )
     {
         this.chkEnd.setText( value );
     }
 
-    @Override
     public void removeAllItemsDenominatorCombobox()
     {
         this.comboDenominator.removeAllItems();
     }
 
-    @Override
     public void addItemDenominatorCombobox( String value )
     {
         this.comboDenominator.addItem( value );
     }
 
-    @Override
     public void setSelectedIndexDenominatorCombobox( int value )
     {
         this.comboDenominator.setSelectedIndex( value );
     }
 
-    @Override
     public int getSelectedIndexDenominatorCombobox()
     {
         return this.comboDenominator.getSelectedIndex();
     }
 
-    @Override
     public int getMaximumNumeratorNum()
     {
         return (int)this.numNumerator.getMaximum();
     }
 
-    @Override
     public int getMinimumNumeratorNum()
     {
         return (int)this.numNumerator.getMinimum();
     }
 
-    @Override
     public void setValueNumeratorNum( int value )
     {
         this.numNumerator.setFloatValue( value );
     }
 
-    @Override
     public int getValueNumeratorNum()
     {
         return (int)this.numNumerator.getFloatValue();

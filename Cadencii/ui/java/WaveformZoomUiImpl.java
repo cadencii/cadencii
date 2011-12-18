@@ -23,7 +23,6 @@ public class WaveformZoomUiImpl
         return super.getHeight();
     }
 
-    @Override
     public void setListener( WaveformZoomUiListener listener )
     {
         mListener = listener;

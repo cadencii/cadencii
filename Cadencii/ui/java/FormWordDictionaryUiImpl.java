@@ -263,9 +263,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
         return jScrollPane;
     }
 
-    @Override
-    public int showDialog(
-        Object parent_form )
+    public int showDialog( Object parent_form )
     {
         BDialogResult ret = BDialogResult.CANCEL;
         if( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) ){
@@ -281,113 +279,82 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
         }
     }
 
-    @Override
-    public void setDialogResult(
-        boolean value )
+    public void setDialogResult( boolean value )
     {
         super.setDialogResult( value ? BDialogResult.OK : BDialogResult.CANCEL );
     }
 
-    @Override
     public int listDictionariesGetSelectedRow()
     {
         return this.listDictionaries.getSelectedRow();
     }
 
-    @Override
     public int listDictionariesGetItemCountRow()
     {
         return this.listDictionaries.getItemCountRow();
     }
 
-    @Override
     public void listDictionariesClear()
     {
         this.listDictionaries.clear();
     }
 
-    @Override
-    public String listDictionariesGetItemAt(
-        int row )
+    public String listDictionariesGetItemAt( int row )
     {
         return this.listDictionaries.getItemAt( row, 0 );
     }
 
-    @Override
-    public boolean listDictionariesIsRowChecked(
-        int row )
+    public boolean listDictionariesIsRowChecked( int row )
     {
         return this.listDictionaries.isRowChecked( row );
     }
 
-    @Override
-    public void listDictionariesSetItemAt(
-        int row,
-        String value )
+    public void listDictionariesSetItemAt( int row, String value )
     {
         this.listDictionaries.setItemAt( row, 0, value );
     }
 
-    @Override
-    public void listDictionariesSetRowChecked(
-        int row,
-        boolean value )
+    public void listDictionariesSetRowChecked( int row, boolean value )
     {
         this.listDictionaries.setRowChecked( row, value );
     }
 
-    @Override
-    public void listDictionariesSetSelectedRow(
-        int row )
+    public void listDictionariesSetSelectedRow( int row )
     {
         this.listDictionaries.setSelectedRow( row );
     }
 
-    @Override
     public void listDictionariesClearSelection()
     {
         this.listDictionaries.clearSelection();
     }
 
-    @Override
-    public void listDictionariesAddRow(
-        String value,
-        boolean selected )
+    public void listDictionariesAddRow( String value, boolean selected )
     {
         this.listDictionaries.addRow( new String[]{ value }, selected );
     }
 
-    @Override
-    public void labelAvailableDictionariesSetText(
-        String value )
+    public void labelAvailableDictionariesSetText( String value )
     {
         this.lblAvailableDictionaries.setText( value );
     }
 
-    @Override
-    public void buttonOkSetText(
-        String value )
+    public void buttonOkSetText( String value )
     {
         this.btnOK.setText( value );
     }
 
-    @Override
-    public void buttonCancelSetText(
-        String value )
+    public void buttonCancelSetText( String value )
     {
         this.btnCancel.setText( value );
     }
 
-    @Override
-    public void buttonUpSetText(
-        String value )
+    public void buttonUpSetText( String value )
     {
         this.btnUp.setText( value );
     }
 
-    @Override
-    public void buttonDownSetText(
-        String value )
+    public void buttonDownSetText( String value )
     {
         this.btnDown.setText( value );
     }

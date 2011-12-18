@@ -9,7 +9,7 @@ import com.github.cadencii.BEvent;
 import com.github.cadencii.BEventArgs;
 import com.github.cadencii.BEventHandler;
 
-public class BMenuItem extends JCheckBoxMenuItem 
+public class BMenuItem extends JCheckBoxMenuItem
                        implements ActionListener
 {
     private static final long serialVersionUID = -1354135252399786976L;
@@ -24,7 +24,6 @@ public class BMenuItem extends JCheckBoxMenuItem
         addActionListener( this );
         final BMenuItem ref = this;
         this.addMouseListener( new MouseListener(){
-            @Override
             public void mouseClicked(MouseEvent e) {
                 // System.Windows.Forms.ToolStripMenuItemでは、
                 // CheckedChangedイベントの後にClickイベントが発生するのでこれに準じる
@@ -40,9 +39,7 @@ public class BMenuItem extends JCheckBoxMenuItem
                 }
             }
 
-            @Override
             public void mouseEntered(MouseEvent e) {
-        System.out.println( "BMenuItem#mouseEntered" );
                 try{
                     mouseEnterEvent.raise( ref, new BEventArgs() );
                 }catch( Exception ex ){
@@ -50,7 +47,6 @@ public class BMenuItem extends JCheckBoxMenuItem
                 }
             }
 
-            @Override
             public void mouseExited(MouseEvent e) {
                 try{
                     mouseLeaveEvent.raise( ref, new BEventArgs() );
@@ -59,11 +55,9 @@ public class BMenuItem extends JCheckBoxMenuItem
                 }
             }
 
-            @Override
             public void mousePressed(MouseEvent e) {
             }
 
-            @Override
             public void mouseReleased(MouseEvent e) {
             }
         });
@@ -72,12 +66,12 @@ public class BMenuItem extends JCheckBoxMenuItem
     private void setSelectedSuper( boolean value ){
         super.setSelected( value );
     }
-    
+
     public void setShortcutKeyDisplayString( String value )
     {
         mShortcutDisplayString = value;
     }
-    
+
     public String getShortcutKeyDisplayString()
     {
         return mShortcutDisplayString;
@@ -91,7 +85,7 @@ public class BMenuItem extends JCheckBoxMenuItem
             invokeCheckedChangedEvent();
         }
     }
-    
+
     /**
      * CheckedChangedイベントに登録されたメソッドを呼び出します
      */
@@ -104,7 +98,6 @@ public class BMenuItem extends JCheckBoxMenuItem
         }
     }
 
-    @Override
     public void actionPerformed( ActionEvent e )
     {
         if( checkOnClick ){
@@ -122,7 +115,7 @@ public class BMenuItem extends JCheckBoxMenuItem
     public boolean isCheckOnClick(){
         return checkOnClick;
     }
-    
+
     public void setCheckOnClick( boolean value ){
         checkOnClick = value;
     }

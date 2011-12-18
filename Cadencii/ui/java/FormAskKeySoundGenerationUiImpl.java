@@ -180,9 +180,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
         return chkAlwaysPerformThisCheck;
     }
 
-    @Override
-    public int showDialog(
-        Object parent_form )
+    public int showDialog( Object parent_form )
     {
         BDialogResult ret = BDialogResult.CANCEL;
         if( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) ){
@@ -198,14 +196,11 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
         }
     }
 
-    @Override
-    public void setAlwaysPerformThisCheck(
-        boolean value )
+    public void setAlwaysPerformThisCheck( boolean value )
     {
         chkAlwaysPerformThisCheck.setSelected( value );
     }
 
-    @Override
     public boolean isAlwaysPerformThisCheck()
     {
         return chkAlwaysPerformThisCheck.isSelected();
@@ -213,30 +208,22 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     // SECTION-END-METHOD
 
-    @Override
-    public void setMessageLabelText(
-        String value )
+    public void setMessageLabelText( String value )
     {
         lblMessage.setText( value );
     }
 
-    @Override
-    public void setAlwaysPerformThisCheckCheckboxText(
-        String value )
+    public void setAlwaysPerformThisCheckCheckboxText( String value )
     {
         chkAlwaysPerformThisCheck.setText( value );
     }
 
-    @Override
-    public void setYesButtonText(
-        String value )
+    public void setYesButtonText( String value )
     {
         btnYes.setText( value );
     }
 
-    @Override
-    public void setNoButtonText(
-        String value )
+    public void setNoButtonText( String value )
     {
         btnNo.setText( value );
     }

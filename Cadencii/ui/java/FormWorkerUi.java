@@ -1,5 +1,6 @@
 package com.github.cadencii.ui;
 
+import com.github.cadencii.FormWorker;
 import com.github.cadencii.apputil.Messaging;
 import com.github.cadencii.windows.forms.BDialog;
 import com.github.cadencii.windows.forms.BDialogResult;
@@ -35,8 +36,8 @@ public class FormWorkerUi extends BDialog
      *
      */
     private FormWorkerUi() {
-    	super();
-    	initialize();
+        super();
+        initialize();
     }
 
     public FormWorkerUi( FormWorker control )

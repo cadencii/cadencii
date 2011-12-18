@@ -102,9 +102,7 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
         getContentPane().add(this.buttonSend, gbc_buttonSend);
     }
 
-    @Override
-    public int showDialog(
-        Object parent_form )
+    public int showDialog( Object parent_form )
     {
         this.setSize( 379, 421 );
         BDialogResult ret = BDialogResult.CANCEL;
@@ -121,28 +119,24 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
         }
     }
 
-    @Override
     public void setDescription(
         String value )
     {
         this.labelDescription.setText( value );
     }
 
-    @Override
     public void setExceptionMessage(
         String value )
     {
         this.textMessage.setText( value );
     }
 
-    @Override
     public void setCancelButtonText(
         String value )
     {
         this.buttonCancel.setText( value );
     }
 
-    @Override
     public void setSendButtonText(
         String value )
     {

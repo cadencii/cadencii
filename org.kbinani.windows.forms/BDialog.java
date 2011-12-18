@@ -19,9 +19,9 @@ import com.github.cadencii.BEvent;
 import com.github.cadencii.BEventArgs;
 import com.github.cadencii.BEventHandler;
 
-public class BDialog extends JDialog 
-                   implements WindowListener, 
-                              KeyListener, 
+public class BDialog extends JDialog
+                   implements WindowListener,
+                              KeyListener,
                               ComponentListener,
                               AWTEventListener
 {
@@ -34,7 +34,7 @@ public class BDialog extends JDialog
     public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> windowStateChangedEvent = new BEvent<BEventHandler>();
     private BDialogResult m_result = BDialogResult.CANCEL;
-    
+
     public BDialog(){
         super();
         addWindowListener( this );
@@ -85,10 +85,9 @@ public class BDialog extends JDialog
             mCancelButton.doClick();
         }
     }
-    
+
     public BDialogResult showDialog( Component parent ){
         setModalityType( ModalityType.APPLICATION_MODAL );
-		//setModal( true );
         setVisible( true );
         return this.m_result;
     }
@@ -125,7 +124,7 @@ public class BDialog extends JDialog
     public Dimension getClientSize(){
         return getContentPane().getSize();
     }
-    
+
     public void close(){
         setVisible( false );
         try{
@@ -140,7 +139,7 @@ public class BDialog extends JDialog
         }
         dispose();
     }
-    
+
     public void windowActivated( WindowEvent e ){
         try{
             activatedEvent.raise( this, new BEventArgs() );
@@ -149,7 +148,7 @@ public class BDialog extends JDialog
             System.err.println( "BForm#windowActivated; ex=" + ex );
         }
     }
-    
+
     public void windowClosed( WindowEvent e ){
         Toolkit.getDefaultToolkit().removeAWTEventListener( this );
         try{
@@ -158,7 +157,7 @@ public class BDialog extends JDialog
             System.err.println( "BForm#windowClosed; ex=" + ex );
         }
     }
-    
+
     public void windowClosing( WindowEvent e ){
         try{
             BFormClosingEventArgs ev = new BFormClosingEventArgs();
@@ -170,7 +169,7 @@ public class BDialog extends JDialog
             System.err.println( "BDialog#windowClosing; ex=" + ex );
         }
     }
-    
+
     public void windowDeactivated( WindowEvent e ){
         try{
             deactivateEvent.raise( this, new BEventArgs() );
@@ -180,7 +179,6 @@ public class BDialog extends JDialog
         }
     }
 
-    @Override
     public void windowDeiconified( WindowEvent e ){
         try{
             windowStateChangedEvent.raise( this, new BEventArgs() );
@@ -188,8 +186,7 @@ public class BDialog extends JDialog
             System.err.println( "BDialog#windowDeiconified; ex=" + ex );
         }
     }
-    
-    @Override
+
     public void windowIconified( WindowEvent e ){
         try{
             windowStateChangedEvent.raise( this, new BEventArgs() );
@@ -197,7 +194,7 @@ public class BDialog extends JDialog
             System.err.println( "BDialog#windowIconified; ex=" + ex );
         }
     }
-    
+
     public void windowOpened( WindowEvent e ){
         try{
             loadEvent.raise( this, new BEventArgs() );
@@ -205,22 +202,22 @@ public class BDialog extends JDialog
             System.err.println( "BForm#windowOpened; ex=" + ex );
         }
     }
-    
+
     public final BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public BDialogResult getDialogResult(){
         return m_result;
     }
-    
+
     public void setDialogResult( BDialogResult value ){
         m_result = value;
         setVisible( false );
     }
-    
+
     public void componentHidden(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
-        
+
     }
 
     public void componentMoved(ComponentEvent e) {
@@ -242,6 +239,6 @@ public class BDialog extends JDialog
 
     public void componentShown(ComponentEvent e) {
         // TODO 自動生成されたメソッド・スタブ
-        
+
     }
 }

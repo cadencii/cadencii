@@ -5629,15 +5629,21 @@ namespace com.github.cadencii
                                 #region ダブルクリックした位置にベジエデータ点があった場合
                                 int chain_id = target_chain.id;
                                 BezierChain before = (BezierChain)target_chain.clone();
-                                FormBezierPointEdit fbpe = null;
+                                FormBezierPointEditController fbpe = null;
                                 try {
-                                    fbpe = new FormBezierPointEdit( this,
+                                    fbpe = new FormBezierPointEditController( this,
                                                                     mSelectedCurve,
                                                                     chain_id,
                                                                     target_point.getID() );
                                     mEditingChainID = chain_id;
                                     mEditingPointID = target_point.getID();
-                                    BDialogResult ret = AppManager.showModalDialog( fbpe, mMainWindow );
+                                    {//TODO:debug
+                                        sout.println( "TrackSelector_MosueDoubleClick; start to show FormBezierPointEdit" );
+                                    }
+                                    int ret = AppManager.showModalDialog( fbpe.getUi(), mMainWindow );
+                                    {//TODO:debug
+                                        sout.println( "TrackSelector_MosueDoubleClick; ret=" + ret );
+                                    }
                                     mEditingChainID = -1;
                                     mEditingPointID = -1;
                                     BezierChain after = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, chain_id );
@@ -5650,9 +5656,9 @@ namespace com.github.cadencii
                                             before,
                                             AppManager.editorConfig.getControlCurveResolutionValue() );
                                     executeCommand( revert, false );
-                                    if ( ret == BDialogResult.OK ) {
+                                    if( ret == 1 ) {
                                         // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
-                                        if ( BezierChain.isBezierImplicit( target_chain ) ) {
+                                        if( BezierChain.isBezierImplicit( target_chain ) ) {
                                             CadenciiCommand run =
                                                 VsqFileEx.generateCommandReplaceBezierChain(
                                                     selected,
@@ -5663,11 +5669,15 @@ namespace com.github.cadencii
                                             executeCommand( run, true );
                                         }
                                     }
-                                } catch ( Exception ex ) {
+                                } catch( Exception ex ) {
+                                    {//TODO:debug
+                                        sout.println( ex.Message );
+                                        sout.println( ex.StackTrace );
+                                    }
                                 } finally {
                                     if ( fbpe != null ) {
                                         try {
-                                            fbpe.close();
+                                            fbpe.getUi().close();
                                         } catch ( Exception ex2 ) {
                                         }
                                     }

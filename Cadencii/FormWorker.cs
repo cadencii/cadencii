@@ -17,6 +17,7 @@ package com.github.cadencii;
 
 import java.util.*;
 import com.github.cadencii.*;
+import com.github.cadencii.ui.*;
 
 #elif __cplusplus
 
@@ -105,7 +106,7 @@ namespace com.github.cadencii
         private double mJobAmount;
         private int mIndex;
         private FormWorker mControl;
-        
+
         public FormWorkerThread( Object invoker, String method_name, FormWorkerJobArgument arg, ProgressBarWithLabel progress_bar, double job_amount, int index, FormWorker worker )
         {
             try{
@@ -123,7 +124,6 @@ namespace com.github.cadencii
                 private boolean mCancelRequested = false;
                 private double mProcessedJob = 0.0;
 
-                @Override
                 public void reportProgress(double processed_job) {
                     mProcessedJob = processed_job;
                     int prog = (int)(processed_job / mJobAmount * 100.0);
@@ -133,33 +133,28 @@ namespace com.github.cadencii
                     mControl.workerProgressChanged( mIndex, prog );
                 }
 
-                @Override
                 public void reportComplete() {
                     mControl.workerCompleted( mIndex );
                 }
 
-                @Override
                 public boolean isCancelRequested() {
                     return mCancelRequested;
                 }
 
-                @Override
                 public void requestCancel() {
                     mCancelRequested = true;
                 }
 
-                @Override
                 public double getProcessedAmount() {
                     return mProcessedJob;
                 }
 
-                @Override
                 public double getJobAmount() {
                     return mJobAmount;
                 }
             };
         }
-        
+
         public void run()
         {
             if( mDelegate == null ) return;
@@ -252,7 +247,7 @@ namespace com.github.cadencii
             label.setText( job_description );
             // フォームのビューにUIを追加
             ptrUi.addProgressBar( ui );
-            
+
             // ラベルのリストに登録
             int index = vec.size( mLabels );
             vec.add( mLabels, label );
@@ -265,9 +260,9 @@ namespace com.github.cadencii
             arg.arguments = argument;
             arg.index = index;
 #if JAVA
-            FormWorkerThread worker = 
+            FormWorkerThread worker =
                 new FormWorkerThread(
-                    obj, method_name, arg, 
+                    obj, method_name, arg,
                     label, job_amount, index, this );
             vec.add( mThreads, worker );
 #elif __cplusplus

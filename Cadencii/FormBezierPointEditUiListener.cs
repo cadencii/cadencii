@@ -39,6 +39,29 @@ namespace com.github.cadencii
     public interface FormBezierPointEditUiListener
 #endif
     {
+        [PureVirtualFunction]
+        void buttonOkClick();
+
+        [PureVirtualFunction]
+        void buttonCancelClick();
+
+        [PureVirtualFunction]
+        void buttonBackwardClick();
+
+        [PureVirtualFunction]
+        void buttonForwardClick();
+
+        [PureVirtualFunction]
+        void checkboxEnableSmoothCheckedChanged();
+
+        [PureVirtualFunction]
+        void buttonsMouseDown( int buttonType );
+
+        [PureVirtualFunction]
+        void buttonsMouseUp();
+
+        [PureVirtualFunction]
+        void buttonsMouseMove();
     }
 
 #if !JAVA

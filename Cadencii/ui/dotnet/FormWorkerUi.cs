@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-//INCLUDE ./ui/java/FormWorkerUi.java
-
-#else
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,7 +60,7 @@ namespace com.github.cadencii
             buttonCancel.Text = _( "Cancel" );
             buttonDetail.Text = _( "detail" );
         }
-    
+
         public void show( Object obj )
         {
             if ( obj != null && obj is IWin32Window ) {
@@ -237,18 +231,18 @@ namespace com.github.cadencii
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonDetail = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
+            //
             // progressBar1
-            // 
+            //
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point( 12, 40 );
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size( 400, 23 );
             this.progressBar1.TabIndex = 1;
-            // 
+            //
             // flowLayoutPanel1
-            // 
+            //
             this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -260,18 +254,18 @@ namespace com.github.cadencii
             this.flowLayoutPanel1.Size = new System.Drawing.Size( 400, 126 );
             this.flowLayoutPanel1.TabIndex = 2;
             this.flowLayoutPanel1.WrapContents = false;
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point( 12, 9 );
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size( 400, 28 );
             this.label1.TabIndex = 3;
-            // 
+            //
             // buttonCancel
-            // 
+            //
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point( 332, 69 );
@@ -281,9 +275,9 @@ namespace com.github.cadencii
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler( this.buttonCancel_Click );
-            // 
+            //
             // buttonDetail
-            // 
+            //
             this.buttonDetail.Location = new System.Drawing.Point( 12, 69 );
             this.buttonDetail.Name = "buttonDetail";
             this.buttonDetail.Size = new System.Drawing.Size( 80, 23 );
@@ -291,9 +285,9 @@ namespace com.github.cadencii
             this.buttonDetail.Text = "detail";
             this.buttonDetail.UseVisualStyleBackColor = true;
             this.buttonDetail.Click += new System.EventHandler( this.buttonDetail_Click );
-            // 
+            //
             // FormWorkerUi
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
@@ -356,4 +350,3 @@ namespace com.github.cadencii
         }
     }
 }
-#endif
