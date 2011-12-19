@@ -12,22 +12,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Windows.Forms;
 using com.github.cadencii.apputil;
 using com.github.cadencii;
 using com.github.cadencii.java.awt;
 using com.github.cadencii.java.util;
-using com.github.cadencii.windows.forms;
 
 namespace com.github.cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using boolean = System.Boolean;
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
-
-    public class FormBezierPointEditUiImpl : BDialog, FormBezierPointEditUi
+    public class FormBezierPointEditUiImpl : Form, FormBezierPointEditUi
     {
         private FormBezierPointEditUiListener listener;
         
@@ -37,7 +30,6 @@ namespace com.github.cadencii
             InitializeComponent();
             registerEventHandlers();
             setResources();
-            applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -215,9 +207,13 @@ namespace com.github.cadencii
             groupDataPoint.Text = value;
         }
 
-        public void setDialogResult( BDialogResult result )
+        public void setDialogResult( bool result )
         {
-            base.setDialogResult( result );
+            if( result ) {
+                this.DialogResult = DialogResult.OK;
+            } else {
+                this.DialogResult = DialogResult.Cancel;
+            }
         }
 
         public void setOpacity( double opacity )
@@ -225,29 +221,18 @@ namespace com.github.cadencii
             this.Opacity = opacity;
         }
 
-        #endregion
-
-
-        #region public methods
-        public void applyLanguage()
+        public void close()
         {
-            setTitle( _( "Edit Bezier Data Point" ) );
-
-            groupDataPoint.setTitle( _( "Data Poin" ) );
-            lblDataPointClock.setText( _( "Clock" ) );
-            lblDataPointValue.setText( _( "Value" ) );
-
-            groupLeft.setTitle( _( "Left Control Point" ) );
-            lblLeftClock.setText( _( "Clock" ) );
-            lblLeftValue.setText( _( "Value" ) );
-
-            groupRight.setTitle( _( "Right Control Point" ) );
-            lblRightClock.setText( _( "Clock" ) );
-            lblRightValue.setText( _( "Value" ) );
-
-            chkEnableSmooth.setText( _( "Smooth" ) );
+            this.Close();
         }
+
+        public void setTitle( string value )
+        {
+            this.Text = value;
+        }
+
         #endregion
+
 
         #region helper methods
 
@@ -258,44 +243,44 @@ namespace com.github.cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            chkEnableSmooth.CheckedChanged += new BEventHandler( chkEnableSmooth_CheckedChanged );
-            btnLeft.MouseMove += new BMouseEventHandler( common_MouseMove );
-            btnLeft.MouseDown += new BMouseEventHandler( handleOperationButtonMouseDown );
-            btnLeft.MouseUp += new BMouseEventHandler( common_MouseUp );
-            btnDataPoint.MouseMove += new BMouseEventHandler( common_MouseMove );
-            btnDataPoint.MouseDown += new BMouseEventHandler( handleOperationButtonMouseDown );
-            btnDataPoint.MouseUp += new BMouseEventHandler( common_MouseUp );
-            btnRight.MouseMove += new BMouseEventHandler( common_MouseMove );
-            btnRight.MouseDown += new BMouseEventHandler( handleOperationButtonMouseDown );
-            btnRight.MouseUp += new BMouseEventHandler( common_MouseUp );
-            btnBackward.Click += new BEventHandler( btnBackward_Click );
-            btnForward.Click += new BEventHandler( btnForward_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            chkEnableSmooth.CheckedChanged += new EventHandler( chkEnableSmooth_CheckedChanged );
+            btnLeft.MouseMove += new MouseEventHandler( common_MouseMove );
+            btnLeft.MouseDown += new MouseEventHandler( handleOperationButtonMouseDown );
+            btnLeft.MouseUp += new MouseEventHandler( common_MouseUp );
+            btnDataPoint.MouseMove += new MouseEventHandler( common_MouseMove );
+            btnDataPoint.MouseDown += new MouseEventHandler( handleOperationButtonMouseDown );
+            btnDataPoint.MouseUp += new MouseEventHandler( common_MouseUp );
+            btnRight.MouseMove += new MouseEventHandler( common_MouseMove );
+            btnRight.MouseDown += new MouseEventHandler( handleOperationButtonMouseDown );
+            btnRight.MouseUp += new MouseEventHandler( common_MouseUp );
+            btnBackward.Click += new EventHandler( btnBackward_Click );
+            btnForward.Click += new EventHandler( btnForward_Click );
         }
 
         private void setResources()
         {
-            this.btnLeft.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
-            this.btnDataPoint.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
-            this.btnRight.setIcon( new ImageIcon( Resources.get_target__pencil() ) );
+            this.btnLeft.Image = Resources.get_target__pencil().image;
+            this.btnDataPoint.Image = Resources.get_target__pencil().image;
+            this.btnRight.Image = Resources.get_target__pencil().image;
         }
         #endregion
 
 
         #region event handlers
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( object sender, EventArgs e )
         {
             this.listener.buttonOkClick();
         }
 
-        public void chkEnableSmooth_CheckedChanged( Object sender, BEventArgs e )
+        public void chkEnableSmooth_CheckedChanged( object sender, EventArgs e )
         {
             this.listener.checkboxEnableSmoothCheckedChanged();
         }
 
-        public void handleOperationButtonMouseDown( Object sender, BMouseEventArgs e )
+        public void handleOperationButtonMouseDown( object sender, MouseEventArgs e )
         {
             int buttonType = FormBezierPointEditController.BUTTON_POINT;
             if ( sender == btnLeft ) {
@@ -306,12 +291,12 @@ namespace com.github.cadencii
             this.listener.buttonsMouseDown( buttonType );
         }
 
-        public void common_MouseUp( Object sender, BMouseEventArgs e )
+        public void common_MouseUp( object sender, MouseEventArgs e )
         {
             this.listener.buttonsMouseUp();
         }
 
-        public void common_MouseMove( Object sender, BMouseEventArgs e )
+        public void common_MouseMove( object sender, MouseEventArgs e )
         {
             this.listener.buttonsMouseMove();
         }
@@ -326,7 +311,7 @@ namespace com.github.cadencii
             this.listener.buttonBackwardClick();
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( object sender, EventArgs e )
         {
             this.listener.buttonCancelClick();
         }
@@ -342,7 +327,7 @@ namespace com.github.cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();
@@ -356,29 +341,29 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.chkEnableSmooth = new BCheckBox();
-            this.lblLeftValue = new BLabel();
-            this.lblLeftClock = new BLabel();
-            this.groupLeft = new BGroupBox();
-            this.btnLeft = new BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.chkEnableSmooth = new CheckBox();
+            this.lblLeftValue = new Label();
+            this.lblLeftClock = new Label();
+            this.groupLeft = new GroupBox();
+            this.btnLeft = new Button();
             this.txtLeftClock = new NumberTextBox();
             this.txtLeftValue = new NumberTextBox();
-            this.groupDataPoint = new BGroupBox();
-            this.btnDataPoint = new BButton();
-            this.lblDataPointValue = new BLabel();
+            this.groupDataPoint = new GroupBox();
+            this.btnDataPoint = new Button();
+            this.lblDataPointValue = new Label();
             this.txtDataPointClock = new NumberTextBox();
-            this.lblDataPointClock = new BLabel();
+            this.lblDataPointClock = new Label();
             this.txtDataPointValue = new NumberTextBox();
-            this.groupRight = new BGroupBox();
-            this.btnRight = new BButton();
-            this.lblRightValue = new BLabel();
+            this.groupRight = new GroupBox();
+            this.btnRight = new Button();
+            this.lblRightValue = new Label();
             this.txtRightClock = new NumberTextBox();
-            this.lblRightClock = new BLabel();
+            this.lblRightClock = new Label();
             this.txtRightValue = new NumberTextBox();
-            this.btnBackward = new BButton();
-            this.btnForward = new BButton();
+            this.btnBackward = new Button();
+            this.btnForward = new Button();
             this.groupLeft.SuspendLayout();
             this.groupDataPoint.SuspendLayout();
             this.groupRight.SuspendLayout();
@@ -657,29 +642,29 @@ namespace com.github.cadencii
 
         }
 
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BCheckBox chkEnableSmooth;
-        private BLabel lblLeftValue;
-        private BLabel lblLeftClock;
+        private Button btnCancel;
+        private Button btnOK;
+        private CheckBox chkEnableSmooth;
+        private Label lblLeftValue;
+        private Label lblLeftClock;
         private NumberTextBox txtLeftValue;
         private NumberTextBox txtLeftClock;
-        private BGroupBox groupLeft;
-        private BGroupBox groupDataPoint;
-        private BLabel lblDataPointValue;
+        private GroupBox groupLeft;
+        private GroupBox groupDataPoint;
+        private Label lblDataPointValue;
         private NumberTextBox txtDataPointClock;
-        private BLabel lblDataPointClock;
+        private Label lblDataPointClock;
         private NumberTextBox txtDataPointValue;
-        private BGroupBox groupRight;
-        private BLabel lblRightValue;
+        private GroupBox groupRight;
+        private Label lblRightValue;
         private NumberTextBox txtRightClock;
-        private BLabel lblRightClock;
+        private Label lblRightClock;
         private NumberTextBox txtRightValue;
-        private BButton btnDataPoint;
-        private BButton btnLeft;
-        private BButton btnRight;
-        private BButton btnBackward;
-        private BButton btnForward;
+        private Button btnDataPoint;
+        private Button btnLeft;
+        private Button btnRight;
+        private Button btnBackward;
+        private Button btnForward;
 
     }
 

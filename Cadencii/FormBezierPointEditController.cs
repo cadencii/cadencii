@@ -146,7 +146,7 @@ namespace com.github.cadencii
                     x = str.toi( this.ui.getRightClockText() );
                     y = str.toi( this.ui.getRightValueText() );
                 }
-                this.ui.setDialogResult( BDialogResult.OK );
+                this.ui.setDialogResult( true );
             } catch( Exception ex ) {
                 AppManager.showMessageBox(
                     _( "Integer format error" ),
@@ -154,14 +154,14 @@ namespace com.github.cadencii
                     com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
                     com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE
                 );
-                this.ui.setDialogResult( BDialogResult.CANCEL );
+                this.ui.setDialogResult( false );
                 Logger.write( typeof( FormBezierPointEditController ) + ".btnOK_Click; ex=" + ex + "\n" );
             }
         }
 
         public void buttonCancelClick()
         {
-            this.ui.setDialogResult( BDialogResult.CANCEL );
+            this.ui.setDialogResult( false );
         }
 
         public void buttonBackwardClick()

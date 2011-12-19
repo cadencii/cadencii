@@ -138,8 +138,12 @@ namespace com.github.cadencii
         [PureVirtualFunction]
         void setCheckboxEnableSmoothText( string value );
 
+        /// <summary>
+        /// ダイアログの結果を設定する
+        /// </summary>
+        /// <param name="result">OKなら true を、そうでなければ false を設定する</param>
         [PureVirtualFunction]
-        void setDialogResult( BDialogResult result );
+        void setDialogResult( bool result );
 
         [PureVirtualFunction]
         void setOpacity( double opacity );

@@ -685,5 +685,14 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
         }
     }
 
+    public void setDialogResult( boolean result )
+    {
+        if( result ){
+            super.setDialogResult( BDialogResult.OK );
+        }else{
+            super.setDialogResult( BDialogResult.CANCEL );
+        }
+    }
+
     //SECTION-END-METHOD
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}
