@@ -1,7 +1,7 @@
 /* -京-
  * BPropertyGrid.cs
  * Copyright © 2011 kbinani
- * 
+ *
  *
  * This file is part of org.kbinani.windows.forms.
  *
