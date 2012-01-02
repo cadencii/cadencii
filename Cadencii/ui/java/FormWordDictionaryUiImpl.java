@@ -5,35 +5,30 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import com.github.cadencii.FormWordDictionaryUi;
 import com.github.cadencii.FormWordDictionaryUiListener;
-import com.github.cadencii.windows.forms.BButton;
-import com.github.cadencii.windows.forms.BDialog;
-import com.github.cadencii.windows.forms.BDialogResult;
-import com.github.cadencii.windows.forms.BLabel;
-import com.github.cadencii.windows.forms.BListView;
-import com.github.cadencii.windows.forms.BPanel;
 
-public class FormWordDictionaryUiImpl extends BDialog implements FormWordDictionaryUi
+public class FormWordDictionaryUiImpl extends DialogBase implements FormWordDictionaryUi
 {
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
-    private BLabel lblAvailableDictionaries = null;
-    private BPanel jPanel2 = null;
-    private BButton btnOK = null;
-    private BButton btnCancel = null;
-    private BPanel jPanel21 = null;
-    private BButton btnUp = null;
-    private BButton btnDown = null;
-    private BListView listDictionaries = null;
+    private JLabel lblAvailableDictionaries = null;
+    private JPanel jPanel2 = null;
+    private JButton btnOK = null;
+    private JButton btnCancel = null;
+    private JPanel jPanel21 = null;
+    private JButton btnUp = null;
+    private JButton btnDown = null;
+    private ListView listDictionaries = null;
     private JScrollPane jScrollPane = null;
-    private BLabel lblSpacer = null;
-    private BLabel lblSpacer1 = null;
-    private FormWordDictionaryUiListener listener;
+    private JLabel lblSpacer = null;
+    private JLabel lblSpacer1 = null;
 
     /**
      * This method initializes
@@ -42,7 +37,6 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     public FormWordDictionaryUiImpl( FormWordDictionaryUiListener listener )
     {
         super();
-        this.listener = listener;
         initialize();
     }
 
@@ -90,7 +84,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
             gridBagConstraints.anchor = GridBagConstraints.WEST;
             gridBagConstraints.insets = new Insets( 12, 12, 6, 0 );
             gridBagConstraints.gridy = 0;
-            lblAvailableDictionaries = new BLabel();
+            lblAvailableDictionaries = new JLabel();
             lblAvailableDictionaries.setText( "Available Dictionaries" );
             jPanel = new JPanel();
             jPanel.setLayout( new GridBagLayout() );
@@ -105,16 +99,16 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     /**
      * This method initializes jPanel2
      *
-     * @return org.kbinani.windows.forms.BPanel
+     * @return org.kbinani.windows.forms.JPanel
      */
-    private BPanel getJPanel2()
+    private JPanel getJPanel2()
     {
         if( jPanel2 == null ){
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
             gridBagConstraints5.gridx = 0;
             gridBagConstraints5.weightx = 1.0D;
             gridBagConstraints5.gridy = 0;
-            lblSpacer1 = new BLabel();
+            lblSpacer1 = new JLabel();
             lblSpacer1.setPreferredSize( new Dimension( 4, 4 ) );
             lblSpacer1.setText( "" );
             GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
@@ -127,7 +121,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
             gridBagConstraints42.gridx = 2;
             gridBagConstraints42.gridy = 0;
             gridBagConstraints42.insets = new Insets( 0, 0, 0, 0 );
-            jPanel2 = new BPanel();
+            jPanel2 = new JPanel();
             jPanel2.setLayout( new GridBagLayout() );
             jPanel2.add( getBtnOK(), gridBagConstraints42 );
             jPanel2.add( getBtnCancel(), gridBagConstraints52 );
@@ -139,12 +133,12 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     /**
      * This method initializes btnOK
      *
-     * @return org.kbinani.windows.forms.BButton
+     * @return org.kbinani.windows.forms.JButton
      */
-    private BButton getBtnOK()
+    private JButton getBtnOK()
     {
         if( btnOK == null ){
-            btnOK = new BButton();
+            btnOK = new JButton();
             btnOK.setText( "OK" );
             btnOK.setPreferredSize( new Dimension( 100, 29 ) );
         }
@@ -154,12 +148,12 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     /**
      * This method initializes btnCancel
      *
-     * @return org.kbinani.windows.forms.BButton
+     * @return org.kbinani.windows.forms.JButton
      */
-    private BButton getBtnCancel()
+    private JButton getBtnCancel()
     {
         if( btnCancel == null ){
-            btnCancel = new BButton();
+            btnCancel = new JButton();
             btnCancel.setText( "Cancel" );
             btnCancel.setPreferredSize( new Dimension( 100, 29 ) );
         }
@@ -169,16 +163,16 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     /**
      * This method initializes jPanel21
      *
-     * @return org.kbinani.windows.forms.BPanel
+     * @return org.kbinani.windows.forms.JPanel
      */
-    private BPanel getJPanel21()
+    private JPanel getJPanel21()
     {
         if( jPanel21 == null ){
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.weightx = 1.0D;
             gridBagConstraints1.gridy = 0;
-            lblSpacer = new BLabel();
+            lblSpacer = new JLabel();
             lblSpacer.setPreferredSize( new Dimension( 4, 4 ) );
             lblSpacer.setText( "" );
             GridBagConstraints gridBagConstraints521 = new GridBagConstraints();
@@ -191,7 +185,7 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
             gridBagConstraints421.gridx = 1;
             gridBagConstraints421.gridy = 0;
             gridBagConstraints421.insets = new Insets( 0, 0, 0, 16 );
-            jPanel21 = new BPanel();
+            jPanel21 = new JPanel();
             jPanel21.setLayout( new GridBagLayout() );
             jPanel21.add( getBtnUp(), gridBagConstraints421 );
             jPanel21.add( getBtnDown(), gridBagConstraints521 );
@@ -203,12 +197,12 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     /**
      * This method initializes btnUp
      *
-     * @return org.kbinani.windows.forms.BButton
+     * @return org.kbinani.windows.forms.JButton
      */
-    private BButton getBtnUp()
+    private JButton getBtnUp()
     {
         if( btnUp == null ){
-            btnUp = new BButton();
+            btnUp = new JButton();
             btnUp.setText( "Up" );
             btnUp.setPreferredSize( new Dimension( 75, 29 ) );
         }
@@ -218,12 +212,12 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
     /**
      * This method initializes btnDown
      *
-     * @return org.kbinani.windows.forms.BButton
+     * @return org.kbinani.windows.forms.JButton
      */
-    private BButton getBtnDown()
+    private JButton getBtnDown()
     {
         if( btnDown == null ){
-            btnDown = new BButton();
+            btnDown = new JButton();
             btnDown.setText( "Down" );
             btnDown.setPreferredSize( new Dimension( 75, 29 ) );
         }
@@ -235,10 +229,10 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
      *
      * @return javax.swing.JPanel
      */
-    private BListView getListDictionaries()
+    private ListView getListDictionaries()
     {
         if( listDictionaries == null ){
-            listDictionaries = new BListView();
+            listDictionaries = new ListView();
             listDictionaries.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
             listDictionaries.setRowSelectionAllowed( true );
         }
@@ -265,23 +259,12 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
 
     public int showDialog( Object parent_form )
     {
-        BDialogResult ret = BDialogResult.CANCEL;
-        if( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) ){
-            ret = super.showDialog( null );
-        }else{
-            BDialog form = (BDialog)parent_form;
-            ret = super.showDialog( form );
-        }
-        if( ret == BDialogResult.OK || ret == BDialogResult.YES ){
-            return 1;
-        }else{
-            return 0;
-        }
+        return super.doShowDialog( parent_form );
     }
 
     public void setDialogResult( boolean value )
     {
-        super.setDialogResult( value ? BDialogResult.OK : BDialogResult.CANCEL );
+        super.setDialogResult( value );
     }
 
     public int listDictionariesGetSelectedRow()
@@ -359,4 +342,8 @@ public class FormWordDictionaryUiImpl extends BDialog implements FormWordDiction
         this.btnDown.setText( value );
     }
 
+    public void close()
+    {
+        super.doClose();
+    }
 }

@@ -108,9 +108,9 @@ public class FormWorkerUi extends BDialog
         jLabel.setText( value );
     }
 
-    public boolean showDialog( FormMain main_form )
+    public boolean showDialogTo( com.github.cadencii.FormMain main_window )
     {
-        if( super.showDialog( main_form ) == BDialogResult.CANCEL ){
+        if( super.showDialog( main_window ) == BDialogResult.CANCEL ){
             return true;
         }else{
             return false;

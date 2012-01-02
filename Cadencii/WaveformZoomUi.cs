@@ -15,10 +15,6 @@
 
 package com.github.cadencii;
 
-import java.awt.*;
-
-import com.github.cadencii.windows.forms.*;
-
 #else
 
 namespace com.github
@@ -28,8 +24,7 @@ namespace com.github
 
 #if CSHARP
             using System;
-            using com.github.cadencii.java.awt;
-            using com.github.cadencii.windows.forms;
+            using org.kbinani.cadencii;
 #else
             using namespace org::kbinani::cadencii;
 #endif

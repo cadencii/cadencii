@@ -12,32 +12,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package com.github.cadencii;
 
-//INCLUDE-SECTION IMPORT ./ui/java/FormBezierPointEdit.java
-
-import java.awt.*;
-import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
 #else
+
 using System;
-using com.github.cadencii.apputil;
 using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.windows.forms;
 
 namespace com.github.cadencii
 {
+
 #endif
 
-#if JAVA
     public interface FormBezierPointEditUiListener
-#else
-    public interface FormBezierPointEditUiListener
-#endif
     {
         [PureVirtualFunction]
         void buttonOkClick();

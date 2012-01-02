@@ -869,7 +869,7 @@ namespace com.github.cadencii
 
             // ダイアログを表示する
             beginShowDialog();
-            boolean ret = fw.getUi().showDialog( main_window );
+            boolean ret = fw.getUi().showDialogTo( main_window );
 #if DEBUG
             sout.println( "AppManager#patchWorkToFreeze; showDialog returns " + ret );
 #endif

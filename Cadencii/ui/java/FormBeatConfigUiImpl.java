@@ -1,6 +1,5 @@
 package com.github.cadencii.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -11,28 +10,24 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import javax.swing.JSpinner;
 import com.github.cadencii.FormBeatConfigUi;
 import com.github.cadencii.FormBeatConfigUiListener;
-import com.github.cadencii.windows.forms.BDialog;
-import com.github.cadencii.windows.forms.BDialogResult;
-import com.github.cadencii.windows.forms.BGroupBox;
-import com.github.cadencii.windows.forms.BNumericUpDown;
 
-public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
+public class FormBeatConfigUiImpl extends DialogBase implements FormBeatConfigUi
 {
     private static final long serialVersionUID = 4414859292940722020L;
     private FormBeatConfigUiListener listener;
     private JPanel jContentPane = null;
-    private BGroupBox groupPosition = null;
+    private JPanel groupPosition = null;
     private JLabel lblStart = null;
-    private BNumericUpDown numStart = null;
+    private JSpinner numStart = null;
     private JLabel lblBar1 = null;
     private JCheckBox chkEnd = null;
-    private BNumericUpDown numEnd = null;
+    private JSpinner numEnd = null;
     private JLabel lblBar2 = null;
-    private BGroupBox groupBeat = null;
-    private BNumericUpDown numNumerator = null;
+    private JPanel groupBeat = null;
+    private JSpinner numNumerator = null;
     private JLabel jLabel = null;
     private JLabel jLabel1 = null;
     private JComboBox comboDenominator = null;
@@ -114,7 +109,7 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
      *
      * @return javax.swing.BPanel
      */
-    private BGroupBox getGroupPosition() {
+    private JPanel getGroupPosition() {
         if (groupPosition == null) {
             GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
             gridBagConstraints61.gridx = 3;
@@ -167,9 +162,8 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
             gridBagConstraints.gridy = 0;
             lblStart = new JLabel();
             lblStart.setText("From");
-            groupPosition = new BGroupBox();
+            groupPosition = createGroupPosition();
             groupPosition.setLayout(new GridBagLayout());
-            groupPosition.setTitle("Position");
             groupPosition.add(lblStart, gridBagConstraints);
             groupPosition.add(getNumStart(), gridBagConstraints1);
             groupPosition.add(lblBar1, gridBagConstraints2);
@@ -187,9 +181,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
      *
      * @return javax.swing.BComboBox
      */
-    private BNumericUpDown getNumStart() {
+    private JSpinner getNumStart() {
         if (numStart == null) {
-            numStart = new BNumericUpDown();
+            numStart = createNumStart();
             numStart.setPreferredSize(new Dimension(31, 29));
         }
         return numStart;
@@ -222,9 +216,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
      *
      * @return javax.swing.BComboBox
      */
-    private BNumericUpDown getNumEnd() {
+    private JSpinner getNumEnd() {
         if (numEnd == null) {
-            numEnd = new BNumericUpDown();
+            numEnd = createNumEnd();
             numEnd.setPreferredSize(new Dimension(31, 29));
             numEnd.setEnabled(false);
         }
@@ -236,7 +230,7 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
      *
      * @return javax.swing.BPanel
      */
-    private BGroupBox getGroupBeat() {
+    private JPanel getGroupBeat() {
         if (groupBeat == null) {
             GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
             gridBagConstraints13.gridx = 4;
@@ -265,9 +259,8 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
             gridBagConstraints7.weightx = 0.5D;
             gridBagConstraints7.insets = new Insets(3, 16, 3, 0);
             gridBagConstraints7.gridx = 0;
-            groupBeat = new BGroupBox();
+            groupBeat = createGroupBeat();
             groupBeat.setLayout(new GridBagLayout());
-            groupBeat.setTitle("Position");
             groupBeat.add(getNumNumerator(), gridBagConstraints7);
             groupBeat.add(jLabel, gridBagConstraints10);
             groupBeat.add(jLabel1, gridBagConstraints11);
@@ -282,9 +275,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
      *
      * @return javax.swing.BComboBox
      */
-    private BNumericUpDown getNumNumerator() {
+    private JSpinner getNumNumerator() {
         if (numNumerator == null) {
-            numNumerator = new BNumericUpDown();
+            numNumerator = creatNumNumerator();
             numNumerator.setPreferredSize(new Dimension(31, 29));
         }
         return numNumerator;
@@ -384,20 +377,7 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 
     public int showDialog( Object parent_form )
     {
-        if( parent_form == null ){
-            return 0;
-        }
-        if( !(parent_form instanceof Component) ){
-            return 0;
-        }
-        Component parent = (Component)parent_form;
-        BDialogResult ret = super.showDialog( parent );
-        if( ret == BDialogResult.OK || ret == BDialogResult.YES )
-        {
-            return 1;
-        }else{
-            return 0;
-        }
+        return super.doShowDialog( parent_form );
     }
 
     public void setFont( String fontName, float fontSize )
@@ -406,42 +386,9 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
     }
 
     @Override
-    public void setTitle( String value )
-    {
-        super.setTitle( value );
-    }
-
-    public void setDialogResult( boolean value )
-    {
-        BDialogResult res = BDialogResult.CANCEL;
-        if( value ){
-            res = BDialogResult.OK;
-        }
-        super.setDialogResult( res );
-    }
-
-    @Override
-    public void setLocation( int x, int y )
-    {
-        super.setLocation( x, y );
-    }
-
-    @Override
-    public int getWidth()
-    {
-        return super.getWidth();
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return super.getHeight();
-    }
-
-    @Override
     public void close()
     {
-        super.close();
+        super.doClose();
     }
 
     public void setTextBar1Label( String value )
@@ -471,12 +418,12 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 
     public void setTextBeatGroup( String value )
     {
-        this.groupBeat.setTitle( value );
+        DialogBase.GroupBox.setTitle( this.groupBeat, value );
     }
 
     public void setTextPositionGroup( String value )
     {
-        this.groupPosition.setTitle( value );
+        DialogBase.GroupBox.setTitle( this.groupPosition, value );
     }
 
     public void setEnabledStartNum( boolean value )
@@ -486,32 +433,32 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 
     public void setMinimumStartNum( int value )
     {
-        this.numStart.setMinimum( value );
+        DialogBase.Spinner.setMinimum( numStart, value );
     }
 
     public void setMaximumStartNum( int value )
     {
-        this.numStart.setMaximum( value );
+        DialogBase.Spinner.setMaximum( numStart, value );
     }
 
     public int getMaximumStartNum()
     {
-        return (int)this.numStart.getMaximum();
+        return (int)DialogBase.Spinner.getMaximum( numStart );
     }
 
     public int getMinimumStartNum()
     {
-        return (int)this.numStart.getMinimum();
+        return (int)DialogBase.Spinner.getMinimum( numStart );
     }
 
     public void setValueStartNum( int value )
     {
-        this.numStart.setFloatValue( value );
+        DialogBase.Spinner.setFloatValue( numStart, value );
     }
 
     public int getValueStartNum()
     {
-        return (int)this.numStart.getFloatValue();
+        return (int)DialogBase.Spinner.getFloatValue( numStart );
     }
 
     public void setEnabledEndNum( boolean value )
@@ -521,32 +468,32 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 
     public void setMinimumEndNum( int value )
     {
-        this.numEnd.setMinimum( value );
+        DialogBase.Spinner.setMinimum( this.numEnd, value );
     }
 
     public void setMaximumEndNum( int value )
     {
-        this.numEnd.setMaximum( value );
+        DialogBase.Spinner.setMaximum( this.numEnd, value );
     }
 
     public int getMaximumEndNum()
     {
-        return (int)this.numEnd.getMaximum();
+        return (int)DialogBase.Spinner.getMaximum( this.numEnd );
     }
 
     public int getMinimumEndNum()
     {
-        return (int)this.numEnd.getMinimum();
+        return (int)DialogBase.Spinner.getMinimum( this.numEnd );
     }
 
     public void setValueEndNum( int value )
     {
-        this.numEnd.setFloatValue( value );
+        DialogBase.Spinner.setFloatValue( this.numEnd, value );
     }
 
     public int getValueEndNum()
     {
-        return (int)this.numEnd.getFloatValue();
+        return (int)DialogBase.Spinner.getFloatValue( this.numEnd );
     }
 
     public boolean isCheckedEndCheckbox()
@@ -591,22 +538,70 @@ public class FormBeatConfigUiImpl extends BDialog implements FormBeatConfigUi
 
     public int getMaximumNumeratorNum()
     {
-        return (int)this.numNumerator.getMaximum();
+        return (int)DialogBase.Spinner.getMaximum( this.numNumerator );
     }
 
     public int getMinimumNumeratorNum()
     {
-        return (int)this.numNumerator.getMinimum();
+        return (int)DialogBase.Spinner.getMinimum( this.numNumerator );
     }
 
     public void setValueNumeratorNum( int value )
     {
-        this.numNumerator.setFloatValue( value );
+        DialogBase.Spinner.setFloatValue( this.numNumerator, value );
     }
 
     public int getValueNumeratorNum()
     {
-        return (int)this.numNumerator.getFloatValue();
+        return (int)DialogBase.Spinner.getFloatValue( this.numNumerator );
     }
 
+    public void setDialogResult( boolean dialogResult )
+    {
+        super.setDialogResult( dialogResult );
+    }
+
+    /**
+     * @wbp.factory
+     */
+    public static JSpinner createNumStart() {
+        JSpinner spinner = DialogBase.Spinner.create();
+        return spinner;
+    }
+
+    /**
+     * @wbp.factory
+     */
+    public static JSpinner createNumEnd() {
+        JSpinner spinner = DialogBase.Spinner.create();
+        return spinner;
+    }
+
+    /**
+     * @wbp.factory
+     */
+    public static JSpinner creatNumNumerator() {
+        JSpinner spinner = DialogBase.Spinner.create();
+        return spinner;
+    }
+
+    /**
+     * @wbp.factory
+     */
+    public static JPanel createGroupPosition() {
+        JPanel panel = DialogBase.GroupBox.create();
+        DialogBase.GroupBox.setTitle( panel, "Position" );
+        return panel;
+    }
+
+    /**
+     * @wbp.factory
+     * @return
+     */
+    public static JPanel createGroupBeat()
+    {
+        JPanel panel = DialogBase.GroupBox.create();
+        DialogBase.GroupBox.setTitle( panel, "Position" );
+        return panel;
+    }
 }

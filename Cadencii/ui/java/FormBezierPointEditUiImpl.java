@@ -1,57 +1,52 @@
 ﻿package com.github.cadencii.ui;
 
-//SECTION-BEGIN-IMPORT
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.github.cadencii.FormBezierPointEditUi;
-import com.github.cadencii.windows.forms.BDialogResult;
-import com.github.cadencii.windows.forms.BTextBox;
-import com.github.cadencii.windows.forms.BLabel;
-import com.github.cadencii.windows.forms.BGroupBox;
-import com.github.cadencii.windows.forms.BCheckBox;
-import com.github.cadencii.windows.forms.BButton;
-import com.github.cadencii.windows.forms.BDialog;
 
 //SECTION-END-IMPORT
-public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPointEditUi
+public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierPointEditUi
 {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
-    private BButton btnBackward = null;
-    private BCheckBox chkEnableSmooth = null;
-    private BButton btnForward = null;
-    private BGroupBox groupLeft = null;
-    private BLabel lblLeftClock = null;
-    private BTextBox txtLeftClock = null;
-    private BLabel lblLeftValue = null;
-    private BTextBox txtLeftValue = null;
-    private BButton btnLeft = null;
-    private BGroupBox groupDataPoint = null;
-    private BLabel lblDataPointClock = null;
-    private BTextBox txtDataPointClock = null;
-    private BLabel lblDataPointValue = null;
-    private BTextBox txtDataPointValue = null;
-    private BButton btnDataPoint = null;
-    private BGroupBox groupRight = null;
-    private BLabel lblRightClock = null;
-    private BTextBox txtRightClock = null;
-    private BLabel lblRightValue = null;
-    private BTextBox txtRightValue = null;
-    private BButton btnRight = null;
-    private BButton btnOK = null;
-    private BButton btnCancel = null;
-    private BLabel jLabel4 = null;
-    private BLabel jLabel5 = null;
+    private JButton btnBackward = null;
+    private JCheckBox chkEnableSmooth = null;
+    private JButton btnForward = null;
+    private JPanel groupLeft = null;
+    private JLabel lblLeftClock = null;
+    private JTextField txtLeftClock = null;
+    private JLabel lblLeftValue = null;
+    private JTextField txtLeftValue = null;
+    private JButton btnLeft = null;
+    private JPanel groupDataPoint = null;
+    private JLabel lblDataPointClock = null;
+    private JTextField txtDataPointClock = null;
+    private JLabel lblDataPointValue = null;
+    private JTextField txtDataPointValue = null;
+    private JButton btnDataPoint = null;
+    private JPanel groupRight = null;
+    private JLabel lblRightClock = null;
+    private JTextField txtRightClock = null;
+    private JLabel lblRightValue = null;
+    private JTextField txtRightValue = null;
+    private JButton btnRight = null;
+    private JButton btnOK = null;
+    private JButton btnCancel = null;
+    private JLabel jLabel4 = null;
+    private JLabel jLabel5 = null;
     private JPanel jPanel3 = null;
-    private BLabel lblRightValue1 = null;
+    private JLabel lblRightValue1 = null;
 
     //SECTION-END-FIELD
     /**
@@ -93,9 +88,9 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints81.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints81.gridwidth = 3;
             gridBagConstraints81.gridy = 3;
-            jLabel5 = new BLabel();
+            jLabel5 = new JLabel();
             jLabel5.setText("    ");
-            jLabel4 = new BLabel();
+            jLabel4 = new JLabel();
             jLabel4.setText("     ");
             GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
             gridBagConstraints13.gridx = 2;
@@ -147,11 +142,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnBackward
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnBackward() {
+    private JButton getBtnBackward() {
         if (btnBackward == null) {
-            btnBackward = new BButton();
+            btnBackward = new JButton();
             btnBackward.setText("<<");
         }
         return btnBackward;
@@ -160,11 +155,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes chkEnableSmooth
      *
-     * @return javax.swing.BCheckBox
+     * @return javax.swing.JCheckBox
      */
-    private BCheckBox getChkEnableSmooth() {
+    private JCheckBox getChkEnableSmooth() {
         if (chkEnableSmooth == null) {
-            chkEnableSmooth = new BCheckBox();
+            chkEnableSmooth = new JCheckBox();
             chkEnableSmooth.setText("Smooth");
         }
         return chkEnableSmooth;
@@ -173,11 +168,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnForward
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnForward() {
+    private JButton getBtnForward() {
         if (btnForward == null) {
-            btnForward = new BButton();
+            btnForward = new JButton();
             btnForward.setText(">>");
         }
         return btnForward;
@@ -209,7 +204,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints5.gridx = 0;
             gridBagConstraints5.insets = new Insets(0, 15, 0, 0);
             gridBagConstraints5.gridy = 1;
-            lblLeftValue = new BLabel();
+            lblLeftValue = new JLabel();
             lblLeftValue.setText("Value");
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
@@ -221,11 +216,10 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints3.gridx = 0;
             gridBagConstraints3.insets = new Insets(0, 15, 0, 0);
             gridBagConstraints3.gridy = 0;
-            lblLeftClock = new BLabel();
+            lblLeftClock = new JLabel();
             lblLeftClock.setText("Clock");
-            groupLeft = new BGroupBox();
+            groupLeft = createGroupLeft();
             groupLeft.setLayout(new GridBagLayout());
-            groupLeft.setTitle("Left Control Point");
             groupLeft.add(lblLeftClock, gridBagConstraints3);
             groupLeft.add(getJTextField(), gridBagConstraints4);
             groupLeft.add(lblLeftValue, gridBagConstraints5);
@@ -236,13 +230,13 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     }
 
     /**
-     * This method initializes BTextBox
+     * This method initializes JTextField
      *
-     * @return javax.swing.BTextBox
+     * @return javax.swing.JTextField
      */
-    private BTextBox getJTextField() {
+    private JTextField getJTextField() {
         if (txtLeftClock == null) {
-            txtLeftClock = new BTextBox();
+            txtLeftClock = new JTextField();
         }
         return txtLeftClock;
     }
@@ -250,11 +244,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes txtLeftValue
      *
-     * @return javax.swing.BTextBox
+     * @return javax.swing.JTextField
      */
-    private BTextBox getTxtLeftValue() {
+    private JTextField getTxtLeftValue() {
         if (txtLeftValue == null) {
-            txtLeftValue = new BTextBox();
+            txtLeftValue = new JTextField();
         }
         return txtLeftValue;
     }
@@ -262,11 +256,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnLeft
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnLeft() {
+    private JButton getBtnLeft() {
         if (btnLeft == null) {
-            btnLeft = new BButton();
+            btnLeft = new JButton();
             btnLeft.setText("");
             btnLeft.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
         }
@@ -298,7 +292,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints51.anchor = GridBagConstraints.WEST;
             gridBagConstraints51.insets = new Insets(0, 15, 0, 0);
             gridBagConstraints51.gridy = 1;
-            lblDataPointValue = new BLabel();
+            lblDataPointValue = new JLabel();
             lblDataPointValue.setText("Value");
             GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
             gridBagConstraints41.fill = GridBagConstraints.HORIZONTAL;
@@ -311,11 +305,10 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints31.insets = new Insets(0, 15, 0, 0);
             gridBagConstraints31.anchor = GridBagConstraints.WEST;
             gridBagConstraints31.gridy = 0;
-            lblDataPointClock = new BLabel();
+            lblDataPointClock = new JLabel();
             lblDataPointClock.setText("Clock");
-            groupDataPoint = new BGroupBox();
+            groupDataPoint = createGroupDataPoint();
             groupDataPoint.setLayout(new GridBagLayout());
-            groupDataPoint.setTitle("Data Point");
             groupDataPoint.add(lblDataPointClock, gridBagConstraints31);
             groupDataPoint.add(getTxtDataPointClock(), gridBagConstraints41);
             groupDataPoint.add(lblDataPointValue, gridBagConstraints51);
@@ -328,11 +321,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes txtDataPointClock
      *
-     * @return javax.swing.BTextBox
+     * @return javax.swing.JTextField
      */
-    private BTextBox getTxtDataPointClock() {
+    private JTextField getTxtDataPointClock() {
         if (txtDataPointClock == null) {
-            txtDataPointClock = new BTextBox();
+            txtDataPointClock = new JTextField();
         }
         return txtDataPointClock;
     }
@@ -340,11 +333,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes txtDataPointValue
      *
-     * @return javax.swing.BTextBox
+     * @return javax.swing.JTextField
      */
-    private BTextBox getTxtDataPointValue() {
+    private JTextField getTxtDataPointValue() {
         if (txtDataPointValue == null) {
-            txtDataPointValue = new BTextBox();
+            txtDataPointValue = new JTextField();
         }
         return txtDataPointValue;
     }
@@ -352,11 +345,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnDataPoint
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnDataPoint() {
+    private JButton getBtnDataPoint() {
         if (btnDataPoint == null) {
-            btnDataPoint = new BButton();
+            btnDataPoint = new JButton();
             btnDataPoint.setText("");
             btnDataPoint.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
         }
@@ -387,7 +380,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints52.gridx = 0;
             gridBagConstraints52.insets = new Insets(0, 15, 0, 0);
             gridBagConstraints52.gridy = 1;
-            lblRightValue = new BLabel();
+            lblRightValue = new JLabel();
             lblRightValue.setText("Value");
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.fill = GridBagConstraints.HORIZONTAL;
@@ -399,11 +392,10 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints32.gridx = 0;
             gridBagConstraints32.insets = new Insets(0, 15, 0, 0);
             gridBagConstraints32.gridy = 0;
-            lblRightClock = new BLabel();
+            lblRightClock = new JLabel();
             lblRightClock.setText("Clock");
-            groupRight = new BGroupBox();
+            groupRight = createGroupRight();
             groupRight.setLayout(new GridBagLayout());
-            groupRight.setTitle("Right Control Point");
             groupRight.add(lblRightClock, gridBagConstraints32);
             groupRight.add(getTxtRightClock(), gridBagConstraints42);
             groupRight.add(lblRightValue, gridBagConstraints52);
@@ -416,11 +408,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes txtRightClock
      *
-     * @return javax.swing.BTextBox
+     * @return javax.swing.JTextField
      */
-    private BTextBox getTxtRightClock() {
+    private JTextField getTxtRightClock() {
         if (txtRightClock == null) {
-            txtRightClock = new BTextBox();
+            txtRightClock = new JTextField();
         }
         return txtRightClock;
     }
@@ -428,11 +420,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes txtRightValue
      *
-     * @return javax.swing.BTextBox
+     * @return javax.swing.JTextField
      */
-    private BTextBox getTxtRightValue() {
+    private JTextField getTxtRightValue() {
         if (txtRightValue == null) {
-            txtRightValue = new BTextBox();
+            txtRightValue = new JTextField();
         }
         return txtRightValue;
     }
@@ -440,11 +432,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnRight
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnRight() {
+    private JButton getBtnRight() {
         if (btnRight == null) {
-            btnRight = new BButton();
+            btnRight = new JButton();
             btnRight.setText("");
             btnRight.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
         }
@@ -454,11 +446,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnOK
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnOK() {
+    private JButton getBtnOK() {
         if (btnOK == null) {
-            btnOK = new BButton();
+            btnOK = new JButton();
             btnOK.setText("OK");
             btnOK.setPreferredSize(new Dimension(100, 29));
         }
@@ -468,11 +460,11 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
     /**
      * This method initializes btnCancel
      *
-     * @return javax.swing.BButton
+     * @return javax.swing.JButton
      */
-    private BButton getBtnCancel() {
+    private JButton getBtnCancel() {
         if (btnCancel == null) {
-            btnCancel = new BButton();
+            btnCancel = new JButton();
             btnCancel.setText("Cancel");
             btnCancel.setPreferredSize(new Dimension(100, 29));
         }
@@ -490,7 +482,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
             gridBagConstraints14.gridx = 0;
             gridBagConstraints14.weightx = 1.0D;
             gridBagConstraints14.gridy = 0;
-            lblRightValue1 = new BLabel();
+            lblRightValue1 = new JLabel();
             lblRightValue1.setText("");
             lblRightValue1.setPreferredSize(new Dimension(4, 4));
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
@@ -512,20 +504,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
 
     public int showDialog( Object parent_form )
     {
-        if( parent_form == null ){
-            return 0;
-        }
-        if( !(parent_form instanceof Component) ){
-            return 0;
-        }
-        Component parent = (Component)parent_form;
-        BDialogResult ret = super.showDialog( parent );
-        if( ret == BDialogResult.OK || ret == BDialogResult.YES )
-        {
-            return 1;
-        }else{
-            return 0;
-        }
+        return super.doShowDialog( parent_form );
     }
 
     public String getDataPointClockText()
@@ -630,7 +609,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
 
     public void setGroupDataPointTitle( String value )
     {
-        this.groupDataPoint.setTitle( value );
+        DialogBase.GroupBox.setTitle( this.groupDataPoint, value );
     }
 
     public void setLabelDataPointClockText( String value )
@@ -645,7 +624,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
 
     public void setGroupLeftTitle( String value )
     {
-        this.groupLeft.setTitle( value );
+        DialogBase.GroupBox.setTitle( this.groupLeft, value );
     }
 
     public void setLabelLeftClockText( String value )
@@ -660,7 +639,7 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
 
     public void setGroupRightTitle( String value )
     {
-        this.groupRight.setTitle( value );
+        DialogBase.GroupBox.setTitle( this.groupRight, value );
     }
 
     public void setLabelRightClockText( String value )
@@ -687,12 +666,45 @@ public class FormBezierPointEditUiImpl extends BDialog implements FormBezierPoin
 
     public void setDialogResult( boolean result )
     {
-        if( result ){
-            super.setDialogResult( BDialogResult.OK );
-        }else{
-            super.setDialogResult( BDialogResult.CANCEL );
-        }
+        super.setDialogResult( result );
     }
 
+    public void close()
+    {
+        super.doClose();
+    }
+
+    /**
+     * @return
+     * @wbp.factory
+     */
+    static private JPanel createGroupLeft()
+    {
+        JPanel panel = DialogBase.GroupBox.create();
+        DialogBase.GroupBox.setTitle( panel, "Left Control Point" );
+        return panel;
+    }
+
+    /**
+     * @return
+     * @wbp.factory
+     */
+    static private JPanel createGroupDataPoint()
+    {
+        JPanel panel = DialogBase.GroupBox.create();
+        DialogBase.GroupBox.setTitle( panel, "Data Point" );
+        return panel;
+    }
+
+    /**
+     * @return
+     * @wbp.factory
+     */
+    static private JPanel createGroupRight()
+    {
+        JPanel panel = DialogBase.GroupBox.create();
+        DialogBase.GroupBox.setTitle( panel, "Right Control Point" );
+        return panel;
+    }
     //SECTION-END-METHOD
 }

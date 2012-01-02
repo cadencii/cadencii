@@ -13,11 +13,9 @@ import javax.swing.SwingConstants;
 
 import com.github.cadencii.ExceptionNotifyFormUi;
 import com.github.cadencii.ExceptionNotifyFormUiListener;
-import com.github.cadencii.windows.forms.BDialog;
-import com.github.cadencii.windows.forms.BDialogResult;
 import javax.swing.JScrollPane;
 
-public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotifyFormUi
+public class ExceptionNotifyFormUiImpl extends DialogBase implements ExceptionNotifyFormUi
 {
     private static final long serialVersionUID = -3483441400468011315L;
     private final ExceptionNotifyFormUiListener uiListener;
@@ -105,18 +103,7 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
     public int showDialog( Object parent_form )
     {
         this.setSize( 379, 421 );
-        BDialogResult ret = BDialogResult.CANCEL;
-        if( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) ){
-            ret = super.showDialog( null );
-        }else{
-            BDialog form = (BDialog)parent_form;
-            ret = super.showDialog( form );
-        }
-        if( ret == BDialogResult.OK || ret == BDialogResult.YES ){
-            return 1;
-        }else{
-            return 0;
-        }
+        return super.doShowDialog( parent_form );
     }
 
     public void setDescription(
@@ -146,6 +133,6 @@ public class ExceptionNotifyFormUiImpl extends BDialog implements ExceptionNotif
     @Override
     public void close()
     {
-        super.close();
+        super.doClose();
     }
 }

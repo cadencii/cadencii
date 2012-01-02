@@ -6,19 +6,17 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.github.cadencii.FormAskKeySoundGenerationUi;
 import com.github.cadencii.FormAskKeySoundGenerationUiListener;
-import com.github.cadencii.windows.forms.BDialog;
-import com.github.cadencii.windows.forms.BDialogResult;
-import com.github.cadencii.windows.forms.BLabel;
 
-public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskKeySoundGenerationUi
+public class FormAskKeySoundGenerationUiImpl extends DialogBase implements FormAskKeySoundGenerationUi
 {
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
-    private BLabel lblMessage = null;
+    private JLabel lblMessage = null;
     private JPanel jPanel1 = null;
     private JButton btnYes = null;
     private JButton btnNo = null;
@@ -48,9 +46,9 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
         boolean value )
     {
         if( value ){
-            super.setDialogResult( BDialogResult.CANCEL );
+            super.setDialogResult( false );
         }else{
-            super.setDialogResult( BDialogResult.OK );
+            super.setDialogResult( true );
         }
     }
 
@@ -84,9 +82,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
             gridBagConstraints.ipadx = 0;
             gridBagConstraints.insets = new Insets( 16, 16, 8, 16 );
             gridBagConstraints.gridy = 0;
-            lblMessage = new BLabel();
-            lblMessage.setText( "It seems some key-board sounds are missing.\nDo you want to re-generate them now?" );
-            lblMessage.setAutoEllipsis( true );
+            lblMessage = createJLabel();
             jPanel = new JPanel();
             jPanel.setLayout( new GridBagLayout() );
             jPanel.add( lblMessage, gridBagConstraints );
@@ -182,18 +178,7 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
 
     public int showDialog( Object parent_form )
     {
-        BDialogResult ret = BDialogResult.CANCEL;
-        if( parent_form == null || (parent_form != null && !(parent_form instanceof BDialog)) ){
-            ret = super.showDialog( null );
-        }else{
-            BDialog form = (BDialog)parent_form;
-            ret = super.showDialog( form );
-        }
-        if( ret == BDialogResult.OK || ret == BDialogResult.YES ){
-            return 1;
-        }else{
-            return 0;
-        }
+        return super.doShowDialog( parent_form );
     }
 
     public void setAlwaysPerformThisCheck( boolean value )
@@ -226,5 +211,14 @@ public class FormAskKeySoundGenerationUiImpl extends BDialog implements FormAskK
     public void setNoButtonText( String value )
     {
         btnNo.setText( value );
+    }
+
+    /**
+     * @wbp.factory
+     */
+    public static JLabel createJLabel() {
+        JLabel label = DialogBase.AutoElipsisLabel.createAutoEllipsisLabel();
+        label.setText( "It seems some key-board sounds are missing.\nDo you want to re-generate them now?" );
+        return label;
     }
 } // @jve:decl-index=0:visual-constraint="10,10"

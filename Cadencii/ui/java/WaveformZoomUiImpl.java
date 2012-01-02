@@ -1,37 +1,17 @@
 package com.github.cadencii.ui;
 
-import com.github.cadencii.windows.forms.BPanel;
-import com.github.cadencii.*;
+import javax.swing.JPanel;
+
+import com.github.cadencii.WaveformZoomUi;
+import com.github.cadencii.WaveformZoomUiListener;
 
 public class WaveformZoomUiImpl
-    extends BPanel
+    extends JPanel
     implements WaveformZoomUi
 {
-    public WaveformZoomUiImpl() {
-    }
-    private WaveformZoomUiListener mListener;
-
-    @Override
-    public int getWidth()
-    {
-        return super.getWidth();
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return super.getHeight();
-    }
+    private static final long serialVersionUID = 717705218400152334L;
 
     public void setListener( WaveformZoomUiListener listener )
     {
-        mListener = listener;
     }
-
-    @Override
-    public void repaint()
-    {
-        super.repaint();
-    }
-
 }
