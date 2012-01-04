@@ -1,4 +1,4 @@
-﻿package com.github.cadencii.ui;
+package com.github.cadencii.ui;
 
 import javax.swing.JPanel;
 

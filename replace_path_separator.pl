@@ -181,7 +181,6 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_CPP_VSQ\@/$dep_cpp_vsq/g;
     $line =~ s/\@DEP_CPP_CADENCII\@/$dep_cpp_cadencii/g;
 
-    $line =~ s/\@JAVA_POST_PROCESS\@/$java_post_process/g;
     $line =~ s/\@CPP_POST_PROCESS\@/$cpp_post_process/g;
 
     foreach $key ( keys %directive ){

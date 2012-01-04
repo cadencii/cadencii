@@ -15,7 +15,6 @@
 
 import com.github.cadencii.*;
 import com.github.cadencii.apputil.*;
-import com.github.cadencii.cadencii.*;
 
 #else
 
@@ -79,7 +78,7 @@ namespace com.github.cadencii
             controller.setReportTarget( ex );
             controller.getUi().showDialog( null );
         }
-        
+
 #if JAVA
         public static void main( String[] args )
 #if DEBUG

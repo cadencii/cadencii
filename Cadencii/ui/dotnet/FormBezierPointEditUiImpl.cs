@@ -23,7 +23,7 @@ namespace com.github.cadencii
     public class FormBezierPointEditUiImpl : Form, FormBezierPointEditUi
     {
         private FormBezierPointEditUiListener listener;
-        
+
         public FormBezierPointEditUiImpl( FormBezierPointEditUiListener listener )
         {
             this.listener = listener;

@@ -952,7 +952,7 @@ namespace com.github.cadencii
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="command"></param>
         /// <param name="register">Undo/Redo用バッファにExecuteの結果を格納するかどうかを指定するフラグ</param>
@@ -1844,8 +1844,8 @@ namespace com.github.cadencii
 
                     // 旗を描く
                     drawPreutteranceAndOverlap(
-                        g, 
-                        preutterance.value, overlap.value, 
+                        g,
+                        preutterance.value, overlap.value,
                         item.UstEvent.getPreUtterance(), item.UstEvent.getVoiceOverlap() );
                 }
             }
@@ -1858,7 +1858,7 @@ namespace com.github.cadencii
                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
                 g.drawRect( rc.x, rc.y, rc.width, rc.height );
             }
-            
+
             g.setClip( null );
         }
 
@@ -2021,8 +2021,8 @@ namespace com.github.cadencii
         /// <param name="found_flag_was_overlap"></param>
         /// <returns></returns>
         private boolean findEnvelopeCore(
-            int locx, int locy, 
-            ByRef<Integer> internal_id, 
+            int locx, int locy,
+            ByRef<Integer> internal_id,
             ByRef<Integer> point_kind, ByRef<Boolean> found_flag_was_overlap )
         {
             internal_id.value = -1;
@@ -2123,14 +2123,14 @@ namespace com.github.cadencii
         /// <param name="px_overlap">オーバーラップを描画するための旗のx座標</param>
         /// <returns>指定した音符イベントのエンベロープを描画するための多角形．x方向の単位は画面上のピクセル単位，y方向の単位はエンベロープの値と同じ単位</returns>
         private Polygon getEnvelopePoints(
-            TempoVector tempo_table, 
+            TempoVector tempo_table,
             VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
             ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap )
         {
             ByRef<Double> sec_env_start1 = new ByRef<Double>( 0.0 );
             ByRef<Double> sec_env_end1 = new ByRef<Double>( 0.0 );
             getEnvelopeRegion( tempo_table, prev_item, item, next_item, sec_env_start1, sec_env_end1 );
-            
+
             UstEvent ust_event1 = item.UstEvent;
             if ( ust_event1 == null ) {
                 ust_event1 = new UstEvent();
@@ -2143,8 +2143,8 @@ namespace com.github.cadencii
             double sec_overlap1 = ust_event1.getVoiceOverlap() / 1000.0;
 
             TempoVectorSearchContext context = new TempoVectorSearchContext();
-            int px_env_start1 = 
-                AppManager.xCoordFromClocks( 
+            int px_env_start1 =
+                AppManager.xCoordFromClocks(
                     (int)tempo_table.getClockFromSec( sec_env_start1.value, context ) );
             if ( px_pre_utteramce != null ) {
                 px_pre_utteramce.value = px_env_start1;
@@ -2161,7 +2161,7 @@ namespace com.github.cadencii
             int p4 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p4, context ) );
             int px_env_end1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_end1.value, context ) );
             if ( px_overlap != null ) {
-                px_overlap.value = 
+                px_overlap.value =
                     AppManager.xCoordFromClocks(
                         (int)tempo_table.getClockFromSec( sec_env_start1.value + sec_overlap1, context ) );
             }
@@ -2185,8 +2185,8 @@ namespace com.github.cadencii
         /// <param name="item_next">直後の音符．休符であればnullを指定する</param>
         /// <param name="env_start_sec">エンベロープの開始時刻(秒)</param>
         /// <param name="env_end_sec">エンベロープの終了時刻(秒)</param>
-        private void getEnvelopeRegion( 
-            TempoVector tempo_table, 
+        private void getEnvelopeRegion(
+            TempoVector tempo_table,
             VsqEvent item_prev, VsqEvent item, VsqEvent item_next,
             ByRef<Double> env_start_sec, ByRef<Double> env_end_sec )
         {
@@ -4923,7 +4923,7 @@ namespace com.github.cadencii
                                                 VsqCommand.generateCommandEventReplaceRange(
                                                     selected, events ) );
                                         } else {
-                                            run = new CadenciiCommand( 
+                                            run = new CadenciiCommand(
                                                 VsqCommand.generateCommandEventChangeVelocity( selected, cpy ) );
                                         }
                                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
@@ -5637,13 +5637,7 @@ namespace com.github.cadencii
                                                                     target_point.getID() );
                                     mEditingChainID = chain_id;
                                     mEditingPointID = target_point.getID();
-                                    {//TODO:debug
-                                        sout.println( "TrackSelector_MosueDoubleClick; start to show FormBezierPointEdit" );
-                                    }
                                     int ret = AppManager.showModalDialog( fbpe.getUi(), mMainWindow );
-                                    {//TODO:debug
-                                        sout.println( "TrackSelector_MosueDoubleClick; ret=" + ret );
-                                    }
                                     mEditingChainID = -1;
                                     mEditingPointID = -1;
                                     BezierChain after = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, chain_id );
@@ -5670,10 +5664,6 @@ namespace com.github.cadencii
                                         }
                                     }
                                 } catch( Exception ex ) {
-                                    {//TODO:debug
-                                        sout.println( ex.Message );
-                                        sout.println( ex.StackTrace );
-                                    }
                                 } finally {
                                     if ( fbpe != null ) {
                                         try {
@@ -6105,12 +6095,12 @@ namespace com.github.cadencii
         #endregion
 #else
         #region UI Impl for C#
-        /// <summary> 
+        /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
@@ -6124,8 +6114,8 @@ namespace com.github.cadencii
 
         #region コンポーネント デザイナで生成されたコード
 
-        /// <summary> 
-        /// デザイナ サポートに必要なメソッドです。このメソッドの内容を 
+        /// <summary>
+        /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent()
@@ -6174,24 +6164,24 @@ namespace com.github.cadencii
             this.cmenuCurveEnvelope = new com.github.cadencii.windows.forms.BMenuItem();
             this.cmenuCurve.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // cmenuSinger
-            // 
+            //
             this.cmenuSinger.Name = "cmenuSinger";
             this.cmenuSinger.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmenuSinger.ShowCheckMargin = true;
             this.cmenuSinger.ShowImageMargin = false;
             this.cmenuSinger.Size = new System.Drawing.Size( 153, 26 );
-            // 
+            //
             // toolTip
-            // 
+            //
             this.toolTip.AutoPopDelay = 5000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.OwnerDraw = true;
             this.toolTip.ReshowDelay = 0;
-            // 
+            //
             // cmenuCurve
-            // 
+            //
             this.cmenuCurve.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.cmenuCurveVelocity,
             this.cmenuCurveAccent,
@@ -6223,55 +6213,55 @@ namespace com.github.cadencii
             this.cmenuCurve.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cmenuCurve.ShowImageMargin = false;
             this.cmenuCurve.Size = new System.Drawing.Size( 160, 496 );
-            // 
+            //
             // cmenuCurveVelocity
-            // 
+            //
             this.cmenuCurveVelocity.Name = "cmenuCurveVelocity";
             this.cmenuCurveVelocity.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveVelocity.Text = "Velocity(&V)";
-            // 
+            //
             // cmenuCurveAccent
-            // 
+            //
             this.cmenuCurveAccent.Name = "cmenuCurveAccent";
             this.cmenuCurveAccent.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveAccent.Text = "Accent";
-            // 
+            //
             // cmenuCurveDecay
-            // 
+            //
             this.cmenuCurveDecay.Name = "cmenuCurveDecay";
             this.cmenuCurveDecay.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveDecay.Text = "Decay";
-            // 
+            //
             // cmenuCurveSeparator1
-            // 
+            //
             this.cmenuCurveSeparator1.Name = "cmenuCurveSeparator1";
             this.cmenuCurveSeparator1.Size = new System.Drawing.Size( 156, 6 );
-            // 
+            //
             // cmenuCurveDynamics
-            // 
+            //
             this.cmenuCurveDynamics.Name = "cmenuCurveDynamics";
             this.cmenuCurveDynamics.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveDynamics.Text = "Dynamics";
-            // 
+            //
             // cmenuCurveVibratoRate
-            // 
+            //
             this.cmenuCurveVibratoRate.Name = "cmenuCurveVibratoRate";
             this.cmenuCurveVibratoRate.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveVibratoRate.Text = "Vibrato Rate";
-            // 
+            //
             // cmenuCurveVibratoDepth
-            // 
+            //
             this.cmenuCurveVibratoDepth.Name = "cmenuCurveVibratoDepth";
             this.cmenuCurveVibratoDepth.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveVibratoDepth.Text = "Vibrato Depth";
-            // 
+            //
             // cmenuCurveSeparator2
-            // 
+            //
             this.cmenuCurveSeparator2.Name = "cmenuCurveSeparator2";
             this.cmenuCurveSeparator2.Size = new System.Drawing.Size( 156, 6 );
-            // 
+            //
             // cmenuCurveReso1
-            // 
+            //
             this.cmenuCurveReso1.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.cmenuCurveReso1Freq,
             this.cmenuCurveReso1BW,
@@ -6279,27 +6269,27 @@ namespace com.github.cadencii
             this.cmenuCurveReso1.Name = "cmenuCurveReso1";
             this.cmenuCurveReso1.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso1.Text = "Resonance 1";
-            // 
+            //
             // cmenuCurveReso1Freq
-            // 
+            //
             this.cmenuCurveReso1Freq.Name = "cmenuCurveReso1Freq";
             this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1Freq.Text = "Frequency";
-            // 
+            //
             // cmenuCurveReso1BW
-            // 
+            //
             this.cmenuCurveReso1BW.Name = "cmenuCurveReso1BW";
             this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1BW.Text = "Band Width";
-            // 
+            //
             // cmenuCurveReso1Amp
-            // 
+            //
             this.cmenuCurveReso1Amp.Name = "cmenuCurveReso1Amp";
             this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1Amp.Text = "Amplitude";
-            // 
+            //
             // cmenuCurveReso2
-            // 
+            //
             this.cmenuCurveReso2.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.cmenuCurveReso2Freq,
             this.cmenuCurveReso2BW,
@@ -6307,27 +6297,27 @@ namespace com.github.cadencii
             this.cmenuCurveReso2.Name = "cmenuCurveReso2";
             this.cmenuCurveReso2.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso2.Text = "Resonance 2";
-            // 
+            //
             // cmenuCurveReso2Freq
-            // 
+            //
             this.cmenuCurveReso2Freq.Name = "cmenuCurveReso2Freq";
             this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2Freq.Text = "Frequency";
-            // 
+            //
             // cmenuCurveReso2BW
-            // 
+            //
             this.cmenuCurveReso2BW.Name = "cmenuCurveReso2BW";
             this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2BW.Text = "Band Width";
-            // 
+            //
             // cmenuCurveReso2Amp
-            // 
+            //
             this.cmenuCurveReso2Amp.Name = "cmenuCurveReso2Amp";
             this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2Amp.Text = "Amplitude";
-            // 
+            //
             // cmenuCurveReso3
-            // 
+            //
             this.cmenuCurveReso3.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.cmenuCurveReso3Freq,
             this.cmenuCurveReso3BW,
@@ -6335,27 +6325,27 @@ namespace com.github.cadencii
             this.cmenuCurveReso3.Name = "cmenuCurveReso3";
             this.cmenuCurveReso3.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso3.Text = "Resonance 3";
-            // 
+            //
             // cmenuCurveReso3Freq
-            // 
+            //
             this.cmenuCurveReso3Freq.Name = "cmenuCurveReso3Freq";
             this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3Freq.Text = "Frequency";
-            // 
+            //
             // cmenuCurveReso3BW
-            // 
+            //
             this.cmenuCurveReso3BW.Name = "cmenuCurveReso3BW";
             this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3BW.Text = "Band Width";
-            // 
+            //
             // cmenuCurveReso3Amp
-            // 
+            //
             this.cmenuCurveReso3Amp.Name = "cmenuCurveReso3Amp";
             this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3Amp.Text = "Amplitude";
-            // 
+            //
             // cmenuCurveReso4
-            // 
+            //
             this.cmenuCurveReso4.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.cmenuCurveReso4Freq,
             this.cmenuCurveReso4BW,
@@ -6363,108 +6353,108 @@ namespace com.github.cadencii
             this.cmenuCurveReso4.Name = "cmenuCurveReso4";
             this.cmenuCurveReso4.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso4.Text = "Resonance 4";
-            // 
+            //
             // cmenuCurveReso4Freq
-            // 
+            //
             this.cmenuCurveReso4Freq.Name = "cmenuCurveReso4Freq";
             this.cmenuCurveReso4Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4Freq.Text = "Frequency";
-            // 
+            //
             // cmenuCurveReso4BW
-            // 
+            //
             this.cmenuCurveReso4BW.Name = "cmenuCurveReso4BW";
             this.cmenuCurveReso4BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4BW.Text = "Band Width";
-            // 
+            //
             // cmenuCurveReso4Amp
-            // 
+            //
             this.cmenuCurveReso4Amp.Name = "cmenuCurveReso4Amp";
             this.cmenuCurveReso4Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4Amp.Text = "Amplitude";
-            // 
+            //
             // cmenuCurveSeparator3
-            // 
+            //
             this.cmenuCurveSeparator3.Name = "cmenuCurveSeparator3";
             this.cmenuCurveSeparator3.Size = new System.Drawing.Size( 156, 6 );
-            // 
+            //
             // cmenuCurveHarmonics
-            // 
+            //
             this.cmenuCurveHarmonics.Name = "cmenuCurveHarmonics";
             this.cmenuCurveHarmonics.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveHarmonics.Text = "Harmonics";
-            // 
+            //
             // cmenuCurveBreathiness
-            // 
+            //
             this.cmenuCurveBreathiness.Name = "cmenuCurveBreathiness";
             this.cmenuCurveBreathiness.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveBreathiness.Text = "Noise";
-            // 
+            //
             // cmenuCurveBrightness
-            // 
+            //
             this.cmenuCurveBrightness.Name = "cmenuCurveBrightness";
             this.cmenuCurveBrightness.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveBrightness.Text = "Brightness";
-            // 
+            //
             // cmenuCurveClearness
-            // 
+            //
             this.cmenuCurveClearness.Name = "cmenuCurveClearness";
             this.cmenuCurveClearness.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveClearness.Text = "Clearness";
-            // 
+            //
             // cmenuCurveOpening
-            // 
+            //
             this.cmenuCurveOpening.Name = "cmenuCurveOpening";
             this.cmenuCurveOpening.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveOpening.Text = "Opening";
-            // 
+            //
             // cmenuCurveGenderFactor
-            // 
+            //
             this.cmenuCurveGenderFactor.Name = "cmenuCurveGenderFactor";
             this.cmenuCurveGenderFactor.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveGenderFactor.Text = "Gender Factor";
-            // 
+            //
             // cmenuCurveSeparator4
-            // 
+            //
             this.cmenuCurveSeparator4.Name = "cmenuCurveSeparator4";
             this.cmenuCurveSeparator4.Size = new System.Drawing.Size( 156, 6 );
-            // 
+            //
             // cmenuCurvePortamentoTiming
-            // 
+            //
             this.cmenuCurvePortamentoTiming.Name = "cmenuCurvePortamentoTiming";
             this.cmenuCurvePortamentoTiming.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurvePortamentoTiming.Text = "Portamento Timing";
-            // 
+            //
             // cmenuCurvePitchBend
-            // 
+            //
             this.cmenuCurvePitchBend.Name = "cmenuCurvePitchBend";
             this.cmenuCurvePitchBend.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurvePitchBend.Text = "Pitch Bend";
-            // 
+            //
             // cmenuCurvePitchBendSensitivity
-            // 
+            //
             this.cmenuCurvePitchBendSensitivity.Name = "cmenuCurvePitchBendSensitivity";
             this.cmenuCurvePitchBendSensitivity.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurvePitchBendSensitivity.Text = "Pitch Bend Sensitivity";
-            // 
+            //
             // cmenuCurveSeparator5
-            // 
+            //
             this.cmenuCurveSeparator5.Name = "cmenuCurveSeparator5";
             this.cmenuCurveSeparator5.Size = new System.Drawing.Size( 156, 6 );
-            // 
+            //
             // cmenuCurveEffect2Depth
-            // 
+            //
             this.cmenuCurveEffect2Depth.Name = "cmenuCurveEffect2Depth";
             this.cmenuCurveEffect2Depth.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveEffect2Depth.Text = "Effect2 Depth";
-            // 
+            //
             // cmenuCurveEnvelope
-            // 
+            //
             this.cmenuCurveEnvelope.Name = "cmenuCurveEnvelope";
             this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveEnvelope.Text = "Envelope";
-            // 
+            //
             // TrackSelector
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.DarkGray;

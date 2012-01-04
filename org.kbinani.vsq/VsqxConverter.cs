@@ -11,6 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+
+package com.github.cadencii.vsq;
+
+public class VsqxConverter
+{
+    public static VsqFile readFromVsqx( String filePath )
+        throws UnsupportedOperationException
+    {
+        throw new UnsupportedOperationException();
+    }
+}
+
+#else
+
 using System;
 using System.Xml;
 using System.Collections.Generic;
@@ -346,3 +361,4 @@ namespace com.github.cadencii.vsq
         }
     }
 }
+#endif

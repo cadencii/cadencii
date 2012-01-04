@@ -267,12 +267,14 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	perl safe_rm.pl ./build/java/Cadencii.java $(TO_DEVNULL)
 	$(CP) ./build/java/com/github/cadencii/Cadencii.java ./build/java/Cadencii.java
 	perl safe_rm.pl ./build/java/com/github/cadencii/Cadencii.java $(TO_DEVNULL)
-	$(MAKE) jpostprocess
-	$(JAVAC) ./build/java/Cadencii.java ./build/java/com/github/cadencii/*.java ./build/java/com/github/cadencii/apputil/*.java ./build/java/com/github/cadencii/media/*.java ./build/java/com/github/cadencii/vsq/*.java ./build/java/com/github/cadencii/*.java ./build/java/com/github/cadencii/componentmodel/*.java ./build/java/com/github/cadencii/windows/forms/*.java ./build/java/com/github/cadencii/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
+	mkdir -p ./build/java/com/github/cadencii/ui
+	cp ./Cadencii/ui/java/*.java ./build/java/com/github/cadencii/ui
+	$(JAVAC) ./build/java/Cadencii.java ./build/java/com/github/cadencii/*.java ./build/java/com/github/cadencii/apputil/*.java ./build/java/com/github/cadencii/media/*.java ./build/java/com/github/cadencii/vsq/*.java ./build/java/com/github/cadencii/*.java ./build/java/com/github/cadencii/componentmodel/*.java ./build/java/com/github/cadencii/windows/forms/*.java ./build/java/com/github/cadencii/xml/*.java ./build/java/com/github/cadencii/ui/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class com/github/cadencii/*.class com/github/cadencii/*.class com/github/cadencii/apputil/*.class com/github/cadencii/media/*.class com/github/cadencii/vsq/*.class com/github/cadencii/componentmodel/*.class com/github/cadencii/windows/forms/*.class com/github/cadencii/xml/*.class
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico $(TO_DEVNULL)
+
 
 ./build/java/ja.po: ./Cadencii/ja.po
 	$(CP) ./Cadencii/ja.po ./build/java/ja.po
@@ -308,44 +310,6 @@ jeditotoini: pp_cs2java.jar jcorlib japputil jmedia jvsq
 #
 jcorlib: pp_cs2java.jar $(SRC_JCORLIB)
 
-
-########################################################################
-# post process for BuildJavaUI
-#
-jpostprocess:
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/math.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/math.java ./BuildJavaUI/src/com/github/cadencii/math.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/fsys.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/fsys.java ./BuildJavaUI/src/com/github/cadencii/fsys.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/str.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/str.java ./BuildJavaUI/src/com/github/cadencii/str.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/vec.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/vec.java ./BuildJavaUI/src/com/github/cadencii/vec.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/PortUtil.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/PortUtil.java ./BuildJavaUI/src/com/github/cadencii/PortUtil.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/ByRef.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/ByRef.java ./BuildJavaUI/src/com/github/cadencii/ByRef.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/NumberTextBox.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/NumberTextBox.java ./BuildJavaUI/src/com/github/cadencii/NumberTextBox.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/NumericUpDownEx.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/com/github/cadencii/NumericUpDownEx.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/IconParader.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/IconParader.java ./BuildJavaUI/src/com/github/cadencii/IconParader.java
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/TrackSelectorSingerPopupMenu.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/TrackSelectorSingerPopupMenu.java ./BuildJavaUI/src/com/github/cadencii/TrackSelectorSingerPopupMenu.java
-	perl safe_mkdir.pl ./BuildJavaUI/src/com/github/cadencii/apputil
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/apputil/Messaging.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/apputil/Messaging.java ./BuildJavaUI/src/com/github/cadencii/apputil/Messaging.java
-	perl safe_mkdir.pl ./BuildJavaUI/src/com/github/cadencii/apputil
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/apputil/MessageBody.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/apputil/MessageBody.java ./BuildJavaUI/src/com/github/cadencii/apputil/MessageBody.java
-	perl safe_mkdir.pl ./BuildJavaUI/src/com/github/cadencii/apputil
-	perl safe_rm.pl ./BuildJavaUI/src/com/github/cadencii/apputil/MessageBodyEntry.java $(TO_DEVNULL)
-	$(CP) ./build/java/com/github/cadencii/apputil/MessageBodyEntry.java ./BuildJavaUI/src/com/github/cadencii/apputil/MessageBodyEntry.java
-	$(CP) ./build/java/com/github/cadencii/UiBase.java          ./BuildJavaUI/src/com/github/cadencii/UiBase.java
-	$(CP) ./build/java/com/github/cadencii/ControllerBase.java  ./BuildJavaUI/src/com/github/cadencii/ControllerBase.java
-@JAVA_POST_PROCESS@
-
 ########################################################################
 # jcomponentmodel
 #
@@ -355,8 +319,6 @@ jcomponentmodel: pp_cs2java.exe $(SRC_JCOMPONENTMODEL)
 # jxml
 #
 jxml: pp_cs2java.jar $(SRC_JXML)
-	$(RM) ./BuildJavaUI/src/com/github/cadencii/xml/XmlSerializable.java
-	$(CP) ./build/java/com/github/cadencii/xml/XmlSerializable.java ./BuildJavaUI/src/com/github/cadencii/xml/XmlSerializable.java
 
 ########################################################################
 # preprocessor

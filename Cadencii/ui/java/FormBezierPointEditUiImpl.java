@@ -1,4 +1,4 @@
-﻿package com.github.cadencii.ui;
+package com.github.cadencii.ui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.github.cadencii.FormBezierPointEditUi;
+import com.github.cadencii.FormBezierPointEditUiListener;
 
 //SECTION-END-IMPORT
 public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierPointEditUi
@@ -52,7 +53,8 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     /**
      * This is the default constructor
      */
-    public FormBezierPointEditUiImpl() {
+    public FormBezierPointEditUiImpl( FormBezierPointEditUiListener listener )
+    {
         super();
         initialize();
     }
