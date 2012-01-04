@@ -37,6 +37,8 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.CubicCurve2D;
+import java.awt.Robot;
+import java.awt.AWTException;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -1369,9 +1371,15 @@ namespace com.github.cadencii {
 
         #endregion
 
-        public static void setMousePosition( Point p ) {
+        public static void setMousePosition( Point p )
+        {
 #if JAVA
-            // TODO: PortUtil#setMousePosition
+            try{
+                Robot r = new Robot();
+                r.mouseMove( p.x, p.y );
+            }catch( AWTException e ){
+                e.printStackTrace();
+            }
 #else
             System.Windows.Forms.Cursor.Position = new System.Drawing.Point( p.x, p.y );
 #endif

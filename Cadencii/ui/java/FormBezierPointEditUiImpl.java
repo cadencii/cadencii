@@ -13,6 +13,13 @@ import javax.swing.JTextField;
 
 import com.github.cadencii.FormBezierPointEditUi;
 import com.github.cadencii.FormBezierPointEditUiListener;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 //SECTION-END-IMPORT
 public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierPointEditUi
@@ -48,6 +55,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JLabel jLabel5 = null;
     private JPanel jPanel3 = null;
     private JLabel lblRightValue1 = null;
+    private FormBezierPointEditUiListener listener;
 
     //SECTION-END-FIELD
     /**
@@ -56,6 +64,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     public FormBezierPointEditUiImpl( FormBezierPointEditUiListener listener )
     {
         super();
+        this.listener = listener;
         initialize();
     }
     //SECTION-BEGIN-METHOD
@@ -149,6 +158,11 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnBackward() {
         if (btnBackward == null) {
             btnBackward = new JButton();
+            btnBackward.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    listener.buttonBackwardClick();
+                }
+            });
             btnBackward.setText("<<");
         }
         return btnBackward;
@@ -162,6 +176,11 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JCheckBox getChkEnableSmooth() {
         if (chkEnableSmooth == null) {
             chkEnableSmooth = new JCheckBox();
+            chkEnableSmooth.addItemListener(new ItemListener() {
+                public void itemStateChanged(ItemEvent arg0) {
+                    listener.checkboxEnableSmoothCheckedChanged();
+                }
+            });
             chkEnableSmooth.setText("Smooth");
         }
         return chkEnableSmooth;
@@ -175,6 +194,11 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnForward() {
         if (btnForward == null) {
             btnForward = new JButton();
+            btnForward.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    listener.buttonForwardClick();
+                }
+            });
             btnForward.setText(">>");
         }
         return btnForward;
@@ -263,8 +287,24 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnLeft() {
         if (btnLeft == null) {
             btnLeft = new JButton();
+            btnLeft.addMouseMotionListener(new MouseMotionAdapter() {
+                @Override
+                public void mouseDragged(MouseEvent arg0) {
+                    listener.buttonsMouseMove();
+                }
+            });
+            btnLeft.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent arg0) {
+                    listener.buttonsMouseDown( true, false, false );
+                }
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    listener.buttonsMouseUp();
+                }
+            });
             btnLeft.setText("");
-            btnLeft.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
+            btnLeft.setIcon(new ImageIcon(getClass().getResource("/resources/target--pencil.png")));
         }
         return btnLeft;
     }
@@ -352,6 +392,22 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnDataPoint() {
         if (btnDataPoint == null) {
             btnDataPoint = new JButton();
+            btnDataPoint.addMouseMotionListener(new MouseMotionAdapter() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    listener.buttonsMouseMove();
+                }
+            });
+            btnDataPoint.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    listener.buttonsMouseDown( false, true, false );
+                }
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    listener.buttonsMouseUp();
+                }
+            });
             btnDataPoint.setText("");
             btnDataPoint.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
         }
@@ -439,6 +495,22 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnRight() {
         if (btnRight == null) {
             btnRight = new JButton();
+            btnRight.addMouseMotionListener(new MouseMotionAdapter() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    listener.buttonsMouseMove();
+                }
+            });
+            btnRight.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    listener.buttonsMouseDown( false,  false, true );
+                }
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    listener.buttonsMouseUp();
+                }
+            });
             btnRight.setText("");
             btnRight.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
         }
@@ -453,6 +525,11 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnOK() {
         if (btnOK == null) {
             btnOK = new JButton();
+            btnOK.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                    listener.buttonOkClick();
+                }
+            });
             btnOK.setText("OK");
             btnOK.setPreferredSize(new Dimension(100, 29));
         }
@@ -467,6 +544,11 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     private JButton getBtnCancel() {
         if (btnCancel == null) {
             btnCancel = new JButton();
+            btnCancel.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    listener.buttonCancelClick();
+                }
+            });
             btnCancel.setText("Cancel");
             btnCancel.setPreferredSize(new Dimension(100, 29));
         }

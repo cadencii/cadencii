@@ -45,21 +45,6 @@ namespace com.github.cadencii
     public class FormBezierPointEditController : ControllerBase, FormBezierPointEditUiListener
 #endif
     {
-        /// <summary>
-        /// 右制御点を操作するためのボタンを表す
-        /// </summary>
-        public const int BUTTON_RIGHT = 1;
-
-        /// <summary>
-        /// 左制御点を操作するためのボタンを表す
-        /// </summary>
-        public const int BUTTON_LEFT = 2;
-
-        /// <summary>
-        /// データ点を操作するためのボタンを表す
-        /// </summary>
-        public const int BUTTON_POINT = 3;
-
         private BezierPoint m_point;
         private int m_min;
         private int m_max;
@@ -198,15 +183,15 @@ namespace com.github.cadencii
             this.ui.setLeftValueText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())) + "" );
             this.ui.setRightClockText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())) + "" );
             this.ui.setRightValueText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())) + "" );
-            m_parent.invalidate();
+            m_parent.doInvalidate();
         }
 
-        public void buttonsMouseDown( int buttonType )
+        public void buttonsMouseDown( bool isLeft, bool isCenter, bool isRight )
         {
             BezierPickedSide side = BezierPickedSide.BASE;
-            if( buttonType == FormBezierPointEditController.BUTTON_LEFT ) {
+            if( isLeft ) {
                 side = BezierPickedSide.LEFT;
-            } else if( buttonType == FormBezierPointEditController.BUTTON_RIGHT ) {
+            } else if( isRight ) {
                 side = BezierPickedSide.RIGHT;
             }
 
@@ -247,7 +232,7 @@ namespace com.github.cadencii
                 new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
             PortUtil.setMousePosition( m_last_mouse_global_location );
-            m_parent.invalidate();
+            m_parent.doInvalidate();
         }
 
         public void buttonsMouseMove()
@@ -275,7 +260,7 @@ namespace com.github.cadencii
                 this.ui.setRightClockText( ((int)ret.getControlRight().getX()) + "" );
                 this.ui.setRightValueText( ((int)ret.getControlRight().getY()) + "" );
 
-                m_parent.invalidate();
+                m_parent.doInvalidate();
             }
         }
 
@@ -310,7 +295,9 @@ namespace com.github.cadencii
 
         #endregion
 
+
         #region helper methods
+
         private void updateStatus()
         {
             this.ui.setDataPointClockText( m_point.getBase().getX() + "" );
@@ -360,7 +347,7 @@ namespace com.github.cadencii
                 m_point = target.points.get( index );
                 updateStatus();
                 m_parent.mEditingPointID = m_point_id;
-                m_parent.invalidate();
+                m_parent.doInvalidate();
 
                 // スクリーン上でデータ点が見えるようにする
                 FormMain main = m_parent.getMainForm();

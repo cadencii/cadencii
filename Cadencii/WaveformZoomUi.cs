@@ -24,7 +24,7 @@ namespace com.github
 
 #if CSHARP
             using System;
-            using org.kbinani.cadencii;
+            using com.github.cadencii;
 #else
             using namespace org::kbinani::cadencii;
 #endif

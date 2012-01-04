@@ -2298,6 +2298,18 @@ namespace com.github.cadencii
         }
 
         /// <summary>
+        /// コンポーネントを再描画する
+        /// </summary>
+        public void doInvalidate()
+        {
+#if JAVA
+            this.mMainWindow.refreshScreen();
+#else
+            this.Invalidate();
+#endif
+        }
+
+        /// <summary>
         /// ベロシティを、与えられたグラフィックgを用いて描画します
         /// </summary>
         /// <param name="g"></param>
@@ -5637,7 +5649,13 @@ namespace com.github.cadencii
                                                                     target_point.getID() );
                                     mEditingChainID = chain_id;
                                     mEditingPointID = target_point.getID();
+                                    {//TODO:
+                                        sout.println( "TrackSelector_MouseDoubleClick; start to show editor" );
+                                    }
                                     int ret = AppManager.showModalDialog( fbpe.getUi(), mMainWindow );
+                                    {//TODO:
+                                        sout.println( "TrackSelector_MouseDoubleCLick; ret=" + ret );
+                                    }
                                     mEditingChainID = -1;
                                     mEditingPointID = -1;
                                     BezierChain after = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, chain_id );

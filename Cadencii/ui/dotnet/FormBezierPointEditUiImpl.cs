@@ -282,13 +282,10 @@ namespace com.github.cadencii
 
         public void handleOperationButtonMouseDown( object sender, MouseEventArgs e )
         {
-            int buttonType = FormBezierPointEditController.BUTTON_POINT;
-            if ( sender == btnLeft ) {
-                buttonType = FormBezierPointEditController.BUTTON_LEFT;
-            } else if ( sender == btnRight ) {
-                buttonType = FormBezierPointEditController.BUTTON_RIGHT;
-            }
-            this.listener.buttonsMouseDown( buttonType );
+            bool isLeft = (sender == btnLeft);
+            bool isRight = (sender == btnRight);
+            bool isCenter = !isLeft && !isRight;
+            this.listener.buttonsMouseDown( isLeft, isCenter, isRight );
         }
 
         public void common_MouseUp( object sender, MouseEventArgs e )

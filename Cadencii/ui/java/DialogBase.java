@@ -101,11 +101,6 @@ public class DialogBase extends JDialog
     protected void doClose()
     {
         setVisible( false );
-        try{
-            setVisible( true );
-        }catch( Exception ex ){
-            System.err.println( "DialogBase#close; ex=" + ex );
-        }
         dispose();
     }
 
