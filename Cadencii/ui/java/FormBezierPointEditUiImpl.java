@@ -75,7 +75,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
      * @return void
      */
     private void initialize() {
-        this.setSize(469, 266);
+        this.setSize(517, 284);
         this.setContentPane(getJContentPane());
         this.setTitle("Edit Bezier Data Point");
         setCancelButton( btnCancel );
@@ -125,13 +125,16 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
             gridBagConstraints8.insets = new Insets(5, 5, 5, 5);
             gridBagConstraints8.gridy = 2;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.insets = new Insets(10, 0, 0, 0);
             gridBagConstraints2.gridx = 2;
             gridBagConstraints2.anchor = GridBagConstraints.WEST;
             gridBagConstraints2.gridy = 0;
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.insets = new Insets(10, 0, 0, 0);
             gridBagConstraints1.gridx = 1;
             gridBagConstraints1.gridy = 0;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.insets = new Insets(10, 0, 0, 0);
             gridBagConstraints.gridx = 0;
             gridBagConstraints.anchor = GridBagConstraints.EAST;
             gridBagConstraints.gridy = 0;
@@ -304,7 +307,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
                 }
             });
             btnLeft.setText("");
-            btnLeft.setIcon(new ImageIcon(getClass().getResource("/resources/target--pencil.png")));
+            btnLeft.setIcon(new ImageIcon(FormBezierPointEditUiImpl.class.getResource("/resources/target--pencil.png")));
         }
         return btnLeft;
     }
@@ -409,7 +412,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
                 }
             });
             btnDataPoint.setText("");
-            btnDataPoint.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
+            btnDataPoint.setIcon(new ImageIcon(FormBezierPointEditUiImpl.class.getResource("/resources/target--pencil.png")));
         }
         return btnDataPoint;
     }
@@ -512,7 +515,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
                 }
             });
             btnRight.setText("");
-            btnRight.setIcon(new ImageIcon(getClass().getResource("/target--pencil.png")));
+            btnRight.setIcon(new ImageIcon(FormBezierPointEditUiImpl.class.getResource("/resources/target--pencil.png")));
         }
         return btnRight;
     }

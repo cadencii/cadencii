@@ -5,6 +5,7 @@ files=`ls $wd/../Cadencii/ui/java/*UiImpl.java`
 
 rm -rf $wd/src/com/github/cadencii/ui
 rm -rf $wd/src/com/github/cadencii/*.java
+rm -f $wd/src/resources
 mkdir -p $wd/src/com/github/cadencii/ui
 
 for file in $files
@@ -26,3 +27,4 @@ done
 cd $wd/src/com/github/cadencii && ln -s $wd/../build/java/com/github/cadencii/UiBase.java
 cd $wd/src/com/github/cadencii/ui && ln -s $wd/../Cadencii/ui/java/DialogBase.java
 cd $wd/src/com/github/cadencii/ui && ln -s $wd/../Cadencii/ui/java/ListView.java
+cd $wd/src && ln -s $wd/../build/java/resources

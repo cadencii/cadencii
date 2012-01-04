@@ -271,6 +271,7 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	cp ./Cadencii/ui/java/*.java ./build/java/com/github/cadencii/ui
 	$(JAVAC) ./build/java/Cadencii.java ./build/java/com/github/cadencii/*.java ./build/java/com/github/cadencii/apputil/*.java ./build/java/com/github/cadencii/media/*.java ./build/java/com/github/cadencii/vsq/*.java ./build/java/com/github/cadencii/*.java ./build/java/com/github/cadencii/componentmodel/*.java ./build/java/com/github/cadencii/windows/forms/*.java ./build/java/com/github/cadencii/xml/*.java ./build/java/com/github/cadencii/ui/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class com/github/cadencii/*.class com/github/cadencii/*.class com/github/cadencii/apputil/*.class com/github/cadencii/media/*.class com/github/cadencii/vsq/*.class com/github/cadencii/componentmodel/*.class com/github/cadencii/windows/forms/*.class com/github/cadencii/xml/*.class
+	mkdir -p ./build/java/resources
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico $(TO_DEVNULL)
