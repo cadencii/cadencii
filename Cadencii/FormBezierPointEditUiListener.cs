@@ -43,7 +43,13 @@ namespace com.github.cadencii
         void checkboxEnableSmoothCheckedChanged();
 
         [PureVirtualFunction]
-        void buttonsMouseDown( bool isLeft, bool isCenter, bool isRight );
+        void buttonLeftMouseDown();
+
+        [PureVirtualFunction]
+        void buttonRightMouseDown();
+
+        [PureVirtualFunction]
+        void buttonCenterMouseDown();
 
         [PureVirtualFunction]
         void buttonsMouseUp();

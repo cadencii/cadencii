@@ -282,10 +282,13 @@ namespace com.github.cadencii
 
         public void handleOperationButtonMouseDown( object sender, MouseEventArgs e )
         {
-            bool isLeft = (sender == btnLeft);
-            bool isRight = (sender == btnRight);
-            bool isCenter = !isLeft && !isRight;
-            this.listener.buttonsMouseDown( isLeft, isCenter, isRight );
+            if( sender == btnLeft ){
+                this.listener.buttonLeftMouseDown();
+            }else if( sender == btnRight ){
+                this.listener.buttonRightMouseDown();
+            }else{
+                this.listener.buttonCenterMouseDown();
+            }
         }
 
         public void common_MouseUp( object sender, MouseEventArgs e )

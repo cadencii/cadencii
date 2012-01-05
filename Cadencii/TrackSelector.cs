@@ -2469,9 +2469,6 @@ namespace com.github.cadencii
                                  next.getControlLeftType() == BezierControlType.None ) {
                                 g.setColor( COLOR_BEZIER_CURVE );
                                 g.drawLine( pxCurrent.x, pxCurrent.y, pxNext.x, pxNext.y );
-#if DEBUG
-                                sout.println( "TrackSelector::drawAttatchedCurve; [" + i + "," + j + "] bezier body(line) drawn" );
-#endif
                             } else {
                                 Point ctrl1 = (current.getControlRightType() == BezierControlType.None) ? pxCurrent : pxControlCurrent;
                                 Point ctrl2 = (next.getControlLeftType() == BezierControlType.None) ? pxNext : pxControlNext;
@@ -2480,9 +2477,6 @@ namespace com.github.cadencii
                                                         ctrl1.x, ctrl1.y,
                                                         ctrl2.x, ctrl2.y,
                                                         pxNext.x, pxNext.y );
-#if DEBUG
-                                sout.println( "TrackSelector::drawAttatchedCurve; [" + i + "," + j + "] bezier body(bezier) drawn" );
-#endif
                             }
                         }
                         int minX = pxCurrent.x;

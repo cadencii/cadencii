@@ -299,7 +299,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
             btnLeft.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent arg0) {
-                    listener.buttonsMouseDown( true, false, false );
+                    listener.buttonLeftMouseDown();
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
@@ -404,7 +404,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
             btnDataPoint.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    listener.buttonsMouseDown( false, true, false );
+                    listener.buttonCenterMouseDown();
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {
@@ -507,7 +507,7 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
             btnRight.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    listener.buttonsMouseDown( false,  false, true );
+                    listener.buttonRightMouseDown();
                 }
                 @Override
                 public void mouseReleased(MouseEvent e) {

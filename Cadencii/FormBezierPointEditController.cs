@@ -186,36 +186,19 @@ namespace com.github.cadencii
             m_parent.doInvalidate();
         }
 
-        public void buttonsMouseDown( bool isLeft, bool isCenter, bool isRight )
+        public void buttonLeftMouseDown()
         {
-            BezierPickedSide side = BezierPickedSide.BASE;
-            if( isLeft ) {
-                side = BezierPickedSide.LEFT;
-            } else if( isRight ) {
-                side = BezierPickedSide.RIGHT;
-            }
+            this.handleMouseDown( BezierPickedSide.LEFT );
+        }
 
-            this.ui.setOpacity( m_min_opacity );
+        public void buttonRightMouseDown()
+        {
+            this.handleMouseDown( BezierPickedSide.RIGHT );
+        }
 
-            m_last_mouse_global_location = PortUtil.getMousePosition();
-            PointD pd = m_point.getPosition( side );
-            Point loc_on_trackselector =
-                new Point(
-                    AppManager.xCoordFromClocks( (int)pd.getX() ),
-                    m_parent.yCoordFromValue( (int)pd.getY() ) );
-            Point loc_topleft = m_parent.getLocationOnScreen();
-            mScreenMouseDownLocation =
-                new Point(
-                    loc_topleft.x + loc_on_trackselector.x,
-                    loc_topleft.y + loc_on_trackselector.y );
-            PortUtil.setMousePosition( mScreenMouseDownLocation );
-            BMouseEventArgs event_arg =
-                new BMouseEventArgs(
-                    BMouseButtons.Left, 0,
-                    loc_on_trackselector.x, loc_on_trackselector.y, 0 );
-            m_parent.TrackSelector_MouseDown( this, event_arg );
-            m_picked_side = side;
-            m_btn_datapoint_downed = true;
+        public void buttonCenterMouseDown()
+        {
+            this.handleMouseDown( BezierPickedSide.BASE );
         }
 
         public void buttonsMouseUp()
@@ -297,6 +280,31 @@ namespace com.github.cadencii
 
 
         #region helper methods
+
+        private void handleMouseDown( BezierPickedSide side )
+        {
+            this.ui.setOpacity( m_min_opacity );
+
+            m_last_mouse_global_location = PortUtil.getMousePosition();
+            PointD pd = m_point.getPosition( side );
+            Point loc_on_trackselector =
+                new Point(
+                    AppManager.xCoordFromClocks( (int)pd.getX() ),
+                    m_parent.yCoordFromValue( (int)pd.getY() ) );
+            Point loc_topleft = m_parent.getLocationOnScreen();
+            mScreenMouseDownLocation =
+                new Point(
+                    loc_topleft.x + loc_on_trackselector.x,
+                    loc_topleft.y + loc_on_trackselector.y );
+            PortUtil.setMousePosition( mScreenMouseDownLocation );
+            BMouseEventArgs event_arg =
+                new BMouseEventArgs(
+                    BMouseButtons.Left, 0,
+                    loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+            m_parent.TrackSelector_MouseDown( this, event_arg );
+            m_picked_side = side;
+            m_btn_datapoint_downed = true;
+        }
 
         private void updateStatus()
         {
