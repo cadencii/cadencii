@@ -10220,7 +10220,10 @@ namespace com.github.cadencii
             sout.println( "FormMain#propertyWindow_WindowStateChanged" );
 #endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
-                if ( AppManager.propertyWindow.getExtendedState() == BForm.ICONIFIED ) {
+#if DEBUG
+                sout.println( "FormMain#proprtyWindow_WindowStateChanged; isMinimized=" + AppManager.propertyWindow.isMinimized() );
+#endif
+                if ( AppManager.propertyWindow.isMinimized() ) {
                     updatePropertyPanelState( PanelState.Docked );
                 }
             }

@@ -67,7 +67,7 @@ namespace com.github.cadencii
         {
             return mPreviousAlwaysOnTop;
         }
-        
+
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
         /// </summary>
@@ -75,12 +75,17 @@ namespace com.github.cadencii
         {
             mPreviousAlwaysOnTop = value;
         }
-                
+
 #if !JAVA
         public void addComponent( System.Windows.Forms.Control c )
         {
             this.Controls.Add( c );
             c.Dock = System.Windows.Forms.DockStyle.Fill;
+        }
+
+        public bool isMinimized()
+        {
+            return this.WindowState == System.Windows.Forms.FormWindowState.Minimized;
         }
 #endif
 
@@ -117,7 +122,7 @@ namespace com.github.cadencii
         {
             setAlwaysOnTop( true );
         }
-        
+
         public void menuClose_Click( Object sender, BEventArgs e )
         {
             close();
@@ -162,9 +167,9 @@ namespace com.github.cadencii
             this.menuClose = new BMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // menuStrip
-            // 
+            //
             this.menuStrip.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuWindow} );
             this.menuStrip.Location = new System.Drawing.Point( 0, 0 );
@@ -173,23 +178,23 @@ namespace com.github.cadencii
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip1";
             this.menuStrip.Visible = false;
-            // 
+            //
             // menuWindow
-            // 
+            //
             this.menuWindow.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuClose} );
             this.menuWindow.Name = "menuWindow";
             this.menuWindow.Size = new System.Drawing.Size( 72, 20 );
             this.menuWindow.Text = "Window(&W)";
-            // 
+            //
             // menuClose
-            // 
+            //
             this.menuClose.Name = "menuClose";
             this.menuClose.Size = new System.Drawing.Size( 115, 22 );
             this.menuClose.Text = "Close(&C)";
-            // 
+            //
             // FormNoteProperty
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;

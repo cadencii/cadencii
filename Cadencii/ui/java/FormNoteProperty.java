@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
 import com.github.cadencii.windows.forms.BDialog;
 import com.github.cadencii.windows.forms.BMenu;
 import com.github.cadencii.windows.forms.BMenuBar;
@@ -23,11 +25,12 @@ public class FormNoteProperty extends BDialog {
     private BMenu menuWindow = null;
     private BMenuItem menuClose = null;
     private JScrollPane jScrollPane = null;
+    private boolean isMinimized = false;
     //SECTION-END-FIELD
 
     /**
-     * This method initializes 
-     * 
+     * This method initializes
+     *
      */
     public FormNoteProperty() {
     	super();
@@ -38,23 +41,54 @@ public class FormNoteProperty extends BDialog {
     public void addComponent( Component c ){
         getJScrollPane().setViewportView( c );
     }
-    
+
+    /**
+     * ウィンドウが最小化された状態かどうかを取得する
+     * @return boolean
+     */
+    public boolean isMinimized()
+    {
+        return this.isMinimized;
+    }
+
     /**
      * This method initializes this
-     * 
+     *
      */
     private void initialize() {
         this.setSize(new Dimension(217, 330));
         this.setJMenuBar(getMenuStrip());
         this.setContentPane(getPanelMain());
         this.setTitle("Note Property");
-    		
+        this.addWindowListener( new WindowListener(){
+            public void windowIconified( WindowEvent e )
+            {
+                {//TODO:
+                    System.out.println( "iconified" );
+                }
+                isMinimized = true;
+            }
+
+            public void windowDeiconified( WindowEvent e )
+            {
+                {//TODO:
+                    System.out.println( "deiconified" );
+                }
+                isMinimized = false;
+            }
+
+            public void windowDeactivated( WindowEvent e ){};
+            public void windowActivated( WindowEvent e ){};
+            public void windowClosed( WindowEvent e ){};
+            public void windowClosing( WindowEvent e ){};
+            public void windowOpened( WindowEvent e ){};
+        } );
     }
 
     /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
+     * This method initializes jPanel
+     *
+     * @return javax.swing.JPanel
      */
     private JPanel getPanelMain() {
         if (panelMain == null) {
@@ -72,9 +106,9 @@ public class FormNoteProperty extends BDialog {
     }
 
     /**
-     * This method initializes menuStrip	
-     * 	
-     * @return javax.swing.JMenuBar	
+     * This method initializes menuStrip
+     *
+     * @return javax.swing.JMenuBar
      */
     private BMenuBar getMenuStrip() {
         if (menuStrip == null) {
@@ -86,9 +120,9 @@ public class FormNoteProperty extends BDialog {
     }
 
     /**
-     * This method initializes menuWindow	
-     * 	
-     * @return javax.swing.JMenu	
+     * This method initializes menuWindow
+     *
+     * @return javax.swing.JMenu
      */
     private BMenu getMenuWindow() {
         if (menuWindow == null) {
@@ -100,9 +134,9 @@ public class FormNoteProperty extends BDialog {
     }
 
     /**
-     * This method initializes menuClose	
-     * 	
-     * @return javax.swing.JMenuItem	
+     * This method initializes menuClose
+     *
+     * @return javax.swing.JMenuItem
      */
     private BMenuItem getMenuClose() {
         if (menuClose == null) {
@@ -113,9 +147,9 @@ public class FormNoteProperty extends BDialog {
     }
 
     /**
-     * This method initializes jScrollPane	
-     * 	
-     * @return javax.swing.JScrollPane	
+     * This method initializes jScrollPane
+     *
+     * @return javax.swing.JScrollPane
      */
     private JScrollPane getJScrollPane() {
         if (jScrollPane == null) {
