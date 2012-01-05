@@ -748,6 +748,9 @@ public class FormBezierPointEditUiImpl extends DialogBase implements FormBezierP
     {
         if( opacity >= 1.0 ){
             this.setVisible( true );
+            com.sun.awt.AWTUtilities.setWindowOpacity( this, 1.0f );
+        }else{
+            com.sun.awt.AWTUtilities.setWindowOpacity( this, (float)opacity );
         }
     }
 
