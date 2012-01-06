@@ -63,6 +63,7 @@ class Preprocessor{
     static Replacement[] REPLACE = new Replacement[0];
     static ReplaceMode mMode = ReplaceMode.NONE;
     static final Replacement[] REPLACE_CS2JAVA = new Replacement[]{
+        new Replacement( "object", "Object", true ),
         new Replacement( "string", "String", true ),
         new Replacement( ".StringFlavor", ".stringFlavor", false ),
         new Replacement( "bool", "boolean", true ),
@@ -91,7 +92,7 @@ class Preprocessor{
         new Replacement( "Math.Max(", "Math.max(" , false ),
         new Replacement( "Math.Log(", "Math.log(" , false ),
         new Replacement( "Math.Exp(", "Math.exp(" , false ),
-        new Replacement( "Math.Ceiling(", "Math.ceil(" , false ), 
+        new Replacement( "Math.Ceiling(", "Math.ceil(" , false ),
         new Replacement( "Math.Floor(", "Math.floor(" , false ),
         new Replacement( "Math.Abs(", "Math.abs(" , false ),
         new Replacement( "Math.Pow(", "Math.pow(" , false ),
@@ -156,7 +157,7 @@ class Preprocessor{
             this.writer = writer;
             source = src;
         }
-        
+
         public void writeLine( String line, int lineNumber ){
             int indx = line.indexOf( "[PureVirtualFunction]" );
             if( indx >= 0 && false == source.isInComment( lineNumber, indx ) ){
@@ -348,7 +349,7 @@ class Preprocessor{
 
     /**
      * 実行時の引数を解析します．
-     * 
+     *
      * @param args
      *            解析する引数．
      * @return 使い方の説明文を表示するオプションがONだった場合にtrue，それ以外はfalseを返します．
@@ -459,7 +460,7 @@ class Preprocessor{
 
     /**
      * 1個のファイルに対してプリプロセス処理を行います．
-     * 
+     *
      * @param in_path
      *            処理するファイルのパス．
      */
@@ -585,11 +586,11 @@ class Preprocessor{
                 readin = Evaluator.eval( equation, local_defines );
                 int end_if = src.findEndIfSentence( i );
                 int else_if = src.findElseSentence( i );
-                
+
                 if( mMode == ReplaceMode.CPP ){
                     context.writeLine( line, i );
                 }
-                
+
                 if( readin ){
                     // #if, #elifの判定がtrueなためブロックの中身を読みに行く場合，
                     // ブロックの中身がどこまでかを検出
@@ -659,7 +660,7 @@ class Preprocessor{
 
     /**
      * "//INCLUDE"の処理を行います．
-     * 
+     *
      * @param in_path
      *            入力ファイルのパス．
      * @param out_path
@@ -717,7 +718,7 @@ class Preprocessor{
 
     /**
      * セクション指定のINCLUDE処理（INCLUDE-SECTION）を行います．
-     * 
+     *
      * @param path
      * @param indent
      * @param sw
@@ -787,7 +788,7 @@ class Preprocessor{
 
     /**
      * ファイル全部をINCLUDEする処理を行います．
-     * 
+     *
      * @param path
      * @param indent
      * @param sw
@@ -914,7 +915,7 @@ class Preprocessor{
 
     /**
      * イベントハンドラの記述箇所の処理を行います．
-     * 
+     *
      * @param line
      *            処理する行データ．
      * @return 処理後の行データ．
@@ -1015,7 +1016,7 @@ class Preprocessor{
 
     /**
      * foreachの置換処理を行います．
-     * 
+     *
      * @param line
      *            処理する行データ．
      * @return 処理後の行データ．
@@ -1037,7 +1038,7 @@ class Preprocessor{
 
     /**
      * 型名の置換を行います．
-     * 
+     *
      * @param line
      *            処理する行データ．
      * @return 処理後の行データ．
@@ -1077,7 +1078,7 @@ class Preprocessor{
 
     /**
      * 指定した行番号の行データを，起動時に指定された置換ルールに基づいて置換します．
-     * 
+     *
      * @param line_number
      *            置換を行う行の行番号．
      * @param src

@@ -171,6 +171,8 @@
     <Compile Include="FormMainController.cs" />
     <Compile Include="FormMainUi.cs" />
     <Compile Include="FormMainUiListener.cs" />
+    <Compile Include="FormNotePropertyUi.cs" />
+    <Compile Include="FormNotePropertyUiListener.cs" />
     <Compile Include="FormSequenceConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -201,6 +203,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProgressBarWithLabel.cs" />
+    <Compile Include="PropertyWindowListener.cs" />
     <Compile Include="PureVirtualFunctionAttribute.cs" />
     <Compile Include="RecentFileMenuItem.cs">
       <SubType>Component</SubType>
@@ -228,6 +231,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ui\dotnet\FormBezierPointEditUiImpl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\dotnet\FormNotePropertyUiImpl.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ui\dotnet\FormWordDictionaryUiImpl.cs">
@@ -342,8 +348,7 @@
     <Compile Include="CommandTree.cs" />
     <Compile Include="CommandTreeUnit.cs" />
     <Compile Include="CurveType.cs" />
-    <Compile Include="FormNoteProperty.cs">
-      <SubType>Form</SubType>
+    <Compile Include="FormNotePropertyController.cs">
     </Compile>
     <Compile Include="FormShortcutKeys.cs">
       <SubType>Form</SubType>
@@ -454,6 +459,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\dotnet\FormBeatConfigUiImpl.resx">
       <DependentUpon>FormBeatConfigUiImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\dotnet\FormNotePropertyUiImpl.resx">
+      <DependentUpon>FormNotePropertyUiImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\dotnet\FormWordDictionaryUiImpl.resx">
       <DependentUpon>FormWordDictionaryUiImpl.cs</DependentUpon>

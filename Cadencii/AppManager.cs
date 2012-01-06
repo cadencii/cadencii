@@ -201,7 +201,7 @@ namespace com.github.cadencii
         /// プロパティウィンドウが分離した場合のプロパティウィンドウのインスタンス。
         /// メインウィンドウとプロパティウィンドウが分離している時、propertyPanelがpropertyWindowの子になる
         /// </summary>
-        public static FormNoteProperty propertyWindow;
+        public static FormNotePropertyController propertyWindow;
 #endif
         /// <summary>
         /// アイコンパレット・ウィンドウのインスタンス
@@ -1818,10 +1818,10 @@ namespace com.github.cadencii
             mShowingDialog = true;
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
-                boolean previous = propertyWindow.isAlwaysOnTop();
+                boolean previous = propertyWindow.getUi().isAlwaysOnTop();
                 propertyWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
-                    propertyWindow.setAlwaysOnTop( false );
+                    propertyWindow.getUi().setAlwaysOnTop( false );
                 }
             }
 #endif
@@ -1849,7 +1849,7 @@ namespace com.github.cadencii
         {
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
-                propertyWindow.setAlwaysOnTop( propertyWindow.getPreviousAlwaysOnTop() );
+                propertyWindow.getUi().setAlwaysOnTop( propertyWindow.getPreviousAlwaysOnTop() );
             }
 #endif
             if ( mMixerWindow != null ) {

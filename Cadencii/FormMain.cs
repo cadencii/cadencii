@@ -88,9 +88,9 @@ namespace com.github.cadencii
     /// エディタのメイン画面クラス
     /// </summary>
 #if JAVA
-    public class FormMain extends BForm implements FormMainUi
+    public class FormMain extends BForm implements FormMainUi, PropertyWindowListener
 #else
-    public class FormMain : BForm, FormMainUi
+    public class FormMain : BForm, FormMainUi, PropertyWindowListener
 #endif
     {
         /// <summary>
@@ -576,8 +576,8 @@ namespace com.github.cadencii
 
 #if ENABLE_PROPERTY
             AppManager.propertyPanel = new PropertyPanel();
-            AppManager.propertyWindow = new FormNoteProperty();
-            AppManager.propertyWindow.addComponent( AppManager.propertyPanel );
+            AppManager.propertyWindow = new FormNotePropertyController( this );
+            AppManager.propertyWindow.getUi().addComponent( AppManager.propertyPanel );
 #endif
 
 #if DEBUG
@@ -1057,11 +1057,11 @@ namespace com.github.cadencii
 #endif
 
 #if ENABLE_PROPERTY
-            AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
-            AppManager.propertyWindow.WindowStateChanged += new BEventHandler( propertyWindow_WindowStateChanged );
-            AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
+            AppManager.propertyWindow.getUi().setBounds( a.x, a.y, rc.width, rc.height );
+            //AppManager.propertyWindow.WindowStateChanged += new BEventHandler( propertyWindow_WindowStateChanged );
+            //AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
+            //AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
+            //AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
 #endif
             updateBgmMenuState();
@@ -2398,21 +2398,11 @@ namespace com.github.cadencii
                 sout.println( "FormMain#updatePropertyPanelState; state=Docked; w=" + w );
 #endif
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
-#if JAVA
-                int before = AppManager.propertyWindow.formClosingEvent.size();
-                int after = before - 1;
-                while( before != after ){
-                    before = AppManager.propertyWindow.formClosingEvent.size();
-                    AppManager.propertyWindow.formClosingEvent.remove( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
-                    after = AppManager.propertyWindow.formClosingEvent.size();
-                }
-                AppManager.propertyWindow.close();
-                AppManager.propertyWindow.formClosingEvent.add( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
-#else
-                AppManager.propertyWindow.setVisible( false );
-#endif
+                AppManager.propertyWindow.getUi().hideWindow();
             } else if ( state == PanelState.Hidden ) {
-                AppManager.propertyWindow.setVisible( false );
+                if( AppManager.propertyWindow.getUi().isVisible() ){
+                    AppManager.propertyWindow.getUi().hideWindow();
+                }
                 menuVisualProperty.setSelected( false );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
@@ -2428,25 +2418,33 @@ namespace com.github.cadencii
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
             } else if ( state == PanelState.Window ) {
-#if JAVA
-                AppManager.propertyWindow.addComponent( AppManager.propertyPanel );
-#else
-                AppManager.propertyWindow.Controls.Add( AppManager.propertyPanel );
-#endif
+                AppManager.propertyWindow.getUi().addComponent( AppManager.propertyPanel );
                 Point parent = this.getLocation();
                 XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
                 Point property = new Point( rc.x, rc.y );
-                AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.width, rc.height ) );
-                normalizeFormLocation( AppManager.propertyWindow );
+                int x = parent.x + property.x;
+                int y = parent.y + property.y;
+                int width = rc.width;
+                int height = rc.height;
+                AppManager.propertyWindow.getUi().setBounds( x, y, width, height );
+                int workingAreaX = AppManager.propertyWindow.getUi().getWorkingAreaX();
+                int workingAreaY = AppManager.propertyWindow.getUi().getWorkingAreaY();
+                int workingAreaWidth = AppManager.propertyWindow.getUi().getWorkingAreaWidth();
+                int workingAreaHeight = AppManager.propertyWindow.getUi().getWorkingAreaHeight();
+                Point appropriateLocation = getAppropriateDialogLocation(
+                    x, y, width, height,
+                    workingAreaX, workingAreaY, workingAreaWidth, workingAreaHeight
+                );
+                AppManager.propertyWindow.getUi().setBounds( appropriateLocation.x, appropriateLocation.y, width, height );
                 // setVisible -> NORMALとすると，javaの場合見栄えが悪くなる
 #if !JAVA
-                AppManager.propertyWindow.setVisible( true );
+                AppManager.propertyWindow.getUi().setVisible( true );
 #endif
-                if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
-                    AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
+                if ( AppManager.propertyWindow.getUi().isWindowMinimized() ) {
+                    AppManager.propertyWindow.getUi().deiconfyWindow();
                 }
 #if JAVA
-                AppManager.propertyWindow.setVisible( true );
+                AppManager.propertyWindow.getUi().setVisible( true );
 #endif
                 menuVisualProperty.setSelected( true );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
@@ -2463,12 +2461,6 @@ namespace com.github.cadencii
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
-#if DEBUG
-                sout.println( "FormMain#updatePropertyPanelState; propertyWindow.getExtendedState()=" + AppManager.propertyWindow.getExtendedState() );
-                sout.println( "    NORMAL=" + BForm.NORMAL );
-                sout.println( "    ICONIFIED=" + BForm.ICONIFIED );
-                sout.println( "    MAXIMIZED_BOTH=" + BForm.MAXIMIZED_BOTH );
-#endif
             }
         }
 #endif
@@ -10199,50 +10191,49 @@ namespace com.github.cadencii
         #endregion
 
         //BOOKMARK: propertyWindow
-        #region propertyWindow
+        #region PropertyWindowListenerの実装
+
 #if ENABLE_PROPERTY
-        public void propertyWindow_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void propertyWindowFormClosing()
         {
-#if !JAVA
-            if ( e.CloseReason != System.Windows.Forms.CloseReason.UserClosing ) {
-                return;
-            }
-            e.Cancel = true;
+#if DEBUG
+            sout.println( "FormMain#propertyWindowFormClosing" );
 #endif
             updatePropertyPanelState( PanelState.Hidden );
         }
 #endif
 
 #if ENABLE_PROPERTY
-        public void propertyWindow_WindowStateChanged( Object sender, BEventArgs e )
+        public void propertyWindowStateChanged()
         {
 #if DEBUG
             sout.println( "FormMain#propertyWindow_WindowStateChanged" );
 #endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
 #if DEBUG
-                sout.println( "FormMain#proprtyWindow_WindowStateChanged; isMinimized=" + AppManager.propertyWindow.isMinimized() );
+                sout.println( "FormMain#proprtyWindow_WindowStateChanged; isWindowMinimized=" + AppManager.propertyWindow.getUi().isWindowMinimized() );
 #endif
-                if ( AppManager.propertyWindow.isMinimized() ) {
+                if ( AppManager.propertyWindow.getUi().isWindowMinimized() ) {
                     updatePropertyPanelState( PanelState.Docked );
                 }
             }
         }
 
-        public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e )
+        public void propertyWindowLocationOrSizeChanged()
         {
 #if DEBUG
             sout.println( "FormMain#propertyWindow_LocationOrSizeChanged" );
 #endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
-                if ( AppManager.propertyWindow.getExtendedState() != BForm.ICONIFIED ) {
+                if ( AppManager.propertyWindow != null && false == AppManager.propertyWindow.getUi().isWindowMinimized() ) {
                     Point parent = this.getLocation();
-                    Point proeprty = AppManager.propertyWindow.getLocation();
+                    int propertyX = AppManager.propertyWindow.getUi().getX();
+                    int propertyY = AppManager.propertyWindow.getUi().getY();
                     AppManager.editorConfig.PropertyWindowStatus.Bounds =
-                        new XmlRectangle( proeprty.x - parent.x,
-                                          proeprty.y - parent.y,
-                                          AppManager.propertyWindow.getWidth(),
-                                          AppManager.propertyWindow.getHeight() );
+                        new XmlRectangle( propertyX - parent.x,
+                                          propertyY - parent.y,
+                                          AppManager.propertyWindow.getUi().getWidth(),
+                                          AppManager.propertyWindow.getUi().getHeight() );
                 }
             }
         }
@@ -10763,11 +10754,11 @@ namespace com.github.cadencii
 #if ENABLE_PROPERTY
                 // プロパティウィンドウの状態を更新
                 if( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ){
-                    if( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ){
-                        AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
+                    if( AppManager.propertyWindow.getUi().isWindowMinimized() ){
+                        AppManager.propertyWindow.getUi().deiconfyWindow();
                     }
-                    if( !AppManager.propertyWindow.isVisible() ){
-                        AppManager.propertyWindow.setVisible( true );
+                    if( !AppManager.propertyWindow.getUi().isVisible() ){
+                        AppManager.propertyWindow.getUi().setVisible( true );
                     }
                 }
 #endif
@@ -10787,7 +10778,7 @@ namespace com.github.cadencii
                 this.requestFocus();
             } else if ( state == BForm.ICONIFIED ) {
 #if ENABLE_PROPERTY
-                AppManager.propertyWindow.setVisible( false );
+                AppManager.propertyWindow.getUi().setVisible( false );
 #endif
                 AppManager.mMixerWindow.setVisible( false );
                 if ( AppManager.iconPalette != null ) {
@@ -17896,29 +17887,41 @@ namespace com.github.cadencii
         }
 
         /// <summary>
+        /// スクリーンに対して、ウィンドウの最適な位置を取得する
+        /// </summary>
+        public static Point getAppropriateDialogLocation( int x, int y, int width, int height, int workingAreaX, int workingAreaY, int workingAreaWidth, int workingAreaHeight )
+        {
+            int top = y;
+            if( top + height > workingAreaY + workingAreaHeight ) {
+                // ダイアログの下端が隠れる場合、位置をずらす
+                top = workingAreaY + workingAreaHeight - height;
+            }
+            if( top < workingAreaY ) {
+                // ダイアログの上端が隠れる場合、位置をずらす
+                top = workingAreaY;
+            }
+            int left = x;
+            if( left + width > workingAreaX + workingAreaWidth ) {
+                left = workingAreaX + workingAreaWidth - width;
+            }
+            if( left < workingAreaX ) {
+                left = workingAreaX;
+            }
+            return new Point( left, top );
+        }
+
+        /// <summary>
         /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
         /// </summary>
         /// <param name="form"></param>
         public static void normalizeFormLocation( BForm dlg )
         {
             Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
-            int top = dlg.getY();
-            if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
-                // ダイアログの下端が隠れる場合、位置をずらす
-                top = rcScreen.y + rcScreen.height - dlg.getHeight();
-            }
-            if ( top < rcScreen.y ) {
-                // ダイアログの上端が隠れる場合、位置をずらす
-                top = rcScreen.y;
-            }
-            int left = dlg.getX();
-            if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
-                left = rcScreen.x + rcScreen.width - dlg.getWidth();
-            }
-            if ( left < rcScreen.x ) {
-                left = rcScreen.x;
-            }
-            dlg.setLocation( left, top );
+            Point p = getAppropriateDialogLocation(
+                dlg.getX(), dlg.getY(), dlg.getWidth(), dlg.getHeight(),
+                rcScreen.x, rcScreen.y, rcScreen.width, rcScreen.height
+            );
+            dlg.setLocation( p.x, p.y );
         }
         #endregion
 
