@@ -2,12 +2,12 @@
  * Timesig.cpp
  * Copyright © 2012 kbinani
  *
- * This file is part of vsq.
+ * This file is part of libvsq.
  *
- * vsq is free software; you can redistribute it and/or
+ * libvsq is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * vsq is distributed in the hope that it will be useful,
+ * libvsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -41,5 +41,14 @@ const string Timesig::toString()
     return oss.str();
 }
 
-VSQ_END_NAMESPACE
+int Timesig::compareTo( Timesig &item )
+{
+    return this->barCount - item.barCount;
+}
 
+bool Timesig::compare( const Timesig &a, const Timesig &b )
+{
+    return a.barCount < b.barCount;
+}
+
+VSQ_END_NAMESPACE

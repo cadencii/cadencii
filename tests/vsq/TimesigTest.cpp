@@ -1,5 +1,5 @@
 #include "Util.h"
-#include "Timesig.h"
+#include "../../vsq/Timesig.h"
 
 using namespace std;
 using namespace VSQ_NS;
@@ -30,4 +30,5 @@ public:
     CPPUNIT_TEST( testToString );
     CPPUNIT_TEST_SUITE_END();
 };
+
 REGISTER_TEST_SUITE( TimesigTest );

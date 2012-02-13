@@ -17,7 +17,8 @@ TEMPLATE = app
 
 SOURCES += \
     TimesigTest.cpp \
-    main.cpp
+    main.cpp \
+    TimesigListTest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 INCLUDEPATH += ../../vsq/

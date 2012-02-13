@@ -2,12 +2,12 @@
  * Timesig.h
  * Copyright © 2012 kbinani
  *
- * This file is part of vsq.
+ * This file is part of libvsq.
  *
- * vsq is free software; you can redistribute it and/or
+ * libvsq is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * vsq is distributed in the hope that it will be useful,
+ * libvsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -28,7 +28,7 @@ public:
     /**
      * @brief Tick 単位の時刻
      */
-    long int clock;
+    tick_t clock;
 
     /**
      * @brief 拍子の分子
@@ -61,6 +61,19 @@ public:
      * @return (string) 変換後の文字列
      */
     const std::string toString();
+
+    /**
+     * @brief 順序を比較する
+     * @param item 比較対象のアイテム
+     * @return このインスタンスが比較対象よりも小さい場合は負の整数、等しい場合は 0、大きい場合は正の整数を返す
+     */
+    int compareTo( Timesig &item );
+
+    /**
+     * @brief 順序を比較する
+     * @return b が a より大であれば true を、そうでなければ false を返す
+     */
+    static bool compare( const Timesig &a, const Timesig &b );
 };
 
 VSQ_END_NAMESPACE

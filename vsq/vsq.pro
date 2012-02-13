@@ -11,11 +11,13 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    Timesig.cpp
+    Timesig.cpp \
+    TimesigList.cpp
 
 HEADERS += \
     Timesig.h \
-    vsq.h
+    vsq.h \
+    TimesigList.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
