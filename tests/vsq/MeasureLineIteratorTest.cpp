@@ -12,7 +12,8 @@ public:
         list.push( Timesig( 4, 4, 0 ) );
         list.push( Timesig( 3, 4, 1 ) );
         list.updateTimesigInfo();
-        MeasureLineIterator i( &list, 3360 );
+        MeasureLineIterator i( &list );
+        i.reset( 3360 );
 
         CPPUNIT_ASSERT( i.hasNext() );
         MeasureLine actual = i.next();
@@ -63,7 +64,8 @@ public:
         list.push( Timesig( 4, 4, 0 ) );
         list.push( Timesig( 3, 4, 1 ) );
         list.updateTimesigInfo();
-        MeasureLineIterator i( &list, 479 );
+        MeasureLineIterator i( &list );
+        i.reset( 479 );
 
         CPPUNIT_ASSERT_EQUAL( true, i.hasNext() );
         MeasureLine actual = i.next();

@@ -18,14 +18,14 @@ VSQ_BEGIN_NAMESPACE
 
 using namespace std;
 
-MeasureLineIterator::MeasureLineIterator( TimesigList *list, tick_t end_clock )
+MeasureLineIterator::MeasureLineIterator( TimesigList *list )
 {
     m_list = list;
-    m_end_clock = end_clock;
+    m_end_clock = 0;
     i = 0;
     t_end = -1;
     clock = 0;
-    this->reset( end_clock );
+    this->reset( m_end_clock );
 }
 
 bool MeasureLineIterator::hasNext()

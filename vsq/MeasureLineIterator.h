@@ -41,9 +41,8 @@ public:
     /**
      * @brief 小節線の情報を取得する区間を指定し、初期化する
      * @param list テンポ変更リスト
-     * @param end tick 単位で表した、区間の終了時刻
      */
-    MeasureLineIterator( TimesigList *list, tick_t end );
+    MeasureLineIterator( TimesigList *list );
 
     /**
      * @brief 次の小節線が取得可能かどうかを取得する
@@ -57,7 +56,10 @@ public:
      */
     MeasureLine next();
 
-private:
+    /**
+     * @brief 反復子をリセットする
+     * @todo startTick を指定できるようにする
+     */
     void reset( tick_t endTick );
 };
 
