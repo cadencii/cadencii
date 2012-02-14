@@ -15,7 +15,7 @@
 #define __Timesig_h__
 
 #include <string>
-#include "vsq.h"
+#include "vsqglobal.h"
 
 VSQ_BEGIN_NAMESPACE
 

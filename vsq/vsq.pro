@@ -12,12 +12,17 @@ CONFIG += staticlib
 
 SOURCES += \
     Timesig.cpp \
-    TimesigList.cpp
+    TimesigList.cpp \
+    MeasureLineIterator.cpp \
+    MeasureLine.cpp
 
 HEADERS += \
     Timesig.h \
     vsq.h \
-    TimesigList.h
+    TimesigList.h \
+    MeasureLineIterator.h \
+    MeasureLine.h \
+    vsqglobal.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
@@ -26,3 +31,5 @@ unix:!symbian {
     }
     INSTALLS += target
 }
+
+INCLUDEPATH += ../ ./

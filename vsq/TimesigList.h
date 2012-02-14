@@ -48,6 +48,11 @@ public:
      * @param item 追加する拍子変更情報
      */
     void push( Timesig item );
+
+    /**
+     * @brief データ点の個数を返す
+     */
+    int size();
 };
 
 VSQ_END_NAMESPACE

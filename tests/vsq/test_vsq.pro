@@ -18,7 +18,8 @@ TEMPLATE = app
 SOURCES += \
     TimesigTest.cpp \
     main.cpp \
-    TimesigListTest.cpp
+    TimesigListTest.cpp \
+    MeasureLineIteratorTest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 INCLUDEPATH += ../../vsq/

@@ -13,7 +13,6 @@
  */
 #include <math.h>
 #include <iostream>
-#include "vsq.h"
 #include "TimesigList.h"
 
 VSQ_BEGIN_NAMESPACE
@@ -31,7 +30,7 @@ void TimesigList::updateTimesigInfo()
         int denominator = item.denominator;
         tick_t clock = item.clock;
         int bar_count = item.barCount;
-        int diff = ::floor( 480 * 4 / denominator * numerator );
+        int diff = (int)::floor( 480 * 4 / denominator * numerator );
         clock = clock + (this->list[j].barCount - bar_count) * diff;
         this->list[j].clock = clock;
     }
@@ -46,4 +45,10 @@ Timesig TimesigList::get( int index )
 {
     return this->list[index];
 }
+
+int TimesigList::size()
+{
+    return this->list.size();
+}
+
 VSQ_END_NAMESPACE
