@@ -19,6 +19,11 @@ VSQ_BEGIN_NAMESPACE
 
 using namespace std;
 
+TimesigList::TimesigList()
+{
+    this->updated = false;
+}
+
 void TimesigList::updateTimesigInfo()
 {
     std::sort( this->list.begin(), this->list.end(), Timesig::compare );
@@ -34,11 +39,14 @@ void TimesigList::updateTimesigInfo()
         clock = clock + (this->list[j].barCount - bar_count) * diff;
         this->list[j].clock = clock;
     }
+
+    this->updated = true;
 }
 
 void TimesigList::push( Timesig item )
 {
     this->list.push_back( item );
+    this->updated = false;
 }
 
 Timesig TimesigList::get( int index )
@@ -49,6 +57,11 @@ Timesig TimesigList::get( int index )
 int TimesigList::size()
 {
     return this->list.size();
+}
+
+bool TimesigList::isUpdated()
+{
+    return this->updated;
 }
 
 VSQ_END_NAMESPACE

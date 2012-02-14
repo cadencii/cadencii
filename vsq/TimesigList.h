@@ -30,7 +30,14 @@ private:
      */
     std::vector<Timesig> list;
 
+    /**
+     * @brief updateTimesigInfo メソッドが呼ばれたかどうか
+     */
+    bool updated;
+
 public:
+    TimesigList();
+
     /**
      * @brief 指定したインデックスの拍子変更情報を取得する
      * @param index 取得するデータ点のインデックス(0から始まる)
@@ -53,6 +60,11 @@ public:
      * @brief データ点の個数を返す
      */
     int size();
+
+    /**
+     * @brief updateTimesigInfo メソッドが呼ばれたかどうかを取得する
+     */
+    bool isUpdated();
 };
 
 VSQ_END_NAMESPACE

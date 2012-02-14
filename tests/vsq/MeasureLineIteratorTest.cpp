@@ -11,7 +11,6 @@ public:
         TimesigList list;
         list.push( Timesig( 4, 4, 0 ) );
         list.push( Timesig( 3, 4, 1 ) );
-        list.updateTimesigInfo();
         MeasureLineIterator i( &list );
         i.reset( 3360 );
 
@@ -63,7 +62,6 @@ public:
         TimesigList list;
         list.push( Timesig( 4, 4, 0 ) );
         list.push( Timesig( 3, 4, 1 ) );
-        list.updateTimesigInfo();
         MeasureLineIterator i( &list );
         i.reset( 479 );
 
