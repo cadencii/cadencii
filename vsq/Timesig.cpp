@@ -46,9 +46,9 @@ int Timesig::compareTo( Timesig &item )
     return this->barCount - item.barCount;
 }
 
-bool Timesig::compare( const Timesig &a, const Timesig &b )
+bool Timesig::compare( const Timesig *a, const Timesig *b )
 {
-    return a.barCount < b.barCount;
+    return (a->barCount) < (b->barCount);
 }
 
 VSQ_END_NAMESPACE

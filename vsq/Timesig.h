@@ -73,7 +73,7 @@ public:
      * @brief 順序を比較する
      * @return b が a より大であれば true を、そうでなければ false を返す
      */
-    static bool compare( const Timesig &a, const Timesig &b );
+    static bool compare( const Timesig *a, const Timesig *b );
 };
 
 VSQ_END_NAMESPACE

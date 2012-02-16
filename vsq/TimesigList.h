@@ -28,7 +28,7 @@ private:
      * 拍子情報を格納したリスト。tick の昇順で格納する
      * @todo barCount をキーにした map を使った実装にリファクタする
      */
-    std::vector<Timesig> list;
+    std::vector<Timesig *> list;
 
     /**
      * @brief updateTimesigInfo メソッドが呼ばれたかどうか
@@ -37,6 +37,8 @@ private:
 
 public:
     TimesigList();
+
+    ~TimesigList();
 
     /**
      * @brief 指定したインデックスの拍子変更情報を取得する
