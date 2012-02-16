@@ -25,10 +25,14 @@ VSQ_BEGIN_NAMESPACE
 class TimesigList{
 private:
     /**
-     * 拍子情報を格納したリスト。tick の昇順で格納する
-     * @todo barCount をキーにした map を使った実装にリファクタする
+     * @brief 拍子情報を格納したリスト。tick の昇順で格納する
      */
-    std::vector<Timesig *> list;
+    Timesig **list;
+
+    /**
+     * @brief リストのサイズ
+     */
+    int listSize;
 
     /**
      * @brief updateTimesigInfo メソッドが呼ばれたかどうか

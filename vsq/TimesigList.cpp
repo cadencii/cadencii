@@ -12,7 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include <math.h>
-#include <iostream>
 #include <algorithm>
 #include "TimesigList.h"
 
@@ -22,52 +21,52 @@ using namespace std;
 
 TimesigList::TimesigList()
 {
+    this->listSize = 0;
+    this->list = NULL;
     this->updated = false;
 }
 
 TimesigList::~TimesigList()
 {
-    for( int i = 0; i < this->list.size(); i++ ){
-        Timesig *item = this->list[i];
-        delete item;
+    if( this->list ){
+        this->listSize = 0;
+        for( int i = 0; i < this->listSize; i++ ){
+            Timesig *item = this->list[i];
+            delete item;
+        }
+        free( this->list );
+        this->list = NULL;
     }
 }
 
 void TimesigList::updateTimesigInfo()
 {
-    bool changed = true;
-    while( changed ){
-        changed = false;
-        for( int i = 0; i < this->list.size() - 1; i++ ){
-            if( Timesig::compare( this->list[i + 1], this->list[i] ) ){
-                changed = true;
-                Timesig *item = this->list[i + 1];
-                this->list[i + 1] = this->list[i];
-                this->list[i] = item;
-            }
+    if( 0 < this->listSize ){
+        qsort( this->list, this->listSize, sizeof( Timesig * ), Timesig::compare );
+
+        int count = this->listSize;
+        for( int j = 1; j < count; j++ ){
+            Timesig *item = this->list[j - 1];
+            int numerator = item->numerator;
+            int denominator = item->denominator;
+            tick_t clock = item->clock;
+            int bar_count = item->barCount;
+            int diff = (int)::floor( (double)(480 * 4 / denominator * numerator) );
+            clock = clock + (this->list[j]->barCount - bar_count) * diff;
+            this->list[j]->clock = clock;
         }
-    }
 
-    int count = this->list.size();
-    for( int j = 1; j < count; j++ ){
-        Timesig *item = this->list[j - 1];
-        int numerator = item->numerator;
-        int denominator = item->denominator;
-        tick_t clock = item->clock;
-        int bar_count = item->barCount;
-        int diff = (int)::floor( (double)(480 * 4 / denominator * numerator) );
-        clock = clock + (this->list[j]->barCount - bar_count) * diff;
-        this->list[j]->clock = clock;
+        this->updated = true;
     }
-
-    this->updated = true;
 }
 
 void TimesigList::push( Timesig item )
 {
     Timesig *add = new Timesig( item.numerator, item.denominator, item.barCount );
     add->clock = item.clock;
-    this->list.push_back( add );
+    this->list = (Timesig **)realloc( this->list, sizeof( Timesig * ) * (this->listSize + 1) );
+    this->list[this->listSize] = add;
+    this->listSize++;
     this->updated = false;
 }
 
@@ -81,7 +80,7 @@ Timesig TimesigList::get( int index )
 
 int TimesigList::size()
 {
-    return this->list.size();
+    return this->listSize;
 }
 
 bool TimesigList::isUpdated()

@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include <sstream>
+#include <iostream>
 #include "Timesig.h"
 
 VSQ_BEGIN_NAMESPACE
@@ -46,9 +47,11 @@ int Timesig::compareTo( Timesig &item )
     return this->barCount - item.barCount;
 }
 
-bool Timesig::compare( const Timesig *a, const Timesig *b )
+int Timesig::compare( const void *a, const void *b )
 {
-    return (a->barCount) < (b->barCount);
+    Timesig *castedA = *(Timesig **)a;
+    Timesig *castedB = *(Timesig **)b;
+    return ((castedA->barCount) - (castedB->barCount));
 }
 
 VSQ_END_NAMESPACE
