@@ -88,4 +88,29 @@ bool TimesigList::isUpdated()
     return this->updated;
 }
 
+Timesig TimesigList::getTimesigAt( tick_t clock )
+{
+    if( !updated ){
+        updateTimesigInfo();
+    }
+    Timesig ret;
+    ret.numerator = 4;
+    ret.denominator = 4;
+    ret.barCount = 0;
+
+    int index = 0;
+    for( int i = listSize - 1; i >= 0; i-- ){
+        index = i;
+        if( list[i]->clock <= clock ){
+            break;
+        }
+    }
+    ret.numerator = list[index]->numerator;
+    ret.denominator = list[index]->denominator;
+    int tickPerBar = 480 * 4 / list[index]->denominator * list[index]->numerator;
+    int deltaBar = (int)::floor( (clock - list[index]->clock) / tickPerBar );
+    ret.barCount = list[index]->barCount + deltaBar;
+    return ret;
+}
+
 VSQ_END_NAMESPACE

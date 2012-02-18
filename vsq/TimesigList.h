@@ -71,6 +71,13 @@ public:
      * @brief updateTimesigInfo メソッドが呼ばれたかどうかを取得する
      */
     bool isUpdated();
+
+    /**
+     * @brief 指定された時刻における拍子情報を取得する
+     * @param clock Tick 単位の時刻
+     * @return 指定された時刻での拍子情報
+     */
+    Timesig getTimesigAt( tick_t tick );
 };
 
 VSQ_END_NAMESPACE
