@@ -108,7 +108,7 @@ Timesig TimesigList::getTimesigAt( tick_t clock )
     ret.numerator = list[index]->numerator;
     ret.denominator = list[index]->denominator;
     int tickPerBar = 480 * 4 / list[index]->denominator * list[index]->numerator;
-    int deltaBar = (int)::floor( (clock - list[index]->clock) / tickPerBar );
+    int deltaBar = (int)::floor( (double)((clock - list[index]->clock) / tickPerBar) );
     ret.barCount = list[index]->barCount + deltaBar;
     return ret;
 }
