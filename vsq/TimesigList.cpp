@@ -98,18 +98,28 @@ Timesig TimesigList::getTimesigAt( tick_t clock )
     ret.denominator = 4;
     ret.barCount = 0;
 
-    int index = 0;
-    for( int i = listSize - 1; i >= 0; i-- ){
-        index = i;
-        if( list[i]->clock <= clock ){
-            break;
+    int index = -1;
+    if( 0 < listSize ){
+        for( int i = listSize - 1; i >= 0; i-- ){
+            index = i;
+            if( list[i]->clock <= clock ){
+                break;
+            }
         }
     }
-    ret.numerator = list[index]->numerator;
-    ret.denominator = list[index]->denominator;
-    int tickPerBar = 480 * 4 / list[index]->denominator * list[index]->numerator;
-    int deltaBar = (int)::floor( (double)((clock - list[index]->clock) / tickPerBar) );
-    ret.barCount = list[index]->barCount + deltaBar;
+
+    if( 0 <= index ){
+        ret.numerator = list[index]->numerator;
+        ret.denominator = list[index]->denominator;
+        int tickPerBar = 480 * 4 / ret.denominator * ret.numerator;
+        int deltaBar = (int)::floor( (double)((clock - list[index]->clock) / tickPerBar) );
+        ret.barCount = list[index]->barCount + deltaBar;
+    }else{
+        int tickPerBar = 480 * 4 / ret.denominator * ret.numerator;
+        int deltaBar = (int)::floor( (double)(clock / tickPerBar) );
+        ret.barCount = deltaBar;
+    }
+
     return ret;
 }
 
