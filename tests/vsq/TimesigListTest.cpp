@@ -54,10 +54,21 @@ public:
         CPPUNIT_ASSERT_EQUAL( 8, timesig.barCount );
     }
 
+    void testPushDuplicateKey()
+    {
+        TimesigList table;
+        table.push( Timesig( 3, 4, 0 ) );
+        table.push( Timesig( 4, 8, 0 ) );
+
+        CPPUNIT_ASSERT_EQUAL( 1, table.size() );
+        CPPUNIT_ASSERT_EQUAL( 4, table.get( 0 ).numerator );
+        CPPUNIT_ASSERT_EQUAL( 8, table.get( 0 ).denominator );
+    }
 
     CPPUNIT_TEST_SUITE( TimesigListTest );
     CPPUNIT_TEST( testUpdateTimesigInfo );
     CPPUNIT_TEST( testGetTimesigAt );
+    CPPUNIT_TEST( testPushDuplicateKey );
     CPPUNIT_TEST_SUITE_END();
 };
 

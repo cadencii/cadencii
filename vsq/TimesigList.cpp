@@ -62,11 +62,25 @@ void TimesigList::updateTimesigInfo()
 
 void TimesigList::push( Timesig item )
 {
-    Timesig *add = new Timesig( item.numerator, item.denominator, item.barCount );
-    add->clock = item.clock;
-    this->list = (Timesig **)realloc( this->list, sizeof( Timesig * ) * (this->listSize + 1) );
-    this->list[this->listSize] = add;
-    this->listSize++;
+    int index = -1;
+    for( int i = 0; i < listSize; i++ ){
+        if( list[i]->barCount == item.barCount ){
+            index = i;
+            break;
+        }
+    }
+
+    if( 0 <= index ){
+        list[index]->barCount = item.barCount;
+        list[index]->numerator = item.numerator;
+        list[index]->denominator = item.denominator;
+    }else{
+        Timesig *add = new Timesig( item.numerator, item.denominator, item.barCount );
+        add->clock = item.clock;
+        this->list = (Timesig **)realloc( this->list, sizeof( Timesig * ) * (this->listSize + 1) );
+        this->list[this->listSize] = add;
+        this->listSize++;
+    }
     this->updated = false;
 }
 
