@@ -137,4 +137,25 @@ Timesig TimesigList::getTimesigAt( tick_t clock )
     return ret;
 }
 
+tick_t TimesigList::getClockFromBarCount( int barCount )
+{
+    if( !updated ){
+        updateTimesigInfo();
+    }
+    int index = 0;
+    for( int i = listSize - 1; i >= 0; i-- ){
+        index = i;
+        if( list[i]->barCount <= barCount ){
+            break;
+        }
+    }
+    Timesig *item = list[index];
+    int numerator = item->numerator;
+    int denominator = item->denominator;
+    tick_t initClock = item->clock;
+    int initBarCount = item->barCount;
+    int clockPerBar = numerator * 480 * 4 / denominator;
+    return initClock + (barCount - initBarCount) * clockPerBar;
+}
+
 VSQ_END_NAMESPACE

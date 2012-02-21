@@ -65,10 +65,24 @@ public:
         CPPUNIT_ASSERT_EQUAL( 8, table.get( 0 ).denominator );
     }
 
+    void testGetClockFromBarCount()
+    {
+        TimesigList table;
+        table.push( Timesig( 4, 6, 2 ) ); // 3360 clock開始
+        table.push( Timesig( 4, 4, 0 ) ); //    0 clock開始
+        table.push( Timesig( 3, 4, 1 ) ); // 1920 clock開始
+
+        CPPUNIT_ASSERT_EQUAL( (tick_t)0, table.getClockFromBarCount( 0 ) );
+        CPPUNIT_ASSERT_EQUAL( (tick_t)1920, table.getClockFromBarCount( 1 ) );
+        CPPUNIT_ASSERT_EQUAL( (tick_t)3360, table.getClockFromBarCount( 2 ) );
+        CPPUNIT_ASSERT_EQUAL( (tick_t)9760, table.getClockFromBarCount( 7 ) );
+    }
+
     CPPUNIT_TEST_SUITE( TimesigListTest );
     CPPUNIT_TEST( testUpdateTimesigInfo );
     CPPUNIT_TEST( testGetTimesigAt );
     CPPUNIT_TEST( testPushDuplicateKey );
+    CPPUNIT_TEST( testGetClockFromBarCount );
     CPPUNIT_TEST_SUITE_END();
 };
 

@@ -78,6 +78,14 @@ public:
      * @return 指定された時刻での拍子情報
      */
     Timesig getTimesigAt( tick_t tick );
+
+    /**
+     * @brief 指定した小節の開始クロックを取得する。
+     * ここで使用する小節数は、プリメジャーを考慮しない。即ち、曲頭の小節が 0 となる
+     * @param barCount 小節数
+     * @return Tick 単位の時刻
+     */
+    tick_t getClockFromBarCount( int barCount );
 };
 
 VSQ_END_NAMESPACE
