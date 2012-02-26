@@ -18,7 +18,6 @@ SOURCES += \
 
 HEADERS += \
     Timesig.h \
-    vsq.h \
     TimesigList.h \
     MeasureLineIterator.h \
     MeasureLine.h \
