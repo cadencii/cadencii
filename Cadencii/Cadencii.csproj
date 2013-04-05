@@ -96,8 +96,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CadenciiHelper, Version=1.0.4144.29205, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CadenciiHelper">
       <HintPath>..\Release\CadenciiHelper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -459,9 +458,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\dotnet\FormBeatConfigUiImpl.resx">
       <DependentUpon>FormBeatConfigUiImpl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ui\dotnet\FormNotePropertyUiImpl.resx">
-      <DependentUpon>FormNotePropertyUiImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\dotnet\FormWordDictionaryUiImpl.resx">
       <DependentUpon>FormWordDictionaryUiImpl.cs</DependentUpon>
