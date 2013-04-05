@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.apputil", "org.kbinani.apputil\org.kbinani.apputil.csproj", "{0C58B068-272F-4390-A14F-3D72AFCF3DFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.media", "org.kbinani.media\org.kbinani.media.csproj", "{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}"
