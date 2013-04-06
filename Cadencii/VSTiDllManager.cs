@@ -332,19 +332,17 @@ namespace com.github.cadencii {
             if ( !str.compare( vocalo2_dll_path, "" ) &&
                     fsys.isFileExists( vocalo2_dll_path ) &&
                     !AppManager.editorConfig.DoNotUseVocaloid2 ) {
-                VocaloidDriver vr = new VocaloidDriver();//200
+                VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID2 );
                 vr.path = vocalo2_dll_path;
                 vr.loaded = false;
-                vr.kind = RendererKind.VOCALOID2;
                 vocaloidDriver.add( vr );
             }
-            if ( !str.compare( vocalo1_dll_path, "" ) && 
+            if ( !str.compare( vocalo1_dll_path, "" ) &&
                     fsys.isFileExists( vocalo1_dll_path ) &&
                     !AppManager.editorConfig.DoNotUseVocaloid1 ) {
-                VocaloidDriver vr = new VocaloidDriver();
+                VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID1 );
                 vr.path = vocalo1_dll_path;
                 vr.loaded = false;
-                vr.kind = RendererKind.VOCALOID1;
                 vocaloidDriver.add( vr );
             }
 
@@ -413,7 +411,7 @@ namespace com.github.cadencii {
             }
 #else // JAVA
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
-                if ( renderer == vocaloidDriver.get( i ).kind && vocaloidDriver.get( i ).loaded ) {
+                if ( renderer == vocaloidDriver.get( i ).getRendererKind() && vocaloidDriver.get( i ).loaded ) {
                     return true;
                 }
             }

@@ -9972,7 +9972,7 @@ namespace com.github.cadencii
                 } else if ( !vd.getUi( this ).isVisible() ) {
                     chkv = false;
                 }
-                RendererKind kind = vd.kind;
+                RendererKind kind = vd.getRendererKind();
                 if ( kind == RendererKind.VOCALOID1 ) {
                     menuVisualPluginUiVocaloid1.setSelected( chkv );
                 } else if ( kind == RendererKind.VOCALOID2 ) {
@@ -10042,7 +10042,7 @@ namespace com.github.cadencii
                 if ( !chk ) {
                     continue;
                 }
-                RendererKind kind = vd.kind;
+                RendererKind kind = vd.getRendererKind();
                 boolean v = true;
                 if ( kind == search ) {
                     if ( search == RendererKind.VOCALOID1 ) {

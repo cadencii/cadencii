@@ -95,6 +95,11 @@ namespace com.github.cadencii
         {
         }
 
+        public override RendererKind getRendererKind()
+        {
+            return RendererKind.AQUES_TONE;
+        }
+
         protected override String[] getKoeFileContents()
         {
             return PHONES;

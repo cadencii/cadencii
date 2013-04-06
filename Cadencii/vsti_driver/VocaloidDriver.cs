@@ -59,6 +59,12 @@ namespace com.github.cadencii
         boolean rendering = false;
         //int dseVersion;
         private Object locker = new Object();
+        RendererKind kind;
+
+        public VocaloidDriver( RendererKind kind )
+        {
+            this.kind = kind;
+        }
 
         public void clearSendEvents()
         {
@@ -67,6 +73,11 @@ namespace com.github.cadencii
                     s_track_events.get( i ).clear();
                 }
             }
+        }
+
+        public override RendererKind getRendererKind()
+        {
+            return kind;
         }
 
         /*public int getDseVersion()

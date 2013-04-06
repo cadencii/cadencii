@@ -48,13 +48,12 @@ namespace com.github.cadencii
         public double TotalSec;
     }
 
-    public class VSTiDriverBase
+    public abstract class VSTiDriverBase
     {
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
         public boolean loaded = false;
         public String path = "";
-        public RendererKind kind = RendererKind.NULL;
         /// <summary>
         /// プラグインのUI
         /// </summary>
@@ -111,6 +110,12 @@ namespace com.github.cadencii
         private boolean useNativeDllLoader = true;*/
         protected MemoryManager memoryManager = new MemoryManager();
         private Object mSyncRoot = new Object();
+
+        /// <summary>
+        /// このドライバが担当する、合成エンジンの種類を取得する
+        /// </summary>
+        /// <returns>合成エンジンの種類</returns>
+        public abstract RendererKind getRendererKind();
 
         public int getSampleRate()
         {
