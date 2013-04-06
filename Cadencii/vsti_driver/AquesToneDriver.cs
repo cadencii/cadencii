@@ -78,8 +78,6 @@ namespace com.github.cadencii
 
         public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
-        private static AquesToneDriver mInstance = null;
-
 #if ENABLE_AQUESTONE
 
         public int haskyParameterIndex = 0;
@@ -92,7 +90,8 @@ namespace com.github.cadencii
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
 
-        private AquesToneDriver()
+        public AquesToneDriver( String dllPath ) :
+            base( dllPath )
         {
         }
 
@@ -109,70 +108,6 @@ namespace com.github.cadencii
         protected override string getConfigSectionKey()
         {
             return "AquesTone";
-        }
-
-        public static void unload()
-        {
-            if ( mInstance != null ) {
-                try {
-                    mInstance.close();
-                } catch ( Exception ex ) {
-                    serr.println( "AquesToneDriver#unload; ex=" + ex );
-                }
-            }
-        }
-
-        public static AquesToneDriver getInstance()
-        {
-            if ( mInstance == null ) {
-                reload();
-            }
-            return mInstance;
-        }
-
-        public static AquesToneDriver getInstance( int sample_rate )
-        {
-            if ( mInstance == null ) {
-                reload( sample_rate );
-            } else {
-                if ( sample_rate != mInstance.getSampleRate() ) {
-                    mInstance.setSampleRate( sample_rate );
-                }
-            }
-            return mInstance;
-        }
-
-        public static void reload( int sample_rate = 44100 )
-        {
-            String aques_tone = AppManager.editorConfig.PathAquesTone;
-            if ( mInstance == null ) {
-                mInstance = new AquesToneDriver();
-                mInstance.loaded = false;
-                mInstance.kind = RendererKind.AQUES_TONE;
-            }
-            if ( mInstance.loaded ) {
-                mInstance.close();
-                mInstance.loaded = false;
-            }
-            mInstance.path = aques_tone;
-            if ( !aques_tone.Equals( "" ) && fsys.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
-                boolean loaded = false;
-                try {
-                    loaded = mInstance.open( sample_rate, sample_rate );
-                } catch ( Exception ex ) {
-                    serr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
-                    loaded = false;
-                    Logger.write( typeof( AquesToneDriver ) + ".reload; ex=" + ex + "\n" );
-                }
-#if DEBUG
-                sout.println( "AquesToneDriver#reload(int); loaded=" + loaded + "; sample_rate=" + sample_rate );
-#endif
-                mInstance.loaded = loaded;
-            }
-
-#if DEBUG
-            sout.println( "AquesToneDriver#initCor; aquesToneDriver.loaded=" + mInstance.loaded );
-#endif
         }
 
 #endif

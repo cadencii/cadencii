@@ -40,8 +40,14 @@ namespace com.github.cadencii
 
 #if ENABLE_AQUESTONE
 
-        protected AquesToneDriverBase()
+        /// <summary>
+        /// AquesTone VSTi の DLL パスを指定して初期化する
+        /// </summary>
+        /// <param name="dllPath">AquesTone VSTi の DLL パス</param>
+        public AquesToneDriverBase( String dllPath )
         {
+            path = dllPath;
+            loaded = open( 44100, 44100 );
         }
 
         /// <summary>

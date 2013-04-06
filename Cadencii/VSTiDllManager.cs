@@ -126,6 +126,13 @@ namespace com.github.cadencii {
 #endif
 #endif
 
+#if ENABLE_AQUESTONE
+        /// <summary>
+        /// AquesTone VSTi のドライバ
+        /// </summary>
+        private static AquesToneDriver aquesToneDriver;
+#endif
+
         /// <summary>
         /// 指定した合成器の種類に合致する合成器の新しいインスタンスを取得します
         /// </summary>
@@ -364,9 +371,26 @@ namespace com.github.cadencii {
 #endif
         }
 
+        /// <summary>
+        /// 初期化した AquesTone ドライバを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static AquesToneDriver getAquesToneDriver()
+        {
+            if ( aquesToneDriver == null && !AppManager.editorConfig.DoNotUseAquesTone ) {
+                aquesToneDriver = new AquesToneDriver( AppManager.editorConfig.PathAquesTone );
+            }
+            return aquesToneDriver;
+        }
+
 #if ENABLE_AQUESTONE
         public static void reloadAquesTone() {
-            AquesToneDriver.reload();
+            if ( !AppManager.editorConfig.DoNotUseAquesTone ) {
+                if ( aquesToneDriver != null ) {
+                    aquesToneDriver.close();
+                }
+                aquesToneDriver = new AquesToneDriver( AppManager.editorConfig.PathAquesTone );
+            }
         }
 #endif
 
@@ -397,7 +421,6 @@ namespace com.github.cadencii {
 #endif // ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
-            AquesToneDriver aquesToneDriver = AquesToneDriver.getInstance();
             if ( renderer == RendererKind.AQUES_TONE && aquesToneDriver != null && aquesToneDriver.loaded ) {
                 return true;
             }
@@ -454,7 +477,9 @@ namespace com.github.cadencii {
 #endif // !ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
-            AquesToneDriver.unload();
+            if ( aquesToneDriver != null ) {
+                aquesToneDriver.close();
+            }
 #endif
         }
 

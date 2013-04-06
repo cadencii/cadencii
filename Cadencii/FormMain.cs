@@ -9984,7 +9984,7 @@ namespace com.github.cadencii
 
 #if ENABLE_AQUESTONE
             // AquesTone
-            AquesToneDriver drv = AquesToneDriver.getInstance();
+            AquesToneDriver drv = VSTiDllManager.getAquesToneDriver();
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
@@ -10067,7 +10067,7 @@ namespace com.github.cadencii
             menuVisualPluginUiAquesTone.setSelected( visible );
 
 #if ENABLE_AQUESTONE
-            AquesToneDriver drv = AquesToneDriver.getInstance();
+            AquesToneDriver drv = VSTiDllManager.getAquesToneDriver();
             boolean chk = true;
             FormPluginUi ui = null;
             if ( drv == null ) {

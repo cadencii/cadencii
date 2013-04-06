@@ -113,7 +113,8 @@ namespace com.github.cadencii
         /// <param name="parameter"></param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
         {
-            mDriver = AquesToneDriver.getInstance( sample_rate );
+            mDriver = VSTiDllManager.getAquesToneDriver();
+            mDriver.setSampleRate( sample_rate );
             mTrack = track;
             mStartClock = start_clock;
             mEndClock = end_clock;
