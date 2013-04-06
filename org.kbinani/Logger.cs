@@ -86,6 +86,11 @@ namespace com.github.cadencii {
             }
         }
 
+        public static void writeLine( String s )
+        {
+            write( s + "\n" );
+        }
+
         public static String getPath() {
             return path;
         }
