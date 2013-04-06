@@ -34,7 +34,7 @@ namespace com.github.cadencii
 #if JAVA
     public class AquesToneDriver{
 #else
-    public class AquesToneDriver : vstidrv
+    public class AquesToneDriver : VSTiDriverBase
     {
 #endif
         public static readonly String[] PHONES = new String[] { 

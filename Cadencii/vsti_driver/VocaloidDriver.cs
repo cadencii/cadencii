@@ -26,7 +26,7 @@ namespace com.github.cadencii
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;
 
-    public unsafe class VocaloidDriver : vstidrv
+    public unsafe class VocaloidDriver : VSTiDriverBase
     {
         const int TRUE = 1;
         const int FALSE = 0;

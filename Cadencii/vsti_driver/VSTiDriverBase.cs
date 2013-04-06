@@ -1,14 +1,14 @@
 #if ENABLE_VOCALOID
 /*
- * vstidrv.cs
- * Copyright © 2008-2011 kbinani
+ * VSTiDriverBase.cs
+ * Copyright © 2008-2013 kbinani
  *
- * This file is part of org.kbinani.cadencii.
+ * This file is part of com.github.cadencii.
  *
- * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * com.github.cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * com.github.cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -48,7 +48,7 @@ namespace com.github.cadencii
         public double TotalSec;
     }
 
-    public class vstidrv
+    public class VSTiDriverBase
     {
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
@@ -472,7 +472,7 @@ namespace com.github.cadencii
             }
         }
 
-        ~vstidrv()
+        ~VSTiDriverBase()
         {
             lock ( mSyncRoot ) {
                 close();
