@@ -110,8 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Amplifier.cs" />
-    <Compile Include="AquesToneDriver.cs">
-    </Compile>
     <Compile Include="AquesToneWaveGenerator.cs" />
     <Compile Include="AttachedCurve.cs" />
     <Compile Include="AttackVariation.cs" />
@@ -251,6 +249,9 @@
     <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
+    <Compile Include="vsti_driver\AquesToneDriver.cs" />
+    <Compile Include="vsti_driver\VocaloidDriver.cs" />
+    <Compile Include="vsti_driver\vstidrv.cs" />
     <Compile Include="WaveformZoomController.cs" />
     <Compile Include="WaveformZoomUi.cs">
     </Compile>
@@ -487,14 +488,12 @@
     <Compile Include="VibratoPointIteratorBySec.cs" />
     <Compile Include="VibratoVariation.cs" />
     <Compile Include="VibratoVariationConverter.cs" />
-    <Compile Include="VocaloidDriver.cs" />
     <Compile Include="VocaloidWaveGenerator.cs" />
     <Compile Include="VolumeTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="VsqBPListComparisonContext.cs" />
     <Compile Include="VsqFileEx.cs" />
-    <Compile Include="vstidrv.cs" />
     <Compile Include="VstSdk.cs" />
     <Compile Include="WaveDrawContext.cs" />
     <Compile Include="WaveGenerator.cs" />
