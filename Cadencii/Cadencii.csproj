@@ -137,6 +137,7 @@
     <Compile Include="dsp\FileWaveReceiver.cs" />
     <Compile Include="dsp\FileWaveSender.cs" />
     <Compile Include="dsp\generator\AquesToneWaveGenerator.cs" />
+    <Compile Include="dsp\generator\AquesToneWaveGeneratorBase.cs" />
     <Compile Include="dsp\generator\EmptyWaveGenerator.cs" />
     <Compile Include="dsp\generator\UtauWaveGenerator.cs" />
     <Compile Include="dsp\generator\VConnectWaveGenerator.cs" />
