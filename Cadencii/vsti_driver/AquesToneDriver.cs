@@ -1,14 +1,14 @@
 #if ENABLE_AQUESTONE
 /*
  * AquesToneDriver.cs
- * Copyright © 2009-2011 kbinani
+ * Copyright © 2009-2013 kbinani
  *
- * This file is part of org.kbinani.cadencii.
+ * This file is part of com.github.cadencii.
  *
- * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * com.github.cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * com.github.cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -32,9 +32,9 @@ namespace com.github.cadencii
 #endif
 
 #if JAVA
-    public class AquesToneDriver{
+    public class AquesToneDriver {
 #else
-    public class AquesToneDriver : VSTiDriverBase
+    public class AquesToneDriver : AquesToneDriverBase
     {
 #endif
         public static readonly String[] PHONES = new String[] { 
@@ -96,6 +96,21 @@ namespace com.github.cadencii
         {
         }
 
+        protected override String[] getKoeFileContents()
+        {
+            return PHONES;
+        }
+
+        protected override String getKoeConfigKey()
+        {
+            return "FileKoe_00";
+        }
+
+        protected override string getConfigSectionKey()
+        {
+            return "AquesTone";
+        }
+
         public static void unload()
         {
             if ( mInstance != null ) {
@@ -127,12 +142,7 @@ namespace com.github.cadencii
             return mInstance;
         }
 
-        public static void reload()
-        {
-            reload( 44100 );
-        }
-
-        public static void reload( int sample_rate )
+        public static void reload( int sample_rate = 44100 )
         {
             String aques_tone = AppManager.editorConfig.PathAquesTone;
             if ( mInstance == null ) {
@@ -165,64 +175,6 @@ namespace com.github.cadencii
 #endif
         }
 
-        public override boolean open( int block_size, int sample_rate )
-        {
-#if DEBUG
-            sout.println( "AquesToneDriver#open" );
-#endif
-            int strlen = 260;
-            StringBuilder sb = new StringBuilder( strlen );
-            win32.GetProfileString( "AquesTone", "FileKoe_00", "", sb, (uint)strlen );
-            String koe_old = sb.ToString();
-
-            String required = getKoeFilePath();
-            boolean refresh_winini = false;
-            if ( !required.Equals( koe_old ) && !koe_old.Equals( "" ) ) {
-                refresh_winini = true;
-            }
-            win32.WriteProfileString( "AquesTone", "FileKoe_00", required );
-            boolean ret = false;
-            try {
-                ret = base.open( block_size, sample_rate );
-            } catch ( Exception ex ) {
-                ret = false;
-                serr.println( "AquesToneDriver#open; ex=" + ex );
-                Logger.write( typeof( AquesToneDriver ) + ".open; ex=" + ex + "\n" );
-            }
-
-            if ( refresh_winini ) {
-                win32.WriteProfileString( "AquesTone", "FileKoe_00", koe_old );
-            }
-#if DEBUG
-            sout.println( "AquesToneDriver#open; done; ret=" + ret );
-#endif
-            return ret;
-        }
-
-        private static String getKoeFilePath()
-        {
-            String ret = fsys.combine( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );
-            BufferedWriter bw = null;
-            try {
-                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
-                foreach ( String s in PHONES ) {
-                    bw.write( s ); bw.newLine();
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AquesToneDriver ) + ".getKoeFilePath; ex=" + ex + "\n" );
-                serr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex );
-            } finally {
-                if ( bw != null ) {
-                    try {
-                        bw.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( AquesToneDriver ) + ".getKoeFilePath; ex=" + ex2 + "\n" );
-                        serr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
-                    }
-                }
-            }
-            return ret;
-        }
 #endif
     }
 
