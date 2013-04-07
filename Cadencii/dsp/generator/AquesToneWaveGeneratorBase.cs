@@ -471,25 +471,7 @@ namespace com.github.cadencii
             EventQueueSequence list = new EventQueueSequence();
             VsqTrack t = vsq.Track.get( track );
 
-            // 歌手変更
-            for ( var iterator = t.getSingerEventIterator( clock_start, clock_end ); iterator.hasNext(); ) {
-                VsqEvent item = iterator.next();
-                if ( item.ID.IconHandle == null ) {
-                    continue;
-                }
-                int program = item.ID.IconHandle.Program;
-                if ( 0 > program || program >= AquesToneDriver.SINGERS.Length ) {
-                    program = 0;
-                }
-                ParameterEvent singer = new ParameterEvent();
-                singer.index = mDriver.phontParameterIndex;
-                singer.value = program + 0.01f;
-                MidiEventQueue queue = list.get( item.Clock );
-                if ( queue.param == null ) {
-                    queue.param = new Vector<ParameterEvent>();
-                }
-                queue.param.add( singer );
-            }
+            addSingerEvents( list, t, clock_start, clock_end );
 
             // ノートon, off
             Vector<Point> pit_send = new Vector<Point>(); // PITが追加されたゲートタイム。音符先頭の分を重複して送信するのを回避するために必要。
@@ -761,6 +743,36 @@ namespace com.github.cadencii
             appendParameterEvents( list, por, mDriver.portaTimeParameterIndex, clock_start, clock_end );
 
             return list;
+        }
+
+        /// <summary>
+        /// 歌手変更イベントを、イベントキューに追加する
+        /// </summary>
+        /// <param name="queueSequence">追加対象のイベントキュー</param>
+        /// <param name="track">歌手変更イベントを取り出すトラック</param>
+        /// <param name="start">時間区間の開始位置</param>
+        /// <param name="end">時間区間の終了位置</param>
+        private void addSingerEvents( EventQueueSequence queueSequence, VsqTrack track, int start, int end )
+        {
+            var iterator = track.getSingerEventIterator( start, end );
+            while ( iterator.hasNext() ) {
+                var item = iterator.next();
+                if ( item.ID.IconHandle == null ) {
+                    continue;
+                }
+                int program = item.ID.IconHandle.Program;
+                if ( 0 > program || program >= AquesToneDriver.SINGERS.Length ) {
+                    program = 0;
+                }
+                var singer = new ParameterEvent();
+                singer.index = mDriver.phontParameterIndex;
+                singer.value = program + 0.01f;
+                var queue = queueSequence.get( item.Clock );
+                if ( queue.param == null ) {
+                    queue.param = new Vector<ParameterEvent>();
+                }
+                queue.param.add( singer );
+            }
         }
 
         private static void appendParameterEvents( EventQueueSequence list, VsqBPList cle, int parameter_index, int clock_start, int clock_end )
