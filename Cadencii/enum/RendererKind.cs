@@ -93,6 +93,10 @@ namespace com.github.cadencii{
         /// </summary>
         VCNT = 5,
         /// <summary>
+        /// AquesTone2
+        /// </summary>
+        AQUES_TONE2 = 6,
+        /// <summary>
         /// 何もしない歌声合成システム(EmptyRenderingRunner)
         /// </summary>
         NULL = -1,

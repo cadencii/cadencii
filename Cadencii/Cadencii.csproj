@@ -154,6 +154,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EditHistoryModel.cs" />
+    <Compile Include="enum\RendererKind.cs" />
+    <Compile Include="enum\RendererKindUtil.cs" />
     <Compile Include="ExceptionNotifyFormController.cs" />
     <Compile Include="ExceptionNotifyFormUi.cs" />
     <Compile Include="ExceptionNotifyFormUiListener.cs" />
@@ -328,8 +330,6 @@
     <Compile Include="PointD.cs" />
     <Compile Include="QuantizeModeUtil.cs" />
     <Compile Include="RenderedStatus.cs" />
-    <Compile Include="RendererKind.cs" />
-    <Compile Include="RendererKindUtil.cs" />
     <Compile Include="NoteNumberExpressionType.cs" />
     <Compile Include="NoteNumberProperty.cs" />
     <Compile Include="NoteNumberPropertyConverter.cs" />

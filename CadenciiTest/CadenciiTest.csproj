@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dsp\generator\AquesToneWaveGeneratorBaseTest.cs" />
+    <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
     </Compile>
     <Compile Include="ExceptionNotifyFormUiImplTest.cs">

@@ -33,6 +33,7 @@ namespace com.github.cadencii {
         const String VCNT = "vConnect-STAND";
         const String UTAU = "UTAU";
         const String AQUES_TONE = "AquesTone";
+        const String AQUES_TONE2 = "AquesTone2";
 
         public static String getString( RendererKind value ) {
             if ( value == RendererKind.VOCALOID1_100 ) {
@@ -49,6 +50,8 @@ namespace com.github.cadencii {
                 return UTAU;
             } else if ( value == RendererKind.AQUES_TONE ) {
                 return AQUES_TONE;
+            } else if ( value == RendererKind.AQUES_TONE2 ) {
+                return AQUES_TONE2;
             } else {
                 return "";
             }
@@ -72,6 +75,8 @@ namespace com.github.cadencii {
                 return RendererKind.UTAU;
             } else if ( str.compare( value, AQUES_TONE ) ) {
                 return RendererKind.AQUES_TONE;
+            } else if ( str.compare( value, AQUES_TONE2 ) ) {
+                return RendererKind.AQUES_TONE2;
             } else {
                 return RendererKind.NULL;
             }
