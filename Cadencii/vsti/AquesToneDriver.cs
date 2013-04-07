@@ -126,7 +126,7 @@ namespace com.github.cadencii
             }
         }
 
-        public override ParameterEvent createSingerEvent( int program )
+        public override ParameterEvent[] createSingerEvent( int program )
         {
             if ( 0 > program || program >= SINGERS.Length ) {
                 program = 0;
@@ -134,7 +134,7 @@ namespace com.github.cadencii
             var singer = new ParameterEvent();
             singer.index = phontParameterIndex;
             singer.value = program + 0.01f;
-            return singer;
+            return new ParameterEvent[] { singer };
         }
 
         protected override String[] getKoeFileContents()

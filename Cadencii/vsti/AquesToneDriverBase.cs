@@ -64,7 +64,7 @@ namespace com.github.cadencii
         /// </summary>
         /// <param name="program">プログラムチェンジ</param>
         /// <returns>イベント</returns>
-        public abstract ParameterEvent createSingerEvent( int program );
+        public abstract ParameterEvent[] createSingerEvent( int program );
 
         /// <summary>
         /// win.ini にて使用されるセクション名を取得する

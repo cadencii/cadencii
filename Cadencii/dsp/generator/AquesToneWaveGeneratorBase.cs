@@ -699,11 +699,13 @@ namespace com.github.cadencii
                 }
                 int program = item.ID.IconHandle.Program;
                 var singer = mDriver.createSingerEvent( program );
-                var queue = queueSequence.get( item.Clock );
-                if ( queue.param == null ) {
-                    queue.param = new Vector<ParameterEvent>();
+                if ( 0 < singer.Length ) {
+                    var queue = queueSequence.get( item.Clock );
+                    if ( queue.param == null ) {
+                        queue.param = new Vector<ParameterEvent>();
+                    }
+                    queue.param.addAll( Arrays.asList( singer ) );
                 }
-                queue.param.add( singer );
             }
         }
 
