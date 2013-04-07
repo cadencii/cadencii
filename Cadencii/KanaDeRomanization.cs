@@ -39,7 +39,7 @@ namespace com.github.cadencii {
                 i++;
                 char transformed = hiragana2katakanaCor( arr[i] );
                 if ( i + 1 < arr.Length ) {
-                    if ( arr[i + 1] == 'ﾞ' ) {
+                    if ( arr[i + 1] == 'ﾞ' || arr[i + 1] == '゛' ) {
                         if ( transformed == 'カ' ) {
                             transformed = 'ガ';
                         } else if ( transformed == 'キ' ) {
@@ -84,7 +84,7 @@ namespace com.github.cadencii {
                             transformed = 'ヴ';
                         }
                         i++;
-                    } else if ( arr[i + 1] == 'ﾟ' ) {
+                    } else if ( arr[i + 1] == 'ﾟ' || arr[i + 1] == '゜' ) {
                         if ( transformed == 'ハ' ) {
                             transformed = 'パ';
                         } else if ( transformed == 'ヒ' ) {
