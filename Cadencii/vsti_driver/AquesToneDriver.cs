@@ -100,6 +100,32 @@ namespace com.github.cadencii
             return RendererKind.AQUES_TONE;
         }
 
+        public override MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
+        {
+            // noteon MIDIイベントを作成
+            String katakana = KanaDeRomanization.hiragana2katakana( KanaDeRomanization.Attach( phrase ) );
+            int index = -1;
+            for ( int i = 0; i < AquesToneDriver.PHONES.Length; i++ ) {
+                if ( katakana.Equals( AquesToneDriver.PHONES[i] ) ) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if ( index < 0 ) {
+                return new MidiEvent[] { };
+            } else {
+                // index行目に移動するコマンドを贈る
+                MidiEvent moveline = new MidiEvent();
+                moveline.firstByte = 0xb0;
+                moveline.data = new[] { 0x0a, index };
+                MidiEvent noteon = new MidiEvent();
+                noteon.firstByte = 0x90;
+                noteon.data = new int[] { note, dynamics };
+                return new MidiEvent[] { moveline, noteon };
+            }
+        }
+
         protected override String[] getKoeFileContents()
         {
             return PHONES;

@@ -54,15 +54,6 @@ namespace com.github.cadencii
         private double[] mBufferR = new double[BUFLEN];
         System.IO.StreamWriter log = null;
 
-        /// <summary>
-        /// Note On のための MIDI イベント列を作成する
-        /// </summary>
-        /// <param name="note">ノート番号</param>
-        /// <param name="dynamics">Dynamics</param>
-        /// <param name="phrase">歌詞</param>
-        /// <returns>Note On のための MIDI イベント列</returns>
-        protected abstract MidiEvent[] createNoteOnEvent(int note, int dynamics, String phrase);
-
         public int getSampleRate()
         {
             return mSampleRate;
@@ -492,7 +483,7 @@ namespace com.github.cadencii
                         // noteonのゲートタイムが，範囲に入っている
                         // noteon MIDIイベントを作成
 
-                        MidiEvent[] noteOnEvents = createNoteOnEvent( item.ID.Note, item.ID.Dynamics, item.ID.LyricHandle.L0.Phrase );
+                        MidiEvent[] noteOnEvents = mDriver.createNoteOnEvent( item.ID.Note, item.ID.Dynamics, item.ID.LyricHandle.L0.Phrase );
                         if ( noteOnEvents.Length > 0 ) {
                             MidiEventQueue queue = list.get( item.Clock );
                             if ( queue.noteon == null ) {
