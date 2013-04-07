@@ -698,12 +698,7 @@ namespace com.github.cadencii
                     continue;
                 }
                 int program = item.ID.IconHandle.Program;
-                if ( 0 > program || program >= AquesToneDriver.SINGERS.Length ) {
-                    program = 0;
-                }
-                var singer = new ParameterEvent();
-                singer.index = mDriver.phontParameterIndex;
-                singer.value = program + 0.01f;
+                var singer = mDriver.createSingerEvent( program );
                 var queue = queueSequence.get( item.Clock );
                 if ( queue.param == null ) {
                     queue.param = new Vector<ParameterEvent>();

@@ -126,6 +126,17 @@ namespace com.github.cadencii
             }
         }
 
+        public override ParameterEvent createSingerEvent( int program )
+        {
+            if ( 0 > program || program >= SINGERS.Length ) {
+                program = 0;
+            }
+            var singer = new ParameterEvent();
+            singer.index = phontParameterIndex;
+            singer.value = program + 0.01f;
+            return singer;
+        }
+
         protected override String[] getKoeFileContents()
         {
             return PHONES;
