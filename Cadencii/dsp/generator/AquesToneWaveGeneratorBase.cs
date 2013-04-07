@@ -472,27 +472,23 @@ namespace com.github.cadencii
             VsqTrack t = vsq.Track.get( track );
 
             // 歌手変更
-            for ( Iterator<VsqEvent> itr = t.getSingerEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
-                if ( clock_start <= item.Clock && item.Clock <= clock_end ) {
-                    if ( item.ID.IconHandle == null ) {
-                        continue;
-                    }
-                    int program = item.ID.IconHandle.Program;
-                    if ( 0 > program || program >= AquesToneDriver.SINGERS.Length ) {
-                        program = 0;
-                    }
-                    ParameterEvent singer = new ParameterEvent();
-                    singer.index = mDriver.phontParameterIndex;
-                    singer.value = program + 0.01f;
-                    MidiEventQueue queue = list.get( item.Clock );
-                    if ( queue.param == null ) {
-                        queue.param = new Vector<ParameterEvent>();
-                    }
-                    queue.param.add( singer );
-                } else if ( clock_end < item.Clock ) {
-                    break;
+            for ( var iterator = t.getSingerEventIterator( clock_start, clock_end ); iterator.hasNext(); ) {
+                VsqEvent item = iterator.next();
+                if ( item.ID.IconHandle == null ) {
+                    continue;
                 }
+                int program = item.ID.IconHandle.Program;
+                if ( 0 > program || program >= AquesToneDriver.SINGERS.Length ) {
+                    program = 0;
+                }
+                ParameterEvent singer = new ParameterEvent();
+                singer.index = mDriver.phontParameterIndex;
+                singer.value = program + 0.01f;
+                MidiEventQueue queue = list.get( item.Clock );
+                if ( queue.param == null ) {
+                    queue.param = new Vector<ParameterEvent>();
+                }
+                queue.param.add( singer );
             }
 
             // ノートon, off
