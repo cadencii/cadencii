@@ -52,6 +52,7 @@
     <Compile Include="strTest.cs" />
     <Compile Include="VsqIDTest.cs" />
     <Compile Include="VsqxConverterTest.cs" />
+    <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
   </ItemGroup>

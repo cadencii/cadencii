@@ -180,50 +180,69 @@ namespace com.github.cadencii.vsq
             }
         }
 
+        /// <summary>
+        /// 歌手変更イベントの反復子
+        /// </summary>
 #if JAVA
-        private class SingerEventIterator implements Iterator{
+        protected class SingerEventIterator implements Iterator{
 #else
-        private class SingerEventIterator : Iterator<VsqEvent>
+        protected class SingerEventIterator : Iterator<VsqEvent>
         {
 #endif
-            VsqEventList m_list;
-            int m_pos;
+            VsqEventList source;
+            int lastIndex;
+            int start;
+            int end;
 
-            public SingerEventIterator( VsqEventList list )
+            /// <summary>
+            /// イベントのリストと、反復する時間の区間を指定して初期化する。
+            /// 引数 start, end はそれぞれ「以上」、「以下」を意味する。
+            /// </summary>
+            /// <param name="list">イベントのリスト</param>
+            /// <param name="start">区間の開始位置。省略可能。省略した場合は int.MinValue と見做される</param>
+            /// <param name="end">区間の終了位置。省略可能。省略した場合は int.MaxValue と見做される</param>
+            public SingerEventIterator( VsqEventList list, int start = int.MinValue, int end = int.MaxValue )
             {
-                m_list = list;
-                m_pos = -1;
+                source = list;
+                lastIndex = -1;
+                this.start = start;
+                this.end = end;
             }
 
             public boolean hasNext()
             {
-                int num = m_list.getCount();
-                for ( int i = m_pos + 1; i < num; i++ ) {
-                    if ( m_list.getElement( i ).ID.type == VsqIDType.Singer ) {
-                        return true;
-                    }
-                }
-                return false;
+                int nextIndex = findNextIndex();
+                return 0 <= nextIndex && nextIndex < source.getCount();
             }
 
             public VsqEvent next()
             {
-                int num = m_list.getCount();
-                for ( int i = m_pos + 1; i < num; i++ ) {
-                    VsqEvent item = m_list.getElement( i );
-                    if ( item.ID.type == VsqIDType.Singer ) {
-                        m_pos = i;
-                        return item;
-                    }
+                int nextIndex = findNextIndex();
+                if ( 0 <= nextIndex && nextIndex < source.getCount() ) {
+                    lastIndex = nextIndex;
+                    return source.getElement( nextIndex );
+                } else {
+                    return null;
                 }
-                return null;
             }
 
             public void remove()
             {
-                if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
-                    m_list.removeAt( m_pos );
+                if ( 0 <= lastIndex && lastIndex < source.getCount() ) {
+                    source.removeAt( lastIndex );
                 }
+            }
+
+            private int findNextIndex()
+            {
+                int count = source.getCount();
+                for ( int i = lastIndex + 1; i < count; ++i ) {
+                    var item = source.getElement( i );
+                    if ( start <= item.Clock && item.Clock <= end && item.ID.type == VsqIDType.Singer ) {
+                        return i;
+                    }
+                }
+                return -1;
             }
         }
 
