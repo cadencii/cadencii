@@ -55,6 +55,9 @@
     <Compile Include="VsqIDTest.cs" />
     <Compile Include="VsqxConverterTest.cs" />
     <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
+    <Compile Include="vsti\aquestone\SyllableMatcherTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
   </ItemGroup>

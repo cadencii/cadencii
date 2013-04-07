@@ -269,6 +269,7 @@
     <Compile Include="vsti\aquestone\EventQueueSequence.cs" />
     <Compile Include="vsti\aquestone\MidiEventQueue.cs" />
     <Compile Include="vsti\aquestone\ParameterEvent.cs" />
+    <Compile Include="vsti\aquestone\SyllableMatcher.cs" />
     <Compile Include="vsti\VocaloidDriver.cs" />
     <Compile Include="vsti\VSTiDriverBase.cs" />
     <Compile Include="WaveformZoomController.cs" />
