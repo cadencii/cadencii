@@ -264,6 +264,9 @@
     <Compile Include="VSTiDllManager.cs" />
     <Compile Include="vsti_driver\AquesToneDriver.cs" />
     <Compile Include="vsti_driver\AquesToneDriverBase.cs" />
+    <Compile Include="vsti_driver\aquestone\EventQueueSequence.cs" />
+    <Compile Include="vsti_driver\aquestone\MidiEventQueue.cs" />
+    <Compile Include="vsti_driver\aquestone\ParameterEvent.cs" />
     <Compile Include="vsti_driver\VocaloidDriver.cs" />
     <Compile Include="vsti_driver\VSTiDriverBase.cs" />
     <Compile Include="WaveformZoomController.cs" />
