@@ -264,6 +264,9 @@
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
+    <Compile Include="vsti\AquesTone2Driver.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="vsti\AquesToneDriver.cs" />
     <Compile Include="vsti\AquesToneDriverBase.cs" />
     <Compile Include="vsti\aquestone\EventQueueSequence.cs" />
