@@ -8,9 +8,9 @@
     <ProjectGuid>{7FC4F869-A95B-439E-93A2-01D85E5A8006}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CadenciiTest</RootNamespace>
+    <RootNamespace>cadencii.test</RootNamespace>
     <AssemblyName>CadenciiTest</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
@@ -19,6 +19,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,14 +38,16 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dsp\generator\AquesToneWaveGeneratorBaseTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
     </Compile>
     <Compile Include="ExceptionNotifyFormUiImplTest.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="strTest.cs" />
     <Compile Include="VsqIDTest.cs" />

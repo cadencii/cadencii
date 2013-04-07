@@ -76,20 +76,55 @@ namespace com.github.cadencii
         /// <summary>
         /// ドライバのパラメータの変更要求
         /// </summary>
-        private class ParameterEvent
+        protected class ParameterEvent
         {
             public int index;
             public float value;
         }
 
-        private class MidiEventQueue
+        protected class MidiEventQueue
         {
             public Vector<MidiEvent> noteoff;
-            //public ParameterEvent singer;
             public Vector<MidiEvent> noteon;
             public Vector<MidiEvent> pit;
-            //public ParameterEvent pbs;
             public Vector<ParameterEvent> param;
+        }
+
+        /// <summary>
+        /// 時刻(clock 単位)順に並べ替えられた、MidiEventQueue のリスト。
+        /// 各 clock に唯一つの MidiEventQueue が紐づくようになっている
+        /// </summary>
+        protected class EventQueueSequence
+        {
+            private TreeMap<Integer, MidiEventQueue> sequence;
+
+            public EventQueueSequence()
+            {
+                sequence = new TreeMap<Integer, MidiEventQueue>();
+            }
+
+            /// <summary>
+            /// 指定した時刻(clock 単位)での MidiEventQueue を取得する。指定した時刻に MidiEventQueue が
+            /// まだ一つもなければ新たに作成したものをシーケンスに登録した上で、これを返す
+            /// </summary>
+            /// <param name="clock">時刻(clock 単位)</param>
+            /// <returns>指定した時刻での MidiEventQueue</returns>
+            public MidiEventQueue get( int clock )
+            {
+                if ( !sequence.containsKey( clock ) ) {
+                    sequence.put( clock, new MidiEventQueue() );
+                }
+                return sequence.get( clock );
+            }
+
+            /// <summary>
+            /// MidiEventQueue が登録されている時刻を小さい順に返す反復子を取得する
+            /// </summary>
+            /// <returns></returns>
+            public Iterator<Integer> keyIterator()
+            {
+                return sequence.keySet().iterator();
+            }
         }
 
         public long getTotalSamples()
@@ -262,9 +297,9 @@ namespace com.github.cadencii
                 log.WriteLine( "saNoteStart=" + saNoteStart + "; saNoteEnd=" + saNoteEnd );
 #endif
 
-                TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
+                EventQueueSequence list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
-                for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
+                for ( Iterator<Integer> itr2 = list.keyIterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
 #if DEBUG
@@ -431,9 +466,9 @@ namespace com.github.cadencii
         /// <param name="clock_start"></param>
         /// <param name="clock_end"></param>
         /// <returns></returns>
-        private TreeMap<Integer, MidiEventQueue> generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end )
+        private EventQueueSequence generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end )
         {
-            TreeMap<Integer, MidiEventQueue> list = new TreeMap<Integer, MidiEventQueue>();
+            EventQueueSequence list = new EventQueueSequence();
             VsqTrack t = vsq.Track.get( track );
 
             // 歌手変更
@@ -450,9 +485,6 @@ namespace com.github.cadencii
                     ParameterEvent singer = new ParameterEvent();
                     singer.index = mDriver.phontParameterIndex;
                     singer.value = program + 0.01f;
-                    if ( !list.containsKey( item.Clock ) ) {
-                        list.put( item.Clock, new MidiEventQueue() );
-                    }
                     MidiEventQueue queue = list.get( item.Clock );
                     if ( queue.param == null ) {
                         queue.param = new Vector<ParameterEvent>();
@@ -484,9 +516,6 @@ namespace com.github.cadencii
 
                         MidiEvent[] noteOnEvents = createNoteOnEvent( item.ID.Note, item.ID.Dynamics, item.ID.LyricHandle.L0.Phrase );
                         if ( noteOnEvents.Length > 0 ) {
-                            if ( !list.containsKey( item.Clock ) ) {
-                                list.put( item.Clock, new MidiEventQueue() );
-                            }
                             MidiEventQueue queue = list.get( item.Clock );
                             if ( queue.noteon == null ) {
                                 queue.noteon = new Vector<MidiEvent>();
@@ -499,12 +528,7 @@ namespace com.github.cadencii
 
                         /* 音符頭で設定するパラメータ */
                         // Release
-                        MidiEventQueue q = null;
-                        if ( !list.containsKey( item.Clock ) ) {
-                            q = new MidiEventQueue();
-                        } else {
-                            q = list.get( item.Clock );
-                        }
+                        MidiEventQueue q = list.get( item.Clock );
                         if ( q.param == null ) {
                             q.param = new Vector<ParameterEvent>();
                         }
@@ -559,9 +583,6 @@ namespace com.github.cadencii
                             // 音符頭のPIT, PBSを強制的に指定
                             int notehead_pit = pit.getValue( item.Clock );
                             MidiEvent pit0 = getPitMidiEvent( notehead_pit );
-                            if ( !list.containsKey( item.Clock ) ) {
-                                list.put( item.Clock, new MidiEventQueue() );
-                            }
                             MidiEventQueue queue = list.get( item.Clock );
                             if ( queue.pit == null ) {
                                 queue.pit = new Vector<MidiEvent>();
@@ -633,9 +654,6 @@ namespace com.github.cadencii
                         if ( required_pbs > 13 ) {
                             required_pbs = 13;
                         }
-                        if ( !list.containsKey( item.Clock ) ) {
-                            list.put( item.Clock, new MidiEventQueue() );
-                        }
                         MidiEventQueue queue = list.get( item.Clock );
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = mDriver.bendLblParameterIndex;
@@ -651,9 +669,6 @@ namespace com.github.cadencii
                             if ( clock_start <= clock && clock <= clock_end ) {
                                 float pvalue = pit_change.get( clock );
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
-                                if ( !list.containsKey( clock ) ) {
-                                    list.put( clock, new MidiEventQueue() );
-                                }
                                 MidiEventQueue q = list.get( clock );
                                 MidiEvent me = getPitMidiEvent( pit_value );
                                 if ( q.pit == null ) {
@@ -676,9 +691,6 @@ namespace com.github.cadencii
                         noteoff.firstByte = 0x80;
                         noteoff.data = new int[] { item.ID.Note, 0x40 }; // ここのvel
                         Vector<MidiEvent> a_noteoff = Arrays.asList( new MidiEvent[] { noteoff } );
-                        if ( !list.containsKey( endclock ) ) {
-                            list.put( endclock, new MidiEventQueue() );
-                        }
                         MidiEventQueue q = list.get( endclock );
                         if ( q.noteoff == null ) {
                             q.noteoff = new Vector<MidiEvent>();
@@ -704,17 +716,11 @@ namespace com.github.cadencii
                         ParameterEvent pbse = new ParameterEvent();
                         pbse.index = mDriver.bendLblParameterIndex;
                         pbse.value = value / 13.0f;
-                        MidiEventQueue queue = null;
-                        if ( list.containsKey( clock ) ) {
-                            queue = list.get( clock );
-                        } else {
-                            queue = new MidiEventQueue();
-                        }
+                        MidiEventQueue queue = list.get( clock );
                         if ( queue.param == null ) {
                             queue.param = new Vector<ParameterEvent>();
                         }
                         queue.param.add( pbse );
-                        list.put( clock, queue );
                     } else if ( clock_end < clock ) {
                         break;
                     }
@@ -740,19 +746,13 @@ namespace com.github.cadencii
                         }
                         int value = pit.getElementA( i );
                         MidiEvent pbs0 = getPitMidiEvent( value );
-                        MidiEventQueue queue = null;
-                        if ( list.containsKey( clock ) ) {
-                            queue = list.get( clock );
-                        } else {
-                            queue = new MidiEventQueue();
-                        }
+                        MidiEventQueue queue = list.get( clock );
                         if ( queue.pit == null ) {
                             queue.pit = new Vector<MidiEvent>();
                         } else {
                             queue.pit.clear();
                         }
                         queue.pit.add( pbs0 );
-                        list.put( clock, queue );
                     } else if ( clock_end < clock ) {
                         break;
                     }
@@ -767,7 +767,7 @@ namespace com.github.cadencii
             return list;
         }
 
-        private static void appendParameterEvents( TreeMap<Integer, MidiEventQueue> list, VsqBPList cle, int parameter_index, int clock_start, int clock_end )
+        private static void appendParameterEvents( EventQueueSequence list, VsqBPList cle, int parameter_index, int clock_start, int clock_end )
         {
             int max = cle.getMaximum();
             int min = cle.getMinimum();
@@ -778,12 +778,7 @@ namespace com.github.cadencii
                     int clock = cle.getKeyClock( i );
                     if ( clock_start <= clock && clock <= clock_end ) {
                         int value = cle.getElementA( i );
-                        MidiEventQueue queue = null;
-                        if ( list.containsKey( clock ) ) {
-                            queue = list.get( clock );
-                        } else {
-                            queue = new MidiEventQueue();
-                        }
+                        MidiEventQueue queue = list.get( clock );
                         if ( queue.param == null ) {
                             queue.param = new Vector<ParameterEvent>();
                         }
@@ -791,7 +786,6 @@ namespace com.github.cadencii
                         pe.index = parameter_index;
                         pe.value = (value - min) * order;
                         queue.param.add( pe );
-                        list.put( clock, queue );
                     } else if ( clock_end < clock ) {
                         break;
                     }
