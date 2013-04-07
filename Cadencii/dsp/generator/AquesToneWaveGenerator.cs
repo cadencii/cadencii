@@ -31,29 +31,6 @@ namespace com.github.cadencii
     public class AquesToneWaveGenerator : AquesToneWaveGeneratorBase
 #endif
     {
-        private const int VERSION = 0;
-        private const int BUFLEN = 1024;
-
-        private AquesToneDriver mDriver = null;
-        private VsqFileEx mVsq = null;
-
-        private WaveReceiver mReceiver = null;
-        private int mTrack;
-        private int mStartClock;
-        private int mEndClock;
-        private boolean mRunning = false;
-        //private boolean mAbortRequired;
-        private long mTotalSamples;
-        private int mSampleRate;
-        /// <summary>
-        /// これまでに合成したサンプル数
-        /// </summary>
-        private long mTotalAppend;
-        private int mTrimRemain;
-        private double[] mBufferL = new double[BUFLEN];
-        private double[] mBufferR = new double[BUFLEN];
-        System.IO.StreamWriter log = null;
-
         protected override MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
         {
             // noteon MIDIイベントを作成
