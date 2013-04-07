@@ -779,10 +779,12 @@ namespace com.github.cadencii.vsq
         /// <summary>
         /// 歌手変更イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
+        /// <param name="start">区間の開始時刻</param>
+        /// <param name="end">区間の終了時刻</param>
         /// <returns></returns>
-        public Iterator<VsqEvent> getSingerEventIterator()
+        public Iterator<VsqEvent> getSingerEventIterator( int start = int.MinValue, int end = int.MaxValue )
         {
-            return new SingerEventIterator( MetaText.getEventList() );
+            return new SingerEventIterator( MetaText.getEventList(), start, end );
         }
 
         /// <summary>
