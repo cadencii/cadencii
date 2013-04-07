@@ -26,10 +26,5 @@ namespace cadencii.test.dsp.generator
                 Assert.False( iterator.hasNext() );
             }
         }
-
-        protected override com.github.cadencii.vsq.MidiEvent[] createNoteOnEvent( int note, int dynamics, string phrase )
-        {
-            return null;
-        }
     }
 }
