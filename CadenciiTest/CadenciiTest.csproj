@@ -43,7 +43,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dsp\generator\AquesToneWaveGeneratorBaseTest.cs" />
     <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
     </Compile>
@@ -55,6 +54,7 @@
     <Compile Include="VsqIDTest.cs" />
     <Compile Include="VsqxConverterTest.cs" />
     <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
+    <Compile Include="vsti\aquestone\EventQueueSequenceTest.cs" />
     <Compile Include="vsti\aquestone\SyllableMatcherTest.cs">
       <SubType>Code</SubType>
     </Compile>

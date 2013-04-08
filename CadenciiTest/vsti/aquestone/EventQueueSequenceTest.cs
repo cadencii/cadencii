@@ -7,10 +7,10 @@ using com.github.cadencii;
 namespace cadencii.test.dsp.generator
 {
     [TestFixture]
-    class AquesToneWaveGeneratorBaseTest
+    class EventQueueSequenceTest
     {
         [Test]
-        public void testEventQueueSequence()
+        public void test()
         {
             var sequence = new EventQueueSequence();
 
