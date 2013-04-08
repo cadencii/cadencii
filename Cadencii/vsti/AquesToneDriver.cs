@@ -37,7 +37,7 @@ namespace com.github.cadencii
     public class AquesToneDriver : AquesToneDriverBase
     {
 #endif
-        public static readonly String[] PHONES = new String[] { 
+        private static readonly String[] PHONES = new String[] { 
             "ア", "イ", "ウ", "エ", "オ",
             "カ", "キ", "ク", "ケ", "コ",
             "サ", "シ", "ス", "セ", "ソ",
@@ -100,7 +100,14 @@ namespace com.github.cadencii
             return RendererKind.AQUES_TONE;
         }
 
-        public override MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
+        /// <summary>
+        /// Note On のための MIDI イベント列を作成する
+        /// </summary>
+        /// <param name="note">ノート番号</param>
+        /// <param name="dynamics">Dynamics</param>
+        /// <param name="phrase">歌詞</param>
+        /// <returns>Note On のための MIDI イベント列</returns>
+        public MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
         {
             // noteon MIDIイベントを作成
             String katakana = KanaDeRomanization.hiragana2katakana( KanaDeRomanization.Attach( phrase ) );
@@ -126,7 +133,12 @@ namespace com.github.cadencii
             }
         }
 
-        public override ParameterEvent[] createSingerEvent( int program )
+        /// <summary>
+        /// 歌手変更のためのイベントを作成する
+        /// </summary>
+        /// <param name="program">プログラムチェンジ</param>
+        /// <returns>イベント</returns>
+        public ParameterEvent[] createSingerEvent( int program )
         {
             if ( 0 > program || program >= SINGERS.Length ) {
                 program = 0;

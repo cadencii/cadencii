@@ -112,7 +112,14 @@ namespace com.github.cadencii
             return RendererKind.AQUES_TONE2;
         }
 
-        public override MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
+        /// <summary>
+        /// Note On のための MIDI イベント列を作成する
+        /// </summary>
+        /// <param name="note">ノート番号</param>
+        /// <param name="dynamics">Dynamics</param>
+        /// <param name="phrase">歌詞</param>
+        /// <returns>Note On のための MIDI イベント列</returns>
+        private MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
         {
             var matcher = new SyllableMatcher();
             var syllable = matcher.find( phrase );
@@ -155,7 +162,12 @@ namespace com.github.cadencii
             }
         }
 
-        public override ParameterEvent[] createSingerEvent( int program )
+        /// <summary>
+        /// 歌手変更のためのイベントを作成する
+        /// </summary>
+        /// <param name="program">プログラムチェンジ</param>
+        /// <returns>イベント</returns>
+        private ParameterEvent[] createSingerEvent( int program )
         {
             return new ParameterEvent[] { };
         }

@@ -51,22 +51,6 @@ namespace com.github.cadencii
         }
 
         /// <summary>
-        /// Note On のための MIDI イベント列を作成する
-        /// </summary>
-        /// <param name="note">ノート番号</param>
-        /// <param name="dynamics">Dynamics</param>
-        /// <param name="phrase">歌詞</param>
-        /// <returns>Note On のための MIDI イベント列</returns>
-        public abstract MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase );
-
-        /// <summary>
-        /// 歌手変更のためのイベントを作成する
-        /// </summary>
-        /// <param name="program">プログラムチェンジ</param>
-        /// <returns>イベント</returns>
-        public abstract ParameterEvent[] createSingerEvent( int program );
-
-        /// <summary>
         /// win.ini にて使用されるセクション名を取得する
         /// </summary>
         /// <returns>セクション名の文字列。両端の"[", "]"は含めない</returns>

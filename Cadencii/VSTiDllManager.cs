@@ -142,7 +142,7 @@ namespace com.github.cadencii {
         {
             if ( kind == RendererKind.AQUES_TONE ) {
 #if ENABLE_AQUESTONE
-                return new AquesToneWaveGenerator();
+                return new AquesToneWaveGenerator(VSTiDllManager.getAquesToneDriver());
 #endif
             } else if ( kind == RendererKind.VCNT ) {
                 return new VConnectWaveGenerator();

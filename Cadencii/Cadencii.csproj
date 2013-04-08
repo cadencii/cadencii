@@ -136,6 +136,7 @@
     <Compile Include="dsp\Amplifier.cs" />
     <Compile Include="dsp\FileWaveReceiver.cs" />
     <Compile Include="dsp\FileWaveSender.cs" />
+    <Compile Include="dsp\generator\AquesTone2WaveGenerator.cs" />
     <Compile Include="dsp\generator\AquesToneWaveGenerator.cs" />
     <Compile Include="dsp\generator\AquesToneWaveGeneratorBase.cs" />
     <Compile Include="dsp\generator\EmptyWaveGenerator.cs" />
