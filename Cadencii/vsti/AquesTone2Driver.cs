@@ -119,7 +119,7 @@ namespace com.github.cadencii
         /// <param name="dynamics">Dynamics</param>
         /// <param name="phrase">歌詞</param>
         /// <returns>Note On のための MIDI イベント列</returns>
-        private MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
+        public MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
         {
             var matcher = new SyllableMatcher();
             var syllable = matcher.find( phrase );

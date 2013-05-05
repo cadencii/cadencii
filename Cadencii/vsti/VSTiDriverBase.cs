@@ -251,6 +251,7 @@ namespace com.github.cadencii
 
         public virtual void send( MidiEvent[] events )
         {
+            if ( events.Length == 0 ) return;
             unsafe {
                 MemoryManager mman = null;
                 try {

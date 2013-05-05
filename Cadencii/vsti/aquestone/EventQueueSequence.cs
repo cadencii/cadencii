@@ -53,6 +53,8 @@ namespace com.github.cadencii
         {
             return sequence.keySet().iterator();
         }
+
+        public TreeMap<Integer, MidiEventQueue> getSequence() { return sequence; }
     }
 
 }

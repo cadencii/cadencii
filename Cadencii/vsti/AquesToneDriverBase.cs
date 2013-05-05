@@ -97,7 +97,6 @@ namespace com.github.cadencii
 
         private String prepareKoeFile()
         {
-            PortUtil.createTempFile();
             String ret = PortUtil.createTempFile();
             BufferedWriter bw = null;
             try {
