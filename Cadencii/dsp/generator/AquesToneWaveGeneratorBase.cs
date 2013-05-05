@@ -273,7 +273,7 @@ namespace com.github.cadencii
                     MidiEventQueue queue = list.get( clock );
                     // まずnoteoff
                     boolean noteoff_send = false;
-                    if ( queue.noteoff != null ) {
+                    if ( queue.noteoff.size() > 0 ) {
 #if DEBUG
                         for ( int i = 0; i < queue.noteoff.size(); i++ ) {
                             String str = "";
@@ -289,7 +289,7 @@ namespace com.github.cadencii
                         noteoff_send = true;
                     }
                     // parameterの変更
-                    if ( queue.param != null ) {
+                    if ( queue.param.size() > 0 ) {
                         for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
                             ParameterEvent pe = itr3.next();
 #if DEBUG
@@ -299,9 +299,9 @@ namespace com.github.cadencii
                         }
                     }
                     // ついでnoteon
-                    if ( queue.noteon != null && queue.noteon.size() > 0 ) {
+                    if ( queue.noteon.size() > 0 ) {
                         // 同ゲートタイムにピッチベンドも指定されている場合、同時に送信しないと反映されないようだ！
-                        if ( queue.pit != null && queue.pit.size() > 0 ) {
+                        if ( queue.pit.size() > 0 ) {
                             queue.noteon.addAll( queue.pit );
                             queue.pit.clear();
                         }
@@ -319,7 +319,7 @@ namespace com.github.cadencii
                         mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
                     }
                     // PIT
-                    if ( queue.pit != null && queue.pit.size() > 0 && !noteoff_send ) {
+                    if ( queue.pit.size() > 0 && !noteoff_send ) {
 #if DEBUG
                         for ( int i = 0; i < queue.pit.size(); i++ ) {
                             String str = "";

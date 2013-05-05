@@ -80,9 +80,6 @@ namespace com.github.cadencii
                         MidiEvent[] noteOnEvents = mDriver.createNoteOnEvent( item.ID.Note, item.ID.Dynamics, item.ID.LyricHandle.L0.Phrase );
                         if ( noteOnEvents.Length > 0 ) {
                             MidiEventQueue queue = list.get( item.Clock );
-                            if ( queue.noteon == null ) {
-                                queue.noteon = new Vector<MidiEvent>();
-                            }
 
                             Vector<MidiEvent> add = Arrays.asList( noteOnEvents );
                             queue.noteon.addAll( add );
@@ -92,9 +89,6 @@ namespace com.github.cadencii
                         /* 音符頭で設定するパラメータ */
                         // Release
                         MidiEventQueue q = list.get( item.Clock );
-                        if ( q.param == null ) {
-                            q.param = new Vector<ParameterEvent>();
-                        }
 
                         String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                         int release = 64;
@@ -147,19 +141,12 @@ namespace com.github.cadencii
                             int notehead_pit = pit.getValue( item.Clock );
                             MidiEvent pit0 = getPitMidiEvent( notehead_pit );
                             MidiEventQueue queue = list.get( item.Clock );
-                            if ( queue.pit == null ) {
-                                queue.pit = new Vector<MidiEvent>();
-                            } else {
-                                queue.pit.clear();
-                            }
+                            queue.pit.clear();
                             queue.pit.add( pit0 );
                             int notehead_pbs = pbs.getValue( item.Clock );
                             ParameterEvent pe = new ParameterEvent();
                             pe.index = mDriver.bendLblParameterIndex;
                             pe.value = notehead_pbs / 13.0f;
-                            if ( queue.param == null ) {
-                                queue.param = new Vector<ParameterEvent>();
-                            }
                             queue.param.add( pe );
                         }
                     } else {
@@ -221,9 +208,6 @@ namespace com.github.cadencii
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = mDriver.bendLblParameterIndex;
                         pe.value = required_pbs / 13.0f;
-                        if ( queue.param == null ) {
-                            queue.param = new Vector<ParameterEvent>();
-                        }
                         queue.param.add( pe );
 
                         // PITを順次追加
@@ -234,11 +218,7 @@ namespace com.github.cadencii
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
                                 MidiEventQueue q = list.get( clock );
                                 MidiEvent me = getPitMidiEvent( pit_value );
-                                if ( q.pit == null ) {
-                                    q.pit = new Vector<MidiEvent>();
-                                } else {
-                                    q.pit.clear();
-                                }
+                                q.pit.clear();
                                 q.pit.add( me );
                             } else if ( clock_end < clock ) {
                                 break;
@@ -255,9 +235,6 @@ namespace com.github.cadencii
                         noteoff.data = new int[] { item.ID.Note, 0x40 }; // ここのvel
                         Vector<MidiEvent> a_noteoff = Arrays.asList( new MidiEvent[] { noteoff } );
                         MidiEventQueue q = list.get( endclock );
-                        if ( q.noteoff == null ) {
-                            q.noteoff = new Vector<MidiEvent>();
-                        }
                         q.noteoff.addAll( a_noteoff );
                         pit_send.add( new Point( endclock, endclock ) ); // PITの送信を抑制するために必要
                     }
@@ -280,9 +257,6 @@ namespace com.github.cadencii
                         pbse.index = mDriver.bendLblParameterIndex;
                         pbse.value = value / 13.0f;
                         MidiEventQueue queue = list.get( clock );
-                        if ( queue.param == null ) {
-                            queue.param = new Vector<ParameterEvent>();
-                        }
                         queue.param.add( pbse );
                     } else if ( clock_end < clock ) {
                         break;
@@ -310,11 +284,7 @@ namespace com.github.cadencii
                         int value = pit.getElementA( i );
                         MidiEvent pbs0 = getPitMidiEvent( value );
                         MidiEventQueue queue = list.get( clock );
-                        if ( queue.pit == null ) {
-                            queue.pit = new Vector<MidiEvent>();
-                        } else {
-                            queue.pit.clear();
-                        }
+                        queue.pit.clear();
                         queue.pit.add( pbs0 );
                     } else if ( clock_end < clock ) {
                         break;
@@ -350,9 +320,6 @@ namespace com.github.cadencii
                 var singer = mDriver.createSingerEvent( program );
                 if ( 0 < singer.Length ) {
                     var queue = queueSequence.get( item.Clock );
-                    if ( queue.param == null ) {
-                        queue.param = new Vector<ParameterEvent>();
-                    }
                     queue.param.addAll( Arrays.asList( singer ) );
                 }
             }
@@ -381,9 +348,6 @@ namespace com.github.cadencii
                     if ( clock_start <= clock && clock <= clock_end ) {
                         int value = cle.getElementA( i );
                         MidiEventQueue queue = list.get( clock );
-                        if ( queue.param == null ) {
-                            queue.param = new Vector<ParameterEvent>();
-                        }
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = parameter_index;
                         pe.value = (value - min) * order;

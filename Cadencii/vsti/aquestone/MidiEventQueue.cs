@@ -26,5 +26,13 @@ namespace com.github.cadencii
         public Vector<MidiEvent> noteon;
         public Vector<MidiEvent> pit;
         public Vector<ParameterEvent> param;
+
+        public MidiEventQueue()
+        {
+            noteoff = new Vector<MidiEvent>();
+            noteon = new Vector<MidiEvent>();
+            pit = new Vector<MidiEvent>();
+            param = new Vector<ParameterEvent>();
+        }
     }
 }
