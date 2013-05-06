@@ -33,7 +33,7 @@ namespace com.github.cadencii {
 #else
     public class VibratoPointIteratorByClock : Iterator<Double> {
 #endif
-        VsqFileEx mVsq;
+        TempoVector mTempoTable;
         VibratoBPList mRate;
         int mStartRate;
         VibratoBPList mDepth;
@@ -53,8 +53,8 @@ namespace com.github.cadencii {
         boolean mFirst = true;
 
         public void rewind() {
-            mSec0 = mVsq.getSecFromClock( mClockStart );
-            mSec1 = mVsq.getSecFromClock( mClockStart + mClockWidth );
+            mSec0 = mTempoTable.getSecFromClock( mClockStart );
+            mSec1 = mTempoTable.getSecFromClock( mClockStart + mClockWidth );
             mFadeWidth = (float)(mSec1 - mSec0) * 0.2f;
             mPhase = 0;
             mStartRate = mRate.getValue( 0.0f, mStartRate );
@@ -75,7 +75,7 @@ namespace com.github.cadencii {
                 mIndex++;
                 if ( mIndex < mClockWidth ) {
                     int clock = mClockStart + mIndex;
-                    double t_sec = mVsq.getSecFromClock( clock );
+                    double t_sec = mTempoTable.getSecFromClock( clock );
                     if ( mSec0 <= t_sec && t_sec <= mSec0 + mFadeWidth ) {
                         mAmplitude *= (t_sec - mSec0) / mFadeWidth;
                     }
@@ -109,14 +109,14 @@ namespace com.github.cadencii {
         public void remove() {
         }
 
-        public VibratoPointIteratorByClock( VsqFileEx vsq,
+        public VibratoPointIteratorByClock( TempoVector tempo_table,
                                       VibratoBPList rate,
                                       int start_rate,
                                       VibratoBPList depth,
                                       int start_depth,
                                       int clock_start,
                                       int clock_width ) {
-            this.mVsq = vsq;
+            this.mTempoTable = tempo_table;
             this.mRate = rate;
             this.mStartRate = start_rate;
             this.mDepth = depth;

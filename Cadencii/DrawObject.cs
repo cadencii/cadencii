@@ -126,7 +126,7 @@ namespace com.github.cadencii {
             int viblength = length - vib_delay;
             if ( viblength > 0 && vib_rate != null && vib_depth != null ) {
                 VibratoPointIteratorByClock itr =
-                    new VibratoPointIteratorByClock( vsq,
+                    new VibratoPointIteratorByClock( vsq.TempoTable,
                                                      vib_rate, vib_start_rate,
                                                      vib_depth, vib_start_depth,
                                                      clock + vib_delay, viblength );
