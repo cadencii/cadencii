@@ -50,6 +50,7 @@ namespace com.github.cadencii
 
     public class vstidrv
     {
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
         public boolean loaded = false;
