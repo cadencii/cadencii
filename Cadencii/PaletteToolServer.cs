@@ -65,7 +65,7 @@ namespace com.github.cadencii {
                 Assembly asm = null;
                 Vector<String> errors = new Vector<String>();
                 try {
-                    asm = Utility.compileScript( code, errors );
+                    asm = (new PluginLoader()).compileScript( code, errors );
                 } catch ( Exception ex ) {
                     serr.println( "PaletteToolServer#init; ex=" + ex );
                     asm = null;

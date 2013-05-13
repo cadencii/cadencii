@@ -1,0 +1,172 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using org.kbinani.vsq;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.apputil;
+using org.kbinani.cadencii;
+
+//USTファイルを出力するプラグインMakeUST Ver1.1
+
+//反映される情報
+//　音符の長さ
+//　音符の高さ
+//　歌詞
+//　ピッチ（PITとPBS）
+//　音量（DYN）
+//　テンポ
+//　先行発声
+//　オーバーラップ
+//　エンベロープ
+//　モジュレーション
+//　フラグ
+//反映されない情報
+//　歌手
+//　その他USTには無い情報
+
+public class MakeUST {
+	public static ScriptReturnStatus Edit( VsqFile Vsq ) {
+		//選択されているトラック番号
+		int trackno = AppManager.getSelected();
+		if (trackno <= 0 ){
+			MessageBox.Show("現在のトラックが取得できません。");
+			return ScriptReturnStatus.NOT_EDITED;
+		}
+		VsqTrack track=Vsq.Track[trackno];
+		//コントロールカーブを取得
+		VsqBPList dyn=track.getCurve("dyn");
+		VsqBPList pit=track.getCurve("pit");
+		VsqBPList pbs=track.getCurve("pbs");
+		//ファイル選択
+		SaveFileDialog sfd=new SaveFileDialog();
+		sfd.Title = "USTファイルを出力";
+		sfd.FileName = string.Empty;
+		sfd.CheckFileExists = false;
+		sfd.AddExtension = true;
+		sfd.OverwritePrompt = true;
+		sfd.Filter ="USTファイル(*.ust)|*.ust|全てのファイル(*.*)|*.*";
+		sfd.FilterIndex = 1;
+		DialogResult ret = sfd.ShowDialog();
+		if (ret != DialogResult.OK)return ScriptReturnStatus.NOT_EDITED;
+		string fn=Path.GetFileNameWithoutExtension(sfd.FileName);
+		//USTへの書き込み
+		int counter=0,zenkaiclock=0;
+		int count = track.getEventCount();
+		ret=MessageBox.Show("プリメジャーも出力しますか？","確認",MessageBoxButtons.YesNo);
+		if(ret!=DialogResult.Yes)zenkaiclock=Vsq.getPreMeasureClocks();
+		double maetempo=GetTempoAverage(Vsq,zenkaiclock,0);
+		System.IO.StreamWriter writer = null;
+		writer = new System.IO.StreamWriter(sfd.FileName, false, System.Text.Encoding.Default );
+		writer.WriteLine("[#SETTING]");
+		writer.WriteLine("Tempo="+maetempo.ToString("0.00"));
+		writer.WriteLine("Tracks=1");
+		writer.WriteLine("ProjectName="+fn);
+		writer.WriteLine("VoiceDir=%VOICE%uta");
+		writer.WriteLine("OutFile="+fn+".wav");
+		writer.WriteLine("CacheDir="+fn+".cache");
+		writer.WriteLine("Tool1=wavtool.exe");
+		writer.WriteLine("Tool2=resampler.exe");
+		double tempoatai;
+		string pitch;
+		Regex regex = new Regex("^(0,)*0$");
+		for(int i=0;i<count;i++) {
+			VsqEvent item=track.getEvent(i);
+			if(item.ID.type!=VsqIDType.Anote)continue;
+			if(item.Clock>zenkaiclock) {
+				writer.WriteLine("[#"+counter.ToString("0000")+"]");
+				writer.WriteLine("Length="+Convert.ToString(item.Clock-zenkaiclock));
+				writer.WriteLine("Lyric=R");
+				writer.WriteLine("NoteNum=60");
+				tempoatai=GetTempoAverage(Vsq,zenkaiclock,item.Clock-zenkaiclock);
+				if(tempoatai!=maetempo) {
+					writer.WriteLine("Tempo="+tempoatai.ToString("0.00"));
+					maetempo=tempoatai;
+				}
+				counter++;
+			}
+			writer.WriteLine("[#"+counter.ToString("0000")+"]");
+			writer.WriteLine("Length="+item.ID.Length.ToString());
+			writer.WriteLine("Lyric="+item.ID.LyricHandle.L0.Phrase);
+			writer.WriteLine("NoteNum="+item.ID.Note.ToString());
+			if(item.UstEvent!=null) {
+				writer.WriteLine("PreUtterance="+
+					item.UstEvent.PreUtterance.ToString());
+				writer.WriteLine("VoiceOverlap="+
+					item.UstEvent.VoiceOverlap.ToString());
+			}
+			writer.WriteLine("Intensity="+
+				Convert.ToString((int)(dyn.getValue(item.Clock)*100/64)));
+			writer.WriteLine("Moduration="+item.UstEvent.Moduration.ToString());
+			pitch="";
+			int ii;
+			for(ii=item.Clock;ii<item.Clock+item.ID.Length;ii+=5) {
+				pitch=pitch+
+					Convert.ToString((int)(pit.getValue(ii)*pbs.getValue(ii)*100/8192))+",";
+			}
+			pitch=pitch+
+				Convert.ToString((int)(pit.getValue(ii)*pbs.getValue(ii)*100/8192));
+			if(!regex.IsMatch(pitch)) {
+				writer.WriteLine("PBType=5");
+				writer.WriteLine("Piches="+pitch);
+			}
+			if(item.UstEvent!=null) {
+				if(item.UstEvent.Flags!="") {
+					writer.WriteLine("Flags="+item.UstEvent.Flags);
+				}
+				if(item.UstEvent.Envelope!=null) {
+					writer.WriteLine("Envelope="+
+						item.UstEvent.Envelope.p1.ToString()+","+
+						item.UstEvent.Envelope.p2.ToString()+","+
+						item.UstEvent.Envelope.p3.ToString()+","+
+						item.UstEvent.Envelope.v1.ToString()+","+
+						item.UstEvent.Envelope.v2.ToString()+","+
+						item.UstEvent.Envelope.v3.ToString()+","+
+						item.UstEvent.Envelope.v4.ToString()+",%,"+
+						item.UstEvent.Envelope.p4.ToString()+","+
+						item.UstEvent.Envelope.p5.ToString()+","+
+						item.UstEvent.Envelope.v5.ToString());
+				}
+			}
+			tempoatai=GetTempoAverage(Vsq,item.Clock,item.ID.Length);
+			if(tempoatai!=maetempo) {
+				writer.WriteLine("Tempo="+tempoatai.ToString("0.00"));
+				maetempo=tempoatai;
+			}
+			counter++;
+			zenkaiclock=item.Clock+item.ID.Length;
+		}
+		if(zenkaiclock<Vsq.TotalClocks) {
+			writer.WriteLine("[#"+counter.ToString("0000")+"]");
+			writer.WriteLine("Length="+Convert.ToString(Vsq.TotalClocks-zenkaiclock));
+			writer.WriteLine("Lyric=R");
+			writer.WriteLine("NoteNum=60");
+			tempoatai=GetTempoAverage(Vsq,zenkaiclock,Vsq.TotalClocks-zenkaiclock);
+			if(tempoatai!=maetempo) {
+				writer.WriteLine("Tempo="+tempoatai.ToString("0.00"));
+				maetempo=tempoatai;
+			}
+			counter++;
+		}
+		writer.WriteLine("[#TRACKEND]");
+		writer.Close();
+		return ScriptReturnStatus.NOT_EDITED;
+	}
+	
+	private static double GetTempoAverage(VsqFile vsq,int start,int length) {
+		double sum=0;
+		int tempokensaku=0;
+		List<TempoTableEntry> tempo=vsq.TempoTable;
+		for(;tempokensaku<tempo.Count && tempo[tempokensaku].Clock<=start;tempokensaku++);
+		if(length<=0)return 60000000.0/(double)tempo[tempokensaku-1].Tempo;
+		for(;tempokensaku<tempo.Count && tempo[tempokensaku].Clock<=start+length;tempokensaku++) {
+			sum+=(60000000.0/(double)tempo[tempokensaku-1].Tempo)*(tempo[tempokensaku].Clock-
+				(tempo[tempokensaku-1].Clock<start?start:tempo[tempokensaku-1].Clock));
+		}
+		sum+=(60000000.0/(double)tempo[tempokensaku-1].Tempo)*(start+length-
+			(tempo[tempokensaku-1].Clock<start?start:tempo[tempokensaku-1].Clock));
+		return sum/length;
+	}
+}

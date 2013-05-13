@@ -1,0 +1,772 @@
+using System;
+using System.IO;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using bocoree.util;
+using Boare.Cadencii;
+
+public class FromClipRIN {
+    //ver1.1 2009/07/10
+    //★印はキャラクタが変わったら数字、テーブルを見直す必要があるところ
+    //OPE設定用テーブル  ★★★キャラクタが変わったら入れ替える★★★
+    struct opeparam {
+        public string goz;
+        public int ope;
+
+        public opeparam( string goz_, int ope_ ) {
+            goz = goz_;
+            ope = ope_;
+        }
+    }
+    static opeparam[] opehenkan = new opeparam[]{ new opeparam( "あ", 127),
+										new opeparam( "か", 127),
+										new opeparam( "さ", 127),
+										new opeparam( "た", 127),
+										new opeparam( "な", 127),
+										new opeparam( "は", 127),
+										new opeparam( "ま", 127),
+										new opeparam( "や", 127),
+										new opeparam( "ら", 127),
+										new opeparam( "わ", 127),
+										new opeparam( "い", 122),
+										new opeparam( "き", 122),
+										new opeparam( "し", 122),
+										new opeparam( "ち", 122),
+										new opeparam( "に", 122),
+										new opeparam( "ひ", 122),
+										new opeparam( "み", 122),
+										new opeparam( "り", 122),
+										new opeparam( "う", 117),
+										new opeparam( "く", 117),
+										new opeparam( "す", 117),
+										new opeparam( "つ", 117),
+										new opeparam( "ぬ", 117),
+										new opeparam( "ふ", 117),
+										new opeparam( "み", 117),
+										new opeparam( "る", 117),
+										new opeparam( "え", 112),
+										new opeparam( "け", 112),
+										new opeparam( "せ", 112),
+										new opeparam( "て", 112),
+										new opeparam( "ね", 112),
+										new opeparam( "へ", 112),
+										new opeparam( "め", 112),
+										new opeparam( "れ", 112),
+										new opeparam( "お", 107),
+										new opeparam( "こ", 107),
+										new opeparam( "そ", 107),
+										new opeparam( "と", 107),
+										new opeparam( "の", 107),
+										new opeparam( "ほ", 107),
+										new opeparam( "も", 107),
+										new opeparam( "ろ", 107),
+										new opeparam( "を", 107),
+										new opeparam( "ん", 60),
+										new opeparam( "が", 127),
+										new opeparam( "ざ", 127),
+										new opeparam( "だ", 127),
+										new opeparam( "ば", 127),
+										new opeparam( "ぎ", 117),
+										new opeparam( "じ", 117),
+										new opeparam( "ぢ", 117),
+										new opeparam( "び", 117),
+										new opeparam( "ぐ", 117),
+										new opeparam( "ず", 117),
+										new opeparam( "づ", 117),
+										new opeparam( "ぶ", 117),
+										new opeparam( "げ", 112),
+										new opeparam( "ぜ", 112),
+										new opeparam( "で", 112),
+										new opeparam( "べ", 112),
+										new opeparam( "ご", 107),
+										new opeparam( "ぞ", 107),
+										new opeparam( "ど", 107),
+										new opeparam( "ぼ", 107),
+										new opeparam( "ア", 127),
+										new opeparam( "カ", 127),
+										new opeparam( "サ", 127),
+										new opeparam( "タ", 127),
+										new opeparam( "ナ", 127),
+										new opeparam( "ハ", 127),
+										new opeparam( "マ", 127),
+										new opeparam( "ヤ", 127),
+										new opeparam( "ラ", 127),
+										new opeparam( "ワ", 127),
+										new opeparam( "イ", 122),
+										new opeparam( "キ", 122),
+										new opeparam( "シ", 122),
+										new opeparam( "チ", 122),
+										new opeparam( "ニ", 122),
+										new opeparam( "ヒ", 122),
+										new opeparam( "ミ", 122),
+										new opeparam( "リ", 122),
+										new opeparam( "ウ", 117),
+										new opeparam( "ク", 117),
+										new opeparam( "ス", 117),
+										new opeparam( "ツ", 117),
+										new opeparam( "ヌ", 117),
+										new opeparam( "フ", 117),
+										new opeparam( "ミ", 117),
+										new opeparam( "ル", 117),
+										new opeparam( "エ", 112),
+										new opeparam( "ケ", 112),
+										new opeparam( "セ", 112),
+										new opeparam( "テ", 112),
+										new opeparam( "ネ", 112),
+										new opeparam( "ヘ", 112),
+										new opeparam( "メ", 112),
+										new opeparam( "レ", 112),
+										new opeparam( "オ", 107),
+										new opeparam( "コ", 107),
+										new opeparam( "ソ", 107),
+										new opeparam( "ト", 107),
+										new opeparam( "ノ", 107),
+										new opeparam( "ホ", 107),
+										new opeparam( "モ", 107),
+										new opeparam( "ロ", 107),
+										new opeparam( "ヲ", 107),
+										new opeparam( "ン", 60),
+                                        new opeparam( "＠", 0 ) }; 
+    // 変換テーブル作成-----------------------
+    struct param {
+        public string kana;
+        public int vel;
+        public int accent;
+
+        public param( string kana_, int vel_, int accent_ ) {
+            kana = kana_;
+            vel = vel_;
+            accent = accent_;
+        }
+    }
+    //★★★キャラクタが変わったら入れ替える★★★
+    //パラメータを変更して、名前を変えて保存する
+    //変換テーブルを直したら、PrintLylic_LUKAも直すこと
+    static param[] henkan = new param[]{ new param( "し", 20, 50 ),
+                                         new param( "た", 20, 50 ),
+                                         new param( "ち", 20, 50 ),
+										 new param( "つ", 20, 50 ),
+                                         new param( "て", 20, 50 ),
+                                         new param( "と", 20, 50 ),
+                                         new param( "だ", 30, 50 ),
+										 new param( "シ", 20, 50 ),
+                                         new param( "タ", 20, 50 ),
+                                         new param( "チ", 20, 50 ),
+                                         new param( "ツ", 20, 50 ),
+                                         new param( "テ", 20, 50 ),
+                                         new param( "ト", 20, 50 ),
+                                         new param( "ダ", 30, 50 ),
+                                         new param( "＠", 0, 0 ) };        //歌歌詞による設定値　★この行の上に追加する　この行は反映されない
+
+    public static bool Edit( VsqFileEx vsq ) {
+        if( AppManager.getSelectedEventCount() <= 0 ){
+            return false;
+        }
+        int selectedid = AppManager.getLastSelectedEvent().original.InternalID;
+        // @kbinani: "start"以降のイベントが、すべて音符イベントとは限らない（歌手変更イベントもある）。
+        // @kbinani: selectedid以降の音符の数を正しく数える。
+        int count = 0;
+        bool begin_count = false;    // selectedidの音符が現れるまでは数えない。これがtureになったら数え始める
+        //一つ前の音符を探すため
+        int pre_id = 0;	//一つ前の音符のID
+        int pre_note = 0;
+        int current_clock = AppManager.getLastSelectedEvent().original.Clock;  //選択されている最後の音符のクロック;
+        for ( Iterator<VsqEvent> itr = vsq.Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = (VsqEvent)itr.next();
+            if ( item.InternalID == selectedid ) {
+                begin_count = true;
+                // @kbinani: 数え始める！
+            }
+                //一つ前の音符IDを記録しておく
+            else if ( item.InternalID < selectedid ) {
+                if ( item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote ) {
+                    pre_id = item.InternalID;
+                    pre_note = item.ID.Note;
+                }
+            }
+            count += (begin_count ? 1 : 0);
+        }
+        //クリップボードから読み込み実行する
+        string clipboard_contents = Clipboard.GetText();
+        if ( clipboard_contents != "" ) {
+            string[] wphrases = GetLetters( clipboard_contents );
+            if ( wphrases[0] == "" ) {
+                return false;
+            }
+            liric_import( vsq, wphrases, count, selectedid, AppManager.getSelected(), pre_id, pre_note, current_clock );
+            return true;
+        } else {
+            // @kbinani: クリップボードに文字列がなかった場合
+            return false;
+        }
+    }
+
+    private static string[] GetLetters( string clipst ) {
+        //小文字のリスト
+        List<char> _SMALL = new List<char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'ゃ', 'ゅ', 'ょ', 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
+                                                         'ャ', 'ュ', 'ョ' } );
+        //拗音他小文字を伴う文字リスト
+        List<string> ch = new List<string>( new string[] { "いぇ", "うぃ", "うぇ", "うぉ", "きゃ", "きゅ", "きぇ", "きょ", "しゃ", 
+                                                           "しゅ", "しぇ", "しょ", "ちゃ", "ちゅ", "ちぇ", "ちょ", "にゃ", "にゅ",
+                                                           "にぇ", "にょ", "ひゃ", "ひゅ", "ひぇ", "ひょ", "ふゃ", "ふぃ", "ふゅ", 
+                                                           "ふぇ", "みゃ", "みゅ", "みぇ", "みょ", "りゃ", "りゅ", "りぇ", "りょ", 
+                                                           "ぎゃ", "ぎゅ", "ぎぇ", "ぎょ", "じゃ", "じゅ", "じぇ", "じょ", "びゃ", 
+                                                           "びゅ", "びぇ", "びょ", "ぴゃ", "ぴゅ", "ぴぇ", "ぴょ", "ふぁ", "ふぉ", 
+                                                           "てゃ", "てぃ", "てゅ", "てぇ", "てょ", "でゃ", "でぃ", "でゅ", "でぇ", 
+                                                           "でょ", "すぃ", "ずぃ", "とぅ", "どぅ", "イェ", "ウィ", "ウェ", "ウォ", 
+                                                           "キャ", "キュ", "キェ", "キョ", "シャ", "シュ", "シェ", "ショ", "チャ", 
+                                                           "チュ", "チェ", "チョ", "ニャ", "ニュ", "ニェ", "ニョ", "ヒャ", "ヒュ", 
+                                                           "ヒェ", "ヒョ", "フャ", "フィ", "フュ", "フェ", "ミャ", "ミュ", "ミェ", 
+                                                           "ミョ", "リャ", "リュ", "リェ", "リョ", "ギャ", "ギュ", "ギェ", "ギョ", 
+                                                           "ジャ", "ジュ", "ジェ", "ジョ", "ビャ", "ビュ", "ビェ", "ビョ", "ピャ", 
+                                                           "ピュ", "ピェ", "ピョ", "ファ", "フォ", "テャ", "ティ", "テュ", "テェ", 
+                                                           "テョ", "デャ", "ディ", "デュ", "デェ", "デョ", "スィ", "ズィ", "トゥ", 
+                                                           "ドゥ" } );
+
+        string tmp = "";
+
+        //エラーとして空の配列を返すためのもの
+        string[] errstring = new string[] { "" };
+
+        for ( int i = 0; i < clipst.Length; i++ ) {
+            //タブ、改行、ひらがな以外はエラーとする ーについては使わないほうがよい
+            if ( !(clipst[i] == ' ' || clipst[i] == '　' || clipst[i] == '\r') ) {
+                if ( (clipst[i] == '\t' || clipst[i] == '\n') || (clipst[i] >= 'ぁ' && clipst[i] <= 'ヶ') || (clipst[i] == 'ー') ) {
+                    tmp = tmp + clipst[i];
+                } else {
+                    MessageBox.Show( "ひらがな、かたかなしか対応していません。違う文字あり:" + clipst );
+                    return errstring;
+                }
+            }
+        }
+
+        //入力の分割
+        char[] list = tmp.ToCharArray();
+        //出力用のリスト
+        List<string> ret = new List<string>();
+
+        //flg最後に２つまとめたか
+        int flg = 0;
+        for ( int i = 0; i < list.Length - 1; i++ ) {
+            if ( list[i] == '\t' || list[i] == '\n' ) {
+                ret.Add( list[i].ToString() );
+            } else {
+                if ( _SMALL.Contains( list[i + 1] ) ) {
+                    // 次の文字が拗音の場合 拗音リストにない場合は[0]にヌル入れて戻る
+                    if ( !ch.Contains( list[i].ToString() + list[i + 1].ToString() ) ) {
+                        MessageBox.Show( "小文字の使われている位置がおかしい" );
+                        return errstring;
+                    }
+                    ret.Add( list[i].ToString() + list[i + 1].ToString() );
+                    i++;
+                    if ( i == list.Length ) 	//最後に小文字があった場合
+                        flg = 1;
+                } else {
+                    ret.Add( list[i].ToString() );
+                }
+            }
+        }
+        if ( flg == 0 )
+            ret.Add( list[list.Length - 1].ToString() );
+        return ret.ToArray();
+    }
+
+    private static void liric_import( VsqFileEx vsq,
+                                      string[] phrases,
+                                      int count,
+                                      int first_id,
+                                      int track,
+                                      int pre_id,
+                                      int pre_note,
+                                      int current_clock ) {
+        //★★★コントロール　キャラクタが変わったら入れ替えるところもあり★★★
+        int kasyu = 2; // 1 LUKA 2 RIN　変えた場合はパラメタを入れ替えること
+        int randamfl = 1; // ランダマイズするかどうかのフラッグ　0:しない 1:する
+        int opefl = 1; // OPEを設定するかどうかのフラッグ　0:しない 1:する
+        int pitfl = 2; // PITを設定するかどうかのフラッグ　0:しない 1:アクセントする 2:両方
+		/*
+        // LUKA
+        int acc_ichi = 15;  //アクセント位置での増分　テーブルにあるかな
+        int param_acc_ichi = 15;  //アクセント位置での増分　テーブルにない
+        int minus_acc_ichi = 10;  //歌詞による設定がないフレーズの最後減らす
+        */
+        // RIN
+        int acc_ichi = 15;  //歌詞による設定がない
+        int param_acc_ichi = 15;  //ある
+        int minus_acc_ichi = 10;  //歌詞による設定がないフレーズの最後減らす
+
+        //phrases には\t、\n も入っている
+        //アクセントの数を確認する　\t　\n の次がアクセント
+
+        int tabcr = 0;
+        for ( int i = 0; i < phrases.Length; i++ ) {
+            if ( phrases[i] == "\n" || phrases[i] == "\t" ) {
+                tabcr = tabcr + 1;
+            }
+        }
+
+        //\t　\n を取り除いてwork_phrasesに入れる
+        string[] work_phrases = new string[phrases.Length - tabcr];
+
+        //アクセント
+        int[] acctbl = new int[phrases.Length - tabcr + 1];
+        int wi = 0;
+
+        bool nexttab = true;
+        for ( int i = 0; i < phrases.Length - 1; i++ ) {
+            if ( nexttab ) {
+                acctbl[wi] = 1;
+            } else {
+                acctbl[wi] = 0;
+            }
+            if ( !(phrases[i] == "\n" || phrases[i] == "\t") ) {
+                work_phrases[wi] = phrases[i];
+                wi++;
+                nexttab = false;
+            } else {
+                nexttab = true;
+            }
+        }
+        if ( !(phrases[phrases.Length - 1] == "\n" || phrases[phrases.Length - 1] == "\t") ) {
+            work_phrases[work_phrases.Length - 1] = phrases[phrases.Length - 1];
+            acctbl[acctbl.Length - 2] = 0;
+        }
+        //acctbl最後に強制的に1を入れる　フレーズの最後のアクセントをマイナスするため
+        acctbl[acctbl.Length - 1] = 1;
+
+        // 選択されたイベント以降の音符数と、入力された文字数の小さいほうを、作業個数とする
+        int min = Math.Min( count, work_phrases.Length );
+        string[] new_phrases = new string[min];
+        string[] new_symbols = new string[min];
+
+        for ( int i = 0; i < min; i++ ) {
+            new_phrases[i] = work_phrases[i];
+            ByRef<string> s = new ByRef<string>( "" );
+            SymbolTable.attatch( work_phrases[i], s );
+            new_symbols[i] = s.value;
+        }
+
+        //ランダマイズ用のテーブルを作成
+        int[] change_clock = new int[min];
+        //int[] change_length = new int[min];
+        // サイコロ　iResult3 クロックのランダム増減30クロックごと
+        Random cRandom = new System.Random();
+        int iResult3 = 0;
+        //最初の場合は移動幅iResult3は0またはプラス
+        //★★★Next(X, X)のカッコ内を変更することで移動幅を調整
+        //cRandom.Next(0, 2) で0,1を返す
+        //cRandom.Next(-1, 2) で-1,0,1を返す
+        if ( pre_id == 0 ) {
+            iResult3 = cRandom.Next( 0, 2 ) * 30;
+        } else {
+            //★★★Next(X, X)のカッコ内を変更することで移動幅を調整
+            iResult3 = cRandom.Next( -1, 2 ) * 30;
+        }
+        int wchange = 0;
+        int processed_count = 0;    // 処理を行った音符の個数。0からmin - 1まで変化。
+        VsqTrack target_track = vsq.Track[track];
+        bool start_replacing = false; // InternalIDがselectedidとなっている音符が現れるまで待機する
+        for ( Iterator<VsqEvent> itr = target_track.getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = (VsqEvent)itr.next();
+            if ( item.InternalID == first_id ) {
+                start_replacing = true;
+            }
+            if ( processed_count >= min ) {
+                break;
+            }
+            //一つ前の音符と現在音符が重ならないようにする
+            if ( randamfl == 1 ) {
+                wchange = current_clock + iResult3;
+                if ( item.InternalID == pre_id && pre_id > 0 ) {
+                    if ( (item.Clock + item.ID.Length) > wchange ) {
+                        item.ID.Length = Math.Max( 60, wchange - item.Clock );
+                        //60以下にはならないと思うが念のため
+                    }
+                }
+            }
+            if ( start_replacing ) {
+                //ランダムで音符位置をテーブルへ
+                if ( randamfl == 1 ) {
+                    change_clock[processed_count] = item.Clock + iResult3;
+                    //★★★Next(X, X)のカッコ内を変更することで移動幅を調整
+                    iResult3 = cRandom.Next( -1, 2 ) * 30;
+                }
+                processed_count++;
+            }
+        }
+        //実際の変更処理  以下２つの変数　上記処理と同じものを使う
+        processed_count = 0;
+        start_replacing = false;
+        for ( Iterator<VsqEvent> itr = target_track.getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = (VsqEvent)itr.next();
+            if ( item.InternalID == first_id ) {
+                start_replacing = true;
+            }
+            if ( processed_count >= min ) {
+                break;
+            }
+            if ( start_replacing ) {
+                //位置のランダマイズ　変更に従って　長さを調整
+                if ( randamfl == 1 ) {
+                    if ( processed_count < min - 1 ) {
+                        if ( change_clock[processed_count + 1] - change_clock[processed_count] < item.ID.Length ) {
+                            item.ID.Length = change_clock[processed_count + 1] - change_clock[processed_count];
+                        }
+                    } else if ( processed_count == min - 1 ) {
+                        item.ID.Length -= (change_clock[processed_count] - item.Clock);
+                        //フレーズの最後だけは、長さを短くしておく
+                    }
+                    item.Clock = change_clock[processed_count];
+                }
+                //歌詞の流し込み
+                item.ID.LyricHandle.L0.Phrase = new_phrases[processed_count];
+                item.ID.LyricHandle.L0.setPhoneticSymbol( new_symbols[processed_count] );
+                //henkan表にあるかなの場合、ヴェロシティ、アクセントを設定する
+                int henkan_ichi = 0;
+                for ( int i = 0; i < henkan.Length; i++ ) {
+                    if ( henkan[i].kana == item.ID.LyricHandle.L0.Phrase ) {
+                        henkan_ichi = i + 1;
+                        break;
+                    }
+                }
+                if ( henkan_ichi >= 1 && henkan_ichi < henkan.Length ) {
+                    //変換表にある場合でフレーズの最初の場合 +param_acc_ichiする
+                    if ( acctbl[processed_count] == 1 && henkan[henkan_ichi - 1].accent < (100 - param_acc_ichi) ) {
+                        item.ID.DEMaccent = henkan[henkan_ichi - 1].accent + param_acc_ichi;
+                    } else {
+                        item.ID.DEMaccent = henkan[henkan_ichi - 1].accent;
+                    }
+                    item.ID.Dynamics = henkan[henkan_ichi - 1].vel;
+                } else {
+                    //変換表に無い場合でフレーズの最後の場合 minus_acc_ichiマイナスする
+                    //acctblは音符の数より１つ多く取ってあり最後には1が入っている
+                    if ( acctbl[processed_count + 1] == 1 && item.ID.DEMaccent > minus_acc_ichi ) {
+                        item.ID.DEMaccent = item.ID.DEMaccent - minus_acc_ichi;
+                    }
+                    //変換表に無い場合でフレーズの最初の場合 acc_ichiプラスする
+                    if ( acctbl[processed_count] == 1 && item.ID.DEMaccent < (100 - acc_ichi) ) {
+                        item.ID.DEMaccent = item.ID.DEMaccent + acc_ichi;
+                    }
+                }
+                //OPE
+                if ( opefl == 1 ) {
+                    editOpe( item, target_track );
+                }
+                //BRI
+                //フレーズの最後の場合
+                if ( acctbl[processed_count + 1] == 1 ) {
+                    //コントロールカーブ　のこぎり減衰
+                    editCurve( item, target_track, 1, kasyu );
+                    if ( pitfl == 2 ) {
+                        editPit2( target_track, item );
+                    }
+                }
+                //フレーズの最初の場合
+                if ( acctbl[processed_count] == 1 ) {
+                    //コントロールカーブ　山型
+                    editCurve( item, target_track, 0, kasyu );
+                    if ( pitfl >= 1 ) {
+                        editPit( target_track, item, pre_note );
+                    }
+                }
+                pre_note = item.ID.Note;
+                processed_count++;
+            }
+        }
+    }
+    //メインの処理ここまで
+
+    //各種処理
+    private static void editOpe( Boare.Lib.Vsq.VsqEvent item, Boare.Lib.Vsq.VsqTrack track ) {
+        // OPEカーブを取得
+        Boare.Lib.Vsq.VsqBPList ope = track.getCurve( "OPE" );
+        // 音符の最後の位置でのOPEを取得．処理の最後で追加
+        int value_at_end = ope.getValue( item.Clock + item.ID.Length );
+        // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
+        removeInBetween( ope, item.Clock, item.Clock + item.ID.Length );
+        //opehenkan表でOPEを設定する
+        int v = value_at_end;
+        for ( int i = 0; i < opehenkan.Length; i++ ) {
+            if ( opehenkan[i].goz == item.ID.LyricHandle.L0.Phrase ) {
+                v = opehenkan[i].ope;
+                break;
+            }
+        }
+        ope.add( item.Clock, v );
+        // 音符末尾の位置のOPEを強制的に元の値に戻す
+        ope.add( item.Clock + item.ID.Length, value_at_end );
+    }
+
+    private static void editPit( VsqTrack track, Boare.Lib.Vsq.VsqEvent item, int pre_note ) {
+        //★★★pitのコントロール★★★
+        int pit_start = -10000;  //開始値　10000で半音
+        int pit_end = 0;  //終了値
+        int pitdown = 1; // PITでずりさげを行う　0:しない 1:する
+        int pit_clock = 90;  //pit終了クロック
+        int pit_no = 50;  //先頭からこのクロック分は同じ値を保つ
+        int pit_limit = 4;  //ずりさげを行うスレッドショット
+
+        //8分以下はピット変化なし
+        if ( item.ID.Length <= 240 ) {
+            return;
+        }
+        int zoubun;
+        //前の音符よりpit_limit半音以上下がっていたらずり下げとなる
+        //ずり上げは下げの半分とする
+        if ( ((pre_note - item.ID.Note) >= pit_limit) && (pitdown == 1) ) {
+            pit_start /= 2;
+            pit_start *= -1;
+        }
+        int clock_start = item.Clock;
+        int clock_end = item.Clock + item.ID.Length;
+
+        // PITカーブを取得し、範囲内の既存値をクリア
+        VsqBPList pit = track.getCurve( "pit" );
+        int pit_at_end = pit.getValue( clock_end );
+        removeInBetween( pit, clock_start, clock_end );
+
+        // PBSカーブを取得し、範囲内の既存値をクリア
+        VsqBPList pbs = track.getCurve( "pbs" );
+        int pbs_at_end = pbs.getValue( clock_end );
+        removeInBetween( pbs, clock_start, clock_end );
+
+        // 必要な最小のPBS値をセット
+        double max_pitch_bend = Math.Max( Math.Abs( pit_start / 10000.0 ), Math.Abs( pit_end / 10000.0 ) );
+        int required_pbs = (int)max_pitch_bend;
+        if ( max_pitch_bend - required_pbs > 0.0 ) {
+            required_pbs++;
+        }
+        if ( required_pbs < 2 ) {
+            required_pbs = 2;
+        }
+        pbs.add( clock_start, required_pbs );
+
+        // PITを編集
+        zoubun = (pit_end - pit_start) / (pit_clock - pit_no);
+        pit.add( clock_start, getPitFromPitchbend( pit_start, required_pbs ) );
+        for ( int i = 1; i < pit_clock; i++ ) {
+            if ( i > pit_no ) {
+                pit.add( clock_start + i, getPitFromPitchbend( pit_start + (i - pit_no) * zoubun, required_pbs ) );
+            }
+        }
+        pit.add( clock_start + pit_clock, pit_at_end );
+        if ( pbs_at_end != required_pbs ) {
+            pbs.add( clock_start + pit_clock, pbs_at_end );
+        }
+    }
+
+    private static void removeInBetween( VsqBPList list, int clock_start, int clock_end ) {
+        List<int> del = new List<int>();
+        for ( Iterator<int> itr = list.keyClockIterator(); itr.hasNext(); ) {
+            int clock = (int)itr.next();
+            if ( clock_start <= clock && clock <= clock_end ) {
+                del.Add( clock );
+            } else if ( clock_end < clock ) {
+                break;
+            }
+        }
+        int c = del.Count;
+        for ( int i = 0; i < c; i++ ) {
+            list.remove( del[i] );
+        }
+    }
+
+    /// <summary>
+    /// pitchベンドの値（pitchbend, 半音で10000）とPBSの値から、PITカーブに指定すべき整数値を計算します
+    /// </summary>
+    private static int getPitFromPitchbend( double pitchbend, int pbs ) {
+        return (int)(pitchbend / 10000.0 * 8192 / (double)pbs);
+    }
+
+    private static void editPit2( VsqTrack track, Boare.Lib.Vsq.VsqEvent item ) {
+        //★★★pitのコントロール  フレーズの最後★★★
+        int pit_start = 0;  //開始値　10000で半音
+        int pit_end = -5000;  //終了値
+        int pit_duration = 180;  //pitクロック
+
+        //4分以下はピット変化なし
+        if ( item.ID.Length < 480 ) {
+            return;
+        }
+        int zoubun;
+        int clock_start = item.Clock + item.ID.Length - pit_duration;
+        int clock_end = item.Clock + item.ID.Length;
+
+        // PITカーブを取得
+        VsqBPList pit = track.getCurve( "pit" );
+        int pit_at_end = pit.getValue( clock_end );
+        removeInBetween( pit, clock_start, clock_end );
+
+        // PBSカーブを取得し、範囲内の既存値をクリア
+        VsqBPList pbs = track.getCurve( "pbs" );
+        int pbs_at_end = pbs.getValue( clock_end );
+        removeInBetween( pbs, clock_start, clock_end );
+
+        // 必要な最小のPBS値をセット
+        double max_pitch_bend = Math.Max( Math.Abs( pit_start / 10000.0 ), Math.Abs( pit_end / 10000.0 ) );
+        int required_pbs = (int)max_pitch_bend;
+        if ( max_pitch_bend - required_pbs > 0.0 ) {
+            required_pbs++;
+        }
+        if ( required_pbs < 2 ) {
+            required_pbs = 2;
+        }
+        pbs.add( clock_start, required_pbs );
+
+        // PITを編集
+        zoubun = (pit_end - pit_start) / (pit_duration);
+        pit.add( clock_start, getPitFromPitchbend( pit_start, required_pbs ) );
+        for ( int i = 1; i < pit_duration; i++ ) {
+            pit.add( clock_start + i, getPitFromPitchbend( pit_start + i * zoubun, required_pbs ) );
+        }
+        pit.add( clock_end, pit_at_end );
+        if ( pbs_at_end != required_pbs ) {
+            pbs.add( clock_end, pbs_at_end );
+        }
+    }
+
+    private static void editCurve( Boare.Lib.Vsq.VsqEvent item, Boare.Lib.Vsq.VsqTrack track, int kubun, int kasyu ) {
+        // Brightnessカーブを取得
+        Boare.Lib.Vsq.VsqBPList bri = track.getCurve( "BRI" );
+        // 音符の最後の位置でのBRIを取得．処理の最後で追加
+        int value_at_end = bri.getValue( item.Clock + item.ID.Length );
+
+        // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
+        removeInBetween( bri, item.Clock, item.Clock + item.ID.Length );
+
+        // 直前に指定したBRI値．最初はありえない値にしておく
+        int last_v = -1;
+
+        //kaizoudoはカーブの解像度　1にする
+        int kaizoudo = 1;
+        // 時間方向解像度（kaizoudo）ごとのクロックに対して，順次BRIを設定
+        for ( int clock = item.Clock; clock <= item.Clock + item.ID.Length; clock += kaizoudo ) {
+            int v = 0;
+            if ( kubun == 0 ) {
+                switch ( kasyu ) {
+                    case 1:
+                        v = getCurve( clock - item.Clock, item.ID.Length, value_at_end );
+                        break;
+                    case 2:
+                        v = getCurve2( clock - item.Clock, item.ID.Length, value_at_end );
+                        break;
+                }
+            } else {
+                switch ( kasyu ) {
+                    case 1:
+                        v = getCurve_saw( clock - item.Clock, item.ID.Length, value_at_end );
+                        break;
+                    case 2:
+                        v = getCurve_saw2( clock - item.Clock, item.ID.Length, value_at_end );
+                        break;
+                }
+            }
+            if ( last_v != v ) {
+                // 直前に指定した値と違うときだけ追加．
+                bri.add( clock, v );
+            }
+            // 「直前の値」を更新
+            last_v = v;
+        }
+
+        // 音符末尾の位置のBRIを強制的に元の値に戻す．これをやらないと，
+        // その音符の末尾以降のBRIがそのまま編集の影響を受けてしまう
+        bri.add( item.Clock + item.ID.Length, value_at_end );
+    }
+
+    private static int getCurve( int current_clock, int total_mesure, int end_value ) {
+        // 音符に合うカーブを作成
+        // 32分の１以下　なし
+        // 8分の1より小さい 右下がりのこぎり
+        // 8分の1以上 ピラミッド型　ピラミッドの頂点位置は先頭から210固定
+        // ２分以上はカーブはない
+
+        int max_value = 96; //★★★最大の値
+        int taiki = 60;  // 最初からここまではカーブなし
+
+        //resは30で考えている
+        if ( total_mesure <= 60 )  //60以下はカーブなし
+        {
+            return end_value;
+        } else if ( total_mesure < 330 ) // のこぎり型 60まで待機
+        {
+            if ( current_clock <= taiki )
+                return end_value;
+            else {
+                float add_value = (end_value - max_value) / (float)(total_mesure - taiki);
+                return (int)(max_value + add_value * (current_clock - taiki));
+            }
+        } else  //ピラミッド
+        {
+            if ( current_clock <= taiki )　//待機
+            {
+                return end_value;
+            } else if ( current_clock < 210 )   //210までは増加
+            {
+                float add_value = (max_value - end_value) / (float)(210 - taiki);
+                return (int)(end_value + add_value * (current_clock - taiki));
+            } else if ( current_clock == 210 )   //7単位で最大値
+            {
+                return max_value;
+            } else if ( current_clock > 210 && current_clock <= 960 )  //最初から２拍目で終わり   
+            {
+                if ( total_mesure > 960 ) {
+                    total_mesure = 960;
+                }
+                float add_value = (max_value - end_value) / (float)(total_mesure - 210);
+                return (int)(end_value + add_value * (total_mesure - current_clock));
+            } else {
+                return end_value;
+            }
+        }
+
+    }
+
+    private static int getCurve_saw( int current_clock, int total_mesure, int end_value ) {
+        // 音符に合うカーブを作成   右下がりのこぎり　減衰
+        // 32分の１以下　なし
+        // 右下がりのこぎり
+
+        int min_value = 50; //★★★最小の値
+        //短い場合は最小値を半分にする
+        if ( total_mesure <= 600 )
+            min_value = (min_value + 64) / 2;
+
+        //resは30で考えている
+        if ( total_mesure <= 210 )  //8分より小さいはカーブなし
+            return end_value;
+        if ( end_value < min_value )
+            return end_value;
+
+        float add_value = (min_value - end_value) / (float)total_mesure;
+        int ret_value = (int)(end_value + add_value * current_clock);
+        if ( ret_value < min_value )
+            ret_value = min_value;
+        return ret_value;
+    }
+
+    private static int getCurve2( int current_clock, int total_mesure, int end_value ) {
+        // 音符に合うカーブを作成
+        // 0の位置を最大とする右下がりのこぎり
+
+        int max_value = 100; //★★★最大の値
+
+        float add_value = (end_value - max_value) / (float)(total_mesure);
+        return (int)(max_value + add_value * (current_clock));
+    }
+
+    private static int getCurve_saw2( int current_clock, int total_mesure, int end_value ) {
+        // 音符に合うカーブを作成   右下がりのこぎり　減衰
+        // 右下がりのこぎり
+
+        int min_value = 40; //★★★最小の値
+        //短い場合は最小値を半分にする
+        if ( total_mesure <= 600 )
+            min_value = (min_value + 64) / 2;
+        float add_value = (min_value - end_value) / (float)total_mesure;
+        int ret_value = (int)(end_value + add_value * current_clock);
+        if ( ret_value < min_value )
+            ret_value = min_value;
+        return ret_value;
+    }
+}

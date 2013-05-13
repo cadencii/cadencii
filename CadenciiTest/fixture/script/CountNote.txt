@@ -1,0 +1,54 @@
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using bocoree.util;
+using Boare.Cadencii;
+
+//選択音符から２小節、２小節の音符の数を表示する
+public class CountNote
+{
+    public static bool Edit(VsqFile vsq)
+    {
+        int selectedid;
+        string wString;
+        int count2 = 0;
+        int count4 = 0;
+        bool begin_count = false;    // selectedidの音符が現れるまでは数えない。これがtureになったら数え始める
+        if (AppManager.getSelectedEventCount() == 0){
+			MessageBox.Show("音符が選択されていません");
+			return false;
+		}
+        VsqTrack track = vsq.Track[AppManager.getSelected()];
+		selectedid = AppManager.getLastSelectedEvent().original.InternalID;
+        int current_clock = AppManager.getLastSelectedEvent().original.Clock;  //選択されている最後の音符のクロック;
+        int last_clock2 = (int)(current_clock / 1920) * 1920 + 1920 * 2;
+        int last_clock4 = (int)(current_clock / 1920) * 1920 + 1920 * 4;
+        for (Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); )
+        {
+            VsqEvent item = (VsqEvent)itr.next();
+            if (item.InternalID == selectedid)
+            {
+                begin_count = true;
+                // 数え始める！
+            }
+            if (begin_count)
+            {
+                if (item.Clock >= last_clock4)
+                {
+                    break;
+                }
+                else if (item.Clock < last_clock2)
+                {
+                    count2 += 1;
+                }
+                else
+                {
+                    count4 += 1;
+                }
+            }
+        }
+        wString = "1-2: " + count2.ToString() + "  3-4: " + count4.ToString();
+        MessageBox.Show(wString);
+        Clipboard.SetText(wString);
+        return true;
+    }
+}

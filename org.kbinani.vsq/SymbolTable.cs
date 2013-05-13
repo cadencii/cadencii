@@ -176,6 +176,32 @@ namespace com.github
                     return null;
                 }
 
+                [Obsolete]
+                public static bool attatch( String phrase, out String result )
+                {
+                    var entry = attatch( phrase );
+                    if ( entry == null ) {
+                        result = "a";
+                        return false;
+                    } else {
+                        result = entry.getSymbol();
+                        return true;
+                    }
+                }
+
+                [Obsolete]
+                public static bool attatch( string phrase, ByRef<string> result )
+                {
+                    var entry = attatch( phrase );
+                    if ( entry == null ) {
+                        result.value = "a";
+                        return false;
+                    } else {
+                        result.value = entry.getSymbol();
+                        return true;
+                    }
+                }
+
                 /// <summary>
                 /// 登録されている辞書の個数を取得します
                 /// </summary>
