@@ -811,7 +811,7 @@ namespace com.github.cadencii.vsq
         /// このトラックのメタテキストを，指定されたファイルに出力します．
         /// </summary>
         /// <param name="file"></param>
-        public void printMetaText( String file, String encoding )
+        public void printMetaText( String file, String encoding = "Shift_JIS" )
 #if JAVA
             throws IOException
 #endif

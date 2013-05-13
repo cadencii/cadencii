@@ -1,0 +1,284 @@
+using org.kbinani.vsq;
+using org.kbinani;
+using org.kbinani.java.util;
+using org.kbinani.apputil;
+using org.kbinani.cadencii;
+
+
+public class AutoSorosoroP : Form {
+	private System.Windows.Forms.CheckBox onputansyuku;
+	private System.Windows.Forms.CheckBox nigatechousei;
+	private System.Windows.Forms.CheckBox hokachousei;
+	private System.Windows.Forms.CheckBox onpusage;
+	private System.Windows.Forms.CheckBox boinsounyuu;
+	private System.Windows.Forms.CheckBox use64bu;
+	private System.Windows.Forms.Button run;
+	private System.Windows.Forms.Button cancel;
+	private System.ComponentModel.IContainer components = null;
+	
+	public AutoSorosoroP() {
+		InitializeComponent();
+		this.onputansyuku.Checked = true;
+		this.nigatechousei.Checked = true;
+		this.hokachousei.Checked = true;
+		this.onpusage.Checked = true;
+		this.boinsounyuu.Checked = true;
+	}
+
+	protected override void Dispose( bool disposing ) {
+		if ( disposing && (components != null) ) {
+			components.Dispose();
+		}
+		base.Dispose( disposing );
+	}
+
+	private void InitializeComponent() {
+		this.onputansyuku = new System.Windows.Forms.CheckBox();
+		this.nigatechousei = new System.Windows.Forms.CheckBox();
+		this.hokachousei = new System.Windows.Forms.CheckBox();
+		this.onpusage = new System.Windows.Forms.CheckBox();
+		this.boinsounyuu = new System.Windows.Forms.CheckBox();
+		this.use64bu = new System.Windows.Forms.CheckBox();
+		this.run = new System.Windows.Forms.Button();
+		this.cancel = new System.Windows.Forms.Button();
+		this.SuspendLayout();
+		
+		this.onputansyuku.AutoSize = true;
+		this.onputansyuku.Location = new System.Drawing.Point( 10, 10 );
+		this.onputansyuku.Name = "onputansyuku";
+		this.onputansyuku.Size = new System.Drawing.Size( 330, 19 );
+		this.onputansyuku.TabIndex = 0;
+		this.onputansyuku.Text = "全ての音符を32分音符分だけ短くする";
+		this.onputansyuku.UseVisualStyleBackColor = true;
+		
+		this.nigatechousei.AutoSize = true;
+		this.nigatechousei.Location = new System.Drawing.Point( 10, 40 );
+		this.nigatechousei.Name = "nigatechousei";
+		this.nigatechousei.Size = new System.Drawing.Size( 330, 19 );
+		this.nigatechousei.TabIndex = 1;
+		this.nigatechousei.Text = "「し」「す」「つ」「ず」「づ」の分割";
+		this.nigatechousei.UseVisualStyleBackColor = true;
+		
+		this.hokachousei.AutoSize = true;
+		this.hokachousei.Location = new System.Drawing.Point( 10, 70 );
+		this.hokachousei.Name = "nigatechousei";
+		this.hokachousei.Size = new System.Drawing.Size( 330, 19 );
+		this.hokachousei.TabIndex = 2;
+		this.hokachousei.Text = "ほかの子音＋母音の音符の分割";
+		this.hokachousei.UseVisualStyleBackColor = true;
+		
+		this.onpusage.AutoSize = true;
+		this.onpusage.Location = new System.Drawing.Point( 10, 100 );
+		this.onpusage.Name = "onpusage";
+		this.onpusage.Size = new System.Drawing.Size( 330, 19 );
+		this.onpusage.TabIndex = 3;
+		this.onpusage.Text = "音程が上がるところで分割した音符を下げる";
+		this.onpusage.UseVisualStyleBackColor = true;
+		
+		this.boinsounyuu.AutoSize = true;
+		this.boinsounyuu.Location = new System.Drawing.Point( 10, 130 );
+		this.boinsounyuu.Name = "boinsounyuu";
+		this.boinsounyuu.Size = new System.Drawing.Size( 330, 19 );
+		this.boinsounyuu.TabIndex = 4;
+		this.boinsounyuu.Text = "母音が続くところに音符を挿入";
+		this.boinsounyuu.UseVisualStyleBackColor = true;
+		
+		this.use64bu.AutoSize = true;
+		this.use64bu.Location = new System.Drawing.Point( 10, 160 );
+		this.use64bu.Name = "use64bu";
+		this.use64bu.Size = new System.Drawing.Size( 3300, 19 );
+		this.use64bu.TabIndex = 5;
+		this.use64bu.Text = "32分音符の代わりに64分音符を使う";
+		this.use64bu.UseVisualStyleBackColor = true;
+		
+		this.run.Location = new System.Drawing.Point( 10, 190 );
+		this.run.Name = "run";
+		this.run.Size = new System.Drawing.Size( 100, 30 );
+		this.run.TabIndex = 6;
+		this.run.Text = "実行";
+		this.run.UseVisualStyleBackColor = true;
+		this.run.Click += new System.EventHandler( this.run_Click );
+		
+		this.cancel.Location = new System.Drawing.Point( 150, 190 );
+		this.cancel.Name = "cancel";
+		this.cancel.Size = new System.Drawing.Size( 100, 30 );
+		this.cancel.TabIndex = 7;
+		this.cancel.Text = "キャンセル";
+		this.cancel.UseVisualStyleBackColor = true;
+		this.cancel.Click += new System.EventHandler( this.cancel_Click );
+		
+		this.AutoScaleDimensions = new System.Drawing.SizeF( 8F, 15F );
+		this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		this.ClientSize = new System.Drawing.Size( 350, 250 );
+		this.Controls.Add(this.onputansyuku);
+		this.Controls.Add(this.nigatechousei);
+		this.Controls.Add(this.hokachousei);
+		this.Controls.Add(this.onpusage);
+		this.Controls.Add(this.boinsounyuu);
+		this.Controls.Add(this.use64bu);
+		this.Controls.Add(this.run);
+		this.Controls.Add(this.cancel);
+		this.Name = "AutoSorosoroP";
+		this.Text = "そろそろP自動調整";
+		this.ResumeLayout( false );
+	}
+	
+	private void run_Click( object sender, EventArgs e ) {
+		this.DialogResult = DialogResult.OK;
+		this.Close();
+	}
+	
+	private void cancel_Click( object sender, EventArgs e ) {
+		this.DialogResult = DialogResult.Cancel;
+		this.Close();
+	}
+	
+	public static bool Edit( VsqFile Vsq ) {
+		//選択されているトラック番号
+		int trackno = AppManager.getSelected();
+		if (trackno <= 0 ){
+			MessageBox.Show("トラック番号が不正です。");
+			return false;
+		}
+		VsqTrack track=Vsq.Track[trackno];
+		using(AutoSorosoroP d=new AutoSorosoroP()) {
+			if(d.ShowDialog()!=DialogResult.OK) {
+				return false;
+			} else {
+				int use32onpu;
+				if(d.use64bu.Checked)use32onpu=30; else use32onpu=60;
+				if(d.onputansyuku.Checked) {//音符を32分音符分だけ短くする
+					int count = track.getEventCount();
+					for ( int i = 0; i < count; i++ ) {
+						VsqEvent item = track.getEvent( i );
+						if ( item.ID.type == VsqIDType.Anote ) {
+							if ( item.ID.Length > use32onpu ) {
+								item.ID.Length -= use32onpu;
+							}
+						}
+					}
+				}
+				if(d.nigatechousei.Checked) {//苦手な音符の分割
+					int count = track.getEventCount();
+					for ( int i = 0; i < count; i++ ) {
+						VsqEvent item = track.getEvent( i );
+						if ( item.ID.type == VsqIDType.Anote && item.ID.Length>=240-use32onpu) {
+							string kasi=KanaDeRomanization.Attach(item.ID.LyricHandle.L0.Phrase);
+							if(kasi=="あ" || kasi=="い" || kasi=="う" || kasi=="え" || kasi=="お" || 
+								kasi=="を" || kasi=="ん")continue;
+							if(kasi=="し" || kasi=="す" || kasi=="つ" || kasi=="ず" || kasi=="づ") {
+								string hatuon=item.ID.LyricHandle.L0.PhoneticSymbol;
+								string[] hatuonarr=hatuon.Split(' ');
+								if(hatuonarr.Length<2)continue;
+								VsqEvent add = (VsqEvent)item.Clone();
+								add.Clock=item.Clock-use32onpu;
+								add.ID.Length=use32onpu;
+								string ps=hatuonarr[0];
+								for(int ii=1;ii<hatuonarr.Length-1;ii++) {
+									ps=ps+" "+hatuonarr[ii];
+								}
+								add.ID.LyricHandle.L0.PhoneticSymbol=ps;
+								add.ID.LyricHandle.L0.Phrase=item.ID.LyricHandle.L0.Phrase;
+								if(d.onpusage.Checked) {
+									VsqEvent prev=GetPrevEvent(track,i);
+									if(prev!=null && prev.ID.Note<add.ID.Note)add.ID.Note--;
+								}
+								track.addEvent( add );
+								item.ID.LyricHandle.L0.Phrase=ps2ph(hatuonarr[hatuonarr.Length-1]);
+								item.ID.LyricHandle.L0.PhoneticSymbol=hatuonarr[hatuonarr.Length-1];
+								count++;
+								i++;
+							}
+						}
+					}
+				}
+				if(d.hokachousei.Checked) {//そのほかの音符の分割
+					int count = track.getEventCount();
+					for ( int i = 0; i < count; i++ ) {
+						VsqEvent item = track.getEvent( i );
+						if ( item.ID.type == VsqIDType.Anote && item.ID.Length>=240-use32onpu) {
+							string kasi=KanaDeRomanization.Attach(item.ID.LyricHandle.L0.Phrase);
+							if(kasi=="あ" || kasi=="い" || kasi=="う" || kasi=="え" || kasi=="お" || 
+								kasi=="を" || kasi=="ん")continue;
+							if(kasi!="し" && kasi!="す" && kasi!="つ" && kasi!="ず" && kasi!="づ") {
+								string hatuon=item.ID.LyricHandle.L0.PhoneticSymbol;
+								string[] hatuonarr=hatuon.Split(' ');
+								if(hatuonarr.Length<2)continue;
+								VsqEvent add = (VsqEvent)item.Clone();
+								add.Clock=item.Clock;
+								add.ID.Length=use32onpu;
+								if(d.onpusage.Checked) {
+									VsqEvent prev=GetPrevEvent(track,i);
+									if(prev!=null && prev.ID.Note<add.ID.Note)add.ID.Note--;
+								}
+								track.addEvent( add );
+								item.Clock+=use32onpu;
+								item.ID.Length-=use32onpu;
+								item.ID.LyricHandle.L0.Phrase=ps2ph(hatuonarr[hatuonarr.Length-1]);
+								item.ID.LyricHandle.L0.PhoneticSymbol=hatuonarr[hatuonarr.Length-1];
+								count++;
+								i++;
+							}
+						}
+					}
+				}
+				if(d.boinsounyuu.Checked) {//母音が続くところに音符を挿入
+					int count = track.getEventCount();
+					for ( int i = 0; i < count; i++ ) {
+						VsqEvent item = track.getEvent( i );
+						if ( item.ID.type == VsqIDType.Anote && item.ID.Length>=240-use32onpu) {
+							string hatuon=item.ID.LyricHandle.L0.PhoneticSymbol;
+							string[] hatuonarr=hatuon.Split(' ');
+							VsqEvent prev=GetPrevEvent(track,i);
+							if(prev==null)continue;
+							string phatuon=prev.ID.LyricHandle.L0.PhoneticSymbol;
+							string[] phatuonarr=phatuon.Split(' ');
+							if(isBoin(hatuonarr[0]) && isBoin(phatuonarr[phatuonarr.Length-1])
+								&& hatuonarr[0]!=phatuonarr[phatuonarr.Length-1]) {
+								VsqEvent add = (VsqEvent)item.Clone();
+								add.Clock=item.Clock-use32onpu;
+								add.ID.Length=use32onpu;
+								add.ID.LyricHandle.L0.Phrase="あ";
+								add.ID.LyricHandle.L0.PhoneticSymbol=phatuonarr[phatuonarr.Length-1]+" h\\ "+hatuonarr[0];
+								if(d.onpusage.Checked) {
+									VsqEvent prev2=GetPrevEvent(track,i);
+									if(prev2!=null && prev2.ID.Note<add.ID.Note)add.ID.Note--;
+								}
+								track.addEvent( add );
+								count++;
+								i++;
+							}
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private static string ps2ph(string ps) {
+		switch(ps) {
+			case "a":return "あ";break;
+			case "i":return "い";break;
+			case "M":return "う";break;
+			case "e":return "え";break;
+			case "o":return "お";break;
+			default:return "a";break;
+		}
+		return "a";
+	}
+	
+	private static bool isBoin(string ps) {
+		if(ps=="a" || ps=="i" || ps=="M" || ps=="e" || ps=="o")return true;
+		return false;
+	}
+	
+	private static VsqEvent GetPrevEvent(VsqTrack tr,int id) {
+		int id2;
+		for(id2=id-1;id2>0;id2--) {
+			if(tr.getEvent(id2).ID.type==VsqIDType.Anote)break;
+		}
+		if(id2<=0)return null;
+		return tr.getEvent(id2);
+	}
+}

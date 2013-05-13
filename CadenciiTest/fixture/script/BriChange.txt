@@ -1,0 +1,52 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using Boare.Lib.AppUtil;
+using bocoree;
+
+//選択されているトラックの音符を全部、入力された値に変更する
+public class BriChange {
+    public static bool Edit( VsqFile Vsq ) {
+        int change_value = 10;
+        InputBox ib = new InputBox( "変化量 -30 ～ 30" );
+        ib.setResult( change_value.ToString() );
+        if ( ib.ShowDialog() != DialogResult.OK ) {
+            return false;
+        }
+        if ( !int.TryParse( ib.getResult(), out change_value ) ) {
+            MessageBox.Show( "数字を入力してください" );
+            return false;
+        }
+        if ( change_value < -30 || change_value > 30 ) {
+            MessageBox.Show( "値の範囲外" );
+            return false;
+        }
+        //選択されているトラック
+        Boare.Lib.Vsq.VsqTrack track = Vsq.Track.get( AppManager.getSelected() );
+        // Brightnessカーブを取得
+        Boare.Lib.Vsq.VsqBPList bri = track.getCurve( "BRI" );
+        int default_value = bri.getDefault();
+        // BRIが指定されているクロックの一覧を取得
+        if ( bri.size() == 0 ) {
+            if ( change_value >= 0 ) {
+                bri.add( 0, Math.Min( default_value + change_value, 127 ) );
+            } else {
+                bri.add( 0, Math.Max( default_value + change_value, 1 ) );
+            }
+        }
+        int size = bri.size();
+        for ( int i = 0; i < size; i++ ) {
+            int clock = bri.getKeyClock( i );
+            int new_bri = bri.getElement( i ) + change_value;
+            if ( new_bri < 1 ) {
+                new_bri = 1;
+            }else if ( new_bri > 127 ){
+                new_bri = 127;
+            }
+            bri.move( clock, clock, new_bri );
+        }
+        return true;
+    }
+}

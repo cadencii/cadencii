@@ -1,0 +1,182 @@
+using System;
+using System.Windows.Forms;
+using System.Drawing;
+using Boare.Lib.Vsq;
+using Boare.Cadencii;
+using bocoree;
+using bocoree.util;
+
+public class VibChange : Form {
+    private System.ComponentModel.IContainer components = null;
+
+    private Button btnExecute;
+    private ComboBox cbbSlide;
+    private Button btnCancel;
+    private Label lblVibratoVariation;
+    private static SynthesizerType s_synth_type = SynthesizerType.VOCALOID2;
+
+    protected override void Dispose( bool disposing ) {
+        if ( disposing && (components != null) ) {
+            components.Dispose();
+        }
+        base.Dispose( disposing );
+    }
+
+    private void InitializeComponent() {
+        this.btnExecute = new System.Windows.Forms.Button();
+        this.cbbSlide = new System.Windows.Forms.ComboBox();
+        this.btnCancel = new System.Windows.Forms.Button();
+        this.lblVibratoVariation = new System.Windows.Forms.Label();
+        this.SuspendLayout();
+        // 
+        // btnExecute
+        // 
+        this.btnExecute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+        this.btnExecute.DialogResult = System.Windows.Forms.DialogResult.OK;
+        this.btnExecute.Location = new System.Drawing.Point( 175, 62 );
+        this.btnExecute.Name = "btnExecute";
+        this.btnExecute.Size = new System.Drawing.Size( 80, 25 );
+        this.btnExecute.TabIndex = 7;
+        this.btnExecute.Text = "実行(&E)";
+        this.btnExecute.UseVisualStyleBackColor = true;
+        // 
+        // cbbSlide
+        // 
+        this.cbbSlide.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.cbbSlide.Location = new System.Drawing.Point( 109, 21 );
+        this.cbbSlide.Name = "cbbSlide";
+        this.cbbSlide.Size = new System.Drawing.Size( 140, 20 );
+        this.cbbSlide.TabIndex = 6;
+        // 
+        // btnCancel
+        // 
+        this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+        this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+        this.btnCancel.Location = new System.Drawing.Point( 89, 62 );
+        this.btnCancel.Name = "btnCancel";
+        this.btnCancel.Size = new System.Drawing.Size( 80, 25 );
+        this.btnCancel.TabIndex = 8;
+        this.btnCancel.Text = "キャンセル(&C)";
+        this.btnCancel.UseVisualStyleBackColor = true;
+        // 
+        // lblVibratoVariation
+        // 
+        this.lblVibratoVariation.AutoSize = true;
+        this.lblVibratoVariation.Location = new System.Drawing.Point( 12, 24 );
+        this.lblVibratoVariation.Name = "lblVibratoVariation";
+        this.lblVibratoVariation.Size = new System.Drawing.Size( 82, 12 );
+        this.lblVibratoVariation.TabIndex = 9;
+        this.lblVibratoVariation.Text = "ビブラートの種類";
+        // 
+        // VibChange
+        // 
+        this.AcceptButton = this.btnExecute;
+        this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        this.CancelButton = this.btnCancel;
+        this.ClientSize = new System.Drawing.Size( 267, 99 );
+        this.Controls.Add( this.lblVibratoVariation );
+        this.Controls.Add( this.btnCancel );
+        this.Controls.Add( this.btnExecute );
+        this.Controls.Add( this.cbbSlide );
+        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+        this.MaximizeBox = false;
+        this.MinimizeBox = false;
+        this.Name = "VibChange";
+        this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+        this.Text = "Vibrate Change";
+        this.ResumeLayout( false );
+        this.PerformLayout();
+
+    }
+
+    public VibChange() {
+        InitializeComponent();
+
+        // 現在のトラックの音声合成エンジンを取得。
+        String synth_engine = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCommon().Version;
+        if ( synth_engine.StartsWith( VSTiProxy.RENDERER_DSB2 ) ) {
+            // vocaloid1
+            s_synth_type = SynthesizerType.VOCALOID1;
+        } else {
+            s_synth_type = SynthesizerType.VOCALOID2;
+        }
+
+        // 音声合成エンジンに応じてビブラートの種類をリストに追加
+        cbbSlide.Items.Add( "[None]" );
+        cbbSlide.SelectedIndex = 0;
+        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( s_synth_type ); itr.hasNext(); ) {
+            cbbSlide.Items.Add( itr.next().ToString() );
+        }
+    }
+
+    /// <summary>
+    /// フォームをマウス位置に出す場合に推奨されるフォーム位置を計算します
+    /// </summary>
+    /// <param name="dlg"></param>
+    /// <returns></returns>
+    private static System.Drawing.Point getFormPreferedLocation( Form dlg ) {
+        System.Drawing.Point mouse = Control.MousePosition;
+        System.Drawing.Rectangle rcScreen = Screen.GetWorkingArea( AppManager.mainWindow );
+        int top = mouse.Y - dlg.Height / 2;
+        if ( top + dlg.Height > rcScreen.Y + rcScreen.Height ) {
+            // ダイアログの下端が隠れる場合、位置をずらす
+            top = rcScreen.Y + rcScreen.Height - dlg.Height;
+        }
+        if ( top < rcScreen.Top ) {
+            // ダイアログの上端が隠れる場合、位置をずらす
+            top = rcScreen.Top;
+        }
+        int left = mouse.X - dlg.Width / 2;
+        if ( left + dlg.Width > rcScreen.X + rcScreen.Width ) {
+            left = rcScreen.X + rcScreen.Width - dlg.Width;
+        }
+        return new System.Drawing.Point( left, top );
+    }
+
+    public static ScriptReturnStatus Edit( VsqFile vsq ) {
+        using ( VibChange dialog = new VibChange() ) {
+            dialog.Location = getFormPreferedLocation( dialog );
+            if ( dialog.ShowDialog() != DialogResult.OK ) {
+                return ScriptReturnStatus.NOT_EDITED;
+            } else {
+                int index = dialog.cbbSlide.SelectedIndex;
+                // リストのうちどれも選択されていない場合何もしない
+                if ( index < 0 ) {
+                    return ScriptReturnStatus.NOT_EDITED;
+                }
+
+                // セットするビブラートの種類を取得
+                VibratoHandle vibrato = null;
+                if ( index > 0 ) {
+                    String search_string = (String)dialog.cbbSlide.Items[index];
+                    for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( s_synth_type ); itr.hasNext(); ) {
+                        VibratoHandle vibrato_config = itr.next();
+                        String caption = vibrato_config.ToString();
+                        if ( caption.Equals( search_string ) ) {
+                            vibrato = (VibratoHandle)vibrato_config.clone();
+                            break;
+                        }
+                    }
+                }
+
+                int track = AppManager.getSelected();
+                for ( Iterator<VsqEvent> itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
+                    if ( vibrato == null ) {
+                        item.ID.VibratoHandle = null;
+                    } else {
+                        if ( item.ID.VibratoHandle != null ) {
+                            int wdelay = item.ID.VibratoDelay;
+                            int whundle = item.ID.VibratoHandle.Length;
+                            int notelength = item.ID.Length;
+                            item.ID.VibratoHandle = (VibratoHandle)vibrato.clone();
+                            item.ID.VibratoDelay = wdelay;
+                        }
+                    }
+                }
+                return ScriptReturnStatus.EDITED;
+            }
+        }
+    }
+}

@@ -10424,7 +10424,7 @@ namespace com.github.cadencii
             }
 #endif
             PlaySound.kill();
-            Utility.cleanupUnusedAssemblyCache();
+            PluginLoader.cleanupUnusedAssemblyCache();
 #if JAVA
             System.exit( 0 );
 #endif

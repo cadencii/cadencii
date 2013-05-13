@@ -37,15 +37,52 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="ICSharpCode.NRefactory">
+      <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.CSharp">
+      <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.Xml">
+      <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
     </Compile>
     <Compile Include="ExceptionNotifyFormUiImplTest.cs">
+      <SubType>Form</SubType>
     </Compile>
+    <Content Include="fixture\script\Hamori.cs">
+      <SubType>Form</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Roman2Hiragana.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\TransposeEx.cs">
+      <SubType>Form</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="script\PluginLoaderTest.cs" />
     <Compile Include="strTest.cs" />
     <Compile Include="VsqIDTest.cs" />
     <Compile Include="VsqxConverterTest.cs" />
@@ -57,9 +94,25 @@
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
     </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.apputil\org.kbinani.apputil.csproj">
+      <Project>{0c58b068-272f-4390-a14f-3d72afcf3dfb}</Project>
+      <Name>org.kbinani.apputil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.componentmodel\org.kbinani.componentmodel.csproj">
+      <Project>{d4f87d2e-caaf-4dee-ab43-be151b410931}</Project>
+      <Name>org.kbinani.componentmodel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
+      <Project>{f4f8f601-4e3d-43f5-a8a8-aa1fb7f48452}</Project>
+      <Name>org.kbinani.media</Name>
+    </ProjectReference>
     <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
       <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
       <Name>org.kbinani.vsq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.windows.forms\org.kbinani.windows.forms.csproj">
+      <Project>{b9481e3b-6842-4ab3-8ed4-29c86c2579a3}</Project>
+      <Name>org.kbinani.windows.forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
       <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
@@ -78,6 +131,63 @@
     <Content Include="expected\WaveUnitConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="fixture\script\AutoSorosoroP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\autoVEL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\BriChange.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\CheckTrack.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Copy Track.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\CountNote.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Devide 2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\From Clip LUKA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\From Clip RIN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Hamori.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Kesu.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\MakeUST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\PrintLyric LUKA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\SaveMetaText.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Search.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\Search2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\TransPoseIn.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\VEL2DYN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\script\VibChange.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="fixture\track1.vsqx">
@@ -86,5 +196,9 @@
     <None Include="fixture\track2.vsqx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
 </Project>

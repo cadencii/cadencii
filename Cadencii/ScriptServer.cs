@@ -40,7 +40,7 @@ namespace com.github.cadencii {
                 return;
             }
 
-            ScriptInvoker si = Utility.loadScript( file );
+            ScriptInvoker si = (new PluginLoader()).loadScript( file );
             scripts.put( id, si );
         }
 
@@ -75,7 +75,7 @@ namespace com.github.cadencii {
                     continue;
                 }
 
-                ScriptInvoker si = Utility.loadScript( file );
+                ScriptInvoker si = (new PluginLoader()).loadScript( file );
                 scripts.put( id, si );
             }
 

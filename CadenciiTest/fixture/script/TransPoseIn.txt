@@ -1,0 +1,46 @@
+using System;
+using System.IO;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using bocoree.util;
+using Boare.Cadencii;
+
+//選択されているトラックの音符を全部入力された数でトランスポーズする
+public class TransPoseIn
+{
+    public static bool Edit(VsqFile Vsq)
+    {
+        int change_value = 1;
+        InputBox ib = new InputBox("トランスポーズ値 -12 ～ 12");
+        ib.setResult(change_value.ToString());
+        if (ib.ShowDialog() != DialogResult.OK)
+        {
+            return false;
+        }
+        if (!int.TryParse(ib.getResult(), out change_value))
+        {
+            MessageBox.Show("数字を入力してください");
+            return false;
+        }
+        if (change_value < -12 || change_value > 12)
+        {
+            MessageBox.Show("値の範囲外");
+            return false;
+        }
+
+        //トランスポーズ　実行
+        int note;
+        int track = AppManager.getSelected();
+        for ( Iterator<VsqEvent> itr = Vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+	            if (item.ID.type == VsqIDType.Anote)
+	            {
+	                note = item.ID.Note + change_value;
+	                if (note < 0) note = 0;
+	                if (127 < note) note = 127;
+	                item.ID.Note = note;
+	            }
+        }
+        return true;
+    }
+}

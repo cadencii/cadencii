@@ -1,0 +1,47 @@
+public class Search2 {
+    public static ScriptReturnStatus Edit( VsqFile vsq ) {
+		string sagasu = "ん";   //★★★検索文字　変更可
+        int selectedid = -1;
+        int track = AppManager.getSelected();
+        bool begin_count = false;
+        if ( AppManager.getSelectedEventCount() <= 0 ) {
+            // 選択状態の音符がひとつも無い場合。
+            // 曲の最初の音符から検索することにする
+            for ( Iterator<VsqEvent> itr = vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = (VsqEvent)itr.next();
+                selectedid = item.InternalID;
+                break;
+            }
+
+            if ( selectedid < 0 ) {
+                // 音符が1つも配置されていない場合、何もせず戻る
+                return ScriptReturnStatus.NOT_EDITED;
+            }
+
+            begin_count = true;
+        } else {
+            selectedid = AppManager.getLastSelectedEvent().original.InternalID;
+        }
+        for ( Iterator<VsqEvent> itr = vsq.Track[track].getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = (VsqEvent)itr.next();
+            if ( item.InternalID == selectedid ) {
+                begin_count = true;
+                if ( AppManager.isSelectedEventContains( track, item.InternalID ) ) {
+                    AppManager.removeSelectedEvent( item.InternalID );
+                    continue;
+                }
+            }
+            if ( begin_count ) {
+                if ( item.ID.type == VsqIDType.Anote ) {
+                    if ( item.ID.LyricHandle.L0.Phrase == sagasu  ) {
+                        AppManager.addSelectedEvent( item.InternalID );
+                        AppManager.setCurrentClock( item.Clock );
+                        AppManager.mainWindow.ensureCursorVisible();
+                        break;
+                    }
+                }
+            }
+        }
+        return ScriptReturnStatus.NOT_EDITED;
+    }
+}

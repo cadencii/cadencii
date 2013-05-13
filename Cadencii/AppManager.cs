@@ -82,7 +82,7 @@ namespace com.github.cadencii
         public long samples;
     }
 
-    public class AppManager
+    public partial class AppManager
     {
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
