@@ -20,7 +20,7 @@ namespace cadencii.test.dsp.generator
 
         public void reflectVibratoPitch( VsqEvent item, VsqBPList pitchBend, VsqBPList pitchBendSensitivity, TempoVector tempoTable )
         {
-            base.reflectVibratoPitch( item, pitchBend, pitchBendSensitivity, tempoTable );
+            base.reflectNoteEventPitch( item, pitchBend, pitchBendSensitivity, tempoTable );
         }
     }
 

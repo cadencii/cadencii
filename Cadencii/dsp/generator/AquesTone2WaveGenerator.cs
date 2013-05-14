@@ -13,19 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using System.Threading;
 using System.Collections.Generic;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
 using com.github.cadencii.vsq;
 
 namespace com.github.cadencii
 {
-    using boolean = System.Boolean;
-    using Float = System.Single;
-    using Integer = System.Int32;
 
+    /// <summary>
+    /// AquesTone2 VSTi を使って歌声合成を行うクラス
+    /// </summary>
     public class AquesTone2WaveGenerator : WaveUnit, WaveGenerator
     {
         private AquesTone2Driver driver_;
@@ -51,10 +47,7 @@ namespace com.github.cadencii
 
         public long getPosition() { return position_; }
 
-        public double getProgress()
-        {
-            return position_ / total_samples_ * 100.0;
-        }
+        public double getProgress() { return position_ / total_samples_ * 100.0; }
 
         public void init( VsqFileEx sequence, int track, int start_clock, int end_clock, int sample_rate )
         {
@@ -71,15 +64,23 @@ namespace com.github.cadencii
 
         public void setReceiver( WaveReceiver receiver )
         {
-            if (receiver_ != null) receiver_.end();
+            if ( receiver_ != null ) { receiver_.end(); }
             receiver_ = receiver;
         }
 
-        public override void setConfig( string config ) {}
+        public override void setConfig( string config ) { }
 
         public override int getVersion() { return 0; }
 
-        protected EventQueueSequence generateMidiEvent( VsqFileEx vsq, Integer trackIndex, Integer clock_start, Integer clock_end )
+        /// <summary>
+        /// イベントキューを生成する
+        /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="trackIndex"></param>
+        /// <param name="clockStart"></param>
+        /// <param name="clockEnd"></param>
+        /// <returns></returns>
+        protected EventQueueSequence generateMidiEvent( VsqFileEx vsq, int trackIndex, int clockStart, int clockEnd )
         {
             var result = new EventQueueSequence();
             
@@ -87,10 +88,10 @@ namespace com.github.cadencii
             appendNoteEvent( track, result );
 
             foreach ( var item in track.MetaText.Events.Events ) {
-                reflectVibratoPitch( item,
-                                     track.MetaText.PIT,
-                                     track.MetaText.PBS,
-                                     vsq.TempoTable );
+                reflectNoteEventPitch( item,
+                                       track.MetaText.PIT,
+                                       track.MetaText.PBS,
+                                       vsq.TempoTable );
             }
 
             appendPitchEvent( track, result );
@@ -98,8 +99,19 @@ namespace com.github.cadencii
             return result;
         }
 
+        /// <summary>
+        /// ピッチとピッチベンドセンシティビティをイベントキューに追加する
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="sequence"></param>
         private void appendPitchEvent( VsqTrack track, EventQueueSequence sequence )
         {
+            // 実際に AquesTone2 に送信する pbs の値と、pbs カーブに入っている値とのマップ
+            const int maxPitchBendSensitivity = 23;
+            int[] map = new int[maxPitchBendSensitivity + 1] {
+                0, 5, 15, 35, 44, 54, 64, 74, 84, 93, 103, 113,
+                127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+            };
             var pbs = track.MetaText.PBS;
             for ( int i = 0; i < pbs.size(); ++i ) {
                 var clock = pbs.getKeyClock( i );
@@ -123,7 +135,8 @@ namespace com.github.cadencii
                     // RPN data MSB
                     var e = new MidiEvent();
                     e.firstByte = 0xB0;
-                    e.data = new int[] { 0x06, pbs.getElementA( i ) };
+                    int value = Math.Max( 0, Math.Min( maxPitchBendSensitivity, pbs.getElementA( i ) ) );
+                    e.data = new int[] { 0x06, map[value] };
                     e.clock = clock;
                     sequence.get( clock ).pit.add( e );
                 }
@@ -143,14 +156,22 @@ namespace com.github.cadencii
         }
 
         /// <summary>
-        /// ビブラートのピッチベンドを、PIT・PBS カーブに反映する
+        /// 音符に付随するピッチベンドの情報を、PIT・PBS カーブに反映する
         /// </summary>
-        /// <param name="track"></param>
-        /// <param name="tempoTable"></param>
-        protected void reflectVibratoPitch( VsqEvent item, VsqBPList pitchBend, VsqBPList pitchBendSensitivity, TempoVector tempoTable )
+        /// <param name="item">音符</param>
+        /// <param name="pitchBend">PIT カーブ</param>
+        /// <param name="pitchBendSensitivity">PBS カーブ</param>
+        /// <param name="tempoTable">テンポ情報</param>
+        protected void reflectNoteEventPitch( VsqEvent item, VsqBPList pitchBend, VsqBPList pitchBendSensitivity, TempoVector tempoTable )
         {
             if ( item.ID.type != VsqIDType.Anote ) return;
-            if ( item.ID.VibratoHandle == null ) return;
+            
+            // AquesTone2 では、note on と同 clock にピッチベンドイベントを送らないと音程が反映されないので、必ずピッチイベントが送られるようにする
+            pitchBend.add( item.Clock, pitchBend.getValue( item.Clock ) );
+
+            if ( item.ID.VibratoHandle == null ) {
+                return;
+            }
 
             int startClock = item.Clock + item.ID.VibratoDelay;
             int vibratoLength = item.ID.Length - item.ID.VibratoDelay;
@@ -197,8 +218,9 @@ namespace com.github.cadencii
 
             // ピッチベンドの最大値を実現するのに必要なPBS
             int requiredPitchbendSensitivity = (int)Math.Ceiling( maxNetPitchBendInCent / 100.0 );
+            int pseudoMaxPitchbendSensitivity = 12; // AquesTone2 は最大 12 半音までベンドできる。
             if ( requiredPitchbendSensitivity < pitchBendSensitivity.Minimum ) requiredPitchbendSensitivity = pitchBendSensitivity.Minimum;
-            if ( pitchBendSensitivity.Maximum < requiredPitchbendSensitivity ) requiredPitchbendSensitivity = pitchBendSensitivity.Maximum;
+            if ( pseudoMaxPitchbendSensitivity < requiredPitchbendSensitivity ) requiredPitchbendSensitivity = pseudoMaxPitchbendSensitivity;
 
             {
                 int i = 0;
@@ -250,6 +272,11 @@ namespace com.github.cadencii
             }
         }
 
+        /// <summary>
+        /// 音符の note on/off のためのイベントを作成し、イベントキューに追加する
+        /// </summary>
+        /// <param name="track">生成元のトラック</param>
+        /// <param name="result">生成したイベントの追加先</param>
         private void appendNoteEvent( VsqTrack track, EventQueueSequence result )
         {
             foreach ( var item in track.MetaText.Events.Events ) {
@@ -288,12 +315,12 @@ namespace com.github.cadencii
             }
 
             var eventQueue = generateMidiEvent( sequence_, track_index_, (int)start_clock_, (int)end_clock_ );
-            foreach( var sequence_item in eventQueue.getSequence() ) {
+            foreach ( var sequence_item in eventQueue.getSequence() ) {
                 var clock = sequence_item.Key;
                 var queue = sequence_item.Value;
 
                 long to_sample = (long)(sequence_.getSecFromClock( clock ) * sample_rate_);
-                if (to_sample >= total_samples_){
+                if ( to_sample >= total_samples_ ) {
                     to_sample = total_samples_;
                 }
                 doSynthesis( to_sample, left, right, state );
