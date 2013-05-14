@@ -18043,6 +18043,7 @@ namespace com.github.cadencii
             this.menuTrackRendererUtau = new com.github.cadencii.windows.forms.BMenuItem();
             this.menuTrackRendererVCNT = new com.github.cadencii.windows.forms.BMenuItem();
             this.menuTrackRendererAquesTone = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuTrackRendererAquesTone2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuTrackBgm = new com.github.cadencii.windows.forms.BMenu();
             this.menuLyric = new com.github.cadencii.windows.forms.BMenuItem();
@@ -18918,7 +18919,8 @@ namespace com.github.cadencii
             this.menuTrackRendererVOCALOID2,
             this.menuTrackRendererUtau,
             this.menuTrackRendererVCNT,
-            this.menuTrackRendererAquesTone} );
+            this.menuTrackRendererAquesTone,
+            this.menuTrackRendererAquesTone2});
             this.menuTrackRenderer.Name = "menuTrackRenderer";
             this.menuTrackRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderer.Text = "Renderer(&R)";
@@ -18952,7 +18954,13 @@ namespace com.github.cadencii
             this.menuTrackRendererAquesTone.Name = "menuTrackRendererAquesTone";
             this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 176, 22 );
             this.menuTrackRendererAquesTone.Text = "AquesTone(&5)";
-            //
+            // 
+            // menuTrackRendererAquesTone2
+            // 
+            this.menuTrackRendererAquesTone2.Name = "menuTrackRendererAquesTone2";
+            this.menuTrackRendererAquesTone2.Size = new System.Drawing.Size(193, 22);
+            this.menuTrackRendererAquesTone2.Text = "AquesTone2(&6)";
+            // 
             // toolStripMenuItem4
             //
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
@@ -20771,9 +20779,9 @@ namespace com.github.cadencii
             this.cMenuPositionIndicatorEndMarker.Name = "cMenuPositionIndicatorEndMarker";
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size( 129, 22 );
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
-            //
+            // 
             // FormMain
-            //
+            // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -21082,6 +21090,7 @@ namespace com.github.cadencii
         private BMenuItem menuVisualPluginUiAquesTone;
         private BMenuItem menuVisualPluginUiVocaloid1;
         private BMenuItem menuVisualPluginUiVocaloid2;
+        private System.Windows.Forms.ToolStripMenuItem menuTrackRendererAquesTone2;
         private BMenuItem menuVisualIconPalette;
         private BMenuItem menuFileExportMusicXml;
         public BMenuItem menuHiddenSelectForward;
