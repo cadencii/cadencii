@@ -40,8 +40,8 @@ namespace com.github.cadencii
         {
             string wine_prefix = config.WinePrefix;
             string wine_top = config.WineTop;
-            var icon
-                = VSTiDllManager.isRendererAvailable( kind_, wine_prefix, wine_top ) ? null : Resources.get_slash();
+            if ( VSTiDllManager.isRendererAvailable( kind_, wine_prefix, wine_top ) ) { return; }
+            var icon = Resources.get_slash();
             if ( track_menu_ != null ) { track_menu_.Image = icon.image; }
             if ( context_menu_ != null ) { context_menu_.Image = icon.image; }
         }
