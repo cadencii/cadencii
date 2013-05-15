@@ -263,6 +263,7 @@
     <Compile Include="ui\main\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\main\RendererMenuHandler.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
