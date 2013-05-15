@@ -42,6 +42,7 @@ using System.Diagnostics;
 using System.Media;
 using System.Text;
 using System.Threading;
+using System.Linq;
 using com.github.cadencii.apputil;
 using com.github.cadencii.componentmodel;
 using com.github.cadencii.java.awt;
@@ -543,6 +544,10 @@ namespace com.github.cadencii
         /// PositionIndicatorに表示しているポップアップのクロック位置
         /// </summary>
         private int mPositionIndicatorPopupShownClock;
+        /// <summary>
+        /// 合成器の種類のメニュー項目を管理するハンドラをまとめたリスト
+        /// </summary>
+        private List<RendererMenuHandler> renderer_menu_handler_;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -632,6 +637,7 @@ namespace com.github.cadencii
             panelOverview.setMainForm( this );
             pictPianoRoll.setMainForm( this );
             bgWorkScreen = new BBackgroundWorker();
+            initializeRendererMenuHandler();
 
 #if JAVA
 #else
@@ -1223,6 +1229,39 @@ namespace com.github.cadencii
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// renderer_menu_handler_ を初期化する
+        /// </summary>
+        private void initializeRendererMenuHandler()
+        {
+            renderer_menu_handler_ = new List<RendererMenuHandler>();
+            renderer_menu_handler_.Clear();
+            renderer_menu_handler_.Add( new RendererMenuHandler( RendererKind.VOCALOID1,
+                                                                 menuTrackRendererVOCALOID1,
+                                                                 cMenuTrackTabRendererVOCALOID1,
+                                                                 menuVisualPluginUiVocaloid1 ) );
+            renderer_menu_handler_.Add( new RendererMenuHandler( RendererKind.VOCALOID2,
+                                                                 menuTrackRendererVOCALOID2,
+                                                                 cMenuTrackTabRendererVOCALOID2,
+                                                                 menuVisualPluginUiVocaloid2 ) );
+            renderer_menu_handler_.Add( new RendererMenuHandler( RendererKind.STRAIGHT_UTAU,
+                                                                 menuTrackRendererVCNT,
+                                                                 cMenuTrackTabRendererStraight,
+                                                                 null ) );
+            renderer_menu_handler_.Add( new RendererMenuHandler( RendererKind.UTAU,
+                                                                 menuTrackRendererUtau,
+                                                                 cMenuTrackTabRendererUtau,
+                                                                 null ) );
+            renderer_menu_handler_.Add( new RendererMenuHandler( RendererKind.AQUES_TONE,
+                                                                 menuTrackRendererAquesTone,
+                                                                 cMenuTrackTabRendererAquesTone,
+                                                                 menuVisualPluginUiAquesTone ) );
+            renderer_menu_handler_.Add( new RendererMenuHandler( RendererKind.AQUES_TONE2,
+                                                                 menuTrackRendererAquesTone2,
+                                                                 cMenuTrackTabRendererAquesTone2,
+                                                                 menuVisualPluginUiAquesTone2 ) );
+        }
+
         /// <summary>
         /// 指定した歌手とリサンプラーについて，設定値に登録されていないものだったら登録する．
         /// </summary>
@@ -2706,71 +2745,11 @@ namespace com.github.cadencii
 
         public void updateRendererMenu()
         {
-            String wine_prefix = AppManager.editorConfig.WinePrefix;
-            String wine_top = AppManager.editorConfig.WineTop;
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererVOCALOID1.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID1.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererVOCALOID1.setIcon( null );
-                menuTrackRendererVOCALOID1.setIcon( null );
-            }
-
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID2, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererVOCALOID2.setIcon( null );
-                menuTrackRendererVOCALOID2.setIcon( null );
-            }
-
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.UTAU, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererUtau.setIcon( null );
-                menuTrackRendererUtau.setIcon( null );
-            }
-
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VCNT, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVCNT.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererStraight.setIcon( null );
-                menuTrackRendererVCNT.setIcon( null );
-            }
-
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.AQUES_TONE, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererAquesTone.setIcon( null );
-                menuTrackRendererAquesTone.setIcon( null );
-            }
+            renderer_menu_handler_.ForEach( ( handler ) => handler.updateRendererAvailability( AppManager.editorConfig ) );
 
             // UTAU用のサブアイテムを更新
             int count = AppManager.editorConfig.getResamplerCount();
             // サブアイテムの個数を整える
-#if JAVA
-            menuTrackRendererUtau.removeAll();
-            cMenuTrackTabRendererUtau.removeAll();
-            for( int i = 0; i < count; i++ ){
-                String path = AppManager.editorConfig.getResamplerAt( i );
-                String name = PortUtil.getFileNameWithoutExtension( path );
-
-                BMenuItem item0 = new BMenuItem();
-                item0.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-                item0.setText( name );
-                item0.setToolTipText( path );
-                menuTrackRendererUtau.add( item0 );
-
-                BMenuItem item1 = new BMenuItem();
-                item1.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-                item1.setText( name );
-                item1.setToolTipText( path );
-                cMenuTrackTabRendererUtau.add( item1 );
-            }
-#else
             int delta = count - menuTrackRendererUtau.DropDownItems.Count;
             if ( delta > 0 ) {
                 // 増やす
@@ -2795,7 +2774,6 @@ namespace com.github.cadencii
                 menuTrackRendererUtau.DropDownItems[i].ToolTipText = path;
                 cMenuTrackTabRendererUtau.DropDownItems[i].ToolTipText = path;
             }
-#endif
         }
 
         public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width )
@@ -15913,34 +15891,9 @@ namespace com.github.cadencii
             menuTrackRenderCurrent.setEnabled( !AppManager.isPlaying() );
             cMenuTrackTabRenderAll.setEnabled( !AppManager.isPlaying() );
             menuTrackRenderAll.setEnabled( !AppManager.isPlaying() );
-            cMenuTrackTabRendererVOCALOID1.setSelected( false );
-            menuTrackRendererVOCALOID1.setSelected( false );
-            cMenuTrackTabRendererVOCALOID2.setSelected( false );
-            menuTrackRendererVOCALOID2.setSelected( false );
-            cMenuTrackTabRendererUtau.setSelected( false );
-            menuTrackRendererUtau.setSelected( false );
-            cMenuTrackTabRendererStraight.setSelected( false );
-            menuTrackRendererVCNT.setSelected( false );
-            cMenuTrackTabRendererAquesTone.setSelected( false );
-            menuTrackRendererAquesTone.setSelected( false );
 
-            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
-            if ( kind == RendererKind.VOCALOID1 ) {
-                cMenuTrackTabRendererVOCALOID1.setSelected( true );
-                menuTrackRendererVOCALOID1.setSelected( true );
-            } else if ( kind == RendererKind.VOCALOID2 ) {
-                cMenuTrackTabRendererVOCALOID2.setSelected( true );
-                menuTrackRendererVOCALOID2.setSelected( true );
-            } else if ( kind == RendererKind.UTAU ) {
-                cMenuTrackTabRendererUtau.setSelected( true );
-                menuTrackRendererUtau.setSelected( true );
-            } else if ( kind == RendererKind.VCNT ) {
-                cMenuTrackTabRendererStraight.setSelected( true );
-                menuTrackRendererVCNT.setSelected( true );
-            } else if ( kind == RendererKind.AQUES_TONE ) {
-                cMenuTrackTabRendererAquesTone.setSelected( true );
-                menuTrackRendererAquesTone.setSelected( true );
-            }
+            var kind = VsqFileEx.getTrackRendererKind( vsq_track );
+            renderer_menu_handler_.ForEach( ( handler ) => handler.updateCheckedState( kind ) );
         }
 
         public void cMenuTrackTabOverlay_Click( Object sender, EventArgs e )
@@ -17250,59 +17203,18 @@ namespace com.github.cadencii
             } else {
                 // イベント送信元のアイテムが，cMenuTrackTabRendererUtauまたは
                 // menuTrackRendererUTAUのサブアイテムかどうかをチェック
-#if JAVA
-                if ( sender instanceof BMenuItem ) {
-#else
                 if ( sender is System.Windows.Forms.ToolStripMenuItem ) {
-#endif
-#if JAVA
-                    BMenuItem item = (BMenuItem)sender;
-                    MenuElement[] subc0 = cMenuTrackTabRendererUtau.getSubElements();
-                    if( subc0.length > 0 ){
-                        MenuElement[] subc1 = subc0[0].getSubElements();
-                        for ( int i = 0; i < subc1.length; i++ ){
-                            MenuElement c = subc1[i];
-                            if( c instanceof BMenuItem ){
-                                BMenuItem b = (BMenuItem)c;
-                                if( b == item ){
-                                    resampler_index = i;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if( resampler_index < 0 ){
-                        MenuElement[] subm0 = menuTrackRendererUtau.getSubElements();
-                        if( subm0.length > 0 ){
-                            MenuElement[] subm1 = subm0[0].getSubElements();
-                            for( int i = 0; i < subm1.length; i++ ){
-                                MenuElement c = subm1[i];
-                                if( c instanceof BMenuItem ){
-                                    BMenuItem b = (BMenuItem)c;
-                                    if( b == item ){
-                                        resampler_index = i;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-#else
                     System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
                     resampler_index = cMenuTrackTabRendererUtau.DropDownItems.IndexOf( item );
                     if ( resampler_index < 0 ) {
                         resampler_index = menuTrackRendererUtau.DropDownItems.IndexOf( item );
                     }
-#endif
                 }
                 if ( resampler_index < 0 ) {
                     // 検出できないのでbailout
                     return;
                 }
 
-#if DEBUG
-                sout.println( "FormMain#handleChangeRenderer; resampler_index=" + resampler_index );
-#endif
                 // 検出できた
                 // このばあいは確実にUTAU
                 kind = RendererKind.UTAU;
@@ -17316,70 +17228,36 @@ namespace com.github.cadencii
             if ( !changed && kind == RendererKind.UTAU ) {
                 changed = (old_resampler_index != resampler_index);
             }
-#if DEBUG
-            sout.println( "FormMain#handleChangeRenderer; old=" + old + "; kind=" + kind );
-            sout.println( "FormMain#handleChangeRenderer; old_resampler_index=" + old_resampler_index + "; resampler_index=" + resampler_index );
-            sout.println( "FormMaiN#handleChangeRenderer; changed=" + changed );
-#endif
-            if ( changed ) {
-                VsqTrack item = (VsqTrack)vsq_track.clone();
-                Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
-                String renderer = AppManager.getVersionStringFromRendererKind( kind );
-                if ( singers == null ) {
-                    serr.println( "FormMain#changeRendererCor; singers is null" );
-                    return;
-                }
 
-                item.changeRenderer( renderer, singers );
-                VsqFileEx.setTrackRendererKind( item, kind );
-                if ( kind == RendererKind.UTAU ) {
-#if DEBUG
-                    sout.println( "FormMain#handleChangeRenderer; before; item.Tag=" + item.Tag );
-#endif
-                    VsqFileEx.setTrackResamplerUsed( item, resampler_index );
-#if DEBUG
-                    sout.println( "FormMain#handleChangeRenderer; after; item.Tag=" + item.Tag );
-#endif
-                }
-                CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
-                                                                             item,
-                                                                             vsq.AttachedCurves.get( selected - 1 ) );
-                AppManager.editHistory.register( vsq.executeCommand( run ) );
-#if DEBUG
-                sout.println( "FormMain#handleChangeRenderer; after executing command; resamplerUsed=" + VsqFileEx.getTrackResamplerUsed( vsq.Track.get( selected ) ) );
-#endif
-                cMenuTrackTabRendererVOCALOID1.setSelected( kind == RendererKind.VOCALOID1 );
-                cMenuTrackTabRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
-                cMenuTrackTabRendererUtau.setSelected( kind == RendererKind.UTAU );
-                cMenuTrackTabRendererStraight.setSelected( kind == RendererKind.VCNT );
-                menuTrackRendererVOCALOID1.setSelected( kind == RendererKind.VOCALOID1 );
-                menuTrackRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
-                menuTrackRendererUtau.setSelected( kind == RendererKind.UTAU );
-                menuTrackRendererVCNT.setSelected( kind == RendererKind.VCNT );
-#if JAVA
-                for( int i = 0; i < cMenuTrackTabRendererUtau.getComponentCount(); i++ ){
-                    Component c = cMenuTrackTabRendererUtau.getComponent( i );
-                    if( c instanceof BMenuItem ){
-                        ((BMenuItem)c).setSelected( (i == resampler_index) );
-                    }
-                }
-                for( int i = 0; i < menuTrackRendererUtau.getComponentCount(); i++ ){
-                    Component c = menuTrackRendererUtau.getComponent( i );
-                    if( c instanceof BMenuItem ){
-                        ((BMenuItem)c).setSelected( (i == resampler_index) );
-                    }
-                }
-#else
-                for ( int i = 0; i < cMenuTrackTabRendererUtau.DropDownItems.Count; i++ ) {
-                    ((System.Windows.Forms.ToolStripMenuItem)cMenuTrackTabRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
-                }
-                for ( int i = 0; i < menuTrackRendererUtau.DropDownItems.Count; i++ ) {
-                    ((System.Windows.Forms.ToolStripMenuItem)menuTrackRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
-                }
-#endif
-                setEdited( true );
-                refreshScreen();
+            if ( !changed ) { return; }
+
+            var track_copy = (VsqTrack)vsq_track.clone();
+            Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
+            String renderer = AppManager.getVersionStringFromRendererKind( kind );
+            if ( singers == null ) {
+                serr.println( "FormMain#changeRendererCor; singers is null" );
+                return;
             }
+
+            track_copy.changeRenderer( renderer, singers );
+            VsqFileEx.setTrackRendererKind( track_copy, kind );
+            if ( kind == RendererKind.UTAU ) {
+                VsqFileEx.setTrackResamplerUsed( track_copy, resampler_index );
+            }
+            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
+                                                                            track_copy,
+                                                                            vsq.AttachedCurves.get( selected - 1 ) );
+            AppManager.editHistory.register( vsq.executeCommand( run ) );
+
+            renderer_menu_handler_.ForEach( ( handler ) => handler.updateCheckedState( kind ) );
+            for ( int i = 0; i < cMenuTrackTabRendererUtau.DropDownItems.Count; i++ ) {
+                ((System.Windows.Forms.ToolStripMenuItem)cMenuTrackTabRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+            }
+            for ( int i = 0; i < menuTrackRendererUtau.DropDownItems.Count; i++ ) {
+                ((System.Windows.Forms.ToolStripMenuItem)menuTrackRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+            }
+            setEdited( true );
+            refreshScreen();
         }
 
         public void handleBgmOffsetSeconds_Click( Object sender, EventArgs e )
