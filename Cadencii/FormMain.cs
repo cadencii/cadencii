@@ -18175,6 +18175,7 @@ namespace com.github.cadencii
             this.cMenuTrackTabRendererUtau = new com.github.cadencii.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererStraight = new com.github.cadencii.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererAquesTone = new com.github.cadencii.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererAquesTone2 = new System.Windows.Forms.ToolStripMenuItem();
             this.cMenuTrackSelector = new com.github.cadencii.windows.forms.BPopupMenu( this.components );
             this.cMenuTrackSelectorPointer = new com.github.cadencii.windows.forms.BMenuItem();
             this.cMenuTrackSelectorPencil = new com.github.cadencii.windows.forms.BMenuItem();
@@ -19884,6 +19885,13 @@ namespace com.github.cadencii
             this.cMenuTrackTabRendererAquesTone.Name = "cMenuTrackTabRendererAquesTone";
             this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 180, 22 );
             this.cMenuTrackTabRendererAquesTone.Text = "AquesTone(&5)";
+            // 
+            // cMenuTrackTabRendererAquesTone2
+            // 
+            this.cMenuTrackTabRendererAquesTone2.Name = "cMenuTrackTabRendererAquesTone2";
+            this.cMenuTrackTabRendererAquesTone2.Size = new System.Drawing.Size(197, 22);
+            this.cMenuTrackTabRendererAquesTone2.Text = "AquesTone2(&6)";
+            // 
             //
             // cMenuTrackSelector
             //
@@ -21041,6 +21049,7 @@ namespace com.github.cadencii
         public BMenuItem cMenuTrackTabRendererVOCALOID1;
         public BMenuItem cMenuTrackTabRendererVOCALOID2;
         public BMenuItem cMenuTrackTabRendererUtau;
+        private System.Windows.Forms.ToolStripMenuItem cMenuTrackTabRendererAquesTone2;
         public BMenuItem menuVisualPitchLine;
         public BMenuItem menuFileImportMidi;
         public BStatusLabel toolStripStatusLabel1;
