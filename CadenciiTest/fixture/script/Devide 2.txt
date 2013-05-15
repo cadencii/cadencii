@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using Boare.Lib.AppUtil;
+using bocoree;
+using Boare.Cadencii;
+
+//選択されている音符を２分割する
+public class Devide2 {
+    public static bool Edit( VsqFile Vsq ) {
+		//選択されているトラック番号
+		int trackno = AppManager.getSelected();
+		if (trackno <= 0 ){
+			MessageBox.Show("音符を選択してください");
+			return false;
+		}
+		//選択されている音符
+        int selectedid = AppManager.getLastSelectedEvent().original.InternalID;
+		if (selectedid <= 0 ){
+			MessageBox.Show("音符を選択してください");
+			return false;
+		}
+        Boare.Lib.Vsq.VsqEvent item = Vsq.Track[trackno].getEvent(selectedid);
+		Boare.Lib.Vsq.VsqEvent add = (VsqEvent)item.Clone();
+		add.Clock = item.Clock + item.ID.Length / 2;
+		add.ID.Length = item.ID.Length / 2;
+		item.ID.Length = item.ID.Length / 2;
+		Vsq.Track[trackno].addEvent( add );
+        return true;
+    }
+}

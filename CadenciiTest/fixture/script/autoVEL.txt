@@ -1,0 +1,120 @@
+public static class Roman2Hiragana {
+  public static bool Edit( Boare.Lib.Vsq.VsqFile Vsq ) {
+    for ( int i = 1; i < Vsq.Track.size(); i++ ) {
+      for ( int j = 0; j < Vsq.Track.get( i ).getEventCount(); j++ ) {
+        Boare.Lib.Vsq.VsqEvent item = Vsq.Track.get( i ).getEvent( j );
+        if ( item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote ) {
+          string kasi = KanaDeRomanization.Attach( item.ID.LyricHandle.L0.Phrase );
+          int vel;
+          switch(kasi) {
+            case "あ":vel=64;break;
+            case "い":vel=50;break;
+            case "う":vel=50;break;
+            case "え":vel=50;break;
+            case "お":vel=50;break;
+            case "か":vel=80;break;
+            case "き":vel=50;break;
+            case "く":vel=80;break;
+            case "け":vel=80;break;
+            case "こ":vel=80;break;
+            case "さ":vel=80;break;
+            case "し":vel=50;break;
+            case "す":vel=80;break;
+            case "せ":vel=80;break;
+            case "そ":vel=80;break;
+            case "た":vel=50;break;
+            case "ち":vel=50;break;
+            case "つ":vel=80;break;
+            case "て":vel=50;break;
+            case "と":vel=50;break;
+            case "な":vel=50;break;
+            case "に":vel=50;break;
+            case "ぬ":vel=50;break;
+            case "ね":vel=50;break;
+            case "の":vel=50;break;
+            case "は":vel=50;break;
+            case "ひ":vel=50;break;
+            case "ふ":vel=50;break;
+            case "へ":vel=50;break;
+            case "ほ":vel=50;break;
+            case "ま":vel=50;break;
+            case "み":vel=50;break;
+            case "む":vel=50;break;
+            case "め":vel=50;break;
+            case "も":vel=50;break;
+            case "や":vel=50;break;
+            case "ゆ":vel=50;break;
+            case "よ":vel=50;break;
+            case "ら":vel=20;break;
+            case "り":vel=50;break;
+            case "る":vel=20;break;
+            case "れ":vel=20;break;
+            case "ろ":vel=20;break;
+            case "わ":vel=50;break;
+            case "を":vel=50;break;
+            case "ん":vel=50;break;
+            case "が":vel=80;break;
+            case "ぎ":vel=50;break;
+            case "ぐ":vel=80;break;
+            case "げ":vel=80;break;
+            case "ご":vel=80;break;
+            case "ざ":vel=80;break;
+            case "じ":vel=80;break;
+            case "ず":vel=80;break;
+            case "ぜ":vel=80;break;
+            case "ぞ":vel=80;break;
+            case "だ":vel=50;break;
+            case "で":vel=50;break;
+            case "ど":vel=50;break;
+            case "ば":vel=50;break;
+            case "び":vel=50;break;
+            case "ぶ":vel=50;break;
+            case "べ":vel=50;break;
+            case "ぼ":vel=50;break;
+            case "ぱ":vel=50;break;
+            case "ぴ":vel=50;break;
+            case "ぷ":vel=50;break;
+            case "ぺ":vel=50;break;
+            case "ぽ":vel=50;break;
+            case "きゃ":vel=64;break;
+            case "きゅ":vel=50;break;
+            case "きょ":vel=50;break;
+            case "しゃ":vel=50;break;
+            case "しゅ":vel=50;break;
+            case "しょ":vel=50;break;
+            case "ちゃ":vel=50;break;
+            case "ちゅ":vel=50;break;
+            case "ちょ":vel=50;break;
+            case "にゃ":vel=50;break;
+            case "にゅ":vel=50;break;
+            case "にょ":vel=50;break;
+            case "ひゃ":vel=50;break;
+            case "ひゅ":vel=50;break;
+            case "ひょ":vel=50;break;
+            case "みゃ":vel=50;break;
+            case "みゅ":vel=50;break;
+            case "みょ":vel=50;break;
+            case "りゃ":vel=50;break;
+            case "りゅ":vel=50;break;
+            case "りょ":vel=50;break;
+            case "ぎゃ":vel=50;break;
+            case "ぎゅ":vel=50;break;
+            case "ぎょ":vel=50;break;
+            case "じゃ":vel=80;break;
+            case "じゅ":vel=80;break;
+            case "じょ":vel=80;break;
+            case "びゃ":vel=50;break;
+            case "びゅ":vel=50;break;
+            case "びょ":vel=50;break;
+            case "ぴゃ":vel=50;break;
+            case "ぴゅ":vel=50;break;
+            case "ぴょ":vel=50;break;
+            default:vel=50;break;
+          }
+          item.ID.Dynamics=vel;
+        }
+      }
+    }
+    return true;
+  }
+}

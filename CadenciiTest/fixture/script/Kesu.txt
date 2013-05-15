@@ -1,0 +1,325 @@
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using Boare.Lib.AppUtil;
+using bocoree;
+using Boare.Cadencii;
+
+public class Kesu : Form {
+    private System.Windows.Forms.CheckBox bri;
+    private System.Windows.Forms.CheckBox accent;
+    private System.Windows.Forms.Button zikkou;
+    private System.Windows.Forms.Button nocheck;
+    private System.Windows.Forms.CheckBox pitch;
+    private System.Windows.Forms.CheckBox ope;
+    private System.Windows.Forms.CheckBox quant;
+    private System.Windows.Forms.CheckBox decay;
+    private System.ComponentModel.IContainer components = null;
+
+    public Kesu() {
+        InitializeComponent();
+    }
+
+    public static bool Edit( VsqFileEx vsq ) {
+        using ( Kesu d = new Kesu() ) {
+            if ( d.ShowDialog() != DialogResult.OK ) {
+                return false;
+            } else {
+                kesu( vsq, d.bri.Checked, d.accent.Checked, d.pitch.Checked, d.ope.Checked, d.quant.Checked, d.decay.Checked );
+                return true;
+            }
+        }
+    }
+
+    protected override void Dispose( bool disposing ) {
+        if ( disposing && (components != null) ) {
+            components.Dispose();
+        }
+        base.Dispose( disposing );
+    }
+
+    private void InitializeComponent() {
+        this.bri = new System.Windows.Forms.CheckBox();
+        this.accent = new System.Windows.Forms.CheckBox();
+        this.zikkou = new System.Windows.Forms.Button();
+        this.nocheck = new System.Windows.Forms.Button();
+        this.pitch = new System.Windows.Forms.CheckBox();
+        this.ope = new System.Windows.Forms.CheckBox();
+        this.quant = new System.Windows.Forms.CheckBox();
+        this.decay = new System.Windows.Forms.CheckBox();
+        this.SuspendLayout();
+        // 
+        // bri
+        // 
+        this.bri.AutoSize = true;
+        this.bri.Location = new System.Drawing.Point( 16, 46 );
+        this.bri.Name = "bri";
+        this.bri.Size = new System.Drawing.Size( 49, 19 );
+        this.bri.TabIndex = 0;
+        this.bri.Text = "BRI";
+        this.bri.UseVisualStyleBackColor = true;
+        // 
+        // accent
+        // 
+        this.accent.AutoSize = true;
+        this.accent.Location = new System.Drawing.Point( 16, 71 );
+        this.accent.Name = "accent";
+        this.accent.Size = new System.Drawing.Size( 102, 19 );
+        this.accent.TabIndex = 1;
+        this.accent.Text = "Accent VEL";
+        this.accent.UseVisualStyleBackColor = true;
+        // 
+        // zikkou
+        // 
+        this.zikkou.Location = new System.Drawing.Point( 207, 232 );
+        this.zikkou.Name = "zikkou";
+        this.zikkou.Size = new System.Drawing.Size( 109, 47 );
+        this.zikkou.TabIndex = 2;
+        this.zikkou.Text = "実行";
+        this.zikkou.UseVisualStyleBackColor = true;
+        this.zikkou.Click += new System.EventHandler( this.zikkou_Click );
+        // 
+        // nocheck
+        // 
+        this.nocheck.Location = new System.Drawing.Point( 207, 36 );
+        this.nocheck.Name = "nocheck";
+        this.nocheck.Size = new System.Drawing.Size( 109, 36 );
+        this.nocheck.TabIndex = 3;
+        this.nocheck.Text = "No Check";
+        this.nocheck.UseVisualStyleBackColor = true;
+        this.nocheck.Click += new System.EventHandler( this.nocheck_Click );
+        // 
+        // pitch
+        // 
+        this.pitch.AutoSize = true;
+        this.pitch.Location = new System.Drawing.Point( 16, 96 );
+        this.pitch.Name = "pitch";
+        this.pitch.Size = new System.Drawing.Size( 59, 19 );
+        this.pitch.TabIndex = 4;
+        this.pitch.Text = "Pitch";
+        this.pitch.UseVisualStyleBackColor = true;
+        // 
+        // ope
+        // 
+        this.ope.AutoSize = true;
+        this.ope.Location = new System.Drawing.Point( 16, 121 );
+        this.ope.Name = "ope";
+        this.ope.Size = new System.Drawing.Size( 54, 19 );
+        this.ope.TabIndex = 4;
+        this.ope.Text = "OPE";
+        this.ope.UseVisualStyleBackColor = true;
+        // 
+        // quant
+        // 
+        this.quant.AutoSize = true;
+        this.quant.Location = new System.Drawing.Point( 16, 171 );
+        this.quant.Name = "quant";
+        this.quant.Size = new System.Drawing.Size( 89, 19 );
+        this.quant.TabIndex = 4;
+        this.quant.Text = "QIANTIZE";
+        this.quant.UseVisualStyleBackColor = true;
+        // 
+        // decay
+        // 
+        this.decay.AutoSize = true;
+        this.decay.Location = new System.Drawing.Point( 16, 146 );
+        this.decay.Name = "decay";
+        this.decay.Size = new System.Drawing.Size( 72, 19 );
+        this.decay.TabIndex = 4;
+        this.decay.Text = "DECAY CHANGE";
+        this.decay.UseVisualStyleBackColor = true;
+        // 
+        // Clear
+        // 
+        this.AutoScaleDimensions = new System.Drawing.SizeF( 8F, 15F );
+        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        this.ClientSize = new System.Drawing.Size( 365, 334 );
+        this.Controls.Add( this.quant );
+        this.Controls.Add( this.decay );
+        this.Controls.Add( this.ope );
+        this.Controls.Add( this.pitch );
+        this.Controls.Add( this.nocheck );
+        this.Controls.Add( this.zikkou );
+        this.Controls.Add( this.accent );
+        this.Controls.Add( this.bri );
+        this.Name = "Kesu";
+        this.Text = "Clear";
+        this.ResumeLayout( false );
+    }
+
+    private static void kesu( VsqFileEx vsq, bool wbri, bool waccent, bool wpitch, bool wope, bool wquant, bool wdecay ) {
+        VsqTrack target = vsq.Track[AppManager.Selected];
+        if ( wbri ) {
+            clear_curve( target, "bri" );
+        }
+        if ( waccent ) {
+            acc_clear( target );
+        }
+        if ( wpitch ) {
+            clear_curve( target, "pit" );
+            clear_curve( target, "pbs" );
+        }
+        if ( wope ) {
+            clear_curve( target, "ope" );
+        }
+        if ( wdecay ) {
+            dec_clear( target );
+        }
+        if ( wquant ) {
+            quantize( target );
+        }
+    }
+
+    private void zikkou_Click( object sender, EventArgs e ) {
+        this.DialogResult = DialogResult.OK;
+        this.Close();
+    }
+
+    private void nocheck_Click( object sender, EventArgs e ) {
+        this.bri.Checked = false;
+        this.accent.Checked = false;
+        this.pitch.Checked = false;
+        this.ope.Checked = false;
+        this.quant.Checked = false;
+        this.decay.Checked = false;
+    }
+
+    private static void clear_curve( VsqTrack target, string curve_name ) {
+        VsqBPList item = target.getCurve( curve_name );
+        if ( item != null ) {
+            item.clear();
+        }
+    }
+
+    private static void acc_clear( VsqTrack target ) {
+        //★　初期値
+        int default_vel = 64;
+        int default_acc = 50;
+        int count = target.getEventCount();
+        for ( int j = 0; j < count; j++ ) {
+            VsqEvent item = target.getEvent( j );
+            if ( item.ID.type == VsqIDType.Anote ) {
+                item.ID.Dynamics = default_vel;
+                item.ID.DEMaccent = default_acc;
+            }
+        }
+    }
+
+    private static void dec_clear( VsqTrack target ) {
+        //値を入力
+        int change_value = 50;
+        InputBox ib = new InputBox( "ディケイ変更値 0 ～ 100" );
+        ib.setResult(change_value.ToString());
+        if ( ib.ShowDialog() != DialogResult.OK ) {
+            return;
+        }
+        if ( !int.TryParse( ib.getResult(), out change_value ) ) {
+            MessageBox.Show( "数字を入力してください" );
+            return;
+        }
+        if ( change_value < 0 || change_value > 100 ) {
+            MessageBox.Show( "値の範囲外" );
+            return;
+        }
+        int count = target.getEventCount();
+        for ( int j = 0; j < count; j++ ) {
+            VsqEvent item = target.getEvent( j );
+            if ( item.ID.type == VsqIDType.Anote ) {
+                item.ID.DEMdecGainRate = change_value;
+            }
+        }
+    }
+
+    //クオンタイズ　分解能は16分と3連であれば3連8分に固定
+    //計算は半分の分解能で行いますが、最終的に長さを16分もしくは3連8分にします
+    //16分とを3連8分自動選択してクオンタイズします
+    private static void quantize( VsqTrack target ) {
+        int event_count = target.getEventCount();
+        int[] tclock = new int[event_count];
+        int[] tlength = new int[event_count];
+        int tbl_cnt = 0;
+        for ( int i = 0; i < event_count; i++ ) {
+            VsqEvent item = target.getEvent( i );
+            if ( item.ID.type == VsqIDType.Anote ) {
+                tclock[tbl_cnt] = item.Clock;
+                tlength[tbl_cnt] = item.ID.Length;
+                tbl_cnt++;
+            }
+        }
+        //タイムラインが16か３連の24かを調査
+        //80にタイムラインが近いか120に近いか
+        //80で割った余りが0～30もしくは50～79
+        //120で割った余りが0～30もしくは90～119
+        int w80 = 0;
+        int w120 = 0;
+        for ( int i = 0; i < tbl_cnt; i++ ) {
+            int work = (tclock[i] % 80);
+            if ( work <= 30 || work >= 50 ) {
+                w80 += 1;
+            }
+            work = (tclock[i] % 120);
+            if ( work <= 30 || work >= 90 ) {
+                w120 += 1;
+            }
+        }
+        //MessageBox.Show( w80.ToString() + " : " + w120.ToString());
+        int j = 0;
+        if ( w120 >= w80 )
+        //120 16分にクオンタイズする　ただし120=16分より短い音符は可能であれば16分にする
+		{
+            for ( int i = 0; i < tbl_cnt; i++ ) {
+                int new_clock = ((tclock[i] % 480 + 60) / 120) * 120 + (tclock[i] / 480) * 480;
+                tclock[i] = new_clock;
+            }
+            for ( int i = 0; i < tbl_cnt - 1; i++ ) {
+                int new_length = ((tlength[i] + 60) / 120) * 120;
+                if ( (tclock[i] + new_length) > tclock[i + 1] ) {
+                    new_length = tclock[i + 1] - tclock[i];
+                } else {
+                    if ( new_length < 120 ) {
+                        if ( (tclock[i + 1] - tclock[i]) > 120 ) {
+                            new_length = 120;
+                        } else {
+                            new_length = tclock[i + 1] - tclock[i];
+                        }
+                    }
+                }
+                tlength[i] = new_length;
+                //MessageBox.Show( tclock[i].ToString() + " : " + new_length.ToString() );
+            }
+        } else
+        //80 24分にクオンタイズする  ただし160=３連八分より短い音符は可能であれば３連八分にする
+		{
+            for ( int i = 0; i < tbl_cnt; i++ ) {
+                int new_clock = ((tclock[i] % 480 + 40) / 80) * 80 + (tclock[i] / 480) * 480;
+                tclock[i] = new_clock;
+            }
+            for ( int i = 0; i < tbl_cnt - 1; i++ ) {
+                int new_length = ((tlength[i] + 40) / 80) * 80;
+                if ( (tclock[i] + new_length) > tclock[i + 1] ) {
+                    new_length = tclock[i + 1] - tclock[i];
+                } else {
+                    if ( new_length < 160 ) {
+                        if ( (tclock[i + 1] - tclock[i]) > 160 ) {
+                            new_length = 160;
+                        } else {
+                            new_length = tclock[i + 1] - tclock[i];
+                        }
+                    }
+                }
+                tlength[i] = new_length;
+            }
+        }
+        //データの修正
+        j = 0;
+        for ( int i = 0; i < event_count; i++ ) {
+            VsqEvent item = target.getEvent( i );
+            if ( item.ID.type == VsqIDType.Anote ) {
+                item.Clock = tclock[j];
+                item.ID.Length = tlength[j];
+                j++;
+            }
+        }
+    }
+}

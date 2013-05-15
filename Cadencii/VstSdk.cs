@@ -504,10 +504,15 @@ namespace VstSdk {
         public const int __effFlagsExtHasBufferDeprecated = 1 << 11;
     }
 
+    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
     public delegate VstIntPtr AEffectDispatcherProc( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt );
+    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
     public delegate void AEffectProcessProc( ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames );
+    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
     public delegate void AEffectProcessDoubleProc( ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames );
+    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
     public delegate void AEffectSetParameterProc( ref AEffect effect, VstInt32 index, float parameter );
+    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
     public delegate float AEffectGetParameterProc( ref AEffect effect, VstInt32 index );
 
     [UnmanagedFunctionPointer( CallingConvention.Cdecl )]

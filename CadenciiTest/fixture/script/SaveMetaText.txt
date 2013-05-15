@@ -1,0 +1,6 @@
+public static class SaveMetaText {
+    public static bool Edit( Boare.Lib.Vsq.VsqFile vsq ) {
+        vsq.Track[1].printMetaText( @"d:\cadencii\meta_text.txt" );
+        return true;
+    }
+}

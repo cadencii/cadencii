@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Collections.Generic;
 using com.github.cadencii.java.util;
 using com.github.cadencii.xml;
 
@@ -25,8 +26,8 @@ namespace com.github.cadencii {
 
         protected override System.Reflection.Assembly Compile( String code ) {
 #if ENABLE_SCRIPT
-            Vector<String> errors = new Vector<String>();
-            return Utility.compileScript( code, errors );
+            List<string> errors = new List<string>();
+            return (new PluginLoader()).compileScript( code, errors );
 #else
             return null;
 #endif

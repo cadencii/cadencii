@@ -1,0 +1,131 @@
+public class VEL2DYN : Form {
+  private System.Windows.Forms.CheckBox dovelclear;
+  private System.Windows.Forms.TextBox velto;
+  private System.Windows.Forms.Label hoseisuru;
+  private System.Windows.Forms.TextBox hoseito;
+  private System.Windows.Forms.Button gobutton;
+  private System.Windows.Forms.Button cancelbutton;
+  private System.ComponentModel.IContainer components = null;
+
+  public VEL2DYN() {
+    InitializeComponent();
+  }
+
+  public static bool Edit( Boare.Lib.Vsq.VsqFile Vsq ) {
+    using(VEL2DYN d=new VEL2DYN()) {
+      if(d.ShowDialog()!=DialogResult.OK) {
+        return false;
+      } else {
+        Boare.Lib.Vsq.VsqTrack vsqt;
+        Boare.Lib.Vsq.VsqBPList bpl;
+        Int32 resetvelto=Int32.Parse(d.velto.Text);
+        if(resetvelto>127)resetvelto=127;
+        if(resetvelto<0)resetvelto=0;
+        int dyn;
+        double bairitu=double.Parse(d.hoseito.Text);
+        for ( int i = 1; i < Vsq.Track.size(); i++ ) {
+          vsqt=Vsq.Track.get( i );
+          bpl=vsqt.getCurve("DYN");
+          bpl.clear();
+          for ( int j = 0; j < vsqt.getEventCount(); j++ ) {
+            Boare.Lib.Vsq.VsqEvent item = Vsq.Track.get( i ).getEvent( j );
+            if ( item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote ) {
+              dyn=(int)(item.ID.Dynamics*bairitu);
+              if(dyn>127)dyn=127;
+              if(dyn<0)dyn=0;
+              bpl.add(item.Clock,dyn);
+              if(d.dovelclear.Checked)item.ID.Dynamics=resetvelto;
+            }
+          }
+        }
+        return true;
+      }
+    }
+  }
+
+  protected override void Dispose( bool disposing ) {
+    if ( disposing && (components != null) ) {
+      components.Dispose();
+    }
+    base.Dispose( disposing );
+  }
+
+  private void InitializeComponent() {
+    this.dovelclear=new System.Windows.Forms.CheckBox();
+    this.velto=new System.Windows.Forms.TextBox();
+    this.hoseisuru=new System.Windows.Forms.Label();
+    this.hoseito=new System.Windows.Forms.TextBox();
+    this.gobutton=new System.Windows.Forms.Button();
+    this.cancelbutton=new System.Windows.Forms.Button();
+
+    this.dovelclear.AutoSize=true;
+    this.dovelclear.Location=new System.Drawing.Point(10,10);
+    this.dovelclear.Name="dovelclear";
+    this.dovelclear.Size=new System.Drawing.Size(100,19);
+    this.dovelclear.TabIndex=0;
+    this.dovelclear.Text="Set VEL to";
+    this.dovelclear.UseVisualStyleBackColor=true;
+
+    this.velto.AutoSize=true;
+    this.velto.Location=new System.Drawing.Point(110,10);
+    this.velto.Name="velto";
+    this.velto.Size=new System.Drawing.Size(50,19);
+    this.velto.TabIndex=1;
+    this.velto.Text="64";
+
+    this.hoseisuru.AutoSize=true;
+    this.hoseisuru.Location=new System.Drawing.Point(10,40);
+    this.hoseisuru.Name="hoseisuru";
+    this.hoseisuru.Size=new System.Drawing.Size(100,19);
+    this.hoseisuru.TabIndex=2;
+    this.hoseisuru.Text="DYN=VEL*";
+
+    this.hoseito.AutoSize=true;
+    this.hoseito.Location=new System.Drawing.Point(110,40);
+    this.hoseito.Name="hoseito";
+    this.hoseito.Size=new System.Drawing.Size(50,19);
+    this.hoseito.TabIndex=3;
+    this.hoseito.Text="1.0";
+
+    this.gobutton.AutoSize=true;
+    this.gobutton.Location=new System.Drawing.Point(10,70);
+    this.gobutton.Name="gobutton";
+    this.gobutton.Size=new System.Drawing.Size(50,19);
+    this.gobutton.TabIndex=4;
+    this.gobutton.Text="Run";
+    this.gobutton.UseVisualStyleBackColor=true;
+    this.gobutton.Click += new System.EventHandler( this.gobutton_Click );
+
+    this.cancelbutton.AutoSize=true;
+    this.cancelbutton.Location=new System.Drawing.Point(70,70);
+    this.cancelbutton.Name="cancelbutton";
+    this.cancelbutton.Size=new System.Drawing.Size(50,19);
+    this.cancelbutton.TabIndex=5;
+    this.cancelbutton.Text="Cancel";
+    this.cancelbutton.UseVisualStyleBackColor=true;
+    this.cancelbutton.Click += new System.EventHandler( this.cancelbutton_Click );
+
+    this.AutoScaleDimensions = new System.Drawing.SizeF( 8F, 15F );
+    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+    this.ClientSize = new System.Drawing.Size( 300, 100 );
+    this.Controls.Add(this.dovelclear);
+    this.Controls.Add(this.velto);
+    this.Controls.Add(this.hoseisuru);
+    this.Controls.Add(this.hoseito);
+    this.Controls.Add(this.gobutton);
+    this.Controls.Add(this.cancelbutton);
+    this.Name = "VEL2DYN";
+    this.Text = "VEL2DYN";
+    this.ResumeLayout( false );
+  }
+
+  private void gobutton_Click( object sender, EventArgs e ) {
+    this.DialogResult = DialogResult.OK;
+    this.Close();
+  }
+
+  private void cancelbutton_Click( object sender, EventArgs e ) {
+    this.DialogResult = DialogResult.Cancel;
+    this.Close();
+  }
+}

@@ -1,0 +1,201 @@
+using System;
+using System.IO;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using bocoree.util;
+using Boare.Cadencii;
+
+//選択されている音符から最後までをヴェロシティ、アクセントを初期値に変更
+//選択されていない場合は最初から
+//初期値はこのスクリプト★で設定
+public static class PrintLyricLUKA
+{
+    //★FromClipからの変換テーブルを持ってくる★
+    // 変換テーブル作成-----------------------
+    struct param
+    {
+        public string kana;
+        public int vel;
+        public int accent;
+
+        public param(string kana_, int vel_, int accent_)
+        {
+            kana = kana_;
+            vel = vel_;
+            accent = accent_;
+        }
+    }
+
+    static param[] henkan = new param[]{ new param( "か",  90, 25 ),
+                                         new param( "く", 110, 25 ),
+                                         new param( "し",  90, 40 ),
+                                         new param( "た", 100, 30 ),
+                                         new param( "ち",  90, 40 ),
+                                         new param( "て",  90, 35 ),
+                                         new param( "と", 110,  5 ),
+                                         new param( "は", 110, 30 ),
+                                         new param( "よ",  60, 40 ),
+                                         new param( "ぢ", 110,  0 ),
+                                         new param( "カ",  90, 25 ),
+                                         new param( "ク", 110, 25 ),
+                                         new param( "シ",  90, 40 ),
+                                         new param( "タ", 100, 30 ),
+                                         new param( "テ",  90, 35 ),
+                                         new param( "チ",  90, 40 ),
+                                         new param( "ト", 110,  5 ),
+                                         new param( "ハ", 110, 30 ),
+                                         new param( "ヨ",  60, 40 ),
+                                         new param( "ヂ", 110,  0 ),
+                                         new param( "＠",   0,  0 ) };        //歌詞による設定値　★この行の上に追加する　この行は反映されない
+    //★ここまで変換テーブル★
+    public static bool Edit(VsqFile Vsq)
+    {
+        int middle_bri = 64;
+        MessageBox.Show("歌詞はd:￥cadencii￥lyrics.txtで作成。アクセント位置があるので、作成したのと同じロジックのスクリプトを使用のこと");
+        InputBox ib = new InputBox("BRIの中間値 30 ～ 80");
+		ib.setResult(middle_bri.ToString());
+        if (ib.ShowDialog() != DialogResult.OK)
+        {
+            return false;
+        }
+        if (!int.TryParse(ib.getResult(), out middle_bri))
+        {
+            MessageBox.Show("数字を入力してください");
+            return false;
+        }
+        if (middle_bri < 30 || middle_bri > 80)
+        {
+            MessageBox.Show("値の範囲外");
+            return false;
+        }
+        int middle_accent = 50;
+        InputBox ib2 = new InputBox("ACCENTの中間値 35 ～ 65");
+		ib2.setResult(middle_accent.ToString());
+        if (ib2.ShowDialog() != DialogResult.OK)
+        {
+            return false;
+        }
+        if (!int.TryParse(ib2.getResult(), out middle_accent))
+        {
+            MessageBox.Show("数字を入力してください");
+            return false;
+        }
+        if (middle_accent < 35 || middle_accent > 65)
+        {
+            MessageBox.Show("値の範囲外");
+            return false;
+        }
+        int track = AppManager.getSelected();
+        int next_ac = 0;
+        bool nwrite = false;
+        bool saisyo = true;
+
+        System.IO.StreamWriter sw = null;
+        try
+        {
+            sw = new System.IO.StreamWriter(@"d:\cadencii\lyrics.txt");
+            for (Iterator<VsqEvent> itr = Vsq.Track[track].getNoteEventIterator(); itr.hasNext(); )
+            {
+                VsqEvent item = (VsqEvent)itr.next();
+                if (item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote)
+                {
+                    nwrite = false;
+                    if (next_ac == 1)
+                    {
+                        nwrite = true;
+                    }
+                    int ac = 0;
+                    bool ari = false;
+                    next_ac = 0;
+                    //アクセントテーブルにあるか
+                    for (int j = 0; j < henkan.Length; j++)
+                    {
+                        if (item.ID.LyricHandle.L0.Phrase == henkan[j].kana)
+                        {
+                            ari = true;
+                            if (item.ID.DEMaccent > henkan[j].accent)
+                            {
+                                ac = 1;
+                            }
+                            else if (item.ID.DEMaccent < henkan[j].accent)
+                            {
+                                next_ac = 1;
+                            }
+                            break;
+                        }
+                    }
+                    //アクセントテーブルにないもの
+                    if (!ari)
+                    {
+                        if (item.ID.DEMaccent > middle_accent)
+                        {
+                            ac = 1;
+                        }
+                        else if (item.ID.DEMaccent < middle_accent)
+                        {
+                            next_ac = 1;
+                        }
+                    }
+                    //ブライトネス
+                    VsqBPList bri = Vsq.Track[track].getCurve("BRI");
+                    // この音符範囲の最大値、最小値
+                    int saidai = 0;
+                    int saisyou = 127;
+					int size = bri.size();
+                    for (int i = 0;i < size ; i++)
+                    {
+						int clock = bri.getKeyClock(i);
+                        if (item.Clock <= clock && clock <= item.Clock + item.ID.Length)
+                        {
+                            int w = bri.getElement(i);
+                            if (w > saidai)
+                            {
+                                saidai = w;
+                            }
+                            if (w < saisyou)
+                            {
+                                saisyou = w;
+                            }
+                        }
+                    }
+                    if (saidai > middle_bri && ac == 0)
+                    {
+                        ac = 1;
+                    }
+                    if (saisyou < middle_bri && next_ac == 0)
+                    {
+                        next_ac = 1;
+                    }
+                    if (nwrite)
+                    {
+                        sw.Write("\n");
+                    }
+                    else if (ac == 1 && !saisyo)
+                    {
+                        sw.Write("\t");
+                    }
+                    sw.Write(item.ID.LyricHandle.L0.Phrase);
+                    saisyo = false;
+                    //音符がフレーズの最後だったら:音符が１．５より大なら最後とする
+                    if (next_ac == 1 && item.ID.Length <= 720)
+                    {
+                        next_ac = 0;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            if (sw != null)
+            {
+                sw.Write("\n");
+                sw.Close();
+            }
+        }
+        return true;
+    }
+}

@@ -1,0 +1,58 @@
+using System;
+using System.IO;
+using System.Windows.Forms;
+using Boare.Lib.Vsq;
+using bocoree.util;
+using Boare.Cadencii;
+
+//選択されているトラックの音符を全部、指定トラックの現在のカーソル以下にコピー
+//選択されていない場合は処理をしない
+//データトラックの名前はdとする
+public class CopyTrack
+{
+    public static bool Edit(VsqFile Vsq)
+    {
+        //選択されているトラック番号
+        int barcount = AppManager.getPlayPosition().barCount;
+        if (barcount <= 0)
+        {
+            MessageBox.Show("コピー先のバーを選択してください？");
+            return false;
+        }
+        int barclock = Vsq.getClockFromBarCount(barcount - 1);
+
+        int track = AppManager.getSelected();
+        //データトラック番号を探す
+        int data_track = 0;
+        for (int i = 1; i < Vsq.Track.Count; i++)
+        {
+            if (Vsq.Track[i].getName() == "d")
+            {
+                data_track = i;
+                break;
+            }
+        }
+        if (data_track == 0)
+        {
+            MessageBox.Show("d という名前のデータトラックが必要です");
+            return false;
+        }
+        if (data_track == track)
+        {
+            MessageBox.Show("データトラックが選択されています");
+            return true;
+        }
+
+        for (Iterator<VsqEvent> itr = Vsq.Track[track].getNoteEventIterator(); itr.hasNext(); )
+        {
+                VsqEvent item = (VsqEvent)itr.next();
+	            if (item.ID.type == Boare.Lib.Vsq.VsqIDType.Anote)
+	            {
+	                Boare.Lib.Vsq.VsqEvent add = (VsqEvent)item.Clone();
+	                add.Clock = item.Clock + barclock;
+	                Vsq.Track[data_track].addEvent(add);
+	            }
+        }
+        return true;
+    }
+}
