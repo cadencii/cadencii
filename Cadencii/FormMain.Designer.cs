@@ -343,6 +343,7 @@ namespace com.github.cadencii
             this.cMenuPositionIndicator = new com.github.cadencii.windows.forms.BPopupMenu(this.components);
             this.cMenuPositionIndicatorStartMarker = new com.github.cadencii.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPluginUiAquesTone2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -746,7 +747,8 @@ namespace com.github.cadencii
             this.menuVisualPluginUi.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuVisualPluginUiVocaloid1,
             this.menuVisualPluginUiVocaloid2,
-            this.menuVisualPluginUiAquesTone});
+            this.menuVisualPluginUiAquesTone,
+            this.menuVisualPluginUiAquesTone2});
             this.menuVisualPluginUi.Name = "menuVisualPluginUi";
             this.menuVisualPluginUi.Size = new System.Drawing.Size(237, 22);
             this.menuVisualPluginUi.Text = "VSTi Plugin UI(&U)";
@@ -2858,6 +2860,12 @@ namespace com.github.cadencii
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size(150, 22);
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
             // 
+            // menuVisualPluginUiAquesTone2
+            // 
+            this.menuVisualPluginUiAquesTone2.Name = "menuVisualPluginUiAquesTone2";
+            this.menuVisualPluginUiAquesTone2.Size = new System.Drawing.Size(157, 22);
+            this.menuVisualPluginUiAquesTone2.Text = "AquesTone2";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -3231,5 +3239,6 @@ namespace com.github.cadencii
         public WaveView waveView;
         public BMenuItem menuFileRecentClear;
         public BMenuItem menuLyricApplyUtauParameters;
+        private System.Windows.Forms.ToolStripMenuItem menuVisualPluginUiAquesTone2;
     }
 }
