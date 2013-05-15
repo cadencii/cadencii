@@ -179,12 +179,6 @@
     <Compile Include="FormCheckUnknownSingerAndResampler.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormMainController.cs" />
     <Compile Include="FormMainUi.cs" />
     <Compile Include="FormMainUiListener.cs" />
@@ -264,6 +258,10 @@
     </Compile>
     <Compile Include="ui\dotnet\WaveformZoomUiImpl.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ui\main\FormMain.cs" />
+    <Compile Include="ui\main\FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
@@ -446,9 +444,6 @@
     <EmbeddedResource Include="FormCheckUnknownSingerAndResampler.resx">
       <DependentUpon>FormCheckUnknownSingerAndResampler.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormSequenceConfig.resx">
       <DependentUpon>FormSequenceConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -524,6 +519,9 @@
     <Compile Include="WorkerState.cs" />
     <Compile Include="WorkerStateImp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
+    <EmbeddedResource Include="ui\main\FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ja.po">
