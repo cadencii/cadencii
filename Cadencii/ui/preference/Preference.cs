@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Linq;
 using com.github.cadencii.apputil;
 using com.github.cadencii.java.awt;
 using com.github.cadencii.java.awt.event_;
@@ -139,19 +140,15 @@ namespace com.github.cadencii
             listSingers.setColumnWidth( 2, columnWidthHeaderPath );
 
             // default synthesizer
-            comboDefaultSynthesizer.removeAllItems();
-            Vector<String> added = new Vector<String>();
-            foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
-                if ( p == RendererKind.NULL ) {
-                    continue;
-                }
-                String s = RendererKindUtil.getString( p );
-                if ( added.contains( s ) ) {
-                    continue;
-                }
-                added.add( s );
-                comboDefaultSynthesizer.addItem( s );
-            }
+            comboDefaultSynthesizer.Items.Clear();
+            (from kind
+                in Enum.GetValues( typeof( RendererKind ) ).Cast<RendererKind>()
+                where kind != RendererKind.NULL
+                select RendererKindUtil.getString( kind )
+            )
+            .Distinct()
+            .OrderBy( ( kind ) => kind ).ToList()
+            .ForEach( ( kind ) => comboDefaultSynthesizer.Items.Add( kind ) );
             comboDefaultSynthesizer.setSelectedIndex( 0 );
 
             numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
