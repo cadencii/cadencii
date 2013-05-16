@@ -235,9 +235,6 @@
     <Compile Include="plugin\PluginLoader.cs" />
     <Compile Include="plugin\PluginVersion.cs" />
     <Compile Include="plugin\ScriptProcessor.cs" />
-    <Compile Include="Preference.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ProgressBarWithLabel.cs" />
     <Compile Include="PropertyWindowListener.cs" />
     <Compile Include="PureVirtualFunctionAttribute.cs" />
@@ -291,6 +288,12 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="ui\main\RendererMenuHandler.cs" />
+    <Compile Include="ui\preference\Preference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\preference\Preference.Designer.cs">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </Compile>
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
@@ -484,9 +487,6 @@
     <EmbeddedResource Include="FormVibratoPreset.resx">
       <DependentUpon>FormVibratoPreset.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Preference.resx">
-      <DependentUpon>Preference.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -549,6 +549,9 @@
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
     <EmbeddedResource Include="ui\main\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\preference\Preference.resx">
+      <DependentUpon>Preference.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
