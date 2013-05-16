@@ -374,6 +374,9 @@ namespace com.github.cadencii
             chkLoadAquesTone.setSelected( value );
         }
 
+        public bool isAquesTone2Required() { return chkLoadAquesTone2.Checked; }
+        public void setAquesTone2Requried( bool value ) { chkLoadAquesTone2.Checked = value; }
+
         public boolean isUseProjectCache()
         {
             return chkKeepProjectCache.isSelected();
