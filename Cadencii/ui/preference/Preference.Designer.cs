@@ -223,6 +223,9 @@ namespace com.github.cadencii
             this.lblVOCALOID1 = new com.github.cadencii.windows.forms.BLabel();
             this.btnCancel = new com.github.cadencii.windows.forms.BButton();
             this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.txtAquesTone2 = new System.Windows.Forms.TextBox();
+            this.lblAquesTone2 = new System.Windows.Forms.Label();
+            this.btnAquesTone2 = new System.Windows.Forms.Button();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
@@ -1931,7 +1934,7 @@ namespace com.github.cadencii
             // groupDefaultSynthesizer
             // 
             this.groupDefaultSynthesizer.Controls.Add(this.comboDefaultSynthesizer);
-            this.groupDefaultSynthesizer.Location = new System.Drawing.Point(23, 224);
+            this.groupDefaultSynthesizer.Location = new System.Drawing.Point(23, 249);
             this.groupDefaultSynthesizer.Name = "groupDefaultSynthesizer";
             this.groupDefaultSynthesizer.Size = new System.Drawing.Size(407, 71);
             this.groupDefaultSynthesizer.TabIndex = 111;
@@ -1968,10 +1971,10 @@ namespace com.github.cadencii
             this.groupSynthesizerDll.Controls.Add(this.chkLoadAquesTone);
             this.groupSynthesizerDll.Controls.Add(this.chkLoadVocaloid2);
             this.groupSynthesizerDll.Controls.Add(this.chkLoadVocaloid1);
-            this.groupSynthesizerDll.Location = new System.Drawing.Point(23, 122);
+            this.groupSynthesizerDll.Location = new System.Drawing.Point(23, 147);
             this.groupSynthesizerDll.Name = "groupSynthesizerDll";
             this.groupSynthesizerDll.Size = new System.Drawing.Size(407, 96);
-            this.groupSynthesizerDll.TabIndex = 109;
+            this.groupSynthesizerDll.TabIndex = 110;
             this.groupSynthesizerDll.TabStop = false;
             this.groupSynthesizerDll.Text = "Synthesizer DLL Usage";
             // 
@@ -2007,6 +2010,9 @@ namespace com.github.cadencii
             // 
             // groupVsti
             // 
+            this.groupVsti.Controls.Add(this.btnAquesTone2);
+            this.groupVsti.Controls.Add(this.lblAquesTone2);
+            this.groupVsti.Controls.Add(this.txtAquesTone2);
             this.groupVsti.Controls.Add(this.btnAquesTone);
             this.groupVsti.Controls.Add(this.txtAquesTone);
             this.groupVsti.Controls.Add(this.lblAquesTone);
@@ -2016,8 +2022,8 @@ namespace com.github.cadencii
             this.groupVsti.Controls.Add(this.lblVOCALOID1);
             this.groupVsti.Location = new System.Drawing.Point(23, 9);
             this.groupVsti.Name = "groupVsti";
-            this.groupVsti.Size = new System.Drawing.Size(407, 107);
-            this.groupVsti.TabIndex = 110;
+            this.groupVsti.Size = new System.Drawing.Size(407, 132);
+            this.groupVsti.TabIndex = 109;
             this.groupVsti.TabStop = false;
             this.groupVsti.Text = "VST Instruments";
             // 
@@ -2027,7 +2033,7 @@ namespace com.github.cadencii
             this.btnAquesTone.Location = new System.Drawing.Point(351, 69);
             this.btnAquesTone.Name = "btnAquesTone";
             this.btnAquesTone.Size = new System.Drawing.Size(41, 23);
-            this.btnAquesTone.TabIndex = 111;
+            this.btnAquesTone.TabIndex = 6;
             this.btnAquesTone.Text = "...";
             this.btnAquesTone.UseVisualStyleBackColor = true;
             // 
@@ -2036,7 +2042,7 @@ namespace com.github.cadencii
             this.txtAquesTone.Location = new System.Drawing.Point(99, 71);
             this.txtAquesTone.Name = "txtAquesTone";
             this.txtAquesTone.Size = new System.Drawing.Size(246, 19);
-            this.txtAquesTone.TabIndex = 109;
+            this.txtAquesTone.TabIndex = 5;
             // 
             // lblAquesTone
             // 
@@ -2044,7 +2050,7 @@ namespace com.github.cadencii
             this.lblAquesTone.Location = new System.Drawing.Point(16, 74);
             this.lblAquesTone.Name = "lblAquesTone";
             this.lblAquesTone.Size = new System.Drawing.Size(62, 12);
-            this.lblAquesTone.TabIndex = 108;
+            this.lblAquesTone.TabIndex = 4;
             this.lblAquesTone.Text = "AquesTone";
             // 
             // txtVOCALOID2
@@ -2053,7 +2059,7 @@ namespace com.github.cadencii
             this.txtVOCALOID2.Name = "txtVOCALOID2";
             this.txtVOCALOID2.ReadOnly = true;
             this.txtVOCALOID2.Size = new System.Drawing.Size(246, 19);
-            this.txtVOCALOID2.TabIndex = 107;
+            this.txtVOCALOID2.TabIndex = 3;
             // 
             // txtVOCALOID1
             // 
@@ -2061,7 +2067,7 @@ namespace com.github.cadencii
             this.txtVOCALOID1.Name = "txtVOCALOID1";
             this.txtVOCALOID1.ReadOnly = true;
             this.txtVOCALOID1.Size = new System.Drawing.Size(246, 19);
-            this.txtVOCALOID1.TabIndex = 106;
+            this.txtVOCALOID1.TabIndex = 1;
             // 
             // lblVOCALOID2
             // 
@@ -2069,7 +2075,7 @@ namespace com.github.cadencii
             this.lblVOCALOID2.Location = new System.Drawing.Point(16, 49);
             this.lblVOCALOID2.Name = "lblVOCALOID2";
             this.lblVOCALOID2.Size = new System.Drawing.Size(68, 12);
-            this.lblVOCALOID2.TabIndex = 1;
+            this.lblVOCALOID2.TabIndex = 2;
             this.lblVOCALOID2.Text = "VOCALOID2";
             // 
             // lblVOCALOID1
@@ -2102,6 +2108,32 @@ namespace com.github.cadencii
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
+            // txtAquesTone2
+            //
+            this.txtAquesTone2.Location = new System.Drawing.Point(99, 96);
+            this.txtAquesTone2.Name = "txtAquesTone2";
+            this.txtAquesTone2.Size = new System.Drawing.Size(246, 19);
+            this.txtAquesTone2.TabIndex = 8;
+            //
+            // lblAquesTone2
+            //
+            this.lblAquesTone2.AutoSize = true;
+            this.lblAquesTone2.Location = new System.Drawing.Point(16, 99);
+            this.lblAquesTone2.Name = "lblAquesTone2";
+            this.lblAquesTone2.Size = new System.Drawing.Size(68, 12);
+            this.lblAquesTone2.TabIndex = 7;
+            this.lblAquesTone2.Text = "AquesTone2";
+            //
+            // btnAquesTone2
+            //
+            this.btnAquesTone2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAquesTone2.Location = new System.Drawing.Point(351, 94);
+            this.btnAquesTone2.Name = "btnAquesTone2";
+            this.btnAquesTone2.Size = new System.Drawing.Size(41, 23);
+            this.btnAquesTone2.TabIndex = 9;
+            this.btnAquesTone2.Text = "...";
+            this.btnAquesTone2.UseVisualStyleBackColor = true;
+            //
             // Preference
             // 
             this.AcceptButton = this.btnOK;
@@ -2317,6 +2349,9 @@ namespace com.github.cadencii
         private BRadioButton radioWineCustom;
         private BRadioButton radioWineBuiltin;
         private BCheckBox checkEnableWideCharacterWorkaround;
+        private System.Windows.Forms.Button btnAquesTone2;
+        private System.Windows.Forms.Label lblAquesTone2;
+        private System.Windows.Forms.TextBox txtAquesTone2;
 
     }
 }
