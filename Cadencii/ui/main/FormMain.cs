@@ -12726,8 +12726,10 @@ namespace com.github.cadencii
                 mDialogPreference.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
                 mDialogPreference.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
                 mDialogPreference.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
+                mDialogPreference.setPathAquesTone2( AppManager.editorConfig.PathAquesTone2 );
                 mDialogPreference.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
                 mDialogPreference.setAquesToneRequired( !AppManager.editorConfig.DoNotUseAquesTone );
+                mDialogPreference.setAquesTone2Requried( !AppManager.editorConfig.DoNotUseAquesTone2 );
                 mDialogPreference.setVocaloid1Required( !AppManager.editorConfig.DoNotUseVocaloid1 );
                 mDialogPreference.setVocaloid2Required( !AppManager.editorConfig.DoNotUseVocaloid2 );
                 mDialogPreference.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
@@ -12877,14 +12879,26 @@ namespace com.github.cadencii
                     AppManager.editorConfig.SelfDeRomanization = mDialogPreference.isSelfDeRomantization();
                     AppManager.editorConfig.AutoBackupIntervalMinutes = mDialogPreference.getAutoBackupIntervalMinutes();
                     AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = mDialogPreference.isUseSpaceKeyAsMiddleButtonModifier();
+
+                    AppManager.editorConfig.DoNotUseAquesTone = !mDialogPreference.isAquesToneRequired();
+                    AppManager.editorConfig.DoNotUseAquesTone2 = !mDialogPreference.isAquesTone2Required();
 #if ENABLE_AQUESTONE
-                    String old_aquestone_dll = AppManager.editorConfig.PathAquesTone;
-                    String new_aquestone_dll = mDialogPreference.getPathAquesTone();
-                    AppManager.editorConfig.PathAquesTone = mDialogPreference.getPathAquesTone();
-                    if ( !old_aquestone_dll.Equals( new_aquestone_dll ) ) {
-                        VSTiDllManager.reloadAquesTone();
-                    }
+                    string updated_aquestone_path = mDialogPreference.getPathAquesTone();
+                    bool reload_aquestone =
+                        (AppManager.editorConfig.PathAquesTone != updated_aquestone_path)
+                        && mDialogPreference.isAquesToneRequired();
+                    AppManager.editorConfig.PathAquesTone = updated_aquestone_path;
+                    if ( reload_aquestone ) { VSTiDllManager.reloadAquesTone(); }
+
+                    string updated_aquestone2_path = mDialogPreference.getPathAquesTone2();
+                    bool reload_aquestone2 =
+                        (AppManager.editorConfig.PathAquesTone2 != updated_aquestone2_path)
+                        && mDialogPreference.isAquesTone2Required();
+                    AppManager.editorConfig.PathAquesTone2 = updated_aquestone2_path;
+                    if ( reload_aquestone2 ) { VSTiDllManager.reloadAquesTone2(); }
 #endif
+                    updateRendererMenu();
+
                     //AppManager.editorConfig.__revoked__WaveFileOutputFromMasterTrack = mDialogPreference.isWaveFileOutputFromMasterTrack();
                     //AppManager.editorConfig.__revoked__WaveFileOutputChannel = mDialogPreference.getWaveFileOutputChannel();
                     if ( AppManager.editorConfig.UseProjectCache && !mDialogPreference.isUseProjectCache() ) {
@@ -12961,7 +12975,6 @@ namespace com.github.cadencii
                         }
                     }
                     AppManager.editorConfig.UseProjectCache = mDialogPreference.isUseProjectCache();
-                    AppManager.editorConfig.DoNotUseAquesTone = !mDialogPreference.isAquesToneRequired();
                     AppManager.editorConfig.DoNotUseVocaloid1 = !mDialogPreference.isVocaloid1Required();
                     AppManager.editorConfig.DoNotUseVocaloid2 = !mDialogPreference.isVocaloid2Required();
                     AppManager.editorConfig.BufferSizeMilliSeconds = mDialogPreference.getBufferSize();

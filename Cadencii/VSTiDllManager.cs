@@ -363,6 +363,7 @@ namespace com.github.cadencii {
 
 #if ENABLE_AQUESTONE
             reloadAquesTone();
+            reloadAquesTone2();
 #endif
         }
 
@@ -392,7 +393,18 @@ namespace com.github.cadencii {
 
 #if ENABLE_AQUESTONE
         public static void reloadAquesTone() {
+            if ( aquesToneDriver != null ) {
+                aquesToneDriver.close();
+                aquesToneDriver = null;
+            }
             aquesToneDriver = getAquesToneDriver();
+        }
+
+        public static void reloadAquesTone2() {
+            if ( aquesTone2Driver != null ) {
+                aquesTone2Driver.close();
+                aquesTone2Driver = null;
+            }
             aquesTone2Driver = getAquesTone2Driver();
         }
 #endif
