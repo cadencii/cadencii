@@ -1090,8 +1090,10 @@ namespace com.github.cadencii
 #endif
 
 #if !ENABLE_AQUESTONE
-            menuTrackRenderer.remove( menuTrackRendererAquesTone );
-            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererAquesTone );
+            menuTrackRenderer.DropDownItems.Remove( menuTrackRendererAquesTone );
+            menuTrackRenderer.DropDownItems.Remove( menuTrackRendererAquesTone2 );
+            cMenuTrackTabRenderer.DropDownItems.Remove( cMenuTrackTabRendererAquesTone );
+            cMenuTrackTabRenderer.DropDownItems.Remove( cMenuTrackTabRendererAquesTone2 );
 #endif
 
 #if JAVA
