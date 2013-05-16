@@ -226,6 +226,7 @@ namespace com.github.cadencii
             this.lblVOCALOID1 = new com.github.cadencii.windows.forms.BLabel();
             this.btnCancel = new com.github.cadencii.windows.forms.BButton();
             this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.chkLoadAquesTone2 = new System.Windows.Forms.CheckBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
@@ -1934,7 +1935,7 @@ namespace com.github.cadencii
             // groupDefaultSynthesizer
             // 
             this.groupDefaultSynthesizer.Controls.Add(this.comboDefaultSynthesizer);
-            this.groupDefaultSynthesizer.Location = new System.Drawing.Point(23, 249);
+            this.groupDefaultSynthesizer.Location = new System.Drawing.Point(23, 271);
             this.groupDefaultSynthesizer.Name = "groupDefaultSynthesizer";
             this.groupDefaultSynthesizer.Size = new System.Drawing.Size(407, 71);
             this.groupDefaultSynthesizer.TabIndex = 111;
@@ -1968,12 +1969,13 @@ namespace com.github.cadencii
             // 
             // groupSynthesizerDll
             // 
+            this.groupSynthesizerDll.Controls.Add(this.chkLoadAquesTone2);
             this.groupSynthesizerDll.Controls.Add(this.chkLoadAquesTone);
             this.groupSynthesizerDll.Controls.Add(this.chkLoadVocaloid2);
             this.groupSynthesizerDll.Controls.Add(this.chkLoadVocaloid1);
             this.groupSynthesizerDll.Location = new System.Drawing.Point(23, 147);
             this.groupSynthesizerDll.Name = "groupSynthesizerDll";
-            this.groupSynthesizerDll.Size = new System.Drawing.Size(407, 96);
+            this.groupSynthesizerDll.Size = new System.Drawing.Size(407, 118);
             this.groupSynthesizerDll.TabIndex = 110;
             this.groupSynthesizerDll.TabStop = false;
             this.groupSynthesizerDll.Text = "Synthesizer DLL Usage";
@@ -2135,6 +2137,16 @@ namespace com.github.cadencii
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
+            // chkLoadAquesTone2
+            //
+            this.chkLoadAquesTone2.AutoSize = true;
+            this.chkLoadAquesTone2.Location = new System.Drawing.Point(18, 88);
+            this.chkLoadAquesTone2.Name = "chkLoadAquesTone2";
+            this.chkLoadAquesTone2.Size = new System.Drawing.Size(87, 16);
+            this.chkLoadAquesTone2.TabIndex = 117;
+            this.chkLoadAquesTone2.Text = "AquesTone2";
+            this.chkLoadAquesTone2.UseVisualStyleBackColor = true;
+            //
             // Preference
             // 
             this.AcceptButton = this.btnOK;
@@ -2353,6 +2365,7 @@ namespace com.github.cadencii
         private System.Windows.Forms.Button btnAquesTone2;
         private System.Windows.Forms.Label lblAquesTone2;
         private System.Windows.Forms.TextBox txtAquesTone2;
+        private System.Windows.Forms.CheckBox chkLoadAquesTone2;
 
     }
 }
