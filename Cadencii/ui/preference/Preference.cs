@@ -1208,6 +1208,10 @@ namespace com.github.cadencii
             txtAquesTone.setText( value );
         }
 
+        public string getPathAquesTone2() { return txtAquesTone2.Text; }
+
+        public void setPathAquesTone2( string value ) { txtAquesTone2.Text = value; }
+
         public Vector<SingerConfig> getUtausingers()
         {
             return m_utau_singers;
@@ -1366,16 +1370,20 @@ namespace com.github.cadencii
             }
         }
 
-        public void btnAquesTone_Click( Object sender, BEventArgs e )
+        public void btnAquesTone_Click( object sender, EventArgs e ) { onAquesToneChooseButtonClicked( txtAquesTone ); }
+
+        private void btnAquesTone2_Click( object sender, EventArgs e ) { onAquesToneChooseButtonClicked( txtAquesTone2 ); }
+
+        private void onAquesToneChooseButtonClicked( System.Windows.Forms.TextBox text_box )
         {
             BFileChooser dialog = new BFileChooser();
-            if ( !txtAquesTone.getText().Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtAquesTone.getText() ) ) ) {
-                dialog.setSelectedFile( txtAquesTone.getText() );
+            if ( text_box.Text != "" && fsys.isDirectoryExists( PortUtil.getDirectoryName( text_box.Text ) ) ) {
+                dialog.setSelectedFile( text_box.Text );
             }
             int dr = AppManager.showModalDialog( dialog, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = dialog.getSelectedFile();
-                txtAquesTone.setText( path );
+                text_box.Text = path;
             }
         }
 

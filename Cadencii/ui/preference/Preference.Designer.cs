@@ -214,6 +214,9 @@ namespace com.github.cadencii
             this.chkLoadVocaloid2 = new com.github.cadencii.windows.forms.BCheckBox();
             this.chkLoadVocaloid1 = new com.github.cadencii.windows.forms.BCheckBox();
             this.groupVsti = new com.github.cadencii.windows.forms.BGroupBox();
+            this.btnAquesTone2 = new System.Windows.Forms.Button();
+            this.lblAquesTone2 = new System.Windows.Forms.Label();
+            this.txtAquesTone2 = new System.Windows.Forms.TextBox();
             this.btnAquesTone = new com.github.cadencii.windows.forms.BButton();
             this.txtAquesTone = new com.github.cadencii.windows.forms.BTextBox();
             this.lblAquesTone = new com.github.cadencii.windows.forms.BLabel();
@@ -223,9 +226,6 @@ namespace com.github.cadencii
             this.lblVOCALOID1 = new com.github.cadencii.windows.forms.BLabel();
             this.btnCancel = new com.github.cadencii.windows.forms.BButton();
             this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.txtAquesTone2 = new System.Windows.Forms.TextBox();
-            this.lblAquesTone2 = new System.Windows.Forms.Label();
-            this.btnAquesTone2 = new System.Windows.Forms.Button();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
@@ -2027,6 +2027,33 @@ namespace com.github.cadencii
             this.groupVsti.TabStop = false;
             this.groupVsti.Text = "VST Instruments";
             // 
+            // btnAquesTone2
+            // 
+            this.btnAquesTone2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAquesTone2.Location = new System.Drawing.Point(351, 94);
+            this.btnAquesTone2.Name = "btnAquesTone2";
+            this.btnAquesTone2.Size = new System.Drawing.Size(41, 23);
+            this.btnAquesTone2.TabIndex = 9;
+            this.btnAquesTone2.Text = "...";
+            this.btnAquesTone2.UseVisualStyleBackColor = true;
+            this.btnAquesTone2.Click += new System.EventHandler(this.btnAquesTone2_Click);
+            // 
+            // lblAquesTone2
+            // 
+            this.lblAquesTone2.AutoSize = true;
+            this.lblAquesTone2.Location = new System.Drawing.Point(16, 99);
+            this.lblAquesTone2.Name = "lblAquesTone2";
+            this.lblAquesTone2.Size = new System.Drawing.Size(68, 12);
+            this.lblAquesTone2.TabIndex = 7;
+            this.lblAquesTone2.Text = "AquesTone2";
+            // 
+            // txtAquesTone2
+            // 
+            this.txtAquesTone2.Location = new System.Drawing.Point(99, 96);
+            this.txtAquesTone2.Name = "txtAquesTone2";
+            this.txtAquesTone2.Size = new System.Drawing.Size(246, 19);
+            this.txtAquesTone2.TabIndex = 8;
+            // 
             // btnAquesTone
             // 
             this.btnAquesTone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -2108,32 +2135,6 @@ namespace com.github.cadencii
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // txtAquesTone2
-            //
-            this.txtAquesTone2.Location = new System.Drawing.Point(99, 96);
-            this.txtAquesTone2.Name = "txtAquesTone2";
-            this.txtAquesTone2.Size = new System.Drawing.Size(246, 19);
-            this.txtAquesTone2.TabIndex = 8;
-            //
-            // lblAquesTone2
-            //
-            this.lblAquesTone2.AutoSize = true;
-            this.lblAquesTone2.Location = new System.Drawing.Point(16, 99);
-            this.lblAquesTone2.Name = "lblAquesTone2";
-            this.lblAquesTone2.Size = new System.Drawing.Size(68, 12);
-            this.lblAquesTone2.TabIndex = 7;
-            this.lblAquesTone2.Text = "AquesTone2";
-            //
-            // btnAquesTone2
-            //
-            this.btnAquesTone2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAquesTone2.Location = new System.Drawing.Point(351, 94);
-            this.btnAquesTone2.Name = "btnAquesTone2";
-            this.btnAquesTone2.Size = new System.Drawing.Size(41, 23);
-            this.btnAquesTone2.TabIndex = 9;
-            this.btnAquesTone2.Text = "...";
-            this.btnAquesTone2.UseVisualStyleBackColor = true;
-            //
             // Preference
             // 
             this.AcceptButton = this.btnOK;
