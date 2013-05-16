@@ -44,54 +44,32 @@ namespace com.github.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
-#if JAVA
-        private BFileChooser folderBrowserSingers;
-#else
 #if DEBUG
         private BFileChooser folderBrowserSingers;
 #else
         private BFolderBrowser folderBrowserSingers;
 #endif
-#endif
 
         public Preference()
         {
-#if JAVA
-            //INCLUDE-SECTION CTOR ./ui/java/Preference.java
-#else
             InitializeComponent();
-#endif
             fontDialog = new BFontChooser();
-#if !JAVA
             fontDialog.dialog.AllowVectorFonts = false;
             fontDialog.dialog.AllowVerticalFonts = false;
             fontDialog.dialog.FontMustExist = true;
             fontDialog.dialog.ShowEffects = false;
-#endif
             openUtauCore = new BFileChooser();
 
-#if JAVA
-            folderBrowserSingers = new BFileChooser();
-#else
 #if DEBUG
             folderBrowserSingers = new BFileChooser();
 #else
             folderBrowserSingers = new BFolderBrowser();
             folderBrowserSingers.setNewFolderButtonVisible( false );
 #endif
-#endif
             applyLanguage();
-#if JAVA
-            listResampler.setColumnWidth( 0, 258 );
-#endif
 
             comboVibratoLength.removeAllItems();
-#if JAVA
-            for( DefaultVibratoLengthEnum dvl : DefaultVibratoLengthEnum.values() )
-#else
-            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
-#endif
- {
+            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 comboVibratoLength.addItem( DefaultVibratoLengthUtil.toString( dvl ) );
             }
             comboVibratoLength.setSelectedIndex( 1 );
@@ -163,11 +141,7 @@ namespace com.github.cadencii
             // default synthesizer
             comboDefaultSynthesizer.removeAllItems();
             Vector<String> added = new Vector<String>();
-#if JAVA
-            for( RendererKind p : RendererKind.values() ) {
-#else
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
-#endif
                 if ( p == RendererKind.NULL ) {
                     continue;
                 }
@@ -182,10 +156,6 @@ namespace com.github.cadencii
 
             numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
             numBuffer.setMinimum( EditorConfig.MIN_BUFFER_MILLIXEC );
-
-#if JAVA
-            checkEnableWideCharacterWorkaround.setEnabled( false );
-#endif
 
             registerEventHandlers();
             setResources();
@@ -210,11 +180,7 @@ namespace com.github.cadencii
             checkEnableWideCharacterWorkaround.setSelected( value );
         }
 
-#if JAVA
-        public override BDialogResult showDialog( Component parent )
-#else
         public override BDialogResult showDialog( System.Windows.Forms.Form parent )
-#endif
         {
             updateMidiDevice();
             updateCustomVibrato();
@@ -316,11 +282,7 @@ namespace com.github.cadencii
         public RendererKind getDefaultSynthesizer()
         {
             String selstr = (String)comboDefaultSynthesizer.getSelectedItem();
-#if JAVA
-            for( RendererKind p : RendererKind.values() ){
-#else
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
-#endif
                 String str = RendererKindUtil.getString( p );
                 if ( str.Equals( selstr ) ) {
                     return p;
@@ -810,44 +772,13 @@ namespace com.github.cadencii
                 openUtauCore.addFileFilter( "All Files(*.*)|*.*" );
             }
 
-#if JAVA
-            folderBrowserSingers.setDialogTitle( _( "Select Singer Directory" ) );
-#else
 #if DEBUG
             folderBrowserSingers.setDialogTitle( _( "Select Singer Directory" ) );
 #else
             folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
 #endif
-#endif
 
             #region tabのタイトル
-#if JAVA
-            int count = tabPane.getTabCount();
-            for( int i = 0; i < count; i++ ){
-                Component c = tabPane.getComponentAt( i );
-                if( !(c instanceof BPanel) ){
-                    continue;
-                }
-                BPanel p = (BPanel)c;
-                if( p == tabSequence ){
-                    tabPane.setTitleAt( i, _( "Sequence" ) );
-                }else if( p == tabAnother ){
-                    tabPane.setTitleAt( i, _( "Other" ) );
-                }else if( p == tabAppearance ){
-                    tabPane.setTitleAt( i, _( "Appearance" ) );
-                }else if( p == tabOperation ){
-                    tabPane.setTitleAt( i, _( "Operation" ) );
-                }else if( p == tabPlatform ){
-                    tabPane.setTitleAt( i, _( "Platform" ) );
-                }else if( p == tabUtausingers ){
-                    tabPane.setTitleAt( i, _( "UTAU Singers" ) );
-                }else if( p == tabFile ){
-                    tabPane.setTitleAt( i, _( "File" ) );
-                }else if( p == tabSingingSynth ){
-                    tabPane.setTitleAt( i, _( "Synthesizer" ) );
-                }
-            }
-#else
             tabSequence.Text = _( "Sequence" );
             tabAnother.Text = _( "Other" );
             tabAppearance.Text = _( "Appearance" );
@@ -856,7 +787,6 @@ namespace com.github.cadencii
             tabUtausingers.Text = _( "UTAU Singers" );
             tabFile.Text = _( "File" );
             tabSingingSynth.Text = _( "Synthesizer" );
-#endif
             #endregion
 
             #region tabSequence
@@ -1131,12 +1061,7 @@ namespace com.github.cadencii
         {
             int count = -1;
             int index = comboVibratoLength.getSelectedIndex();
-#if JAVA
-            for( DefaultVibratoLengthEnum vt : DefaultVibratoLengthEnum.values() )
-#else
-            foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
-#endif
- {
+            foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( index == count ) {
                     return vt;
@@ -1149,12 +1074,7 @@ namespace com.github.cadencii
         public void setDefaultVibratoLength( DefaultVibratoLengthEnum value )
         {
             int count = -1;
-#if JAVA
-            for( DefaultVibratoLengthEnum dvl : DefaultVibratoLengthEnum.values() )
-#else
-            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) )
-#endif
- {
+            foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( dvl == value ) {
                     comboVibratoLength.setSelectedIndex( count );
@@ -1320,14 +1240,12 @@ namespace com.github.cadencii
         public void btnOK_Click( Object sender, BEventArgs e )
         {
             boolean was_modified = false;
-#if !JAVA
             if ( AppManager.editorConfig.DoNotUseVocaloid2 != (!isVocaloid2Required()) ) {
                 was_modified = true;
             }
             if ( AppManager.editorConfig.DoNotUseVocaloid1 != (!isVocaloid1Required()) ) {
                 was_modified = true;
             }
-#endif
             if ( was_modified ) {
                 AppManager.showMessageBox( _( "Restart Cadencii to complete your changes\n(restart will NOT be automatically done)" ),
                                            "Cadencii",
@@ -1463,17 +1381,12 @@ namespace com.github.cadencii
 
         public void btnAdd_Click( Object sender, BEventArgs e )
         {
-#if JAVA
-            if( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ){
-                String dir = folderBrowserSingers.getSelectedFile();
-#else
 #if DEBUG
             if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String dir = folderBrowserSingers.getSelectedFile();
 #else
             if ( folderBrowserSingers.showDialog( this ) == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
-#endif
 #endif
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
@@ -1629,15 +1542,7 @@ namespace com.github.cadencii
         #region helper methods
         private boolean isMac()
         {
-#if JAVA
-            String osname = System.getProperty( "os.name" );
-            if( osname == null ){
-                osname = "";
-            }
-            return (osname.indexOf( "Mac" ) >= 0);
-#else
             return false;
-#endif
         }
 
         private boolean isWindowsExecutable( String path )
@@ -1701,9 +1606,6 @@ namespace com.github.cadencii
                 try {
                     device = MidiSystem.getMidiDevice( info );
                 } catch ( Exception ex ) {
-#if JAVA
-                    ex.printStackTrace();
-#endif
                     device = null;
                 }
                 if ( device == null ) continue;
