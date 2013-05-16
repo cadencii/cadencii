@@ -98,6 +98,7 @@ namespace com.github.cadencii {
         public const String RENDERER_UTU0 = "UTU0";
         public const String RENDERER_STR0 = "STR0";
         public const String RENDERER_AQT0 = "AQT0";
+        public const string RENDERER_AQT1 = "AQT1";
         /// <summary>
         /// EmtryRenderingRunnerが使用される
         /// </summary>
@@ -131,6 +132,10 @@ namespace com.github.cadencii {
         /// AquesTone VSTi のドライバ
         /// </summary>
         private static AquesToneDriver aquesToneDriver;
+        /// <summary>
+        /// AquesTone2 VSTi のドライバ
+        /// </summary>
+        private static AquesTone2Driver aquesTone2Driver;
 #endif
 
         /// <summary>
@@ -142,7 +147,9 @@ namespace com.github.cadencii {
         {
             if ( kind == RendererKind.AQUES_TONE ) {
 #if ENABLE_AQUESTONE
-                return new AquesToneWaveGenerator(VSTiDllManager.getAquesToneDriver());
+                return new AquesToneWaveGenerator( getAquesToneDriver() );
+            } else if ( kind == RendererKind.AQUES_TONE2 ) {
+                return new AquesTone2WaveGenerator( getAquesTone2Driver() );
 #endif
             } else if ( kind == RendererKind.VCNT ) {
                 return new VConnectWaveGenerator();
@@ -381,45 +388,39 @@ namespace com.github.cadencii {
             return aquesToneDriver;
         }
 
+        /// <summary>
+        /// 初期化した AquesTone2 ドライバを取得する
+        /// </summary>
+        /// <returns></returns>
+        public static AquesTone2Driver getAquesTone2Driver()
+        {
+            if ( aquesTone2Driver == null && !AppManager.editorConfig.DoNotUseAquesTone2 ) {
+                aquesTone2Driver = new AquesTone2Driver( AppManager.editorConfig.PathAquesTone2 );
+            }
+            return aquesTone2Driver;
+        }
+
 #if ENABLE_AQUESTONE
         public static void reloadAquesTone() {
-            if ( !AppManager.editorConfig.DoNotUseAquesTone ) {
-                if ( aquesToneDriver != null ) {
-                    aquesToneDriver.close();
-                }
-                aquesToneDriver = new AquesToneDriver( AppManager.editorConfig.PathAquesTone );
-            }
+            aquesToneDriver = getAquesToneDriver();
+            aquesTone2Driver = getAquesTone2Driver();
         }
 #endif
 
         public static boolean isRendererAvailable( RendererKind renderer, String wine_prefix, String wine_top ) {
 #if ENABLE_VOCALOID
-#if JAVA
-            if( renderer == RendererKind.VOCALOID2  || renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ){
-                String dll = (renderer == RendererKind.VOCALOID2) ?
-                             VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) :
-                             VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-                if( dll != null && dll.length() > 3 ){
-                    String act_dll = VocaloSysUtil.combineWinePath( wine_prefix, dll );
-                    String wine_exe = fsys.combine( fsys.combine( wine_top, "bin" ), "wine" );
-#if DEBUG
-                    sout.println( "VSTiDllManager#isRendererAvailable; act_dll=" + act_dll + "; exists=" + fsys.isFileExists( act_dll ) );
-                    sout.println( "VSTiDllManager#isRendererAvailable; wine_exe=" + wine_exe + "; exists=" + fsys.isFileExists( wine_exe ) );
-#endif // DEBUG
-                    return fsys.isFileExists( wine_exe ) && fsys.isFileExists( act_dll );
-                }
-            }
-#else // JAVA
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 if ( renderer == vocaloidDriver.get( i ).getRendererKind() && vocaloidDriver.get( i ).loaded ) {
                     return true;
                 }
             }
-#endif // JAVA
 #endif // ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
             if ( renderer == RendererKind.AQUES_TONE && aquesToneDriver != null && aquesToneDriver.loaded ) {
+                return true;
+            }
+            if ( renderer == RendererKind.AQUES_TONE2 && aquesTone2Driver != null && aquesTone2Driver.loaded ) {
                 return true;
             }
 #endif
@@ -456,28 +457,17 @@ namespace com.github.cadencii {
 
         public static void terminate() {
 #if ENABLE_VOCALOID
-#if JAVA
-            for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
-                VocaloidDaemon vd = vocaloidrvDaemon[i];
-                if( vd == null ){
-                    continue;
-                }
-                vd.terminate();
-            }
-#else
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 if ( vocaloidDriver.get( i ) != null ) {
                     vocaloidDriver.get( i ).close();
                 }
             }
             vocaloidDriver.clear();
-#endif // !JAVA
 #endif // !ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
-            if ( aquesToneDriver != null ) {
-                aquesToneDriver.close();
-            }
+            if ( aquesToneDriver != null ) { aquesToneDriver.close(); }
+            if ( aquesTone2Driver != null ) { aquesTone2Driver.close(); }
 #endif
         }
 
