@@ -437,7 +437,11 @@ namespace com.github.cadencii
         /// <summary>
         /// AquesToneのDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        public boolean DoNotUseAquesTone = false;
+        public bool DoNotUseAquesTone = false;
+        /// <summary>
+        /// AquesTone2のDLLを読み込まない場合true。既定ではfalse
+        /// </summary>
+        public bool DoNotUseAquesTone2 = false;
         /// <summary>
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
         /// 3.3で廃止
