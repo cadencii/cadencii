@@ -53,6 +53,17 @@ namespace com.github.cadencii
         /// </summary>
         public const String TAG_VSQTRACK_RESAMPLER_USED = "org.kbinani.cadencii.ResamplerUsed";
 
+        public const string RENDERER_DSB2 = "DSB2";
+        public const string RENDERER_DSB3 = "DSB3";
+        public const string RENDERER_UTU0 = "UTU0";
+        public const string RENDERER_STR0 = "STR0";
+        public const string RENDERER_AQT0 = "AQT0";
+        public const string RENDERER_AQT1 = "AQT1";
+        /// <summary>
+        /// EmtryRenderingRunnerが使用される
+        /// </summary>
+        public const string RENDERER_NULL = "NUL0";
+
         public AttachedCurve AttachedCurves;
 #if JAVA
         @XmlGenericType( BgmFile.class )
@@ -142,15 +153,18 @@ namespace com.github.cadencii
                 // お手上げである。その２
                 return RendererKind.VOCALOID2;
             }
-            if ( version.StartsWith( VSTiDllManager.RENDERER_AQT0 ) ) {
+
+            if ( version.StartsWith( RENDERER_AQT0 ) ) {
                 return RendererKind.AQUES_TONE;
-            } else if ( version.StartsWith( VSTiDllManager.RENDERER_DSB3 ) ) {
+            } else if ( version.StartsWith( RENDERER_AQT1 ) ) {
+                return RendererKind.AQUES_TONE2;
+            } else if ( version.StartsWith( RENDERER_DSB3 ) ) {
                 return RendererKind.VOCALOID2;
-            } else if ( version.StartsWith( VSTiDllManager.RENDERER_STR0 ) ) {
+            } else if ( version.StartsWith( RENDERER_STR0 ) ) {
                 return RendererKind.VCNT;
-            } else if ( version.StartsWith( VSTiDllManager.RENDERER_UTU0 ) ) {
+            } else if ( version.StartsWith( RENDERER_UTU0 ) ) {
                 return RendererKind.UTAU;
-            } else if ( version.StartsWith( VSTiDllManager.RENDERER_NULL ) ) {
+            } else if ( version.StartsWith( RENDERER_NULL ) ) {
                 return RendererKind.NULL;
             } else {
                 return RendererKind.VOCALOID1;
@@ -163,17 +177,19 @@ namespace com.github.cadencii
             VsqCommon vsq_common = vsq_track.getCommon();
             if ( vsq_common != null ) {
                 if ( renderer_kind == RendererKind.AQUES_TONE ) {
-                    vsq_common.Version = VSTiDllManager.RENDERER_AQT0;
+                    vsq_common.Version = RENDERER_AQT0;
+                } else if ( renderer_kind == RendererKind.AQUES_TONE2 ) {
+                    vsq_common.Version = RENDERER_AQT1;
                 } else if ( renderer_kind == RendererKind.VCNT ) {
-                    vsq_common.Version = VSTiDllManager.RENDERER_STR0;
+                    vsq_common.Version = RENDERER_STR0;
                 } else if ( renderer_kind == RendererKind.UTAU ) {
-                    vsq_common.Version = VSTiDllManager.RENDERER_UTU0;
+                    vsq_common.Version = RENDERER_UTU0;
                 } else if ( renderer_kind == RendererKind.VOCALOID1 ) {
-                    vsq_common.Version = VSTiDllManager.RENDERER_DSB2;
+                    vsq_common.Version = RENDERER_DSB2;
                 } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
-                    vsq_common.Version = VSTiDllManager.RENDERER_DSB3;
+                    vsq_common.Version = RENDERER_DSB3;
                 } else if ( renderer_kind == RendererKind.NULL ) {
-                    vsq_common.Version = VSTiDllManager.RENDERER_NULL;
+                    vsq_common.Version = RENDERER_NULL;
                 }
             }
         }

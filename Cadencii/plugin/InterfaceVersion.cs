@@ -96,11 +96,11 @@ namespace com.github.cadencii
     [Obsolete]
     public static class VSTiProxy
     {
-        public const string RENDERER_DSB2 = VSTiDllManager.RENDERER_DSB2;
-        public const string RENDERER_DSB3 = VSTiDllManager.RENDERER_DSB3;
-        public const string RENDERER_UTU0 = VSTiDllManager.RENDERER_UTU0;
-        public const string RENDERER_STR0 = VSTiDllManager.RENDERER_STR0;
-        public const string RENDERER_AQT0 = VSTiDllManager.RENDERER_AQT0;
-        public const string RENDERER_NULL = VSTiDllManager.RENDERER_NULL;
+        public const string RENDERER_DSB2 = VsqFileEx.RENDERER_DSB2;
+        public const string RENDERER_DSB3 = VsqFileEx.RENDERER_DSB3;
+        public const string RENDERER_UTU0 = VsqFileEx.RENDERER_UTU0;
+        public const string RENDERER_STR0 = VsqFileEx.RENDERER_STR0;
+        public const string RENDERER_AQT0 = VsqFileEx.RENDERER_AQT0;
+        public const string RENDERER_NULL = VsqFileEx.RENDERER_NULL;
     }
 }

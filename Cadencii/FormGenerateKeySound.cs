@@ -284,10 +284,10 @@ namespace com.github.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = singers1[i].VOICENAME;
-                    first_found_renderer = VSTiDllManager.RENDERER_DSB2;
+                    first_found_renderer = VsqFileEx.RENDERER_DSB2;
                 }
                 if ( singers1[i].VOICENAME.Equals( singer ) ) {
-                    renderer = VSTiDllManager.RENDERER_DSB2;
+                    renderer = VsqFileEx.RENDERER_DSB2;
                     break;
                 }
             }
@@ -297,10 +297,10 @@ namespace com.github.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = singers2[i].VOICENAME;
-                    first_found_renderer = VSTiDllManager.RENDERER_DSB3;
+                    first_found_renderer = VsqFileEx.RENDERER_DSB3;
                 }
                 if ( singers2[i].VOICENAME.Equals( singer ) ) {
-                    renderer = VSTiDllManager.RENDERER_DSB3;
+                    renderer = VsqFileEx.RENDERER_DSB3;
                     break;
                 }
             }
@@ -309,10 +309,10 @@ namespace com.github.cadencii {
                 SingerConfig sc = itr.next();
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = sc.VOICENAME;
-                    first_found_renderer = VSTiDllManager.RENDERER_UTU0;
+                    first_found_renderer = VsqFileEx.RENDERER_UTU0;
                 }
                 if ( sc.VOICENAME.Equals( singer ) ) {
-                    renderer = VSTiDllManager.RENDERER_UTU0;
+                    renderer = VsqFileEx.RENDERER_UTU0;
                     break;
                 }
             }

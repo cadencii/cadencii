@@ -93,16 +93,6 @@ namespace com.github.cadencii {
 #else
     public static class VSTiDllManager {
 #endif
-        public const String RENDERER_DSB2 = "DSB2";
-        public const String RENDERER_DSB3 = "DSB3";
-        public const String RENDERER_UTU0 = "UTU0";
-        public const String RENDERER_STR0 = "STR0";
-        public const String RENDERER_AQT0 = "AQT0";
-        public const string RENDERER_AQT1 = "AQT1";
-        /// <summary>
-        /// EmtryRenderingRunnerが使用される
-        /// </summary>
-        public const String RENDERER_NULL = "NUL0";
         //public static int SAMPLE_RATE = 44100;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
