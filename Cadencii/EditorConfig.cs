@@ -381,6 +381,10 @@ namespace com.github.cadencii
         /// </summary>
         public String PathAquesTone = "";
         /// <summary>
+        /// AquesTone2 の VSTi dll へのパス
+        /// </summary>
+        public string PathAquesTone2 = "";
+        /// <summary>
         /// アイコンパレット・ウィンドウの位置
         /// </summary>
         public XmlPoint FormIconPaletteLocation = new XmlPoint( 0, 0 );
