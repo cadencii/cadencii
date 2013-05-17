@@ -12750,15 +12750,8 @@ namespace com.github.cadencii
                     String old_base_font_name = AppManager.editorConfig.BaseFontName;
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
                     Font new_base_font = mDialogPreference.getBaseFont();
-#if DEBUG
-                    sout.println( "FormMain#menuSettingPreference; old_base_font_name=" + old_base_font_name + "; new_base_font.getName()=" + new_base_font.getName() );
-                    sout.println( "FormMain#menuSettingPreference; old_base_font_size=" + old_base_font_size + "; new_base_font.getSize2D()=" + new_base_font.getSize2D() );
-#endif
                     if ( !old_base_font_name.Equals( new_base_font.getName() ) ||
                          old_base_font_size != new_base_font.getSize2D() ) {
-#if DEBUG
-                        sout.println( "FormMain#menuSettingPreference; font changed" );
-#endif
                         AppManager.editorConfig.BaseFontName = mDialogPreference.getBaseFont().getName();
                         AppManager.editorConfig.BaseFontSize = mDialogPreference.getBaseFont().getSize2D();
                         updateMenuFonts();
@@ -12782,11 +12775,7 @@ namespace com.github.cadencii
                         applyLanguage();
                         mDialogPreference.applyLanguage();
                         AppManager.mMixerWindow.applyLanguage();
-#if JAVA
-                        if ( mVersionInfo != null ) {
-#else
                         if ( mVersionInfo != null && !mVersionInfo.IsDisposed ) {
-#endif
                             mVersionInfo.applyLanguage();
                         }
 #if ENABLE_PROPERTY
@@ -12851,21 +12840,9 @@ namespace com.github.cadencii
                     Vector<Boolean> new_with_wine = new Vector<Boolean>();
                     mDialogPreference.copyResamplersConfig( new_resamplers, new_with_wine );
                     AppManager.editorConfig.clearResampler();
-#if DEBUG
-                    sout.println( "FormMain#menuSettingPreference_Click; before;" );
-                    for ( int i = 0; i < new_resamplers.size(); i++ ) {
-                        sout.println( "  " + new_resamplers.get( i ) );
-                    }
-#endif
                     for ( int i = 0; i < new_resamplers.size(); i++ ) {
                         AppManager.editorConfig.addResampler( new_resamplers.get( i ), new_with_wine.get( i ) );
                     }
-#if DEBUG
-                    sout.println( "FormMain#menuSettingPreference_Click; after;" );
-                    for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
-                        sout.println( "  " + AppManager.editorConfig.getResamplerAt( i ) );
-                    }
-#endif
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
                     AppManager.editorConfig.WavtoolWithWine = mDialogPreference.isWavtoolWithWine();
 
@@ -12880,22 +12857,22 @@ namespace com.github.cadencii
                     AppManager.editorConfig.AutoBackupIntervalMinutes = mDialogPreference.getAutoBackupIntervalMinutes();
                     AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = mDialogPreference.isUseSpaceKeyAsMiddleButtonModifier();
 
-                    AppManager.editorConfig.DoNotUseAquesTone = !mDialogPreference.isAquesToneRequired();
-                    AppManager.editorConfig.DoNotUseAquesTone2 = !mDialogPreference.isAquesTone2Required();
 #if ENABLE_AQUESTONE
-                    string updated_aquestone_path = mDialogPreference.getPathAquesTone();
-                    bool reload_aquestone =
-                        (AppManager.editorConfig.PathAquesTone != updated_aquestone_path)
-                        && mDialogPreference.isAquesToneRequired();
-                    AppManager.editorConfig.PathAquesTone = updated_aquestone_path;
-                    if ( reload_aquestone ) { VSTiDllManager.reloadAquesTone(); }
+                    var old_aquestone_config = Tuple.Create( AppManager.editorConfig.PathAquesTone, AppManager.editorConfig.DoNotUseAquesTone );
+                    AppManager.editorConfig.PathAquesTone = mDialogPreference.getPathAquesTone();
+                    AppManager.editorConfig.DoNotUseAquesTone = !mDialogPreference.isAquesToneRequired();
+                    if ( old_aquestone_config.Item1 != AppManager.editorConfig.PathAquesTone
+                        || old_aquestone_config.Item2 != AppManager.editorConfig.DoNotUseAquesTone ) {
+                        VSTiDllManager.reloadAquesTone();
+                    }
 
-                    string updated_aquestone2_path = mDialogPreference.getPathAquesTone2();
-                    bool reload_aquestone2 =
-                        (AppManager.editorConfig.PathAquesTone2 != updated_aquestone2_path)
-                        && mDialogPreference.isAquesTone2Required();
-                    AppManager.editorConfig.PathAquesTone2 = updated_aquestone2_path;
-                    if ( reload_aquestone2 ) { VSTiDllManager.reloadAquesTone2(); }
+                    var old_aquestone2_config = Tuple.Create( AppManager.editorConfig.PathAquesTone2, AppManager.editorConfig.DoNotUseAquesTone2 );
+                    AppManager.editorConfig.PathAquesTone2 = mDialogPreference.getPathAquesTone2();
+                    AppManager.editorConfig.DoNotUseAquesTone2 = !mDialogPreference.isAquesTone2Required();
+                    if ( old_aquestone2_config.Item1 != AppManager.editorConfig.PathAquesTone2
+                        || old_aquestone2_config.Item2 != AppManager.editorConfig.DoNotUseAquesTone2 ) {
+                        VSTiDllManager.reloadAquesTone2();
+                    }
 #endif
                     updateRendererMenu();
 
@@ -12985,14 +12962,6 @@ namespace com.github.cadencii
                     AppManager.editorConfig.WineTopBuiltin = mDialogPreference.isWineBuiltin();
                     AppManager.editorConfig.UseWideCharacterWorkaround = mDialogPreference.isEnableWideCharacterWorkaround();
 
-#if JAVA
-                    // WinePrefix, WineTopのどちらかが変わっていたら，ドライバー・デーモンを再起動する
-                    if( !str.compare( old_wine_prefix, AppManager.editorConfig.WinePrefix ) ||
-                        !str.compare( old_wine_top, AppManager.editorConfig.getWineTop() ) ){
-                        VSTiDllManager.restartVocaloidrvDaemon();
-                    }
-#endif
-
                     trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
                     trackSelector.updateVisibleCurves();
 
@@ -13018,9 +12987,6 @@ namespace com.github.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                 AppManager.debugWriteLine( "FormMain#menuSettingPreference_Click; ex=" + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
             }
         }
 
