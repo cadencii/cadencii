@@ -285,6 +285,15 @@ namespace com.github.cadencii
                 }
             }
             splash = null;
+
+            // AquesTone2 は UI のインスタンスを生成してからでないと、合成時にクラッシュする。
+            // これを回避するため、UI インスタンスの初回生成をココで行う。
+            // AquesTone2 DLL のリロード時にも同様の処理が必要だが、これは VSTiDllManager.getAquesTone2Driver にて行う。
+            var driver = VSTiDllManager.getAquesTone2Driver();
+            if ( driver != null ) {
+                driver.getUi( AppManager.mMainWindow );
+            }
+
             AppManager.mMainWindow.Load -= mainWindow_Load;
         }
 #endif
