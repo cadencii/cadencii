@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using com.github.cadencii.vsq;
 
@@ -33,8 +34,6 @@ namespace com.github.cadencii
 
         private VsqFileEx sequence_;
         private int track_index_;
-        private long start_clock_;
-        private long end_clock_;
 
         public AquesTone2WaveGenerator( AquesTone2Driver driver )
         {
@@ -52,9 +51,14 @@ namespace com.github.cadencii
         public void init( VsqFileEx sequence, int track, int start_clock, int end_clock, int sample_rate )
         {
             sequence_ = (VsqFileEx)sequence.Clone();
+            sequence_.updateTotalClocks();
+            sequence_.removePart( end_clock, sequence_.TotalClocks );
+            sequence_.removePart( 0, start_clock );
+            sequence_.updateTotalClocks();
+            sequence_.updateTempoInfo();
+            sequence_.updateTimesigInfo();
+
             track_index_ = track;
-            start_clock_ = start_clock;
-            end_clock_ = end_clock;
             sample_rate_ = sample_rate;
             is_running_ = false;
             position_ = 0;
@@ -77,10 +81,8 @@ namespace com.github.cadencii
         /// </summary>
         /// <param name="vsq"></param>
         /// <param name="trackIndex"></param>
-        /// <param name="clockStart"></param>
-        /// <param name="clockEnd"></param>
         /// <returns></returns>
-        protected EventQueueSequence generateMidiEvent( VsqFileEx vsq, int trackIndex, int clockStart, int clockEnd )
+        protected EventQueueSequence generateMidiEvent( VsqFileEx vsq, int trackIndex )
         {
             var result = new EventQueueSequence();
             
@@ -293,10 +295,7 @@ namespace com.github.cadencii
                 {
                     var clock = item.Clock + item.ID.Length;
                     var queue = result.get( clock );
-                    var noteOff = new MidiEvent();
-                    noteOff.clock = clock;
-                    noteOff.firstByte = 0x80;
-                    noteOff.data = new int[] { item.ID.Note, 0x40 };
+                    var noteOff = createNoteOffEvent( clock, item.ID.Note );
                     queue.noteoff.add( noteOff );
                 }
             }
@@ -306,15 +305,15 @@ namespace com.github.cadencii
         {
             is_running_ = true;
             total_samples_ = total_samples;
-            const int BUFLEN = 1024;
-            double[] left = new double[BUFLEN];
-            double[] right = new double[BUFLEN];
+            int buffer_length = sample_rate_ / 10;
+            double[] left = new double[buffer_length];
+            double[] right = new double[buffer_length];
 
             if ( driver_.getUi( null ) == null ) {
                 throw new InvalidOperationException("plugin ui を main view のスレッドで作成した後、このメソッドを呼ばなくてはならない。");
             }
 
-            var eventQueue = generateMidiEvent( sequence_, track_index_, (int)start_clock_, (int)end_clock_ );
+            var eventQueue = generateMidiEvent( sequence_, track_index_ );
             foreach ( var sequence_item in eventQueue.getSequence() ) {
                 var clock = sequence_item.Key;
                 var queue = sequence_item.Value;
@@ -360,6 +359,15 @@ namespace com.github.cadencii
                 position_ += process;
                 state.reportProgress( position_ );
             }
+        }
+
+        private MidiEvent createNoteOffEvent( int clock, int note )
+        {
+            var result = new MidiEvent();
+            result.clock = clock;
+            result.firstByte = 0x80;
+            result.data = new int[] { note, 0x40 };
+            return result;
         }
     }
 
