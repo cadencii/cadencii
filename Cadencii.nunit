@@ -1,6 +1,6 @@
 ﻿<NUnitProject>
-  <Settings activeconfig="Debug" />
-  <Config name="Debug" appbase="CadenciiTest\bin\x86\Debug" binpathtype="Auto">
+  <Settings activeconfig="Debug" processModel="Separate" domainUsage="Default" />
+  <Config name="Debug" appbase="CadenciiTest\bin\x86\Debug" binpathtype="Auto" runtimeFramework="v4.0.21006">
     <assembly path="CadenciiTest.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto">

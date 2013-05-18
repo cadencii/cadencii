@@ -122,6 +122,8 @@ namespace com.github.cadencii
                 item = AppManager.getSingerIDUtau( language, program );
             } else if ( renderer_kind == RendererKind.AQUES_TONE ) {
                 item = AppManager.getSingerIDAquesTone( program );
+            } else if ( renderer_kind == RendererKind.AQUES_TONE2 ) {
+                item = AppManager.getSingerIDAquesTone2( program );
             }
             return item;
         }

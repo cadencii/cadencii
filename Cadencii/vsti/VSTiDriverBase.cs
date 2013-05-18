@@ -1,14 +1,14 @@
 #if ENABLE_VOCALOID
 /*
- * vstidrv.cs
- * Copyright © 2008-2011 kbinani
+ * VSTiDriverBase.cs
+ * Copyright © 2008-2013 kbinani
  *
- * This file is part of org.kbinani.cadencii.
+ * This file is part of com.github.cadencii.
  *
- * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * com.github.cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * com.github.cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -48,14 +48,13 @@ namespace com.github.cadencii
         public double TotalSec;
     }
 
-    public class vstidrv
+    public abstract class VSTiDriverBase
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
         public boolean loaded = false;
         public String path = "";
-        public RendererKind kind = RendererKind.NULL;
         /// <summary>
         /// プラグインのUI
         /// </summary>
@@ -112,6 +111,12 @@ namespace com.github.cadencii
         private boolean useNativeDllLoader = true;*/
         protected MemoryManager memoryManager = new MemoryManager();
         private Object mSyncRoot = new Object();
+
+        /// <summary>
+        /// このドライバが担当する、合成エンジンの種類を取得する
+        /// </summary>
+        /// <returns>合成エンジンの種類</returns>
+        public abstract RendererKind getRendererKind();
 
         public int getSampleRate()
         {
@@ -247,6 +252,7 @@ namespace com.github.cadencii
 
         public virtual void send( MidiEvent[] events )
         {
+            if ( events.Length == 0 ) return;
             unsafe {
                 MemoryManager mman = null;
                 try {
@@ -473,7 +479,7 @@ namespace com.github.cadencii
             }
         }
 
-        ~vstidrv()
+        ~VSTiDriverBase()
         {
             lock ( mSyncRoot ) {
                 close();

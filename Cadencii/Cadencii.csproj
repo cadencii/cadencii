@@ -130,10 +130,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Amplifier.cs" />
-    <Compile Include="AquesToneDriver.cs">
-    </Compile>
-    <Compile Include="AquesToneWaveGenerator.cs" />
     <Compile Include="AttachedCurve.cs" />
     <Compile Include="AttackVariation.cs" />
     <Compile Include="AttackVariationConverter.cs" />
@@ -158,11 +154,30 @@
     <Compile Include="CommandExecuteRequiredEventHandler.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ControllerBase.cs" />
+    <Compile Include="dsp\Amplifier.cs" />
+    <Compile Include="dsp\FileWaveReceiver.cs" />
+    <Compile Include="dsp\FileWaveSender.cs" />
+    <Compile Include="dsp\generator\AquesTone2WaveGenerator.cs" />
+    <Compile Include="dsp\generator\AquesToneWaveGenerator.cs" />
+    <Compile Include="dsp\generator\AquesToneWaveGeneratorBase.cs" />
+    <Compile Include="dsp\generator\EmptyWaveGenerator.cs" />
+    <Compile Include="dsp\generator\UtauWaveGenerator.cs" />
+    <Compile Include="dsp\generator\VConnectWaveGenerator.cs" />
+    <Compile Include="dsp\generator\VocaloidWaveGenerator.cs" />
+    <Compile Include="dsp\generator\WaveGenerator.cs" />
+    <Compile Include="dsp\generator\WaveSenderDriver.cs" />
+    <Compile Include="dsp\Mixer.cs" />
+    <Compile Include="dsp\MonitorWaveReceiver.cs" />
+    <Compile Include="dsp\Separator.cs" />
+    <Compile Include="dsp\WaveReceiver.cs" />
+    <Compile Include="dsp\WaveSender.cs" />
+    <Compile Include="dsp\WaveUnit.cs" />
     <Compile Include="EditedStateChangedEventHandler.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EditHistoryModel.cs" />
-    <Compile Include="EmptyWaveGenerator.cs" />
+    <Compile Include="enum\RendererKind.cs" />
+    <Compile Include="enum\RendererKindUtil.cs" />
     <Compile Include="ExceptionNotifyFormController.cs" />
     <Compile Include="ExceptionNotifyFormUi.cs" />
     <Compile Include="ExceptionNotifyFormUiListener.cs" />
@@ -183,9 +198,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FormCheckUnknownSingerAndResampler.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMainController.cs" />
@@ -223,9 +235,6 @@
     <Compile Include="plugin\PluginLoader.cs" />
     <Compile Include="plugin\PluginVersion.cs" />
     <Compile Include="plugin\ScriptProcessor.cs" />
-    <Compile Include="Preference.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ProgressBarWithLabel.cs" />
     <Compile Include="PropertyWindowListener.cs" />
     <Compile Include="PureVirtualFunctionAttribute.cs" />
@@ -272,29 +281,47 @@
     <Compile Include="ui\dotnet\WaveformZoomUiImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ui\main\FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\main\FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\main\RendererMenuHandler.cs" />
+    <Compile Include="ui\preference\Preference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\preference\Preference.Designer.cs">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </Compile>
     <Compile Include="VConnectRenderingQueue.cs" />
-    <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
+    <Compile Include="vsti\AquesTone2Driver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="vsti\AquesToneDriver.cs" />
+    <Compile Include="vsti\AquesToneDriverBase.cs" />
+    <Compile Include="vsti\aquestone\EventQueueSequence.cs" />
+    <Compile Include="vsti\aquestone\MidiEventQueue.cs" />
+    <Compile Include="vsti\aquestone\ParameterEvent.cs" />
+    <Compile Include="vsti\aquestone\SyllableMatcher.cs" />
+    <Compile Include="vsti\VocaloidDriver.cs" />
+    <Compile Include="vsti\VSTiDriverBase.cs" />
     <Compile Include="WaveformZoomController.cs" />
     <Compile Include="WaveformZoomUi.cs">
     </Compile>
     <Compile Include="WaveformZoomUiListener.cs" />
-    <Compile Include="WaveUnit.cs" />
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
     <Compile Include="DrawObjectType.cs" />
     <Compile Include="Matrix2D.cs" />
-    <Compile Include="Mixer.cs" />
-    <Compile Include="MonitorWaveReceiver.cs" />
     <Compile Include="DynaffComparisonContext.cs" />
     <Compile Include="EditedZone.cs" />
     <Compile Include="EditedZoneCommand.cs" />
     <Compile Include="EditedZoneUnit.cs" />
     <Compile Include="EditorStatus.cs" />
     <Compile Include="FederChangedEventHandler.cs" />
-    <Compile Include="FileWaveReceiver.cs" />
-    <Compile Include="FileWaveSender.cs" />
     <Compile Include="FormCurvePointEdit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -340,8 +367,6 @@
     <Compile Include="PointD.cs" />
     <Compile Include="QuantizeModeUtil.cs" />
     <Compile Include="RenderedStatus.cs" />
-    <Compile Include="RendererKind.cs" />
-    <Compile Include="RendererKindUtil.cs" />
     <Compile Include="NoteNumberExpressionType.cs" />
     <Compile Include="NoteNumberProperty.cs" />
     <Compile Include="NoteNumberPropertyConverter.cs" />
@@ -359,14 +384,12 @@
     <Compile Include="SelectedEventEntryPropertyDescriptor.cs" />
     <Compile Include="SelectedEventEntryTypeConverter.cs" />
     <Compile Include="SelectedTrackChangedEventHandler.cs" />
-    <Compile Include="Separator.cs" />
     <Compile Include="SingerEventComparisonContext.cs" />
     <Compile Include="SoloChangedEventHandler.cs" />
     <Compile Include="StateChangeRequiredEventHandler.cs" />
     <Compile Include="TopMostChangedEventHandler.cs" />
     <Compile Include="UpdateProgressEventHandler.cs" />
     <Compile Include="UtauVoiceDB.cs" />
-    <Compile Include="UtauWaveGenerator.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="ValuePairOfStringArrayOfKeys.cs" />
     <Compile Include="CommandTree.cs" />
@@ -452,9 +475,6 @@
     <EmbeddedResource Include="FormCheckUnknownSingerAndResampler.resx">
       <DependentUpon>FormCheckUnknownSingerAndResampler.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormSequenceConfig.resx">
       <DependentUpon>FormSequenceConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -466,9 +486,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoPreset.resx">
       <DependentUpon>FormVibratoPreset.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Preference.resx">
-      <DependentUpon>Preference.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -512,20 +529,13 @@
     <Compile Include="VibratoPointIteratorBySec.cs" />
     <Compile Include="VibratoVariation.cs" />
     <Compile Include="VibratoVariationConverter.cs" />
-    <Compile Include="VocaloidDriver.cs" />
-    <Compile Include="VocaloidWaveGenerator.cs" />
     <Compile Include="VolumeTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="VsqBPListComparisonContext.cs" />
     <Compile Include="VsqFileEx.cs" />
-    <Compile Include="vstidrv.cs" />
     <Compile Include="VstSdk.cs" />
     <Compile Include="WaveDrawContext.cs" />
-    <Compile Include="WaveGenerator.cs" />
-    <Compile Include="WaveReceiver.cs" />
-    <Compile Include="WaveSender.cs" />
-    <Compile Include="WaveSenderDriver.cs" />
     <Compile Include="WaveUnitConfig.cs" />
     <Compile Include="WaveUnitConfigElement.cs" />
     <Compile Include="WaveView.cs">
@@ -537,6 +547,12 @@
     <Compile Include="WorkerState.cs" />
     <Compile Include="WorkerStateImp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
+    <EmbeddedResource Include="ui\main\FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\preference\Preference.resx">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ja.po">

@@ -260,7 +260,7 @@ namespace com.github.cadencii
             // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
             for ( int i = 0; i < VSTiDllManager.vocaloidDriver.size(); i++ ) {
-                if ( VSTiDllManager.vocaloidDriver.get( i ).kind == s_working_renderer ) {
+                if ( VSTiDllManager.vocaloidDriver.get( i ).getRendererKind() == s_working_renderer ) {
                     mDriver = VSTiDllManager.vocaloidDriver.get( i );
                     break;
                 }

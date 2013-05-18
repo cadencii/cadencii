@@ -381,6 +381,10 @@ namespace com.github.cadencii
         /// </summary>
         public String PathAquesTone = "";
         /// <summary>
+        /// AquesTone2 の VSTi dll へのパス
+        /// </summary>
+        public string PathAquesTone2 = "";
+        /// <summary>
         /// アイコンパレット・ウィンドウの位置
         /// </summary>
         public XmlPoint FormIconPaletteLocation = new XmlPoint( 0, 0 );
@@ -433,7 +437,11 @@ namespace com.github.cadencii
         /// <summary>
         /// AquesToneのDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        public boolean DoNotUseAquesTone = false;
+        public bool DoNotUseAquesTone = false;
+        /// <summary>
+        /// AquesTone2のDLLを読み込まない場合true。既定ではfalse
+        /// </summary>
+        public bool DoNotUseAquesTone2 = false;
         /// <summary>
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
         /// 3.3で廃止

@@ -26,7 +26,7 @@ namespace com.github.cadencii
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;
 
-    public unsafe class VocaloidDriver : vstidrv
+    public unsafe class VocaloidDriver : VSTiDriverBase
     {
         const int TRUE = 1;
         const int FALSE = 0;
@@ -59,6 +59,12 @@ namespace com.github.cadencii
         boolean rendering = false;
         //int dseVersion;
         private Object locker = new Object();
+        RendererKind kind;
+
+        public VocaloidDriver( RendererKind kind )
+        {
+            this.kind = kind;
+        }
 
         public void clearSendEvents()
         {
@@ -67,6 +73,11 @@ namespace com.github.cadencii
                     s_track_events.get( i ).clear();
                 }
             }
+        }
+
+        public override RendererKind getRendererKind()
+        {
+            return kind;
         }
 
         /*public int getDseVersion()

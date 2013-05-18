@@ -219,6 +219,11 @@ namespace com.github.cadencii.vsq
                 m_list.add( new VibratoBPPair( (float)str.tof( spl2[0] ), str.toi( spl2[1] ) ) );
             }
         }
+
+        public void clear()
+        {
+            m_list.clear();
+        }
     }
 
 #if !JAVA

@@ -8,9 +8,9 @@
     <ProjectGuid>{7FC4F869-A95B-439E-93A2-01D85E5A8006}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CadenciiTest</RootNamespace>
+    <RootNamespace>cadencii.test</RootNamespace>
     <AssemblyName>CadenciiTest</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
@@ -19,14 +19,17 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -66,11 +69,14 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dsp\generator\AquesTone2WaveGeneratorTest.cs" />
+    <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
     </Compile>
     <Compile Include="ExceptionNotifyFormUiImplTest.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="KanaDeRomanizationTest.cs" />
     <Content Include="fixture\script\Hamori.cs">
       <SubType>Form</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -86,6 +92,11 @@
     <Compile Include="strTest.cs" />
     <Compile Include="VsqIDTest.cs" />
     <Compile Include="VsqxConverterTest.cs" />
+    <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
+    <Compile Include="vsti\aquestone\EventQueueSequenceTest.cs" />
+    <Compile Include="vsti\aquestone\SyllableMatcherTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
   </ItemGroup>
@@ -201,4 +212,5 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
 </Project>
