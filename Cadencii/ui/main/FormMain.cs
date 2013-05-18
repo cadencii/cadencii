@@ -608,7 +608,7 @@ namespace com.github.cadencii
                     4,
                     500000 );
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = AppManager.getVersionStringFromRendererKind( kind );
+            String renderer = kind.getVersionString();
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
             tvsq.Track.get( 1 ).changeRenderer( renderer, singers );
             AppManager.setVsqFile( tvsq );
@@ -6107,7 +6107,7 @@ namespace com.github.cadencii
             VsqTrack vsq_track = new VsqTrack( name, singer );
 
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = AppManager.getVersionStringFromRendererKind( kind );
+            String renderer = kind.getVersionString();
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
 
             vsq_track.changeRenderer( renderer, singers );
@@ -11973,7 +11973,7 @@ namespace com.github.cadencii
 
                 // デフォルトの音声合成システムに切り替え
                 RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-                String renderer = AppManager.getVersionStringFromRendererKind( kind );
+                String renderer = kind.getVersionString();
                 Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
                 work_track.changeRenderer( renderer, singers );
 
@@ -16835,7 +16835,7 @@ namespace com.github.cadencii
             VsqFileEx vsq = new VsqFileEx( AppManager.editorConfig.DefaultSingerName, 1, 4, 4, 500000 );
 
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = AppManager.getVersionStringFromRendererKind( kind );
+            String renderer = kind.getVersionString();
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
             vsq.Track.get( 1 ).changeRenderer( renderer, singers );
 
@@ -17214,7 +17214,7 @@ namespace com.github.cadencii
 
             var track_copy = (VsqTrack)vsq_track.clone();
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
-            String renderer = AppManager.getVersionStringFromRendererKind( kind );
+            String renderer = kind.getVersionString();
             if ( singers == null ) {
                 serr.println( "FormMain#changeRendererCor; singers is null" );
                 return;

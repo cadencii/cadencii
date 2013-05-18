@@ -62,31 +62,6 @@ namespace com.github.cadencii {
         private readonly Color COLOR_ADDING_NOTE_BORDER = new Color( 0, 0, 0, 136 );
         private readonly Color COLOR_ADDING_NOTE_FILL = new Color( 255, 0, 0, 136 );
         
-        private readonly Color COLOR_VOCALO2_BLACK = new Color( 212, 212, 212 );
-        private readonly Color COLOR_VOCALO2_WHITE = new Color( 240, 240, 240 );
-        private readonly Color COLOR_VOCALO2_BAR = new Color( 161, 157, 136 );
-        private readonly Color COLOR_VOCALO2_BEAT = new Color( 209, 204, 172 );
-
-        private readonly Color COLOR_VOCALO1_BLACK = new Color( 210, 205, 172 );
-        private readonly Color COLOR_VOCALO1_WHITE = new Color( 240, 235, 214 );
-        private readonly Color COLOR_VOCALO1_BAR = new Color( 161, 157, 136 );
-        private readonly Color COLOR_VOCALO1_BEAT = new Color( 209, 204, 172 );
-
-        private readonly Color COLOR_UTAU_BLACK = new Color( 212, 212, 212 );
-        private readonly Color COLOR_UTAU_WHITE = new Color( 240, 240, 240 );
-        private readonly Color COLOR_UTAU_BAR = new Color( 255, 64, 255 );
-        private readonly Color COLOR_UTAU_BEAT = new Color( 128, 128, 255 );
-
-        private readonly Color COLOR_VCNT_BLACK = new Color( 212, 212, 212 );
-        private readonly Color COLOR_VCNT_WHITE = new Color( 240, 240, 240 );
-        private readonly Color COLOR_VCNT_BAR = new Color( 255, 153, 0 );
-        private readonly Color COLOR_VCNT_BEAT = new Color( 128, 128, 255 );
-
-        private readonly Color COLOR_AQUESTONE_BLACK = new Color( 212, 212, 212 );
-        private readonly Color COLOR_AQUESTONE_WHITE = new Color( 240, 240, 240 );
-        private readonly Color COLOR_AQUESTONE_BAR = new Color( 7, 107, 175 );
-        private readonly Color COLOR_AQUESTONE_BEAT = new Color( 234, 190, 62 );
-
         public readonly Color[] COLORS_HIDDEN = new Color[]{
             new Color( 181, 162, 123 ),
             new Color( 179, 181, 123 ),
@@ -380,39 +355,16 @@ namespace com.github.cadencii {
 #endif
                 }
 
-                Color black = COLOR_VOCALO2_BLACK;
-                Color white = COLOR_VOCALO2_WHITE;
-                Color bar = COLOR_VOCALO2_BAR;
-                Color beat = COLOR_VOCALO2_BEAT;
                 RendererKind renderer = RendererKind.VOCALOID2;
-
-                EditMode edit_mode = AppManager.getEditMode();
-
                 if ( vsq != null ) {
                     renderer = VsqFileEx.getTrackRendererKind( vsq_track );
                 }
+                Color black = renderer.getPianorollDarkBackground();
+                Color white = renderer.getPianorollBackground();
+                Color bar = renderer.getPianorollBar();
+                Color beat = renderer.getPianorollBeat();
 
-                if ( renderer == RendererKind.UTAU ) {
-                    black = COLOR_UTAU_BLACK;
-                    white = COLOR_UTAU_WHITE;
-                    bar = COLOR_UTAU_BAR;
-                    beat = COLOR_UTAU_BEAT;
-                } else if ( renderer == RendererKind.VOCALOID1 ) {
-                    black = COLOR_VOCALO1_BLACK;
-                    white = COLOR_VOCALO1_WHITE;
-                    bar = COLOR_VOCALO1_BAR;
-                    beat = COLOR_VOCALO1_BEAT;
-                } else if ( renderer == RendererKind.VCNT ) {
-                    black = COLOR_VCNT_BLACK;
-                    white = COLOR_VCNT_WHITE;
-                    bar = COLOR_VCNT_BAR;
-                    beat = COLOR_VCNT_BEAT;
-                } else if ( renderer == RendererKind.AQUES_TONE ) {
-                    black = COLOR_AQUESTONE_BLACK;
-                    white = COLOR_AQUESTONE_WHITE;
-                    bar = COLOR_AQUESTONE_BAR;
-                    beat = COLOR_AQUESTONE_BEAT;
-                }
+                EditMode edit_mode = AppManager.getEditMode();
 
                 #region ピアノロール周りのスクロールバーなど
                 // スクロール画面背景

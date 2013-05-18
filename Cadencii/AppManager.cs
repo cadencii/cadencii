@@ -1467,27 +1467,6 @@ namespace com.github.cadencii
         }
 
         /// <summary>
-        /// 指定した音声合成システムを識別する文字列(DSB301, DSB202等)を取得します
-        /// </summary>
-        /// <param name="kind">音声合成システムの種類</param>
-        /// <returns>音声合成システムを識別する文字列(VOCALOID2=DSB301, VOCALOID1[1.0,1.1]=DSB202, AquesTone=AQT000, Straight x UTAU=STR000, UTAU=UTAU000)</returns>
-        public static String getVersionStringFromRendererKind( RendererKind kind )
-        {
-            if ( kind == RendererKind.AQUES_TONE ) {
-                return "AQT000";
-            } else if ( kind == RendererKind.VCNT ) {
-                return "STR000";
-            } else if ( kind == RendererKind.UTAU ) {
-                return "UTU000";
-            } else if ( kind == RendererKind.VOCALOID1 ) {
-                return "DSB202";
-            } else if ( kind == RendererKind.VOCALOID2 ) {
-                return "DSB301";
-            }
-            return "";
-        }
-
-        /// <summary>
         /// 指定した音声合成システムが使用する歌手のリストを取得します
         /// </summary>
         /// <param name="kind">音声合成システムの種類</param>

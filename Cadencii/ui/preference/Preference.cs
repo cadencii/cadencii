@@ -144,7 +144,7 @@ namespace com.github.cadencii
             (from kind
                 in Enum.GetValues( typeof( RendererKind ) ).Cast<RendererKind>()
                 where kind != RendererKind.NULL
-                select RendererKindUtil.getString( kind )
+                select kind.getString()
             )
             .Distinct()
             .OrderBy( ( kind ) => kind ).ToList()
@@ -280,7 +280,7 @@ namespace com.github.cadencii
         {
             String selstr = (String)comboDefaultSynthesizer.getSelectedItem();
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
-                String str = RendererKindUtil.getString( p );
+                String str = p.getString();
                 if ( str.Equals( selstr ) ) {
                     return p;
                 }
