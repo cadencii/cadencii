@@ -557,8 +557,11 @@ namespace com.github.cadencii {
                     g.setFont( AppManager.baseFont50Bold );
                     g.setColor( new Color( 0, 0, 0, 32 ) );
                     String str = "VOCALOID2";
+                    //FIXME: この分岐無くしたい
                     if ( renderer == RendererKind.AQUES_TONE ) {
                         str = "AquesTone";
+                    } else if ( renderer == RendererKind.AQUES_TONE2 ) {
+                        str = "AquesTone2";
                     } else if ( renderer == RendererKind.VOCALOID1 ) {
                         str = "VOCALOID1";
                     } else if ( renderer == RendererKind.VCNT ) {
