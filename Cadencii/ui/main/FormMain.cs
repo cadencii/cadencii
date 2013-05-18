@@ -10041,13 +10041,11 @@ namespace com.github.cadencii
 #endif
         }
 
-        public void menuVisualPluginUiAquesTone_Click( Object sender, EventArgs e )
+        private void onClickVisualPluginUiAquesTone( System.Windows.Forms.ToolStripMenuItem menu, AquesToneDriverBase drv )
         {
-            boolean visible = !menuVisualPluginUiAquesTone.isSelected();
-            menuVisualPluginUiAquesTone.setSelected( visible );
-
+            bool visible = !menu.Checked;
+            menu.Checked = visible;
 #if ENABLE_AQUESTONE
-            AquesToneDriver drv = VSTiDllManager.getAquesToneDriver();
             boolean chk = true;
             FormPluginUi ui = null;
             if ( drv == null ) {
@@ -10063,13 +10061,23 @@ namespace com.github.cadencii
                 }
             }
             if ( !chk ) {
-                menuVisualPluginUiAquesTone.setSelected( false );
+                menu.Checked = false;
                 return;
             }
             if ( ui != null && !ui.IsDisposed ) {
                 ui.setVisible( visible );
             }
 #endif
+        }
+
+        public void menuVisualPluginUiAquesTone_Click( Object sender, EventArgs e )
+        {
+            onClickVisualPluginUiAquesTone( menuVisualPluginUiAquesTone, VSTiDllManager.getAquesToneDriver() );
+        }
+
+        private void menuVisualPluginUiAquesTone2_Click( object sender, BEventArgs e )
+        {
+            onClickVisualPluginUiAquesTone( menuVisualPluginUiAquesTone2, VSTiDllManager.getAquesTone2Driver() );
         }
         #endregion
 
@@ -17173,14 +17181,9 @@ namespace com.github.cadencii
         {
             RendererKind kind = RendererKind.NULL;
             int resampler_index = -1;
-            if ( sender == cMenuTrackTabRendererAquesTone || sender == menuTrackRendererAquesTone ) {
-                kind = RendererKind.AQUES_TONE;
-            } else if ( sender == cMenuTrackTabRendererStraight || sender == menuTrackRendererVCNT ) {
-                kind = RendererKind.VCNT;
-            } else if ( sender == cMenuTrackTabRendererVOCALOID1 || sender == menuTrackRendererVOCALOID1 ) {
-                kind = RendererKind.VOCALOID1;
-            } else if ( sender == cMenuTrackTabRendererVOCALOID2 || sender == menuTrackRendererVOCALOID2 ) {
-                kind = RendererKind.VOCALOID2;
+            var menu_handler = renderer_menu_handler_.FirstOrDefault( ( handler ) => handler.isMatch( sender ) );
+            if ( menu_handler != null && menu_handler.RendererKind != RendererKind.UTAU ) {
+                kind = menu_handler.RendererKind;
             } else {
                 // イベント送信元のアイテムが，cMenuTrackTabRendererUtauまたは
                 // menuTrackRendererUTAUのサブアイテムかどうかをチェック
@@ -17200,6 +17203,7 @@ namespace com.github.cadencii
                 // このばあいは確実にUTAU
                 kind = RendererKind.UTAU;
             }
+
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
@@ -17226,8 +17230,8 @@ namespace com.github.cadencii
                 VsqFileEx.setTrackResamplerUsed( track_copy, resampler_index );
             }
             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
-                                                                            track_copy,
-                                                                            vsq.AttachedCurves.get( selected - 1 ) );
+                                                                         track_copy,
+                                                                         vsq.AttachedCurves.get( selected - 1 ) );
             AppManager.editHistory.register( vsq.executeCommand( run ) );
 
             renderer_menu_handler_.ForEach( ( handler ) => handler.updateCheckedState( kind ) );
@@ -17783,6 +17787,7 @@ namespace com.github.cadencii
             dlg.setLocation( p.x, p.y );
         }
         #endregion
+
     }
 
 #if !JAVA

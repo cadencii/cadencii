@@ -77,6 +77,7 @@ namespace com.github.cadencii
             this.menuVisualPluginUiVocaloid1 = new com.github.cadencii.windows.forms.BMenuItem();
             this.menuVisualPluginUiVocaloid2 = new com.github.cadencii.windows.forms.BMenuItem();
             this.menuVisualPluginUiAquesTone = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuVisualPluginUiAquesTone2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuVisualGridline = new com.github.cadencii.windows.forms.BMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
@@ -343,7 +344,6 @@ namespace com.github.cadencii
             this.cMenuPositionIndicator = new com.github.cadencii.windows.forms.BPopupMenu(this.components);
             this.cMenuPositionIndicatorStartMarker = new com.github.cadencii.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new com.github.cadencii.windows.forms.BMenuItem();
-            this.menuVisualPluginUiAquesTone2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -771,6 +771,13 @@ namespace com.github.cadencii
             this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size(157, 22);
             this.menuVisualPluginUiAquesTone.Text = "AquesTone(&A)";
             // 
+            // menuVisualPluginUiAquesTone2
+            // 
+            this.menuVisualPluginUiAquesTone2.Name = "menuVisualPluginUiAquesTone2";
+            this.menuVisualPluginUiAquesTone2.Size = new System.Drawing.Size(157, 22);
+            this.menuVisualPluginUiAquesTone2.Text = "AquesTone2";
+            this.menuVisualPluginUiAquesTone2.Click += new System.EventHandler(this.menuVisualPluginUiAquesTone2_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
@@ -1033,6 +1040,8 @@ namespace com.github.cadencii
             this.menuTrackRendererAquesTone2.Name = "menuTrackRendererAquesTone2";
             this.menuTrackRendererAquesTone2.Size = new System.Drawing.Size(193, 22);
             this.menuTrackRendererAquesTone2.Text = "AquesTone2(&6)";
+            this.menuTrackRendererAquesTone2.Click += new System.EventHandler(this.handleChangeRenderer);
+            this.menuTrackRendererAquesTone2.MouseEnter += new System.EventHandler(this.handleMenuMouseEnter);
             // 
             // toolStripMenuItem4
             // 
@@ -1964,6 +1973,7 @@ namespace com.github.cadencii
             this.cMenuTrackTabRendererAquesTone2.Name = "cMenuTrackTabRendererAquesTone2";
             this.cMenuTrackTabRendererAquesTone2.Size = new System.Drawing.Size(197, 22);
             this.cMenuTrackTabRendererAquesTone2.Text = "AquesTone2(&6)";
+            this.cMenuTrackTabRendererAquesTone2.Click += new System.EventHandler(this.handleChangeRenderer);
             // 
             // cMenuTrackSelector
             // 
@@ -2859,12 +2869,6 @@ namespace com.github.cadencii
             this.cMenuPositionIndicatorEndMarker.Name = "cMenuPositionIndicatorEndMarker";
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size(150, 22);
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
-            // 
-            // menuVisualPluginUiAquesTone2
-            // 
-            this.menuVisualPluginUiAquesTone2.Name = "menuVisualPluginUiAquesTone2";
-            this.menuVisualPluginUiAquesTone2.Size = new System.Drawing.Size(157, 22);
-            this.menuVisualPluginUiAquesTone2.Text = "AquesTone2";
             // 
             // FormMain
             // 

@@ -49,6 +49,10 @@ namespace com.github.cadencii
             if ( context_menu_ != null ) { context_menu_.Image = icon; }
         }
 
+        public bool isMatch( object menu ) { return (menu != null) && (menu == track_menu_ || menu == context_menu_); }
+
+        public RendererKind RendererKind { get { return kind_; } }
+
         protected ToolStripMenuItem track_menu_;
         protected ToolStripMenuItem context_menu_;
         protected ToolStripMenuItem vsti_ui_menu_;
