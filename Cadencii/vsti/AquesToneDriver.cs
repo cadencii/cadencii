@@ -22,6 +22,8 @@ import com.github.cadencii.vsq.*;
 
 using System;
 using System.Text;
+using System.Linq;
+using System.Collections.Generic;
 using com.github.cadencii;
 using com.github.cadencii.java.io;
 using com.github.cadencii.vsq;
@@ -76,7 +78,7 @@ namespace com.github.cadencii
         private static readonly SingerConfig male_hk = new SingerConfig( "Male_HK", 2, 2 );
         private static readonly SingerConfig auto_hk = new SingerConfig( "Auto_HK", 3, 3 );
 
-        public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
+        private static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
 #if ENABLE_AQUESTONE
 
@@ -164,6 +166,23 @@ namespace com.github.cadencii
             return "AquesTone";
         }
 
+        /// <summary>
+        /// プログラムチェンジの値から、該当する歌手設定を取得する
+        /// </summary>
+        /// <param name="program_change">プログラムチェンジ</param>
+        /// <returns>歌手設定。該当する歌手設定がなければ null を返す</returns>
+        public static SingerConfig getSingerConfig( int program_change )
+        {
+            return SINGERS.FirstOrDefault( ( singer_config ) => singer_config.Program == program_change );
+        }
+
+        /// <summary>
+        /// 歌手情報を列挙する
+        /// </summary>
+        public static IEnumerable<SingerConfig> Singers
+        {
+            get { return SINGERS; }
+        }
 #endif
     }
 

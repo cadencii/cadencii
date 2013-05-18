@@ -35,6 +35,7 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 using Microsoft.CSharp;
 using com.github.cadencii.apputil;
 using com.github.cadencii.java.awt;
@@ -1477,11 +1478,12 @@ namespace com.github.cadencii
             if ( kind == RendererKind.AQUES_TONE ) {
                 singers = new Vector<VsqID>();
 #if ENABLE_AQUESTONE
-                SingerConfig[] list = AquesToneDriver.SINGERS;
-                for ( int i = 0; i < list.Length; i++ ) {
-                    SingerConfig sc = list[i];
-                    singers.add( getSingerIDAquesTone( sc.Program ) );
-                }
+                singers.AddRange( AquesToneDriver.Singers.Select( ( config ) => getSingerIDAquesTone( config.Program ) ) );
+#endif
+            } else if ( kind == RendererKind.AQUES_TONE2 ) {
+                singers = new Vector<VsqID>();
+#if ENABLE_AQUESTONE
+                singers.AddRange( AquesTone2Driver.Singers.Select( ( config ) => getSingerIDAquesTone2( config.Program ) ) );
 #endif
             } else if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
                 Vector<SingerConfig> list = editorConfig.UtauSingers;
@@ -3291,55 +3293,65 @@ namespace com.github.cadencii
             }
         }
 
+        /// <summary>
+        /// TODO: 廃止する。AquesToneDriver から取得するようにする
+        /// </summary>
+        /// <param name="program_change"></param>
+        /// <returns></returns>
         public static SingerConfig getSingerInfoAquesTone( int program_change )
         {
 #if ENABLE_AQUESTONE
-            for ( int i = 0; i < AquesToneDriver.SINGERS.Length; i++ ) {
-                if ( program_change == AquesToneDriver.SINGERS[i].Program ) {
-                    return AquesToneDriver.SINGERS[i];
-                }
-            }
-#endif
+            return AquesToneDriver.getSingerConfig( program_change );
+#else
             return null;
+#endif
         }
 
-        public static VsqID getSingerIDAquesTone( int program )
+        private static VsqID createAquesToneSingerID( int program, Func<int, SingerConfig> get_singer_config )
         {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
-            int index = -1;
-#if ENABLE_AQUESTONE
-            int c = AquesToneDriver.SINGERS.Length;
-            for ( int i = 0; i < c; i++ ) {
-                if ( AquesToneDriver.SINGERS[i].Program == program ) {
-                    index = i;
-                    break;
-                }
+            SingerConfig config = null;
+            if ( get_singer_config != null ) {
+                config = get_singer_config( program );
             }
-            if ( index >= 0 ) {
-                SingerConfig sc = AquesToneDriver.SINGERS[index];
+            if ( config != null ) {
                 int lang = 0;
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( lang, 2 ) + PortUtil.toHexString( program, 2 );
-                ret.IconHandle.IDS = sc.VOICENAME;
+                ret.IconHandle.IDS = config.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = lang;
                 ret.IconHandle.setLength( 1 );
                 ret.IconHandle.Original = lang << 8 | program;
                 ret.IconHandle.Program = program;
                 ret.IconHandle.Caption = "";
-                return ret;
             } else {
-#endif
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
                 ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 2 ) + PortUtil.toHexString( 0, 2 );
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
-                return ret;
-#if ENABLE_AQUESTONE
             }
+            return ret;
+        }
+
+        public static VsqID getSingerIDAquesTone( int program )
+        {
+#if ENABLE_AQUESTONE
+            return createAquesToneSingerID(program, AquesToneDriver.getSingerConfig);
+#else
+            return createAquesToneSingerID( program, null );
+#endif
+        }
+
+        public static VsqID getSingerIDAquesTone2( int program )
+        {
+#if ENABLE_AQUESTONE
+            return createAquesToneSingerID( program, AquesTone2Driver.getSingerConfig );
+#else
+            return createAquesToneSingerID( program, null );
 #endif
         }
 

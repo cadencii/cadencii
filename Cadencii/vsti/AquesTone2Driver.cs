@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using com.github.cadencii.vsq;
 using com.github.cadencii.java.util;
 
@@ -65,6 +66,10 @@ namespace com.github.cadencii
         /// キーが音素、値は行インデックス, カラムインデックスを保持した SyllablePosition
         /// </summary>
         private static readonly Dictionary<string, SyllablePosition> syllableMap;
+
+        private static readonly SingerConfig lina_ = new SingerConfig( "Lina", 0, 0 );
+
+        private static readonly List<SingerConfig> singers_ = new List<SingerConfig>() { lina_ };
 
         static AquesTone2Driver()
         {
@@ -185,6 +190,24 @@ namespace com.github.cadencii
         protected override String getKoeConfigKey()
         {
             return "FileKoe";
+        }
+
+        /// <summary>
+        /// プログラムチェンジの値から、該当する歌手設定を取得する
+        /// </summary>
+        /// <param name="program_change">プログラムチェンジ</param>
+        /// <returns>歌手設定。該当する歌手設定がなければ null を返す</returns>
+        public static SingerConfig getSingerConfig( int program_change )
+        {
+            return singers_.FirstOrDefault( ( singer_config ) => singer_config.Program == program_change );
+        }
+
+        /// <summary>
+        /// 歌手情報を列挙する
+        /// </summary>
+        public static IEnumerable<SingerConfig> Singers
+        {
+            get { return singers_; }
         }
     }
 

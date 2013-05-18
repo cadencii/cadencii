@@ -30,6 +30,7 @@ import com.github.cadencii.windows.forms.*;
 //#define OLD_IMPL_MOUSE_TRACER
 using System;
 using System.Threading;
+using System.Linq;
 using com.github.cadencii;
 using com.github.cadencii.apputil;
 using com.github.cadencii.java.awt;
@@ -5821,10 +5822,10 @@ namespace com.github.cadencii
 #if ENABLE_AQUESTONE
             } else if ( renderer == RendererKind.AQUES_TONE ) {
                 items = new Vector<SingerConfig>();
-                int c = AquesToneDriver.SINGERS.Length;
-                for ( int i = 0; i < c; i++ ) {
-                    items.add( AppManager.getSingerInfoAquesTone( i ) );
-                }
+                items.AddRange( AquesToneDriver.Singers );
+            } else if ( renderer == RendererKind.AQUES_TONE2 ) {
+                items = new Vector<SingerConfig>();
+                items.AddRange( AquesTone2Driver.Singers );
 #endif
             } else {
                 return;
@@ -5860,7 +5861,7 @@ namespace com.github.cadencii
                               "\nGender Factor: " + sc.GenderFactor +
                               "\nOpening: " + sc.Opening;
                     }
-                } else if ( renderer == RendererKind.AQUES_TONE ) {
+                } else if ( renderer == RendererKind.AQUES_TONE || renderer == RendererKind.AQUES_TONE2 ) {
                     if ( sc != null ) {
                         tip = "Name: " + sc.VOICENAME;
                     }
