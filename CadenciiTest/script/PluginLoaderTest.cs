@@ -5,7 +5,6 @@ using System.Text;
 using NUnit.Framework;
 using cadencii;
 using Microsoft.CSharp;
-using ICSharpCode.NRefactory.CSharp;
 using System.IO;
 
 namespace cadencii
