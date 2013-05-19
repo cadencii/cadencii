@@ -5,6 +5,7 @@ using System.Reflection;
 using System.CodeDom.Compiler;
 using System.IO;
 using Microsoft.CSharp;
+using System.Linq;
 using cadencii;
 using cadencii.apputil;
 using cadencii.vsq;
@@ -32,6 +33,10 @@ namespace cadencii
 
             if ( fsys.isFileExists( cached_asm_file ) ) {
                 ret = Assembly.LoadFile( cached_asm_file );
+                if ( !isValidCachedAssembly( ret ) ){
+                    ret = null;
+                    usedAssemblyChache.Remove( cached_asm_file );
+                }
                 if ( ret != null ) {
                     if ( !usedAssemblyChache.Contains( cached_asm_file ) ) {
                         usedAssemblyChache.Add( cached_asm_file );
@@ -56,12 +61,12 @@ namespace cadencii
                 }
 
                 CompilerParameters parameters = new CompilerParameters( new String[] {
-                    fsys.combine( path, "org.kbinani.vsq.dll" ),
+                    fsys.combine( path, "cadencii.vsq.dll" ),
                     fsys.combine( path, "Cadencii.exe" ),
-                    fsys.combine( path, "org.kbinani.media.dll" ),
-                    fsys.combine( path, "org.kbinani.apputil.dll" ),
-                    fsys.combine( path, "org.kbinani.windows.forms.dll" ),
-                    fsys.combine( path, "org.kbinani.dll" )
+                    fsys.combine( path, "cadencii.media.dll" ),
+                    fsys.combine( path, "cadencii.apputil.dll" ),
+                    fsys.combine( path, "cadencii.windows.forms.dll" ),
+                    fsys.combine( path, "cadencii.core.dll" )
                 } );
                 parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
                 parameters.ReferencedAssemblies.Add( "System.dll" );
@@ -109,6 +114,16 @@ namespace cadencii
             return ret;
         }
 #endif // ENABLE_SCRIPT
+
+        /// <summary>
+        /// キャシュから読み込んだアセンブリが、このバージョンの Cadencii で使えるかどうかを調べる
+        /// </summary>
+        /// <param name="assembly">対象のアセンブリ</param>
+        /// <returns>使えるようであれば true</returns>
+        private static bool isValidCachedAssembly( Assembly assembly )
+        {
+            return assembly.GetReferencedAssemblies().All( ( asm ) => !asm.Name.Contains( "org.kbinani" ) );
+        }
 
         /// <summary>
         /// 使用されていないアセンブリのキャッシュを削除します
