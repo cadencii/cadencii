@@ -13,9 +13,9 @@ namespace cadencii.test.dsp.generator
         {
         }
 
-        public new EventQueueSequence generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end )
+        public EventQueueSequence generateMidiEvent( VsqFileEx vsq, int track )
         {
-            return base.generateMidiEvent( vsq, track, clock_start, clock_end );
+            return base.generateMidiEvent( vsq, track );
         }
 
         public void reflectVibratoPitch( VsqEvent item, VsqBPList pitchBend, VsqBPList pitchBendSensitivity, TempoVector tempoTable )
