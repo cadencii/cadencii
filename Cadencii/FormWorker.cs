@@ -13,11 +13,11 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.ui.*;
+import cadencii.*;
+import cadencii.ui.*;
 
 #elif __cplusplus
 
@@ -31,9 +31,9 @@ using System;
 using System.Threading;
 using System.ComponentModel;
 using System.Reflection;
-using com.github.cadencii.java.util;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 #endif
 

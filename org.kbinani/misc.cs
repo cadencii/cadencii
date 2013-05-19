@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public static class Misc {
         /// <summary>

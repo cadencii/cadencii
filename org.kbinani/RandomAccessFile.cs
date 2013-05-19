@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace com.github.cadencii.java.io {
+namespace cadencii.java.io {
 
     public class RandomAccessFile : InputStream {
         private System.IO.FileStream m_stream;

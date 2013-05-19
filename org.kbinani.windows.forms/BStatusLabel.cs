@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BStatusLabel.java
 #else
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BStatusLabel : System.Windows.Forms.ToolStripStatusLabel {
         public void setText( string value ) {
@@ -33,11 +33,11 @@ namespace com.github.cadencii.windows.forms {
             return base.ToolTipText;
         }
 
-        public com.github.cadencii.java.awt.Icon getIcon() {
-            return new com.github.cadencii.java.awt.ImageIcon( base.Image );
+        public cadencii.java.awt.Icon getIcon() {
+            return new cadencii.java.awt.ImageIcon( base.Image );
         }
 
-        public void setIcon( com.github.cadencii.java.awt.Icon value ) {
+        public void setIcon( cadencii.java.awt.Icon value ) {
             if ( value == null ) {
                 base.Image = null;
             } else {

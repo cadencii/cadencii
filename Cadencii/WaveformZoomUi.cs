@@ -13,18 +13,16 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 #else
 
-namespace com.github
-{
     namespace cadencii
     {
 
 #if CSHARP
             using System;
-            using com.github.cadencii;
+            using cadencii;
 #else
             using namespace org::kbinani::cadencii;
 #endif
@@ -66,6 +64,5 @@ namespace com.github
 #else
 
     }
-}
 
 #endif

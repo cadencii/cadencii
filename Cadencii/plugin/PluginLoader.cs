@@ -5,11 +5,11 @@ using System.Reflection;
 using System.CodeDom.Compiler;
 using System.IO;
 using Microsoft.CSharp;
-using com.github.cadencii;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
+using cadencii;
+using cadencii.apputil;
+using cadencii.vsq;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     /// <summary>
     /// プラグインファイルを読み込み、コンパイルするクラス

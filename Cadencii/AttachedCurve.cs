@@ -13,20 +13,20 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.xml.*;
+import cadencii.*;
+import cadencii.xml.*;
 
 #else
 
 using System;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.java.io;
+using cadencii;
+using cadencii.java.util;
+using cadencii.java.io;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 #endif
 

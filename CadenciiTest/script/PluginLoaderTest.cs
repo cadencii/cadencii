@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using com.github.cadencii;
+using cadencii;
 using Microsoft.CSharp;
 using ICSharpCode.NRefactory.CSharp;
 using System.IO;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     [TestFixture]
     class PluginLoaderTest

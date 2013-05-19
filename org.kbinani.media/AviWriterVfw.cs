@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public class AviWriterVfw : IAviWriter {
         private int m_file_handle = 0;

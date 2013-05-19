@@ -12,27 +12,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormNoteExpressionConfig.java
 
 import java.awt.event.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.java.util;
-using com.github.cadencii.java.awt.event_;
+using cadencii.apputil;
+using cadencii.vsq;
+using cadencii.windows.forms;
+using cadencii.java.util;
+using cadencii.java.awt.event_;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
@@ -446,8 +446,8 @@ namespace com.github.cadencii
         {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
-                                  com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
                 m_apply_current_track = true;
                 setDialogResult( BDialogResult.OK );
             }
@@ -567,8 +567,8 @@ namespace com.github.cadencii
             this.groupPitchControl = new BGroupBox();
             this.label5 = new BLabel();
             this.label4 = new BLabel();
-            this.txtBendLength = new com.github.cadencii.NumberTextBox();
-            this.txtBendDepth = new com.github.cadencii.NumberTextBox();
+            this.txtBendLength = new cadencii.NumberTextBox();
+            this.txtBendDepth = new cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
             this.trackBendDepth = new BSlider();
             this.chkDownPortamento = new BCheckBox();
@@ -578,8 +578,8 @@ namespace com.github.cadencii
             this.groupDynamicsControl = new BGroupBox();
             this.label7 = new BLabel();
             this.label6 = new BLabel();
-            this.txtAccent = new com.github.cadencii.NumberTextBox();
-            this.txtDecay = new com.github.cadencii.NumberTextBox();
+            this.txtAccent = new cadencii.NumberTextBox();
+            this.txtDecay = new cadencii.NumberTextBox();
             this.trackAccent = new BSlider();
             this.trackDecay = new BSlider();
             this.lblAccent = new BLabel();
@@ -591,8 +591,8 @@ namespace com.github.cadencii
             this.groupAttack = new BGroupBox();
             this.lblAttackTemplate = new BLabel();
             this.comboAttackTemplate = new BComboBox();
-            this.txtDepth = new com.github.cadencii.NumberTextBox();
-            this.txtDuration = new com.github.cadencii.NumberTextBox();
+            this.txtDepth = new cadencii.NumberTextBox();
+            this.txtDuration = new cadencii.NumberTextBox();
             this.trackDepth = new BSlider();
             this.trackDuration = new BSlider();
             this.lblDepth = new BLabel();
@@ -661,7 +661,7 @@ namespace com.github.cadencii
             this.txtBendLength.TabIndex = 5;
             this.txtBendLength.Text = "0";
             this.txtBendLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBendLength.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtBendLength.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtBendDepth
             // 
@@ -673,7 +673,7 @@ namespace com.github.cadencii
             this.txtBendDepth.TabIndex = 2;
             this.txtBendDepth.Text = "8";
             this.txtBendDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtBendDepth.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtBendDepth.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackBendLength
             // 
@@ -779,7 +779,7 @@ namespace com.github.cadencii
             this.txtAccent.TabIndex = 13;
             this.txtAccent.Text = "50";
             this.txtAccent.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtAccent.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtAccent.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDecay
             // 
@@ -791,7 +791,7 @@ namespace com.github.cadencii
             this.txtDecay.TabIndex = 10;
             this.txtDecay.Text = "50";
             this.txtDecay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDecay.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDecay.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackAccent
             // 
@@ -924,7 +924,7 @@ namespace com.github.cadencii
             this.txtDepth.TabIndex = 13;
             this.txtDepth.Text = "64";
             this.txtDepth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDepth.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDepth.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDuration
             // 
@@ -936,7 +936,7 @@ namespace com.github.cadencii
             this.txtDuration.TabIndex = 10;
             this.txtDuration.Text = "64";
             this.txtDuration.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtDuration.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDuration.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // trackDepth
             // 

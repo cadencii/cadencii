@@ -12,17 +12,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
-import com.github.cadencii.*;
-import com.github.cadencii.xml.*;
+import cadencii.*;
+import cadencii.xml.*;
 #else
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.xml;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.xml;
 
-namespace com.github.cadencii {
+namespace cadencii {
 #endif
 
     /// <summary>

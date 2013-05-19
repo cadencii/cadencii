@@ -13,20 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import javax.imageio.*;
-import com.github.cadencii.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.javax.imageio;
-using com.github.cadencii.windows.forms;
+using cadencii.java.awt;
+using cadencii.javax.imageio;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;

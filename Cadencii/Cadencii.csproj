@@ -8,7 +8,7 @@
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com.github.cadencii</RootNamespace>
+    <RootNamespace>cadencii</RootNamespace>
     <AssemblyName>Cadencii</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -1206,7 +1206,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>javac "$(SolutionDir)makeRes.java" -encoding UTF8
-java -classpath "$(SolutionDir)..\Cadencii" makeRes -i "$(ProjectDir)Resources.list" -o "$(ProjectDir)Resources.cs" -p "com.github.cadencii" -n "com.github.cadencii"
+java -classpath "$(SolutionDir)..\Cadencii" makeRes -i "$(ProjectDir)Resources.list" -o "$(ProjectDir)Resources.cs" -p "cadencii" -n "cadencii"
 </PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -13,11 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
+using cadencii.apputil;
+using cadencii.java.io;
+using cadencii.java.util;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
 
     /// <summary>
@@ -131,7 +131,7 @@ namespace com.github.cadencii {
                         ret = ScriptReturnStatus.ERROR;
                     }
                     if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         AppManager.editHistory.register( vsq.executeCommand( run ) );
@@ -159,11 +159,11 @@ namespace com.github.cadencii {
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     serr.println( "AppManager#invokeScript; ex=" + ex );
                 }
             } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
             }
             return false;
         }

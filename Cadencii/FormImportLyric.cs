@@ -12,22 +12,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormImportLyric.java
 
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii;
+using cadencii.java.util;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -207,10 +207,10 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtLyrics = new com.github.cadencii.windows.forms.BTextArea();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.lblNotes = new com.github.cadencii.windows.forms.BLabel();
+            this.txtLyrics = new cadencii.windows.forms.BTextArea();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.lblNotes = new cadencii.windows.forms.BLabel();
             this.SuspendLayout();
             // 
             // txtLyrics

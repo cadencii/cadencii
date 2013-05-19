@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace com.github.cadencii.java.util {
+namespace cadencii.java.util {
     using boolean = Boolean;
 
     public interface Entry<K, V> {

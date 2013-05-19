@@ -12,20 +12,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormRealtimeConfig.java
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.apputil;
+using cadencii;
+using cadencii.windows.forms;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;

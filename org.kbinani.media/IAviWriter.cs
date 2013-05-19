@@ -15,7 +15,7 @@
 using System;
 using System.Drawing;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public interface IAviWriter {
         void AddFrame( Bitmap frame );

@@ -12,15 +12,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
 #else
 using System.Collections.Generic;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
+using cadencii;
+using cadencii.java.util;
 
-namespace com.github.cadencii {
+namespace cadencii {
 #endif
 
     public interface ICommand {

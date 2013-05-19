@@ -12,17 +12,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.windows.forms;
+package cadencii.windows.forms;
 
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 #else
-using com.github.cadencii.java.util;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.javax.swing;
+using cadencii.java.util;
+using cadencii.java.awt.event_;
+using cadencii.javax.swing;
 
-namespace com.github.cadencii.windows.forms{
+namespace cadencii.windows.forms{
 #endif
 
     public class BKeysUtility{

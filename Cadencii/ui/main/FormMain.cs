@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormMain.java
 
@@ -25,13 +25,13 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Transmitter;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.MidiDevice;
-import com.github.cadencii.ui.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.componentmodel.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.xml.*;
+import cadencii.ui.*;
+import cadencii.apputil.*;
+import cadencii.componentmodel.*;
+import cadencii.media.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
+import cadencii.xml.*;
 
 #else
 
@@ -43,20 +43,20 @@ using System.Media;
 using System.Text;
 using System.Threading;
 using System.Linq;
-using com.github.cadencii.apputil;
-using com.github.cadencii.componentmodel;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
-using com.github.cadencii.javax.swing;
-using com.github.cadencii.javax.sound.midi;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.xml;
+using cadencii.apputil;
+using cadencii.componentmodel;
+using cadencii.java.awt;
+using cadencii.java.awt.event_;
+using cadencii.java.io;
+using cadencii.java.util;
+using cadencii.javax.swing;
+using cadencii.javax.sound.midi;
+using cadencii.media;
+using cadencii.vsq;
+using cadencii.windows.forms;
+using cadencii.xml;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
@@ -3071,8 +3071,8 @@ namespace com.github.cadencii
                 }
                 BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                               _( "Affirmation" ),
-                                                              com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                              com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
+                                                              cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                              cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == BDialogResult.YES ) {
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
                         int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
@@ -4351,9 +4351,9 @@ namespace com.github.cadencii
                             Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
 #if !JAVA
 #if DEBUG
-                            com.github.cadencii.debug.push_log( "FormMain+ClearTempWave()" );
-                            com.github.cadencii.debug.push_log( "    ex=" + ex.ToString() );
-                            com.github.cadencii.debug.push_log( "    error_count=" + error );
+                            cadencii.debug.push_log( "FormMain+ClearTempWave()" );
+                            cadencii.debug.push_log( "    ex=" + ex.ToString() );
+                            cadencii.debug.push_log( "    error_count=" + error );
 #endif
 #endif
 
@@ -6081,8 +6081,8 @@ namespace com.github.cadencii
             if ( AppManager.showMessageBox(
                     PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
                     _APP_NAME,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
+                    cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
                 if ( selected >= 2 ) {
                     AppManager.setSelected( selected - 1 );
@@ -6893,7 +6893,7 @@ namespace com.github.cadencii
                             AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                        _( "Info." ),
                                                        PortUtil.OK_OPTION,
-                                                       com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                                       cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                             return true;
                         }
                     }
@@ -6935,7 +6935,7 @@ namespace com.github.cadencii
                         AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                    _( "Info." ),
                                                    PortUtil.OK_OPTION,
-                                                   com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                                   cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                         return true;
                     }
                 }
@@ -10387,7 +10387,7 @@ namespace com.github.cadencii
             }
             String log = fsys.combine( tempdir, "run.log" );
 #if !JAVA
-            com.github.cadencii.debug.close();
+            cadencii.debug.close();
 #endif
             try {
                 if ( fsys.isFileExists( log ) ) {
@@ -10457,8 +10457,8 @@ namespace com.github.cadencii
                 }
                 BDialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                                _( "Affirmation" ),
-                                                               com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
-                                                               com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
+                                                               cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
+                                                               cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( ret == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
@@ -11040,8 +11040,8 @@ namespace com.github.cadencii
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
                         ),
                         _APP_NAME,
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                        cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -11401,7 +11401,7 @@ namespace com.github.cadencii
                     _( "invalid rendering region; start>=end" ),
                     _( "Error" ),
                     PortUtil.OK_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
             for ( int i = 1; i < size; i++ ) {
@@ -11554,8 +11554,8 @@ namespace com.github.cadencii
                 BDialogResult dr = AppManager.showMessageBox(
                     _( "UTAU singer not registered yet.\nContinue ?" ),
                     _( "Info" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 if ( dr != BDialogResult.YES ) {
                     return;
                 }
@@ -11683,7 +11683,7 @@ namespace com.github.cadencii
                     _( "invalid rendering region; start>=end" ),
                     _( "Error" ),
                     PortUtil.OK_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
             Vector<Integer> other_tracks = new Vector<Integer>();
@@ -11760,16 +11760,16 @@ namespace com.github.cadencii
                 AppManager.showMessageBox(
                     _( "Invalid MIDI file." ),
                     _( "Error" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mf == null ) {
                 AppManager.showMessageBox(
                     _( "Invalid MIDI file." ),
                     _( "Error" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             int count = mf.getTrackCount();
@@ -12254,7 +12254,7 @@ namespace com.github.cadencii
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportVsq_Click; ex=" + ex + "\n" );
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mDialogMidiImportAndExport == null ) {
@@ -12547,8 +12547,8 @@ namespace com.github.cadencii
                 AppManager.showMessageBox(
                     _( "Invalid VSQ/VOCALOID MIDI file" ),
                     _( "Error" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             AppManager.setSelected( 1 );
@@ -15001,10 +15001,10 @@ namespace com.github.cadencii
             String version_str = Utility.getVersion();
 #else
             String version_str = Utility.getVersion() + "\n\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.apputil.Util ) ) + "\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.media.Wave ) ) + "\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.vsq.VsqFile ) ) + "\n" +
-                                 Utility.getAssemblyNameAndFileVersion( typeof( com.github.cadencii.math ) );
+                                 Utility.getAssemblyNameAndFileVersion( typeof( cadencii.apputil.Util ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( cadencii.media.Wave ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( cadencii.vsq.VsqFile ) ) + "\n" +
+                                 Utility.getAssemblyNameAndFileVersion( typeof( cadencii.math ) );
 #endif
             if ( mVersionInfo == null ) {
                 mVersionInfo = new VersionInfo( _APP_NAME, version_str );
@@ -15046,8 +15046,8 @@ namespace com.github.cadencii
                 AppManager.showMessageBox(
                     _( "file not found" ),
                     _APP_NAME,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 #if JAVA
@@ -15081,7 +15081,7 @@ namespace com.github.cadencii
                     _( "Log file has not generated yet." ),
                     _( "Info" ),
                     PortUtil.OK_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
 
@@ -16771,8 +16771,8 @@ namespace com.github.cadencii
                             track,
                             AppManager.getVsqFile().Track.get( track ).getName() ),
                         _APP_NAME,
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                        cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
             }
@@ -16816,8 +16816,8 @@ namespace com.github.cadencii
                 AppManager.showMessageBox(
                     _( "Invalid XVSQ file" ),
                     _( "Error" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             clearExistingData();
@@ -17347,8 +17347,8 @@ namespace com.github.cadencii
                 AppManager.showMessageBox(
                     PortUtil.formatMessage( _( "file '{0}' is already registered as BGM." ), file ),
                     _( "Error" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 
@@ -17368,8 +17368,8 @@ namespace com.github.cadencii
             BgmFile bgm = AppManager.getBgm( index );
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
-                                  com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                                  cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
                 return;
             }
             AppManager.removeBgm( index );

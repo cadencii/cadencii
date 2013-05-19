@@ -13,17 +13,17 @@
  */
 using System;
 using System.Linq;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
-using com.github.cadencii.javax.sound.midi;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii.java.awt;
+using cadencii.java.awt.event_;
+using cadencii.java.io;
+using cadencii.java.util;
+using cadencii.javax.sound.midi;
+using cadencii.media;
+using cadencii.vsq;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -1253,8 +1253,8 @@ namespace com.github.cadencii
             if ( was_modified ) {
                 AppManager.showMessageBox( _( "Restart Cadencii to complete your changes\n(restart will NOT be automatically done)" ),
                                            "Cadencii",
-                                           com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                                           com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                           cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                                           cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
             setDialogResult( BDialogResult.OK );

@@ -13,18 +13,18 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.windows.forms.BMenuItem;
+import cadencii.windows.forms.BMenuItem;
 
 #else
 
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii;
+using cadencii.windows.forms;
+using cadencii;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

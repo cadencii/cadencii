@@ -15,12 +15,12 @@
 //INCLUDE ./MidiReceivedEventHandler.java
 #else
 using System;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media
+namespace cadencii.media
 {
 
-    public delegate void MidiReceivedEventHandler( Object sender, com.github.cadencii.javax.sound.midi.MidiMessage message );
+    public delegate void MidiReceivedEventHandler( Object sender, cadencii.javax.sound.midi.MidiMessage message );
 
 }
 #endif

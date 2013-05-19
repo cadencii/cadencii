@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using com.github.cadencii;
-using com.github.cadencii.vsq;
+using cadencii;
+using cadencii.vsq;
 using System;
 using System.Collections.Generic;
 

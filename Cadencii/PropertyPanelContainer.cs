@@ -13,21 +13,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/PropertyPanelContainer.java
 import javax.swing.*;
 import java.awt.*;
-import com.github.cadencii.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.windows.forms.*;
 #else
 
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.windows.forms;
+using cadencii.java.awt;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventHandler = System.EventHandler;

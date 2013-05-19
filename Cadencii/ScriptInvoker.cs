@@ -13,11 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
-using com.github.cadencii.xml;
+using cadencii.apputil;
+using cadencii.vsq;
+using cadencii.xml;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     using boolean = System.Boolean;
 

@@ -13,10 +13,10 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.io.*;
-import com.github.cadencii.xml.*;
+import cadencii.xml.*;
 
 #else
 
@@ -25,7 +25,7 @@ using System.Drawing;
 using System.Xml.Serialization;
 using System.ComponentModel;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

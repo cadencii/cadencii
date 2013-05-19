@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace com.github.cadencii.java.io
+namespace cadencii.java.io
 {
 
     public interface OutputStream

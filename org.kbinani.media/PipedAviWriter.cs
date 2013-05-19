@@ -23,9 +23,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public class PipedAviWriter {
         private const string _PIPE_NAME = "fifo";

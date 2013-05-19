@@ -12,14 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.apputil;
+package cadencii.apputil;
 
 import java.awt.*;
 #else
 using System;
-using com.github.cadencii.java.awt;
+using cadencii.java.awt;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
     using boolean = System.Boolean;
 #endif
 

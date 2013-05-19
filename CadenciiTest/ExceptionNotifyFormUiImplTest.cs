@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     [TestFixture]
     public class ExceptionNotifyFormUiImplTest : ExceptionNotifyFormUiImpl

@@ -12,10 +12,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using com.github.cadencii.java.awt.image;
-using com.github.cadencii.java.io;
+using cadencii.java.awt.image;
+using cadencii.java.io;
 
-namespace com.github.cadencii.javax.imageio
+namespace cadencii.javax.imageio
 {
 
     public class ImageIO

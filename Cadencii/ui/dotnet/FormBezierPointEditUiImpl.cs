@@ -13,12 +13,12 @@
  */
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
+using cadencii.apputil;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     public class FormBezierPointEditUiImpl : Form, FormBezierPointEditUi
     {

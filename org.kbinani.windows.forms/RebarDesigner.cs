@@ -21,9 +21,9 @@ using System.ComponentModel.Design;
 using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using System.Drawing;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
     /// <summary>
     /// Summary description for RebarDesigner.
     /// </summary>

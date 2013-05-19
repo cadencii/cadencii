@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using com.github.cadencii.vsq;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii;
+using cadencii.vsq;
+using cadencii.apputil;
+using cadencii;
+using cadencii.java.util;
+using cadencii;
 
 public class RenderAsUtau : Form {
     private System.ComponentModel.IContainer components = null;

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.media;
+package cadencii.media;
 
 import java.io.*;
 import javax.sound.sampled.*;
@@ -116,7 +116,7 @@ public class BSoundPlayer{
     }
 }
 #else
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public class BSoundPlayer : System.Media.SoundPlayer {
         public BSoundPlayer( string sound_location )

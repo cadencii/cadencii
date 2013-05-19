@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormIconPalette.java
 
@@ -23,20 +23,20 @@ import java.awt.dnd.*;
 import java.io.*;
 import javax.swing.*;
 import javax.imageio.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.javax.swing;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii.java.awt;
+using cadencii.java.util;
+using cadencii.javax.swing;
+using cadencii.vsq;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -377,9 +377,9 @@ namespace com.github.cadencii
 #else
         private void InitializeComponent()
         {
-            this.menuBar = new com.github.cadencii.windows.forms.BMenuBar();
-            this.menuWindow = new com.github.cadencii.windows.forms.BMenuItem();
-            this.menuWindowHide = new com.github.cadencii.windows.forms.BMenuItem();
+            this.menuBar = new cadencii.windows.forms.BMenuBar();
+            this.menuWindow = new cadencii.windows.forms.BMenuItem();
+            this.menuWindowHide = new cadencii.windows.forms.BMenuItem();
             this.menuBar.SuspendLayout();
             this.SuspendLayout();
             // 

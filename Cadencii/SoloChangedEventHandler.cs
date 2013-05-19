@@ -12,10 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.lang.reflect.*;
-import com.github.cadencii.*;
+import cadencii.*;
 
 public class SoloChangedEventHandler extends BEventHandler{
     public SoloChangedEventHandler( Object sender, String method_name ){
@@ -29,7 +29,7 @@ public class SoloChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public delegate void SoloChangedEventHandler( int track, bool solo );
 

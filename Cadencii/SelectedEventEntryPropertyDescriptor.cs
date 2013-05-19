@@ -13,20 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.componentmodel.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.componentmodel.*;
 
 #else
 
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using com.github.cadencii.apputil;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

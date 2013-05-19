@@ -13,17 +13,17 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
+import cadencii.*;
+import cadencii.apputil.*;
 
 #else
 
 using System;
-using com.github.cadencii.apputil;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

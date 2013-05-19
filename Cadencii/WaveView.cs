@@ -12,23 +12,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import java.awt.image.*;
-import com.github.cadencii.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.media.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.awt.image;
-using com.github.cadencii.media;
-using com.github.cadencii.windows.forms;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.java.awt.image;
+using cadencii.media;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
 #endif

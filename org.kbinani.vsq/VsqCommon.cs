@@ -12,16 +12,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 #if JAVA
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 import java.io.*;
-import com.github.cadencii.*;
+import cadencii.*;
 #else
 using System;
-using com.github.cadencii;
-using com.github.cadencii.java.io;
+using cadencii;
+using cadencii.java.io;
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
 
     using boolean = System.Boolean;
@@ -43,15 +43,15 @@ namespace com.github.cadencii.vsq
         /// <summary>
         /// Dynamicsカーブを表示するモード(Expert)なら1、しない(Standard)なら0。
         /// </summary>
-        public int DynamicsMode = com.github.cadencii.vsq.DynamicsMode.Expert;
+        public int DynamicsMode = cadencii.vsq.DynamicsMode.Expert;
         /// <summary>
         /// Play With Synthesisなら1、Play After Synthesiなら0、Offなら-1。
         /// </summary>
-        public int PlayMode = com.github.cadencii.vsq.PlayMode.PlayWithSynth;
+        public int PlayMode = cadencii.vsq.PlayMode.PlayWithSynth;
         /// <summary>
         /// PlayModeがOff(-1)にされる直前に，PlayAfterSynthかPlayWithSynthのどちらが指定されていたかを記憶しておく．
         /// </summary>
-        public int LastPlayMode = com.github.cadencii.vsq.PlayMode.PlayWithSynth;
+        public int LastPlayMode = cadencii.vsq.PlayMode.PlayWithSynth;
 
 #if !JAVA
         public object Clone()

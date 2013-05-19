@@ -13,18 +13,18 @@
  */
 #if JAVA
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
+import cadencii.*;
+import cadencii.apputil.*;
 
 #else
 
 using System;
 using System.Threading;
 using System.Windows.Forms;
-using com.github.cadencii;
-using com.github.cadencii.apputil;
+using cadencii;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif
@@ -181,8 +181,8 @@ namespace com.github.cadencii
                         _( "Info: This is test version of Cadencii version {0}" ),
                         BAssemblyInfo.fileVersionMeasure + "." + (minor + 1) ),
                     "Cadencii",
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
             // スプラッシュを表示するスレッドを開始

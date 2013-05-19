@@ -16,7 +16,7 @@
 #else
 using System;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BTimer : System.Windows.Forms.Timer {
         public void start() {

@@ -2,16 +2,16 @@
  * ParameterEvent.cs
  * Copyright © 2013 kbinani
  *
- * This file is part of com.github.cadencii.
+ * This file is part of cadencii.
  *
- * com.github.cadencii is free software; you can redistribute it and/or
+ * cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * com.github.cadencii is distributed in the hope that it will be useful,
+ * cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace com.github.cadencii
+namespace cadencii
 {
     /// <summary>
     /// AquesTone VSTi へパラメータの変更要求

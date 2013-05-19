@@ -13,14 +13,14 @@
  */
 #if JAVA
 
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 import java.io.*;
 #else
 
 using System;
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
 #endif
 

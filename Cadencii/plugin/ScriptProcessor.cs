@@ -5,7 +5,7 @@ using System.IO;
 using ICSharpCode.NRefactory.CSharp;
 using System.Linq;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     abstract class ScriptProcessor
     {
@@ -46,13 +46,13 @@ namespace com.github.cadencii
                         childIdentifier.Name = "github.cadencii";
                     }
                     if ( id.Name == "bocoree" ) {
-                        id.Name = "com.github.cadencii.java";
+                        id.Name = "cadencii.java";
                     }
                     if ( id.Name == "bocoreex" ) {
-                        id.Name = "com.github.cadencii.javax";
+                        id.Name = "cadencii.javax";
                     }
                     if ( id.Name == "InputBox" ) {
-                        id.Name = typeof( com.github.cadencii.windows.forms.InputBox ).FullName;
+                        id.Name = typeof( cadencii.windows.forms.InputBox ).FullName;
                     }
                 } );
             root
@@ -61,7 +61,7 @@ namespace com.github.cadencii
                 .ForEach( ( node ) => {
                     if ( node.Children.Count() == 0 ) {
                         if ( node.GetText() == "InputBox" && node.GetNextNode().GetType() != typeof( CSharpTokenNode ) ) {
-                            (node as Identifier).Name = typeof( com.github.cadencii.windows.forms.InputBox ).FullName;
+                            (node as Identifier).Name = typeof( cadencii.windows.forms.InputBox ).FullName;
                         }
                     }
                 } );
@@ -101,7 +101,7 @@ namespace com.github.cadencii
                 "using System.Drawing;" +
                 "using System.Text;" +
                 "using System.Xml.Serialization;" +
-                "namespace com.github.cadencii.plugin {";
+                "namespace cadencii.plugin {";
         }
         protected override string getSuffix() { return "}"; }
     }
@@ -125,7 +125,7 @@ namespace com.github.cadencii
                 "using System.Drawing;" +
                 "using System.Text;" +
                 "using System.Xml.Serialization;" +
-                "namespace com.github.cadencii.plugin {";
+                "namespace cadencii.plugin {";
         }
         protected override string getSuffix() { return "}"; }
     }
@@ -137,19 +137,19 @@ namespace com.github.cadencii
             return
                 "using System;" +
                 "using System.IO;" +
-                "using com.github.cadencii.vsq;" +
-                "using com.github.cadencii;" +
-                "using com.github.cadencii.java.io;" +
-                "using com.github.cadencii.java.util;" +
-                "using com.github.cadencii.java.awt;" +
-                "using com.github.cadencii.media;" +
-                "using com.github.cadencii.apputil;" +
+                "using cadencii.vsq;" +
+                "using cadencii;" +
+                "using cadencii.java.io;" +
+                "using cadencii.java.util;" +
+                "using cadencii.java.awt;" +
+                "using cadencii.media;" +
+                "using cadencii.apputil;" +
                 "using System.Windows.Forms;" +
                 "using System.Collections.Generic;" +
                 "using System.Drawing;" +
                 "using System.Text;" +
                 "using System.Xml.Serialization;" +
-                "namespace com.github.cadencii.plugin {";
+                "namespace cadencii.plugin {";
         }
         protected override string getSuffix() { return "}"; }
     }

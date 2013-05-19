@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     public class CubicSpline : ICloneable, IDisposable {
         int m_num_key;

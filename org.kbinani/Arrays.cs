@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace com.github.cadencii.java.util {
+namespace cadencii.java.util {
 
     public static class Arrays {
         public static Vector<T> asList<T>( T[] a ) {

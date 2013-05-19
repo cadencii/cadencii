@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BToolBarButton.java
 #else
-namespace com.github.cadencii.windows.forms
+namespace cadencii.windows.forms
 {
 
     public class BToolBarButton : System.Windows.Forms.ToolBarButton

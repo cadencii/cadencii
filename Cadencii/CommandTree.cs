@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
 #if TREECOM
     /// <summary>

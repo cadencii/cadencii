@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
     public interface MenuElement {
         MenuElement[] getSubElements();
     }
@@ -59,7 +59,7 @@ namespace com.github.cadencii.windows.forms {
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {
-            return new com.github.cadencii.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+            return new cadencii.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
         }
 
         public void setMinimumSize( java.awt.Dimension value ) {
@@ -67,7 +67,7 @@ namespace com.github.cadencii.windows.forms {
         }
 
         public java.awt.Dimension getMaximumSize() {
-            return new com.github.cadencii.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+            return new cadencii.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
         }
 
         public void setMaximumSize( java.awt.Dimension value ) {
@@ -194,9 +194,9 @@ namespace com.github.cadencii.windows.forms {
         }
 #endif
 
-        public com.github.cadencii.java.awt.Rectangle getBounds() {
+        public cadencii.java.awt.Rectangle getBounds() {
             System.Drawing.Rectangle r = base.Bounds;
-            return new com.github.cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
@@ -219,32 +219,32 @@ namespace com.github.cadencii.windows.forms {
             return base.Height;
         }
 
-        public com.github.cadencii.java.awt.Dimension getSize() {
-            return new com.github.cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
+        public cadencii.java.awt.Dimension getSize() {
+            return new cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
         public void setSize( int width, int height ) {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( com.github.cadencii.java.awt.Dimension d ) {
+        public void setSize( cadencii.java.awt.Dimension d ) {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( com.github.cadencii.java.awt.Color color ) {
+        public void setBackground( cadencii.java.awt.Color color ) {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public com.github.cadencii.java.awt.Color getBackground() {
-            return new com.github.cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+        public cadencii.java.awt.Color getBackground() {
+            return new cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( com.github.cadencii.java.awt.Color color ) {
+        public void setForeground( cadencii.java.awt.Color color ) {
             base.ForeColor = color.color;
         }
 
-        public com.github.cadencii.java.awt.Color getForeground() {
-            return new com.github.cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+        public cadencii.java.awt.Color getForeground() {
+            return new cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
         public bool isEnabled() {
@@ -265,15 +265,15 @@ namespace com.github.cadencii.windows.forms {
         }
 #endif
 
-        public void setPreferredSize( com.github.cadencii.java.awt.Dimension size ) {
+        public void setPreferredSize( cadencii.java.awt.Dimension size ) {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public com.github.cadencii.java.awt.Font getFont() {
-            return new com.github.cadencii.java.awt.Font( base.Font );
+        public cadencii.java.awt.Font getFont() {
+            return new cadencii.java.awt.Font( base.Font );
         }
 
-        public void setFont( com.github.cadencii.java.awt.Font font ) {
+        public void setFont( cadencii.java.awt.Font font ) {
             if ( font == null ) {
                 return;
             }
@@ -292,10 +292,10 @@ namespace com.github.cadencii.windows.forms {
             return base.Items.Count;
         }
 
-        public void setAccelerator( com.github.cadencii.javax.swing.KeyStroke stroke ) {
+        public void setAccelerator( cadencii.javax.swing.KeyStroke stroke ) {
         }
 
-        public com.github.cadencii.javax.swing.KeyStroke getAccelerator() {
+        public cadencii.javax.swing.KeyStroke getAccelerator() {
             return null;
         }
 

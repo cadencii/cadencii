@@ -19,7 +19,7 @@
  */
 using System;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public static unsafe class fft_test {
         const int NMAXSQRT = 64;

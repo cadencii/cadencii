@@ -12,31 +12,31 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
 import java.io.*;
 import java.awt.*;
-import com.github.cadencii.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.xml.*;
-import com.github.cadencii.apputil.*;
+import cadencii.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
+import cadencii.xml.*;
+import cadencii.apputil.*;
 #else
 using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Collections.Generic;
 using Microsoft.CSharp;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.xml;
-using com.github.cadencii.java.awt;
+using cadencii.apputil;
+using cadencii.java.io;
+using cadencii.java.util;
+using cadencii.vsq;
+using cadencii.windows.forms;
+using cadencii.xml;
+using cadencii.java.awt;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;

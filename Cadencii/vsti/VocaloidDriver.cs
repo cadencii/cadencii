@@ -17,11 +17,11 @@
 //#define TEST
 #endif
 using System;
-using com.github.cadencii.java.util;
-using com.github.cadencii.vsq;
+using cadencii.java.util;
+using cadencii.vsq;
 using VstSdk;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;

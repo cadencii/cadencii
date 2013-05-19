@@ -14,9 +14,9 @@
  */
 using System;
 using System.Runtime.InteropServices;
-using com.github.cadencii.java.util;
+using cadencii.java.util;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     /// <summary>
     /// アンマネージドなメモリーの確保・解放を行うマネージャです。

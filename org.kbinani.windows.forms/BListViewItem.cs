@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BListViewItem.java
 #else
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BListViewItem : System.Windows.Forms.ListViewItem {
         private string group = "";

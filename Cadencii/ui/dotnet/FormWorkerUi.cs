@@ -19,10 +19,10 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.apputil;
+using cadencii.windows.forms;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     public class FormWorkerUi : BDialog
     {

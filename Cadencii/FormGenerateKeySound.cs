@@ -12,26 +12,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormGenerateKeySound.java
 
 import java.util.*;
-import com.github.cadencii.componentmodel.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.*;
+import cadencii.componentmodel.*;
+import cadencii.media.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
+import cadencii.*;
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.componentmodel;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
+using cadencii.componentmodel;
+using cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;

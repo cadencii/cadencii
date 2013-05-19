@@ -16,9 +16,9 @@
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.java.awt;
+using cadencii.java.awt;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BFontChooser {
         public FontDialog dialog = null;

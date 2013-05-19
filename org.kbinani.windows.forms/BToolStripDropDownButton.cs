@@ -14,7 +14,7 @@
  */
 using System;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BToolStripDropDownButton : System.Windows.Forms.ToolStripDropDownButton {
         public void setText( string value ) {

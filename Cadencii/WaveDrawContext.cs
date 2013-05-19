@@ -13,26 +13,26 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.vsq.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.media.*;
+import cadencii.vsq.*;
 
 #else
 
 using System;
-using com.github.cadencii.media;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.vsq;
-using com.github.cadencii.apputil;
+using cadencii.media;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.java.util;
+using cadencii.vsq;
+using cadencii.apputil;
 
-namespace com.github.cadencii.new_
+namespace cadencii.new_
 {
     using boolean = System.Boolean;
 
@@ -132,7 +132,7 @@ namespace com.github.cadencii.new_
 
 }
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

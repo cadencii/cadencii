@@ -17,7 +17,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     public unsafe class BitmapEx : IDisposable {
         private Bitmap m_base;

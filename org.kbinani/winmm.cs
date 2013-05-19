@@ -14,9 +14,9 @@
  */
 using System;
 using System.Runtime.InteropServices;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     using MMRESULT = System.UInt32;
     using HMIDIIN = System.Int32;

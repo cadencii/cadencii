@@ -12,25 +12,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormCurvePointEdit.java
 
 import java.util.*;
 import java.awt.event.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
-using com.github.cadencii;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.java.util;
+using cadencii.apputil;
+using cadencii.vsq;
+using cadencii;
+using cadencii.windows.forms;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -334,20 +334,20 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnForward = new com.github.cadencii.windows.forms.BButton();
-            this.btnBackward = new com.github.cadencii.windows.forms.BButton();
-            this.lblDataPointValue = new com.github.cadencii.windows.forms.BLabel();
-            this.lblDataPointClock = new com.github.cadencii.windows.forms.BLabel();
-            this.btnExit = new com.github.cadencii.windows.forms.BButton();
-            this.btnBackward2 = new com.github.cadencii.windows.forms.BButton();
-            this.btnForward2 = new com.github.cadencii.windows.forms.BButton();
-            this.btnApply = new com.github.cadencii.windows.forms.BButton();
-            this.txtDataPointClock = new com.github.cadencii.NumberTextBox();
-            this.txtDataPointValue = new com.github.cadencii.NumberTextBox();
-            this.btnBackward3 = new com.github.cadencii.windows.forms.BButton();
-            this.btnForward3 = new com.github.cadencii.windows.forms.BButton();
-            this.btnUndo = new com.github.cadencii.windows.forms.BButton();
-            this.btnRedo = new com.github.cadencii.windows.forms.BButton();
+            this.btnForward = new cadencii.windows.forms.BButton();
+            this.btnBackward = new cadencii.windows.forms.BButton();
+            this.lblDataPointValue = new cadencii.windows.forms.BLabel();
+            this.lblDataPointClock = new cadencii.windows.forms.BLabel();
+            this.btnExit = new cadencii.windows.forms.BButton();
+            this.btnBackward2 = new cadencii.windows.forms.BButton();
+            this.btnForward2 = new cadencii.windows.forms.BButton();
+            this.btnApply = new cadencii.windows.forms.BButton();
+            this.txtDataPointClock = new cadencii.NumberTextBox();
+            this.txtDataPointValue = new cadencii.NumberTextBox();
+            this.btnBackward3 = new cadencii.windows.forms.BButton();
+            this.btnForward3 = new cadencii.windows.forms.BButton();
+            this.btnUndo = new cadencii.windows.forms.BButton();
+            this.btnRedo = new cadencii.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // btnForward
@@ -431,7 +431,7 @@ namespace com.github.cadencii
             this.txtDataPointClock.Name = "txtDataPointClock";
             this.txtDataPointClock.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointClock.TabIndex = 2;
-            this.txtDataPointClock.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointClock.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // txtDataPointValue
             // 
@@ -439,7 +439,7 @@ namespace com.github.cadencii
             this.txtDataPointValue.Name = "txtDataPointValue";
             this.txtDataPointValue.Size = new System.Drawing.Size( 71, 19 );
             this.txtDataPointValue.TabIndex = 1;
-            this.txtDataPointValue.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtDataPointValue.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // btnBackward3
             // 

@@ -13,23 +13,23 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import javax.swing.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.ui.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
+import cadencii.ui.*;
 
 #else
 
 using System;
-using com.github.cadencii.javax.swing;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.windows.forms;
+using cadencii.javax.swing;
+using cadencii.apputil;
+using cadencii;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 #endif
 

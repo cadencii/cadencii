@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BSplitPane.java
 #else
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BSplitPane : System.Windows.Forms.SplitContainer {
         public int getDividerLocation() {

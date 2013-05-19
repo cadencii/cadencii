@@ -14,10 +14,10 @@
  */
 using System;
 using System.Collections.Generic;
-using com.github.cadencii.java.util;
-using com.github.cadencii.xml;
+using cadencii.java.util;
+using cadencii.xml;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public class XmlStaticMemberSerializerEx : XmlStaticMemberSerializer {
         public XmlStaticMemberSerializerEx( Type item )

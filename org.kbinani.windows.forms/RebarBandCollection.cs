@@ -19,13 +19,13 @@ using System.Collections;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     /// <summary>
     /// Summary description for BandCollection.
     /// </summary>
 #if !MONO
-    [Editor( typeof( com.github.cadencii.windows.forms.BandCollectionEditor ),
+    [Editor( typeof( cadencii.windows.forms.BandCollectionEditor ),
         typeof( System.Drawing.Design.UITypeEditor ) )]
 #endif
     public class RebarBandCollection : CollectionBase, IEnumerable {

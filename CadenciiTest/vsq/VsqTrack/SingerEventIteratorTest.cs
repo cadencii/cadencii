@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using com.github.cadencii.vsq;
+using cadencii.vsq;
 
 namespace cadencii.test.vsq.VsqTrack
 {
     [TestFixture]
-    class SingerEventIteratorTest : com.github.cadencii.vsq.VsqTrack
+    class SingerEventIteratorTest : cadencii.vsq.VsqTrack
     {
         private VsqEventList fixture;
 
@@ -40,7 +40,7 @@ namespace cadencii.test.vsq.VsqTrack
         [Test]
         public void testWithoutRange()
         {
-            var iterator = new com.github.cadencii.vsq.VsqTrack.SingerEventIterator( fixture );
+            var iterator = new cadencii.vsq.VsqTrack.SingerEventIterator( fixture );
             Assert.True( iterator.hasNext() );
             {
                 var actual = iterator.next();
@@ -69,7 +69,7 @@ namespace cadencii.test.vsq.VsqTrack
         [Test]
         public void testWithRange()
         {
-            var iterator = new com.github.cadencii.vsq.VsqTrack.SingerEventIterator( fixture, 1, 481 );
+            var iterator = new cadencii.vsq.VsqTrack.SingerEventIterator( fixture, 1, 481 );
             Assert.True( iterator.hasNext() );
             {
                 var actual = iterator.next();
@@ -84,7 +84,7 @@ namespace cadencii.test.vsq.VsqTrack
         [Test]
         public void testWithStart()
         {
-            var iterator = new com.github.cadencii.vsq.VsqTrack.SingerEventIterator( fixture, 481 );
+            var iterator = new cadencii.vsq.VsqTrack.SingerEventIterator( fixture, 481 );
             Assert.True( iterator.hasNext() );
             {
                 var actual = iterator.next();

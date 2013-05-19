@@ -15,7 +15,7 @@
 using System;
 using System.Drawing;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     partial class VersionInfo {
         /// <summary>
@@ -116,8 +116,8 @@ namespace com.github.cadencii.apputil {
         public void applyLanguage() {
             string about = string.Format( _( "About {0}" ), m_app_name );
             string credit = _( "Credit" );
-            com.github.cadencii.java.awt.Dimension size1 = Util.measureString( about, new com.github.cadencii.java.awt.Font( btnFlip.Font ) );
-            com.github.cadencii.java.awt.Dimension size2 = Util.measureString( credit, new com.github.cadencii.java.awt.Font( btnFlip.Font ) );
+            cadencii.java.awt.Dimension size1 = Util.measureString( about, new cadencii.java.awt.Font( btnFlip.Font ) );
+            cadencii.java.awt.Dimension size2 = Util.measureString( credit, new cadencii.java.awt.Font( btnFlip.Font ) );
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if( m_credit_mode ) {

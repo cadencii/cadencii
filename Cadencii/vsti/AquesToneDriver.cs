@@ -3,20 +3,20 @@
  * AquesToneDriver.cs
  * Copyright © 2009-2013 kbinani
  *
- * This file is part of com.github.cadencii.
+ * This file is part of cadencii.
  *
- * com.github.cadencii is free software; you can redistribute it and/or
+ * cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * com.github.cadencii is distributed in the hope that it will be useful,
+ * cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.*;
-import com.github.cadencii.vsq.*;
+import cadencii.*;
+import cadencii.vsq.*;
 
 #else
 
@@ -24,11 +24,11 @@ using System;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
-using com.github.cadencii;
-using com.github.cadencii.java.io;
-using com.github.cadencii.vsq;
+using cadencii;
+using cadencii.java.io;
+using cadencii.vsq;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

@@ -1,5 +1,5 @@
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 #elif __cplusplus
 
@@ -8,7 +8,7 @@ namespace kbinani{
 
 #else
 
-namespace com.github.cadencii
+namespace cadencii
 {
 #endif
 

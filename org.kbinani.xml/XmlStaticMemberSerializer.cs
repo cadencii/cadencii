@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 using Microsoft.CSharp;
 
-namespace com.github.cadencii.xml {
+namespace cadencii.xml {
 
     /// <summary>
     /// クラスのstaticメンバーのxmlシリアライズ/デシリアライズを行うclass

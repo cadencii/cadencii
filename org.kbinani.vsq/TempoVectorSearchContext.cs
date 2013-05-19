@@ -13,11 +13,11 @@
  */
 #if JAVA
 
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 #else
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
 #endif
 
