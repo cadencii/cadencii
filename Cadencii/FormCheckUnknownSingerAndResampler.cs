@@ -12,26 +12,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormCheckUnknownSingerAndResampler.java
 
 import java.awt.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.java.awt;
+using cadencii.apputil;
+using cadencii.vsq;
+using cadencii;
+using cadencii.java.util;
+using cadencii.windows.forms;
+using cadencii.java.awt;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
@@ -185,15 +185,15 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new com.github.cadencii.windows.forms.BButton();
-            this.buttonOk = new com.github.cadencii.windows.forms.BButton();
-            this.labelMessage = new com.github.cadencii.windows.forms.BLabel();
-            this.checkSingerImport = new com.github.cadencii.windows.forms.BCheckBox();
-            this.pictureSinger = new com.github.cadencii.IconParader();
-            this.labelSingerName = new com.github.cadencii.windows.forms.BLabel();
-            this.textSingerPath = new com.github.cadencii.windows.forms.BTextBox();
-            this.checkResamplerImport = new com.github.cadencii.windows.forms.BCheckBox();
-            this.textResamplerPath = new com.github.cadencii.windows.forms.BTextBox();
+            this.buttonCancel = new cadencii.windows.forms.BButton();
+            this.buttonOk = new cadencii.windows.forms.BButton();
+            this.labelMessage = new cadencii.windows.forms.BLabel();
+            this.checkSingerImport = new cadencii.windows.forms.BCheckBox();
+            this.pictureSinger = new cadencii.IconParader();
+            this.labelSingerName = new cadencii.windows.forms.BLabel();
+            this.textSingerPath = new cadencii.windows.forms.BTextBox();
+            this.checkResamplerImport = new cadencii.windows.forms.BCheckBox();
+            this.textResamplerPath = new cadencii.windows.forms.BTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).BeginInit();
             this.SuspendLayout();
             //
@@ -327,7 +327,7 @@ namespace com.github.cadencii
 
         private BButton buttonCancel;
         private BButton buttonOk;
-        private com.github.cadencii.windows.forms.BLabel labelMessage;
+        private cadencii.windows.forms.BLabel labelMessage;
         private BCheckBox checkSingerImport;
         private BLabel labelSingerName;
         private BTextBox textSingerPath;

@@ -13,13 +13,13 @@
  */
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii.vsq;
+using cadencii;
+using cadencii.java.util;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
@@ -309,7 +309,7 @@ namespace com.github.cadencii
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
-            this.listDictionaries = new com.github.cadencii.windows.forms.BListView();
+            this.listDictionaries = new cadencii.windows.forms.BListView();
             this.lblAvailableDictionaries = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();

@@ -19,7 +19,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public class BFileChooser : IDisposable {
         public const int APPROVE_OPTION = 0;

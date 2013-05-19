@@ -12,20 +12,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import javax.swing.event.DocumentEvent;
-import com.github.cadencii.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.windows.forms.*;
 #else
 #define COMPONENT_ENABLE_LOCATION
 using System;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.windows.forms;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
 #endif
 

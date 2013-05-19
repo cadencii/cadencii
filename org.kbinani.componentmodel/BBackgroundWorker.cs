@@ -14,9 +14,9 @@
 #if JAVA
 //INCLUDE ./BBackgroundWorker.java
 #else
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.componentmodel {
+namespace cadencii.componentmodel {
     public class BBackgroundWorker : System.ComponentModel.BackgroundWorker {
         public bool isWorkerReportsProgress() {
             return base.WorkerReportsProgress;

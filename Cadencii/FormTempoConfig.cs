@@ -12,21 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormTempoConfig.java
 
 import java.awt.event.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.apputil;
-using com.github.cadencii.windows.forms;
+using cadencii.java.awt.event_;
+using cadencii.apputil;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
@@ -156,15 +156,15 @@ namespace com.github.cadencii
         private void InitializeComponent()
         {
             this.groupPosition = new BGroupBox();
-            this.numClock = new com.github.cadencii.NumericUpDownEx();
-            this.numBeat = new com.github.cadencii.NumericUpDownEx();
-            this.numBar = new com.github.cadencii.NumericUpDownEx();
+            this.numClock = new cadencii.NumericUpDownEx();
+            this.numBeat = new cadencii.NumericUpDownEx();
+            this.numBar = new cadencii.NumericUpDownEx();
             this.lblClock = new BLabel();
             this.lblBeat = new BLabel();
             this.lblBar = new BLabel();
             this.groupTempo = new BGroupBox();
             this.lblTempoRange = new BLabel();
-            this.numTempo = new com.github.cadencii.NumericUpDownEx();
+            this.numTempo = new cadencii.NumericUpDownEx();
             this.btnOK = new BButton();
             this.btnCancel = new BButton();
             this.groupPosition.SuspendLayout();

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using com.github.cadencii;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
+using cadencii;
+using cadencii.apputil;
+using cadencii;
 
 class UtauPluginManager : Form {
     delegate void VoidDelegate();
@@ -213,12 +213,12 @@ class UtauPluginManager : Form {
             string tfile = litem.SubItems[1].Text;
 
             if ( tname == name ) {
-                com.github.cadencii.windows.forms.BDialogResult dr =
+                cadencii.windows.forms.BDialogResult dr =
                     AppManager.showMessageBox( string.Format( _( "Script named '{0}' is already registered. Overwrite?" ), name ),
                                                "UTAU Plugin Manager",
-                                               com.github.cadencii.windows.forms.Utility.MSGBOX_OK_CANCEL_OPTION,
-                                               com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
-                if ( dr != com.github.cadencii.windows.forms.BDialogResult.YES ) {
+                                               cadencii.windows.forms.Utility.MSGBOX_OK_CANCEL_OPTION,
+                                               cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
+                if ( dr != cadencii.windows.forms.BDialogResult.YES ) {
                     return;
                 }
 
@@ -317,12 +317,12 @@ class UtauPluginManager : Form {
         string name = litem.SubItems[0].Text;
         string path = litem.SubItems[1].Text;
 
-        com.github.cadencii.windows.forms.BDialogResult dr =
+        cadencii.windows.forms.BDialogResult dr =
             AppManager.showMessageBox( string.Format( _( "Remove '{0}'?" ), name ),
                                        "UTAU Plugin Manager",
-                                       com.github.cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                       com.github.cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
-        if ( dr != com.github.cadencii.windows.forms.BDialogResult.YES ) {
+                                       cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                                       cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
+        if ( dr != cadencii.windows.forms.BDialogResult.YES ) {
             return;
         }
 

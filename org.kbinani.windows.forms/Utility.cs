@@ -12,13 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.windows.forms;
+package cadencii.windows.forms;
 
 import javax.swing.*;
 #else
 using System;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 #endif
 
     public class Utility {

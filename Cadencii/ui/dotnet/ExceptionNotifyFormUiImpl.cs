@@ -19,7 +19,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     public partial class ExceptionNotifyFormUiImpl : Form, ExceptionNotifyFormUi
     {

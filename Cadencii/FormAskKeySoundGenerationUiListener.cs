@@ -15,19 +15,17 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 #else
 
-namespace com.github
-{
     namespace cadencii
     {
 
 #if CSHARP
             using System;
-            using com.github.cadencii.windows.forms;
-            using com.github.cadencii.apputil;
+            using cadencii.windows.forms;
+            using cadencii.apputil;
 
             using boolean = System.Boolean;
             using BEventArgs = System.EventArgs;
@@ -57,7 +55,6 @@ namespace com.github
 #else
 
     }
-}
 
 #endif
 

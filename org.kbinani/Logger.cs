@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -25,7 +25,7 @@ import java.io.FileWriter;
 using System;
 using System.IO;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
 #endif
 

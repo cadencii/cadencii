@@ -12,28 +12,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.vsq.*;
+import cadencii.*;
+import cadencii.media.*;
+import cadencii.vsq.*;
 
 #else
 
 using System;
 using System.Diagnostics;
 using System.Threading;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.java.io;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;
@@ -200,7 +200,7 @@ namespace com.github.cadencii
             if ( mUseWideCharacterWorkaround ) {
                 String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
                 if ( !fsys.isDirectoryExists( junction_path ) ) {
-                    com.github.cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
+                    cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
                     mJunctions.add( junction_path );
                 }
                 mTempDir = junction_path;
@@ -415,7 +415,7 @@ namespace com.github.cadencii
                         if ( mUseWideCharacterWorkaround ) {
                             String junction = fsys.combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
                             if ( !fsys.isDirectoryExists( junction ) ) {
-                                com.github.cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
+                                cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
                                 mJunctions.add( junction );
                             }
                             singer = junction;

@@ -12,10 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 #else
-namespace com.github.cadencii {
+namespace cadencii {
 #endif
 
     public enum DrawObjectType {

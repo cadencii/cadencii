@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace com.github.cadencii.java.io {
+namespace cadencii.java.io {
 
     public class FileWriter {
         public StreamWriter m_writer;

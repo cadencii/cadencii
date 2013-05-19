@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormSequenceConfig.java
 
@@ -20,23 +20,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.media.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii.java.awt;
+using cadencii.java.awt.event_;
+using cadencii.java.io;
+using cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -289,18 +289,18 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupWaveFileOutput = new com.github.cadencii.windows.forms.BGroupBox();
-            this.comboSampleRate = new com.github.cadencii.windows.forms.BComboBox();
-            this.labelSampleRate = new com.github.cadencii.windows.forms.BLabel();
-            this.radioCurrentTrack = new com.github.cadencii.windows.forms.BRadioButton();
-            this.radioMasterTrack = new com.github.cadencii.windows.forms.BRadioButton();
-            this.lblChannel = new com.github.cadencii.windows.forms.BLabel();
-            this.comboChannel = new com.github.cadencii.windows.forms.BComboBox();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.groupSequence = new com.github.cadencii.windows.forms.BGroupBox();
-            this.labelPreMeasure = new com.github.cadencii.windows.forms.BLabel();
-            this.comboPreMeasure = new com.github.cadencii.windows.forms.BComboBox();
+            this.groupWaveFileOutput = new cadencii.windows.forms.BGroupBox();
+            this.comboSampleRate = new cadencii.windows.forms.BComboBox();
+            this.labelSampleRate = new cadencii.windows.forms.BLabel();
+            this.radioCurrentTrack = new cadencii.windows.forms.BRadioButton();
+            this.radioMasterTrack = new cadencii.windows.forms.BRadioButton();
+            this.lblChannel = new cadencii.windows.forms.BLabel();
+            this.comboChannel = new cadencii.windows.forms.BComboBox();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.groupSequence = new cadencii.windows.forms.BGroupBox();
+            this.labelPreMeasure = new cadencii.windows.forms.BLabel();
+            this.comboPreMeasure = new cadencii.windows.forms.BComboBox();
             this.groupWaveFileOutput.SuspendLayout();
             this.groupSequence.SuspendLayout();
             this.SuspendLayout();

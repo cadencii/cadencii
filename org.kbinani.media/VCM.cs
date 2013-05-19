@@ -18,9 +18,9 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public class VCM {
         public const uint ICMODE_QUERY = 4;

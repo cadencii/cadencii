@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using com.github.cadencii.vsq;
-using com.github.cadencii;
-using com.github.cadencii.xml;
+using cadencii.vsq;
+using cadencii;
+using cadencii.xml;
 using NUnit.Framework;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     [TestFixture]
     class VsqIDTest

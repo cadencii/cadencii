@@ -13,13 +13,13 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.*;
+import cadencii.*;
 
 #else
 
-namespace com.github.cadencii
+namespace cadencii
 {
 #endif
 

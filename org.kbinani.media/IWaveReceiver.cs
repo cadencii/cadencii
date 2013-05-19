@@ -12,10 +12,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.media;
+package cadencii.media;
 
 #else
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 #endif
 
     public interface IWaveReceiver {

@@ -19,7 +19,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 
     public class ProgressBarWithLabelUi : UserControl

@@ -12,21 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.componentmodel.*;
-import com.github.cadencii.xml.*;
+import cadencii.*;
+import cadencii.vsq.*;
+import cadencii.componentmodel.*;
+import cadencii.xml.*;
 
 #else
 using System;
 using System.ComponentModel;
-using com.github.cadencii.java.util;
-using com.github.cadencii.vsq;
+using cadencii.java.util;
+using cadencii.vsq;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using Integer = System.Int32;
 #endif

@@ -13,16 +13,14 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
 
 #else
 
-using com.github.cadencii.java.util;
+using cadencii.java.util;
 
-namespace com.github
-{
     namespace cadencii
     {
 
@@ -132,5 +130,4 @@ namespace com.github
 
 #if !JAVA
     }
-}
 #endif

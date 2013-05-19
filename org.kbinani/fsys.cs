@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.io.*;
 #else
@@ -22,8 +22,6 @@ using System.IO;
 using System.Collections.Generic;
 
 #endif
-namespace com.github
-{
     namespace cadencii
     {
 #if !__cplusplus
@@ -169,7 +167,6 @@ namespace com.github
 
 #if !JAVA
     }
-}
 
 // staticメンバーの実体の宣言
 #if __cplusplus

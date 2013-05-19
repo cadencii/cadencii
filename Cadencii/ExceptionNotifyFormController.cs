@@ -13,22 +13,20 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.io.*;
 import java.net.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.ui.*;
+import cadencii.apputil.*;
+import cadencii.ui.*;
 
 #else
 
-namespace com.github
-{
     namespace cadencii
     {
 #if CSHARP
             using System;
-            using com.github.cadencii.apputil;
+            using cadencii.apputil;
 #endif
 
 #endif
@@ -179,5 +177,4 @@ namespace com.github
 
 #if !JAVA
     }
-}
 #endif

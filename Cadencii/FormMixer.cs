@@ -12,29 +12,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormMixer.java
 
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.javax.swing;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii.java.awt;
+using cadencii.java.util;
+using cadencii.javax.swing;
+using cadencii.vsq;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -679,12 +679,12 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuMain = new com.github.cadencii.windows.forms.BMenuBar();
-            this.menuVisual = new com.github.cadencii.windows.forms.BMenuItem();
-            this.menuVisualReturn = new com.github.cadencii.windows.forms.BMenuItem();
-            this.panelSlaves = new com.github.cadencii.windows.forms.BPanel();
-            this.hScroll = new com.github.cadencii.windows.forms.BHScrollBar();
-            this.volumeMaster = new com.github.cadencii.VolumeTracker();
+            this.menuMain = new cadencii.windows.forms.BMenuBar();
+            this.menuVisual = new cadencii.windows.forms.BMenuItem();
+            this.menuVisualReturn = new cadencii.windows.forms.BMenuItem();
+            this.panelSlaves = new cadencii.windows.forms.BPanel();
+            this.hScroll = new cadencii.windows.forms.BHScrollBar();
+            this.volumeMaster = new cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
             // 

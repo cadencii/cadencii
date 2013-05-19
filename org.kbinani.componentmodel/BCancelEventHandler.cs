@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.componentmodel;
+package cadencii.componentmodel;
 
-import com.github.cadencii.BEventHandler;
+import cadencii.BEventHandler;
 
     public class BCancelEventHandler extends BEventHandler{
         public BCancelEventHandler( Object sender, String method_name )

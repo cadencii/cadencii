@@ -17,7 +17,7 @@ using System;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     /// <summary>
     /// Valueの型を変えられるTrackBar

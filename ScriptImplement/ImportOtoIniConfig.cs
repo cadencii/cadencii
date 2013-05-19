@@ -1,7 +1,7 @@
-using com.github.cadencii;
-using com.github.cadencii.vsq;
-using com.github.cadencii.java.util;
-using com.github.cadencii.apputil;
+using cadencii;
+using cadencii.vsq;
+using cadencii.java.util;
+using cadencii.apputil;
 
 public class ImportOtoIniConfig
 {

@@ -17,7 +17,7 @@
 #else
 using System;
 
-namespace com.github.cadencii{
+namespace cadencii{
 
     public class WaveViewRealoadRequiredEventArgs
     {

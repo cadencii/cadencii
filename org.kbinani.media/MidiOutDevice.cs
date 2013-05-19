@@ -16,9 +16,9 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public unsafe class MidiOutDevice {
         private IntPtr m_handle;

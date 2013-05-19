@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using com.github.cadencii;
+using cadencii;
 
 namespace cadencii.test.enums
 {

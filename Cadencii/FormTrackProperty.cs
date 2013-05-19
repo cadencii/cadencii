@@ -12,21 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormTrackProperty.java
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;

@@ -13,12 +13,10 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 #else
 
-namespace com.github
-{
     namespace cadencii
     {
 
@@ -86,6 +84,4 @@ namespace com.github
 #if !JAVA
 
     }
-}
-
 #endif

@@ -25,7 +25,7 @@
 #define DISABLE_EXTENDED_STATE
 using System;
 
-namespace com.github.cadencii.windows.forms
+namespace cadencii.windows.forms
 {
     using boolean = System.Boolean;
 
@@ -161,10 +161,10 @@ namespace com.github.cadencii.windows.forms
             base.Close();
         }
 
-        public com.github.cadencii.java.awt.Dimension getClientSize()
+        public cadencii.java.awt.Dimension getClientSize()
         {
             System.Drawing.Size s = base.Size;
-            return new com.github.cadencii.java.awt.Dimension( s.Width, s.Height );
+            return new cadencii.java.awt.Dimension( s.Width, s.Height );
         }
 
         // root implementation: common APIs of org.kbinani.*
@@ -216,7 +216,7 @@ namespace com.github.cadencii.windows.forms
             int w = 0;
             int h = 0;
 #endif
-            return new com.github.cadencii.java.awt.Dimension( w, h );
+            return new cadencii.java.awt.Dimension( w, h );
         }
 
         public void setMinimumSize( java.awt.Dimension value )
@@ -235,7 +235,7 @@ namespace com.github.cadencii.windows.forms
             int w = int.MaxValue;
             int h = int.MaxValue;
 #endif
-            return new com.github.cadencii.java.awt.Dimension( w, h );
+            return new cadencii.java.awt.Dimension( w, h );
         }
 
         public void setMaximumSize( java.awt.Dimension value )
@@ -258,46 +258,46 @@ namespace com.github.cadencii.windows.forms
 #endif
 
 #if COMPONENT_ENABLE_CURSOR
-        public com.github.cadencii.java.awt.Cursor getCursor()
+        public cadencii.java.awt.Cursor getCursor()
         {
             System.Windows.Forms.Cursor c = base.Cursor;
-            com.github.cadencii.java.awt.Cursor ret = null;
+            cadencii.java.awt.Cursor ret = null;
             if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.DEFAULT_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.DEFAULT_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.Cross ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.CROSSHAIR_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.CROSSHAIR_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.Default ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.DEFAULT_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.DEFAULT_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.Hand ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.HAND_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.HAND_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.IBeam ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.TEXT_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.TEXT_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanEast ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.E_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.E_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanNE ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.NE_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.NE_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanNorth ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.N_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.N_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanNW ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.NW_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.NW_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanSE ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.SE_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.SE_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanSouth ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.S_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.S_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanSW ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.SW_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.SW_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.PanWest ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.W_RESIZE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.W_RESIZE_CURSOR );
             } else if ( c.Equals( System.Windows.Forms.Cursors.SizeAll ) ) {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.MOVE_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.MOVE_CURSOR );
             } else {
-                ret = new com.github.cadencii.java.awt.Cursor( com.github.cadencii.java.awt.Cursor.CUSTOM_CURSOR );
+                ret = new cadencii.java.awt.Cursor( cadencii.java.awt.Cursor.CUSTOM_CURSOR );
             }
             ret.cursor = c;
             return ret;
         }
 
-        public void setCursor( com.github.cadencii.java.awt.Cursor value )
+        public void setCursor( cadencii.java.awt.Cursor value )
         {
             base.Cursor = value.cursor;
         }
@@ -352,21 +352,21 @@ namespace com.github.cadencii.windows.forms
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
 
-        public void setBounds( com.github.cadencii.java.awt.Rectangle rc )
+        public void setBounds( cadencii.java.awt.Rectangle rc )
         {
             base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
         }
 
-        public com.github.cadencii.java.awt.Point getLocationOnScreen()
+        public cadencii.java.awt.Point getLocationOnScreen()
         {
             System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
-            return new com.github.cadencii.java.awt.Point( p.X, p.Y );
+            return new cadencii.java.awt.Point( p.X, p.Y );
         }
 
-        public com.github.cadencii.java.awt.Point getLocation()
+        public cadencii.java.awt.Point getLocation()
         {
             System.Drawing.Point loc = this.Location;
-            return new com.github.cadencii.java.awt.Point( loc.X, loc.Y );
+            return new cadencii.java.awt.Point( loc.X, loc.Y );
         }
 
         public void setLocation( int x, int y )
@@ -374,16 +374,16 @@ namespace com.github.cadencii.windows.forms
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( com.github.cadencii.java.awt.Point p )
+        public void setLocation( cadencii.java.awt.Point p )
         {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public com.github.cadencii.java.awt.Rectangle getBounds()
+        public cadencii.java.awt.Rectangle getBounds()
         {
             System.Drawing.Rectangle r = base.Bounds;
-            return new com.github.cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
@@ -410,9 +410,9 @@ namespace com.github.cadencii.windows.forms
             return base.Height;
         }
 
-        public com.github.cadencii.java.awt.Dimension getSize()
+        public cadencii.java.awt.Dimension getSize()
         {
-            return new com.github.cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
+            return new cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
         public void setSize( int width, int height )
@@ -420,29 +420,29 @@ namespace com.github.cadencii.windows.forms
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( com.github.cadencii.java.awt.Dimension d )
+        public void setSize( cadencii.java.awt.Dimension d )
         {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( com.github.cadencii.java.awt.Color color )
+        public void setBackground( cadencii.java.awt.Color color )
         {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public com.github.cadencii.java.awt.Color getBackground()
+        public cadencii.java.awt.Color getBackground()
         {
-            return new com.github.cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+            return new cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( com.github.cadencii.java.awt.Color color )
+        public void setForeground( cadencii.java.awt.Color color )
         {
             base.ForeColor = color.color;
         }
 
-        public com.github.cadencii.java.awt.Color getForeground()
+        public cadencii.java.awt.Color getForeground()
         {
-            return new com.github.cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+            return new cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
         public bool isEnabled()
@@ -467,17 +467,17 @@ namespace com.github.cadencii.windows.forms
         }
 #endif
 
-        public void setPreferredSize( com.github.cadencii.java.awt.Dimension size )
+        public void setPreferredSize( cadencii.java.awt.Dimension size )
         {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public com.github.cadencii.java.awt.Font getFont()
+        public cadencii.java.awt.Font getFont()
         {
-            return new com.github.cadencii.java.awt.Font( base.Font );
+            return new cadencii.java.awt.Font( base.Font );
         }
 
-        public void setFont( com.github.cadencii.java.awt.Font font )
+        public void setFont( cadencii.java.awt.Font font )
         {
             if ( font == null ) {
                 return;

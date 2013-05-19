@@ -13,35 +13,35 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/VersionInfo.java
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import com.github.cadencii.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.apputil.*;
+import cadencii.*;
+import cadencii.windows.forms.*;
+import cadencii.apputil.*;
 
 #else
 
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.awt.image;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.java.awt.image;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BEventHandler = System.EventHandler;
-    using Graphics = com.github.cadencii.java.awt.Graphics2D;
+    using Graphics = cadencii.java.awt.Graphics2D;
 #endif
 
 #if JAVA
@@ -489,11 +489,11 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnFlip = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.lblVstLogo = new com.github.cadencii.windows.forms.BLabel();
-            this.pictVstLogo = new com.github.cadencii.windows.forms.BPictureBox();
-            this.chkTwitterID = new com.github.cadencii.windows.forms.BCheckBox();
+            this.btnFlip = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.lblVstLogo = new cadencii.windows.forms.BLabel();
+            this.pictVstLogo = new cadencii.windows.forms.BPictureBox();
+            this.chkTwitterID = new cadencii.windows.forms.BCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 

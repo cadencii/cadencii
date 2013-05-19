@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BDialogResult.java
 #else
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public enum BDialogResult {
         OK,

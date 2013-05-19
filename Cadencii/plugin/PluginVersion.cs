@@ -1,4 +1,4 @@
-﻿namespace com.github.cadencii
+﻿namespace cadencii
 {
     /// <summary>
     /// プラグインインターフェースのバージョン

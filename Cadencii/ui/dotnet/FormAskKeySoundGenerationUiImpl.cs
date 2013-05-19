@@ -14,9 +14,9 @@
 using System;
 
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 
     public class FormAskKeySoundGenerationUiImpl : Form, FormAskKeySoundGenerationUi

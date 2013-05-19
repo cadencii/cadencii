@@ -14,10 +14,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
+using cadencii;
+using cadencii.java.awt;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     /// <summary>
     /// 歌声合成システムの種類

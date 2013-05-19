@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace com.github.CadenciiScript {
+namespace cadenciiScript {
     public class TestUtauScript : Form {
         public static void Main( string[] args ) {
             if ( args.Length <= 0 ) {

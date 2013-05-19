@@ -12,19 +12,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.windows.forms;
+package cadencii.windows.forms;
 
 //INCLUDE-SECTION IMPORT ./InputBox.java
 
-import com.github.cadencii.*;
+import cadencii.*;
 
 #else
 
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.windows.forms;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii.windows.forms
+namespace cadencii.windows.forms
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -104,10 +104,10 @@ namespace com.github.cadencii.windows.forms
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtInput = new com.github.cadencii.windows.forms.BTextBox();
-            this.btnOk = new com.github.cadencii.windows.forms.BButton();
-            this.lblMessage = new com.github.cadencii.windows.forms.BLabel();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
+            this.txtInput = new cadencii.windows.forms.BTextBox();
+            this.btnOk = new cadencii.windows.forms.BButton();
+            this.lblMessage = new cadencii.windows.forms.BLabel();
+            this.btnCancel = new cadencii.windows.forms.BButton();
             this.SuspendLayout();
             //
             // txtInput

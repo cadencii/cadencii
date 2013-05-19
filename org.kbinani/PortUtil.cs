@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
@@ -60,12 +60,12 @@ import java.util.Vector;
 using System;
 using System.IO;
 using System.Text;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.java.util;
-using com.github.cadencii.javax.swing;
+using cadencii.java.awt;
+using cadencii.java.awt.event_;
+using cadencii.java.util;
+using cadencii.javax.swing;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
     using Float = System.Single;
     using Integer = System.Int32;

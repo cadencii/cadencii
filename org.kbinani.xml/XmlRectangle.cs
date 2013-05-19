@@ -12,14 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.xml;
+package cadencii.xml;
 
 import java.awt.*;
 #else
 using System.Xml.Serialization;
-using com.github.cadencii.java.awt;
+using cadencii.java.awt;
 
-namespace com.github.cadencii.xml{
+namespace cadencii.xml{
 #endif
 
     public class XmlRectangle{

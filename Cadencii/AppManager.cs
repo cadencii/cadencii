@@ -13,20 +13,20 @@
  */
 //#define ENABLE_OBSOLUTE_COMMAND
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import javax.swing.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.xml.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.ui.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
+import cadencii.xml.*;
+import cadencii.media.*;
+import cadencii.ui.*;
 
 #else
 
@@ -37,16 +37,16 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
 using Microsoft.CSharp;
-using com.github.cadencii.apputil;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.xml;
+using cadencii.apputil;
+using cadencii.java.awt;
+using cadencii.java.io;
+using cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
+using cadencii.windows.forms;
+using cadencii.xml;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -267,13 +267,13 @@ namespace com.github.cadencii
         /// </summary>
         public static readonly String[] usingS = new String[] { "using System;",
                                              "using System.IO;",
-                                             "using com.github.cadencii.vsq;",
-                                             "using com.github.cadencii;",
-                                             "using com.github.cadencii.java.io;",
-                                             "using com.github.cadencii.java.util;",
-                                             "using com.github.cadencii.java.awt;",
-                                             "using com.github.cadencii.media;",
-                                             "using com.github.cadencii.apputil;",
+                                             "using cadencii.vsq;",
+                                             "using cadencii;",
+                                             "using cadencii.java.io;",
+                                             "using cadencii.java.util;",
+                                             "using cadencii.java.awt;",
+                                             "using cadencii.media;",
+                                             "using cadencii.apputil;",
                                              "using System.Windows.Forms;",
                                              "using System.Collections.Generic;",
                                              "using System.Drawing;",
@@ -1669,17 +1669,17 @@ namespace com.github.cadencii
         #region MessageBoxのラッパー
         public static BDialogResult showMessageBox( String text )
         {
-            return showMessageBox( text, "", com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, "", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption )
         {
-            return showMessageBox( text, caption, com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, com.github.cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, caption, cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType )
         {
-            return showMessageBox( text, caption, optionType, com.github.cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox( text, caption, optionType, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
         /// <summary>
@@ -1860,7 +1860,7 @@ namespace com.github.cadencii
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType )
         {
             beginShowDialog();
-            BDialogResult ret = com.github.cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
+            BDialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
             endShowDialog();
             return ret;
         }
@@ -2498,7 +2498,7 @@ namespace com.github.cadencii
                             showMessageBox( PortUtil.formatMessage( _( "failed creating cache directory, '{0}'." ), cacheDir ),
                                             _( "Info." ),
                                             PortUtil.OK_OPTION,
-                                            com.github.cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                            cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                             Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                             return;
                         }
@@ -2525,7 +2525,7 @@ namespace com.github.cadencii
                                     showMessageBox( PortUtil.formatMessage( _( "failed copying WAVE cache file, '{0}'." ), wavFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
-                                                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                                                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                                     Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                                     break;
                                 }
@@ -2549,7 +2549,7 @@ namespace com.github.cadencii
                                     showMessageBox( PortUtil.formatMessage( _( "failed copying XML cache file, '{0}'." ), xmlFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
-                                                    com.github.cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                                                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                                     Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                                     break;
                                 }

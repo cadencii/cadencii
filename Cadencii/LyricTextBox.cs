@@ -16,10 +16,10 @@
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii;
+using cadencii.windows.forms;
+using cadencii;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
 
     /// <summary>

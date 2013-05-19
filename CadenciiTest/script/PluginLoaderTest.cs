@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using com.github.cadencii;
+using cadencii;
 using Microsoft.CSharp;
-using ICSharpCode.NRefactory.CSharp;
 using System.IO;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     [TestFixture]
     class PluginLoaderTest
@@ -16,6 +15,7 @@ namespace com.github.cadencii
         [Test]
         public void loadTest()
         {
+            PluginLoader.cleanupUnusedAssemblyCache();
             var files =
                 from file in PortUtil.listFiles( "./fixture/script", "" )
                     where

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
     /// <summary>
     /// 歌声合成システムの種類
@@ -53,7 +53,7 @@ package com.github.cadencii;
 #else
 using System;
 
-namespace com.github.cadencii{
+namespace cadencii{
 
     /// <summary>
     /// 歌声合成システムの種類

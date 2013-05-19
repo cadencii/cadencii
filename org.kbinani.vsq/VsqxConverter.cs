@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 public class VsqxConverter
 {
@@ -30,7 +30,7 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
 
     /// <summary>

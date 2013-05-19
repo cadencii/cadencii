@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace com.github.CadenciiScript.Properties {
+namespace cadenciiScript.Properties {
     using System;
     
     

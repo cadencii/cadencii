@@ -13,25 +13,23 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.io.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.vsq.*;
+import cadencii.*;
+import cadencii.vsq.*;
 
 #else
 
-namespace com.github
-{
     namespace cadencii
     {
 
 #if __cplusplus
 #else
             using System;
-            using com.github.cadencii.vsq;
-            using com.github.cadencii.java.util;
+            using cadencii.vsq;
+            using cadencii.java.util;
             using System.Windows.Forms;
 #endif
 
@@ -311,5 +309,4 @@ namespace com.github
 
 #if !JAVA
     }
-}
 #endif

@@ -12,27 +12,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormShortcutKeys.java
 
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.java.util;
-using com.github.cadencii.javax.swing;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii;
+using cadencii.java.awt.event_;
+using cadencii.java.util;
+using cadencii.javax.swing;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
@@ -532,23 +532,23 @@ namespace com.github.cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.list = new com.github.cadencii.windows.forms.BListView();
-            this.btnLoadDefault = new com.github.cadencii.windows.forms.BButton();
-            this.btnRevert = new com.github.cadencii.windows.forms.BButton();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.list = new cadencii.windows.forms.BListView();
+            this.btnLoadDefault = new cadencii.windows.forms.BButton();
+            this.btnRevert = new cadencii.windows.forms.BButton();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.labelCategory = new com.github.cadencii.windows.forms.BLabel();
-            this.comboCategory = new com.github.cadencii.windows.forms.BComboBox();
-            this.labelCommand = new com.github.cadencii.windows.forms.BLabel();
-            this.labelEdit = new com.github.cadencii.windows.forms.BLabel();
-            this.labelEditKey = new com.github.cadencii.windows.forms.BLabel();
-            this.labelEditModifier = new com.github.cadencii.windows.forms.BLabel();
-            this.comboEditKey = new com.github.cadencii.windows.forms.BComboBox();
-            this.checkCommand = new com.github.cadencii.windows.forms.BCheckBox();
-            this.checkShift = new com.github.cadencii.windows.forms.BCheckBox();
-            this.checkControl = new com.github.cadencii.windows.forms.BCheckBox();
-            this.checkOption = new com.github.cadencii.windows.forms.BCheckBox();
+            this.labelCategory = new cadencii.windows.forms.BLabel();
+            this.comboCategory = new cadencii.windows.forms.BComboBox();
+            this.labelCommand = new cadencii.windows.forms.BLabel();
+            this.labelEdit = new cadencii.windows.forms.BLabel();
+            this.labelEditKey = new cadencii.windows.forms.BLabel();
+            this.labelEditModifier = new cadencii.windows.forms.BLabel();
+            this.comboEditKey = new cadencii.windows.forms.BComboBox();
+            this.checkCommand = new cadencii.windows.forms.BCheckBox();
+            this.checkShift = new cadencii.windows.forms.BCheckBox();
+            this.checkControl = new cadencii.windows.forms.BCheckBox();
+            this.checkOption = new cadencii.windows.forms.BCheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -768,11 +768,11 @@ namespace com.github.cadencii
         private System.Windows.Forms.ToolTip toolTip;
         private BLabel labelCategory;
         private BComboBox comboCategory;
-        private com.github.cadencii.windows.forms.BLabel labelCommand;
-        private com.github.cadencii.windows.forms.BLabel labelEdit;
-        private com.github.cadencii.windows.forms.BLabel labelEditKey;
-        private com.github.cadencii.windows.forms.BLabel labelEditModifier;
-        private com.github.cadencii.windows.forms.BComboBox comboEditKey;
+        private cadencii.windows.forms.BLabel labelCommand;
+        private cadencii.windows.forms.BLabel labelEdit;
+        private cadencii.windows.forms.BLabel labelEditKey;
+        private cadencii.windows.forms.BLabel labelEditModifier;
+        private cadencii.windows.forms.BComboBox comboEditKey;
         private BCheckBox checkCommand;
         private BCheckBox checkShift;
         private BCheckBox checkControl;

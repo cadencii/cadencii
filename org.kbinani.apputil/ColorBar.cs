@@ -15,7 +15,7 @@
 using System;
 using System.Drawing;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     public enum ColorBarType {
         apricot = 1,

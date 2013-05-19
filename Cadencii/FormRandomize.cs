@@ -12,21 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormRandomize.java
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.vsq;
-using com.github.cadencii.apputil;
-using com.github.cadencii.windows.forms;
+using cadencii.vsq;
+using cadencii.apputil;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
@@ -369,29 +369,29 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblStart = new com.github.cadencii.windows.forms.BLabel();
-            this.lblStartBar = new com.github.cadencii.windows.forms.BLabel();
-            this.lblStartBeat = new com.github.cadencii.windows.forms.BLabel();
-            this.bLabel1 = new com.github.cadencii.windows.forms.BLabel();
-            this.lblEndBeat = new com.github.cadencii.windows.forms.BLabel();
-            this.lblEndBar = new com.github.cadencii.windows.forms.BLabel();
-            this.lblEnd = new com.github.cadencii.windows.forms.BLabel();
-            this.chkShift = new com.github.cadencii.windows.forms.BCheckBox();
-            this.lblShiftValue = new com.github.cadencii.windows.forms.BLabel();
-            this.comboShiftValue = new com.github.cadencii.windows.forms.BComboBox();
-            this.comboPitPattern = new com.github.cadencii.windows.forms.BComboBox();
-            this.lblPitPattern = new com.github.cadencii.windows.forms.BLabel();
-            this.chkPit = new com.github.cadencii.windows.forms.BCheckBox();
-            this.comboPitValue = new com.github.cadencii.windows.forms.BComboBox();
-            this.lblPitValue = new com.github.cadencii.windows.forms.BLabel();
-            this.lblResolution = new com.github.cadencii.windows.forms.BLabel();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.numResolution = new com.github.cadencii.NumericUpDownEx();
-            this.numEndBeat = new com.github.cadencii.NumericUpDownEx();
-            this.numEndBar = new com.github.cadencii.NumericUpDownEx();
-            this.numStartBeat = new com.github.cadencii.NumericUpDownEx();
-            this.numStartBar = new com.github.cadencii.NumericUpDownEx();
+            this.lblStart = new cadencii.windows.forms.BLabel();
+            this.lblStartBar = new cadencii.windows.forms.BLabel();
+            this.lblStartBeat = new cadencii.windows.forms.BLabel();
+            this.bLabel1 = new cadencii.windows.forms.BLabel();
+            this.lblEndBeat = new cadencii.windows.forms.BLabel();
+            this.lblEndBar = new cadencii.windows.forms.BLabel();
+            this.lblEnd = new cadencii.windows.forms.BLabel();
+            this.chkShift = new cadencii.windows.forms.BCheckBox();
+            this.lblShiftValue = new cadencii.windows.forms.BLabel();
+            this.comboShiftValue = new cadencii.windows.forms.BComboBox();
+            this.comboPitPattern = new cadencii.windows.forms.BComboBox();
+            this.lblPitPattern = new cadencii.windows.forms.BLabel();
+            this.chkPit = new cadencii.windows.forms.BCheckBox();
+            this.comboPitValue = new cadencii.windows.forms.BComboBox();
+            this.lblPitValue = new cadencii.windows.forms.BLabel();
+            this.lblResolution = new cadencii.windows.forms.BLabel();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.numResolution = new cadencii.NumericUpDownEx();
+            this.numEndBeat = new cadencii.NumericUpDownEx();
+            this.numEndBar = new cadencii.NumericUpDownEx();
+            this.numStartBeat = new cadencii.NumericUpDownEx();
+            this.numStartBar = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numResolution)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBeat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEndBar)).BeginInit();

@@ -12,24 +12,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormBezierPointEdit.java
 
 import java.awt.*;
 import java.util.*;
-import com.github.cadencii.ui.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.ui.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii;
+using cadencii.java.awt;
+using cadencii.java.util;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -120,8 +120,8 @@ namespace com.github.cadencii
                     AppManager.showMessageBox(
                         _( "Invalid value" ),
                         _( "Error" ),
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE
+                        cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE
                     );
                     return;
                 }
@@ -136,8 +136,8 @@ namespace com.github.cadencii
                 AppManager.showMessageBox(
                     _( "Integer format error" ),
                     _( "Error" ),
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    com.github.cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE
+                    cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    cadencii.windows.forms.Utility.MSGBOX_ERROR_MESSAGE
                 );
                 this.ui.setDialogResult( false );
                 Logger.write( typeof( FormBezierPointEditController ) + ".btnOK_Click; ex=" + ex + "\n" );

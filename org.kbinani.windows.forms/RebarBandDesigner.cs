@@ -16,7 +16,7 @@
 using System;
 using System.Windows.Forms.Design;
 
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     /// <summary>
     /// Summary description for BandDesigner.

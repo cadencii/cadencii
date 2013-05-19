@@ -13,18 +13,18 @@
  */
 #define MIDI_PRINT_TO_FILE
 #if JAVA
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 import java.io.*;
 import java.util.*;
-import com.github.cadencii.*;
+import cadencii.*;
 #else
 using System;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.java.io;
+using cadencii;
+using cadencii.java.util;
+using cadencii.java.io;
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
     using boolean = System.Boolean;
     using Long = System.Int64;

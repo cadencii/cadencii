@@ -14,9 +14,9 @@
  */
 using System;
 using System.Collections.Generic;
-using com.github.cadencii.media;
+using cadencii.media;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     using boolean = Boolean;
 

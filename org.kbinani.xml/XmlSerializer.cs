@@ -16,9 +16,9 @@
 #else
 using System;
 using System.IO;
-using com.github.cadencii.xml;
+using cadencii.xml;
 
-namespace com.github.cadencii.xml {
+namespace cadencii.xml {
 
     public class XmlSerializer {
         private bool m_serialize_static_mode = false;

@@ -14,7 +14,7 @@
  */
 using System.Globalization;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     internal class iso639 {
         public static bool CheckValidity( string code_string ) {

@@ -13,19 +13,19 @@
  */
 #if JAVA
 
-package com.github.cadencii.apputil;
+package cadencii.apputil;
 
-import com.github.cadencii.*;
+import cadencii.*;
 import java.util.Vector;
 import java.util.Iterator;
 
 #else
 
 using System;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
+using cadencii;
+using cadencii.java.util;
 
-namespace com.github.cadencii.apputil
+namespace cadencii.apputil
 {
 #endif
 

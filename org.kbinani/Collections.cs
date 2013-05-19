@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 //#define VECTOR_TEST
-namespace com.github.cadencii.java.util {
+namespace cadencii.java.util {
 
     public static class Collections {
         public static void sort<T>( Vector<T> list ) {

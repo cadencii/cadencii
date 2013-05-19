@@ -13,28 +13,26 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.util.*;
-import com.github.cadencii.ui.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
+import cadencii.ui.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
 
 #else
 
-namespace com.github
-{
     namespace cadencii
     {
 #if __cplusplus
 #else
             using System;
             using System.Windows.Forms;
-            using com.github.cadencii.apputil;
-            using com.github.cadencii.vsq;
-            using com.github.cadencii;
-            using com.github.cadencii.java.util;
-            using com.github.cadencii.windows.forms;
+            using cadencii.apputil;
+            using cadencii.vsq;
+            using cadencii;
+            using cadencii.java.util;
+            using cadencii.windows.forms;
             using BEventArgs = System.EventArgs;
             using boolean = System.Boolean;
             using BEventHandler = System.EventHandler;
@@ -224,5 +222,4 @@ namespace com.github
 
 #if !JAVA
     }
-}
 #endif

@@ -14,13 +14,13 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using com.github.cadencii;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
+using cadencii;
+using cadencii;
+using cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
 
-namespace com.github.cadencii.generatekeysound {
+namespace cadencii.generatekeysound {
 
     class Program {
         #region static members

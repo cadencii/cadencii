@@ -13,15 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using com.github.cadencii.java.awt.event_;
+using cadencii.java.awt.event_;
 
-namespace com.github.cadencii.javax.swing
+namespace cadencii.javax.swing
 {
 
     public class KeyStroke
     {
         public System.Windows.Forms.Keys keys = System.Windows.Forms.Keys.None;
-        private static com.github.cadencii.java.util.TreeMap<string, int> keyCodes = null;
+        private static cadencii.java.util.TreeMap<string, int> keyCodes = null;
 
         private KeyStroke()
         {

@@ -14,16 +14,16 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.componentmodel.*;
+import cadencii.componentmodel.*;
 
 #else
 
 using System;
 using System.ComponentModel;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
 #endif

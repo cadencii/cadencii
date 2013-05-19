@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.util.Collections;
 import java.util.Vector;
@@ -26,8 +26,6 @@ using System.IO;
 using System.Collections.Generic;
 
 #endif
-namespace com.github
-{
     namespace cadencii
     {
 #if !__cplusplus
@@ -211,5 +209,4 @@ namespace com.github
 
 #if !JAVA
     }
-}
 #endif

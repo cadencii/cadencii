@@ -12,19 +12,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormInsertBar.java
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
@@ -157,15 +157,15 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblPosition = new com.github.cadencii.windows.forms.BLabel();
-            this.lblLength = new com.github.cadencii.windows.forms.BLabel();
-            this.lblThBar = new com.github.cadencii.windows.forms.BLabel();
-            this.lblBar = new com.github.cadencii.windows.forms.BLabel();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.lblPositionPrefix = new com.github.cadencii.windows.forms.BLabel();
-            this.numLength = new com.github.cadencii.NumericUpDownEx();
-            this.numPosition = new com.github.cadencii.NumericUpDownEx();
+            this.lblPosition = new cadencii.windows.forms.BLabel();
+            this.lblLength = new cadencii.windows.forms.BLabel();
+            this.lblThBar = new cadencii.windows.forms.BLabel();
+            this.lblBar = new cadencii.windows.forms.BLabel();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.lblPositionPrefix = new cadencii.windows.forms.BLabel();
+            this.numLength = new cadencii.NumericUpDownEx();
+            this.numPosition = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPosition)).BeginInit();
             this.SuspendLayout();

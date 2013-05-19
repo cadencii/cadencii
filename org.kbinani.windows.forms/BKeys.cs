@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BKeys.java
 #else
-namespace com.github.cadencii.windows.forms {
+namespace cadencii.windows.forms {
 
     public enum BKeys {
         Modifiers = -65536,

@@ -12,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.BEventHandler;
+import cadencii.BEventHandler;
 
 public class SelectedTrackChangedEventHandler extends BEventHandler{
     public SelectedTrackChangedEventHandler( Object sender, String method_name ){
@@ -28,7 +28,7 @@ public class SelectedTrackChangedEventHandler extends BEventHandler{
 #else
 using System;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public delegate void SelectedTrackChangedEventHandler( Object sender, int track );
 

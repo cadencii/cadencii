@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
     partial class OBSOLUTE_BHScrollBar {
         /// <summary> 
         /// 必要なデザイナ変数です。

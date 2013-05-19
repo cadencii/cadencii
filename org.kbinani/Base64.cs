@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 public class Base64{
     static final char TABLE[] = {
@@ -142,7 +142,7 @@ public class Base64{
 #else
 using System;
 
-namespace com.github.cadencii {
+namespace cadencii {
     public static class Base64 {
         public static string encode( byte[] value ) {
             return Convert.ToBase64String( value );

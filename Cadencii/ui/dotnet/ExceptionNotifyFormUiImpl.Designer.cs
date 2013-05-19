@@ -1,5 +1,5 @@
 #if CSHARP
-namespace com.github.cadencii
+namespace cadencii
 {
     partial class ExceptionNotifyFormUiImpl
     {

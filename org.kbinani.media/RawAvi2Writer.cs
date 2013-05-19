@@ -23,9 +23,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #endif
 
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public struct _avistdindex_entry {
         public UInt32 dwOffset;

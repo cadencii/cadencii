@@ -13,10 +13,10 @@
  */
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
+using cadencii.apputil;
+using cadencii;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 
     public class FormBeatConfigUiImpl : Form, FormBeatConfigUi
@@ -126,7 +126,7 @@ namespace com.github.cadencii
 
         public void setFont( string fontName, float fontSize )
         {
-            Util.applyFontRecurse( this, new com.github.cadencii.java.awt.Font( new System.Drawing.Font( fontName, fontSize ) ) );
+            Util.applyFontRecurse( this, new cadencii.java.awt.Font( new System.Drawing.Font( fontName, fontSize ) ) );
         }
 
         public void setTextPositionGroup( string value )
@@ -315,15 +315,15 @@ namespace com.github.cadencii
             this.groupPosition = new System.Windows.Forms.GroupBox();
             this.lblBar2 = new System.Windows.Forms.Label();
             this.lblBar1 = new System.Windows.Forms.Label();
-            this.numEnd = new com.github.cadencii.NumericUpDownEx();
-            this.numStart = new com.github.cadencii.NumericUpDownEx();
+            this.numEnd = new cadencii.NumericUpDownEx();
+            this.numStart = new cadencii.NumericUpDownEx();
             this.chkEnd = new System.Windows.Forms.CheckBox();
             this.lblStart = new System.Windows.Forms.Label();
             this.groupBeat = new System.Windows.Forms.GroupBox();
             this.comboDenominator = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.numNumerator = new com.github.cadencii.NumericUpDownEx();
+            this.numNumerator = new cadencii.NumericUpDownEx();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupPosition.SuspendLayout();

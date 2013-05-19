@@ -28,9 +28,9 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     public static class CursorUtil {
         public static void SaveAsIcon( Bitmap item, Stream stream, Color transp ) {

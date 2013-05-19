@@ -12,12 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.apputil;
+package cadencii.apputil;
 
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
-import com.github.cadencii.*;
+import cadencii.*;
 #else
 using System;
 using System.Collections.Generic;
@@ -28,11 +28,11 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Text;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.apputil
+namespace cadencii.apputil
 {
-    using java = com.github.cadencii.java;
+    using java = cadencii.java;
     using boolean = System.Boolean;
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
@@ -246,7 +246,7 @@ namespace com.github.cadencii.apputil
             applyToolStripFontRecurse( item, font );
         }
 #else
-        public static void applyContextMenuFontRecurse( ContextMenuStrip item, com.github.cadencii.java.awt.Font font )
+        public static void applyContextMenuFontRecurse( ContextMenuStrip item, cadencii.java.awt.Font font )
         {
             if ( !isApplyFontRecurseEnabled )
             {
@@ -273,7 +273,7 @@ namespace com.github.cadencii.apputil
             }
         }
 #else
-        public static void applyToolStripFontRecurse( ToolStripItem item, com.github.cadencii.java.awt.Font font )
+        public static void applyToolStripFontRecurse( ToolStripItem item, cadencii.java.awt.Font font )
         {
             if ( !isApplyFontRecurseEnabled )
             {
@@ -348,7 +348,7 @@ namespace com.github.cadencii.apputil
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new com.github.cadencii.java.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new cadencii.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
                         {
@@ -374,7 +374,7 @@ namespace com.github.cadencii.apputil
                         int ic = b2.getRGB( x, y );
                         Color c = new Color( ic );
 #else
-                        java.awt.Color c = new com.github.cadencii.java.awt.Color( b2.GetPixel( x, y ) );
+                        java.awt.Color c = new cadencii.java.awt.Color( b2.GetPixel( x, y ) );
 #endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
                         {

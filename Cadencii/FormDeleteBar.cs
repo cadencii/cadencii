@@ -12,20 +12,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormDeleteBar.java
 
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.windows.forms;
+using cadencii.apputil;
+using cadencii;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
@@ -141,14 +141,14 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.label4 = new com.github.cadencii.windows.forms.BLabel();
-            this.label3 = new com.github.cadencii.windows.forms.BLabel();
-            this.lblEnd = new com.github.cadencii.windows.forms.BLabel();
-            this.lblStart = new com.github.cadencii.windows.forms.BLabel();
-            this.numEnd = new com.github.cadencii.NumericUpDownEx();
-            this.numStart = new com.github.cadencii.NumericUpDownEx();
+            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.label4 = new cadencii.windows.forms.BLabel();
+            this.label3 = new cadencii.windows.forms.BLabel();
+            this.lblEnd = new cadencii.windows.forms.BLabel();
+            this.lblStart = new cadencii.windows.forms.BLabel();
+            this.numEnd = new cadencii.NumericUpDownEx();
+            this.numStart = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();
             this.SuspendLayout();

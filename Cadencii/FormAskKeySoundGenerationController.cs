@@ -13,21 +13,21 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormAskKeySoundGeneration.java
 
-import com.github.cadencii.*;
-import com.github.cadencii.windows.forms.*;
-import com.github.cadencii.apputil.*;
+import cadencii.*;
+import cadencii.windows.forms.*;
+import cadencii.apputil.*;
 
 #else
 
 using System;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.apputil;
+using cadencii.windows.forms;
+using cadencii.apputil;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;

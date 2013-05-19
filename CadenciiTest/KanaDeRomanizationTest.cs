@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using com.github.cadencii;
+using cadencii;
 using NUnit.Framework;
 
 namespace cadencii.test

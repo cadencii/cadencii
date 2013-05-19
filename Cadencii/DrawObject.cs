@@ -12,16 +12,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.vsq.*;
+import cadencii.vsq.*;
 import java.awt.*;
 #else
 using System;
-using com.github.cadencii.vsq;
-using com.github.cadencii.java.awt;
+using cadencii.vsq;
+using cadencii.java.awt;
 
-namespace com.github.cadencii {
+namespace cadencii {
     using boolean = System.Boolean;
 #endif
 

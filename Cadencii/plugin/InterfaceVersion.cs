@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     [Obsolete]
     public struct PlayPositionSpecifier
@@ -53,7 +53,7 @@ namespace com.github.cadencii
         }
 
         [Obsolete]
-        public static com.github.cadencii.java.util.Iterator<SelectedEventEntry> getSelectedEventIterator()
+        public static cadencii.java.util.Iterator<SelectedEventEntry> getSelectedEventIterator()
         {
             return itemSelection.getEventIterator();
         }

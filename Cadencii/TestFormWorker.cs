@@ -14,16 +14,16 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.*;
+import cadencii.*;
 
 #else
 
 using System;
 using System.Threading;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using Integer = System.Int32;
 #endif

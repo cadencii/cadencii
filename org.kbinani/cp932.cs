@@ -17,7 +17,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public class cp932 {
 

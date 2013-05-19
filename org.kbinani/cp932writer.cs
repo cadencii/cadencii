@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace com.github.cadencii {
+namespace cadencii {
 
     public class cp932writer : IDisposable {
         Stream m_stream;

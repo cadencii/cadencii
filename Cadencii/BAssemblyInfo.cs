@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 #else
 using System;
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle( "Cadencii" )]
 [assembly: AssemblyDescription( "" )]
-[assembly: AssemblyConfiguration( com.github.cadencii.BAssemblyInfo.id )]
+[assembly: AssemblyConfiguration( cadencii.BAssemblyInfo.id )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "Cadencii" )]
 [assembly: AssemblyCopyright( "Copyright (C) 2008-2011 kbinani. All Rights Reserved." )]
@@ -31,9 +31,9 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible( false )]
 [assembly: Guid( "5028b296-d7be-4278-a799-ffaf50026128" )]
 [assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( com.github.cadencii.BAssemblyInfo.fileVersion )]
+[assembly: AssemblyFileVersion( cadencii.BAssemblyInfo.fileVersion )]
 
-namespace com.github.cadencii {
+namespace cadencii {
 #endif
 
     public class BAssemblyInfo {

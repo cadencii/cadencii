@@ -12,20 +12,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.event.*;
-import com.github.cadencii.ui.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.ui.*;
+import cadencii.apputil.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.apputil;
-using com.github.cadencii;
-using com.github.cadencii.windows.forms;
+using cadencii.java.awt.event_;
+using cadencii.apputil;
+using cadencii;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;

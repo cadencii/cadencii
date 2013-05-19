@@ -12,26 +12,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 //INCLUDE-SECTION IMPORT ./ui/java/FormVibratoConfig.java
 
 import java.awt.event.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.apputil.*;
-import com.github.cadencii.vsq.*;
-import com.github.cadencii.windows.forms.*;
+import cadencii.*;
+import cadencii.apputil.*;
+import cadencii.vsq.*;
+import cadencii.windows.forms.*;
 #else
 using System;
-using com.github.cadencii;
-using com.github.cadencii.apputil;
-using com.github.cadencii.vsq;
-using com.github.cadencii.windows.forms;
-using com.github.cadencii.java.awt.event_;
-using com.github.cadencii.java.util;
+using cadencii;
+using cadencii.apputil;
+using cadencii.vsq;
+using cadencii.windows.forms;
+using cadencii.java.awt.event_;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
@@ -358,13 +358,13 @@ namespace com.github.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblVibratoLength = new com.github.cadencii.windows.forms.BLabel();
-            this.lblVibratoType = new com.github.cadencii.windows.forms.BLabel();
-            this.txtVibratoLength = new com.github.cadencii.NumberTextBox();
-            this.label3 = new com.github.cadencii.windows.forms.BLabel();
-            this.comboVibratoType = new com.github.cadencii.windows.forms.BComboBox();
-            this.btnCancel = new com.github.cadencii.windows.forms.BButton();
-            this.btnOK = new com.github.cadencii.windows.forms.BButton();
+            this.lblVibratoLength = new cadencii.windows.forms.BLabel();
+            this.lblVibratoType = new cadencii.windows.forms.BLabel();
+            this.txtVibratoLength = new cadencii.NumberTextBox();
+            this.label3 = new cadencii.windows.forms.BLabel();
+            this.comboVibratoType = new cadencii.windows.forms.BComboBox();
+            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new cadencii.windows.forms.BButton();
             this.groupSelect = new BGroupBox();
             this.radioUserDefined = new BRadioButton();
             this.radioVocaloid2 = new BRadioButton();
@@ -397,7 +397,7 @@ namespace com.github.cadencii
             this.txtVibratoLength.Name = "txtVibratoLength";
             this.txtVibratoLength.Size = new System.Drawing.Size( 61, 19 );
             this.txtVibratoLength.TabIndex = 2;
-            this.txtVibratoLength.Type = com.github.cadencii.NumberTextBox.ValueType.Integer;
+            this.txtVibratoLength.Type = cadencii.NumberTextBox.ValueType.Integer;
             // 
             // label3
             // 

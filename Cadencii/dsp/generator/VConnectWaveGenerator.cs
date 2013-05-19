@@ -12,25 +12,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.media.*;
-import com.github.cadencii.vsq.*;
+import cadencii.*;
+import cadencii.media.*;
+import cadencii.vsq.*;
 #else
 using System;
 using System.Diagnostics;
 using System.Threading;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.io;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
+using cadencii.java.awt;
+using cadencii.java.io;
+using cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using Integer = System.Int32;

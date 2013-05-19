@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 using NUnit.Framework;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     class WaveUnitConfigElementStub : WaveUnitConfigElement
     {

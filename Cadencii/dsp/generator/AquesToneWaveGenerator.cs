@@ -14,12 +14,12 @@
  */
 using System;
 using System.Threading;
-using com.github.cadencii.java.awt;
-using com.github.cadencii.java.util;
-using com.github.cadencii.media;
-using com.github.cadencii.vsq;
+using cadencii.java.awt;
+using cadencii.java.util;
+using cadencii.media;
+using cadencii.vsq;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using boolean = System.Boolean;
     using Float = System.Single;

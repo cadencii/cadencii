@@ -17,9 +17,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
 
     public static class VFW {
         public static UInt32 streamtypeVIDEO = Util.mmioFOURCC( 'v', 'i', 'd', 's' );

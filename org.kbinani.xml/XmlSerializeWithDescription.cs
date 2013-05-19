@@ -19,7 +19,7 @@ using System.Xml;
 using System.Reflection;
 using System.IO;
 
-namespace com.github.cadencii.xml {
+namespace cadencii.xml {
 
     /// <summary>
     /// フィールド、またはプロパティの概要を格納するattribute

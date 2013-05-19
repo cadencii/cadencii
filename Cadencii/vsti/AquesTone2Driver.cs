@@ -2,12 +2,12 @@
  * AquesTone2Driver.cs
  * Copyright © 2013 kbinani
  *
- * This file is part of com.github.cadencii.
+ * This file is part of cadencii.
  *
- * com.github.cadencii is free software; you can redistribute it and/or
+ * cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * com.github.cadencii is distributed in the hope that it will be useful,
+ * cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using com.github.cadencii.vsq;
-using com.github.cadencii.java.util;
+using cadencii.vsq;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using Integer = System.Int32;
 

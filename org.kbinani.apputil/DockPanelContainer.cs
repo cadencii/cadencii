@@ -15,7 +15,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 
     public class DockPanelContainer : Panel {
     }

@@ -13,10 +13,10 @@
  */
 using System;
 
-using com.github.cadencii.java.awt;
-using com.github.cadencii.windows.forms;
+using cadencii.java.awt;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;

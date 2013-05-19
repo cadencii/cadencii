@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace com.github.CadenciiScript.Properties {
+namespace cadenciiScript.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -1,4 +1,4 @@
-using com.github.cadencii;
+using cadencii;
 
 public class RunOnce {
     private static int runCount = 0;
@@ -12,7 +12,7 @@ public class RunOnce {
         // 以下に，起動時に変更するパラメータを記述する
 
         // ピアノロールに合成システムの名称をオーバーレイ表示するかどうか
-        AppManager.drawOverSynthNameOnPianoroll = false;
+        AppManager.drawOverSynthNameOnPianoroll = true;
         // 再生中に，WAVE波形の描画をスキップするかどうか
         AppManager.skipDrawingWaveformWhenPlaying = true;
         // 起動時のツール．デフォルトはEditTool.PENCIL

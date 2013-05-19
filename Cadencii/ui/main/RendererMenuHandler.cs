@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     /// <summary>
     /// 合成器のメニュー項目へのアクションに応答するハンドラ

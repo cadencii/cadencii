@@ -13,15 +13,15 @@
  */
 #if ENABLE_AQUESTONE
 #if JAVA
-package com.github.cadencii;
+package cadencii;
 
-import com.github.cadencii.windows.forms.*;
+import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
-using com.github.cadencii.windows.forms;
+using cadencii.windows.forms;
 
-namespace com.github.cadencii {
+namespace cadencii {
 #endif
 
 #if JAVA

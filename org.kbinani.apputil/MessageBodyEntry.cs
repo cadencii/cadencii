@@ -12,15 +12,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.apputil;
+package cadencii.apputil;
 
 import java.util.Vector;
 
 #else
 using System;
-using com.github.cadencii.java.util;
+using cadencii.java.util;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
 #endif
 
     public class MessageBodyEntry {

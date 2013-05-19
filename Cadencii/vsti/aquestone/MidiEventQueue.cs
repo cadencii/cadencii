@@ -2,20 +2,20 @@
  * MidiEventQueue.cs
  * Copyright © 2013 kbinani
  *
- * This file is part of com.github.cadencii.
+ * This file is part of cadencii.
  *
- * com.github.cadencii is free software; you can redistribute it and/or
+ * cadencii is free software; you can redistribute it and/or
  * modify it under the terms of the GPLv3 License.
  *
- * com.github.cadencii is distributed in the hope that it will be useful,
+ * cadencii is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using com.github.cadencii;
-using com.github.cadencii.vsq;
-using com.github.cadencii.java.util;
+using cadencii;
+using cadencii.vsq;
+using cadencii.java.util;
 
-namespace com.github.cadencii
+namespace cadencii
 {
     /// <summary>
     /// ある時刻(clock)に送信すべきイベントを表すクラス

@@ -14,7 +14,7 @@
 #if JAVA
 //INCLUDE ./BToggleButton.java
 #else
-namespace com.github.cadencii.windows.forms
+namespace cadencii.windows.forms
 {
 
     public class BToggleButton : System.Windows.Forms.ToolStripButton

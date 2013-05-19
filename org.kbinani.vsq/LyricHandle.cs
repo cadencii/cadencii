@@ -12,19 +12,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 import java.io.*;
 import java.util.*;
-import com.github.cadencii.xml.*;
+import cadencii.xml.*;
 
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
-using com.github.cadencii.java.util;
+using cadencii.java.util;
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
     using boolean = System.Boolean;
 #endif

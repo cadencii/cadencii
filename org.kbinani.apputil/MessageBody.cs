@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package com.github.cadencii.apputil;
+package cadencii.apputil;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,18 +26,18 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import com.github.cadencii.ByRef;
-import com.github.cadencii.PortUtil;
-import com.github.cadencii.str;
+import cadencii.ByRef;
+import cadencii.PortUtil;
+import cadencii.str;
 
 #else
 
 using System;
-using com.github.cadencii;
-using com.github.cadencii.java.util;
-using com.github.cadencii.java.io;
+using cadencii;
+using cadencii.java.util;
+using cadencii.java.io;
 
-namespace com.github.cadencii.apputil {
+namespace cadencii.apputil {
     using boolean = System.Boolean;
 #endif
 

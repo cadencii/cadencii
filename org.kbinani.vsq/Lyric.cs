@@ -13,12 +13,12 @@
  */
 #if JAVA
 
-package com.github.cadencii.vsq;
+package cadencii.vsq;
 
 import java.io.*;
 import java.util.*;
-import com.github.cadencii.*;
-import com.github.cadencii.xml.*;
+import cadencii.*;
+import cadencii.xml.*;
 
 #elif __cplusplus
 
@@ -29,9 +29,9 @@ namespace org{ namespace kbinani{ namespace vsq{
 using System;
 using System.Collections.Generic;
 
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.vsq
+namespace cadencii.vsq
 {
 
 #endif

@@ -13,7 +13,7 @@
  */
 #if JAVA
 
-package com.github.cadencii;
+package cadencii;
 
 import java.awt.*;
 import java.io.*;
@@ -21,9 +21,9 @@ import java.io.*;
 #else
 
 using System;
-using com.github.cadencii.java.awt;
+using cadencii.java.awt;
 
-namespace com.github.cadencii
+namespace cadencii
 {
 #endif
 

@@ -14,16 +14,16 @@
 #define USE_PLAYSOUND_DLL
 
 #if JAVA
-package com.github.cadencii.media;
+package cadencii.media;
 
 import javax.sound.sampled.*;
-import com.github.cadencii.*;
+import cadencii.*;
 #else
 using System;
 using System.Runtime.InteropServices;
-using com.github.cadencii;
+using cadencii;
 
-namespace com.github.cadencii.media {
+namespace cadencii.media {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
@@ -278,7 +278,7 @@ namespace com.github.cadencii.media {
 #if !JAVA
 }
 
-namespace com.github.cadencii.media.impl {
+namespace cadencii.media.impl {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
