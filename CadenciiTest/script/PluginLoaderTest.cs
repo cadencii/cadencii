@@ -16,6 +16,7 @@ namespace cadencii
         [Test]
         public void loadTest()
         {
+            PluginLoader.cleanupUnusedAssemblyCache();
             var files =
                 from file in PortUtil.listFiles( "./fixture/script", "" )
                     where
