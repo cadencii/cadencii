@@ -22,9 +22,6 @@ namespace com.github.cadencii
                 .Descendants
                 .OfType<Identifier>()
                 .Where( ( id ) => { var n = GetSiblingNode( id, 1 ); return n != null && n.GetType() == typeof( CSharpTokenNode ); } )
-                /*.Where( ( id ) => { var n = GetSiblingNode( id, 2 ); return n != null && n.GetType() == typeof( Identifier ); } )
-                .Where( ( id ) => { var n = GetSiblingNode( id, 3 ); return n != null && n.GetType() == typeof( CSharpTokenNode ); } )
-                .Where( ( id ) => { var n = GetSiblingNode( id, 4 ); return n != null && n.GetType() == typeof( Identifier ); } )*/
                 .ToList().ForEach( ( id ) => {
                     var childIdentifier = GetSiblingNode( id, 2 ) as Identifier;
                     var grandChildIdentifier = GetSiblingNode( id, 4 ) as Identifier;
@@ -87,7 +84,6 @@ namespace com.github.cadencii
 
     class ScriptProcessorVersion1 : ScriptProcessor
     {
-        //git ls-files | grep '\.cs$' | xargs cat | grep ^using | sort | uniq
         protected override string getPrefix() {
             return
                 "using System;" +
