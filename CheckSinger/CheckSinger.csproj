@@ -45,14 +45,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
+    <ProjectReference Include="..\cadencii.vsq\cadencii.vsq.csproj">
       <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
-      <Name>org.kbinani.vsq</Name>
+      <Name>cadencii.vsq</Name>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+    <ProjectReference Include="..\cadencii.core\cadencii.core.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
+      <Name>cadencii.core</Name>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

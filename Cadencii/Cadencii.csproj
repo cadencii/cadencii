@@ -100,9 +100,6 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CadenciiHelper">
-      <HintPath>..\Release\CadenciiHelper.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -767,33 +764,37 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.kbinani.apputil\org.kbinani.apputil.csproj">
+    <ProjectReference Include="..\cadencii.apputil\cadencii.apputil.csproj">
       <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
-      <Name>org.kbinani.apputil</Name>
+      <Name>cadencii.apputil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.componentmodel\org.kbinani.componentmodel.csproj">
+    <ProjectReference Include="..\cadencii.componentmodel\cadencii.componentmodel.csproj">
       <Project>{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}</Project>
-      <Name>org.kbinani.componentmodel</Name>
+      <Name>cadencii.componentmodel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
+    <ProjectReference Include="..\cadencii.helper\cadencii.helper.vcxproj">
+      <Project>{5b7732b0-3322-4b24-9ed2-15b2e5d39432}</Project>
+      <Name>cadencii.helper %28Visual Studio 2008%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cadencii.media\cadencii.media.csproj">
       <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
-      <Name>org.kbinani.media</Name>
+      <Name>cadencii.media</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
+    <ProjectReference Include="..\cadencii.vsq\cadencii.vsq.csproj">
       <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
-      <Name>org.kbinani.vsq</Name>
+      <Name>cadencii.vsq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.windows.forms\org.kbinani.windows.forms.csproj">
+    <ProjectReference Include="..\cadencii.windows.forms\cadencii.windows.forms.csproj">
       <Project>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</Project>
-      <Name>org.kbinani.windows.forms</Name>
+      <Name>cadencii.windows.forms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
+    <ProjectReference Include="..\cadencii.xml\cadencii.xml.csproj">
       <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
-      <Name>org.kbinani.xml</Name>
+      <Name>cadencii.xml</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+    <ProjectReference Include="..\cadencii.core\cadencii.core.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
+      <Name>cadencii.core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,7 @@
     <RootNamespace>CadenciiHelper</RootNamespace>
     <Keyword>ManagedCProj</Keyword>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <ProjectName>cadencii.helper</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -52,6 +53,7 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>cadencii.helper</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

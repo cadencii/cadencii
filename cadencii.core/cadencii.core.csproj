@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</ProjectGuid>
+    <ProjectGuid>{C8AAE632-9C6C-4372-8175-811528A66742}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com_github.cadencii.apputil</RootNamespace>
-    <AssemblyName>org.kbinani.apputil</AssemblyName>
+    <RootNamespace>cadencii</RootNamespace>
+    <AssemblyName>cadencii.core</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
@@ -27,13 +27,13 @@
     <OutputPath>bin\x86\Debug\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\org.kbinani.apputil.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\cadencii.core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Release\org.kbinani.apputil.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\cadencii.core.xml</DocumentationFile>
     <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
@@ -41,79 +41,81 @@
     <OutputPath>bin\x86\DebugMinimal\</OutputPath>
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Debug\org.kbinani.apputil.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\org.kbinani.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseMinimal|x86' ">
     <OutputPath>bin\x86\ReleaseMinimal\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Release\org.kbinani.apputil.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\org.kbinani.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
     <OutputPath>bin\x86\MonoRelease\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Release\org.kbinani.apputil.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\org.kbinani.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorListEntry.cs" />
-    <Compile Include="BHScrollBar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BHScrollBar.Designer.cs">
-      <DependentUpon>BHScrollBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BitmapEx.cs" />
-    <Compile Include="ColorBar.cs" />
-    <Compile Include="CubicSpline.cs" />
-    <Compile Include="CursorUtil.cs" />
-    <Compile Include="DockPanelContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ISO639.cs" />
-    <Compile Include="MessageBodyEntry.cs" />
-    <Compile Include="Messaging.cs" />
-    <Compile Include="MessageBody.cs" />
-    <Compile Include="PolylineDrawer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BSplitContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BSplitterPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BTrackBar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Util.cs" />
-    <Compile Include="VersionInfo.cs">
+    <Compile Include="Arrays.cs" />
+    <Compile Include="awt.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VersionInfo.Designer.cs">
-      <DependentUpon>VersionInfo.cs</DependentUpon>
+    <Compile Include="awt.event.cs" />
+    <Compile Include="awt.geom.cs" />
+    <Compile Include="awt.image.cs" />
+    <Compile Include="BArray.cs" />
+    <Compile Include="Base64.cs" />
+    <Compile Include="BDelegate.cs" />
+    <Compile Include="BEvent.cs" />
+    <Compile Include="BEventArgs.cs" />
+    <Compile Include="BEventHandler.cs" />
+    <Compile Include="BufferedReader.cs" />
+    <Compile Include="BufferedWriter.cs" />
+    <Compile Include="ByRef.cs" />
+    <Compile Include="Collections.cs" />
+    <Compile Include="cp932.cs" />
+    <Compile Include="cp932reader.cs" />
+    <Compile Include="cp932writer.cs" />
+    <Compile Include="dic.cs" />
+    <Compile Include="dicitr.cs" />
+    <Compile Include="fft.cs" />
+    <Compile Include="fsys.cs" />
+    <Compile Include="imageio.cs" />
+    <Compile Include="io.cs" />
+    <Compile Include="Iterator.cs" />
+    <Compile Include="lang.cs" />
+    <Compile Include="ListIterator.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="math.cs" />
+    <Compile Include="Misc.cs" />
+    <Compile Include="mman.cs" />
+    <Compile Include="PortUtil.cs" />
+    <Compile Include="RandomAccessFile.cs" />
+    <Compile Include="serr.cs" />
+    <Compile Include="sound.midi.cs" />
+    <Compile Include="sout.cs" />
+    <Compile Include="str.cs" />
+    <Compile Include="swing.cs">
     </Compile>
-    <Compile Include="BVScrollBar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BVScrollBar.Designer.cs">
-      <DependentUpon>BVScrollBar.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
-      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
-    </ProjectReference>
+    <Compile Include="util.cs" />
+    <Compile Include="ValuePair.cs" />
+    <Compile Include="vec.cs" />
+    <Compile Include="vecitr.cs" />
+    <Compile Include="Vector.cs" />
+    <Compile Include="winmm.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="windows.cs" />
+    <Compile Include="wingdi.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
