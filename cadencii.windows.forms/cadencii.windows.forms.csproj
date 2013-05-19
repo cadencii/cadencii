@@ -8,8 +8,8 @@
     <ProjectGuid>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com_github.cadencii.windows.forms</RootNamespace>
-    <AssemblyName>org.kbinani.windows.forms</AssemblyName>
+    <RootNamespace>cadencii.windows.forms</RootNamespace>
+    <AssemblyName>cadencii.windows.forms</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -26,7 +26,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>bin\x86\Debug\org.kbinani.windows.forms.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\cadencii.windows.forms.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -35,7 +35,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>bin\x86\Release\org.kbinani.windows.forms.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\cadencii.windows.forms.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
     <OutputPath>bin\x86\MonoRelease\</OutputPath>
@@ -193,9 +193,9 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+    <ProjectReference Include="..\cadencii.core\cadencii.core.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
+      <Name>cadencii.core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

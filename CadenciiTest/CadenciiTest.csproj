@@ -84,33 +84,33 @@
       <Project>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</Project>
       <Name>Cadencii</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.apputil\org.kbinani.apputil.csproj">
+    <ProjectReference Include="..\cadencii.apputil\cadencii.apputil.csproj">
       <Project>{0c58b068-272f-4390-a14f-3d72afcf3dfb}</Project>
-      <Name>org.kbinani.apputil</Name>
+      <Name>cadencii.apputil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.componentmodel\org.kbinani.componentmodel.csproj">
+    <ProjectReference Include="..\cadencii.componentmodel\cadencii.componentmodel.csproj">
       <Project>{d4f87d2e-caaf-4dee-ab43-be151b410931}</Project>
-      <Name>org.kbinani.componentmodel</Name>
+      <Name>cadencii.componentmodel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
+    <ProjectReference Include="..\cadencii.media\cadencii.media.csproj">
       <Project>{f4f8f601-4e3d-43f5-a8a8-aa1fb7f48452}</Project>
-      <Name>org.kbinani.media</Name>
+      <Name>cadencii.media</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.vsq\org.kbinani.vsq.csproj">
+    <ProjectReference Include="..\cadencii.vsq\cadencii.vsq.csproj">
       <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
-      <Name>org.kbinani.vsq</Name>
+      <Name>cadencii.vsq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.windows.forms\org.kbinani.windows.forms.csproj">
+    <ProjectReference Include="..\cadencii.windows.forms\cadencii.windows.forms.csproj">
       <Project>{b9481e3b-6842-4ab3-8ed4-29c86c2579a3}</Project>
-      <Name>org.kbinani.windows.forms</Name>
+      <Name>cadencii.windows.forms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
+    <ProjectReference Include="..\cadencii.xml\cadencii.xml.csproj">
       <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
-      <Name>org.kbinani.xml</Name>
+      <Name>cadencii.xml</Name>
     </ProjectReference>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+    <ProjectReference Include="..\cadencii.core\cadencii.core.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
+      <Name>cadencii.core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

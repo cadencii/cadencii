@@ -8,8 +8,8 @@
     <ProjectGuid>{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com_github.cadencii.componentmodel</RootNamespace>
-    <AssemblyName>org.kbinani.componentmodel</AssemblyName>
+    <RootNamespace>cadencii.componentmodel</RootNamespace>
+    <AssemblyName>cadencii.componentmodel</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -18,12 +18,12 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\org.kbinani.componentmodel.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\cadencii.componentmodel.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>bin\x86\Release\org.kbinani.componentmodel.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\cadencii.componentmodel.xml</DocumentationFile>
     <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
@@ -55,9 +55,9 @@
     <Compile Include="TypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+    <ProjectReference Include="..\cadencii.core\cadencii.core.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
+      <Name>cadencii.core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,8 +8,8 @@
     <ProjectGuid>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>com_github.cadencii.vsq</RootNamespace>
-    <AssemblyName>org.kbinani.vsq</AssemblyName>
+    <RootNamespace>cadencii.vsq</RootNamespace>
+    <AssemblyName>cadencii.vsq</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -25,12 +25,12 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\org.kbinani.vsq.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Debug\cadencii.vsq.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>bin\x86\Release\org.kbinani.vsq.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Release\cadencii.vsq.xml</DocumentationFile>
     <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
@@ -133,9 +133,9 @@
     <Compile Include="WrappedStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+    <ProjectReference Include="..\cadencii.core\cadencii.core.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
-      <Name>org.kbinani</Name>
+      <Name>cadencii.core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
