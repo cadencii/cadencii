@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>com.github.cadencii</RootNamespace>
     <AssemblyName>Cadencii</AssemblyName>
@@ -21,7 +21,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>3B7855CA5AB710E8AC0C79D614FD5307A8FDC6F3</ManifestCertificateThumbprint>
     <ManifestKeyFile>keyfile.pfx</ManifestKeyFile>
-    <GenerateManifests>false</GenerateManifests>
+    <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
     <ApplicationIcon>resources\icon.ico</ApplicationIcon>
     <TargetZone>LocalIntranet</TargetZone>
@@ -94,6 +94,10 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CadenciiHelper">
