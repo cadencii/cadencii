@@ -130,6 +130,7 @@
     <Compile Include="VsqTrack.cs" />
     <Compile Include="VsqVoiceLanguage.cs" />
     <Compile Include="VsqxReader.cs" />
+    <Compile Include="VsqxWriter.cs" />
     <Compile Include="WrappedStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
