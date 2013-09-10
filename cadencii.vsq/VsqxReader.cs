@@ -1,8 +1,8 @@
 /*
- * VsqxConverter.cs
- * Copyright © 2011 kbinani
+ * VsqxReader.cs
+ * Copyright © 2011,2013 kbinani
  *
- * This file is part of org.kbinani.vsq.
+ * This file is part of cadencii.vsq.
  *
  * org.kbinani.vsq is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
@@ -34,9 +34,9 @@ namespace cadencii.vsq
 {
 
     /// <summary>
-    /// VSQXファイルを読み込むクラスs
+    /// VSQXファイルを読み込むクラス
     /// </summary>
-    public class VsqxConverter
+    public class VsqxReader
     {
         /// <summary>
         /// vsqxファイルを読み込み，新しいシーケンスオブジェクトを生成する

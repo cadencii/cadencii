@@ -12530,7 +12530,7 @@ namespace cadencii
                 bool isVsqx = str.endsWith( filename, ".vsqx" );
                 if ( isVsqx ) {
                     actualReadFile = PortUtil.createTempFile();
-                    VsqFile temporarySequence = VsqxConverter.readFromVsqx( filename );
+                    VsqFile temporarySequence = VsqxReader.readFromVsqx( filename );
                     temporarySequence.write( actualReadFile );
                 }
                 VsqFileEx vsq = new VsqFileEx( actualReadFile, "Shift_JIS" );

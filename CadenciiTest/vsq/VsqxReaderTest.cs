@@ -8,12 +8,12 @@ using NUnit.Framework;
 namespace cadencii
 {
     [TestFixture]
-    class VsqxConverterTest
+    class VsqxReaderTest
     {
         [Test]
         public void readFromVsqxMultiTrack()
         {
-            VsqFile vsq = VsqxConverter.readFromVsqx( "./fixture/track2.vsqx" );
+            VsqFile vsq = VsqxReader.readFromVsqx( "./fixture/track2.vsqx" );
 
             Assert.AreEqual( 3, vsq.Track.size() );
 
@@ -37,7 +37,7 @@ namespace cadencii
         [Test]
         public void readFromVsqx()
         {
-            VsqFile vsq = VsqxConverter.readFromVsqx( "./fixture/track1.vsqx" );
+            VsqFile vsq = VsqxReader.readFromVsqx( "./fixture/track1.vsqx" );
 
             // トラック数
             Assert.AreEqual( 2, vsq.Track.size() );
