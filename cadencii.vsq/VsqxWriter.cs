@@ -14,14 +14,37 @@
 
 using System.Text;
 using System.Xml;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace cadencii.vsq
 {
+    public static class XmlAttributeUtil
+    {
+        public static XmlElement Attribute(this XmlElement element, string key, string value)
+        {
+            var attr = element.OwnerDocument.CreateAttribute(key);
+            attr.Value = value;
+            element.Attributes.Append(attr);
+            return element;
+        }
+    }
+
     /// <summary>
     /// Vsqx ファイルへのエクスポートを行うクラス。
     /// </summary>
     public class VsqxWriter
     {
+        public class ExportSettings
+        {
+            public int pmBendDepth = 8;
+            public int pmBendLength = 0;
+            public int pmbPortamentoUse = 0;
+            public int demDecGainRate = 50;
+            public int demAccent = 50;
+            public int opening = 127;
+        }
+
         private static readonly string MIXER_UNIT_MASTER = "masterUnit";
         private static readonly string MIXER_UNIT_VS = "vsUnit";
         private static readonly string MIXER_UNIT_SE = "seUnit";
@@ -36,15 +59,21 @@ namespace cadencii.vsq
         private static readonly string MIXER_NODE_VOL = "vol";
 
         private XmlDocument doc_;
+        private ExportSettings settings_;
 
         /// <summary>
         /// エクスポートを行う。
         /// </summary>
         /// <param name="path">出力先のファイルパス</param>
         /// <param name="sequence">出力するシーケンス</param>
-        public void exportAsVsqx(string path, VsqFile sequence)
+        public void exportAsVsqx(string path, VsqFile sequence, ExportSettings settings = null)
         {
             doc_ = new XmlDocument();
+            if (settings == null) {
+                settings_ = new ExportSettings();
+            } else {
+                settings_ = settings;
+            }
             const string xsi_url = "http://www.w3.org/2001/XMLSchema-instance";
             var root = doc_.CreateElement("vsq3");
             {
@@ -62,7 +91,22 @@ namespace cadencii.vsq
                 schema.Value = "http://www.yamaha.co.jp/vocaloid/schema/vsq3/ vsq3.xsd";
                 root.Attributes.Append(schema);
             }
+            root.AppendChild(createNode("vender", "Yamaha corporation"));
+            root.AppendChild(createNode("version", "3.0.0.11"));
+            root.AppendChild(createVoiceTableNode(sequence));
             root.AppendChild(createMixerNode(sequence.Mixer));
+            root.AppendChild(createMasterTrackNode(sequence, sequence.Track[0]));
+
+            for (int i = 1; i < sequence.Track.Count; ++i) {
+                root.AppendChild(createTrackNode(sequence.Track[i],
+                                                 i - 1,
+                                                 sequence.getPreMeasureClocks(),
+                                                 sequence.TotalClocks));
+            }
+
+            root.AppendChild(doc_.CreateElement("seTrack"));
+            root.AppendChild(doc_.CreateElement("karaokeTrack"));
+            
             doc_.AppendChild(root);
             using (var stream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
                 var writer = new XmlTextWriter(stream, Encoding.UTF8);
@@ -73,18 +117,68 @@ namespace cadencii.vsq
 
         private XmlElement createNode<T>(string name, T value)
         {
-            var result = doc_.CreateElement(name);
-            result.InnerText = value.ToString();
+            XmlElement result = doc_.CreateElement(name);
+            if (typeof(T) == typeof(string)) {
+                result.InnerXml = doc_.CreateCDataSection(value.ToString()).OuterXml;
+            } else {
+                result.InnerText = value.ToString();
+            }
             return result;
         }
+
+        #region <vVoiceTable>
+
+        private List<IconHandle> collectAllSingerInfo(VsqFile sequence)
+        {
+            return
+                sequence.Track
+                    .Where((track) => track.MetaText != null)
+                    .SelectMany((track) => track.MetaText.Events.Events)
+                    .Where((vsq_event) => vsq_event.ID.type == VsqIDType.Singer)
+                    .Select((vsq_event) => vsq_event.ID.IconHandle)
+                    .Distinct()
+                    .OrderBy((handle) => handle.Language * 255 + handle.Program)
+                    .ToList();
+        }
+
+        private XmlElement createVoiceParamNode(IconHandle handle)
+        {
+            var result = doc_.CreateElement("vVoiceParam");
+            result.AppendChild(createNode("bre", 0));
+            result.AppendChild(createNode("bri", 0));
+            result.AppendChild(createNode("cle", 0));
+            result.AppendChild(createNode("gen", 0));
+            result.AppendChild(createNode("ope", 0));
+            return result;
+        }
+
+        private XmlElement createVoiceTableNode(VsqFile sequence)
+        {
+            var result = doc_.CreateElement("vVoiceTable");
+            var all_assigned_singers = collectAllSingerInfo(sequence);
+            all_assigned_singers.ForEach((handle) => {
+                var node = doc_.CreateElement("vVoice");
+                node.AppendChild(createNode("vBS", handle.Language));
+                node.AppendChild(createNode("vPC", handle.Program));
+                node.AppendChild(createNode("compID", "AAAAAAAAAAAAAAAA"));
+                node.AppendChild(createNode("vVoiceName", handle.Caption));
+                node.AppendChild(createVoiceParamNode(handle));
+                result.AppendChild(node);
+            });
+            return result;
+        }
+
+        #endregion
+
+        #region <mixer>
 
         private XmlElement createMixerUnitNode(VsqMixerEntry entry, int index)
         {
             var result = doc_.CreateElement(MIXER_UNIT_VS);
             result.AppendChild(createNode(MIXER_NODE_VSTRCKNO, index));
-            result.AppendChild(createNode(MIXER_NODE_INGAIN, "0"));
-            result.AppendChild(createNode(MIXER_NODE_SENDLEVEL, "-898"));
-            result.AppendChild(createNode(MIXER_NODE_SENDENABLE, "0"));
+            result.AppendChild(createNode(MIXER_NODE_INGAIN, 0));
+            result.AppendChild(createNode(MIXER_NODE_SENDLEVEL, VsqMixer.FEDER_MIN));
+            result.AppendChild(createNode(MIXER_NODE_SENDENABLE, 0));
             result.AppendChild(createNode(MIXER_NODE_MUTE, entry.Mute));
             result.AppendChild(createNode(MIXER_NODE_SOLO, entry.Solo));
             result.AppendChild(createNode(MIXER_NODE_PAN, entry.Panpot + 64));
@@ -95,9 +189,9 @@ namespace cadencii.vsq
         private XmlElement createMixerSoundEffectUnitNode()
         {
             var result = doc_.CreateElement(MIXER_UNIT_SE);
-            result.AppendChild(createNode(MIXER_NODE_INGAIN, "0"));
-            result.AppendChild(createNode(MIXER_NODE_SENDLEVEL, "-898"));
-            result.AppendChild(createNode(MIXER_NODE_SENDENABLE, "0"));
+            result.AppendChild(createNode(MIXER_NODE_INGAIN, 0));
+            result.AppendChild(createNode(MIXER_NODE_SENDLEVEL, VsqMixer.FEDER_MIN));
+            result.AppendChild(createNode(MIXER_NODE_SENDENABLE, 0));
             result.AppendChild(createNode(MIXER_NODE_MUTE, 0));
             result.AppendChild(createNode(MIXER_NODE_SOLO, 0));
             result.AppendChild(createNode(MIXER_NODE_PAN, 64));
@@ -108,6 +202,7 @@ namespace cadencii.vsq
         private XmlElement createMixerKaraokeUnitNode()
         {
             var result = doc_.CreateElement(MIXER_UNIT_KARAOKE);
+            result.AppendChild(createNode(MIXER_NODE_INGAIN, 0));
             result.AppendChild(createNode(MIXER_NODE_MUTE, 0));
             result.AppendChild(createNode(MIXER_NODE_SOLO, 0));
             result.AppendChild(createNode(MIXER_NODE_VOL, -129));
@@ -135,5 +230,118 @@ namespace cadencii.vsq
 
             return result;
         }
+
+        #endregion
+
+        #region <masterTrack>
+
+        private XmlElement createMasterTrackNode(VsqFile sequence, VsqTrack master_track)
+        {
+            var result = doc_.CreateElement("masterTrack");
+            result.AppendChild(createNode("seqName", master_track.getName()));
+            result.AppendChild(createNode("comment", ""));
+            result.AppendChild(createNode("resolution", sequence.getTickPerQuarter()));
+            result.AppendChild(createNode("preMeasure", sequence.getPreMeasure()));
+            sequence.TimesigTable.ForEach((time_sig) => {
+                var node = doc_.CreateElement("timeSig");
+                node.AppendChild(createNode("posMes", time_sig.BarCount));
+                node.AppendChild(createNode("nume", time_sig.Numerator));
+                node.AppendChild(createNode("denomi", time_sig.Denominator));
+                result.AppendChild(node);
+            });
+            sequence.TempoTable.ForEach((tempo) => {
+                var node = doc_.CreateElement("tempo");
+                node.AppendChild(createNode("posTick", tempo.Clock));
+                node.AppendChild(createNode("bpm", (int)(60e6 / tempo.Tempo * 100)));
+                result.AppendChild(node);
+            });
+            return result;
+        }
+
+        #endregion
+
+        #region <vsTrack>
+
+        private XmlElement createNoteNode(VsqEvent vsq_event, int pre_measure_clock)
+        {
+            var node = doc_.CreateElement("note");
+            node.AppendChild(createNode("posTick", vsq_event.Clock - pre_measure_clock));
+            node.AppendChild(createNode("durTick", vsq_event.ID.getLength()));
+            node.AppendChild(createNode("noteNum", vsq_event.ID.Note));
+            node.AppendChild(createNode("velocity", vsq_event.ID.Dynamics));
+            node.AppendChild(createNode("lyric", vsq_event.ID.LyricHandle.getLyricAt(0).Phrase));
+            node.AppendChild(createNode("phnms", vsq_event.ID.LyricHandle.getLyricAt(0).getPhoneticSymbol()));
+            {
+                var style = doc_.CreateElement("noteStyle");
+                style.AppendChild(createNode("attr", vsq_event.ID.DEMaccent).Attribute("id", "accent"));
+                style.AppendChild(createNode("attr", vsq_event.ID.PMBendDepth).Attribute("id", "bendDep"));
+                style.AppendChild(createNode("attr", vsq_event.ID.PMBendLength).Attribute("id", "bendLen"));
+                style.AppendChild(createNode("attr", vsq_event.ID.DEMdecGainRate).Attribute("id", "decay"));
+                style.AppendChild(createNode("attr", vsq_event.ID.isFallPortamento() ? 1 : 0).Attribute("id", "fallPort"));
+                style.AppendChild(createNode("attr", 127).Attribute("id", "opening"));
+                style.AppendChild(createNode("attr", vsq_event.ID.isRisePortamento() ? 1 : 0).Attribute("id", "risePort"));
+                node.AppendChild(style);
+            }
+            return node;
+        }
+
+        private XmlElement createPartStyleNode()
+        {
+            var partStyle = doc_.CreateElement("partStyle");
+            partStyle.AppendChild(createNode("attr", settings_.demAccent).Attribute("id", "accent"));
+            partStyle.AppendChild(createNode("attr", settings_.pmBendDepth).Attribute("id", "bendDep"));
+            partStyle.AppendChild(createNode("attr", settings_.pmBendLength).Attribute("id", "bendLen"));
+            partStyle.AppendChild(createNode("attr", settings_.demDecGainRate).Attribute("id", "decay"));
+            bool risePort = (settings_.pmbPortamentoUse & 1) == 1;
+            bool fallPort = (settings_.pmbPortamentoUse & 2) == 2;
+            partStyle.AppendChild(createNode("attr", fallPort ? 1 : 0).Attribute("id", "fallPort"));
+            partStyle.AppendChild(createNode("attr", settings_.opening).Attribute("id", "opening"));
+            partStyle.AppendChild(createNode("attr", risePort ? 1 : 0).Attribute("id", "risePort"));
+            return partStyle;
+        }
+
+        private XmlElement createMusicalPartNode(VsqTrack track, int pre_measure_clock, int sequence_length)
+        {
+            var result = doc_.CreateElement("musicalPart");
+            result.AppendChild(createNode("posTick", pre_measure_clock));
+            result.AppendChild(createNode("playTime", sequence_length - pre_measure_clock));
+            result.AppendChild(createNode("partName", track.getName()));
+            result.AppendChild(createNode("comment", ""));
+            {
+                var stylePlugin = doc_.CreateElement("stylePlugin");
+                stylePlugin.AppendChild(createNode("stylePluginID", "ACA9C502-A04B-42b5-B2EB-5CEA36D16FCE"));
+                stylePlugin.AppendChild(createNode("stylePluginName", "VOCALOID2 Compatible Style"));
+                stylePlugin.AppendChild(createNode("version", "3.0.0.1"));
+                result.AppendChild(stylePlugin);
+            }
+            {
+                result.AppendChild(createPartStyleNode());
+            }
+            track.MetaText.Events.Events.ForEach((vsq_event) => {
+                if (vsq_event.ID.type == VsqIDType.Singer) {
+                    var node = doc_.CreateElement("singer");
+                    node.AppendChild(createNode("posTick", vsq_event.Clock - pre_measure_clock));
+                    node.AppendChild(createNode("vBS", vsq_event.ID.IconHandle.Language));
+                    node.AppendChild(createNode("vPC", vsq_event.ID.IconHandle.Program));
+                    result.AppendChild(node);
+                } else if (vsq_event.ID.type == VsqIDType.Anote) {
+                    result.AppendChild(createNoteNode(vsq_event, pre_measure_clock));
+                }
+            });
+            return result;
+        }
+
+        private XmlElement createTrackNode(VsqTrack track, int index, int pre_measure_clock, int sequence_length)
+        {
+            var result = doc_.CreateElement("vsTrack");
+            result.AppendChild(createNode("vsTrackNo", index));
+            result.AppendChild(createNode("trackName", track.getName()));
+            result.AppendChild(createNode("comment", ""));
+            result.AppendChild(createMusicalPartNode(track, pre_measure_clock, sequence_length));
+            return result;
+        }
+
+        #endregion
+
     }
 }

@@ -39,6 +39,9 @@ namespace cadencii.vsq
     public class VsqMixer : ICloneable
 #endif
     {
+        public const int FEDER_MIN = -898;
+        public const int FEDER_MAX = 55;
+
         public int MasterFeder;
         public int MasterPanpot;
         public int MasterMute;

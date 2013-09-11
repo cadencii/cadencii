@@ -13,7 +13,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <SignAssembly>false</SignAssembly>
@@ -26,12 +26,14 @@
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
     <DocumentationFile>bin\x86\Debug\cadencii.vsq.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <DocumentationFile>bin\x86\Release\cadencii.vsq.xml</DocumentationFile>
     <DefineConstants>CSHARP</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,18 +41,21 @@
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
     <DocumentationFile>bin\x86\Debug\org.kbinani.vsq.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseMinimal|x86' ">
     <OutputPath>bin\x86\ReleaseMinimal\</OutputPath>
     <DocumentationFile>bin\x86\Release\org.kbinani.vsq.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>CSHARP</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
     <OutputPath>bin\x86\MonoRelease\</OutputPath>
     <DocumentationFile>bin\x86\Release\org.kbinani.vsq.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>CSHARP</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
