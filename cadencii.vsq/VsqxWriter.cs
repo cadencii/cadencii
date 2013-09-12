@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+using System;
 using System.Text;
 using System.Xml;
 using System.Collections.Generic;
@@ -262,6 +263,26 @@ namespace cadencii.vsq
 
         #region <vsTrack>
 
+        private XmlElement createVibratoCurveNode(int start_value, VibratoBPList curve)
+        {
+            var result = doc_.CreateElement("seqAttr");
+            Func<VibratoBPPair, XmlElement> CreateElem = (pair) => {
+                var elem = doc_.CreateElement("elem");
+                int x = (int)(pair.X * 65536);
+                elem.AppendChild(createNode("posNrm", x));
+                elem.AppendChild(createNode("elv", pair.Y));
+                return elem;
+            };
+            result.AppendChild(CreateElem(new VibratoBPPair(0.0f, start_value)));
+            int count = curve.getCount();
+            for (int i = 0; i < count; ++i) {
+                var pair = curve.getElement(i);
+                var elem = CreateElem(curve.getElement(i));
+                result.AppendChild(elem);
+            }
+            return result;
+        }
+
         private XmlElement createNoteNode(VsqEvent vsq_event, int pre_measure_clock)
         {
             var node = doc_.CreateElement("note");
@@ -280,6 +301,14 @@ namespace cadencii.vsq
                 style.AppendChild(createNode("attr", vsq_event.ID.isFallPortamento() ? 1 : 0).Attribute("id", "fallPort"));
                 style.AppendChild(createNode("attr", 127).Attribute("id", "opening"));
                 style.AppendChild(createNode("attr", vsq_event.ID.isRisePortamento() ? 1 : 0).Attribute("id", "risePort"));
+                if (vsq_event.ID.VibratoHandle != null && vsq_event.ID.VibratoDelay < vsq_event.ID.getLength()) {
+                    int vibrato_length = vsq_event.ID.getLength() - vsq_event.ID.VibratoDelay;
+                    int percent = (int)(vibrato_length * 100.0 / vsq_event.ID.getLength());
+                    style.AppendChild(createNode("attr", percent).Attribute("id", "vibLen"));
+                    style.AppendChild(createNode("attr", vsq_event.ID.VibratoHandle.Index).Attribute("id", "vibType"));
+                    style.AppendChild(createVibratoCurveNode(vsq_event.ID.VibratoHandle.getStartDepth(), vsq_event.ID.VibratoHandle.getDepthBP()).Attribute("id", "vibDep"));
+                    style.AppendChild(createVibratoCurveNode(vsq_event.ID.VibratoHandle.getStartRate(), vsq_event.ID.VibratoHandle.getRateBP()).Attribute("id", "vibRate"));
+                }
                 node.AppendChild(style);
             }
             return node;
