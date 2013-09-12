@@ -4559,6 +4559,7 @@ namespace cadencii
             menuFileExportParaWave.setText( _( "Serial numbered WAVEs" ) );
             menuFileExportUst.setText( _( "UTAU project file" ) );
             menuFileExportVxt.setText( _( "Metatext for vConnect" ) );
+            menuFileExportVsq.Text = _("VSQ File");
             menuFileExportVsqx.Text = _("VSQX File");
             menuFileRecent.setText( _( "Open Recent" ) );
             menuFileRecent.setMnemonic( KeyEvent.VK_R );
