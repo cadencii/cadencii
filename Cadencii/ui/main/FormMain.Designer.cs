@@ -344,6 +344,7 @@ namespace cadencii
             this.cMenuPositionIndicator = new cadencii.windows.forms.BPopupMenu(this.components);
             this.cMenuPositionIndicatorStartMarker = new cadencii.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new cadencii.windows.forms.BMenuItem();
+            this.menuFileExportVsqx = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -497,6 +498,7 @@ namespace cadencii
             this.menuFileExportWave,
             this.menuFileExportParaWave,
             this.menuFileExportVsq,
+            this.menuFileExportVsqx,
             this.menuFileExportMidi,
             this.menuFileExportMusicXml,
             this.menuFileExportUst,
@@ -2870,6 +2872,12 @@ namespace cadencii
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size(150, 22);
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
             // 
+            // menuFileExportVsqx
+            // 
+            this.menuFileExportVsqx.Name = "menuFileExportVsqx";
+            this.menuFileExportVsqx.Size = new System.Drawing.Size(268, 22);
+            this.menuFileExportVsqx.Text = "VSQX File";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -3244,5 +3252,6 @@ namespace cadencii
         public BMenuItem menuFileRecentClear;
         public BMenuItem menuLyricApplyUtauParameters;
         private System.Windows.Forms.ToolStripMenuItem menuVisualPluginUiAquesTone2;
+        private System.Windows.Forms.ToolStripMenuItem menuFileExportVsqx;
     }
 }

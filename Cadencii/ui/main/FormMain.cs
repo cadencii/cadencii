@@ -4559,6 +4559,7 @@ namespace cadencii
             menuFileExportParaWave.setText( _( "Serial numbered WAVEs" ) );
             menuFileExportUst.setText( _( "UTAU project file" ) );
             menuFileExportVxt.setText( _( "Metatext for vConnect" ) );
+            menuFileExportVsqx.Text = _("VSQX File");
             menuFileRecent.setText( _( "Open Recent" ) );
             menuFileRecent.setMnemonic( KeyEvent.VK_R );
             menuFileRecentClear.setText( _( "Clear Menu" ) );
@@ -7251,6 +7252,8 @@ namespace cadencii
             menuFileExportUst.Click += new BEventHandler( menuFileExportUst_Click );
             menuFileExportVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuFileExportVsq.Click += new BEventHandler( menuFileExportVsq_Click );
+            menuFileExportVsqx.MouseEnter += new EventHandler(handleMenuMouseEnter);
+            menuFileExportVsqx.Click += new EventHandler(menuFileExportVsqx_Click);
             menuFileExportVxt.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuFileExportVxt.Click += new BEventHandler( menuFileExportVxt_Click );
             menuFileRecent.MouseEnter += new BEventHandler( handleMenuMouseEnter );
@@ -11545,6 +11548,20 @@ namespace cadencii
             // 出力処理
             VsqFile tvsq = (VsqFile)vsq;
             tvsq.write( file_name, AppManager.editorConfig.PreSendTime, "Shift_JIS" );
+        }
+
+        private void menuFileExportVsqx_Click(object sender, EventArgs e)
+        {
+            VsqFileEx sequence = AppManager.getVsqFile();
+            using (var dialog = new System.Windows.Forms.SaveFileDialog()) {
+                dialog.Title = _("Export VSQX (*.vsqx)");
+                dialog.Filter = _("VSQX Format(*.vsqx)|*.vsqx") + "|" + _("All Files(*.*)|*.*");
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    var file_path = dialog.FileName;
+                    var writer = new VsqxWriter();
+                    writer.exportAsVsqx(file_path, sequence);
+                }
+            }
         }
 
         public void menuFileExportVxt_Click( Object sender, EventArgs e )
@@ -17054,6 +17071,8 @@ namespace cadencii
                 text = _( "Export current track as UTAU project file" );
             } else if ( sender == menuFileExportVsq ) {
                 text = _( "Export to VSQ" );
+            } else if (sender == menuFileExportVsqx) {
+                text = _("Export to VSQX");
             } else if ( sender == menuFileExportVxt ) {
                 text = _( "Export current track as Meta-text for vConnect" );
             } else if ( sender == menuFileRecent ) {
