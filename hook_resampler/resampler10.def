@@ -1,7 +1,0 @@
-EXPORTS
-	SoundInit
-	SoundAppend
-	SoundReset
-	SoundGetPosition
-	SoundIsBusy
-	SoundWaitForExit

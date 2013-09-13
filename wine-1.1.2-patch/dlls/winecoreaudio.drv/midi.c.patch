@@ -1,4 +1,0 @@
-119c119
-<     MIDIIn_NumDevs = 0;// oh no... MIDIGetNumberOfSources();
----
->     MIDIIn_NumDevs = MIDIGetNumberOfSources();
