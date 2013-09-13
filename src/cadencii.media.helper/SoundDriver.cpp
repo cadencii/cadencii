@@ -1,4 +1,6 @@
-#include "org.kbinani.media.helper.h"
+#include "./SoundDriver.h"
+
+#pragma comment(lib, "winmm")
 
 static HWAVEOUT wave_out = NULL;
 static WAVEFORMATEX wave_format;
@@ -185,7 +187,7 @@ void SoundAppend( double *left, double *right, int length ) {
 /// <param name="dwInstance"></param>
 /// <param name="dwParam1"></param>
 /// <param name="dwParam2"></param>
-void SoundCallback(
+extern void CALLBACK SoundCallback(
     HWAVEOUT hwo,
     UINT uMsg,
     DWORD dwInstance,

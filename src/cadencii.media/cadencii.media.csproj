@@ -98,10 +98,6 @@
       <Name>cadencii.core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="org.kbinani.media.helper.cpp" />
-    <Content Include="org.kbinani.media.helper.h" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -111,8 +107,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>g++ -shared -m32 -s "$(ProjectDir)org.kbinani.media.helper.cpp" -o "$(TargetDir)org.kbinani.media.helper.dll" -lwinmm
-copy "$(TargetDir)org.kbinani.media.helper.dll" "$(SolutionDir)Cadencii\$(OutDir)org.kbinani.media.helper.dll"
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

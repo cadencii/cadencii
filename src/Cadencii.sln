@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.apputil", "cadencii.apputil\cadencii.apputil.csproj", "{0C58B068-272F-4390-A14F-3D72AFCF3DFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.media", "cadencii.media\cadencii.media.csproj", "{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}"
+	ProjectSection(ProjectDependencies) = postProject
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516} = {21D48CB2-CEDA-45C1-AC85-A8FE84797516}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.vsq", "cadencii.vsq\cadencii.vsq.csproj", "{673347F3-6FC2-4F82-9273-BF158E0F8CB1}"
 EndProject
@@ -24,6 +27,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cadencii.helper", "cadencii.helper\cadencii.helper.vcxproj", "{5B7732B0-3322-4B24-9ED2-15B2E5D39432}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadenciiTest", "..\tests\CadenciiTest\CadenciiTest.csproj", "{7FC4F869-A95B-439E-93A2-01D85E5A8006}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cadencii.media.helper", "cadencii.media.helper\cadencii.media.helper.vcxproj", "{21D48CB2-CEDA-45C1-AC85-A8FE84797516}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,6 +184,18 @@ Global
 		{7FC4F869-A95B-439E-93A2-01D85E5A8006}.Release|Win32.Build.0 = Release|x86
 		{7FC4F869-A95B-439E-93A2-01D85E5A8006}.Release|x86.ActiveCfg = Release|x86
 		{7FC4F869-A95B-439E-93A2-01D85E5A8006}.Release|x86.Build.0 = Release|x86
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Debug|Win32.Build.0 = Debug|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Debug|x86.ActiveCfg = Debug|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Debug|x86.Build.0 = Debug|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.MonoRelease|Win32.ActiveCfg = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.MonoRelease|Win32.Build.0 = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.MonoRelease|x86.ActiveCfg = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.MonoRelease|x86.Build.0 = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Release|Win32.ActiveCfg = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Release|Win32.Build.0 = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Release|x86.ActiveCfg = Release|Win32
+		{21D48CB2-CEDA-45C1-AC85-A8FE84797516}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

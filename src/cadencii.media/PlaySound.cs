@@ -39,25 +39,25 @@ namespace cadencii.media {
         private static byte[] m_buffer;
 #else
 #if USE_PLAYSOUND_DLL
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundInit();
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern int SoundPrepare( int sample_rate );
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundAppend( IntPtr left, IntPtr right, int length );
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundExit();
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern double SoundGetPosition();
-        /*[DllImport( "org.kbinani.media.helper" )]
+        /*[DllImport("cadencii.media.helper.dll")]
         private static extern bool SoundIsBusy();*/
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundWaitForExit();
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundSetResolution( int resolution );
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundKill();
-        [DllImport( "org.kbinani.media.helper.dll" )]
+        [DllImport("cadencii.media.helper.dll")]
         private static extern void SoundUnprepare();
 #else
 //#error 途中で詰まる場合があるので使わないでね(org.kbinani.cadencii.PlaySound)
