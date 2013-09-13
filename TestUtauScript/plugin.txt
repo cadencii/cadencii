@@ -1,2 +1,0 @@
-name=テストプラグイン
-execute=TestUtauScript.exe

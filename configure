@@ -1,7 +1,0 @@
-#!/bin/sh
-str=""
-for arg in $*
-do
-  str="${str} ${arg}"
-done
-perl replace_path_separator.pl $str 2>/dev/null
