@@ -33,6 +33,12 @@ namespace cadencii.vsq
             this.numerator = numerator;
             this.denominator = denominator;
         }
+
+        public bool Equals(Timesig rhs)
+        {
+            return numerator == rhs.numerator
+                && denominator == rhs.denominator;
+        }
     }
 
 #if !JAVA
