@@ -2,6 +2,7 @@
 using System.IO;
 using cadencii.vsq;
 using cadencii;
+using cadencii.vsq.io;
 using cadencii.xml;
 using NUnit.Framework;
 

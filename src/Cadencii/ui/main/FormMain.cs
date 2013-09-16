@@ -11561,7 +11561,7 @@ namespace cadencii
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     var file_path = dialog.FileName;
                     var writer = new VsqxWriter();
-                    writer.exportAsVsqx(file_path, sequence);
+                    writer.write(sequence, file_path);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * ISequenceWriter.cs
  * Copyright © 2013 kbinani
  *
