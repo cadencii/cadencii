@@ -102,9 +102,9 @@ namespace cadencii.vsq.io
             /// </summary>
             /// <param name="item"></param>
             /// <param name="timesig_table"></param>
-            public TiedEvent(VsqEvent item, TimesigVector timesig_table)
+            public TiedEvent(VsqEvent item, TimesigVector timesig_table, TempoVector tempo_table)
             {
-                Init(timesig_table, item.Clock, item.ID.getLength(), item.ID.Note, false);
+                Init(timesig_table, tempo_table, item.Clock, item.ID.getLength(), item.ID.Note, false);
                 if (notes_.Count > 0 && item.ID.LyricHandle != null && item.ID.LyricHandle.getCount() > 0) {
                     var lyric = new lyric();
                     lyric.text.Add(new textelementdata());
@@ -119,9 +119,9 @@ namespace cadencii.vsq.io
             /// <param name="clock_start"></param>
             /// <param name="length"></param>
             /// <param name="timesig_table"></param>
-            public TiedEvent(int clock_start, int length, TimesigVector timesig_table)
+            public TiedEvent(int clock_start, int length, TimesigVector timesig_table, TempoVector tempo_table)
             {
-                Init(timesig_table, clock_start, length, 0, true);
+                Init(timesig_table, tempo_table, clock_start, length, 0, true);
             }
 
             public int Clock
@@ -134,11 +134,19 @@ namespace cadencii.vsq.io
                 get { return length_; }
             }
 
-            private void Init(TimesigVector timesig_table, int clock_start, int length, int note_number, bool create_rest)
+            private void Init(TimesigVector timesig_table, TempoVector tempo_table, int clock_start, int length, int note_number, bool create_rest)
             {
                 clock_ = clock_start;
                 length_ = length;
 
+                // 着目している範囲内のテンポのみを取り出す
+                var small_tempo_table = new TempoVector();
+                small_tempo_table.AddRange(
+                    tempo_table
+                        .Where((tempo) => clock_start <= tempo.Clock && tempo.Clock < clock_start + length)
+                        .Select((tempo) => (TempoTableEntry)tempo.Clone()));
+
+                // <pitch> エレメントのテンプレートを作成
                 MusicXML.pitch pitch = null;
                 if (!create_rest) {
                     pitch = new pitch();
@@ -158,7 +166,21 @@ namespace cadencii.vsq.io
                 int current_clock = clock_start;
                 while (current_clock < clock_start + length) {
                     int next_bar_clock = timesig_table.getClockFromBarCount(timesig_table.getBarCountFromClock(current_clock) + 1);
-                    int remain = (next_bar_clock < clock_end ? next_bar_clock : clock_end) - current_clock;
+                    int next_tempo_change = clock_end;
+                    if (small_tempo_table.Count > 0) {
+                        try {
+                            next_tempo_change =
+                                small_tempo_table
+                                    .First((tempo) => {
+                                        return current_clock < tempo.Clock && tempo.Clock < clock_end;
+                                    })
+                                    .Clock;
+                        } catch (InvalidOperationException) { }
+                    }
+
+                    int next_separation_point = Math.Min(Math.Min(clock_end, next_bar_clock), next_tempo_change);
+
+                    int remain = next_separation_point - current_clock;
                     var template =
                         templates_
                             .OrderByDescending((note) => note.duration.First)
@@ -252,9 +274,13 @@ namespace cadencii.vsq.io
             }
             score.partlist.Items = partlist.ToArray();
 
+            var quantized_tempo_table = quantizeTempoTable(sequence.TempoTable);
+
             score.part = 
                 sequence.Track.Skip(1).Select((track) => {
-                    return createScorePart(track, sequence.TimesigTable);
+                    var result = createScorePart(track, sequence.TimesigTable, quantized_tempo_table);
+                    quantized_tempo_table.Clear();
+                    return result;
                 }).ToArray();
             for (int i = 0; i < score.part.Length; i++) {
                 score.part[i].id = "P" + (i + 1);
@@ -274,10 +300,10 @@ namespace cadencii.vsq.io
         /// <param name="track"></param>
         /// <param name="timesig_table"></param>
         /// <returns></returns>
-        private scorepartwisePart createScorePart(VsqTrack track, TimesigVector timesig_table)
+        private scorepartwisePart createScorePart(VsqTrack track, TimesigVector timesig_table, TempoVector tempo_table)
         {
             var part = new scorepartwisePart();
-            var note_list = quantizeTrack(track, timesig_table);
+            var note_list = quantizeTrack(track, timesig_table, tempo_table);
             var measures = new List<scorepartwisePartMeasure>();
             int measure = 0;
             Timesig timesig = new Timesig(0, 0);
@@ -285,8 +311,15 @@ namespace cadencii.vsq.io
             while (0 < note_list.Count) {
                 int measure_start_clock = timesig_table.getClockFromBarCount(measure);
                 int measure_end_clock = timesig_table.getClockFromBarCount(measure + 1);
+
+                var tempo_change_in_measure = new TempoVector();
+                tempo_change_in_measure.AddRange(
+                    tempo_table
+                        .Where((tempo) => measure_start_clock <= tempo.Clock && tempo.Clock < measure_end_clock)
+                        .Select((tempo) => (TempoTableEntry)tempo.Clone()));
+                
                 // get the list of TiedEvent, contained in target measure.
-                var in_measure_tied_note_list = 
+                var in_measure_tied_note_list =
                     note_list
                         .Where((tied_event) => {
                             int tied_event_start = tied_event.Clock;
@@ -301,11 +334,28 @@ namespace cadencii.vsq.io
                 var in_measure_note_list =
                     in_measure_tied_note_list
                         .SelectMany((tied_event) => {
-                            var result = new List<note>();
+                            var result = new List<object>();
                             int clock = tied_event.Clock;
                             foreach (var note in tied_event) {
                                 int length = (int)note.duration.First;
                                 if (measure_start_clock <= clock && clock + length <= measure_end_clock) {
+                                    var tempo_change =
+                                        tempo_change_in_measure
+                                            .FirstOrDefault((tempo) => tempo.Clock == clock);
+                                    if (tempo_change != null) {
+                                        var direction = new direction();
+                                        direction.placement = abovebelow.above;
+                                        direction.placementSpecified = true;
+                                        direction.directiontype = new directiontype[] { new directiontype() };
+                                        direction.directiontype[0].metronome.Add(new metronome());
+                                        var perminute = new perminute();
+                                        perminute.Value = getTempo(tempo_change).ToString();
+                                        direction.directiontype[0].metronome[0].Items = new object[] { notetypevalue.quarter, perminute };
+                                        direction.sound = new sound();
+                                        direction.sound.tempo = getTempo(tempo_change);
+                                        direction.sound.tempoSpecified = true;
+                                        result.Add(direction);
+                                    }
                                     result.Add(note);
                                 }
                                 clock += length;
@@ -344,6 +394,11 @@ namespace cadencii.vsq.io
             return part;
         }
 
+        private decimal getTempo(TempoTableEntry tempo)
+        {
+            return Math.Round((decimal)(60e6 / tempo.Tempo), 2);
+        }
+
         private int quantize(int clock)
         {
             const int unit = QUANTIZE_UNIT;
@@ -355,7 +410,25 @@ namespace cadencii.vsq.io
             return new_clock;
         }
 
-        private List<TiedEvent> quantizeTrack(VsqTrack track, TimesigVector timesig_table)
+        private TempoVector quantizeTempoTable(TempoVector tempo_table)
+        {
+            var copy = new TempoVector();
+            copy.AddRange(
+                tempo_table
+                    .Select((tempo) => {
+                        int clock = quantize(tempo.Clock);
+                        return new TempoTableEntry(clock, tempo.Tempo, 0.0);
+                    }));
+            for (int i = copy.Count - 1; i > 0; i--) {
+                if (copy[i].Clock == copy[i - 1].Clock) {
+                    copy.RemoveAt(i);
+                }
+            }
+            copy.updateTempoInfo();
+            return copy;
+        }
+
+        private List<TiedEvent> quantizeTrack(VsqTrack track, TimesigVector timesig_table, TempoVector tempo_table)
         {
             var result = new List<TiedEvent>();
             if (track.MetaText == null) {
@@ -388,9 +461,9 @@ namespace cadencii.vsq.io
                 if (item.ID.type == VsqIDType.Anote) {
                     int rest_length = item.Clock - clock;
                     if (rest_length > 0) {
-                        result.Add(new TiedEvent(clock, rest_length, timesig_table));
+                        result.Add(new TiedEvent(clock, rest_length, timesig_table, tempo_table));
                     }
-                    result.Add(new TiedEvent(item, timesig_table));
+                    result.Add(new TiedEvent(item, timesig_table, tempo_table));
                     clock = item.Clock + item.ID.getLength();
                 }
             }
