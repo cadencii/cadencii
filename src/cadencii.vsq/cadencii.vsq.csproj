@@ -72,6 +72,16 @@
     <Compile Include="IconParameter.cs" />
     <Compile Include="IndexIteratorKind.cs" />
     <Compile Include="InternalStreamWriter.cs" />
+    <Compile Include="io\ISequenceWriter.cs" />
+    <Compile Include="io\MusicXml.cs" />
+    <Compile Include="io\MusicXmlExtentions.cs">
+      <SubType>code</SubType>
+    </Compile>
+    <Compile Include="io\MusicXmlWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="io\VsqxReader.cs" />
+    <Compile Include="io\VsqxWriter.cs" />
     <Compile Include="ITextWriter.cs" />
     <Compile Include="Lyric.cs" />
     <Compile Include="LyricHandle.cs" />
@@ -134,8 +144,6 @@
     <Compile Include="VsqPhoneticSymbol.cs" />
     <Compile Include="VsqTrack.cs" />
     <Compile Include="VsqVoiceLanguage.cs" />
-    <Compile Include="VsqxReader.cs" />
-    <Compile Include="VsqxWriter.cs" />
     <Compile Include="WrappedStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>

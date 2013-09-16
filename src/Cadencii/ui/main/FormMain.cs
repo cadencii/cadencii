@@ -53,6 +53,7 @@ using cadencii.javax.swing;
 using cadencii.javax.sound.midi;
 using cadencii.media;
 using cadencii.vsq;
+using cadencii.vsq.io;
 using cadencii.windows.forms;
 using cadencii.xml;
 
@@ -11340,8 +11341,8 @@ namespace cadencii
                     return;
                 }
                 String file = dialog.getSelectedFile();
-                String software = "Cadencii version " + BAssemblyInfo.fileVersion;
-                vsq.printAsMusicXml( file, "UTF-8", software );
+                var writer = new MusicXmlWriter();
+                writer.write(vsq, file);
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xml" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
@@ -11560,7 +11561,7 @@ namespace cadencii
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     var file_path = dialog.FileName;
                     var writer = new VsqxWriter();
-                    writer.exportAsVsqx(file_path, sequence);
+                    writer.write(sequence, file_path);
                 }
             }
         }

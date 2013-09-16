@@ -4,10 +4,10 @@
  *
  * This file is part of cadencii.vsq.
  *
- * org.kbinani.vsq is free software; you can redistribute it and/or
+ * cadencii.vsq is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * org.kbinani.vsq is distributed in the hope that it will be useful,
+ * cadencii.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -18,7 +18,7 @@ using System.Xml;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace cadencii.vsq
+namespace cadencii.vsq.io
 {
     public static class XmlAttributeUtil
     {
@@ -34,7 +34,7 @@ namespace cadencii.vsq
     /// <summary>
     /// Vsqx ファイルへのエクスポートを行うクラス。
     /// </summary>
-    public class VsqxWriter
+    public class VsqxWriter : ISequenceWriter
     {
         public class ExportSettings
         {
@@ -60,21 +60,16 @@ namespace cadencii.vsq
         private static readonly string MIXER_NODE_VOL = "vol";
 
         private XmlDocument doc_;
-        private ExportSettings settings_;
+        private ExportSettings settings_ = new ExportSettings();
 
         /// <summary>
         /// エクスポートを行う。
         /// </summary>
         /// <param name="path">出力先のファイルパス</param>
         /// <param name="sequence">出力するシーケンス</param>
-        public void exportAsVsqx(string path, VsqFile sequence, ExportSettings settings = null)
+        public void write(VsqFile sequence, string path)
         {
             doc_ = new XmlDocument();
-            if (settings == null) {
-                settings_ = new ExportSettings();
-            } else {
-                settings_ = settings;
-            }
             const string xsi_url = "http://www.w3.org/2001/XMLSchema-instance";
             var root = doc_.CreateElement("vsq3");
             {
@@ -114,6 +109,11 @@ namespace cadencii.vsq
                 writer.Formatting = Formatting.Indented;
                 doc_.Save(writer);
             }
+        }
+
+        public void setSettings(ExportSettings settings)
+        {
+            settings_ = settings;
         }
 
         private XmlElement createNode<T>(string name, T value)
