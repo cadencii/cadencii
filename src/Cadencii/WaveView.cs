@@ -45,7 +45,7 @@ namespace cadencii {
         /// <summary>
         /// 波形描画用のコンテキスト
         /// </summary>
-        private WaveDrawContext[] mDrawer = new WaveDrawContext[16];
+        private WaveDrawContext[] mDrawer = new WaveDrawContext[AppManager.MAX_NUM_TRACK];
         /// <summary>
         /// グラフィクスオブジェクトのキャッシュ
         /// </summary>

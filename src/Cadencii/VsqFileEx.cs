@@ -1205,7 +1205,7 @@ namespace cadencii
                     for ( int i = 0; i < count - 1; i++ ) {
                         editorStatus.renderRequired[i] = true;
                     }
-                    for ( int i = count - 1; i < 16; i++ ) {
+                    for ( int i = count - 1; i < AppManager.MAX_NUM_TRACK; i++ ) {
                         editorStatus.renderRequired[i] = false;
                     }
                     #endregion
