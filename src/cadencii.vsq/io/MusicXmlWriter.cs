@@ -159,6 +159,7 @@ namespace cadencii.vsq.io
                     int alter = VsqNote.getNoteAlter(note_number);
                     if (alter != 0) {
                         pitch.alter = alter;
+                        pitch.alterSpecified = true;
                     }
                 }
 
