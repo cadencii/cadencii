@@ -731,104 +731,100 @@ namespace cadencii
 
         public void draw( Graphics2D g, int width, int height )
         {
-            if ( mMainForm == null ) {
+            if (mMainForm == null) {
                 return;
             }
-            if ( AppManager.mDrawObjects == null ) {
-                return;
-            }
+            lock (AppManager.mDrawObjects) {
+                g.setColor(mBackgroundColor);
+                g.fillRect(0, 0, width, height);
 
-            g.setColor( mBackgroundColor );
-            g.fillRect( 0, 0, width, height );
+                g.setStroke(getStroke2px());
+                g.setColor(FormMain.mColorNoteFill);
+                int key_width = AppManager.keyWidth;
+                int xoffset = key_width + AppManager.keyOffset;
+                VsqFileEx vsq = AppManager.getVsqFile();
 
-            g.setStroke( getStroke2px() );
-            g.setColor( FormMain.mColorNoteFill );
-            int key_width = AppManager.keyWidth;
-            int xoffset = key_width + AppManager.keyOffset;
-            VsqFileEx vsq = AppManager.getVsqFile();
-            int selected = AppManager.getSelected();
+                int overview_dot_diam = 2;
 
-            int overview_dot_diam = 2;
+                int selected = AppManager.getSelected();
+                Vector<DrawObject> objs = AppManager.mDrawObjects[selected - 1];
 
-            Vector<DrawObject> objs = AppManager.mDrawObjects.get( selected - 1 );
-
-            // 平均ノートナンバーを調べる
-            double sum = 0.0;
-            int count = 0;
-            for ( Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
-                DrawObject dobj = itr.next();
-                if ( dobj.mType == DrawObjectType.Note ) {
-                    sum += dobj.mNote;
-                    count++;
-                }
-            }
-            float average_note = (float)(sum / (double)count);
-
-            for ( Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
-                DrawObject dobj = itr.next();
-                int x = (int)(dobj.mClock * mOverviewPixelPerClock);
-                if ( x < 0 ) {
-                    continue;
-                }
-                if ( width - key_width < x ) {
-                    break;
-                }
-                int y = height - (height / 2 + (int)((dobj.mNote - average_note) * overview_dot_diam));
-                int length = (int)(dobj.mLength * mOverviewPixelPerClock);
-                if ( length < overview_dot_diam ) {
-                    length = overview_dot_diam;
-                }
-                g.drawLine( x + xoffset, y, x + length + xoffset, y );
-            }
-
-            g.setStroke( getStrokeDefault() );
-            //}
-            int current_start = AppManager.clockFromXCoord( key_width );
-            int current_end = AppManager.clockFromXCoord( mMainForm.pictPianoRoll.getWidth() );
-            int x_start = (int)(current_start * mOverviewPixelPerClock);
-            int x_end = (int)(current_end * mOverviewPixelPerClock);
-
-            // 小節ごとの線
-            int clock_start = 0;
-            int clock_end = (int)(width / mOverviewPixelPerClock);
-            int premeasure = vsq.getPreMeasure();
-            g.setClip( null );
-            Color pen_color = new java.awt.Color( 0, 0, 0, 130 );
-
-            int barcountx = 0;
-            String barcountstr = "";
-            for ( Iterator<VsqBarLineType> itr = vsq.getBarLineIterator( clock_end * 3 / 2 ); itr.hasNext(); ) {
-                VsqBarLineType bar = itr.next();
-                if ( bar.clock() < clock_start ) {
-                    continue;
-                }
-                if ( width - key_width < barcountx ) {
-                    break;
-                }
-                if ( bar.isSeparator() ) {
-                    int barcount = bar.getBarCount() - premeasure + 1;
-                    int x = (int)(bar.clock() * mOverviewPixelPerClock);
-                    if ( (barcount % 5 == 0 && barcount > 0) || barcount == 1 ) {
-                        g.setColor( pen_color );
-                        g.setStroke( getStroke2px() );
-                        g.drawLine( x + xoffset, 0, x + xoffset, height );
-
-                        g.setStroke( getStrokeDefault() );
-                        if ( !barcountstr.Equals( "" ) ) {
-                            g.setColor( Color.white );
-                            g.setFont( AppManager.baseFont9 );
-                            g.drawString( barcountstr, barcountx + 1 + xoffset, 1 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 );
-                        }
-                        barcountstr = barcount + "";
-                        barcountx = x;
-                    } else {
-                        g.setColor( pen_color );
-                        g.drawLine( x + xoffset, 0, x + xoffset, height );
+                // 平均ノートナンバーを調べる
+                double sum = 0.0;
+                int count = 0;
+                for (Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
+                    DrawObject dobj = itr.next();
+                    if (dobj.mType == DrawObjectType.Note) {
+                        sum += dobj.mNote;
+                        count++;
                     }
                 }
-            }
-            g.setClip( null );
+                float average_note = (float)(sum / (double)count);
 
+                for (Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
+                    DrawObject dobj = itr.next();
+                    int x = (int)(dobj.mClock * mOverviewPixelPerClock);
+                    if (x < 0) {
+                        continue;
+                    }
+                    if (width - key_width < x) {
+                        break;
+                    }
+                    int y = height - (height / 2 + (int)((dobj.mNote - average_note) * overview_dot_diam));
+                    int length = (int)(dobj.mLength * mOverviewPixelPerClock);
+                    if (length < overview_dot_diam) {
+                        length = overview_dot_diam;
+                    }
+                    g.drawLine(x + xoffset, y, x + length + xoffset, y);
+                }
+
+                g.setStroke(getStrokeDefault());
+                int current_start = AppManager.clockFromXCoord(key_width);
+                int current_end = AppManager.clockFromXCoord(mMainForm.pictPianoRoll.getWidth());
+                int x_start = (int)(current_start * mOverviewPixelPerClock);
+                int x_end = (int)(current_end * mOverviewPixelPerClock);
+
+                // 小節ごとの線
+                int clock_start = 0;
+                int clock_end = (int)(width / mOverviewPixelPerClock);
+                int premeasure = vsq.getPreMeasure();
+                g.setClip(null);
+                Color pen_color = new java.awt.Color(0, 0, 0, 130);
+
+                int barcountx = 0;
+                String barcountstr = "";
+                for (Iterator<VsqBarLineType> itr = vsq.getBarLineIterator(clock_end * 3 / 2); itr.hasNext(); ) {
+                    VsqBarLineType bar = itr.next();
+                    if (bar.clock() < clock_start) {
+                        continue;
+                    }
+                    if (width - key_width < barcountx) {
+                        break;
+                    }
+                    if (bar.isSeparator()) {
+                        int barcount = bar.getBarCount() - premeasure + 1;
+                        int x = (int)(bar.clock() * mOverviewPixelPerClock);
+                        if ((barcount % 5 == 0 && barcount > 0) || barcount == 1) {
+                            g.setColor(pen_color);
+                            g.setStroke(getStroke2px());
+                            g.drawLine(x + xoffset, 0, x + xoffset, height);
+
+                            g.setStroke(getStrokeDefault());
+                            if (!barcountstr.Equals("")) {
+                                g.setColor(Color.white);
+                                g.setFont(AppManager.baseFont9);
+                                g.drawString(barcountstr, barcountx + 1 + xoffset, 1 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1);
+                            }
+                            barcountstr = barcount + "";
+                            barcountx = x;
+                        } else {
+                            g.setColor(pen_color);
+                            g.drawLine(x + xoffset, 0, x + xoffset, height);
+                        }
+                    }
+                }
+                g.setClip(null);
+            }
         }
 
         public void setOffsetX( int value )

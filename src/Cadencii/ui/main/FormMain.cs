@@ -1901,7 +1901,7 @@ namespace cadencii
             }
             lock ( AppManager.mDrawObjects )
             {
-                Vector<DrawObject> dobj_list = AppManager.mDrawObjects.get( selected - 1 );
+                Vector<DrawObject> dobj_list = AppManager.mDrawObjects[selected - 1];
                 int count = dobj_list.size();
                 int start_to_draw_x = controller.getStartToDrawX();
                 int start_to_draw_y = controller.getStartToDrawY();
@@ -4341,7 +4341,7 @@ namespace cadencii
             //TODO: システムカウンタは約49日でリセットされてしまい，厳密には実装できないようなので，保留．
 
             // このFormMainのインスタンスが使用したデータを消去する
-            for ( int i = 1; i <= 16; i++ ) {
+            for ( int i = 1; i <= AppManager.MAX_NUM_TRACK; i++ ) {
                 String file = fsys.combine( tmppath, i + ".wav" );
                 if ( fsys.isFileExists( file ) ) {
                     for ( int error = 0; error < 100; error++ ) {
@@ -6354,23 +6354,15 @@ namespace cadencii
         /// </summary>
         public void updateDrawObjectList()
         {
-            // AppManager.m_draw_objects
-            if ( AppManager.mDrawObjects == null ) {
-                AppManager.mDrawObjects = new Vector<Vector<DrawObject>>();
-            }
-            lock ( AppManager.mDrawObjects ) {
-                if ( AppManager.getVsqFile() == null ) {
+            lock (AppManager.mDrawObjects) {
+                if (AppManager.getVsqFile() == null) {
                     return;
                 }
-                for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
+                for (int i = 0; i < AppManager.mDrawStartIndex.Length; i++) {
                     AppManager.mDrawStartIndex[i] = 0;
                 }
-                if ( AppManager.mDrawObjects != null ) {
-                    for ( Iterator<Vector<DrawObject>> itr = AppManager.mDrawObjects.iterator(); itr.hasNext(); ) {
-                        Vector<DrawObject> list = itr.next();
-                        list.clear();
-                    }
-                    AppManager.mDrawObjects.clear();
+                for (int i = 0; i < AppManager.mDrawObjects.Length; i++) {
+                    AppManager.mDrawObjects[i].Clear();
                 }
 
                 int xoffset = AppManager.keyOffset;// 6 + AppManager.keyWidth;
@@ -6378,16 +6370,16 @@ namespace cadencii
                 float scalex = controller.getScaleX();
                 Font SMALL_FONT = null;
                 try {
-                    SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
+                    SMALL_FONT = new Font(AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8);
                     int track_height = (int)(100 * controller.getScaleY());
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int track_count = vsq.Track.size();
-                    Polygon env = new Polygon( new int[7], new int[7], 7 );
-                    ByRef<Integer> overlap_x = new ByRef<Integer>( 0 );
-                    for ( int track = 1; track < track_count; track++ ) {
-                        VsqTrack vsq_track = vsq.Track.get( track );
-                        Vector<DrawObject> tmp = new Vector<DrawObject>();
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
+                    Polygon env = new Polygon(new int[7], new int[7], 7);
+                    ByRef<Integer> overlap_x = new ByRef<Integer>(0);
+                    for (int track = 1; track < track_count; track++) {
+                        VsqTrack vsq_track = vsq.Track.get(track);
+                        Vector<DrawObject> tmp = AppManager.mDrawObjects[track - 1];
+                        RendererKind kind = VsqFileEx.getTrackRendererKind(vsq_track);
                         AppManager.mDrawIsUtau[track - 1] = kind == RendererKind.UTAU;
 
                         // 音符イベント
@@ -6395,18 +6387,18 @@ namespace cadencii
                         VsqEvent item_prev = null;
                         VsqEvent item = null;
                         VsqEvent item_next = itr_note.hasNext() ? itr_note.next() : null;
-                        while ( item_prev != null || item != null || item_next != null ) {
+                        while (item_prev != null || item != null || item_next != null) {
                             item_prev = item;
                             item = item_next;
-                            if ( itr_note.hasNext() ) {
+                            if (itr_note.hasNext()) {
                                 item_next = itr_note.next();
                             } else {
                                 item_next = null;
                             }
-                            if ( item == null ) {
+                            if (item == null) {
                                 continue;
                             }
-                            if ( item.ID.LyricHandle == null ) {
+                            if (item.ID.LyricHandle == null) {
                                 continue;
                             }
                             int timesig = item.Clock;
@@ -6417,13 +6409,13 @@ namespace cadencii
                             int lyric_width = (int)(length * scalex);
                             String lyric_jp = item.ID.LyricHandle.L0.Phrase;
                             String lyric_en = item.ID.LyricHandle.L0.getPhoneticSymbol();
-                            String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
+                            String title = Utility.trimString(lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width);
                             int accent = item.ID.DEMaccent;
                             int px_vibrato_start = x + lyric_width;
                             int px_vibrato_end = x;
                             int px_vibrato_delay = lyric_width * 2;
                             int vib_delay = length;
-                            if ( item.ID.VibratoHandle != null ) {
+                            if (item.ID.VibratoHandle != null) {
                                 vib_delay = item.ID.VibratoDelay;
                                 double rate = (double)vib_delay / (double)length;
                                 px_vibrato_delay = _PX_ACCENT_HEADER + (int)((lyric_width - _PX_ACCENT_HEADER) * rate);
@@ -6432,7 +6424,7 @@ namespace cadencii
                             VibratoBPList depth_bp = null;
                             int rate_start = 0;
                             int depth_start = 0;
-                            if ( item.ID.VibratoHandle != null ) {
+                            if (item.ID.VibratoHandle != null) {
                                 rate_bp = item.ID.VibratoHandle.getRateBP();
                                 depth_bp = item.ID.VibratoHandle.getDepthBP();
                                 rate_start = item.ID.VibratoHandle.getStartRate();
@@ -6442,28 +6434,28 @@ namespace cadencii
                             // analyzed/のSTFが引き当てられるかどうか
                             // UTAUのWAVが引き当てられるかどうか
                             boolean is_valid_for_utau = false;
-                            VsqEvent singer_at_clock = vsq_track.getSingerEventAt( timesig );
+                            VsqEvent singer_at_clock = vsq_track.getSingerEventAt(timesig);
                             int program = singer_at_clock.ID.IconHandle.Program;
-                            if ( 0 <= program && program < AppManager.editorConfig.UtauSingers.size() ) {
-                                SingerConfig sc = AppManager.editorConfig.UtauSingers.get( program );
+                            if (0 <= program && program < AppManager.editorConfig.UtauSingers.size()) {
+                                SingerConfig sc = AppManager.editorConfig.UtauSingers.get(program);
                                 // 通常のUTAU音源
-                                if ( AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                                    UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
-                                    OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
-                                    if ( oa.fileName == null ||
-                                        (oa.fileName != null && str.compare( oa.fileName, "" )) ) {
+                                if (AppManager.mUtauVoiceDB.containsKey(sc.VOICEIDSTR)) {
+                                    UtauVoiceDB db = AppManager.mUtauVoiceDB.get(sc.VOICEIDSTR);
+                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp);
+                                    if (oa.fileName == null ||
+                                        (oa.fileName != null && str.compare(oa.fileName, ""))) {
                                         is_valid_for_utau = false;
                                     } else {
-                                        is_valid_for_utau = fsys.isFileExists( fsys.combine( sc.VOICEIDSTR, oa.fileName ) );
+                                        is_valid_for_utau = fsys.isFileExists(fsys.combine(sc.VOICEIDSTR, oa.fileName));
                                     }
                                 }
                             }
                             int intensity = item.UstEvent == null ? 100 : item.UstEvent.getIntensity();
 
                             //追加
-                            tmp.add( new DrawObject( DrawObjectType.Note,
+                            tmp.add(new DrawObject(DrawObjectType.Note,
                                                      vsq,
-                                                     new Rectangle( x, y, lyric_width, track_height ),
+                                                     new Rectangle(x, y, lyric_width, track_height),
                                                      title,
                                                      accent,
                                                      item.ID.DEMdecGainRate,
@@ -6483,69 +6475,69 @@ namespace cadencii
                                                      is_valid_for_utau,
                                                      is_valid_for_utau, // vConnect-STANDはstfファイルを必要としないので，
                                                      vib_delay,
-                                                     intensity ) );
+                                                     intensity));
                         }
 
                         // Dynaff, Crescendイベント
-                        for ( Iterator<VsqEvent> itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
+                        for (Iterator<VsqEvent> itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
                             VsqEvent item_itr = itr.next();
                             IconDynamicsHandle handle = item_itr.ID.IconDynamicsHandle;
-                            if ( handle == null ) {
+                            if (handle == null) {
                                 continue;
                             }
                             int clock = item_itr.Clock;
                             int length = item_itr.ID.getLength();
-                            if ( length <= 0 ) {
+                            if (length <= 0) {
                                 length = 1;
                             }
                             int raw_width = (int)(length * scalex);
                             DrawObjectType type = DrawObjectType.Note;
                             int width = 0;
                             String str = "";
-                            if ( handle.isDynaffType() ) {
+                            if (handle.isDynaffType()) {
                                 // 強弱記号
                                 type = DrawObjectType.Dynaff;
                                 width = AppManager.DYNAFF_ITEM_WIDTH;
                                 int startDyn = handle.getStartDyn();
-                                if ( startDyn == 120 ) {
+                                if (startDyn == 120) {
                                     str = "fff";
-                                } else if ( startDyn == 104 ) {
+                                } else if (startDyn == 104) {
                                     str = "ff";
-                                } else if ( startDyn == 88 ) {
+                                } else if (startDyn == 88) {
                                     str = "f";
-                                } else if ( startDyn == 72 ) {
+                                } else if (startDyn == 72) {
                                     str = "mf";
-                                } else if ( startDyn == 56 ) {
+                                } else if (startDyn == 56) {
                                     str = "mp";
-                                } else if ( startDyn == 40 ) {
+                                } else if (startDyn == 40) {
                                     str = "p";
-                                } else if ( startDyn == 24 ) {
+                                } else if (startDyn == 24) {
                                     str = "pp";
-                                } else if ( startDyn == 8 ) {
+                                } else if (startDyn == 8) {
                                     str = "ppp";
                                 } else {
                                     str = "?";
                                 }
-                            } else if ( handle.isCrescendType() ) {
+                            } else if (handle.isCrescendType()) {
                                 // クレッシェンド
                                 type = DrawObjectType.Crescend;
                                 width = raw_width;
                                 str = handle.IDS;
-                            } else if ( handle.isDecrescendType() ) {
+                            } else if (handle.isDecrescendType()) {
                                 // デクレッシェンド
                                 type = DrawObjectType.Decrescend;
                                 width = raw_width;
                                 str = handle.IDS;
                             }
-                            if ( type == DrawObjectType.Note ) {
+                            if (type == DrawObjectType.Note) {
                                 continue;
                             }
                             int note = item_itr.ID.Note;
                             int x = (int)(clock * scalex + xoffset);
                             int y = -note * (int)(100 * controller.getScaleY()) + yoffset;
-                            tmp.add( new DrawObject( type,
+                            tmp.add(new DrawObject(type,
                                                      vsq,
-                                                     new Rectangle( x, y, width, track_height ),
+                                                     new Rectangle(x, y, width, track_height),
                                                      str,
                                                      0,
                                                      0,
@@ -6565,13 +6557,13 @@ namespace cadencii
                                                      true,
                                                      true,
                                                      length,
-                                                     0 ) );
+                                                     0));
                         }
 
                         // 重複部分があるかどうかを判定
                         int count = tmp.size();
-                        for ( int i = 0; i < count - 1; i++ ) {
-                            DrawObject itemi = tmp.get( i );
+                        for (int i = 0; i < count - 1; i++) {
+                            DrawObject itemi = tmp.get(i);
                             DrawObjectType parent_type = itemi.mType;
                             /*if ( itemi.type != DrawObjectType.Note ) {
                                 continue;
@@ -6579,47 +6571,46 @@ namespace cadencii
                             boolean overwrapped = false;
                             int istart = itemi.mClock;
                             int iend = istart + itemi.mLength;
-                            if ( itemi.mIsOverlapped ) {
+                            if (itemi.mIsOverlapped) {
                                 continue;
                             }
-                            for ( int j = i + 1; j < count; j++ ) {
-                                DrawObject itemj = tmp.get( j );
-                                if ( (itemj.mType == DrawObjectType.Note && parent_type != DrawObjectType.Note) ||
-                                     (itemj.mType != DrawObjectType.Note && parent_type == DrawObjectType.Note) ) {
+                            for (int j = i + 1; j < count; j++) {
+                                DrawObject itemj = tmp.get(j);
+                                if ((itemj.mType == DrawObjectType.Note && parent_type != DrawObjectType.Note) ||
+                                     (itemj.mType != DrawObjectType.Note && parent_type == DrawObjectType.Note)) {
                                     continue;
                                 }
                                 int jstart = itemj.mClock;
                                 int jend = jstart + itemj.mLength;
-                                if ( jstart <= istart ) {
-                                    if ( istart < jend ) {
+                                if (jstart <= istart) {
+                                    if (istart < jend) {
                                         overwrapped = true;
                                         itemj.mIsOverlapped = true;
                                         // breakできない．2個以上の重複を検出する必要があるので．
                                     }
                                 }
-                                if ( istart <= jstart ) {
-                                    if ( jstart < iend ) {
+                                if (istart <= jstart) {
+                                    if (jstart < iend) {
                                         overwrapped = true;
                                         itemj.mIsOverlapped = true;
                                     }
                                 }
                             }
-                            if ( overwrapped ) {
+                            if (overwrapped) {
                                 itemi.mIsOverlapped = true;
                             }
                         }
-                        Collections.sort( tmp );
-                        AppManager.mDrawObjects.add( tmp );
+                        Collections.sort(tmp);
                     }
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMain ) + ".updateDrawObjectList; ex=" + ex + "\n" );
-                    serr.println( "FormMain#updateDrawObjectList; ex=" + ex );
+                } catch (Exception ex) {
+                    Logger.write(typeof(FormMain) + ".updateDrawObjectList; ex=" + ex + "\n");
+                    serr.println("FormMain#updateDrawObjectList; ex=" + ex);
 #if JAVA
                     ex.printStackTrace();
 #endif
                 } finally {
 #if !JAVA
-                    if ( SMALL_FONT != null ) {
+                    if (SMALL_FONT != null) {
                         SMALL_FONT.font.Dispose();
                     }
 #endif
@@ -8064,8 +8055,8 @@ namespace cadencii
                         // マウス位置にビブラートの波波があったら削除する
                         int stdx = controller.getStartToDrawX();
                         int stdy = controller.getStartToDrawY();
-                        for ( int i = 0; i < AppManager.mDrawObjects.get( selected - 1 ).size(); i++ ) {
-                            DrawObject dobj = AppManager.mDrawObjects.get( selected - 1 ).get( i );
+                        for ( int i = 0; i < AppManager.mDrawObjects[selected - 1].size(); i++ ) {
+                            DrawObject dobj = AppManager.mDrawObjects[selected - 1].get( i );
                             if ( dobj.mRectangleInPixel.x + controller.getStartToDrawX() + dobj.mRectangleInPixel.width - stdx < 0 ) {
                                 continue;
                             } else if ( pictPianoRoll.getWidth() < dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx ) {
@@ -8224,7 +8215,7 @@ namespace cadencii
                 if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
                     int stdx = controller.getStartToDrawX();
                     int stdy = controller.getStartToDrawY();
-                    for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
+                    for ( Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
                         DrawObject dobj = itr.next();
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
@@ -8502,7 +8493,7 @@ namespace cadencii
                         int px_vibrato_length = 0;
                         mVibratoEditingId = -1;
                         Rectangle pxFound = new Rectangle();
-                        Vector<DrawObject> target_list = AppManager.mDrawObjects.get( selected - 1 );
+                        Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                         int count = target_list.size();
                         for ( int i = 0; i < count; i++ ) {
                             DrawObject dobj = target_list.get( i );
@@ -8632,7 +8623,7 @@ namespace cadencii
                     if ( selected_tool != EditTool.ERASER && e.Button == BMouseButtons.Left ) {
 #endif
                         int min_width = 4 * _EDIT_HANDLE_WIDTH;
-                        for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
+                        for ( Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
                             DrawObject dobj = itr.next();
 
                             int edit_handle_width = _EDIT_HANDLE_WIDTH;
@@ -8780,518 +8771,504 @@ namespace cadencii
 
         public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e )
         {
-            if ( mFormActivated ) {
+            lock (AppManager.mDrawObjects) {
+                if (mFormActivated) {
 #if ENABLE_PROPERTY
-#if JAVA
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
+                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing()) {
 #else
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
+                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible()) {
 #endif
-#else
-#if JAVA
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.isVisible() ) {
-#else
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() ) {
-#endif
-#endif
-                    focusPianoRoll();
-                }
-            }
-
-            EditMode edit_mode = AppManager.getEditMode();
-            int stdx = controller.getStartToDrawX();
-            int stdy = controller.getStartToDrawY();
-            int selected = AppManager.getSelected();
-            EditTool selected_tool = AppManager.getSelectedTool();
-
-            if ( edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.mCurveOnPianoroll ) {
-                pictPianoRoll.mMouseTracer.append( e.X + stdx, e.Y + stdy );
-                if ( !timer.isRunning() ) {
-                    refreshScreen();
-                }
-                return;
-            }
-
-            if ( !mMouseMoved && edit_mode == EditMode.MIDDLE_DRAG ) {
-#if JAVA
-                setCursor( new Cursor( java.awt.Cursor.MOVE_CURSOR ) );
-#else
-                this.Cursor = HAND;
-#endif
-            }
-
-            if ( e.X != mButtonInitial.x || e.Y != mButtonInitial.y ) {
-                mMouseMoved = true;
-            }
-            if ( !(edit_mode == EditMode.MIDDLE_DRAG) && AppManager.isPlaying() ) {
-                return;
-            }
-
-            if ( edit_mode == EditMode.MOVE_ENTRY_WAIT_MOVE ||
-                 edit_mode == EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE ) {
-                int x = e.X + stdx;
-                int y = e.Y + stdy;
-                if ( mMouseMoveInit.x != x || mMouseMoveInit.y != y ) {
-                    if ( edit_mode == EditMode.MOVE_ENTRY_WAIT_MOVE ) {
-                        AppManager.setEditMode( EditMode.MOVE_ENTRY );
-                        edit_mode = EditMode.MOVE_ENTRY;
-                    } else {
-                        AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE );
-                        edit_mode = EditMode.MOVE_ENTRY_WHOLE;
+                        focusPianoRoll();
                     }
                 }
-            }
+
+                EditMode edit_mode = AppManager.getEditMode();
+                int stdx = controller.getStartToDrawX();
+                int stdy = controller.getStartToDrawY();
+                int selected = AppManager.getSelected();
+                EditTool selected_tool = AppManager.getSelectedTool();
+
+                if (edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.mCurveOnPianoroll) {
+                    pictPianoRoll.mMouseTracer.append(e.X + stdx, e.Y + stdy);
+                    if (!timer.isRunning()) {
+                        refreshScreen();
+                    }
+                    return;
+                }
+
+                if (!mMouseMoved && edit_mode == EditMode.MIDDLE_DRAG) {
+                    this.Cursor = HAND;
+                }
+
+                if (e.X != mButtonInitial.x || e.Y != mButtonInitial.y) {
+                    mMouseMoved = true;
+                }
+                if (!(edit_mode == EditMode.MIDDLE_DRAG) && AppManager.isPlaying()) {
+                    return;
+                }
+
+                if (edit_mode == EditMode.MOVE_ENTRY_WAIT_MOVE ||
+                     edit_mode == EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE) {
+                    int x = e.X + stdx;
+                    int y = e.Y + stdy;
+                    if (mMouseMoveInit.x != x || mMouseMoveInit.y != y) {
+                        if (edit_mode == EditMode.MOVE_ENTRY_WAIT_MOVE) {
+                            AppManager.setEditMode(EditMode.MOVE_ENTRY);
+                            edit_mode = EditMode.MOVE_ENTRY;
+                        } else {
+                            AppManager.setEditMode(EditMode.MOVE_ENTRY_WHOLE);
+                            edit_mode = EditMode.MOVE_ENTRY_WHOLE;
+                        }
+                    }
+                }
 
 #if ENABLE_MOUSEHOVER
-            if ( mMouseMoved && mMouseHoverThread != null ) {
-                mMouseHoverThread.Abort();
-            }
+                if (mMouseMoved && mMouseHoverThread != null) {
+                    mMouseHoverThread.Abort();
+                }
 #endif
 
-            int clock = AppManager.clockFromXCoord( e.X );
-            if ( mMouseDowned ) {
-                if ( mExtDragX == ExtDragXMode.NONE ) {
-                    if ( AppManager.keyWidth > e.X ) {
-                        mExtDragX = ExtDragXMode.LEFT;
-                    } else if ( pictPianoRoll.getWidth() < e.X ) {
-                        mExtDragX = ExtDragXMode.RIGHT;
-                    }
-                } else {
-                    if ( AppManager.keyWidth <= e.X && e.X <= pictPianoRoll.getWidth() ) {
-                        mExtDragX = ExtDragXMode.NONE;
-                    }
-                }
-
-                if ( mExtDragY == ExtDragYMode.NONE ) {
-                    if ( 0 > e.Y ) {
-                        mExtDragY = ExtDragYMode.UP;
-                    } else if ( pictPianoRoll.getHeight() < e.Y ) {
-                        mExtDragY = ExtDragYMode.DOWN;
-                    }
-                } else {
-                    if ( 0 <= e.Y && e.Y <= pictPianoRoll.getHeight() ) {
-                        mExtDragY = ExtDragYMode.NONE;
-                    }
-                }
-            } else {
-                mExtDragX = ExtDragXMode.NONE;
-                mExtDragY = ExtDragYMode.NONE;
-            }
-
-            if ( edit_mode == EditMode.MIDDLE_DRAG ) {
-                mExtDragX = ExtDragXMode.NONE;
-                mExtDragY = ExtDragYMode.NONE;
-            }
-
-            double now = 0, dt = 0;
-            if ( mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE ) {
-                now = PortUtil.getCurrentTime();
-                dt = now - mTimerDragLastIgnitted;
-            }
-            if ( mExtDragX == ExtDragXMode.RIGHT || mExtDragX == ExtDragXMode.LEFT ) {
-                int px_move = AppManager.editorConfig.MouseDragIncrement;
-                if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
-                    px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
-                }
-                double d_draft;
-                if ( mExtDragX == ExtDragXMode.LEFT ) {
-                    px_move *= -1;
-                }
-                int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
-                float inv_scale_x = controller.getScaleXInv();
-                int dclock = (int)(px_move * inv_scale_x);
-                d_draft = 5 * inv_scale_x + left_clock + dclock;
-                if ( d_draft < 0.0 ) {
-                    d_draft = 0.0;
-                }
-                int draft = (int)d_draft;
-                if ( hScroll.getMaximum() < draft ) {
-                    if ( edit_mode == EditMode.ADD_ENTRY ||
-                         edit_mode == EditMode.MOVE_ENTRY ||
-                         edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
-                         edit_mode == EditMode.DRAG_DROP ) {
-                        hScroll.setMaximum( draft );
-                    } else {
-                        draft = hScroll.getMaximum();
-                    }
-                }
-                if ( draft < hScroll.getMinimum() ) {
-                    draft = hScroll.getMinimum();
-                }
-                hScroll.setValue( draft );
-            }
-            if ( mExtDragY == ExtDragYMode.UP || mExtDragY == ExtDragYMode.DOWN ) {
-                int min = vScroll.getMinimum();
-                int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
-                int px_move = AppManager.editorConfig.MouseDragIncrement;
-                if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
-                    px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
-                }
-                px_move += 50;
-                if ( mExtDragY == ExtDragYMode.UP ) {
-                    px_move *= -1;
-                }
-                int draft = vScroll.getValue() + px_move;
-                if ( draft < 0 ) {
-                    draft = 0;
-                }
-                int df = (int)draft;
-                if ( df < min ) {
-                    df = min;
-                } else if ( max < df ) {
-                    df = max;
-                }
-                vScroll.setValue( df );
-            }
-            if ( mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE ) {
-                mTimerDragLastIgnitted = now;
-            }
-
-            // 選択範囲にあるイベントを選択．
-            if ( AppManager.mIsPointerDowned ) {
-                if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    int endClock = AppManager.clockFromXCoord( e.X );
-                    if ( AppManager.editorConfig.CurveSelectingQuantized ) {
-                        int unit = AppManager.getPositionQuantizeClock();
-                        endClock = doQuantize( endClock, unit );
-                    }
-                    AppManager.mWholeSelectedInterval.setEnd( endClock );
-                } else {
-                    Point mouse = new Point( e.X + stdx, e.Y + stdy );
-                    int tx, ty, twidth, theight;
-                    int lx = AppManager.mMouseDownLocation.x;
-                    if ( lx < mouse.x ) {
-                        tx = lx;
-                        twidth = mouse.x - lx;
-                    } else {
-                        tx = mouse.x;
-                        twidth = lx - mouse.x;
-                    }
-                    int ly = AppManager.mMouseDownLocation.y;
-                    if ( ly < mouse.y ) {
-                        ty = ly;
-                        theight = mouse.y - ly;
-                    } else {
-                        ty = mouse.y;
-                        theight = ly - mouse.y;
-                    }
-
-                    Rectangle rect = new Rectangle( tx, ty, twidth, theight );
-                    Vector<Integer> add_required = new Vector<Integer>();
-                    int internal_id = -1;
-                    for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
-                        DrawObject dobj = itr.next();
-                        int x0 = dobj.mRectangleInPixel.x + AppManager.keyWidth;
-                        int x1 = dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width;
-                        int y0 = dobj.mRectangleInPixel.y;
-                        int y1 = dobj.mRectangleInPixel.y + dobj.mRectangleInPixel.height;
-                        internal_id = dobj.mInternalID;
-                        if ( x1 < tx ) {
-                            continue;
+                int clock = AppManager.clockFromXCoord(e.X);
+                if (mMouseDowned) {
+                    if (mExtDragX == ExtDragXMode.NONE) {
+                        if (AppManager.keyWidth > e.X) {
+                            mExtDragX = ExtDragXMode.LEFT;
+                        } else if (pictPianoRoll.getWidth() < e.X) {
+                            mExtDragX = ExtDragXMode.RIGHT;
                         }
-                        if ( tx + twidth < x0 ) {
-                            break;
+                    } else {
+                        if (AppManager.keyWidth <= e.X && e.X <= pictPianoRoll.getWidth()) {
+                            mExtDragX = ExtDragXMode.NONE;
                         }
-                        boolean found = Utility.isInRect( new Point( x0, y0 ), rect ) |
-                                        Utility.isInRect( new Point( x0, y1 ), rect ) |
-                                        Utility.isInRect( new Point( x1, y0 ), rect ) |
-                                        Utility.isInRect( new Point( x1, y1 ), rect );
-                        if ( found ) {
-                            add_required.add( internal_id );
+                    }
+
+                    if (mExtDragY == ExtDragYMode.NONE) {
+                        if (0 > e.Y) {
+                            mExtDragY = ExtDragYMode.UP;
+                        } else if (pictPianoRoll.getHeight() < e.Y) {
+                            mExtDragY = ExtDragYMode.DOWN;
+                        }
+                    } else {
+                        if (0 <= e.Y && e.Y <= pictPianoRoll.getHeight()) {
+                            mExtDragY = ExtDragYMode.NONE;
+                        }
+                    }
+                } else {
+                    mExtDragX = ExtDragXMode.NONE;
+                    mExtDragY = ExtDragYMode.NONE;
+                }
+
+                if (edit_mode == EditMode.MIDDLE_DRAG) {
+                    mExtDragX = ExtDragXMode.NONE;
+                    mExtDragY = ExtDragYMode.NONE;
+                }
+
+                double now = 0, dt = 0;
+                if (mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE) {
+                    now = PortUtil.getCurrentTime();
+                    dt = now - mTimerDragLastIgnitted;
+                }
+                if (mExtDragX == ExtDragXMode.RIGHT || mExtDragX == ExtDragXMode.LEFT) {
+                    int px_move = AppManager.editorConfig.MouseDragIncrement;
+                    if (px_move / dt > AppManager.editorConfig.MouseDragMaximumRate) {
+                        px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
+                    }
+                    double d_draft;
+                    if (mExtDragX == ExtDragXMode.LEFT) {
+                        px_move *= -1;
+                    }
+                    int left_clock = AppManager.clockFromXCoord(AppManager.keyWidth);
+                    float inv_scale_x = controller.getScaleXInv();
+                    int dclock = (int)(px_move * inv_scale_x);
+                    d_draft = 5 * inv_scale_x + left_clock + dclock;
+                    if (d_draft < 0.0) {
+                        d_draft = 0.0;
+                    }
+                    int draft = (int)d_draft;
+                    if (hScroll.getMaximum() < draft) {
+                        if (edit_mode == EditMode.ADD_ENTRY ||
+                             edit_mode == EditMode.MOVE_ENTRY ||
+                             edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
+                             edit_mode == EditMode.DRAG_DROP) {
+                            hScroll.setMaximum(draft);
                         } else {
-                            if ( x0 <= tx && tx + twidth <= x1 ) {
-                                if ( ty < y0 ) {
-                                    if ( y0 <= ty + theight ) {
-                                        add_required.add( internal_id );
+                            draft = hScroll.getMaximum();
+                        }
+                    }
+                    if (draft < hScroll.getMinimum()) {
+                        draft = hScroll.getMinimum();
+                    }
+                    hScroll.setValue(draft);
+                }
+                if (mExtDragY == ExtDragYMode.UP || mExtDragY == ExtDragYMode.DOWN) {
+                    int min = vScroll.getMinimum();
+                    int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                    int px_move = AppManager.editorConfig.MouseDragIncrement;
+                    if (px_move / dt > AppManager.editorConfig.MouseDragMaximumRate) {
+                        px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
+                    }
+                    px_move += 50;
+                    if (mExtDragY == ExtDragYMode.UP) {
+                        px_move *= -1;
+                    }
+                    int draft = vScroll.getValue() + px_move;
+                    if (draft < 0) {
+                        draft = 0;
+                    }
+                    int df = (int)draft;
+                    if (df < min) {
+                        df = min;
+                    } else if (max < df) {
+                        df = max;
+                    }
+                    vScroll.setValue(df);
+                }
+                if (mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE) {
+                    mTimerDragLastIgnitted = now;
+                }
+
+                // 選択範囲にあるイベントを選択．
+                if (AppManager.mIsPointerDowned) {
+                    if (AppManager.isWholeSelectedIntervalEnabled()) {
+                        int endClock = AppManager.clockFromXCoord(e.X);
+                        if (AppManager.editorConfig.CurveSelectingQuantized) {
+                            int unit = AppManager.getPositionQuantizeClock();
+                            endClock = doQuantize(endClock, unit);
+                        }
+                        AppManager.mWholeSelectedInterval.setEnd(endClock);
+                    } else {
+                        Point mouse = new Point(e.X + stdx, e.Y + stdy);
+                        int tx, ty, twidth, theight;
+                        int lx = AppManager.mMouseDownLocation.x;
+                        if (lx < mouse.x) {
+                            tx = lx;
+                            twidth = mouse.x - lx;
+                        } else {
+                            tx = mouse.x;
+                            twidth = lx - mouse.x;
+                        }
+                        int ly = AppManager.mMouseDownLocation.y;
+                        if (ly < mouse.y) {
+                            ty = ly;
+                            theight = mouse.y - ly;
+                        } else {
+                            ty = mouse.y;
+                            theight = ly - mouse.y;
+                        }
+
+                        Rectangle rect = new Rectangle(tx, ty, twidth, theight);
+                        Vector<Integer> add_required = new Vector<Integer>();
+                        int internal_id = -1;
+                        for (Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
+                            DrawObject dobj = itr.next();
+                            int x0 = dobj.mRectangleInPixel.x + AppManager.keyWidth;
+                            int x1 = dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width;
+                            int y0 = dobj.mRectangleInPixel.y;
+                            int y1 = dobj.mRectangleInPixel.y + dobj.mRectangleInPixel.height;
+                            internal_id = dobj.mInternalID;
+                            if (x1 < tx) {
+                                continue;
+                            }
+                            if (tx + twidth < x0) {
+                                break;
+                            }
+                            boolean found = Utility.isInRect(new Point(x0, y0), rect) |
+                                            Utility.isInRect(new Point(x0, y1), rect) |
+                                            Utility.isInRect(new Point(x1, y0), rect) |
+                                            Utility.isInRect(new Point(x1, y1), rect);
+                            if (found) {
+                                add_required.add(internal_id);
+                            } else {
+                                if (x0 <= tx && tx + twidth <= x1) {
+                                    if (ty < y0) {
+                                        if (y0 <= ty + theight) {
+                                            add_required.add(internal_id);
+                                        }
+                                    } else if (y0 <= ty && ty < y1) {
+                                        add_required.add(internal_id);
                                     }
-                                } else if ( y0 <= ty && ty < y1 ) {
-                                    add_required.add( internal_id );
-                                }
-                            } else if ( y0 <= ty && ty + theight <= y1 ) {
-                                if ( tx < x0 ) {
-                                    if ( x0 <= tx + twidth ) {
-                                        add_required.add( internal_id );
+                                } else if (y0 <= ty && ty + theight <= y1) {
+                                    if (tx < x0) {
+                                        if (x0 <= tx + twidth) {
+                                            add_required.add(internal_id);
+                                        }
+                                    } else if (x0 <= tx && tx < x1) {
+                                        add_required.add(internal_id);
                                     }
-                                } else if ( x0 <= tx && tx < x1 ) {
-                                    add_required.add( internal_id );
                                 }
                             }
                         }
-                    }
-                    Vector<Integer> remove_required = new Vector<Integer>();
-                    for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry selectedEvent = itr.next();
-                        if ( !add_required.contains( selectedEvent.original.InternalID ) ) {
-                            remove_required.add( selectedEvent.original.InternalID );
+                        Vector<Integer> remove_required = new Vector<Integer>();
+                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
+                            SelectedEventEntry selectedEvent = itr.next();
+                            if (!add_required.contains(selectedEvent.original.InternalID)) {
+                                remove_required.add(selectedEvent.original.InternalID);
+                            }
                         }
-                    }
-                    if ( remove_required.size() > 0 ) {
-                        AppManager.itemSelection.removeEventRange( PortUtil.convertIntArray( remove_required.toArray( new Integer[] { } ) ) );
-                    }
-                    for ( Iterator<Integer> itr = add_required.iterator(); itr.hasNext(); ) {
-                        int id = itr.next();
-                        if ( AppManager.itemSelection.isEventContains( selected, id ) ) {
-                            itr.remove();
+                        if (remove_required.size() > 0) {
+                            AppManager.itemSelection.removeEventRange(PortUtil.convertIntArray(remove_required.toArray(new Integer[] { })));
                         }
+                        for (Iterator<Integer> itr = add_required.iterator(); itr.hasNext(); ) {
+                            int id = itr.next();
+                            if (AppManager.itemSelection.isEventContains(selected, id)) {
+                                itr.remove();
+                            }
+                        }
+                        AppManager.itemSelection.addEventAll(add_required);
                     }
-                    AppManager.itemSelection.addEventAll( add_required );
                 }
-            }
 
-            if ( edit_mode == EditMode.MIDDLE_DRAG ) {
-                #region MiddleDrag
-                int drafth = computeHScrollValueForMiddleDrag( e.X );
-                int draftv = computeVScrollValueForMiddleDrag( e.Y );
-                boolean moved = false;
-                if ( drafth != hScroll.getValue() ) {
-                    //moved = true;
-                    //hScroll.beQuiet();
-                    hScroll.setValue( drafth );
-                }
-                if ( draftv != vScroll.getValue() ) {
-                    //moved = true;
-                    //vScroll.beQuiet();
-                    vScroll.setValue( draftv );
-                }
-                //if ( moved ) {
-                //    vScroll.setQuiet( false );
-                //    hScroll.setQuiet( false );
-                //    refreshScreen( true );
-                //}
-                refreshScreen( true );
-                if ( AppManager.isPlaying() ) {
+                if (edit_mode == EditMode.MIDDLE_DRAG) {
+                    #region MiddleDrag
+                    int drafth = computeHScrollValueForMiddleDrag(e.X);
+                    int draftv = computeVScrollValueForMiddleDrag(e.Y);
+                    boolean moved = false;
+                    if (drafth != hScroll.getValue()) {
+                        //moved = true;
+                        //hScroll.beQuiet();
+                        hScroll.setValue(drafth);
+                    }
+                    if (draftv != vScroll.getValue()) {
+                        //moved = true;
+                        //vScroll.beQuiet();
+                        vScroll.setValue(draftv);
+                    }
+                    //if ( moved ) {
+                    //    vScroll.setQuiet( false );
+                    //    hScroll.setQuiet( false );
+                    //    refreshScreen( true );
+                    //}
+                    refreshScreen(true);
+                    if (AppManager.isPlaying()) {
+                        return;
+                    }
+                    #endregion
                     return;
-                }
-                #endregion
-                return;
-            } else if ( edit_mode == EditMode.ADD_ENTRY ) {
-                #region ADD_ENTRY
-                int unit = AppManager.getLengthQuantizeClock();
-                int length = clock - AppManager.mAddingEvent.Clock;
-                int odd = length % unit;
-                int new_length = length - odd;
+                } else if (edit_mode == EditMode.ADD_ENTRY) {
+                    #region ADD_ENTRY
+                    int unit = AppManager.getLengthQuantizeClock();
+                    int length = clock - AppManager.mAddingEvent.Clock;
+                    int odd = length % unit;
+                    int new_length = length - odd;
 
-                if ( unit * controller.getScaleX() > 10 ) { //これをしないと、グリッド2個分増えることがある
-                    int next_clock = AppManager.clockFromXCoord( e.X + 10 );
-                    int next_length = next_clock - AppManager.mAddingEvent.Clock;
-                    int next_new_length = next_length - (next_length % unit);
-                    if ( next_new_length == new_length + unit ) {
-                        new_length = next_new_length;
+                    if (unit * controller.getScaleX() > 10) { //これをしないと、グリッド2個分増えることがある
+                        int next_clock = AppManager.clockFromXCoord(e.X + 10);
+                        int next_length = next_clock - AppManager.mAddingEvent.Clock;
+                        int next_new_length = next_length - (next_length % unit);
+                        if (next_new_length == new_length + unit) {
+                            new_length = next_new_length;
+                        }
                     }
-                }
 
-                if ( new_length <= 0 ) {
-                    new_length = 0;
-                }
-                AppManager.mAddingEvent.ID.setLength( new_length );
-                #endregion
-            } else if ( edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.MOVE_ENTRY_WHOLE ) {
-                #region MOVE_ENTRY, MOVE_ENTRY_WHOLE
-                if ( AppManager.itemSelection.getEventCount() > 0 ) {
+                    if (new_length <= 0) {
+                        new_length = 0;
+                    }
+                    AppManager.mAddingEvent.ID.setLength(new_length);
+                    #endregion
+                } else if (edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.MOVE_ENTRY_WHOLE) {
+                    #region MOVE_ENTRY, MOVE_ENTRY_WHOLE
+                    if (AppManager.itemSelection.getEventCount() > 0) {
+                        VsqEvent original = AppManager.itemSelection.getLastEvent().original;
+                        int note = AppManager.noteFromYCoord(e.Y);                           // 現在のマウス位置でのnote
+                        int note_init = original.ID.Note;
+                        int dnote = (edit_mode == EditMode.MOVE_ENTRY) ? note - note_init : 0;
+
+                        int tclock = AppManager.clockFromXCoord(e.X - mMouseMoveOffset);
+                        int clock_init = original.Clock;
+
+                        int dclock = tclock - clock_init;
+
+                        if (AppManager.editorConfig.getPositionQuantize() != QuantizeMode.off) {
+                            int unit = AppManager.getPositionQuantizeClock();
+                            int new_clock = doQuantize(original.Clock + dclock, unit);
+                            dclock = new_clock - clock_init;
+                        }
+
+                        AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart() + dclock;
+
+                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
+                            SelectedEventEntry item = itr.next();
+                            int new_clock = item.original.Clock + dclock;
+                            int new_note = item.original.ID.Note + dnote;
+                            item.editing.Clock = new_clock;
+                            item.editing.ID.Note = new_note;
+                        }
+                    }
+                    #endregion
+                } else if (edit_mode == EditMode.EDIT_LEFT_EDGE) {
+                    #region EditLeftEdge
+                    int unit = AppManager.getLengthQuantizeClock();
                     VsqEvent original = AppManager.itemSelection.getLastEvent().original;
-                    int note = AppManager.noteFromYCoord( e.Y );                           // 現在のマウス位置でのnote
-                    int note_init = original.ID.Note;
-                    int dnote = (edit_mode == EditMode.MOVE_ENTRY) ? note - note_init : 0;
-
-                    int tclock = AppManager.clockFromXCoord( e.X - mMouseMoveOffset );
                     int clock_init = original.Clock;
-
-                    int dclock = tclock - clock_init;
-
-                    if ( AppManager.editorConfig.getPositionQuantize() != QuantizeMode.off ) {
-                        int unit = AppManager.getPositionQuantizeClock();
-                        int new_clock = doQuantize( original.Clock + dclock, unit );
-                        dclock = new_clock - clock_init;
-                    }
-
-                    AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart() + dclock;
-
-                    for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
+                    int dclock = clock - clock_init;
+                    for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                         SelectedEventEntry item = itr.next();
+                        int end_clock = item.original.Clock + item.original.ID.getLength();
                         int new_clock = item.original.Clock + dclock;
-                        int new_note = item.original.ID.Note + dnote;
-                        item.editing.Clock = new_clock;
-                        item.editing.ID.Note = new_note;
+                        int new_length = doQuantize(end_clock - new_clock, unit);
+                        if (new_length <= 0) {
+                            new_length = unit;
+                        }
+                        item.editing.Clock = end_clock - new_length;
+                        if (AppManager.vibratoLengthEditingRule == VibratoLengthEditingRule.PERCENTAGE) {
+                            double percentage = item.original.ID.VibratoDelay / (double)item.original.ID.getLength() * 100.0;
+                            int newdelay = (int)(new_length * percentage / 100.0);
+                            item.editing.ID.VibratoDelay = newdelay;
+                        }
+                        item.editing.ID.setLength(new_length);
                     }
-                }
-                #endregion
-            } else if ( edit_mode == EditMode.EDIT_LEFT_EDGE ) {
-                #region EditLeftEdge
-                int unit = AppManager.getLengthQuantizeClock();
-                VsqEvent original = AppManager.itemSelection.getLastEvent().original;
-                int clock_init = original.Clock;
-                int dclock = clock - clock_init;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
-                    int end_clock = item.original.Clock + item.original.ID.getLength();
-                    int new_clock = item.original.Clock + dclock;
-                    int new_length = doQuantize( end_clock - new_clock, unit );
-                    if ( new_length <= 0 ) {
-                        new_length = unit;
-                    }
-                    item.editing.Clock = end_clock - new_length;
-                    if ( AppManager.vibratoLengthEditingRule == VibratoLengthEditingRule.PERCENTAGE ) {
-                        double percentage = item.original.ID.VibratoDelay / (double)item.original.ID.getLength() * 100.0;
-                        int newdelay = (int)(new_length * percentage / 100.0);
-                        item.editing.ID.VibratoDelay = newdelay;
-                    }
-                    item.editing.ID.setLength( new_length );
-                }
-                #endregion
-            } else if ( edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
-                #region EditRightEdge
-                int unit = AppManager.getLengthQuantizeClock();
+                    #endregion
+                } else if (edit_mode == EditMode.EDIT_RIGHT_EDGE) {
+                    #region EditRightEdge
+                    int unit = AppManager.getLengthQuantizeClock();
 
-                VsqEvent original = AppManager.itemSelection.getLastEvent().original;
-                int dlength = clock - (original.Clock + original.ID.getLength());
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
-                    int new_length = doQuantize( item.original.ID.getLength() + dlength, unit );
-                    if ( new_length <= 0 ) {
-                        new_length = unit;
-                    }
-                    if ( AppManager.vibratoLengthEditingRule == VibratoLengthEditingRule.PERCENTAGE ) {
-                        double percentage = item.original.ID.VibratoDelay / (double)item.original.ID.getLength() * 100.0;
-                        int newdelay = (int)(new_length * percentage / 100.0);
-                        item.editing.ID.VibratoDelay = newdelay;
-                    }
-                    item.editing.ID.setLength( new_length );
+                    VsqEvent original = AppManager.itemSelection.getLastEvent().original;
+                    int dlength = clock - (original.Clock + original.ID.getLength());
+                    for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
+                        SelectedEventEntry item = itr.next();
+                        int new_length = doQuantize(item.original.ID.getLength() + dlength, unit);
+                        if (new_length <= 0) {
+                            new_length = unit;
+                        }
+                        if (AppManager.vibratoLengthEditingRule == VibratoLengthEditingRule.PERCENTAGE) {
+                            double percentage = item.original.ID.VibratoDelay / (double)item.original.ID.getLength() * 100.0;
+                            int newdelay = (int)(new_length * percentage / 100.0);
+                            item.editing.ID.VibratoDelay = newdelay;
+                        }
+                        item.editing.ID.setLength(new_length);
 #if DEBUG
-                    sout.println( "FormMain#pictPianoRoll_MouseMove; length(before,after)=(" + item.original.ID.getLength() + "," + item.editing.ID.getLength() + ")" );
+                        sout.println("FormMain#pictPianoRoll_MouseMove; length(before,after)=(" + item.original.ID.getLength() + "," + item.editing.ID.getLength() + ")");
 #endif
-                }
-                #endregion
-            } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
-                #region AddFixedLengthEntry
-                int note = AppManager.noteFromYCoord( e.Y );
-                int unit = AppManager.getPositionQuantizeClock();
-                int new_clock = doQuantize( AppManager.clockFromXCoord( e.X ), unit );
-                AppManager.mAddingEvent.ID.Note = note;
-                AppManager.mAddingEvent.Clock = new_clock;
-                #endregion
-            } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
-                #region EditVibratoDelay
-                int new_vibrato_start = clock;
-                int old_vibrato_end = AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength();
-                int new_vibrato_length = old_vibrato_end - new_vibrato_start;
-                int max_length = (int)(AppManager.mAddingEventLength - _PX_ACCENT_HEADER * controller.getScaleXInv());
-                if ( max_length < 0 ) {
-                    max_length = 0;
-                }
-                if ( new_vibrato_length > max_length ) {
-                    new_vibrato_start = old_vibrato_end - max_length;
-                    new_vibrato_length = max_length;
-                }
-                if ( new_vibrato_length < 0 ) {
-                    new_vibrato_start = old_vibrato_end;
-                    new_vibrato_length = 0;
-                }
-                AppManager.mAddingEvent.Clock = new_vibrato_start;
-                AppManager.mAddingEvent.ID.setLength( new_vibrato_length );
-                if ( !timer.isRunning() ) {
-                    refreshScreen();
-                }
-                #endregion
-                return;
-            } else if ( edit_mode == EditMode.DRAG_DROP ) {
-                #region DRAG_DROP
-                // クオンタイズの処理
-                int unit = AppManager.getPositionQuantizeClock();
-                int clock1 = doQuantize( clock, unit );
-                int note = AppManager.noteFromYCoord( e.Y );
-                AppManager.mAddingEvent.Clock = clock1;
-                AppManager.mAddingEvent.ID.Note = note;
-                #endregion
-            }
-
-            // カーソルの形を決める
-            if ( !mMouseDowned &&
-                 edit_mode != EditMode.CURVE_ON_PIANOROLL &&
-                 !(AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE)) ) {
-                boolean split_cursor = false;
-                boolean hand_cursor = false;
-                int min_width = 4 * _EDIT_HANDLE_WIDTH;
-                for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
-                    DrawObject dobj = itr.next();
-                    Rectangle rc;
-                    if ( dobj.mType != DrawObjectType.Dynaff ) {
-                        int edit_handle_width = _EDIT_HANDLE_WIDTH;
-                        if ( dobj.mRectangleInPixel.width < min_width ) {
-                            edit_handle_width = dobj.mRectangleInPixel.width / 4;
-                        }
-
-                        // 音符左側の編集領域
-                        rc = new Rectangle(
-                                            dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
-                                            dobj.mRectangleInPixel.y - stdy,
-                                            edit_handle_width,
-                                            (int)(100 * controller.getScaleY()) );
-                        if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
-                            split_cursor = true;
-                            break;
-                        }
-
-                        // 音符右側の編集領域
-                        rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width - stdx - edit_handle_width,
-                                            dobj.mRectangleInPixel.y - stdy,
-                                            edit_handle_width,
-                                            (int)(100 * controller.getScaleY()) );
-                        if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
-                            split_cursor = true;
-                            break;
-                        }
                     }
+                    #endregion
+                } else if (edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY) {
+                    #region AddFixedLengthEntry
+                    int note = AppManager.noteFromYCoord(e.Y);
+                    int unit = AppManager.getPositionQuantizeClock();
+                    int new_clock = doQuantize(AppManager.clockFromXCoord(e.X), unit);
+                    AppManager.mAddingEvent.ID.Note = note;
+                    AppManager.mAddingEvent.Clock = new_clock;
+                    #endregion
+                } else if (edit_mode == EditMode.EDIT_VIBRATO_DELAY) {
+                    #region EditVibratoDelay
+                    int new_vibrato_start = clock;
+                    int old_vibrato_end = AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength();
+                    int new_vibrato_length = old_vibrato_end - new_vibrato_start;
+                    int max_length = (int)(AppManager.mAddingEventLength - _PX_ACCENT_HEADER * controller.getScaleXInv());
+                    if (max_length < 0) {
+                        max_length = 0;
+                    }
+                    if (new_vibrato_length > max_length) {
+                        new_vibrato_start = old_vibrato_end - max_length;
+                        new_vibrato_length = max_length;
+                    }
+                    if (new_vibrato_length < 0) {
+                        new_vibrato_start = old_vibrato_end;
+                        new_vibrato_length = 0;
+                    }
+                    AppManager.mAddingEvent.Clock = new_vibrato_start;
+                    AppManager.mAddingEvent.ID.setLength(new_vibrato_length);
+                    if (!timer.isRunning()) {
+                        refreshScreen();
+                    }
+                    #endregion
+                    return;
+                } else if (edit_mode == EditMode.DRAG_DROP) {
+                    #region DRAG_DROP
+                    // クオンタイズの処理
+                    int unit = AppManager.getPositionQuantizeClock();
+                    int clock1 = doQuantize(clock, unit);
+                    int note = AppManager.noteFromYCoord(e.Y);
+                    AppManager.mAddingEvent.Clock = clock1;
+                    AppManager.mAddingEvent.ID.Note = note;
+                    #endregion
+                }
 
-                    // 音符本体
-                    rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
-                                        dobj.mRectangleInPixel.y - stdy,
-                                        dobj.mRectangleInPixel.width,
-                                        dobj.mRectangleInPixel.height );
-                    if ( dobj.mType == DrawObjectType.Note ) {
-                        if ( AppManager.editorConfig.ShowExpLine && !dobj.mIsOverlapped ) {
-                            rc.height *= 2;
-                            if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
-                                // ビブラートの開始位置
-                                rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mVibratoDelayInPixel - stdx - _EDIT_HANDLE_WIDTH / 2,
-                                                    dobj.mRectangleInPixel.y + (int)(100 * controller.getScaleY()) - stdy,
-                                                    _EDIT_HANDLE_WIDTH,
-                                                    (int)(100 * controller.getScaleY()) );
-                                if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
-                                    split_cursor = true;
-                                    break;
-                                } else {
+                // カーソルの形を決める
+                if (!mMouseDowned &&
+                     edit_mode != EditMode.CURVE_ON_PIANOROLL &&
+                     !(AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE))) {
+                    boolean split_cursor = false;
+                    boolean hand_cursor = false;
+                    int min_width = 4 * _EDIT_HANDLE_WIDTH;
+                    for (Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
+                        DrawObject dobj = itr.next();
+                        Rectangle rc;
+                        if (dobj.mType != DrawObjectType.Dynaff) {
+                            int edit_handle_width = _EDIT_HANDLE_WIDTH;
+                            if (dobj.mRectangleInPixel.width < min_width) {
+                                edit_handle_width = dobj.mRectangleInPixel.width / 4;
+                            }
+
+                            // 音符左側の編集領域
+                            rc = new Rectangle(
+                                                dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
+                                                dobj.mRectangleInPixel.y - stdy,
+                                                edit_handle_width,
+                                                (int)(100 * controller.getScaleY()));
+                            if (Utility.isInRect(new Point(e.X, e.Y), rc)) {
+                                split_cursor = true;
+                                break;
+                            }
+
+                            // 音符右側の編集領域
+                            rc = new Rectangle(dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width - stdx - edit_handle_width,
+                                                dobj.mRectangleInPixel.y - stdy,
+                                                edit_handle_width,
+                                                (int)(100 * controller.getScaleY()));
+                            if (Utility.isInRect(new Point(e.X, e.Y), rc)) {
+                                split_cursor = true;
+                                break;
+                            }
+                        }
+
+                        // 音符本体
+                        rc = new Rectangle(dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
+                                            dobj.mRectangleInPixel.y - stdy,
+                                            dobj.mRectangleInPixel.width,
+                                            dobj.mRectangleInPixel.height);
+                        if (dobj.mType == DrawObjectType.Note) {
+                            if (AppManager.editorConfig.ShowExpLine && !dobj.mIsOverlapped) {
+                                rc.height *= 2;
+                                if (Utility.isInRect(new Point(e.X, e.Y), rc)) {
+                                    // ビブラートの開始位置
+                                    rc = new Rectangle(dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mVibratoDelayInPixel - stdx - _EDIT_HANDLE_WIDTH / 2,
+                                                        dobj.mRectangleInPixel.y + (int)(100 * controller.getScaleY()) - stdy,
+                                                        _EDIT_HANDLE_WIDTH,
+                                                        (int)(100 * controller.getScaleY()));
+                                    if (Utility.isInRect(new Point(e.X, e.Y), rc)) {
+                                        split_cursor = true;
+                                        break;
+                                    } else {
+                                        hand_cursor = true;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (Utility.isInRect(new Point(e.X, e.Y), rc)) {
                                     hand_cursor = true;
                                     break;
                                 }
                             }
                         } else {
-                            if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
+                            if (Utility.isInRect(new Point(e.X, e.Y), rc)) {
                                 hand_cursor = true;
                                 break;
                             }
                         }
+                    }
+
+                    if (split_cursor) {
+                        Cursor = System.Windows.Forms.Cursors.VSplit;
+                    } else if (hand_cursor) {
+                        setCursor(new Cursor(java.awt.Cursor.HAND_CURSOR));
                     } else {
-                        if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
-                            hand_cursor = true;
-                            break;
-                        }
+                        setCursor(new Cursor(java.awt.Cursor.DEFAULT_CURSOR));
                     }
                 }
-
-                if ( split_cursor ) {
-#if JAVA
-                    setCursor( new Cursor( java.awt.Cursor.E_RESIZE_CURSOR ) );
-#else
-                    Cursor = System.Windows.Forms.Cursors.VSplit;
-#endif
-                } else if ( hand_cursor ) {
-                    setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
-                } else {
-                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                if (!timer.isRunning()) {
+                    refreshScreen(true);
                 }
-            }
-            if ( !timer.isRunning() ) {
-                refreshScreen( true );
             }
         }
 
@@ -9536,7 +9513,7 @@ namespace cadencii
                         }*/
                     }
                     lock ( AppManager.mDrawObjects ) {
-                        Collections.sort( AppManager.mDrawObjects.get( selected - 1 ) );
+                        Collections.sort( AppManager.mDrawObjects[selected - 1] );
                     }
                 }
                 #endregion
@@ -11993,7 +11970,7 @@ namespace cadencii
                 if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                     continue;
                 }
-                if ( vec.size( work.Track ) + 1 > 16 ) {
+                if ( vec.size( work.Track ) + 1 > AppManager.MAX_NUM_TRACK ) {
                     break;
                 }
                 VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.getItemAt( i, 1 ), "Miku" );
@@ -12331,7 +12308,7 @@ namespace cadencii
 
             for ( Iterator<Integer> itr = add_track.iterator(); itr.hasNext(); ) {
                 int track = itr.next();
-                if ( replace.Track.size() + 1 >= 16 ) {
+                if ( replace.Track.size() + 1 >= AppManager.MAX_NUM_TRACK ) {
                     break;
                 }
                 if ( !mDialogMidiImportAndExport.isTempo() ) {
@@ -15875,10 +15852,10 @@ namespace cadencii
             int tracks = vsq.Track.size();
             cMenuTrackTabDelete.setEnabled( tracks >= 3 );
             menuTrackDelete.setEnabled( tracks >= 3 );
-            cMenuTrackTabAdd.setEnabled( tracks <= 16 );
-            menuTrackAdd.setEnabled( tracks <= 16 );
-            cMenuTrackTabCopy.setEnabled( tracks <= 16 );
-            menuTrackCopy.setEnabled( tracks <= 16 );
+            cMenuTrackTabAdd.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
+            menuTrackAdd.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
+            cMenuTrackTabCopy.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
+            menuTrackCopy.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
 
             boolean on = vsq_track.isTrackOn();
             cMenuTrackTabTrackOn.setSelected( on );

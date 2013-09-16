@@ -108,6 +108,7 @@ namespace cadencii
         public const int FONT_SIZE9 = FONT_SIZE8 + 1;
         public const int FONT_SIZE10 = FONT_SIZE8 + 2;
         public const int FONT_SIZE50 = FONT_SIZE8 + 42;
+        public const int MAX_NUM_TRACK = 16;
 
         /// <summary>
         /// 鍵盤の表示幅(pixel)
@@ -484,7 +485,7 @@ namespace cadencii
         /// <summary>
         /// 画面に描かれるエントリのリスト．trackBar.Valueの変更やエントリの編集などのたびに更新される
         /// </summary>
-        public static Vector<Vector<DrawObject>> mDrawObjects;
+        public static Vector<DrawObject>[] mDrawObjects = new Vector<DrawObject>[MAX_NUM_TRACK];
         /// <summary>
         /// 歌詞入力に使用するテキストボックス
         /// </summary>
@@ -501,7 +502,7 @@ namespace cadencii
         /// <summary>
         /// 各トラックがUTAUモードかどうか．mDrawObjectsと同じタイミングで更新される
         /// </summary>
-        public static boolean[] mDrawIsUtau = new boolean[16];
+        public static boolean[] mDrawIsUtau = new boolean[MAX_NUM_TRACK];
         /// <summary>
         /// マウスが降りていて，かつ範囲選択をしているときに立つフラグ
         /// </summary>
@@ -518,7 +519,7 @@ namespace cadencii
         /// <summary>
         /// 最後にレンダリングが行われた時の、トラックの情報が格納されている。
         /// </summary>
-        public static RenderedStatus[] mLastRenderedStatus = new RenderedStatus[16];
+        public static RenderedStatus[] mLastRenderedStatus = new RenderedStatus[MAX_NUM_TRACK];
         /// <summary>
         /// RenderingStatusをXMLシリアライズするためのシリアライザ
         /// </summary>
@@ -669,6 +670,13 @@ namespace cadencii
 #endif
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        static AppManager()
+        {
+            for (int i = 0; i < MAX_NUM_TRACK; i++) {
+                mDrawObjects[i] = new Vector<DrawObject>();
+            }
+        }
 
         /// <summary>
         /// voacloidrv.shからwineを呼ぶために，ProcessBuilderに渡す

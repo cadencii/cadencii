@@ -1274,7 +1274,7 @@ namespace cadencii
                 g.setColor( brs_string );
                 g.drawString( "TRACK", 9, size.height - OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
                 if ( vsq != null ) {
-                    for ( int i = 0; i < 16; i++ ) {
+                    for ( int i = 0; i < AppManager.MAX_NUM_TRACK; i++ ) {
                         int x = key_width + i * selecter_width;
 #if DEBUG
                         try {
@@ -2343,7 +2343,7 @@ namespace cadencii
             g.setFont( AppManager.baseFont10Bold );
             boolean cursor_should_be_hand = false;
             lock ( AppManager.mDrawObjects ) {
-                Vector<DrawObject> target_list = AppManager.mDrawObjects.get( selected - 1 );
+                Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                 int count = target_list.size();
                 int i_start = AppManager.mDrawStartIndex[selected - 1];
                 for ( int i = i_start; i < count; i++ ) {
@@ -3581,7 +3581,7 @@ namespace cadencii
                     mMouseTracer.clear();
                     int selecter_width = getSelectorWidth();
                     if ( vsq != null ) {
-                        for ( int i = 0; i < 16; i++ ) {
+                        for ( int i = 0; i < AppManager.MAX_NUM_TRACK; i++ ) {
                             int x = key_width + i * selecter_width;
                             if ( vec.size( vsq.Track ) > i + 1 ) {
                                 if ( x <= e.X && e.X < x + selecter_width ) {
