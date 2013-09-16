@@ -72,6 +72,7 @@
     <Compile Include="IconParameter.cs" />
     <Compile Include="IndexIteratorKind.cs" />
     <Compile Include="InternalStreamWriter.cs" />
+    <Compile Include="io\ISequenceWriter.cs" />
     <Compile Include="io\MusicXml.cs" />
     <Compile Include="io\MusicXmlExtentions.cs">
       <SubType>code</SubType>

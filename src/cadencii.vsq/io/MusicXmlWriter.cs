@@ -21,11 +21,6 @@ using MusicXML;
 
 namespace cadencii.vsq.io
 {
-    interface ISequenceWriter
-    {
-        void write(VsqFile sequence, string file_path);
-    }
-
     static class MusicXmlNoteUtil
     {
         public static note Duration(this note note, decimal duration)
