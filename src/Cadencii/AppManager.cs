@@ -1526,6 +1526,9 @@ namespace cadencii
         public static void applyUtauParameter( VsqTrack vsq_track, VsqEvent item )
         {
             VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
+            if (singer == null) {
+                return;
+            }
             SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
             if ( sc != null && mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                 UtauVoiceDB db = mUtauVoiceDB.get( sc.VOICEIDSTR );
