@@ -2,12 +2,12 @@
  * SynthesizerType.cs
  * Copyright © 2009-2011 kbinani
  *
- * This file is part of Boare.Cadencii.
+ * This file is part of cadencii.vsq.
  *
- * Boare.Cadencii is free software; you can redistribute it and/or
- * modify it under the terms of the GPLv3 License.
+ * cadencii.vsq is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
  *
- * Boare.Cadencii is distributed in the hope that it will be useful,
+ * cadencii.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */

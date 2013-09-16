@@ -1,6 +1,6 @@
 #if ENABLE_AQUESTONE
 /*
- * AquesToneWave2Generator.cs
+ * AquesTone2WaveGenerator.cs
  * Copyright © 2013 kbinani
  *
  * This file is part of cadencii.

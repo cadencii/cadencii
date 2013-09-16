@@ -1,20 +1,19 @@
 /*
  * Program.cs
- * Copyright (C) 2008-2010 kbinani
+ * Copyright © 2008-2010 kbinani
  *
- * This file is part of org.kbinani.generatekeysound.
+ * This file is part of cadencii.generatekeysound.
  *
- * org.kbinani.generatekeysound is free software; you can redistribute it and/or
+ * cadencii.generatekeysound is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * org.kbinani.generatekeysound is distributed in the hope that it will be useful,
+ * cadencii.generatekeysound is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using cadencii;
 using cadencii;
 using cadencii.java.util;
 using cadencii.media;
