@@ -253,7 +253,9 @@ namespace cadencii.vsq.io
         public void write(VsqFile sequence, string file_path)
         {
             var score = new scorepartwise();
-            
+
+            score.version = "2.0";
+
             score.identification = new identification();
             score.identification.encoding = new encoding();
             score.identification.encoding.software.Add(this.GetType().FullName);
@@ -290,7 +292,11 @@ namespace cadencii.vsq.io
             using (var stream = new FileStream(file_path, FileMode.Create, FileAccess.Write)) {
                 var writer = new System.Xml.XmlTextWriter(stream, System.Text.Encoding.UTF8);
                 writer.Formatting = System.Xml.Formatting.Indented;
-                serializer.Serialize(writer, score);
+                writer.WriteStartDocument();
+                writer.WriteDocType("score-partwise", "-//Recordare//DTD MusicXML 2.0 Partwise//EN", "http://www.musicxml.org/dtds/partwise.dtd", null);
+                var ns = new System.Xml.Serialization.XmlSerializerNamespaces();
+                ns.Add(string.Empty, string.Empty);
+                serializer.Serialize(writer, score, ns);
             }
         }
 
