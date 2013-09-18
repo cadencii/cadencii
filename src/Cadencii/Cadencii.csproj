@@ -66,7 +66,8 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DefineConstants>ENABLE_PROPERTY, ENABLE_VOCALOID, ENABLE_SCRIPT, ENABLE_MOUSEHOVER, ENABLE_MIDI, ENABLE_STRIP_DROPDOWN, ENABLE_AQUESTONE, CSHARP</DefineConstants>
     <Optimize>true</Optimize>
-    <DocumentationFile>bin\x86\Release\Cadencii.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
     <DebugSymbols>true</DebugSymbols>

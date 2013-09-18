@@ -31,7 +31,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>bin\x86\Release\cadencii.vsq.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DefineConstants>CSHARP</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>

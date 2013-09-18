@@ -18,12 +18,13 @@
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;CSHARP</DefineConstants>
-    <DocumentationFile>bin\x86\Debug\cadencii.componentmodel.xml</DocumentationFile>
+    <DocumentationFile>intermediates\x86\Debug\cadencii.componentmodel.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>bin\x86\Release\cadencii.componentmodel.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DefineConstants>CSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">

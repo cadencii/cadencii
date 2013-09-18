@@ -38,6 +38,8 @@
     <DebugType>none</DebugType>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>CSHARP</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugMinimal|x86' ">
     <OutputPath>bin\x86\DebugMinimal\</OutputPath>
