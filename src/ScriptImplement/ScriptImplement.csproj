@@ -17,7 +17,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -165,7 +165,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>gmcs "$(SolutionDir)ParseUtauPluginInvoker.cs" /out:"$(SolutionDir)ParseUtauPluginInvoker.exe" /r:System.Windows.Forms &amp;&amp; "$(SolutionDir)ParseUtauPluginInvoker.exe" &amp;&amp; copy "$(ProjectDir)..\Cadencii\bin\x86\Release\script\UTAU Plugin Manager.txt" "$(ProjectDir)..\Cadencii\bin\x86\Debug\script\UTAU Plugin Manager.txt"
+    <PostBuildEvent>mkdir "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script"
+mkdir "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool"
+"$(SolutionDir)\..\utils\GenerateUtauPluginManagerPlugin\bin\$(PlatformName)\$(ConfigurationName)\GenerateUtauPluginManagerPlugin.exe
 copy "$(ProjectDir)Transpose Plus 1 Degree.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Transpose Plus 1 Degree.txt"
 copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)DivideNote.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool\DivideNote.txt"
