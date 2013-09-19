@@ -3940,9 +3940,12 @@ namespace cadencii
             vScroll.setBlockIncrement( large_change );
 #endif
 
-            int old_value = vScroll.getValue();
-            if ( old_value > maximum - large_change ) {
-                vScroll.setValue( maximum - large_change );
+            int new_value = maximum - large_change;
+            if (new_value < vScroll.Minimum) {
+                new_value = vScroll.Minimum;
+            }
+            if (vScroll.Value > new_value) {
+                vScroll.Value = new_value;
             }
         }
 
