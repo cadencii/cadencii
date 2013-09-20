@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( cadencii.BAssemblyInfo.id )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "Cadencii" )]
-[assembly: AssemblyCopyright( "Copyright (C) 2008-2011 kbinani. All Rights Reserved." )]
+[assembly: AssemblyCopyright("Copyright © 2008-2013 kbinani. All Rights Reserved.")]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 [assembly: ComVisible( false )]
@@ -40,7 +40,7 @@ namespace cadencii {
         public const String id = "$Id$";
         public const String fileVersionMeasure = "3";
         public const String fileVersionMinor = "5";
-        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".1";
+        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".2";
     }
 
 #if !JAVA
