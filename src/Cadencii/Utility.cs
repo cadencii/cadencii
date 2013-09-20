@@ -1511,27 +1511,8 @@ namespace cadencii
 
         public static String getVersion() {
             String suffix = "";
-            String rev = "";
-            // $Id: AppManager.cs 474 2009-09-23 11:31:07Z kbinani $
-            String id = BAssemblyInfo.id;
-            String[] spl0 = PortUtil.splitString( id, new String[] { " " }, true );
-            if ( spl0.Length >= 3 ) {
-                String s = spl0[2];
-#if DEBUG
-                AppManager.debugWriteLine( "AppManager.get__VERSION; s=" + s );
-#endif
-                String[] spl = PortUtil.splitString( s, new String[] { " " }, true );
-                if ( spl.Length > 0 ) {
-                    rev = spl[0];
-                }
-            }
-            if ( str.compare( rev, "" ) ) {
-                rev = "?";
-            }
-
             TreeMap<String, Boolean> directives = Config.getDirectives();
-            suffix = "\nrev: " + rev + "\n";
-            suffix += "\n";
+            suffix += "\n\n";
             for( Iterator<String> itr = directives.keySet().iterator(); itr.hasNext(); ){
                 String k = itr.next();
                 Boolean v = directives.get( k );
