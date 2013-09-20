@@ -3593,8 +3593,12 @@ namespace cadencii
         /// <param name="note"></param>
         public void ensureVisibleY( int note )
         {
+            Action<int> setVScrollValue = (value) => {
+                int draft = Math.Min(Math.Max(value, vScroll.Minimum), vScroll.Maximum);
+                vScroll.Value = draft;
+            };
             if ( note <= 0 ) {
-                vScroll.setValue( vScroll.getMaximum() - vScroll.getVisibleAmount() );
+                setVScrollValue(vScroll.getMaximum() - vScroll.getVisibleAmount());
                 return;
             } else if ( note >= 127 ) {
                 vScroll.setValue( vScroll.getMinimum() );
@@ -3613,12 +3617,12 @@ namespace cadencii
                 // startToDrawYを次の値にする必要がある
                 int new_start_to_draw_y = controller.getStartToDrawY() + (note_y - height);
                 int value = calculateVScrollValueFromStartToDrawY( new_start_to_draw_y );
-                vScroll.setValue( value );
+                setVScrollValue(value);
             } else if ( noteTop < note ) {
                 // ノートナンバーnoteTopの現在のy座標が，ノートナンバーnoteの新しいy座標と同一になるよう，startToDrawYを変える
                 int new_start_to_draw_y = controller.getStartToDrawY() + (note_y - 0);
                 int value = calculateVScrollValueFromStartToDrawY( new_start_to_draw_y );
-                vScroll.setValue( value );
+                setVScrollValue(value);
             }
         }
 
