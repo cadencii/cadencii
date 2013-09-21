@@ -144,7 +144,7 @@ namespace cadencii
         {
             lblTemplate.setText( _( "Template" ) );
             lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
-            groupPitchControl.setTitle( _( "Pitch Control" ) );
+            groupPitchControl.Text = _( "Pitch Control" );
             lblBendDepth.setText( _( "Bend Depth" ) );
             lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
             lblBendLength.setText( _( "Bend Length" ) );
@@ -152,8 +152,8 @@ namespace cadencii
             chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
             chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
 
-            groupAttack.setTitle( _( "Attack Control (VOCALOID1)" ) );
-            groupDynamicsControl.setTitle( _( "Dynamics Control (VOCALOID2)" ) );
+            groupAttack.Text = _( "Attack Control (VOCALOID1)" );
+            groupDynamicsControl.Text = _( "Dynamics Control (VOCALOID2)" );
             lblDecay.setText( _( "Decay" ) );
             lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
             lblAccent.setText( _( "Accent" ) );
@@ -556,7 +556,7 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPitchControl = new BGroupBox();
+            this.groupPitchControl = new GroupBox();
             this.label5 = new BLabel();
             this.label4 = new BLabel();
             this.txtBendLength = new cadencii.NumberTextBox();
@@ -567,7 +567,7 @@ namespace cadencii
             this.chkUpPortamento = new CheckBox();
             this.lblBendLength = new BLabel();
             this.lblBendDepth = new BLabel();
-            this.groupDynamicsControl = new BGroupBox();
+            this.groupDynamicsControl = new GroupBox();
             this.label7 = new BLabel();
             this.label6 = new BLabel();
             this.txtAccent = new cadencii.NumberTextBox();
@@ -580,7 +580,7 @@ namespace cadencii
             this.btnCancel = new Button();
             this.btnOK = new Button();
             this.comboTemplate = new ComboBox();
-            this.groupAttack = new BGroupBox();
+            this.groupAttack = new GroupBox();
             this.lblAttackTemplate = new BLabel();
             this.comboAttackTemplate = new ComboBox();
             this.txtDepth = new cadencii.NumberTextBox();
@@ -1043,8 +1043,8 @@ namespace cadencii
 
         #endregion
 
-        private BGroupBox groupPitchControl;
-        private BGroupBox groupDynamicsControl;
+        private GroupBox groupPitchControl;
+        private GroupBox groupDynamicsControl;
         private BLabel lblBendDepth;
         private BLabel lblTemplate;
         private BLabel lblBendLength;
@@ -1067,7 +1067,7 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private ComboBox comboTemplate;
-        private BGroupBox groupAttack;
+        private GroupBox groupAttack;
         private NumberTextBox txtDepth;
         private NumberTextBox txtDuration;
         private BSlider trackDepth;

@@ -798,8 +798,8 @@ namespace cadencii
             lblAutoVibratoThresholdLength.setMnemonic( KeyEvent.VK_M, txtAutoVibratoThresholdLength );
 
             lblAutoVibratoType.setText( _( "Auto Vibrato Type" ) );
-            groupVocaloidEditorCompatible.setTitle( _( "VOCALOID Editor Compatible" ) );
-            groupUserDefined.setTitle( _( "User Defined" ) );
+            groupVocaloidEditorCompatible.Text = _( "VOCALOID Editor Compatible" );
+            groupUserDefined.Text = _( "User Defined" );
             radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
             radioUserDefined.setText( _( "User Defined" ) );
             chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
@@ -823,18 +823,18 @@ namespace cadencii
             #endregion
 
             #region tabAppearance
-            groupFont.setTitle( _( "Font" ) );
+            groupFont.Text = _( "Font" );
             labelMenu.setText( _( "Menu / Lyrics" ) );
             labelScreen.setText( _( "Screen" ) );
             lblLanguage.setText( _( "UI Language" ) );
             btnChangeMenuFont.Text = _( "Change" );
             btnChangeScreenFont.Text = _( "Change" );
             lblTrackHeight.setText( _( "Track Height (pixel)" ) );
-            groupVisibleCurve.setTitle( _( "Visible Control Curve" ) );
+            groupVisibleCurve.Text = _( "Visible Control Curve" );
             #endregion
 
             #region tabOperation
-            groupPianoroll.setTitle( _( "Piano Roll" ) );
+            groupPianoroll.Text = _( "Piano Roll" );
             labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
 
             chkCursorFix.Text = _( "Fix Song position to Center" );
@@ -844,7 +844,7 @@ namespace cadencii
             chkCurveSelectingQuantized.Text = _( "Enable Quantize for Curve Selecting" );
             chkUseSpaceKeyAsMiddleButtonModifier.Text = _( "Use space key as Middle button modifier" );
 
-            groupMisc.setTitle( _( "Misc" ) );
+            groupMisc.Text = _( "Misc" );
             lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
             lblMilliSecond.setText( _( "frame per second" ) );
             lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
@@ -854,7 +854,7 @@ namespace cadencii
             #endregion
 
             #region tabPlatform
-            groupUtauCores.setTitle( _( "UTAU Cores" ) );
+            groupUtauCores.Text = _( "UTAU Cores" );
             labelWavtoolPath.setText( _( "Path:" ) );
             chkWavtoolWithWine.Text = _( "Invoke wavtool with Wine" );
             listResampler.setColumnHeaders( new String[] { _( "path" ) } );
@@ -878,9 +878,9 @@ namespace cadencii
             #endregion
 
             #region tabSingingSynth
-            groupSynthesizerDll.setTitle( _( "Synthesizer DLL Usage" ) );
+            groupSynthesizerDll.Text = _( "Synthesizer DLL Usage" );
 
-            groupDefaultSynthesizer.setTitle( _( "Default Synthesizer" ) );
+            groupDefaultSynthesizer.Text = _( "Default Synthesizer" );
             #endregion
         }
 
@@ -1481,8 +1481,8 @@ namespace cadencii
         {
             boolean v = radioVocaloidEditorCompatible.isSelected();
             boolean ud = radioUserDefined.isSelected();
-            groupVocaloidEditorCompatible.setEnabled( v );
-            groupUserDefined.setEnabled( ud );
+            groupVocaloidEditorCompatible.Enabled = v;
+            groupUserDefined.Enabled = ud;
             comboAutoVibratoType1.Enabled = v;
             comboAutoVibratoType2.Enabled = v;
             comboAutoVibratoTypeCustom.Enabled = ud;

@@ -66,14 +66,14 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Global Tempo" ) );
-            groupPosition.setTitle( _( "Position" ) );
+            groupPosition.Text = _( "Position" );
             lblBar.setText( _( "Measure" ) );
             lblBar.setMnemonic( KeyEvent.VK_M, numBar );
             lblBeat.setText( _( "Beat" ) );
             lblBeat.setMnemonic( KeyEvent.VK_B, numBeat );
             lblClock.setText( _( "Clock" ) );
             lblClock.setMnemonic( KeyEvent.VK_L, numClock );
-            groupTempo.setTitle( _( "Tempo" ) );
+            groupTempo.Text = _( "Tempo" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
         }
@@ -153,14 +153,14 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPosition = new BGroupBox();
+            this.groupPosition = new System.Windows.Forms.GroupBox();
             this.numClock = new cadencii.NumericUpDownEx();
             this.numBeat = new cadencii.NumericUpDownEx();
             this.numBar = new cadencii.NumericUpDownEx();
             this.lblClock = new BLabel();
             this.lblBeat = new BLabel();
             this.lblBar = new BLabel();
-            this.groupTempo = new BGroupBox();
+            this.groupTempo = new System.Windows.Forms.GroupBox();
             this.lblTempoRange = new BLabel();
             this.numTempo = new cadencii.NumericUpDownEx();
             this.btnOK = new System.Windows.Forms.Button();
@@ -332,11 +332,11 @@ namespace cadencii
 
         #endregion
 
-        private BGroupBox groupPosition;
+        private System.Windows.Forms.GroupBox groupPosition;
         private BLabel lblClock;
         private BLabel lblBeat;
         private BLabel lblBar;
-        private BGroupBox groupTempo;
+        private System.Windows.Forms.GroupBox groupTempo;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private NumericUpDownEx numBar;

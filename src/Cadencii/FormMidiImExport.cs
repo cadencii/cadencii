@@ -84,13 +84,13 @@ namespace cadencii
             } else {
                 setTitle( _( "VSQ/Vocaloid Midi Import" ) );
             }
-            groupMode.setTitle( _( "Import Basis" ) );
+            groupMode.Text = _( "Import Basis" );
             radioGateTime.setText( _( "gate-time" ) );
             radioPlayTime.setText( _( "play-time" ) );
             listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.Text = _( "Check All" );
             btnUncheckAll.Text = _( "Uncheck All" );
-            groupCommonOption.setTitle( _( "Option" ) );
+            groupCommonOption.Text = _( "Option" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
             chkTempo.Text = _( "Tempo" );
@@ -164,21 +164,21 @@ namespace cadencii
                 } else {
                     chkMetaText.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus;
                 }
-                groupMode.setEnabled( false );
+                groupMode.Enabled = false;
             } else if ( m_mode == FormMidiMode.IMPORT ) {
                 setTitle( _( "Midi Import" ) );
                 chkPreMeasure.Text = _( "Inserting start at pre-measure" );
                 chkMetaText.Enabled = false;
                 AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.Checked;
                 chkMetaText.Checked = false;
-                groupMode.setEnabled( true );
+                groupMode.Enabled = true;
             } else {
                 setTitle( _( "VSQ/Vocaloid Midi Import" ) );
                 chkPreMeasure.Text = _( "Inserting start at pre-measure" );
                 chkPreMeasure.Checked = false;
                 AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.Checked;
                 chkMetaText.Checked = true;
-                groupMode.setEnabled( false );
+                groupMode.Enabled = false;
             }
         }
 
@@ -383,11 +383,11 @@ namespace cadencii
             this.chkTempo = new CheckBox();
             this.chkNote = new CheckBox();
             this.chkLyric = new CheckBox();
-            this.groupCommonOption = new cadencii.windows.forms.BGroupBox();
+            this.groupCommonOption = new System.Windows.Forms.GroupBox();
             this.chkMetaText = new CheckBox();
             this.chkPreMeasure = new CheckBox();
             this.chkExportVocaloidNrpn = new CheckBox();
-            this.groupMode = new cadencii.windows.forms.BGroupBox();
+            this.groupMode = new System.Windows.Forms.GroupBox();
             this.lblOffsetUnit = new cadencii.windows.forms.BLabel();
             this.txtOffset = new cadencii.NumberTextBox();
             this.lblOffset = new cadencii.windows.forms.BLabel();
@@ -681,12 +681,12 @@ namespace cadencii
         private CheckBox chkTempo;
         private CheckBox chkNote;
         private CheckBox chkLyric;
-        private BGroupBox groupCommonOption;
+        private GroupBox groupCommonOption;
         private CheckBox chkExportVocaloidNrpn;
         public BListView listTrack;
         private CheckBox chkPreMeasure;
         private CheckBox chkMetaText;
-        private BGroupBox groupMode;
+        private GroupBox groupMode;
         private BRadioButton radioPlayTime;
         private BRadioButton radioGateTime;
         private BLabel lblOffset;

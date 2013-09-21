@@ -59,9 +59,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BFormWindowState.cs" />
-    <Compile Include="BGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BKeys.cs" />
     <Compile Include="BKeysUtility.cs" />
     <Compile Include="BLabel.cs">

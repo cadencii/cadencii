@@ -78,7 +78,7 @@ namespace cadencii
         {
             lblTemplate.setText( _( "Template" ) );
             lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
-            groupPitchControl.setTitle( _( "Pitch Control" ) );
+            groupPitchControl.Text = _( "Pitch Control" );
             lblBendDepth.setText( _( "Bend Depth" ) );
             lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
             lblBendLength.setText( _( "Bend Length" ) );
@@ -86,7 +86,7 @@ namespace cadencii
             chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
             chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
 
-            groupDynamicsControl.setTitle( _( "Dynamics Control" ) );
+            groupDynamicsControl.Text = _( "Dynamics Control" );
             lblDecay.setText( _( "Decay" ) );
             lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
             lblAccent.setText( _( "Accent" ) );
@@ -388,7 +388,7 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPitchControl = new BGroupBox();
+            this.groupPitchControl = new GroupBox();
             this.label5 = new BLabel();
             this.label4 = new BLabel();
             this.txtBendLength = new cadencii.NumberTextBox();
@@ -399,7 +399,7 @@ namespace cadencii
             this.chkUpPortamento = new CheckBox();
             this.lblBendLength = new BLabel();
             this.lblBendDepth = new BLabel();
-            this.groupDynamicsControl = new BGroupBox();
+            this.groupDynamicsControl = new GroupBox();
             this.label7 = new BLabel();
             this.label6 = new BLabel();
             this.txtAccent = new cadencii.NumberTextBox();
@@ -733,8 +733,8 @@ namespace cadencii
 
         #endregion
 
-        private BGroupBox groupPitchControl;
-        private BGroupBox groupDynamicsControl;
+        private GroupBox groupPitchControl;
+        private GroupBox groupDynamicsControl;
         private BLabel lblBendDepth;
         private BLabel lblTemplate;
         private BLabel lblBendLength;

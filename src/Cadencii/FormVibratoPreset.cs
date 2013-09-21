@@ -503,10 +503,10 @@ namespace cadencii
 
             labelPresets.setText( _( "List of vibrato preset" ) );
 
-            groupEdit.setTitle( _( "Edit" ) );
+            groupEdit.Text = _( "Edit" );
             labelName.setText( _( "Name" ) );
 
-            groupPreview.setTitle( _( "Preview" ) );
+            groupPreview.Text = _( "Preview" );
             labelDepthCurve.setText( _( "Depth curve" ) );
             labelRateCurve.setText( _( "Rate curve" ) );
             labelResulting.setText( _( "Resulting pitch bend" ) );
@@ -699,10 +699,10 @@ namespace cadencii
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.labelResulting = new cadencii.windows.forms.BLabel();
             this.pictureResulting = new cadencii.windows.forms.BPictureBox();
-            this.groupEdit = new cadencii.windows.forms.BGroupBox();
+            this.groupEdit = new System.Windows.Forms.GroupBox();
             this.textName = new cadencii.windows.forms.BTextBox();
             this.labelName = new cadencii.windows.forms.BLabel();
-            this.groupPreview = new cadencii.windows.forms.BGroupBox();
+            this.groupPreview = new System.Windows.Forms.GroupBox();
             this.listPresets = new BListBox();
             this.textDepth = new cadencii.NumberTextBox();
             this.textRate = new cadencii.NumberTextBox();
@@ -1053,10 +1053,10 @@ namespace cadencii
         private System.Windows.Forms.SplitContainer splitContainer2;
         private BLabel labelResulting;
         private BPictureBox pictureResulting;
-        private BGroupBox groupEdit;
+        private GroupBox groupEdit;
         private BLabel labelName;
         private BTextBox textName;
-        private BGroupBox groupPreview;
+        private GroupBox groupPreview;
         private BListBox listPresets;
         private System.Windows.Forms.Button buttonDown;
         #endregion
