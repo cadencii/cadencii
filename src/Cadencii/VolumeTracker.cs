@@ -250,27 +250,27 @@ namespace cadencii
 
         public boolean isMuted()
         {
-            return chkMute.isSelected();
+            return chkMute.Checked;
         }
 
         public void setMuted( boolean value )
         {
-            boolean old = chkMute.isSelected();
-            chkMute.setSelected( value );
-            chkMute.setBackground( value ? PortUtil.DimGray : Color.white );
+            boolean old = chkMute.Checked;
+            chkMute.Checked = value;
+            chkMute.BackColor = value ? System.Drawing.Color.DimGray : System.Drawing.Color.White;
             mMuted = value;
         }
 
         public boolean isSolo()
         {
-            return chkSolo.isSelected();
+            return chkSolo.Checked;
         }
 
         public void setSolo( boolean value )
         {
-            boolean old = chkSolo.isSelected();
-            chkSolo.setSelected( value );
-            chkSolo.setBackground( value ? PortUtil.DarkCyan : Color.white );
+            boolean old = chkSolo.Checked;
+            chkSolo.Checked = value;
+            chkSolo.BackColor = value ? System.Drawing.Color.DarkCyan : System.Drawing.Color.White;
         }
 
         public int getPanpot()
@@ -285,12 +285,12 @@ namespace cadencii
 
         public boolean isSoloButtonVisible()
         {
-            return chkSolo.isVisible();
+            return chkSolo.Visible;
         }
 
         public void setSoloButtonVisible( boolean value )
         {
-            chkSolo.setVisible( value );
+            chkSolo.Visible = value;
         }
 
         public int getFeder()
@@ -521,7 +521,7 @@ namespace cadencii
 
         public void chkMute_Click( Object sender, EventArgs e )
         {
-            mMuted = chkMute.isSelected();
+            mMuted = chkMute.Checked;
             try {
 #if JAVA
                 muteButtonClickEvent.raise( this, e );
@@ -593,8 +593,8 @@ namespace cadencii
             this.txtPanpot = new cadencii.windows.forms.BTextBox();
             this.lblTitle = new cadencii.windows.forms.BLabel();
             this.txtFeder = new cadencii.windows.forms.BTextBox();
-            this.chkMute = new cadencii.windows.forms.BCheckBox();
-            this.chkSolo = new cadencii.windows.forms.BCheckBox();
+            this.chkMute = new CheckBox();
+            this.chkSolo = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackPanpot)).BeginInit();
             this.SuspendLayout();
@@ -716,8 +716,8 @@ namespace cadencii
         private BTextBox txtPanpot;
         private BLabel lblTitle;
         private BTextBox txtFeder;
-        private BCheckBox chkMute;
-        private BCheckBox chkSolo;
+        private System.Windows.Forms.CheckBox chkMute;
+        private System.Windows.Forms.CheckBox chkSolo;
 
         #endregion
 #endif

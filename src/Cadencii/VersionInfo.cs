@@ -107,7 +107,7 @@ namespace cadencii
             //m_scroll = generateAuthorListB( false );
             //m_scroll_with_id = generateAuthorListB( true );
 #endif
-            chkTwitterID.setVisible( false );
+            chkTwitterID.Visible = false;
         }
 
         public boolean isShowTwitterID()
@@ -318,14 +318,14 @@ namespace cadencii
                 m_shift = 0f;
                 pictVstLogo.setVisible( false );
                 lblVstLogo.setVisible( false );
-                chkTwitterID.setVisible( true );
+                chkTwitterID.Visible = true;
                 timer.start();
             } else {
                 timer.stop();
                 btnFlip.Text = _( "Credit" );
                 pictVstLogo.setVisible( true );
                 lblVstLogo.setVisible( true );
-                chkTwitterID.setVisible( false );
+                chkTwitterID.Visible = false;
             }
             this.repaint();
         }
@@ -422,7 +422,7 @@ namespace cadencii
 
         public void chkTwitterID_CheckedChanged( Object sender, EventArgs e )
         {
-            m_show_twitter_id = chkTwitterID.isSelected();
+            m_show_twitter_id = chkTwitterID.Checked;
             repaint();
         }
 
@@ -476,7 +476,7 @@ namespace cadencii
             this.btnOK = new Button();
             this.lblVstLogo = new cadencii.windows.forms.BLabel();
             this.pictVstLogo = new cadencii.windows.forms.BPictureBox();
-            this.chkTwitterID = new cadencii.windows.forms.BCheckBox();
+            this.chkTwitterID = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -564,7 +564,7 @@ namespace cadencii
         private System.Windows.Forms.Button btnOK;
         private BPictureBox pictVstLogo;
         private BLabel lblVstLogo;
-        private BCheckBox chkTwitterID;
+        private CheckBox chkTwitterID;
 #endif
         #endregion
     }

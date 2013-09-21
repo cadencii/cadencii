@@ -83,10 +83,8 @@ namespace cadencii
             lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
             lblBendLength.setText( _( "Bend Length" ) );
             lblBendLength.setMnemonic( KeyEvent.VK_L, txtBendLength );
-            chkUpPortamento.setText( _( "Add portamento in rising movement" ) );
-            chkUpPortamento.setMnemonic( KeyEvent.VK_R );
-            chkDownPortamento.setText( _( "Add portamento in falling movement" ) );
-            chkDownPortamento.setMnemonic( KeyEvent.VK_F );
+            chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
+            chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
 
             groupDynamicsControl.setTitle( _( "Dynamics Control" ) );
             lblDecay.setText( _( "Decay" ) );
@@ -130,10 +128,10 @@ namespace cadencii
         public int getPMbPortamentoUse()
         {
             int ret = 0;
-            if ( chkUpPortamento.isSelected() ) {
+            if ( chkUpPortamento.Checked ) {
                 ret += 1;
             }
-            if ( chkDownPortamento.isSelected() ) {
+            if ( chkDownPortamento.Checked ) {
                 ret += 2;
             }
             return ret;
@@ -142,14 +140,14 @@ namespace cadencii
         public void setPMbPortamentoUse( int value )
         {
             if ( value % 2 == 1 ) {
-                chkUpPortamento.setSelected( true );
+                chkUpPortamento.Checked = true;
             } else {
-                chkUpPortamento.setSelected( false );
+                chkUpPortamento.Checked = false;
             }
             if ( value >= 2 ) {
-                chkDownPortamento.setSelected( true );
+                chkDownPortamento.Checked = true;
             } else {
-                chkDownPortamento.setSelected( false );
+                chkDownPortamento.Checked = false;
             }
         }
 
@@ -397,8 +395,8 @@ namespace cadencii
             this.txtBendDepth = new cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
             this.trackBendDepth = new BSlider();
-            this.chkDownPortamento = new BCheckBox();
-            this.chkUpPortamento = new BCheckBox();
+            this.chkDownPortamento = new CheckBox();
+            this.chkUpPortamento = new CheckBox();
             this.lblBendLength = new BLabel();
             this.lblBendDepth = new BLabel();
             this.groupDynamicsControl = new BGroupBox();
@@ -740,8 +738,8 @@ namespace cadencii
         private BLabel lblBendDepth;
         private BLabel lblTemplate;
         private BLabel lblBendLength;
-        private BCheckBox chkDownPortamento;
-        private BCheckBox chkUpPortamento;
+        private CheckBox chkDownPortamento;
+        private CheckBox chkUpPortamento;
         private BSlider trackBendDepth;
         private BSlider trackBendLength;
         private BSlider trackAccent;

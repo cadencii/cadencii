@@ -162,7 +162,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isEnableWideCharacterWorkaround()
         {
-            return checkEnableWideCharacterWorkaround.isSelected();
+            return checkEnableWideCharacterWorkaround.Checked;
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace cadencii
         /// <param name="value"></param>
         public void setEnableWideCharacterWorkaround( boolean value )
         {
-            checkEnableWideCharacterWorkaround.setSelected( value );
+            checkEnableWideCharacterWorkaround.Checked = value;
         }
 
         public override BDialogResult showDialog( System.Windows.Forms.Form parent )
@@ -314,8 +314,8 @@ namespace cadencii
         /// <returns></returns>
         public boolean isVocaloid1Required()
         {
-            if ( chkLoadVocaloid1.isEnabled() ) {
-                return chkLoadVocaloid1.isSelected();
+            if ( chkLoadVocaloid1.Enabled ) {
+                return chkLoadVocaloid1.Checked;
             } else {
                 return false;
             }
@@ -327,8 +327,8 @@ namespace cadencii
         /// <param name="value"></param>
         public void setVocaloid1Required( boolean value )
         {
-            if ( chkLoadVocaloid1.isEnabled() ) {
-                chkLoadVocaloid1.setSelected( value );
+            if ( chkLoadVocaloid1.Enabled ) {
+                chkLoadVocaloid1.Checked = value;
             }
         }
 
@@ -338,7 +338,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isVocaloid2Required()
         {
-            return chkLoadVocaloid2.isSelected();
+            return chkLoadVocaloid2.Checked;
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace cadencii
         /// <param name="value"></param>
         public void setVocaloid2Required( boolean value )
         {
-            chkLoadVocaloid2.setSelected( value );
+            chkLoadVocaloid2.Checked = value;
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isAquesToneRequired()
         {
-            return chkLoadAquesTone.isSelected();
+            return chkLoadAquesTone.Checked;
         }
 
         /// <summary>
@@ -365,7 +365,7 @@ namespace cadencii
         /// <param name="value"></param>
         public void setAquesToneRequired( boolean value )
         {
-            chkLoadAquesTone.setSelected( value );
+            chkLoadAquesTone.Checked = value;
         }
 
         public bool isAquesTone2Required() { return chkLoadAquesTone2.Checked; }
@@ -373,27 +373,27 @@ namespace cadencii
 
         public boolean isUseProjectCache()
         {
-            return chkKeepProjectCache.isSelected();
+            return chkKeepProjectCache.Checked;
         }
 
         public void setUseProjectCache( boolean value )
         {
-            chkKeepProjectCache.setSelected( value );
+            chkKeepProjectCache.Checked = value;
         }
 
         public boolean isUseSpaceKeyAsMiddleButtonModifier()
         {
-            return chkUseSpaceKeyAsMiddleButtonModifier.isSelected();
+            return chkUseSpaceKeyAsMiddleButtonModifier.Checked;
         }
 
         public void setUseSpaceKeyAsMiddleButtonModifier( boolean value )
         {
-            chkUseSpaceKeyAsMiddleButtonModifier.setSelected( value );
+            chkUseSpaceKeyAsMiddleButtonModifier.Checked = value;
         }
 
         public int getAutoBackupIntervalMinutes()
         {
-            if ( chkAutoBackup.isSelected() ) {
+            if ( chkAutoBackup.Checked ) {
                 return (int)numAutoBackupInterval.getFloatValue();
             } else {
                 return 0;
@@ -403,21 +403,21 @@ namespace cadencii
         public void setAutoBackupIntervalMinutes( int value )
         {
             if ( value <= 0 ) {
-                chkAutoBackup.setSelected( false );
+                chkAutoBackup.Checked = false;
             } else {
-                chkAutoBackup.setSelected( true );
+                chkAutoBackup.Checked = true;
                 numAutoBackupInterval.setFloatValue( value );
             }
         }
 
         public boolean isSelfDeRomantization()
         {
-            return chkTranslateRoman.isSelected();
+            return chkTranslateRoman.Checked;
         }
 
         public void setSelfDeRomantization( boolean value )
         {
-            chkTranslateRoman.setSelected( value );
+            chkTranslateRoman.Checked = value;
         }
 
 #if ENABLE_MTC
@@ -477,232 +477,232 @@ namespace cadencii
 
         public boolean isCurveVisibleVel()
         {
-            return chkVel.isSelected();
+            return chkVel.Checked;
         }
 
         public void setCurveVisibleVel( boolean value )
         {
-            chkVel.setSelected( value );
+            chkVel.Checked = value;
         }
 
         public boolean isCurveVisibleAccent()
         {
-            return chkAccent.isSelected();
+            return chkAccent.Checked;
         }
 
         public void setCurveVisibleAccent( boolean value )
         {
-            chkAccent.setSelected( value );
+            chkAccent.Checked = value;
         }
 
         public boolean isCurveVisibleDecay()
         {
-            return chkDecay.isSelected();
+            return chkDecay.Checked;
         }
 
         public void setCurveVisibleDecay( boolean value )
         {
-            chkDecay.setSelected( value );
+            chkDecay.Checked = value;
         }
 
         public boolean isCurveVisibleVibratoRate()
         {
-            return chkVibratoRate.isSelected();
+            return chkVibratoRate.Checked;
         }
 
         public void setCurveVisibleVibratoRate( boolean value )
         {
-            chkVibratoRate.setSelected( value );
+            chkVibratoRate.Checked = value;
         }
 
         public boolean isCurveVisibleVibratoDepth()
         {
-            return chkVibratoDepth.isSelected();
+            return chkVibratoDepth.Checked;
         }
 
         public void setCurveVisibleVibratoDepth( boolean value )
         {
-            chkVibratoDepth.setSelected( value );
+            chkVibratoDepth.Checked = value;
         }
 
         public boolean isCurveVisibleDyn()
         {
-            return chkDyn.isSelected();
+            return chkDyn.Checked;
         }
 
         public void setCurveVisibleDyn( boolean value )
         {
-            chkDyn.setSelected( value );
+            chkDyn.Checked = value;
         }
 
         public boolean isCurveVisibleBre()
         {
-            return chkBre.isSelected();
+            return chkBre.Checked;
         }
 
         public void setCurveVisibleBre( boolean value )
         {
-            chkBre.setSelected( value );
+            chkBre.Checked = value;
         }
 
         public boolean isCurveVisibleBri()
         {
-            return chkBri.isSelected();
+            return chkBri.Checked;
         }
 
         public void setCurveVisibleBri( boolean value )
         {
-            chkBri.setSelected( value );
+            chkBri.Checked = value;
         }
 
         public boolean isCurveVisibleCle()
         {
-            return chkCle.isSelected();
+            return chkCle.Checked;
         }
 
         public void setCurveVisibleCle( boolean value )
         {
-            chkCle.setSelected( value );
+            chkCle.Checked = value;
         }
 
         public boolean isCurveVisibleOpe()
         {
-            return chkOpe.isSelected();
+            return chkOpe.Checked;
         }
 
         public void setCurveVisibleOpe( boolean value )
         {
-            chkOpe.setSelected( value );
+            chkOpe.Checked = value;
         }
 
         public boolean isCurveVisiblePor()
         {
-            return chkPor.isSelected();
+            return chkPor.Checked;
         }
 
         public void setCurveVisiblePor( boolean value )
         {
-            chkPor.setSelected( value );
+            chkPor.Checked = value;
         }
 
         public boolean isCurveVisibleGen()
         {
-            return chkGen.isSelected();
+            return chkGen.Checked;
         }
 
         public void setCurveVisibleGen( boolean value )
         {
-            chkGen.setSelected( value );
+            chkGen.Checked = value;
         }
 
         public boolean isCurveVisiblePit()
         {
-            return chkPit.isSelected();
+            return chkPit.Checked;
         }
 
         public void setCurveVisiblePit( boolean value )
         {
-            chkPit.setSelected( value );
+            chkPit.Checked = value;
         }
 
         public boolean isCurveVisiblePbs()
         {
-            return chkPbs.isSelected();
+            return chkPbs.Checked;
         }
 
         public void setCurveVisiblePbs( boolean value )
         {
-            chkPbs.setSelected( value );
+            chkPbs.Checked = value;
         }
 
         public boolean isCurveVisibleFx2Depth()
         {
-            return chkFx2Depth.isSelected();
+            return chkFx2Depth.Checked;
         }
 
         public void setCurveVisibleFx2Depth( boolean value )
         {
-            chkFx2Depth.setSelected( value );
+            chkFx2Depth.Checked = value;
         }
 
         public boolean isCurveVisibleHarmonics()
         {
-            return chkHarmonics.isSelected();
+            return chkHarmonics.Checked;
         }
 
         public void setCurveVisibleHarmonics( boolean value )
         {
-            chkHarmonics.setSelected( value );
+            chkHarmonics.Checked = value;
         }
 
         public boolean isCurveVisibleReso1()
         {
-            return chkReso1.isSelected();
+            return chkReso1.Checked;
         }
 
         public void setCurveVisibleReso1( boolean value )
         {
-            chkReso1.setSelected( value );
+            chkReso1.Checked = value;
         }
 
         public boolean isCurveVisibleReso2()
         {
-            return chkReso2.isSelected();
+            return chkReso2.Checked;
         }
 
         public void setCurveVisibleReso2( boolean value )
         {
-            chkReso2.setSelected( value );
+            chkReso2.Checked = value;
         }
 
         public boolean isCurveVisibleReso3()
         {
-            return chkReso3.isSelected();
+            return chkReso3.Checked;
         }
 
         public void setCurveVisibleReso3( boolean value )
         {
-            chkReso3.setSelected( value );
+            chkReso3.Checked = value;
         }
 
         public boolean isCurveVisibleReso4()
         {
-            return chkReso4.isSelected();
+            return chkReso4.Checked;
         }
 
         public void setCurveVisibleReso4( boolean value )
         {
-            chkReso4.setSelected( value );
+            chkReso4.Checked = value;
         }
 
         public boolean isCurveVisibleEnvelope()
         {
-            return chkEnvelope.isSelected();
+            return chkEnvelope.Checked;
         }
 
         public void setCurveVisibleEnvelope( boolean value )
         {
-            chkEnvelope.setSelected( value );
+            chkEnvelope.Checked = value;
         }
 
         public boolean isCurveSelectingQuantized()
         {
-            return chkCurveSelectingQuantized.isSelected();
+            return chkCurveSelectingQuantized.Checked;
         }
 
         public void setCurveSelectingQuantized( boolean value )
         {
-            chkCurveSelectingQuantized.setSelected( value );
+            chkCurveSelectingQuantized.Checked = value;
         }
 
         public boolean isPlayPreviewWhenRightClick()
         {
-            return chkPlayPreviewWhenRightClick.isSelected();
+            return chkPlayPreviewWhenRightClick.Checked;
         }
 
         public void setPlayPreviewWhenRightClick( boolean value )
         {
-            chkPlayPreviewWhenRightClick.setSelected( value );
+            chkPlayPreviewWhenRightClick.Checked = value;
         }
 
         public int getMouseHoverTime()
@@ -727,12 +727,12 @@ namespace cadencii
 
         public boolean isKeepLyricInputMode()
         {
-            return chkKeepLyricInputMode.isSelected();
+            return chkKeepLyricInputMode.Checked;
         }
 
         public void setKeepLyricInputMode( boolean value )
         {
-            chkKeepLyricInputMode.setSelected( value );
+            chkKeepLyricInputMode.Checked = value;
         }
 
         public int getMaximumFrameRate()
@@ -747,12 +747,12 @@ namespace cadencii
 
         public boolean isScrollHorizontalOnWheel()
         {
-            return chkScrollHorizontal.isSelected();
+            return chkScrollHorizontal.Checked;
         }
 
         public void setScrollHorizontalOnWheel( boolean value )
         {
-            chkScrollHorizontal.setSelected( value );
+            chkScrollHorizontal.Checked = value;
         }
 
         public void applyLanguage()
@@ -791,8 +791,7 @@ namespace cadencii
             lblResolControlCurve.setText( _( "Control Curve" ) );
             lblResolControlCurve.setMnemonic( KeyEvent.VK_C, comboResolControlCurve );
 
-            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) );
-            chkEnableAutoVibrato.setMnemonic( KeyEvent.VK_E );
+            chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
             lblVibratoLength.setText( _( "Default Vibrato Length" ) );
             lblVibratoLength.setMnemonic( KeyEvent.VK_L, comboVibratoLength );
             lblAutoVibratoThresholdLength.setText( _( "Minimum note length for Automatic Vibrato" ) );
@@ -803,8 +802,7 @@ namespace cadencii
             groupUserDefined.setTitle( _( "User Defined" ) );
             radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
             radioUserDefined.setText( _( "User Defined" ) );
-            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) );
-            chkEnableAutoVibrato.setMnemonic( KeyEvent.VK_E );
+            chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
             lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1" );
             lblAutoVibratoType1.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType1 );
             lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2" );
@@ -818,8 +816,7 @@ namespace cadencii
             lblPreSendTime.setMnemonic( KeyEvent.VK_P, numPreSendTime );
             lblWait.setText( _( "Waiting Time" ) );
             lblWait.setMnemonic( KeyEvent.VK_W, numWait );
-            chkChasePastEvent.setText( _( "Chase Event" ) );
-            chkChasePastEvent.setMnemonic( KeyEvent.VK_C );
+            chkChasePastEvent.Text = BMenuItem.setMnemonicFromText(_("Chase Event"), KeyEvent.VK_C);
             lblBuffer.setText( _( "Buffer Size" ) );
             lblBuffer.setMnemonic( KeyEvent.VK_B, numBuffer );
             lblBufferSize.setText( "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")" );
@@ -840,12 +837,12 @@ namespace cadencii
             groupPianoroll.setTitle( _( "Piano Roll" ) );
             labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
 
-            chkCursorFix.setText( _( "Fix Song position to Center" ) );
-            chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
-            chkKeepLyricInputMode.setText( _( "Keep Lyric Input Mode" ) );
-            chkPlayPreviewWhenRightClick.setText( _( "Play Preview On Right Click" ) );
-            chkCurveSelectingQuantized.setText( _( "Enable Quantize for Curve Selecting" ) );
-            chkUseSpaceKeyAsMiddleButtonModifier.setText( _( "Use space key as Middle button modifier" ) );
+            chkCursorFix.Text = _( "Fix Song position to Center" );
+            chkScrollHorizontal.Text = _( "Horizontal Scroll when Mouse wheel" );
+            chkKeepLyricInputMode.Text = _( "Keep Lyric Input Mode" );
+            chkPlayPreviewWhenRightClick.Text = _( "Play Preview On Right Click" );
+            chkCurveSelectingQuantized.Text = _( "Enable Quantize for Curve Selecting" );
+            chkUseSpaceKeyAsMiddleButtonModifier.Text = _( "Use space key as Middle button modifier" );
 
             groupMisc.setTitle( _( "Misc" ) );
             lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
@@ -853,16 +850,16 @@ namespace cadencii
             lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
             lblMidiInPort.setText( _( "MIDI In Port Number" ) );
             labelMtcMidiInPort.setText( _( "MTC MIDI In Port Number" ) );
-            chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
+            chkTranslateRoman.Text = _( "Translate Roman letters into Kana" );
             #endregion
 
             #region tabPlatform
             groupUtauCores.setTitle( _( "UTAU Cores" ) );
             labelWavtoolPath.setText( _( "Path:" ) );
-            chkWavtoolWithWine.setText( _( "Invoke wavtool with Wine" ) );
+            chkWavtoolWithWine.Text = _( "Invoke wavtool with Wine" );
             listResampler.setColumnHeaders( new String[] { _( "path" ) } );
             labelResamplerWithWine.setText( _( "Check the box to use Wine" ) );
-            checkEnableWideCharacterWorkaround.setText( _( "Enable Workaround for Wide-Character Path" ) );
+            checkEnableWideCharacterWorkaround.Text = _( "Enable Workaround for Wide-Character Path" );
             #endregion
 
             #region tabUtausingers
@@ -874,10 +871,10 @@ namespace cadencii
             #endregion
 
             #region tabFile
-            chkAutoBackup.setText( _( "Automatical Backup" ) );
+            chkAutoBackup.Text = _( "Automatical Backup" );
             lblAutoBackupInterval.setText( _( "interval" ) );
             lblAutoBackupMinutes.setText( _( "minute(s)" ) );
-            chkKeepProjectCache.setText( _( "Keep Project Cache" ) );
+            chkKeepProjectCache.Text = _( "Keep Project Cache" );
             #endregion
 
             #region tabSingingSynth
@@ -950,12 +947,12 @@ namespace cadencii
 
         public boolean isEnableAutoVibrato()
         {
-            return chkEnableAutoVibrato.isSelected();
+            return chkEnableAutoVibrato.Checked;
         }
 
         public void setEnableAutoVibrato( boolean value )
         {
-            chkEnableAutoVibrato.setSelected( value );
+            chkEnableAutoVibrato.Checked = value;
         }
 
         public String getAutoVibratoType1()
@@ -1082,12 +1079,12 @@ namespace cadencii
 
         public boolean isCursorFixed()
         {
-            return chkCursorFix.isSelected();
+            return chkCursorFix.Checked;
         }
 
         public void setCursorFixed( boolean value )
         {
-            chkCursorFix.setSelected( value );
+            chkCursorFix.Checked = value;
         }
 
         public int getWheelOrder()
@@ -1177,12 +1174,12 @@ namespace cadencii
 
         public void setWavtoolWithWine( boolean value )
         {
-            chkWavtoolWithWine.setSelected( value );
+            chkWavtoolWithWine.Checked = value;
         }
 
         public boolean isWavtoolWithWine()
         {
-            return chkWavtoolWithWine.isSelected();
+            return chkWavtoolWithWine.Checked;
         }
 
         public String getPathWavtool()
@@ -1292,7 +1289,7 @@ namespace cadencii
                         if ( is_mac ) {
                             check = isWindowsExecutable( wavtool );
                         }
-                        chkWavtoolWithWine.setSelected( check );
+                        chkWavtoolWithWine.Checked = check;
                     }
                 }
             }
@@ -1353,7 +1350,7 @@ namespace cadencii
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
-                chkWavtoolWithWine.setSelected( check );
+                chkWavtoolWithWine.Checked = check;
                 if ( listResampler.getItemCountRow() == 0 ) {
                     String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( fsys.isFileExists( resampler ) ) {
@@ -1465,7 +1462,7 @@ namespace cadencii
 
         public void chkAutoBackup_CheckedChanged( Object sender, EventArgs e )
         {
-            numAutoBackupInterval.setEnabled( chkAutoBackup.isSelected() );
+            numAutoBackupInterval.setEnabled( chkAutoBackup.Checked );
         }
 
         public void Preference_FormClosing( Object sender, FormClosingEventArgs e )

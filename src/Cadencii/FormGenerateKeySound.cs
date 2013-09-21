@@ -153,7 +153,7 @@ namespace cadencii {
             txtDir.setEditable( enabled );
             btnBrowse.Enabled = enabled;
             btnExecute.Enabled = enabled;
-            chkIgnoreExistingWavs.setEnabled( enabled );
+            chkIgnoreExistingWavs.Enabled = enabled;
             if ( enabled ) {
                 btnCancel.Text = "Close";
             } else {
@@ -200,7 +200,7 @@ namespace cadencii {
             arg.singer = (String)comboSinger.getSelectedItem();
             arg.amplitude = 1.0;
             arg.directory = txtDir.getText();
-            arg.replace = chkIgnoreExistingWavs.isSelected();
+            arg.replace = chkIgnoreExistingWavs.Checked;
             updateEnabled( false );
             bgWork.runWorkerAsync( arg );
         }
@@ -384,7 +384,7 @@ namespace cadencii {
             this.lblSingingSynthSystem = new BLabel();
             this.lblSinger = new BLabel();
             this.comboSinger = new BComboBox();
-            this.chkIgnoreExistingWavs = new BCheckBox();
+            this.chkIgnoreExistingWavs = new CheckBox();
             this.txtDir = new BTextBox();
             this.btnBrowse = new Button();
             this.lblDir = new BLabel();
@@ -511,7 +511,7 @@ namespace cadencii {
         private BLabel lblSingingSynthSystem;
         private BLabel lblSinger;
         private BComboBox comboSinger;
-        private BCheckBox chkIgnoreExistingWavs;
+        private CheckBox chkIgnoreExistingWavs;
         private BTextBox txtDir;
         private System.Windows.Forms.Button btnBrowse;
         private BLabel lblDir;

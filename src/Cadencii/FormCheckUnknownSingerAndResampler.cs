@@ -61,8 +61,8 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 
             // singers
-            checkSingerImport.setSelected( apply_singer );
-            checkSingerImport.setEnabled( apply_singer );
+            checkSingerImport.Checked = apply_singer;
+            checkSingerImport.Enabled = apply_singer;
             textSingerPath.setEditable( false );
             textSingerPath.setEnabled( apply_singer );
             if ( apply_singer ) {
@@ -78,8 +78,8 @@ namespace cadencii
             }
 
             // resampler
-            checkResamplerImport.setSelected( apply_resampler );
-            checkResamplerImport.setEnabled( apply_resampler );
+            checkResamplerImport.Checked = apply_resampler;
+            checkResamplerImport.Enabled = apply_resampler;
             textResamplerPath.setEditable( false );
             textResamplerPath.setEnabled( apply_resampler );
             if ( apply_resampler ) {
@@ -96,7 +96,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isSingerChecked()
         {
-            return checkSingerImport.isSelected();
+            return checkSingerImport.Checked;
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isResamplerChecked()
         {
-            return checkResamplerImport.isSelected();
+            return checkResamplerImport.Checked;
         }
 
         /// <summary>
@@ -144,8 +144,8 @@ namespace cadencii
         {
             setTitle( _( "Unknown singers and resamplers" ) );
             labelMessage.setText( _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." ) );
-            checkSingerImport.setText( _( "Import singer" ) );
-            checkResamplerImport.setText( _( "Import resampler" ) );
+            checkSingerImport.Text = _( "Import singer" );
+            checkResamplerImport.Text = _( "Import resampler" );
         }
         #endregion
 
@@ -184,11 +184,11 @@ namespace cadencii
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
             this.labelMessage = new cadencii.windows.forms.BLabel();
-            this.checkSingerImport = new cadencii.windows.forms.BCheckBox();
+            this.checkSingerImport = new System.Windows.Forms.CheckBox();
             this.pictureSinger = new cadencii.IconParader();
             this.labelSingerName = new cadencii.windows.forms.BLabel();
             this.textSingerPath = new cadencii.windows.forms.BTextBox();
-            this.checkResamplerImport = new cadencii.windows.forms.BCheckBox();
+            this.checkResamplerImport = new System.Windows.Forms.CheckBox();
             this.textResamplerPath = new cadencii.windows.forms.BTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).BeginInit();
             this.SuspendLayout();
@@ -324,10 +324,10 @@ namespace cadencii
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOk;
         private cadencii.windows.forms.BLabel labelMessage;
-        private BCheckBox checkSingerImport;
+        private System.Windows.Forms.CheckBox checkSingerImport;
         private BLabel labelSingerName;
         private BTextBox textSingerPath;
-        private BCheckBox checkResamplerImport;
+        private System.Windows.Forms.CheckBox checkResamplerImport;
         private BTextBox textResamplerPath;
         private IconParader pictureSinger;
 

@@ -385,16 +385,16 @@ namespace cadencii
             Vector<BKeys> capturelist = new Vector<BKeys>();
             if( key != BKeys.None ){
                 capturelist.add( key );
-                if( checkCommand.isSelected() ){
+                if (checkCommand.Checked) {
                     capturelist.add( BKeys.Menu );
                 }
-                if( checkShift.isSelected() ){
+                if (checkShift.Checked) {
                     capturelist.add( BKeys.Shift );
                 }
-                if( checkControl.isSelected() ){
+                if( checkControl.Checked ){
                     capturelist.add( BKeys.Control );
                 }
-                if( checkOption.isSelected() ){
+                if( checkOption.Checked ){
                     capturelist.add( BKeys.Alt );
                 }
             }
@@ -417,10 +417,10 @@ namespace cadencii
             ValuePair<String, BKeys[]> item = mDict.get( display );
             BKeys[] keys = item.getValue();
             Vector<BKeys> vkeys = new Vector<BKeys>( Arrays.asList( keys ) );
-            checkCommand.setSelected( vkeys.contains( BKeys.Menu ) );
-            checkShift.setSelected( vkeys.contains( BKeys.Shift ) );
-            checkControl.setSelected( vkeys.contains( BKeys.Control ) );
-            checkOption.setSelected( vkeys.contains( BKeys.Alt ) );
+            checkCommand.Checked = vkeys.contains( BKeys.Menu );
+            checkShift.Checked = vkeys.contains( BKeys.Shift );
+            checkControl.Checked = vkeys.contains( BKeys.Control );
+            checkOption.Checked = vkeys.contains( BKeys.Alt );
             int size = comboEditKey.getItemCount();
             comboEditKey.setSelectedIndex( -1 );
             for( int i = 0; i < size; i++ ){
@@ -537,10 +537,10 @@ namespace cadencii
             this.labelEditKey = new cadencii.windows.forms.BLabel();
             this.labelEditModifier = new cadencii.windows.forms.BLabel();
             this.comboEditKey = new cadencii.windows.forms.BComboBox();
-            this.checkCommand = new cadencii.windows.forms.BCheckBox();
-            this.checkShift = new cadencii.windows.forms.BCheckBox();
-            this.checkControl = new cadencii.windows.forms.BCheckBox();
-            this.checkOption = new cadencii.windows.forms.BCheckBox();
+            this.checkCommand = new CheckBox();
+            this.checkShift = new CheckBox();
+            this.checkControl = new CheckBox();
+            this.checkOption = new CheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -765,10 +765,10 @@ namespace cadencii
         private cadencii.windows.forms.BLabel labelEditKey;
         private cadencii.windows.forms.BLabel labelEditModifier;
         private cadencii.windows.forms.BComboBox comboEditKey;
-        private BCheckBox checkCommand;
-        private BCheckBox checkShift;
-        private BCheckBox checkControl;
-        private BCheckBox checkOption;
+        private System.Windows.Forms.CheckBox checkCommand;
+        private System.Windows.Forms.CheckBox checkShift;
+        private System.Windows.Forms.CheckBox checkControl;
+        private System.Windows.Forms.CheckBox checkOption;
 
         #endregion
 #endif

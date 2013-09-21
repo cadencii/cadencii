@@ -94,9 +94,9 @@ namespace cadencii
                 comboPitValue.addItem( pit_value_items[i] );
             }
 
-            chkShift.setSelected( lastPositionRandomizeEnabled );
+            chkShift.Checked = lastPositionRandomizeEnabled;
             comboShiftValue.setSelectedIndex( lastPositionRandomizeValue - 1 );
-            chkPit.setSelected( lastPitRandomizeEnabled );
+            chkPit.Checked = lastPitRandomizeEnabled;
             numResolution.setFloatValue( lastResolution );
             comboPitPattern.setSelectedIndex( lastPitRandomizePattern - 1 );
             comboPitValue.setSelectedIndex( lastPitRandomizeValue - 1 );
@@ -209,13 +209,13 @@ namespace cadencii
         #region event handlers
         public void chkShift_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean v = chkShift.isSelected();
+            boolean v = chkShift.Checked;
             comboShiftValue.setEnabled( v );
         }
 
         public void chkPit_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean v = chkPit.isSelected();
+            boolean v = chkPit.Checked;
             numResolution.setEnabled( v );
             comboPitPattern.setEnabled( v );
             comboPitValue.setEnabled( v );
@@ -278,7 +278,7 @@ namespace cadencii
 
         public boolean isPositionRandomizeEnabled()
         {
-            return chkShift.isSelected();
+            return chkShift.Checked;
         }
 
         public int getPositionRandomizeValue()
@@ -292,7 +292,7 @@ namespace cadencii
 
         public boolean isPitRandomizeEnabled()
         {
-            return chkPit.isSelected();
+            return chkPit.Checked;
         }
 
         public int getPitRandomizeValue()
@@ -322,10 +322,10 @@ namespace cadencii
             lblEndBar.setText( _( "bar" ) );
             lblEndBeat.setText( _( "beat" ) );
 
-            chkShift.setText( _( "Note Shift" ) );
+            chkShift.Text = _( "Note Shift" );
             lblShiftValue.setText( _( "Value" ) );
 
-            chkPit.setText( _( "Pitch Fluctuation" ) );
+            chkPit.Text = _( "Pitch Fluctuation" );
             lblResolution.setText( _( "Resolution" ) );
             lblPitPattern.setText( _( "Pattern" ) );
             lblPitValue.setText( _( "Value" ) );
@@ -375,12 +375,12 @@ namespace cadencii
             this.lblEndBeat = new cadencii.windows.forms.BLabel();
             this.lblEndBar = new cadencii.windows.forms.BLabel();
             this.lblEnd = new cadencii.windows.forms.BLabel();
-            this.chkShift = new cadencii.windows.forms.BCheckBox();
+            this.chkShift = new System.Windows.Forms.CheckBox();
             this.lblShiftValue = new cadencii.windows.forms.BLabel();
             this.comboShiftValue = new cadencii.windows.forms.BComboBox();
             this.comboPitPattern = new cadencii.windows.forms.BComboBox();
             this.lblPitPattern = new cadencii.windows.forms.BLabel();
-            this.chkPit = new cadencii.windows.forms.BCheckBox();
+            this.chkPit = new System.Windows.Forms.CheckBox();
             this.comboPitValue = new cadencii.windows.forms.BComboBox();
             this.lblPitValue = new cadencii.windows.forms.BLabel();
             this.lblResolution = new cadencii.windows.forms.BLabel();
@@ -717,12 +717,12 @@ namespace cadencii
         private BLabel lblEndBar;
         private BLabel lblEnd;
         private NumericUpDownEx numEndBar;
-        private BCheckBox chkShift;
+        private System.Windows.Forms.CheckBox chkShift;
         private BLabel lblShiftValue;
         private BComboBox comboShiftValue;
         private BComboBox comboPitPattern;
         private BLabel lblPitPattern;
-        private BCheckBox chkPit;
+        private System.Windows.Forms.CheckBox chkPit;
         private BComboBox comboPitValue;
         private BLabel lblPitValue;
         private BLabel lblResolution;
