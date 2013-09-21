@@ -71,9 +71,6 @@
     <Compile Include="BGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BHScrollBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BKeys.cs" />
     <Compile Include="BKeysUtility.cs" />
     <Compile Include="BLabel.cs">
@@ -158,9 +155,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BToolStripTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BVScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="InputBox.cs">

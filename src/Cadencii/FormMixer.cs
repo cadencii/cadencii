@@ -265,20 +265,20 @@ namespace cadencii
 #if !JAVA
             if ( panel_capacity >= num_vtracker_on_panel ) {
                 // volumeMaster以外の全てのVolumeTrackerを，画面上に同時表示可能
-                hScroll.setMinimum( 0 );
-                hScroll.setValue( 0 );
-                hScroll.setMaximum( 0 );
-                hScroll.setVisibleAmount( 1 );
-                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, 15 ) );
+                hScroll.Minimum = 0;
+                hScroll.Value = 0;
+                hScroll.Maximum = 0;
+                hScroll.LargeChange = 1;
+                hScroll.Size = new Size( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, 15 );
             } else {
                 // num_vtracker_on_panel個のVolumeTrackerのうち，panel_capacity個しか，画面上に同時表示できない
-                hScroll.setMinimum( 0 );
-                hScroll.setValue( 0 );
-                hScroll.setMaximum( num_vtracker_on_panel * VolumeTracker.WIDTH );
-                hScroll.setVisibleAmount( panel_capacity * VolumeTracker.WIDTH );
-                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * panel_capacity, 15 ) );
+                hScroll.Minimum = 0;
+                hScroll.Value = 0;
+                hScroll.Maximum = num_vtracker_on_panel * VolumeTracker.WIDTH;
+                hScroll.LargeChange = panel_capacity * VolumeTracker.WIDTH;
+                hScroll.Size = new Size( (VolumeTracker.WIDTH + 1) * panel_capacity, 15 );
             }
-            hScroll.setLocation( 0, VolumeTracker.HEIGHT );
+            hScroll.Location = new System.Drawing.Point( 0, VolumeTracker.HEIGHT );
 #endif
 
             int j = -1;
@@ -577,7 +577,7 @@ namespace cadencii
 #if !JAVA
         public void veScrollBar_ValueChanged( Object sender, EventArgs e )
         {
-            int stdx = hScroll.getValue();
+            int stdx = hScroll.Value;
             for ( int i = 0; i < m_tracker.size(); i++ ) {
                 m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
             }
@@ -653,7 +653,7 @@ namespace cadencii
             this.menuVisual = new cadencii.windows.forms.BMenuItem();
             this.menuVisualReturn = new cadencii.windows.forms.BMenuItem();
             this.panelSlaves = new cadencii.windows.forms.BPanel();
-            this.hScroll = new cadencii.windows.forms.BHScrollBar();
+            this.hScroll = new HScrollBar();
             this.volumeMaster = new cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
@@ -741,7 +741,7 @@ namespace cadencii
         private BMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
         private BPanel panelSlaves;
-        private BHScrollBar hScroll;
+        private HScrollBar hScroll;
         #endregion
 #endif
         #endregion

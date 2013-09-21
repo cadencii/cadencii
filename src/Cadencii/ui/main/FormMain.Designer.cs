@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 using cadencii.windows.forms;
 
 namespace cadencii
@@ -270,7 +271,7 @@ namespace cadencii
             this.pictureBox3 = new cadencii.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new cadencii.windows.forms.BPictureBox();
             this.pictureBox2 = new cadencii.windows.forms.BPictureBox();
-            this.vScroll = new cadencii.windows.forms.BVScrollBar();
+            this.vScroll = new VScrollBar();
             this.picturePositionIndicator = new cadencii.windows.forms.BPictureBox();
             this.toolStripBottom = new cadencii.windows.forms.BToolBar();
             this.toolStripStatusLabel1 = new cadencii.windows.forms.BStatusLabel();
@@ -302,7 +303,7 @@ namespace cadencii
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelOverview = new cadencii.PictOverview();
             this.pictPianoRoll = new cadencii.PictPianoRoll();
-            this.hScroll = new cadencii.windows.forms.BHScrollBar();
+            this.hScroll = new HScrollBar();
             this.rebar = new cadencii.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList(this.components);
             this.toolBarFile = new System.Windows.Forms.ToolBar();
@@ -3115,8 +3116,8 @@ namespace cadencii
         public System.Windows.Forms.MenuItem stripDDBtnQuantizeTriplet;
         public System.Windows.Forms.ToolBarButton stripBtnStartMarker;
         public System.Windows.Forms.ToolBarButton stripBtnEndMarker;
-        public BHScrollBar hScroll;
-        public BVScrollBar vScroll;
+        public HScrollBar hScroll;
+        public VScrollBar vScroll;
         public BMenuItem menuLyricVibratoProperty;
         public BMenuItem cMenuPianoVibratoProperty;
         public BMenuItem menuScriptUpdate;

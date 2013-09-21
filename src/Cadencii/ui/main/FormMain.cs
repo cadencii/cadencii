@@ -768,7 +768,7 @@ namespace cadencii
             vScroll.Height = pictPianoRoll.getHeight();
             // pictureBox3
             pictureBox3.Left = 0;
-            pictureBox3.Top = panel1.Height - hScroll.getHeight();
+            pictureBox3.Top = panel1.Height - hScroll.Height;
             pictureBox3.Height = hScroll.Height;
             // hScroll
             hScroll.Left = pictureBox3.Width;
@@ -795,11 +795,11 @@ namespace cadencii
 
             menuVisualOverview.CheckedChanged += new EventHandler( menuVisualOverview_CheckedChanged );
 
-            hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
-            hScroll.setVisibleAmount( 240 * 4 );
+            hScroll.Maximum = AppManager.getVsqFile().TotalClocks + 240;
+            hScroll.LargeChange = 240 * 4;
 
-            vScroll.setMaximum( (int)(controller.getScaleY() * 100 * 128) );
-            vScroll.setVisibleAmount( 24 * 4 );
+            vScroll.Maximum = (int)(controller.getScaleY() * 100 * 128);
+            vScroll.LargeChange = 24 * 4;
 #if !JAVA
             hScroll.SmallChange = 240;
             vScroll.SmallChange = 24;
@@ -912,9 +912,9 @@ namespace cadencii
 
             // C3が画面中央に来るように調整
             int draft_start_to_draw_y = 68 * (int)(100 * controller.getScaleY()) - pictPianoRoll.getHeight() / 2;
-            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * (int)(100 * controller.getScaleY()) - vScroll.getHeight()));
+            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.Maximum) / (128 * (int)(100 * controller.getScaleY()) - vScroll.Height));
             try {
-                vScroll.setValue( draft_vscroll_value );
+                vScroll.Value = draft_vscroll_value;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
@@ -923,7 +923,7 @@ namespace cadencii
             int cp = AppManager.getVsqFile().getPreMeasureClocks();
             int draft_hscroll_value = (int)(cp - 24.0 * controller.getScaleXInv());
             try {
-                hScroll.setValue( draft_hscroll_value );
+                hScroll.Value = draft_hscroll_value;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
@@ -1360,7 +1360,7 @@ namespace cadencii
             if ( scaley != draft ) {
                 AppManager.editorConfig.PianoRollScaleY = draft;
                 updateScrollRangeVertical();
-                controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
                 updateDrawObjectList();
             }
         }
@@ -1916,8 +1916,8 @@ namespace cadencii
         private int computeVScrollValueForMiddleDrag( int mouse_y )
         {
             int dy = mouse_y - mButtonInitial.y;
-            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
-            int min = vScroll.getMinimum();
+            int max = vScroll.Maximum - vScroll.LargeChange;
+            int min = vScroll.Minimum;
             double new_vscroll_value = (double)mMiddleButtonVScroll - dy * max / (128.0 * (int)(100.0 * controller.getScaleY()) - (double)pictPianoRoll.getHeight());
             int value = (int)new_vscroll_value;
             if ( value < min ) {
@@ -1936,8 +1936,8 @@ namespace cadencii
         private int computeHScrollValueForMiddleDrag( int mouse_x )
         {
             int dx = mouse_x - mButtonInitial.x;
-            int max = hScroll.getMaximum() - hScroll.getVisibleAmount();
-            int min = hScroll.getMinimum();
+            int max = hScroll.Maximum - hScroll.LargeChange;
+            int min = hScroll.Minimum;
             double new_hscroll_value = (double)mMiddleButtonHScroll - (double)dx * controller.getScaleXInv();
             int value = (int)new_hscroll_value;
             if ( value < min ) {
@@ -1962,8 +1962,8 @@ namespace cadencii
         /// </summary>
         private int calculateStartToDrawY( int vscroll_value )
         {
-            int min = vScroll.getMinimum();
-            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+            int min = vScroll.Minimum;
+            int max = vScroll.Maximum - vScroll.LargeChange;
             int value = vscroll_value;
             if ( value < min ) {
                 value = min;
@@ -2204,7 +2204,7 @@ namespace cadencii
 
         public int calculateStartToDrawX()
         {
-            return (int)(hScroll.getValue() * controller.getScaleX());
+            return (int)(hScroll.Value * controller.getScaleX());
         }
 
         /// <summary>
@@ -3555,17 +3555,17 @@ namespace cadencii
                 vScroll.Value = draft;
             };
             if ( note <= 0 ) {
-                setVScrollValue(vScroll.getMaximum() - vScroll.getVisibleAmount());
+                setVScrollValue(vScroll.Maximum - vScroll.LargeChange);
                 return;
             } else if ( note >= 127 ) {
-                vScroll.setValue( vScroll.getMinimum() );
+                vScroll.Value = vScroll.Minimum;
                 return;
             }
             int height = pictPianoRoll.getHeight();
             int noteTop = AppManager.noteFromYCoord( 0 ); //画面上端でのノートナンバー
             int noteBottom = AppManager.noteFromYCoord( height ); // 画面下端でのノートナンバー
 
-            int maximum = vScroll.getMaximum();
+            int maximum = vScroll.Maximum;
             int track_height = (int)(100 * controller.getScaleY());
             // ノートナンバーnoteの現在のy座標がいくらか？
             int note_y = AppManager.yCoordFromNote( note );
@@ -3600,14 +3600,14 @@ namespace cadencii
                     f_draft = 0;
                 }
                 int draft = (int)(f_draft);
-                if ( draft < hScroll.getMinimum() ) {
-                    draft = hScroll.getMinimum();
-                } else if ( hScroll.getMaximum() < draft ) {
-                    draft = hScroll.getMaximum();
+                if ( draft < hScroll.Minimum ) {
+                    draft = hScroll.Minimum;
+                } else if ( hScroll.Maximum < draft ) {
+                    draft = hScroll.Maximum;
                 }
-                if ( hScroll.getValue() != draft ) {
+                if ( hScroll.Value != draft ) {
                     AppManager.mDrawStartIndex[AppManager.getSelected() - 1] = 0;
-                    hScroll.setValue( draft );
+                    hScroll.Value = draft;
                 }
             }
         }
@@ -3807,7 +3807,7 @@ namespace cadencii
         {
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
             int pwidth = pictPianoRoll.getWidth();
-            int hwidth = hScroll.getWidth();
+            int hwidth = hScroll.Width;
             if ( pwidth <= 0 || hwidth <= 0 ) {
                 return;
             }
@@ -3837,8 +3837,8 @@ namespace cadencii
 
             if ( large_change <= 0 ) large_change = 1;
             if ( maximum <= 0 ) maximum = 1;
-            hScroll.setVisibleAmount( large_change );
-            hScroll.setMaximum( maximum );
+            hScroll.LargeChange = large_change;
+            hScroll.Maximum = maximum;
 #if JAVA
             int unit_increment = large_change / 10;
             if( unit_increment <= 0 ){
@@ -3848,9 +3848,9 @@ namespace cadencii
             hScroll.setBlockIncrement( large_change );
 #endif
 
-            int old_value = hScroll.getValue();
+            int old_value = hScroll.Value;
             if ( old_value > maximum - large_change ) {
-                hScroll.setValue( maximum - large_change );
+                hScroll.Value = maximum - large_change;
             }
         }
 
@@ -3858,7 +3858,7 @@ namespace cadencii
         {
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
             int pheight = pictPianoRoll.getHeight();
-            int vheight = vScroll.getHeight();
+            int vheight = vScroll.Height;
             if ( pheight <= 0 || vheight <= 0 ) {
                 return;
             }
@@ -3882,8 +3882,8 @@ namespace cadencii
 
             if ( large_change <= 0 ) large_change = 1;
             if ( maximum <= 0 ) maximum = 1;
-            vScroll.setVisibleAmount( large_change );
-            vScroll.setMaximum( maximum );
+            vScroll.LargeChange = large_change;
+            vScroll.Maximum = maximum;
 #if !JAVA
             vScroll.SmallChange = 100;
 #endif
@@ -4205,7 +4205,7 @@ namespace cadencii
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
             int cl_new = doQuantize( cl_clock + unit, unit );
 
-            if ( cl_new <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) * controller.getScaleXInv() ) {
+            if ( cl_new <= hScroll.Maximum + (pictPianoRoll.getWidth() - AppManager.keyWidth) * controller.getScaleXInv() ) {
                 // 表示の更新など
                 AppManager.setCurrentClock( cl_new );
 
@@ -5104,16 +5104,16 @@ namespace cadencii
         /// <returns></returns>
         public int computeScrollValueFromWheelDelta( int delta )
         {
-            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * controller.getScaleX());
+            double new_val = (double)hScroll.Value - delta * AppManager.editorConfig.WheelOrder / (5.0 * controller.getScaleX());
             if ( new_val < 0.0 ) {
                 new_val = 0;
             }
-            int max = hScroll.getMaximum() - hScroll.getVisibleAmount();
+            int max = hScroll.Maximum - hScroll.LargeChange;
             int draft = (int)new_val;
             if ( draft > max ) {
                 draft = max;
-            } else if ( draft < hScroll.getMinimum() ) {
-                draft = hScroll.getMinimum();
+            } else if ( draft < hScroll.Minimum ) {
+                draft = hScroll.Minimum;
             }
             return draft;
         }
@@ -7635,13 +7635,13 @@ namespace cadencii
                             draft_d = 0.0;
                         }
                         int draft = (int)draft_d;
-                        if ( draft < hScroll.getMinimum() ) {
-                            draft = hScroll.getMinimum();
-                        } else if ( hScroll.getMaximum() < draft ) {
-                            draft = hScroll.getMaximum();
+                        if ( draft < hScroll.Minimum ) {
+                            draft = hScroll.Minimum;
+                        } else if ( hScroll.Maximum < draft ) {
+                            draft = hScroll.Maximum;
                         }
                         refresh_screen = false;
-                        hScroll.setValue( draft );
+                        hScroll.Value = draft;
                     }
                     // y軸方向について，見えるように移動
                     int track_height = (int)(100 * controller.getScaleY());
@@ -8288,8 +8288,8 @@ namespace cadencii
             if ( e.Button == BMouseButtons.Middle ) {
 #endif
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
-                mMiddleButtonVScroll = vScroll.getValue();
-                mMiddleButtonHScroll = hScroll.getValue();
+                mMiddleButtonVScroll = vScroll.Value;
+                mMiddleButtonHScroll = hScroll.Value;
                 return;
             }
 
@@ -8310,8 +8310,8 @@ namespace cadencii
 #if ENABLE_SCRIPT
             if ( selected_tool == EditTool.PALETTE_TOOL && item == null && e.Button == BMouseButtons.Middle ) {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
-                mMiddleButtonVScroll = vScroll.getValue();
-                mMiddleButtonHScroll = hScroll.getValue();
+                mMiddleButtonVScroll = vScroll.Value;
+                mMiddleButtonHScroll = hScroll.Value;
                 return;
             }
 #endif
@@ -8747,24 +8747,24 @@ namespace cadencii
                         d_draft = 0.0;
                     }
                     int draft = (int)d_draft;
-                    if (hScroll.getMaximum() < draft) {
+                    if (hScroll.Maximum < draft) {
                         if (edit_mode == EditMode.ADD_ENTRY ||
                              edit_mode == EditMode.MOVE_ENTRY ||
                              edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
                              edit_mode == EditMode.DRAG_DROP) {
-                            hScroll.setMaximum(draft);
+                            hScroll.Maximum = draft;
                         } else {
-                            draft = hScroll.getMaximum();
+                            draft = hScroll.Maximum;
                         }
                     }
-                    if (draft < hScroll.getMinimum()) {
-                        draft = hScroll.getMinimum();
+                    if (draft < hScroll.Minimum) {
+                        draft = hScroll.Minimum;
                     }
-                    hScroll.setValue(draft);
+                    hScroll.Value = draft;
                 }
                 if (mExtDragY == ExtDragYMode.UP || mExtDragY == ExtDragYMode.DOWN) {
-                    int min = vScroll.getMinimum();
-                    int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                    int min = vScroll.Minimum;
+                    int max = vScroll.Maximum - vScroll.LargeChange;
                     int px_move = AppManager.editorConfig.MouseDragIncrement;
                     if (px_move / dt > AppManager.editorConfig.MouseDragMaximumRate) {
                         px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
@@ -8773,7 +8773,7 @@ namespace cadencii
                     if (mExtDragY == ExtDragYMode.UP) {
                         px_move *= -1;
                     }
-                    int draft = vScroll.getValue() + px_move;
+                    int draft = vScroll.Value + px_move;
                     if (draft < 0) {
                         draft = 0;
                     }
@@ -8783,7 +8783,7 @@ namespace cadencii
                     } else if (max < df) {
                         df = max;
                     }
-                    vScroll.setValue(df);
+                    vScroll.Value = df;
                 }
                 if (mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE) {
                     mTimerDragLastIgnitted = now;
@@ -8885,15 +8885,15 @@ namespace cadencii
                     int drafth = computeHScrollValueForMiddleDrag(e.X);
                     int draftv = computeVScrollValueForMiddleDrag(e.Y);
                     boolean moved = false;
-                    if (drafth != hScroll.getValue()) {
+                    if (drafth != hScroll.Value) {
                         //moved = true;
                         //hScroll.beQuiet();
-                        hScroll.setValue(drafth);
+                        hScroll.Value = drafth;
                     }
-                    if (draftv != vScroll.getValue()) {
+                    if (draftv != vScroll.Value) {
                         //moved = true;
                         //vScroll.beQuiet();
-                        vScroll.setValue(draftv);
+                        vScroll.Value = draftv;
                     }
                     //if ( moved ) {
                     //    vScroll.setQuiet( false );
@@ -9642,16 +9642,16 @@ namespace cadencii
                         int stdx1 = (int)(clock_at_mouse * (scale1 - scale0) + stdx0);
                         // 新しいhScroll.Value
                         int hscroll_value = (int)(stdx1 / scale1);
-                        if ( hscroll_value < hScroll.getMinimum() ) {
-                            hscroll_value = hScroll.getMinimum();
+                        if ( hscroll_value < hScroll.Minimum ) {
+                            hscroll_value = hScroll.Minimum;
                         }
-                        if ( hScroll.getMaximum() < hscroll_value ) {
-                            hscroll_value = hScroll.getMaximum();
+                        if ( hScroll.Maximum < hscroll_value ) {
+                            hscroll_value = hScroll.Maximum;
                         }
 
                         controller.setScaleX( scale1 );
                         controller.setStartToDrawX( stdx1 );
-                        hScroll.setValue( hscroll_value );
+                        hScroll.Value = hscroll_value;
                         trackBar.setValue( draft );
                     }
                 } else {
@@ -9663,17 +9663,17 @@ namespace cadencii
                     horizontal = false;
                 }
                 if ( horizontal ) {
-                    hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+                    hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
                 } else {
-                    double new_val = (double)vScroll.getValue() - e.Delta * 10;
-                    int min = vScroll.getMinimum();
-                    int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                    double new_val = (double)vScroll.Value - e.Delta * 10;
+                    int min = vScroll.Minimum;
+                    int max = vScroll.Maximum - vScroll.LargeChange;
                     if ( new_val > max ) {
-                        vScroll.setValue( max );
+                        vScroll.Value = max;
                     } else if ( new_val < min ) {
-                        vScroll.setValue( min );
+                        vScroll.Value = min;
                     } else {
-                        vScroll.setValue( (int)new_val );
+                        vScroll.Value = (int)new_val;
                     }
                 }
             }
@@ -10631,17 +10631,17 @@ namespace cadencii
             sout.println( "FormMain#FormMain_MouseWheel" );
 #endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             } else {
-                int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
-                int min = vScroll.getMinimum();
-                double new_val = (double)vScroll.getValue() - e.Delta;
+                int max = vScroll.Maximum - vScroll.LargeChange;
+                int min = vScroll.Minimum;
+                double new_val = (double)vScroll.Value - e.Delta;
                 if ( new_val > max ) {
-                    vScroll.setValue( max );
+                    vScroll.Value = max;
                 } else if ( new_val < min ) {
-                    vScroll.setValue( min );
+                    vScroll.Value = min;
                 } else {
-                    vScroll.setValue( (int)new_val );
+                    vScroll.Value = (int)new_val;
                 }
             }
             refreshScreen();
@@ -10660,7 +10660,7 @@ namespace cadencii
         {
             if ( getExtendedState() != BForm.ICONIFIED ) {
                 updateScrollRangeVertical();
-                controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
             }
         }
 
@@ -10734,22 +10734,22 @@ namespace cadencii
                     mLastPovL = pov_l;
 
                     if ( !event_processed && pov_u && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() - (int)(100 * controller.getScaleY()) * 3;
-                        if ( draft_vscroll < vScroll.getMinimum() ) {
-                            draft_vscroll = vScroll.getMinimum();
+                        int draft_vscroll = vScroll.Value - (int)(100 * controller.getScaleY()) * 3;
+                        if ( draft_vscroll < vScroll.Minimum ) {
+                            draft_vscroll = vScroll.Minimum;
                         }
-                        vScroll.setValue( draft_vscroll );
+                        vScroll.Value = draft_vscroll;
                         refreshScreen();
                         mLastEventProcessed = now;
                         event_processed = true;
                     }
 
                     if ( !event_processed && pov_d && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() + (int)(100 * controller.getScaleY()) * 3;
-                        if ( draft_vscroll > vScroll.getMaximum() ) {
-                            draft_vscroll = vScroll.getMaximum();
+                        int draft_vscroll = vScroll.Value + (int)(100 * controller.getScaleY()) * 3;
+                        if ( draft_vscroll > vScroll.Maximum ) {
+                            draft_vscroll = vScroll.Maximum;
                         }
-                        vScroll.setValue( draft_vscroll );
+                        vScroll.Value = draft_vscroll;
                         refreshScreen();
                         mLastEventProcessed = now;
                         event_processed = true;
@@ -12827,7 +12827,7 @@ namespace cadencii
                     AppManager.updateAutoBackupTimerStatus();
 
                     // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
-                    controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                    controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
 
                     if ( menuVisualControlTrack.isSelected() ) {
                         splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
@@ -13937,7 +13937,7 @@ namespace cadencii
 
         public void vScroll_ValueChanged( Object sender, EventArgs e )
         {
-            controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+            controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -13969,7 +13969,7 @@ namespace cadencii
             if ( isMouseMiddleButtonDowned( e.Button ) ) {
                 mEditCurveMode = CurveEditMode.MIDDLE_DRAG;
                 mButtonInitial = new Point( e.X, e.Y );
-                mMiddleButtonHScroll = hScroll.getValue();
+                mMiddleButtonHScroll = hScroll.Value;
 #if !JAVA
                 this.Cursor = HAND;
 #endif
@@ -13988,8 +13988,8 @@ namespace cadencii
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 int draft = computeHScrollValueForMiddleDrag( e.X );
-                if ( hScroll.getValue() != draft ) {
-                    hScroll.setValue( draft );
+                if ( hScroll.Value != draft ) {
+                    hScroll.Value = draft;
                 }
             }
         }
@@ -14027,7 +14027,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#picturePositionIndicator_MouseWheel" );
 #endif
-            hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+            hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
         }
 
         public void picturePositionIndicator_MouseClick( Object sender, MouseEventArgs e )
@@ -14991,7 +14991,7 @@ namespace cadencii
                 if ( isMouseMiddleButtonDowned( e.Button ) ) {
                     mEditCurveMode = CurveEditMode.MIDDLE_DRAG;
                     mButtonInitial = new Point( e.X, e.Y );
-                    mMiddleButtonHScroll = hScroll.getValue();
+                    mMiddleButtonHScroll = hScroll.Value;
 #if !JAVA
                     this.Cursor = HAND;
 #endif
@@ -15029,8 +15029,8 @@ namespace cadencii
                 }
 
                 int draft = computeHScrollValueForMiddleDrag( e.X );
-                if ( hScroll.getValue() != draft ) {
-                    hScroll.setValue( draft );
+                if ( hScroll.Value != draft ) {
+                    hScroll.Value = draft;
                 }
             } else {
                 if ( mMouseDownedTrackSelector ) {
@@ -15061,18 +15061,18 @@ namespace cadencii
                     if ( mExtDragXTrackSelector == ExtDragXMode.LEFT ) {
                         px_move *= -1;
                     }
-                    double d_draft = hScroll.getValue() + px_move * controller.getScaleXInv();
+                    double d_draft = hScroll.Value + px_move * controller.getScaleXInv();
                     if ( d_draft < 0.0 ) {
                         d_draft = 0.0;
                     }
                     int draft = (int)d_draft;
-                    if ( hScroll.getMaximum() < draft ) {
-                        hScroll.setMaximum( draft );
+                    if ( hScroll.Maximum < draft ) {
+                        hScroll.Maximum = draft;
                     }
-                    if ( draft < hScroll.getMinimum() ) {
-                        draft = hScroll.getMinimum();
+                    if ( draft < hScroll.Minimum ) {
+                        draft = hScroll.Minimum;
                     }
-                    hScroll.setValue( draft );
+                    hScroll.Value = draft;
                 }
             }
             if ( !timer.isRunning() ) {
@@ -15095,18 +15095,18 @@ namespace cadencii
             sout.println( "FormMain#trackSelector_MouseWheel" );
 #endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                double new_val = (double)vScroll.getValue() - e.Delta;
-                int max = vScroll.getMaximum() - vScroll.getMinimum();
-                int min = vScroll.getMinimum();
+                double new_val = (double)vScroll.Value - e.Delta;
+                int max = vScroll.Maximum - vScroll.Minimum;
+                int min = vScroll.Minimum;
                 if ( new_val > max ) {
-                    vScroll.setValue( max );
+                    vScroll.Value = max;
                 } else if ( new_val < min ) {
-                    vScroll.setValue( min );
+                    vScroll.Value = min;
                 } else {
-                    vScroll.setValue( (int)new_val );
+                    vScroll.Value = (int)new_val;
                 }
             } else {
-                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             }
             refreshScreen();
         }
