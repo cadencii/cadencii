@@ -43,7 +43,7 @@ namespace cadencii.windows.forms
             InitializeComponent();
 #endif
             registerEventHandlers();
-            lblMessage.setText( message );
+            lblMessage.Text = message;
         }
 
         public String getResult()
@@ -104,7 +104,7 @@ namespace cadencii.windows.forms
         private void InitializeComponent() {
             this.txtInput = new cadencii.windows.forms.BTextBox();
             this.btnOk = new Button();
-            this.lblMessage = new cadencii.windows.forms.BLabel();
+            this.lblMessage = new Label();
             this.btnCancel = new Button();
             this.SuspendLayout();
             //
@@ -170,7 +170,7 @@ namespace cadencii.windows.forms
         }
         #endregion
 
-        private BLabel lblMessage;
+        private Label lblMessage;
         private Button btnCancel;
         private BTextBox txtInput;
         private Button btnOk;

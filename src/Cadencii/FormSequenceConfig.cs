@@ -88,13 +88,13 @@ namespace cadencii
             btnOK.Text = _( "OK" );
 
             groupWaveFileOutput.Text = _( "Wave File Output" );
-            lblChannel.setText( _( "Channel" ) );
-            lblChannel.setMnemonic( KeyEvent.VK_C, comboChannel );
-            labelSampleRate.setText( _( "Sample rate" ) );
-            labelSampleRate.setMnemonic( KeyEvent.VK_S, comboSampleRate );
+            lblChannel.Text = _( "Channel" );
+            lblChannel.Mnemonic( KeyEvent.VK_C );
+            labelSampleRate.Text = _( "Sample rate" );
+            labelSampleRate.Mnemonic( KeyEvent.VK_S );
             radioMasterTrack.setText( _( "Master Track" ) );
             radioCurrentTrack.setText( _( "Current Track" ) );
-            labelSampleRate.setText( _( "Sample rate" ) );
+            labelSampleRate.Text = _( "Sample rate" );
 
             int current_index = comboChannel.SelectedIndex;
             comboChannel.Items.Clear();
@@ -103,7 +103,7 @@ namespace cadencii
             comboChannel.SelectedIndex = current_index;
 
             groupSequence.Text = _( "Sequence" );
-            labelPreMeasure.setText( _( "Pre-measure" ) );
+            labelPreMeasure.Text = _( "Pre-measure" );
         }
 
         /// <summary>
@@ -288,15 +288,15 @@ namespace cadencii
         {
             this.groupWaveFileOutput = new System.Windows.Forms.GroupBox();
             this.comboSampleRate = new System.Windows.Forms.ComboBox();
-            this.labelSampleRate = new cadencii.windows.forms.BLabel();
+            this.labelSampleRate = new System.Windows.Forms.Label();
             this.radioCurrentTrack = new cadencii.windows.forms.BRadioButton();
             this.radioMasterTrack = new cadencii.windows.forms.BRadioButton();
-            this.lblChannel = new cadencii.windows.forms.BLabel();
+            this.lblChannel = new System.Windows.Forms.Label();
             this.comboChannel = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupSequence = new System.Windows.Forms.GroupBox();
-            this.labelPreMeasure = new cadencii.windows.forms.BLabel();
+            this.labelPreMeasure = new System.Windows.Forms.Label();
             this.comboPreMeasure = new System.Windows.Forms.ComboBox();
             this.groupWaveFileOutput.SuspendLayout();
             this.groupSequence.SuspendLayout();
@@ -465,14 +465,14 @@ namespace cadencii
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private BLabel lblChannel;
+        private System.Windows.Forms.Label lblChannel;
         private System.Windows.Forms.ComboBox comboChannel;
         private System.Windows.Forms.GroupBox groupWaveFileOutput;
         private BRadioButton radioCurrentTrack;
         private BRadioButton radioMasterTrack;
-        private BLabel labelSampleRate;
+        private System.Windows.Forms.Label labelSampleRate;
         private System.Windows.Forms.GroupBox groupSequence;
-        private BLabel labelPreMeasure;
+        private System.Windows.Forms.Label labelPreMeasure;
         private System.Windows.Forms.ComboBox comboPreMeasure;
         private System.Windows.Forms.ComboBox comboSampleRate;
 

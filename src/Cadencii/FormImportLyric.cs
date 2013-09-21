@@ -88,7 +88,7 @@ namespace cadencii
         public void setMaxNotes( int max_notes )
         {
             String notes = (max_notes > 1) ? " [notes]" : " [note]";
-            this.lblNotes.setText( "Max : " + max_notes + notes );
+            this.lblNotes.Text = "Max : " + max_notes + notes;
             this.m_max_notes = max_notes;
         }
 
@@ -208,7 +208,7 @@ namespace cadencii
             this.txtLyrics = new cadencii.windows.forms.BTextArea();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.lblNotes = new cadencii.windows.forms.BLabel();
+            this.lblNotes = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtLyrics
@@ -278,7 +278,7 @@ namespace cadencii
         private BTextArea txtLyrics;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private BLabel lblNotes;
+        private System.Windows.Forms.Label lblNotes;
 #endif
         #endregion
 

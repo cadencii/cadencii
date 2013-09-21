@@ -229,11 +229,11 @@ namespace cadencii
         private void updateTitle()
         {
             if ( str.compare( m_number, "" ) ) {
-                lblTitle.setText( m_title );
+                lblTitle.Text = m_title;
             } else if ( str.compare( m_title, "" ) ) {
-                lblTitle.setText( m_number );
+                lblTitle.Text = m_number;
             } else {
-                lblTitle.setText( m_number + " " + m_title );
+                lblTitle.Text = m_number + " " + m_title;
             }
         }
 
@@ -591,7 +591,7 @@ namespace cadencii
             this.trackFeder = new cadencii.windows.forms.BSlider();
             this.trackPanpot = new cadencii.windows.forms.BSlider();
             this.txtPanpot = new cadencii.windows.forms.BTextBox();
-            this.lblTitle = new cadencii.windows.forms.BLabel();
+            this.lblTitle = new Label();
             this.txtFeder = new cadencii.windows.forms.BTextBox();
             this.chkMute = new CheckBox();
             this.chkSolo = new CheckBox();
@@ -714,7 +714,7 @@ namespace cadencii
         private BSlider trackFeder;
         private BSlider trackPanpot;
         private BTextBox txtPanpot;
-        private BLabel lblTitle;
+        private Label lblTitle;
         private BTextBox txtFeder;
         private System.Windows.Forms.CheckBox chkMute;
         private System.Windows.Forms.CheckBox chkSolo;

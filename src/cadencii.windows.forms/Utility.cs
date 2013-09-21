@@ -21,7 +21,7 @@ using System;
 namespace cadencii.windows.forms {
 #endif
 
-    public class Utility {
+    public static class Utility {
         public const int MSGBOX_DEFAULT_OPTION = -1;
         public const int MSGBOX_YES_NO_OPTION = 0;
         public const int MSGBOX_YES_NO_CANCEL_OPTION = 1;
@@ -32,6 +32,38 @@ namespace cadencii.windows.forms {
         public const int MSGBOX_WARNING_MESSAGE = 2;
         public const int MSGBOX_QUESTION_MESSAGE = 3;
         public const int MSGBOX_PLAIN_MESSAGE = -1;
+
+        public static System.Windows.Forms.Control Mnemonic(this System.Windows.Forms.Control control, int value)
+        {
+            string text = control.Text;
+            if (value == 0) {
+                return control;
+            }
+            if ((value < 48 || 57 < value) && (value < 65 || 90 < value)) {
+                return control;
+            }
+
+            if (text.Length >= 2) {
+                char lastc = text[0];
+                int index = -1; // 第index文字目が、ニーモニック
+                for (int i = 1; i < text.Length; i++) {
+                    char c = text[i];
+                    if (lastc == '&' && c != '&') {
+                        index = i;
+                    }
+                    lastc = c;
+                }
+
+                if (index >= 0) {
+                    string newtext = text.Substring(0, index) + new string((char)value, 1) + ((index + 1 < text.Length) ? text.Substring(index + 1) : "");
+                    control.Text = newtext;
+                    return control;
+                }
+            }
+            text = text + "(&" + new string((char)value, 1) + ")";
+            control.Text = text;
+            return control;
+        }
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
             BDialogResult ret = BDialogResult.CANCEL;

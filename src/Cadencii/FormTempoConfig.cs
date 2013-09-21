@@ -67,12 +67,12 @@ namespace cadencii
         {
             setTitle( _( "Global Tempo" ) );
             groupPosition.Text = _( "Position" );
-            lblBar.setText( _( "Measure" ) );
-            lblBar.setMnemonic( KeyEvent.VK_M, numBar );
-            lblBeat.setText( _( "Beat" ) );
-            lblBeat.setMnemonic( KeyEvent.VK_B, numBeat );
-            lblClock.setText( _( "Clock" ) );
-            lblClock.setMnemonic( KeyEvent.VK_L, numClock );
+            lblBar.Text = _( "Measure" );
+            lblBar.Mnemonic( KeyEvent.VK_M );
+            lblBeat.Text = _( "Beat" );
+            lblBeat.Mnemonic( KeyEvent.VK_B );
+            lblClock.Text = _( "Clock" );
+            lblClock.Mnemonic( KeyEvent.VK_L );
             groupTempo.Text = _( "Tempo" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
@@ -157,11 +157,11 @@ namespace cadencii
             this.numClock = new cadencii.NumericUpDownEx();
             this.numBeat = new cadencii.NumericUpDownEx();
             this.numBar = new cadencii.NumericUpDownEx();
-            this.lblClock = new BLabel();
-            this.lblBeat = new BLabel();
-            this.lblBar = new BLabel();
+            this.lblClock = new System.Windows.Forms.Label();
+            this.lblBeat = new System.Windows.Forms.Label();
+            this.lblBar = new System.Windows.Forms.Label();
             this.groupTempo = new System.Windows.Forms.GroupBox();
-            this.lblTempoRange = new BLabel();
+            this.lblTempoRange = new System.Windows.Forms.Label();
             this.numTempo = new cadencii.NumericUpDownEx();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -333,16 +333,16 @@ namespace cadencii
         #endregion
 
         private System.Windows.Forms.GroupBox groupPosition;
-        private BLabel lblClock;
-        private BLabel lblBeat;
-        private BLabel lblBar;
+        private System.Windows.Forms.Label lblClock;
+        private System.Windows.Forms.Label lblBeat;
+        private System.Windows.Forms.Label lblBar;
         private System.Windows.Forms.GroupBox groupTempo;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private NumericUpDownEx numBar;
         private NumericUpDownEx numClock;
         private NumericUpDownEx numBeat;
-        private BLabel lblTempoRange;
+        private System.Windows.Forms.Label lblTempoRange;
         private NumericUpDownEx numTempo;
 #endif
         #endregion

@@ -315,20 +315,20 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            lblStart.setText( _( "Start" ) );
-            lblStartBar.setText( _( "bar" ) );
-            lblStartBeat.setText( _( "beat" ) );
-            lblEnd.setText( _( "End" ) );
-            lblEndBar.setText( _( "bar" ) );
-            lblEndBeat.setText( _( "beat" ) );
+            lblStart.Text = _( "Start" );
+            lblStartBar.Text = _( "bar" );
+            lblStartBeat.Text = _( "beat" );
+            lblEnd.Text = _( "End" );
+            lblEndBar.Text = _( "bar" );
+            lblEndBeat.Text = _( "beat" );
 
             chkShift.Text = _( "Note Shift" );
-            lblShiftValue.setText( _( "Value" ) );
+            lblShiftValue.Text = _( "Value" );
 
             chkPit.Text = _( "Pitch Fluctuation" );
-            lblResolution.setText( _( "Resolution" ) );
-            lblPitPattern.setText( _( "Pattern" ) );
-            lblPitValue.setText( _( "Value" ) );
+            lblResolution.Text = _( "Resolution" );
+            lblPitPattern.Text = _( "Pattern" );
+            lblPitValue.Text = _( "Value" );
 
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
@@ -368,22 +368,22 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblStart = new cadencii.windows.forms.BLabel();
-            this.lblStartBar = new cadencii.windows.forms.BLabel();
-            this.lblStartBeat = new cadencii.windows.forms.BLabel();
-            this.bLabel1 = new cadencii.windows.forms.BLabel();
-            this.lblEndBeat = new cadencii.windows.forms.BLabel();
-            this.lblEndBar = new cadencii.windows.forms.BLabel();
-            this.lblEnd = new cadencii.windows.forms.BLabel();
+            this.lblStart = new System.Windows.Forms.Label();
+            this.lblStartBar = new System.Windows.Forms.Label();
+            this.lblStartBeat = new System.Windows.Forms.Label();
+            this.bLabel1 = new System.Windows.Forms.Label();
+            this.lblEndBeat = new System.Windows.Forms.Label();
+            this.lblEndBar = new System.Windows.Forms.Label();
+            this.lblEnd = new System.Windows.Forms.Label();
             this.chkShift = new System.Windows.Forms.CheckBox();
-            this.lblShiftValue = new cadencii.windows.forms.BLabel();
+            this.lblShiftValue = new System.Windows.Forms.Label();
             this.comboShiftValue = new System.Windows.Forms.ComboBox();
             this.comboPitPattern = new System.Windows.Forms.ComboBox();
-            this.lblPitPattern = new cadencii.windows.forms.BLabel();
+            this.lblPitPattern = new System.Windows.Forms.Label();
             this.chkPit = new System.Windows.Forms.CheckBox();
             this.comboPitValue = new System.Windows.Forms.ComboBox();
-            this.lblPitValue = new cadencii.windows.forms.BLabel();
-            this.lblResolution = new cadencii.windows.forms.BLabel();
+            this.lblPitValue = new System.Windows.Forms.Label();
+            this.lblResolution = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.numResolution = new cadencii.NumericUpDownEx();
@@ -707,25 +707,25 @@ namespace cadencii
         #endregion
 
         private NumericUpDownEx numStartBar;
-        private BLabel lblStart;
-        private BLabel lblStartBar;
+        private System.Windows.Forms.Label lblStart;
+        private System.Windows.Forms.Label lblStartBar;
         private NumericUpDownEx numStartBeat;
-        private BLabel lblStartBeat;
-        private BLabel bLabel1;
-        private BLabel lblEndBeat;
+        private System.Windows.Forms.Label lblStartBeat;
+        private System.Windows.Forms.Label bLabel1;
+        private System.Windows.Forms.Label lblEndBeat;
         private NumericUpDownEx numEndBeat;
-        private BLabel lblEndBar;
-        private BLabel lblEnd;
+        private System.Windows.Forms.Label lblEndBar;
+        private System.Windows.Forms.Label lblEnd;
         private NumericUpDownEx numEndBar;
         private System.Windows.Forms.CheckBox chkShift;
-        private BLabel lblShiftValue;
+        private System.Windows.Forms.Label lblShiftValue;
         private System.Windows.Forms.ComboBox comboShiftValue;
         private System.Windows.Forms.ComboBox comboPitPattern;
-        private BLabel lblPitPattern;
+        private System.Windows.Forms.Label lblPitPattern;
         private System.Windows.Forms.CheckBox chkPit;
         private System.Windows.Forms.ComboBox comboPitValue;
-        private BLabel lblPitValue;
-        private BLabel lblResolution;
+        private System.Windows.Forms.Label lblPitValue;
+        private System.Windows.Forms.Label lblResolution;
         private NumericUpDownEx numResolution;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;

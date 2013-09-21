@@ -147,7 +147,7 @@ namespace cadencii
 
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
 
-            labelCategory.setText( _( "Category" ) );
+            labelCategory.Text = _( "Category" );
             int selected = comboCategory.SelectedIndex;
             comboCategory.Items.Clear();
             foreach ( String category in mCategories ) {
@@ -180,10 +180,10 @@ namespace cadencii
             }
             comboCategory.SelectedIndex = selected;
 
-            labelCommand.setText( _( "Command" ) );
-            labelEdit.setText( _( "Edit" ) );
-            labelEditKey.setText( _( "Key:" ) );
-            labelEditModifier.setText( _( "Modifier:" ) );
+            labelCommand.Text = _( "Command" );
+            labelEdit.Text = _( "Edit" );
+            labelEditKey.Text = _( "Key:" );
+            labelEditModifier.Text = _( "Modifier:" );
         }
 
         public TreeMap<String, ValuePair<String, BKeys[]>> getResult()
@@ -530,12 +530,12 @@ namespace cadencii
             this.btnLoadDefault = new Button();
             this.btnRevert = new Button();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.labelCategory = new cadencii.windows.forms.BLabel();
+            this.labelCategory = new Label();
             this.comboCategory = new System.Windows.Forms.ComboBox();
-            this.labelCommand = new cadencii.windows.forms.BLabel();
-            this.labelEdit = new cadencii.windows.forms.BLabel();
-            this.labelEditKey = new cadencii.windows.forms.BLabel();
-            this.labelEditModifier = new cadencii.windows.forms.BLabel();
+            this.labelCommand = new Label();
+            this.labelEdit = new Label();
+            this.labelEditKey = new Label();
+            this.labelEditModifier = new Label();
             this.comboEditKey = new System.Windows.Forms.ComboBox();
             this.checkCommand = new CheckBox();
             this.checkShift = new CheckBox();
@@ -758,12 +758,12 @@ namespace cadencii
         private System.Windows.Forms.Button btnLoadDefault;
         private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.ToolTip toolTip;
-        private BLabel labelCategory;
+        private Label labelCategory;
         private ComboBox comboCategory;
-        private cadencii.windows.forms.BLabel labelCommand;
-        private cadencii.windows.forms.BLabel labelEdit;
-        private cadencii.windows.forms.BLabel labelEditKey;
-        private cadencii.windows.forms.BLabel labelEditModifier;
+        private Label labelCommand;
+        private Label labelEdit;
+        private Label labelEditKey;
+        private Label labelEditModifier;
         private ComboBox comboEditKey;
         private System.Windows.Forms.CheckBox checkCommand;
         private System.Windows.Forms.CheckBox checkShift;

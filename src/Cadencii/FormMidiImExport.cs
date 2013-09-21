@@ -98,11 +98,11 @@ namespace cadencii
             chkNote.Text = _( "Note" );
             chkLyric.Text = _( "Lyrics" );
             chkExportVocaloidNrpn.Text = _( "vocaloid NRPN" );
-            lblOffset.setText( _( "offset" ) );
+            lblOffset.Text = _( "offset" );
             if ( radioGateTime.isSelected() ) {
-                lblOffsetUnit.setText( _( "clocks" ) );
+                lblOffsetUnit.Text = _( "clocks" );
             } else {
-                lblOffsetUnit.setText( _( "seconds" ) );
+                lblOffsetUnit.Text = _( "seconds" );
             }
         }
 
@@ -328,7 +328,7 @@ namespace cadencii
         public void radioGateTime_CheckedChanged( Object sender, EventArgs e )
         {
             if ( radioGateTime.isSelected() ) {
-                lblOffsetUnit.setText( _( "clocks" ) );
+                lblOffsetUnit.Text = _( "clocks" );
                 txtOffset.setType( NumberTextBox.ValueType.Integer );
             }
         }
@@ -336,7 +336,7 @@ namespace cadencii
         public void radioPlayTime_CheckedChanged( Object sender, EventArgs e )
         {
             if ( radioPlayTime.isSelected() ) {
-                lblOffsetUnit.setText( _( "seconds" ) );
+                lblOffsetUnit.Text = _( "seconds" );
                 txtOffset.setType( NumberTextBox.ValueType.Double );
             }
         }
@@ -388,9 +388,9 @@ namespace cadencii
             this.chkPreMeasure = new CheckBox();
             this.chkExportVocaloidNrpn = new CheckBox();
             this.groupMode = new System.Windows.Forms.GroupBox();
-            this.lblOffsetUnit = new cadencii.windows.forms.BLabel();
+            this.lblOffsetUnit = new Label();
             this.txtOffset = new cadencii.NumberTextBox();
-            this.lblOffset = new cadencii.windows.forms.BLabel();
+            this.lblOffset = new Label();
             this.radioPlayTime = new cadencii.windows.forms.BRadioButton();
             this.radioGateTime = new cadencii.windows.forms.BRadioButton();
             this.groupCommonOption.SuspendLayout();
@@ -689,9 +689,9 @@ namespace cadencii
         private GroupBox groupMode;
         private BRadioButton radioPlayTime;
         private BRadioButton radioGateTime;
-        private BLabel lblOffset;
+        private Label lblOffset;
         private NumberTextBox txtOffset;
-        private BLabel lblOffsetUnit;
+        private Label lblOffsetUnit;
 
 #endif
         #endregion

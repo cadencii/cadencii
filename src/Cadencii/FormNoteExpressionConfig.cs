@@ -142,22 +142,22 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            lblTemplate.setText( _( "Template" ) );
-            lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
+            lblTemplate.Text = _( "Template" );
+            lblTemplate.Mnemonic( KeyEvent.VK_T );
             groupPitchControl.Text = _( "Pitch Control" );
-            lblBendDepth.setText( _( "Bend Depth" ) );
-            lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
-            lblBendLength.setText( _( "Bend Length" ) );
-            lblBendLength.setMnemonic( KeyEvent.VK_L, txtBendLength );
+            lblBendDepth.Text = _( "Bend Depth" );
+            lblBendDepth.Mnemonic( KeyEvent.VK_B );
+            lblBendLength.Text = _( "Bend Length" );
+            lblBendLength.Mnemonic( KeyEvent.VK_L );
             chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
             chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
 
             groupAttack.Text = _( "Attack Control (VOCALOID1)" );
             groupDynamicsControl.Text = _( "Dynamics Control (VOCALOID2)" );
-            lblDecay.setText( _( "Decay" ) );
-            lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
-            lblAccent.setText( _( "Accent" ) );
-            lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
+            lblDecay.Text = _( "Decay" );
+            lblDecay.Mnemonic( KeyEvent.VK_D );
+            lblAccent.Text = _( "Accent" );
+            lblAccent.Mnemonic( KeyEvent.VK_A );
 
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
@@ -557,38 +557,38 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.groupPitchControl = new GroupBox();
-            this.label5 = new BLabel();
-            this.label4 = new BLabel();
+            this.label5 = new Label();
+            this.label4 = new Label();
             this.txtBendLength = new cadencii.NumberTextBox();
             this.txtBendDepth = new cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
             this.trackBendDepth = new BSlider();
             this.chkDownPortamento = new CheckBox();
             this.chkUpPortamento = new CheckBox();
-            this.lblBendLength = new BLabel();
-            this.lblBendDepth = new BLabel();
+            this.lblBendLength = new Label();
+            this.lblBendDepth = new Label();
             this.groupDynamicsControl = new GroupBox();
-            this.label7 = new BLabel();
-            this.label6 = new BLabel();
+            this.label7 = new Label();
+            this.label6 = new Label();
             this.txtAccent = new cadencii.NumberTextBox();
             this.txtDecay = new cadencii.NumberTextBox();
             this.trackAccent = new BSlider();
             this.trackDecay = new BSlider();
-            this.lblAccent = new BLabel();
-            this.lblDecay = new BLabel();
-            this.lblTemplate = new BLabel();
+            this.lblAccent = new Label();
+            this.lblDecay = new Label();
+            this.lblTemplate = new Label();
             this.btnCancel = new Button();
             this.btnOK = new Button();
             this.comboTemplate = new ComboBox();
             this.groupAttack = new GroupBox();
-            this.lblAttackTemplate = new BLabel();
+            this.lblAttackTemplate = new Label();
             this.comboAttackTemplate = new ComboBox();
             this.txtDepth = new cadencii.NumberTextBox();
             this.txtDuration = new cadencii.NumberTextBox();
             this.trackDepth = new BSlider();
             this.trackDuration = new BSlider();
-            this.lblDepth = new BLabel();
-            this.lblDuration = new BLabel();
+            this.lblDepth = new Label();
+            this.lblDuration = new Label();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.panelVocaloid2Template = new BPanel();
             this.panelButtons = new BPanel();
@@ -1045,25 +1045,25 @@ namespace cadencii
 
         private GroupBox groupPitchControl;
         private GroupBox groupDynamicsControl;
-        private BLabel lblBendDepth;
-        private BLabel lblTemplate;
-        private BLabel lblBendLength;
+        private Label lblBendDepth;
+        private Label lblTemplate;
+        private Label lblBendLength;
         private CheckBox chkDownPortamento;
         private CheckBox chkUpPortamento;
         private BSlider trackBendDepth;
         private BSlider trackBendLength;
         private BSlider trackAccent;
         private BSlider trackDecay;
-        private BLabel lblAccent;
-        private BLabel lblDecay;
+        private Label lblAccent;
+        private Label lblDecay;
         private NumberTextBox txtBendLength;
         private NumberTextBox txtBendDepth;
         private NumberTextBox txtAccent;
         private NumberTextBox txtDecay;
-        private BLabel label5;
-        private BLabel label4;
-        private BLabel label7;
-        private BLabel label6;
+        private Label label5;
+        private Label label4;
+        private Label label7;
+        private Label label6;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private ComboBox comboTemplate;
@@ -1072,13 +1072,13 @@ namespace cadencii
         private NumberTextBox txtDuration;
         private BSlider trackDepth;
         private BSlider trackDuration;
-        private BLabel lblDepth;
-        private BLabel lblDuration;
+        private Label lblDepth;
+        private Label lblDuration;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private BPanel panelButtons;
         private BPanel panelVocaloid2Template;
         private ComboBox comboAttackTemplate;
-        private BLabel lblAttackTemplate;
+        private Label lblAttackTemplate;
         #endregion
 #endif
         #endregion

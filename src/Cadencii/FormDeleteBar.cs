@@ -55,8 +55,8 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Delete Bars" ) );
-            lblStart.setText( _( "Start" ) );
-            lblEnd.setText( _( "End" ) );
+            lblStart.Text = _( "Start" );
+            lblEnd.Text = _( "End" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
         }
@@ -141,10 +141,10 @@ namespace cadencii
         {
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.label4 = new cadencii.windows.forms.BLabel();
-            this.label3 = new cadencii.windows.forms.BLabel();
-            this.lblEnd = new cadencii.windows.forms.BLabel();
-            this.lblStart = new cadencii.windows.forms.BLabel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblEnd = new System.Windows.Forms.Label();
+            this.lblStart = new System.Windows.Forms.Label();
             this.numEnd = new cadencii.NumericUpDownEx();
             this.numStart = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
@@ -277,10 +277,10 @@ namespace cadencii
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private BLabel label4;
-        private BLabel label3;
-        private BLabel lblEnd;
-        private BLabel lblStart;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblEnd;
+        private System.Windows.Forms.Label lblStart;
         private NumericUpDownEx numEnd;
         private NumericUpDownEx numStart;
 

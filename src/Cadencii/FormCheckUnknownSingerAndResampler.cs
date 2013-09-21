@@ -74,7 +74,7 @@ namespace cadencii
 #endif
                 Image img = IconParader.createIconImage( path_image, sc.VOICENAME );
                 pictureSinger.setImage( img );
-                labelSingerName.setText( sc.VOICENAME );
+                labelSingerName.Text = sc.VOICENAME;
             }
 
             // resampler
@@ -143,7 +143,7 @@ namespace cadencii
         private void applyLanguage()
         {
             setTitle( _( "Unknown singers and resamplers" ) );
-            labelMessage.setText( _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." ) );
+            labelMessage.Text = _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." );
             checkSingerImport.Text = _( "Import singer" );
             checkResamplerImport.Text = _( "Import resampler" );
         }
@@ -183,10 +183,10 @@ namespace cadencii
         {
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.labelMessage = new cadencii.windows.forms.BLabel();
+            this.labelMessage = new System.Windows.Forms.Label();
             this.checkSingerImport = new System.Windows.Forms.CheckBox();
             this.pictureSinger = new cadencii.IconParader();
-            this.labelSingerName = new cadencii.windows.forms.BLabel();
+            this.labelSingerName = new System.Windows.Forms.Label();
             this.textSingerPath = new cadencii.windows.forms.BTextBox();
             this.checkResamplerImport = new System.Windows.Forms.CheckBox();
             this.textResamplerPath = new cadencii.windows.forms.BTextBox();
@@ -323,9 +323,9 @@ namespace cadencii
 
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOk;
-        private cadencii.windows.forms.BLabel labelMessage;
+        private System.Windows.Forms.Label labelMessage;
         private System.Windows.Forms.CheckBox checkSingerImport;
-        private BLabel labelSingerName;
+        private System.Windows.Forms.Label labelSingerName;
         private BTextBox textSingerPath;
         private System.Windows.Forms.CheckBox checkResamplerImport;
         private BTextBox textResamplerPath;

@@ -97,9 +97,9 @@ namespace cadencii
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
             if ( num_dev > 0 ) {
-                lblMessage.setText( _( "Push buttons in turn as shown below" ) );
+                lblMessage.Text = _( "Push buttons in turn as shown below" );
             } else {
-                lblMessage.setText( _( "Game controler is not available" ) );
+                lblMessage.Text = _( "Game controler is not available" );
             }
             setTitle( _( "Game Controler Configuration" ) );
             btnOK.Text = _( "OK" );
@@ -349,7 +349,7 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblMessage = new BLabel();
+            this.lblMessage = new System.Windows.Forms.Label();
             this.pictButton = new BPictureBox();
             this.progressCount = new BProgressBar();
             this.btnSkip = new System.Windows.Forms.Button();
@@ -459,7 +459,7 @@ namespace cadencii
 
         }
 
-        private BLabel lblMessage;
+        private System.Windows.Forms.Label lblMessage;
         private BPictureBox pictButton;
         private BProgressBar progressCount;
         private System.Windows.Forms.Button btnSkip;

@@ -58,7 +58,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            lblMasterTuning.setText( _( "Master Tuning in Cent" ) );
+            lblMasterTuning.Text = _( "Master Tuning in Cent" );
             setTitle( _( "Track Property" ) );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
@@ -145,7 +145,7 @@ namespace cadencii
         {
             this.btnOK = new Button();
             this.btnCancel = new Button();
-            this.lblMasterTuning = new BLabel();
+            this.lblMasterTuning = new Label();
             this.txtMasterTuning = new BTextBox();
             this.SuspendLayout();
             // 
@@ -215,7 +215,7 @@ namespace cadencii
 
         private Button btnOK;
         private Button btnCancel;
-        private BLabel lblMasterTuning;
+        private Label lblMasterTuning;
         private BTextBox txtMasterTuning;
         #endregion
 #endif

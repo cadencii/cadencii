@@ -76,21 +76,21 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            lblTemplate.setText( _( "Template" ) );
-            lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
+            lblTemplate.Text = _( "Template" );
+            lblTemplate.Mnemonic( KeyEvent.VK_T );
             groupPitchControl.Text = _( "Pitch Control" );
-            lblBendDepth.setText( _( "Bend Depth" ) );
-            lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
-            lblBendLength.setText( _( "Bend Length" ) );
-            lblBendLength.setMnemonic( KeyEvent.VK_L, txtBendLength );
+            lblBendDepth.Text = _( "Bend Depth" );
+            lblBendDepth.Mnemonic( KeyEvent.VK_B );
+            lblBendLength.Text = _( "Bend Length" );
+            lblBendLength.Mnemonic( KeyEvent.VK_L );
             chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
             chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
 
             groupDynamicsControl.Text = _( "Dynamics Control" );
-            lblDecay.setText( _( "Decay" ) );
-            lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
-            lblAccent.setText( _( "Accent" ) );
-            lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
+            lblDecay.Text = _( "Decay" );
+            lblDecay.Mnemonic( KeyEvent.VK_D );
+            lblAccent.Text = _( "Accent" );
+            lblAccent.Mnemonic( KeyEvent.VK_A );
 
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
@@ -389,26 +389,26 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.groupPitchControl = new GroupBox();
-            this.label5 = new BLabel();
-            this.label4 = new BLabel();
+            this.label5 = new Label();
+            this.label4 = new Label();
             this.txtBendLength = new cadencii.NumberTextBox();
             this.txtBendDepth = new cadencii.NumberTextBox();
             this.trackBendLength = new BSlider();
             this.trackBendDepth = new BSlider();
             this.chkDownPortamento = new CheckBox();
             this.chkUpPortamento = new CheckBox();
-            this.lblBendLength = new BLabel();
-            this.lblBendDepth = new BLabel();
+            this.lblBendLength = new Label();
+            this.lblBendDepth = new Label();
             this.groupDynamicsControl = new GroupBox();
-            this.label7 = new BLabel();
-            this.label6 = new BLabel();
+            this.label7 = new Label();
+            this.label6 = new Label();
             this.txtAccent = new cadencii.NumberTextBox();
             this.txtDecay = new cadencii.NumberTextBox();
             this.trackAccent = new BSlider();
             this.trackDecay = new BSlider();
-            this.lblAccent = new BLabel();
-            this.lblDecay = new BLabel();
-            this.lblTemplate = new BLabel();
+            this.lblAccent = new Label();
+            this.lblDecay = new Label();
+            this.lblTemplate = new Label();
             this.btnCancel = new Button();
             this.btnOK = new Button();
             this.btnApply = new Button();
@@ -735,25 +735,25 @@ namespace cadencii
 
         private GroupBox groupPitchControl;
         private GroupBox groupDynamicsControl;
-        private BLabel lblBendDepth;
-        private BLabel lblTemplate;
-        private BLabel lblBendLength;
+        private Label lblBendDepth;
+        private Label lblTemplate;
+        private Label lblBendLength;
         private CheckBox chkDownPortamento;
         private CheckBox chkUpPortamento;
         private BSlider trackBendDepth;
         private BSlider trackBendLength;
         private BSlider trackAccent;
         private BSlider trackDecay;
-        private BLabel lblAccent;
-        private BLabel lblDecay;
+        private Label lblAccent;
+        private Label lblDecay;
         private NumberTextBox txtBendLength;
         private NumberTextBox txtBendDepth;
         private NumberTextBox txtAccent;
         private NumberTextBox txtDecay;
-        private BLabel label5;
-        private BLabel label4;
-        private BLabel label7;
-        private BLabel label6;
+        private Label label5;
+        private Label label4;
+        private Label label7;
+        private Label label6;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnApply;

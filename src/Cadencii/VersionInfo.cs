@@ -102,7 +102,7 @@ namespace cadencii
 #endif
 
             m_credit = new AuthorListEntry[] { };
-            lblVstLogo.setForeground( m_version_color );
+            lblVstLogo.ForeColor = m_version_color.color;
 #if DEBUG
             //m_scroll = generateAuthorListB( false );
             //m_scroll_with_id = generateAuthorListB( true );
@@ -154,7 +154,7 @@ namespace cadencii
         public void setVersionColor( Color value )
         {
             m_version_color = value;
-            lblVstLogo.setForeground( value );
+            lblVstLogo.ForeColor = value.color;
         }
 
         /// <summary>
@@ -317,14 +317,14 @@ namespace cadencii
                 m_last_t = 0f;
                 m_shift = 0f;
                 pictVstLogo.setVisible( false );
-                lblVstLogo.setVisible( false );
+                lblVstLogo.Visible = false;
                 chkTwitterID.Visible = true;
                 timer.start();
             } else {
                 timer.stop();
                 btnFlip.Text = _( "Credit" );
                 pictVstLogo.setVisible( true );
-                lblVstLogo.setVisible( true );
+                lblVstLogo.Visible = true;
                 chkTwitterID.Visible = false;
             }
             this.repaint();
@@ -474,7 +474,7 @@ namespace cadencii
         {
             this.btnFlip = new Button();
             this.btnOK = new Button();
-            this.lblVstLogo = new cadencii.windows.forms.BLabel();
+            this.lblVstLogo = new System.Windows.Forms.Label();
             this.pictVstLogo = new cadencii.windows.forms.BPictureBox();
             this.chkTwitterID = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
@@ -563,7 +563,7 @@ namespace cadencii
         private System.Windows.Forms.Button btnFlip;
         private System.Windows.Forms.Button btnOK;
         private BPictureBox pictVstLogo;
-        private BLabel lblVstLogo;
+        private Label lblVstLogo;
         private CheckBox chkTwitterID;
 #endif
         #endregion

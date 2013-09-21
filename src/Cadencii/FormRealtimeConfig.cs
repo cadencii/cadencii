@@ -216,8 +216,8 @@ namespace cadencii
             this.components = new System.ComponentModel.Container();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lblRealTimeInput = new BLabel();
-            this.lblSpeed = new BLabel();
+            this.lblRealTimeInput = new System.Windows.Forms.Label();
+            this.lblSpeed = new System.Windows.Forms.Label();
             this.numSpeed = new BNumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
             this.SuspendLayout();
@@ -322,8 +322,8 @@ namespace cadencii
 
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
-        private BLabel lblRealTimeInput;
-        private BLabel lblSpeed;
+        private System.Windows.Forms.Label lblRealTimeInput;
+        private System.Windows.Forms.Label lblSpeed;
         private BNumericUpDown numSpeed;
         #endregion
 #endif

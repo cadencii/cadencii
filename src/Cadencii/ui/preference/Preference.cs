@@ -787,55 +787,55 @@ namespace cadencii
             #endregion
 
             #region tabSequence
-            lblResolution.setText( _( "Resolution(VSTi)" ) );
-            lblResolControlCurve.setText( _( "Control Curve" ) );
-            lblResolControlCurve.setMnemonic( KeyEvent.VK_C, comboResolControlCurve );
+            lblResolution.Text = _( "Resolution(VSTi)" );
+            lblResolControlCurve.Text = _( "Control Curve" );
+            lblResolControlCurve.Mnemonic( KeyEvent.VK_C );
 
             chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
-            lblVibratoLength.setText( _( "Default Vibrato Length" ) );
-            lblVibratoLength.setMnemonic( KeyEvent.VK_L, comboVibratoLength );
-            lblAutoVibratoThresholdLength.setText( _( "Minimum note length for Automatic Vibrato" ) );
-            lblAutoVibratoThresholdLength.setMnemonic( KeyEvent.VK_M, txtAutoVibratoThresholdLength );
+            lblVibratoLength.Text = _( "Default Vibrato Length" );
+            lblVibratoLength.Mnemonic( KeyEvent.VK_L );
+            lblAutoVibratoThresholdLength.Text = _( "Minimum note length for Automatic Vibrato" );
+            lblAutoVibratoThresholdLength.Mnemonic( KeyEvent.VK_M );
 
-            lblAutoVibratoType.setText( _( "Auto Vibrato Type" ) );
+            lblAutoVibratoType.Text = _( "Auto Vibrato Type" );
             groupVocaloidEditorCompatible.Text = _( "VOCALOID Editor Compatible" );
             groupUserDefined.Text = _( "User Defined" );
             radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
             radioUserDefined.setText( _( "User Defined" ) );
             chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
-            lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1" );
-            lblAutoVibratoType1.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType1 );
-            lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2" );
-            lblAutoVibratoType2.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType2 );
+            lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1";
+            lblAutoVibratoType1.Mnemonic( KeyEvent.VK_T );
+            lblAutoVibratoType2.Text = _( "Vibrato Type" ) + ": VOCALOID2";
+            lblAutoVibratoType2.Mnemonic( KeyEvent.VK_T );
             #endregion
 
             #region tabAnother
-            lblDefaultSinger.setText( _( "Default Singer" ) );
-            lblDefaultSinger.setMnemonic( KeyEvent.VK_S, comboDefualtSinger );
-            lblPreSendTime.setText( _( "Pre-Send time" ) );
-            lblPreSendTime.setMnemonic( KeyEvent.VK_P, numPreSendTime );
-            lblWait.setText( _( "Waiting Time" ) );
-            lblWait.setMnemonic( KeyEvent.VK_W, numWait );
+            lblDefaultSinger.Text = _( "Default Singer" );
+            lblDefaultSinger.Mnemonic( KeyEvent.VK_S );
+            lblPreSendTime.Text = _( "Pre-Send time" );
+            lblPreSendTime.Mnemonic( KeyEvent.VK_P );
+            lblWait.Text = _( "Waiting Time" );
+            lblWait.Mnemonic( KeyEvent.VK_W );
             chkChasePastEvent.Text = BMenuItem.setMnemonicFromText(_("Chase Event"), KeyEvent.VK_C);
-            lblBuffer.setText( _( "Buffer Size" ) );
-            lblBuffer.setMnemonic( KeyEvent.VK_B, numBuffer );
-            lblBufferSize.setText( "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")" );
+            lblBuffer.Text = _( "Buffer Size" );
+            lblBuffer.Mnemonic( KeyEvent.VK_B );
+            lblBufferSize.Text = "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")";
             #endregion
 
             #region tabAppearance
             groupFont.Text = _( "Font" );
-            labelMenu.setText( _( "Menu / Lyrics" ) );
-            labelScreen.setText( _( "Screen" ) );
-            lblLanguage.setText( _( "UI Language" ) );
+            labelMenu.Text = _( "Menu / Lyrics" );
+            labelScreen.Text = _( "Screen" );
+            lblLanguage.Text = _( "UI Language" );
             btnChangeMenuFont.Text = _( "Change" );
             btnChangeScreenFont.Text = _( "Change" );
-            lblTrackHeight.setText( _( "Track Height (pixel)" ) );
+            lblTrackHeight.Text = _( "Track Height (pixel)" );
             groupVisibleCurve.Text = _( "Visible Control Curve" );
             #endregion
 
             #region tabOperation
             groupPianoroll.Text = _( "Piano Roll" );
-            labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
+            labelWheelOrder.Text = _( "Mouse wheel Rate" );
 
             chkCursorFix.Text = _( "Fix Song position to Center" );
             chkScrollHorizontal.Text = _( "Horizontal Scroll when Mouse wheel" );
@@ -845,20 +845,20 @@ namespace cadencii
             chkUseSpaceKeyAsMiddleButtonModifier.Text = _( "Use space key as Middle button modifier" );
 
             groupMisc.Text = _( "Misc" );
-            lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
-            lblMilliSecond.setText( _( "frame per second" ) );
-            lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
-            lblMidiInPort.setText( _( "MIDI In Port Number" ) );
-            labelMtcMidiInPort.setText( _( "MTC MIDI In Port Number" ) );
+            lblMaximumFrameRate.Text = _( "Maximum Frame Rate" );
+            lblMilliSecond.Text = _( "frame per second" );
+            lblMouseHoverTime.Text = _( "Waiting Time for Preview" );
+            lblMidiInPort.Text = _( "MIDI In Port Number" );
+            labelMtcMidiInPort.Text = _( "MTC MIDI In Port Number" );
             chkTranslateRoman.Text = _( "Translate Roman letters into Kana" );
             #endregion
 
             #region tabPlatform
             groupUtauCores.Text = _( "UTAU Cores" );
-            labelWavtoolPath.setText( _( "Path:" ) );
+            labelWavtoolPath.Text = _( "Path:" );
             chkWavtoolWithWine.Text = _( "Invoke wavtool with Wine" );
             listResampler.setColumnHeaders( new String[] { _( "path" ) } );
-            labelResamplerWithWine.setText( _( "Check the box to use Wine" ) );
+            labelResamplerWithWine.Text = _( "Check the box to use Wine" );
             checkEnableWideCharacterWorkaround.Text = _( "Enable Workaround for Wide-Character Path" );
             #endregion
 
@@ -872,8 +872,8 @@ namespace cadencii
 
             #region tabFile
             chkAutoBackup.Text = _( "Automatical Backup" );
-            lblAutoBackupInterval.setText( _( "interval" ) );
-            lblAutoBackupMinutes.setText( _( "minute(s)" ) );
+            lblAutoBackupInterval.Text = _( "interval" );
+            lblAutoBackupMinutes.Text = _( "minute(s)" );
             chkKeepProjectCache.Text = _( "Keep Project Cache" );
             #endregion
 
@@ -1111,7 +1111,7 @@ namespace cadencii
         public void setScreenFont( Font value )
         {
             m_screen_font = value;
-            labelScreenFontName.setText( m_screen_font.getName() );
+            labelScreenFontName.Text = m_screen_font.getName();
         }
 
         public java.awt.Font getBaseFont()
@@ -1122,7 +1122,7 @@ namespace cadencii
         public void setBaseFont( java.awt.Font value )
         {
             m_base_font = value;
-            labelMenuFontName.setText( m_base_font.getName() );
+            labelMenuFontName.Text = m_base_font.getName();
             UpdateFonts( m_base_font.getName() );
         }
 
@@ -1230,7 +1230,7 @@ namespace cadencii
                 java.awt.Font f = fontDialog.getSelectedFont();
                 if ( f != null ) {
                     m_base_font = f;
-                    labelMenuFontName.setText( f.getName() );
+                    labelMenuFontName.Text = f.getName();
                 }
             }
         }
@@ -1262,7 +1262,7 @@ namespace cadencii
                 java.awt.Font f = fontDialog.getSelectedFont();
                 if ( f != null ) {
                     m_screen_font = f;
-                    labelScreenFontName.setText( f.getName() );
+                    labelScreenFontName.Text = f.getName();
                 }
             }
         }
@@ -1486,9 +1486,9 @@ namespace cadencii
             comboAutoVibratoType1.Enabled = v;
             comboAutoVibratoType2.Enabled = v;
             comboAutoVibratoTypeCustom.Enabled = ud;
-            lblAutoVibratoType1.setEnabled( v );
-            lblAutoVibratoType2.setEnabled( v );
-            lblAutoVibratoTypeCustom.setEnabled( ud );
+            lblAutoVibratoType1.Enabled = v;
+            lblAutoVibratoType2.Enabled = v;
+            lblAutoVibratoTypeCustom.Enabled = ud;
         }
 
         public void buttonWinePrefix_Click( Object sender, EventArgs e )

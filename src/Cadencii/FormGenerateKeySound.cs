@@ -381,13 +381,13 @@ namespace cadencii {
             this.btnExecute = new Button();
             this.btnCancel = new Button();
             this.comboSingingSynthSystem = new ComboBox();
-            this.lblSingingSynthSystem = new BLabel();
-            this.lblSinger = new BLabel();
+            this.lblSingingSynthSystem = new Label();
+            this.lblSinger = new Label();
             this.comboSinger = new ComboBox();
             this.chkIgnoreExistingWavs = new CheckBox();
             this.txtDir = new BTextBox();
             this.btnBrowse = new Button();
-            this.lblDir = new BLabel();
+            this.lblDir = new Label();
             this.SuspendLayout();
             // 
             // btnExecute
@@ -508,13 +508,13 @@ namespace cadencii {
         private System.Windows.Forms.Button btnExecute;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox comboSingingSynthSystem;
-        private BLabel lblSingingSynthSystem;
-        private BLabel lblSinger;
+        private Label lblSingingSynthSystem;
+        private Label lblSinger;
         private System.Windows.Forms.ComboBox comboSinger;
         private CheckBox chkIgnoreExistingWavs;
         private BTextBox txtDir;
         private System.Windows.Forms.Button btnBrowse;
-        private BLabel lblDir;
+        private Label lblDir;
 
 #endif
         #endregion

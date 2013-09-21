@@ -46,7 +46,7 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            label1.setText( message );
+            label1.Text = message;
             textBox1.setText( errors );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -109,7 +109,7 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new cadencii.windows.forms.BLabel();
+            this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new cadencii.windows.forms.BTextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -167,7 +167,7 @@ namespace cadencii
 
         }
 
-        private BLabel label1;
+        private System.Windows.Forms.Label label1;
         private BTextBox textBox1;
         private System.Windows.Forms.Button btnOK;
 

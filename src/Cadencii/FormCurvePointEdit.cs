@@ -75,8 +75,8 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Edit Value" ) );
-            lblDataPointClock.setText( _( "Clock" ) );
-            lblDataPointValue.setText( _( "Value" ) );
+            lblDataPointClock.Text = _( "Clock" );
+            lblDataPointValue.Text = _( "Value" );
             btnApply.Text = _( "Apply" );
             btnExit.Text = _( "Exit" );
         }
@@ -323,8 +323,8 @@ namespace cadencii
         {
             this.btnForward = new Button();
             this.btnBackward = new Button();
-            this.lblDataPointValue = new cadencii.windows.forms.BLabel();
-            this.lblDataPointClock = new cadencii.windows.forms.BLabel();
+            this.lblDataPointValue = new Label();
+            this.lblDataPointClock = new Label();
             this.btnExit = new Button();
             this.btnBackward2 = new Button();
             this.btnForward2 = new Button();
@@ -499,9 +499,9 @@ namespace cadencii
 
         private System.Windows.Forms.Button btnForward;
         private System.Windows.Forms.Button btnBackward;
-        private BLabel lblDataPointValue;
+        private Label lblDataPointValue;
         private NumberTextBox txtDataPointClock;
-        private BLabel lblDataPointClock;
+        private Label lblDataPointClock;
         private NumberTextBox txtDataPointValue;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnBackward2;

@@ -134,10 +134,10 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Vibrato property" ) );
-            lblVibratoLength.setText( _( "Vibrato length" ) );
-            lblVibratoLength.setMnemonic( KeyEvent.VK_L, txtVibratoLength );
-            lblVibratoType.setText( _( "Vibrato Type" ) );
-            lblVibratoType.setMnemonic( KeyEvent.VK_T, comboVibratoType );
+            lblVibratoLength.Text = _( "Vibrato length" );
+            lblVibratoLength.Mnemonic( KeyEvent.VK_L );
+            lblVibratoType.Text = _( "Vibrato Type" );
+            lblVibratoType.Mnemonic( KeyEvent.VK_T );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
             groupSelect.Text = _( "Select from" );
@@ -356,10 +356,10 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblVibratoLength = new cadencii.windows.forms.BLabel();
-            this.lblVibratoType = new cadencii.windows.forms.BLabel();
+            this.lblVibratoLength = new System.Windows.Forms.Label();
+            this.lblVibratoType = new System.Windows.Forms.Label();
             this.txtVibratoLength = new cadencii.NumberTextBox();
-            this.label3 = new cadencii.windows.forms.BLabel();
+            this.label3 = new System.Windows.Forms.Label();
             this.comboVibratoType = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
@@ -517,10 +517,10 @@ namespace cadencii
         }
         #endregion
 
-        private BLabel lblVibratoLength;
-        private BLabel lblVibratoType;
+        private System.Windows.Forms.Label lblVibratoLength;
+        private System.Windows.Forms.Label lblVibratoType;
         private NumberTextBox txtVibratoLength;
-        private BLabel label3;
+        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboVibratoType;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;

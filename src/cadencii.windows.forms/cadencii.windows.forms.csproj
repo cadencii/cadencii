@@ -61,9 +61,6 @@
     <Compile Include="BFormWindowState.cs" />
     <Compile Include="BKeys.cs" />
     <Compile Include="BKeysUtility.cs" />
-    <Compile Include="BLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BListBox.cs">
       <SubType>Component</SubType>
     </Compile>

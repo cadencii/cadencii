@@ -57,14 +57,14 @@ namespace cadencii
             setTitle( _( "Insert Bars" ) );
             String th_prefix = _( "_PREFIX_TH_" );
             if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
-                lblPositionPrefix.setText( "" );
+                lblPositionPrefix.Text = "";
             } else {
-                lblPositionPrefix.setText( th_prefix );
+                lblPositionPrefix.Text = th_prefix;
             }
-            lblPosition.setText( _( "Position" ) );
-            lblLength.setText( _( "Length" ) );
-            lblThBar.setText( _( "th bar" ) );
-            lblBar.setText( _( "bar" ) );
+            lblPosition.Text = _( "Position" );
+            lblLength.Text = _( "Length" );
+            lblThBar.Text = _( "th bar" );
+            lblBar.Text = _( "bar" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
 #if !JAVA
@@ -130,13 +130,13 @@ namespace cadencii
         private System.ComponentModel.IContainer components = null;
         private NumericUpDownEx numPosition;
         private NumericUpDownEx numLength;
-        private BLabel lblPosition;
-        private BLabel lblLength;
-        private BLabel lblThBar;
-        private BLabel lblBar;
+        private Label lblPosition;
+        private Label lblLength;
+        private Label lblThBar;
+        private Label lblBar;
         private Button btnCancel;
         private Button btnOK;
-        private BLabel lblPositionPrefix;
+        private Label lblPositionPrefix;
 
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
@@ -156,13 +156,13 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblPosition = new cadencii.windows.forms.BLabel();
-            this.lblLength = new cadencii.windows.forms.BLabel();
-            this.lblThBar = new cadencii.windows.forms.BLabel();
-            this.lblBar = new cadencii.windows.forms.BLabel();
+            this.lblPosition = new Label();
+            this.lblLength = new Label();
+            this.lblThBar = new Label();
+            this.lblBar = new Label();
             this.btnCancel = new Button();
             this.btnOK = new Button();
-            this.lblPositionPrefix = new cadencii.windows.forms.BLabel();
+            this.lblPositionPrefix = new Label();
             this.numLength = new cadencii.NumericUpDownEx();
             this.numPosition = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numLength)).BeginInit();

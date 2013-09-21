@@ -501,15 +501,15 @@ namespace cadencii
         {
             this.setTitle( _( "Vibrato preset" ) );
 
-            labelPresets.setText( _( "List of vibrato preset" ) );
+            labelPresets.Text = _( "List of vibrato preset" );
 
             groupEdit.Text = _( "Edit" );
-            labelName.setText( _( "Name" ) );
+            labelName.Text = _( "Name" );
 
             groupPreview.Text = _( "Preview" );
-            labelDepthCurve.setText( _( "Depth curve" ) );
-            labelRateCurve.setText( _( "Rate curve" ) );
-            labelResulting.setText( _( "Resulting pitch bend" ) );
+            labelDepthCurve.Text = _( "Depth curve" );
+            labelRateCurve.Text = _( "Rate curve" );
+            labelResulting.Text = _( "Resulting pitch bend" );
 
             buttonAdd.Text = _( "Add" );
             buttonRemove.Text = _( "Remove" );
@@ -688,20 +688,20 @@ namespace cadencii
             this.buttonAdd = new Button();
             this.buttonUp = new Button();
             this.buttonDown = new Button();
-            this.labelRate = new cadencii.windows.forms.BLabel();
-            this.labelDepth = new cadencii.windows.forms.BLabel();
-            this.labelPresets = new cadencii.windows.forms.BLabel();
+            this.labelRate = new Label();
+            this.labelDepth = new Label();
+            this.labelPresets = new Label();
             this.pictureRate = new cadencii.windows.forms.BPictureBox();
-            this.labelRateCurve = new cadencii.windows.forms.BLabel();
-            this.labelDepthCurve = new cadencii.windows.forms.BLabel();
+            this.labelRateCurve = new Label();
+            this.labelDepthCurve = new Label();
             this.pictureDepth = new cadencii.windows.forms.BPictureBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.labelResulting = new cadencii.windows.forms.BLabel();
+            this.labelResulting = new Label();
             this.pictureResulting = new cadencii.windows.forms.BPictureBox();
             this.groupEdit = new System.Windows.Forms.GroupBox();
             this.textName = new cadencii.windows.forms.BTextBox();
-            this.labelName = new cadencii.windows.forms.BLabel();
+            this.labelName = new Label();
             this.groupPreview = new System.Windows.Forms.GroupBox();
             this.listPresets = new BListBox();
             this.textDepth = new cadencii.NumberTextBox();
@@ -1040,21 +1040,21 @@ namespace cadencii
         private System.Windows.Forms.Button buttonRemove;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonUp;
-        private cadencii.windows.forms.BLabel labelRate;
-        private cadencii.windows.forms.BLabel labelDepth;
+        private Label labelRate;
+        private Label labelDepth;
         private NumberTextBox textRate;
         private NumberTextBox textDepth;
-        private BLabel labelPresets;
+        private Label labelPresets;
         private BPictureBox pictureRate;
-        private BLabel labelRateCurve;
-        private BLabel labelDepthCurve;
+        private Label labelRateCurve;
+        private Label labelDepthCurve;
         private BPictureBox pictureDepth;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private BLabel labelResulting;
+        private Label labelResulting;
         private BPictureBox pictureResulting;
         private GroupBox groupEdit;
-        private BLabel labelName;
+        private Label labelName;
         private BTextBox textName;
         private GroupBox groupPreview;
         private BListBox listPresets;
