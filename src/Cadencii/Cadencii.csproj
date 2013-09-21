@@ -814,6 +814,8 @@
 copy "$(SolutionDir)$(Configuration)\vConnect-STAND.exe" "$(TargetDir)"
 copy "$(SolutionDir)lib\libiconv.dll" "$(TargetDir)"
 copy "$(SolutionDir)..\data\libfftw3-3.dll" "$(TargetDir)"
+copy "$(SolutionDir)..\data\license.txt" "$(TargetDir)"
+del "$(TargetDir)*.pdb"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
