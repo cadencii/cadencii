@@ -36,7 +36,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using Graphics = cadencii.java.awt.Graphics2D;
@@ -407,15 +406,10 @@ namespace cadencii
             }
         }
 
-        private void VersionInfo_KeyDown( Object sender, BKeyEventArgs e )
+        private void VersionInfo_KeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if( (e.getKeyCode() & KeyEvent.VK_ESCAPE) == KeyEvent.VK_ESCAPE )
-#else
-            if ( (e.KeyCode & Keys.Escape) == Keys.Escape )
-#endif
- {
-                setDialogResult( BDialogResult.CANCEL );
+            if ((e.KeyCode & Keys.Escape) == Keys.Escape) {
+                setDialogResult(BDialogResult.CANCEL);
                 close();
             }
         }

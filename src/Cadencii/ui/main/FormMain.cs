@@ -62,7 +62,6 @@ namespace cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -71,7 +70,6 @@ namespace cadencii
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
 
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
@@ -695,8 +693,8 @@ namespace cadencii
             trackSelector.MouseUp += new BMouseEventHandler( trackSelector_MouseUp );
             trackSelector.MouseDown += new BMouseEventHandler( trackSelector_MouseDown );
             trackSelector.MouseMove += new BMouseEventHandler( trackSelector_MouseMove );
-            trackSelector.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            trackSelector.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
+            trackSelector.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
+            trackSelector.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
             trackSelector.PreviewKeyDown += new BPreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
             trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( trackSelector_SelectedTrackChanged );
             trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( trackSelector_SelectedCurveChanged );
@@ -3644,7 +3642,7 @@ namespace cadencii
         /// </summary>
         /// <param name="e"></param>
         /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
-        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown )
+        public void processSpecialShortcutKey( KeyEventArgs e, boolean onPreviewKeyDown )
         {
 #if DEBUG
             sout.println( "FormMain#processSpecialShortcutKey" );
@@ -6017,36 +6015,6 @@ namespace cadencii
                     ib.close();
                 }
             }
-
-/*            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
-#if JAVA
-            mTextBoxTrackName = new LyricTextBox( this );
-#else
-            mTextBoxTrackName = new LyricTextBox();
-#endif
-            mTextBoxTrackName.setVisible( false );
-            int selector_width = trackSelector.getSelectorWidth();
-            int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
-            mTextBoxTrackName.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
-            mTextBoxTrackName.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
-#if JAVA
-            mTextBoxTrackName.keyUpEvent.add( new BKeyEventHandler( this, "mTextBoxTrackName_KeyUp" ) );
-#else
-            mTextBoxTrackName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            mTextBoxTrackName.KeyUp += new System.Windows.Forms.KeyEventHandler( mTextBoxTrackName_KeyUp );
-            mTextBoxTrackName.Parent = trackSelector;
-#endif
-            mTextBoxTrackName.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
-            mTextBoxTrackName.setVisible( true );
-            mTextBoxTrackName.requestFocus();
-            mTextBoxTrackName.selectAll();*/
         }
 
         /// <summary>
@@ -6691,8 +6659,8 @@ namespace cadencii
 #endif
             hideInputTextBox();
 
-            AppManager.mInputTextBox.KeyUp += new BKeyEventHandler( mInputTextBox_KeyUp );
-            AppManager.mInputTextBox.KeyDown += new BKeyEventHandler( mInputTextBox_KeyDown );
+            AppManager.mInputTextBox.KeyUp += new KeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown += new KeyEventHandler( mInputTextBox_KeyDown );
             //TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #if !JAVA
             AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
@@ -6728,15 +6696,9 @@ namespace cadencii
 
         public void hideInputTextBox()
         {
-#if JAVA
-            AppManager.mInputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
-            AppManager.mInputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
-            // TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
-#else
-            AppManager.mInputTextBox.KeyUp -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
-            AppManager.mInputTextBox.KeyDown -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
+            AppManager.mInputTextBox.KeyUp -= new KeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown -= new KeyEventHandler( mInputTextBox_KeyDown );
             AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
-#endif
             mLastSymbolEditMode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
             AppManager.mInputTextBox.setVisible( false );
 #if !JAVA
@@ -7459,8 +7421,8 @@ namespace cadencii
             pictKeyLengthSplitter.MouseMove += new BMouseEventHandler( pictKeyLengthSplitter_MouseMove );
             pictKeyLengthSplitter.MouseDown += new BMouseEventHandler( pictKeyLengthSplitter_MouseDown );
             pictKeyLengthSplitter.MouseUp += new BMouseEventHandler( pictKeyLengthSplitter_MouseUp );
-            panelOverview.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
-            panelOverview.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
+            panelOverview.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
+            panelOverview.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
             vScroll.ValueChanged += new EventHandler( vScroll_ValueChanged );
             //this.Resize += new EventHandler( handleVScrollResize );
             pictPianoRoll.Resize += new EventHandler( handleVScrollResize );
@@ -7476,14 +7438,14 @@ namespace cadencii
             picturePositionIndicator.MouseUp += new BMouseEventHandler( picturePositionIndicator_MouseUp );
             picturePositionIndicator.Paint += new BPaintEventHandler( picturePositionIndicator_Paint );
             pictPianoRoll.PreviewKeyDown += new BPreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
-            pictPianoRoll.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
-            pictPianoRoll.KeyUp += new BKeyEventHandler( pictPianoRoll_KeyUp );
+            pictPianoRoll.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
+            pictPianoRoll.KeyUp += new KeyEventHandler( pictPianoRoll_KeyUp );
             pictPianoRoll.MouseMove += new BMouseEventHandler( pictPianoRoll_MouseMove );
             pictPianoRoll.MouseDoubleClick += new BMouseEventHandler( pictPianoRoll_MouseDoubleClick );
             pictPianoRoll.MouseClick += new BMouseEventHandler( pictPianoRoll_MouseClick );
             pictPianoRoll.MouseDown += new BMouseEventHandler( pictPianoRoll_MouseDown );
             pictPianoRoll.MouseUp += new BMouseEventHandler( pictPianoRoll_MouseUp );
-            pictPianoRoll.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
+            pictPianoRoll.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
             waveView.MouseDoubleClick += new BMouseEventHandler( waveView_MouseDoubleClick );
             waveView.MouseDown += new BMouseEventHandler( waveView_MouseDown );
             waveView.MouseUp += new BMouseEventHandler( waveView_MouseUp );
@@ -7587,7 +7549,7 @@ namespace cadencii
 
         //BOOKMARK: inputTextBox
         #region AppManager.mInputTextBox
-        public void mInputTextBox_KeyDown( Object sender, BKeyEventArgs e )
+        public void mInputTextBox_KeyDown( Object sender, KeyEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyDown" );
@@ -7729,7 +7691,7 @@ namespace cadencii
             }
         }
 
-        public void mInputTextBox_KeyUp( Object sender, BKeyEventArgs e )
+        public void mInputTextBox_KeyUp( Object sender, KeyEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyUp" );
@@ -7882,7 +7844,7 @@ namespace cadencii
 
         //BOOKMARK: pictPianoRoll
         #region pictPianoRoll
-        public void pictPianoRoll_KeyUp( Object sender, BKeyEventArgs e )
+        public void pictPianoRoll_KeyUp( Object sender, KeyEventArgs e )
         {
             processSpecialShortcutKey( e, false );
         }
@@ -9737,11 +9699,7 @@ namespace cadencii
 
         public void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
         {
-#if JAVA
-            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
         }
         #endregion
@@ -10711,11 +10669,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#FormMain_PreviewKeyDown" );
 #endif
-#if JAVA
-            BKeyEventArgs ex = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs ex = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs ex = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( ex, true );
         }
 
@@ -14877,11 +14831,7 @@ namespace cadencii
 
         public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
         {
-#if JAVA
-            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
         }
         #endregion
@@ -15190,11 +15140,7 @@ namespace cadencii
 
         public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
         {
-#if JAVA
-            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
         }
 
@@ -17070,24 +17016,16 @@ namespace cadencii
 #endif
         }
 
-        public void handleSpaceKeyDown( Object sender, BKeyEventArgs e )
+        public void handleSpaceKeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space ) {
-#endif
                 mSpacekeyDowned = true;
             }
         }
 
-        public void handleSpaceKeyUp( Object sender, BKeyEventArgs e )
+        public void handleSpaceKeyUp( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space ) {
-#endif
                 mSpacekeyDowned = false;
             }
         }

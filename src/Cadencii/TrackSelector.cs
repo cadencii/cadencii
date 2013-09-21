@@ -31,6 +31,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Threading;
 using System.Linq;
+using System.Windows.Forms;
 using cadencii;
 using cadencii.apputil;
 using cadencii.java.awt;
@@ -41,11 +42,9 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
 
     using boolean = System.Boolean;
@@ -2389,11 +2388,11 @@ namespace cadencii
             }
             if ( cursor_should_be_hand ) {
                 if ( getCursor().getType() != java.awt.Cursor.HAND_CURSOR ) {
-                    setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
+                    setCursor( new java.awt.Cursor( java.awt.Cursor.HAND_CURSOR ) );
                 }
             } else {
                 if ( getCursor().getType() != java.awt.Cursor.DEFAULT_CURSOR ) {
-                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                    setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 }
             }
             g.setClip( last_clip );
@@ -5956,7 +5955,7 @@ namespace cadencii
         }
 #endif
 
-        public void TrackSelector_KeyDown( Object sender, BKeyEventArgs e )
+        public void TrackSelector_KeyDown( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
@@ -5968,7 +5967,7 @@ namespace cadencii
             }
         }
 
-        public void TrackSelector_KeyUp( Object sender, BKeyEventArgs e )
+        public void TrackSelector_KeyUp( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
@@ -6030,11 +6029,11 @@ namespace cadencii
 
             this.MouseMove += new BMouseEventHandler( TrackSelector_MouseMove );
             this.MouseDoubleClick += new BMouseEventHandler( TrackSelector_MouseDoubleClick );
-            this.KeyUp += new BKeyEventHandler( TrackSelector_KeyUp );
+            this.KeyUp += new KeyEventHandler( TrackSelector_KeyUp );
             this.MouseClick += new BMouseEventHandler( TrackSelector_MouseClick );
             this.MouseDown += new BMouseEventHandler( TrackSelector_MouseDown );
             this.MouseUp += new BMouseEventHandler( TrackSelector_MouseUp );
-            this.KeyDown += new BKeyEventHandler( TrackSelector_KeyDown );
+            this.KeyDown += new KeyEventHandler( TrackSelector_KeyDown );
         }
 
         private void setResources()

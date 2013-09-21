@@ -30,10 +30,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
-
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
-    
     using boolean = System.Boolean;
 #endif
 
@@ -450,7 +446,7 @@ namespace cadencii
             }
         }
 
-        public void txtFeder_KeyDown( Object sender, BKeyEventArgs e )
+        public void txtFeder_KeyDown( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
@@ -478,7 +474,7 @@ namespace cadencii
             }
         }
 
-        public void txtPanpot_KeyDown( Object sender, BKeyEventArgs e )
+        public void txtPanpot_KeyDown( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
@@ -546,8 +542,8 @@ namespace cadencii
         {
             trackFeder.ValueChanged += new EventHandler( trackFeder_ValueChanged );
             trackPanpot.ValueChanged += new EventHandler( trackPanpot_ValueChanged );
-            txtPanpot.KeyDown += new BKeyEventHandler( txtPanpot_KeyDown );
-            txtFeder.KeyDown += new BKeyEventHandler( txtFeder_KeyDown );
+            txtPanpot.KeyDown += new KeyEventHandler( txtPanpot_KeyDown );
+            txtFeder.KeyDown += new KeyEventHandler( txtFeder_KeyDown );
             chkSolo.Click += new EventHandler( chkSolo_Click );
             chkMute.Click += new EventHandler( chkMute_Click );
 #if !JAVA

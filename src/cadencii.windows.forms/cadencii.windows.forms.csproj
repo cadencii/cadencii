@@ -74,8 +74,6 @@
     <Compile Include="BHScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BKeyEventArgs.cs" />
-    <Compile Include="BKeyEventHandler.cs" />
     <Compile Include="BKeyPressEventArgs.cs" />
     <Compile Include="BKeyPressEventHandler.cs" />
     <Compile Include="BKeys.cs" />

@@ -34,10 +34,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
 #if JAVA

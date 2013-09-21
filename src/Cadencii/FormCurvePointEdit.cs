@@ -24,6 +24,7 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -32,9 +33,7 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
 #if JAVA
@@ -166,9 +165,9 @@ namespace cadencii
             btnForward2.Click += new EventHandler( commonButton_Click );
             btnApply.Click += new EventHandler( btnApply_Click );
             txtDataPointClock.TextChanged += new EventHandler( commonTextBox_TextChanged );
-            txtDataPointClock.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
+            txtDataPointClock.KeyUp += new KeyEventHandler( commonTextBox_KeyUp );
             txtDataPointValue.TextChanged += new EventHandler( commonTextBox_TextChanged );
-            txtDataPointValue.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
+            txtDataPointValue.KeyUp += new KeyEventHandler( commonTextBox_KeyUp );
             btnBackward3.Click += new EventHandler( commonButton_Click );
             btnForward3.Click += new EventHandler( commonButton_Click );
             btnUndo.Click += new EventHandler( handleUndoRedo_Click );
@@ -178,7 +177,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void commonTextBox_KeyUp( Object sender, BKeyEventArgs e )
+        public void commonTextBox_KeyUp( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
