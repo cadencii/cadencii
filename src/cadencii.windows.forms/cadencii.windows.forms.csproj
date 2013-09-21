@@ -67,8 +67,6 @@
     <Compile Include="BForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BFormClosedEventArgs.cs" />
-    <Compile Include="BFormClosedEventHandler.cs" />
     <Compile Include="BFormClosingEventArgs.cs" />
     <Compile Include="BFormClosingEventHandler.cs" />
     <Compile Include="BFormWindowState.cs" />

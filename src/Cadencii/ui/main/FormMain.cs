@@ -43,6 +43,7 @@ using System.Media;
 using System.Text;
 using System.Threading;
 using System.Linq;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.componentmodel;
 using cadencii.java.awt;
@@ -61,7 +62,6 @@ namespace cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
@@ -76,7 +76,6 @@ namespace cadencii
     using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
-    using BFormClosedEventHandler = System.Windows.Forms.FormClosedEventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
 
@@ -451,7 +450,7 @@ namespace cadencii
         public MidiInDevice m_midi_in_mtc = null;
 #endif
         public FormMidiImExport mDialogMidiImportAndExport = null;
-        public TreeMap<EditTool, Cursor> mCursor = new TreeMap<EditTool, Cursor>();
+        public TreeMap<EditTool, java.awt.Cursor> mCursor = new TreeMap<EditTool, java.awt.Cursor>();
         private Preference mDialogPreference;
 #if ENABLE_PROPERTY
         public PropertyPanelContainer mPropertyPanelContainer;
@@ -7516,7 +7515,7 @@ namespace cadencii
             stripBtnStepSequencer.CheckedChanged += new EventHandler( stripBtnStepSequencer_CheckedChanged );
             this.Deactivate += new EventHandler( FormMain_Deactivate );
             this.Activated += new EventHandler( FormMain_Activated );
-            this.FormClosed += new BFormClosedEventHandler( FormMain_FormClosed );
+            this.FormClosed += new FormClosedEventHandler( FormMain_FormClosed );
             this.FormClosing += new BFormClosingEventHandler( FormMain_FormClosing );
             this.PreviewKeyDown += new BPreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
             panelOverview.Enter += new EventHandler( panelOverview_Enter );
@@ -8356,7 +8355,7 @@ namespace cadencii
             if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mMouseTracer.clear();
                 pictPianoRoll.mMouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 AppManager.setEditMode( EditMode.CURVE_ON_PIANOROLL );
                 return;
             }
@@ -8478,7 +8477,7 @@ namespace cadencii
                                     mButtonInitial = new Point( e.X, e.Y );
                                     AppManager.mAddingEvent.ID.setLength( 0 );
                                     AppManager.mAddingEvent.ID.Note = note;
-                                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                                    setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
 #if DEBUG
                                     AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
 #endif
@@ -8486,7 +8485,7 @@ namespace cadencii
                                     AppManager.setEditMode( EditMode.ADD_FIXED_LENGTH_ENTRY );
                                     AppManager.mAddingEvent.ID.setLength( mPencilMode.getUnitLength() );
                                     AppManager.mAddingEvent.ID.Note = note;
-                                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                                    setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                                 }
                             } else {
 #if !JAVA
@@ -8677,7 +8676,7 @@ namespace cadencii
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
                             }
 
-                            setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
+                            setCursor( new java.awt.Cursor( java.awt.Cursor.HAND_CURSOR ) );
 #if DEBUG
                             AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
                             AppManager.debugWriteLine( "    m_config.SelectedEvent.Count=" + AppManager.itemSelection.getEventCount() );
@@ -9181,9 +9180,9 @@ namespace cadencii
                     if (split_cursor) {
                         Cursor = System.Windows.Forms.Cursors.VSplit;
                     } else if (hand_cursor) {
-                        setCursor(new Cursor(java.awt.Cursor.HAND_CURSOR));
+                        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
                     } else {
-                        setCursor(new Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
                     }
                 }
                 if (!timer.isRunning()) {
@@ -9352,7 +9351,7 @@ namespace cadencii
             }
 
             if ( edit_mode == EditMode.MIDDLE_DRAG ) {
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
             } else if ( edit_mode == EditMode.ADD_ENTRY || edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
                 #region AddEntry || AddFixedLengthEntry
                 if ( AppManager.getSelected() >= 0 ) {
@@ -10277,7 +10276,7 @@ namespace cadencii
             }
         }
 #endif
-        public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e )
+        public void FormMain_FormClosed( Object sender, FormClosedEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#FormMain_FormClosed" );
@@ -10603,7 +10602,7 @@ namespace cadencii
                     FormGenerateKeySound form = null;
                     try {
                         form = new FormGenerateKeySound( true );
-                        form.FormClosed += new BFormClosedEventHandler( FormGenerateKeySound_FormClosed );
+                        form.FormClosed += new FormClosedEventHandler( FormGenerateKeySound_FormClosed );
                         form.setVisible( true );
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
@@ -10624,7 +10623,7 @@ namespace cadencii
             }
         }
 
-        public void FormGenerateKeySound_FormClosed( Object sender, BFormClosedEventArgs e )
+        public void FormGenerateKeySound_FormClosed( Object sender, FormClosedEventArgs e )
         {
             try {
                 KeySoundPlayer.init();
@@ -14046,7 +14045,7 @@ namespace cadencii
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
             }
         }
 
@@ -15155,7 +15154,7 @@ namespace cadencii
             mMouseDownedTrackSelector = false;
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
             }
         }
 
