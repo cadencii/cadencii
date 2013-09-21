@@ -43,9 +43,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
 
     using boolean = System.Boolean;
     using Float = System.Single;
@@ -2812,7 +2809,7 @@ namespace cadencii
             this.SetStyle( System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true );
         }
 
-        public void TrackSelector_MouseClick( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( mCurveVisible ) {
                 if ( e.Button == BMouseButtons.Left ) {
@@ -3175,7 +3172,7 @@ namespace cadencii
                 length * Math.Sin( theta ) / scaley + base_point.getY() );
         }
 
-        public BezierPoint HandleMouseMoveForBezierMove( BMouseEventArgs e, BezierPickedSide picked )
+        public BezierPoint HandleMouseMoveForBezierMove( MouseEventArgs e, BezierPickedSide picked )
         {
             int clock = AppManager.clockFromXCoord( e.X );
             int value = valueFromYCoord( e.Y );
@@ -3194,7 +3191,7 @@ namespace cadencii
             return HandleMouseMoveForBezierMove( clock, value, value_raw, picked );
         }
 
-        public void TrackSelector_MouseMove( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseMove( Object sender, MouseEventArgs e )
         {
             int value = valueFromYCoord( e.Y );
             int value_raw = value;
@@ -3474,7 +3471,7 @@ namespace cadencii
             }
         }
 
-        private void processMouseDownSelectRegion( BMouseEventArgs e )
+        private void processMouseDownSelectRegion( MouseEventArgs e )
         {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
                 AppManager.itemSelection.clearPoint();
@@ -3505,7 +3502,7 @@ namespace cadencii
             }
         }
 
-        public void TrackSelector_MouseDown( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseDown( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseDown" );
@@ -4115,7 +4112,7 @@ namespace cadencii
             invalidate();
         }
 
-        private boolean processMouseDownBezier( BMouseEventArgs e )
+        private boolean processMouseDownBezier( MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "TrackSelector::processMouseDownBezier" );
@@ -4253,7 +4250,7 @@ namespace cadencii
             return true;
         }
 
-        private boolean processMouseDownPreutteranceAndOverlap( BMouseEventArgs e )
+        private boolean processMouseDownPreutteranceAndOverlap( MouseEventArgs e )
         {
             ByRef<Integer> internal_id = new ByRef<Integer>();
             ByRef<Boolean> found_flag_was_overlap = new ByRef<Boolean>();
@@ -4283,7 +4280,7 @@ namespace cadencii
             return false;
         }
 
-        private boolean processMouseDownEnvelope( BMouseEventArgs e )
+        private boolean processMouseDownEnvelope( MouseEventArgs e )
         {
             ByRef<Integer> internal_id = new ByRef<Integer>( -1 );
             ByRef<Integer> point_kind = new ByRef<Integer>( -1 );
@@ -4458,7 +4455,7 @@ namespace cadencii
             return null;
         }
 
-        public void TrackSelector_MouseUp( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseUp( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseUp" );
@@ -5511,7 +5508,7 @@ namespace cadencii
             Invoke( new EventHandler( TrackSelector_MouseHover ) );
         }
 
-        public void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
 #if JAVA
             if( mMouseHoverThread != null && mMouseHoverThread.isAlive() ){
@@ -6027,12 +6024,12 @@ namespace cadencii
             this.cmenuCurveEnvelope.Click += new EventHandler( cmenuCurveCommon_Click );
             this.Load += new EventHandler( this.TrackSelector_Load );
 
-            this.MouseMove += new BMouseEventHandler( TrackSelector_MouseMove );
-            this.MouseDoubleClick += new BMouseEventHandler( TrackSelector_MouseDoubleClick );
+            this.MouseMove += new MouseEventHandler( TrackSelector_MouseMove );
+            this.MouseDoubleClick += new MouseEventHandler( TrackSelector_MouseDoubleClick );
             this.KeyUp += new KeyEventHandler( TrackSelector_KeyUp );
-            this.MouseClick += new BMouseEventHandler( TrackSelector_MouseClick );
-            this.MouseDown += new BMouseEventHandler( TrackSelector_MouseDown );
-            this.MouseUp += new BMouseEventHandler( TrackSelector_MouseUp );
+            this.MouseClick += new MouseEventHandler( TrackSelector_MouseClick );
+            this.MouseDown += new MouseEventHandler( TrackSelector_MouseDown );
+            this.MouseUp += new MouseEventHandler( TrackSelector_MouseUp );
             this.KeyDown += new KeyEventHandler( TrackSelector_KeyDown );
         }
 

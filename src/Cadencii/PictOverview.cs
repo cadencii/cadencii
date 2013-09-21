@@ -31,8 +31,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -161,7 +159,7 @@ namespace cadencii
             }
         }
 
-        public void btnLeft_MouseDown( Object sender, BMouseEventArgs e )
+        public void btnLeft_MouseDown( Object sender, MouseEventArgs e )
         {
             mOverviewBtnDowned = PortUtil.getCurrentTime();
             mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
@@ -194,12 +192,12 @@ namespace cadencii
 #endif
         }
 
-        public void btnLeft_MouseUp( Object sender, BMouseEventArgs e )
+        public void btnLeft_MouseUp( Object sender, MouseEventArgs e )
         {
             overviewStopThread();
         }
 
-        public void btnRight_MouseDown( Object sender, BMouseEventArgs e )
+        public void btnRight_MouseDown( Object sender, MouseEventArgs e )
         {
             mOverviewBtnDowned = PortUtil.getCurrentTime();
             mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
@@ -230,7 +228,7 @@ namespace cadencii
 #endif
         }
 
-        public void btnRight_MouseUp( Object sender, BMouseEventArgs e )
+        public void btnRight_MouseUp( Object sender, MouseEventArgs e )
         {
             overviewStopThread();
         }
@@ -429,10 +427,10 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            this.MouseDown += new BMouseEventHandler( handleMouseDown );
-            this.MouseUp += new BMouseEventHandler( handleMouseUp );
-            this.MouseMove += new BMouseEventHandler( handleMouseMove );
-            this.MouseDoubleClick += new BMouseEventHandler( handleMouseDoubleClick );
+            this.MouseDown += new MouseEventHandler( handleMouseDown );
+            this.MouseUp += new MouseEventHandler( handleMouseUp );
+            this.MouseMove += new MouseEventHandler( handleMouseMove );
+            this.MouseDoubleClick += new MouseEventHandler( handleMouseDoubleClick );
             this.MouseLeave += new EventHandler( handleMouseLeave );
             this.Resize += new EventHandler( handleResize );
         }
@@ -457,7 +455,7 @@ namespace cadencii
             overviewStopThread();
         }
 
-        public void handleMouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void handleMouseDoubleClick( Object sender, MouseEventArgs e )
         {
             if ( AppManager.keyWidth < e.X && e.X < getWidth() - 19 ) {
                 mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
@@ -473,7 +471,7 @@ namespace cadencii
             }
         }
 
-        public void handleMouseDown( Object sender, BMouseEventArgs e )
+        public void handleMouseDown( Object sender, MouseEventArgs e )
         {
             BMouseButtons btn = e.Button;
             if ( mMainForm.isMouseMiddleButtonDowned( e.Button ) ) {
@@ -521,7 +519,7 @@ namespace cadencii
             }
         }
 
-        public void handleMouseUp( Object sender, BMouseEventArgs e )
+        public void handleMouseUp( Object sender, MouseEventArgs e )
         {
             Point mouse = new Point( e.X, e.Y );
             if ( Utility.isInRect( mouse, getButtonBoundsLeft1() ) ) {
@@ -546,7 +544,7 @@ namespace cadencii
             mMainForm.refreshScreen();
         }
 
-        public void handleMouseMove( Object sender, BMouseEventArgs e )
+        public void handleMouseMove( Object sender, MouseEventArgs e )
         {
             int xoffset = AppManager.keyWidth + AppManager.keyOffset;
             if ( mOverviewMouseDownMode == OverviewMouseDownMode.LEFT ) {

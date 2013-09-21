@@ -28,8 +28,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
 #endif
 
@@ -97,9 +95,9 @@ namespace cadencii
             IconParader p = new IconParader();
             Image img = IconParader.createIconImage( path_image, singer_name );
             p.setImage( img );
-            p.MouseDown += new BMouseEventHandler( handleMouseDown );
-            p.MouseUp += new BMouseEventHandler( handleMouseUp );
-            p.MouseMove += new BMouseEventHandler( handleMouseMove );
+            p.MouseDown += new MouseEventHandler( handleMouseDown );
+            p.MouseUp += new MouseEventHandler( handleMouseUp );
+            p.MouseMove += new MouseEventHandler( handleMouseMove );
 #if JAVA
             panelIcon.add( p );
 #else
@@ -139,7 +137,7 @@ namespace cadencii
         /// </summary>
         /// <param name="screen_x"></param>
         /// <param name="screen_y"></param>
-        public void handleMouseDown( Object sender, BMouseEventArgs arg )
+        public void handleMouseDown( Object sender, MouseEventArgs arg )
         {
             mouseDowned = true;
             Point screen = PortUtil.getMousePosition();
@@ -150,7 +148,7 @@ namespace cadencii
         /// <summary>
         /// このスプラッシュウィンドウに，MouseUpイベントを通知します
         /// </summary>
-        public void handleMouseUp( Object sender, BMouseEventArgs arg )
+        public void handleMouseUp( Object sender, MouseEventArgs arg )
         {
             mouseDowned = false;
         }
@@ -158,7 +156,7 @@ namespace cadencii
         /// <summary>
         /// このスプラッシュウィンドウに，MouseMoveイベントを通知します
         /// </summary>
-        public void handleMouseMove( Object sender, BMouseEventArgs arg )
+        public void handleMouseMove( Object sender, MouseEventArgs arg )
         {
             if ( !mouseDowned ) {
                 return;

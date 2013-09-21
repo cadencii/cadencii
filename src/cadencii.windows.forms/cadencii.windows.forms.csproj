@@ -99,8 +99,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BMouseButtons.cs" />
-    <Compile Include="BMouseEventArgs.cs" />
-    <Compile Include="BMouseEventHandler.cs" />
     <Compile Include="BNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -63,12 +63,10 @@ namespace cadencii
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
 
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
@@ -688,10 +686,10 @@ namespace cadencii
             trackSelector.setSize( 446, 250 );
             trackSelector.TabIndex = 0;
 #endif
-            trackSelector.MouseClick += new BMouseEventHandler( trackSelector_MouseClick );
-            trackSelector.MouseUp += new BMouseEventHandler( trackSelector_MouseUp );
-            trackSelector.MouseDown += new BMouseEventHandler( trackSelector_MouseDown );
-            trackSelector.MouseMove += new BMouseEventHandler( trackSelector_MouseMove );
+            trackSelector.MouseClick += new MouseEventHandler( trackSelector_MouseClick );
+            trackSelector.MouseUp += new MouseEventHandler( trackSelector_MouseUp );
+            trackSelector.MouseDown += new MouseEventHandler( trackSelector_MouseDown );
+            trackSelector.MouseMove += new MouseEventHandler( trackSelector_MouseMove );
             trackSelector.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
             trackSelector.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
             trackSelector.PreviewKeyDown += new BPreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
@@ -699,7 +697,7 @@ namespace cadencii
             trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( trackSelector_SelectedCurveChanged );
             trackSelector.RenderRequired += new RenderRequiredEventHandler( trackSelector_RenderRequired );
             trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
-            trackSelector.MouseDoubleClick += new BMouseEventHandler( trackSelector_MouseDoubleClick );
+            trackSelector.MouseDoubleClick += new MouseEventHandler( trackSelector_MouseDoubleClick );
 
 #if !JAVA
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
@@ -795,9 +793,9 @@ namespace cadencii
 
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 
-            pictPianoRoll.MouseWheel += new BMouseEventHandler( pictPianoRoll_MouseWheel );
-            trackSelector.MouseWheel += new BMouseEventHandler( trackSelector_MouseWheel );
-            picturePositionIndicator.MouseWheel += new BMouseEventHandler( picturePositionIndicator_MouseWheel );
+            pictPianoRoll.MouseWheel += new MouseEventHandler( pictPianoRoll_MouseWheel );
+            trackSelector.MouseWheel += new MouseEventHandler( trackSelector_MouseWheel );
+            picturePositionIndicator.MouseWheel += new MouseEventHandler( picturePositionIndicator_MouseWheel );
 
             menuVisualOverview.CheckedChanged += new EventHandler( menuVisualOverview_CheckedChanged );
 
@@ -7407,9 +7405,9 @@ namespace cadencii
             trackBar.Enter += new EventHandler( trackBar_Enter );
             bgWorkScreen.DoWork += new BDoWorkEventHandler( bgWorkScreen_DoWork );
             timer.Tick += new EventHandler( timer_Tick );
-            pictKeyLengthSplitter.MouseMove += new BMouseEventHandler( pictKeyLengthSplitter_MouseMove );
-            pictKeyLengthSplitter.MouseDown += new BMouseEventHandler( pictKeyLengthSplitter_MouseDown );
-            pictKeyLengthSplitter.MouseUp += new BMouseEventHandler( pictKeyLengthSplitter_MouseUp );
+            pictKeyLengthSplitter.MouseMove += new MouseEventHandler( pictKeyLengthSplitter_MouseMove );
+            pictKeyLengthSplitter.MouseDown += new MouseEventHandler( pictKeyLengthSplitter_MouseDown );
+            pictKeyLengthSplitter.MouseUp += new MouseEventHandler( pictKeyLengthSplitter_MouseUp );
             panelOverview.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
             panelOverview.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
             vScroll.ValueChanged += new EventHandler( vScroll_ValueChanged );
@@ -7420,32 +7418,32 @@ namespace cadencii
             hScroll.Resize += new EventHandler( hScroll_Resize );
             hScroll.Enter += new EventHandler( hScroll_Enter );
             picturePositionIndicator.PreviewKeyDown += new BPreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
-            picturePositionIndicator.MouseMove += new BMouseEventHandler( picturePositionIndicator_MouseMove );
-            picturePositionIndicator.MouseClick += new BMouseEventHandler( picturePositionIndicator_MouseClick );
-            picturePositionIndicator.MouseDoubleClick += new BMouseEventHandler( picturePositionIndicator_MouseDoubleClick );
-            picturePositionIndicator.MouseDown += new BMouseEventHandler( picturePositionIndicator_MouseDown );
-            picturePositionIndicator.MouseUp += new BMouseEventHandler( picturePositionIndicator_MouseUp );
+            picturePositionIndicator.MouseMove += new MouseEventHandler( picturePositionIndicator_MouseMove );
+            picturePositionIndicator.MouseClick += new MouseEventHandler( picturePositionIndicator_MouseClick );
+            picturePositionIndicator.MouseDoubleClick += new MouseEventHandler( picturePositionIndicator_MouseDoubleClick );
+            picturePositionIndicator.MouseDown += new MouseEventHandler( picturePositionIndicator_MouseDown );
+            picturePositionIndicator.MouseUp += new MouseEventHandler( picturePositionIndicator_MouseUp );
             picturePositionIndicator.Paint += new BPaintEventHandler( picturePositionIndicator_Paint );
             pictPianoRoll.PreviewKeyDown += new BPreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
             pictPianoRoll.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
             pictPianoRoll.KeyUp += new KeyEventHandler( pictPianoRoll_KeyUp );
-            pictPianoRoll.MouseMove += new BMouseEventHandler( pictPianoRoll_MouseMove );
-            pictPianoRoll.MouseDoubleClick += new BMouseEventHandler( pictPianoRoll_MouseDoubleClick );
-            pictPianoRoll.MouseClick += new BMouseEventHandler( pictPianoRoll_MouseClick );
-            pictPianoRoll.MouseDown += new BMouseEventHandler( pictPianoRoll_MouseDown );
-            pictPianoRoll.MouseUp += new BMouseEventHandler( pictPianoRoll_MouseUp );
+            pictPianoRoll.MouseMove += new MouseEventHandler( pictPianoRoll_MouseMove );
+            pictPianoRoll.MouseDoubleClick += new MouseEventHandler( pictPianoRoll_MouseDoubleClick );
+            pictPianoRoll.MouseClick += new MouseEventHandler( pictPianoRoll_MouseClick );
+            pictPianoRoll.MouseDown += new MouseEventHandler( pictPianoRoll_MouseDown );
+            pictPianoRoll.MouseUp += new MouseEventHandler( pictPianoRoll_MouseUp );
             pictPianoRoll.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
-            waveView.MouseDoubleClick += new BMouseEventHandler( waveView_MouseDoubleClick );
-            waveView.MouseDown += new BMouseEventHandler( waveView_MouseDown );
-            waveView.MouseUp += new BMouseEventHandler( waveView_MouseUp );
-            waveView.MouseMove += new BMouseEventHandler( waveView_MouseMove );
+            waveView.MouseDoubleClick += new MouseEventHandler( waveView_MouseDoubleClick );
+            waveView.MouseDown += new MouseEventHandler( waveView_MouseDown );
+            waveView.MouseUp += new MouseEventHandler( waveView_MouseUp );
+            waveView.MouseMove += new MouseEventHandler( waveView_MouseMove );
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
             this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
             this.DragLeave += new EventHandler( FormMain_DragLeave );
 
-            pictureBox2.MouseDown += new BMouseEventHandler( pictureBox2_MouseDown );
-            pictureBox2.MouseUp += new BMouseEventHandler( pictureBox2_MouseUp );
+            pictureBox2.MouseDown += new MouseEventHandler( pictureBox2_MouseDown );
+            pictureBox2.MouseUp += new MouseEventHandler( pictureBox2_MouseUp );
             pictureBox2.Paint += new BPaintEventHandler( pictureBox2_Paint );
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
             rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
@@ -7460,7 +7458,7 @@ namespace cadencii
             toolBarFile.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarFile_ButtonClick );
             toolBarPosition.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarPosition_ButtonClick );
             toolBarMeasure.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarMeasure_ButtonClick );
-            toolBarMeasure.MouseDown += new BMouseEventHandler( toolBarMeasure_MouseDown );
+            toolBarMeasure.MouseDown += new MouseEventHandler( toolBarMeasure_MouseDown );
             stripBtnStepSequencer.CheckedChanged += new EventHandler( stripBtnStepSequencer_CheckedChanged );
             this.Deactivate += new EventHandler( FormMain_Deactivate );
             this.Activated += new EventHandler( FormMain_Activated );
@@ -7838,7 +7836,7 @@ namespace cadencii
             processSpecialShortcutKey( e, false );
         }
 
-        public void pictPianoRoll_MouseClick( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseClick( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseClick" );
@@ -8045,7 +8043,7 @@ namespace cadencii
             }
         }
 
-        public void pictPianoRoll_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#pictPianoRoll_MouseDoubleClick" );
@@ -8254,7 +8252,7 @@ namespace cadencii
             }
         }
 
-        public void pictPianoRoll_MouseDown( Object sender, BMouseEventArgs e0 )
+        public void pictPianoRoll_MouseDown( Object sender, MouseEventArgs e0 )
         {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseDown" );
@@ -8263,7 +8261,7 @@ namespace cadencii
             if ( isMouseMiddleButtonDowned( btn0 ) ) {
                 btn0 = BMouseButtons.Middle;
             }
-            BMouseEventArgs e = new BMouseEventArgs( btn0, e0.Clicks, e0.X, e0.Y, e0.Delta );
+            MouseEventArgs e = new MouseEventArgs( btn0, e0.Clicks, e0.X, e0.Y, e0.Delta );
 
             mMouseMoved = false;
             if ( !AppManager.isPlaying() && 0 <= e.X && e.X <= AppManager.keyWidth ) {
@@ -8637,7 +8635,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseMove( Object sender, MouseEventArgs e )
         {
             lock (AppManager.mDrawObjects) {
                 if (mFormActivated) {
@@ -9145,7 +9143,7 @@ namespace cadencii
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void pictPianoRoll_MouseUp( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseUp( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "pictureBox1_MouseUp" );
@@ -9608,7 +9606,7 @@ namespace cadencii
             refreshScreen( true );
         }
 
-        public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseWheel( Object sender, MouseEventArgs e )
         {
             int modifier = PortUtil.getCurrentModifierKey();
             boolean horizontal = (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
@@ -10107,11 +10105,11 @@ namespace cadencii
                     return;
                 }
             }
-            BMouseEventArgs e0 = new BMouseEventArgs( BMouseButtons.Left,
-                                                      1,
-                                                      screen_x - pt.x,
-                                                      screen_y - pt.y,
-                                                      0 );
+            MouseEventArgs e0 = new MouseEventArgs( BMouseButtons.Left,
+                                                    1,
+                                                    screen_x - pt.x,
+                                                    screen_y - pt.y,
+                                                    0 );
             pictPianoRoll_MouseMove( this, e0 );
         }
 
@@ -10631,7 +10629,7 @@ namespace cadencii
             }*/
         }
 
-        public void FormMain_MouseWheel( Object sender, BMouseEventArgs e )
+        public void FormMain_MouseWheel( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#FormMain_MouseWheel" );
@@ -13953,7 +13951,7 @@ namespace cadencii
 
         //BOOKMARK: waveView
         #region waveView
-        public void waveView_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void waveView_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
@@ -13967,7 +13965,7 @@ namespace cadencii
             }
         }
 
-        public void waveView_MouseDown( Object sender, BMouseEventArgs e )
+        public void waveView_MouseDown( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "waveView_MouseDown; isMiddleButtonDowned=" + isMouseMiddleButtonDowned( e.Button ) );
@@ -13982,7 +13980,7 @@ namespace cadencii
             }
         }
 
-        public void waveView_MouseUp( Object sender, BMouseEventArgs e )
+        public void waveView_MouseUp( Object sender, MouseEventArgs e )
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
@@ -13990,7 +13988,7 @@ namespace cadencii
             }
         }
 
-        public void waveView_MouseMove( Object sender, BMouseEventArgs e )
+        public void waveView_MouseMove( Object sender, MouseEventArgs e )
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 int draft = computeHScrollValueForMiddleDrag( e.X );
@@ -14028,7 +14026,7 @@ namespace cadencii
 
         //BOOKMARK: picturePositionIndicator
         #region picturePositionIndicator
-        public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseWheel( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#picturePositionIndicator_MouseWheel" );
@@ -14036,7 +14034,7 @@ namespace cadencii
             hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
         }
 
-        public void picturePositionIndicator_MouseClick( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Right && 0 < e.Y && e.Y <= 18 && AppManager.keyWidth < e.X ) {
                 // クリックされた位置でのクロックを保存
@@ -14051,7 +14049,7 @@ namespace cadencii
             }
         }
 
-        public void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
@@ -14392,7 +14390,7 @@ namespace cadencii
             }
         }
 
-        public void picturePositionIndicator_MouseDown( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseDown( Object sender, MouseEventArgs e )
         {
             if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
@@ -14564,7 +14562,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseUp( Object sender, MouseEventArgs e )
         {
             int modifiers = PortUtil.getCurrentModifierKey();
 #if DEBUG
@@ -14738,7 +14736,7 @@ namespace cadencii
             picturePositionIndicator.repaint();
         }
 
-        public void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseMove( Object sender, MouseEventArgs e )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TEMPO ) {
@@ -14962,7 +14960,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void trackSelector_MouseClick( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Right ) {
                 if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() ) {
@@ -14975,7 +14973,7 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
@@ -14990,7 +14988,7 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseDown( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseDown( Object sender, MouseEventArgs e )
         {
             if ( AppManager.keyWidth < e.X ) {
                 mMouseDownedTrackSelector = true;
@@ -15005,7 +15003,7 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseMove( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseMove( Object sender, MouseEventArgs e )
         {
             if ( mFormActivated && AppManager.mInputTextBox != null ){
 #if JAVA
@@ -15086,7 +15084,7 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseUp( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseUp( Object sender, MouseEventArgs e )
         {
             mMouseDownedTrackSelector = false;
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
@@ -15095,7 +15093,7 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseWheel( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#trackSelector_MouseWheel" );
@@ -15966,7 +15964,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e )
+        public void pictureBox2_MouseDown( Object sender, MouseEventArgs e )
         {
             // 拡大・縮小ボタンが押されたかどうか判定
             int height = pictureBox2.getHeight();
@@ -15999,7 +15997,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public void pictureBox2_MouseUp( Object sender, BMouseEventArgs e )
+        public void pictureBox2_MouseUp( Object sender, MouseEventArgs e )
         {
             mPianoRollScaleYMouseStatus = 0;
             pictureBox2.invalidate();
@@ -16137,7 +16135,7 @@ namespace cadencii
 
         //BOOKMARK: pictKeyLengthSplitter
         #region pictKeyLengthSplitter
-        public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e )
+        public void pictKeyLengthSplitter_MouseDown( Object sender, MouseEventArgs e )
         {
             mKeyLengthSplitterMouseDowned = true;
             mKeyLengthSplitterInitialMouse = PortUtil.getMousePosition();
@@ -16146,7 +16144,7 @@ namespace cadencii
             mKeyLengthSplitterDistance = splitContainer1.getDividerLocation();
         }
 
-        public void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e )
+        public void pictKeyLengthSplitter_MouseMove( Object sender, MouseEventArgs e )
         {
             if ( !mKeyLengthSplitterMouseDowned ) {
                 return;
@@ -16172,7 +16170,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e )
+        public void pictKeyLengthSplitter_MouseUp( Object sender, MouseEventArgs e )
         {
             mKeyLengthSplitterMouseDowned = false;
         }

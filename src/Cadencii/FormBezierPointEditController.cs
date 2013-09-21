@@ -23,6 +23,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.awt;
@@ -31,8 +32,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
 #endif
@@ -209,8 +208,8 @@ namespace cadencii
             Point loc_trackselector = m_parent.getLocationOnScreen();
             Point loc_on_trackselector =
                 new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
-            BMouseEventArgs event_arg =
-                new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+            MouseEventArgs event_arg =
+                new MouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
             PortUtil.setMousePosition( m_last_mouse_global_location );
             m_parent.doInvalidate();
@@ -230,8 +229,8 @@ namespace cadencii
                 Point loc_trackselector = m_parent.getLocationOnScreen();
                 Point loc_on_trackselector =
                     new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
-                BMouseEventArgs event_arg =
-                    new BMouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+                MouseEventArgs event_arg =
+                    new MouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
                 BezierPoint ret = m_parent.HandleMouseMoveForBezierMove( event_arg, m_picked_side );
 
                 this.ui.setDataPointClockText( ((int)ret.getBase().getX()) + "" );
@@ -295,8 +294,8 @@ namespace cadencii
                     loc_topleft.x + loc_on_trackselector.x,
                     loc_topleft.y + loc_on_trackselector.y );
             PortUtil.setMousePosition( mScreenMouseDownLocation );
-            BMouseEventArgs event_arg =
-                new BMouseEventArgs(
+            MouseEventArgs event_arg =
+                new MouseEventArgs(
                     BMouseButtons.Left, 0,
                     loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );

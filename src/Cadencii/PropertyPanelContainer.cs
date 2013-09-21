@@ -29,8 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -64,7 +62,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public void panelTitle_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             handleRestoreWindow();
         }
@@ -132,7 +130,7 @@ namespace cadencii
             this.panelMain.SizeChanged += new EventHandler( panelMain_SizeChanged );
             this.btnClose.Click += new EventHandler( btnClose_Click );
             this.btnWindow.Click += new EventHandler( btnWindow_Click );
-            this.panelTitle.MouseDoubleClick += new BMouseEventHandler( panelTitle_MouseDoubleClick );
+            this.panelTitle.MouseDoubleClick += new MouseEventHandler( panelTitle_MouseDoubleClick );
         }
 
         private void setResources()

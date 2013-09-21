@@ -39,8 +39,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -242,7 +240,7 @@ namespace cadencii
                         btn.setText( str );
                     }
                 }
-                btn.MouseDown += new BMouseEventHandler( handleCommonMouseDown );
+                btn.MouseDown += new MouseEventHandler( handleCommonMouseDown );
                 btn.setPreferredSize( new Dimension( buttonWidth, buttonWidth ) );
                 int iw = 0;
                 int ih = 0;
@@ -336,7 +334,7 @@ namespace cadencii
             setVisible( false );
         }
 
-        public void handleCommonMouseDown( Object sender, BMouseEventArgs e )
+        public void handleCommonMouseDown( Object sender, MouseEventArgs e )
         {
             if ( AppManager.getEditMode() != EditMode.NONE ) {
                 return;

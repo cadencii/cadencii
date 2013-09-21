@@ -18,7 +18,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
 
