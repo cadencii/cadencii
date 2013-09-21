@@ -39,25 +39,25 @@ namespace cadencii.media {
         private static byte[] m_buffer;
 #else
 #if USE_PLAYSOUND_DLL
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundInit();
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int SoundPrepare( int sample_rate );
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundAppend( IntPtr left, IntPtr right, int length );
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundExit();
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern double SoundGetPosition();
         /*[DllImport("cadencii.media.helper.dll")]
         private static extern bool SoundIsBusy();*/
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundWaitForExit();
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundSetResolution( int resolution );
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundKill();
-        [DllImport("cadencii.media.helper.dll")]
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundUnprepare();
 #else
 //#error 途中で詰まる場合があるので使わないでね(org.kbinani.cadencii.PlaySound)
