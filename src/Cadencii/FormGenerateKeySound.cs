@@ -89,10 +89,10 @@ namespace cadencii {
             m_singer_config2 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
             m_singer_config_utau = AppManager.editorConfig.UtauSingers.toArray( new SingerConfig[] { } );
             if ( m_singer_config1.Length > 0 ) {
-                comboSingingSynthSystem.addItem( "VOCALOID1" );
+                comboSingingSynthSystem.Items.Add( "VOCALOID1" );
             }
             if ( m_singer_config2.Length > 0 ) {
-                comboSingingSynthSystem.addItem( "VOCALOID2" );
+                comboSingingSynthSystem.Items.Add( "VOCALOID2" );
             }
 
             // 取りあえず最初に登録されているresamplerを使うってことで
@@ -100,10 +100,10 @@ namespace cadencii {
             if ( m_singer_config_utau.Length > 0 &&
                  AppManager.editorConfig.PathWavtool != null && fsys.isFileExists( AppManager.editorConfig.PathWavtool ) &&
                  resampler != null && fsys.isFileExists( resampler ) ) {
-                comboSingingSynthSystem.addItem( "UTAU" );
+                comboSingingSynthSystem.Items.Add( "UTAU" );
             }
-            if ( comboSingingSynthSystem.getItemCount() > 0 ) {
-                comboSingingSynthSystem.setSelectedIndex( 0 );
+            if ( comboSingingSynthSystem.Items.Count > 0 ) {
+                comboSingingSynthSystem.SelectedIndex = 0;
             }
             updateSinger();
             txtDir.setText( Utility.getKeySoundPath() );
@@ -119,10 +119,10 @@ namespace cadencii {
         }
 
         private void updateSinger() {
-            if ( comboSingingSynthSystem.getSelectedIndex() < 0 ) {
+            if ( comboSingingSynthSystem.SelectedIndex < 0 ) {
                 return;
             }
-            String singer = (String)comboSingingSynthSystem.getSelectedItem();
+            String singer = (String)comboSingingSynthSystem.SelectedItem;
             SingerConfig[] list = null;
             if ( singer.Equals( "VOCALOID1" ) ) {
                 list = m_singer_config1;
@@ -131,15 +131,15 @@ namespace cadencii {
             } else if ( singer.Equals( "UTAU" ) ) {
                 list = m_singer_config_utau;
             }
-            comboSinger.removeAllItems();
+            comboSinger.Items.Clear();
             if ( list == null ) {
                 return;
             }
             for ( int i = 0; i < list.Length; i++ ) {
-                comboSinger.addItem( list[i].VOICENAME );
+                comboSinger.Items.Add( list[i].VOICENAME );
             }
-            if ( comboSinger.getItemCount() > 0 ) {
-                comboSinger.setSelectedIndex( 0 );
+            if ( comboSinger.Items.Count > 0 ) {
+                comboSinger.SelectedIndex = 0;
             }
         }
 
@@ -148,8 +148,8 @@ namespace cadencii {
         }
 
         private void updateEnabled( boolean enabled ) {
-            comboSinger.setEnabled( enabled );
-            comboSingingSynthSystem.setEnabled( enabled );
+            comboSinger.Enabled = enabled;
+            comboSingingSynthSystem.Enabled = enabled;
             txtDir.setEditable( enabled );
             btnBrowse.Enabled = enabled;
             btnExecute.Enabled = enabled;
@@ -197,7 +197,7 @@ namespace cadencii {
 
         public void btnExecute_Click( Object sender, EventArgs e ) {
             PrepareStartArgument arg = new PrepareStartArgument();
-            arg.singer = (String)comboSinger.getSelectedItem();
+            arg.singer = (String)comboSinger.SelectedItem;
             arg.amplitude = 1.0;
             arg.directory = txtDir.getText();
             arg.replace = chkIgnoreExistingWavs.Checked;
@@ -380,10 +380,10 @@ namespace cadencii {
         private void InitializeComponent() {
             this.btnExecute = new Button();
             this.btnCancel = new Button();
-            this.comboSingingSynthSystem = new BComboBox();
+            this.comboSingingSynthSystem = new ComboBox();
             this.lblSingingSynthSystem = new BLabel();
             this.lblSinger = new BLabel();
-            this.comboSinger = new BComboBox();
+            this.comboSinger = new ComboBox();
             this.chkIgnoreExistingWavs = new CheckBox();
             this.txtDir = new BTextBox();
             this.btnBrowse = new Button();
@@ -507,10 +507,10 @@ namespace cadencii {
 
         private System.Windows.Forms.Button btnExecute;
         private System.Windows.Forms.Button btnCancel;
-        private BComboBox comboSingingSynthSystem;
+        private System.Windows.Forms.ComboBox comboSingingSynthSystem;
         private BLabel lblSingingSynthSystem;
         private BLabel lblSinger;
-        private BComboBox comboSinger;
+        private System.Windows.Forms.ComboBox comboSinger;
         private CheckBox chkIgnoreExistingWavs;
         private BTextBox txtDir;
         private System.Windows.Forms.Button btnBrowse;

@@ -53,7 +53,7 @@ namespace cadencii
             InitializeComponent();
 #endif
 
-            comboTemplate.removeAllItems();
+            comboTemplate.Items.Clear();
             String[] strs = new String[]{
                 "[Select a template]",
                 "normal",
@@ -63,7 +63,7 @@ namespace cadencii
                 "slow legate",
             };
             for( int i = 0; i < strs.Length; i++ ){
-                comboTemplate.addItem( strs[i] );
+                comboTemplate.Items.Add( strs[i] );
             }
 
             registerEventHandlers();
@@ -322,7 +322,7 @@ namespace cadencii
 
         public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboTemplate.getSelectedIndex() - 1;
+            int index = comboTemplate.SelectedIndex - 1;
             if( index < 0 || 4 < index ){
                 return;
             }
@@ -412,7 +412,7 @@ namespace cadencii
             this.btnCancel = new Button();
             this.btnOK = new Button();
             this.btnApply = new Button();
-            this.comboTemplate = new BComboBox();
+            this.comboTemplate = new ComboBox();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendDepth)).BeginInit();
@@ -757,7 +757,7 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnApply;
-        private BComboBox comboTemplate;
+        private System.Windows.Forms.ComboBox comboTemplate;
         #endregion
 #endif
         #endregion

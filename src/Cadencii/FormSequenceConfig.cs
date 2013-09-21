@@ -58,21 +58,21 @@ namespace cadencii
             applyLanguage();
 
             // wave channel
-            comboChannel.removeAllItems();
-            comboChannel.addItem( _( "Monoral" ) );
-            comboChannel.addItem( _( "Stereo" ) );
+            comboChannel.Items.Clear();
+            comboChannel.Items.Add( _( "Monoral" ) );
+            comboChannel.Items.Add( _( "Stereo" ) );
 
             // sample rate
-            comboSampleRate.removeAllItems();
-            comboSampleRate.addItem( "44100" );
-            comboSampleRate.addItem( "48000" );
-            comboSampleRate.addItem( "96000" );
-            comboSampleRate.setSelectedIndex( 0 );
+            comboSampleRate.Items.Clear();
+            comboSampleRate.Items.Add( "44100" );
+            comboSampleRate.Items.Add( "48000" );
+            comboSampleRate.Items.Add( "96000" );
+            comboSampleRate.SelectedIndex = 0;
 
             // pre-measure
-            comboPreMeasure.removeAllItems();
+            comboPreMeasure.Items.Clear();
             for ( int i = AppManager.MIN_PRE_MEASURE; i <= AppManager.MAX_PRE_MEASURE; i++ ) {
-                comboPreMeasure.addItem( i );
+                comboPreMeasure.Items.Add( i );
             }
 
             registerEventHandlers();
@@ -96,11 +96,11 @@ namespace cadencii
             radioCurrentTrack.setText( _( "Current Track" ) );
             labelSampleRate.setText( _( "Sample rate" ) );
 
-            int current_index = comboChannel.getSelectedIndex();
-            comboChannel.removeAllItems();
-            comboChannel.addItem( _( "Monoral" ) );
-            comboChannel.addItem( _( "Stereo" ) );
-            comboChannel.setSelectedIndex( current_index );
+            int current_index = comboChannel.SelectedIndex;
+            comboChannel.Items.Clear();
+            comboChannel.Items.Add( _( "Monoral" ) );
+            comboChannel.Items.Add( _( "Stereo" ) );
+            comboChannel.SelectedIndex = current_index;
 
             groupSequence.setTitle( _( "Sequence" ) );
             labelPreMeasure.setText( _( "Pre-measure" ) );
@@ -112,7 +112,7 @@ namespace cadencii
         /// <returns></returns>
         public int getPreMeasure()
         {
-            int indx = comboPreMeasure.getSelectedIndex();
+            int indx = comboPreMeasure.SelectedIndex;
             int ret = 1;
             if ( indx >= 0 ) {
                 ret = AppManager.MIN_PRE_MEASURE + indx;
@@ -145,10 +145,10 @@ namespace cadencii
             if ( indx < 0 ) {
                 indx = 0;
             }
-            if ( comboPreMeasure.getItemCount() <= indx ) {
-                indx = comboPreMeasure.getItemCount() - 1;
+            if ( comboPreMeasure.Items.Count <= indx ) {
+                indx = comboPreMeasure.Items.Count - 1;
             }
-            comboPreMeasure.setSelectedIndex( indx );
+            comboPreMeasure.SelectedIndex = indx;
         }
 
         /// <summary>
@@ -157,10 +157,10 @@ namespace cadencii
         /// <returns></returns>
         public int getSampleRate()
         {
-            int index = comboSampleRate.getSelectedIndex();
+            int index = comboSampleRate.SelectedIndex;
             String s = "44100";
             if ( index >= 0 ) {
-                s = (String)comboSampleRate.getItemAt( index );
+                s = (String)comboSampleRate.Items[index];
             } else {
 #if !JAVA
                 s = comboSampleRate.Text;
@@ -181,9 +181,9 @@ namespace cadencii
         /// <param name="value"></param>
         public void setSampleRate( int value )
         {
-            comboSampleRate.setSelectedIndex( 0 );
-            for ( int i = 0; i < comboSampleRate.getItemCount(); i++ ) {
-                String s = (String)comboSampleRate.getItemAt( i );
+            comboSampleRate.SelectedIndex = 0;
+            for ( int i = 0; i < comboSampleRate.Items.Count; i++ ) {
+                String s = (String)comboSampleRate.Items[i];
                 int rate = 0;
                 try {
                     rate = str.toi( s );
@@ -191,7 +191,7 @@ namespace cadencii
                     rate = 0;
                 }
                 if ( rate == value ) {
-                    comboSampleRate.setSelectedIndex( i );
+                    comboSampleRate.SelectedIndex = i;
                     break;
                 }
             }
@@ -210,7 +210,7 @@ namespace cadencii
 
         public int getWaveFileOutputChannel()
         {
-            if ( comboChannel.getSelectedIndex() <= 0 ) {
+            if ( comboChannel.SelectedIndex <= 0 ) {
                 return 1;
             } else {
                 return 2;
@@ -220,9 +220,9 @@ namespace cadencii
         public void setWaveFileOutputChannel( int value )
         {
             if ( value == 1 ) {
-                comboChannel.setSelectedIndex( 0 );
+                comboChannel.SelectedIndex = 0;
             } else {
-                comboChannel.setSelectedIndex( 1 );
+                comboChannel.SelectedIndex = 1;
             }
         }
         #endregion
@@ -287,17 +287,17 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.groupWaveFileOutput = new cadencii.windows.forms.BGroupBox();
-            this.comboSampleRate = new cadencii.windows.forms.BComboBox();
+            this.comboSampleRate = new System.Windows.Forms.ComboBox();
             this.labelSampleRate = new cadencii.windows.forms.BLabel();
             this.radioCurrentTrack = new cadencii.windows.forms.BRadioButton();
             this.radioMasterTrack = new cadencii.windows.forms.BRadioButton();
             this.lblChannel = new cadencii.windows.forms.BLabel();
-            this.comboChannel = new cadencii.windows.forms.BComboBox();
+            this.comboChannel = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupSequence = new cadencii.windows.forms.BGroupBox();
             this.labelPreMeasure = new cadencii.windows.forms.BLabel();
-            this.comboPreMeasure = new cadencii.windows.forms.BComboBox();
+            this.comboPreMeasure = new System.Windows.Forms.ComboBox();
             this.groupWaveFileOutput.SuspendLayout();
             this.groupSequence.SuspendLayout();
             this.SuspendLayout();
@@ -466,15 +466,15 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private BLabel lblChannel;
-        private BComboBox comboChannel;
+        private System.Windows.Forms.ComboBox comboChannel;
         private BGroupBox groupWaveFileOutput;
         private BRadioButton radioCurrentTrack;
         private BRadioButton radioMasterTrack;
         private BLabel labelSampleRate;
         private BGroupBox groupSequence;
         private BLabel labelPreMeasure;
-        private BComboBox comboPreMeasure;
-        private BComboBox comboSampleRate;
+        private System.Windows.Forms.ComboBox comboPreMeasure;
+        private System.Windows.Forms.ComboBox comboSampleRate;
 
 #endif
         #endregion

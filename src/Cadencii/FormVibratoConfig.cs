@@ -92,13 +92,13 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
 #endif
-                for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
-                    VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
+                for ( int i = 0; i < comboVibratoType.Items.Count; i++ ) {
+                    VibratoHandle handle = (VibratoHandle)comboVibratoType.Items[i];
 #if DEBUG
                     sout.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
 #endif
                     if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
-                        comboVibratoType.setSelectedIndex( i );
+                        comboVibratoType.SelectedIndex = i;
                         break;
                     }
                 }
@@ -164,16 +164,16 @@ namespace cadencii
         private void updateComboBoxStatus()
         {
             // 選択位置
-            int old = comboVibratoType.getSelectedIndex();
+            int old = comboVibratoType.SelectedIndex;
 
             // 全部削除
-            comboVibratoType.removeAllItems();
+            comboVibratoType.Items.Clear();
 
             // 「ビブラート無し」を表すアイテムを追加
             VibratoHandle empty = new VibratoHandle();
             empty.setCaption( "[Non Vibrato]" );
             empty.IconID = "$04040000";
-            comboVibratoType.addItem( empty );
+            comboVibratoType.Items.Add( empty );
 
             // 選択元を元に，選択肢を追加する
             if ( radioUserDefined.isSelected() ) {
@@ -181,24 +181,24 @@ namespace cadencii
                 int size = AppManager.editorConfig.AutoVibratoCustom.size();
                 for ( int i = 0; i < size; i++ ) {
                     VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                    comboVibratoType.addItem( handle );
+                    comboVibratoType.Items.Add( handle );
                 }
             } else {
                 // VOCALOID1/VOCALOID2のシステム定義のを使う場合
                 SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                 for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                     VibratoHandle vconfig = itr.next();
-                    comboVibratoType.addItem( vconfig );
+                    comboVibratoType.Items.Add( vconfig );
                 }
             }
 
             // 選択位置を戻せるなら戻す
             int index = old;
-            if ( index >= comboVibratoType.getItemCount() ) {
-                index = comboVibratoType.getItemCount() - 1;
+            if ( index >= comboVibratoType.Items.Count ) {
+                index = comboVibratoType.Items.Count - 1;
             }
             if ( 0 <= index ) {
-                comboVibratoType.setSelectedIndex( index );
+                comboVibratoType.SelectedIndex = index;
             }
         }
 
@@ -231,12 +231,12 @@ namespace cadencii
 
         public void comboVibratoType_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboVibratoType.getSelectedIndex();
+            int index = comboVibratoType.SelectedIndex;
 #if DEBUG
             sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index );
 #endif
             if ( index >= 0 ) {
-                String s = ((VibratoHandle)comboVibratoType.getItemAt( index )).IconID;
+                String s = ((VibratoHandle)comboVibratoType.Items[index]).IconID;
 #if DEBUG
                 sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index + "; iconid=" + s );
 #endif
@@ -360,7 +360,7 @@ namespace cadencii
             this.lblVibratoType = new cadencii.windows.forms.BLabel();
             this.txtVibratoLength = new cadencii.NumberTextBox();
             this.label3 = new cadencii.windows.forms.BLabel();
-            this.comboVibratoType = new cadencii.windows.forms.BComboBox();
+            this.comboVibratoType = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupSelect = new BGroupBox();
@@ -521,7 +521,7 @@ namespace cadencii
         private BLabel lblVibratoType;
         private NumberTextBox txtVibratoLength;
         private BLabel label3;
-        private BComboBox comboVibratoType;
+        private System.Windows.Forms.ComboBox comboVibratoType;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private BGroupBox groupSelect;

@@ -93,12 +93,12 @@ namespace cadencii
             setResources();
 
             mDict = dict;
-            comboCategory.setSelectedIndex( 0 );
+            comboCategory.SelectedIndex = 0;
             mFirstDict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             copyDict( mDict, mFirstDict );
 
-            comboEditKey.removeAllItems();
-            comboEditKey.addItem( BKeys.None );
+            comboEditKey.Items.Clear();
+            comboEditKey.Items.Add( BKeys.None );
             // アルファベット順になるように一度配列に入れて並べ替える
             int size = AppManager.SHORTCUT_ACCEPTABLE.size();
             BKeys[] keys = new BKeys[size];
@@ -126,7 +126,7 @@ namespace cadencii
                 }
             }
             foreach( BKeys key in keys ){
-                comboEditKey.addItem( key );
+                comboEditKey.Items.Add( key );
             }
             this.setSize( mWindowWidth, mWindowHeight );
 
@@ -148,8 +148,8 @@ namespace cadencii
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
 
             labelCategory.setText( _( "Category" ) );
-            int selected = comboCategory.getSelectedIndex();
-            comboCategory.removeAllItems();
+            int selected = comboCategory.SelectedIndex;
+            comboCategory.Items.Clear();
             foreach ( String category in mCategories ) {
                 String c = category;
                 if ( str.compare( category, "menuFile" ) ) {
@@ -173,12 +173,12 @@ namespace cadencii
                 } else {
                     c = _( "Other" );
                 }
-                comboCategory.addItem( c );
+                comboCategory.Items.Add( c );
             }
-            if ( comboCategory.getItemCount() <= selected ) {
-                selected = comboCategory.getItemCount() - 1;
+            if ( comboCategory.Items.Count <= selected ) {
+                selected = comboCategory.Items.Count - 1;
             }
-            comboCategory.setSelectedIndex( selected );
+            comboCategory.SelectedIndex = selected;
 
             labelCommand.setText( _( "Command" ) );
             labelEdit.setText( _( "Edit" ) );
@@ -226,7 +226,7 @@ namespace cadencii
             mFieldName.clear();
 
             // 現在のカテゴリーを取得
-            int selected = comboCategory.getSelectedIndex();
+            int selected = comboCategory.SelectedIndex;
             if ( selected < 0 ) {
                 selected = 0;
             }
@@ -369,7 +369,7 @@ namespace cadencii
         /// </summary>
         private void updateSelectionKeys()
         {
-            int indx = comboEditKey.getSelectedIndex();
+            int indx = comboEditKey.SelectedIndex;
             if( indx < 0 ){
                 return;
             }
@@ -377,7 +377,7 @@ namespace cadencii
             if( indx_row < 0 ){
                 return;
             }
-            BKeys key = (BKeys)comboEditKey.getItemAt( indx );
+            BKeys key = (BKeys)comboEditKey.Items[indx];
             String display = list.getItemAt( indx_row, 0 );
             if ( !mDict.containsKey( display ) ) {
                 return;
@@ -421,12 +421,12 @@ namespace cadencii
             checkShift.Checked = vkeys.contains( BKeys.Shift );
             checkControl.Checked = vkeys.contains( BKeys.Control );
             checkOption.Checked = vkeys.contains( BKeys.Alt );
-            int size = comboEditKey.getItemCount();
-            comboEditKey.setSelectedIndex( -1 );
+            int size = comboEditKey.Items.Count;
+            comboEditKey.SelectedIndex = -1;
             for( int i = 0; i < size; i++ ){
-                BKeys k = (BKeys)comboEditKey.getItemAt( i );
+                BKeys k = (BKeys)comboEditKey.Items[i];
                 if( vkeys.contains( k ) ){
-                    comboEditKey.setSelectedIndex( i );
+                    comboEditKey.SelectedIndex = i;
                     break;
                 }
             }
@@ -435,12 +435,12 @@ namespace cadencii
         
         public void comboCategory_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int selected = comboCategory.getSelectedIndex();
+            int selected = comboCategory.SelectedIndex;
 #if DEBUG
             sout.println( "FormShortcutKeys#comboCategory_selectedIndexChanged; selected=" + selected );
 #endif
             if ( selected < 0 ) {
-                comboCategory.setSelectedIndex( 0 );
+                comboCategory.SelectedIndex = 0;
                 //updateList();
                 return;
             }
@@ -531,12 +531,12 @@ namespace cadencii
             this.btnRevert = new Button();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.labelCategory = new cadencii.windows.forms.BLabel();
-            this.comboCategory = new cadencii.windows.forms.BComboBox();
+            this.comboCategory = new System.Windows.Forms.ComboBox();
             this.labelCommand = new cadencii.windows.forms.BLabel();
             this.labelEdit = new cadencii.windows.forms.BLabel();
             this.labelEditKey = new cadencii.windows.forms.BLabel();
             this.labelEditModifier = new cadencii.windows.forms.BLabel();
-            this.comboEditKey = new cadencii.windows.forms.BComboBox();
+            this.comboEditKey = new System.Windows.Forms.ComboBox();
             this.checkCommand = new CheckBox();
             this.checkShift = new CheckBox();
             this.checkControl = new CheckBox();
@@ -759,12 +759,12 @@ namespace cadencii
         private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.ToolTip toolTip;
         private BLabel labelCategory;
-        private BComboBox comboCategory;
+        private ComboBox comboCategory;
         private cadencii.windows.forms.BLabel labelCommand;
         private cadencii.windows.forms.BLabel labelEdit;
         private cadencii.windows.forms.BLabel labelEditKey;
         private cadencii.windows.forms.BLabel labelEditModifier;
-        private cadencii.windows.forms.BComboBox comboEditKey;
+        private ComboBox comboEditKey;
         private System.Windows.Forms.CheckBox checkCommand;
         private System.Windows.Forms.CheckBox checkShift;
         private System.Windows.Forms.CheckBox checkControl;

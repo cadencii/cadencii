@@ -48,9 +48,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BDialog.cs">
       <SubType>Form</SubType>
     </Compile>

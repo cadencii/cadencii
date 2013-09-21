@@ -66,65 +66,65 @@ namespace cadencii
 #endif
             applyLanguage();
 
-            comboVibratoLength.removeAllItems();
+            comboVibratoLength.Items.Clear();
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
-                comboVibratoLength.addItem( DefaultVibratoLengthUtil.toString( dvl ) );
+                comboVibratoLength.Items.Add( DefaultVibratoLengthUtil.toString( dvl ) );
             }
-            comboVibratoLength.setSelectedIndex( 1 );
+            comboVibratoLength.SelectedIndex = 1;
 
             txtAutoVibratoThresholdLength.setText( "480" );
 
-            comboAutoVibratoType1.removeAllItems();
+            comboAutoVibratoType1.Items.Clear();
             for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 VibratoHandle vconfig = itr.next();
-                comboAutoVibratoType1.addItem( vconfig );
+                comboAutoVibratoType1.Items.Add( vconfig );
             }
-            if ( comboAutoVibratoType1.getItemCount() > 0 ) {
-                comboAutoVibratoType1.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType1.Items.Count > 0 ) {
+                comboAutoVibratoType1.SelectedIndex = 0;
             }
 
-            comboAutoVibratoType2.removeAllItems();
+            comboAutoVibratoType2.Items.Clear();
             for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 ); itr.hasNext(); ) {
                 VibratoHandle vconfig = itr.next();
-                comboAutoVibratoType2.addItem( vconfig );
+                comboAutoVibratoType2.Items.Add( vconfig );
             }
-            if ( comboAutoVibratoType2.getItemCount() > 0 ) {
-                comboAutoVibratoType2.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType2.Items.Count > 0 ) {
+                comboAutoVibratoType2.SelectedIndex = 0;
             }
 
             updateCustomVibrato();
 
-            comboResolControlCurve.removeAllItems();
+            comboResolControlCurve.Items.Clear();
             for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = itr.next();
-                comboResolControlCurve.addItem( ClockResolutionUtility.toString( cr ) );
+                comboResolControlCurve.Items.Add( ClockResolutionUtility.toString( cr ) );
             }
-            comboResolControlCurve.setSelectedIndex( 0 );
+            comboResolControlCurve.SelectedIndex = 0;
 
-            comboLanguage.removeAllItems();
+            comboLanguage.Items.Clear();
             String[] list = Messaging.getRegisteredLanguage();
             int index = 0;
-            comboLanguage.addItem( "Default" );
+            comboLanguage.Items.Add( "Default" );
             int count = 0;
             foreach ( String s in list ) {
                 count++;
-                comboLanguage.addItem( s );
+                comboLanguage.Items.Add( s );
                 if ( s.Equals( Messaging.getLanguage() ) ) {
                     index = count;
                 }
             }
-            comboLanguage.setSelectedIndex( index );
+            comboLanguage.SelectedIndex = index;
 
             SingerConfig[] dict = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
             m_program_change = new Vector<String>();
-            comboDefualtSinger.removeAllItems();
+            comboDefualtSinger.Items.Clear();
             foreach ( SingerConfig kvp in dict ) {
                 m_program_change.add( kvp.VOICENAME );
-                comboDefualtSinger.addItem( kvp.VOICENAME );
+                comboDefualtSinger.Items.Add( kvp.VOICENAME );
             }
-            comboDefualtSinger.setEnabled( (comboDefualtSinger.getItemCount() > 0) );
-            if ( comboDefualtSinger.getItemCount() > 0 ) {
-                comboDefualtSinger.setSelectedIndex( 0 );
+            comboDefualtSinger.Enabled = (comboDefualtSinger.Items.Count > 0);
+            if ( comboDefualtSinger.Items.Count > 0 ) {
+                comboDefualtSinger.SelectedIndex = 0;
             }
 
             updateMidiDevice();
@@ -146,7 +146,7 @@ namespace cadencii
             .Distinct()
             .OrderBy( ( kind ) => kind ).ToList()
             .ForEach( ( kind ) => comboDefaultSynthesizer.Items.Add( kind ) );
-            comboDefaultSynthesizer.setSelectedIndex( 0 );
+            comboDefaultSynthesizer.SelectedIndex = 0;
 
             numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
             numBuffer.setMinimum( EditorConfig.MIN_BUFFER_MILLIXEC );
@@ -256,17 +256,17 @@ namespace cadencii
         /// <param name="value"></param>
         public void setDefaultSynthesizer( RendererKind value )
         {
-            int c = comboDefaultSynthesizer.getItemCount();
+            int c = comboDefaultSynthesizer.Items.Count;
             int select_indx = 0;
             for ( int i = 0; i < c; i++ ) {
-                String str = (String)comboDefaultSynthesizer.getItemAt( i );
+                String str = (String)comboDefaultSynthesizer.Items[i];
                 RendererKind p = RendererKindUtil.fromString( str );
                 if ( p == value ) {
                     select_indx = i;
                     break;
                 }
             }
-            comboDefaultSynthesizer.setSelectedIndex( select_indx );
+            comboDefaultSynthesizer.SelectedIndex = select_indx;
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace cadencii
         /// <returns></returns>
         public RendererKind getDefaultSynthesizer()
         {
-            String selstr = (String)comboDefaultSynthesizer.getSelectedItem();
+            String selstr = (String)comboDefaultSynthesizer.SelectedItem;
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
                 String str = p.getString();
                 if ( str.Equals( selstr ) ) {
@@ -438,9 +438,9 @@ namespace cadencii
 #if ENABLE_MIDI
         public int getMidiInPort()
         {
-            if ( comboMidiInPortNumber.isEnabled() ) {
-                if ( comboMidiInPortNumber.getSelectedIndex() >= 0 ) {
-                    return comboMidiInPortNumber.getSelectedIndex();
+            if ( comboMidiInPortNumber.Enabled ) {
+                if ( comboMidiInPortNumber.SelectedIndex >= 0 ) {
+                    return comboMidiInPortNumber.SelectedIndex;
                 } else {
                     return 0;
                 }
@@ -465,11 +465,11 @@ namespace cadencii
 #if ENABLE_MIDI
         public void setMidiInPort( int value )
         {
-            if ( comboMidiInPortNumber.isEnabled() ) {
-                if ( 0 <= value && value < comboMidiInPortNumber.getItemCount() ) {
-                    comboMidiInPortNumber.setSelectedIndex( value );
+            if ( comboMidiInPortNumber.Enabled ) {
+                if ( 0 <= value && value < comboMidiInPortNumber.Items.Count ) {
+                    comboMidiInPortNumber.SelectedIndex = value;
                 } else {
-                    comboMidiInPortNumber.setSelectedIndex( 0 );
+                    comboMidiInPortNumber.SelectedIndex = 0;
                 }
             }
         }
@@ -886,9 +886,9 @@ namespace cadencii
 
         public String getLanguage()
         {
-            int index = comboLanguage.getSelectedIndex();
-            if ( 0 <= index && index < comboLanguage.getItemCount() ) {
-                String title = (String)comboLanguage.getItemAt( index );
+            int index = comboLanguage.SelectedIndex;
+            if ( 0 <= index && index < comboLanguage.Items.Count ) {
+                String title = (String)comboLanguage.Items[index];
                 if ( title.Equals( "Default" ) ) {
                     return "";
                 } else {
@@ -906,7 +906,7 @@ namespace cadencii
         public ClockResolution getControlCurveResolution()
         {
             int count = -1;
-            int index = comboResolControlCurve.getSelectedIndex();
+            int index = comboResolControlCurve.SelectedIndex;
             for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution vt = itr.next();
                 count++;
@@ -914,7 +914,7 @@ namespace cadencii
                     return vt;
                 }
             }
-            comboResolControlCurve.setSelectedIndex( 0 );
+            comboResolControlCurve.SelectedIndex = 0;
             return ClockResolution.L30;
         }
 
@@ -929,7 +929,7 @@ namespace cadencii
                 ClockResolution vt = itr.next();
                 count++;
                 if ( vt.Equals( value ) ) {
-                    comboResolControlCurve.setSelectedIndex( count );
+                    comboResolControlCurve.SelectedIndex = count;
                     break;
                 }
             }
@@ -958,9 +958,9 @@ namespace cadencii
         public String getAutoVibratoType1()
         {
             int count = -1;
-            int index = comboAutoVibratoType1.getSelectedIndex();
+            int index = comboAutoVibratoType1.SelectedIndex;
             if ( 0 <= index ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.getSelectedItem();
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.SelectedItem;
                 return vconfig.IconID;
             } else {
                 return "$04040001";
@@ -969,24 +969,24 @@ namespace cadencii
 
         public void setAutoVibratoType1( String value )
         {
-            for ( int i = 0; i < comboAutoVibratoType1.getItemCount(); i++ ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.getItemAt( i );
+            for ( int i = 0; i < comboAutoVibratoType1.Items.Count; i++ ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.Items[i];
                 if ( vconfig.IconID.Equals( value ) ) {
-                    comboAutoVibratoType1.setSelectedIndex( i );
+                    comboAutoVibratoType1.SelectedIndex = i;
                     return;
                 }
             }
-            if ( comboAutoVibratoType1.getItemCount() > 0 ) {
-                comboAutoVibratoType1.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType1.Items.Count > 0 ) {
+                comboAutoVibratoType1.SelectedIndex = 0;
             }
         }
 
         public String getAutoVibratoType2()
         {
             int count = -1;
-            int index = comboAutoVibratoType2.getSelectedIndex();
+            int index = comboAutoVibratoType2.SelectedIndex;
             if ( 0 <= index ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.getSelectedItem();
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.SelectedItem;
                 return vconfig.IconID;
             } else {
                 return "$04040001";
@@ -995,24 +995,24 @@ namespace cadencii
 
         public void setAutoVibratoType2( String value )
         {
-            for ( int i = 0; i < comboAutoVibratoType2.getItemCount(); i++ ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.getItemAt( i );
+            for ( int i = 0; i < comboAutoVibratoType2.Items.Count; i++ ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.Items[i];
                 if ( vconfig.IconID.Equals( value ) ) {
-                    comboAutoVibratoType2.setSelectedIndex( i );
+                    comboAutoVibratoType2.SelectedIndex = i;
                     return;
                 }
             }
-            if ( comboAutoVibratoType2.getItemCount() > 0 ) {
-                comboAutoVibratoType2.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType2.Items.Count > 0 ) {
+                comboAutoVibratoType2.SelectedIndex = 0;
             }
         }
 
         public String getAutoVibratoTypeCustom()
         {
             int count = -1;
-            int index = comboAutoVibratoTypeCustom.getSelectedIndex();
+            int index = comboAutoVibratoTypeCustom.SelectedIndex;
             if ( 0 <= index ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoTypeCustom.getSelectedItem();
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoTypeCustom.SelectedItem;
                 return vconfig.IconID;
             } else {
                 return "$04040001";
@@ -1021,10 +1021,10 @@ namespace cadencii
 
         public void setAutoVibratoTypeCustom( String icon_id )
         {
-            for ( int i = 0; i < comboAutoVibratoTypeCustom.getItemCount(); i++ ) {
-                VibratoHandle handle = (VibratoHandle)comboAutoVibratoTypeCustom.getItemAt( i );
+            for ( int i = 0; i < comboAutoVibratoTypeCustom.Items.Count; i++ ) {
+                VibratoHandle handle = (VibratoHandle)comboAutoVibratoTypeCustom.Items[i];
                 if ( handle.IconID.Equals( icon_id ) ) {
-                    comboAutoVibratoTypeCustom.setSelectedIndex( i );
+                    comboAutoVibratoTypeCustom.SelectedIndex = i;
                     return;
                 }
             }
@@ -1054,14 +1054,14 @@ namespace cadencii
         public DefaultVibratoLengthEnum getDefaultVibratoLength()
         {
             int count = -1;
-            int index = comboVibratoLength.getSelectedIndex();
+            int index = comboVibratoLength.SelectedIndex;
             foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( index == count ) {
                     return vt;
                 }
             }
-            comboVibratoLength.setSelectedIndex( 1 );
+            comboVibratoLength.SelectedIndex = 1;
             return DefaultVibratoLengthEnum.L66;
         }
 
@@ -1071,7 +1071,7 @@ namespace cadencii
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( dvl == value ) {
-                    comboVibratoLength.setSelectedIndex( count );
+                    comboVibratoLength.SelectedIndex = count;
                     break;
                 }
             }
@@ -1128,8 +1128,8 @@ namespace cadencii
 
         public String getDefaultSingerName()
         {
-            if ( comboDefualtSinger.getSelectedIndex() >= 0 ) {
-                return m_program_change.get( comboDefualtSinger.getSelectedIndex() );
+            if ( comboDefualtSinger.SelectedIndex >= 0 ) {
+                return m_program_change.get( comboDefualtSinger.SelectedIndex );
             } else {
                 return "Miku";
             }
@@ -1145,7 +1145,7 @@ namespace cadencii
                 }
             }
             if ( index >= 0 ) {
-                comboDefualtSinger.setSelectedIndex( index );
+                comboDefualtSinger.SelectedIndex = index;
             }
         }
 
@@ -1483,9 +1483,9 @@ namespace cadencii
             boolean ud = radioUserDefined.isSelected();
             groupVocaloidEditorCompatible.setEnabled( v );
             groupUserDefined.setEnabled( ud );
-            comboAutoVibratoType1.setEnabled( v );
-            comboAutoVibratoType2.setEnabled( v );
-            comboAutoVibratoTypeCustom.setEnabled( ud );
+            comboAutoVibratoType1.Enabled = v;
+            comboAutoVibratoType2.Enabled = v;
+            comboAutoVibratoTypeCustom.Enabled = ud;
             lblAutoVibratoType1.setEnabled( v );
             lblAutoVibratoType2.setEnabled( v );
             lblAutoVibratoTypeCustom.setEnabled( ud );
@@ -1579,10 +1579,10 @@ namespace cadencii
         private void updateCustomVibrato()
         {
             int size = AppManager.editorConfig.AutoVibratoCustom.size();
-            comboAutoVibratoTypeCustom.removeAllItems();
+            comboAutoVibratoTypeCustom.Items.Clear();
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                comboAutoVibratoTypeCustom.addItem( handle );
+                comboAutoVibratoTypeCustom.Items.Add( handle );
             }
         }
 
@@ -1591,11 +1591,11 @@ namespace cadencii
         /// </summary>
         private void updateMidiDevice()
         {
-            int sel_midi = comboMidiInPortNumber.getSelectedIndex();
-            int sel_mtc = comboMtcMidiInPortNumber.getSelectedIndex();
+            int sel_midi = comboMidiInPortNumber.SelectedIndex;
+            int sel_mtc = comboMtcMidiInPortNumber.SelectedIndex;
 
-            comboMidiInPortNumber.removeAllItems();
-            comboMtcMidiInPortNumber.removeAllItems();
+            comboMidiInPortNumber.Items.Clear();
+            comboMtcMidiInPortNumber.Items.Clear();
 #if ENABLE_MIDI
             Vector<MidiDevice.Info> midiins = new Vector<MidiDevice.Info>();
             foreach ( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ) {
@@ -1622,19 +1622,19 @@ namespace cadencii
             }
 
             foreach ( MidiDevice.Info info in midiins ) {
-                comboMidiInPortNumber.addItem( info );
-                comboMtcMidiInPortNumber.addItem( info );
+                comboMidiInPortNumber.Items.Add( info );
+                comboMtcMidiInPortNumber.Items.Add( info );
             }
             if ( vec.size( midiins ) <= 0 ) {
-                comboMtcMidiInPortNumber.setEnabled( false );
-                comboMidiInPortNumber.setEnabled( false );
+                comboMtcMidiInPortNumber.Enabled = false;
+                comboMidiInPortNumber.Enabled = false;
             } else {
 #if ENABLE_MTC
                 comboMtcMidiInPortNumber.setEnabled( true );
 #else // ENABLE_MTC
-                comboMtcMidiInPortNumber.setEnabled( false );
+                comboMtcMidiInPortNumber.Enabled = false;
 #endif // ENABLE_MTC
-                comboMidiInPortNumber.setEnabled( true );
+                comboMidiInPortNumber.Enabled = true;
             }
 #else // ENABLE_MIDI
             comboMtcMidiInPortNumber.setEnabled( false );
@@ -1643,17 +1643,17 @@ namespace cadencii
 
             // 可能なら選択状態を復帰
             if ( sel_midi >= 0 ) {
-                if ( comboMidiInPortNumber.getItemCount() <= sel_midi ) {
-                    sel_midi = comboMidiInPortNumber.getItemCount() - 1;
+                if ( comboMidiInPortNumber.Items.Count <= sel_midi ) {
+                    sel_midi = comboMidiInPortNumber.Items.Count - 1;
                 }
-                comboMidiInPortNumber.setSelectedIndex( sel_midi );
+                comboMidiInPortNumber.SelectedIndex = sel_midi;
             }
 
             if ( sel_mtc >= 0 ) {
-                if ( comboMtcMidiInPortNumber.getItemCount() <= sel_mtc ) {
-                    sel_mtc = comboMtcMidiInPortNumber.getItemCount() - 1;
+                if ( comboMtcMidiInPortNumber.Items.Count <= sel_mtc ) {
+                    sel_mtc = comboMtcMidiInPortNumber.Items.Count - 1;
                 }
-                comboMtcMidiInPortNumber.setSelectedIndex( sel_mtc );
+                comboMtcMidiInPortNumber.SelectedIndex = sel_mtc;
             }
         }
 

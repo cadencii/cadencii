@@ -83,11 +83,11 @@ namespace cadencii
 
             //comboAttackTemplateを更新
             NoteHeadHandle empty = new NoteHeadHandle();
-            comboAttackTemplate.removeAllItems();
+            comboAttackTemplate.Items.Clear();
             empty.IconID = "$01010000";
             empty.setCaption( "[Non Attack]" );
-            comboAttackTemplate.addItem( empty );
-            comboAttackTemplate.setSelectedItem( empty );
+            comboAttackTemplate.Items.Add( empty );
+            comboAttackTemplate.SelectedItem = empty;
             String icon_id = "";
             if ( m_note_head_handle != null ) {
                 icon_id = m_note_head_handle.IconID;
@@ -101,14 +101,14 @@ namespace cadencii
             }
             for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 NoteHeadHandle item = itr.next();
-                comboAttackTemplate.addItem( item );
+                comboAttackTemplate.Items.Add( item );
                 if ( item.IconID.Equals( icon_id ) ) {
-                    comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
+                    comboAttackTemplate.SelectedItem = comboAttackTemplate.Items[comboAttackTemplate.Items.Count - 1];
                 }
             }
             comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
-            comboTemplate.removeAllItems();
+            comboTemplate.Items.Clear();
             String[] strs = new String[]{
                 "[Select a template]",
                 "normal",
@@ -118,7 +118,7 @@ namespace cadencii
                 "slow legate",
             };
             for( int i = 0; i < strs.Length; i++ ){
-                comboTemplate.addItem( strs[i] );
+                comboTemplate.Items.Add( strs[i] );
             }
 
 #if JAVA
@@ -277,7 +277,7 @@ namespace cadencii
         #region event handlers
         public void comboAttackTemplate_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboAttackTemplate.getSelectedIndex();
+            int index = comboAttackTemplate.SelectedIndex;
             if ( index < 0 ) {
                 return;
             }
@@ -293,7 +293,7 @@ namespace cadencii
             trackDuration.setEnabled( true );
             txtDepth.setEnabled( true );
             trackDepth.setEnabled( true );
-            NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.getSelectedItem();
+            NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.SelectedItem;
             if ( m_note_head_handle == null ) {
                 txtDuration.setText( aconfig.getDuration() + "" );
                 txtDepth.setText( aconfig.getDepth() + "" );
@@ -418,7 +418,7 @@ namespace cadencii
 
         public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboTemplate.getSelectedIndex() - 1;
+            int index = comboTemplate.SelectedIndex - 1;
             if( index < 0 || 4 < index ){
                 return;
             }
@@ -579,10 +579,10 @@ namespace cadencii
             this.lblTemplate = new BLabel();
             this.btnCancel = new Button();
             this.btnOK = new Button();
-            this.comboTemplate = new BComboBox();
+            this.comboTemplate = new ComboBox();
             this.groupAttack = new BGroupBox();
             this.lblAttackTemplate = new BLabel();
-            this.comboAttackTemplate = new BComboBox();
+            this.comboAttackTemplate = new ComboBox();
             this.txtDepth = new cadencii.NumberTextBox();
             this.txtDuration = new cadencii.NumberTextBox();
             this.trackDepth = new BSlider();
@@ -1066,7 +1066,7 @@ namespace cadencii
         private BLabel label6;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private BComboBox comboTemplate;
+        private ComboBox comboTemplate;
         private BGroupBox groupAttack;
         private NumberTextBox txtDepth;
         private NumberTextBox txtDuration;
@@ -1077,7 +1077,7 @@ namespace cadencii
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private BPanel panelButtons;
         private BPanel panelVocaloid2Template;
-        private BComboBox comboAttackTemplate;
+        private ComboBox comboAttackTemplate;
         private BLabel lblAttackTemplate;
         #endregion
 #endif
