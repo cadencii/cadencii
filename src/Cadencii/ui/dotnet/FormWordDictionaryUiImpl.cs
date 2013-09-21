@@ -21,9 +21,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 

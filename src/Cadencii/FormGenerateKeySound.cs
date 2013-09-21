@@ -33,11 +33,9 @@ using cadencii.windows.forms;
 
 namespace cadencii {
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
     using BProgressChangedEventArgs = System.ComponentModel.ProgressChangedEventArgs;
-    using BEventHandler = System.EventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using BRunWorkerCompletedEventHandler = System.ComponentModel.RunWorkerCompletedEventHandler;
     using BProgressChangedEventHandler = System.ComponentModel.ProgressChangedEventHandler;
@@ -165,11 +163,11 @@ namespace cadencii {
         #endregion
 
         #region event handlers
-        public void comboSingingSynthSystem_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void comboSingingSynthSystem_SelectedIndexChanged( Object sender, EventArgs e ) {
             updateSinger();
         }
 
-        public void btnBrowse_Click( Object sender, BEventArgs e ) {
+        public void btnBrowse_Click( Object sender, EventArgs e ) {
             folderBrowser.setSelectedPath( txtDir.getText() );
             if ( folderBrowser.showDialog( this ) != BDialogResult.OK ) {
                 return;
@@ -177,7 +175,7 @@ namespace cadencii {
             txtDir.setText( folderBrowser.getSelectedPath() );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, EventArgs e ) {
             if ( bgWork.isBusy() ) {
                 m_cancel_required = true;
                 while ( m_cancel_required ) {
@@ -197,7 +195,7 @@ namespace cadencii {
             }
         }
 
-        public void btnExecute_Click( Object sender, BEventArgs e ) {
+        public void btnExecute_Click( Object sender, EventArgs e ) {
             PrepareStartArgument arg = new PrepareStartArgument();
             arg.singer = (String)comboSinger.getSelectedItem();
             arg.amplitude = 1.0;
@@ -401,7 +399,7 @@ namespace cadencii {
             this.btnExecute.TabIndex = 0;
             this.btnExecute.Text = "Execute";
             this.btnExecute.UseVisualStyleBackColor = true;
-            this.btnExecute.Click += new BEventHandler( this.btnExecute_Click );
+            this.btnExecute.Click += new EventHandler( this.btnExecute_Click );
             // 
             // btnCancel
             // 
@@ -412,7 +410,7 @@ namespace cadencii {
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Close";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new BEventHandler( this.btnCancel_Click );
+            this.btnCancel.Click += new EventHandler( this.btnCancel_Click );
             // 
             // comboSingingSynthSystem
             // 
@@ -421,7 +419,7 @@ namespace cadencii {
             this.comboSingingSynthSystem.Name = "comboSingingSynthSystem";
             this.comboSingingSynthSystem.Size = new System.Drawing.Size( 121, 20 );
             this.comboSingingSynthSystem.TabIndex = 2;
-            this.comboSingingSynthSystem.SelectedIndexChanged += new BEventHandler( this.comboSingingSynthSystem_SelectedIndexChanged );
+            this.comboSingingSynthSystem.SelectedIndexChanged += new EventHandler( this.comboSingingSynthSystem_SelectedIndexChanged );
             // 
             // lblSingingSynthSystem
             // 
@@ -476,7 +474,7 @@ namespace cadencii {
             this.btnBrowse.TabIndex = 8;
             this.btnBrowse.Text = "...";
             this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new BEventHandler( this.btnBrowse_Click );
+            this.btnBrowse.Click += new EventHandler( this.btnBrowse_Click );
             // 
             // lblDir
             // 

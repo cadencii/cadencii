@@ -36,11 +36,9 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BEventHandler = System.EventHandler;
     using Graphics = cadencii.java.awt.Graphics2D;
 #endif
 
@@ -283,7 +281,7 @@ namespace cadencii
             return ret;
         }
 
-        void btnSaveAuthorList_Click( Object sender, BEventArgs e )
+        void btnSaveAuthorList_Click( Object sender, EventArgs e )
         {
 #if !JAVA
 #if DEBUG
@@ -304,14 +302,14 @@ namespace cadencii
 #endif
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
             timer.stop();
             close();
         }
 
-        public void btnFlip_Click( Object sender, BEventArgs e )
+        public void btnFlip_Click( Object sender, EventArgs e )
         {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
@@ -338,7 +336,7 @@ namespace cadencii
             this.repaint();
         }
 
-        public void timer_Tick( Object sender, BEventArgs e )
+        public void timer_Tick( Object sender, EventArgs e )
         {
 #if JAVA
             this.repaint();
@@ -422,7 +420,7 @@ namespace cadencii
             }
         }
 
-        private void VersionInfo_FontChanged( Object sender, BEventArgs e )
+        private void VersionInfo_FontChanged( Object sender, EventArgs e )
         {
 #if JAVA
             Util.applyFontRecurse( this, getFont() );
@@ -433,7 +431,7 @@ namespace cadencii
 #endif
         }
 
-        public void chkTwitterID_CheckedChanged( Object sender, BEventArgs e )
+        public void chkTwitterID_CheckedChanged( Object sender, EventArgs e )
         {
             m_show_twitter_id = chkTwitterID.isSelected();
             repaint();
@@ -446,12 +444,12 @@ namespace cadencii
 #else
             this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfo_Paint );
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
-            this.FontChanged += new BEventHandler( this.VersionInfo_FontChanged );
+            this.FontChanged += new EventHandler( this.VersionInfo_FontChanged );
 #endif
-            this.timer.Tick += new BEventHandler( timer_Tick );
-            this.btnFlip.Click += new BEventHandler( btnFlip_Click );
-            this.btnOK.Click += new BEventHandler( btnOK_Click );
-            this.chkTwitterID.CheckedChanged += new BEventHandler( chkTwitterID_CheckedChanged );
+            this.timer.Tick += new EventHandler( timer_Tick );
+            this.btnFlip.Click += new EventHandler( btnFlip_Click );
+            this.btnOK.Click += new EventHandler( btnOK_Click );
+            this.chkTwitterID.CheckedChanged += new EventHandler( chkTwitterID_CheckedChanged );
         }
 
         private void setResources()

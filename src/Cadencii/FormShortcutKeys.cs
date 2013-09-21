@@ -34,10 +34,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
@@ -227,9 +225,9 @@ namespace cadencii
         /// </summary>
         private void updateList()
         {
-            list.SelectedIndexChanged -= new BEventHandler( list_SelectedIndexChanged );
+            list.SelectedIndexChanged -= new EventHandler( list_SelectedIndexChanged );
             list.clear();
-            list.SelectedIndexChanged += new BEventHandler( list_SelectedIndexChanged );
+            list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
             mFieldName.clear();
 
             // 現在のカテゴリーを取得
@@ -319,34 +317,33 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            //this.list.KeyDown += new BKeyEventHandler( list_KeyDown );
-            btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
-            btnRevert.Click += new BEventHandler( btnRevert_Click );
+            btnLoadDefault.Click += new EventHandler( btnLoadDefault_Click );
+            btnRevert.Click += new EventHandler( btnRevert_Click );
             this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            comboCategory.SelectedIndexChanged += new BEventHandler( comboCategory_SelectedIndexChanged );
-            list.SelectedIndexChanged += new BEventHandler( list_SelectedIndexChanged );
-            this.SizeChanged += new BEventHandler( FormShortcutKeys_SizeChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            comboCategory.SelectedIndexChanged += new EventHandler( comboCategory_SelectedIndexChanged );
+            list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
+            this.SizeChanged += new EventHandler( FormShortcutKeys_SizeChanged );
             reRegisterHandlers();
         }
 
         private void unRegisterHandlers()
         {
-            comboEditKey.SelectedIndexChanged -= new BEventHandler( comboEditKey_SelectedIndexChanged );
-            checkCommand.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
-            checkShift.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
-            checkControl.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
-            checkOption.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
+            comboEditKey.SelectedIndexChanged -= new EventHandler( comboEditKey_SelectedIndexChanged );
+            checkCommand.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
+            checkShift.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
+            checkControl.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
+            checkOption.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
         }
         
         private void reRegisterHandlers()
         {
-            comboEditKey.SelectedIndexChanged += new BEventHandler( comboEditKey_SelectedIndexChanged );
-            checkCommand.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
-            checkShift.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
-            checkControl.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
-            checkOption.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
+            comboEditKey.SelectedIndexChanged += new EventHandler( comboEditKey_SelectedIndexChanged );
+            checkCommand.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
+            checkShift.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
+            checkControl.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
+            checkOption.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
         }
 
         private void setResources()
@@ -355,18 +352,18 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void FormShortcutKeys_SizeChanged( Object sender, BEventArgs e )
+        public void FormShortcutKeys_SizeChanged( Object sender, EventArgs e )
         {
             mWindowWidth = getWidth();
             mWindowHeight = getHeight();
         }
         
-        public void handleModifier_CheckedChanged( Object sender, BEventArgs e )
+        public void handleModifier_CheckedChanged( Object sender, EventArgs e )
         {
             updateSelectionKeys();
         }
 
-        public void comboEditKey_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboEditKey_SelectedIndexChanged( Object sender, EventArgs e )
         {
             updateSelectionKeys();
         }
@@ -411,7 +408,7 @@ namespace cadencii
             list.setItemAt( indx_row, 1, Utility.getShortcutDisplayString( keys ) ); 
         } 
 
-        public void list_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void list_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int indx = list.getSelectedRow();
             if( indx < 0 ){
@@ -455,13 +452,13 @@ namespace cadencii
             updateList();
         }
 
-        public void btnRevert_Click( Object sender, BEventArgs e )
+        public void btnRevert_Click( Object sender, EventArgs e )
         {
             copyDict( mFirstDict, mDict );
             updateList();
         }
 
-        public void btnLoadDefault_Click( Object sender, BEventArgs e )
+        public void btnLoadDefault_Click( Object sender, EventArgs e )
         {
             Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
             for ( int i = 0; i < defaults.size(); i++ ) {
@@ -487,12 +484,12 @@ namespace cadencii
 #endif
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }

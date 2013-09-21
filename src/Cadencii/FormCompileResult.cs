@@ -27,8 +27,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -72,12 +70,12 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }

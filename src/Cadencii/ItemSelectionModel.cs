@@ -70,13 +70,7 @@ import cadencii.vsq.*;
                 /// <summary>
                 /// 選択状態のアイテムが変化した時発生するイベント
                 /// </summary>
-#if JAVA
-                public BEvent<SelectedEventChangedEventHandler> selectedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
-#elif QT_VERSION
-                public: signals: void selectedEventChanged( QObject sender, bool foo );
-#else
                 public event SelectedEventChangedEventHandler SelectedEventChanged;
-#endif
 
                 #region Bezier
                 /// <summary>

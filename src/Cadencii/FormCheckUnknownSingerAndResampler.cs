@@ -33,9 +33,7 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BEventHandler = System.EventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif

@@ -43,8 +43,6 @@
     <Compile Include="BBackgroundWorker.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BCancelEventArgs.cs" />
-    <Compile Include="BCancelEventHandler.cs" />
     <Compile Include="BDoWorkEventArgs.cs" />
     <Compile Include="BDoWorkEventHandler.cs" />
     <Compile Include="BProgressChangedEventArgs.cs" />

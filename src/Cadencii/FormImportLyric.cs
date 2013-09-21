@@ -29,8 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using Character = System.Char;
     using boolean = System.Boolean;
 #endif
@@ -158,8 +156,8 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -168,12 +166,12 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }

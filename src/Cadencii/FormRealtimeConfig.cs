@@ -27,8 +27,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -66,7 +64,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void FormRealtimeConfig_Load( Object sender, BEventArgs e )
+        public void FormRealtimeConfig_Load( Object sender, EventArgs e )
         {
 #if JAVA
             System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
@@ -80,7 +78,7 @@ namespace cadencii
             }
         }
 
-        public void timer_Tick( Object sender, BEventArgs e )
+        public void timer_Tick( Object sender, EventArgs e )
         {
 #if !JAVA
             try {
@@ -156,13 +154,13 @@ namespace cadencii
 #endif
         }
 
-        public void btnStart_Click( Object sender, BEventArgs e )
+        public void btnStart_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
             close();
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
@@ -171,10 +169,10 @@ namespace cadencii
         #region helper methods
         private void registerEventHandlers()
         {
-            this.Load += new BEventHandler( FormRealtimeConfig_Load );
-            timer.Tick += new BEventHandler( timer_Tick );
-            btnStart.Click += new BEventHandler( btnStart_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            this.Load += new EventHandler( FormRealtimeConfig_Load );
+            timer.Tick += new EventHandler( timer_Tick );
+            btnStart.Click += new EventHandler( btnStart_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()

@@ -30,7 +30,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BEventHandler = System.EventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
@@ -42,11 +41,7 @@ namespace cadencii
 #endif
     {
         public const int _TITLE_HEIGHT = 29;
-#if JAVA
-        public BEvent<StateChangeRequiredEventHandler> stateChangeRequiredEvent = new BEvent<StateChangeRequiredEventHandler>();
-#else
         public event StateChangeRequiredEventHandler StateChangeRequired;
-#endif
 
         public PropertyPanelContainer()
         {
@@ -134,12 +129,10 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-#if !JAVA
-            this.panelMain.SizeChanged += new BEventHandler( panelMain_SizeChanged );
-            this.btnClose.Click += new BEventHandler( btnClose_Click );
-            this.btnWindow.Click += new BEventHandler( btnWindow_Click );
+            this.panelMain.SizeChanged += new EventHandler( panelMain_SizeChanged );
+            this.btnClose.Click += new EventHandler( btnClose_Click );
+            this.btnWindow.Click += new EventHandler( btnWindow_Click );
             this.panelTitle.MouseDoubleClick += new BMouseEventHandler( panelTitle_MouseDoubleClick );
-#endif
         }
 
         private void setResources()

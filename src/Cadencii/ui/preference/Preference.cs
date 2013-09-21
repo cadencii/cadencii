@@ -25,9 +25,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BEventHandler = System.EventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 
@@ -1228,7 +1226,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnChangeMenuFont_Click( Object sender, BEventArgs e )
+        public void btnChangeMenuFont_Click( Object sender, EventArgs e )
         {
             fontDialog.setSelectedFont( getBaseFont() );
             fontDialog.setVisible( true );
@@ -1241,7 +1239,7 @@ namespace cadencii
             }
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             boolean was_modified = false;
             if ( AppManager.editorConfig.DoNotUseVocaloid2 != (!isVocaloid2Required()) ) {
@@ -1260,7 +1258,7 @@ namespace cadencii
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnChangeScreenFont_Click( Object sender, BEventArgs e )
+        public void btnChangeScreenFont_Click( Object sender, EventArgs e )
         {
             fontDialog.setSelectedFont( m_screen_font );
             fontDialog.setVisible( true );
@@ -1273,7 +1271,7 @@ namespace cadencii
             }
         }
 
-        public void buttonResamplerAdd_Click( Object sender, BEventArgs e )
+        public void buttonResamplerAdd_Click( Object sender, EventArgs e )
         {
             openUtauCore.setSelectedFile( "resampler.exe" );
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
@@ -1342,7 +1340,7 @@ namespace cadencii
             }
         }
 
-        public void btnWavtool_Click( Object sender, BEventArgs e )
+        public void btnWavtool_Click( Object sender, EventArgs e )
         {
             if ( !txtWavtool.getText().Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
                 openUtauCore.setSelectedFile( txtWavtool.getText() );
@@ -1387,7 +1385,7 @@ namespace cadencii
             }
         }
 
-        public void btnAdd_Click( Object sender, BEventArgs e )
+        public void btnAdd_Click( Object sender, EventArgs e )
         {
 #if DEBUG
             if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -1413,7 +1411,7 @@ namespace cadencii
             }
         }
 
-        public void listSingers_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void listSingers_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
             if ( index < 0 ) {
@@ -1427,7 +1425,7 @@ namespace cadencii
             }
         }
 
-        public void btnRemove_Click( Object sender, BEventArgs e )
+        public void btnRemove_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
             if ( 0 <= index && index < m_utau_singers.size() ) {
@@ -1436,7 +1434,7 @@ namespace cadencii
             UpdateUtausingerList();
         }
 
-        public void btnDown_Click( Object sender, BEventArgs e )
+        public void btnDown_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
 #if DEBUG
@@ -1451,7 +1449,7 @@ namespace cadencii
             }
         }
 
-        public void btnUp_Click( Object sender, BEventArgs e )
+        public void btnUp_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
 #if DEBUG
@@ -1466,7 +1464,7 @@ namespace cadencii
             }
         }
 
-        public void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e )
+        public void chkAutoBackup_CheckedChanged( Object sender, EventArgs e )
         {
             numAutoBackupInterval.setEnabled( chkAutoBackup.isSelected() );
         }
@@ -1478,12 +1476,12 @@ namespace cadencii
             columnWidthHeaderPath = listSingers.getColumnWidth( 2 );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void commonChangeAutoVibratoType( Object sender, BEventArgs e )
+        public void commonChangeAutoVibratoType( Object sender, EventArgs e )
         {
             boolean v = radioVocaloidEditorCompatible.isSelected();
             boolean ud = radioUserDefined.isSelected();
@@ -1497,7 +1495,7 @@ namespace cadencii
             lblAutoVibratoTypeCustom.setEnabled( ud );
         }
 
-        public void buttonWinePrefix_Click( Object sender, BEventArgs e )
+        public void buttonWinePrefix_Click( Object sender, EventArgs e )
         {
             BFileChooser dialog = null;
             try {
@@ -1518,7 +1516,7 @@ namespace cadencii
             }
         }
 
-        public void buttonWineTop_Click( Object sender, BEventArgs e )
+        public void buttonWineTop_Click( Object sender, EventArgs e )
         {
             BFileChooser dialog = null;
             try {
@@ -1539,7 +1537,7 @@ namespace cadencii
             }
         }
 
-        public void radioWineBuiltin_CheckedChanged( Object sender, BEventArgs e )
+        public void radioWineBuiltin_CheckedChanged( Object sender, EventArgs e )
         {
             boolean enable = !radioWineBuiltin.isSelected();
             textWineTop.setEnabled( enable );
@@ -1704,27 +1702,27 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnChangeScreenFont.Click += new BEventHandler( btnChangeScreenFont_Click );
-            btnChangeMenuFont.Click += new BEventHandler( btnChangeMenuFont_Click );
-            btnWavtool.Click += new BEventHandler( btnWavtool_Click );
-            buttonResamplerAdd.Click += new BEventHandler( buttonResamplerAdd_Click );
-            buttonResamplerRemove.Click += new BEventHandler( buttonResamplerRemove_Click );
-            buttonResamplerUp.Click += new BEventHandler( buttonResamplerUpDown_Click );
-            buttonResamplerDown.Click += new BEventHandler( buttonResamplerUpDown_Click );
-            btnAquesTone.Click += new BEventHandler( btnAquesTone_Click );
-            btnRemove.Click += new BEventHandler( btnRemove_Click );
-            btnAdd.Click += new BEventHandler( btnAdd_Click );
-            btnUp.Click += new BEventHandler( btnUp_Click );
-            btnDown.Click += new BEventHandler( btnDown_Click );
-            listSingers.SelectedIndexChanged += new BEventHandler( listSingers_SelectedIndexChanged );
-            chkAutoBackup.CheckedChanged += new BEventHandler( chkAutoBackup_CheckedChanged );
-            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnChangeScreenFont.Click += new EventHandler( btnChangeScreenFont_Click );
+            btnChangeMenuFont.Click += new EventHandler( btnChangeMenuFont_Click );
+            btnWavtool.Click += new EventHandler( btnWavtool_Click );
+            buttonResamplerAdd.Click += new EventHandler( buttonResamplerAdd_Click );
+            buttonResamplerRemove.Click += new EventHandler( buttonResamplerRemove_Click );
+            buttonResamplerUp.Click += new EventHandler( buttonResamplerUpDown_Click );
+            buttonResamplerDown.Click += new EventHandler( buttonResamplerUpDown_Click );
+            btnAquesTone.Click += new EventHandler( btnAquesTone_Click );
+            btnRemove.Click += new EventHandler( btnRemove_Click );
+            btnAdd.Click += new EventHandler( btnAdd_Click );
+            btnUp.Click += new EventHandler( btnUp_Click );
+            btnDown.Click += new EventHandler( btnDown_Click );
+            listSingers.SelectedIndexChanged += new EventHandler( listSingers_SelectedIndexChanged );
+            chkAutoBackup.CheckedChanged += new EventHandler( chkAutoBackup_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
             this.FormClosing += new BFormClosingEventHandler( Preference_FormClosing );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            radioVocaloidEditorCompatible.CheckedChanged += new BEventHandler( commonChangeAutoVibratoType );
-            buttonWinePrefix.Click += new BEventHandler( buttonWinePrefix_Click );
-            buttonWineTop.Click += new BEventHandler( buttonWineTop_Click );
-            radioWineBuiltin.CheckedChanged += new BEventHandler( radioWineBuiltin_CheckedChanged );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioVocaloidEditorCompatible.CheckedChanged += new EventHandler( commonChangeAutoVibratoType );
+            buttonWinePrefix.Click += new EventHandler( buttonWinePrefix_Click );
+            buttonWineTop.Click += new EventHandler( buttonWineTop_Click );
+            radioWineBuiltin.CheckedChanged += new EventHandler( radioWineBuiltin_CheckedChanged );
         }
 
         private void setResources()

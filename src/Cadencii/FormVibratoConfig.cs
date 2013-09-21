@@ -33,9 +33,7 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -206,18 +204,18 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            radioUserDefined.CheckedChanged += new BEventHandler( handleRadioCheckedChanged );
-            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
-              txtVibratoLength.TextChanged += new BEventHandler( txtVibratoLength_TextChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioUserDefined.CheckedChanged += new EventHandler( handleRadioCheckedChanged );
+            comboVibratoType.SelectedIndexChanged += new EventHandler( comboVibratoType_SelectedIndexChanged );
+              txtVibratoLength.TextChanged += new EventHandler( txtVibratoLength_TextChanged );
         }
 
         public void handleRadioCheckedChanged( Object sender, EventArgs e )
         {
-            comboVibratoType.SelectedIndexChanged -= new BEventHandler( comboVibratoType_SelectedIndexChanged );
+            comboVibratoType.SelectedIndexChanged -= new EventHandler( comboVibratoType_SelectedIndexChanged );
             updateComboBoxStatus();
-            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
+            comboVibratoType.SelectedIndexChanged += new EventHandler( comboVibratoType_SelectedIndexChanged );
         }
 
         private void setResources()
@@ -226,12 +224,12 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboVibratoType_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int index = comboVibratoType.getSelectedIndex();
 #if DEBUG
@@ -289,7 +287,7 @@ namespace cadencii
             }
         }
 
-        public void txtVibratoLength_TextChanged( Object sender, BEventArgs e )
+        public void txtVibratoLength_TextChanged( Object sender, EventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "txtVibratoLength_TextChanged" );
@@ -320,7 +318,7 @@ namespace cadencii
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }

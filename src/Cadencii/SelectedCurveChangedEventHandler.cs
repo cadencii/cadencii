@@ -11,21 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
 
-import cadencii.BEventHandler;
-
-public class SelectedCurveChangedEventHandler extends BEventHandler{
-    public SelectedCurveChangedEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, CurveType.class );
-    }
-    
-    public SelectedCurveChangedEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, CurveType.class );
-    }
-}
-#else
 using System;
 
 namespace cadencii {
@@ -33,4 +19,3 @@ namespace cadencii {
     public delegate void SelectedCurveChangedEventHandler( Object sender, CurveType curve_type );
 
 }
-#endif

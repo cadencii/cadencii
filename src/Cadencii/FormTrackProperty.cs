@@ -29,8 +29,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -80,9 +78,9 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            txtMasterTuning.TextChanged += new BEventHandler( txtMasterTuning_TextChanged );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            txtMasterTuning.TextChanged += new EventHandler( txtMasterTuning_TextChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -91,7 +89,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void txtMasterTuning_TextChanged( Object sender, BEventArgs e )
+        public void txtMasterTuning_TextChanged( Object sender, EventArgs e )
         {
             int v = m_master_tuning;
             try {
@@ -101,12 +99,12 @@ namespace cadencii
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }

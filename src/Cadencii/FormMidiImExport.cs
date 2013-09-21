@@ -28,9 +28,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BEventHandler = System.EventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 #endif
@@ -243,17 +241,17 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnCheckAll.Click += new BEventHandler( btnCheckAll_Click );
-            btnUncheckAll.Click += new BEventHandler( btnUnckeckAll_Click );
-            chkNote.CheckedChanged += new BEventHandler( chkNote_CheckedChanged );
-            chkMetaText.Click += new BEventHandler( chkMetaText_Click );
-            chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            btnCheckAll.Click += new EventHandler( btnCheckAll_Click );
+            btnUncheckAll.Click += new EventHandler( btnUnckeckAll_Click );
+            chkNote.CheckedChanged += new EventHandler( chkNote_CheckedChanged );
+            chkMetaText.Click += new EventHandler( chkMetaText_Click );
+            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
             this.FormClosing += new BFormClosingEventHandler( FormMidiImExport_FormClosing );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            radioGateTime.CheckedChanged += new BEventHandler( radioGateTime_CheckedChanged );
-            radioPlayTime.CheckedChanged += new BEventHandler( radioPlayTime_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioGateTime.CheckedChanged += new EventHandler( radioGateTime_CheckedChanged );
+            radioPlayTime.CheckedChanged += new EventHandler( radioPlayTime_CheckedChanged );
         }
 
         private void setResources()
@@ -262,21 +260,21 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnCheckAll_Click( Object sender, BEventArgs e )
+        public void btnCheckAll_Click( Object sender, EventArgs e )
         {
             for ( int i = 0; i < listTrack.getItemCountRow(); i++ ) {
                 listTrack.setRowChecked( i, true );
             }
         }
 
-        public void btnUnckeckAll_Click( Object sender, BEventArgs e )
+        public void btnUnckeckAll_Click( Object sender, EventArgs e )
         {
             for ( int i = 0; i < listTrack.getItemCountRow(); i++ ) {
                 listTrack.setRowChecked( i, false );
             }
         }
 
-        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e )
+        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, EventArgs e )
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkExportVocaloidNrpn.isSelected() ) {
@@ -290,7 +288,7 @@ namespace cadencii
             }
         }
 
-        public void chkNote_CheckedChanged( Object sender, BEventArgs e )
+        public void chkNote_CheckedChanged( Object sender, EventArgs e )
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkNote.isSelected() ) {
@@ -304,7 +302,7 @@ namespace cadencii
             }
         }
 
-        public void chkMetaText_Click( Object sender, BEventArgs e )
+        public void chkMetaText_Click( Object sender, EventArgs e )
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
@@ -318,12 +316,12 @@ namespace cadencii
             columnWidthNotes = listTrack.getColumnWidth( 2 );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }

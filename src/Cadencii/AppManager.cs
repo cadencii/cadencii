@@ -48,8 +48,6 @@ using cadencii.xml;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -582,92 +580,44 @@ namespace cadencii
         /// <summary>
         /// メイン画面で、グリッド表示のOn/Offが切り替わった時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void gridVisibleChanged( QObject sender, QObject e );
-#else
-        public static event BEventHandler GridVisibleChanged;
-#endif
+        public static event EventHandler GridVisibleChanged;
 
         /// <summary>
         /// プレビュー再生が開始された時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void previewStartedEvent( QObject sender, QObject e );
-#else
-        public static event BEventHandler PreviewStarted;
-#endif
+        public static event EventHandler PreviewStarted;
 
         /// <summary>
         /// プレビュー再生が終了した時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void previewAborted( QObject sender, QObject e );
-#else
-        public static event BEventHandler PreviewAborted;
-#endif
+        public static event EventHandler PreviewAborted;
 
         /// <summary>
         /// 編集ツールが変化した時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void selectedToolChanged( QObject sender, QObject e );
-#else
-        public static event BEventHandler SelectedToolChanged;
-#endif
+        public static event EventHandler SelectedToolChanged;
 
         /// <summary>
         /// BGMに何らかの変更があった時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> updateBgmStatusRequiredEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void updateBgmStatusRequired( QObject sender, QObject e );
-#else
-        public static event BEventHandler UpdateBgmStatusRequired;
-#endif
+        public static event EventHandler UpdateBgmStatusRequired;
 
         /// <summary>
         /// メインウィンドウにフォーカスを当てる要求があった時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> mainWindowFocusRequiredEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void mainWindowFocusRequired( QObject sender, QObject e );
-#else
-        public static event BEventHandler MainWindowFocusRequired;
-#endif
+        public static event EventHandler MainWindowFocusRequired;
 
         /// <summary>
         /// 編集されたかどうかを表す値に変更が要求されたときに発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<EditedStateChangedEventHandler> editedStateChangedEvent = new BEvent<EditedStateChangedEventHandler>();
-#elif QT_VERSION
-        public: signals: void editedStateChanged( QObject sender, bool edited );
-#else
         public static event EditedStateChangedEventHandler EditedStateChanged;
-#endif
 
         /// <summary>
         /// 波形ビューのリロードが要求されたとき発生するイベント．
         /// GeneralEventArgsの引数は，トラック番号,waveファイル名,開始時刻(秒),終了時刻(秒)が格納されたObject[]配列
         /// 開始時刻＞終了時刻の場合は，partialではなく全体のリロード要求
         /// </summary>
-#if JAVA
-        public static BEvent<WaveViewRealoadRequiredEventHandler> waveViewReloadRequiredEvent = new BEvent<WaveViewRealoadRequiredEventHandler>();
-#elif QT_VERSION
-        public: signals: void waveViewReloadRequired( QObject sender, int track, QString path, double sec_start, double sec_end );
-#else
         public static event WaveViewRealoadRequiredEventHandler WaveViewReloadRequired;
-#endif
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -1852,15 +1802,9 @@ namespace cadencii
             }
 
             try {
-#if JAVA
-                mainWindowFocusRequiredEvent.raise( AppManager.class, new BEventArgs() );
-#elif QT_VERSION
-                mainWindowFocusRequired( this, null );
-#else
                 if ( MainWindowFocusRequired != null ) {
                     MainWindowFocusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".endShowDialog; ex=" + ex + "\n" );
                 sout.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
@@ -2002,7 +1946,7 @@ namespace cadencii
             }
         }
 
-        public static void handleAutoBackupTimerTick( Object sender, BEventArgs e )
+        public static void handleAutoBackupTimerTick( Object sender, EventArgs e )
         {
 #if DEBUG
             sout.println( "AppManager::handleAutoBackupTimerTick" );
@@ -2123,15 +2067,9 @@ namespace cadencii
             mIsCurveMode = value;
             if ( old != mIsCurveMode ) {
                 try {
-#if JAVA
-                    selectedToolChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                    selectedToolChanged( this, null );
-#else
                     if ( SelectedToolChanged != null ) {
                         SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "AppManager#setCurveMode; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setCurveMode; ex=" + ex + "\n" );
@@ -2165,15 +2103,9 @@ namespace cadencii
                 ICommand inv = mVsq.executeCommand( run );
                 if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
                     try {
-#if JAVA
-                        updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                        updateBgmStatusRequired( this, null );
-#else
                         if ( UpdateBgmStatusRequired != null ) {
                             UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                         }
-#endif
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".undo; ex=" + ex + "\n" );
                         serr.println( typeof( AppManager ) + ".undo; ex=" + ex );
@@ -2355,15 +2287,9 @@ namespace cadencii
             if ( value != mGridVisible ) {
                 mGridVisible = value;
                 try {
-#if JAVA
-                    gridVisibleChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                    gridVisibleChanged( this, null );
-#else
                     if ( GridVisibleChanged != null ) {
                         GridVisibleChanged.Invoke( typeof( AppManager ), new EventArgs() );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "AppManager#setGridVisible; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setGridVisible; ex=" + ex + "\n" );
@@ -2419,15 +2345,9 @@ namespace cadencii
                                 mPlaying = false;
                                 return;
                             }
-#if JAVA
-                            previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                            previewStarted( this, null );
-#else
                             if ( PreviewStarted != null ) {
                                 PreviewStarted.Invoke( typeof( AppManager ), new EventArgs() );
                             }
-#endif
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
@@ -2441,15 +2361,9 @@ namespace cadencii
 #if DEBUG
                             sout.println( "AppManager#setPlaying; raise previewAbortedEvent" );
 #endif
-#if JAVA
-                            previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                            previewAbortedEvent( this, null );
-#else
                             if ( PreviewAborted != null ) {
                                 PreviewAborted.Invoke( typeof( AppManager ), new EventArgs() );
                             }
-#endif
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
@@ -2978,11 +2892,7 @@ namespace cadencii
             reloadUtauVoiceDB();
 
             mAutoBackupTimer = new BTimer();
-#if JAVA
-            mAutoBackupTimer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
-#else
-            mAutoBackupTimer.Tick += new BEventHandler( handleAutoBackupTimerTick );
-#endif
+            mAutoBackupTimer.Tick += new EventHandler( handleAutoBackupTimerTick );
         }
 
         /// <summary>

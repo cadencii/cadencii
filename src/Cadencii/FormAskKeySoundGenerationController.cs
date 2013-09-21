@@ -30,8 +30,6 @@ using cadencii.apputil;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 
 #endif
 

@@ -35,8 +35,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -614,13 +612,7 @@ namespace cadencii
         /// PositionQuantize, PositionQuantizeTriplet, LengthQuantize, LengthQuantizeTripletの描くプロパティのいずれかが
         /// 変更された時発生します
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void quantizeModeChanged( QObject sender, QObject e );
-#else
-        public static event BEventHandler QuantizeModeChanged;
-#endif
+        public static event EventHandler QuantizeModeChanged;
 
         /// <summary>
         /// コンストラクタ．起動したOSによって動作を変える場合がある
@@ -1223,19 +1215,10 @@ namespace cadencii
         /// QuantizeModeChangedイベントを発行します
         /// </summary>
         private void invokeQuantizeModeChangedEvent()
-#if JAVA
-            throws java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException
-#endif
         {
-#if JAVA
-            quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
-#elif QT_VERSION
-            quantizeModeChanged( null, null );
-#else
             if ( QuantizeModeChanged != null ) {
                 QuantizeModeChanged.Invoke( typeof( EditorConfig ), new EventArgs() );
             }
-#endif
         }
 
 #if !JAVA

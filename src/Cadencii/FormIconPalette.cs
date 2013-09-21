@@ -40,10 +40,8 @@ namespace cadencii
 {
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BEventHandler = System.EventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
 
@@ -164,9 +162,9 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            this.Load += new BEventHandler( FormIconPalette_Load );
+            this.Load += new EventHandler( FormIconPalette_Load );
             this.FormClosing += new BFormClosingEventHandler( FormIconPalette_FormClosing );
-            menuWindowHide.Click += new BEventHandler( menuWindowHide_Click );
+            menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
         }
 
         private void init()
@@ -320,7 +318,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void FormIconPalette_Load( Object sender, BEventArgs e )
+        public void FormIconPalette_Load( Object sender, EventArgs e )
         {
             // コンストラクタから呼ぶと、スレッドが違うので（たぶん）うまく行かない
             setAlwaysOnTop( true );

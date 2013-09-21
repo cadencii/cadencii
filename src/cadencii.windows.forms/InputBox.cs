@@ -26,8 +26,6 @@ using cadencii.windows.forms;
 
 namespace cadencii.windows.forms
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -58,12 +56,12 @@ namespace cadencii.windows.forms
             txtInput.setText( value );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOk_Click( Object sender, BEventArgs e )
+        public void btnOk_Click( Object sender, EventArgs e )
         {
 #if DEBUG
             sout.println( "InputBox#btnOk_Click" );
@@ -73,8 +71,8 @@ namespace cadencii.windows.forms
 
         private void registerEventHandlers()
         {
-            btnOk.Click += new BEventHandler( btnOk_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOk.Click += new EventHandler( btnOk_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
 #if JAVA

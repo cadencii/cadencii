@@ -32,7 +32,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 
 #endif
@@ -190,18 +189,18 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            txtBendLength.TextChanged += new BEventHandler( txtBendLength_TextChanged );
-            txtBendDepth.TextChanged += new BEventHandler( txtBendDepth_TextChanged );
-            trackBendLength.ValueChanged += new BEventHandler( trackBendLength_Scroll );
-            trackBendDepth.ValueChanged += new BEventHandler( trackBendDepth_Scroll );
-            txtAccent.TextChanged += new BEventHandler( txtAccent_TextChanged );
-            txtDecay.TextChanged += new BEventHandler( txtDecay_TextChanged );
-            trackAccent.ValueChanged += new BEventHandler( trackAccent_Scroll );
-            trackDecay.ValueChanged += new BEventHandler( trackDecay_Scroll );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnApply.Click += new BEventHandler( btnApply_Click );
-            comboTemplate.SelectedIndexChanged += new BEventHandler( comboBox1_SelectedIndexChanged );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnApply.Click += new EventHandler( btnApply_Click );
+            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()

@@ -34,9 +34,7 @@ using cadencii.java.awt.event_;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -108,11 +106,7 @@ namespace cadencii
                     comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
                 }
             }
-#if JAVA
-            comboAttackTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboAttackTemplate_SelectedIndexChanged" ) );
-#else
-            comboAttackTemplate.SelectedIndexChanged += new BEventHandler( comboAttackTemplate_SelectedIndexChanged );
-#endif
+            comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
             comboTemplate.removeAllItems();
             String[] strs = new String[]{
@@ -260,21 +254,21 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            txtBendLength.TextChanged += new BEventHandler( txtBendLength_TextChanged );
-            txtBendDepth.TextChanged += new BEventHandler( txtBendDepth_TextChanged );
-            trackBendLength.ValueChanged += new BEventHandler( trackBendLength_Scroll );
-            trackBendDepth.ValueChanged += new BEventHandler( trackBendDepth_Scroll );
-            txtAccent.TextChanged += new BEventHandler( txtAccent_TextChanged );
-            txtDecay.TextChanged += new BEventHandler( txtDecay_TextChanged );
-            trackAccent.ValueChanged += new BEventHandler( trackAccent_Scroll );
-            trackDecay.ValueChanged += new BEventHandler( trackDecay_Scroll );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            comboTemplate.SelectedIndexChanged += new BEventHandler( comboBox1_SelectedIndexChanged );
-            txtDepth.TextChanged += new BEventHandler( txtDepth_TextChanged );
-            txtDuration.TextChanged += new BEventHandler( txtDuration_TextChanged );
-            trackDepth.ValueChanged += new BEventHandler( trackDepth_Scroll );
-            trackDuration.ValueChanged += new BEventHandler( trackDuration_Scroll );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
+            txtDepth.TextChanged += new EventHandler( txtDepth_TextChanged );
+            txtDuration.TextChanged += new EventHandler( txtDuration_TextChanged );
+            trackDepth.ValueChanged += new EventHandler( trackDepth_Scroll );
+            trackDuration.ValueChanged += new EventHandler( trackDuration_Scroll );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -283,7 +277,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void comboAttackTemplate_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboAttackTemplate_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int index = comboAttackTemplate.getSelectedIndex();
             if ( index < 0 ) {
@@ -311,7 +305,7 @@ namespace cadencii
             m_note_head_handle.setDepth( trackDepth.getValue() );
         }
 
-        public void trackBendDepth_Scroll( Object sender, BEventArgs e )
+        public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
             String s = trackBendDepth.getValue() + "";
             if( !str.compare( s, txtBendDepth.getText() ) ){
@@ -319,7 +313,7 @@ namespace cadencii
             }
         }
 
-        public void txtBendDepth_TextChanged( Object sender, BEventArgs e )
+        public void txtBendDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
                 int draft = str.toi( txtBendDepth.getText() );
@@ -338,7 +332,7 @@ namespace cadencii
             }
         }
 
-        public void trackBendLength_Scroll( Object sender, BEventArgs e )
+        public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
             String s = trackBendLength.getValue() + "";
             if( !str.compare( s, txtBendLength.getText() ) ){
@@ -346,7 +340,7 @@ namespace cadencii
             }
         }
 
-        public void txtBendLength_TextChanged( Object sender, BEventArgs e )
+        public void txtBendLength_TextChanged( Object sender, EventArgs e )
         {
             try {
                 int draft = str.toi( txtBendLength.getText() );
@@ -365,7 +359,7 @@ namespace cadencii
             }
         }
 
-        public void trackDecay_Scroll( Object sender, BEventArgs e )
+        public void trackDecay_Scroll( Object sender, EventArgs e )
         {
             String s = trackDecay.getValue() + "";
             if( !str.compare( s, txtDecay.getText() ) ){
@@ -373,7 +367,7 @@ namespace cadencii
             }
         }
 
-        public void txtDecay_TextChanged( Object sender, BEventArgs e )
+        public void txtDecay_TextChanged( Object sender, EventArgs e )
         {
             try {
                 int draft = str.toi( txtDecay.getText() );
@@ -392,7 +386,7 @@ namespace cadencii
             }
         }
 
-        public void trackAccent_Scroll( Object sender, BEventArgs e )
+        public void trackAccent_Scroll( Object sender, EventArgs e )
         {
             String s = trackAccent.getValue() + "";
             if( !str.compare( s, txtAccent.getText() ) ){
@@ -400,7 +394,7 @@ namespace cadencii
             }
         }
 
-        public void txtAccent_TextChanged( Object sender, BEventArgs e )
+        public void txtAccent_TextChanged( Object sender, EventArgs e )
         {
             try {
                 int draft = str.toi( txtAccent.getText() );
@@ -419,12 +413,12 @@ namespace cadencii
             }
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int index = comboTemplate.getSelectedIndex() - 1;
             if( index < 0 || 4 < index ){
@@ -442,7 +436,7 @@ namespace cadencii
             setDEMaccent( dem_accent[index] );
         }
 
-        public void btnApply_Click( Object sender, BEventArgs e )
+        public void btnApply_Click( Object sender, EventArgs e )
         {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
@@ -453,7 +447,7 @@ namespace cadencii
             }
         }
 
-        public void trackDuration_Scroll( Object sender, BEventArgs e )
+        public void trackDuration_Scroll( Object sender, EventArgs e )
         {
             String s = trackDuration.getValue() + "";
             if( !str.compare( s, txtDuration.getText() ) ){
@@ -464,7 +458,7 @@ namespace cadencii
             }
         }
 
-        public void trackDepth_Scroll( Object sender, BEventArgs e )
+        public void trackDepth_Scroll( Object sender, EventArgs e )
         {
             String s = trackDepth.getValue() + "";
             if( !str.compare( s, txtDepth.getText() ) ){
@@ -475,7 +469,7 @@ namespace cadencii
             }
         }
 
-        public void txtDuration_TextChanged( Object sender, BEventArgs e )
+        public void txtDuration_TextChanged( Object sender, EventArgs e )
         {
             try {
                 int draft = str.toi( txtDuration.getText() );
@@ -500,7 +494,7 @@ namespace cadencii
             }
         }
 
-        public void txtDepth_TextChanged( Object sender, BEventArgs e )
+        public void txtDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
                 int draft = str.toi( txtDepth.getText() );
@@ -525,7 +519,7 @@ namespace cadencii
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }

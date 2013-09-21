@@ -32,7 +32,6 @@ namespace cadencii
 {
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BEventHandler = System.EventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
@@ -384,12 +383,7 @@ namespace cadencii
 #endif
                     break;
                 }
-#if JAVA
-                repaint();
-#else
-                this.Invoke( new BEventHandler( invalidatePictOverview ) );
-                //mMainForm.refreshScreen();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
-#endif
+                this.Invoke( new EventHandler( invalidatePictOverview ) );
             }
 #if JAVA
         }
@@ -439,8 +433,8 @@ namespace cadencii
             this.MouseUp += new BMouseEventHandler( handleMouseUp );
             this.MouseMove += new BMouseEventHandler( handleMouseMove );
             this.MouseDoubleClick += new BMouseEventHandler( handleMouseDoubleClick );
-            this.MouseLeave += new BEventHandler( handleMouseLeave );
-            this.Resize += new BEventHandler( handleResize );
+            this.MouseLeave += new EventHandler( handleMouseLeave );
+            this.Resize += new EventHandler( handleResize );
         }
 
         public void handleResize( Object sender, EventArgs e )

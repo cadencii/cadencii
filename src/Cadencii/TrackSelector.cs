@@ -41,12 +41,10 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
-    using BEventHandler = System.EventHandler;
     using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
 
@@ -415,43 +413,23 @@ namespace cadencii
         /// <summary>
         /// 最前面に表示するカーブの種類が変更されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
-#else
         public event SelectedCurveChangedEventHandler SelectedCurveChanged;
-#endif
         /// <summary>
         /// 表示するトラック番号が変更されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
-#else
         public event SelectedTrackChangedEventHandler SelectedTrackChanged;
-#endif
         /// <summary>
         /// VSQの編集コマンドが発行されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<BEventHandler> commandExecutedEvent = new BEvent<BEventHandler>();
-#else
-        public event BEventHandler CommandExecuted;
-#endif
+        public event EventHandler CommandExecuted;
         /// <summary>
         /// トラックの歌声合成が要求されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<RenderRequiredEventHandler> renderRequiredEvent = new BEvent<RenderRequiredEventHandler>();
-#else
         public event RenderRequiredEventHandler RenderRequired;
-#endif
         /// <summary>
         /// このコントロールの推奨最少表示高さが変わったとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<BEventHandler> preferredMinHeightChangedEvent = new BEvent<BEventHandler>();
-#else
-        public event BEventHandler PreferredMinHeightChanged;
-#endif
+        public event EventHandler PreferredMinHeightChanged;
 
 #if JAVA
         /**
@@ -965,15 +943,9 @@ namespace cadencii
                 AppManager.getVsqFile().executeCommand( command );
             }
             try {
-#if JAVA
-                commandExecutedEvent.raise( this, new BEventArgs() );
-#elif QT_VERSION
-                commandExecuted( this, new BEventArgs() );
-#else
                 if ( CommandExecuted != null ) {
-                    CommandExecuted.Invoke( this, new BEventArgs() );
+                    CommandExecuted.Invoke( this, new EventArgs() );
                 }
-#endif
             } catch ( Exception ex ) {
                 serr.println( "TrackSelector#executeCommand; ex=" + ex );
             }
@@ -1150,13 +1122,9 @@ namespace cadencii
             int min_size = getPreferredMinSize();
             if ( mLastPreferredMinHeight != min_size ) {
                 try {
-#if JAVA
-                    preferredMinHeightChangedEvent.raise( this, new BEventArgs() );
-#else
                     if ( PreferredMinHeightChanged != null ) {
-                        PreferredMinHeightChanged.Invoke( this, new BEventArgs() );
+                        PreferredMinHeightChanged.Invoke( this, new EventArgs() );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
                 }
@@ -2838,14 +2806,12 @@ namespace cadencii
             return getWidth() - AppManager.keyWidth;
         }
 
-#if !JAVA
-        public void TrackSelector_Load( Object sender, BEventArgs e )
+        public void TrackSelector_Load( Object sender, EventArgs e )
         {
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true );
         }
-#endif
 
         public void TrackSelector_MouseClick( Object sender, BMouseEventArgs e )
         {
@@ -5360,7 +5326,7 @@ namespace cadencii
 #endif
         }
 
-        public void TrackSelector_MouseHover( Object sender, BEventArgs e )
+        public void TrackSelector_MouseHover( Object sender, EventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseHover" );
@@ -5540,24 +5506,11 @@ namespace cadencii
             }
         }
 
-#if JAVA
-        private class MouseHoverEventGeneratorProc extends Thread{
-            public void run(){
-                try{
-                    Thread.sleep( 1000 );
-                }catch( Exception ex ){
-                    return;
-                }
-                TrackSelector_MouseHover( this, new BEventArgs() );
-            }
-        }
-#else
         private void MouseHoverEventGenerator()
         {
             Thread.Sleep( (int)(System.Windows.Forms.SystemInformation.MouseHoverTime * 0.8) );
-            Invoke( new BEventHandler( TrackSelector_MouseHover ) );
+            Invoke( new EventHandler( TrackSelector_MouseHover ) );
         }
-#endif
 
         public void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
         {
@@ -5874,21 +5827,13 @@ namespace cadencii
                     tsmi.ToolTipPxWidth = 0;
                     tsmi.Language = sc.Language;
                     tsmi.Program = sc.Program;
-                    tsmi.Click += new BEventHandler( cmenusinger_Click );
-#if JAVA
-                    // TODO: tsmi.MouseHover
-#else
-                    tsmi.MouseHover += new BEventHandler( cmenusinger_MouseHover );
-#endif
+                    tsmi.Click += new EventHandler( cmenusinger_Click );
+                    tsmi.MouseHover += new EventHandler( cmenusinger_MouseHover );
                     cmenuSinger.add( tsmi );
                     count++;
                 }
             }
-#if JAVA
-            cmenuSinger.visibleChangedEvent.add( new BEventHandler( this, "cmenuSinger_VisibleChanged" ) );
-#else
-            cmenuSinger.VisibleChanged += new BEventHandler( cmenuSinger_VisibleChanged );
-#endif
+            cmenuSinger.VisibleChanged += new EventHandler( cmenuSinger_VisibleChanged );
             mCMenuSingerTooltipWidth = new int[count];
             //m_cmenusinger_map = list.ToArray();
             for ( int i = 0; i < count; i++ ) {
@@ -5897,20 +5842,17 @@ namespace cadencii
             mCMenuSingerPrepared = renderer;
         }
 
-        public void cmenuSinger_VisibleChanged( Object sender, BEventArgs e )
+        public void cmenuSinger_VisibleChanged( Object sender, EventArgs e )
         {
-#if JAVA
-#else
             toolTip.Hide( cmenuSinger );
-#endif
         }
 
-        public void cmenusinger_MouseEnter( Object sender, BEventArgs e )
+        public void cmenusinger_MouseEnter( Object sender, EventArgs e )
         {
             cmenusinger_MouseHover( sender, e );
         }
 
-        public void cmenusinger_MouseHover( Object sender, BEventArgs e )
+        public void cmenusinger_MouseHover( Object sender, EventArgs e )
         {
 #if !JAVA
             try {
@@ -5952,7 +5894,7 @@ namespace cadencii
 #endif
         }
 
-        public void cmenusinger_Click( Object sender, BEventArgs e )
+        public void cmenusinger_Click( Object sender, EventArgs e )
         {
             if ( !(sender is TrackSelectorSingerDropdownMenuItem) ) {
                 return;
@@ -6038,7 +5980,7 @@ namespace cadencii
             }
         }
 
-        public void cmenuCurveCommon_Click( Object sender, BEventArgs e )
+        public void cmenuCurveCommon_Click( Object sender, EventArgs e )
         {
             if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
@@ -6055,38 +5997,36 @@ namespace cadencii
 #else
             this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
 #endif
-            this.cmenuCurveVelocity.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveAccent.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveDecay.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveDynamics.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveVibratoRate.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveVibratoDepth.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso1Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso1BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso1Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso2Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso2BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso2Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso3Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso3BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso3Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso4Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso4BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso4Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveHarmonics.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveBreathiness.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveBrightness.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveClearness.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveOpening.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveGenderFactor.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurvePortamentoTiming.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurvePitchBend.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurvePitchBendSensitivity.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveEffect2Depth.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveEnvelope.Click += new BEventHandler( cmenuCurveCommon_Click );
-#if !JAVA
-            this.Load += new BEventHandler( this.TrackSelector_Load );
-#endif
+            this.cmenuCurveVelocity.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveAccent.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveDecay.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveDynamics.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveVibratoRate.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveVibratoDepth.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso1Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso1BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso1Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso2Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso2BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso2Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso3Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso3BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso3Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso4Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso4BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso4Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveHarmonics.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveBreathiness.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveBrightness.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveClearness.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveOpening.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveGenderFactor.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurvePortamentoTiming.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurvePitchBend.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurvePitchBendSensitivity.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveEffect2Depth.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveEnvelope.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.Load += new EventHandler( this.TrackSelector_Load );
 
             this.MouseMove += new BMouseEventHandler( TrackSelector_MouseMove );
             this.MouseDoubleClick += new BMouseEventHandler( TrackSelector_MouseDoubleClick );

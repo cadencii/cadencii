@@ -36,9 +36,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BEventHandler = System.EventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
@@ -57,37 +55,13 @@ namespace cadencii
         private Vector<VolumeTracker> m_tracker = null;
         private boolean mPreviousAlwaysOnTop;
 
-#if JAVA
-        public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
-#elif __cplusplus
-        public: signals: void federChanged( int track, int feder );
-#else
         public event FederChangedEventHandler FederChanged;
-#endif
 
-#if JAVA
-        public BEvent<PanpotChangedEventHandler> panpotChangedEvent = new BEvent<PanpotChangedEventHandler>();
-#elif __cplusplus
-        public: signals: void panpotChanged( int track, int panpot );
-#else
         public event PanpotChangedEventHandler PanpotChanged;
-#endif
 
-#if JAVA
-        public BEvent<SoloChangedEventHandler> soloChangedEvent = new BEvent<SoloChangedEventHandler>();
-#elif __cplusplus
-        public signals: void soloChanged( int track, bool solo );
-#else
         public event SoloChangedEventHandler SoloChanged;
-#endif
 
-#if JAVA
-        public BEvent<MuteChangedEventHandler> muteChangedEvent = new BEvent<MuteChangedEventHandler>();
-#elif __cplusplus
-        public signals: void muteChanged( int track, bool mute );
-#else
         public event MuteChangedEventHandler MuteChanged;
-#endif
 
         public FormMixer( FormMain parent )
         {
@@ -426,12 +400,12 @@ namespace cadencii
                 VolumeTracker item = m_tracker.get( i );
                 item.PanpotChanged -= new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged -= new FederChangedEventHandler( FormMixer_FederChanged );
-                item.MuteButtonClick -= new BEventHandler( FormMixer_MuteButtonClick );
-                item.SoloButtonClick -= new BEventHandler( FormMixer_SoloButtonClick );
+                item.MuteButtonClick -= new EventHandler( FormMixer_MuteButtonClick );
+                item.SoloButtonClick -= new EventHandler( FormMixer_SoloButtonClick );
             }
             volumeMaster.PanpotChanged -= new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
             volumeMaster.FederChanged -= new FederChangedEventHandler( volumeMaster_FederChanged );
-            volumeMaster.MuteButtonClick -= new BEventHandler( volumeMaster_MuteButtonClick );
+            volumeMaster.MuteButtonClick -= new EventHandler( volumeMaster_MuteButtonClick );
         }
 
         /// <summary>
@@ -447,22 +421,20 @@ namespace cadencii
                 VolumeTracker item = m_tracker.get( i );
                 item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
-                item.MuteButtonClick += new BEventHandler( FormMixer_MuteButtonClick );
-                item.SoloButtonClick += new BEventHandler( FormMixer_SoloButtonClick );
+                item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
+                item.SoloButtonClick += new EventHandler( FormMixer_SoloButtonClick );
             }
             volumeMaster.PanpotChanged += new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
             volumeMaster.FederChanged += new FederChangedEventHandler( volumeMaster_FederChanged );
-            volumeMaster.MuteButtonClick += new BEventHandler( volumeMaster_MuteButtonClick );
+            volumeMaster.MuteButtonClick += new EventHandler( volumeMaster_MuteButtonClick );
         }
 
         private void registerEventHandlers()
         {
-            menuVisualReturn.Click += new BEventHandler( menuVisualReturn_Click );
-#if !JAVA
-            hScroll.ValueChanged += new BEventHandler( veScrollBar_ValueChanged );
-#endif
+            menuVisualReturn.Click += new EventHandler( menuVisualReturn_Click );
+            hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
             this.FormClosing += new BFormClosingEventHandler( FormMixer_FormClosing );
-            this.Load += new BEventHandler( FormMixer_Load );
+            this.Load += new EventHandler( FormMixer_Load );
             reregisterEventHandlers();
         }
 
@@ -565,7 +537,7 @@ namespace cadencii
             }
         }
 
-        public void FormMixer_SoloButtonClick( Object sender, BEventArgs e )
+        public void FormMixer_SoloButtonClick( Object sender, EventArgs e )
         {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = parent.getTrack();
@@ -578,7 +550,7 @@ namespace cadencii
             updateSoloMute();
         }
 
-        public void FormMixer_MuteButtonClick( Object sender, BEventArgs e )
+        public void FormMixer_MuteButtonClick( Object sender, EventArgs e )
         {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = parent.getTrack();
@@ -591,7 +563,7 @@ namespace cadencii
             updateSoloMute();
         }
 
-        public void menuVisualReturn_Click( Object sender, BEventArgs e )
+        public void menuVisualReturn_Click( Object sender, EventArgs e )
         {
             this.setVisible( false );
         }
@@ -605,7 +577,7 @@ namespace cadencii
         }
 
 #if !JAVA
-        public void veScrollBar_ValueChanged( Object sender, BEventArgs e )
+        public void veScrollBar_ValueChanged( Object sender, EventArgs e )
         {
             int stdx = hScroll.getValue();
             for ( int i = 0; i < m_tracker.size(); i++ ) {
@@ -635,7 +607,7 @@ namespace cadencii
             }
         }
 
-        public void volumeMaster_MuteButtonClick( Object sender, BEventArgs e )
+        public void volumeMaster_MuteButtonClick( Object sender, EventArgs e )
         {
             try {
                 invokeMuteChangedEvent( 0, volumeMaster.isMuted() );

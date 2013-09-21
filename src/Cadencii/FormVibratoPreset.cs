@@ -32,9 +32,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BEventHandler = System.EventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif
@@ -163,9 +161,9 @@ namespace cadencii
             }
 
             // イベントハンドラを一時的に取り除く
-            textDepth.TextChanged -= new BEventHandler( textDepth_TextChanged );
-            textRate.TextChanged -= new BEventHandler( textRate_TextChanged );
-            textName.TextChanged -= new BEventHandler( textName_TextChanged );
+            textDepth.TextChanged -= new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged -= new EventHandler( textRate_TextChanged );
+            textName.TextChanged -= new EventHandler( textName_TextChanged );
 
             // テクストボックスに値を反映
             mSelected = mHandles.get( index );
@@ -174,9 +172,9 @@ namespace cadencii
             textName.setText( mSelected.getCaption() );
 
             // イベントハンドラを再登録
-            textDepth.TextChanged += new BEventHandler( textDepth_TextChanged );
-            textRate.TextChanged += new BEventHandler( textRate_TextChanged );
-            textName.TextChanged += new BEventHandler( textName_TextChanged );
+            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new EventHandler( textRate_TextChanged );
+            textName.TextChanged += new EventHandler( textName_TextChanged );
 
             // 再描画
             repaintPictures();
@@ -477,22 +475,22 @@ namespace cadencii
         /// </summary>
         private void registerEventHandlers()
         {
-            listPresets.SelectedIndexChanged += new BEventHandler( listPresets_SelectedIndexChanged );
-            textDepth.TextChanged += new BEventHandler( textDepth_TextChanged );
-            textRate.TextChanged += new BEventHandler( textRate_TextChanged );
-            textName.TextChanged += new BEventHandler( textName_TextChanged );
-            buttonAdd.Click += new BEventHandler( buttonAdd_Click );
-            buttonRemove.Click += new BEventHandler( buttonRemove_Click );
-            buttonUp.Click += new BEventHandler( handleUpDownButtonClick );
-            buttonDown.Click += new BEventHandler( handleUpDownButtonClick );
+            listPresets.SelectedIndexChanged += new EventHandler( listPresets_SelectedIndexChanged );
+            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new EventHandler( textRate_TextChanged );
+            textName.TextChanged += new EventHandler( textName_TextChanged );
+            buttonAdd.Click += new EventHandler( buttonAdd_Click );
+            buttonRemove.Click += new EventHandler( buttonRemove_Click );
+            buttonUp.Click += new EventHandler( handleUpDownButtonClick );
+            buttonDown.Click += new EventHandler( handleUpDownButtonClick );
 
             pictureDepth.Paint += new BPaintEventHandler( pictureDepth_Paint );
             pictureRate.Paint += new BPaintEventHandler( pictureRate_Paint );
             pictureResulting.Paint += new BPaintEventHandler( pictureResulting_Paint );
 
-            this.Resize += new BEventHandler( FormVibratoPreset_Resize );
-            buttonOk.Click += new BEventHandler( buttonOk_Click );
-            buttonCancel.Click += new BEventHandler( buttonCancel_Click );
+            this.Resize += new EventHandler( FormVibratoPreset_Resize );
+            buttonOk.Click += new EventHandler( buttonOk_Click );
+            buttonCancel.Click += new EventHandler( buttonCancel_Click );
         }
 
         private static String _( String id )
@@ -648,9 +646,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoPreset#updateStatus; B; old_selected=" + old_select );
 #endif
-                //listPresets.SelectedIndexChanged -= new BEventHandler( listPresets_SelectedIndexChanged );
                 listPresets.setSelectedIndex( old_select );
-                //listPresets.SelectedIndexChanged += new BEventHandler( listPresets_SelectedIndexChanged );
             }
         }
         #endregion

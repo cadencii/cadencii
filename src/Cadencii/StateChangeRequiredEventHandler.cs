@@ -11,21 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
 
-import cadencii.BEventHandler;
-
-public class StateChangeRequiredEventHandler extends BEventHandler{
-    public StateChangeRequiredEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, PanelState.class );
-    }
-    
-    public StateChangeRequiredEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, PanelState.class );
-    }
-}
-#else
 using System;
 
 namespace cadencii {
@@ -33,4 +19,3 @@ namespace cadencii {
     public delegate void StateChangeRequiredEventHandler( Object sender, PanelState state );
 
 }
-#endif

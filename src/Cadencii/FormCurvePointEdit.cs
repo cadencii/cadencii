@@ -32,10 +32,8 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
     using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
@@ -162,20 +160,20 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnForward.Click += new BEventHandler( commonButton_Click );
-            btnBackward.Click += new BEventHandler( commonButton_Click );
-            btnBackward2.Click += new BEventHandler( commonButton_Click );
-            btnForward2.Click += new BEventHandler( commonButton_Click );
-            btnApply.Click += new BEventHandler( btnApply_Click );
-            txtDataPointClock.TextChanged += new BEventHandler( commonTextBox_TextChanged );
+            btnForward.Click += new EventHandler( commonButton_Click );
+            btnBackward.Click += new EventHandler( commonButton_Click );
+            btnBackward2.Click += new EventHandler( commonButton_Click );
+            btnForward2.Click += new EventHandler( commonButton_Click );
+            btnApply.Click += new EventHandler( btnApply_Click );
+            txtDataPointClock.TextChanged += new EventHandler( commonTextBox_TextChanged );
             txtDataPointClock.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
-            txtDataPointValue.TextChanged += new BEventHandler( commonTextBox_TextChanged );
+            txtDataPointValue.TextChanged += new EventHandler( commonTextBox_TextChanged );
             txtDataPointValue.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
-            btnBackward3.Click += new BEventHandler( commonButton_Click );
-            btnForward3.Click += new BEventHandler( commonButton_Click );
-            btnUndo.Click += new BEventHandler( handleUndoRedo_Click );
-            btnRedo.Click += new BEventHandler( handleUndoRedo_Click );
-            btnExit.Click += new BEventHandler( btnExit_Click );
+            btnBackward3.Click += new EventHandler( commonButton_Click );
+            btnForward3.Click += new EventHandler( commonButton_Click );
+            btnUndo.Click += new EventHandler( handleUndoRedo_Click );
+            btnRedo.Click += new EventHandler( handleUndoRedo_Click );
+            btnExit.Click += new EventHandler( btnExit_Click );
         }
         #endregion
 
@@ -192,7 +190,7 @@ namespace cadencii
             applyValue( (sender == txtDataPointClock) );
         }
 
-        public void commonButton_Click( Object sender, BEventArgs e )
+        public void commonButton_Click( Object sender, EventArgs e )
         {
             VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() );
             VsqBPPairSearchContext search = list.findElement( m_editing_id );
@@ -222,22 +220,12 @@ namespace cadencii
             VsqBPPair bp = list.getElementB( index );
             m_editing_id = bp.id;
             int clock = list.getKeyClock( index );
-#if JAVA
-            txtDataPointClock.textChangedEvent.remove( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            txtDataPointValue.textChangedEvent.remove( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-#else
             txtDataPointClock.TextChanged -= commonTextBox_TextChanged;
             txtDataPointValue.TextChanged -= commonTextBox_TextChanged;
-#endif
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( bp.value + "" );
-#if JAVA
-            txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-#else
             txtDataPointClock.TextChanged += commonTextBox_TextChanged;
             txtDataPointValue.TextChanged += commonTextBox_TextChanged;
-#endif
 
             txtDataPointValue.requestFocus();
             txtDataPointValue.selectAll();
@@ -250,17 +238,17 @@ namespace cadencii
             }
         }
 
-        public void btnApply_Click( Object sender, BEventArgs e )
+        public void btnApply_Click( Object sender, EventArgs e )
         {
             applyValue( true );
         }
 
-        public void commonTextBox_TextChanged( Object sender, BEventArgs e )
+        public void commonTextBox_TextChanged( Object sender, EventArgs e )
         {
             m_changed = true;
         }
 
-        public void handleUndoRedo_Click( Object sender, BEventArgs e )
+        public void handleUndoRedo_Click( Object sender, EventArgs e )
         {
             if ( sender == btnUndo ) {
                 AppManager.undo();
@@ -300,7 +288,7 @@ namespace cadencii
             btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
         }
 
-        public void btnExit_Click( Object sender, BEventArgs e )
+        public void btnExit_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }

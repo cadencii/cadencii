@@ -29,8 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -189,11 +187,11 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            timer.Tick += new BEventHandler( timer_Tick );
-            btnSkip.Click += new BEventHandler( btnSkip_Click );
-            btnReset.Click += new BEventHandler( btnReset_Click );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            timer.Tick += new EventHandler( timer_Tick );
+            btnSkip.Click += new EventHandler( btnSkip_Click );
+            btnReset.Click += new EventHandler( btnReset_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -202,7 +200,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void timer_Tick( Object sender, BEventArgs e )
+        public void timer_Tick( Object sender, EventArgs e )
         {
             //int num_btn = vstidrv.JoyGetNumButtons( 0 );
             byte[] btn;
@@ -260,7 +258,7 @@ namespace cadencii
             }
         }
 
-        public void btnSkip_Click( Object sender, BEventArgs e )
+        public void btnSkip_Click( Object sender, EventArgs e )
         {
             if ( index <= 4 ) {
                 m_povs.set( index - 1, int.MinValue );
@@ -292,7 +290,7 @@ namespace cadencii
             index++;
         }
 
-        public void btnReset_Click( Object sender, BEventArgs e )
+        public void btnReset_Click( Object sender, EventArgs e )
         {
             m_list.set( 0, 3 ); // □
             m_list.set( 1, 0 ); // △
@@ -311,12 +309,12 @@ namespace cadencii
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
         }

@@ -30,10 +30,8 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
-    using BEventHandler = System.EventHandler;
     using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     
     using boolean = System.Boolean;
@@ -149,37 +147,13 @@ namespace cadencii
         };
         #endregion
 
-#if JAVA
-        public BEvent<BEventHandler> federChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public signals: void federChanged( QObject sender, QObject e );
-#else
         public event FederChangedEventHandler FederChanged;
-#endif
 
-#if JAVA
-        public BEvent<BEventHandler> panpotChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public signals: void panpotChanged( QObject sender, QObject e );
-#else
         public event PanpotChangedEventHandler PanpotChanged;
-#endif
 
-#if JAVA
-        public BEvent<BEventHandler> muteButtonClickEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void muteButtonClick( QObject sender, QObject e );
-#else
-        public event BEventHandler MuteButtonClick;
-#endif
+        public event EventHandler MuteButtonClick;
 
-#if JAVA
-        public BEvent<BEventHandler> soloButtonClickEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void soloButtonClick( QObject sender, QObject e );
-#else
-        public event BEventHandler SoloButtonClick;
-#endif
+        public event EventHandler SoloButtonClick;
 
         public VolumeTracker()
         {
@@ -430,7 +404,7 @@ namespace cadencii
             txtFeder.selectAll();
         }
 
-        public void VolumeTracker_Resize( Object sender, BEventArgs e )
+        public void VolumeTracker_Resize( Object sender, EventArgs e )
         {
 #if !JAVA
             this.Width = WIDTH;
@@ -438,7 +412,7 @@ namespace cadencii
 #endif
         }
 
-        public void trackFeder_ValueChanged( Object sender, BEventArgs e )
+        public void trackFeder_ValueChanged( Object sender, EventArgs e )
         {
             mFeder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
             txtFeder.setText( (mFeder / 10.0) + "" );
@@ -457,7 +431,7 @@ namespace cadencii
             }
         }
 
-        public void trackPanpot_ValueChanged( Object sender, BEventArgs e )
+        public void trackPanpot_ValueChanged( Object sender, EventArgs e )
         {
             mPanpot = trackPanpot.getValue();
             txtPanpot.setText( mPanpot + "" );
@@ -570,15 +544,15 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            trackFeder.ValueChanged += new BEventHandler( trackFeder_ValueChanged );
-            trackPanpot.ValueChanged += new BEventHandler( trackPanpot_ValueChanged );
+            trackFeder.ValueChanged += new EventHandler( trackFeder_ValueChanged );
+            trackPanpot.ValueChanged += new EventHandler( trackPanpot_ValueChanged );
             txtPanpot.KeyDown += new BKeyEventHandler( txtPanpot_KeyDown );
             txtFeder.KeyDown += new BKeyEventHandler( txtFeder_KeyDown );
-            chkSolo.Click += new BEventHandler( chkSolo_Click );
-            chkMute.Click += new BEventHandler( chkMute_Click );
+            chkSolo.Click += new EventHandler( chkSolo_Click );
+            chkMute.Click += new EventHandler( chkMute_Click );
 #if !JAVA
-            txtFeder.Enter += new BEventHandler( txtFeder_Enter );
-            txtPanpot.Enter += new BEventHandler( txtPanpot_Enter );
+            txtFeder.Enter += new EventHandler( txtFeder_Enter );
+            txtPanpot.Enter += new EventHandler( txtPanpot_Enter );
 #endif
         }
 

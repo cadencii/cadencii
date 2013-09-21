@@ -28,7 +28,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -196,14 +195,14 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            numStartBar.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            numStartBeat.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            numEndBar.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            numEndBeat.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            chkShift.CheckedChanged += new BEventHandler( chkShift_CheckedChanged );
-            chkPit.CheckedChanged += new BEventHandler( chkPit_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            numStartBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numStartBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numEndBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numEndBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            chkShift.CheckedChanged += new EventHandler( chkShift_CheckedChanged );
+            chkPit.CheckedChanged += new EventHandler( chkPit_CheckedChanged );
         }
         #endregion
 

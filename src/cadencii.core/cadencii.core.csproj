@@ -77,9 +77,6 @@
     <Compile Include="BArray.cs" />
     <Compile Include="Base64.cs" />
     <Compile Include="BDelegate.cs" />
-    <Compile Include="BEvent.cs" />
-    <Compile Include="BEventArgs.cs" />
-    <Compile Include="BEventHandler.cs" />
     <Compile Include="BufferedReader.cs" />
     <Compile Include="BufferedWriter.cs" />
     <Compile Include="ByRef.cs" />
