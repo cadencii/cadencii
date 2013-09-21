@@ -64,10 +64,8 @@ namespace cadencii
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using boolean = System.Boolean;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
 
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
-    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
 
     using Integer = System.Int32;
@@ -7421,7 +7419,7 @@ namespace cadencii
             picturePositionIndicator.MouseDoubleClick += new MouseEventHandler( picturePositionIndicator_MouseDoubleClick );
             picturePositionIndicator.MouseDown += new MouseEventHandler( picturePositionIndicator_MouseDown );
             picturePositionIndicator.MouseUp += new MouseEventHandler( picturePositionIndicator_MouseUp );
-            picturePositionIndicator.Paint += new BPaintEventHandler( picturePositionIndicator_Paint );
+            picturePositionIndicator.Paint += new PaintEventHandler( picturePositionIndicator_Paint );
             pictPianoRoll.PreviewKeyDown += new PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
             pictPianoRoll.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
             pictPianoRoll.KeyUp += new KeyEventHandler( pictPianoRoll_KeyUp );
@@ -7442,7 +7440,7 @@ namespace cadencii
 
             pictureBox2.MouseDown += new MouseEventHandler( pictureBox2_MouseDown );
             pictureBox2.MouseUp += new MouseEventHandler( pictureBox2_MouseUp );
-            pictureBox2.Paint += new BPaintEventHandler( pictureBox2_Paint );
+            pictureBox2.Paint += new PaintEventHandler( pictureBox2_Paint );
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
             rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
             stripDDBtnQuantize04.Click += handlePositionQuantize;
@@ -14799,7 +14797,7 @@ namespace cadencii
             }
         }
 
-        public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e )
+        public void picturePositionIndicator_Paint( Object sender, PaintEventArgs e )
         {
 #if JAVA
             Graphics g = e.Graphics;
@@ -15926,7 +15924,7 @@ namespace cadencii
 
         #region pictureBox2
 #if !JAVA
-        public void pictureBox2_Paint( Object sender, BPaintEventArgs e )
+        public void pictureBox2_Paint( Object sender, PaintEventArgs e )
         {
             if ( mGraphicsPictureBox2 == null ) {
                 mGraphicsPictureBox2 = new Graphics2D( null );

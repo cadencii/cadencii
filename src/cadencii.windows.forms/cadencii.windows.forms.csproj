@@ -102,8 +102,6 @@
     <Compile Include="BNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BPaintEventArgs.cs" />
-    <Compile Include="BPaintEventHandler.cs" />
     <Compile Include="BPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

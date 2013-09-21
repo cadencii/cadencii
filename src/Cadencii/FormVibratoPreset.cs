@@ -24,6 +24,7 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -32,8 +33,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -317,7 +316,7 @@ namespace cadencii
             listPresets.setSelectedIndex( move_to );
         }
 
-        public void pictureResulting_Paint( Object sender, BPaintEventArgs e )
+        public void pictureResulting_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
             int raw_width = pictureResulting.getWidth();
@@ -395,7 +394,7 @@ namespace cadencii
             d.flush();
         }
 
-        public void pictureRate_Paint( Object sender, BPaintEventArgs e )
+        public void pictureRate_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
             int width = pictureRate.getWidth();
@@ -426,7 +425,7 @@ namespace cadencii
                 width, height );
         }
 
-        public void pictureDepth_Paint( Object sender, BPaintEventArgs e )
+        public void pictureDepth_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
             int width = pictureDepth.getWidth();
@@ -484,9 +483,9 @@ namespace cadencii
             buttonUp.Click += new EventHandler( handleUpDownButtonClick );
             buttonDown.Click += new EventHandler( handleUpDownButtonClick );
 
-            pictureDepth.Paint += new BPaintEventHandler( pictureDepth_Paint );
-            pictureRate.Paint += new BPaintEventHandler( pictureRate_Paint );
-            pictureResulting.Paint += new BPaintEventHandler( pictureResulting_Paint );
+            pictureDepth.Paint += new PaintEventHandler( pictureDepth_Paint );
+            pictureRate.Paint += new PaintEventHandler( pictureRate_Paint );
+            pictureResulting.Paint += new PaintEventHandler( pictureResulting_Paint );
 
             this.Resize += new EventHandler( FormVibratoPreset_Resize );
             buttonOk.Click += new EventHandler( buttonOk_Click );

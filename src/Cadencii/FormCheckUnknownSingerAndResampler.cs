@@ -33,8 +33,6 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif
 

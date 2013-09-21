@@ -37,7 +37,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using Graphics = cadencii.java.awt.Graphics2D;
 #endif
 
@@ -344,7 +343,7 @@ namespace cadencii
 #endif
         }
 
-        public void VersionInfo_Paint( Object sender, BPaintEventArgs e )
+        public void VersionInfo_Paint( Object sender, PaintEventArgs e )
         {
             try {
 #if JAVA
@@ -433,13 +432,9 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-#if JAVA
-            this.panelCredit.paintEvent.add( new BPaintEventHandler( this, "VersionInfo_Paint" ) );
-#else
-            this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfo_Paint );
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
+            this.Paint += new PaintEventHandler( this.VersionInfo_Paint );
+            this.KeyDown += new KeyEventHandler( this.VersionInfo_KeyDown );
             this.FontChanged += new EventHandler( this.VersionInfo_FontChanged );
-#endif
             this.timer.Tick += new EventHandler( timer_Tick );
             this.btnFlip.Click += new EventHandler( btnFlip_Click );
             this.btnOK.Click += new EventHandler( btnOK_Click );
