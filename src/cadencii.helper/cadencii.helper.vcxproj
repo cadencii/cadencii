@@ -26,7 +26,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v110_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>true</CLRSupport>
@@ -71,7 +71,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(SolutionDir)Cadencii\bin\x86\$(Configuration)\"</Command>
+      <Command>copy "$(SolutionDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(SolutionDir)Cadencii\bin\x86\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,7 +88,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(SolutionDir)Cadencii\bin\x86\$(Configuration)\"</Command>
+      <Command>copy "$(SolutionDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(SolutionDir)Cadencii\bin\x86\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
