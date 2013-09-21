@@ -13,6 +13,7 @@
  */
 using System;
 using System.Linq;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
@@ -25,8 +26,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 
     partial class Preference : BDialog
@@ -1469,7 +1468,7 @@ namespace cadencii
             numAutoBackupInterval.setEnabled( chkAutoBackup.isSelected() );
         }
 
-        public void Preference_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void Preference_FormClosing( Object sender, FormClosingEventArgs e )
         {
             columnWidthHeaderProgramChange = listSingers.getColumnWidth( 0 );
             columnWidthHeaderName = listSingers.getColumnWidth( 1 );
@@ -1717,7 +1716,7 @@ namespace cadencii
             listSingers.SelectedIndexChanged += new EventHandler( listSingers_SelectedIndexChanged );
             chkAutoBackup.CheckedChanged += new EventHandler( chkAutoBackup_CheckedChanged );
             btnOK.Click += new EventHandler( btnOK_Click );
-            this.FormClosing += new BFormClosingEventHandler( Preference_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( Preference_FormClosing );
             btnCancel.Click += new EventHandler( btnCancel_Click );
             radioVocaloidEditorCompatible.CheckedChanged += new EventHandler( commonChangeAutoVibratoType );
             buttonWinePrefix.Click += new EventHandler( buttonWinePrefix_Click );

@@ -29,6 +29,7 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -38,9 +39,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
@@ -163,7 +162,7 @@ namespace cadencii
         private void registerEventHandlers()
         {
             this.Load += new EventHandler( FormIconPalette_Load );
-            this.FormClosing += new BFormClosingEventHandler( FormIconPalette_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( FormIconPalette_FormClosing );
             menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
         }
 
@@ -324,7 +323,7 @@ namespace cadencii
             setAlwaysOnTop( true );
         }
 
-        public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormIconPalette_FormClosing( Object sender, FormClosingEventArgs e )
         {
             setVisible( false );
 #if !JAVA

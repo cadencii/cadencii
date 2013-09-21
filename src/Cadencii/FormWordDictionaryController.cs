@@ -34,8 +34,6 @@ import cadencii.vsq.*;
             using cadencii.java.util;
             using cadencii.windows.forms;
             using boolean = System.Boolean;
-            using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
-            using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 #endif
 
 #endif

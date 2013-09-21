@@ -34,11 +34,9 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
@@ -319,7 +317,7 @@ namespace cadencii
         {
             btnLoadDefault.Click += new EventHandler( btnLoadDefault_Click );
             btnRevert.Click += new EventHandler( btnRevert_Click );
-            this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( FormShortcutKeys_FormClosing );
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
             comboCategory.SelectedIndexChanged += new EventHandler( comboCategory_SelectedIndexChanged );
@@ -475,7 +473,7 @@ namespace cadencii
             updateList();
         }
 
-        public void FormShortcutKeys_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormShortcutKeys_FormClosing( Object sender, FormClosingEventArgs e )
         {
             mColumnWidthCommand = list.getColumnWidth( 0 );
             mColumnWidthShortcutKey = list.getColumnWidth( 1 );

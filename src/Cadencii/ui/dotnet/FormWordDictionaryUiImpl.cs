@@ -22,8 +22,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
 
     class FormWordDictionaryUiImpl : Form, FormWordDictionaryUi
     {

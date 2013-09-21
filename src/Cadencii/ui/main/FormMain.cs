@@ -62,7 +62,6 @@ namespace cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
@@ -76,7 +75,6 @@ namespace cadencii
     using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
 
     using Integer = System.Int32;
@@ -967,7 +965,7 @@ namespace cadencii
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mMixerWindow.setVisible( true );
             }
-            AppManager.mMixerWindow.FormClosing += new BFormClosingEventHandler( mixerWindow_FormClosing );
+            AppManager.mMixerWindow.FormClosing += new FormClosingEventHandler( mixerWindow_FormClosing );
 
             Point p1 = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
             if ( !PortUtil.isPointInScreens( p1 ) ) {
@@ -978,7 +976,7 @@ namespace cadencii
             if ( AppManager.editorConfig.IconPaletteVisible ) {
                 AppManager.iconPalette.setVisible( true );
             }
-            AppManager.iconPalette.FormClosing += new BFormClosingEventHandler( iconPalette_FormClosing );
+            AppManager.iconPalette.FormClosing += new FormClosingEventHandler( iconPalette_FormClosing );
             AppManager.iconPalette.LocationChanged += new EventHandler( iconPalette_LocationChanged );
 
             trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
@@ -7516,7 +7514,7 @@ namespace cadencii
             this.Deactivate += new EventHandler( FormMain_Deactivate );
             this.Activated += new EventHandler( FormMain_Activated );
             this.FormClosed += new FormClosedEventHandler( FormMain_FormClosed );
-            this.FormClosing += new BFormClosingEventHandler( FormMain_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( FormMain_FormClosing );
             this.PreviewKeyDown += new BPreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
             panelOverview.Enter += new EventHandler( panelOverview_Enter );
         }
@@ -9755,7 +9753,7 @@ namespace cadencii
             AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
         }
 
-        public void iconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void iconPalette_FormClosing( Object sender, FormClosingEventArgs e )
         {
             flipIconPaletteVisible( AppManager.iconPalette.isVisible() );
         }
@@ -9984,7 +9982,7 @@ namespace cadencii
 
         //BOOKMARK: mixerWindow
         #region mixerWindow
-        public void mixerWindow_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void mixerWindow_FormClosing( Object sender, FormClosingEventArgs e )
         {
             flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
         }
@@ -10319,7 +10317,7 @@ namespace cadencii
 #endif
         }
 
-        public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormMain_FormClosing( Object sender, FormClosingEventArgs e )
         {
             // 設定値を格納
             if( AppManager.editorConfig.ViewWaveform ){

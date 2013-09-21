@@ -38,7 +38,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
 #endif
 

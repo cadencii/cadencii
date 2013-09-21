@@ -22,14 +22,13 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -247,7 +246,7 @@ namespace cadencii
             chkMetaText.Click += new EventHandler( chkMetaText_Click );
             chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
             chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            this.FormClosing += new BFormClosingEventHandler( FormMidiImExport_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( FormMidiImExport_FormClosing );
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
             radioGateTime.CheckedChanged += new EventHandler( radioGateTime_CheckedChanged );
@@ -309,7 +308,7 @@ namespace cadencii
             }
         }
 
-        public void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormMidiImExport_FormClosing( Object sender, FormClosingEventArgs e )
         {
             columnWidthTrack = listTrack.getColumnWidth( 0 );
             columnWidthName = listTrack.getColumnWidth( 1 );

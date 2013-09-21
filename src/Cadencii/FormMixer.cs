@@ -36,8 +36,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -433,7 +431,7 @@ namespace cadencii
         {
             menuVisualReturn.Click += new EventHandler( menuVisualReturn_Click );
             hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
-            this.FormClosing += new BFormClosingEventHandler( FormMixer_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( FormMixer_FormClosing );
             this.Load += new EventHandler( FormMixer_Load );
             reregisterEventHandlers();
         }
@@ -568,7 +566,7 @@ namespace cadencii
             this.setVisible( false );
         }
 
-        public void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormMixer_FormClosing( Object sender, FormClosingEventArgs e )
         {
             this.setVisible( false );
 #if !JAVA
