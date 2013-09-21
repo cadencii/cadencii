@@ -108,7 +108,7 @@ namespace cadencii
             // 表示状態を更新
             updateStatus();
             if ( size > 0 ) {
-                listPresets.setSelectedIndex( 0 );
+                listPresets.SelectedIndex = 0;
             }
         }
 
@@ -145,7 +145,7 @@ namespace cadencii
         public void listPresets_SelectedIndexChanged( Object sender, EventArgs e )
         {
             // インデックスを取得
-            int index = listPresets.getSelectedIndex();
+            int index = listPresets.SelectedIndex;
 #if DEBUG
             sout.println( "FormVibratoPreset#listPresets_SelectedIndexChanged; index=" + index );
 #endif
@@ -186,9 +186,9 @@ namespace cadencii
             }
 
             mSelected.setCaption( textName.getText() );
-            int index = listPresets.getSelectedIndex();
+            int index = listPresets.SelectedIndex;
             if( index >= 0 ){
-                listPresets.setItemAt( index, mSelected.getCaption() );
+                listPresets.Items[index] = mSelected.getCaption();
             }
         }
 
@@ -266,17 +266,17 @@ namespace cadencii
             VibratoHandle handle = new VibratoHandle();
             handle.setCaption( "No-Name" );
             mHandles.add( handle );
-            listPresets.clearSelection();
+            listPresets.SelectedIndices.Clear();
             // 表示反映させて
             updateStatus();
             // 追加したのを選択状態にする
-            listPresets.setSelectedIndex( mHandles.size() - 1 );
+            listPresets.SelectedIndex = mHandles.size() - 1;
         }
 
         public void buttonRemove_Click( Object sender, EventArgs e )
         {
-            int index = listPresets.getSelectedIndex();
-            if ( index < 0 || listPresets.getItemCount() <= index ) {
+            int index = listPresets.SelectedIndex;
+            if ( index < 0 || listPresets.Items.Count <= index ) {
                 return;
             }
 
@@ -293,7 +293,7 @@ namespace cadencii
             }
 
             // 移動後のインデックスは？
-            int index = listPresets.getSelectedIndex();
+            int index = listPresets.SelectedIndex;
             int move_to = index + delta;
 
             // 範囲内かどうか
@@ -311,9 +311,9 @@ namespace cadencii
             mHandles.set( move_to, buff );
 
             // 選択状態を変える
-            listPresets.clearSelection();
+            listPresets.SelectedIndices.Clear();
             updateStatus();
-            listPresets.setSelectedIndex( move_to );
+            listPresets.SelectedIndex = move_to;
         }
 
         public void pictureResulting_Paint( Object sender, PaintEventArgs e )
@@ -609,29 +609,29 @@ namespace cadencii
         /// </summary>
         private void updateStatus()
         {
-            int old_select = listPresets.getSelectedIndex();
-            listPresets.clearSelection();
+            int old_select = listPresets.SelectedIndex;
+            listPresets.SelectedIndices.Clear();
 
             // アイテムの個数に過不足があれば数を整える
             int size = mHandles.size();
-            int delta = size - listPresets.getItemCount();
+            int delta = size - listPresets.Items.Count;
 #if DEBUG
             sout.println( "FormVibratoPreset#updateStatus; delta=" + delta );
 #endif
             if ( delta > 0 ) {
                 for ( int i = 0; i < delta; i++ ) {
-                    listPresets.addItem( "" );
+                    listPresets.Items.Add( "" );
                 }
             } else if ( delta < 0 ) {
                 for ( int i = 0; i < -delta; i++ ) {
-                    listPresets.removeItemAt( 0 );
+                    listPresets.Items.RemoveAt( 0 );
                 }
             }
 
             // アイテムを更新
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = mHandles.get( i );
-                listPresets.setItemAt( i, handle.getCaption() );
+                listPresets.Items[i] = handle.getCaption();
             }
 
             // 選択状態を復帰
@@ -645,7 +645,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoPreset#updateStatus; B; old_selected=" + old_select );
 #endif
-                listPresets.setSelectedIndex( old_select );
+                listPresets.SelectedIndex = old_select;
             }
         }
         #endregion
@@ -703,7 +703,7 @@ namespace cadencii
             this.textName = new cadencii.windows.forms.BTextBox();
             this.labelName = new Label();
             this.groupPreview = new System.Windows.Forms.GroupBox();
-            this.listPresets = new BListBox();
+            this.listPresets = new ListBox();
             this.textDepth = new cadencii.NumberTextBox();
             this.textRate = new cadencii.NumberTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureRate)).BeginInit();
@@ -1057,7 +1057,7 @@ namespace cadencii
         private Label labelName;
         private BTextBox textName;
         private GroupBox groupPreview;
-        private BListBox listPresets;
+        private ListBox listPresets;
         private System.Windows.Forms.Button buttonDown;
         #endregion
 #endif
