@@ -74,8 +74,8 @@ namespace cadencii
             lblClock.setText( _( "Clock" ) );
             lblClock.setMnemonic( KeyEvent.VK_L, numClock );
             groupTempo.setTitle( _( "Tempo" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
         }
 
         public int getBeatCount()
@@ -163,8 +163,8 @@ namespace cadencii
             this.groupTempo = new BGroupBox();
             this.lblTempoRange = new BLabel();
             this.numTempo = new cadencii.NumericUpDownEx();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numClock)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numBeat)).BeginInit();
@@ -337,8 +337,8 @@ namespace cadencii
         private BLabel lblBeat;
         private BLabel lblBar;
         private BGroupBox groupTempo;
-        private BButton btnOK;
-        private BButton btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
         private NumericUpDownEx numBar;
         private NumericUpDownEx numClock;
         private NumericUpDownEx numBeat;

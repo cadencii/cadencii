@@ -511,13 +511,13 @@ namespace cadencii
             labelRateCurve.setText( _( "Rate curve" ) );
             labelResulting.setText( _( "Resulting pitch bend" ) );
 
-            buttonAdd.setText( _( "Add" ) );
-            buttonRemove.setText( _( "Remove" ) );
-            buttonUp.setText( _( "Up" ) );
-            buttonDown.setText( _( "Down" ) );
+            buttonAdd.Text = _( "Add" );
+            buttonRemove.Text = _( "Remove" );
+            buttonUp.Text = _( "Up" );
+            buttonDown.Text = _( "Down" );
 
-            buttonOk.setText( _( "OK" ) );
-            buttonCancel.setText( _( "Cancel" ) );
+            buttonOk.Text = _( "OK" );
+            buttonCancel.Text = _( "Cancel" );
         }
 
         /// <summary>
@@ -682,12 +682,12 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new cadencii.windows.forms.BButton();
-            this.buttonOk = new cadencii.windows.forms.BButton();
-            this.buttonRemove = new cadencii.windows.forms.BButton();
-            this.buttonAdd = new cadencii.windows.forms.BButton();
-            this.buttonUp = new cadencii.windows.forms.BButton();
-            this.buttonDown = new cadencii.windows.forms.BButton();
+            this.buttonCancel = new Button();
+            this.buttonOk = new Button();
+            this.buttonRemove = new Button();
+            this.buttonAdd = new Button();
+            this.buttonUp = new Button();
+            this.buttonDown = new Button();
             this.labelRate = new cadencii.windows.forms.BLabel();
             this.labelDepth = new cadencii.windows.forms.BLabel();
             this.labelPresets = new cadencii.windows.forms.BLabel();
@@ -1035,11 +1035,11 @@ namespace cadencii
         }
         #endregion
 
-        private BButton buttonCancel;
-        private BButton buttonOk;
-        private cadencii.windows.forms.BButton buttonRemove;
-        private cadencii.windows.forms.BButton buttonAdd;
-        private cadencii.windows.forms.BButton buttonUp;
+        private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.Button buttonRemove;
+        private System.Windows.Forms.Button buttonAdd;
+        private System.Windows.Forms.Button buttonUp;
         private cadencii.windows.forms.BLabel labelRate;
         private cadencii.windows.forms.BLabel labelDepth;
         private NumberTextBox textRate;
@@ -1058,7 +1058,7 @@ namespace cadencii
         private BTextBox textName;
         private BGroupBox groupPreview;
         private BListBox listPresets;
-        private cadencii.windows.forms.BButton buttonDown;
+        private System.Windows.Forms.Button buttonDown;
         #endregion
 #endif
     }

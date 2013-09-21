@@ -78,12 +78,12 @@ namespace cadencii
                 progressCount.setMinimum( 0 );
                 progressCount.setValue( 0 );
                 index = 1;
-                btnSkip.setEnabled( true );
-                btnReset.setEnabled( true );
+                btnSkip.Enabled = true;
+                btnReset.Enabled = true;
                 timer.start();
             } else {
-                btnSkip.setEnabled( false );
-                btnReset.setEnabled( false );
+                btnSkip.Enabled = false;
+                btnReset.Enabled = false;
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -102,10 +102,10 @@ namespace cadencii
                 lblMessage.setText( _( "Game controler is not available" ) );
             }
             setTitle( _( "Game Controler Configuration" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnReset.setText( _( "Reset And Exit" ) );
-            btnSkip.setText( _( "Skip" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            btnReset.Text = _( "Reset And Exit" );
+            btnSkip.Text = _( "Skip" );
         }
 
         public int getRectangle()
@@ -250,8 +250,8 @@ namespace cadencii
                     progressCount.setMaximum( 2 );
                 }
                 if ( index == 14 ) {
-                    btnSkip.setEnabled( false );
-                    btnOK.setEnabled( true );
+                    btnSkip.Enabled = false;
+                    btnOK.Enabled = true;
                     timer.stop();
                 }
                 index++;
@@ -283,8 +283,8 @@ namespace cadencii
                 progressCount.setMaximum( 2 );
             }
             if ( index == 14 ) {
-                btnSkip.setEnabled( false );
-                btnOK.setEnabled( true );
+                btnSkip.Enabled = false;
+                btnOK.Enabled = true;
                 timer.stop();
             }
             index++;
@@ -352,10 +352,10 @@ namespace cadencii
             this.lblMessage = new BLabel();
             this.pictButton = new BPictureBox();
             this.progressCount = new BProgressBar();
-            this.btnSkip = new BButton();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
-            this.btnReset = new BButton();
+            this.btnSkip = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictButton)).BeginInit();
             this.SuspendLayout();
             // 
@@ -462,10 +462,10 @@ namespace cadencii
         private BLabel lblMessage;
         private BPictureBox pictButton;
         private BProgressBar progressCount;
-        private BButton btnSkip;
-        private BButton btnOK;
-        private BButton btnCancel;
-        private BButton btnReset;
+        private System.Windows.Forms.Button btnSkip;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnReset;
 
 #endif
         #endregion

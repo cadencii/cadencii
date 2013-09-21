@@ -67,8 +67,8 @@ namespace cadencii
             listTrack.setColumnWidth( 1, columnWidthName );
             listTrack.setColumnWidth( 2, columnWidthNotes );
 
-            Point p = btnCheckAll.getLocation();
-            btnUncheckAll.setLocation( p.x + btnCheckAll.getWidth() + 6, p.y );
+            System.Drawing.Point p = btnCheckAll.Location;
+            btnUncheckAll.Location = new System.Drawing.Point( p.X + btnCheckAll.Width + 6, p.Y );
 
             registerEventHandlers();
             setResources();
@@ -88,11 +88,11 @@ namespace cadencii
             radioGateTime.setText( _( "gate-time" ) );
             radioPlayTime.setText( _( "play-time" ) );
             listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
-            btnCheckAll.setText( _( "Check All" ) );
-            btnUncheckAll.setText( _( "Uncheck All" ) );
+            btnCheckAll.Text = _( "Check All" );
+            btnUncheckAll.Text = _( "Uncheck All" );
             groupCommonOption.setTitle( _( "Option" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
             chkTempo.setText( _( "Tempo" ) );
             chkBeat.setText( _( "Beat" ) );
             chkNote.setText( _( "Note" ) );
@@ -374,11 +374,11 @@ namespace cadencii
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
             this.listTrack = new cadencii.windows.forms.BListView();
-            this.btnCheckAll = new cadencii.windows.forms.BButton();
-            this.btnUncheckAll = new cadencii.windows.forms.BButton();
+            this.btnCheckAll = new Button();
+            this.btnUncheckAll = new Button();
             this.chkBeat = new cadencii.windows.forms.BCheckBox();
             this.chkTempo = new cadencii.windows.forms.BCheckBox();
             this.chkNote = new cadencii.windows.forms.BCheckBox();
@@ -673,10 +673,10 @@ namespace cadencii
 
         }
 
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BButton btnCheckAll;
-        private BButton btnUncheckAll;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCheckAll;
+        private System.Windows.Forms.Button btnUncheckAll;
         private BCheckBox chkBeat;
         private BCheckBox chkTempo;
         private BCheckBox chkNote;

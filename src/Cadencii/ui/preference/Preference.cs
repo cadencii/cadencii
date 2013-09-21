@@ -758,8 +758,8 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Preference" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnOK.setText( _( "OK" ) );
+            btnCancel.Text = _( "Cancel" );
+            btnOK.Text = _( "OK" );
             openUtauCore.clearChoosableFileFilter();
             try {
                 openUtauCore.addFileFilter( _( "Executable(*.exe)|*.exe" ) );
@@ -830,8 +830,8 @@ namespace cadencii
             labelMenu.setText( _( "Menu / Lyrics" ) );
             labelScreen.setText( _( "Screen" ) );
             lblLanguage.setText( _( "UI Language" ) );
-            btnChangeMenuFont.setText( _( "Change" ) );
-            btnChangeScreenFont.setText( _( "Change" ) );
+            btnChangeMenuFont.Text = _( "Change" );
+            btnChangeScreenFont.Text = _( "Change" );
             lblTrackHeight.setText( _( "Track Height (pixel)" ) );
             groupVisibleCurve.setTitle( _( "Visible Control Curve" ) );
             #endregion
@@ -867,10 +867,10 @@ namespace cadencii
 
             #region tabUtausingers
             listSingers.setColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
-            btnAdd.setText( _( "Add" ) );
-            btnRemove.setText( _( "Remove" ) );
-            btnUp.setText( _( "Up" ) );
-            btnDown.setText( _( "Down" ) );
+            btnAdd.Text = _( "Add" );
+            btnRemove.Text = _( "Remove" );
+            btnUp.Text = _( "Up" );
+            btnDown.Text = _( "Down" );
             #endregion
 
             #region tabFile
@@ -1414,13 +1414,13 @@ namespace cadencii
         {
             int index = getUtausingersSelectedIndex();
             if ( index < 0 ) {
-                btnRemove.setEnabled( false );
-                btnUp.setEnabled( false );
-                btnDown.setEnabled( false );
+                btnRemove.Enabled = false;
+                btnUp.Enabled = false;
+                btnDown.Enabled = false;
             } else {
-                btnRemove.setEnabled( true );
-                btnUp.setEnabled( 0 <= index - 1 && index - 1 < m_utau_singers.size() );
-                btnDown.setEnabled( 0 <= index + 1 && index + 1 < m_utau_singers.size() );
+                btnRemove.Enabled = true;
+                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.size();
+                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.size();
             }
         }
 
@@ -1540,7 +1540,7 @@ namespace cadencii
         {
             boolean enable = !radioWineBuiltin.isSelected();
             textWineTop.setEnabled( enable );
-            buttonWineTop.setEnabled( enable );
+            buttonWineTop.Enabled = enable;
         }
         #endregion
 

@@ -181,8 +181,8 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new cadencii.windows.forms.BButton();
-            this.buttonOk = new cadencii.windows.forms.BButton();
+            this.buttonCancel = new System.Windows.Forms.Button();
+            this.buttonOk = new System.Windows.Forms.Button();
             this.labelMessage = new cadencii.windows.forms.BLabel();
             this.checkSingerImport = new cadencii.windows.forms.BCheckBox();
             this.pictureSinger = new cadencii.IconParader();
@@ -321,8 +321,8 @@ namespace cadencii
         }
         #endregion
 
-        private BButton buttonCancel;
-        private BButton buttonOk;
+        private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonOk;
         private cadencii.windows.forms.BLabel labelMessage;
         private BCheckBox checkSingerImport;
         private BLabel labelSingerName;

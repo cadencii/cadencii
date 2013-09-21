@@ -103,9 +103,9 @@ namespace cadencii.windows.forms
         /// </summary>
         private void InitializeComponent() {
             this.txtInput = new cadencii.windows.forms.BTextBox();
-            this.btnOk = new cadencii.windows.forms.BButton();
+            this.btnOk = new Button();
             this.lblMessage = new cadencii.windows.forms.BLabel();
-            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnCancel = new Button();
             this.SuspendLayout();
             //
             // txtInput
@@ -171,9 +171,9 @@ namespace cadencii.windows.forms
         #endregion
 
         private BLabel lblMessage;
-        private BButton btnCancel;
+        private Button btnCancel;
         private BTextBox txtInput;
-        private BButton btnOk;
+        private Button btnOk;
 #endif
     }
 

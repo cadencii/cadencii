@@ -42,11 +42,7 @@ namespace cadencii
     using boolean = System.Boolean;
 #endif
 
-#if JAVA
-    class DraggableBButton extends BButton
-#else
-    class DraggableBButton : BButton
-#endif
+    class DraggableBButton : Button
     {
         private IconDynamicsHandle mHandle = null;
 #if JAVA
@@ -95,9 +91,9 @@ namespace cadencii
     public class FormIconPalette : BForm
 #endif
     {
-        private Vector<BButton> dynaffButtons = new Vector<BButton>();
-        private Vector<BButton> crescendButtons = new Vector<BButton>();
-        private Vector<BButton> decrescendButtons = new Vector<BButton>();
+        private Vector<Button> dynaffButtons = new Vector<Button>();
+        private Vector<Button> crescendButtons = new Vector<Button>();
+        private Vector<Button> decrescendButtons = new Vector<Button>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
         private boolean mPreviousAlwaysOnTop;
@@ -174,25 +170,13 @@ namespace cadencii
 #else
                 DraggableBButton btn = new DraggableBButton();
 #endif
-                btn.setName( icon_id );
+                btn.Name = icon_id;
                 btn.setHandle( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
                 boolean setimg = fsys.isFileExists( buttonIconPath );
                 if ( setimg ) {
-                    Image img = null;
-#if JAVA
-                    try{
-                        img = ImageIO.read( new File( buttonIconPath ) );
-                    }catch( Exception ex ){
-                        Logger.write( FormIconPalette.class + "; ex=" + ex + "\n" );
-                        serr.println( "FormIconPalette#init; ex=" + ex );
-                    }
-#else
-                    img = new Image();
-                    img.image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
-#endif
-                    btn.setIcon( new ImageIcon( img ) );
+                    btn.Image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
                 } else {
                     Image img = null;
                     String str = "";
@@ -235,13 +219,13 @@ namespace cadencii
                         str = "ppp";
                     }
                     if ( img != null ) {
-                        btn.setIcon( new ImageIcon( img ) );
+                        btn.Image = img.image;
                     } else {
-                        btn.setText( str );
+                        btn.Text = str;
                     }
                 }
                 btn.MouseDown += new MouseEventHandler( handleCommonMouseDown );
-                btn.setPreferredSize( new Dimension( buttonWidth, buttonWidth ) );
+                btn.Size = new System.Drawing.Size( buttonWidth, buttonWidth );
                 int iw = 0;
                 int ih = 0;
                 if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {

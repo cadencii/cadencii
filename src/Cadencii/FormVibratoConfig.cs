@@ -138,8 +138,8 @@ namespace cadencii
             lblVibratoLength.setMnemonic( KeyEvent.VK_L, txtVibratoLength );
             lblVibratoType.setText( _( "Vibrato Type" ) );
             lblVibratoType.setMnemonic( KeyEvent.VK_T, comboVibratoType );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
             groupSelect.setTitle( _( "Select from" ) );
         }
 
@@ -361,8 +361,8 @@ namespace cadencii
             this.txtVibratoLength = new cadencii.NumberTextBox();
             this.label3 = new cadencii.windows.forms.BLabel();
             this.comboVibratoType = new cadencii.windows.forms.BComboBox();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.groupSelect = new BGroupBox();
             this.radioUserDefined = new BRadioButton();
             this.radioVocaloid2 = new BRadioButton();
@@ -522,8 +522,8 @@ namespace cadencii
         private NumberTextBox txtVibratoLength;
         private BLabel label3;
         private BComboBox comboVibratoType;
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
         private BGroupBox groupSelect;
         private BRadioButton radioVocaloid2;
         private BRadioButton radioVocaloid1;

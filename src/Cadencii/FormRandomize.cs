@@ -330,8 +330,8 @@ namespace cadencii
             lblPitPattern.setText( _( "Pattern" ) );
             lblPitValue.setText( _( "Value" ) );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
 
             setTitle( _( "Randomize" ) );
         }
@@ -384,8 +384,8 @@ namespace cadencii
             this.comboPitValue = new cadencii.windows.forms.BComboBox();
             this.lblPitValue = new cadencii.windows.forms.BLabel();
             this.lblResolution = new cadencii.windows.forms.BLabel();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.numResolution = new cadencii.NumericUpDownEx();
             this.numEndBeat = new cadencii.NumericUpDownEx();
             this.numEndBar = new cadencii.NumericUpDownEx();
@@ -727,8 +727,8 @@ namespace cadencii
         private BLabel lblPitValue;
         private BLabel lblResolution;
         private NumericUpDownEx numResolution;
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
 
         #endregion
 #endif

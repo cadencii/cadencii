@@ -94,10 +94,10 @@ namespace cadencii
             lblAccent.setText( _( "Accent" ) );
             lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnApply.setText( _( "Apply to current track" ) );
-            btnApply.setMnemonic( KeyEvent.VK_C );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            btnApply.Text = _( "Apply to current track" );
+            btnApply.Text = BMenuItem.setMnemonicFromText(btnApply.Text, KeyEvent.VK_C);
 
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
@@ -411,9 +411,9 @@ namespace cadencii
             this.lblAccent = new BLabel();
             this.lblDecay = new BLabel();
             this.lblTemplate = new BLabel();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.btnApply = new BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.btnApply = new Button();
             this.comboTemplate = new BComboBox();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
@@ -756,9 +756,9 @@ namespace cadencii
         private BLabel label4;
         private BLabel label7;
         private BLabel label6;
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BButton btnApply;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnApply;
         private BComboBox comboTemplate;
         #endregion
 #endif

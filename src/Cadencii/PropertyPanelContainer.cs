@@ -136,8 +136,8 @@ namespace cadencii
         private void setResources()
         {
 #if !JAVA
-            this.btnClose.setIcon( new ImageIcon( Resources.get_cross_small() ) );
-            this.btnWindow.setIcon( new ImageIcon( Resources.get_chevron_small_collapse() ) );
+            this.btnClose.Image = Resources.get_cross_small().image;
+            this.btnWindow.Image = Resources.get_chevron_small_collapse().image;
 #endif
         }
 
@@ -174,8 +174,8 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.panelMain = new System.Windows.Forms.Panel();
-            this.btnClose = new BButton();
-            this.btnWindow = new BButton();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.btnWindow = new System.Windows.Forms.Button();
             this.panelTitle = new System.Windows.Forms.Panel();
             this.panelTitle.SuspendLayout();
             this.SuspendLayout();
@@ -236,8 +236,8 @@ namespace cadencii
         #endregion
 
         private System.Windows.Forms.Panel panelMain;
-        private BButton btnClose;
-        private BButton btnWindow;
+        private Button btnClose;
+        private Button btnWindow;
         private System.Windows.Forms.Panel panelTitle;
         #endregion
 #endif

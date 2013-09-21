@@ -124,20 +124,16 @@ namespace cadencii
         {
             String about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
-            Dimension size1 = Util.measureString( about, btnFlip.getFont() );
-            Dimension size2 = Util.measureString( credit, btnFlip.getFont() );
+            Dimension size1 = Util.measureString( about, btnFlip.Font );
+            Dimension size2 = Util.measureString( credit, btnFlip.Font );
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if ( m_credit_mode ) {
-#if !JAVA
-                btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
-#endif
-                btnFlip.setText( about );
+                btnFlip.Size = new System.Drawing.Size( m_button_width_about, btnFlip.Height );
+                btnFlip.Text = about;
             } else {
-#if !JAVA
-                btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
-#endif
-                btnFlip.setText( credit );
+                btnFlip.Size = new System.Drawing.Size( m_button_width_credit, btnFlip.Height );
+                btnFlip.Text = credit;
             }
             setTitle( about );
         }
@@ -312,9 +308,9 @@ namespace cadencii
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
                 try {
-                    btnFlip.setText( PortUtil.formatMessage( _( "About {0}" ), m_app_name ) );
+                    btnFlip.Text = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
                 } catch ( Exception ex ) {
-                    btnFlip.setText( "About " + m_app_name );
+                    btnFlip.Text = "About " + m_app_name;
                 }
                 m_scroll_started = PortUtil.getCurrentTime();
                 m_last_speed = 0f;
@@ -326,7 +322,7 @@ namespace cadencii
                 timer.start();
             } else {
                 timer.stop();
-                btnFlip.setText( _( "Credit" ) );
+                btnFlip.Text = _( "Credit" );
                 pictVstLogo.setVisible( true );
                 lblVstLogo.setVisible( true );
                 chkTwitterID.setVisible( false );
@@ -476,8 +472,8 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnFlip = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnFlip = new Button();
+            this.btnOK = new Button();
             this.lblVstLogo = new cadencii.windows.forms.BLabel();
             this.pictVstLogo = new cadencii.windows.forms.BPictureBox();
             this.chkTwitterID = new cadencii.windows.forms.BCheckBox();
@@ -564,8 +560,8 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnFlip;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnFlip;
+        private System.Windows.Forms.Button btnOK;
         private BPictureBox pictVstLogo;
         private BLabel lblVstLogo;
         private BCheckBox chkTwitterID;

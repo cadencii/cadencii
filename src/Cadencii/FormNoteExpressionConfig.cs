@@ -161,8 +161,8 @@ namespace cadencii
             lblAccent.setText( _( "Accent" ) );
             lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
 
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
@@ -579,8 +579,8 @@ namespace cadencii
             this.lblAccent = new BLabel();
             this.lblDecay = new BLabel();
             this.lblTemplate = new BLabel();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
             this.comboTemplate = new BComboBox();
             this.groupAttack = new BGroupBox();
             this.lblAttackTemplate = new BLabel();
@@ -1066,8 +1066,8 @@ namespace cadencii
         private BLabel label4;
         private BLabel label7;
         private BLabel label6;
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
         private BComboBox comboTemplate;
         private BGroupBox groupAttack;
         private NumberTextBox txtDepth;

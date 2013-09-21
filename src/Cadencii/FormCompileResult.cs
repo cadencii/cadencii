@@ -111,7 +111,7 @@ namespace cadencii
         {
             this.label1 = new cadencii.windows.forms.BLabel();
             this.textBox1 = new cadencii.windows.forms.BTextBox();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
             // label1
@@ -169,7 +169,7 @@ namespace cadencii
 
         private BLabel label1;
         private BTextBox textBox1;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnOK;
 
 #endif
         #endregion

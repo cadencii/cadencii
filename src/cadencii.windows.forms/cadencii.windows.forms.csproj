@@ -48,9 +48,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>

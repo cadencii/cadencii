@@ -105,25 +105,25 @@ namespace cadencii
                 boolean R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
                 boolean SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
                 if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                    if ( btnStart.isFocusOwner() ) {
+                    if ( btnStart.Focused ) {
                         if ( btn_o ) {
                             timer.stop();
                             btnStart_Click( this, new EventArgs() );
                             m_last_event_processed = now;
                         } else if ( pov_r ) {
-                            btnCancel.requestFocus();
+                            btnCancel.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_d ) {
                             numSpeed.requestFocus();
                             m_last_event_processed = now;
                         }
-                    } else if ( btnCancel.isFocusOwner() ) {
+                    } else if ( btnCancel.Focused ) {
                         if ( btn_o ) {
                             timer.stop();
                             setDialogResult( BDialogResult.CANCEL );
                             close();
                         } else if ( pov_l ) {
-                            btnStart.requestFocus();
+                            btnStart.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_d || pov_r ) {
                             numSpeed.requestFocus();
@@ -141,10 +141,10 @@ namespace cadencii
                                 m_last_event_processed = now;
                             }
                         } else if ( pov_l ) {
-                            btnCancel.requestFocus();
+                            btnCancel.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_u ) {
-                            btnStart.requestFocus();
+                            btnStart.Focus();
                             m_last_event_processed = now;
                         }
                     }
@@ -214,8 +214,8 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnStart = new BButton();
-            this.btnCancel = new BButton();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.lblRealTimeInput = new BLabel();
             this.lblSpeed = new BLabel();
             this.numSpeed = new BNumericUpDown();
@@ -320,8 +320,8 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnStart;
-        private BButton btnCancel;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnCancel;
         private BLabel lblRealTimeInput;
         private BLabel lblSpeed;
         private BNumericUpDown numSpeed;

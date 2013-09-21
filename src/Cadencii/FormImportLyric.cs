@@ -77,8 +77,8 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Import lyrics" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnOK.setText( _( "OK" ) );
+            btnCancel.Text = _( "Cancel" );
+            btnOK.Text = _( "OK" );
         }
 
         /// <summary>
@@ -206,8 +206,8 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.txtLyrics = new cadencii.windows.forms.BTextArea();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.lblNotes = new cadencii.windows.forms.BLabel();
             this.SuspendLayout();
             // 
@@ -276,8 +276,8 @@ namespace cadencii
         }
 
         private BTextArea txtLyrics;
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
         private BLabel lblNotes;
 #endif
         #endregion

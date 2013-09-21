@@ -21,6 +21,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.windows.forms;
 
@@ -64,8 +65,8 @@ namespace cadencii
             lblLength.setText( _( "Length" ) );
             lblThBar.setText( _( "th bar" ) );
             lblBar.setText( _( "bar" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
 #if !JAVA
             lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
 #endif
@@ -133,8 +134,8 @@ namespace cadencii
         private BLabel lblLength;
         private BLabel lblThBar;
         private BLabel lblBar;
-        private BButton btnCancel;
-        private BButton btnOK;
+        private Button btnCancel;
+        private Button btnOK;
         private BLabel lblPositionPrefix;
 
         /// <summary>
@@ -159,8 +160,8 @@ namespace cadencii
             this.lblLength = new cadencii.windows.forms.BLabel();
             this.lblThBar = new cadencii.windows.forms.BLabel();
             this.lblBar = new cadencii.windows.forms.BLabel();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
             this.lblPositionPrefix = new cadencii.windows.forms.BLabel();
             this.numLength = new cadencii.NumericUpDownEx();
             this.numPosition = new cadencii.NumericUpDownEx();

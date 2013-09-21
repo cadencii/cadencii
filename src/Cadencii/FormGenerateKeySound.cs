@@ -151,13 +151,13 @@ namespace cadencii {
             comboSinger.setEnabled( enabled );
             comboSingingSynthSystem.setEnabled( enabled );
             txtDir.setEditable( enabled );
-            btnBrowse.setEnabled( enabled );
-            btnExecute.setEnabled( enabled );
+            btnBrowse.Enabled = enabled;
+            btnExecute.Enabled = enabled;
             chkIgnoreExistingWavs.setEnabled( enabled );
             if ( enabled ) {
-                btnCancel.setText( "Close" );
+                btnCancel.Text = "Close";
             } else {
-                btnCancel.setText( "Cancel" );
+                btnCancel.Text = "Cancel";
             }
         }
         #endregion
@@ -378,15 +378,15 @@ namespace cadencii {
         //INCLUDE-SECTION METHOD ./ui/java/FormGenerateKeySound.java
 #else
         private void InitializeComponent() {
-            this.btnExecute = new BButton();
-            this.btnCancel = new BButton();
+            this.btnExecute = new Button();
+            this.btnCancel = new Button();
             this.comboSingingSynthSystem = new BComboBox();
             this.lblSingingSynthSystem = new BLabel();
             this.lblSinger = new BLabel();
             this.comboSinger = new BComboBox();
             this.chkIgnoreExistingWavs = new BCheckBox();
             this.txtDir = new BTextBox();
-            this.btnBrowse = new BButton();
+            this.btnBrowse = new Button();
             this.lblDir = new BLabel();
             this.SuspendLayout();
             // 
@@ -505,15 +505,15 @@ namespace cadencii {
 
         }
 
-        private BButton btnExecute;
-        private BButton btnCancel;
+        private System.Windows.Forms.Button btnExecute;
+        private System.Windows.Forms.Button btnCancel;
         private BComboBox comboSingingSynthSystem;
         private BLabel lblSingingSynthSystem;
         private BLabel lblSinger;
         private BComboBox comboSinger;
         private BCheckBox chkIgnoreExistingWavs;
         private BTextBox txtDir;
-        private BButton btnBrowse;
+        private System.Windows.Forms.Button btnBrowse;
         private BLabel lblDir;
 
 #endif

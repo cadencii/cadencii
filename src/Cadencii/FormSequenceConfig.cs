@@ -84,8 +84,8 @@ namespace cadencii
         public void applyLanguage()
         {
             setTitle( _( "Sequence config" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnOK.setText( _( "OK" ) );
+            btnCancel.Text = _( "Cancel" );
+            btnOK.Text = _( "OK" );
 
             groupWaveFileOutput.setTitle( _( "Wave File Output" ) );
             lblChannel.setText( _( "Channel" ) );
@@ -293,8 +293,8 @@ namespace cadencii
             this.radioMasterTrack = new cadencii.windows.forms.BRadioButton();
             this.lblChannel = new cadencii.windows.forms.BLabel();
             this.comboChannel = new cadencii.windows.forms.BComboBox();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.groupSequence = new cadencii.windows.forms.BGroupBox();
             this.labelPreMeasure = new cadencii.windows.forms.BLabel();
             this.comboPreMeasure = new cadencii.windows.forms.BComboBox();
@@ -463,8 +463,8 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
         private BLabel lblChannel;
         private BComboBox comboChannel;
         private BGroupBox groupWaveFileOutput;

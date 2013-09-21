@@ -67,8 +67,8 @@ namespace cadencii
             txtDataPointValue.setText( context.point.value + "" );
             txtDataPointValue.selectAll();
 
-            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
+            btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+            btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
         }
 
         #region public methods
@@ -77,8 +77,8 @@ namespace cadencii
             setTitle( _( "Edit Value" ) );
             lblDataPointClock.setText( _( "Clock" ) );
             lblDataPointValue.setText( _( "Value" ) );
-            btnApply.setText( _( "Apply" ) );
-            btnExit.setText( _( "Exit" ) );
+            btnApply.Text = _( "Apply" );
+            btnExit.Text = _( "Exit" );
         }
         #endregion
 
@@ -147,8 +147,8 @@ namespace cadencii
                 txtDataPointValue.selectAll();
             }
 
-            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
+            btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+            btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
             m_changed = false;
         }
 
@@ -266,13 +266,13 @@ namespace cadencii
 #endif
             txtDataPointClock.setEnabled( exists );
             txtDataPointValue.setEnabled( exists );
-            btnApply.setEnabled( exists );
-            btnBackward.setEnabled( exists );
-            btnBackward2.setEnabled( exists );
-            btnBackward3.setEnabled( exists );
-            btnForward.setEnabled( exists );
-            btnForward2.setEnabled( exists );
-            btnForward3.setEnabled( exists );
+            btnApply.Enabled = exists;
+            btnBackward.Enabled = exists;
+            btnBackward2.Enabled = exists;
+            btnBackward3.Enabled = exists;
+            btnForward.Enabled = exists;
+            btnForward2.Enabled = exists;
+            btnForward3.Enabled = exists;
 
             if ( exists ) {
                 AppManager.itemSelection.clearPoint();
@@ -283,8 +283,8 @@ namespace cadencii
                 mMainWindow.updateDrawObjectList();
                 mMainWindow.refreshScreen();
             }
-            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
+            btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+            btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
         }
 
         public void btnExit_Click( Object sender, EventArgs e )
@@ -321,20 +321,20 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnForward = new cadencii.windows.forms.BButton();
-            this.btnBackward = new cadencii.windows.forms.BButton();
+            this.btnForward = new Button();
+            this.btnBackward = new Button();
             this.lblDataPointValue = new cadencii.windows.forms.BLabel();
             this.lblDataPointClock = new cadencii.windows.forms.BLabel();
-            this.btnExit = new cadencii.windows.forms.BButton();
-            this.btnBackward2 = new cadencii.windows.forms.BButton();
-            this.btnForward2 = new cadencii.windows.forms.BButton();
-            this.btnApply = new cadencii.windows.forms.BButton();
+            this.btnExit = new Button();
+            this.btnBackward2 = new Button();
+            this.btnForward2 = new Button();
+            this.btnApply = new Button();
             this.txtDataPointClock = new cadencii.NumberTextBox();
             this.txtDataPointValue = new cadencii.NumberTextBox();
-            this.btnBackward3 = new cadencii.windows.forms.BButton();
-            this.btnForward3 = new cadencii.windows.forms.BButton();
-            this.btnUndo = new cadencii.windows.forms.BButton();
-            this.btnRedo = new cadencii.windows.forms.BButton();
+            this.btnBackward3 = new Button();
+            this.btnForward3 = new Button();
+            this.btnUndo = new Button();
+            this.btnRedo = new Button();
             this.SuspendLayout();
             // 
             // btnForward
@@ -497,20 +497,20 @@ namespace cadencii
 
         }
 
-        private BButton btnForward;
-        private BButton btnBackward;
+        private System.Windows.Forms.Button btnForward;
+        private System.Windows.Forms.Button btnBackward;
         private BLabel lblDataPointValue;
         private NumberTextBox txtDataPointClock;
         private BLabel lblDataPointClock;
         private NumberTextBox txtDataPointValue;
-        private BButton btnExit;
-        private BButton btnBackward2;
-        private BButton btnForward2;
-        private BButton btnApply;
-        private BButton btnBackward3;
-        private BButton btnForward3;
-        private BButton btnUndo;
-        private BButton btnRedo;
+        private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.Button btnBackward2;
+        private System.Windows.Forms.Button btnForward2;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button btnBackward3;
+        private System.Windows.Forms.Button btnForward3;
+        private System.Windows.Forms.Button btnUndo;
+        private System.Windows.Forms.Button btnRedo;
 
 #endif
         #endregion

@@ -140,10 +140,10 @@ namespace cadencii
         {
             setTitle( _( "Shortcut Config" ) );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnRevert.setText( _( "Revert" ) );
-            btnLoadDefault.setText( _( "Load Default" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            btnRevert.Text = _( "Revert" );
+            btnLoadDefault.Text = _( "Load Default" );
 
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
 
@@ -524,11 +524,11 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
             this.list = new cadencii.windows.forms.BListView();
-            this.btnLoadDefault = new cadencii.windows.forms.BButton();
-            this.btnRevert = new cadencii.windows.forms.BButton();
+            this.btnLoadDefault = new Button();
+            this.btnRevert = new Button();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.labelCategory = new cadencii.windows.forms.BLabel();
             this.comboCategory = new cadencii.windows.forms.BComboBox();
@@ -752,11 +752,11 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
         private BListView list;
-        private BButton btnLoadDefault;
-        private BButton btnRevert;
+        private System.Windows.Forms.Button btnLoadDefault;
+        private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.ToolTip toolTip;
         private BLabel labelCategory;
         private BComboBox comboCategory;

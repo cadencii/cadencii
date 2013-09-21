@@ -57,8 +57,8 @@ namespace cadencii
             setTitle( _( "Delete Bars" ) );
             lblStart.setText( _( "Start" ) );
             lblEnd.setText( _( "End" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
         }
 
         public int getStart()
@@ -139,8 +139,8 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.label4 = new cadencii.windows.forms.BLabel();
             this.label3 = new cadencii.windows.forms.BLabel();
             this.lblEnd = new cadencii.windows.forms.BLabel();
@@ -275,8 +275,8 @@ namespace cadencii
 
         }
 
-        private BButton btnOK;
-        private BButton btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
         private BLabel label4;
         private BLabel label3;
         private BLabel lblEnd;

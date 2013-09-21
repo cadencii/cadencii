@@ -60,8 +60,8 @@ namespace cadencii
         {
             lblMasterTuning.setText( _( "Master Tuning in Cent" ) );
             setTitle( _( "Track Property" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
         }
 
         public int getMasterTuningInCent()
@@ -143,8 +143,8 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
+            this.btnOK = new Button();
+            this.btnCancel = new Button();
             this.lblMasterTuning = new BLabel();
             this.txtMasterTuning = new BTextBox();
             this.SuspendLayout();
@@ -213,8 +213,8 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnOK;
-        private BButton btnCancel;
+        private Button btnOK;
+        private Button btnCancel;
         private BLabel lblMasterTuning;
         private BTextBox txtMasterTuning;
         #endregion
