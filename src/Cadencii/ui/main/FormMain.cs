@@ -62,7 +62,6 @@ namespace cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
@@ -815,15 +814,6 @@ namespace cadencii
             trackSelector.setCurveVisible( true );
 
             // inputTextBoxの初期化
-#if JAVA
-            AppManager.mInputTextBox = new LyricTextBox( this );
-            AppManager.mInputTextBox.setVisible( false );
-            AppManager.mInputTextBox.setSize( 80, 22 );
-            AppManager.mInputTextBox.setBackground( Color.white );
-            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
-            AppManager.mInputTextBox.setEnabled( false );
-            AppManager.mInputTextBox.keyPressEvent.add( new BKeyPressEventHandler( this, "mInputTextBox_KeyPress" ) );
-#else
             AppManager.mInputTextBox = new LyricTextBox();
             AppManager.mInputTextBox.setVisible( false );
             AppManager.mInputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -835,7 +825,6 @@ namespace cadencii
             AppManager.mInputTextBox.KeyPress += mInputTextBox_KeyPress;
             AppManager.mInputTextBox.Parent = pictPianoRoll;
             panel1.Controls.Add( AppManager.mInputTextBox );
-#endif
 
             int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
             timer.setDelay( (fps <= 0) ? 1 : fps );
@@ -7718,7 +7707,7 @@ namespace cadencii
             mLastIsImeModeOn = AppManager.mInputTextBox.isImeModeOn();
         }
 
-        public void mInputTextBox_KeyPress( Object sender, BKeyPressEventArgs e )
+        public void mInputTextBox_KeyPress( Object sender, KeyPressEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyPress" );
