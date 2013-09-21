@@ -35,7 +35,6 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
 #endif
 
 #if JAVA

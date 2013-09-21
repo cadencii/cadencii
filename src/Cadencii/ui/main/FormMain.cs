@@ -65,9 +65,7 @@ namespace cadencii
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
 
-    using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
@@ -692,7 +690,7 @@ namespace cadencii
             trackSelector.MouseMove += new MouseEventHandler( trackSelector_MouseMove );
             trackSelector.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
             trackSelector.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
-            trackSelector.PreviewKeyDown += new BPreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
+            trackSelector.PreviewKeyDown += new PreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
             trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( trackSelector_SelectedTrackChanged );
             trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( trackSelector_SelectedCurveChanged );
             trackSelector.RenderRequired += new RenderRequiredEventHandler( trackSelector_RenderRequired );
@@ -7417,14 +7415,14 @@ namespace cadencii
             hScroll.ValueChanged += new EventHandler( hScroll_ValueChanged );
             hScroll.Resize += new EventHandler( hScroll_Resize );
             hScroll.Enter += new EventHandler( hScroll_Enter );
-            picturePositionIndicator.PreviewKeyDown += new BPreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
+            picturePositionIndicator.PreviewKeyDown += new PreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
             picturePositionIndicator.MouseMove += new MouseEventHandler( picturePositionIndicator_MouseMove );
             picturePositionIndicator.MouseClick += new MouseEventHandler( picturePositionIndicator_MouseClick );
             picturePositionIndicator.MouseDoubleClick += new MouseEventHandler( picturePositionIndicator_MouseDoubleClick );
             picturePositionIndicator.MouseDown += new MouseEventHandler( picturePositionIndicator_MouseDown );
             picturePositionIndicator.MouseUp += new MouseEventHandler( picturePositionIndicator_MouseUp );
             picturePositionIndicator.Paint += new BPaintEventHandler( picturePositionIndicator_Paint );
-            pictPianoRoll.PreviewKeyDown += new BPreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
+            pictPianoRoll.PreviewKeyDown += new PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
             pictPianoRoll.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
             pictPianoRoll.KeyUp += new KeyEventHandler( pictPianoRoll_KeyUp );
             pictPianoRoll.MouseMove += new MouseEventHandler( pictPianoRoll_MouseMove );
@@ -7464,7 +7462,7 @@ namespace cadencii
             this.Activated += new EventHandler( FormMain_Activated );
             this.FormClosed += new FormClosedEventHandler( FormMain_FormClosed );
             this.FormClosing += new FormClosingEventHandler( FormMain_FormClosing );
-            this.PreviewKeyDown += new BPreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
+            this.PreviewKeyDown += new PreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
             panelOverview.Enter += new EventHandler( panelOverview_Enter );
         }
 
@@ -9684,7 +9682,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void pictPianoRoll_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
             KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
@@ -10651,7 +10649,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void FormMain_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#FormMain_PreviewKeyDown" );
@@ -14816,7 +14814,7 @@ namespace cadencii
 #endif
         }
 
-        public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void picturePositionIndicator_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
             KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
@@ -15125,7 +15123,7 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void trackSelector_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
             KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );

@@ -113,8 +113,6 @@
     <Compile Include="BPopupMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BPreviewKeyDownEventArgs.cs" />
-    <Compile Include="BPreviewKeyDownEventHandler.cs" />
     <Compile Include="BProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
