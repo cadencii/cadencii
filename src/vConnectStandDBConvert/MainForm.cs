@@ -123,7 +123,7 @@ namespace cadencii.vconnect
 
             lock (mutex_) {
                 if (!stop_requested_) {
-                    MessageBox.Show(_("Completed"), _(""), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(_("Completed"), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
