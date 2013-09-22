@@ -2476,9 +2476,9 @@ namespace cadencii
         /// <returns></returns>
         public Object searchMenuItemFromName( String name, ByRef<Object> parent )
         {
-            int count = menuStripMain.getMenuCount();
+            int count = menuStripMain.Items.Count;
             for ( int i = 0; i < count; i++ ) {
-                Object tsi = menuStripMain.getMenu( i );
+                Object tsi = menuStripMain.Items[i];
                 Object ret = searchMenuItemRecurse( name, tsi, parent );
                 if ( ret != null ) {
                     if ( parent.value == null ) {
@@ -3138,7 +3138,7 @@ namespace cadencii
                                   splitContainer1.getPanel2MinSize() +
                                   _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
                                   rebar.Height +
-                                  menuStripMain.getHeight() + statusStrip.Height +
+                                  menuStripMain.Height + statusStrip.Height +
                                   (current.height - client.height) +
                                   20 );
 #endif
@@ -7987,7 +7987,7 @@ namespace cadencii
                     refreshScreen();
 
                     mContextMenuOpenedPosition = new Point( e.X, e.Y );
-                    cMenuPiano.show( pictPianoRoll, e.X, e.Y );
+                    cMenuPiano.Show( pictPianoRoll, e.X, e.Y );
                 } else {
                     ByRef<Rectangle> out_id_rect = new ByRef<Rectangle>();
                     VsqEvent item = getItemAtClickedPosition( mButtonInitial, out_id_rect );
@@ -14029,7 +14029,7 @@ namespace cadencii
                     clock = 0;
                 }
                 mPositionIndicatorPopupShownClock = clock;
-                cMenuPositionIndicator.show( picturePositionIndicator, e.X, e.Y );
+                cMenuPositionIndicator.Show( picturePositionIndicator, e.X, e.Y );
             }
         }
 
@@ -14949,9 +14949,9 @@ namespace cadencii
             if ( e.Button == BMouseButtons.Right ) {
                 if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() ) {
                     if ( trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.getHeight() ) {
-                        cMenuTrackTab.show( trackSelector, e.X, e.Y );
+                        cMenuTrackTab.Show( trackSelector, e.X, e.Y );
                     } else {
-                        cMenuTrackSelector.show( trackSelector, e.X, e.Y );
+                        cMenuTrackSelector.Show( trackSelector, e.X, e.Y );
                     }
                 }
             }

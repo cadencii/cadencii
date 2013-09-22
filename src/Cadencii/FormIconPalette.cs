@@ -356,7 +356,7 @@ namespace cadencii
 #else
         private void InitializeComponent()
         {
-            this.menuBar = new cadencii.windows.forms.BMenuBar();
+            this.menuBar = new MenuStrip();
             this.menuWindow = new ToolStripMenuItem();
             this.menuWindowHide = new ToolStripMenuItem();
             this.menuBar.SuspendLayout();
@@ -405,7 +405,7 @@ namespace cadencii
 
         }
 
-        private BMenuBar menuBar;
+        private MenuStrip menuBar;
         private ToolStripMenuItem menuWindow;
         private ToolStripMenuItem menuWindowHide;
 

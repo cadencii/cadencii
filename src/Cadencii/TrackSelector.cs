@@ -2825,9 +2825,7 @@ namespace cadencii
                 } else if ( e.Button == BMouseButtons.Right ) {
                     if ( 0 <= e.X && e.X <= AppManager.keyWidth &&
                          0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
-                        MenuElement[] sub_cmenu_curve = cmenuCurve.getSubElements();
-                        for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
-                            MenuElement tsi = sub_cmenu_curve[i];
+                        foreach (var tsi in cmenuCurve.Items) {
                             if (tsi is ToolStripMenuItem) {
                                 ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
                                 tsmi.Checked = false;
@@ -2947,8 +2945,7 @@ namespace cadencii
                             cmenuCurveBreathiness.Text = "Breathiness";
                             cmenuCurveVelocity.Text = "Velocity";
                         }
-                        for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
-                            MenuElement tsi = sub_cmenu_curve[i];
+                        foreach (var tsi in cmenuCurve.Items) {
                             if ( tsi is ToolStripMenuItem ) {
                                 ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
                                 CurveType ct = getCurveTypeFromMenu( tsmi );
@@ -2975,7 +2972,7 @@ namespace cadencii
                             }
                         }
 
-                        cmenuCurve.show( this, e.X, e.Y );
+                        cmenuCurve.Show( this, e.X, e.Y );
                     }
                 }
             }
@@ -5707,10 +5704,8 @@ namespace cadencii
                             }
                             cmenuSinger.SingerChangeExists = true;
                             cmenuSinger.InternalID = ve.InternalID;
-                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-                            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                                TrackSelectorSingerDropdownMenuItem tsmi =
-                                    (TrackSelectorSingerDropdownMenuItem)sub_cmenu_singer[i];
+                            foreach (var item in cmenuSinger.Items) {
+                                var tsmi = item as TrackSelectorSingerDropdownMenuItem;
                                 if ( tsmi.Language == ve.ID.IconHandle.Language &&
                                      tsmi.Program == ve.ID.IconHandle.Program ) {
                                     tsmi.Checked = true;
@@ -5718,7 +5713,7 @@ namespace cadencii
                                     tsmi.Checked = false;
                                 }
                             }
-                            cmenuSinger.show( this, e.X, e.Y );
+                            cmenuSinger.Show( this, e.X, e.Y );
                         } else if ( key_width <= e.X && e.X <= width ) {
                             // マウス位置に何もアイテムが無かった場合
                             if ( !mCMenuSingerPrepared.Equals( renderer ) ) {
@@ -5737,12 +5732,11 @@ namespace cadencii
                             }
                             cmenuSinger.SingerChangeExists = false;
                             cmenuSinger.Clock = clock;
-                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-                            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                                ToolStripMenuItem tsmi = (ToolStripMenuItem)sub_cmenu_singer[i];
+                            foreach (var item in cmenuSinger.Items) {
+                                var tsmi = item as ToolStripMenuItem;
                                 tsmi.Checked = false;
                             }
-                            cmenuSinger.show( this, e.X, e.Y );
+                            cmenuSinger.Show( this, e.X, e.Y );
                         }
                     }
                     #endregion
@@ -5756,7 +5750,7 @@ namespace cadencii
         /// <param name="renderer"></param>
         public void prepareSingerMenu( RendererKind renderer )
         {
-            cmenuSinger.removeAll();
+            cmenuSinger.Items.Clear();
             Vector<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
@@ -5821,7 +5815,7 @@ namespace cadencii
                     tsmi.Program = sc.Program;
                     tsmi.Click += new EventHandler( cmenusinger_Click );
                     tsmi.MouseHover += new EventHandler( cmenusinger_MouseHover );
-                    cmenuSinger.add( tsmi );
+                    cmenuSinger.Items.Add( tsmi );
                     count++;
                 }
             }
@@ -5856,10 +5850,8 @@ namespace cadencii
 
                 // tooltipを表示するy座標を決める
                 int y = 0;
-                MenuElement[] sub = cmenuSinger.getSubElements();
-                for ( int i = 0; i < sub.Length; i++ ) {
-                    TrackSelectorSingerDropdownMenuItem item =
-                        (TrackSelectorSingerDropdownMenuItem)sub[i];
+                foreach (var i in cmenuSinger.Items) {
+                    var item = i as TrackSelectorSingerDropdownMenuItem;
                     if ( language == item.Language &&
                          program == item.Program ) {
                         break;
@@ -5868,13 +5860,13 @@ namespace cadencii
                 }
 
                 int tip_width = menu.ToolTipPxWidth;
-                Point ppts = cmenuSinger.pointToScreen( new Point( 0, 0 ) );
-                Point pts = new Point( ppts.x, ppts.y );
+                var ppts = cmenuSinger.PointToScreen(new System.Drawing.Point( 0, 0 ) );
+                Point pts = new Point( ppts.X, ppts.Y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
                 mTooltipProgram = program;
                 mTooltipLanguage = language;
-                if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
+                if ( pts.x + cmenuSinger.Width + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( cmenuSinger.Width, y ), 5000 );
@@ -5927,9 +5919,7 @@ namespace cadencii
             sout.println( "TrackSelector#toolTip_Draw; sender.GetType()=" + sender.GetType() );
 #endif
 
-            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                MenuElement tsi = sub_cmenu_singer[i];
+            foreach (var tsi in cmenuSinger.Items) {
                 if ( !(tsi is TrackSelectorSingerDropdownMenuItem) ) {
                     continue;
                 }
@@ -6067,7 +6057,7 @@ namespace cadencii
             this.components = new System.ComponentModel.Container();
             this.cmenuSinger = new TrackSelectorSingerPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.cmenuCurve = new cadencii.windows.forms.BPopupMenu( this.components );
+            this.cmenuCurve = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmenuCurveVelocity = new ToolStripMenuItem();
             this.cmenuCurveAccent = new ToolStripMenuItem();
             this.cmenuCurveDecay = new ToolStripMenuItem();
@@ -6414,7 +6404,7 @@ namespace cadencii
 
         private TrackSelectorSingerPopupMenu cmenuSinger;
         private System.Windows.Forms.ToolTip toolTip;
-        private BPopupMenu cmenuCurve;
+        private ContextMenuStrip cmenuCurve;
         private ToolStripMenuItem cmenuCurveVelocity;
         private ToolStripSeparator cmenuCurveSeparator2;
         private ToolStripMenuItem cmenuCurveReso1;

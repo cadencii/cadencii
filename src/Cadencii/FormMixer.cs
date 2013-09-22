@@ -649,7 +649,7 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuMain = new cadencii.windows.forms.BMenuBar();
+            this.menuMain = new MenuStrip();
             this.menuVisual = new ToolStripMenuItem();
             this.menuVisualReturn = new ToolStripMenuItem();
             this.panelSlaves = new cadencii.windows.forms.BPanel();
@@ -736,7 +736,7 @@ namespace cadencii
 
         #endregion
 
-        private BMenuBar menuMain;
+        private MenuStrip menuMain;
         private ToolStripMenuItem menuVisual;
         private ToolStripMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;

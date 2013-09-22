@@ -28,7 +28,7 @@ namespace cadencii
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            this.menuStripMain = new cadencii.windows.forms.BMenuBar();
+            this.menuStripMain = new MenuStrip();
             this.menuFile = new ToolStripMenuItem();
             this.menuFileNew = new ToolStripMenuItem();
             this.menuFileOpen = new ToolStripMenuItem();
@@ -181,7 +181,7 @@ namespace cadencii
             this.menuHiddenPlayFromStartMarker = new ToolStripMenuItem();
             this.menuHiddenFlipCurveOnPianorollMode = new ToolStripMenuItem();
             this.menuHiddenPrintPoToCSV = new ToolStripMenuItem();
-            this.cMenuPiano = new cadencii.windows.forms.BPopupMenu(this.components);
+            this.cMenuPiano = new ContextMenuStrip(this.components);
             this.cMenuPianoPointer = new ToolStripMenuItem();
             this.cMenuPianoPencil = new ToolStripMenuItem();
             this.cMenuPianoEraser = new ToolStripMenuItem();
@@ -229,7 +229,7 @@ namespace cadencii
             this.cMenuPianoExpressionProperty = new ToolStripMenuItem();
             this.cMenuPianoVibratoProperty = new ToolStripMenuItem();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.cMenuTrackTab = new cadencii.windows.forms.BPopupMenu(this.components);
+            this.cMenuTrackTab = new ContextMenuStrip(this.components);
             this.cMenuTrackTabTrackOn = new ToolStripMenuItem();
             this.toolStripMenuItem24 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackTabAdd = new ToolStripMenuItem();
@@ -248,7 +248,7 @@ namespace cadencii
             this.cMenuTrackTabRendererStraight = new ToolStripMenuItem();
             this.cMenuTrackTabRendererAquesTone = new ToolStripMenuItem();
             this.cMenuTrackTabRendererAquesTone2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.cMenuTrackSelector = new cadencii.windows.forms.BPopupMenu(this.components);
+            this.cMenuTrackSelector = new ContextMenuStrip(this.components);
             this.cMenuTrackSelectorPointer = new ToolStripMenuItem();
             this.cMenuTrackSelectorPencil = new ToolStripMenuItem();
             this.cMenuTrackSelectorLine = new ToolStripMenuItem();
@@ -342,7 +342,7 @@ namespace cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.cMenuPositionIndicator = new cadencii.windows.forms.BPopupMenu(this.components);
+            this.cMenuPositionIndicator = new ContextMenuStrip(this.components);
             this.cMenuPositionIndicatorStartMarker = new ToolStripMenuItem();
             this.cMenuPositionIndicatorEndMarker = new ToolStripMenuItem();
             this.menuFileExportVsqx = new System.Windows.Forms.ToolStripMenuItem();
@@ -2926,7 +2926,7 @@ namespace cadencii
 
         private System.ComponentModel.IContainer components;
 
-        public BMenuBar menuStripMain;
+        public MenuStrip menuStripMain;
         public ToolStripMenuItem menuFile;
         public ToolStripMenuItem menuEdit;
         public ToolStripMenuItem menuVisual;
@@ -2974,7 +2974,7 @@ namespace cadencii
         public BPictureBox pictureBox2;
         public BPictureBox pictureBox3;
         public BPictureBox picturePositionIndicator;
-        public BPopupMenu cMenuPiano;
+        public ContextMenuStrip cMenuPiano;
         public ToolStripMenuItem cMenuPianoPointer;
         public ToolStripMenuItem cMenuPianoPencil;
         public ToolStripMenuItem cMenuPianoEraser;
@@ -3037,7 +3037,7 @@ namespace cadencii
         public ToolStripMenuItem menuTrackRenderAll;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem23;
         public ToolStripMenuItem menuTrackOverlay;
-        public BPopupMenu cMenuTrackTab;
+        public ContextMenuStrip cMenuTrackTab;
         public ToolStripMenuItem cMenuTrackTabTrackOn;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem24;
         public ToolStripMenuItem cMenuTrackTabAdd;
@@ -3049,7 +3049,7 @@ namespace cadencii
         public ToolStripMenuItem cMenuTrackTabRenderAll;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem27;
         public ToolStripMenuItem cMenuTrackTabOverlay;
-        public BPopupMenu cMenuTrackSelector;
+        public ContextMenuStrip cMenuTrackSelector;
         public ToolStripMenuItem cMenuTrackSelectorPointer;
         public ToolStripMenuItem cMenuTrackSelectorPencil;
         public ToolStripMenuItem cMenuTrackSelectorLine;
@@ -3245,7 +3245,7 @@ namespace cadencii
         public ToolStripMenuItem menuFileExportParaWave;
         public ToolStripMenuItem menuFileImportUst;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
-        public BPopupMenu cMenuPositionIndicator;
+        public ContextMenuStrip cMenuPositionIndicator;
         public ToolStripMenuItem cMenuPositionIndicatorStartMarker;
         public ToolStripMenuItem cMenuPositionIndicatorEndMarker;
         public ToolStripMenuItem menuHelpManual;
