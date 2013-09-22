@@ -10909,7 +10909,7 @@ namespace cadencii
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
-            mDialogMidiImportAndExport.listTrack.clear();
+            mDialogMidiImportAndExport.listTrack.Items.Clear();
             VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
 
             for ( int i = 0; i < vsq.Track.size(); i++ ) {
@@ -10919,7 +10919,7 @@ namespace cadencii
                     VsqEvent obj = itr.next();
                     notes++;
                 }
-                mDialogMidiImportAndExport.listTrack.addRow( new String[] { i + "", track.getName(), notes + "" }, true );
+                mDialogMidiImportAndExport.listTrack.AddRow( new String[] { i + "", track.getName(), notes + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
@@ -10929,8 +10929,8 @@ namespace cadencii
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
                 int track_count = 0;
-                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                    if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                    if ( mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                         track_count++;
                     }
                 }
@@ -10964,8 +10964,8 @@ namespace cadencii
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
                         int count = -1;
-                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                            if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                            if ( !mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                                 continue;
                             }
                             VsqTrack track = vsq.Track.get( i );
@@ -11589,7 +11589,7 @@ namespace cadencii
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
-            mDialogMidiImportAndExport.listTrack.clear();
+            mDialogMidiImportAndExport.listTrack.Items.Clear();
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
@@ -11650,7 +11650,7 @@ namespace cadencii
                         notes++;
                     }
                 }
-                mDialogMidiImportAndExport.listTrack.addRow(
+                mDialogMidiImportAndExport.listTrack.AddRow(
                     new String[] { i + "", track_name, notes + "" }, true );
             }
 
@@ -11820,14 +11820,14 @@ namespace cadencii
                 work.updateTimesigInfo();
             }
 
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                if ( !mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                     continue;
                 }
                 if ( vec.size( work.Track ) + 1 > AppManager.MAX_NUM_TRACK ) {
                     break;
                 }
-                VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.getItemAt( i, 1 ), "Miku" );
+                VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.Items[i].SubItems[1].Text, "Miku" );
 
                 // デフォルトの音声合成システムに切り替え
                 RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
@@ -12110,9 +12110,9 @@ namespace cadencii
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
-            mDialogMidiImportAndExport.listTrack.clear();
+            mDialogMidiImportAndExport.listTrack.Items.Clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                mDialogMidiImportAndExport.listTrack.addRow( new String[] {
+                mDialogMidiImportAndExport.listTrack.AddRow( new String[] {
                     track + "",
                     vsq.Track.get( track ).getName(),
                     vsq.Track.get( track ).getEventCount() + "" }, true );
@@ -12127,8 +12127,8 @@ namespace cadencii
             }
 
             Vector<Integer> add_track = new Vector<Integer>();
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                if ( mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                     add_track.add( i + 1 );
                 }
             }

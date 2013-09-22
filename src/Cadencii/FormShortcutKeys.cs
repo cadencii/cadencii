@@ -85,9 +85,9 @@ namespace cadencii
             sout.println( "FormShortcutKeys#.ctor; mColumnWidthCommand=" + mColumnWidthCommand + "; mColumnWidthShortcutKey=" + mColumnWidthShortcutKey );
 #endif
             mMainForm = main_form;
-            list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
-            list.setColumnWidth( 0, mColumnWidthCommand );
-            list.setColumnWidth( 1, mColumnWidthShortcutKey );
+            list.SetColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+            list.Columns[0].Width = mColumnWidthCommand;
+            list.Columns[1].Width = mColumnWidthShortcutKey;
 
             applyLanguage();
             setResources();
@@ -145,7 +145,7 @@ namespace cadencii
             btnRevert.Text = _( "Revert" );
             btnLoadDefault.Text = _( "Load Default" );
 
-            list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+            list.SetColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
 
             labelCategory.Text = _( "Category" );
             int selected = comboCategory.SelectedIndex;
@@ -221,7 +221,7 @@ namespace cadencii
         private void updateList()
         {
             list.SelectedIndexChanged -= new EventHandler( list_SelectedIndexChanged );
-            list.clear();
+            list.Items.Clear();
             list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
             mFieldName.clear();
 
@@ -257,7 +257,7 @@ namespace cadencii
                     }
                 }
                 if ( add_this_one ) {
-                     list.addRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
+                     list.AddRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
                      mFieldName.add( field_name );
                 }
             }
@@ -272,14 +272,14 @@ namespace cadencii
         /// </summary>
         private void updateColor()
         {
-            int size = list.getItemCountRow();
+            int size = list.Items.Count;
             for ( int i = 0; i < size; i++ ) {
                 //BListViewItem list_item = list.getItemAt( i );
                 String field_name = mFieldName.get( i );
-                String key_display = list.getItemAt( i, 1 );
+                String key_display = list.Items[i].SubItems[1].Text;
                 if ( str.compare( key_display, "" ) ){
                     // ショートカットキーが割り当てられていないのでスルー
-                    list.setRowBackColor( i, java.awt.Color.white );
+                    list.Items[i].BackColor = System.Drawing.Color.White;
                     continue;
                 }
 
@@ -303,9 +303,9 @@ namespace cadencii
 
                 // 背景色を変える
                 if ( found ) {
-                    list.setRowBackColor( i, java.awt.Color.yellow );
+                    list.Items[i].BackColor = System.Drawing.Color.Yellow;
                 } else {
-                    list.setRowBackColor(  i, java.awt.Color.white );
+                    list.Items[i].BackColor = System.Drawing.Color.White;
                 }
             }
         }
@@ -373,12 +373,12 @@ namespace cadencii
             if( indx < 0 ){
                 return;
             }
-            int indx_row = list.getSelectedRow();
-            if( indx_row < 0 ){
+            if( list.SelectedIndices.Count == 0 ){
                 return;
             }
+            int indx_row = list.SelectedIndices[0];
             BKeys key = (BKeys)comboEditKey.Items[indx];
-            String display = list.getItemAt( indx_row, 0 );
+            String display = list.Items[indx_row].SubItems[0].Text;
             if ( !mDict.containsKey( display ) ) {
                 return;
             }
@@ -400,16 +400,16 @@ namespace cadencii
             }
             BKeys[] keys = capturelist.toArray( new BKeys[] { } );
             mDict.get( display ).setValue( keys );
-            list.setItemAt( indx_row, 1, Utility.getShortcutDisplayString( keys ) ); 
+            list.Items[indx_row].SubItems[1].Text = Utility.getShortcutDisplayString( keys ); 
         } 
 
         public void list_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int indx = list.getSelectedRow();
-            if( indx < 0 ){
+            if( list.SelectedIndices.Count == 0 ){
                 return;
             }
-            String display = list.getItemAt( indx, 0 );
+            int indx = list.SelectedIndices[0];
+            String display = list.Items[indx].SubItems[0].Text;
             if( !mDict.containsKey( display ) ){
                 return;
             }
@@ -472,8 +472,8 @@ namespace cadencii
 
         public void FormShortcutKeys_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            mColumnWidthCommand = list.getColumnWidth( 0 );
-            mColumnWidthShortcutKey = list.getColumnWidth( 1 );
+            mColumnWidthCommand = list.Columns[0].Width;
+            mColumnWidthShortcutKey = list.Columns[1].Width;
 #if DEBUG
             sout.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + mColumnWidthCommand + "," + mColumnWidthShortcutKey );
 #endif
@@ -526,7 +526,7 @@ namespace cadencii
             this.components = new System.ComponentModel.Container();
             this.btnCancel = new Button();
             this.btnOK = new Button();
-            this.list = new cadencii.windows.forms.BListView();
+            this.list = new ListView();
             this.btnLoadDefault = new Button();
             this.btnRevert = new Button();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
@@ -754,7 +754,7 @@ namespace cadencii
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private BListView list;
+        private ListView list;
         private System.Windows.Forms.Button btnLoadDefault;
         private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.ToolTip toolTip;

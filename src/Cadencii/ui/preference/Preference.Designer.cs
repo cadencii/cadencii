@@ -187,7 +187,7 @@ namespace cadencii
             this.buttonResamplerDown = new System.Windows.Forms.Button();
             this.buttonResamplerRemove = new System.Windows.Forms.Button();
             this.buttonResamplerAdd = new System.Windows.Forms.Button();
-            this.listResampler = new cadencii.windows.forms.BListView();
+            this.listResampler = new System.Windows.Forms.ListView();
             this.columnHeaderPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblResampler = new System.Windows.Forms.Label();
             this.chkWavtoolWithWine = new System.Windows.Forms.CheckBox();
@@ -199,7 +199,7 @@ namespace cadencii
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnUp = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
-            this.listSingers = new cadencii.windows.forms.BListView();
+            this.listSingers = new System.Windows.Forms.ListView();
             this.tabFile = new System.Windows.Forms.TabPage();
             this.chkKeepProjectCache = new System.Windows.Forms.CheckBox();
             this.lblAutoBackupMinutes = new System.Windows.Forms.Label();
@@ -2290,7 +2290,7 @@ namespace cadencii
         private System.Windows.Forms.CheckBox chkReso4;
         private System.Windows.Forms.CheckBox chkReso3;
         private System.Windows.Forms.TabPage tabUtausingers;
-        private BListView listSingers;
+        private System.Windows.Forms.ListView listSingers;
         private System.Windows.Forms.GroupBox groupUtauCores;
         private System.Windows.Forms.Label lblResampler;
         private System.Windows.Forms.CheckBox chkWavtoolWithWine;
@@ -2344,7 +2344,7 @@ namespace cadencii
         private NumberTextBox txtAutoVibratoThresholdLength;
         private System.Windows.Forms.ComboBox comboAutoVibratoTypeCustom;
         private System.Windows.Forms.Label lblAutoVibratoTypeCustom;
-        private BListView listResampler;
+        private System.Windows.Forms.ListView listResampler;
         private System.Windows.Forms.Button buttonResamplerRemove;
         private System.Windows.Forms.Button buttonResamplerAdd;
         private System.Windows.Forms.Button buttonResamplerUp;

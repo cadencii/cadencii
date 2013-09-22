@@ -33,6 +33,30 @@ namespace cadencii.windows.forms {
         public const int MSGBOX_QUESTION_MESSAGE = 3;
         public const int MSGBOX_PLAIN_MESSAGE = -1;
 
+        public static void AddRow(this System.Windows.Forms.ListView list_view, string[] items, bool selected = false)
+        {
+            var item = new System.Windows.Forms.ListViewItem(items);
+            item.Checked = selected;
+            if (list_view.Columns.Count < items.Length) {
+                for (int i = list_view.Columns.Count; i < items.Length; i++) {
+                    list_view.Columns.Add("");
+                }
+            }
+            list_view.Items.Add(item);
+        }
+
+        public static void SetColumnHeaders(this System.Windows.Forms.ListView list_view, string[] headers)
+        {
+            if (list_view.Columns.Count < headers.Length) {
+                for (int i = list_view.Columns.Count; i < headers.Length; i++) {
+                    list_view.Columns.Add("");
+                }
+            }
+            for (int i = 0; i < headers.Length; i++) {
+                list_view.Columns[i].Text = headers[i];
+            }
+        }
+
         public static System.Windows.Forms.Control Mnemonic(this System.Windows.Forms.Control control, int value)
         {
             string text = control.Text;

@@ -132,9 +132,9 @@ namespace cadencii
             txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
             txtVOCALOID2.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
 
-            listSingers.setColumnWidth( 0, columnWidthHeaderProgramChange );
-            listSingers.setColumnWidth( 1, columnWidthHeaderName );
-            listSingers.setColumnWidth( 2, columnWidthHeaderPath );
+            listSingers.Columns[0].Width = columnWidthHeaderProgramChange;
+            listSingers.Columns[1].Width = columnWidthHeaderName;
+            listSingers.Columns[2].Width = columnWidthHeaderPath;
 
             // default synthesizer
             comboDefaultSynthesizer.Items.Clear();
@@ -857,13 +857,13 @@ namespace cadencii
             groupUtauCores.Text = _( "UTAU Cores" );
             labelWavtoolPath.Text = _( "Path:" );
             chkWavtoolWithWine.Text = _( "Invoke wavtool with Wine" );
-            listResampler.setColumnHeaders( new String[] { _( "path" ) } );
+            listResampler.SetColumnHeaders( new String[] { _( "path" ) } );
             labelResamplerWithWine.Text = _( "Check the box to use Wine" );
             checkEnableWideCharacterWorkaround.Text = _( "Enable Workaround for Wide-Character Path" );
             #endregion
 
             #region tabUtausingers
-            listSingers.setColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
+            listSingers.SetColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.Text = _( "Add" );
             btnRemove.Text = _( "Remove" );
             btnUp.Text = _( "Up" );
@@ -1151,23 +1151,23 @@ namespace cadencii
 
         public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
         {
-            for ( int i = 0; i < listResampler.getItemCountRow(); i++ ) {
-                ret.add( (String)listResampler.getItemAt( i, 0 ) );
-                with_wine.add( listResampler.isRowChecked( i ) );
+            for ( int i = 0; i < listResampler.Items.Count; i++ ) {
+                ret.add( (String)listResampler.Items[i].SubItems[0].Text );
+                with_wine.add( listResampler.Items[i].Checked );
             }
         }
 
         public void setResamplersConfig( Vector<String> path, Vector<Boolean> with_wine )
         {
-            int size = listResampler.getItemCountRow();
+            int size = listResampler.Items.Count;
             for ( int i = 0; i < size; i++ ) {
-                listResampler.removeRow( 0 );
+                listResampler.Items.RemoveAt( 0 );
             }
             if ( path == null ) {
                 return;
             }
             for ( int i = 0; i < vec.size( path ); i++ ) {
-                listResampler.addRow(
+                listResampler.AddRow(
                     new String[] { vec.get( path, i ) }, vec.get( with_wine, i ) );
             }
         }
@@ -1278,7 +1278,7 @@ namespace cadencii
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
-                listResampler.addRow( new String[] { path }, check );
+                listResampler.AddRow( new String[] { path }, check );
                 if ( str.compare( txtWavtool.getText(), "" ) ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
@@ -1301,38 +1301,44 @@ namespace cadencii
             if ( sender == buttonResamplerUp ) {
                 delta = -1;
             }
-            int index = listResampler.getSelectedRow();
-            int count = listResampler.getItemCountRow();
-            if ( index < 0 || count <= index ) {
+            int count = listResampler.Items.Count;
+            if ( listResampler.SelectedIndices.Count == 0 ) {
                 return;
             }
-            if ( index + delta < 0 || count <= index + delta ) {
+            int index = listResampler.SelectedIndices[0];
+            if (index + delta < 0 || count <= index + delta) {
                 return;
             }
 
-            String sel = (String)listResampler.getItemAt( index, 0 );
-            boolean chk = listResampler.isRowChecked( index );
-            listResampler.setItemAt( index, 0, listResampler.getItemAt( index + delta, 0 ) );
-            listResampler.setRowChecked( index, listResampler.isRowChecked( index + delta ) );
-            listResampler.setItemAt( index + delta, 0, sel );
-            listResampler.setRowChecked( index + delta, chk );
-            listResampler.setSelectedRow( index + delta );
+            String sel = (String)listResampler.Items[index].SubItems[0].Text;
+            boolean chk = listResampler.Items[index].Checked;
+            listResampler.Items[index].SubItems[0].Text = listResampler.Items[index + delta].SubItems[0].Text;
+            listResampler.Items[index].Checked = listResampler.Items[index + delta].Checked;
+            listResampler.Items[index + delta].SubItems[0].Text = sel;
+            listResampler.Items[index + delta].Checked = chk;
+            if (!listResampler.Items[index + delta].Selected) {
+                listResampler.SelectedIndices.Clear();
+                listResampler.Items[index + delta].Selected = true;
+            }
         }
 
         public void buttonResamplerRemove_Click( Object sender, EventArgs e )
         {
-            int index = listResampler.getSelectedRow();
-            int count = listResampler.getItemCountRow();
-            if ( index < 0 || count <= index ) {
+            int count = listResampler.Items.Count;
+            if ( listResampler.SelectedIndices.Count == 0 ) {
                 return;
             }
-            listResampler.removeRow( index );
+            int index = listResampler.SelectedIndices[0];
+            listResampler.Items.RemoveAt(index);
             // 選択し直す
             if ( index >= count - 1 ) {
                 index--;
             }
             if ( 0 <= index && index < count - 1 ) {
-                listResampler.setSelectedRow( index );
+                if (!listResampler.Items[index].Selected) {
+                    listResampler.SelectedIndices.Clear();
+                    listResampler.Items[index].Selected = true;
+                }
             }
         }
 
@@ -1351,14 +1357,14 @@ namespace cadencii
                     check = isWindowsExecutable( path );
                 }
                 chkWavtoolWithWine.Checked = check;
-                if ( listResampler.getItemCountRow() == 0 ) {
+                if ( listResampler.Items.Count == 0 ) {
                     String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( fsys.isFileExists( resampler ) ) {
                         check = false;
                         if ( is_mac ) {
                             check = isWindowsExecutable( resampler );
                         }
-                        listResampler.addRow( new String[] { resampler }, check );
+                        listResampler.AddRow( new String[] { resampler }, check );
                     }
                 }
             }
@@ -1441,7 +1447,10 @@ namespace cadencii
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
                 UpdateUtausingerList();
-                listSingers.setSelectedRow( index + 1 );
+                if (!listSingers.Items[index + 1].Selected) {
+                    listSingers.SelectedIndices.Clear();
+                    listSingers.Items[index + 1].Selected = true;
+                }
             }
         }
 
@@ -1456,7 +1465,10 @@ namespace cadencii
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
                 UpdateUtausingerList();
-                listSingers.setSelectedRow( index - 1 );
+                if (!listSingers.Items[index - 1].Selected) {
+                    listSingers.SelectedIndices.Clear();
+                    listSingers.Items[index - 1].Selected = true;
+                }
             }
         }
 
@@ -1467,9 +1479,9 @@ namespace cadencii
 
         public void Preference_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            columnWidthHeaderProgramChange = listSingers.getColumnWidth( 0 );
-            columnWidthHeaderName = listSingers.getColumnWidth( 1 );
-            columnWidthHeaderPath = listSingers.getColumnWidth( 2 );
+            columnWidthHeaderProgramChange = listSingers.Columns[0].Width;
+            columnWidthHeaderName = listSingers.Columns[1].Width;
+            columnWidthHeaderPath = listSingers.Columns[2].Width;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
@@ -1680,10 +1692,10 @@ namespace cadencii
 
         private void UpdateUtausingerList()
         {
-            listSingers.clear();
+            listSingers.Items.Clear();
             for ( int i = 0; i < m_utau_singers.size(); i++ ) {
                 m_utau_singers.get( i ).Program = i;
-                listSingers.addRow(
+                listSingers.AddRow(
                     new String[] { 
                         m_utau_singers.get( i ).Program + "",
                         m_utau_singers.get( i ).VOICENAME, 
@@ -1693,7 +1705,11 @@ namespace cadencii
 
         private int getUtausingersSelectedIndex()
         {
-            return listSingers.getSelectedRow();
+            if (listSingers.SelectedIndices.Count == 0) {
+                return -1;
+            } else {
+                return listSingers.SelectedIndices[0];
+            }
         }
 
         private void registerEventHandlers()

@@ -62,10 +62,10 @@ namespace cadencii
             applyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
-            listTrack.setColumnWidth( 0, columnWidthTrack );
-            listTrack.setColumnWidth( 1, columnWidthName );
-            listTrack.setColumnWidth( 2, columnWidthNotes );
+            listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            listTrack.Columns[0].Width = columnWidthTrack;
+            listTrack.Columns[1].Width = columnWidthName;
+            listTrack.Columns[2].Width = columnWidthNotes;
 
             System.Drawing.Point p = btnCheckAll.Location;
             btnUncheckAll.Location = new System.Drawing.Point( p.X + btnCheckAll.Width + 6, p.Y );
@@ -87,7 +87,7 @@ namespace cadencii
             groupMode.Text = _( "Import Basis" );
             radioGateTime.setText( _( "gate-time" ) );
             radioPlayTime.setText( _( "play-time" ) );
-            listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.Text = _( "Check All" );
             btnUncheckAll.Text = _( "Uncheck All" );
             groupCommonOption.Text = _( "Option" );
@@ -261,15 +261,15 @@ namespace cadencii
         #region event handlers
         public void btnCheckAll_Click( Object sender, EventArgs e )
         {
-            for ( int i = 0; i < listTrack.getItemCountRow(); i++ ) {
-                listTrack.setRowChecked( i, true );
+            for ( int i = 0; i < listTrack.Items.Count; i++ ) {
+                listTrack.Items[i].Checked = true;
             }
         }
 
         public void btnUnckeckAll_Click( Object sender, EventArgs e )
         {
-            for ( int i = 0; i < listTrack.getItemCountRow(); i++ ) {
-                listTrack.setRowChecked( i, false );
+            for ( int i = 0; i < listTrack.Items.Count; i++ ) {
+                listTrack.Items[i].Checked = false;
             }
         }
 
@@ -310,9 +310,9 @@ namespace cadencii
 
         public void FormMidiImExport_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            columnWidthTrack = listTrack.getColumnWidth( 0 );
-            columnWidthName = listTrack.getColumnWidth( 1 );
-            columnWidthNotes = listTrack.getColumnWidth( 2 );
+            columnWidthTrack = listTrack.Columns[0].Width;
+            columnWidthName = listTrack.Columns[1].Width;
+            columnWidthNotes = listTrack.Columns[2].Width;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
@@ -376,7 +376,7 @@ namespace cadencii
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.btnCancel = new Button();
             this.btnOK = new Button();
-            this.listTrack = new cadencii.windows.forms.BListView();
+            this.listTrack = new ListView();
             this.btnCheckAll = new Button();
             this.btnUncheckAll = new Button();
             this.chkBeat = new CheckBox();
@@ -683,7 +683,7 @@ namespace cadencii
         private CheckBox chkLyric;
         private GroupBox groupCommonOption;
         private CheckBox chkExportVocaloidNrpn;
-        public BListView listTrack;
+        public ListView listTrack;
         private CheckBox chkPreMeasure;
         private CheckBox chkMetaText;
         private GroupBox groupMode;

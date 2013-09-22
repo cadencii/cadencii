@@ -305,7 +305,7 @@ namespace cadencii
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
-            this.listDictionaries = new cadencii.windows.forms.BListView();
+            this.listDictionaries = new ListView();
             this.lblAvailableDictionaries = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -429,7 +429,7 @@ namespace cadencii
 
         #endregion
 
-        private BListView listDictionaries;
+        private ListView listDictionaries;
         private Label lblAvailableDictionaries;
         private Button btnOK;
         private Button btnCancel;
