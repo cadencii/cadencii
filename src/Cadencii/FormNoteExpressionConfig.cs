@@ -592,8 +592,8 @@ namespace cadencii
             this.lblDepth = new Label();
             this.lblDuration = new Label();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.panelVocaloid2Template = new BPanel();
-            this.panelButtons = new BPanel();
+            this.panelVocaloid2Template = new UserControl();
+            this.panelButtons = new UserControl();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendDepth)).BeginInit();
@@ -1077,8 +1077,8 @@ namespace cadencii
         private Label lblDepth;
         private Label lblDuration;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
-        private BPanel panelButtons;
-        private BPanel panelVocaloid2Template;
+        private UserControl panelButtons;
+        private UserControl panelVocaloid2Template;
         private ComboBox comboAttackTemplate;
         private Label lblAttackTemplate;
         #endregion

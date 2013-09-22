@@ -2148,10 +2148,10 @@ namespace cadencii
 #endif
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
-            trackSelector.repaint();
+            trackSelector.Refresh();
             pictureBox2.repaint();
             if ( menuVisualWaveform.Checked ) {
-                waveView.repaint();
+                waveView.Refresh();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
                 panelOverview.repaint();

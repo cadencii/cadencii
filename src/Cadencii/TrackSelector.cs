@@ -57,7 +57,7 @@ namespace cadencii
 #if JAVA
     public class TrackSelector extends BPanel
 #else
-    public class TrackSelector : BPanel
+    public class TrackSelector : UserControl
 #endif
     {
         #region constants and internal enums
@@ -3554,7 +3554,7 @@ namespace cadencii
                                         } catch ( Exception ex ) {
                                             serr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                         }
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     } else if ( x + selecter_width - PX_WIDTH_RENDER <= e.X && e.X < e.X + selecter_width ) {
                                         if ( AppManager.getRenderRequired( AppManager.getSelected() ) && !AppManager.isPlaying() ) {
@@ -3680,11 +3680,11 @@ namespace cadencii
                             if ( AppManager.isCurveMode() ) {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else if ( !mSelectedCurve.equals( CurveType.VEL ) &&
@@ -3692,18 +3692,18 @@ namespace cadencii
                                             !mSelectedCurve.equals( CurveType.Decay ) &&
                                             !mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownBezier( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
                             } else {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
@@ -3719,11 +3719,11 @@ namespace cadencii
                                     // todo: TrackSelector_MouseDownのベジエ曲線
                                 } else if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else if ( !mSelectedCurve.equals( CurveType.VEL ) &&
@@ -3731,7 +3731,7 @@ namespace cadencii
                                             !mSelectedCurve.equals( CurveType.Decay ) &&
                                             !mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownBezier( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else {
@@ -3742,11 +3742,11 @@ namespace cadencii
                                 #region NOT CurveMode
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
@@ -3771,11 +3771,11 @@ namespace cadencii
                             if ( mSelectedCurve.isScalar() || mSelectedCurve.isAttachNote() ) {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
@@ -3910,7 +3910,7 @@ namespace cadencii
                                     mMouseHoverThread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
                                     mMouseHoverThread.Start();
 #endif
-                                    invalidate();
+                                    Invalidate();
                                     return;
                                 }
 
@@ -3921,7 +3921,7 @@ namespace cadencii
                                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                             AppManager.itemSelection.removePoint( id );
                                             mMouseDownMode = MouseDownMode.NONE;
-                                            invalidate();
+                                            Invalidate();
                                             return;
                                         }
                                     } else {
@@ -3942,7 +3942,7 @@ namespace cadencii
                                                 mMovingPoints.add( new BPPair( list.getKeyClock( i ), item.value ) );
                                             }
                                         }
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else {
@@ -4002,7 +4002,7 @@ namespace cadencii
                                                                                                                        AppManager.editorConfig.getControlCurveResolutionValue() );
                                                     executeCommand( run, true );
                                                     mMouseDownMode = MouseDownMode.NONE;
-                                                    invalidate();
+                                                    Invalidate();
                                                     return;
                                                 } else {
                                                     // 1個しかデータ点がないので、BezierChainを削除
@@ -4012,7 +4012,7 @@ namespace cadencii
                                                                                                                       AppManager.editorConfig.getControlCurveResolutionValue() );
                                                     executeCommand( run, true );
                                                     mMouseDownMode = MouseDownMode.NONE;
-                                                    invalidate();
+                                                    Invalidate();
                                                     return;
                                                 }
                                             } else {
@@ -4034,7 +4034,7 @@ namespace cadencii
                                                                                                                    AppManager.editorConfig.getControlCurveResolutionValue() );
                                                 executeCommand( run, true );
                                                 mMouseDownMode = MouseDownMode.NONE;
-                                                invalidate();
+                                                Invalidate();
                                                 return;
                                             }
                                         }
@@ -4054,7 +4054,7 @@ namespace cadencii
                                                                                                  work ) );
                                                 executeCommand( run, true );
                                                 mMouseDownMode = MouseDownMode.NONE;
-                                                invalidate();
+                                                Invalidate();
                                                 return;
                                             }
                                         }
@@ -4102,7 +4102,7 @@ namespace cadencii
                 }
                 #endregion
             }
-            invalidate();
+            Invalidate();
         }
 
         private boolean processMouseDownBezier( MouseEventArgs e )
@@ -4468,7 +4468,7 @@ namespace cadencii
 
             if ( !mCurveVisible ) {
                 mMouseDownMode = MouseDownMode.NONE;
-                invalidate();
+                Invalidate();
                 return;
             }
 
@@ -5308,11 +5308,7 @@ namespace cadencii
                 mMovingPoints.clear();
             }
             mMouseDownMode = MouseDownMode.NONE;
-#if JAVA
-            repaint();
-#else
-            invalidate();
-#endif
+            Invalidate();
         }
 
         public void TrackSelector_MouseHover( Object sender, EventArgs e )
@@ -5491,7 +5487,7 @@ namespace cadencii
                 AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + mVelEditSelected.containsKey( mVelEditLastSelectedID ) );
 #endif
                 mMouseDownMode = MouseDownMode.VEL_EDIT;
-                invalidate();
+                Invalidate();
             }
         }
 
@@ -5662,7 +5658,7 @@ namespace cadencii
                                         new FormCurvePointEdit( mMainWindow, bp_id, mSelectedCurve );
                                     int tx = AppManager.xCoordFromClocks( tclock );
                                     Point pt = pointToScreen( new Point( tx, 0 ) );
-                                    invalidate();
+                                    Invalidate();
                                     dialog.setLocation(
                                         new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
                                     AppManager.showModalDialog( dialog, mMainWindow );

@@ -38,7 +38,7 @@ namespace cadencii {
 #if JAVA
     public class WaveView extends BPanel
 #else
-    public class WaveView : BPanel
+    public class WaveView : UserControl
 #endif
     {
         /// <summary>
@@ -115,8 +115,8 @@ namespace cadencii {
         /// </summary>
         /// <param name="g"></param>
         public void paint( Graphics g1 ) {
-            int width = getWidth();
-            int height = getHeight();
+            int width = Width;
+            int height = Height;
             Rectangle rc = new Rectangle( 0, 0, width, height );
 
             Graphics2D g = (Graphics2D)g1;

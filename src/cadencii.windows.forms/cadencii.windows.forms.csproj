@@ -61,12 +61,8 @@
     <Compile Include="BFormWindowState.cs" />
     <Compile Include="BKeys.cs" />
     <Compile Include="BKeysUtility.cs" />
-    <Compile Include="BMouseButtons.cs" />
     <Compile Include="BNumericUpDown.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BPanel.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="BPictureBox.cs">
       <SubType>Component</SubType>
@@ -80,7 +76,6 @@
     <Compile Include="BRadioButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BScrollBar.cs" />
     <Compile Include="BSlider.cs">
       <SubType>Component</SubType>
     </Compile>

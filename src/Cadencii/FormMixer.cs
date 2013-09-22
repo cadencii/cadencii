@@ -652,7 +652,7 @@ namespace cadencii
             this.menuMain = new MenuStrip();
             this.menuVisual = new ToolStripMenuItem();
             this.menuVisualReturn = new ToolStripMenuItem();
-            this.panelSlaves = new cadencii.windows.forms.BPanel();
+            this.panelSlaves = new UserControl();
             this.hScroll = new HScrollBar();
             this.volumeMaster = new cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
@@ -740,7 +740,7 @@ namespace cadencii
         private ToolStripMenuItem menuVisual;
         private ToolStripMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
-        private BPanel panelSlaves;
+        private UserControl panelSlaves;
         private HScrollBar hScroll;
         #endregion
 #endif
