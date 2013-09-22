@@ -43,6 +43,7 @@ using System.Media;
 using System.Text;
 using System.Threading;
 using System.Linq;
+using System.IO;
 using cadencii.apputil;
 using cadencii.componentmodel;
 using cadencii.java.awt;
@@ -4717,6 +4718,9 @@ namespace cadencii
             menuWindow.setText( _( "Window" ) );
             menuWindowMinimize.setText( _( "Minimize" ) );
 #endif
+
+            menuTools.Text = BMenuItem.setMnemonicFromText(_("Tools"), KeyEvent.VK_O);
+            menuToolsCreateVConnectSTANDDb.Text = _("Create vConnect-STAND DB");
 
             menuHelp.setText( _( "Help" ) );
             menuHelp.setMnemonic( KeyEvent.VK_H );
@@ -17793,6 +17797,13 @@ namespace cadencii
         }
         #endregion
 
+        private void menuToolsCreateVConnectSTANDDb_Click(object sender, BEventArgs e)
+        {
+            string creator = Path.Combine(System.Windows.Forms.Application.StartupPath, "vConnectStandDBConvert.exe");
+            if (System.IO.File.Exists(creator)) {
+                Process.Start(creator);
+            }
+        }
     }
 
 #if !JAVA
