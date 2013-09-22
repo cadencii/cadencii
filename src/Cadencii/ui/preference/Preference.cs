@@ -41,7 +41,7 @@ namespace cadencii
         private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
 
         private BFileChooser openUtauCore;
-        private BFontChooser fontDialog;
+        private FontDialog fontDialog;
 #if DEBUG
         private BFileChooser folderBrowserSingers;
 #else
@@ -51,11 +51,11 @@ namespace cadencii
         public Preference()
         {
             InitializeComponent();
-            fontDialog = new BFontChooser();
-            fontDialog.dialog.AllowVectorFonts = false;
-            fontDialog.dialog.AllowVerticalFonts = false;
-            fontDialog.dialog.FontMustExist = true;
-            fontDialog.dialog.ShowEffects = false;
+            fontDialog = new FontDialog();
+            fontDialog.AllowVectorFonts = false;
+            fontDialog.AllowVerticalFonts = false;
+            fontDialog.FontMustExist = true;
+            fontDialog.ShowEffects = false;
             openUtauCore = new BFileChooser();
 
 #if DEBUG
@@ -1227,11 +1227,10 @@ namespace cadencii
         #region event handlers
         public void btnChangeMenuFont_Click( Object sender, EventArgs e )
         {
-            fontDialog.setSelectedFont( getBaseFont() );
-            fontDialog.setVisible( true );
-            if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
-                java.awt.Font f = fontDialog.getSelectedFont();
-                if ( f != null ) {
+            fontDialog.Font = getBaseFont().font;
+            if ( fontDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
+                if ( fontDialog.Font != null ) {
+                    java.awt.Font f = new java.awt.Font(fontDialog.Font);
                     m_base_font = f;
                     labelMenuFontName.Text = f.getName();
                 }
@@ -1259,11 +1258,10 @@ namespace cadencii
 
         public void btnChangeScreenFont_Click( Object sender, EventArgs e )
         {
-            fontDialog.setSelectedFont( m_screen_font );
-            fontDialog.setVisible( true );
-            if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
-                java.awt.Font f = fontDialog.getSelectedFont();
-                if ( f != null ) {
+            fontDialog.Font = m_screen_font.font;
+            if ( fontDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
+                if ( fontDialog.Font != null ) {
+                    java.awt.Font f = new java.awt.Font(fontDialog.Font);
                     m_screen_font = f;
                     labelScreenFontName.Text = f.getName();
                 }
