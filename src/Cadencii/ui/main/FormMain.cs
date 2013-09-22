@@ -829,7 +829,7 @@ namespace cadencii
 #endif // !DEBUG
 #else // JAVA
 #if DEBUG
-            menuHelpDebug.setVisible( true );
+            menuHelpDebug.Visible = true;
 #endif // DEBUG
 #endif // else JAVA
 
@@ -1050,7 +1050,7 @@ namespace cadencii
             repaint();
             updateLayout();
 #if DEBUG
-            menuHidden.setVisible( true );
+            menuHidden.Visible = true;
 #else
             menuHidden.Visible = false;
 #endif
@@ -3656,7 +3656,7 @@ namespace cadencii
                     if ( stroke.Equals( holder.shortcut ) ) {
                         try {
 #if DEBUG
-                            sout.println( "FormMain#processSpecialShortcutKey; perform click: name=" + holder.menu.getName() );
+                            sout.println( "FormMain#processSpecialShortcutKey; perform click: name=" + holder.menu.Name );
 #endif
                             holder.menu.PerformClick();
                         } catch ( Exception ex ) {
@@ -4148,7 +4148,7 @@ namespace cadencii
             try {
                 if ( dict.containsKey( item_name ) ) {
 #if DEBUG
-                    if ( !(item is BMenuItem) ) {
+                    if ( !(item is ToolStripMenuItem) ) {
                         throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
                     }
 #endif // DEBUG
@@ -9710,7 +9710,7 @@ namespace cadencii
         public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e )
         {
 #if DEBUG
-            sout.println( "FormMain#menuVisualOverview_CheckedChanged; menuVisualOverview.isSelected()=" + menuVisualOverview.isSelected() );
+            sout.println( "FormMain#menuVisualOverview_CheckedChanged; menuVisualOverview.isSelected()=" + menuVisualOverview.Checked );
 #endif
             AppManager.editorConfig.OverviewEnabled = menuVisualOverview.Checked;
             updateLayout();
@@ -16974,9 +16974,9 @@ namespace cadencii
             }
 
 #if DEBUG && !JAVA
-            if ( notfound && sender is BMenuItem ) {
-                BMenuItem item = (BMenuItem)sender;
-                Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
+            if ( notfound && sender is ToolStripMenuItem ) {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.Name + "\n" );
             }
 #endif
 #if JAVA
