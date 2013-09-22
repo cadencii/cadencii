@@ -791,7 +791,8 @@ namespace cadencii
             lblResolControlCurve.Text = _( "Control Curve" );
             lblResolControlCurve.Mnemonic( KeyEvent.VK_C );
 
-            chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
+            chkEnableAutoVibrato.Text = _("Enable Automatic Vibrato");
+            chkEnableAutoVibrato.Mnemonic(KeyEvent.VK_E);
             lblVibratoLength.Text = _( "Default Vibrato Length" );
             lblVibratoLength.Mnemonic( KeyEvent.VK_L );
             lblAutoVibratoThresholdLength.Text = _( "Minimum note length for Automatic Vibrato" );
@@ -802,7 +803,8 @@ namespace cadencii
             groupUserDefined.Text = _( "User Defined" );
             radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
             radioUserDefined.setText( _( "User Defined" ) );
-            chkEnableAutoVibrato.Text = BMenuItem.setMnemonicFromText(_("Enable Automatic Vibrato"), KeyEvent.VK_E);
+            chkEnableAutoVibrato.Text = _("Enable Automatic Vibrato");
+            chkEnableAutoVibrato.Mnemonic(KeyEvent.VK_E);
             lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1";
             lblAutoVibratoType1.Mnemonic( KeyEvent.VK_T );
             lblAutoVibratoType2.Text = _( "Vibrato Type" ) + ": VOCALOID2";
@@ -816,7 +818,8 @@ namespace cadencii
             lblPreSendTime.Mnemonic( KeyEvent.VK_P );
             lblWait.Text = _( "Waiting Time" );
             lblWait.Mnemonic( KeyEvent.VK_W );
-            chkChasePastEvent.Text = BMenuItem.setMnemonicFromText(_("Chase Event"), KeyEvent.VK_C);
+            chkChasePastEvent.Text = _("Chase Event");
+            chkChasePastEvent.Mnemonic(KeyEvent.VK_C);
             lblBuffer.Text = _( "Buffer Size" );
             lblBuffer.Mnemonic( KeyEvent.VK_B );
             lblBufferSize.Text = "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")";

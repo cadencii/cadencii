@@ -149,8 +149,10 @@ namespace cadencii
             lblBendDepth.Mnemonic( KeyEvent.VK_B );
             lblBendLength.Text = _( "Bend Length" );
             lblBendLength.Mnemonic( KeyEvent.VK_L );
-            chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
-            chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
+            chkUpPortamento.Text = _("Add portamento in rising movement");
+            chkUpPortamento.Mnemonic(KeyEvent.VK_R);
+            chkDownPortamento.Text = _("Add portamento in falling movement");
+            chkDownPortamento.Mnemonic(KeyEvent.VK_F);
 
             groupAttack.Text = _( "Attack Control (VOCALOID1)" );
             groupDynamicsControl.Text = _( "Dynamics Control (VOCALOID2)" );

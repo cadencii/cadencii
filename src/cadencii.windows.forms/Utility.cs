@@ -59,12 +59,23 @@ namespace cadencii.windows.forms {
 
         public static System.Windows.Forms.Control Mnemonic(this System.Windows.Forms.Control control, int value)
         {
-            string text = control.Text;
+            control.Text = GetMnemonicString(control.Text, value);
+            return control;
+        }
+
+        public static System.Windows.Forms.ToolStripItem Mnemonic(this System.Windows.Forms.ToolStripItem item, int value)
+        {
+            item.Text = GetMnemonicString(item.Text, value);
+            return item;
+        }
+
+        private static string GetMnemonicString(string text, int value)
+        {
             if (value == 0) {
-                return control;
+                return text;
             }
             if ((value < 48 || 57 < value) && (value < 65 || 90 < value)) {
-                return control;
+                return text;
             }
 
             if (text.Length >= 2) {
@@ -80,13 +91,10 @@ namespace cadencii.windows.forms {
 
                 if (index >= 0) {
                     string newtext = text.Substring(0, index) + new string((char)value, 1) + ((index + 1 < text.Length) ? text.Substring(index + 1) : "");
-                    control.Text = newtext;
-                    return control;
+                    return newtext;
                 }
             }
-            text = text + "(&" + new string((char)value, 1) + ")";
-            control.Text = text;
-            return control;
+            return text + "(&" + new string((char)value, 1) + ")";
         }
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {

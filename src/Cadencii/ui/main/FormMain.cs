@@ -93,14 +93,14 @@ namespace cadencii
             /// <summary>
             /// ショートカットキーとの紐付けを行う相手先のメニューアイテム
             /// </summary>
-            public BMenuItem menu;
+            public ToolStripMenuItem menu;
 
             /// <summary>
             /// ショートカットキーとメニューアイテムを指定したコンストラクタ
             /// </summary>
             /// <param name="shortcut">ショートカットキー</param>
             /// <param name="menu">ショートカットキーとの紐付けを行うメニューアイテム</param>
-            public SpecialShortcutHolder( KeyStroke shortcut, BMenuItem menu )
+            public SpecialShortcutHolder(KeyStroke shortcut, ToolStripMenuItem menu)
             {
                 this.shortcut = shortcut;
                 this.menu = menu;
@@ -659,7 +659,7 @@ namespace cadencii
             /*mOverviewScaleCount = AppManager.editorConfig.OverviewScaleCount;
             mOverviewPixelPerClock = getOverviewScaleX( mOverviewScaleCount );*/
 
-            menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
+            menuVisualOverview.Checked = AppManager.editorConfig.OverviewEnabled;
 #if ENABLE_PROPERTY
             mPropertyPanelContainer = new PropertyPanelContainer();
 #endif
@@ -862,7 +862,7 @@ namespace cadencii
             }
 #endif
 
-            menuHelpLogSwitch.setSelected( Logger.isEnabled() );
+            menuHelpLogSwitch.Checked = Logger.isEnabled();
             applyShortcut();
 
             AppManager.mMixerWindow = new FormMixer( this );
@@ -931,10 +931,10 @@ namespace cadencii
             //s_pen_dashed_171_171_171.DashPattern = new float[] { 3, 3 };
             //s_pen_dashed_209_204_172.DashPattern = new float[] { 3, 3 };
 
-            menuVisualNoteProperty.setSelected( AppManager.editorConfig.ShowExpLine );
-            menuVisualLyrics.setSelected( AppManager.editorConfig.ShowLyric );
-            menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
-            menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
+            menuVisualNoteProperty.Checked = AppManager.editorConfig.ShowExpLine;
+            menuVisualLyrics.Checked = AppManager.editorConfig.ShowLyric;
+            menuVisualMixer.Checked = AppManager.editorConfig.MixerVisible;
+            menuVisualPitchLine.Checked = AppManager.editorConfig.ViewAtcualPitch;
 
             updateMenuFonts();
 
@@ -982,7 +982,7 @@ namespace cadencii
 #if ENABLE_MIDI
             reloadMidiIn();
 #endif
-            menuVisualWaveform.setSelected( AppManager.editorConfig.ViewWaveform );
+            menuVisualWaveform.Checked = AppManager.editorConfig.ViewWaveform;
 
             updateRendererMenu();
 
@@ -1052,7 +1052,7 @@ namespace cadencii
 #if DEBUG
             menuHidden.setVisible( true );
 #else
-            menuHidden.setVisible( false );
+            menuHidden.Visible = false;
 #endif
 
 #if !ENABLE_VOCALOID
@@ -1987,85 +1987,85 @@ namespace cadencii
 #endif
             Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
                 new ValuePairOfStringArrayOfKeys[]{
-                new ValuePairOfStringArrayOfKeys( menuFileNew.getName(), new BKeys[]{ ctrl, BKeys.N } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpen.getName(), new BKeys[]{ ctrl, BKeys.O } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileSave.getName(), new BKeys[]{ ctrl, BKeys.S } ),
-                new ValuePairOfStringArrayOfKeys( menuFileQuit.getName(), new BKeys[]{ ctrl, BKeys.Q } ),
-                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportWave.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuEditUndo.getName(), new BKeys[]{ ctrl, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditRedo.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCut.getName(), new BKeys[]{ ctrl, BKeys.X } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCopy.getName(), new BKeys[]{ ctrl, BKeys.C } ),
-                new ValuePairOfStringArrayOfKeys( menuEditPaste.getName(), new BKeys[]{ ctrl, BKeys.V } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.getName(), new BKeys[]{ ctrl, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditDelete.getName(), new BKeys[]{ BKeys.Back } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualMixer.getName(), new BKeys[]{ BKeys.F3 } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualProperty.getName(), new BKeys[]{ BKeys.F6 } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualGridline.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.getName(), new BKeys[]{ BKeys.F4 } ),
-                new ValuePairOfStringArrayOfKeys( menuJobNormalize.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobRandomize.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobConnect.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobLyric.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackOn.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackAdd.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackCopy.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackDelete.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingPreference.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileNew.Name, new BKeys[]{ ctrl, BKeys.N } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpen.Name, new BKeys[]{ ctrl, BKeys.O } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileSave.Name, new BKeys[]{ ctrl, BKeys.S } ),
+                new ValuePairOfStringArrayOfKeys( menuFileQuit.Name, new BKeys[]{ ctrl, BKeys.Q } ),
+                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportWave.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuEditUndo.Name, new BKeys[]{ ctrl, BKeys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditRedo.Name, new BKeys[]{ ctrl, BKeys.Shift, BKeys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCut.Name, new BKeys[]{ ctrl, BKeys.X } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCopy.Name, new BKeys[]{ ctrl, BKeys.C } ),
+                new ValuePairOfStringArrayOfKeys( menuEditPaste.Name, new BKeys[]{ ctrl, BKeys.V } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.Name, new BKeys[]{ ctrl, BKeys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.Name, new BKeys[]{ ctrl, BKeys.Shift, BKeys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditDelete.Name, new BKeys[]{ BKeys.Back } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualMixer.Name, new BKeys[]{ BKeys.F3 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualProperty.Name, new BKeys[]{ BKeys.F6 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualGridline.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.Name, new BKeys[]{ BKeys.F4 } ),
+                new ValuePairOfStringArrayOfKeys( menuJobNormalize.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobRandomize.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobConnect.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobLyric.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOn.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackAdd.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackCopy.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackDelete.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPreference.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.Name, new BKeys[]{} ),
                 //new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new BKeys[]{} ),
 #if JAVA
                 new ValuePairOfStringArrayOfKeys( menuWindowMinimize.getName(), new BKeys[]{ ctrl, BKeys.M } ),
 #endif
-                new ValuePairOfStringArrayOfKeys( menuHelpAbout.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.getName(), new BKeys[]{ BKeys.F2 } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ ctrl, BKeys.W } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ ctrl, BKeys.E } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ ctrl, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ ctrl, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.getName(), new BKeys[]{ BKeys.Shift, BKeys.Up } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.getName(), new BKeys[]{ BKeys.Shift, BKeys.Down } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.getName(), new BKeys[]{ BKeys.Shift, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.getName(), new BKeys[]{ BKeys.Shift, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ ctrl, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ ctrl, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ ctrl, BKeys.End } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Home } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Enter } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.getName(), new BKeys[]{ BKeys.Tab } ),
+                new ValuePairOfStringArrayOfKeys( menuHelpAbout.Name, new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.Name, new BKeys[]{ BKeys.F2 } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.Name, new BKeys[]{ ctrl, BKeys.W } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.Name, new BKeys[]{ ctrl, BKeys.E } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.Name, new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.Name, new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.Name, new BKeys[]{ ctrl, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.Name, new BKeys[]{ ctrl, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.Name, new BKeys[]{ BKeys.Alt, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.Name, new BKeys[]{ BKeys.Alt, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.Name, new BKeys[]{ BKeys.Shift, BKeys.Up } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.Name, new BKeys[]{ BKeys.Shift, BKeys.Down } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.Name, new BKeys[]{ BKeys.Shift, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.Name, new BKeys[]{ BKeys.Shift, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.Name, new BKeys[]{ ctrl, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.Name, new BKeys[]{ ctrl, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.Name, new BKeys[]{ ctrl, BKeys.End } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.Name, new BKeys[]{ ctrl, BKeys.Home } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.Name, new BKeys[]{ ctrl, BKeys.Enter } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.Name, new BKeys[]{ BKeys.Tab } ),
             } ) );
             return ret;
         }
@@ -2150,7 +2150,7 @@ namespace cadencii
             picturePositionIndicator.repaint();
             trackSelector.repaint();
             pictureBox2.repaint();
-            if ( menuVisualWaveform.isSelected() ) {
+            if ( menuVisualWaveform.Checked ) {
                 waveView.repaint();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
@@ -2333,43 +2333,43 @@ namespace cadencii
 
         public void updateBgmMenuState()
         {
-            menuTrackBgm.removeAll();
+            menuTrackBgm.DropDownItems.Clear();
             int count = AppManager.getBgmCount();
             if ( count > 0 ) {
                 for ( int i = 0; i < count; i++ ) {
                     BgmFile item = AppManager.getBgm( i );
-                    BMenu menu = new BMenu();
-                    menu.setText( PortUtil.getFileName( item.file ) );
-                    menu.setToolTipText( item.file );
+                    var menu = new ToolStripMenuItem();
+                    menu.Text = PortUtil.getFileName( item.file );
+                    menu.ToolTipText = item.file;
 
                     BgmMenuItem menu_remove = new BgmMenuItem( i );
-                    menu_remove.setText( _( "Remove" ) );
-                    menu_remove.setToolTipText( item.file );
+                    menu_remove.Text = _( "Remove" );
+                    menu_remove.ToolTipText = item.file;
                     menu_remove.Click += new EventHandler( handleBgmRemove_Click );
-                    menu.add( menu_remove );
+                    menu.DropDownItems.Add( menu_remove );
 
                     BgmMenuItem menu_start_after_premeasure = new BgmMenuItem( i );
-                    menu_start_after_premeasure.setText( _( "Start After Premeasure" ) );
-                    menu_start_after_premeasure.setName( "menu_start_after_premeasure" + i );
-                    menu_start_after_premeasure.setCheckOnClick( true );
-                    menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
+                    menu_start_after_premeasure.Text = _( "Start After Premeasure" );
+                    menu_start_after_premeasure.Name = "menu_start_after_premeasure" + i;
+                    menu_start_after_premeasure.CheckOnClick = true;
+                    menu_start_after_premeasure.Checked = item.startAfterPremeasure;
                     menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
-                    menu.add( menu_start_after_premeasure );
+                    menu.DropDownItems.Add( menu_start_after_premeasure );
 
                     BgmMenuItem menu_offset_second = new BgmMenuItem( i );
-                    menu_offset_second.setText( _( "Set Offset Seconds" ) );
-                    menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
+                    menu_offset_second.Text = _( "Set Offset Seconds" );
+                    menu_offset_second.ToolTipText = item.readOffsetSeconds + " " + _( "seconds" );
                     menu_offset_second.Click += new EventHandler( handleBgmOffsetSeconds_Click );
-                    menu.add( menu_offset_second );
+                    menu.DropDownItems.Add( menu_offset_second );
 
-                    menuTrackBgm.add( menu );
+                    menuTrackBgm.DropDownItems.Add( menu );
                 }
-                menuTrackBgm.addSeparator();
+                menuTrackBgm.DropDownItems.Add(new ToolStripSeparator());
             }
-            BMenuItem menu_add = new BMenuItem();
-            menu_add.setText( _( "Add" ) );
+            var menu_add = new ToolStripMenuItem();
+            menu_add.Text = _( "Add" );
             menu_add.Click += new EventHandler( handleBgmAdd_Click );
-            menuTrackBgm.add( menu_add );
+            menuTrackBgm.DropDownItems.Add( menu_add );
         }
 
 
@@ -2381,7 +2381,7 @@ namespace cadencii
 #endif
             if ( state == PanelState.Docked ) {
                 mPropertyPanelContainer.addComponent( AppManager.propertyPanel );
-                menuVisualProperty.setSelected( true );
+                menuVisualProperty.Checked = true;
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
                 splitContainerProperty.setPanel1Hidden( false );
                 splitContainerProperty.setSplitterFixed( false );
@@ -2405,7 +2405,7 @@ namespace cadencii
                 if( AppManager.propertyWindow.getUi().isVisible() ){
                     AppManager.propertyWindow.getUi().hideWindow();
                 }
-                menuVisualProperty.setSelected( false );
+                menuVisualProperty.Checked = false;
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
@@ -2448,7 +2448,7 @@ namespace cadencii
 #if JAVA
                 AppManager.propertyWindow.getUi().setVisible( true );
 #endif
-                menuVisualProperty.setSelected( true );
+                menuVisualProperty.Checked = true;
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
@@ -2882,33 +2882,33 @@ namespace cadencii
 
                 // cMenuTrackSelector
                 PaletteToolMenuItem tsmi = new PaletteToolMenuItem( id );
-                tsmi.setText( name );
-                tsmi.setToolTipText( desc );
+                tsmi.Text = name;
+                tsmi.ToolTipText = desc;
                 tsmi.Click += new EventHandler( handleStripPaletteTool_Click );
-                cMenuTrackSelectorPaletteTool.add( tsmi );
+                cMenuTrackSelectorPaletteTool.DropDownItems.Add( tsmi );
 
                 // cMenuPiano
                 PaletteToolMenuItem tsmi2 = new PaletteToolMenuItem( id );
-                tsmi2.setText( name );
-                tsmi2.setToolTipText( desc );
+                tsmi2.Text = name;
+                tsmi2.ToolTipText = desc;
                 tsmi2.Click += new EventHandler( handleStripPaletteTool_Click );
-                cMenuPianoPaletteTool.add( tsmi2 );
+                cMenuPianoPaletteTool.DropDownItems.Add( tsmi2 );
 
                 // menuSettingPaletteTool
                 if ( ipt.hasDialog() ) {
                     PaletteToolMenuItem tsmi3 = new PaletteToolMenuItem( id );
-                    tsmi3.setText( name );
+                    tsmi3.Text = name;
                     tsmi3.Click += new EventHandler( handleSettingPaletteTool );
-                    menuSettingPaletteTool.add( tsmi3 );
+                    menuSettingPaletteTool.DropDownItems.Add( tsmi3 );
                     num_has_dialog++;
                 }
             }
             if ( count == 0 ) {
-                cMenuTrackSelectorPaletteTool.setVisible( false );
-                cMenuPianoPaletteTool.setVisible( false );
+                cMenuTrackSelectorPaletteTool.Visible = false;
+                cMenuPianoPaletteTool.Visible = false;
             }
             if ( num_has_dialog == 0 ) {
-                menuSettingPaletteTool.setVisible( false );
+                menuSettingPaletteTool.Visible = false;
             }
         }
 #endif
@@ -2922,27 +2922,27 @@ namespace cadencii
                                        (AppManager.itemSelection.getPointIDCount() == 0);
 
             int selected_point_id_count = AppManager.itemSelection.getPointIDCount();
-            cMenuTrackSelectorCopy.setEnabled( selected_point_id_count > 0 );
-            cMenuTrackSelectorCut.setEnabled( selected_point_id_count > 0 );
-            cMenuTrackSelectorDeleteBezier.setEnabled( (AppManager.isCurveMode() && AppManager.itemSelection.getLastBezier() != null) );
+            cMenuTrackSelectorCopy.Enabled = selected_point_id_count > 0;
+            cMenuTrackSelectorCut.Enabled = selected_point_id_count > 0;
+            cMenuTrackSelectorDeleteBezier.Enabled = (AppManager.isCurveMode() && AppManager.itemSelection.getLastBezier() != null);
             if ( selected_point_id_count > 0 ) {
-                cMenuTrackSelectorDelete.setEnabled( true );
+                cMenuTrackSelectorDelete.Enabled = true;
             } else {
                 SelectedEventEntry last = AppManager.itemSelection.getLastEvent();
                 if ( last == null ) {
-                    cMenuTrackSelectorDelete.setEnabled( false );
+                    cMenuTrackSelectorDelete.Enabled = false;
                 } else {
-                    cMenuTrackSelectorDelete.setEnabled( last.original.ID.type == VsqIDType.Singer );
+                    cMenuTrackSelectorDelete.Enabled = last.original.ID.type == VsqIDType.Singer;
                 }
             }
 
-            cMenuPianoCopy.setEnabled( !selected_is_null );
-            cMenuPianoCut.setEnabled( !selected_is_null );
-            cMenuPianoDelete.setEnabled( !selected_is_null );
+            cMenuPianoCopy.Enabled = !selected_is_null;
+            cMenuPianoCut.Enabled = !selected_is_null;
+            cMenuPianoDelete.Enabled = !selected_is_null;
 
-            menuEditCopy.setEnabled( !selected_is_null );
-            menuEditCut.setEnabled( !selected_is_null );
-            menuEditDelete.setEnabled( !selected_is_null );
+            menuEditCopy.Enabled = !selected_is_null;
+            menuEditCut.Enabled = !selected_is_null;
+            menuEditDelete.Enabled = !selected_is_null;
 
             ClipboardEntry ce = AppManager.clipboard.getCopiedItems();
             int copy_started_clock = ce.copyStartedClock;
@@ -2973,9 +2973,9 @@ namespace cadencii
                 // 複数種類のカーブがコピーされている場合→そのままペーストすればOK
                 enabled = true;
             }
-            cMenuTrackSelectorPaste.setEnabled( enabled );
-            cMenuPianoPaste.setEnabled( enabled );
-            menuEditPaste.setEnabled( enabled );
+            cMenuTrackSelectorPaste.Enabled = enabled;
+            cMenuPianoPaste.Enabled = enabled;
+            menuEditPaste.Enabled = enabled;
 
             /*int copy_started_clock;
             boolean copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
@@ -3511,7 +3511,7 @@ namespace cadencii
         public void updateScriptShortcut()
         {
             // 既存のアイテムを削除
-            menuScript.removeAll();
+            menuScript.DropDownItems.Clear();
             // スクリプトをリロード
             ScriptServer.reload();
 
@@ -3528,18 +3528,18 @@ namespace cadencii
                 // menuScriptの子だと自動で認識される
                 String name = "menuScript" + id.Replace( '.', '_' );
                 PaletteToolMenuItem item = new PaletteToolMenuItem( id );
-                item.setText( display );
-                item.setName( name );
+                item.Text = display;
+                item.Name = name;
                 item.Click += new EventHandler( handleScriptMenuItem_Click );
-                menuScript.add( item );
+                menuScript.DropDownItems.Add( item );
                 count++;
             }
 
             // 「スクリプトのリストを更新」を追加
             if ( count > 0 ) {
-                menuScript.addSeparator();
+                menuScript.DropDownItems.Add(new ToolStripSeparator());
             }
-            menuScript.add( menuScriptUpdate );
+            menuScript.DropDownItems.Add( menuScriptUpdate );
             Util.applyToolStripFontRecurse( menuScript, AppManager.editorConfig.getBaseFont() );
             applyShortcut();
         }
@@ -3936,8 +3936,8 @@ namespace cadencii
         {
             AppManager.mMixerWindow.setVisible( visible );
             AppManager.editorConfig.MixerVisible = visible;
-            if( visible != menuVisualMixer.isSelected() ){
-                menuVisualMixer.setSelected( visible );
+            if( visible != menuVisualMixer.Checked ){
+                menuVisualMixer.Checked = visible;
             }
         }
 
@@ -3948,8 +3948,8 @@ namespace cadencii
         {
             AppManager.iconPalette.setVisible( visible );
             AppManager.editorConfig.IconPaletteVisible = visible;
-            if( visible != menuVisualIconPalette.isSelected() ){
-                menuVisualIconPalette.setSelected( visible );
+            if( visible != menuVisualIconPalette.Checked ){
+                menuVisualIconPalette.Checked = visible;
             }
         }
 
@@ -3978,8 +3978,8 @@ namespace cadencii
                         continue;
                     }
 #else
-                    if ( menu is BMenuItem ) {
-                        menu_name = ((BMenuItem)menu).Name;
+                    if ( menu is ToolStripMenuItem ) {
+                        menu_name = ((ToolStripMenuItem)menu).Name;
                     } else {
                         continue;
                     }
@@ -3998,33 +3998,33 @@ namespace cadencii
             }
             #endregion
 
-            Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererAquesTone", new BMenuItem[] { menuTrackRendererAquesTone } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVCNT", new BMenuItem[] { menuTrackRendererVCNT } ) );
+            Vector<ValuePair<String, ToolStripMenuItem[]>> work = new Vector<ValuePair<String, ToolStripMenuItem[]>>();
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditUndo", new ToolStripMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditRedo", new ToolStripMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCut", new ToolStripMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCopy", new ToolStripMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditPaste", new ToolStripMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAll", new ToolStripMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAllEvents", new ToolStripMenuItem[] { cMenuPianoSelectAllEvents } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditDelete", new ToolStripMenuItem[] { menuEditDelete } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuVisualGridline", new ToolStripMenuItem[] { cMenuPianoGrid } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuJobLyric", new ToolStripMenuItem[] { cMenuPianoImportLyric } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricExpressionProperty", new ToolStripMenuItem[] { cMenuPianoExpressionProperty } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricVibratoProperty", new ToolStripMenuItem[] { cMenuPianoVibratoProperty } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOn", new ToolStripMenuItem[] { cMenuTrackTabTrackOn } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackAdd", new ToolStripMenuItem[] { cMenuTrackTabAdd } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackCopy", new ToolStripMenuItem[] { cMenuTrackTabCopy } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackDelete", new ToolStripMenuItem[] { cMenuTrackTabDelete } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderCurrent", new ToolStripMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderAll", new ToolStripMenuItem[] { cMenuTrackTabRenderAll } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOverlay", new ToolStripMenuItem[] { cMenuTrackTabOverlay } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID1", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID2", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererAquesTone", new ToolStripMenuItem[] { menuTrackRendererAquesTone } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
             int c = work.size();
             for ( int j = 0; j < c; j++ ) {
-                ValuePair<String, BMenuItem[]> item = work.get( j );
+                ValuePair<String, ToolStripMenuItem[]> item = work.get( j );
                 if ( dict.containsKey( item.getKey() ) ) {
                     BKeys[] k = dict.get( item.getKey() );
                     String s = Utility.getShortcutDisplayString( k );
@@ -4057,8 +4057,8 @@ namespace cadencii
 #if ENABLE_PROPERTY
             // プロパティ
             if( AppManager.propertyWindow != null ){
-                if( dict.containsKey( menuVisualProperty.getName() ) ){
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.getName() ) );
+                if( dict.containsKey( menuVisualProperty.Name ) ){
+                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.Name ) );
                     AppManager.propertyWindow.applyShortcut( shortcut );
                 }
             }
@@ -4152,8 +4152,8 @@ namespace cadencii
                         throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
                     }
 #endif // DEBUG
-                    if ( item is BMenuItem ) {
-                        BMenuItem menu = (BMenuItem)item;
+                    if ( item is ToolStripMenuItem ) {
+                        ToolStripMenuItem menu = (ToolStripMenuItem)item;
                         BKeys[] keys = dict.get( item_name );
                         System.Windows.Forms.Keys shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys ).keys;
 
@@ -4176,8 +4176,8 @@ namespace cadencii
                         }
                     }
                 } else {
-                    if ( item is BMenuItem ) {
-                        ((BMenuItem)item).setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
+                    if (item is System.Windows.Forms.ToolStripMenuItem) {
+                        ((System.Windows.Forms.ToolStripMenuItem)item).ShortcutKeys = Keys.None;
                     }
                 }
             } catch ( Exception ex ) {
@@ -4255,39 +4255,39 @@ namespace cadencii
         /// </summary>
         public void updateCMenuPianoFixed()
         {
-            cMenuPianoFixed01.setSelected( false );
-            cMenuPianoFixed02.setSelected( false );
-            cMenuPianoFixed04.setSelected( false );
-            cMenuPianoFixed08.setSelected( false );
-            cMenuPianoFixed16.setSelected( false );
-            cMenuPianoFixed32.setSelected( false );
-            cMenuPianoFixed64.setSelected( false );
-            cMenuPianoFixed128.setSelected( false );
-            cMenuPianoFixedOff.setSelected( false );
-            cMenuPianoFixedTriplet.setSelected( false );
-            cMenuPianoFixedDotted.setSelected( false );
+            cMenuPianoFixed01.Checked = false;
+            cMenuPianoFixed02.Checked = false;
+            cMenuPianoFixed04.Checked = false;
+            cMenuPianoFixed08.Checked = false;
+            cMenuPianoFixed16.Checked = false;
+            cMenuPianoFixed32.Checked = false;
+            cMenuPianoFixed64.Checked = false;
+            cMenuPianoFixed128.Checked = false;
+            cMenuPianoFixedOff.Checked = false;
+            cMenuPianoFixedTriplet.Checked = false;
+            cMenuPianoFixedDotted.Checked = false;
             PencilModeEnum mode = mPencilMode.getMode();
             if ( mode == PencilModeEnum.L1 ) {
-                cMenuPianoFixed01.setSelected( true );
+                cMenuPianoFixed01.Checked = true;
             } else if ( mode == PencilModeEnum.L2 ) {
-                cMenuPianoFixed02.setSelected( true );
+                cMenuPianoFixed02.Checked = true;
             } else if ( mode == PencilModeEnum.L4 ) {
-                cMenuPianoFixed04.setSelected( true );
+                cMenuPianoFixed04.Checked = true;
             } else if ( mode == PencilModeEnum.L8 ) {
-                cMenuPianoFixed08.setSelected( true );
+                cMenuPianoFixed08.Checked = true;
             } else if ( mode == PencilModeEnum.L16 ) {
-                cMenuPianoFixed16.setSelected( true );
+                cMenuPianoFixed16.Checked = true;
             } else if ( mode == PencilModeEnum.L32 ) {
-                cMenuPianoFixed32.setSelected( true );
+                cMenuPianoFixed32.Checked = true;
             } else if ( mode == PencilModeEnum.L64 ) {
-                cMenuPianoFixed64.setSelected( true );
+                cMenuPianoFixed64.Checked = true;
             } else if ( mode == PencilModeEnum.L128 ) {
-                cMenuPianoFixed128.setSelected( true );
+                cMenuPianoFixed128.Checked = true;
             } else if ( mode == PencilModeEnum.Off ) {
-                cMenuPianoFixedOff.setSelected( true );
+                cMenuPianoFixedOff.Checked = true;
             }
-            cMenuPianoFixedTriplet.setSelected( mPencilMode.isTriplet() );
-            cMenuPianoFixedDotted.setSelected( mPencilMode.isDot() );
+            cMenuPianoFixedTriplet.Checked = mPencilMode.isTriplet();
+            cMenuPianoFixedDotted.Checked = mPencilMode.isDot();
         }
 
         public void clearTempWave()
@@ -4493,324 +4493,324 @@ namespace cadencii
 #endif
 
             #region main menu
-            menuFile.setText( _( "File" ) );
-            menuFile.setMnemonic( KeyEvent.VK_F );
-            menuFileNew.setText( _( "New" ) );
-            menuFileNew.setMnemonic( KeyEvent.VK_N );
-            menuFileOpen.setText( _( "Open" ) );
-            menuFileOpen.setMnemonic( KeyEvent.VK_O );
-            menuFileOpenVsq.setText( _( "Open VSQX/VSQ/Vocaloid MIDI" ) );
-            menuFileOpenVsq.setMnemonic( KeyEvent.VK_V );
-            menuFileOpenUst.setText( _( "Open UTAU project file" ) );
-            menuFileOpenUst.setMnemonic( KeyEvent.VK_U );
-            menuFileSave.setText( _( "Save" ) );
-            menuFileSave.setMnemonic( KeyEvent.VK_S );
-            menuFileSaveNamed.setText( _( "Save as" ) );
-            menuFileSaveNamed.setMnemonic( KeyEvent.VK_A );
-            menuFileImport.setText( _( "Import" ) );
-            menuFileImport.setMnemonic( KeyEvent.VK_I );
-            menuFileImportVsq.setText( _( "VSQ / Vocaloid Midi" ) );
-            menuFileExport.setText( _( "Export" ) );
-            menuFileExport.setMnemonic( KeyEvent.VK_E );
-            menuFileExportWave.setText( _( "WAVE" ) );
-            menuFileExportParaWave.setText( _( "Serial numbered WAVEs" ) );
-            menuFileExportUst.setText( _( "UTAU project file" ) );
-            menuFileExportVxt.setText( _( "Metatext for vConnect" ) );
+            menuFile.Text = _( "File" );
+            menuFile.Mnemonic( KeyEvent.VK_F );
+            menuFileNew.Text = _( "New" );
+            menuFileNew.Mnemonic( KeyEvent.VK_N );
+            menuFileOpen.Text = _( "Open" );
+            menuFileOpen.Mnemonic( KeyEvent.VK_O );
+            menuFileOpenVsq.Text = _( "Open VSQX/VSQ/Vocaloid MIDI" );
+            menuFileOpenVsq.Mnemonic( KeyEvent.VK_V );
+            menuFileOpenUst.Text = _( "Open UTAU project file" );
+            menuFileOpenUst.Mnemonic( KeyEvent.VK_U );
+            menuFileSave.Text = _( "Save" );
+            menuFileSave.Mnemonic( KeyEvent.VK_S );
+            menuFileSaveNamed.Text = _( "Save as" );
+            menuFileSaveNamed.Mnemonic( KeyEvent.VK_A );
+            menuFileImport.Text = _( "Import" );
+            menuFileImport.Mnemonic( KeyEvent.VK_I );
+            menuFileImportVsq.Text = _( "VSQ / Vocaloid Midi" );
+            menuFileExport.Text = _( "Export" );
+            menuFileExport.Mnemonic( KeyEvent.VK_E );
+            menuFileExportWave.Text = _( "WAVE" );
+            menuFileExportParaWave.Text = _( "Serial numbered WAVEs" );
+            menuFileExportUst.Text = _( "UTAU project file" );
+            menuFileExportVxt.Text = _( "Metatext for vConnect" );
             menuFileExportVsq.Text = _("VSQ File");
             menuFileExportVsqx.Text = _("VSQX File");
-            menuFileRecent.setText( _( "Open Recent" ) );
-            menuFileRecent.setMnemonic( KeyEvent.VK_R );
-            menuFileRecentClear.setText( _( "Clear Menu" ) );
-            menuFileQuit.setText( _( "Quit" ) );
-            menuFileQuit.setMnemonic( KeyEvent.VK_Q );
+            menuFileRecent.Text = _( "Open Recent" );
+            menuFileRecent.Mnemonic( KeyEvent.VK_R );
+            menuFileRecentClear.Text = _( "Clear Menu" );
+            menuFileQuit.Text = _( "Quit" );
+            menuFileQuit.Mnemonic( KeyEvent.VK_Q );
 
-            menuEdit.setText( _( "Edit" ) );
-            menuEdit.setMnemonic( KeyEvent.VK_E );
-            menuEditUndo.setText( _( "Undo" ) );
-            menuEditUndo.setMnemonic( KeyEvent.VK_U );
-            menuEditRedo.setText( _( "Redo" ) );
-            menuEditRedo.setMnemonic( KeyEvent.VK_R );
-            menuEditCut.setText( _( "Cut" ) );
-            menuEditCut.setMnemonic( KeyEvent.VK_T );
-            menuEditCopy.setText( _( "Copy" ) );
-            menuEditCopy.setMnemonic( KeyEvent.VK_C );
-            menuEditPaste.setText( _( "Paste" ) );
-            menuEditPaste.setMnemonic( KeyEvent.VK_P );
-            menuEditDelete.setText( _( "Delete" ) );
-            menuEditDelete.setMnemonic( KeyEvent.VK_D );
-            menuEditAutoNormalizeMode.setText( _( "Auto normalize mode" ) );
-            menuEditAutoNormalizeMode.setMnemonic( KeyEvent.VK_N );
-            menuEditSelectAll.setText( _( "Select All" ) );
-            menuEditSelectAll.setMnemonic( KeyEvent.VK_A );
-            menuEditSelectAllEvents.setText( _( "Select all events" ) );
-            menuEditSelectAllEvents.setMnemonic( KeyEvent.VK_E );
+            menuEdit.Text = _( "Edit" );
+            menuEdit.Mnemonic( KeyEvent.VK_E );
+            menuEditUndo.Text = _( "Undo" );
+            menuEditUndo.Mnemonic( KeyEvent.VK_U );
+            menuEditRedo.Text = _( "Redo" );
+            menuEditRedo.Mnemonic( KeyEvent.VK_R );
+            menuEditCut.Text = _( "Cut" );
+            menuEditCut.Mnemonic( KeyEvent.VK_T );
+            menuEditCopy.Text = _( "Copy" );
+            menuEditCopy.Mnemonic( KeyEvent.VK_C );
+            menuEditPaste.Text = _( "Paste" );
+            menuEditPaste.Mnemonic( KeyEvent.VK_P );
+            menuEditDelete.Text = _( "Delete" );
+            menuEditDelete.Mnemonic( KeyEvent.VK_D );
+            menuEditAutoNormalizeMode.Text = _( "Auto normalize mode" );
+            menuEditAutoNormalizeMode.Mnemonic( KeyEvent.VK_N );
+            menuEditSelectAll.Text = _( "Select All" );
+            menuEditSelectAll.Mnemonic( KeyEvent.VK_A );
+            menuEditSelectAllEvents.Text = _( "Select all events" );
+            menuEditSelectAllEvents.Mnemonic( KeyEvent.VK_E );
 
-            menuVisual.setText( _( "View" ) );
-            menuVisual.setMnemonic( KeyEvent.VK_V );
-            menuVisualControlTrack.setText( _( "Control track" ) );
-            menuVisualControlTrack.setMnemonic( KeyEvent.VK_C );
-            menuVisualMixer.setText( _( "Mixer" ) );
-            menuVisualMixer.setMnemonic( KeyEvent.VK_X );
-            menuVisualWaveform.setText( _( "Waveform" ) );
-            menuVisualWaveform.setMnemonic( KeyEvent.VK_W );
-            menuVisualProperty.setText( _( "Property window" ) );
-            menuVisualOverview.setText( _( "Navigation" ) );
-            menuVisualOverview.setMnemonic( KeyEvent.VK_V );
-            menuVisualGridline.setText( _( "Grid line" ) );
-            menuVisualGridline.setMnemonic( KeyEvent.VK_G );
-            menuVisualStartMarker.setText( _( "Start marker" ) );
-            menuVisualStartMarker.setMnemonic( KeyEvent.VK_S );
-            menuVisualEndMarker.setText( _( "End marker" ) );
-            menuVisualEndMarker.setMnemonic( KeyEvent.VK_E );
-            menuVisualLyrics.setText( _( "Lyrics/Phoneme" ) );
-            menuVisualLyrics.setMnemonic( KeyEvent.VK_L );
-            menuVisualNoteProperty.setText( _( "Note expression/vibrato" ) );
-            menuVisualNoteProperty.setMnemonic( KeyEvent.VK_N );
-            menuVisualPitchLine.setText( _( "Pitch line" ) );
-            menuVisualPitchLine.setMnemonic( KeyEvent.VK_P );
-            menuVisualPluginUi.setText( _( "VSTi plugin UI" ) );
-            menuVisualPluginUi.setMnemonic( KeyEvent.VK_U );
-            menuVisualIconPalette.setText( _( "Icon palette" ) );
-            menuVisualIconPalette.setMnemonic( KeyEvent.VK_I );
+            menuVisual.Text = _( "View" );
+            menuVisual.Mnemonic( KeyEvent.VK_V );
+            menuVisualControlTrack.Text = _( "Control track" );
+            menuVisualControlTrack.Mnemonic( KeyEvent.VK_C );
+            menuVisualMixer.Text = _( "Mixer" );
+            menuVisualMixer.Mnemonic( KeyEvent.VK_X );
+            menuVisualWaveform.Text = _( "Waveform" );
+            menuVisualWaveform.Mnemonic( KeyEvent.VK_W );
+            menuVisualProperty.Text = _( "Property window" );
+            menuVisualOverview.Text = _( "Navigation" );
+            menuVisualOverview.Mnemonic( KeyEvent.VK_V );
+            menuVisualGridline.Text = _( "Grid line" );
+            menuVisualGridline.Mnemonic( KeyEvent.VK_G );
+            menuVisualStartMarker.Text = _( "Start marker" );
+            menuVisualStartMarker.Mnemonic( KeyEvent.VK_S );
+            menuVisualEndMarker.Text = _( "End marker" );
+            menuVisualEndMarker.Mnemonic( KeyEvent.VK_E );
+            menuVisualLyrics.Text = _( "Lyrics/Phoneme" );
+            menuVisualLyrics.Mnemonic( KeyEvent.VK_L );
+            menuVisualNoteProperty.Text = _( "Note expression/vibrato" );
+            menuVisualNoteProperty.Mnemonic( KeyEvent.VK_N );
+            menuVisualPitchLine.Text = _( "Pitch line" );
+            menuVisualPitchLine.Mnemonic( KeyEvent.VK_P );
+            menuVisualPluginUi.Text = _( "VSTi plugin UI" );
+            menuVisualPluginUi.Mnemonic( KeyEvent.VK_U );
+            menuVisualIconPalette.Text = _( "Icon palette" );
+            menuVisualIconPalette.Mnemonic( KeyEvent.VK_I );
 
-            menuJob.setText( _( "Job" ) );
-            menuJob.setMnemonic( KeyEvent.VK_J );
-            menuJobNormalize.setText( _( "Normalize notes" ) );
-            menuJobNormalize.setMnemonic( KeyEvent.VK_N );
-            menuJobInsertBar.setText( _( "Insert bars" ) );
-            menuJobInsertBar.setMnemonic( KeyEvent.VK_I );
-            menuJobDeleteBar.setText( _( "Delete bars" ) );
-            menuJobDeleteBar.setMnemonic( KeyEvent.VK_D );
-            menuJobRandomize.setText( _( "Randomize" ) );
-            menuJobRandomize.setMnemonic( KeyEvent.VK_R );
-            menuJobConnect.setText( _( "Connect notes" ) );
-            menuJobConnect.setMnemonic( KeyEvent.VK_C );
-            menuJobLyric.setText( _( "Insert lyrics" ) );
-            menuJobLyric.setMnemonic( KeyEvent.VK_L );
+            menuJob.Text = _( "Job" );
+            menuJob.Mnemonic( KeyEvent.VK_J );
+            menuJobNormalize.Text = _( "Normalize notes" );
+            menuJobNormalize.Mnemonic( KeyEvent.VK_N );
+            menuJobInsertBar.Text = _( "Insert bars" );
+            menuJobInsertBar.Mnemonic( KeyEvent.VK_I );
+            menuJobDeleteBar.Text = _( "Delete bars" );
+            menuJobDeleteBar.Mnemonic( KeyEvent.VK_D );
+            menuJobRandomize.Text = _( "Randomize" );
+            menuJobRandomize.Mnemonic( KeyEvent.VK_R );
+            menuJobConnect.Text = _( "Connect notes" );
+            menuJobConnect.Mnemonic( KeyEvent.VK_C );
+            menuJobLyric.Text = _( "Insert lyrics" );
+            menuJobLyric.Mnemonic( KeyEvent.VK_L );
 
-            menuTrack.setText( _( "Track" ) );
-            menuTrack.setMnemonic( KeyEvent.VK_T );
-            menuTrackOn.setText( _( "Track on" ) );
-            menuTrackOn.setMnemonic( KeyEvent.VK_K );
-            menuTrackAdd.setText( _( "Add track" ) );
-            menuTrackAdd.setMnemonic( KeyEvent.VK_A );
-            menuTrackCopy.setText( _( "Copy track" ) );
-            menuTrackCopy.setMnemonic( KeyEvent.VK_C );
-            menuTrackChangeName.setText( _( "Rename track" ) );
-            menuTrackDelete.setText( _( "Delete track" ) );
-            menuTrackDelete.setMnemonic( KeyEvent.VK_D );
-            menuTrackRenderCurrent.setText( _( "Render current track" ) );
-            menuTrackRenderCurrent.setMnemonic( KeyEvent.VK_T );
-            menuTrackRenderAll.setText( _( "Render all tracks" ) );
-            menuTrackRenderAll.setMnemonic( KeyEvent.VK_S );
-            menuTrackOverlay.setText( _( "Overlay" ) );
-            menuTrackOverlay.setMnemonic( KeyEvent.VK_O );
-            menuTrackRenderer.setText( _( "Renderer" ) );
-            menuTrackRenderer.setMnemonic( KeyEvent.VK_R );
-            menuTrackRendererVOCALOID1.setMnemonic( KeyEvent.VK_1 );
-            menuTrackRendererVOCALOID2.setMnemonic( KeyEvent.VK_3 );
-            menuTrackRendererUtau.setMnemonic( KeyEvent.VK_4 );
-            menuTrackRendererVCNT.setMnemonic( KeyEvent.VK_5 );
-            menuTrackRendererAquesTone.setMnemonic( KeyEvent.VK_6 );
+            menuTrack.Text = _( "Track" );
+            menuTrack.Mnemonic( KeyEvent.VK_T );
+            menuTrackOn.Text = _( "Track on" );
+            menuTrackOn.Mnemonic( KeyEvent.VK_K );
+            menuTrackAdd.Text = _( "Add track" );
+            menuTrackAdd.Mnemonic( KeyEvent.VK_A );
+            menuTrackCopy.Text = _( "Copy track" );
+            menuTrackCopy.Mnemonic( KeyEvent.VK_C );
+            menuTrackChangeName.Text = _( "Rename track" );
+            menuTrackDelete.Text = _( "Delete track" );
+            menuTrackDelete.Mnemonic( KeyEvent.VK_D );
+            menuTrackRenderCurrent.Text = _( "Render current track" );
+            menuTrackRenderCurrent.Mnemonic( KeyEvent.VK_T );
+            menuTrackRenderAll.Text = _( "Render all tracks" );
+            menuTrackRenderAll.Mnemonic( KeyEvent.VK_S );
+            menuTrackOverlay.Text = _( "Overlay" );
+            menuTrackOverlay.Mnemonic( KeyEvent.VK_O );
+            menuTrackRenderer.Text = _( "Renderer" );
+            menuTrackRenderer.Mnemonic( KeyEvent.VK_R );
+            menuTrackRendererVOCALOID1.Mnemonic( KeyEvent.VK_1 );
+            menuTrackRendererVOCALOID2.Mnemonic( KeyEvent.VK_3 );
+            menuTrackRendererUtau.Mnemonic( KeyEvent.VK_4 );
+            menuTrackRendererVCNT.Mnemonic( KeyEvent.VK_5 );
+            menuTrackRendererAquesTone.Mnemonic( KeyEvent.VK_6 );
 
-            menuLyric.setText( _( "Lyrics" ) );
-            menuLyric.setMnemonic( KeyEvent.VK_L );
-            menuLyricExpressionProperty.setText( _( "Note expression property" ) );
-            menuLyricExpressionProperty.setMnemonic( KeyEvent.VK_E );
-            menuLyricVibratoProperty.setText( _( "Note vibrato property" ) );
-            menuLyricVibratoProperty.setMnemonic( KeyEvent.VK_V );
-            menuLyricApplyUtauParameters.setText( _( "Apply UTAU Parameters" ) );
-            menuLyricApplyUtauParameters.setMnemonic( KeyEvent.VK_A );
-            menuLyricPhonemeTransformation.setText( _( "Phoneme transformation" ) );
-            menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
-            menuLyricDictionary.setText( _( "User word dictionary" ) );
-            menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
-            menuLyricCopyVibratoToPreset.setText( _( "Copy vibrato config to preset" ) );
-            menuLyricCopyVibratoToPreset.setMnemonic( KeyEvent.VK_P );
+            menuLyric.Text = _( "Lyrics" );
+            menuLyric.Mnemonic( KeyEvent.VK_L );
+            menuLyricExpressionProperty.Text = _( "Note expression property" );
+            menuLyricExpressionProperty.Mnemonic( KeyEvent.VK_E );
+            menuLyricVibratoProperty.Text = _( "Note vibrato property" );
+            menuLyricVibratoProperty.Mnemonic( KeyEvent.VK_V );
+            menuLyricApplyUtauParameters.Text = _( "Apply UTAU Parameters" );
+            menuLyricApplyUtauParameters.Mnemonic( KeyEvent.VK_A );
+            menuLyricPhonemeTransformation.Text = _( "Phoneme transformation" );
+            menuLyricPhonemeTransformation.Mnemonic( KeyEvent.VK_T );
+            menuLyricDictionary.Text = _( "User word dictionary" );
+            menuLyricDictionary.Mnemonic( KeyEvent.VK_C );
+            menuLyricCopyVibratoToPreset.Text = _( "Copy vibrato config to preset" );
+            menuLyricCopyVibratoToPreset.Mnemonic( KeyEvent.VK_P );
 
-            menuScript.setText( _( "Script" ) );
-            menuScript.setMnemonic( KeyEvent.VK_C );
-            menuScriptUpdate.setText( _( "Update script list" ) );
-            menuScriptUpdate.setMnemonic( KeyEvent.VK_U );
+            menuScript.Text = _( "Script" );
+            menuScript.Mnemonic( KeyEvent.VK_C );
+            menuScriptUpdate.Text = _( "Update script list" );
+            menuScriptUpdate.Mnemonic( KeyEvent.VK_U );
 
-            menuSetting.setText( _( "Setting" ) );
-            menuSetting.setMnemonic( KeyEvent.VK_S );
-            menuSettingPreference.setText( _( "Preference" ) );
-            menuSettingPreference.setMnemonic( KeyEvent.VK_P );
-            menuSettingGameControler.setText( _( "Game controler" ) );
-            menuSettingGameControler.setMnemonic( KeyEvent.VK_G );
-            menuSettingGameControlerLoad.setText( _( "Load" ) );
-            menuSettingGameControlerLoad.setMnemonic( KeyEvent.VK_L );
-            menuSettingGameControlerRemove.setText( _( "Remove" ) );
-            menuSettingGameControlerRemove.setMnemonic( KeyEvent.VK_R );
-            menuSettingGameControlerSetting.setText( _( "Setting" ) );
-            menuSettingGameControlerSetting.setMnemonic( KeyEvent.VK_S );
-            menuSettingSequence.setText( _( "Sequence config" ) );
-            menuSettingSequence.setMnemonic( KeyEvent.VK_S );
-            menuSettingShortcut.setText( _( "Shortcut key" ) );
-            menuSettingShortcut.setMnemonic( KeyEvent.VK_K );
-            menuSettingDefaultSingerStyle.setText( _( "Singing style defaults" ) );
-            menuSettingDefaultSingerStyle.setMnemonic( KeyEvent.VK_D );
-            menuSettingPositionQuantize.setText( _( "Quantize" ) );
-            menuSettingPositionQuantize.setMnemonic( KeyEvent.VK_Q );
-            menuSettingPositionQuantizeOff.setText( _( "Off" ) );
-            menuSettingPositionQuantizeTriplet.setText( _( "Triplet" ) );
+            menuSetting.Text = _( "Setting" );
+            menuSetting.Mnemonic( KeyEvent.VK_S );
+            menuSettingPreference.Text = _( "Preference" );
+            menuSettingPreference.Mnemonic( KeyEvent.VK_P );
+            menuSettingGameControler.Text = _( "Game controler" );
+            menuSettingGameControler.Mnemonic( KeyEvent.VK_G );
+            menuSettingGameControlerLoad.Text = _( "Load" );
+            menuSettingGameControlerLoad.Mnemonic( KeyEvent.VK_L );
+            menuSettingGameControlerRemove.Text = _( "Remove" );
+            menuSettingGameControlerRemove.Mnemonic( KeyEvent.VK_R );
+            menuSettingGameControlerSetting.Text = _( "Setting" );
+            menuSettingGameControlerSetting.Mnemonic( KeyEvent.VK_S );
+            menuSettingSequence.Text = _( "Sequence config" );
+            menuSettingSequence.Mnemonic( KeyEvent.VK_S );
+            menuSettingShortcut.Text = _( "Shortcut key" );
+            menuSettingShortcut.Mnemonic( KeyEvent.VK_K );
+            menuSettingDefaultSingerStyle.Text = _( "Singing style defaults" );
+            menuSettingDefaultSingerStyle.Mnemonic( KeyEvent.VK_D );
+            menuSettingPositionQuantize.Text = _( "Quantize" );
+            menuSettingPositionQuantize.Mnemonic( KeyEvent.VK_Q );
+            menuSettingPositionQuantizeOff.Text = _( "Off" );
+            menuSettingPositionQuantizeTriplet.Text = _( "Triplet" );
             //menuSettingSingerProperty.setText( _( "Singer Properties" ) );
             //menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
-            menuSettingPaletteTool.setText( _( "Palette Tool" ) );
-            menuSettingPaletteTool.setMnemonic( KeyEvent.VK_T );
-            menuSettingVibratoPreset.setText( _( "Vibrato preset" ) );
-            menuSettingVibratoPreset.setMnemonic( KeyEvent.VK_V );
+            menuSettingPaletteTool.Text = _( "Palette Tool" );
+            menuSettingPaletteTool.Mnemonic( KeyEvent.VK_T );
+            menuSettingVibratoPreset.Text = _( "Vibrato preset" );
+            menuSettingVibratoPreset.Mnemonic( KeyEvent.VK_V );
 
 #if JAVA
             menuWindow.setText( _( "Window" ) );
             menuWindowMinimize.setText( _( "Minimize" ) );
 #endif
 
-            menuHelp.setText( _( "Help" ) );
-            menuHelp.setMnemonic( KeyEvent.VK_H );
-            menuHelpLog.setText( _( "Log" ) );
-            menuHelpLog.setMnemonic( KeyEvent.VK_L );
-            menuHelpLogSwitch.setText( Logger.isEnabled() ? _( "Disable" ) : _( "Enable" ) );
-            menuHelpLogSwitch.setMnemonic( KeyEvent.VK_L );
-            menuHelpLogOpen.setText( _( "Open" ) );
-            menuHelpLogOpen.setMnemonic( KeyEvent.VK_O );
-            menuHelpAbout.setText( _( "About Cadencii" ) );
-            menuHelpAbout.setMnemonic( KeyEvent.VK_A );
-            menuHelpManual.setText( _( "Manual" ) + " (PDF)" );
+            menuHelp.Text = _( "Help" );
+            menuHelp.Mnemonic( KeyEvent.VK_H );
+            menuHelpLog.Text = _( "Log" );
+            menuHelpLog.Mnemonic( KeyEvent.VK_L );
+            menuHelpLogSwitch.Text = Logger.isEnabled() ? _( "Disable" ) : _( "Enable" );
+            menuHelpLogSwitch.Mnemonic( KeyEvent.VK_L );
+            menuHelpLogOpen.Text = _( "Open" );
+            menuHelpLogOpen.Mnemonic( KeyEvent.VK_O );
+            menuHelpAbout.Text = _( "About Cadencii" );
+            menuHelpAbout.Mnemonic( KeyEvent.VK_A );
+            menuHelpManual.Text = _( "Manual" ) + " (PDF)";
 
-            menuHiddenCopy.setText( _( "Copy" ) );
-            menuHiddenCut.setText( _( "Cut" ) );
-            menuHiddenEditFlipToolPointerEraser.setText( _( "Chagne tool pointer / eraser" ) );
-            menuHiddenEditFlipToolPointerPencil.setText( _( "Change tool pointer / pencil" ) );
-            menuHiddenEditLyric.setText( _( "Start lyric input" ) );
-            menuHiddenGoToEndMarker.setText( _( "GoTo end marker" ) );
-            menuHiddenGoToStartMarker.setText( _( "Goto start marker" ) );
-            menuHiddenLengthen.setText( _( "Lengthen" ) );
-            menuHiddenMoveDown.setText( _( "Move down" ) );
-            menuHiddenMoveLeft.setText( _( "Move left" ) );
-            menuHiddenMoveRight.setText( _( "Move right" ) );
-            menuHiddenMoveUp.setText( _( "Move up" ) );
-            menuHiddenPaste.setText( _( "Paste" ) );
-            menuHiddenPlayFromStartMarker.setText( _( "Play from start marker" ) );
-            menuHiddenSelectBackward.setText( _( "Select backward" ) );
-            menuHiddenSelectForward.setText( _( "Select forward" ) );
-            menuHiddenShorten.setText( _( "Shorten" ) );
-            menuHiddenTrackBack.setText( _( "Previous track" ) );
-            menuHiddenTrackNext.setText( _( "Next track" ) );
-            menuHiddenVisualBackwardParameter.setText( _( "Previous control curve" ) );
-            menuHiddenVisualForwardParameter.setText( _( "Next control curve" ) );
-            menuHiddenFlipCurveOnPianorollMode.setText( _( "Change pitch drawing mode" ) );
+            menuHiddenCopy.Text = _( "Copy" );
+            menuHiddenCut.Text = _( "Cut" );
+            menuHiddenEditFlipToolPointerEraser.Text = _( "Chagne tool pointer / eraser" );
+            menuHiddenEditFlipToolPointerPencil.Text = _( "Change tool pointer / pencil" );
+            menuHiddenEditLyric.Text = _( "Start lyric input" );
+            menuHiddenGoToEndMarker.Text = _( "GoTo end marker" );
+            menuHiddenGoToStartMarker.Text = _( "Goto start marker" );
+            menuHiddenLengthen.Text = _( "Lengthen" );
+            menuHiddenMoveDown.Text = _( "Move down" );
+            menuHiddenMoveLeft.Text = _( "Move left" );
+            menuHiddenMoveRight.Text = _( "Move right" );
+            menuHiddenMoveUp.Text = _( "Move up" );
+            menuHiddenPaste.Text = _( "Paste" );
+            menuHiddenPlayFromStartMarker.Text = _( "Play from start marker" );
+            menuHiddenSelectBackward.Text = _( "Select backward" );
+            menuHiddenSelectForward.Text = _( "Select forward" );
+            menuHiddenShorten.Text = _( "Shorten" );
+            menuHiddenTrackBack.Text = _( "Previous track" );
+            menuHiddenTrackNext.Text = _( "Next track" );
+            menuHiddenVisualBackwardParameter.Text = _( "Previous control curve" );
+            menuHiddenVisualForwardParameter.Text = _( "Next control curve" );
+            menuHiddenFlipCurveOnPianorollMode.Text = _( "Change pitch drawing mode" );
             #endregion
 
             #region cMenuPiano
-            cMenuPianoPointer.setText( _( "Arrow" ) );
-            cMenuPianoPointer.setMnemonic( KeyEvent.VK_A );
-            cMenuPianoPencil.setText( _( "Pencil" ) );
-            cMenuPianoPencil.setMnemonic( KeyEvent.VK_W );
-            cMenuPianoEraser.setText( _( "Eraser" ) );
-            cMenuPianoEraser.setMnemonic( KeyEvent.VK_E );
-            cMenuPianoPaletteTool.setText( _( "Palette Tool" ) );
+            cMenuPianoPointer.Text = _( "Arrow" );
+            cMenuPianoPointer.Mnemonic( KeyEvent.VK_A );
+            cMenuPianoPencil.Text = _( "Pencil" );
+            cMenuPianoPencil.Mnemonic( KeyEvent.VK_W );
+            cMenuPianoEraser.Text = _( "Eraser" );
+            cMenuPianoEraser.Mnemonic( KeyEvent.VK_E );
+            cMenuPianoPaletteTool.Text = _( "Palette Tool" );
 
-            cMenuPianoCurve.setText( _( "Curve" ) );
-            cMenuPianoCurve.setMnemonic( KeyEvent.VK_V );
+            cMenuPianoCurve.Text = _( "Curve" );
+            cMenuPianoCurve.Mnemonic( KeyEvent.VK_V );
 
-            cMenuPianoFixed.setText( _( "Note Fixed Length" ) );
-            cMenuPianoFixed.setMnemonic( KeyEvent.VK_N );
-            cMenuPianoFixedTriplet.setText( _( "Triplet" ) );
-            cMenuPianoFixedOff.setText( _( "Off" ) );
-            cMenuPianoFixedDotted.setText( _( "Dot" ) );
-            cMenuPianoQuantize.setText( _( "Quantize" ) );
-            cMenuPianoQuantize.setMnemonic( KeyEvent.VK_Q );
-            cMenuPianoQuantizeTriplet.setText( _( "Triplet" ) );
-            cMenuPianoQuantizeOff.setText( _( "Off" ) );
-            cMenuPianoGrid.setText( _( "Show/Hide Grid Line" ) );
-            cMenuPianoGrid.setMnemonic( KeyEvent.VK_S );
+            cMenuPianoFixed.Text = _( "Note Fixed Length" );
+            cMenuPianoFixed.Mnemonic( KeyEvent.VK_N );
+            cMenuPianoFixedTriplet.Text = _( "Triplet" );
+            cMenuPianoFixedOff.Text = _( "Off" );
+            cMenuPianoFixedDotted.Text = _( "Dot" );
+            cMenuPianoQuantize.Text = _( "Quantize" );
+            cMenuPianoQuantize.Mnemonic( KeyEvent.VK_Q );
+            cMenuPianoQuantizeTriplet.Text = _( "Triplet" );
+            cMenuPianoQuantizeOff.Text = _( "Off" );
+            cMenuPianoGrid.Text = _( "Show/Hide Grid Line" );
+            cMenuPianoGrid.Mnemonic( KeyEvent.VK_S );
 
-            cMenuPianoUndo.setText( _( "Undo" ) );
-            cMenuPianoUndo.setMnemonic( KeyEvent.VK_U );
-            cMenuPianoRedo.setText( _( "Redo" ) );
-            cMenuPianoRedo.setMnemonic( KeyEvent.VK_R );
+            cMenuPianoUndo.Text = _( "Undo" );
+            cMenuPianoUndo.Mnemonic( KeyEvent.VK_U );
+            cMenuPianoRedo.Text = _( "Redo" );
+            cMenuPianoRedo.Mnemonic( KeyEvent.VK_R );
 
-            cMenuPianoCut.setText( _( "Cut" ) );
-            cMenuPianoCut.setMnemonic( KeyEvent.VK_T );
-            cMenuPianoPaste.setText( _( "Paste" ) );
-            cMenuPianoPaste.setMnemonic( KeyEvent.VK_P );
-            cMenuPianoCopy.setText( _( "Copy" ) );
-            cMenuPianoCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuPianoDelete.setText( _( "Delete" ) );
-            cMenuPianoDelete.setMnemonic( KeyEvent.VK_D );
+            cMenuPianoCut.Text = _( "Cut" );
+            cMenuPianoCut.Mnemonic( KeyEvent.VK_T );
+            cMenuPianoPaste.Text = _( "Paste" );
+            cMenuPianoPaste.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoCopy.Text = _( "Copy" );
+            cMenuPianoCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuPianoDelete.Text = _( "Delete" );
+            cMenuPianoDelete.Mnemonic( KeyEvent.VK_D );
 
-            cMenuPianoSelectAll.setText( _( "Select All" ) );
-            cMenuPianoSelectAll.setMnemonic( KeyEvent.VK_A );
-            cMenuPianoSelectAllEvents.setText( _( "Select All Events" ) );
-            cMenuPianoSelectAllEvents.setMnemonic( KeyEvent.VK_E );
+            cMenuPianoSelectAll.Text = _( "Select All" );
+            cMenuPianoSelectAll.Mnemonic( KeyEvent.VK_A );
+            cMenuPianoSelectAllEvents.Text = _( "Select All Events" );
+            cMenuPianoSelectAllEvents.Mnemonic( KeyEvent.VK_E );
 
-            cMenuPianoExpressionProperty.setText( _( "Note Expression Property" ) );
-            cMenuPianoExpressionProperty.setMnemonic( KeyEvent.VK_P );
-            cMenuPianoVibratoProperty.setText( _( "Note Vibrato Property" ) );
-            cMenuPianoImportLyric.setText( _( "Insert Lyrics" ) );
-            cMenuPianoImportLyric.setMnemonic( KeyEvent.VK_P );
+            cMenuPianoExpressionProperty.Text = _( "Note Expression Property" );
+            cMenuPianoExpressionProperty.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoVibratoProperty.Text = _( "Note Vibrato Property" );
+            cMenuPianoImportLyric.Text = _( "Insert Lyrics" );
+            cMenuPianoImportLyric.Mnemonic( KeyEvent.VK_P );
             #endregion
 
             #region cMenuTrackTab
-            cMenuTrackTabTrackOn.setText( _( "Track On" ) );
-            cMenuTrackTabTrackOn.setMnemonic( KeyEvent.VK_K );
-            cMenuTrackTabAdd.setText( _( "Add Track" ) );
-            cMenuTrackTabAdd.setMnemonic( KeyEvent.VK_A );
-            cMenuTrackTabCopy.setText( _( "Copy Track" ) );
-            cMenuTrackTabCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuTrackTabChangeName.setText( _( "Rename Track" ) );
-            cMenuTrackTabDelete.setText( _( "Delete Track" ) );
-            cMenuTrackTabDelete.setMnemonic( KeyEvent.VK_D );
+            cMenuTrackTabTrackOn.Text = _( "Track On" );
+            cMenuTrackTabTrackOn.Mnemonic( KeyEvent.VK_K );
+            cMenuTrackTabAdd.Text = _( "Add Track" );
+            cMenuTrackTabAdd.Mnemonic( KeyEvent.VK_A );
+            cMenuTrackTabCopy.Text = _( "Copy Track" );
+            cMenuTrackTabCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuTrackTabChangeName.Text = _( "Rename Track" );
+            cMenuTrackTabDelete.Text = _( "Delete Track" );
+            cMenuTrackTabDelete.Mnemonic( KeyEvent.VK_D );
 
-            cMenuTrackTabRenderCurrent.setText( _( "Render Current Track" ) );
-            cMenuTrackTabRenderCurrent.setMnemonic( KeyEvent.VK_T );
-            cMenuTrackTabRenderAll.setText( _( "Render All Tracks" ) );
-            cMenuTrackTabRenderAll.setMnemonic( KeyEvent.VK_S );
-            cMenuTrackTabOverlay.setText( _( "Overlay" ) );
-            cMenuTrackTabOverlay.setMnemonic( KeyEvent.VK_O );
-            cMenuTrackTabRenderer.setText( _( "Renderer" ) );
-            cMenuTrackTabRenderer.setMnemonic( KeyEvent.VK_R );
+            cMenuTrackTabRenderCurrent.Text = _( "Render Current Track" );
+            cMenuTrackTabRenderCurrent.Mnemonic( KeyEvent.VK_T );
+            cMenuTrackTabRenderAll.Text = _( "Render All Tracks" );
+            cMenuTrackTabRenderAll.Mnemonic( KeyEvent.VK_S );
+            cMenuTrackTabOverlay.Text = _( "Overlay" );
+            cMenuTrackTabOverlay.Mnemonic( KeyEvent.VK_O );
+            cMenuTrackTabRenderer.Text = _( "Renderer" );
+            cMenuTrackTabRenderer.Mnemonic( KeyEvent.VK_R );
             #endregion
 
             #region cMenuTrackSelector
-            cMenuTrackSelectorPointer.setText( _( "Arrow" ) );
-            cMenuTrackSelectorPointer.setMnemonic( KeyEvent.VK_A );
-            cMenuTrackSelectorPencil.setText( _( "Pencil" ) );
-            cMenuTrackSelectorPencil.setMnemonic( KeyEvent.VK_W );
-            cMenuTrackSelectorLine.setText( _( "Line" ) );
-            cMenuTrackSelectorLine.setMnemonic( KeyEvent.VK_L );
-            cMenuTrackSelectorEraser.setText( _( "Eraser" ) );
-            cMenuTrackSelectorEraser.setMnemonic( KeyEvent.VK_E );
-            cMenuTrackSelectorPaletteTool.setText( _( "Palette Tool" ) );
+            cMenuTrackSelectorPointer.Text = _( "Arrow" );
+            cMenuTrackSelectorPointer.Mnemonic( KeyEvent.VK_A );
+            cMenuTrackSelectorPencil.Text = _( "Pencil" );
+            cMenuTrackSelectorPencil.Mnemonic( KeyEvent.VK_W );
+            cMenuTrackSelectorLine.Text = _( "Line" );
+            cMenuTrackSelectorLine.Mnemonic( KeyEvent.VK_L );
+            cMenuTrackSelectorEraser.Text = _( "Eraser" );
+            cMenuTrackSelectorEraser.Mnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorPaletteTool.Text = _( "Palette Tool" );
 
-            cMenuTrackSelectorCurve.setText( _( "Curve" ) );
-            cMenuTrackSelectorCurve.setMnemonic( KeyEvent.VK_V );
+            cMenuTrackSelectorCurve.Text = _( "Curve" );
+            cMenuTrackSelectorCurve.Mnemonic( KeyEvent.VK_V );
 
-            cMenuTrackSelectorUndo.setText( _( "Undo" ) );
-            cMenuTrackSelectorUndo.setMnemonic( KeyEvent.VK_U );
-            cMenuTrackSelectorRedo.setText( _( "Redo" ) );
-            cMenuTrackSelectorRedo.setMnemonic( KeyEvent.VK_R );
+            cMenuTrackSelectorUndo.Text = _( "Undo" );
+            cMenuTrackSelectorUndo.Mnemonic( KeyEvent.VK_U );
+            cMenuTrackSelectorRedo.Text = _( "Redo" );
+            cMenuTrackSelectorRedo.Mnemonic( KeyEvent.VK_R );
 
-            cMenuTrackSelectorCut.setText( _( "Cut" ) );
-            cMenuTrackSelectorCut.setMnemonic( KeyEvent.VK_T );
-            cMenuTrackSelectorCopy.setText( _( "Copy" ) );
-            cMenuTrackSelectorCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuTrackSelectorPaste.setText( _( "Paste" ) );
-            cMenuTrackSelectorPaste.setMnemonic( KeyEvent.VK_P );
-            cMenuTrackSelectorDelete.setText( _( "Delete" ) );
-            cMenuTrackSelectorDelete.setMnemonic( KeyEvent.VK_D );
-            cMenuTrackSelectorDeleteBezier.setText( _( "Delete Bezier Point" ) );
-            cMenuTrackSelectorDeleteBezier.setMnemonic( KeyEvent.VK_B );
+            cMenuTrackSelectorCut.Text = _( "Cut" );
+            cMenuTrackSelectorCut.Mnemonic( KeyEvent.VK_T );
+            cMenuTrackSelectorCopy.Text = _( "Copy" );
+            cMenuTrackSelectorCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuTrackSelectorPaste.Text = _( "Paste" );
+            cMenuTrackSelectorPaste.Mnemonic( KeyEvent.VK_P );
+            cMenuTrackSelectorDelete.Text = _( "Delete" );
+            cMenuTrackSelectorDelete.Mnemonic( KeyEvent.VK_D );
+            cMenuTrackSelectorDeleteBezier.Text = _( "Delete Bezier Point" );
+            cMenuTrackSelectorDeleteBezier.Mnemonic( KeyEvent.VK_B );
 
-            cMenuTrackSelectorSelectAll.setText( _( "Select All Events" ) );
-            cMenuTrackSelectorSelectAll.setMnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorSelectAll.Text = _( "Select All Events" );
+            cMenuTrackSelectorSelectAll.Mnemonic( KeyEvent.VK_E );
             #endregion
 
             #region cMenuPositionIndicator
-            cMenuPositionIndicatorStartMarker.setText( _( "Set start marker" ) );
-            cMenuPositionIndicatorEndMarker.setText( _( "Set end marker" ) );
+            cMenuPositionIndicatorStartMarker.Text = _( "Set start marker" );
+            cMenuPositionIndicatorEndMarker.Text = _( "Set end marker" );
             #endregion
 
 #if !JAVA
@@ -4838,42 +4838,42 @@ namespace cadencii
                 }
             }
 
-            foreach ( MenuElement tsi in cMenuPianoPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
+            foreach ( var tsi in cMenuPianoPaletteTool.DropDownItems ) {
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                        String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
                 }
             }
 
-            foreach ( MenuElement tsi in cMenuTrackSelectorPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
+            foreach ( var tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                        String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
                 }
             }
 
-            foreach ( MenuElement tsi in menuSettingPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
+            foreach ( var tsi in menuSettingPaletteTool.DropDownItems ) {
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                        String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
+                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
                         }
                     }
                 }
@@ -6059,13 +6059,13 @@ namespace cadencii
         /// </summary>
         public void applyQuantizeMode()
         {
-            cMenuPianoQuantize04.setSelected( false );
-            cMenuPianoQuantize08.setSelected( false );
-            cMenuPianoQuantize16.setSelected( false );
-            cMenuPianoQuantize32.setSelected( false );
-            cMenuPianoQuantize64.setSelected( false );
-            cMenuPianoQuantize128.setSelected( false );
-            cMenuPianoQuantizeOff.setSelected( false );
+            cMenuPianoQuantize04.Checked = false;
+            cMenuPianoQuantize08.Checked = false;
+            cMenuPianoQuantize16.Checked = false;
+            cMenuPianoQuantize32.Checked = false;
+            cMenuPianoQuantize64.Checked = false;
+            cMenuPianoQuantize128.Checked = false;
+            cMenuPianoQuantizeOff.Checked = false;
 
 #if ENABLE_STRIP_DROPDOWN
             stripDDBtnQuantize04.Checked = false;
@@ -6077,13 +6077,13 @@ namespace cadencii
             stripDDBtnQuantizeOff.Checked = false;
 #endif
 
-            menuSettingPositionQuantize04.setSelected( false );
-            menuSettingPositionQuantize08.setSelected( false );
-            menuSettingPositionQuantize16.setSelected( false );
-            menuSettingPositionQuantize32.setSelected( false );
-            menuSettingPositionQuantize64.setSelected( false );
-            menuSettingPositionQuantize128.setSelected( false );
-            menuSettingPositionQuantizeOff.setSelected( false );
+            menuSettingPositionQuantize04.Checked = false;
+            menuSettingPositionQuantize08.Checked = false;
+            menuSettingPositionQuantize16.Checked = false;
+            menuSettingPositionQuantize32.Checked = false;
+            menuSettingPositionQuantize64.Checked = false;
+            menuSettingPositionQuantize128.Checked = false;
+            menuSettingPositionQuantizeOff.Checked = false;
 
 #if !JAVA
             QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
@@ -6093,74 +6093,74 @@ namespace cadencii
                 ((qm != QuantizeMode.off && triplet) ? " [3]" : "");
 #endif
             if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
-                cMenuPianoQuantize04.setSelected( true );
+                cMenuPianoQuantize04.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize04.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note004.png";
 #endif
-                menuSettingPositionQuantize04.setSelected( true );
+                menuSettingPositionQuantize04.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
-                cMenuPianoQuantize08.setSelected( true );
+                cMenuPianoQuantize08.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize08.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note008.png";
 #endif
-                menuSettingPositionQuantize08.setSelected( true );
+                menuSettingPositionQuantize08.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
-                cMenuPianoQuantize16.setSelected( true );
+                cMenuPianoQuantize16.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize16.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note016.png";
 #endif
-                menuSettingPositionQuantize16.setSelected( true );
+                menuSettingPositionQuantize16.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
-                cMenuPianoQuantize32.setSelected( true );
+                cMenuPianoQuantize32.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize32.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note032.png";
 #endif
-                menuSettingPositionQuantize32.setSelected( true );
+                menuSettingPositionQuantize32.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
-                cMenuPianoQuantize64.setSelected( true );
+                cMenuPianoQuantize64.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize64.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note064.png";
 #endif
-                menuSettingPositionQuantize64.setSelected( true );
+                menuSettingPositionQuantize64.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
-                cMenuPianoQuantize128.setSelected( true );
+                cMenuPianoQuantize128.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize128.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note128.png";
 #endif
-                menuSettingPositionQuantize128.setSelected( true );
+                menuSettingPositionQuantize128.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
-                cMenuPianoQuantizeOff.setSelected( true );
+                cMenuPianoQuantizeOff.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantizeOff.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "notenull.png";
 #endif
-                menuSettingPositionQuantizeOff.setSelected( true );
+                menuSettingPositionQuantizeOff.Checked = true;
             }
-            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            cMenuPianoQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
 #if ENABLE_STRIP_DROPDOWN
             stripDDBtnQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
 #endif
-            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            menuSettingPositionQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
         }
 
         /// <summary>
@@ -6213,8 +6213,7 @@ namespace cadencii
                 }
 #endif // JAVA
             }
-            MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
-            foreach ( MenuElement tsi in items ) {
+            foreach ( var tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
                     String id = tsmi.getPaletteToolID();
@@ -6224,12 +6223,11 @@ namespace cadencii
                         sel = str.compare( AppManager.mSelectedPaletteTool, id );
                     }
 #endif
-                    tsmi.setSelected( sel );
+                    tsmi.Checked = sel;
                 }
             }
 
-            items = cMenuPianoPaletteTool.getSubElements();
-            foreach ( MenuElement tsi in items ) {
+            foreach ( var tsi in cMenuPianoPaletteTool.DropDownItems ) {
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
                     String id = tsmi.getPaletteToolID();
@@ -6239,19 +6237,19 @@ namespace cadencii
                         sel = str.compare( AppManager.mSelectedPaletteTool, id );
                     }
 #endif
-                    tsmi.setSelected( sel );
+                    tsmi.Checked = sel;
                 }
             }
 
             EditTool selected_tool = AppManager.getSelectedTool();
-            cMenuPianoPointer.setSelected( (selected_tool == EditTool.ARROW) );
-            cMenuPianoPencil.setSelected( (selected_tool == EditTool.PENCIL) );
-            cMenuPianoEraser.setSelected( (selected_tool == EditTool.ERASER) );
+            cMenuPianoPointer.Checked = (selected_tool == EditTool.ARROW);
+            cMenuPianoPencil.Checked = (selected_tool == EditTool.PENCIL);
+            cMenuPianoEraser.Checked = (selected_tool == EditTool.ERASER);
 
-            cMenuTrackSelectorPointer.setSelected( (selected_tool == EditTool.ARROW) );
-            cMenuTrackSelectorPencil.setSelected( (selected_tool == EditTool.PENCIL) );
-            cMenuTrackSelectorLine.setSelected( (selected_tool == EditTool.LINE) );
-            cMenuTrackSelectorEraser.setSelected( (selected_tool == EditTool.ERASER) );
+            cMenuTrackSelectorPointer.Checked = (selected_tool == EditTool.ARROW);
+            cMenuTrackSelectorPencil.Checked = (selected_tool == EditTool.PENCIL);
+            cMenuTrackSelectorLine.Checked = (selected_tool == EditTool.LINE);
+            cMenuTrackSelectorEraser.Checked = (selected_tool == EditTool.ERASER);
 
 #if JAVA
             stripBtnPointer.setSelected( (selected_tool == EditTool.ARROW) );
@@ -6266,13 +6264,9 @@ namespace cadencii
 #endif
 
 
-            cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
-            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
-#if JAVA
-            stripBtnCurve.setSelected( AppManager.isCurveMode() );
-#else
+            cMenuPianoCurve.Checked = AppManager.isCurveMode();
+            cMenuTrackSelectorCurve.Checked = AppManager.isCurveMode();
             stripBtnCurve.Pushed = AppManager.isCurveMode();
-#endif
         }
 
         /// <summary>
@@ -6550,7 +6544,7 @@ namespace cadencii
         public void updateRecentFileMenu()
         {
             int added = 0;
-            menuFileRecent.removeAll();
+            menuFileRecent.DropDownItems.Clear();
             if ( AppManager.editorConfig.RecentFiles != null ) {
                 for ( int i = 0; i < AppManager.editorConfig.RecentFiles.size(); i++ ) {
                     String item = AppManager.editorConfig.RecentFiles.get( i );
@@ -6561,26 +6555,26 @@ namespace cadencii
                         String short_name = PortUtil.getFileName( item );
                         boolean available = fsys.isFileExists( item );
                         RecentFileMenuItem itm = new RecentFileMenuItem( item );
-                        itm.setText( short_name );
+                        itm.Text = short_name;
                         String tooltip = "";
                         if ( !available ) {
                             tooltip = _( "[file not found]" ) + " ";
                         }
                         tooltip += item;
-                        itm.setToolTipText( tooltip );
-                        itm.setEnabled( available );
+                        itm.ToolTipText = tooltip;
+                        itm.Enabled = available;
                         itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
                         itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
-                        menuFileRecent.add( itm );
+                        menuFileRecent.DropDownItems.Add( itm );
                         added++;
                     }
                 }
             } else {
                 AppManager.editorConfig.pushRecentFiles( "" );
             }
-            menuFileRecent.addSeparator();
-            menuFileRecent.add( menuFileRecentClear );
-            menuFileRecent.setEnabled( true );
+            menuFileRecent.DropDownItems.Add(new ToolStripSeparator());
+            menuFileRecent.DropDownItems.Add( menuFileRecentClear );
+            menuFileRecent.Enabled = true;
         }
 
         /// <summary>
@@ -6609,12 +6603,12 @@ namespace cadencii
             }
             boolean redo = AppManager.editHistory.hasRedoHistory();
             boolean undo = AppManager.editHistory.hasUndoHistory();
-            menuEditRedo.setEnabled( redo );
-            menuEditUndo.setEnabled( undo );
-            cMenuPianoRedo.setEnabled( redo );
-            cMenuPianoUndo.setEnabled( undo );
-            cMenuTrackSelectorRedo.setEnabled( redo );
-            cMenuTrackSelectorUndo.setEnabled( undo );
+            menuEditRedo.Enabled = redo;
+            menuEditUndo.Enabled = undo;
+            cMenuPianoRedo.Enabled = redo;
+            cMenuPianoUndo.Enabled = undo;
+            cMenuTrackSelectorRedo.Enabled = redo;
+            cMenuTrackSelectorUndo.Enabled = undo;
 #if JAVA
             stripBtnUndo.setEnabled( undo );
             stripBtnRedo.setEnabled( redo );
@@ -6714,12 +6708,12 @@ namespace cadencii
         {
             if ( AppManager.editHistory.hasUndoHistory() ) {
                 AppManager.undo();
-                menuEditRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                menuEditUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuPianoRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuPianoUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuTrackSelectorRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuTrackSelectorUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+                menuEditRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                menuEditUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuPianoRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuPianoUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuTrackSelectorRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuTrackSelectorUndo.Enabled = AppManager.editHistory.hasUndoHistory();
                 AppManager.mMixerWindow.updateStatus();
                 setEdited( true );
                 updateDrawObjectList();
@@ -6739,12 +6733,12 @@ namespace cadencii
         {
             if ( AppManager.editHistory.hasRedoHistory() ) {
                 AppManager.redo();
-                menuEditRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                menuEditUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuPianoRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuPianoUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuTrackSelectorRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuTrackSelectorUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+                menuEditRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                menuEditUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuPianoRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuPianoUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuTrackSelectorRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuTrackSelectorUndo.Enabled = AppManager.editHistory.hasUndoHistory();
                 AppManager.mMixerWindow.updateStatus();
                 setEdited( true );
                 updateDrawObjectList();
@@ -7722,13 +7716,9 @@ namespace cadencii
 
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e )
         {
-            menuVisualGridline.setSelected( AppManager.isGridVisible() );
-#if JAVA
-            stripBtnGrid.setSelected( AppManager.isGridVisible() );
-#else
+            menuVisualGridline.Checked = AppManager.isGridVisible();
             stripBtnGrid.Pushed = AppManager.isGridVisible();
-#endif
-            cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
+            cMenuPianoGrid.Checked = AppManager.isGridVisible();
         }
 
         public void AppManager_MainWindowFocusRequired( Object sender, EventArgs e )
@@ -7788,15 +7778,15 @@ namespace cadencii
 
         public void ItemSelectionModel_SelectedEventChanged( Object sender, boolean selected_event_is_null )
         {
-            menuEditCut.setEnabled( !selected_event_is_null );
-            menuEditPaste.setEnabled( !selected_event_is_null );
-            menuEditDelete.setEnabled( !selected_event_is_null );
-            cMenuPianoCut.setEnabled( !selected_event_is_null );
-            cMenuPianoCopy.setEnabled( !selected_event_is_null );
-            cMenuPianoDelete.setEnabled( !selected_event_is_null );
-            cMenuPianoExpressionProperty.setEnabled( !selected_event_is_null );
-            menuLyricVibratoProperty.setEnabled( !selected_event_is_null );
-            menuLyricExpressionProperty.setEnabled( !selected_event_is_null );
+            menuEditCut.Enabled = !selected_event_is_null;
+            menuEditPaste.Enabled = !selected_event_is_null;
+            menuEditDelete.Enabled = !selected_event_is_null;
+            cMenuPianoCut.Enabled = !selected_event_is_null;
+            cMenuPianoCopy.Enabled = !selected_event_is_null;
+            cMenuPianoDelete.Enabled = !selected_event_is_null;
+            cMenuPianoExpressionProperty.Enabled = !selected_event_is_null;
+            menuLyricVibratoProperty.Enabled = !selected_event_is_null;
+            menuLyricExpressionProperty.Enabled = !selected_event_is_null;
 #if JAVA
             stripBtnCut.setEnabled( !selected_event_is_null );
             stripBtnCopy.setEnabled( !selected_event_is_null );
@@ -7986,14 +7976,14 @@ namespace cadencii
                         AppManager.itemSelection.addEvent( item.InternalID );
                     }
                     boolean item_is_null = (item == null);
-                    cMenuPianoCopy.setEnabled( !item_is_null );
-                    cMenuPianoCut.setEnabled( !item_is_null );
-                    cMenuPianoDelete.setEnabled( !item_is_null );
-                    cMenuPianoImportLyric.setEnabled( !item_is_null );
-                    cMenuPianoExpressionProperty.setEnabled( !item_is_null );
+                    cMenuPianoCopy.Enabled = !item_is_null;
+                    cMenuPianoCut.Enabled = !item_is_null;
+                    cMenuPianoDelete.Enabled = !item_is_null;
+                    cMenuPianoImportLyric.Enabled = !item_is_null;
+                    cMenuPianoExpressionProperty.Enabled = !item_is_null;
 
                     int clock = AppManager.clockFromXCoord( e.X );
-                    cMenuPianoPaste.setEnabled( ((AppManager.clipboard.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks())) );
+                    cMenuPianoPaste.Enabled = ((AppManager.clipboard.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks()));
                     refreshScreen();
 
                     mContextMenuOpenedPosition = new Point( e.X, e.Y );
@@ -9705,7 +9695,7 @@ namespace cadencii
         public void menuVisualProperty_CheckedChanged( Object sender, EventArgs e )
         {
 #if ENABLE_PROPERTY
-            if ( menuVisualProperty.isSelected() ) {
+            if ( menuVisualProperty.Checked ) {
                 if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
                     updatePropertyPanelState( PanelState.Docked );
                 } else {
@@ -9722,7 +9712,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#menuVisualOverview_CheckedChanged; menuVisualOverview.isSelected()=" + menuVisualOverview.isSelected() );
 #endif
-            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
+            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.Checked;
             updateLayout();
         }
 
@@ -9735,7 +9725,7 @@ namespace cadencii
 
         public void menuVisualGridline_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.setGridVisible( menuVisualGridline.isSelected() );
+            AppManager.setGridVisible( menuVisualGridline.Checked );
             refreshScreen();
         }
 
@@ -9747,28 +9737,28 @@ namespace cadencii
 
         public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ShowLyric = menuVisualLyrics.isSelected();
+            AppManager.editorConfig.ShowLyric = menuVisualLyrics.Checked;
         }
 
         public void menuVisualNoteProperty_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.isSelected();
+            AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.Checked;
             refreshScreen();
         }
 
         public void menuVisualPitchLine_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.isSelected();
+            AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.Checked;
         }
 
         public void menuVisualControlTrack_CheckedChanged( Object sender, EventArgs e )
         {
-            flipControlCurveVisible( menuVisualControlTrack.isSelected() );
+            flipControlCurveVisible( menuVisualControlTrack.Checked );
         }
 
         public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ViewWaveform = menuVisualWaveform.isSelected();
+            AppManager.editorConfig.ViewWaveform = menuVisualWaveform.Checked;
             updateSplitContainer2Size( true );
         }
 
@@ -9794,9 +9784,9 @@ namespace cadencii
                 }
                 RendererKind kind = vd.getRendererKind();
                 if ( kind == RendererKind.VOCALOID1 ) {
-                    menuVisualPluginUiVocaloid1.setSelected( chkv );
+                    menuVisualPluginUiVocaloid1.Checked = chkv;
                 } else if ( kind == RendererKind.VOCALOID2 ) {
-                    menuVisualPluginUiVocaloid2.setSelected( chkv );
+                    menuVisualPluginUiVocaloid2.Checked = chkv;
                 }
             }
 #endif
@@ -9820,7 +9810,7 @@ namespace cadencii
                     chk = false;
                 }
             }
-            menuVisualPluginUiAquesTone.setSelected( chk );
+            menuVisualPluginUiAquesTone.Checked = chk;
 #endif
         }
 
@@ -9866,12 +9856,12 @@ namespace cadencii
                 boolean v = true;
                 if ( kind == search ) {
                     if ( search == RendererKind.VOCALOID1 ) {
-                        v = !menuVisualPluginUiVocaloid1.isSelected();
-                        menuVisualPluginUiVocaloid1.setSelected( v );
+                        v = !menuVisualPluginUiVocaloid1.Checked;
+                        menuVisualPluginUiVocaloid1.Checked = v;
                         vd.getUi( this ).setVisible( v );
                     } else if ( search == RendererKind.VOCALOID2 ) {
-                        v = !menuVisualPluginUiVocaloid2.isSelected();
-                        menuVisualPluginUiVocaloid2.setSelected( v );
+                        v = !menuVisualPluginUiVocaloid2.Checked;
+                        menuVisualPluginUiVocaloid2.Checked = v;
                         vd.getUi( this ).setVisible( v );
                     }
                     break;
@@ -10597,7 +10587,7 @@ namespace cadencii
                 }
 
                 // アイコンパレットの状態を更新
-                if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
+                if ( AppManager.iconPalette != null && menuVisualIconPalette.Checked ) {
                     if( !AppManager.iconPalette.isVisible() ){
                         AppManager.iconPalette.setVisible( true );
                     }
@@ -10901,7 +10891,7 @@ namespace cadencii
 
         public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
         {
-            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
+            menuFileExportWave.Enabled = (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0);
         }
 
         public void menuFileExportMidi_Click( Object sender, EventArgs e )
@@ -12829,7 +12819,7 @@ namespace cadencii
                     // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
                     controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
 
-                    if ( menuVisualControlTrack.isSelected() ) {
+                    if ( menuVisualControlTrack.Checked ) {
                         splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
                     }
 
@@ -12864,12 +12854,10 @@ namespace cadencii
 
             // スクリプトのToolStripMenuITemを蒐集
             Vector<String> script_shortcut = new Vector<String>();
-            MenuElement[] sub_menu_script = menuScript.getSubElements();
-            for ( int i = 0; i < sub_menu_script.Length; i++ ) {
-                MenuElement tsi = sub_menu_script[i];
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    String name = tsmi.getName();
+            foreach (var tsi in menuScript.DropDownItems) {
+                if (tsi is System.Windows.Forms.ToolStripMenuItem) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    String name = tsmi.Name;
                     script_shortcut.add( name );
                     if ( !configured.containsKey( name ) ) {
                         configured.put( name, new BKeys[] { } );
@@ -12893,17 +12881,17 @@ namespace cadencii
                     casted_owner_item = (JMenuItem)owner.value;
                 }
 #else
-                BMenuItem casted_owner_item = null;
-                if ( owner.value is BMenuItem ) {
-                    casted_owner_item = (BMenuItem)owner.value;
+                ToolStripMenuItem casted_owner_item = null;
+                if (owner.value is ToolStripMenuItem) {
+                    casted_owner_item = (ToolStripMenuItem)owner.value;
                 }
 #endif
                 if ( casted_owner_item == null ) {
                     continue;
                 }
                 String parent = "";
-                if ( !casted_owner_item.getName().Equals( menuHidden.getName() ) ) {
-                    String s = casted_owner_item.getText();
+                if ( !casted_owner_item.Name.Equals( menuHidden.Name ) ) {
+                    String s = casted_owner_item.Text;
                     int i = s.IndexOf( "(&" );
                     if ( i > 0 ) {
                         s = str.sub( s, 0, i );
@@ -12916,15 +12904,15 @@ namespace cadencii
                     casted_menu = (JMenuItem)menu;
                 }
 #else
-                BMenuItem casted_menu = null;
-                if ( menu is BMenuItem ) {
-                    casted_menu = (BMenuItem)menu;
+                ToolStripMenuItem casted_menu = null;
+                if (menu is ToolStripMenuItem) {
+                    casted_menu = (ToolStripMenuItem)menu;
                 }
 #endif
                 if ( casted_menu == null ) {
                     continue;
                 }
-                String s1 = casted_menu.getText();
+                String s1 = casted_menu.Text;
                 int i1 = s1.IndexOf( "(&" );
                 if ( i1 > 0 ) {
                     s1 = str.sub( s1, 0, i1 );
@@ -13064,7 +13052,7 @@ namespace cadencii
         public void menuEditAutoNormalizeMode_Click( Object sender, EventArgs e )
         {
             AppManager.mAutoNormalize = !AppManager.mAutoNormalize;
-            menuEditAutoNormalizeMode.setSelected( AppManager.mAutoNormalize );
+            menuEditAutoNormalizeMode.Checked = AppManager.mAutoNormalize;
         }
         #endregion
 
@@ -13072,7 +13060,7 @@ namespace cadencii
         #region menuLyric*
         public void menuLyric_DropDownOpening( Object sender, EventArgs e )
         {
-            menuLyricCopyVibratoToPreset.setEnabled( false );
+            menuLyricCopyVibratoToPreset.Enabled = false;
 
             int num = AppManager.itemSelection.getEventCount();
             if ( num <= 0 ) {
@@ -13086,7 +13074,7 @@ namespace cadencii
                 return;
             }
 
-            menuLyricCopyVibratoToPreset.setEnabled( true );
+            menuLyricCopyVibratoToPreset.Enabled = true;
         }
 
         public void menuLyricExpressionProperty_Click( Object sender, EventArgs e )
@@ -13221,7 +13209,7 @@ namespace cadencii
         public void menuJob_DropDownOpening( Object sender, EventArgs e )
         {
             if ( AppManager.itemSelection.getEventCount() <= 1 ) {
-                menuJobConnect.setEnabled( false );
+                menuJobConnect.Enabled = false;
             } else {
                 // menuJobConnect(音符の結合)がEnableされるかどうかは、選択されている音符がピアノロール上で連続かどうかで決まる
                 int[] list = new int[AppManager.itemSelection.getEventCount()];
@@ -13256,10 +13244,10 @@ namespace cadencii
                         break;
                     }
                 }
-                menuJobConnect.setEnabled( continued );
+                menuJobConnect.Enabled = continued;
             }
 
-            menuJobLyric.setEnabled( AppManager.itemSelection.getLastEvent() != null );
+            menuJobLyric.Enabled = AppManager.itemSelection.getLastEvent() != null;
         }
 
         public void menuJobLyric_Click( Object sender, EventArgs e )
@@ -14910,11 +14898,11 @@ namespace cadencii
 
         public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e )
         {
-            Logger.setEnabled( menuHelpLogSwitch.isSelected() );
-            if ( menuHelpLogSwitch.isSelected() ) {
-                menuHelpLogSwitch.setText( _( "Enabled" ) );
+            Logger.setEnabled( menuHelpLogSwitch.Checked );
+            if ( menuHelpLogSwitch.Checked ) {
+                menuHelpLogSwitch.Text = _( "Enabled" );
             } else {
-                menuHelpLogSwitch.setText( _( "Disabled" ) );
+                menuHelpLogSwitch.Text = _( "Disabled" );
             }
         }
 
@@ -15113,7 +15101,7 @@ namespace cadencii
 
         public void trackSelector_PreferredMinHeightChanged( Object sender, EventArgs e )
         {
-            if ( menuVisualControlTrack.isSelected() ) {
+            if ( menuVisualControlTrack.Checked ) {
                 splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
 #if DEBUG
                 sout.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
@@ -15257,7 +15245,7 @@ namespace cadencii
         public void cMenuPianoGrid_Click( Object sender, EventArgs e )
         {
             boolean new_v = !AppManager.isGridVisible();
-            cMenuPianoGrid.setSelected( new_v );
+            cMenuPianoGrid.Checked = new_v;
             AppManager.setGridVisible( new_v );
         }
 
@@ -15289,7 +15277,7 @@ namespace cadencii
         public void cMenuPiano_Opening( Object sender, BCancelEventArgs e )
         {
             updateCopyAndPasteButtonStatus();
-            cMenuPianoImportLyric.setEnabled( AppManager.itemSelection.getLastEvent() != null );
+            cMenuPianoImportLyric.Enabled = AppManager.itemSelection.getLastEvent() != null;
         }
 
         public void cMenuPianoSelectAll_Click( Object sender, EventArgs e )
@@ -15696,32 +15684,32 @@ namespace cadencii
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
             int tracks = vsq.Track.size();
-            cMenuTrackTabDelete.setEnabled( tracks >= 3 );
-            menuTrackDelete.setEnabled( tracks >= 3 );
-            cMenuTrackTabAdd.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
-            menuTrackAdd.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
-            cMenuTrackTabCopy.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
-            menuTrackCopy.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
+            cMenuTrackTabDelete.Enabled = tracks >= 3;
+            menuTrackDelete.Enabled = tracks >= 3;
+            cMenuTrackTabAdd.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
+            menuTrackAdd.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
+            cMenuTrackTabCopy.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
+            menuTrackCopy.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
 
             boolean on = vsq_track.isTrackOn();
-            cMenuTrackTabTrackOn.setSelected( on );
-            menuTrackOn.setSelected( on );
+            cMenuTrackTabTrackOn.Checked = on;
+            menuTrackOn.Checked = on;
 
             if ( tracks > 2 ) {
-                cMenuTrackTabOverlay.setEnabled( true );
-                menuTrackOverlay.setEnabled( true );
-                cMenuTrackTabOverlay.setSelected( AppManager.isOverlay() );
-                menuTrackOverlay.setSelected( AppManager.isOverlay() );
+                cMenuTrackTabOverlay.Enabled = true;
+                menuTrackOverlay.Enabled = true;
+                cMenuTrackTabOverlay.Checked = AppManager.isOverlay();
+                menuTrackOverlay.Checked = AppManager.isOverlay();
             } else {
-                cMenuTrackTabOverlay.setEnabled( false );
-                menuTrackOverlay.setEnabled( false );
-                cMenuTrackTabOverlay.setSelected( false );
-                menuTrackOverlay.setSelected( false );
+                cMenuTrackTabOverlay.Enabled = false;
+                menuTrackOverlay.Enabled = false;
+                cMenuTrackTabOverlay.Checked = false;
+                menuTrackOverlay.Checked = false;
             }
-            cMenuTrackTabRenderCurrent.setEnabled( !AppManager.isPlaying() );
-            menuTrackRenderCurrent.setEnabled( !AppManager.isPlaying() );
-            cMenuTrackTabRenderAll.setEnabled( !AppManager.isPlaying() );
-            menuTrackRenderAll.setEnabled( !AppManager.isPlaying() );
+            cMenuTrackTabRenderCurrent.Enabled = !AppManager.isPlaying();
+            menuTrackRenderCurrent.Enabled = !AppManager.isPlaying();
+            cMenuTrackTabRenderAll.Enabled = !AppManager.isPlaying();
+            menuTrackRenderAll.Enabled = !AppManager.isPlaying();
 
             var kind = VsqFileEx.getTrackRendererKind( vsq_track );
             renderer_menu_handler_.ForEach( ( handler ) => handler.updateCheckedState( kind ) );
@@ -15756,7 +15744,7 @@ namespace cadencii
             if ( vsq.config.EndMarker < clock ) {
                 vsq.config.EndMarker = clock;
             }
-            menuVisualStartMarker.setSelected( true );
+            menuVisualStartMarker.Checked = true;
             setEdited( true );
             picturePositionIndicator.repaint();
         }
@@ -15770,7 +15758,7 @@ namespace cadencii
             if ( vsq.config.StartMarker > clock ) {
                 vsq.config.StartMarker = clock;
             }
-            menuVisualEndMarker.setSelected( true );
+            menuVisualEndMarker.Checked = true;
             setEdited( true );
             picturePositionIndicator.repaint();
         }
@@ -15783,21 +15771,21 @@ namespace cadencii
             updateCopyAndPasteButtonStatus();
 
             // 選択ツールの状態に合わせて表示を更新
-            cMenuTrackSelectorPointer.setSelected( false );
-            cMenuTrackSelectorPencil.setSelected( false );
-            cMenuTrackSelectorLine.setSelected( false );
-            cMenuTrackSelectorEraser.setSelected( false );
+            cMenuTrackSelectorPointer.Checked = false;
+            cMenuTrackSelectorPencil.Checked = false;
+            cMenuTrackSelectorLine.Checked = false;
+            cMenuTrackSelectorEraser.Checked = false;
             EditTool tool = AppManager.getSelectedTool();
             if ( tool == EditTool.ARROW ) {
-                cMenuTrackSelectorPointer.setSelected( true );
+                cMenuTrackSelectorPointer.Checked = true;
             } else if ( tool == EditTool.PENCIL ) {
-                cMenuTrackSelectorPencil.setSelected( true );
+                cMenuTrackSelectorPencil.Checked = true;
             } else if ( tool == EditTool.LINE ) {
-                cMenuTrackSelectorLine.setSelected( true );
+                cMenuTrackSelectorLine.Checked = true;
             } else if ( tool == EditTool.ERASER ) {
-                cMenuTrackSelectorEraser.setSelected( true );
+                cMenuTrackSelectorEraser.Checked = true;
             }
-            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
+            cMenuTrackSelectorCurve.Checked = AppManager.isCurveMode();
         }
 
         public void cMenuTrackSelectorPointer_Click( Object sender, EventArgs e )
@@ -16497,13 +16485,13 @@ namespace cadencii
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
                     tsb.Pushed = true;
                 }
-            } else if ( sender is BMenuItem ) {
-                BMenuItem tsmi = (BMenuItem)sender;
-                if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                    id = (String)tsmi.getTag();
+            } else if (sender is ToolStripMenuItem) {
+                ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+                if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                    id = (String)tsmi.Tag;
                     AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
-                    tsmi.setSelected( true );
+                    tsmi.Checked = true;
                 }
             }
 #endif
@@ -16543,23 +16531,22 @@ namespace cadencii
 #endif
             }
 
-            MenuElement[] sub_cmenu_piano_palette_tool = cMenuPianoPaletteTool.getSubElements();
-            for ( int i = 0; i < sub_cmenu_piano_palette_tool.Length; i++ ) {
-                MenuElement item = sub_cmenu_piano_palette_tool[i];
+            foreach (var item in cMenuPianoPaletteTool.DropDownItems) {
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
                     String tagged_id = menu.getPaletteToolID();
-                    menu.setSelected( str.compare( id, tagged_id ) );
+                    menu.Checked = str.compare( id, tagged_id );
                 }
             }
 
-            MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
-            for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
-                MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
+            //MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
+            //for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
+                //MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
+            foreach (var item in cMenuTrackSelectorPaletteTool.DropDownItems) {
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
                     String tagged_id = menu.getPaletteToolID();
-                    menu.setSelected( str.compare( id, tagged_id ) );
+                    menu.Checked = str.compare( id, tagged_id );
                 }
             }
         }
@@ -16577,8 +16564,8 @@ namespace cadencii
                     new_status ? last_play_mode : PlayMode.Off,
                     last_play_mode ) );
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
-            menuTrackOn.setSelected( new_status );
-            cMenuTrackTabTrackOn.setSelected( new_status );
+            menuTrackOn.Checked = new_status;
+            cMenuTrackTabTrackOn.Checked = new_status;
             setEdited( true );
             refreshScreen();
         }
@@ -16786,7 +16773,7 @@ namespace cadencii
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             vsq.config.StartMarkerEnabled = !vsq.config.StartMarkerEnabled;
-            menuVisualStartMarker.setSelected( vsq.config.StartMarkerEnabled );
+            menuVisualStartMarker.Checked = vsq.config.StartMarkerEnabled;
             setEdited( true );
             focusPianoRoll();
             refreshScreen();
@@ -16799,7 +16786,7 @@ namespace cadencii
 #if !JAVA
             stripBtnEndMarker.Pushed = vsq.config.EndMarkerEnabled;
 #endif
-            menuVisualEndMarker.setSelected( vsq.config.EndMarkerEnabled );
+            menuVisualEndMarker.Checked = vsq.config.EndMarkerEnabled;
             setEdited( true );
             focusPianoRoll();
             refreshScreen();
@@ -17112,7 +17099,7 @@ namespace cadencii
                 try {
                     draft = str.tof( ib.getResult() );
                     item.readOffsetSeconds = draft;
-                    menu.setToolTipText( draft + " " + _( "seconds" ) );
+                    menu.ToolTipText = draft + " " + _( "seconds" );
                 } catch ( Exception ex3 ) {
                     Logger.write( typeof( FormMain ) + ".handleBgmOffsetSeconds_Click; ex=" + ex3 + "\n" );
                 }
@@ -17146,7 +17133,7 @@ namespace cadencii
             for ( int i = 0; i < count; i++ ) {
                 if ( i == index ) {
                     BgmFile item = (BgmFile)AppManager.getBgm( i ).clone();
-                    item.startAfterPremeasure = menu.isSelected();
+                    item.startAfterPremeasure = menu.Checked;
                     list.add( item );
                 } else {
                     list.add( AppManager.getBgm( i ) );

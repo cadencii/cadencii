@@ -83,8 +83,10 @@ namespace cadencii
             lblBendDepth.Mnemonic( KeyEvent.VK_B );
             lblBendLength.Text = _( "Bend Length" );
             lblBendLength.Mnemonic( KeyEvent.VK_L );
-            chkUpPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in rising movement"), KeyEvent.VK_R);
-            chkDownPortamento.Text = BMenuItem.setMnemonicFromText(_("Add portamento in falling movement"), KeyEvent.VK_F);
+            chkUpPortamento.Text = _("Add portamento in rising movement");
+            chkUpPortamento.Mnemonic(KeyEvent.VK_R);
+            chkDownPortamento.Text = _("Add portamento in falling movement");
+            chkDownPortamento.Mnemonic(KeyEvent.VK_F);
 
             groupDynamicsControl.Text = _( "Dynamics Control" );
             lblDecay.Text = _( "Decay" );
@@ -95,7 +97,7 @@ namespace cadencii
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
             btnApply.Text = _( "Apply to current track" );
-            btnApply.Text = BMenuItem.setMnemonicFromText(btnApply.Text, KeyEvent.VK_C);
+            btnApply.Mnemonic(KeyEvent.VK_C);
 
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;

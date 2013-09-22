@@ -115,7 +115,7 @@ namespace cadencii
             if ( dict.containsKey( "menuVisualIconPalette" ) ) {
                 BKeys[] keys = dict.get( "menuVisualIconPalette" );
                 KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );
-                menuWindowHide.setAccelerator( shortcut );
+                menuWindowHide.ShortcutKeys = shortcut.keys;
             }
         }
     
@@ -143,7 +143,7 @@ namespace cadencii
 
         public void applyShortcut( KeyStroke shortcut )
         {
-            menuWindowHide.setAccelerator( shortcut );
+            menuWindowHide.ShortcutKeys = shortcut.keys;
         }
         #endregion
 
@@ -357,8 +357,8 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.menuBar = new cadencii.windows.forms.BMenuBar();
-            this.menuWindow = new cadencii.windows.forms.BMenuItem();
-            this.menuWindowHide = new cadencii.windows.forms.BMenuItem();
+            this.menuWindow = new ToolStripMenuItem();
+            this.menuWindowHide = new ToolStripMenuItem();
             this.menuBar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -406,8 +406,8 @@ namespace cadencii
         }
 
         private BMenuBar menuBar;
-        private BMenuItem menuWindow;
-        private BMenuItem menuWindowHide;
+        private ToolStripMenuItem menuWindow;
+        private ToolStripMenuItem menuWindowHide;
 
 #endif
         #endregion

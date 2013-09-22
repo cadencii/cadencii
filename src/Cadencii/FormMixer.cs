@@ -193,7 +193,7 @@ namespace cadencii
 
         public void applyShortcut( KeyStroke shortcut )
         {
-            menuVisualReturn.setAccelerator( shortcut );
+            menuVisualReturn.ShortcutKeys = shortcut.keys;
         }
 
         public void applyLanguage()
@@ -650,8 +650,8 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.menuMain = new cadencii.windows.forms.BMenuBar();
-            this.menuVisual = new cadencii.windows.forms.BMenuItem();
-            this.menuVisualReturn = new cadencii.windows.forms.BMenuItem();
+            this.menuVisual = new ToolStripMenuItem();
+            this.menuVisualReturn = new ToolStripMenuItem();
             this.panelSlaves = new cadencii.windows.forms.BPanel();
             this.hScroll = new HScrollBar();
             this.volumeMaster = new cadencii.VolumeTracker();
@@ -737,8 +737,8 @@ namespace cadencii
         #endregion
 
         private BMenuBar menuMain;
-        private BMenuItem menuVisual;
-        private BMenuItem menuVisualReturn;
+        private ToolStripMenuItem menuVisual;
+        private ToolStripMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
         private BPanel panelSlaves;
         private HScrollBar hScroll;

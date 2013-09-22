@@ -32,7 +32,7 @@ namespace cadencii
 #if JAVA
     public class BgmMenuItem extends BMenuItem
 #else
-    public class BgmMenuItem : BMenuItem
+    public class BgmMenuItem : ToolStripMenuItem
 #endif
     {
         private int mBgmIndex;
