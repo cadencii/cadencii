@@ -38,7 +38,7 @@ namespace cadencii
 #endif
         private boolean m_game_ctrl_enabled = false;
         private double m_last_event_processed;
-        private BTimer timer;
+        private System.Windows.Forms.Timer timer;
 
         public FormRealtimeConfig()
         {
@@ -48,9 +48,9 @@ namespace cadencii
             timer = new BTimer();
 #else
             InitializeComponent();
-            timer = new BTimer( this.components );
+            timer = new System.Windows.Forms.Timer( this.components );
 #endif
-            timer.setDelay( 10 );
+            timer.Interval = 10;
             registerEventHandlers();
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -74,7 +74,7 @@ namespace cadencii
 #endif
             m_game_ctrl_enabled = (num_joydev > 0);
             if ( m_game_ctrl_enabled ) {
-                timer.start();
+                timer.Start();
             }
         }
 
@@ -107,7 +107,7 @@ namespace cadencii
                 if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
                     if ( btnStart.Focused ) {
                         if ( btn_o ) {
-                            timer.stop();
+                            timer.Stop();
                             btnStart_Click( this, new EventArgs() );
                             m_last_event_processed = now;
                         } else if ( pov_r ) {
@@ -119,7 +119,7 @@ namespace cadencii
                         }
                     } else if ( btnCancel.Focused ) {
                         if ( btn_o ) {
-                            timer.stop();
+                            timer.Stop();
                             setDialogResult( BDialogResult.CANCEL );
                             close();
                         } else if ( pov_l ) {

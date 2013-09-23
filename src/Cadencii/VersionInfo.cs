@@ -71,7 +71,7 @@ namespace cadencii
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
         private boolean m_shadow_enablde = false;
-        private BTimer timer;
+        private System.Windows.Forms.Timer timer;
         private boolean m_show_twitter_id = false;
 
         public VersionInfo( String app_name, String version )
@@ -85,12 +85,12 @@ namespace cadencii
             if ( this.components == null ) {
                 this.components = new System.ComponentModel.Container();
             }
-            timer = new BTimer( this.components );
+            timer = new Timer( this.components );
 #endif
             m_version = version;
             m_app_name = app_name;
 
-            timer.setDelay( 30 );
+            timer.Interval = 30;
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -299,7 +299,7 @@ namespace cadencii
         public void btnOK_Click( Object sender, EventArgs e )
         {
             setDialogResult( BDialogResult.OK );
-            timer.stop();
+            timer.Stop();
             close();
         }
 
@@ -319,9 +319,9 @@ namespace cadencii
                 pictVstLogo.setVisible( false );
                 lblVstLogo.Visible = false;
                 chkTwitterID.Visible = true;
-                timer.start();
+                timer.Start();
             } else {
-                timer.stop();
+                timer.Stop();
                 btnFlip.Text = _( "Credit" );
                 pictVstLogo.setVisible( true );
                 lblVstLogo.Visible = true;

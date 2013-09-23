@@ -42,7 +42,7 @@ namespace cadencii
         private Vector<Integer> m_list = new Vector<Integer>();
         private Vector<Integer> m_povs = new Vector<Integer>();
         private int index;
-        private BTimer timer;
+        private System.Windows.Forms.Timer timer;
 
         public FormGameControlerConfig()
         {
@@ -53,11 +53,7 @@ namespace cadencii
             InitializeComponent();
 #endif
 
-#if JAVA
-            timer = new BTimer();
-#else
-            timer = new BTimer( this.components );
-#endif
+            timer = new System.Windows.Forms.Timer( this.components );
             registerEventHandlers();
             setResources();
             for ( int i = 0; i < 10; i++ ) {
@@ -80,7 +76,7 @@ namespace cadencii
                 index = 1;
                 btnSkip.Enabled = true;
                 btnReset.Enabled = true;
-                timer.start();
+                timer.Start();
             } else {
                 btnSkip.Enabled = false;
                 btnReset.Enabled = false;
@@ -252,7 +248,7 @@ namespace cadencii
                 if ( index == 14 ) {
                     btnSkip.Enabled = false;
                     btnOK.Enabled = true;
-                    timer.stop();
+                    timer.Stop();
                 }
                 index++;
             }
@@ -285,7 +281,7 @@ namespace cadencii
             if ( index == 14 ) {
                 btnSkip.Enabled = false;
                 btnOK.Enabled = true;
-                timer.stop();
+                timer.Stop();
             }
             index++;
         }

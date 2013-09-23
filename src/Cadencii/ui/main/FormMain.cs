@@ -417,7 +417,7 @@ namespace cadencii
         /// </summary>
         public boolean mFormActivated = true;
         private GameControlMode mGameMode = GameControlMode.DISABLED;
-        public BTimer mTimer;
+        public System.Windows.Forms.Timer mTimer;
         public boolean mLastPovR = false;
         public boolean mLastPovL = false;
         public boolean mLastPovU = false;
@@ -478,7 +478,7 @@ namespace cadencii
         public BFileChooser openMidiDialog;
         public BFileChooser saveMidiDialog;
         public BFileChooser openWaveDialog;
-        public BTimer timer;
+        public System.Windows.Forms.Timer timer;
         public BBackgroundWorker bgWorkScreen;
         /// <summary>
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
@@ -618,7 +618,7 @@ namespace cadencii
 //            toolStripTool.remove( getStripBtnStepSequencer() );
 #else
             InitializeComponent();
-            timer = new BTimer( this.components );
+            timer = new System.Windows.Forms.Timer( this.components );
 #endif
 
             panelOverview.setMainForm( this );
@@ -821,7 +821,7 @@ namespace cadencii
             panel1.Controls.Add( AppManager.mInputTextBox );
 
             int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
-            timer.setDelay( (fps <= 0) ? 1 : fps );
+            timer.Interval = (fps <= 0) ? 1 : fps;
 
 #if JAVA
 #if !DEBUG
@@ -3354,7 +3354,7 @@ namespace cadencii
         {
 #if !JAVA
             if ( mTimer != null ) {
-                mTimer.stop();
+                mTimer.Stop();
                 mTimer.Dispose();
                 mTimer = null;
             }
@@ -3381,10 +3381,10 @@ namespace cadencii
                     mGameMode = GameControlMode.NORMAL;
                     stripLblGameCtrlMode.Image = null;
                     stripLblGameCtrlMode.Text = mGameMode.ToString();
-                    mTimer = new BTimer();
-                    mTimer.setDelay( 10 );
+                    mTimer = new System.Windows.Forms.Timer();
+                    mTimer.Interval = 10;
                     mTimer.Tick += new EventHandler( mTimer_Tick );
-                    mTimer.start();
+                    mTimer.Start();
                 } else {
                     mGameMode = GameControlMode.DISABLED;
                 }
@@ -3787,7 +3787,7 @@ namespace cadencii
                         threshold = 0.0;
                     }
                     if ( elapsed > threshold ) {
-                        timer.stop();
+                        timer.Stop();
                         AppManager.setPlaying( false, this );
                     }
                 } else {
@@ -7738,7 +7738,7 @@ namespace cadencii
             stripBtnPlay.ImageKey = "control.png";
             stripBtnPlay.Text = _( "Play" );
 #endif
-            timer.stop();
+            timer.Stop();
 
             for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
                 AppManager.mDrawStartIndex[i] = 0;
@@ -7761,7 +7761,7 @@ namespace cadencii
             mLastClock = clock;
             double now = PortUtil.getCurrentTime();
             AppManager.mPreviewStartedTime = now;
-            timer.start();
+            timer.Start();
 #if JAVA
             stripBtnPlay.setIcon( new ImageIcon( Resources.get_control_pause() ) );
             stripBtnPlay.setText( _( "Stop" ) );
@@ -8642,7 +8642,7 @@ namespace cadencii
 
                 if (edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.mCurveOnPianoroll) {
                     pictPianoRoll.mMouseTracer.append(e.X + stdx, e.Y + stdy);
-                    if (!timer.isRunning()) {
+                    if (!timer.Enabled) {
                         refreshScreen();
                     }
                     return;
@@ -9020,7 +9020,7 @@ namespace cadencii
                     }
                     AppManager.mAddingEvent.Clock = new_vibrato_start;
                     AppManager.mAddingEvent.ID.setLength(new_vibrato_length);
-                    if (!timer.isRunning()) {
+                    if (!timer.Enabled) {
                         refreshScreen();
                     }
                     #endregion
@@ -9118,7 +9118,7 @@ namespace cadencii
                         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
                     }
                 }
-                if (!timer.isRunning()) {
+                if (!timer.Enabled) {
                     refreshScreen(true);
                 }
             }
@@ -10701,7 +10701,7 @@ namespace cadencii
 
                     if ( !event_processed && !btn_o && mLastBtnO ) {
                         if ( AppManager.isPlaying() ) {
-                            timer.stop();
+                            timer.Stop();
                         }
                         AppManager.setPlaying( !AppManager.isPlaying(), this );
                         mLastEventProcessed = now;
@@ -10841,7 +10841,7 @@ namespace cadencii
 #endif
                 mGameMode = GameControlMode.DISABLED;
                 updateGameControlerStatus( null, null );
-                mTimer.stop();
+                mTimer.Stop();
             }
         }
 #endif
@@ -12640,7 +12640,7 @@ namespace cadencii
                     AppManager.editorConfig.ScrollHorizontalOnWheel = mDialogPreference.isScrollHorizontalOnWheel();
                     AppManager.editorConfig.MaximumFrameRate = mDialogPreference.getMaximumFrameRate();
                     int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
-                    timer.setDelay( (fps <= 0) ? 1 : fps );
+                    timer.Interval = (fps <= 0) ? 1 : fps;
                     applyShortcut();
                     AppManager.editorConfig.KeepLyricInputMode = mDialogPreference.isKeepLyricInputMode();
                     if ( AppManager.editorConfig.PxTrackHeight != mDialogPreference.getPxTrackHeight() ) {
@@ -15005,7 +15005,7 @@ namespace cadencii
                 }
             }
             if ( e.Button == BMouseButtons.None ) {
-                if ( !timer.isRunning() ) {
+                if ( !timer.Enabled ) {
                     refreshScreen( true );
                 }
                 return;
@@ -15063,7 +15063,7 @@ namespace cadencii
                     hScroll.Value = draft;
                 }
             }
-            if ( !timer.isRunning() ) {
+            if ( !timer.Enabled ) {
                 refreshScreen( true );
             }
         }
@@ -16082,7 +16082,7 @@ namespace cadencii
         public void stripBtnStop_Click( Object sender, EventArgs e )
         {
             AppManager.setPlaying( false, this );
-            timer.stop();
+            timer.Stop();
             focusPianoRoll();
         }
 

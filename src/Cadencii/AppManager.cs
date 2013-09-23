@@ -377,7 +377,7 @@ namespace cadencii
         #region Private Static Fields
         private static Color mHilightBrush = PortUtil.CornflowerBlue;
         private static Object mLocker;
-        private static BTimer mAutoBackupTimer;
+        private static System.Windows.Forms.Timer mAutoBackupTimer;
         /// <summary>
         /// 現在稼働しているWaveGenerator．稼働していないときはnull
         /// </summary>
@@ -1939,10 +1939,10 @@ namespace cadencii
                 if ( millisec > int.MaxValue ) {
                     draft = int.MaxValue;
                 }
-                mAutoBackupTimer.setDelay( draft );
-                mAutoBackupTimer.start();
+                mAutoBackupTimer.Interval = draft;
+                mAutoBackupTimer.Start();
             } else {
-                mAutoBackupTimer.stop();
+                mAutoBackupTimer.Stop();
             }
         }
 
@@ -2492,14 +2492,14 @@ namespace cadencii
             if ( mVsq != null ) {
                 mFile = file;
                 editorConfig.pushRecentFiles( mFile );
-                if ( !mAutoBackupTimer.isRunning() && editorConfig.AutoBackupIntervalMinutes > 0 ) {
+                if ( !mAutoBackupTimer.Enabled && editorConfig.AutoBackupIntervalMinutes > 0 ) {
                     double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                     int draft = (int)millisec;
                     if ( millisec > int.MaxValue ) {
                         draft = int.MaxValue;
                     }
-                    mAutoBackupTimer.setDelay( draft );
-                    mAutoBackupTimer.start();
+                    mAutoBackupTimer.Interval = draft;
+                    mAutoBackupTimer.Start();
                 }
             }
         }
@@ -2639,7 +2639,7 @@ namespace cadencii
             //mStartMarker = mVsq.getPreMeasureClocks();
             //int bar = mVsq.getPreMeasure() + 1;
             //mEndMarker = mVsq.getClockFromBarCount( bar );
-            mAutoBackupTimer.stop();
+            mAutoBackupTimer.Stop();
             setCurrentClock( mVsq.getPreMeasureClocks() );
             try {
 #if JAVA
@@ -2891,7 +2891,7 @@ namespace cadencii
 
             reloadUtauVoiceDB();
 
-            mAutoBackupTimer = new BTimer();
+            mAutoBackupTimer = new System.Windows.Forms.Timer();
             mAutoBackupTimer.Tick += new EventHandler( handleAutoBackupTimerTick );
         }
 

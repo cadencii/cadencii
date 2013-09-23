@@ -63,9 +63,6 @@
     <Compile Include="BPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BTimer.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
