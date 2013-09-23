@@ -27,6 +27,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.CSharp;
 using cadencii.apputil;
 using cadencii.java.io;
@@ -1285,7 +1286,7 @@ namespace cadencii
             }
         }
 
-        public static String getShortcutDisplayString( BKeys[] keys ) {
+        public static String getShortcutDisplayString( Keys[] keys ) {
             String ret = "";
 #if JAVA_MAC
             String plus = "";
@@ -1300,22 +1301,22 @@ namespace cadencii
             String option = "Alt";
             String command = "Meta";
 #endif
-            Vector<BKeys> list = new Vector<BKeys>( Arrays.asList( keys ) );
-            if ( list.contains( BKeys.Control ) ) {
+            Vector<Keys> list = new Vector<Keys>( Arrays.asList( keys ) );
+            if ( list.contains( Keys.Control ) ) {
                 ret += (str.compare( ret, "" ) ? "" : plus) + ctrl;
             }
-            if ( list.contains( BKeys.Alt ) ) {
+            if ( list.contains( Keys.Alt ) ) {
                 ret += (str.compare( ret, "" ) ? "" : plus) + option;
             }
-            if ( list.contains( BKeys.Shift ) ) {
+            if ( list.contains( Keys.Shift ) ) {
                 ret += (str.compare( ret, "" ) ? "" : plus) + shift;
             }
-            if ( list.contains( BKeys.Menu ) ) {
+            if ( list.contains( Keys.Menu ) ) {
                 ret += (str.compare( ret, "" ) ? "" : plus) + command;
             }
-            Vector<BKeys> list2 = new Vector<BKeys>();
-            foreach ( BKeys key in keys ) {
-                if ( key != BKeys.Control && key != BKeys.Shift && key != BKeys.Alt && key != BKeys.Menu ) {
+            Vector<Keys> list2 = new Vector<Keys>();
+            foreach ( Keys key in keys ) {
+                if ( key != Keys.Control && key != Keys.Shift && key != Keys.Alt && key != Keys.Menu ) {
                     list2.add( key );
                 }
             }
@@ -1326,39 +1327,39 @@ namespace cadencii
             return ret;
         }
 
-        private static String getKeyDisplayString( BKeys key ) {
-            if ( key.Equals( BKeys.PageDown ) ) {
+        private static String getKeyDisplayString( Keys key ) {
+            if ( key.Equals( Keys.PageDown ) ) {
                 return "PgDn";
-            } else if ( key.Equals( BKeys.PageUp ) ) {
+            } else if ( key.Equals( Keys.PageUp ) ) {
                 return "PgUp";
-            } else if ( key.Equals( BKeys.D0 ) ) {
+            } else if ( key.Equals( Keys.D0 ) ) {
                 return "0";
-            } else if ( key.Equals( BKeys.D1 ) ) {
+            } else if ( key.Equals( Keys.D1 ) ) {
                 return "1";
-            } else if ( key.Equals( BKeys.D2 ) ) {
+            } else if ( key.Equals( Keys.D2 ) ) {
                 return "2";
-            } else if ( key.Equals( BKeys.D3 ) ) {
+            } else if ( key.Equals( Keys.D3 ) ) {
                 return "3";
-            } else if ( key.Equals( BKeys.D4 ) ) {
+            } else if ( key.Equals( Keys.D4 ) ) {
                 return "4";
-            } else if ( key.Equals( BKeys.D5 ) ) {
+            } else if ( key.Equals( Keys.D5 ) ) {
                 return "5";
-            } else if ( key.Equals( BKeys.D6 ) ) {
+            } else if ( key.Equals( Keys.D6 ) ) {
                 return "6";
-            } else if ( key.Equals( BKeys.D7 ) ) {
+            } else if ( key.Equals( Keys.D7 ) ) {
                 return "7";
-            } else if ( key.Equals( BKeys.D8 ) ) {
+            } else if ( key.Equals( Keys.D8 ) ) {
                 return "8";
-            } else if ( key.Equals( BKeys.D9 ) ) {
+            } else if ( key.Equals( Keys.D9 ) ) {
                 return "9";
-            } else if ( key.Equals( BKeys.Menu ) ) {
+            } else if ( key.Equals( Keys.Menu ) ) {
 #if JAVA
                 return new String( new char[]{ '\u2318' } );
 #else
                 return new String( '\x2318', 1 );
 #endif
 #if JAVA_MAC
-            } else if ( key.Equals( BKeys.Back ) ){
+            } else if ( key.Equals( Keys.Back ) ){
                 return "⌫";
 #endif
             } else {

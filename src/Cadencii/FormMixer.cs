@@ -191,9 +191,9 @@ namespace cadencii
             this.Refresh();
         }
 
-        public void applyShortcut( KeyStroke shortcut )
+        public void applyShortcut( Keys shortcut )
         {
-            menuVisualReturn.ShortcutKeys = shortcut.keys;
+            menuVisualReturn.ShortcutKeys = shortcut;
         }
 
         public void applyLanguage()

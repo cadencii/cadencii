@@ -21,6 +21,7 @@ import cadencii.apputil.*;
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 using cadencii;
 using cadencii.apputil;
 
@@ -127,29 +128,29 @@ namespace cadencii
         [STAThread]
         public static void Main( String[] args )
         {
-            Application.ThreadException += new ThreadExceptionEventHandler( Application_ThreadException );
-            Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler( Cadencii_UnhandledException );
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(Cadencii_UnhandledException);
 
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault( false );
+            Application.SetCompatibleTextRenderingDefault(false);
 
             // 引数を解釈
-            parseArguments( args );
-            if ( mPrintVersion ) {
-                Console.Write( BAssemblyInfo.fileVersion );
+            parseArguments(args);
+            if (mPrintVersion) {
+                Console.Write(BAssemblyInfo.fileVersion);
                 return;
             }
             String file = mPathVsq;
-            if ( !str.compare( mPathResource, "" ) ) {
-                Resources.setBasePath( mPathResource );
+            if (!str.compare(mPathResource, "")) {
+                Resources.setBasePath(mPathResource);
             }
 
-            Logger.setEnabled( false );
+            Logger.setEnabled(false);
             String logfile = PortUtil.createTempFile() + ".txt";
 
-            Logger.setPath( logfile );
+            Logger.setPath(logfile);
 #if DEBUG
-            Logger.setEnabled( true );
+            Logger.setEnabled(true);
 #endif
 
 #if !DEBUG
@@ -162,33 +163,33 @@ namespace cadencii
                 // システムのデフォルトの言語を調べる．
                 // EditorConfigのコンストラクタは，この判定を自動でやるのでそれを利用
                 EditorConfig ec = new EditorConfig();
-                Messaging.setLanguage( ec.Language );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
-                serr.println( "FormMain#.ctor; ex=" + ex );
+                Messaging.setLanguage(ec.Language);
+            } catch (Exception ex) {
+                Logger.write(typeof(FormMain) + ".ctor; ex=" + ex + "\n");
+                serr.println("FormMain#.ctor; ex=" + ex);
             }
 
             // 開発版の場合の警告ダイアログ
             String str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
-                minor = str.toi( str_minor );
-            } catch ( Exception ex ) {
+                minor = str.toi(str_minor);
+            } catch (Exception ex) {
             }
-            if ( (minor % 2) != 0 ) {
+            if ((minor % 2) != 0) {
                 AppManager.showMessageBox(
                     PortUtil.formatMessage(
-                        _( "Info: This is test version of Cadencii version {0}" ),
-                        BAssemblyInfo.fileVersionMeasure + "." + (minor + 1) ),
+                        _("Info: This is test version of Cadencii version {0}"),
+                        BAssemblyInfo.fileVersionMeasure + "." + (minor + 1)),
                     "Cadencii",
                     cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE);
             }
 
             // スプラッシュを表示するスレッドを開始
 #if !MONO
-            splashThread = new Thread( new ThreadStart( showSplash ) );
-            splashThread.TrySetApartmentState( ApartmentState.STA );
+            splashThread = new Thread(new ThreadStart(showSplash));
+            splashThread.TrySetApartmentState(ApartmentState.STA);
             splashThread.Start();
 #endif
 
@@ -199,17 +200,17 @@ namespace cadencii
             try {
                 ScriptServer.reload();
                 PaletteToolServer.init();
-            } catch ( Exception ex ) {
-                serr.println( "Cadencii::Main; ex=" + ex );
-                Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
+            } catch (Exception ex) {
+                serr.println("Cadencii::Main; ex=" + ex);
+                Logger.write(typeof(Cadencii) + ".Main; ex=" + ex + "\n");
             }
 #endif
             AppManager.mMainWindowController = new FormMainController();
-            AppManager.mMainWindow = new FormMain( AppManager.mMainWindowController, file );
+            AppManager.mMainWindow = new FormMain(AppManager.mMainWindowController, file);
 #if !MONO
             AppManager.mMainWindow.Load += mainWindow_Load;
 #endif
-            Application.Run( AppManager.mMainWindow );
+            Application.Run(AppManager.mMainWindow);
 #if !DEBUG
             } catch ( Exception ex ) {
                 String str_ex = getExceptionText( ex, 0 );

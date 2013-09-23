@@ -30,6 +30,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Linq;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -111,11 +112,12 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             init();
             registerEventHandlers();
-            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
+            TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
             if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                BKeys[] keys = dict.get( "menuVisualIconPalette" );
-                KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );
-                menuWindowHide.ShortcutKeys = shortcut.keys;
+                Keys[] keys = dict.get( "menuVisualIconPalette" );
+                Keys shortcut = Keys.None;
+                keys.Aggregate(shortcut, (seed, key) => seed | key);
+                menuWindowHide.ShortcutKeys = shortcut;
             }
         }
     
@@ -141,9 +143,9 @@ namespace cadencii
             this.Text = _( "Icon Palette" );
         }
 
-        public void applyShortcut( KeyStroke shortcut )
+        public void applyShortcut( Keys shortcut )
         {
-            menuWindowHide.ShortcutKeys = shortcut.keys;
+            menuWindowHide.ShortcutKeys = shortcut;
         }
         #endregion
 

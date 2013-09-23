@@ -89,7 +89,7 @@ namespace cadencii
             /// <summary>
             /// ショートカットキーを表すKeyStrokeクラスのインスタンス
             /// </summary>
-            public KeyStroke shortcut;
+            public Keys shortcut;
             /// <summary>
             /// ショートカットキーとの紐付けを行う相手先のメニューアイテム
             /// </summary>
@@ -100,7 +100,7 @@ namespace cadencii
             /// </summary>
             /// <param name="shortcut">ショートカットキー</param>
             /// <param name="menu">ショートカットキーとの紐付けを行うメニューアイテム</param>
-            public SpecialShortcutHolder(KeyStroke shortcut, ToolStripMenuItem menu)
+            public SpecialShortcutHolder(Keys shortcut, ToolStripMenuItem menu)
             {
                 this.shortcut = shortcut;
                 this.menu = menu;
@@ -1978,91 +1978,91 @@ namespace cadencii
         public Vector<ValuePairOfStringArrayOfKeys> getDefaultShortcutKeys()
         {
 #if JAVA_MAC
-            BKeys ctrl = BKeys.Menu;
+            Keys ctrl = Keys.Menu;
 #else
-            BKeys ctrl = BKeys.Control;
+            Keys ctrl = Keys.Control;
 #endif
             Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
                 new ValuePairOfStringArrayOfKeys[]{
-                new ValuePairOfStringArrayOfKeys( menuFileNew.Name, new BKeys[]{ ctrl, BKeys.N } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpen.Name, new BKeys[]{ ctrl, BKeys.O } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileSave.Name, new BKeys[]{ ctrl, BKeys.S } ),
-                new ValuePairOfStringArrayOfKeys( menuFileQuit.Name, new BKeys[]{ ctrl, BKeys.Q } ),
-                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportWave.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuEditUndo.Name, new BKeys[]{ ctrl, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditRedo.Name, new BKeys[]{ ctrl, BKeys.Shift, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCut.Name, new BKeys[]{ ctrl, BKeys.X } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCopy.Name, new BKeys[]{ ctrl, BKeys.C } ),
-                new ValuePairOfStringArrayOfKeys( menuEditPaste.Name, new BKeys[]{ ctrl, BKeys.V } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.Name, new BKeys[]{ ctrl, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.Name, new BKeys[]{ ctrl, BKeys.Shift, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditDelete.Name, new BKeys[]{ BKeys.Back } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualMixer.Name, new BKeys[]{ BKeys.F3 } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualProperty.Name, new BKeys[]{ BKeys.F6 } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualGridline.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.Name, new BKeys[]{ BKeys.F4 } ),
-                new ValuePairOfStringArrayOfKeys( menuJobNormalize.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobRandomize.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobConnect.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobLyric.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackOn.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackAdd.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackCopy.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackDelete.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingPreference.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.Name, new BKeys[]{} ),
-                //new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileNew.Name, new Keys[]{ ctrl, Keys.N } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpen.Name, new Keys[]{ ctrl, Keys.O } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileSave.Name, new Keys[]{ ctrl, Keys.S } ),
+                new ValuePairOfStringArrayOfKeys( menuFileQuit.Name, new Keys[]{ ctrl, Keys.Q } ),
+                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportWave.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuEditUndo.Name, new Keys[]{ ctrl, Keys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditRedo.Name, new Keys[]{ ctrl, Keys.Shift, Keys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCut.Name, new Keys[]{ ctrl, Keys.X } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCopy.Name, new Keys[]{ ctrl, Keys.C } ),
+                new ValuePairOfStringArrayOfKeys( menuEditPaste.Name, new Keys[]{ ctrl, Keys.V } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.Name, new Keys[]{ ctrl, Keys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.Name, new Keys[]{ ctrl, Keys.Shift, Keys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditDelete.Name, new Keys[]{ Keys.Back } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualMixer.Name, new Keys[]{ Keys.F3 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualProperty.Name, new Keys[]{ Keys.F6 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualGridline.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.Name, new Keys[]{ Keys.F4 } ),
+                new ValuePairOfStringArrayOfKeys( menuJobNormalize.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobRandomize.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobConnect.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobLyric.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOn.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackAdd.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackCopy.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackDelete.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPreference.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.Name, new Keys[]{} ),
+                //new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new Keys[]{} ),
 #if JAVA
-                new ValuePairOfStringArrayOfKeys( menuWindowMinimize.getName(), new BKeys[]{ ctrl, BKeys.M } ),
+                new ValuePairOfStringArrayOfKeys( menuWindowMinimize.getName(), new Keys[]{ ctrl, Keys.M } ),
 #endif
-                new ValuePairOfStringArrayOfKeys( menuHelpAbout.Name, new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.Name, new BKeys[]{ BKeys.F2 } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.Name, new BKeys[]{ ctrl, BKeys.W } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.Name, new BKeys[]{ ctrl, BKeys.E } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.Name, new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.Name, new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.Name, new BKeys[]{ ctrl, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.Name, new BKeys[]{ ctrl, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.Name, new BKeys[]{ BKeys.Alt, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.Name, new BKeys[]{ BKeys.Alt, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.Name, new BKeys[]{ BKeys.Shift, BKeys.Up } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.Name, new BKeys[]{ BKeys.Shift, BKeys.Down } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.Name, new BKeys[]{ BKeys.Shift, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.Name, new BKeys[]{ BKeys.Shift, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.Name, new BKeys[]{ ctrl, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.Name, new BKeys[]{ ctrl, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.Name, new BKeys[]{ ctrl, BKeys.End } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.Name, new BKeys[]{ ctrl, BKeys.Home } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.Name, new BKeys[]{ ctrl, BKeys.Enter } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.Name, new BKeys[]{ BKeys.Tab } ),
+                new ValuePairOfStringArrayOfKeys( menuHelpAbout.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.Name, new Keys[]{ Keys.F2 } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.Name, new Keys[]{ ctrl, Keys.W } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.Name, new Keys[]{ ctrl, Keys.E } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.Name, new Keys[]{ ctrl, Keys.Alt, Keys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.Name, new Keys[]{ ctrl, Keys.Alt, Keys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.Name, new Keys[]{ ctrl, Keys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.Name, new Keys[]{ ctrl, Keys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.Name, new Keys[]{ Keys.Alt, Keys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.Name, new Keys[]{ Keys.Alt, Keys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.Name, new Keys[]{ Keys.Shift, Keys.Up } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.Name, new Keys[]{ Keys.Shift, Keys.Down } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.Name, new Keys[]{ Keys.Shift, Keys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.Name, new Keys[]{ Keys.Shift, Keys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.Name, new Keys[]{ ctrl, Keys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.Name, new Keys[]{ ctrl, Keys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.Name, new Keys[]{ ctrl, Keys.End } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.Name, new Keys[]{ ctrl, Keys.Home } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.Name, new Keys[]{ ctrl, Keys.Enter } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.Name, new Keys[]{ Keys.Tab } ),
             } ) );
             return ret;
         }
@@ -3760,15 +3760,10 @@ namespace cadencii
             } else {
                 if ( !AppManager.isPlaying() ) {
                     // 最初に戻る、の機能を発動
-                    BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
+                    Keys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
                     if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
-                        KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( specialGoToFirst );
-#if JAVA
-                        if( e.KeyCode == ks.getKeyCode() )
-#else
-                        if ( e.KeyCode == ks.keys )
-#endif
-                        {
+                        Keys shortcut = specialGoToFirst.Aggregate(Keys.None, (seed, key) => seed | key);
+                        if ( e.KeyCode == shortcut ) {
                             AppManager.setCurrentClock( 0 );
                             ensureCursorVisible();
                             refreshScreen();
@@ -3957,7 +3952,7 @@ namespace cadencii
         {
             mSpecialShortcutHolders.clear();
 
-            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
             #region menuStripMain
             ByRef<Object> parent = new ByRef<Object>( null );
             for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
@@ -4023,7 +4018,7 @@ namespace cadencii
             for ( int j = 0; j < c; j++ ) {
                 ValuePair<String, ToolStripMenuItem[]> item = work.get( j );
                 if ( dict.containsKey( item.getKey() ) ) {
-                    BKeys[] k = dict.get( item.getKey() );
+                    Keys[] k = dict.get( item.getKey() );
                     String s = Utility.getShortcutDisplayString( k );
 #if !JAVA
                     if ( s != "" ) {
@@ -4038,7 +4033,7 @@ namespace cadencii
             // ミキサーウィンドウ
             if ( AppManager.mMixerWindow != null ) {
                 if ( dict.containsKey( "menuVisualMixer" ) ) {
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
+                    Keys shortcut = dict.get( "menuVisualMixer" ).Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.mMixerWindow.applyShortcut( shortcut );
                 }
             }
@@ -4046,7 +4041,7 @@ namespace cadencii
             // アイコンパレット
             if ( AppManager.iconPalette != null ) {
                 if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
+                    Keys shortcut = dict.get( "menuVisualIconPalette" ).Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.iconPalette.applyShortcut( shortcut );
                 }
             }
@@ -4055,7 +4050,7 @@ namespace cadencii
             // プロパティ
             if( AppManager.propertyWindow != null ){
                 if( dict.containsKey( menuVisualProperty.Name ) ){
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.Name ) );
+                    Keys shortcut = dict.get( menuVisualProperty.Name ).Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.propertyWindow.applyShortcut( shortcut );
                 }
             }
@@ -4104,7 +4099,7 @@ namespace cadencii
         /// <param name="item"></param>
         /// <param name="item_name"></param>
         /// <param name="default_shortcut"></param>
-        public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name )
+        public void applyMenuItemShortcut( TreeMap<String, Keys[]> dict, Object item, String item_name )
         {
 #if JAVA
             if( item == null ){
@@ -4121,7 +4116,7 @@ namespace cadencii
             if( !dict.containsKey( item_name ) ){
                 return;
             }
-            BKeys[] k = dict.get( item_name );
+            Keys[] k = dict.get( item_name );
             if( k == null ){
                 return;
             }
@@ -4151,14 +4146,13 @@ namespace cadencii
 #endif // DEBUG
                     if ( item is ToolStripMenuItem ) {
                         ToolStripMenuItem menu = (ToolStripMenuItem)item;
-                        BKeys[] keys = dict.get( item_name );
-                        System.Windows.Forms.Keys shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys ).keys;
+                        Keys[] keys = dict.get( item_name );
+                        Keys shortcut = keys.Aggregate(Keys.None, (seed, key) => seed | key);
 
                         if ( shortcut == System.Windows.Forms.Keys.Delete ) {
                             menu.ShortcutKeyDisplayString = "Delete";
-                            menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-                            mSpecialShortcutHolders.add(
-                                new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
+                            menu.ShortcutKeys = Keys.None;
+                            mSpecialShortcutHolders.add(new SpecialShortcutHolder( shortcut, menu ) );
                         } else {
                             try {
                                 menu.ShortcutKeyDisplayString = "";
@@ -4166,9 +4160,8 @@ namespace cadencii
                             } catch ( Exception ex ) {
                                 // ショートカットの適用に失敗する→特殊な取り扱いが必要
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
-                                menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-                                mSpecialShortcutHolders.add(
-                                    new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
+                                menu.ShortcutKeys = Keys.None;
+                                mSpecialShortcutHolders.add(new SpecialShortcutHolder( shortcut, menu ) );
                             }
                         }
                     }
@@ -12841,13 +12834,13 @@ namespace cadencii
 
         public void menuSettingShortcut_Click( Object sender, EventArgs e )
         {
-            TreeMap<String, ValuePair<String, BKeys[]>> dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            TreeMap<String, ValuePair<String, Keys[]>> dict = new TreeMap<String, ValuePair<String, Keys[]>>();
+            TreeMap<String, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
 #if DEBUG
             sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
             for( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ){
                 String name = itr.next();
-                BKeys[] keys = configured.get( name );
+                Keys[] keys = configured.get( name );
                 String disp = Utility.getShortcutDisplayString( keys );
                 sout.println( "    " + name + " -> " + disp );
             }
@@ -12861,7 +12854,7 @@ namespace cadencii
                     String name = tsmi.Name;
                     script_shortcut.add( name );
                     if ( !configured.containsKey( name ) ) {
-                        configured.put( name, new BKeys[] { } );
+                        configured.put( name, new Keys[] { } );
                     }
                 }
             }
@@ -12918,15 +12911,15 @@ namespace cadencii
                 if ( i1 > 0 ) {
                     s1 = str.sub( s1, 0, i1 );
                 }
-                dict.put( parent + s1, new ValuePair<String, BKeys[]>( name, configured.get( name ) ) );
+                dict.put( parent + s1, new ValuePair<String, Keys[]>( name, configured.get( name ) ) );
             }
 
             // 最初に戻る、のショートカットキー
-            BKeys[] keysGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
+            Keys[] keysGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
             if ( keysGoToFirst == null ) {
-                keysGoToFirst = new BKeys[] { };
+                keysGoToFirst = new Keys[] { };
             }
-            dict.put( _( "Go to the first" ), new ValuePair<String, BKeys[]>( "SpecialShortcutGoToFirst", keysGoToFirst ) );
+            dict.put( _( "Go to the first" ), new ValuePair<String, Keys[]>( "SpecialShortcutGoToFirst", keysGoToFirst ) );
 
             FormShortcutKeys form = null;
             try {
@@ -12934,11 +12927,11 @@ namespace cadencii
                 form.Location = getFormPreferedLocation( form );
                 DialogResult dr = AppManager.showModalDialog( form, this );
                 if ( dr == DialogResult.OK ) {
-                    TreeMap<String, ValuePair<String, BKeys[]>> res = form.getResult();
+                    TreeMap<String, ValuePair<String, Keys[]>> res = form.getResult();
                     for ( Iterator<String> itr = res.keySet().iterator(); itr.hasNext(); ) {
                         String display = itr.next();
                         String name = res.get( display ).getKey();
-                        BKeys[] keys = res.get( display ).getValue();
+                        Keys[] keys = res.get( display ).getValue();
                         boolean found = false;
                         if ( name.Equals( "SpecialShortcutGoToFirst" ) ) {
                             AppManager.editorConfig.SpecialShortcutGoToFirst = keys;

@@ -75,7 +75,7 @@ namespace cadencii
         /// </summary>
         /// <param name="value"></param>
         [PureVirtualFunction]
-        void setMenuCloseAccelerator( javax.swing.KeyStroke value );
+        void setMenuCloseAccelerator( System.Windows.Forms.Keys value );
 
         /// <summary>
         /// ウィンドウが可視状態かどうかを設定する

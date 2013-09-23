@@ -25,6 +25,8 @@ import cadencii.windows.forms.*;
 #else
 
 using System;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -394,7 +396,8 @@ namespace cadencii
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>
-        public BKeys[] SpecialShortcutGoToFirst = new BKeys[] { BKeys.Home };
+        [XmlArrayItem("BKeys")]
+        public Keys[] SpecialShortcutGoToFirst = new Keys[] { Keys.Home };
         /// <summary>
         /// waveファイル出力時のチャンネル数（1または2）
         /// 3.3で廃止
@@ -604,7 +607,7 @@ namespace cadencii
 #if JAVA
         private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
 #else
-        private static XmlSerializer s_serializer = new XmlSerializer( typeof( EditorConfig ) );
+        private static cadencii.xml.XmlSerializer s_serializer = new cadencii.xml.XmlSerializer( typeof( EditorConfig ) );
 #endif
         #endregion
 
@@ -652,7 +655,7 @@ namespace cadencii
         /// EditorConfigのインスタンスをxmlシリアライズするためのシリアライザを取得します
         /// </summary>
         /// <returns></returns>
-        public static XmlSerializer getSerializer()
+        public static cadencii.xml.XmlSerializer getSerializer()
         {
             return s_serializer;
         }
@@ -1041,9 +1044,9 @@ namespace cadencii
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public TreeMap<String, BKeys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
+        public TreeMap<String, Keys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
         {
-            TreeMap<String, BKeys[]> ret = new TreeMap<String, BKeys[]>();
+            TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
             for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
                 ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
             }
