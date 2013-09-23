@@ -57,7 +57,7 @@ namespace cadencii {
         /// <summary>
         /// プロパティパネルがウィンドウに分離された状態における，ウィンドウの表示状態
         /// </summary>
-        public BFormWindowState WindowState = BFormWindowState.Normal;
+        public System.Windows.Forms.FormWindowState WindowState = System.Windows.Forms.FormWindowState.Normal;
         /// <summary>
         /// プロパティパネルがドッキングされた状態における表示幅(ピクセル)
         /// </summary>

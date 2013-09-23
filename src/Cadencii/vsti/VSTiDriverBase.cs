@@ -311,7 +311,7 @@ namespace cadencii
             return result;
         }
 
-        public FormPluginUi getUi( cadencii.windows.forms.BForm main_window )
+        public FormPluginUi getUi( System.Windows.Forms.Form main_window )
         {
             if ( ui == null ) {
                 if ( main_window != null ) {
@@ -457,7 +457,7 @@ namespace cadencii
                 sout.println( "vstidrv#close" );
 #endif
                 if ( ui != null && !ui.IsDisposed ) {
-                    ui.close();
+                    ui.Close();
                 }
                 try {
                     sout.println( "vstidrv#close; (aEffect==null)=" + (aEffect == null) );

@@ -43,7 +43,7 @@ namespace cadencii
 #if JAVA
     public class FormMixer extends BForm
 #else
-    public class FormMixer : BForm
+    public class FormMixer : Form
 #endif
     {
 #if JAVA
@@ -81,7 +81,7 @@ namespace cadencii
             applyLanguage();
             m_parent = parent;
 #if !JAVA
-            setAlwaysOnTop( true );
+            this.TopMost = true;
             this.SetStyle( ControlStyles.DoubleBuffer, true );
 #endif
         }
@@ -188,7 +188,7 @@ namespace cadencii
                 m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
             }
 
-            this.repaint();
+            this.Refresh();
         }
 
         public void applyShortcut( KeyStroke shortcut )
@@ -198,7 +198,7 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            setTitle( _( "Mixer" ) );
+            this.Text = _( "Mixer" );
         }
 
         /// <summary>
@@ -438,7 +438,7 @@ namespace cadencii
 
         private void setResources()
         {
-            setIconImage( Resources.get_icon() );
+            this.Icon = Resources.get_icon();
         }
 
         private void invokePanpotChangedEvent( int track, int panpot )
@@ -512,7 +512,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMixer#FormMixer_Load" );
 #endif
-            setAlwaysOnTop( true );
+            this.TopMost = true;
         }
         
         public void FormMixer_PanpotChanged( int track, int panpot )
@@ -563,12 +563,12 @@ namespace cadencii
 
         public void menuVisualReturn_Click( Object sender, EventArgs e )
         {
-            this.setVisible( false );
+            this.Visible = false;
         }
 
         public void FormMixer_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            this.setVisible( false );
+            this.Visible = false;
 #if !JAVA
             e.Cancel = true;
 #endif
@@ -581,7 +581,7 @@ namespace cadencii
             for ( int i = 0; i < m_tracker.size(); i++ ) {
                 m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
             }
-            this.invalidate();
+            this.Invalidate();
         }
 #endif
 

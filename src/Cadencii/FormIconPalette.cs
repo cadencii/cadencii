@@ -88,7 +88,7 @@ namespace cadencii
 #if JAVA
     public class FormIconPalette extends BForm
 #else
-    public class FormIconPalette : BForm
+    public class FormIconPalette : Form
 #endif
     {
         private Vector<Button> dynaffButtons = new Vector<Button>();
@@ -138,7 +138,7 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            setTitle( _( "Icon Palette" ) );
+            this.Text = _( "Icon Palette" );
         }
 
         public void applyShortcut( KeyStroke shortcut )
@@ -291,10 +291,10 @@ namespace cadencii
             setResizable( false );
 #else
             this.ClientSize = new System.Drawing.Size( width, height );
-            Dimension size = getSize();
+            var size = this.Size;
 #endif
-            setMaximumSize( size );
-            setMinimumSize( size );
+            this.MaximumSize = new System.Drawing.Size(size.Width, size.Height);
+            this.MinimumSize = new System.Drawing.Size(size.Width, size.Height);
         }
         #endregion
 
@@ -302,20 +302,18 @@ namespace cadencii
         public void FormIconPalette_Load( Object sender, EventArgs e )
         {
             // コンストラクタから呼ぶと、スレッドが違うので（たぶん）うまく行かない
-            setAlwaysOnTop( true );
+            this.TopMost = true;
         }
 
         public void FormIconPalette_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            setVisible( false );
-#if !JAVA
+            this.Visible = false;
             e.Cancel = true;
-#endif
         }
 
         public void menuWindowHide_Click( Object sender, EventArgs e )
         {
-            setVisible( false );
+            this.Visible = false;
         }
 
         public void handleCommonMouseDown( Object sender, MouseEventArgs e )
@@ -325,7 +323,7 @@ namespace cadencii
             }
             DraggableBButton btn = (DraggableBButton)sender;
             if ( mMainWindow != null ) {
-                mMainWindow.toFront();
+                mMainWindow.BringToFront();
             }
 
             IconDynamicsHandle handle = btn.getHandle();

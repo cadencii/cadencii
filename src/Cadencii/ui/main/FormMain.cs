@@ -78,7 +78,7 @@ namespace cadencii
 #if JAVA
     public class FormMain extends BForm implements FormMainUi, PropertyWindowListener
 #else
-    public partial class FormMain : BForm, FormMainUi, PropertyWindowListener
+    public partial class FormMain : Form, FormMainUi, PropertyWindowListener
 #endif
     {
         /// <summary>
@@ -535,6 +535,7 @@ namespace cadencii
         /// 合成器の種類のメニュー項目を管理するハンドラをまとめたリスト
         /// </summary>
         private List<RendererMenuHandler> renderer_menu_handler_;
+        private FormWindowState mWindowState = FormWindowState.Normal;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -697,7 +698,8 @@ namespace cadencii
 
 #if !JAVA
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
-            this.setMinimumSize( getWindowMinimumSize() );
+            var minimum_size = getWindowMinimumSize();
+            this.MinimumSize = new System.Drawing.Size(minimum_size.width, minimum_size.height);
 #endif
 #if JAVA
             stripBtnScroll.setSelected( AppManager.mAutoScroll );
@@ -944,7 +946,7 @@ namespace cadencii
             AppManager.mMixerWindow.SoloChanged += new SoloChangedEventHandler( mixerWindow_SoloChanged );
             AppManager.mMixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
-                AppManager.mMixerWindow.setVisible( true );
+                AppManager.mMixerWindow.Visible = true;
             }
             AppManager.mMixerWindow.FormClosing += new FormClosingEventHandler( mixerWindow_FormClosing );
 
@@ -953,9 +955,9 @@ namespace cadencii
                 Rectangle workingArea = PortUtil.getWorkingArea( this );
                 p1 = new Point( workingArea.x, workingArea.y );
             }
-            AppManager.iconPalette.setLocation( p1 );
+            AppManager.iconPalette.Location = new System.Drawing.Point(p1.x, p1.y);
             if ( AppManager.editorConfig.IconPaletteVisible ) {
-                AppManager.iconPalette.setVisible( true );
+                AppManager.iconPalette.Visible = true;
             }
             AppManager.iconPalette.FormClosing += new FormClosingEventHandler( iconPalette_FormClosing );
             AppManager.iconPalette.LocationChanged += new EventHandler( iconPalette_LocationChanged );
@@ -988,12 +990,12 @@ namespace cadencii
 
             // ウィンドウの位置・サイズを再現
             if ( AppManager.editorConfig.WindowMaximized ) {
-                setExtendedState( BForm.MAXIMIZED_BOTH );
+                this.WindowState = FormWindowState.Maximized;
             } else {
-                setExtendedState( BForm.NORMAL );
+                this.WindowState = FormWindowState.Normal;
             }
             Rectangle bounds = AppManager.editorConfig.WindowRect;
-            this.setBounds( bounds );
+            this.Bounds = new System.Drawing.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
             // ウィンドウ位置・サイズの設定値が、使えるディスプレイのどれにも被っていない場合
             Rectangle rc2 = PortUtil.getScreenBounds( this );
             if ( bounds.x < rc2.x ||
@@ -1002,10 +1004,9 @@ namespace cadencii
                  rc2.y + rc2.height < bounds.y + bounds.height ) {
                 bounds.x = rc2.x;
                 bounds.y = rc2.y;
-                this.setBounds( bounds );
+                this.Bounds = new System.Drawing.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
                 AppManager.editorConfig.WindowRect = bounds;
             }
-            this.WindowStateChanged += new EventHandler( FormMain_WindowStateChanged );
             this.LocationChanged += new EventHandler( FormMain_LocationChanged );
 
             updateScrollRangeHorizontal();
@@ -1014,10 +1015,10 @@ namespace cadencii
             // プロパティウィンドウの位置を復元
             Rectangle rc1 = PortUtil.getScreenBounds( this );
             Rectangle rcScreen = new Rectangle( rc1.x, rc1.y, rc1.width, rc1.height );
-            Point p = this.getLocation();
+            var p = this.Location;
             XmlRectangle xr = AppManager.editorConfig.PropertyWindowStatus.Bounds;
             Point p0 = new Point( xr.x, xr.y );
-            Point a = new Point( p.x + p0.x, p.y + p0.y );
+            Point a = new Point( p.X + p0.x, p.Y + p0.y );
             Rectangle rc = new Rectangle( a.x,
                                           a.y,
                                           AppManager.editorConfig.PropertyWindowStatus.Bounds.getWidth(),
@@ -1047,7 +1048,7 @@ namespace cadencii
             AppManager.mLastTrackSelectorHeight = trackSelector.getPreferredMinSize();
             flipControlCurveVisible( true );
 
-            repaint();
+            Refresh();
             updateLayout();
 #if DEBUG
             menuHidden.Visible = true;
@@ -2399,7 +2400,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormMain#updatePropertyPanelState; state=Docked; w=" + w );
 #endif
-                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
+                AppManager.editorConfig.PropertyWindowStatus.WindowState = FormWindowState.Minimized;
                 AppManager.propertyWindow.getUi().hideWindow();
             } else if ( state == PanelState.Hidden ) {
                 if( AppManager.propertyWindow.getUi().isVisible() ){
@@ -2421,11 +2422,11 @@ namespace cadencii
                 splitContainerProperty.setSplitterFixed( true );
             } else if ( state == PanelState.Window ) {
                 AppManager.propertyWindow.getUi().addComponent( AppManager.propertyPanel );
-                Point parent = this.getLocation();
+                var parent = this.Location;
                 XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
                 Point property = new Point( rc.x, rc.y );
-                int x = parent.x + property.x;
-                int y = parent.y + property.y;
+                int x = parent.X + property.x;
+                int y = parent.Y + property.y;
                 int width = rc.width;
                 int height = rc.height;
                 AppManager.propertyWindow.getUi().setBounds( x, y, width, height );
@@ -2462,7 +2463,7 @@ namespace cadencii
                 splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
-                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
+                AppManager.editorConfig.PropertyWindowStatus.WindowState = FormWindowState.Normal;
             }
         }
 #endif
@@ -3121,7 +3122,7 @@ namespace cadencii
         /// <returns></returns>
         public Dimension getWindowMinimumSize()
         {
-            Dimension current_minsize = new Dimension( getMinimumSize().width, getMinimumSize().height );
+            Dimension current_minsize = new Dimension( MinimumSize.Width, MinimumSize.Height );
 #if JAVA
             Dimension client = getContentPane().getSize();
             Dimension current = getSize();
@@ -3934,7 +3935,7 @@ namespace cadencii
         /// <param name="visible">表示状態にする場合true，そうでなければfalse</param>
         public void flipMixerDialogVisible( boolean visible )
         {
-            AppManager.mMixerWindow.setVisible( visible );
+            AppManager.mMixerWindow.Visible = visible;
             AppManager.editorConfig.MixerVisible = visible;
             if( visible != menuVisualMixer.Checked ){
                 menuVisualMixer.Checked = visible;
@@ -3946,7 +3947,7 @@ namespace cadencii
         /// </summary>
         public void flipIconPaletteVisible( boolean visible )
         {
-            AppManager.iconPalette.setVisible( visible );
+            AppManager.iconPalette.Visible = visible;
             AppManager.editorConfig.IconPaletteVisible = visible;
             if( visible != menuVisualIconPalette.Checked ){
                 menuVisualIconPalette.Checked = visible;
@@ -4975,7 +4976,7 @@ namespace cadencii
                         VsqCommand.generateCommandEventReplaceRange( selected, new_events ) );
                     AppManager.editHistory.register( vsq.executeCommand( run ) );
                     setEdited( true );
-                    repaint();
+                    Refresh();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".importLyric; ex=" + ex + "\n" );
@@ -5281,7 +5282,7 @@ namespace cadencii
                     setEdited( true );
                     AppManager.itemSelection.clearEvent();
                 }
-                repaint();
+                Refresh();
             } else if ( AppManager.itemSelection.getTempoCount() > 0 ) {
                 Vector<Integer> clocks = new Vector<Integer>();
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
@@ -5311,7 +5312,7 @@ namespace cadencii
                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                 setEdited( true );
                 AppManager.itemSelection.clearTempo();
-                repaint();
+                Refresh();
             } else if ( AppManager.itemSelection.getTimesigCount() > 0 ) {
 #if DEBUG
                 AppManager.debugWriteLine( "    Timesig" );
@@ -5346,7 +5347,7 @@ namespace cadencii
                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                 setEdited( true );
                 AppManager.itemSelection.clearTimesig();
-                repaint();
+                Refresh();
             }
             if ( AppManager.itemSelection.getPointIDCount() > 0 ) {
 #if DEBUG
@@ -6598,8 +6599,8 @@ namespace cadencii
                 file += " *";
             }
             String title = file + " - " + _APP_NAME;
-            if ( !str.compare( getTitle(), title ) ) {
-                setTitle( title );
+            if ( !str.compare( this.Text, title ) ) {
+                this.Text = title;
             }
             boolean redo = AppManager.editHistory.hasRedoHistory();
             boolean undo = AppManager.editHistory.hasUndoHistory();
@@ -7455,6 +7456,7 @@ namespace cadencii
             this.FormClosed += new FormClosedEventHandler( FormMain_FormClosed );
             this.FormClosing += new FormClosingEventHandler( FormMain_FormClosing );
             this.PreviewKeyDown += new PreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
+            this.SizeChanged += FormMain_SizeChanged;
             panelOverview.Enter += new EventHandler( panelOverview_Enter );
         }
 
@@ -7499,7 +7501,7 @@ namespace cadencii
                 buttonVZoom.setIcon( new ImageIcon( Resources.get_plus8x8() ) );
                 buttonVMooz.setIcon( new ImageIcon( Resources.get_minus8x8() ) );
 #endif
-                setIconImage( Resources.get_icon() );
+                this.Icon = Resources.get_icon();
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
                 serr.println( "FormMain#setResources; ex=" + ex );
@@ -7510,9 +7512,9 @@ namespace cadencii
         #region event handlers
         public void menuWindowMinimize_Click( Object sender, EventArgs e )
         {
-            int state = this.getExtendedState();
-            if( state != BForm.ICONIFIED ){
-                setExtendedState( BForm.ICONIFIED );
+            var state = this.WindowState;
+            if( state != FormWindowState.Minimized ){
+                this.WindowState = FormWindowState.Minimized;
             }
         }
 
@@ -7723,7 +7725,7 @@ namespace cadencii
 
         public void AppManager_MainWindowFocusRequired( Object sender, EventArgs e )
         {
-            this.requestFocus();
+            this.Focus();
         }
 
         public void AppManager_PreviewAborted( Object sender, EventArgs e )
@@ -8288,7 +8290,7 @@ namespace cadencii
             if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mMouseTracer.clear();
                 pictPianoRoll.mMouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
-                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
                 AppManager.setEditMode( EditMode.CURVE_ON_PIANOROLL );
                 return;
             }
@@ -8410,7 +8412,7 @@ namespace cadencii
                                     mButtonInitial = new Point( e.X, e.Y );
                                     AppManager.mAddingEvent.ID.setLength( 0 );
                                     AppManager.mAddingEvent.ID.Note = note;
-                                    setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                                    this.Cursor = Cursors.Default;
 #if DEBUG
                                     AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
 #endif
@@ -8418,7 +8420,7 @@ namespace cadencii
                                     AppManager.setEditMode( EditMode.ADD_FIXED_LENGTH_ENTRY );
                                     AppManager.mAddingEvent.ID.setLength( mPencilMode.getUnitLength() );
                                     AppManager.mAddingEvent.ID.Note = note;
-                                    setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                                    this.Cursor = Cursors.Default;
                                 }
                             } else {
 #if !JAVA
@@ -8609,7 +8611,7 @@ namespace cadencii
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
                             }
 
-                            setCursor( new java.awt.Cursor( java.awt.Cursor.HAND_CURSOR ) );
+                            this.Cursor = Cursors.Hand;
 #if DEBUG
                             AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
                             AppManager.debugWriteLine( "    m_config.SelectedEvent.Count=" + AppManager.itemSelection.getEventCount() );
@@ -9113,9 +9115,9 @@ namespace cadencii
                     if (split_cursor) {
                         Cursor = System.Windows.Forms.Cursors.VSplit;
                     } else if (hand_cursor) {
-                        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+                        this.Cursor = Cursors.Hand;
                     } else {
-                        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                        this.Cursor = Cursors.Default;
                     }
                 }
                 if (!timer.Enabled) {
@@ -9284,7 +9286,7 @@ namespace cadencii
             }
 
             if ( edit_mode == EditMode.MIDDLE_DRAG ) {
-                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
             } else if ( edit_mode == EditMode.ADD_ENTRY || edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
                 #region AddEntry || AddFixedLengthEntry
                 if ( AppManager.getSelected() >= 0 ) {
@@ -9681,12 +9683,13 @@ namespace cadencii
         #region iconPalette
         public void iconPalette_LocationChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
+            var point = AppManager.iconPalette.Location;
+            AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint(point.X, point.Y);
         }
 
         public void iconPalette_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            flipIconPaletteVisible( AppManager.iconPalette.isVisible() );
+            flipIconPaletteVisible( AppManager.iconPalette.Visible );
         }
         #endregion
 
@@ -9696,7 +9699,7 @@ namespace cadencii
         {
 #if ENABLE_PROPERTY
             if ( menuVisualProperty.Checked ) {
-                if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
+                if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == FormWindowState.Minimized ) {
                     updatePropertyPanelState( PanelState.Docked );
                 } else {
                     updatePropertyPanelState( PanelState.Window );
@@ -9720,7 +9723,7 @@ namespace cadencii
         {
             boolean v = !AppManager.editorConfig.MixerVisible;
             flipMixerDialogVisible( v );
-            requestFocus();
+            this.Focus();
         }
 
         public void menuVisualGridline_CheckedChanged( Object sender, EventArgs e )
@@ -9779,7 +9782,7 @@ namespace cadencii
                     chkv = false;
                 } else if ( vd.getUi( this ).IsDisposed ) {
                     chkv = false;
-                } else if ( !vd.getUi( this ).isVisible() ) {
+                } else if ( !vd.getUi( this ).Visible ) {
                     chkv = false;
                 }
                 RendererKind kind = vd.getRendererKind();
@@ -9806,7 +9809,7 @@ namespace cadencii
                     chk = false;
                 } else if ( ui.IsDisposed ) {
                     chk = false;
-                } else if ( !ui.isVisible() ) {
+                } else if ( !ui.Visible ) {
                     chk = false;
                 }
             }
@@ -9858,11 +9861,11 @@ namespace cadencii
                     if ( search == RendererKind.VOCALOID1 ) {
                         v = !menuVisualPluginUiVocaloid1.Checked;
                         menuVisualPluginUiVocaloid1.Checked = v;
-                        vd.getUi( this ).setVisible( v );
+                        vd.getUi( this ).Visible = v;
                     } else if ( search == RendererKind.VOCALOID2 ) {
                         v = !menuVisualPluginUiVocaloid2.Checked;
                         menuVisualPluginUiVocaloid2.Checked = v;
-                        vd.getUi( this ).setVisible( v );
+                        vd.getUi( this ).Visible = v;
                     }
                     break;
                 }
@@ -9895,7 +9898,7 @@ namespace cadencii
                 return;
             }
             if ( ui != null && !ui.IsDisposed ) {
-                ui.setVisible( visible );
+                ui.Visible = visible;
             }
 #endif
         }
@@ -9915,7 +9918,7 @@ namespace cadencii
         #region mixerWindow
         public void mixerWindow_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
+            flipMixerDialogVisible( AppManager.mMixerWindow.Visible );
         }
 
         public void mixerWindow_SoloChanged( int track, boolean solo )
@@ -10044,12 +10047,12 @@ namespace cadencii
 #endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow != null && false == AppManager.propertyWindow.getUi().isWindowMinimized() ) {
-                    Point parent = this.getLocation();
+                    var parent = this.Location;
                     int propertyX = AppManager.propertyWindow.getUi().getX();
                     int propertyY = AppManager.propertyWindow.getUi().getY();
                     AppManager.editorConfig.PropertyWindowStatus.Bounds =
-                        new XmlRectangle( propertyX - parent.x,
-                                          propertyY - parent.y,
+                        new XmlRectangle( propertyX - parent.X,
+                                          propertyY - parent.Y,
                                           AppManager.propertyWindow.getUi().getWidth(),
                                           AppManager.propertyWindow.getUi().getHeight() );
                 }
@@ -10305,7 +10308,7 @@ namespace cadencii
                     return true;
                 }
             }
-            AppManager.editorConfig.WindowMaximized = (getExtendedState() == BForm.MAXIMIZED_BOTH);
+            AppManager.editorConfig.WindowMaximized = (this.WindowState == FormWindowState.Maximized);
             AppManager.saveConfig();
             UtauWaveGenerator.clearCache();
             VConnectWaveGenerator.clearCache();
@@ -10323,8 +10326,9 @@ namespace cadencii
 
         public void FormMain_LocationChanged( Object sender, EventArgs e )
         {
-            if ( getExtendedState() == BForm.NORMAL ) {
-                AppManager.editorConfig.WindowRect = this.getBounds();
+            if ( this.WindowState == FormWindowState.Normal ) {
+                var bounds = this.Bounds;
+                AppManager.editorConfig.WindowRect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height);
             }
         }
 
@@ -10562,12 +10566,16 @@ namespace cadencii
             }
         }
 
-        public void FormMain_WindowStateChanged( Object sender, EventArgs e )
+        void FormMain_SizeChanged(object sender, EventArgs e)
         {
-            int state = getExtendedState();
-            if ( state == BForm.NORMAL || state == BForm.MAXIMIZED_BOTH ) {
-                if( state == BForm.NORMAL ){
-                    AppManager.editorConfig.WindowRect = this.getBounds();
+            if (mWindowState == this.WindowState) {
+                return;
+            }
+            var state = this.WindowState;
+            if ( state == FormWindowState.Normal || state == FormWindowState.Maximized ) {
+                if( state == FormWindowState.Normal ){
+                    var bounds = this.Bounds;
+                    AppManager.editorConfig.WindowRect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height);
                 }
 #if ENABLE_PROPERTY
                 // プロパティウィンドウの状態を更新
@@ -10582,25 +10590,25 @@ namespace cadencii
 #endif
                 // ミキサーウィンドウの状態を更新
                 boolean vm = AppManager.editorConfig.MixerVisible;
-                if( vm != AppManager.mMixerWindow.isVisible() ){
-                    AppManager.mMixerWindow.setVisible( vm );
+                if( vm != AppManager.mMixerWindow.Visible ){
+                    AppManager.mMixerWindow.Visible = vm;
                 }
 
                 // アイコンパレットの状態を更新
                 if ( AppManager.iconPalette != null && menuVisualIconPalette.Checked ) {
-                    if( !AppManager.iconPalette.isVisible() ){
-                        AppManager.iconPalette.setVisible( true );
+                    if( !AppManager.iconPalette.Visible ){
+                        AppManager.iconPalette.Visible = true;
                     }
                 }
                 updateLayout();
-                this.requestFocus();
-            } else if ( state == BForm.ICONIFIED ) {
+                this.Focus();
+            } else if ( state == FormWindowState.Minimized ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.getUi().setVisible( false );
 #endif
-                AppManager.mMixerWindow.setVisible( false );
+                AppManager.mMixerWindow.Visible = false;
                 if ( AppManager.iconPalette != null ) {
-                    AppManager.iconPalette.setVisible( false );
+                    AppManager.iconPalette.Visible = false;
                 }
             }/* else if ( state == BForm.MAXIMIZED_BOTH ) {
 #if ENABLE_PROPERTY
@@ -10648,7 +10656,7 @@ namespace cadencii
 
         public void handleVScrollResize( Object sender, EventArgs e )
         {
-            if ( getExtendedState() != BForm.ICONIFIED ) {
+            if ( this.WindowState != FormWindowState.Minimized ) {
                 updateScrollRangeVertical();
                 controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
             }
@@ -10886,7 +10894,7 @@ namespace cadencii
 
         public void menuFileQuit_Click( Object sender, EventArgs e )
         {
-            close();
+            Close();
         }
 
         public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
@@ -13295,7 +13303,7 @@ namespace cadencii
                 VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internalids, ids ) );
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
-            repaint();
+            Refresh();
         }
 
         public void menuJobInsertBar_Click( Object sender, EventArgs e )
@@ -13410,7 +13418,7 @@ namespace cadencii
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
                     AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    repaint();
+                    Refresh();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuJobInsertBar_Click; ex=" + ex + "\n" );
@@ -13597,7 +13605,7 @@ namespace cadencii
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
                     AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    repaint();
+                    Refresh();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuJobDeleteBar_Click; ex=" + ex + "\n" );
@@ -13968,7 +13976,7 @@ namespace cadencii
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
-                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
             }
         }
 
@@ -13992,7 +14000,7 @@ namespace cadencii
 
         public void hScroll_Resize( Object sender, EventArgs e )
         {
-            if ( getExtendedState() != BForm.ICONIFIED ) {
+            if ( this.WindowState != FormWindowState.Minimized ) {
                 updateScrollRangeHorizontal();
             }
         }
@@ -14035,7 +14043,7 @@ namespace cadencii
 
         public void picturePositionIndicator_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
-            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || this.Width - 3 < e.X ) {
                 return;
             }
             if ( e.Button == BMouseButtons.Left ) {
@@ -14376,7 +14384,7 @@ namespace cadencii
 
         public void picturePositionIndicator_MouseDown( Object sender, MouseEventArgs e )
         {
-            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || this.Width - 3 < e.X ) {
                 return;
             }
 
@@ -14427,7 +14435,7 @@ namespace cadencii
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( x < 0 ) {
                             continue;
-                        } else if ( getWidth() < x ) {
+                        } else if ( this.Width < x ) {
                             break;
                         }
                         String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
@@ -14819,7 +14827,7 @@ namespace cadencii
             controller.setScaleX( getScaleXFromTrackBarValue( trackBar.Value ) );
             controller.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
-            repaint();
+            Refresh();
         }
         #endregion
 
@@ -15073,7 +15081,7 @@ namespace cadencii
             mMouseDownedTrackSelector = false;
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
-                setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
             }
         }
 
@@ -16423,12 +16431,12 @@ namespace cadencii
 
         public void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e )
         {
-            if ( getExtendedState() == BForm.ICONIFIED ) {
+            if ( this.WindowState == FormWindowState.Minimized ) {
                 return;
             }
             Dimension minsize = getWindowMinimumSize();
-            int wid = getWidth();
-            int hei = getHeight();
+            int wid = this.Width;
+            int hei = this.Height;
             boolean change_size_required = false;
             if ( minsize.width > wid ) {
                 wid = minsize.width;
@@ -16438,9 +16446,10 @@ namespace cadencii
                 hei = minsize.height;
                 change_size_required = true;
             }
-            setMinimumSize( getWindowMinimumSize() );
+            var min_size = getWindowMinimumSize();
+            this.MinimumSize = new System.Drawing.Size(min_size.width, min_size.height);
             if ( change_size_required ) {
-                setSize( wid, hei );
+                this.Size = new System.Drawing.Size( wid, hei );
             }
         }
 
@@ -17600,14 +17609,14 @@ namespace cadencii
         /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
         /// </summary>
         /// <param name="form"></param>
-        public static void normalizeFormLocation( BForm dlg )
+        public static void normalizeFormLocation( Form dlg )
         {
             Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
             Point p = getAppropriateDialogLocation(
-                dlg.getX(), dlg.getY(), dlg.getWidth(), dlg.getHeight(),
+                dlg.Left, dlg.Top, dlg.Width, dlg.Height,
                 rcScreen.x, rcScreen.y, rcScreen.width, rcScreen.height
             );
-            dlg.setLocation( p.x, p.y );
+            dlg.Location = new System.Drawing.Point(p.x, p.y);
         }
         #endregion
 

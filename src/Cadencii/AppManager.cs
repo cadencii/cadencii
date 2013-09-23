@@ -1767,18 +1767,18 @@ namespace cadencii
             }
 #endif
             if ( mMixerWindow != null ) {
-                boolean previous = mMixerWindow.isAlwaysOnTop();
+                boolean previous = mMixerWindow.TopMost;
                 mMixerWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
-                    mMixerWindow.setAlwaysOnTop( false );
+                    mMixerWindow.TopMost = false;
                 }
             }
 
             if ( iconPalette != null ) {
-                boolean previous = iconPalette.isAlwaysOnTop();
+                boolean previous = iconPalette.TopMost;
                 iconPalette.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
-                    iconPalette.setAlwaysOnTop( false );
+                    iconPalette.TopMost = false;
                 }
             }
         }
@@ -1794,11 +1794,11 @@ namespace cadencii
             }
 #endif
             if ( mMixerWindow != null ) {
-                mMixerWindow.setAlwaysOnTop( mMixerWindow.getPreviousAlwaysOnTop() );
+                mMixerWindow.TopMost = mMixerWindow.getPreviousAlwaysOnTop();
             }
 
             if ( iconPalette != null ) {
-                iconPalette.setAlwaysOnTop( iconPalette.getPreviousAlwaysOnTop() );
+                iconPalette.TopMost = iconPalette.getPreviousAlwaysOnTop();
             }
 
             try {

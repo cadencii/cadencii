@@ -54,10 +54,6 @@
     <Compile Include="BDialogResult.cs" />
     <Compile Include="BFileChooser.cs" />
     <Compile Include="BFolderBrowser.cs" />
-    <Compile Include="BForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BFormWindowState.cs" />
     <Compile Include="BKeys.cs" />
     <Compile Include="BKeysUtility.cs" />
     <Compile Include="BPictureBox.cs">
