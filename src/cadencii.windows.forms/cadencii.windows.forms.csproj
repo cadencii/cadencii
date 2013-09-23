@@ -63,24 +63,6 @@
     <Compile Include="BPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BToolBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BToolBarButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BToolStripButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BToolStripDropDownButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BToolStripLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BToolStripTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
