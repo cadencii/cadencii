@@ -39,7 +39,7 @@ namespace cadencii
 #if JAVA
     public class FormVibratoConfig extends BDialog{
 #else
-    public class FormVibratoConfig : BDialog
+    public class FormVibratoConfig : System.Windows.Forms.Form
     {
 #endif
         private VibratoHandle m_vibrato;
@@ -133,7 +133,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Vibrato property" ) );
+            this.Text = _( "Vibrato property" );
             lblVibratoLength.Text = _( "Vibrato length" );
             lblVibratoLength.Mnemonic( KeyEvent.VK_L );
             lblVibratoType.Text = _( "Vibrato Type" );
@@ -226,7 +226,7 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void comboVibratoType_SelectedIndexChanged( Object sender, EventArgs e )
@@ -320,7 +320,7 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

@@ -320,7 +320,7 @@ namespace cadencii
                 }
             }
             ptrUi.setTotalProgress( (int)(processed / total * 100.0) );
-            ptrUi.repaint();
+            ptrUi.Refresh();
         }
 
         public void workerCompleted( int index )

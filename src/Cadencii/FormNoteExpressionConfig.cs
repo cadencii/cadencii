@@ -40,7 +40,7 @@ namespace cadencii
 #if JAVA
     public class FormNoteExpressionConfig extends BDialog {
 #else
-    public class FormNoteExpressionConfig : BDialog
+    public class FormNoteExpressionConfig : Form
     {
 #endif
         boolean m_apply_current_track = false;
@@ -167,7 +167,7 @@ namespace cadencii
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
 #endif
-            setTitle( _( "Expression control property" ) );
+            this.Text = _( "Expression control property" );
         }
 
         public int getPMBendDepth()
@@ -415,7 +415,7 @@ namespace cadencii
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
@@ -441,9 +441,9 @@ namespace cadencii
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == DialogResult.Yes ) {
                 m_apply_current_track = true;
-                setDialogResult( BDialogResult.OK );
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
         }
 
@@ -521,7 +521,7 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

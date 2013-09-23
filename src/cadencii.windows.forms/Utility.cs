@@ -97,8 +97,8 @@ namespace cadencii.windows.forms {
             return text + "(&" + new string((char)value, 1) + ")";
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
-            BDialogResult ret = BDialogResult.CANCEL;
+        public static System.Windows.Forms.DialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
+            System.Windows.Forms.DialogResult ret = System.Windows.Forms.DialogResult.Cancel;
 #if JAVA
             int r = JOptionPane.showConfirmDialog( null, text, caption, optionType, messageType );
             if ( r == JOptionPane.YES_OPTION ){
@@ -139,13 +139,13 @@ namespace cadencii.windows.forms {
 
             System.Windows.Forms.DialogResult dr = System.Windows.Forms.MessageBox.Show( text, caption, btn, icon );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                ret = BDialogResult.OK;
+                ret = System.Windows.Forms.DialogResult.OK;
             } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {
-                ret = BDialogResult.CANCEL;
+                ret = System.Windows.Forms.DialogResult.Cancel;
             } else if ( dr == System.Windows.Forms.DialogResult.Yes ) {
-                ret = BDialogResult.YES;
+                ret = System.Windows.Forms.DialogResult.Yes;
             } else if ( dr == System.Windows.Forms.DialogResult.No ) {
-                ret = BDialogResult.NO;
+                ret = System.Windows.Forms.DialogResult.No;
             }
 #endif
             return ret;

@@ -1628,17 +1628,17 @@ namespace cadencii
         #endregion
 
         #region MessageBoxのラッパー
-        public static BDialogResult showMessageBox( String text )
+        public static DialogResult showMessageBox( String text )
         {
             return showMessageBox( text, "", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption )
+        public static DialogResult showMessageBox( String text, String caption )
         {
             return showMessageBox( text, caption, cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType )
+        public static DialogResult showMessageBox( String text, String caption, int optionType )
         {
             return showMessageBox( text, caption, optionType, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
@@ -1649,14 +1649,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-#if JAVA
-        public static BDialogResult showModalDialog( BDialog dialog, Component parent_form )
-#else
-        public static BDialogResult showModalDialog( BDialog dialog, System.Windows.Forms.Form parent_form )
-#endif
+        public static DialogResult showModalDialog( Form dialog, Form parent_form )
         {
             beginShowDialog();
-            BDialogResult ret = dialog.showDialog( parent_form );
+            DialogResult ret = dialog.ShowDialog( parent_form );
             endShowDialog();
             return ret;
         }
@@ -1686,13 +1682,13 @@ namespace cadencii
         /// <param name="main_form"></param>
         /// <returns></returns>
 #if JAVA
-        public static BDialogResult showModalDialog( BFolderBrowser dialog, Frame main_form )
+        public static DialogResult showModalDialog( BFolderBrowser dialog, Frame main_form )
 #else
-        public static BDialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )
+        public static DialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )
 #endif
         {
             beginShowDialog();
-            BDialogResult ret = dialog.showDialog( main_form );
+            DialogResult ret = dialog.showDialog( main_form );
             endShowDialog();
             return ret;
         }
@@ -1812,10 +1808,10 @@ namespace cadencii
             mShowingDialog = false;
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType )
+        public static DialogResult showMessageBox( String text, String caption, int optionType, int messageType )
         {
             beginShowDialog();
-            BDialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
+            DialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
             endShowDialog();
             return ret;
         }

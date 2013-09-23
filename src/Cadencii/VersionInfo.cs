@@ -43,7 +43,7 @@ namespace cadencii
 #if JAVA
     public class VersionInfo extends BDialog {
 #else
-    public class VersionInfo : BDialog
+    public class VersionInfo : Form
     {
 #endif
         const float m_speed = 35f;
@@ -135,7 +135,7 @@ namespace cadencii
                 btnFlip.Size = new System.Drawing.Size( m_button_width_credit, btnFlip.Height );
                 btnFlip.Text = credit;
             }
-            setTitle( about );
+            this.Text = about;
         }
 
         public static String _( String s )
@@ -200,7 +200,7 @@ namespace cadencii
             String font_name = "Arial";
             Font font = new Font( font_name, java.awt.Font.PLAIN, FONT_SIZE );
             Dimension size = Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
-            int width = getWidth();
+            int width = this.Width;
             int height = size.height;
             //StringFormat sf = new StringFormat();
             BufferedImage ret = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
@@ -298,9 +298,9 @@ namespace cadencii
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
             timer.Stop();
-            close();
+            Close();
         }
 
         public void btnFlip_Click( Object sender, EventArgs e )
@@ -327,16 +327,12 @@ namespace cadencii
                 lblVstLogo.Visible = true;
                 chkTwitterID.Visible = false;
             }
-            this.repaint();
+            this.Refresh();
         }
 
         public void timer_Tick( Object sender, EventArgs e )
         {
-#if JAVA
-            this.repaint();
-#else
-            invalidate();
-#endif
+            Invalidate();
         }
 
         public void VersionInfo_Paint( Object sender, PaintEventArgs e )
@@ -359,9 +355,9 @@ namespace cadencii
         private void paintCor( Graphics g1 )
         {
             Graphics2D g = (Graphics2D)g1;
-            g.clipRect( 0, 0, getWidth(), m_height );
+            g.clipRect( 0, 0, this.Width, m_height );
             g.setColor( Color.white );
-            g.fillRect( 0, 0, getWidth(), getHeight() );
+            g.fillRect( 0, 0, this.Width, this.Height );
             //g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
                 float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
@@ -372,16 +368,16 @@ namespace cadencii
                 m_last_speed = speed;
                 BufferedImage image = m_show_twitter_id ? m_scroll_with_id : m_scroll;
                 if ( image != null ) {
-                    float dx = (getWidth() - image.getWidth( null )) * 0.5f;
+                    float dx = (this.Width - image.getWidth( null )) * 0.5f;
                     g.drawImage( image, (int)dx, (int)(90f - m_shift), null );
                     if ( 90f - m_shift + image.getHeight( null ) < 0 ) {
                         m_shift = -m_height * 1.5f;
                     }
                 }
                 int grad_height = 60;
-                Rectangle top = new Rectangle( 0, 0, getWidth(), grad_height );
-                Rectangle bottom = new Rectangle( 0, m_height - grad_height, getWidth(), grad_height );
-                g.clipRect( 0, m_height - grad_height + 1, getWidth(), grad_height - 1 );
+                Rectangle top = new Rectangle( 0, 0, this.Width, grad_height );
+                Rectangle bottom = new Rectangle( 0, m_height - grad_height, this.Width, grad_height );
+                g.clipRect( 0, m_height - grad_height + 1, this.Width, grad_height - 1 );
                 g.setClip( null );
             } else {
                 g.setFont( new Font( "Century Gorhic", java.awt.Font.BOLD, FONT_SIZE * 2 ) );
@@ -404,8 +400,8 @@ namespace cadencii
         private void VersionInfo_KeyDown( Object sender, KeyEventArgs e )
         {
             if ((e.KeyCode & Keys.Escape) == Keys.Escape) {
-                setDialogResult(BDialogResult.CANCEL);
-                close();
+                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                Close();
             }
         }
 
@@ -423,7 +419,7 @@ namespace cadencii
         public void chkTwitterID_CheckedChanged( Object sender, EventArgs e )
         {
             m_show_twitter_id = chkTwitterID.Checked;
-            repaint();
+            Refresh();
         }
 
         private void registerEventHandlers()

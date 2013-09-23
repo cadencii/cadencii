@@ -36,7 +36,7 @@ namespace cadencii
 #if JAVA
     public class FormGameControlerConfig extends BDialog
 #else
-    public class FormGameControlerConfig : BDialog
+    public class FormGameControlerConfig : System.Windows.Forms.Form
 #endif
     {
         private Vector<Integer> m_list = new Vector<Integer>();
@@ -97,7 +97,7 @@ namespace cadencii
             } else {
                 lblMessage.Text = _( "Game controler is not available" );
             }
-            setTitle( _( "Game Controler Configuration" ) );
+            this.Text = _( "Game Controler Configuration" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
             btnReset.Text = _( "Reset And Exit" );
@@ -302,17 +302,17 @@ namespace cadencii
             m_povs.set( 1, 27000 ); // left
             m_povs.set( 2, 0 ); // up
             m_povs.set( 3, 9000 ); // right
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 

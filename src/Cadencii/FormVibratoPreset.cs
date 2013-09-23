@@ -39,7 +39,7 @@ namespace cadencii
 #if JAVA
     public class FormVibratoPreset extends BDialog
 #else
-    public class FormVibratoPreset : BDialog
+    public class FormVibratoPreset : Form
 #endif
     {
         /// <summary>
@@ -95,7 +95,7 @@ namespace cadencii
 #endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            this.setSize( mPreviousWidth, mPreviousHeight );
+            this.Size = new System.Drawing.Size( mPreviousWidth, mPreviousHeight );
             registerEventHandlers();
 
             // ハンドルのリストをクローン
@@ -134,12 +134,12 @@ namespace cadencii
         #region event handlers
         public void buttonOk_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         
         public void buttonCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         
         public void listPresets_SelectedIndexChanged( Object sender, EventArgs e )
@@ -460,8 +460,8 @@ namespace cadencii
         {
 #if !JAVA
             if ( this.WindowState == System.Windows.Forms.FormWindowState.Normal ) {
-                mPreviousWidth = this.getWidth();
-                mPreviousHeight = this.getHeight();
+                mPreviousWidth = this.Width;
+                mPreviousHeight = this.Height;
             }
 #endif
             repaintPictures();
@@ -499,7 +499,7 @@ namespace cadencii
 
         private void applyLanguage()
         {
-            this.setTitle( _( "Vibrato preset" ) );
+            this.Text = _( "Vibrato preset" );
 
             labelPresets.Text = _( "List of vibrato preset" );
 

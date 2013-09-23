@@ -35,7 +35,7 @@ namespace cadencii
 #if JAVA
     public class FormMidiImExport extends BDialog {
 #else
-    public class FormMidiImExport : BDialog
+    public class FormMidiImExport : Form
     {
 #endif
         public enum FormMidiMode
@@ -78,11 +78,11 @@ namespace cadencii
         public void applyLanguage()
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                setTitle( _( "Midi Export" ) );
+                this.Text = _( "Midi Export" );
             } else if ( m_mode == FormMidiMode.IMPORT ) {
-                setTitle( _( "Midi Import" ) );
+                this.Text = _( "Midi Import" );
             } else {
-                setTitle( _( "VSQ/Vocaloid Midi Import" ) );
+                this.Text = _( "VSQ/Vocaloid Midi Import" );
             }
             groupMode.Text = _( "Import Basis" );
             radioGateTime.Text = _( "gate-time" );
@@ -148,7 +148,7 @@ namespace cadencii
             chkNote.Enabled = (m_mode != FormMidiMode.IMPORT_VSQ);
             chkPreMeasure.Enabled = (m_mode != FormMidiMode.IMPORT_VSQ);
             if ( m_mode == FormMidiMode.EXPORT ) {
-                setTitle( _( "Midi Export" ) );
+                this.Text = _( "Midi Export" );
                 chkPreMeasure.Text = _( "Export pre-measure part" );
                 if ( chkExportVocaloidNrpn.Checked ) {
                     chkPreMeasure.Enabled = false;
@@ -166,14 +166,14 @@ namespace cadencii
                 }
                 groupMode.Enabled = false;
             } else if ( m_mode == FormMidiMode.IMPORT ) {
-                setTitle( _( "Midi Import" ) );
+                this.Text = _( "Midi Import" );
                 chkPreMeasure.Text = _( "Inserting start at pre-measure" );
                 chkMetaText.Enabled = false;
                 AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.Checked;
                 chkMetaText.Checked = false;
                 groupMode.Enabled = true;
             } else {
-                setTitle( _( "VSQ/Vocaloid Midi Import" ) );
+                this.Text = _( "VSQ/Vocaloid Midi Import" );
                 chkPreMeasure.Text = _( "Inserting start at pre-measure" );
                 chkPreMeasure.Checked = false;
                 AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.Checked;
@@ -317,12 +317,12 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void radioGateTime_CheckedChanged( Object sender, EventArgs e )

@@ -28,7 +28,7 @@ namespace cadencii
 {
     using boolean = System.Boolean;
 
-    partial class Preference : BDialog
+    partial class Preference : Form
     {
         private static int columnWidthHeaderProgramChange = 60;
         private static int columnWidthHeaderName = 100;
@@ -174,11 +174,11 @@ namespace cadencii
             checkEnableWideCharacterWorkaround.Checked = value;
         }
 
-        public override BDialogResult showDialog( System.Windows.Forms.Form parent )
+        public DialogResult ShowDialog( System.Windows.Forms.Form parent )
         {
             updateMidiDevice();
             updateCustomVibrato();
-            return base.showDialog( parent );
+            return base.ShowDialog( parent );
         }
 
         /// <summary>
@@ -757,7 +757,7 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            setTitle( _( "Preference" ) );
+            this.Text = _( "Preference" );
             btnCancel.Text = _( "Cancel" );
             btnOK.Text = _( "OK" );
             openUtauCore.clearChoosableFileFilter();
@@ -1253,7 +1253,7 @@ namespace cadencii
                                            cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnChangeScreenFont_Click( Object sender, EventArgs e )
@@ -1487,7 +1487,7 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void commonChangeAutoVibratoType( Object sender, EventArgs e )
@@ -1683,11 +1683,11 @@ namespace cadencii
             if ( font_name.Equals( "" ) ) {
                 return;
             }
-            Font f = this.getFont();
+            var f = this.Font;
             if ( f == null ) {
                 return;
             }
-            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)f.getSize() );
+            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)f.SizeInPoints );
             Util.applyFontRecurse( this, font );
         }
 

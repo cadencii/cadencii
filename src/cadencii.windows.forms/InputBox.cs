@@ -31,7 +31,7 @@ namespace cadencii.windows.forms
 #if JAVA
     public class InputBox extends BDialog
 #else
-    public class InputBox : BDialog
+    public class InputBox : Form
 #endif
     {
         public InputBox( String message )
@@ -58,7 +58,7 @@ namespace cadencii.windows.forms
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOk_Click( Object sender, EventArgs e )
@@ -66,7 +66,7 @@ namespace cadencii.windows.forms
 #if DEBUG
             sout.println( "InputBox#btnOk_Click" );
 #endif
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         private void registerEventHandlers()

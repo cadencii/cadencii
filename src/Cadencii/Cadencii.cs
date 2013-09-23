@@ -268,12 +268,12 @@ namespace cadencii
         static void showSplash()
         {
             splash = new FormSplash();
-            splash.showDialog( null );
+            splash.ShowDialog( null );
         }
 
         static void closeSplash()
         {
-            splash.close();
+            splash.Close();
         }
 
         public static void mainWindow_Load( Object sender, EventArgs e )

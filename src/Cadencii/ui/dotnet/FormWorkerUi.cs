@@ -24,7 +24,7 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    public class FormWorkerUi : BDialog
+    public class FormWorkerUi : Form
     {
         private ProgressBar progressBar1;
         private FlowLayoutPanel flowLayoutPanel1;

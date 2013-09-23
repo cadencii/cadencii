@@ -44,7 +44,7 @@ namespace cadencii {
 #if JAVA
     public class FormGenerateKeySound extends BDialog
 #else
-    public class FormGenerateKeySound : BDialog
+    public class FormGenerateKeySound : Form
 #endif
     {
 #if !JAVA
@@ -144,7 +144,7 @@ namespace cadencii {
         }
 
         private void updateTitle( String title ) {
-            setTitle( title );
+            this.Text = title;
         }
 
         private void updateEnabled( boolean enabled ) {
@@ -169,7 +169,7 @@ namespace cadencii {
 
         public void btnBrowse_Click( Object sender, EventArgs e ) {
             folderBrowser.setSelectedPath( txtDir.Text );
-            if ( folderBrowser.showDialog( this ) != BDialogResult.OK ) {
+            if ( folderBrowser.showDialog( this ) != DialogResult.OK ) {
                 return;
             }
             txtDir.Text = folderBrowser.getSelectedPath();
@@ -191,7 +191,7 @@ namespace cadencii {
 #endif
                 }
             } else {
-                this.close();
+                this.Close();
             }
         }
 
@@ -267,7 +267,7 @@ namespace cadencii {
         public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
             updateEnabled( true );
             if ( m_close_when_finished ) {
-                close();
+                Close();
             }
         }
         #endregion

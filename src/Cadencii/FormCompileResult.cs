@@ -32,7 +32,7 @@ namespace cadencii
 #if JAVA
     public class FormCompileResult extends BDialog {
 #else
-    public class FormCompileResult : BDialog
+    public class FormCompileResult : System.Windows.Forms.Form
     {
 #endif
         public FormCompileResult( String message, String errors )
@@ -77,7 +77,7 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 

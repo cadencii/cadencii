@@ -34,7 +34,7 @@ namespace cadencii
 #if JAVA
     public class FormTempoConfig extends BDialog {
 #else
-    class FormTempoConfig : BDialog
+    class FormTempoConfig : System.Windows.Forms.Form
     {
 #endif
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure )
@@ -65,7 +65,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Global Tempo" ) );
+            this.Text = _( "Global Tempo" );
             groupPosition.Text = _( "Position" );
             lblBar.Text = _( "Measure" );
             lblBar.Mnemonic( KeyEvent.VK_M );
@@ -97,12 +97,12 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

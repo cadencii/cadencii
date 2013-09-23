@@ -34,7 +34,7 @@ namespace cadencii
 #if JAVA
     public class FormTrackProperty extends BDialog {
 #else
-    public class FormTrackProperty : BDialog
+    public class FormTrackProperty : Form
     {
 #endif
         private int m_master_tuning;
@@ -59,7 +59,7 @@ namespace cadencii
         public void applyLanguage()
         {
             lblMasterTuning.Text = _( "Master Tuning in Cent" );
-            setTitle( _( "Track Property" ) );
+            this.Text = _( "Track Property" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
         }
@@ -101,12 +101,12 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 

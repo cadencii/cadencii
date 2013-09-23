@@ -37,7 +37,7 @@ namespace cadencii
 #if JAVA
     public class FormSplash extends BDialog {
 #else
-    public class FormSplash : BDialog
+    public class FormSplash : Form
     {
 #endif
 
@@ -141,7 +141,8 @@ namespace cadencii
         {
             mouseDowned = true;
             Point screen = PortUtil.getMousePosition();
-            Point p = pointToClient( screen );
+            var point = this.PointToClient(new System.Drawing.Point(screen.x, screen.y));
+            Point p = new Point(point.X, point.Y);
             mouseDownedLocation = p;
         }
 
@@ -163,8 +164,8 @@ namespace cadencii
             }
 
             Point screen = PortUtil.getMousePosition();
-            Point p = new Point( screen.x - mouseDownedLocation.x, screen.y - mouseDownedLocation.y );
-            setLocation( p );
+            var p = new System.Drawing.Point( screen.x - mouseDownedLocation.x, screen.y - mouseDownedLocation.y );
+            this.Location = p;
         }
         #endregion
 

@@ -32,7 +32,7 @@ namespace cadencii
 #if JAVA
     public class FormDeleteBar extends BDialog {
 #else
-    class FormDeleteBar : BDialog
+    class FormDeleteBar : System.Windows.Forms.Form
     {
 #endif
         public FormDeleteBar( int max_barcount )
@@ -54,7 +54,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Delete Bars" ) );
+            this.Text = _( "Delete Bars" );
             lblStart.Text = _( "Start" );
             lblEnd.Text = _( "End" );
             btnOK.Text = _( "OK" );
@@ -102,12 +102,12 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

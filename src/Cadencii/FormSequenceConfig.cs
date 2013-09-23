@@ -44,7 +44,7 @@ namespace cadencii
 #if JAVA
     public class FormSequenceConfig extends BDialog
 #else
-    class FormSequenceConfig : BDialog
+    class FormSequenceConfig : System.Windows.Forms.Form
 #endif
     {
         public FormSequenceConfig()
@@ -83,7 +83,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Sequence config" ) );
+            this.Text = _( "Sequence config" );
             btnCancel.Text = _( "Cancel" );
             btnOK.Text = _( "OK" );
 
@@ -230,12 +230,12 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

@@ -39,7 +39,7 @@ namespace cadencii
 #if JAVA
     public class FormSingerStyleConfig extends BDialog {
 #else
-    class FormSingerStyleConfig : BDialog
+    class FormSingerStyleConfig : Form
     {
 #endif
         boolean m_apply_current_track = false;
@@ -70,7 +70,6 @@ namespace cadencii
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             applyLanguage();
-            Dimension current_size = getClientSize();
         }
 
         #region public methods
@@ -102,7 +101,7 @@ namespace cadencii
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
 #endif
-            setTitle( _( "Default Singer Style" ) );
+            this.Text = _( "Default Singer Style" );
         }
 
         public int getPMBendDepth()
@@ -319,7 +318,7 @@ namespace cadencii
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
@@ -345,15 +344,15 @@ namespace cadencii
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == DialogResult.Yes ) {
                 m_apply_current_track = true;
-                setDialogResult( BDialogResult.OK );
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

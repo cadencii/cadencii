@@ -5659,8 +5659,8 @@ namespace cadencii
                                     int tx = AppManager.xCoordFromClocks( tclock );
                                     Point pt = pointToScreen( new Point( tx, 0 ) );
                                     Invalidate();
-                                    dialog.setLocation(
-                                        new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
+                                    dialog.Location =
+                                        new System.Drawing.Point( pt.x - dialog.Width / 2, pt.y - dialog.Height );
                                     AppManager.showModalDialog( dialog, mMainWindow );
                                 }
                                 #endregion

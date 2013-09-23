@@ -40,7 +40,7 @@ namespace cadencii
 #if JAVA
     public class FormShortcutKeys extends BDialog {
 #else
-    public class FormShortcutKeys : BDialog
+    public class FormShortcutKeys : Form
     {
 #endif
         /// <summary>
@@ -128,7 +128,7 @@ namespace cadencii
             foreach( BKeys key in keys ){
                 comboEditKey.Items.Add( key );
             }
-            this.setSize( mWindowWidth, mWindowHeight );
+            this.Size = new System.Drawing.Size( mWindowWidth, mWindowHeight );
 
             registerEventHandlers();
             updateList();
@@ -138,7 +138,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Shortcut Config" ) );
+            this.Text = _( "Shortcut Config" );
 
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
@@ -349,8 +349,8 @@ namespace cadencii
         #region event handlers
         public void FormShortcutKeys_SizeChanged( Object sender, EventArgs e )
         {
-            mWindowWidth = getWidth();
-            mWindowHeight = getHeight();
+            mWindowWidth = this.Width;
+            mWindowHeight = this.Height;
         }
         
         public void handleModifier_CheckedChanged( Object sender, EventArgs e )
@@ -481,12 +481,12 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 

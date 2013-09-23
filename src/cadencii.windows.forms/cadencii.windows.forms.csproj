@@ -48,10 +48,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BDialogResult.cs" />
     <Compile Include="BFileChooser.cs" />
     <Compile Include="BFolderBrowser.cs" />
     <Compile Include="BKeys.cs" />

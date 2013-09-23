@@ -39,7 +39,7 @@ namespace cadencii
 #if JAVA
     public class FormCurvePointEdit extends BDialog {
 #else
-    public class FormCurvePointEdit : BDialog
+    public class FormCurvePointEdit : Form
     {
 #endif
         private long m_editing_id = -1;
@@ -74,7 +74,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Edit Value" ) );
+            this.Text = _( "Edit Value" );
             lblDataPointClock.Text = _( "Clock" );
             lblDataPointValue.Text = _( "Value" );
             btnApply.Text = _( "Apply" );
@@ -289,7 +289,7 @@ namespace cadencii
 
         public void btnExit_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

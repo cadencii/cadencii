@@ -39,7 +39,7 @@ namespace cadencii
 #if JAVA
     public class FormCheckUnknownSingerAndResampler extends BDialog
 #else
-    public class FormCheckUnknownSingerAndResampler : BDialog
+    public class FormCheckUnknownSingerAndResampler : System.Windows.Forms.Form
 #endif
     {
         /// <summary>
@@ -142,7 +142,7 @@ namespace cadencii
 
         private void applyLanguage()
         {
-            setTitle( _( "Unknown singers and resamplers" ) );
+            this.Text = _( "Unknown singers and resamplers" );
             labelMessage.Text = _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." );
             checkSingerImport.Text = _( "Import singer" );
             checkResamplerImport.Text = _( "Import resampler" );

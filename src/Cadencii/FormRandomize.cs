@@ -34,7 +34,7 @@ namespace cadencii
 #if JAVA
     public class FormRandomize extends BDialog {
 #else
-    public class FormRandomize : BDialog
+    public class FormRandomize : System.Windows.Forms.Form
     {
 #endif
         private static boolean lastPositionRandomizeEnabled = true;
@@ -231,7 +231,7 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOK_Click( Object sender, EventArgs e )
@@ -246,7 +246,7 @@ namespace cadencii
             lastStartBeat = getStartBeat();
             lastEndBar = getEndBar();
             lastEndBeat = getEndBeat();
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
@@ -333,7 +333,7 @@ namespace cadencii
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
 
-            setTitle( _( "Randomize" ) );
+            this.Text = _( "Randomize" );
         }
         #endregion
 

@@ -33,7 +33,7 @@ namespace cadencii
 #if JAVA
     public class FormInsertBar extends BDialog {
 #else
-    public class FormInsertBar : BDialog
+    public class FormInsertBar : Form
     {
 #endif
         public FormInsertBar( int max_position )
@@ -54,7 +54,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Insert Bars" ) );
+            this.Text = _( "Insert Bars" );
             String th_prefix = _( "_PREFIX_TH_" );
             if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
                 lblPositionPrefix.Text = "";
@@ -113,12 +113,12 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

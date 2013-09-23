@@ -33,7 +33,7 @@ namespace cadencii
 #if JAVA
     public class FormRealtimeConfig extends BDialog {
 #else
-    public class FormRealtimeConfig : BDialog
+    public class FormRealtimeConfig : System.Windows.Forms.Form
     {
 #endif
         private boolean m_game_ctrl_enabled = false;
@@ -120,8 +120,8 @@ namespace cadencii
                     } else if ( btnCancel.Focused ) {
                         if ( btn_o ) {
                             timer.Stop();
-                            setDialogResult( BDialogResult.CANCEL );
-                            close();
+                            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                            Close();
                         } else if ( pov_l ) {
                             btnStart.Focus();
                             m_last_event_processed = now;
@@ -156,13 +156,13 @@ namespace cadencii
 
         public void btnStart_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
-            close();
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            Close();
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

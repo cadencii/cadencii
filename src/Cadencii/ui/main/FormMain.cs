@@ -1307,9 +1307,9 @@ namespace cadencii
             try {
                 if ( check_unknown_singer || check_unknwon_resampler ) {
                     dialog = new FormCheckUnknownSingerAndResampler( singer_path.value, check_unknown_singer, resampler_path.value, check_unknwon_resampler );
-                    dialog.setLocation( getFormPreferedLocation( dialog ) );
-                    BDialogResult dr = AppManager.showModalDialog( dialog, this );
-                    if ( dr != BDialogResult.OK ) {
+                    dialog.Location = getFormPreferedLocation( dialog );
+                    DialogResult dr = AppManager.showModalDialog( dialog, this );
+                    if ( dr != DialogResult.OK ) {
                         return;
                     }
 
@@ -1337,7 +1337,7 @@ namespace cadencii
             } finally {
                 if ( dialog != null ) {
                     try {
-                        dialog.close();
+                        dialog.Close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -2577,7 +2577,7 @@ namespace cadencii
         /// </summary>
         /// <param name="dlg"></param>
         /// <returns></returns>
-        public Point getFormPreferedLocation( int dialogWidth, int dialogHeight )
+        public System.Drawing.Point getFormPreferedLocation( int dialogWidth, int dialogHeight )
         {
             Point mouse = PortUtil.getMousePosition();
             Rectangle rcScreen = PortUtil.getWorkingArea( this );
@@ -2603,7 +2603,7 @@ namespace cadencii
                 // ダイアログの左端が隠れる場合，位置をずらす
                 left = rcScreen.x;
             }
-            return new Point( left, top );
+            return new System.Drawing.Point( left, top );
         }
 
         /// <summary>
@@ -2611,9 +2611,9 @@ namespace cadencii
         /// </summary>
         /// <param name="dlg"></param>
         /// <returns></returns>
-        public Point getFormPreferedLocation( BDialog dlg )
+        public System.Drawing.Point getFormPreferedLocation( Form dlg )
         {
-            return getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+            return getFormPreferedLocation( dlg.Width, dlg.Height );
         }
 
         public void updateLayout()
@@ -3028,11 +3028,11 @@ namespace cadencii
                 } else {
                     file = PortUtil.getFileName( file );
                 }
-                BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
+                DialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                               _( "Affirmation" ),
                                                               cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
                                                               cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
-                if ( dr == BDialogResult.YES ) {
+                if ( dr == DialogResult.Yes ) {
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
                         int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr2 == BFileChooser.APPROVE_OPTION ) {
@@ -3046,7 +3046,7 @@ namespace cadencii
                         AppManager.saveTo( AppManager.getFileName() );
                         return true;
                     }
-                } else if ( dr == BDialogResult.NO ) {
+                } else if ( dr == DialogResult.No ) {
                     return true;
                 } else {
                     return false;
@@ -4912,9 +4912,9 @@ namespace cadencii
                 } else {
                     mDialogImportLyric.setMaxNotes( count );
                 }
-                mDialogImportLyric.setLocation( getFormPreferedLocation( mDialogImportLyric ) );
-                BDialogResult dr = AppManager.showModalDialog( mDialogImportLyric, this );
-                if ( dr == BDialogResult.OK ) {
+                mDialogImportLyric.Location = getFormPreferedLocation( mDialogImportLyric );
+                DialogResult dr = AppManager.showModalDialog( mDialogImportLyric, this );
+                if ( dr == DialogResult.OK ) {
                     String[] phrases = mDialogImportLyric.getLetters();
 #if DEBUG
                     foreach ( String s in phrases ) {
@@ -4981,7 +4981,7 @@ namespace cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".importLyric; ex=" + ex + "\n" );
             } finally {
-                mDialogImportLyric.setVisible( false );
+                mDialogImportLyric.Hide();
             }
         }
 
@@ -5011,9 +5011,9 @@ namespace cadencii
                     AppManager.editorConfig.DefaultVibratoLength,
                     type,
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType );
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dlg.getDialogResult() == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dlg.DialogResult == DialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     if ( dlg.getVibratoHandle() != null ) {
                         edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
@@ -5034,7 +5034,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".editNoteVibratoProperty; ex=" + ex2 + "\n" );
                     }
@@ -5069,9 +5069,9 @@ namespace cadencii
                 dlg.setDEMdecGainRate( ev.ID.DEMdecGainRate );
                 dlg.setDEMaccent( ev.ID.DEMaccent );
 
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     edited.ID.PMBendDepth = dlg.getPMBendDepth();
                     edited.ID.PMBendLength = dlg.getPMBendLength();
@@ -5090,7 +5090,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".editNoteExpressionProperty; ex=" + ex2 + "\n" );
                     }
@@ -5983,9 +5983,9 @@ namespace cadencii
                 VsqFileEx vsq = AppManager.getVsqFile();
                 ib = new InputBox( _( "Input new name of track" ) );
                 ib.setResult( vsq.Track.get( selected ).getName() );
-                ib.setLocation( getFormPreferedLocation( ib ) );
-                BDialogResult dr = AppManager.showModalDialog( ib, this );
-                if( dr == BDialogResult.OK ){
+                ib.Location = getFormPreferedLocation( ib );
+                DialogResult dr = AppManager.showModalDialog( ib, this );
+                if( dr == DialogResult.OK ){
                     String ret = ib.getResult();
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandTrackChangeName( selected, ret ) );
@@ -5996,7 +5996,7 @@ namespace cadencii
             }catch( Exception ex ){
             }finally{
                 if( ib != null ){
-                    ib.close();
+                    ib.Close();
                 }
             }
         }
@@ -6012,7 +6012,7 @@ namespace cadencii
                     PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
                     _APP_NAME,
                     cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                    cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
+                    cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == DialogResult.Yes ) {
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
                 if ( selected >= 2 ) {
                     AppManager.setSelected( selected - 1 );
@@ -8105,9 +8105,9 @@ namespace cadencii
                                     dlg.setPMbPortamentoUse( selectedEvent.ID.PMbPortamentoUse );
                                     dlg.setDEMdecGainRate( selectedEvent.ID.DEMdecGainRate );
                                     dlg.setDEMaccent( selectedEvent.ID.DEMaccent );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                    if ( dr == BDialogResult.OK ) {
+                                    dlg.Location = getFormPreferedLocation( dlg );
+                                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                    if ( dr == DialogResult.OK ) {
                                         VsqID id = (VsqID)selectedEvent.ID.clone();
                                         id.PMBendDepth = dlg.getPMBendDepth();
                                         id.PMBendLength = dlg.getPMBendLength();
@@ -8127,7 +8127,7 @@ namespace cadencii
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-                                            dlg.close();
+                                            dlg.Close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
                                             serr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" );
@@ -8176,9 +8176,9 @@ namespace cadencii
                                         AppManager.editorConfig.DefaultVibratoLength,
                                         type,
                                         AppManager.editorConfig.UseUserDefinedAutoVibratoType );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                    if ( dr == BDialogResult.OK ) {
+                                    dlg.Location = getFormPreferedLocation( dlg );
+                                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                    if ( dr == DialogResult.OK ) {
                                         VsqID t = (VsqID)selectedEvent.ID.clone();
                                         VibratoHandle handle = dlg.getVibratoHandle();
 #if DEBUG
@@ -8207,7 +8207,7 @@ namespace cadencii
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-                                            dlg.close();
+                                            dlg.Close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
                                         }
@@ -10288,11 +10288,11 @@ namespace cadencii
                 } else {
                     file = PortUtil.getFileName( file );
                 }
-                BDialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
+                DialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                                _( "Affirmation" ),
                                                                cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
                                                                cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
-                if ( ret == BDialogResult.YES ) {
+                if ( ret == DialogResult.Yes ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr == BFileChooser.APPROVE_OPTION ) {
@@ -10304,7 +10304,7 @@ namespace cadencii
                         AppManager.saveTo( AppManager.getFileName() );
                     }
 
-                } else if ( ret == BDialogResult.CANCEL ) {
+                } else if ( ret == DialogResult.Cancel ) {
                     return true;
                 }
             }
@@ -10536,7 +10536,7 @@ namespace cadencii
                     try {
                         form = new FormGenerateKeySound( true );
                         form.FormClosed += new FormClosedEventHandler( FormGenerateKeySound_FormClosed );
-                        form.setVisible( true );
+                        form.ShowDialog();
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                         serr.println( "FormMain#FormMain_Load; ex=" + ex );
@@ -10920,9 +10920,9 @@ namespace cadencii
                 mDialogMidiImportAndExport.listTrack.AddRow( new String[] { i + "", track.getName(), notes + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr == BDialogResult.OK ) {
+            mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
+            DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr == DialogResult.OK ) {
                 if ( !mDialogMidiImportAndExport.isPreMeasure() ) {
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
@@ -11200,8 +11200,8 @@ namespace cadencii
                 String initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
                 file_dialog.setDescription( _( "Choose destination directory" ) );
                 file_dialog.setSelectedPath( initial_dir );
-                BDialogResult ret = AppManager.showModalDialog( file_dialog, this );
-                if ( ret != BDialogResult.OK ) {
+                DialogResult ret = AppManager.showModalDialog( file_dialog, this );
+                if ( ret != DialogResult.OK ) {
                     return;
                 }
                 dir = file_dialog.getSelectedPath();
@@ -11399,12 +11399,12 @@ namespace cadencii
         {
             // UTAUの歌手が登録されていない場合は警告を表示
             if ( AppManager.editorConfig.UtauSingers.size() <= 0 ) {
-                BDialogResult dr = AppManager.showMessageBox(
+                DialogResult dr = AppManager.showMessageBox(
                     _( "UTAU singer not registered yet.\nContinue ?" ),
                     _( "Info" ),
                     cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
                     cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                if ( dr != BDialogResult.YES ) {
+                if ( dr != DialogResult.Yes ) {
                     return;
                 }
             }
@@ -11597,7 +11597,7 @@ namespace cadencii
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
+            mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
             MidiFile mf = null;
             try {
                 String filename = openMidiDialog.getSelectedFile();
@@ -11652,8 +11652,8 @@ namespace cadencii
                     new String[] { i + "", track_name, notes + "" }, true );
             }
 
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr != BDialogResult.OK ) {
+            DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr != DialogResult.OK ) {
                 return;
             }
 
@@ -12118,9 +12118,9 @@ namespace cadencii
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             mDialogMidiImportAndExport.setTempo( false );
             mDialogMidiImportAndExport.setTimesig( false );
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr != BDialogResult.OK ) {
+            mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
+            DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr != DialogResult.OK ) {
                 return;
             }
 
@@ -12423,9 +12423,9 @@ namespace cadencii
                 dlg.setDEMaccent( AppManager.editorConfig.DefaultDEMaccent );
 
                 int selected = AppManager.getSelected();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     AppManager.editorConfig.DefaultPMBendDepth = dlg.getPMBendDepth();
                     AppManager.editorConfig.DefaultPMBendLength = dlg.getPMBendLength();
                     AppManager.editorConfig.DefaultPMbPortamentoUse = dlg.getPMbPortamentoUse();
@@ -12459,7 +12459,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex2 + "\n" );
                     }
@@ -12482,9 +12482,9 @@ namespace cadencii
             FormGameControlerConfig dlg = null;
             try {
                 dlg = new FormGameControlerConfig();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     AppManager.editorConfig.GameControlerRectangle = dlg.getRectangle();
                     AppManager.editorConfig.GameControlerTriangle = dlg.getTriangle();
                     AppManager.editorConfig.GameControlerCircle = dlg.getCircle();
@@ -12505,7 +12505,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingGameControlerSetting_Click; ex=" + ex2 + "\n" );
                     }
@@ -12599,10 +12599,10 @@ namespace cadencii
                 String old_wine_prefix = AppManager.editorConfig.WinePrefix;
                 String old_wine_top = AppManager.editorConfig.getWineTop();
 
-                mDialogPreference.setLocation( getFormPreferedLocation( mDialogPreference ) );
+                mDialogPreference.Location = getFormPreferedLocation( mDialogPreference );
 
-                BDialogResult dr = AppManager.showModalDialog( mDialogPreference, this );
-                if ( dr == BDialogResult.OK ) {
+                DialogResult dr = AppManager.showModalDialog( mDialogPreference, this );
+                if ( dr == DialogResult.OK ) {
                     String old_base_font_name = AppManager.editorConfig.BaseFontName;
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
                     Font new_base_font = mDialogPreference.getBaseFont();
@@ -12938,9 +12938,9 @@ namespace cadencii
             FormShortcutKeys form = null;
             try {
                 form = new FormShortcutKeys( dict, this );
-                form.setLocation( getFormPreferedLocation( form ) );
-                BDialogResult dr = AppManager.showModalDialog( form, this );
-                if ( dr == BDialogResult.OK ) {
+                form.Location = getFormPreferedLocation( form );
+                DialogResult dr = AppManager.showModalDialog( form, this );
+                if ( dr == DialogResult.OK ) {
                     TreeMap<String, ValuePair<String, BKeys[]>> res = form.getResult();
                     for ( Iterator<String> itr = res.keySet().iterator(); itr.hasNext(); ) {
                         String display = itr.next();
@@ -12969,7 +12969,7 @@ namespace cadencii
             } finally {
                 if ( form != null ) {
                     try {
-                        form.close();
+                        form.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingSHortcut_Click; ex=" + ex2 + "\n" );
                     }
@@ -12982,9 +12982,9 @@ namespace cadencii
             FormVibratoPreset dialog = null;
             try {
                 dialog = new FormVibratoPreset( AppManager.editorConfig.AutoVibratoCustom );
-                dialog.setLocation( getFormPreferedLocation( dialog ) );
-                BDialogResult ret = AppManager.showModalDialog( dialog, this );
-                if ( ret != BDialogResult.OK ) {
+                dialog.Location = getFormPreferedLocation( dialog );
+                DialogResult ret = AppManager.showModalDialog( dialog, this );
+                if ( ret != DialogResult.OK ) {
                     return;
                 }
 
@@ -13180,8 +13180,8 @@ namespace cadencii
             FormWordDictionaryController dlg = null;
             try {
                 dlg = new FormWordDictionaryController();
-                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
-                dlg.setLocation( p.x, p.y );
+                var p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                dlg.setLocation(p.X, p.Y);
                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                 if ( dr == 1 ) {
                     Vector<ValuePair<String, Boolean>> result = dlg.getResult();
@@ -13321,9 +13321,9 @@ namespace cadencii
                 }
                 dlg.setPosition( draft );
 
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     int pos = dlg.getPosition() + AppManager.getVsqFile().getPreMeasure() - 1;
                     int length = dlg.getLength();
 
@@ -13425,7 +13425,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobInsertBar_Click; ex=" + ex2 + "\n" );
                     }
@@ -13440,9 +13440,9 @@ namespace cadencii
                 dialog = new InputBox( _( "input pre-measure" ) );
                 int old_pre_measure = AppManager.getVsqFile().getPreMeasure();
                 dialog.setResult( old_pre_measure + "" );
-                dialog.setLocation( getFormPreferedLocation( dialog ) );
-                BDialogResult ret = AppManager.showModalDialog( dialog, this );
-                if ( ret == BDialogResult.OK ) {
+                dialog.Location = getFormPreferedLocation( dialog );
+                DialogResult ret = AppManager.showModalDialog( dialog, this );
+                if ( ret == DialogResult.OK ) {
                     String str_result = dialog.getResult();
                     int result = old_pre_measure;
                     try {
@@ -13469,7 +13469,7 @@ namespace cadencii
             } finally {
                 if ( dialog != null ) {
                     try {
-                        dialog.close();
+                        dialog.Close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -13491,8 +13491,8 @@ namespace cadencii
             dialog.setSampleRate( old_sample_rate );
             dialog.setPreMeasure( old_pre_measure );
 
-            dialog.setLocation( getFormPreferedLocation( dialog ) );
-            if ( AppManager.showModalDialog( dialog, this ) != BDialogResult.OK ) {
+            dialog.Location = getFormPreferedLocation( dialog );
+            if ( AppManager.showModalDialog( dialog, this ) != DialogResult.OK ) {
                 return;
             }
 
@@ -13527,9 +13527,9 @@ namespace cadencii
                 dlg.setStart( draft );
                 dlg.setEnd( draft + 1 );
 
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
                     int start = dlg.getStart() + AppManager.getVsqFile().getPreMeasure() - 1;
                     int end = dlg.getEnd() + AppManager.getVsqFile().getPreMeasure() - 1;
@@ -13612,7 +13612,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobDeleteBar_Click; ex=" + ex2 + "\n" );
                     }
@@ -13681,9 +13681,9 @@ namespace cadencii
             FormRandomize dlg = null;
             try {
                 dlg = new FormRandomize();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int preMeasure = vsq.getPreMeasure();
                     int startBar = dlg.getStartBar() + (preMeasure - 1);
@@ -13902,7 +13902,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex2 + "\n" );
                         serr.println( "FormMain#menuJobRandomize; ex2=" + ex2 );
@@ -14104,9 +14104,9 @@ namespace cadencii
                                 FormTempoConfig dlg = null;
                                 try {
                                     dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (float)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                    if ( dr == BDialogResult.OK ) {
+                                    dlg.Location = getFormPreferedLocation( dlg );
+                                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                    if ( dr == DialogResult.OK ) {
                                         int new_beat = dlg.getBeatCount();
                                         int new_clocks_in_beat = dlg.getClock();
                                         int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
@@ -14122,7 +14122,7 @@ namespace cadencii
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-                                            dlg.close();
+                                            dlg.Close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                             serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex2=" + ex2 );
@@ -14175,9 +14175,9 @@ namespace cadencii
                                                            clock_per_beat,
                                                            (float)(6e7 / changing_tempo),
                                                            vsq.getPreMeasure() );
-                                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                if ( dr == BDialogResult.OK ) {
+                                dlg.Location = getFormPreferedLocation( dlg );
+                                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                if ( dr == DialogResult.OK ) {
                                     int new_beat = dlg.getBeatCount();
                                     int new_clocks_in_beat = dlg.getClock();
                                     int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
@@ -14198,7 +14198,7 @@ namespace cadencii
                             } finally {
                                 if ( dlg != null ) {
                                     try {
-                                        dlg.close();
+                                        dlg.Close();
                                     } catch ( Exception ex2 ) {
                                         Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                     }
@@ -14253,8 +14253,8 @@ namespace cadencii
                             FormBeatConfigController dlg = null;
                             try {
                                 dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
-                                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
-                                dlg.setLocation( p.x, p.y );
+                                var p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                                dlg.setLocation( p.X, p.Y );
                                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                                 if ( dr == 1 ) {
                                     if ( dlg.isEndSpecified() ) {
@@ -14327,8 +14327,8 @@ namespace cadencii
                             FormBeatConfigController dlg = null;
                             try {
                                 dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
-                                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
-                                dlg.setLocation( p.x, p.y );
+                                var p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                                dlg.setLocation( p.X, p.Y );
                                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                                 if ( dr == 1 ) {
                                     if ( dlg.isEndSpecified() ) {
@@ -14851,7 +14851,7 @@ namespace cadencii
             if ( mVersionInfo == null ) {
                 mVersionInfo = new VersionInfo( _APP_NAME, version_str );
                 mVersionInfo.setAuthorList( _CREDIT );
-                mVersionInfo.setVisible( true );
+                mVersionInfo.Show();
             } else {
 #if !JAVA
                 if ( mVersionInfo.IsDisposed ) {
@@ -14859,7 +14859,7 @@ namespace cadencii
                     mVersionInfo.setAuthorList( _CREDIT );
                 }
 #endif
-                mVersionInfo.setVisible( true );
+                mVersionInfo.Show();
             }
         }
 
@@ -15207,8 +15207,8 @@ namespace cadencii
                     dlg.setPMbPortamentoUse( original.ID.PMbPortamentoUse );
                     dlg.setDEMdecGainRate( original.ID.DEMdecGainRate );
                     dlg.setDEMaccent( original.ID.DEMaccent );
-                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                    if ( dr == BDialogResult.OK ) {
+                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                    if ( dr == DialogResult.OK ) {
                         VsqID copy = (VsqID)original.ID.clone();
                         copy.PMBendDepth = dlg.getPMBendDepth();
                         copy.PMBendLength = dlg.getPMBendLength();
@@ -15226,7 +15226,7 @@ namespace cadencii
                 } finally {
                     if ( dlg != null ) {
                         try {
-                            dlg.close();
+                            dlg.Close();
                         } catch ( Exception ex2 ) {
                             Logger.write( typeof( FormMain ) + ".cMenuPianoExpression_Click; ex=" + ex2 + "\n" );
                         }
@@ -17087,10 +17087,10 @@ namespace cadencii
             InputBox ib = null;
             try {
                 ib = new InputBox( _( "Input Offset Seconds" ) );
-                ib.setLocation( getFormPreferedLocation( ib ) );
+                ib.Location = getFormPreferedLocation( ib );
                 ib.setResult( AppManager.getBgm( index ).readOffsetSeconds + "" );
-                BDialogResult dr = AppManager.showModalDialog( ib, this );
-                if ( dr != BDialogResult.OK ) {
+                DialogResult dr = AppManager.showModalDialog( ib, this );
+                if ( dr != DialogResult.OK ) {
                     return;
                 }
                 Vector<BgmFile> list = new Vector<BgmFile>();
@@ -17201,7 +17201,7 @@ namespace cadencii
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
                                   cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != DialogResult.Yes ) {
                 return;
             }
             AppManager.removeBgm( index );
@@ -17290,7 +17290,7 @@ namespace cadencii
                     } finally {
                         if ( dlg != null ) {
                             try {
-                                dlg.close();
+                                dlg.Close();
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex2 + "\n" );
                             }

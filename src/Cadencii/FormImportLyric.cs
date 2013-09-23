@@ -36,7 +36,7 @@ namespace cadencii
 #if JAVA
     public class FormImportLyric extends BDialog {
 #else
-    class FormImportLyric : BDialog
+    class FormImportLyric : System.Windows.Forms.Form
     {
 #endif
         private int m_max_notes = 1;
@@ -61,9 +61,9 @@ namespace cadencii
         public void setVisible( boolean value ){
             super.setVisible( value );
 #else
-        public override void setVisible( boolean value )
+        public void __setVisible( boolean value )
         {
-            base.setVisible( value );
+            base.Visible = value;
 #endif
 #if JAVA
             //TODO: FormImportLyric#setVisible
@@ -76,7 +76,7 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            setTitle( _( "Import lyrics" ) );
+            this.Text = _( "Import lyrics" );
             btnCancel.Text = _( "Cancel" );
             btnOK.Text = _( "OK" );
         }
@@ -168,12 +168,12 @@ namespace cadencii
         #region event handlers
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 

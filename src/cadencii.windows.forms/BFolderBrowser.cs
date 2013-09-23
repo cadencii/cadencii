@@ -58,13 +58,13 @@ namespace cadencii.windows.forms {
             dialog.SelectedPath = value;
         }
 
-        public BDialogResult showDialog( System.Windows.Forms.Form parent )
+        public DialogResult showDialog( System.Windows.Forms.Form parent )
         {
             DialogResult ret = dialog.ShowDialog( parent );
             if ( ret == DialogResult.OK ) {
-                return BDialogResult.OK;
+                return DialogResult.OK;
             }
-            return BDialogResult.CANCEL;
+            return DialogResult.Cancel;
         }
     }
 
