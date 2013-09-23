@@ -63,9 +63,9 @@ namespace cadencii
             m_curve = curve;
 
             VsqBPPairSearchContext context = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() ).findElement( m_editing_id );
-            txtDataPointClock.setText( context.clock + "" );
-            txtDataPointValue.setText( context.point.value + "" );
-            txtDataPointValue.selectAll();
+            txtDataPointClock.Text = context.clock + "";
+            txtDataPointValue.Text = context.point.value + "";
+            txtDataPointValue.SelectAll();
 
             btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
             btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
@@ -95,7 +95,7 @@ namespace cadencii
             }
             int value = m_curve.getDefault();
             try {
-                value = str.toi( txtDataPointValue.getText() );
+                value = str.toi( txtDataPointValue.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
@@ -108,7 +108,7 @@ namespace cadencii
 
             int clock = 0;
             try {
-                clock = str.toi( txtDataPointClock.getText() );
+                clock = str.toi( txtDataPointClock.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
@@ -132,8 +132,8 @@ namespace cadencii
             }
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
 
-            txtDataPointClock.setText( clock + "" );
-            txtDataPointValue.setText( value + "" );
+            txtDataPointClock.Text = clock + "";
+            txtDataPointValue.Text = value + "";
 
             if ( mMainWindow != null ) {
                 mMainWindow.setEdited( true );
@@ -142,9 +142,9 @@ namespace cadencii
             }
 
             if ( mode_clock ) {
-                txtDataPointClock.selectAll();
+                txtDataPointClock.SelectAll();
             } else {
-                txtDataPointValue.selectAll();
+                txtDataPointValue.SelectAll();
             }
 
             btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
@@ -221,13 +221,13 @@ namespace cadencii
             int clock = list.getKeyClock( index );
             txtDataPointClock.TextChanged -= commonTextBox_TextChanged;
             txtDataPointValue.TextChanged -= commonTextBox_TextChanged;
-            txtDataPointClock.setText( clock + "" );
-            txtDataPointValue.setText( bp.value + "" );
+            txtDataPointClock.Text = clock + "";
+            txtDataPointValue.Text = bp.value + "";
             txtDataPointClock.TextChanged += commonTextBox_TextChanged;
             txtDataPointValue.TextChanged += commonTextBox_TextChanged;
 
-            txtDataPointValue.requestFocus();
-            txtDataPointValue.selectAll();
+            txtDataPointValue.Focus();
+            txtDataPointValue.SelectAll();
 
             AppManager.itemSelection.clearPoint();
             AppManager.itemSelection.addPoint( m_curve, bp.id );
@@ -264,8 +264,8 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormCurvePointEdit#handleUndoRedo_Click; exists=" + exists );
 #endif
-            txtDataPointClock.setEnabled( exists );
-            txtDataPointValue.setEnabled( exists );
+            txtDataPointClock.Enabled = exists;
+            txtDataPointValue.Enabled = exists;
             btnApply.Enabled = exists;
             btnBackward.Enabled = exists;
             btnBackward2.Enabled = exists;

@@ -809,13 +809,13 @@ namespace cadencii
 
             // inputTextBoxの初期化
             AppManager.mInputTextBox = new LyricTextBox();
-            AppManager.mInputTextBox.setVisible( false );
+            AppManager.mInputTextBox.Visible = false;
             AppManager.mInputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             AppManager.mInputTextBox.Width = 80;
             AppManager.mInputTextBox.AcceptsReturn = true;
-            AppManager.mInputTextBox.setBackground( Color.white );
-            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            AppManager.mInputTextBox.setEnabled( false );
+            AppManager.mInputTextBox.BackColor = System.Drawing.Color.White;
+            AppManager.mInputTextBox.Font = new System.Drawing.Font(AppManager.editorConfig.BaseFontName, AppManager.FONT_SIZE9, System.Drawing.FontStyle.Regular);
+            AppManager.mInputTextBox.Enabled = false;
             AppManager.mInputTextBox.KeyPress += mInputTextBox_KeyPress;
             AppManager.mInputTextBox.Parent = pictPianoRoll;
             panel1.Controls.Add( AppManager.mInputTextBox );
@@ -3223,7 +3223,7 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol[0] );
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
-            AppManager.debugWriteLine( "    AppManager.mInputTextBox.setText(=" + AppManager.mInputTextBox.getText() );
+            AppManager.debugWriteLine( "    AppManager.mInputTextBox.setText(=" + AppManager.mInputTextBox.Text );
 #endif
             String[] phrase = new String[count];
             String[] phonetic_symbol = new String[count];
@@ -3231,7 +3231,7 @@ namespace cadencii
                 phrase[i] = original_phrase[i];
                 phonetic_symbol[i] = original_symbol[i];
             }
-            String txt = AppManager.mInputTextBox.getText();
+            String txt = AppManager.mInputTextBox.Text;
             int txtlen = PortUtil.getStringLength( txt );
             if ( txtlen > 0 ) {
                 // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
@@ -3249,12 +3249,12 @@ namespace cadencii
             }
 
             // 発音記号または歌詞が変更された場合の処理
-            if ( (phonetic_symbol_edit_mode && !str.compare( AppManager.mInputTextBox.getText(), original_symbol[0] )) ||
+            if ( (phonetic_symbol_edit_mode && !str.compare( AppManager.mInputTextBox.Text, original_symbol[0] )) ||
                  (!phonetic_symbol_edit_mode && !str.compare( phrase[0], original_phrase[0] )) ) {
                 if ( phonetic_symbol_edit_mode ) {
                     // 発音記号を編集するモード
                     phrase[0] = AppManager.mInputTextBox.getBufferText();
-                    phonetic_symbol[0] = AppManager.mInputTextBox.getText();
+                    phonetic_symbol[0] = AppManager.mInputTextBox.Text;
 
                     // 入力された発音記号のうち、有効なものだけをピックアップ
                     String[] spl = PortUtil.splitString( phonetic_symbol[0], new char[] { ' ' }, true );
@@ -3636,7 +3636,7 @@ namespace cadencii
 #else
             if ( AppManager.mInputTextBox.Enabled ) {
 #endif
-                AppManager.mInputTextBox.requestFocus();
+                AppManager.mInputTextBox.Focus();
                 return;
             }
 
@@ -5204,10 +5204,10 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine(
                 "FormMain#deleteEvent(); AppManager.mInputTextBox.isEnabled()=" +
-                AppManager.mInputTextBox.isEnabled() );
+                AppManager.mInputTextBox.Enabled );
 #endif
 
-            if ( AppManager.mInputTextBox.isVisible() ) {
+            if ( AppManager.mInputTextBox.Visible ) {
                 return;
             }
 #if ENABLE_PROPERTY
@@ -6643,32 +6643,32 @@ namespace cadencii
             AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #endif
 
-            AppManager.mInputTextBox.setImeModeOn( mLastIsImeModeOn );
+            AppManager.mInputTextBox.ImeMode = mLastIsImeModeOn ? System.Windows.Forms.ImeMode.Hiragana : System.Windows.Forms.ImeMode.Off;
             if ( phonetic_symbol_edit_mode ) {
                 AppManager.mInputTextBox.setBufferText( phrase );
                 AppManager.mInputTextBox.setPhoneticSymbolEditMode( true );
-                AppManager.mInputTextBox.setText( phonetic_symbol );
-                AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
+                AppManager.mInputTextBox.Text = phonetic_symbol;
+                AppManager.mInputTextBox.BackColor = mColorTextboxBackcolor.color;
             } else {
                 AppManager.mInputTextBox.setBufferText( phonetic_symbol );
                 AppManager.mInputTextBox.setPhoneticSymbolEditMode( false );
-                AppManager.mInputTextBox.setText( phrase );
-                AppManager.mInputTextBox.setBackground( Color.white );
+                AppManager.mInputTextBox.Text = phrase;
+                AppManager.mInputTextBox.BackColor = System.Drawing.Color.White;
             }
-            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            Point p = new Point( position.x + 4, position.y + 2 );
+            AppManager.mInputTextBox.Font = new System.Drawing.Font( AppManager.editorConfig.BaseFontName, AppManager.FONT_SIZE9, System.Drawing.FontStyle.Regular );
+            System.Drawing.Point p = new System.Drawing.Point( position.x + 4, position.y + 2 );
 #if JAVA
             p = pictPianoRoll.pointToScreen( p );
 #endif
-            AppManager.mInputTextBox.setLocation( p );
+            AppManager.mInputTextBox.Location = p;
 
 #if !JAVA
             AppManager.mInputTextBox.Parent = pictPianoRoll;
 #endif
-            AppManager.mInputTextBox.setEnabled( true );
-            AppManager.mInputTextBox.setVisible( true );
-            AppManager.mInputTextBox.requestFocusInWindow();
-            AppManager.mInputTextBox.selectAll();
+            AppManager.mInputTextBox.Enabled = true;
+            AppManager.mInputTextBox.Visible = true;
+            AppManager.mInputTextBox.Focus();
+            AppManager.mInputTextBox.SelectAll();
         }
 
         public void hideInputTextBox()
@@ -6677,11 +6677,11 @@ namespace cadencii
             AppManager.mInputTextBox.KeyDown -= new KeyEventHandler( mInputTextBox_KeyDown );
             AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
             mLastSymbolEditMode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
-            AppManager.mInputTextBox.setVisible( false );
+            AppManager.mInputTextBox.Visible = false;
 #if !JAVA
             AppManager.mInputTextBox.Parent = null;
 #endif
-            AppManager.mInputTextBox.setEnabled( false );
+            AppManager.mInputTextBox.Enabled = false;
             focusPianoRoll();
         }
 
@@ -6690,13 +6690,13 @@ namespace cadencii
         /// </summary>
         public void flipInputTextBoxMode()
         {
-            String new_value = AppManager.mInputTextBox.getText();
+            String new_value = AppManager.mInputTextBox.Text;
             if ( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
-                AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
+                AppManager.mInputTextBox.BackColor = mColorTextboxBackcolor.color;
             } else {
-                AppManager.mInputTextBox.setBackground( Color.white );
+                AppManager.mInputTextBox.BackColor = System.Drawing.Color.White;
             }
-            AppManager.mInputTextBox.setText( AppManager.mInputTextBox.getBufferText() );
+            AppManager.mInputTextBox.Text = AppManager.mInputTextBox.getBufferText();
             AppManager.mInputTextBox.setBufferText( new_value );
             AppManager.mInputTextBox.setPhoneticSymbolEditMode( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() );
         }
@@ -7600,14 +7600,14 @@ namespace cadencii
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
                         new Point( x, y ),
                         phonetic_symbol_edit_mode );
-                    int clWidth = (int)(AppManager.mInputTextBox.getWidth() * controller.getScaleXInv());
+                    int clWidth = (int)(AppManager.mInputTextBox.Width * controller.getScaleXInv());
 
                     // 画面上にAppManager.mInputTextBoxが見えるように，移動
                     int SPACE = 20;
                     // vScrollやhScrollをいじった場合はfalseにする．
                     boolean refresh_screen = true;
                     // X軸方向について，見えるように移動
-                    if ( x < key_width || width < x + AppManager.mInputTextBox.getWidth() ) {
+                    if ( x < key_width || width < x + AppManager.mInputTextBox.Width ) {
                         int clock, clock_x;
                         if ( x < key_width ) {
                             // 左に隠れてしまう場合
@@ -7682,7 +7682,7 @@ namespace cadencii
 #endif
 
             if ( flip ) {
-                if ( AppManager.mInputTextBox.isVisible() ) {
+                if ( AppManager.mInputTextBox.Visible ) {
                     flipInputTextBoxMode();
                 }
             } else if ( hide ) {
@@ -7692,7 +7692,7 @@ namespace cadencii
 
         public void mInputTextBox_ImeModeChanged( Object sender, EventArgs e )
         {
-            mLastIsImeModeOn = AppManager.mInputTextBox.isImeModeOn();
+            mLastIsImeModeOn = AppManager.mInputTextBox.ImeMode == System.Windows.Forms.ImeMode.Hiragana;
         }
 
         public void mInputTextBox_KeyPress( Object sender, KeyPressEventArgs e )
@@ -8626,9 +8626,9 @@ namespace cadencii
             lock (AppManager.mDrawObjects) {
                 if (mFormActivated) {
 #if ENABLE_PROPERTY
-                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing()) {
+                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.Visible && !AppManager.propertyPanel.isEditing()) {
 #else
-                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible()) {
+                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.Visible) {
 #endif
                         focusPianoRoll();
                     }
@@ -14993,7 +14993,7 @@ namespace cadencii
 #if JAVA
                 boolean input_visible = AppManager.mInputTextBox.isVisible();
 #else
-                boolean input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.isVisible();
+                boolean input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.Visible;
 #endif
 #if ENABLE_PROPERTY
                 boolean prop_editing = AppManager.propertyPanel.isEditing();

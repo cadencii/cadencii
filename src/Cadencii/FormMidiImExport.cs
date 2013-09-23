@@ -110,7 +110,7 @@ namespace cadencii
         {
             double v = 0.0;
             try {
-                v = str.tof( txtOffset.getText() );
+                v = str.tof( txtOffset.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMidiImExport ) + ".getOffsetSeconds; ex=" + ex + "\n" );
                 serr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
@@ -122,7 +122,7 @@ namespace cadencii
         {
             int v = 0;
             try {
-                v = str.toi( txtOffset.getText() );
+                v = str.toi( txtOffset.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMidiImExport ) + ".getOffsetClocks; ex=" + ex + "\n" );
                 serr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );

@@ -106,7 +106,7 @@ namespace cadencii {
                 comboSingingSynthSystem.SelectedIndex = 0;
             }
             updateSinger();
-            txtDir.setText( Utility.getKeySoundPath() );
+            txtDir.Text = Utility.getKeySoundPath();
 
             registerEventHandlers();
         }
@@ -150,7 +150,7 @@ namespace cadencii {
         private void updateEnabled( boolean enabled ) {
             comboSinger.Enabled = enabled;
             comboSingingSynthSystem.Enabled = enabled;
-            txtDir.setEditable( enabled );
+            txtDir.ReadOnly = !enabled;
             btnBrowse.Enabled = enabled;
             btnExecute.Enabled = enabled;
             chkIgnoreExistingWavs.Enabled = enabled;
@@ -168,11 +168,11 @@ namespace cadencii {
         }
 
         public void btnBrowse_Click( Object sender, EventArgs e ) {
-            folderBrowser.setSelectedPath( txtDir.getText() );
+            folderBrowser.setSelectedPath( txtDir.Text );
             if ( folderBrowser.showDialog( this ) != BDialogResult.OK ) {
                 return;
             }
-            txtDir.setText( folderBrowser.getSelectedPath() );
+            txtDir.Text = folderBrowser.getSelectedPath();
         }
 
         public void btnCancel_Click( Object sender, EventArgs e ) {
@@ -199,7 +199,7 @@ namespace cadencii {
             PrepareStartArgument arg = new PrepareStartArgument();
             arg.singer = (String)comboSinger.SelectedItem;
             arg.amplitude = 1.0;
-            arg.directory = txtDir.getText();
+            arg.directory = txtDir.Text;
             arg.replace = chkIgnoreExistingWavs.Checked;
             updateEnabled( false );
             bgWork.runWorkerAsync( arg );
@@ -385,7 +385,7 @@ namespace cadencii {
             this.lblSinger = new Label();
             this.comboSinger = new ComboBox();
             this.chkIgnoreExistingWavs = new CheckBox();
-            this.txtDir = new BTextBox();
+            this.txtDir = new TextBox();
             this.btnBrowse = new Button();
             this.lblDir = new Label();
             this.SuspendLayout();
@@ -512,7 +512,7 @@ namespace cadencii {
         private Label lblSinger;
         private System.Windows.Forms.ComboBox comboSinger;
         private CheckBox chkIgnoreExistingWavs;
-        private BTextBox txtDir;
+        private TextBox txtDir;
         private System.Windows.Forms.Button btnBrowse;
         private Label lblDir;
 

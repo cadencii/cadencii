@@ -392,12 +392,12 @@ namespace cadencii
         #region event handlers
         private void txtPanpot_Enter( Object sender, EventArgs e )
         {
-            txtPanpot.selectAll();
+            txtPanpot.SelectAll();
         }
 
         private void txtFeder_Enter( Object sender, EventArgs e )
         {
-            txtFeder.selectAll();
+            txtFeder.SelectAll();
         }
 
         public void VolumeTracker_Resize( Object sender, EventArgs e )
@@ -411,7 +411,7 @@ namespace cadencii
         public void trackFeder_ValueChanged( Object sender, EventArgs e )
         {
             mFeder = getFederFromYCoord( 151 - (trackFeder.Value - 26) );
-            txtFeder.setText( (mFeder / 10.0) + "" );
+            txtFeder.Text = (mFeder / 10.0) + "";
             try {
 #if JAVA
                 federChangedEvent.raise( mTrack, mFeder );
@@ -430,7 +430,7 @@ namespace cadencii
         public void trackPanpot_ValueChanged( Object sender, EventArgs e )
         {
             mPanpot = trackPanpot.Value;
-            txtPanpot.setText( mPanpot + "" );
+            txtPanpot.Text = mPanpot + "";
             try {
 #if JAVA
                 panpotChangedEvent.raise( mTrack, mPanpot );
@@ -458,7 +458,7 @@ namespace cadencii
             }
 #endif
             try {
-                int feder = (int)((float)str.tof( txtFeder.getText() ) * 10.0f);
+                int feder = (int)((float)str.tof( txtFeder.Text ) * 10.0f);
                 if ( 55 < feder ) {
                     feder = 55;
                 }
@@ -466,9 +466,9 @@ namespace cadencii
                     feder = -898;
                 }
                 setFeder( feder );
-                txtFeder.setText( getFeder() / 10.0f + "" );
-                txtFeder.requestFocusInWindow();
-                txtFeder.selectAll();
+                txtFeder.Text = getFeder() / 10.0f + "";
+                txtFeder.Focus();
+                txtFeder.SelectAll();
             } catch ( Exception ex ) {
                 serr.println( "VolumeTracker#txtFeder_KeyDown; ex=" + ex );
             }
@@ -486,7 +486,7 @@ namespace cadencii
             }
 #endif
             try {
-                int panpot = str.toi( txtPanpot.getText() );
+                int panpot = str.toi( txtPanpot.Text );
                 if ( panpot < -64 ) {
                     panpot = -64;
                 }
@@ -494,9 +494,9 @@ namespace cadencii
                     panpot = 64;
                 }
                 setPanpot( panpot );
-                txtPanpot.setText( getPanpot() + "" );
-                txtPanpot.requestFocusInWindow();
-                txtPanpot.selectAll();
+                txtPanpot.Text = getPanpot() + "";
+                txtPanpot.Focus();
+                txtPanpot.SelectAll();
             } catch ( Exception ex ) {
                 serr.println( "VolumeTracker#txtPanpot_KeyDown; ex=" + ex );
             }
@@ -590,9 +590,9 @@ namespace cadencii
         {
             this.trackFeder = new TrackBar();
             this.trackPanpot = new TrackBar();
-            this.txtPanpot = new cadencii.windows.forms.BTextBox();
+            this.txtPanpot = new TextBox();
             this.lblTitle = new Label();
-            this.txtFeder = new cadencii.windows.forms.BTextBox();
+            this.txtFeder = new TextBox();
             this.chkMute = new CheckBox();
             this.chkSolo = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackFeder)).BeginInit();
@@ -713,9 +713,9 @@ namespace cadencii
 
         private TrackBar trackFeder;
         private TrackBar trackPanpot;
-        private BTextBox txtPanpot;
+        private TextBox txtPanpot;
         private Label lblTitle;
-        private BTextBox txtFeder;
+        private TextBox txtFeder;
         private System.Windows.Forms.CheckBox chkMute;
         private System.Windows.Forms.CheckBox chkSolo;
 

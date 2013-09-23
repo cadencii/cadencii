@@ -344,7 +344,7 @@ namespace cadencii {
                     float scalex = AppManager.mMainWindowController.getScaleX();
                     float inv_scalex = AppManager.mMainWindowController.getScaleXInv();
 
-                    if (AppManager.itemSelection.getEventCount() > 0 && AppManager.mInputTextBox.isVisible()) {
+                    if (AppManager.itemSelection.getEventCount() > 0 && AppManager.mInputTextBox.Visible) {
                         VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                         int event_x = (int)(original.Clock * scalex + xoffset);
                         int event_y = -original.ID.Note * track_height + yoffset;

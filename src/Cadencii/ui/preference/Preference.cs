@@ -72,7 +72,7 @@ namespace cadencii
             }
             comboVibratoLength.SelectedIndex = 1;
 
-            txtAutoVibratoThresholdLength.setText( "480" );
+            txtAutoVibratoThresholdLength.Text = "480";
 
             comboAutoVibratoType1.Items.Clear();
             for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
@@ -129,8 +129,8 @@ namespace cadencii
 
             updateMidiDevice();
 
-            txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
-            txtVOCALOID2.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+            txtVOCALOID1.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
+            txtVOCALOID2.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
 
             listSingers.Columns[0].Width = columnWidthHeaderProgramChange;
             listSingers.Columns[1].Width = columnWidthHeaderName;
@@ -186,7 +186,7 @@ namespace cadencii
         /// </summary>
         public String getWinePrefix()
         {
-            return textWinePrefix.getText();
+            return textWinePrefix.Text;
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace cadencii
         /// </summary>
         public void setWinePrefix( String value )
         {
-            textWinePrefix.setText( value );
+            textWinePrefix.Text = value;
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace cadencii
         /// </summary>
         public String getWineTop()
         {
-            return textWineTop.getText();
+            return textWineTop.Text;
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace cadencii
         /// </summary>
         public void setWineTop( String value )
         {
-            textWineTop.setText( value );
+            textWineTop.Text = value;
         }
 
         /// <summary>
@@ -1036,7 +1036,7 @@ namespace cadencii
         public int getAutoVibratoThresholdLength()
         {
             try {
-                int ret = str.toi( txtAutoVibratoThresholdLength.getText() );
+                int ret = str.toi( txtAutoVibratoThresholdLength.Text );
                 if ( ret < 0 ) {
                     ret = 0;
                 }
@@ -1051,7 +1051,7 @@ namespace cadencii
             if ( value < 0 ) {
                 value = 0;
             }
-            txtAutoVibratoThresholdLength.setText( value + "" );
+            txtAutoVibratoThresholdLength.Text = value + "";
         }
 
         public DefaultVibratoLengthEnum getDefaultVibratoLength()
@@ -1187,22 +1187,22 @@ namespace cadencii
 
         public String getPathWavtool()
         {
-            return txtWavtool.getText();
+            return txtWavtool.Text;
         }
 
         public void setPathWavtool( String value )
         {
-            txtWavtool.setText( value );
+            txtWavtool.Text = value;
         }
 
         public String getPathAquesTone()
         {
-            return txtAquesTone.getText();
+            return txtAquesTone.Text;
         }
 
         public void setPathAquesTone( String value )
         {
-            txtAquesTone.setText( value );
+            txtAquesTone.Text = value;
         }
 
         public string getPathAquesTone2() { return txtAquesTone2.Text; }
@@ -1280,12 +1280,12 @@ namespace cadencii
                     check = isWindowsExecutable( path );
                 }
                 listResampler.AddRow( new String[] { path }, check );
-                if ( str.compare( txtWavtool.getText(), "" ) ) {
+                if ( str.compare( txtWavtool.Text, "" ) ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
                     String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if ( fsys.isFileExists( wavtool ) ) {
-                        txtWavtool.setText( wavtool );
+                        txtWavtool.Text = wavtool;
                         check = false;
                         if ( is_mac ) {
                             check = isWindowsExecutable( wavtool );
@@ -1345,13 +1345,13 @@ namespace cadencii
 
         public void btnWavtool_Click( Object sender, EventArgs e )
         {
-            if ( !txtWavtool.getText().Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
-                openUtauCore.setSelectedFile( txtWavtool.getText() );
+            if ( !txtWavtool.Text.Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.Text ) ) ) {
+                openUtauCore.setSelectedFile( txtWavtool.Text );
             }
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
-                txtWavtool.setText( path );
+                txtWavtool.Text = path;
                 boolean is_mac = isMac();
                 boolean check = false;
                 if ( is_mac ) {
@@ -1509,7 +1509,7 @@ namespace cadencii
             BFileChooser dialog = null;
             try {
                 dialog = new BFileChooser();
-                String dir = textWinePrefix.getText();
+                String dir = textWinePrefix.Text;
                 if ( dir != null && str.length( dir ) > 0 ) {
                     dialog.setSelectedFile( fsys.combine( dir, "a" ) );
                 }
@@ -1519,7 +1519,7 @@ namespace cadencii
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
                     }
-                    textWinePrefix.setText( dir );
+                    textWinePrefix.Text = dir;
                 }
             } catch ( Exception ex ) {
             }
@@ -1530,7 +1530,7 @@ namespace cadencii
             BFileChooser dialog = null;
             try {
                 dialog = new BFileChooser();
-                String dir = textWineTop.getText();
+                String dir = textWineTop.Text;
                 if ( dir != null && str.length( dir ) > 0 ) {
                     dialog.setSelectedFile( fsys.combine( dir, "a" ) );
                 }
@@ -1540,7 +1540,7 @@ namespace cadencii
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
                     }
-                    textWineTop.setText( dir );
+                    textWineTop.Text = dir;
                 }
             } catch ( Exception ex ) {
             }
@@ -1549,7 +1549,7 @@ namespace cadencii
         public void radioWineBuiltin_CheckedChanged( Object sender, EventArgs e )
         {
             boolean enable = !radioWineBuiltin.Checked;
-            textWineTop.setEnabled( enable );
+            textWineTop.Enabled = enable;
             buttonWineTop.Enabled = enable;
         }
         #endregion

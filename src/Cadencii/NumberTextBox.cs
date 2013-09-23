@@ -32,7 +32,7 @@ namespace cadencii {
 #if JAVA
     public class NumberTextBox extends BTextBox {
 #else
-    public class NumberTextBox : BTextBox {
+    public class NumberTextBox : System.Windows.Forms.TextBox {
 #endif
         public enum ValueType {
             Double,
@@ -84,7 +84,7 @@ namespace cadencii {
 
         private void validateText() {
             boolean valid = false;
-            String text = getText();
+            String text = this.Text;
             if ( m_value_type == ValueType.Double ) {
                 double dou;
                 try {
@@ -111,11 +111,11 @@ namespace cadencii {
                 }
             }
             if ( valid ) {
-                setForeground( m_textcolor_normal );
-                setBackground( m_backcolor_normal );
+                ForeColor = m_textcolor_normal.color;
+                BackColor = m_backcolor_normal.color;
             } else {
-                setForeground( m_textcolor_invalid );
-                setBackground( m_backcolor_invalid );
+                ForeColor = m_textcolor_invalid.color;
+                BackColor = m_backcolor_invalid.color;
             }
         }
 

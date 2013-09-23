@@ -104,9 +104,9 @@ namespace cadencii
                 }
             }
 
-            txtVibratoLength.setEnabled( vibrato_handle != null );
+            txtVibratoLength.Enabled = (vibrato_handle != null);
             if ( vibrato_handle != null ) {
-                txtVibratoLength.setText( (int)((float)vibrato_handle.getLength() / (float)note_length * 100.0f) + "" );
+                txtVibratoLength.Text = (int)((float)vibrato_handle.getLength() / (float)note_length * 100.0f) + "";
             } else {
                 String s = "";
                 if ( default_vibrato_length == DefaultVibratoLengthEnum.L100 ) {
@@ -118,7 +118,7 @@ namespace cadencii
                 } else if ( default_vibrato_length == DefaultVibratoLengthEnum.L75 ) {
                     s = "75";
                 }
-                txtVibratoLength.setText( s );
+                txtVibratoLength.Text = s;
             }
   
             m_note_length = note_length;
@@ -245,10 +245,10 @@ namespace cadencii
                     sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; B; m_vibrato -> null" );
 #endif
                     m_vibrato = null;
-                    txtVibratoLength.setEnabled( false );
+                    txtVibratoLength.Enabled = false;
                     return;
                 } else {
-                    txtVibratoLength.setEnabled( true );
+                    txtVibratoLength.Enabled = true;
                     VibratoHandle src = null;
                     if ( radioUserDefined.Checked ) {
                         int size = vec.size( AppManager.editorConfig.AutoVibratoCustom );
@@ -275,7 +275,7 @@ namespace cadencii
                     if ( src != null ) {
                         int percent;
                         try {
-                            percent = str.toi( txtVibratoLength.getText() );
+                            percent = str.toi( txtVibratoLength.Text );
                         } catch ( Exception ex ) {
                             return;
                         }
@@ -295,7 +295,7 @@ namespace cadencii
 #endif
             int percent = 0;
             try {
-                percent = str.toi( txtVibratoLength.getText() );
+                percent = str.toi( txtVibratoLength.Text );
                 if ( percent < 0 ) {
                     percent = 0;
                 } else if ( 100 < percent ) {
@@ -309,7 +309,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoConfig#txtVibratoLength_TextChanged; A; m_vibrato -> null" );
 #endif
-                txtVibratoLength.setEnabled( false );
+                txtVibratoLength.Enabled = false;
             } else {
                 if ( m_vibrato != null ) {
                     int new_length = (int)(m_note_length * percent / 100.0f);

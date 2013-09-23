@@ -91,11 +91,11 @@ namespace cadencii
             String icon_id = "";
             if ( m_note_head_handle != null ) {
                 icon_id = m_note_head_handle.IconID;
-                txtDuration.setText( m_note_head_handle.getDuration() + "" );
-                txtDepth.setText( m_note_head_handle.getDepth() + "" );
+                txtDuration.Text = m_note_head_handle.getDuration() + "";
+                txtDepth.Text = m_note_head_handle.getDepth() + "";
             } else {
-                txtDuration.setEnabled( false );
-                txtDepth.setEnabled( false );
+                txtDuration.Enabled = false;
+                txtDepth.Enabled = false;
                 trackDuration.Enabled = false;
                 trackDepth.Enabled = false;
             }
@@ -178,7 +178,7 @@ namespace cadencii
         public void setPMBendDepth( int value )
         {
             trackBendDepth.Value = value;
-            txtBendDepth.setText( value + "" );
+            txtBendDepth.Text = value + "";
         }
 
         public int getPMBendLength()
@@ -189,7 +189,7 @@ namespace cadencii
         public void setPMBendLength( int value )
         {
             trackBendLength.Value = value;
-            txtBendLength.setText( value + "" );
+            txtBendLength.Text = value + "";
         }
 
         public int getPMbPortamentoUse()
@@ -226,7 +226,7 @@ namespace cadencii
         public void setDEMdecGainRate( int value )
         {
             trackDecay.Value = value;
-            txtDecay.setText( value + "" );
+            txtDecay.Text = value + "";
         }
 
         public int getDEMaccent()
@@ -237,7 +237,7 @@ namespace cadencii
         public void setDEMaccent( int value )
         {
             trackAccent.Value = value;
-            txtAccent.setText( value + "" );
+            txtAccent.Text = value + "";
         }
 
         public boolean getApplyCurrentTrack()
@@ -285,20 +285,20 @@ namespace cadencii
             }
             if ( index == 0 ) {
                 m_note_head_handle = null;
-                txtDuration.setEnabled( false );
+                txtDuration.Enabled = false;
                 trackDuration.Enabled = false;
-                txtDepth.setEnabled( false );
+                txtDepth.Enabled = false;
                 trackDepth.Enabled = false;
                 return;
             }
-            txtDuration.setEnabled( true );
+            txtDuration.Enabled = true;
             trackDuration.Enabled = true;
-            txtDepth.setEnabled( true );
+            txtDepth.Enabled = true;
             trackDepth.Enabled = true;
             NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.SelectedItem;
             if ( m_note_head_handle == null ) {
-                txtDuration.setText( aconfig.getDuration() + "" );
-                txtDepth.setText( aconfig.getDepth() + "" );
+                txtDuration.Text = aconfig.getDuration() + "";
+                txtDepth.Text = aconfig.getDepth() + "";
             }
             m_note_head_handle = (NoteHeadHandle)aconfig.clone();
             m_note_head_handle.setDuration( trackDuration.Value );
@@ -308,21 +308,21 @@ namespace cadencii
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
             String s = trackBendDepth.Value + "";
-            if( !str.compare( s, txtBendDepth.getText() ) ){
-                txtBendDepth.setText( s );
+            if( !str.compare( s, txtBendDepth.Text ) ){
+                txtBendDepth.Text = s;
             }
         }
 
         public void txtBendDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendDepth.getText() );
+                int draft = str.toi( txtBendDepth.Text );
                 if ( draft < trackBendDepth.Minimum ) {
                     draft = trackBendDepth.Minimum;
-                    txtBendDepth.setText( draft + "" );
+                    txtBendDepth.Text = draft + "";
                 } else if ( trackBendDepth.Maximum < draft ) {
                     draft = trackBendDepth.Maximum;
-                    txtBendDepth.setText( draft + "" );
+                    txtBendDepth.Text = draft + "";
                 }
                 if ( draft != trackBendDepth.Value ) {
                     trackBendDepth.Value = draft;
@@ -335,21 +335,21 @@ namespace cadencii
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
             String s = trackBendLength.Value + "";
-            if( !str.compare( s, txtBendLength.getText() ) ){
-                txtBendLength.setText( s );
+            if( !str.compare( s, txtBendLength.Text ) ){
+                txtBendLength.Text = s;
             }
         }
 
         public void txtBendLength_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendLength.getText() );
+                int draft = str.toi( txtBendLength.Text );
                 if ( draft < trackBendLength.Minimum ) {
                     draft = trackBendLength.Minimum;
-                    txtBendLength.setText( draft + "" );
+                    txtBendLength.Text = draft + "";
                 } else if ( trackBendLength.Maximum < draft ) {
                     draft = trackBendLength.Maximum;
-                    txtBendLength.setText( draft + "" );
+                    txtBendLength.Text = draft + "";
                 }
                 if ( draft != trackBendLength.Value ) {
                     trackBendLength.Value = draft;
@@ -362,21 +362,21 @@ namespace cadencii
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
             String s = trackDecay.Value + "";
-            if( !str.compare( s, txtDecay.getText() ) ){
-                txtDecay.setText( s );
+            if( !str.compare( s, txtDecay.Text ) ){
+                txtDecay.Text = s;
             }
         }
 
         public void txtDecay_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDecay.getText() );
+                int draft = str.toi( txtDecay.Text );
                 if ( draft < trackDecay.Minimum ) {
                     draft = trackDecay.Minimum;
-                    txtDecay.setText( draft + "" );
+                    txtDecay.Text = draft + "";
                 } else if ( trackDecay.Maximum < draft ) {
                     draft = trackDecay.Maximum;
-                    txtDecay.setText( draft + "" );
+                    txtDecay.Text = draft + "";
                 }
                 if ( draft != trackDecay.Value ) {
                     trackDecay.Value = draft;
@@ -389,21 +389,21 @@ namespace cadencii
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
             String s = trackAccent.Value + "";
-            if( !str.compare( s, txtAccent.getText() ) ){
-                txtAccent.setText( s );
+            if( !str.compare( s, txtAccent.Text ) ){
+                txtAccent.Text = s;
             }
         }
 
         public void txtAccent_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtAccent.getText() );
+                int draft = str.toi( txtAccent.Text );
                 if ( draft < trackAccent.Minimum ) {
                     draft = trackAccent.Minimum;
-                    txtAccent.setText( draft + "" );
+                    txtAccent.Text = draft + "";
                 } else if ( trackAccent.Maximum < draft ) {
                     draft = trackAccent.Maximum;
-                    txtAccent.setText( draft + "" );
+                    txtAccent.Text = draft + "";
                 }
                 if ( draft != trackAccent.Value ) {
                     trackAccent.Value = draft;
@@ -450,8 +450,8 @@ namespace cadencii
         public void trackDuration_Scroll( Object sender, EventArgs e )
         {
             String s = trackDuration.Value + "";
-            if( !str.compare( s, txtDuration.getText() ) ){
-                txtDuration.setText( s );
+            if( !str.compare( s, txtDuration.Text ) ){
+                txtDuration.Text = s;
             }
             if ( m_note_head_handle != null ) {
                 m_note_head_handle.setDuration( trackDuration.Value );
@@ -461,8 +461,8 @@ namespace cadencii
         public void trackDepth_Scroll( Object sender, EventArgs e )
         {
             String s = trackDepth.Value + "";
-            if( !str.compare( s, txtDepth.getText() ) ){
-                txtDepth.setText( s );
+            if( !str.compare( s, txtDepth.Text ) ){
+                txtDepth.Text = s;
             }
             if ( m_note_head_handle != null ) {
                 m_note_head_handle.setDepth( trackDepth.Value );
@@ -472,13 +472,13 @@ namespace cadencii
         public void txtDuration_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDuration.getText() );
+                int draft = str.toi( txtDuration.Text );
                 if ( draft < trackDuration.Minimum ) {
                     draft = trackDuration.Minimum;
-                    txtDuration.setText( draft + "" );
+                    txtDuration.Text = draft + "";
                 } else if ( trackDuration.Maximum < draft ) {
                     draft = trackDuration.Maximum;
-                    txtDuration.setText( draft + "" );
+                    txtDuration.Text = draft + "";
                 }
                 if ( draft != trackDuration.Value ) {
                     trackDuration.Value = draft;
@@ -497,13 +497,13 @@ namespace cadencii
         public void txtDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDepth.getText() );
+                int draft = str.toi( txtDepth.Text );
                 if ( draft < trackDepth.Minimum ) {
                     draft = trackDepth.Minimum;
-                    txtDepth.setText( draft + "" );
+                    txtDepth.Text = draft + "";
                 } else if ( trackDepth.Maximum < draft ) {
                     draft = trackDepth.Maximum;
-                    txtDepth.setText( draft + "" );
+                    txtDepth.Text = draft + "";
                 }
                 if ( draft != trackDepth.Value ) {
                     trackDepth.Value = draft;

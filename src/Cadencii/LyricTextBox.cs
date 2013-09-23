@@ -25,7 +25,7 @@ namespace cadencii {
     /// <summary>
     /// 歌詞入力用のテキストボックス
     /// </summary>
-    public class LyricTextBox : BTextBox {
+    public class LyricTextBox : TextBox {
         private String m_buf_text;
         private boolean m_phonetic_symbol_edit_mode;
 

@@ -51,7 +51,7 @@ namespace cadencii
             setResources();
             applyLanguage();
             m_master_tuning = master_tuning_in_cent;
-            txtMasterTuning.setText( master_tuning_in_cent + "" );
+            txtMasterTuning.Text = master_tuning_in_cent + "";
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -93,7 +93,7 @@ namespace cadencii
         {
             int v = m_master_tuning;
             try {
-                v = str.toi( txtMasterTuning.getText() );
+                v = str.toi( txtMasterTuning.Text );
                 m_master_tuning = v;
             } catch ( Exception ex ) {
             }
@@ -146,7 +146,7 @@ namespace cadencii
             this.btnOK = new Button();
             this.btnCancel = new Button();
             this.lblMasterTuning = new Label();
-            this.txtMasterTuning = new BTextBox();
+            this.txtMasterTuning = new TextBox();
             this.SuspendLayout();
             // 
             // btnOK
@@ -216,7 +216,7 @@ namespace cadencii
         private Button btnOK;
         private Button btnCancel;
         private Label lblMasterTuning;
-        private BTextBox txtMasterTuning;
+        private TextBox txtMasterTuning;
         #endregion
 #endif
         #endregion

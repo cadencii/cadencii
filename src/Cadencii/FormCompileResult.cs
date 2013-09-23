@@ -47,14 +47,14 @@ namespace cadencii
             setResources();
             applyLanguage();
             label1.Text = message;
-            textBox1.setText( errors );
+            textBox1.Text = errors;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
         public void applyLanguage()
         {
-            textBox1.setText( _( "Script Compilation Result" ) );
+            textBox1.Text = _( "Script Compilation Result" );
         }
         #endregion
 
@@ -110,7 +110,7 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new cadencii.windows.forms.BTextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
@@ -168,7 +168,7 @@ namespace cadencii
         }
 
         private System.Windows.Forms.Label label1;
-        private BTextBox textBox1;
+        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnOK;
 
 #endif

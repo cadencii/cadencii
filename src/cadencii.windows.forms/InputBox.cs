@@ -48,12 +48,12 @@ namespace cadencii.windows.forms
 
         public String getResult()
         {
-            return txtInput.getText();
+            return txtInput.Text;
         }
 
         public void setResult( String value )
         {
-            txtInput.setText( value );
+            txtInput.Text = value;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
@@ -102,7 +102,7 @@ namespace cadencii.windows.forms
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtInput = new cadencii.windows.forms.BTextBox();
+            this.txtInput = new TextBox();
             this.btnOk = new Button();
             this.lblMessage = new Label();
             this.btnCancel = new Button();
@@ -172,7 +172,7 @@ namespace cadencii.windows.forms
 
         private Label lblMessage;
         private Button btnCancel;
-        private BTextBox txtInput;
+        private TextBox txtInput;
         private Button btnOk;
 #endif
     }

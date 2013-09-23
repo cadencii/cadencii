@@ -63,10 +63,10 @@ namespace cadencii
             // singers
             checkSingerImport.Checked = apply_singer;
             checkSingerImport.Enabled = apply_singer;
-            textSingerPath.setEditable( false );
-            textSingerPath.setEnabled( apply_singer );
+            textSingerPath.ReadOnly = true;
+            textSingerPath.Enabled = apply_singer;
             if ( apply_singer ) {
-                textSingerPath.setText( singer );
+                textSingerPath.Text = singer;
                 SingerConfig sc = new SingerConfig();
                 String path_image = Utility.readUtauSingerConfig( singer, sc );
 #if DEBUG
@@ -80,10 +80,10 @@ namespace cadencii
             // resampler
             checkResamplerImport.Checked = apply_resampler;
             checkResamplerImport.Enabled = apply_resampler;
-            textResamplerPath.setEditable( false );
-            textResamplerPath.setEnabled( apply_resampler );
+            textResamplerPath.ReadOnly = true;
+            textResamplerPath.Enabled = apply_resampler;
             if ( apply_resampler ) {
-                textResamplerPath.setText( resampler );
+                textResamplerPath.Text = resampler;
             }
 
             registerEventHandlers();
@@ -105,7 +105,7 @@ namespace cadencii
         /// <returns></returns>
         public String getSingerPath()
         {
-            return textSingerPath.getText();
+            return textSingerPath.Text;
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace cadencii
         /// <returns></returns>
         public String getResamplerPath()
         {
-            return textResamplerPath.getText();
+            return textResamplerPath.Text;
         }
         #endregion
 
@@ -187,9 +187,9 @@ namespace cadencii
             this.checkSingerImport = new System.Windows.Forms.CheckBox();
             this.pictureSinger = new cadencii.IconParader();
             this.labelSingerName = new System.Windows.Forms.Label();
-            this.textSingerPath = new cadencii.windows.forms.BTextBox();
+            this.textSingerPath = new System.Windows.Forms.TextBox();
             this.checkResamplerImport = new System.Windows.Forms.CheckBox();
-            this.textResamplerPath = new cadencii.windows.forms.BTextBox();
+            this.textResamplerPath = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).BeginInit();
             this.SuspendLayout();
             //
@@ -326,9 +326,9 @@ namespace cadencii
         private System.Windows.Forms.Label labelMessage;
         private System.Windows.Forms.CheckBox checkSingerImport;
         private System.Windows.Forms.Label labelSingerName;
-        private BTextBox textSingerPath;
+        private System.Windows.Forms.TextBox textSingerPath;
         private System.Windows.Forms.CheckBox checkResamplerImport;
-        private BTextBox textResamplerPath;
+        private System.Windows.Forms.TextBox textResamplerPath;
         private IconParader pictureSinger;
 
         #endregion

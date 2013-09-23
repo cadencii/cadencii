@@ -166,9 +166,9 @@ namespace cadencii
 
             // テクストボックスに値を反映
             mSelected = mHandles.get( index );
-            textDepth.setText( mSelected.getStartDepth() + "" );
-            textRate.setText( mSelected.getStartRate() + "" );
-            textName.setText( mSelected.getCaption() );
+            textDepth.Text = mSelected.getStartDepth() + "";
+            textRate.Text = mSelected.getStartRate() + "";
+            textName.Text = mSelected.getCaption();
 
             // イベントハンドラを再登録
             textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
@@ -185,7 +185,7 @@ namespace cadencii
                 return;
             }
 
-            mSelected.setCaption( textName.getText() );
+            mSelected.setCaption( textName.Text );
             int index = listPresets.SelectedIndex;
             if( index >= 0 ){
                 listPresets.Items[index] = mSelected.getCaption();
@@ -200,7 +200,7 @@ namespace cadencii
 
             int old = mSelected.getStartRate();
             int value = old;
-            String s = textRate.getText();
+            String s = textRate.Text;
             try {
                 value = str.toi( s );
             } catch ( Exception ex ) {
@@ -215,7 +215,7 @@ namespace cadencii
             mSelected.setStartRate( value );
             String nstr = value + "";
             if ( !str.compare( s, nstr ) ) {
-                textRate.setText( nstr );
+                textRate.Text = nstr;
 #if JAVA
                 textRate.setCaretPosition( nstr.length() );
 #else
@@ -234,7 +234,7 @@ namespace cadencii
 
             int old = mSelected.getStartDepth();
             int value = old;
-            String s = textDepth.getText();
+            String s = textDepth.Text;
             try {
                 value = str.toi( s );
             } catch ( Exception ex ) {
@@ -249,7 +249,7 @@ namespace cadencii
             mSelected.setStartDepth( value );
             String nstr = value + "";
             if ( !str.compare( s, nstr ) ) {
-                textDepth.setText( nstr );
+                textDepth.Text = nstr;
 #if JAVA
                 textDepth.setCaretPosition( nstr.length() );
 #else
@@ -700,7 +700,7 @@ namespace cadencii
             this.labelResulting = new Label();
             this.pictureResulting = new cadencii.windows.forms.BPictureBox();
             this.groupEdit = new System.Windows.Forms.GroupBox();
-            this.textName = new cadencii.windows.forms.BTextBox();
+            this.textName = new TextBox();
             this.labelName = new Label();
             this.groupPreview = new System.Windows.Forms.GroupBox();
             this.listPresets = new ListBox();
@@ -1055,7 +1055,7 @@ namespace cadencii
         private BPictureBox pictureResulting;
         private GroupBox groupEdit;
         private Label labelName;
-        private BTextBox textName;
+        private TextBox textName;
         private GroupBox groupPreview;
         private ListBox listPresets;
         private System.Windows.Forms.Button buttonDown;
