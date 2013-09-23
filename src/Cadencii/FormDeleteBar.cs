@@ -46,8 +46,8 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            numStart.setMaximum( max_barcount );
-            numEnd.setMaximum( max_barcount );
+            numStart.Maximum = max_barcount;
+            numEnd.Maximum = max_barcount;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -63,22 +63,22 @@ namespace cadencii
 
         public int getStart()
         {
-            return (int)numStart.getFloatValue();
+            return (int)numStart.Value;
         }
 
         public void setStart( int value )
         {
-            numStart.setFloatValue( value );
+            numStart.Value = value;
         }
 
         public int getEnd()
         {
-            return (int)numEnd.getFloatValue();
+            return (int)numEnd.Value;
         }
 
         public void setEnd( int value )
         {
-            numEnd.setFloatValue( value );
+            numEnd.Value = value;
         }
         #endregion
 

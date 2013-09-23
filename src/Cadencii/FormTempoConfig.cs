@@ -48,17 +48,17 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            numBar.setMinimum( -pre_measure + 1 );
-            numBar.setMaximum( 100000 );
-            numBar.setFloatValue( bar_count );
+            numBar.Minimum = -pre_measure + 1;
+            numBar.Maximum = 100000;
+            numBar.Value = bar_count;
 
-            numBeat.setMinimum( 1 );
-            numBeat.setMaximum( beat_max );
-            numBeat.setFloatValue( beat );
-            numClock.setMinimum( 0 );
-            numClock.setMaximum( clock_max );
-            numClock.setFloatValue( clock );
-            numTempo.setFloatValue( tempo );
+            numBeat.Minimum = 1;
+            numBeat.Maximum = beat_max;
+            numBeat.Value = beat;
+            numClock.Minimum = 0;
+            numClock.Maximum = clock_max;
+            numClock.Value = clock;
+            numTempo.Value = (decimal)tempo;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -80,17 +80,17 @@ namespace cadencii
 
         public int getBeatCount()
         {
-            return (int)numBeat.getFloatValue();
+            return (int)numBeat.Value;
         }
 
         public int getClock()
         {
-            return (int)numClock.getFloatValue();
+            return (int)numClock.Value;
         }
 
         public float getTempo()
         {
-            return numTempo.getFloatValue();
+            return (float)numTempo.Value;
         }
         #endregion
 

@@ -30,7 +30,7 @@ namespace cadencii
 #if JAVA
     public class NumericUpDownEx extends BNumericUpDown {
 #else
-    public class NumericUpDownEx : BNumericUpDown
+    public class NumericUpDownEx : NumericUpDown
     {
 #endif
         private const long serialVersionUID = -4608658084088065812L;

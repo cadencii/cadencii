@@ -148,8 +148,8 @@ namespace cadencii
             .ForEach( ( kind ) => comboDefaultSynthesizer.Items.Add( kind ) );
             comboDefaultSynthesizer.SelectedIndex = 0;
 
-            numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
-            numBuffer.setMinimum( EditorConfig.MIN_BUFFER_MILLIXEC );
+            numBuffer.Maximum = EditorConfig.MAX_BUFFER_MILLISEC;
+            numBuffer.Minimum = EditorConfig.MIN_BUFFER_MILLIXEC;
 
             registerEventHandlers();
             setResources();
@@ -291,7 +291,7 @@ namespace cadencii
         /// <returns></returns>
         public int getBufferSize()
         {
-            return (int)numBuffer.getFloatValue();
+            return (int)numBuffer.Value;
         }
 
         /// <summary>
@@ -300,12 +300,12 @@ namespace cadencii
         /// <param name="value"></param>
         public void setBufferSize( int value )
         {
-            if ( value < numBuffer.getMinimum() ) {
-                value = (int)numBuffer.getMinimum();
-            } else if ( numBuffer.getMaximum() < value ) {
-                value = (int)numBuffer.getMaximum();
+            if ( value < numBuffer.Minimum ) {
+                value = (int)numBuffer.Minimum;
+            } else if ( numBuffer.Maximum < value ) {
+                value = (int)numBuffer.Maximum;
             }
-            numBuffer.setFloatValue( value );
+            numBuffer.Value = value;
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace cadencii
         public int getAutoBackupIntervalMinutes()
         {
             if ( chkAutoBackup.Checked ) {
-                return (int)numAutoBackupInterval.getFloatValue();
+                return (int)numAutoBackupInterval.Value;
             } else {
                 return 0;
             }
@@ -406,7 +406,7 @@ namespace cadencii
                 chkAutoBackup.Checked = false;
             } else {
                 chkAutoBackup.Checked = true;
-                numAutoBackupInterval.setFloatValue( value );
+                numAutoBackupInterval.Value = value;
             }
         }
 
@@ -707,22 +707,22 @@ namespace cadencii
 
         public int getMouseHoverTime()
         {
-            return (int)numMouseHoverTime.getFloatValue();
+            return (int)numMouseHoverTime.Value;
         }
 
         public void setMouseHoverTime( int value )
         {
-            numMouseHoverTime.setFloatValue( value );
+            numMouseHoverTime.Value = value;
         }
 
         public int getPxTrackHeight()
         {
-            return (int)numTrackHeight.getFloatValue();
+            return (int)numTrackHeight.Value;
         }
 
         public void setPxTrackHeight( int value )
         {
-            numTrackHeight.setFloatValue( value );
+            numTrackHeight.Value = value;
         }
 
         public boolean isKeepLyricInputMode()
@@ -737,12 +737,12 @@ namespace cadencii
 
         public int getMaximumFrameRate()
         {
-            return (int)numMaximumFrameRate.getFloatValue();
+            return (int)numMaximumFrameRate.Value;
         }
 
         public void setMaximumFrameRate( int value )
         {
-            numMaximumFrameRate.setFloatValue( value );
+            numMaximumFrameRate.Value = value;
         }
 
         public boolean isScrollHorizontalOnWheel()
@@ -940,12 +940,12 @@ namespace cadencii
 
         public int getPreSendTime()
         {
-            return (int)numPreSendTime.getFloatValue();
+            return (int)numPreSendTime.Value;
         }
 
         public void setPreSendTime( int value )
         {
-            numPreSendTime.setFloatValue( value );
+            numPreSendTime.Value = value;
         }
 
         public boolean isEnableAutoVibrato()
@@ -1092,17 +1092,17 @@ namespace cadencii
 
         public int getWheelOrder()
         {
-            return (int)numericUpDownEx1.getFloatValue();
+            return (int)numericUpDownEx1.Value;
         }
 
         public void setWheelOrder( int value )
         {
-            if ( value < numericUpDownEx1.getMinimum() ) {
-                numericUpDownEx1.setFloatValue( numericUpDownEx1.getMinimum() );
-            } else if ( numericUpDownEx1.getMaximum() < value ) {
-                numericUpDownEx1.setFloatValue( numericUpDownEx1.getMaximum() );
+            if ( value < numericUpDownEx1.Minimum ) {
+                numericUpDownEx1.Value = numericUpDownEx1.Minimum;
+            } else if ( numericUpDownEx1.Maximum < value ) {
+                numericUpDownEx1.Value = numericUpDownEx1.Maximum;
             } else {
-                numericUpDownEx1.setFloatValue( value );
+                numericUpDownEx1.Value = value;
             }
         }
 
@@ -1475,7 +1475,7 @@ namespace cadencii
 
         public void chkAutoBackup_CheckedChanged( Object sender, EventArgs e )
         {
-            numAutoBackupInterval.setEnabled( chkAutoBackup.Checked );
+            numAutoBackupInterval.Enabled = chkAutoBackup.Checked;
         }
 
         public void Preference_FormClosing( Object sender, FormClosingEventArgs e )

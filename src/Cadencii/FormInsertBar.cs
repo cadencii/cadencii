@@ -47,7 +47,7 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            numPosition.setMaximum( max_position );
+            numPosition.Maximum = max_position;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -74,22 +74,22 @@ namespace cadencii
 
         public int getLength()
         {
-            return (int)numLength.getFloatValue();
+            return (int)numLength.Value;
         }
 
         public void setLength( int value )
         {
-            numLength.setFloatValue( value );
+            numLength.Value = value;
         }
 
         public int getPosition()
         {
-            return (int)numPosition.getFloatValue();
+            return (int)numPosition.Value;
         }
 
         public void setPosition( int value )
         {
-            numPosition.setFloatValue( value );
+            numPosition.Value = value;
         }
         #endregion
 

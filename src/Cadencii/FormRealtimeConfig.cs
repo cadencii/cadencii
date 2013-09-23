@@ -59,7 +59,7 @@ namespace cadencii
         #region public methods
         public float getSpeed()
         {
-            return (float)numSpeed.getFloatValue();
+            return (float)numSpeed.Value;
         }
         #endregion
 
@@ -114,7 +114,7 @@ namespace cadencii
                             btnCancel.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_d ) {
-                            numSpeed.requestFocus();
+                            numSpeed.Focus();
                             m_last_event_processed = now;
                         }
                     } else if ( btnCancel.Focused ) {
@@ -126,18 +126,18 @@ namespace cadencii
                             btnStart.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_d || pov_r ) {
-                            numSpeed.requestFocus();
+                            numSpeed.Focus();
                             m_last_event_processed = now;
                         }
-                    } else if ( numSpeed.isFocusOwner() ) {
+                    } else if ( numSpeed.Focused ) {
                         if ( R1 ) {
-                            if ( numSpeed.getFloatValue() + numSpeed.getIncrement() <= numSpeed.getMaximum() ) {
-                                numSpeed.setFloatValue( numSpeed.getFloatValue() + numSpeed.getIncrement() );
+                            if ( numSpeed.Value + numSpeed.Increment <= numSpeed.Maximum ) {
+                                numSpeed.Value = numSpeed.Value + numSpeed.Increment;
                                 m_last_event_processed = now;
                             }
                         } else if ( L1 ) {
-                            if ( numSpeed.getFloatValue() - numSpeed.getIncrement() >= numSpeed.getMinimum() ) {
-                                numSpeed.setFloatValue( numSpeed.getFloatValue() - numSpeed.getIncrement() );
+                            if ( numSpeed.Value - numSpeed.Increment >= numSpeed.Minimum ) {
+                                numSpeed.Value = numSpeed.Value - numSpeed.Increment;
                                 m_last_event_processed = now;
                             }
                         } else if ( pov_l ) {
@@ -218,7 +218,7 @@ namespace cadencii
             this.btnCancel = new System.Windows.Forms.Button();
             this.lblRealTimeInput = new System.Windows.Forms.Label();
             this.lblSpeed = new System.Windows.Forms.Label();
-            this.numSpeed = new BNumericUpDown();
+            this.numSpeed = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
             this.SuspendLayout();
             // 
@@ -324,7 +324,7 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblRealTimeInput;
         private System.Windows.Forms.Label lblSpeed;
-        private BNumericUpDown numSpeed;
+        private System.Windows.Forms.NumericUpDown numSpeed;
         #endregion
 #endif
         #endregion

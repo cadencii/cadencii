@@ -97,14 +97,14 @@ namespace cadencii
             chkShift.Checked = lastPositionRandomizeEnabled;
             comboShiftValue.SelectedIndex = lastPositionRandomizeValue - 1;
             chkPit.Checked = lastPitRandomizeEnabled;
-            numResolution.setFloatValue( lastResolution );
+            numResolution.Value = lastResolution;
             comboPitPattern.SelectedIndex = lastPitRandomizePattern - 1;
             comboPitValue.SelectedIndex = lastPitRandomizeValue - 1;
             lockRequired = true;
-            numStartBar.setFloatValue( lastStartBar );
-            numStartBeat.setFloatValue( lastStartBeat );
-            numEndBar.setFloatValue( lastEndBar );
-            numEndBeat.setFloatValue( lastEndBeat );
+            numStartBar.Value = lastStartBar;
+            numStartBeat.Value = lastStartBeat;
+            numEndBar.Value = lastEndBar;
+            numEndBeat.Value = lastEndBeat;
             lockRequired = false;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -177,14 +177,14 @@ namespace cadencii
             }
 
             lockRequired = true;
-            numStartBar.setMaximum( startBarMax );
-            numStartBar.setMinimum( startBarMin );
-            numStartBeat.setMaximum( startBeatMax );
-            numStartBeat.setMinimum( startBeatMin );
-            numEndBar.setMaximum( endBarMax );
-            numEndBar.setMinimum( endBarMin );
-            numEndBeat.setMaximum( endBeatMax );
-            numEndBeat.setMinimum( endBeatMin );
+            numStartBar.Maximum = startBarMax;
+            numStartBar.Minimum = startBarMin;
+            numStartBeat.Maximum = startBeatMax;
+            numStartBeat.Minimum = startBeatMin;
+            numEndBar.Maximum = endBarMax;
+            numEndBar.Minimum = endBarMin;
+            numEndBeat.Maximum = endBeatMax;
+            numEndBeat.Minimum = endBeatMin;
             lockRequired = false;
         }
 
@@ -216,7 +216,7 @@ namespace cadencii
         public void chkPit_CheckedChanged( Object sender, EventArgs e )
         {
             boolean v = chkPit.Checked;
-            numResolution.setEnabled( v );
+            numResolution.Enabled = v;
             comboPitPattern.Enabled = v;
             comboPitValue.Enabled = v;
         }
@@ -253,27 +253,27 @@ namespace cadencii
         #region public methods
         public int getResolution()
         {
-            return (int)numResolution.getFloatValue();
+            return (int)numResolution.Value;
         }
 
         public int getStartBar()
         {
-            return (int)numStartBar.getFloatValue();
+            return (int)numStartBar.Value;
         }
 
         public int getStartBeat()
         {
-            return (int)numStartBeat.getFloatValue();
+            return (int)numStartBeat.Value;
         }
 
         public int getEndBar()
         {
-            return (int)numEndBar.getFloatValue();
+            return (int)numEndBar.Value;
         }
 
         public int getEndBeat()
         {
-            return (int)numEndBeat.getFloatValue();
+            return (int)numEndBeat.Value;
         }
 
         public boolean isPositionRandomizeEnabled()
