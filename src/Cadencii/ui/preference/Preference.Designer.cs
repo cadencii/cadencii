@@ -78,9 +78,9 @@ namespace cadencii
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.txtAutoVibratoThresholdLength = new cadencii.NumberTextBox();
             this.bLabel1 = new System.Windows.Forms.Label();
-            this.radioUserDefined = new cadencii.windows.forms.BRadioButton();
+            this.radioUserDefined = new System.Windows.Forms.RadioButton();
             this.lblAutoVibratoType = new System.Windows.Forms.Label();
-            this.radioVocaloidEditorCompatible = new cadencii.windows.forms.BRadioButton();
+            this.radioVocaloidEditorCompatible = new System.Windows.Forms.RadioButton();
             this.groupUserDefined = new System.Windows.Forms.GroupBox();
             this.comboAutoVibratoTypeCustom = new System.Windows.Forms.ComboBox();
             this.lblAutoVibratoTypeCustom = new System.Windows.Forms.Label();
@@ -171,8 +171,8 @@ namespace cadencii
             this.chkKeepLyricInputMode = new System.Windows.Forms.CheckBox();
             this.tabPlatform = new System.Windows.Forms.TabPage();
             this.groupWine = new System.Windows.Forms.GroupBox();
-            this.radioWineCustom = new cadencii.windows.forms.BRadioButton();
-            this.radioWineBuiltin = new cadencii.windows.forms.BRadioButton();
+            this.radioWineCustom = new System.Windows.Forms.RadioButton();
+            this.radioWineBuiltin = new System.Windows.Forms.RadioButton();
             this.labelWineTop = new System.Windows.Forms.Label();
             this.buttonWineTop = new System.Windows.Forms.Button();
             this.textWineTop = new cadencii.windows.forms.BTextBox();
@@ -2338,8 +2338,8 @@ namespace cadencii
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupUserDefined;
         private System.Windows.Forms.Label lblAutoVibratoType;
-        private BRadioButton radioVocaloidEditorCompatible;
-        private BRadioButton radioUserDefined;
+        private System.Windows.Forms.RadioButton radioVocaloidEditorCompatible;
+        private System.Windows.Forms.RadioButton radioUserDefined;
         private System.Windows.Forms.Label bLabel1;
         private NumberTextBox txtAutoVibratoThresholdLength;
         private System.Windows.Forms.ComboBox comboAutoVibratoTypeCustom;
@@ -2359,8 +2359,8 @@ namespace cadencii
         private System.Windows.Forms.Label labelWineTop;
         private System.Windows.Forms.Button buttonWineTop;
         private BTextBox textWineTop;
-        private BRadioButton radioWineCustom;
-        private BRadioButton radioWineBuiltin;
+        private System.Windows.Forms.RadioButton radioWineCustom;
+        private System.Windows.Forms.RadioButton radioWineBuiltin;
         private System.Windows.Forms.CheckBox checkEnableWideCharacterWorkaround;
         private System.Windows.Forms.Button btnAquesTone2;
         private System.Windows.Forms.Label lblAquesTone2;

@@ -73,12 +73,12 @@ namespace cadencii
             sout.println( "    type=" + type );
 #endif
             if ( use_original ) {
-                radioUserDefined.setSelected( true );
+                radioUserDefined.Checked = true;
             } else {
                 if ( type == SynthesizerType.VOCALOID1 ) {
-                    radioVocaloid1.setSelected( true );
+                    radioVocaloid1.Checked = true;
                 } else {
-                    radioVocaloid2.setSelected( true );
+                    radioVocaloid2.Checked = true;
                 }
             }
             if ( vibrato_handle != null ) {
@@ -176,7 +176,7 @@ namespace cadencii
             comboVibratoType.Items.Add( empty );
 
             // 選択元を元に，選択肢を追加する
-            if ( radioUserDefined.isSelected() ) {
+            if ( radioUserDefined.Checked ) {
                 // ユーザー定義のを使う場合
                 int size = AppManager.editorConfig.AutoVibratoCustom.size();
                 for ( int i = 0; i < size; i++ ) {
@@ -185,7 +185,7 @@ namespace cadencii
                 }
             } else {
                 // VOCALOID1/VOCALOID2のシステム定義のを使う場合
-                SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                 for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                     VibratoHandle vconfig = itr.next();
                     comboVibratoType.Items.Add( vconfig );
@@ -250,7 +250,7 @@ namespace cadencii
                 } else {
                     txtVibratoLength.setEnabled( true );
                     VibratoHandle src = null;
-                    if ( radioUserDefined.isSelected() ) {
+                    if ( radioUserDefined.Checked ) {
                         int size = vec.size( AppManager.editorConfig.AutoVibratoCustom );
                         for ( int i = 0; i < size; i++ ) {
                             VibratoHandle handle = vec.get( AppManager.editorConfig.AutoVibratoCustom, i );
@@ -260,7 +260,7 @@ namespace cadencii
                             }
                         }
                     } else {
-                        SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                        SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                             VibratoHandle vconfig = itr.next();
                             if ( str.compare( s, vconfig.IconID ) ) {
@@ -364,9 +364,9 @@ namespace cadencii
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupSelect = new System.Windows.Forms.GroupBox();
-            this.radioUserDefined = new BRadioButton();
-            this.radioVocaloid2 = new BRadioButton();
-            this.radioVocaloid1 = new BRadioButton();
+            this.radioUserDefined = new System.Windows.Forms.RadioButton();
+            this.radioVocaloid2 = new System.Windows.Forms.RadioButton();
+            this.radioVocaloid1 = new System.Windows.Forms.RadioButton();
             this.groupSelect.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -525,9 +525,9 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.GroupBox groupSelect;
-        private BRadioButton radioVocaloid2;
-        private BRadioButton radioVocaloid1;
-        private BRadioButton radioUserDefined;
+        private System.Windows.Forms.RadioButton radioVocaloid2;
+        private System.Windows.Forms.RadioButton radioVocaloid1;
+        private System.Windows.Forms.RadioButton radioUserDefined;
         #endregion
 #endif
     }

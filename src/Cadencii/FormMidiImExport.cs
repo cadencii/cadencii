@@ -85,8 +85,8 @@ namespace cadencii
                 setTitle( _( "VSQ/Vocaloid Midi Import" ) );
             }
             groupMode.Text = _( "Import Basis" );
-            radioGateTime.setText( _( "gate-time" ) );
-            radioPlayTime.setText( _( "play-time" ) );
+            radioGateTime.Text = _( "gate-time" );
+            radioPlayTime.Text = _( "play-time" );
             listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.Text = _( "Check All" );
             btnUncheckAll.Text = _( "Uncheck All" );
@@ -99,7 +99,7 @@ namespace cadencii
             chkLyric.Text = _( "Lyrics" );
             chkExportVocaloidNrpn.Text = _( "vocaloid NRPN" );
             lblOffset.Text = _( "offset" );
-            if ( radioGateTime.isSelected() ) {
+            if ( radioGateTime.Checked ) {
                 lblOffsetUnit.Text = _( "clocks" );
             } else {
                 lblOffsetUnit.Text = _( "seconds" );
@@ -132,7 +132,7 @@ namespace cadencii
 
         public boolean isSecondBasis()
         {
-            return radioPlayTime.isSelected();
+            return radioPlayTime.Checked;
         }
 
         public FormMidiMode getMode()
@@ -327,7 +327,7 @@ namespace cadencii
 
         public void radioGateTime_CheckedChanged( Object sender, EventArgs e )
         {
-            if ( radioGateTime.isSelected() ) {
+            if ( radioGateTime.Checked ) {
                 lblOffsetUnit.Text = _( "clocks" );
                 txtOffset.setType( NumberTextBox.ValueType.Integer );
             }
@@ -335,7 +335,7 @@ namespace cadencii
 
         public void radioPlayTime_CheckedChanged( Object sender, EventArgs e )
         {
-            if ( radioPlayTime.isSelected() ) {
+            if ( radioPlayTime.Checked ) {
                 lblOffsetUnit.Text = _( "seconds" );
                 txtOffset.setType( NumberTextBox.ValueType.Double );
             }
@@ -391,8 +391,8 @@ namespace cadencii
             this.lblOffsetUnit = new Label();
             this.txtOffset = new cadencii.NumberTextBox();
             this.lblOffset = new Label();
-            this.radioPlayTime = new cadencii.windows.forms.BRadioButton();
-            this.radioGateTime = new cadencii.windows.forms.BRadioButton();
+            this.radioPlayTime = new RadioButton();
+            this.radioGateTime = new RadioButton();
             this.groupCommonOption.SuspendLayout();
             this.groupMode.SuspendLayout();
             this.SuspendLayout();
@@ -687,8 +687,8 @@ namespace cadencii
         private CheckBox chkPreMeasure;
         private CheckBox chkMetaText;
         private GroupBox groupMode;
-        private BRadioButton radioPlayTime;
-        private BRadioButton radioGateTime;
+        private RadioButton radioPlayTime;
+        private RadioButton radioGateTime;
         private Label lblOffset;
         private NumberTextBox txtOffset;
         private Label lblOffsetUnit;

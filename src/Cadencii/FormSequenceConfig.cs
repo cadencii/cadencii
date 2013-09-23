@@ -92,8 +92,8 @@ namespace cadencii
             lblChannel.Mnemonic( KeyEvent.VK_C );
             labelSampleRate.Text = _( "Sample rate" );
             labelSampleRate.Mnemonic( KeyEvent.VK_S );
-            radioMasterTrack.setText( _( "Master Track" ) );
-            radioCurrentTrack.setText( _( "Current Track" ) );
+            radioMasterTrack.Text = _( "Master Track" );
+            radioCurrentTrack.Text = _( "Current Track" );
             labelSampleRate.Text = _( "Sample rate" );
 
             int current_index = comboChannel.SelectedIndex;
@@ -199,13 +199,13 @@ namespace cadencii
 
         public boolean isWaveFileOutputFromMasterTrack()
         {
-            return radioMasterTrack.isSelected();
+            return radioMasterTrack.Checked;
         }
 
         public void setWaveFileOutputFromMasterTrack( boolean value )
         {
-            radioMasterTrack.setSelected( value );
-            radioCurrentTrack.setSelected( !value );
+            radioMasterTrack.Checked = value;
+            radioCurrentTrack.Checked = !value;
         }
 
         public int getWaveFileOutputChannel()
@@ -289,8 +289,8 @@ namespace cadencii
             this.groupWaveFileOutput = new System.Windows.Forms.GroupBox();
             this.comboSampleRate = new System.Windows.Forms.ComboBox();
             this.labelSampleRate = new System.Windows.Forms.Label();
-            this.radioCurrentTrack = new cadencii.windows.forms.BRadioButton();
-            this.radioMasterTrack = new cadencii.windows.forms.BRadioButton();
+            this.radioCurrentTrack = new System.Windows.Forms.RadioButton();
+            this.radioMasterTrack = new System.Windows.Forms.RadioButton();
             this.lblChannel = new System.Windows.Forms.Label();
             this.comboChannel = new System.Windows.Forms.ComboBox();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -468,8 +468,8 @@ namespace cadencii
         private System.Windows.Forms.Label lblChannel;
         private System.Windows.Forms.ComboBox comboChannel;
         private System.Windows.Forms.GroupBox groupWaveFileOutput;
-        private BRadioButton radioCurrentTrack;
-        private BRadioButton radioMasterTrack;
+        private System.Windows.Forms.RadioButton radioCurrentTrack;
+        private System.Windows.Forms.RadioButton radioMasterTrack;
         private System.Windows.Forms.Label labelSampleRate;
         private System.Windows.Forms.GroupBox groupSequence;
         private System.Windows.Forms.Label labelPreMeasure;

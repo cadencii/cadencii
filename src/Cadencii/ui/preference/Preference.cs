@@ -218,7 +218,7 @@ namespace cadencii
         /// </summary>
         public boolean isWineBuiltin()
         {
-            return radioWineBuiltin.isSelected();
+            return radioWineBuiltin.Checked;
         }
 
         /// <summary>
@@ -226,8 +226,8 @@ namespace cadencii
         /// </summary>        
         public void setWineBuiltin( boolean value )
         {
-            radioWineBuiltin.setSelected( value );
-            radioWineCustom.setSelected( !value );
+            radioWineBuiltin.Checked = value;
+            radioWineCustom.Checked = !value;
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isUseUserDefinedAutoVibratoType()
         {
-            return radioUserDefined.isSelected();
+            return radioUserDefined.Checked;
         }
 
         /// <summary>
@@ -246,8 +246,8 @@ namespace cadencii
         /// <returns></returns>
         public void setUseUserDefinedAutoVibratoType( boolean value )
         {
-            radioUserDefined.setSelected( value );
-            radioVocaloidEditorCompatible.setSelected( !value );
+            radioUserDefined.Checked = value;
+            radioVocaloidEditorCompatible.Checked = !value;
         }
 
         /// <summary>
@@ -801,8 +801,8 @@ namespace cadencii
             lblAutoVibratoType.Text = _( "Auto Vibrato Type" );
             groupVocaloidEditorCompatible.Text = _( "VOCALOID Editor Compatible" );
             groupUserDefined.Text = _( "User Defined" );
-            radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
-            radioUserDefined.setText( _( "User Defined" ) );
+            radioVocaloidEditorCompatible.Text = _( "VOCALOID Editor Compatible" );
+            radioUserDefined.Text = _( "User Defined" );
             chkEnableAutoVibrato.Text = _("Enable Automatic Vibrato");
             chkEnableAutoVibrato.Mnemonic(KeyEvent.VK_E);
             lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1";
@@ -1492,8 +1492,8 @@ namespace cadencii
 
         public void commonChangeAutoVibratoType( Object sender, EventArgs e )
         {
-            boolean v = radioVocaloidEditorCompatible.isSelected();
-            boolean ud = radioUserDefined.isSelected();
+            boolean v = radioVocaloidEditorCompatible.Checked;
+            boolean ud = radioUserDefined.Checked;
             groupVocaloidEditorCompatible.Enabled = v;
             groupUserDefined.Enabled = ud;
             comboAutoVibratoType1.Enabled = v;
@@ -1548,7 +1548,7 @@ namespace cadencii
 
         public void radioWineBuiltin_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean enable = !radioWineBuiltin.isSelected();
+            boolean enable = !radioWineBuiltin.Checked;
             textWineTop.setEnabled( enable );
             buttonWineTop.Enabled = enable;
         }

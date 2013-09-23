@@ -66,9 +66,6 @@
     <Compile Include="BPropertyGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BRadioButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BSlider.cs">
       <SubType>Component</SubType>
     </Compile>
