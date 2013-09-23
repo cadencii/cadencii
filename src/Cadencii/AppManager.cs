@@ -1703,37 +1703,11 @@ namespace cadencii
 #if JAVA
         public static int showModalDialog( BFileChooser dialog, boolean open_mode, Object main_form )
 #else
-        public static int showModalDialog( BFileChooser dialog, boolean open_mode, System.Windows.Forms.Form main_form )
+        public static DialogResult showModalDialog( FileDialog dialog, boolean open_mode, Form main_form )
 #endif
         {
             beginShowDialog();
-            int ret = 0;
-
-            if ( open_mode ) {
-#if JAVA
-                if( main_form instanceof Frame ){
-                    ret = dialog.showOpenDialog( (Frame)main_form );
-                }else if( main_form instanceof Dialog ){
-                    ret = dialog.showOpenDialog( (Dialog)main_form );
-                }else{
-                    ret = BFileChooser.ERROR_OPTION;
-                }
-#else
-                ret = dialog.showOpenDialog( main_form );
-#endif
-            } else {
-#if JAVA
-                if( main_form instanceof Frame ){
-                    ret = dialog.showSaveDialog( (Frame)main_form );
-                }else if( main_form instanceof Dialog ){
-                    ret = dialog.showSaveDialog( (Dialog)main_form );
-                }else{
-                    ret = BFileChooser.ERROR_OPTION;
-                }
-#else
-                ret = dialog.showSaveDialog( main_form );
-#endif
-            }
+            DialogResult ret = dialog.ShowDialog( main_form );
             endShowDialog();
             return ret;
         }

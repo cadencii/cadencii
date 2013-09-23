@@ -40,10 +40,10 @@ namespace cadencii
         private PlatformEnum m_platform = PlatformEnum.Windows;
         private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
 
-        private BFileChooser openUtauCore;
+        private OpenFileDialog openUtauCore;
         private FontDialog fontDialog;
 #if DEBUG
-        private BFileChooser folderBrowserSingers;
+        private BFolderBrowser folderBrowserSingers;
 #else
         private BFolderBrowser folderBrowserSingers;
 #endif
@@ -56,10 +56,10 @@ namespace cadencii
             fontDialog.AllowVerticalFonts = false;
             fontDialog.FontMustExist = true;
             fontDialog.ShowEffects = false;
-            openUtauCore = new BFileChooser();
+            openUtauCore = new OpenFileDialog();
 
 #if DEBUG
-            folderBrowserSingers = new BFileChooser();
+            folderBrowserSingers = new BFolderBrowser();
 #else
             folderBrowserSingers = new BFolderBrowser();
             folderBrowserSingers.setNewFolderButtonVisible( false );
@@ -760,20 +760,14 @@ namespace cadencii
             this.Text = _( "Preference" );
             btnCancel.Text = _( "Cancel" );
             btnOK.Text = _( "OK" );
-            openUtauCore.clearChoosableFileFilter();
+            openUtauCore.Filter = string.Empty;
             try {
-                openUtauCore.addFileFilter( _( "Executable(*.exe)|*.exe" ) );
-                openUtauCore.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openUtauCore.Filter = string.Join("|", new[] { _( "Executable(*.exe)|*.exe" ), _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
-                openUtauCore.addFileFilter( "Executable(*.exe)|*.exe" );
-                openUtauCore.addFileFilter( "All Files(*.*)|*.*" );
+                openUtauCore.Filter = string.Join("|", new[] { "Executable(*.exe)|*.exe", "All Files(*.*)|*.*" });
             }
 
-#if DEBUG
-            folderBrowserSingers.setDialogTitle( _( "Select Singer Directory" ) );
-#else
             folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
-#endif
 
             #region tabのタイトル
             tabSequence.Text = _( "Sequence" );
@@ -1270,10 +1264,10 @@ namespace cadencii
 
         public void buttonResamplerAdd_Click( Object sender, EventArgs e )
         {
-            openUtauCore.setSelectedFile( "resampler.exe" );
-            int dr = AppManager.showModalDialog( openUtauCore, true, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String path = openUtauCore.getSelectedFile();
+            openUtauCore.SetSelectedFile("resampler.exe");
+            var dr = AppManager.showModalDialog( openUtauCore, true, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String path = openUtauCore.FileName;
                 boolean check = false;
                 boolean is_mac = isMac();
                 if ( is_mac ) {
@@ -1346,11 +1340,11 @@ namespace cadencii
         public void btnWavtool_Click( Object sender, EventArgs e )
         {
             if ( !txtWavtool.Text.Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.Text ) ) ) {
-                openUtauCore.setSelectedFile( txtWavtool.Text );
+                openUtauCore.SetSelectedFile(txtWavtool.Text);
             }
-            int dr = AppManager.showModalDialog( openUtauCore, true, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String path = openUtauCore.getSelectedFile();
+            var dr = AppManager.showModalDialog( openUtauCore, true, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String path = openUtauCore.FileName;
                 txtWavtool.Text = path;
                 boolean is_mac = isMac();
                 boolean check = false;
@@ -1377,26 +1371,21 @@ namespace cadencii
 
         private void onAquesToneChooseButtonClicked( System.Windows.Forms.TextBox text_box )
         {
-            BFileChooser dialog = new BFileChooser();
+            OpenFileDialog dialog = new OpenFileDialog();
             if ( text_box.Text != "" && fsys.isDirectoryExists( PortUtil.getDirectoryName( text_box.Text ) ) ) {
-                dialog.setSelectedFile( text_box.Text );
+                dialog.SetSelectedFile(text_box.Text);
             }
-            int dr = AppManager.showModalDialog( dialog, true, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String path = dialog.getSelectedFile();
+            var dr = AppManager.showModalDialog( dialog, true, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String path = dialog.FileName;
                 text_box.Text = path;
             }
         }
 
         public void btnAdd_Click( Object sender, EventArgs e )
         {
-#if DEBUG
-            if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String dir = folderBrowserSingers.getSelectedFile();
-#else
-            if ( folderBrowserSingers.showDialog( this ) == BDialogResult.OK ) {
+            if ( folderBrowserSingers.showDialog( this ) == DialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
-#endif
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
                 sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + fsys.isDirectoryExists( dir ) );
@@ -1506,15 +1495,15 @@ namespace cadencii
 
         public void buttonWinePrefix_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            OpenFileDialog dialog = null;
             try {
-                dialog = new BFileChooser();
+                dialog = new OpenFileDialog();
                 String dir = textWinePrefix.Text;
                 if ( dir != null && str.length( dir ) > 0 ) {
-                    dialog.setSelectedFile( fsys.combine( dir, "a" ) );
+                    dialog.SetSelectedFile(fsys.combine( dir, "a" ));
                 }
-                if ( AppManager.showModalDialog( dialog, true, this ) == BFileChooser.APPROVE_OPTION ) {
-                    dir = dialog.getSelectedFile();
+                if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
+                    dir = dialog.FileName;
                     if ( fsys.isFileExists( dir ) ) {
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
@@ -1527,15 +1516,15 @@ namespace cadencii
 
         public void buttonWineTop_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            OpenFileDialog dialog = null;
             try {
-                dialog = new BFileChooser();
+                dialog = new OpenFileDialog();
                 String dir = textWineTop.Text;
                 if ( dir != null && str.length( dir ) > 0 ) {
-                    dialog.setSelectedFile( fsys.combine( dir, "a" ) );
+                    dialog.SetSelectedFile(fsys.combine( dir, "a" ));
                 }
-                if ( AppManager.showModalDialog( dialog, true, this ) == BFileChooser.APPROVE_OPTION ) {
-                    dir = dialog.getSelectedFile();
+                if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
+                    dir = dialog.FileName;
                     if ( fsys.isFileExists( dir ) ) {
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );

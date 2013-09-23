@@ -33,6 +33,27 @@ namespace cadencii.windows.forms {
         public const int MSGBOX_QUESTION_MESSAGE = 3;
         public const int MSGBOX_PLAIN_MESSAGE = -1;
 
+        public static string SelectedFilter(this System.Windows.Forms.FileDialog dialog)
+        {
+            string[] filters = dialog.Filter.Split('|');
+            int index = dialog.FilterIndex;
+            if (0 <= index && index < filters.Length) {
+                return filters[index];
+            } else {
+                return string.Empty;
+            }
+        }
+
+        public static System.Windows.Forms.FileDialog SetSelectedFile(this System.Windows.Forms.FileDialog dialog, string file_path)
+        {
+            string file_name = string.Empty;
+            string initial_directory = System.IO.Directory.Exists(file_path) ? file_path : System.IO.Path.GetDirectoryName(file_path);
+
+            dialog.FileName = file_name;
+            dialog.InitialDirectory = initial_directory;
+            return dialog;
+        }
+
         public static void AddRow(this System.Windows.Forms.ListView list_view, string[] items, bool selected = false)
         {
             var item = new System.Windows.Forms.ListViewItem(items);

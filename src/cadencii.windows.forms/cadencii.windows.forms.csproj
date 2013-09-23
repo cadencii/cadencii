@@ -48,7 +48,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BFileChooser.cs" />
     <Compile Include="BFolderBrowser.cs" />
     <Compile Include="BKeys.cs" />
     <Compile Include="BKeysUtility.cs" />

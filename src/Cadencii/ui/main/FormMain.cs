@@ -472,12 +472,12 @@ namespace cadencii
         /// AppManager.keyWidthを調節するモードに入る直前での、splitContainer1のSplitterLocationの値
         /// </summary>
         public int mKeyLengthSplitterDistance = 0;
-        public BFileChooser openXmlVsqDialog;
-        public BFileChooser saveXmlVsqDialog;
-        public BFileChooser openUstDialog;
-        public BFileChooser openMidiDialog;
-        public BFileChooser saveMidiDialog;
-        public BFileChooser openWaveDialog;
+        public OpenFileDialog openXmlVsqDialog;
+        public SaveFileDialog saveXmlVsqDialog;
+        public OpenFileDialog openUstDialog;
+        public OpenFileDialog openMidiDialog;
+        public SaveFileDialog saveMidiDialog;
+        public OpenFileDialog openWaveDialog;
         public System.Windows.Forms.Timer timer;
         public BBackgroundWorker bgWorkScreen;
         /// <summary>
@@ -640,22 +640,18 @@ namespace cadencii
             this.waveView.Size = new System.Drawing.Size( 355, 59 );
             this.waveView.TabIndex = 17;
 #endif
-            openXmlVsqDialog = new BFileChooser();
-            openXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-            openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
+            openXmlVsqDialog = new OpenFileDialog();
+            openXmlVsqDialog.Filter = string.Join("|", new[] { "VSQ Format(*.vsq)|*.vsq", "XML-VSQ Format(*.xvsq)|*.xvsq" });
 
-            saveXmlVsqDialog = new BFileChooser();
-            saveXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-            saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-            saveXmlVsqDialog.addFileFilter( "All files(*.*)|*.*" );
+            saveXmlVsqDialog = new SaveFileDialog();
+            saveXmlVsqDialog.Filter = string.Join("|", new[] { "VSQ Format(*.vsq)|*.vsq", "XML-VSQ Format(*.xvsq)|*.xvsq", "All files(*.*)|*.*" });
 
-            openUstDialog = new BFileChooser();
-            openUstDialog.addFileFilter( "UTAU Project File(*.ust)|*.ust" );
-            openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
+            openUstDialog = new OpenFileDialog();
+            openUstDialog.Filter = string.Join("|", new[] { "UTAU Project File(*.ust)|*.ust", "All Files(*.*)|*.*" });
 
-            openMidiDialog = new BFileChooser();
-            saveMidiDialog = new BFileChooser();
-            openWaveDialog = new BFileChooser();
+            openMidiDialog = new OpenFileDialog();
+            saveMidiDialog = new SaveFileDialog();
+            openWaveDialog = new OpenFileDialog();
 
             /*mOverviewScaleCount = AppManager.editorConfig.OverviewScaleCount;
             mOverviewPixelPerClock = getOverviewScaleX( mOverviewScaleCount );*/
@@ -3034,9 +3030,9 @@ namespace cadencii
                                                               cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == DialogResult.Yes ) {
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
-                        int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-                        if ( dr2 == BFileChooser.APPROVE_OPTION ) {
-                            String sf = saveXmlVsqDialog.getSelectedFile();
+                        var dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+                        if ( dr2 == System.Windows.Forms.DialogResult.OK ) {
+                            String sf = saveXmlVsqDialog.FileName;
                             AppManager.saveTo( sf );
                             return true;
                         } else {
@@ -4374,70 +4370,70 @@ namespace cadencii
         /// </summary>
         public void applyLanguage()
         {
-            openXmlVsqDialog.clearChoosableFileFilter();
+            openXmlVsqDialog.Filter = string.Empty;
             try {
-                openXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
-                openXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openXmlVsqDialog.Filter = string.Join("|", new[] { _("XML-VSQ Format(*.xvsq)|*.xvsq"), _("All Files(*.*)|*.*") });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-                openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openXmlVsqDialog.Filter = string.Join("|", new[] { "XML-VSQ Format(*.xvsq)|*.xvsq", "All Files(*.*)|*.*" });
             }
 
-            saveXmlVsqDialog.clearChoosableFileFilter();
+            saveXmlVsqDialog.Filter = string.Empty;
             try {
-                saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
-                saveXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                saveXmlVsqDialog.Filter = string.Join("|", new[] { _("XML-VSQ Format(*.xvsq)|*.xvsq"), _("All Files(*.*)|*.*") });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-                saveXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
+                saveXmlVsqDialog.Filter = string.Join("|", new[] { "XML-VSQ Format(*.xvsq)|*.xvsq", "All Files(*.*)|*.*" });
             }
 
-            openUstDialog.clearChoosableFileFilter();
+            openUstDialog.Filter = string.Empty;
             try {
-                openUstDialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
-                openUstDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openUstDialog.Filter = string.Join("|", new[] { _("UTAU Script Format(*.ust)|*.ust"), _("All Files(*.*)|*.*") });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openUstDialog.addFileFilter( "UTAU Script Format(*.ust)|*.ust" );
-                openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openUstDialog.Filter = string.Join("|", new[] { "UTAU Script Format(*.ust)|*.ust", "All Files(*.*)|*.*" });
             }
 
-            openMidiDialog.clearChoosableFileFilter();
+            openMidiDialog.Filter = string.Empty;
             try {
-                openMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
-                openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                openMidiDialog.addFileFilter( _( "VSQX Format(*.vsqx)|*.vsqx" ) );
-                openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openMidiDialog.Filter = string.Join("|", new[] {
+                    _( "MIDI Format(*.mid)|*.mid" ),
+                    _( "VSQ Format(*.vsq)|*.vsq" ),
+                    _( "VSQX Format(*.vsqx)|*.vsqx" ),
+                    _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
-                openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-                openMidiDialog.addFileFilter( "VSQX Format(*.vsqx)|*.vsqx" );
-                openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openMidiDialog.Filter = string.Join("|", new[] {
+                    "MIDI Format(*.mid)|*.mid",
+                    "VSQ Format(*.vsq)|*.vsq",
+                    "VSQX Format(*.vsqx)|*.vsqx",
+                    "All Files(*.*)|*.*" });
             }
 
-            saveMidiDialog.clearChoosableFileFilter();
+            saveMidiDialog.Filter = string.Empty;
             try {
-                saveMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
-                saveMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                saveMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                saveMidiDialog.Filter = string.Join("|", new[] {
+                    _( "MIDI Format(*.mid)|*.mid" ),
+                    _( "VSQ Format(*.vsq)|*.vsq" ),
+                    _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                saveMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
-                saveMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-                saveMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
+                saveMidiDialog.Filter = string.Join("|", new[] {
+                    "MIDI Format(*.mid)|*.mid",
+                    "VSQ Format(*.vsq)|*.vsq",
+                    "All Files(*.*)|*.*" });
             }
 
-            openWaveDialog.clearChoosableFileFilter();
+            openWaveDialog.Filter = string.Empty;
             try {
-                openWaveDialog.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
-                openWaveDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openWaveDialog.Filter = string.Join("|", new[] {
+                    _( "Wave File(*.wav)|*.wav" ),
+                    _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openWaveDialog.addFileFilter( "Wave File(*.wav)|*.wav" );
-                openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openWaveDialog.Filter = string.Join("|", new[] {
+                    "Wave File(*.wav)|*.wav",
+                    "All Files(*.*)|*.*" });
             }
 
 #if !JAVA
@@ -10294,9 +10290,9 @@ namespace cadencii
                                                                cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( ret == DialogResult.Yes ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
-                        int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-                        if ( dr == BFileChooser.APPROVE_OPTION ) {
-                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
+                        var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+                        if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                            AppManager.saveTo( saveXmlVsqDialog.FileName );
                         } else {
                             return true;
                         }
@@ -10881,10 +10877,10 @@ namespace cadencii
             }
 
             String dir = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
-            saveXmlVsqDialog.setSelectedFile( dir );
-            int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String file = saveXmlVsqDialog.getSelectedFile();
+            saveXmlVsqDialog.SetSelectedFile(dir);
+            var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String file = saveXmlVsqDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
@@ -10937,12 +10933,12 @@ namespace cadencii
                 }
 
                 String dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
-                saveMidiDialog.setSelectedFile( dir );
-                int dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
+                saveMidiDialog.SetSelectedFile(dir);
+                var dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
 
-                if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result == System.Windows.Forms.DialogResult.OK ) {
                     RandomAccessFile fs = null;
-                    String filename = saveMidiDialog.getSelectedFile();
+                    String filename = saveMidiDialog.FileName;
                     AppManager.editorConfig.setLastUsedPathOut( filename, ".mid" );
                     try {
                         fs = new RandomAccessFile( filename, "rw" );
@@ -11154,22 +11150,21 @@ namespace cadencii
 
         public void menuFileExportMusicXml_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            SaveFileDialog dialog = null;
             try {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq == null ) {
                     return;
                 }
                 String first = AppManager.editorConfig.getLastUsedPathOut( "xml" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( first );
-                dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-                int result = AppManager.showModalDialog( dialog, false, this );
-                if ( result != BFileChooser.APPROVE_OPTION ) {
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(first);
+                dialog.Filter = string.Join("|", new[] { _( "MusicXML(*.xml)|*.xml" ), _( "All Files(*.*)|*.*" ) });
+                var result = AppManager.showModalDialog( dialog, false, this );
+                if ( result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                String file = dialog.getSelectedFile();
+                String file = dialog.FileName;
                 var writer = new MusicXmlWriter();
                 writer.write(vsq, file);
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xml" );
@@ -11286,21 +11281,20 @@ namespace cadencii
             int selected = AppManager.getSelected();
 
             // 出力先のファイル名を選ぶ
-            BFileChooser dialog = null;
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            SaveFileDialog dialog = null;
+            var dialog_result = DialogResult.Cancel;
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "ust" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( last_path );
-                dialog.setDialogTitle( _( "Export UTAU (*.ust)" ) );
-                dialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(last_path);
+                dialog.Title = _( "Export UTAU (*.ust)" );
+                dialog.Filter = string.Join("|", new[] { _( "UTAU Script Format(*.ust)|*.ust" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( dialog, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".ust" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
@@ -11346,21 +11340,20 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
 
             // 出力先のファイル名を選ぶ
-            BFileChooser dialog = null;
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            SaveFileDialog dialog = null;
+            var dialog_result = DialogResult.Cancel;
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "vsq" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( last_path );
-                dialog.setDialogTitle( _( "Export VSQ (*.vsq)" ) );
-                dialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(last_path);
+                dialog.Title = _( "Export VSQ (*.vsq)" );
+                dialog.Filter = string.Join("|", new[] { _( "VSQ Format(*.vsq)|*.vsq" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( dialog, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".vsq" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
@@ -11412,21 +11405,20 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
 
             // 出力先のファイル名を選ぶ
-            BFileChooser dialog = null;
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            SaveFileDialog dialog = null;
+            var dialog_result = DialogResult.Cancel;
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "txt" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( last_path );
-                dialog.setDialogTitle( _( "Metatext for vConnect" ) );
-                dialog.addFileFilter( _( "Text File(*.txt)|*.txt" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(last_path);
+                dialog.Title = _( "Metatext for vConnect" );
+                dialog.Filter = string.Join("|", new[] { _( "Text File(*.txt)|*.txt" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( dialog, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".txt" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
@@ -11490,24 +11482,23 @@ namespace cadencii
 
         public void menuFileExportWave_Click( Object sender, EventArgs e )
         {
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            var dialog_result = DialogResult.Cancel;
             String filename = "";
-            BFileChooser sfd = null;
+            SaveFileDialog sfd = null;
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "wav" );
 #if DEBUG
                 sout.println( "FormMain#menuFileExportWave_Click; last_path=" + last_path );
 #endif
-                sfd = new BFileChooser();
-                sfd.setSelectedFile( last_path );
-                sfd.setDialogTitle( _( "Wave Export" ) );
-                sfd.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
-                sfd.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                sfd = new SaveFileDialog();
+                sfd.SetSelectedFile(last_path);
+                sfd.Title = _( "Wave Export" );
+                sfd.Filter = string.Join("|", new[] { _( "Wave File(*.wav)|*.wav" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( sfd, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                filename = sfd.getSelectedFile();
+                filename = sfd.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( filename, ".wav" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
@@ -11591,16 +11582,16 @@ namespace cadencii
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
-            openMidiDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            openMidiDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
             mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
             MidiFile mf = null;
             try {
-                String filename = openMidiDialog.getSelectedFile();
+                String filename = openMidiDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".mid" );
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
@@ -11973,17 +11964,17 @@ namespace cadencii
 
         public void menuFileImportUst_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            OpenFileDialog dialog = null;
             try {
                 // 読み込むファイルを選ぶ
                 String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( dir );
-                int dialog_result = AppManager.showModalDialog( dialog, true, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                dialog = new OpenFileDialog();
+                dialog.SetSelectedFile(dir);
+                var dialog_result = AppManager.showModalDialog( dialog, true, this );
+                if ( dialog_result != DialogResult.OK ) {
                     return;
                 }
-                String file = dialog.getSelectedFile();
+                String file = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( file, ".ust" );
 
                 // ustを読み込む
@@ -12089,14 +12080,14 @@ namespace cadencii
         public void menuFileImportVsq_Click( Object sender, EventArgs e )
         {
             String dir = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
-            openMidiDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            openMidiDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
             VsqFileEx vsq = null;
-            String filename = openMidiDialog.getSelectedFile();
+            String filename = openMidiDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( filename, ".vsq" );
             try {
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
@@ -12245,15 +12236,15 @@ namespace cadencii
             }
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-            openUstDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
+            openUstDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
 
             try {
-                String filename = openUstDialog.getSelectedFile();
+                String filename = openUstDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".ust" );
 
                 // ust読み込み
@@ -12341,31 +12332,33 @@ namespace cadencii
                 return;
             }
 
-            String[] filters = openMidiDialog.getChoosableFileFilter();
-            String filter = "";
+            String[] filters = openMidiDialog.Filter.Split('|');
+            int filter_index = -1;
+            string filter = "";
             foreach ( String f in filters ) {
-                if ( f.EndsWith( AppManager.editorConfig.LastUsedExtension ) ) {
-                    filter = f;
+                ++filter_index;
+                if (f.EndsWith(AppManager.editorConfig.LastUsedExtension)) {
                     break;
                 }
             }
 
-            openMidiDialog.setFileFilter( filter );
+            openMidiDialog.FilterIndex = filter_index;
             String dir = AppManager.editorConfig.getLastUsedPathIn( filter );
-            openMidiDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            openMidiDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
             String ext = ".vsq";
-            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result == System.Windows.Forms.DialogResult.OK ) {
 #if DEBUG
-                AppManager.debugWriteLine( "openMidiDialog.getFileFilter()=" + openMidiDialog.getFileFilter() );
+                AppManager.debugWriteLine( "openMidiDialog.Filter=" + openMidiDialog.Filter );
 #endif
-                if ( openMidiDialog.getFileFilter().EndsWith( ".mid" ) ) {
+                string selected_filter = openMidiDialog.SelectedFilter();
+                if ( selected_filter.EndsWith( ".mid" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".mid";
                     ext = ".mid";
-                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
+                } else if ( selected_filter.EndsWith( ".vsq" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".vsq";
                     ext = ".vsq";
-                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsqx" ) ) {
+                } else if ( selected_filter.EndsWith( ".vsqx" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".vsqx";
                     ext = ".vsqx";
                 }
@@ -12373,7 +12366,7 @@ namespace cadencii
                 return;
             }
             try {
-                String filename = openMidiDialog.getSelectedFile();
+                String filename = openMidiDialog.FileName;
                 String actualReadFile = filename;
                 bool isVsqx = str.endsWith( filename, ".vsqx" );
                 if ( isVsqx ) {
@@ -16619,11 +16612,11 @@ namespace cadencii
                 String last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
                 if ( !last_file.Equals( "" ) ) {
                     String dir = PortUtil.getDirectoryName( last_file );
-                    saveXmlVsqDialog.setSelectedFile( dir );
+                    saveXmlVsqDialog.SetSelectedFile(dir);
                 }
-                int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-                if ( dr == BFileChooser.APPROVE_OPTION ) {
-                    file = saveXmlVsqDialog.getSelectedFile();
+                var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+                if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                    file = saveXmlVsqDialog.FileName;
                     AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 }
             }
@@ -16640,15 +16633,15 @@ namespace cadencii
                 return;
             }
             String dir = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
-            openXmlVsqDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            openXmlVsqDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false, this );
             }
-            String file = openXmlVsqDialog.getSelectedFile();
+            String file = openXmlVsqDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( file, ".xvsq" );
             if( openVsqCor( file ) ){
                 AppManager.showMessageBox(
@@ -17156,13 +17149,13 @@ namespace cadencii
         public void handleBgmAdd_Click( Object sender, EventArgs e )
         {
             String dir = AppManager.editorConfig.getLastUsedPathIn( "wav" );
-            openWaveDialog.setSelectedFile( dir );
-            int ret = AppManager.showModalDialog( openWaveDialog, true, this );
-            if ( ret != BFileChooser.APPROVE_OPTION ) {
+            openWaveDialog.SetSelectedFile(dir);
+            var ret = AppManager.showModalDialog( openWaveDialog, true, this );
+            if ( ret != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
 
-            String file = openWaveDialog.getSelectedFile();
+            String file = openWaveDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( file, ".wav" );
 
             // 既に開かれていたらキャンセル
