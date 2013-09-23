@@ -74,9 +74,9 @@ namespace cadencii
 #endif
             if ( num_dev > 0 ) {
                 pictButton.setImage( Resources.get_btn1() );
-                progressCount.setMaximum( 8 );
-                progressCount.setMinimum( 0 );
-                progressCount.setValue( 0 );
+                progressCount.Maximum = 8;
+                progressCount.Minimum = 0;
+                progressCount.Value = 0;
                 index = 1;
                 btnSkip.Enabled = true;
                 btnReset.Enabled = true;
@@ -233,21 +233,21 @@ namespace cadencii
             }
             if ( added ) {
                 if ( index <= 8 ) {
-                    progressCount.setValue( index );
+                    progressCount.Value = index;
                 } else if ( index <= 12 ) {
-                    progressCount.setValue( index - 8 );
+                    progressCount.Value = index - 8;
                 } else {
-                    progressCount.setValue( index - 12 );
+                    progressCount.Value = index - 12;
                 }
 
                 if ( index == 8 ) {
                     pictButton.setImage( Resources.get_btn2() );
-                    progressCount.setValue( 0 );
-                    progressCount.setMaximum( 4 );
+                    progressCount.Value = 0;
+                    progressCount.Maximum = 4;
                 } else if ( index == 12 ) {
                     pictButton.setImage( Resources.get_btn3() );
-                    progressCount.setValue( 0 );
-                    progressCount.setMaximum( 2 );
+                    progressCount.Value = 0;
+                    progressCount.Maximum = 2;
                 }
                 if ( index == 14 ) {
                     btnSkip.Enabled = false;
@@ -266,21 +266,21 @@ namespace cadencii
                 m_list.set( index - 5, -1 );
             }
             if ( index <= 8 ) {
-                progressCount.setValue( index );
+                progressCount.Value = index;
             } else if ( index <= 12 ) {
-                progressCount.setValue( index - 8 );
+                progressCount.Value = index - 8;
             } else {
-                progressCount.setValue( index - 12 );
+                progressCount.Value = index - 12;
             }
 
             if ( index == 8 ) {
                 pictButton.setImage( Resources.get_btn2() );
-                progressCount.setValue( 0 );
-                progressCount.setMaximum( 4 );
+                progressCount.Value = 0;
+                progressCount.Maximum = 4;
             } else if ( index == 12 ) {
                 pictButton.setImage( Resources.get_btn3() );
-                progressCount.setValue( 0 );
-                progressCount.setMaximum( 2 );
+                progressCount.Value = 0;
+                progressCount.Maximum = 2;
             }
             if ( index == 14 ) {
                 btnSkip.Enabled = false;
@@ -351,7 +351,7 @@ namespace cadencii
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new System.Windows.Forms.Label();
             this.pictButton = new BPictureBox();
-            this.progressCount = new BProgressBar();
+            this.progressCount = new System.Windows.Forms.ProgressBar();
             this.btnSkip = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -461,7 +461,7 @@ namespace cadencii
 
         private System.Windows.Forms.Label lblMessage;
         private BPictureBox pictButton;
-        private BProgressBar progressCount;
+        private System.Windows.Forms.ProgressBar progressCount;
         private System.Windows.Forms.Button btnSkip;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
