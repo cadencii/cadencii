@@ -251,9 +251,9 @@ namespace cadencii
                     txtVibratoLength.Enabled = true;
                     VibratoHandle src = null;
                     if ( radioUserDefined.Checked ) {
-                        int size = vec.size( AppManager.editorConfig.AutoVibratoCustom );
+                        int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                         for ( int i = 0; i < size; i++ ) {
-                            VibratoHandle handle = vec.get( AppManager.editorConfig.AutoVibratoCustom, i );
+                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[i];
                             if ( str.compare( s, handle.IconID ) ) {
                                 src = handle;
                                 break;

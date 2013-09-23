@@ -715,9 +715,9 @@ namespace cadencii.vsq
                 sw.newLine();
             }
             if ( Properties != null ) {
-                int size = vec.size( Properties );
+                int size = Properties.Count;
                 for ( int i = 0; i < size; i++ ) {
-                    UstEventProperty itemi = vec.get( Properties, i );
+                    UstEventProperty itemi = Properties[i];
                     sw.write( itemi.Name + "=" + itemi.Value );
                     sw.newLine();
                 }

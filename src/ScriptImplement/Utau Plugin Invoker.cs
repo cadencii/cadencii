@@ -495,7 +495,7 @@ public class Utau_Plugin_Invoker : Form {
         CurveType[] type = new CurveType[] { CurveType.PBS, CurveType.PIT };
         foreach ( CurveType ct in type ) {
             // コピー元を取得
-            VsqBPList src = vec.get( uf_vsq.Track, 1 ).getCurve( ct.getName() );
+            VsqBPList src = uf_vsq.Track[1].getCurve( ct.getName() );
             if ( src != null ) {
                 // コピー先を取得
                 VsqBPList dst = vsq_track.getCurve( ct.getName() );
@@ -549,7 +549,7 @@ public class Utau_Plugin_Invoker : Form {
         int num_tempo = vsq.TempoTable.size();
         int index = -1;
         for ( int j = 0; j < num_tempo; j++ ) {
-            TempoTableEntry itemj = vec.get( vsq.TempoTable, j );
+            TempoTableEntry itemj = vsq.TempoTable[j];
             if ( itemj.Clock == clock ) {
                 index = j;
                 break;
@@ -558,11 +558,11 @@ public class Utau_Plugin_Invoker : Form {
         int tempo = (int)(60e6 / t);
         if ( index >= 0 ) {
             // clock位置に既存のテンポ変更がある場合，テンポ値を変更
-            TempoTableEntry itemj = vec.get( vsq.TempoTable, index );
+            TempoTableEntry itemj = vsq.TempoTable[index];
             itemj.Tempo = tempo;
         } else {
             // 既存のものはないので新規に追加
-            vec.add( vsq.TempoTable, new TempoTableEntry( clock, tempo, 0.0 ) );
+            vsq.TempoTable.Add( new TempoTableEntry( clock, tempo, 0.0 ) );
         }
         // テンポテーブルを更新
         vsq.TempoTable.updateTempoInfo();

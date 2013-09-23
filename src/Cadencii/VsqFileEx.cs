@@ -266,9 +266,9 @@ namespace cadencii
         {
             base.insertBlank( clock_start, clock_amount );
             Vector<BezierCurves> curves = AttachedCurves.getCurves();
-            int size = vec.size( curves );
+            int size = curves.Count;
             for ( int i = 0; i < size; i++ ) {
-                BezierCurves bcs = vec.get( curves, i );
+                BezierCurves bcs = curves[i];
                 bcs.insertBlank( clock_start, clock_amount );
             }
         }
@@ -281,7 +281,7 @@ namespace cadencii
         /// <param name="clock_amount">挿入する空白の量</param>
         public void insertBlank( int track, int clock_start, int clock_amount )
         {
-            VsqTrack vsq_track = vec.get( Track, track );
+            VsqTrack vsq_track = Track[track];
             vsq_track.insertBlank( clock_start, clock_amount );
             BezierCurves bcs = AttachedCurves.get( track - 1 );
             bcs.insertBlank( clock_start, clock_amount );
@@ -300,9 +300,9 @@ namespace cadencii
         {
             base.removePart( clock_start, clock_end );
             Vector<BezierCurves> curves = AttachedCurves.getCurves();
-            int size = vec.size( curves );
+            int size = curves.Count;
             for ( int i = 0; i < size; i++ ) {
-                BezierCurves bcs = vec.get( curves, i );
+                BezierCurves bcs = curves[i];
                 bcs.removePart( clock_start, clock_end );
             }
         }
@@ -315,7 +315,7 @@ namespace cadencii
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
         public void removePart( int track, int clock_start, int clock_end )
         {
-            VsqTrack vsq_track = vec.get( Track, track );
+            VsqTrack vsq_track = Track[track];
             vsq_track.removePart( clock_start, clock_end );
             BezierCurves bcs = AttachedCurves.get( track - 1 );
             bcs.removePart( clock_start, clock_end );

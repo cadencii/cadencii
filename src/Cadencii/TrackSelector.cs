@@ -1694,7 +1694,7 @@ namespace cadencii
             int clock_end = AppManager.clockFromXCoord( width );
 
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack track = vec.get( vsq.Track, track_index );
+            VsqTrack track = vsq.Track[track_index];
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
@@ -3508,7 +3508,7 @@ namespace cadencii
             int height = getHeight();
             int width = getWidth();
             int key_width = AppManager.keyWidth;
-            VsqTrack vsq_track = vec.get( vsq.Track, selected );
+            VsqTrack vsq_track = vsq.Track[selected];
             mMouseMoved = false;
             mMouseDowned = true;
             if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
@@ -3538,7 +3538,7 @@ namespace cadencii
                     if ( vsq != null ) {
                         for ( int i = 0; i < AppManager.MAX_NUM_TRACK; i++ ) {
                             int x = key_width + i * selecter_width;
-                            if ( vec.size( vsq.Track ) > i + 1 ) {
+                            if ( vsq.Track.Count > i + 1 ) {
                                 if ( x <= e.X && e.X < x + selecter_width ) {
                                     int new_selected = i + 1;
                                     if ( AppManager.getSelected() != new_selected ) {
@@ -5332,7 +5332,7 @@ namespace cadencii
 
                 int selected = AppManager.getSelected();
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack vsq_track = vec.get( vsq.Track, selected );
+                VsqTrack vsq_track = vsq.Track[selected];
 
                 if ( value < min ) {
                     value = min;

@@ -437,9 +437,9 @@ namespace cadencii {
                 Vector<BezierChain> vbc = get( ct );
                 for ( Iterator<BezierChain> itr = vbc.iterator(); itr.hasNext(); ) {
                     BezierChain bc = itr.next();
-                    int size = vec.size( bc.points );
+                    int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        BezierPoint bp = vec.get( bc.points, i );
+                        BezierPoint bp = bc.points[i];
                         PointD p = bp.getBase();
                         if ( clock_start <= p.getX() ) {
                             p.setX( p.getX() + clock_amount );
@@ -461,7 +461,7 @@ namespace cadencii {
             // 全種類のカーブが対象
             Vector<CurveType> target_curve = new Vector<CurveType>();
             foreach ( CurveType ct in CURVES ) {
-                vec.add( target_curve, ct );
+                target_curve.Add( ct );
             }
 
             // 便利メソッドで削除をやる
@@ -474,9 +474,9 @@ namespace cadencii {
                 Vector<BezierChain> vbc = get( ct );
                 for ( Iterator<BezierChain> itr_bc = vbc.iterator(); itr_bc.hasNext(); ) {
                     BezierChain bc = itr_bc.next();
-                    int size = vec.size( bc.points );
+                    int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        BezierPoint bp = vec.get( bc.points, i );
+                        BezierPoint bp = bc.points[i];
                         PointD p = bp.getBase();
                         if ( clock_end <= p.getX() ) {
                             p.setX( p.getX() - delta );

@@ -619,14 +619,14 @@ namespace cadencii.vsq
             }
             Collections.sort( temp );
             int i = 0;
-            while ( i < vec.size( temp ) ) {
-                VsqEvent item = vec.get( temp, i );
+            while ( i < temp.Count ) {
+                VsqEvent item = temp[i];
                 if ( !item.ID.Equals( VsqID.EOS ) ) {
                     String ids = "ID#" + PortUtil.formatDecimal( "0000", item.ID.value );
-                    int clock = vec.get( temp, i ).Clock;
-                    while ( i + 1 < vec.size( temp ) && clock == vec.get( temp, i + 1 ).Clock ) {
+                    int clock = temp[i].Clock;
+                    while ( i + 1 < temp.Count && clock == temp[i + 1].Clock ) {
                         i++;
-                        ids += ",ID#" + PortUtil.formatDecimal( "0000", vec.get( temp, i ).ID.value );
+                        ids += ",ID#" + PortUtil.formatDecimal( "0000", temp[i].ID.value );
                     }
                     writer.writeLine( clock + "=" + ids );
                 }
@@ -792,10 +792,10 @@ namespace cadencii.vsq
                             for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
                                 id_number = str.toi( spl3[1] );
-                                vec.add( t_event_list, new ValuePair<Integer, Integer>( clock, id_number ) );
+                                t_event_list.Add( new ValuePair<Integer, Integer>( clock, id_number ) );
                             }
                         } else {
-                            vec.add( t_event_list, new ValuePair<Integer, Integer>( clock, -1 ) );
+                            t_event_list.Add( new ValuePair<Integer, Integer>( clock, -1 ) );
                         }
                         if ( !sr.ready() ) {
                             break;
@@ -896,8 +896,8 @@ namespace cadencii.vsq
             // idをeventListに埋め込み
             Events = new VsqEventList();
             int count = 0;
-            for ( int i = 0; i < vec.size( t_event_list ); i++ ) {
-                ValuePair<Integer, Integer> item = vec.get( t_event_list, i );
+            for ( int i = 0; i < t_event_list.Count; i++ ) {
+                ValuePair<Integer, Integer> item = t_event_list[i];
                 int clock = item.getKey();
                 int id_number = item.getValue();
                 if ( __id.containsKey( id_number ) ) {

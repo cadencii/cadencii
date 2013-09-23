@@ -807,8 +807,8 @@ namespace cadencii
                 return ResamplerWithWine;
             } else {
                 index--;
-                if ( 0 <= index && index < vec.size( ResamplersWithWine ) ) {
-                    return vec.get( ResamplersWithWine, index );
+                if ( 0 <= index && index < ResamplersWithWine.Count ) {
+                    return ResamplersWithWine[index];
                 }
                 return false;
             }
@@ -825,8 +825,8 @@ namespace cadencii
                 ResamplerWithWine = with_wine;
             } else {
                 index--;
-                if ( 0 <= index && index < vec.size( ResamplersWithWine ) ) {
-                    vec.set( ResamplersWithWine, index, with_wine );
+                if ( 0 <= index && index < ResamplersWithWine.Count ) {
+                    ResamplersWithWine[index] = with_wine;
                 }
             }
         }
@@ -1337,15 +1337,15 @@ namespace cadencii
             if ( ResamplersWithWine == null ) {
                 ResamplersWithWine = new Vector<Boolean>();
             }
-            if ( vec.size( PathResamplers ) != vec.size( ResamplersWithWine ) ) {
-                int delta = vec.size( ResamplersWithWine ) - vec.size( PathResamplers );
+            if ( PathResamplers.Count != ResamplersWithWine.Count ) {
+                int delta = ResamplersWithWine.Count - PathResamplers.Count;
                 if ( delta > 0 ) {
                     for ( int i = 0; i < delta; i++ ) {
-                        ResamplersWithWine.removeElementAt( vec.size( ResamplersWithWine ) - 1 );
+                        ResamplersWithWine.removeElementAt( ResamplersWithWine.Count - 1 );
                     }
                 } else if ( delta < 0 ) {
                     for ( int i = 0; i < -delta; i++ ) {
-                        vec.add( ResamplersWithWine, false );
+                        ResamplersWithWine.Add( false );
                     }
                 }
             }

@@ -233,7 +233,7 @@ namespace cadencii.vsq
                                     if ( ue.Properties == null ) {
                                         ue.Properties = new Vector<UstEventProperty>();
                                     }
-                                    vec.add( ue.Properties, new UstEventProperty( name, value ) );
+                                    ue.Properties.Add( new UstEventProperty( name, value ) );
                                 }
                             }
                         }
@@ -309,25 +309,25 @@ namespace cadencii.vsq
                 VsqEvent item = itr.next();
                 if ( last_clock < item.Clock ) {
                     // 休符Rの分
-                    vec.add( tempo, new TempoTableEntry( last_clock, itempo, work.getSecFromClock( last_clock ) ) );
+                    tempo.Add( new TempoTableEntry( last_clock, itempo, work.getSecFromClock( last_clock ) ) );
                 }
-                vec.add( tempo, new TempoTableEntry( item.Clock, itempo, work.getSecFromClock( item.Clock ) ) );
+                tempo.Add( new TempoTableEntry( item.Clock, itempo, work.getSecFromClock( item.Clock ) ) );
                 last_clock = item.Clock + item.ID.getLength();
             }
-            if ( vec.size( tempo ) == 0 ) {
-                vec.add( tempo, new TempoTableEntry( 0, (int)(60e6 / m_tempo), 0.0 ) );
+            if ( tempo.Count == 0 ) {
+                tempo.Add( new TempoTableEntry( 0, (int)(60e6 / m_tempo), 0.0 ) );
             }
             // tempoの中の各要素の時刻が、vsq.TempoTableから計算した時刻と合致するよう調節
 #if DEBUG
             sout.println( "UstFile#.ctor; before; list=" );
-            for ( int i = 0; i < vec.size( tempo ); i++ ) {
-                TempoTableEntry item = vec.get( tempo, i );
+            for ( int i = 0; i < tempo.Count; i++ ) {
+                TempoTableEntry item = tempo[i];
                 sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
             }
 #endif
-            TempoTableEntry prev = vec.get( tempo, 0 );
-            for ( int i = 1; i < vec.size( tempo ); i++ ) {
-                TempoTableEntry item = vec.get( tempo, i );
+            TempoTableEntry prev = tempo[0];
+            for ( int i = 1; i < tempo.Count; i++ ) {
+                TempoTableEntry item = tempo[i];
                 double sec = item.Time - prev.Time;
                 int delta = item.Clock - prev.Clock;
                 // deltaクロックでsecを表現するにはテンポをいくらにすればいいか？
@@ -342,8 +342,8 @@ namespace cadencii.vsq
             }
 #if DEBUG
             sout.println( "UstFile#.ctor; after; list=" );
-            for ( int i = 0; i < vec.size( tempo ); i++ ) {
-                TempoTableEntry item = vec.get( tempo, i );
+            for ( int i = 0; i < tempo.Count; i++ ) {
+                TempoTableEntry item = tempo[i];
                 sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
             }
             sout.println( "UstFile#.ctor; vsq.TempoTable=" );
@@ -397,18 +397,18 @@ namespace cadencii.vsq
                 int size = track_add.getEventCount();
                 int lasttempo = -1; // ありえない値にしておく
                 for ( int i = 0; i < size; i++ ) {
-                    TempoTableEntry item = vec.get( tempo, i );
+                    TempoTableEntry item = tempo[i];
                     if ( lasttempo != item.Tempo ) {
                         // テンポ値が変わっているもののみ追加
                         UstEvent ue = track_add.getEvent( i );
                         ue.setTempo( (float)(60e6 / item.Tempo) );
                         lasttempo = item.Tempo;
-                        vec.add( m_tempo_table, item );
+                        m_tempo_table.Add( item );
                     }
                 }
             } else {
                 // tempoはどうせ破棄されるのでクローンしなくていい
-                vec.add( m_tempo_table, vec.get( tempo, 0 ) );
+                m_tempo_table.Add( tempo[0] );
             }
 
             // ピッチを反映
@@ -702,10 +702,10 @@ namespace cadencii.vsq
             ret.m_cache_dir = m_cache_dir;
             ret.m_tool1 = m_tool1;
             ret.m_tool2 = m_tool2;
-            int size = vec.size( m_tracks );
+            int size = m_tracks.Count;
             ret.m_tracks = new Vector<UstTrack>();
             for ( int i = 0; i < size; i++ ) {
-                vec.add( ret.m_tracks, (UstTrack)vec.get( m_tracks, i ).clone() );
+                ret.m_tracks.Add( (UstTrack)m_tracks[i].clone() );
             }
             ret.m_tempo_table = new Vector<TempoTableEntry>();
             for ( int i = 0; i < m_tempo_table.size(); i++ ) {

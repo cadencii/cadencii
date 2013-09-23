@@ -231,10 +231,10 @@ using System.Collections.Generic;
             public static int split( string s, List<string> dst, List<string> splitter, bool ignore_empty )
 #endif
             {
-                int len = vec.size( splitter );
-                vec.clear( dst );
+                int len = splitter.Count;
+                dst.Clear();
                 if ( len == 0 ) {
-                    vec.add( dst, s );
+                    dst.Add( s );
                     return 1;
                 }
 #if JAVA
@@ -242,28 +242,28 @@ using System.Collections.Generic;
 #else
                 string remain = s;
 #endif
-                int index = find( remain, vec.get( splitter, 0 ), 0 );
+                int index = find( remain, splitter[0], 0 );
                 int i = 1;
                 while ( index < 0 && i < len ) {
-                    index = find( remain, vec.get( splitter, i ), 0 );
+                    index = find( remain, splitter[i], 0 );
                     i++;
                 }
                 int added_count = 0;
                 while ( index >= 0 ) {
                     if ( !ignore_empty || (ignore_empty && index > 0) ) {
-                        vec.add( dst, sub( remain, 0, index ) );
+                        dst.Add( sub( remain, 0, index ) );
                         added_count++;
                     }
                     remain = sub( remain, index + len );
-                    index = find( remain, vec.get( splitter, 0 ) );
+                    index = find( remain, splitter[0] );
                     i = 1;
                     while ( index < 0 && i < len ) {
-                        index = find( remain, vec.get( splitter, i ) );
+                        index = find( remain, splitter[i] );
                         i++;
                     }
                 }
                 if ( !ignore_empty || (ignore_empty && length( remain ) > 0) ) {
-                    vec.add( dst, remain );
+                    dst.Add( remain );
                 }
                 return added_count;
             }
@@ -283,7 +283,7 @@ using System.Collections.Generic;
 #else
                 List<String> splitter = new List<string>();
 #endif
-                vec.add( splitter, s1 );
+                splitter.Add( s1 );
                 return split( s, dst, splitter, ignore_empty );
             }
 

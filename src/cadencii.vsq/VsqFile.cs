@@ -103,7 +103,7 @@ namespace cadencii.vsq
 #endif
             int clock_count = 0;
             VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
-            VsqTrack vsq_track = vec.get( this.Track, 1 );
+            VsqTrack vsq_track = this.Track[1];
             int last_clock = -1;
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
@@ -1465,9 +1465,9 @@ namespace cadencii.vsq
         public void insertBlank( int clock_start, int clock_amount )
         {
             // テンポを挿入
-            int size = vec.size( TempoTable );
+            int size = TempoTable.Count;
             for ( int i = 0; i < size; i++ ) {
-                TempoTableEntry itemi = vec.get( TempoTable, i );
+                TempoTableEntry itemi = TempoTable[i];
                 if ( itemi.Clock <= 0 ) {
                     continue;
                 }
@@ -1478,9 +1478,9 @@ namespace cadencii.vsq
             TempoTable.updateTempoInfo();
 
             // 各トラックに空白を挿入
-            size = vec.size( Track );
+            size = Track.Count;
             for ( int i = 1; i < size; i++ ) {
-                VsqTrack vsq_track = vec.get( Track, i );
+                VsqTrack vsq_track = Track[i];
                 vsq_track.insertBlank( clock_start, clock_amount );
             }
         }
@@ -2617,7 +2617,7 @@ namespace cadencii.vsq
             List<String> spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
             String s = "";
             for ( int j = 0; j < spl.Count; j++ ) {
-                s += vec.get( spl, j );
+                s += spl[j];
             }
             char[] symbols = s.ToCharArray();
             if ( renderer.StartsWith( "DSB2" ) ) {
@@ -2626,12 +2626,12 @@ namespace cadencii.vsq
             add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
             List<Integer> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
-            for ( int j = 0; j < vec.size( spl ); j++ ) {
-                char[] chars = vec.get( spl, j ).ToCharArray();
+            for ( int j = 0; j < spl.Count; j++ ) {
+                char[] chars = spl[j].ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;
                     if ( k == 0 ) {
-                        int v = vec.get( consonantAdjustment, j );
+                        int v = consonantAdjustment[j];
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)v, true ); // Phonetic symbol j
                     } else {
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], true ); // Phonetic symbol j

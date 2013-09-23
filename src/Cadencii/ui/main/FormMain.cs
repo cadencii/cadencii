@@ -1261,8 +1261,8 @@ namespace cadencii
                 // oto.iniが存在する場合
                 // editorConfigに入っていない場合に，ダイアログを出す
                 boolean found = false;
-                for ( int i = 0; i < vec.size( AppManager.editorConfig.UtauSingers ); i++ ) {
-                    SingerConfig sc = vec.get( AppManager.editorConfig.UtauSingers, i );
+                for ( int i = 0; i < AppManager.editorConfig.UtauSingers.Count; i++ ) {
+                    SingerConfig sc = AppManager.editorConfig.UtauSingers[i];
                     if ( sc == null ) {
                         continue;
                     }
@@ -1323,7 +1323,7 @@ namespace cadencii
                         if ( fsys.isDirectoryExists( path ) ) {
                             SingerConfig sc = new SingerConfig();
                             Utility.readUtauSingerConfig( path, sc );
-                            vec.add( AppManager.editorConfig.UtauSingers, sc );
+                            AppManager.editorConfig.UtauSingers.Add( sc );
                         }
                         AppManager.reloadUtauVoiceDB();
                     }
@@ -3330,8 +3330,8 @@ namespace cadencii
                         List<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #endif
                         Vector<Integer> adjustment = new Vector<Integer>();
-                        for ( int i = 0; i < vec.size( spl ); i++ ) {
-                            String s = vec.get( spl, i );
+                        for ( int i = 0; i < spl.Count; i++ ) {
+                            String s = spl[i];
                             adjustment.add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
                         }
                         items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
@@ -3479,7 +3479,7 @@ namespace cadencii
                     devices.add( info );
                 }
             }
-            if ( midiport < 0 || vec.size( devices ) <= 0 ) {
+            if ( midiport < 0 || devices.Count <= 0 ) {
 #if JAVA
                 stripBtnStepSequencer.setEnabled( false );
 #else
@@ -3487,14 +3487,14 @@ namespace cadencii
                 stripLblMidiIn.Image = Resources.get_slash().image;
 #endif
             } else {
-                if ( midiport >= vec.size( devices ) ) {
+                if ( midiport >= devices.Count ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
 #if JAVA
                 stripBtnStepSequencer.setEnabled( true );
 #else
-                stripLblMidiIn.Text = vec.get( devices, midiport ).getName();
+                stripLblMidiIn.Text = devices[midiport].getName();
                 stripLblMidiIn.Image = Resources.get_piano().image;
 #endif
             }
@@ -11248,7 +11248,7 @@ namespace cadencii
                 SynthesizeWorker worker = new SynthesizeWorker( this );
 
                 for( int i  = 0; i < queue.size(); i++ ){
-                    PatchWorkQueue q = vec.get( queue, i );
+                    PatchWorkQueue q = queue[i];
                     fw.addJob( worker, "processQueue", q.getMessage(), q.getJobAmount(), q );
                 }
 
@@ -11788,7 +11788,7 @@ namespace cadencii
             if ( mDialogMidiImportAndExport.isTimesig() ) {
                 work.TimesigTable.clear();
                 Vector<TimeSigTableEntry> list = tempo.TimesigTable;
-                int list_count = vec.size( list );
+                int list_count = list.Count;
                 for ( int i = 0; i < list_count; i++ ) {
                     TimeSigTableEntry item = list.get( i );
                     work.TimesigTable.add(
@@ -11806,7 +11806,7 @@ namespace cadencii
                 if ( !mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                     continue;
                 }
-                if ( vec.size( work.Track ) + 1 > AppManager.MAX_NUM_TRACK ) {
+                if ( work.Track.Count + 1 > AppManager.MAX_NUM_TRACK ) {
                     break;
                 }
                 VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.Items[i].SubItems[1].Text, "Miku" );
@@ -11819,7 +11819,7 @@ namespace cadencii
 
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 Collections.sort( events );
-                int events_count = vec.size( events );
+                int events_count = events.Count;
 
                 // note
                 if ( mDialogMidiImportAndExport.isNotes() ) {
@@ -11831,7 +11831,7 @@ namespace cadencii
                     }
                     int last_note = -1;
                     for ( int j = 0; j < events_count; j++ ) {
-                        MidiEvent itemj = vec.get( events, j );
+                        MidiEvent itemj = events[j];
                         int not_closed_note = -1;
                         if ( (itemj.firstByte & 0xf0) == 0x90 && itemj.data.Length >= 2 && itemj.data[1] > 0 ) {
                             for ( int m = 0; m < 128; m++ ) {
@@ -11879,7 +11879,7 @@ namespace cadencii
                                 String phrase = "a";
                                 if ( mDialogMidiImportAndExport.isLyric() ) {
                                     for ( int k = 0; k < events_count; k++ ) {
-                                        MidiEvent itemk = vec.get( events, k );
+                                        MidiEvent itemk = events[k];
                                         if ( onclock_each_note[note] <= (int)itemk.clock && (int)itemk.clock <= clock_off ) {
                                             if ( itemk.firstByte == 0xff && itemk.data.Length >= 2 && itemk.data[0] == 0x05 ) {
                                                 int[] d = new int[itemk.data.Length - 1];
@@ -11938,7 +11938,7 @@ namespace cadencii
                         }
                     }
 
-                    int track = vec.size( work.Track );
+                    int track = work.Track.Count;
                     CadenciiCommand run_add =
                         VsqFileEx.generateCommandAddTrack(
                             work_track,
@@ -11978,8 +11978,8 @@ namespace cadencii
                 vsq.insertBlank( 0, vsq.getPreMeasureClocks() );
 
                 // RendererKindをUTAUに指定
-                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
-                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                for ( int i = 1; i < vsq.Track.Count; i++ ) {
+                    VsqTrack vsq_track = vsq.Track[i];
                     VsqFileEx.setTrackRendererKind( vsq_track, RendererKind.UTAU );
                 }
 
@@ -11990,8 +11990,8 @@ namespace cadencii
 
                 // 歌手変更を何とかする
                 int program = 0;
-                for ( int i = 0; i < vec.size( AppManager.editorConfig.UtauSingers ); i++ ) {
-                    SingerConfig sc = vec.get( AppManager.editorConfig.UtauSingers, i );
+                for ( int i = 0; i < AppManager.editorConfig.UtauSingers.Count; i++ ) {
+                    SingerConfig sc = AppManager.editorConfig.UtauSingers[i];
                     if ( sc == null ) {
                         continue;
                     }
@@ -12010,8 +12010,8 @@ namespace cadencii
                     singer_id.IconHandle.IconID = "$0401" + PortUtil.toHexString( 0, 4 );
                 }
                 // トラックの歌手変更イベントをすべて置き換える
-                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
-                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                for ( int i = 1; i < vsq.Track.Count; i++ ) {
+                    VsqTrack vsq_track = vsq.Track[i];
                     int c = vsq_track.getEventCount();
                     for ( int j = 0; j < c; j++ ) {
                         VsqEvent itemj = vsq_track.getEvent( j );
@@ -12022,8 +12022,8 @@ namespace cadencii
                 }
 
                 // resamplerUsedを更新(可能なら)
-                for ( int j = 1; j < vec.size( vsq.Track ); j++ ) {
-                    VsqTrack vsq_track = vec.get( vsq.Track, j );
+                for ( int j = 1; j < vsq.Track.Count; j++ ) {
+                    VsqTrack vsq_track = vsq.Track[j];
                     for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                         String resampler = AppManager.editorConfig.getResamplerAt( i );
                         if ( str.compare( resampler, ref_resampler.value ) ) {
@@ -12248,8 +12248,8 @@ namespace cadencii
                 vsq.insertBlank( 0, vsq.getPreMeasureClocks() );
 
                 // すべてのトラックの合成器指定をUTAUにする
-                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
-                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                for ( int i = 1; i < vsq.Track.Count; i++ ) {
+                    VsqTrack vsq_track = vsq.Track[i];
                     VsqFileEx.setTrackRendererKind( vsq_track, RendererKind.UTAU );
                 }
 
@@ -12260,8 +12260,8 @@ namespace cadencii
 
                 // 歌手変更を何とかする
                 int program = 0;
-                for ( int i = 0; i < vec.size( AppManager.editorConfig.UtauSingers ); i++ ) {
-                    SingerConfig sc = vec.get( AppManager.editorConfig.UtauSingers, i );
+                for ( int i = 0; i < AppManager.editorConfig.UtauSingers.Count; i++ ) {
+                    SingerConfig sc = AppManager.editorConfig.UtauSingers[i];
                     if ( sc == null ) {
                         continue;
                     }
@@ -12280,8 +12280,8 @@ namespace cadencii
                     singer_id.IconHandle.IconID = "$0401" + PortUtil.toHexString( 0, 4 );
                 }
                 // トラックの歌手変更イベントをすべて置き換える
-                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
-                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                for ( int i = 1; i < vsq.Track.Count; i++ ) {
+                    VsqTrack vsq_track = vsq.Track[i];
                     int c = vsq_track.getEventCount();
                     for ( int j = 0; j < c; j++ ) {
                         VsqEvent itemj = vsq_track.getEvent( j );
@@ -12292,8 +12292,8 @@ namespace cadencii
                 }
 
                 // resamplerUsedを更新(可能なら)
-                for ( int j = 1; j < vec.size( vsq.Track ); j++ ) {
-                    VsqTrack vsq_track = vec.get( vsq.Track, j );
+                for ( int j = 1; j < vsq.Track.Count; j++ ) {
+                    VsqTrack vsq_track = vsq.Track[j];
                     for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                         String resampler = AppManager.editorConfig.getResamplerAt( i );
                         if ( str.compare( resampler, ref_resampler.value ) ) {

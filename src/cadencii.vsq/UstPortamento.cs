@@ -92,7 +92,7 @@ namespace cadencii.vsq
             sw.newLine();
             sw.write( "PBS=" + Start + (mIsUnknownIntSpecified ? (";" + mUnknownInt) : "") );
             sw.newLine();
-            if ( vec.size( Points ) >= 2 ) {
+            if ( Points.Count >= 2 ) {
                 sw.write( "PBY=" + pby );
                 sw.newLine();
                 sw.write( "PBM=" + pbm );

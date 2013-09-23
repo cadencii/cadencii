@@ -566,11 +566,11 @@ namespace cadencii
                         // dst_noteに，clockでの，音符のノートナンバー(あれば．なければ元の音符と同じ値)
                         int dst_note = base_note;
                         if ( k > 0 ) {
-                            VsqEvent prev = vec.get( events, k - 1 );
+                            VsqEvent prev = events[k - 1];
                             dst_note = base_note;
                         }
                         for ( int i = indx; i < events_count; i++ ) {
-                            VsqEvent itemi = vec.get( events, i );
+                            VsqEvent itemi = events[i];
                             if ( clock < itemi.Clock ) {
                                 continue;
                             }
@@ -593,9 +593,9 @@ namespace cadencii
 
                         // リストに入れる
                         if ( totalcount == 0 ) {
-                            vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) + "Q" + tempo );
+                            pitch.Add( PortUtil.formatDecimal( "0.00", pvalue ) + "Q" + tempo );
                         } else {
-                            vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) );
+                            pitch.Add( PortUtil.formatDecimal( "0.00", pvalue ) );
                         }
                         totalcount++;
 #if DEBUG
@@ -837,17 +837,17 @@ namespace cadencii
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     //String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
                     Vector<String> arg_wavtool = new Vector<String>();
-                    int size = vec.size( p.WavtoolArgPrefix );
+                    int size = p.WavtoolArgPrefix.Count;
                     for ( int j = 0; j < size; j++ ) {
-                        String s = vec.get( p.WavtoolArgPrefix, j );
+                        String s = p.WavtoolArgPrefix[j];
                         if ( j == size - 1 ) {
                             s += (mten >= 0 ? ("+" + mten) : ("-" + (-mten)));
                         }
-                        vec.add( arg_wavtool, s );
+                        arg_wavtool.Add( s );
                     }
-                    size = vec.size( p.WavtoolArgSuffix );
+                    size = p.WavtoolArgSuffix.Count;
                     for ( int j = 0; j < size; j++ ) {
-                        vec.add( arg_wavtool, vec.get( p.WavtoolArgSuffix, j ) );
+                        arg_wavtool.Add( p.WavtoolArgSuffix[j] );
                     }
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
@@ -1260,9 +1260,9 @@ namespace cadencii
                 process = new Process();
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
                 String argument = "";
-                int size = vec.size( arg );
+                int size = arg.Count;
                 for ( int i = 0; i < size; i++ ) {
-                    argument += vec.get( arg, i ) + (i == size - 1 ? "" : " ");
+                    argument += arg[i] + (i == size - 1 ? "" : " ");
                 }
                 /*if ( __a != arg ) {
                     serr.println( "UtauWaveGenerator#processWavtool; warning; (__a != arg);" );

@@ -1155,9 +1155,9 @@ namespace cadencii
             if ( path == null ) {
                 return;
             }
-            for ( int i = 0; i < vec.size( path ); i++ ) {
+            for ( int i = 0; i < path.Count; i++ ) {
                 listResampler.AddRow(
-                    new String[] { vec.get( path, i ) }, vec.get( with_wine, i ) );
+                    new String[] { path[i] }, with_wine[i] );
             }
         }
 
@@ -1619,7 +1619,7 @@ namespace cadencii
                 comboMidiInPortNumber.Items.Add( info );
                 comboMtcMidiInPortNumber.Items.Add( info );
             }
-            if ( vec.size( midiins ) <= 0 ) {
+            if ( midiins.Count <= 0 ) {
                 comboMtcMidiInPortNumber.Enabled = false;
                 comboMidiInPortNumber.Enabled = false;
             } else {

@@ -85,7 +85,7 @@ namespace cadencii
             WaveUnitConfigElement newItem = new WaveUnitConfigElement();
             newItem.setKey( key );
             newItem.setValue( value );
-            vec.add( this.Elements, newItem );
+            this.Elements.Add( newItem );
         }
 
         /// <summary>

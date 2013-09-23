@@ -115,7 +115,7 @@ namespace cadencii.vsq
 
             for ( int i = 0; i < size; i++ )
             {
-                int v = vec.get( arr, i );
+                int v = arr[i];
                 ret += (i == 0 ? "" : " ") + v;
             }
             return ret;
@@ -134,11 +134,11 @@ namespace cadencii.vsq
             List<String> spl = new List<String>();
             List<String> tokenizer = new List<String>();
 #endif
-            vec.add( tokenizer, " " );
-            vec.add( tokenizer, "," );
+            tokenizer.Add( " " );
+            tokenizer.Add( "," );
             str.split( value, spl, tokenizer, true );
 
-            int size = vec.size( spl );
+            int size = spl.Count;
 #if __cplusplus
             vector<Integer> arr;
 #else
@@ -149,13 +149,13 @@ namespace cadencii.vsq
                 int v = 64;
                 try
                 {
-                    v = str.toi( vec.get( spl, i ) );
+                    v = str.toi( spl[i] );
                 }
                 catch ( Exception ex )
                 {
                     serr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
                 }
-                vec.add( arr, v );
+                arr.Add( v );
             }
             setConsonantAdjustmentList( arr );
         }
@@ -198,11 +198,11 @@ namespace cadencii.vsq
             }
 #endif
 
-            vec.clear( mConsonantAdjustments );
+            mConsonantAdjustments.Clear();
             for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
             {
-                int v = VsqPhoneticSymbol.isConsonant( vec.get( mPhoneticSymbols, i ) ) ? 64 : 0;
-                vec.add( mConsonantAdjustments, v );
+                int v = VsqPhoneticSymbol.isConsonant( mPhoneticSymbols[i] ) ? 64 : 0;
+                mConsonantAdjustments.Add( v );
             }
             return mConsonantAdjustments;
         }
@@ -222,11 +222,11 @@ namespace cadencii.vsq
                 return;
             }
 #endif
-            vec.clear( mConsonantAdjustments );
+            mConsonantAdjustments.Clear();
             for ( int i = 0; i < value.Count; i++ )
             {
-                int v = vec.get( value, i );
-                vec.add( mConsonantAdjustments, v );
+                int v = value[i];
+                mConsonantAdjustments.Add( v );
             }
         }
 
@@ -240,17 +240,17 @@ namespace cadencii.vsq
             Lyric result = new Lyric();
             result.Phrase = this.Phrase;
             result.mPhoneticSymbols = new List<String>();
-            for ( int i = 0; i < vec.size( mPhoneticSymbols ); i++ )
+            for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
             {
-                vec.add( result.mPhoneticSymbols, vec.get( mPhoneticSymbols, i ) );
+                result.mPhoneticSymbols.Add( mPhoneticSymbols[i] );
             }
             result.UnknownFloat = this.UnknownFloat;
             if ( mConsonantAdjustments != null )
             {
                 result.mConsonantAdjustments = new List<Integer>();
-                for ( int i = 0; i < vec.size( mConsonantAdjustments ); i++ )
+                for ( int i = 0; i < mConsonantAdjustments.Count; i++ )
                 {
-                    vec.add( result.mConsonantAdjustments, vec.get( mConsonantAdjustments, i ) );
+                    result.mConsonantAdjustments.Add( mConsonantAdjustments[i] );
                 }
             }
             result.PhoneticSymbolProtected = PhoneticSymbolProtected;
@@ -417,9 +417,9 @@ namespace cadencii.vsq
         {
             List<String> symbol = getPhoneticSymbolList();
             String ret = "";
-            for ( int i = 0; i < vec.size( symbol ); i++ )
+            for ( int i = 0; i < symbol.Count; i++ )
             {
-                ret += (i == 0 ? "" : " ") + vec.get( symbol, i );
+                ret += (i == 0 ? "" : " ") + symbol[i];
             }
             return ret;
         }
@@ -435,11 +435,11 @@ namespace cadencii.vsq
             List<String> old_symbol = null;
             if ( mPhoneticSymbols != null )
             {
-                int count = vec.size( mPhoneticSymbols );
+                int count = mPhoneticSymbols.Count;
                 old_symbol = new List<String>();
                 for ( int i = 0; i < count; i++ )
                 {
-                    vec.add( old_symbol, vec.get( mPhoneticSymbols, i ) );
+                    old_symbol.Add( mPhoneticSymbols[i] );
                 }
             }
 
@@ -448,10 +448,10 @@ namespace cadencii.vsq
             if ( mConsonantAdjustments != null )
             {
                 old_adjustment = new List<Integer>();
-                int count = vec.size( mConsonantAdjustments );
+                int count = mConsonantAdjustments.Count;
                 for ( int i = 0; i < count; i++ )
                 {
-                    vec.add( old_adjustment, vec.get( mConsonantAdjustments, i ) );
+                    old_adjustment.Add( mConsonantAdjustments[i] );
                 }
             }
 
@@ -466,48 +466,48 @@ namespace cadencii.vsq
             }
             int size = spl.Length;
 #endif
-            vec.clear( mPhoneticSymbols );
+            mPhoneticSymbols.Clear();
             for ( int i = 0; i < size; i++ )
             {
-                vec.add( mPhoneticSymbols, spl[i] );
+                mPhoneticSymbols.Add( spl[i] );
             }
-            for ( int i = 0; i < vec.size( mPhoneticSymbols ); i++ )
+            for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
             {
-                vec.set( mPhoneticSymbols, i, vec.get( mPhoneticSymbols, i ).Replace( "\\" + "\\", "\\" ) );
+                mPhoneticSymbols[i] = mPhoneticSymbols[i].Replace( "\\" + "\\", "\\" );
             }
 
             // consonant adjustmentを更新
             if ( mConsonantAdjustments == null ||
-                (mConsonantAdjustments != null && vec.size( mConsonantAdjustments ) != vec.size( mPhoneticSymbols )) )
+                (mConsonantAdjustments != null && mConsonantAdjustments.Count != mPhoneticSymbols.Count) )
             {
                 mConsonantAdjustments = new List<Integer>();
-                for ( int i = 0; i < vec.size( mPhoneticSymbols ); i++ )
+                for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
                 {
-                    vec.add( mConsonantAdjustments, 0 );
+                    mConsonantAdjustments.Add( 0 );
                 }
             }
 
             // 古い発音記号と同じなら、古い値を使う
             if ( old_symbol != null )
             {
-                for ( int i = 0; i < vec.size( mPhoneticSymbols ); i++ )
+                for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
                 {
-                    if ( i >= vec.size( old_symbol ) )
+                    if ( i >= old_symbol.Count )
                     {
                         break;
                     }
-                    String s0 = vec.get( mPhoneticSymbols, i );
-                    String s1 = vec.get( old_symbol, i );
-                    boolean use_old_value = (old_symbol != null && i < vec.size( old_symbol )) &&
+                    String s0 = mPhoneticSymbols[i];
+                    String s1 = old_symbol[i];
+                    boolean use_old_value = (old_symbol != null && i < old_symbol.Count) &&
                                             (str.compare( s0, s1 )) &&
-                                            (old_adjustment != null && i < vec.size( old_adjustment ));
+                                            (old_adjustment != null && i < old_adjustment.Count);
                     if ( use_old_value )
                     {
-                        vec.set( mConsonantAdjustments, i, VsqPhoneticSymbol.isConsonant( vec.get( mPhoneticSymbols, i ) ) ? vec.get( old_adjustment, i ) : 0 );
+                        mConsonantAdjustments[i] = VsqPhoneticSymbol.isConsonant( mPhoneticSymbols[i] ) ? old_adjustment[i] : 0;
                     }
                     else
                     {
-                        vec.set( mConsonantAdjustments, i, VsqPhoneticSymbol.isConsonant( vec.get( mPhoneticSymbols, i ) ) ? 64 : 0 );
+                        mConsonantAdjustments[i] = VsqPhoneticSymbol.isConsonant( mPhoneticSymbols[i] ) ? 64 : 0;
                     }
                 }
             }
@@ -566,14 +566,14 @@ namespace cadencii.vsq
             if ( mConsonantAdjustments == null )
             {
                 mConsonantAdjustments = new List<Integer>();
-                for ( int i = 0; i < vec.size( symbol ); i++ )
+                for ( int i = 0; i < symbol.Count; i++ )
                 {
-                    vec.add( mConsonantAdjustments, VsqPhoneticSymbol.isConsonant( vec.get( symbol, i ) ) ? 64 : 0 );
+                    mConsonantAdjustments.Add( VsqPhoneticSymbol.isConsonant( symbol[i] ) ? 64 : 0 );
                 }
             }
-            for ( int i = 0; i < vec.size( mConsonantAdjustments ); i++ )
+            for ( int i = 0; i < mConsonantAdjustments.Count; i++ )
             {
-                result += "," + vec.get( mConsonantAdjustments, i );
+                result += "," + mConsonantAdjustments[i];
             }
             if ( PhoneticSymbolProtected )
             {

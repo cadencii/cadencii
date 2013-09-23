@@ -107,7 +107,6 @@
     </Compile>
     <Compile Include="util.cs" />
     <Compile Include="ValuePair.cs" />
-    <Compile Include="vec.cs" />
     <Compile Include="vecitr.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="winmm.cs" />
