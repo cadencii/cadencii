@@ -316,14 +316,14 @@ namespace cadencii
                 m_last_speed = 0f;
                 m_last_t = 0f;
                 m_shift = 0f;
-                pictVstLogo.setVisible( false );
+                pictVstLogo.Visible = false;
                 lblVstLogo.Visible = false;
                 chkTwitterID.Visible = true;
                 timer.Start();
             } else {
                 timer.Stop();
                 btnFlip.Text = _( "Credit" );
-                pictVstLogo.setVisible( true );
+                pictVstLogo.Visible = true;
                 lblVstLogo.Visible = true;
                 chkTwitterID.Visible = false;
             }
@@ -435,7 +435,7 @@ namespace cadencii
 
         private void setResources()
         {
-            pictVstLogo.setImage( Resources.get_VSTonWht() );
+            pictVstLogo.Image = Resources.get_VSTonWht().image;
         }
 
         #region ui implementation
@@ -471,7 +471,7 @@ namespace cadencii
             this.btnFlip = new Button();
             this.btnOK = new Button();
             this.lblVstLogo = new System.Windows.Forms.Label();
-            this.pictVstLogo = new cadencii.windows.forms.BPictureBox();
+            this.pictVstLogo = new PictureBox();
             this.chkTwitterID = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
@@ -558,7 +558,7 @@ namespace cadencii
 
         private System.Windows.Forms.Button btnFlip;
         private System.Windows.Forms.Button btnOK;
-        private BPictureBox pictVstLogo;
+        private PictureBox pictVstLogo;
         private Label lblVstLogo;
         private CheckBox chkTwitterID;
 #endif

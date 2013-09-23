@@ -268,11 +268,11 @@ namespace cadencii
             this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackSelectorSelectAll = new ToolStripMenuItem();
             this.trackBar = new TrackBar();
-            this.pictureBox3 = new cadencii.windows.forms.BPictureBox();
-            this.pictKeyLengthSplitter = new cadencii.windows.forms.BPictureBox();
-            this.pictureBox2 = new cadencii.windows.forms.BPictureBox();
+            this.pictureBox3 = new PictureBox();
+            this.pictKeyLengthSplitter = new PictureBox();
+            this.pictureBox2 = new PictureBox();
             this.vScroll = new VScrollBar();
-            this.picturePositionIndicator = new cadencii.windows.forms.BPictureBox();
+            this.picturePositionIndicator = new PictureBox();
             this.toolStripBottom = new ToolStrip();
             this.toolStripStatusLabel1 = new ToolStripStatusLabel();
             this.stripLblGameCtrlMode = new ToolStripStatusLabel();
@@ -2971,9 +2971,9 @@ namespace cadencii
         public ToolStripMenuItem menuEditUndo;
         public ToolStripMenuItem menuEditRedo;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
-        public BPictureBox pictureBox2;
-        public BPictureBox pictureBox3;
-        public BPictureBox picturePositionIndicator;
+        public PictureBox pictureBox2;
+        public PictureBox pictureBox3;
+        public PictureBox picturePositionIndicator;
         public ContextMenuStrip cMenuPiano;
         public ToolStripMenuItem cMenuPianoPointer;
         public ToolStripMenuItem cMenuPianoPencil;
@@ -3183,7 +3183,7 @@ namespace cadencii
         public ToolStripMenuItem cMenuTrackTabRendererStraight;
         public PictPianoRoll pictPianoRoll;
         public TrackSelector trackSelector;
-        public BPictureBox pictKeyLengthSplitter;
+        public PictureBox pictKeyLengthSplitter;
         private ToolStripMenuItem menuTrackRendererAquesTone;
         private ToolStripMenuItem cMenuTrackTabRendererAquesTone;
         private ToolStripMenuItem menuVisualPluginUi;

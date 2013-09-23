@@ -48,9 +48,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>

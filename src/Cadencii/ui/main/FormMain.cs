@@ -759,7 +759,7 @@ namespace cadencii
             picturePositionIndicator.Top = 0;
             picturePositionIndicator.Width = panel1.Width;
             // pictPianoRoll
-            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.Height );
+            pictPianoRoll.Bounds = new System.Drawing.Rectangle( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.Height );
             // vScroll
             vScroll.Left = pictPianoRoll.getWidth();
             vScroll.Top = picturePositionIndicator.Height;
@@ -2143,15 +2143,15 @@ namespace cadencii
 #if MONITOR_FPS
             double t0 = PortUtil.getCurrentTime();
 #endif
-            pictPianoRoll.repaint();
-            picturePositionIndicator.repaint();
+            pictPianoRoll.Refresh();
+            picturePositionIndicator.Refresh();
             trackSelector.Refresh();
-            pictureBox2.repaint();
+            pictureBox2.Refresh();
             if ( menuVisualWaveform.Checked ) {
                 waveView.Refresh();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
-                panelOverview.repaint();
+                panelOverview.Refresh();
             }
 #if MONITOR_FPS
             double t = PortUtil.getCurrentTime();
@@ -2325,7 +2325,7 @@ namespace cadencii
 
         public void invalidatePictOverview( Object sender, EventArgs e )
         {
-            panelOverview.invalidate();
+            panelOverview.Invalidate();
         }
 
         public void updateBgmMenuState()
@@ -6922,8 +6922,8 @@ namespace cadencii
             int small_font_offset = AppManager.baseFont8OffsetHeight;
             try {
                 int key_width = AppManager.keyWidth;
-                int width = picturePositionIndicator.getWidth();
-                int height = picturePositionIndicator.getHeight();
+                int width = picturePositionIndicator.Width;
+                int height = picturePositionIndicator.Height;
                 VsqFileEx vsq = AppManager.getVsqFile();
 
                 #region 小節ごとの線
@@ -6987,10 +6987,10 @@ namespace cadencii
                                 int edit_clock_x = AppManager.xCoordFromClocks( vsq.getClockFromBarCount( AppManager.itemSelection.getTimesig( barcount ).editing.BarCount ) );
                                 g.setColor( mColorR187G187B255 );
                                 g.drawLine( edit_clock_x - 1, 32,
-                                            edit_clock_x - 1, picturePositionIndicator.getHeight() - 1 );
+                                            edit_clock_x - 1, picturePositionIndicator.Height - 1 );
                                 g.setColor( mColorR007G007B151 );
                                 g.drawLine( edit_clock_x, 32,
-                                            edit_clock_x, picturePositionIndicator.getHeight() - 1 );
+                                            edit_clock_x, picturePositionIndicator.Height - 1 );
                             }
                         }
                     }
@@ -7086,7 +7086,7 @@ namespace cadencii
 
                 #region TEMPO & BEAT
                 // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
-                g.setColor( picturePositionIndicator.getBackground() );
+                g.setColor(new Color(picturePositionIndicator.BackColor));
                 g.fillRect( 0, 0, AppManager.keyWidth, 48 );
                 // 横ライン上
                 g.setColor( new Color( 104, 104, 104 ) );
@@ -9611,7 +9611,7 @@ namespace cadencii
                         // マウスのスクリーン座標
                         Point screen_p_at_mouse = PortUtil.getMousePosition();
                         // ピアノロール上でのマウスのx座標
-                        int x_at_mouse = pictPianoRoll.pointToClient( screen_p_at_mouse ).x;
+                        int x_at_mouse = pictPianoRoll.PointToClient(new System.Drawing.Point(screen_p_at_mouse.x, screen_p_at_mouse.y)).X;
                         // マウス位置でのクロック -> こいつが保存される
                         int clock_at_mouse = AppManager.clockFromXCoord( x_at_mouse );
                         // 古い拡大率
@@ -10073,10 +10073,10 @@ namespace cadencii
             if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
                 return;
             }
-            Point pt = pictPianoRoll.getLocationOnScreen();
+            var pt = pictPianoRoll.PointToScreen(System.Drawing.Point.Empty);
             if ( !mIconPaletteOnceDragEntered ) {
                 int keywidth = AppManager.keyWidth;
-                Rectangle rc = new Rectangle( pt.x + keywidth, pt.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
+                Rectangle rc = new Rectangle( pt.X + keywidth, pt.Y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
                 if ( Utility.isInRect( new Point( screen_x, screen_y ), rc ) ) {
                     mIconPaletteOnceDragEntered = true;
                 } else {
@@ -10085,8 +10085,8 @@ namespace cadencii
             }
             MouseEventArgs e0 = new MouseEventArgs( BMouseButtons.Left,
                                                     1,
-                                                    screen_x - pt.x,
-                                                    screen_y - pt.y,
+                                                    screen_x - pt.X,
+                                                    screen_y - pt.Y,
                                                     0 );
             pictPianoRoll_MouseMove( this, e0 );
         }
@@ -10106,10 +10106,10 @@ namespace cadencii
             if( handle == null ){
                 return;
             }
-            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            var locPianoroll = pictPianoRoll.PointToScreen(System.Drawing.Point.Empty);
             // ドロップ位置を特定して，アイテムを追加する
-            int x = screen_x - locPianoroll.x;
-            int y = screen_y - locPianoroll.y;
+            int x = screen_x - locPianoroll.X;
+            int y = screen_y - locPianoroll.Y;
             int clock1 = AppManager.clockFromXCoord( x );
 
             // クオンタイズの処理
@@ -10155,10 +10155,10 @@ namespace cadencii
             if ( !e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
                 return;
             }
-            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            var locPianoroll = pictPianoRoll.PointToScreen(System.Drawing.Point.Empty);
             int keywidth = AppManager.keyWidth;
-            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
-                                                   locPianoroll.y,
+            Rectangle rcPianoroll = new Rectangle( locPianoroll.X + keywidth,
+                                                   locPianoroll.Y,
                                                    pictPianoRoll.getWidth() - keywidth,
                                                    pictPianoRoll.getHeight() );
             if ( !Utility.isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
@@ -14195,7 +14195,7 @@ namespace cadencii
                     }
                     mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
                     #endregion
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
                     #region 拍子の変更
                     AppManager.itemSelection.clearEvent();
                     AppManager.itemSelection.clearTempo();
@@ -14363,8 +14363,8 @@ namespace cadencii
                     mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
                     #endregion
                 }
-                picturePositionIndicator.repaint();
-                pictPianoRoll.repaint();
+                picturePositionIndicator.Refresh();
+                pictPianoRoll.Refresh();
             }
         }
 
@@ -14476,7 +14476,7 @@ namespace cadencii
                         AppManager.itemSelection.clearTimesig();
                     }
                     #endregion
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
                     #region 拍子
                     // クリック位置に拍子が表示されているかどうか検査
                     int index = -1;
@@ -14608,7 +14608,7 @@ namespace cadencii
                         }
                         mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
                         #endregion
-                    } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                    } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
                         #region 拍子の変更
                         AppManager.itemSelection.clearEvent();
                         AppManager.itemSelection.clearTempo();
@@ -14710,8 +14710,8 @@ namespace cadencii
                 }
             }
             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
-            pictPianoRoll.repaint();
-            picturePositionIndicator.repaint();
+            pictPianoRoll.Refresh();
+            picturePositionIndicator.Refresh();
         }
 
         public void picturePositionIndicator_MouseMove( Object sender, MouseEventArgs e )
@@ -14728,7 +14728,7 @@ namespace cadencii
                     int key = item.getKey();
                     AppManager.itemSelection.getTempo( key ).editing.Clock = AppManager.itemSelection.getTempo( key ).original.Clock + dclock;
                 }
-                picturePositionIndicator.repaint();
+                picturePositionIndicator.Refresh();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TIMESIG ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - mTimesigDraggingDeltaClock;
                 int barcount = vsq.getBarCountFromClock( clock );
@@ -14739,7 +14739,7 @@ namespace cadencii
                     int bar = item.getKey();
                     AppManager.itemSelection.getTimesig( bar ).editing.BarCount = AppManager.itemSelection.getTimesig( bar ).original.BarCount + dbarcount;
                 }
-                picturePositionIndicator.repaint();
+                picturePositionIndicator.Refresh();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.MARK_START ) {
                 int clock = AppManager.clockFromXCoord( e.X );
                 int unit = AppManager.getPositionQuantizeClock();
@@ -15740,7 +15740,7 @@ namespace cadencii
             }
             menuVisualStartMarker.Checked = true;
             setEdited( true );
-            picturePositionIndicator.repaint();
+            picturePositionIndicator.Refresh();
         }
 
         public void cMenuPositionIndicatorEndMarker_Click( Object sender, EventArgs e )
@@ -15754,7 +15754,7 @@ namespace cadencii
             }
             menuVisualEndMarker.Checked = true;
             setEdited( true );
-            picturePositionIndicator.repaint();
+            picturePositionIndicator.Refresh();
         }
         #endregion
 
@@ -15912,8 +15912,8 @@ namespace cadencii
                 mGraphicsPictureBox2 = new Graphics2D( null );
             }
             mGraphicsPictureBox2.nativeGraphics = e.Graphics;
-            int width = pictureBox2.getWidth();
-            int height = pictureBox2.getHeight();
+            int width = pictureBox2.Width;
+            int height = pictureBox2.Height;
             int unit_height = height / 4;
             mGraphicsPictureBox2.setColor( mColorR214G214B214 );
             mGraphicsPictureBox2.fillRect( 0, 0, width, height );
@@ -15945,8 +15945,8 @@ namespace cadencii
         public void pictureBox2_MouseDown( Object sender, MouseEventArgs e )
         {
             // 拡大・縮小ボタンが押されたかどうか判定
-            int height = pictureBox2.getHeight();
-            int width = pictureBox2.getWidth();
+            int height = pictureBox2.Height;
+            int width = pictureBox2.Width;
             int height4 = height / 4;
             if ( 0 <= e.X && e.X < width ) {
                 int scaley = AppManager.editorConfig.PianoRollScaleY;
@@ -15978,7 +15978,7 @@ namespace cadencii
         public void pictureBox2_MouseUp( Object sender, MouseEventArgs e )
         {
             mPianoRollScaleYMouseStatus = 0;
-            pictureBox2.invalidate();
+            pictureBox2.Invalidate();
         }
 #endif
         #endregion

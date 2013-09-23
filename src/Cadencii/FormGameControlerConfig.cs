@@ -69,7 +69,7 @@ namespace cadencii
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
             if ( num_dev > 0 ) {
-                pictButton.setImage( Resources.get_btn1() );
+                pictButton.Image = Resources.get_btn1().image;
                 progressCount.Maximum = 8;
                 progressCount.Minimum = 0;
                 progressCount.Value = 0;
@@ -237,11 +237,11 @@ namespace cadencii
                 }
 
                 if ( index == 8 ) {
-                    pictButton.setImage( Resources.get_btn2() );
+                    pictButton.Image = Resources.get_btn2().image;
                     progressCount.Value = 0;
                     progressCount.Maximum = 4;
                 } else if ( index == 12 ) {
-                    pictButton.setImage( Resources.get_btn3() );
+                    pictButton.Image = Resources.get_btn3().image;
                     progressCount.Value = 0;
                     progressCount.Maximum = 2;
                 }
@@ -270,11 +270,11 @@ namespace cadencii
             }
 
             if ( index == 8 ) {
-                pictButton.setImage( Resources.get_btn2() );
+                pictButton.Image = Resources.get_btn2().image;
                 progressCount.Value = 0;
                 progressCount.Maximum = 4;
             } else if ( index == 12 ) {
-                pictButton.setImage( Resources.get_btn3() );
+                pictButton.Image = Resources.get_btn3().image;
                 progressCount.Value = 0;
                 progressCount.Maximum = 2;
             }
@@ -346,7 +346,7 @@ namespace cadencii
         {
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new System.Windows.Forms.Label();
-            this.pictButton = new BPictureBox();
+            this.pictButton = new System.Windows.Forms.PictureBox();
             this.progressCount = new System.Windows.Forms.ProgressBar();
             this.btnSkip = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
@@ -456,7 +456,7 @@ namespace cadencii
         }
 
         private System.Windows.Forms.Label lblMessage;
-        private BPictureBox pictButton;
+        private System.Windows.Forms.PictureBox pictButton;
         private System.Windows.Forms.ProgressBar progressCount;
         private System.Windows.Forms.Button btnSkip;
         private System.Windows.Forms.Button btnOK;

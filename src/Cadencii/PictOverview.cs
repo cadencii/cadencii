@@ -40,7 +40,7 @@ namespace cadencii
 #if JAVA
     public class PictOverview extends BPictureBox implements IImageCachedComponentDrawer {
 #else
-    public class PictOverview : BPictureBox, IImageCachedComponentDrawer
+    public class PictOverview : PictureBox, IImageCachedComponentDrawer
     {
 #endif
         enum OverviewMouseDownMode
@@ -283,7 +283,7 @@ namespace cadencii
         /// <returns></returns>
         private Rectangle getButtonBoundsRight1()
         {
-            return new Rectangle( getWidth() - 16 - 2, 1, 16, 19 );
+            return new Rectangle( this.Width - 16 - 2, 1, 16, 19 );
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace cadencii
         /// <returns></returns>
         private Rectangle getButtonBoundsRight2()
         {
-            return new Rectangle( getWidth() - 16 - 2, 19 + 3, 16, 26 );
+            return new Rectangle( this.Width - 16 - 2, 19 + 3, 16, 26 );
         }
 
         /// <summary>
@@ -333,7 +333,7 @@ namespace cadencii
             int max = AppManager.getCurrentClock();
             int total_clocks = vsq.TotalClocks;
             if ( max < total_clocks ) max = total_clocks;
-            int required_width = (int)(max * mOverviewPixelPerClock) + getWidth();
+            int required_width = (int)(max * mOverviewPixelPerClock) + this.Width;
             updateCachedImage( required_width );
         }
 
@@ -366,9 +366,9 @@ namespace cadencii
                 int key_width = AppManager.keyWidth;
                 double dt = PortUtil.getCurrentTime() - mOverviewBtnDowned;
                 int draft = (int)(mOverviewStartToDrawClockInitialValue + mOverviewDirection * dt * OVERVIEW_SCROLL_SPEED / mOverviewPixelPerClock);
-                int clock = getOverviewClockFromXCoord( getWidth() - key_width, draft );
+                int clock = getOverviewClockFromXCoord( this.Width - key_width, draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)((getWidth() - key_width) / mOverviewPixelPerClock);
+                    draft = AppManager.getVsqFile().TotalClocks - (int)((this.Width - key_width) / mOverviewPixelPerClock);
                 }
                 if ( draft < 0 ) {
                     draft = 0;
@@ -441,7 +441,7 @@ namespace cadencii
             int max = AppManager.getCurrentClock();
             int total_clocks = vsq.TotalClocks;
             if ( max < total_clocks ) max = total_clocks;
-            int min_width = (int)(max * mOverviewPixelPerClock) + getWidth();
+            int min_width = (int)(max * mOverviewPixelPerClock) + this.Width;
             if ( mDrawer.getWidth() < min_width ) {
                 lock( mDrawerSyncRoot ){
                     mDrawer.setWidth( min_width );
@@ -457,7 +457,7 @@ namespace cadencii
 
         public void handleMouseDoubleClick( Object sender, MouseEventArgs e )
         {
-            if ( AppManager.keyWidth < e.X && e.X < getWidth() - 19 ) {
+            if ( AppManager.keyWidth < e.X && e.X < this.Width - 19 ) {
                 mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
                 int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
                 int draft = (int)(draft_stdx * AppManager.mMainWindowController.getScaleXInv());
@@ -482,7 +482,7 @@ namespace cadencii
                 mOverviewMouseDownedLocationX = e.X;
                 mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
             } else if ( e.Button == BMouseButtons.Left ) {
-                if ( e.X <= AppManager.keyWidth || getWidth() - 19 <= e.X ) {
+                if ( e.X <= AppManager.keyWidth || this.Width - 19 <= e.X ) {
                     Point mouse = new Point( e.X, e.Y );
                     if ( Utility.isInRect( mouse, getButtonBoundsLeft1() ) ) {
                         btnLeft_MouseDown( null, null );
@@ -558,9 +558,9 @@ namespace cadencii
                 int dx = e.X - mOverviewMouseDownedLocationX;
                 int draft = mOverviewStartToDrawClockInitialValue - (int)(dx / mOverviewPixelPerClock);
                 int key_width = AppManager.keyWidth;
-                int clock = getOverviewClockFromXCoord( getWidth() - xoffset, draft );
+                int clock = getOverviewClockFromXCoord( this.Width - xoffset, draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)((getWidth() - xoffset) / mOverviewPixelPerClock);
+                    draft = AppManager.getVsqFile().TotalClocks - (int)((this.Width - xoffset) / mOverviewPixelPerClock);
                 }
                 if ( draft < 0 ) {
                     draft = 0;
@@ -608,8 +608,8 @@ namespace cadencii
             mDrawer.draw( doffset, g );
 
             int key_width = AppManager.keyWidth;
-            int width = getWidth();
-            int height = getHeight();
+            int width = this.Width;
+            int height = this.Height;
             int xoffset = key_width + AppManager.keyOffset;
             int current_start = AppManager.clockFromXCoord( key_width );
             int current_end = AppManager.clockFromXCoord( mMainForm.pictPianoRoll.getWidth() );

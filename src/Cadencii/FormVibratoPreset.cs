@@ -319,8 +319,8 @@ namespace cadencii
         public void pictureResulting_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
-            int raw_width = pictureResulting.getWidth();
-            int raw_height = pictureResulting.getHeight();
+            int raw_width = pictureResulting.Width;
+            int raw_height = pictureResulting.Height;
 #if JAVA
             Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
@@ -397,8 +397,8 @@ namespace cadencii
         public void pictureRate_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
-            int width = pictureRate.getWidth();
-            int height = pictureRate.getHeight();
+            int width = pictureRate.Width;
+            int height = pictureRate.Height;
 #if JAVA
             Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
@@ -428,8 +428,8 @@ namespace cadencii
         public void pictureDepth_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
-            int width = pictureDepth.getWidth();
-            int height = pictureDepth.getHeight();
+            int width = pictureDepth.Width;
+            int height = pictureDepth.Height;
 #if JAVA
             Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
@@ -525,9 +525,9 @@ namespace cadencii
         /// </summary>
         private void repaintPictures()
         {
-            pictureDepth.repaint();
-            pictureRate.repaint();
-            pictureResulting.repaint();
+            pictureDepth.Refresh();
+            pictureRate.Refresh();
+            pictureResulting.Refresh();
         }
 
         /// <summary>
@@ -691,14 +691,14 @@ namespace cadencii
             this.labelRate = new Label();
             this.labelDepth = new Label();
             this.labelPresets = new Label();
-            this.pictureRate = new cadencii.windows.forms.BPictureBox();
+            this.pictureRate = new PictureBox();
             this.labelRateCurve = new Label();
             this.labelDepthCurve = new Label();
-            this.pictureDepth = new cadencii.windows.forms.BPictureBox();
+            this.pictureDepth = new PictureBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.labelResulting = new Label();
-            this.pictureResulting = new cadencii.windows.forms.BPictureBox();
+            this.pictureResulting = new PictureBox();
             this.groupEdit = new System.Windows.Forms.GroupBox();
             this.textName = new TextBox();
             this.labelName = new Label();
@@ -1045,14 +1045,14 @@ namespace cadencii
         private NumberTextBox textRate;
         private NumberTextBox textDepth;
         private Label labelPresets;
-        private BPictureBox pictureRate;
+        private PictureBox pictureRate;
         private Label labelRateCurve;
         private Label labelDepthCurve;
-        private BPictureBox pictureDepth;
+        private PictureBox pictureDepth;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private Label labelResulting;
-        private BPictureBox pictureResulting;
+        private PictureBox pictureResulting;
         private GroupBox groupEdit;
         private Label labelName;
         private TextBox textName;

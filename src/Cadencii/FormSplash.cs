@@ -93,8 +93,8 @@ namespace cadencii
         public void addIcon( String path_image, String singer_name )
         {
             IconParader p = new IconParader();
-            Image img = IconParader.createIconImage( path_image, singer_name );
-            p.setImage( img );
+            var img = IconParader.createIconImage( path_image, singer_name );
+            p.Image = img.image;
             p.MouseDown += new MouseEventHandler( handleMouseDown );
             p.MouseUp += new MouseEventHandler( handleMouseUp );
             p.MouseMove += new MouseEventHandler( handleMouseMove );
