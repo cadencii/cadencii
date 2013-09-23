@@ -96,8 +96,8 @@ namespace cadencii
             } else {
                 txtDuration.setEnabled( false );
                 txtDepth.setEnabled( false );
-                trackDuration.setEnabled( false );
-                trackDepth.setEnabled( false );
+                trackDuration.Enabled = false;
+                trackDepth.Enabled = false;
             }
             for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 NoteHeadHandle item = itr.next();
@@ -172,23 +172,23 @@ namespace cadencii
 
         public int getPMBendDepth()
         {
-            return trackBendDepth.getValue();
+            return trackBendDepth.Value;
         }
 
         public void setPMBendDepth( int value )
         {
-            trackBendDepth.setValue( value );
+            trackBendDepth.Value = value;
             txtBendDepth.setText( value + "" );
         }
 
         public int getPMBendLength()
         {
-            return trackBendLength.getValue();
+            return trackBendLength.Value;
         }
 
         public void setPMBendLength( int value )
         {
-            trackBendLength.setValue( value );
+            trackBendLength.Value = value;
             txtBendLength.setText( value + "" );
         }
 
@@ -220,23 +220,23 @@ namespace cadencii
 
         public int getDEMdecGainRate()
         {
-            return trackDecay.getValue();
+            return trackDecay.Value;
         }
 
         public void setDEMdecGainRate( int value )
         {
-            trackDecay.setValue( value );
+            trackDecay.Value = value;
             txtDecay.setText( value + "" );
         }
 
         public int getDEMaccent()
         {
-            return trackAccent.getValue();
+            return trackAccent.Value;
         }
 
         public void setDEMaccent( int value )
         {
-            trackAccent.setValue( value );
+            trackAccent.Value = value;
             txtAccent.setText( value + "" );
         }
 
@@ -286,28 +286,28 @@ namespace cadencii
             if ( index == 0 ) {
                 m_note_head_handle = null;
                 txtDuration.setEnabled( false );
-                trackDuration.setEnabled( false );
+                trackDuration.Enabled = false;
                 txtDepth.setEnabled( false );
-                trackDepth.setEnabled( false );
+                trackDepth.Enabled = false;
                 return;
             }
             txtDuration.setEnabled( true );
-            trackDuration.setEnabled( true );
+            trackDuration.Enabled = true;
             txtDepth.setEnabled( true );
-            trackDepth.setEnabled( true );
+            trackDepth.Enabled = true;
             NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.SelectedItem;
             if ( m_note_head_handle == null ) {
                 txtDuration.setText( aconfig.getDuration() + "" );
                 txtDepth.setText( aconfig.getDepth() + "" );
             }
             m_note_head_handle = (NoteHeadHandle)aconfig.clone();
-            m_note_head_handle.setDuration( trackDuration.getValue() );
-            m_note_head_handle.setDepth( trackDepth.getValue() );
+            m_note_head_handle.setDuration( trackDuration.Value );
+            m_note_head_handle.setDepth( trackDepth.Value );
         }
 
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendDepth.getValue() + "";
+            String s = trackBendDepth.Value + "";
             if( !str.compare( s, txtBendDepth.getText() ) ){
                 txtBendDepth.setText( s );
             }
@@ -317,15 +317,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtBendDepth.getText() );
-                if ( draft < trackBendDepth.getMinimum() ) {
-                    draft = trackBendDepth.getMinimum();
+                if ( draft < trackBendDepth.Minimum ) {
+                    draft = trackBendDepth.Minimum;
                     txtBendDepth.setText( draft + "" );
-                } else if ( trackBendDepth.getMaximum() < draft ) {
-                    draft = trackBendDepth.getMaximum();
+                } else if ( trackBendDepth.Maximum < draft ) {
+                    draft = trackBendDepth.Maximum;
                     txtBendDepth.setText( draft + "" );
                 }
-                if ( draft != trackBendDepth.getValue() ) {
-                    trackBendDepth.setValue( draft );
+                if ( draft != trackBendDepth.Value ) {
+                    trackBendDepth.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendDepth_TextChanged; ex=" + ex + "\n" );
@@ -334,7 +334,7 @@ namespace cadencii
 
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendLength.getValue() + "";
+            String s = trackBendLength.Value + "";
             if( !str.compare( s, txtBendLength.getText() ) ){
                 txtBendLength.setText( s );
             }
@@ -344,15 +344,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtBendLength.getText() );
-                if ( draft < trackBendLength.getMinimum() ) {
-                    draft = trackBendLength.getMinimum();
+                if ( draft < trackBendLength.Minimum ) {
+                    draft = trackBendLength.Minimum;
                     txtBendLength.setText( draft + "" );
-                } else if ( trackBendLength.getMaximum() < draft ) {
-                    draft = trackBendLength.getMaximum();
+                } else if ( trackBendLength.Maximum < draft ) {
+                    draft = trackBendLength.Maximum;
                     txtBendLength.setText( draft + "" );
                 }
-                if ( draft != trackBendLength.getValue() ) {
-                    trackBendLength.setValue( draft );
+                if ( draft != trackBendLength.Value ) {
+                    trackBendLength.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendLength_TextChanged; ex=" + ex + "\n" );
@@ -361,7 +361,7 @@ namespace cadencii
 
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDecay.getValue() + "";
+            String s = trackDecay.Value + "";
             if( !str.compare( s, txtDecay.getText() ) ){
                 txtDecay.setText( s );
             }
@@ -371,15 +371,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtDecay.getText() );
-                if ( draft < trackDecay.getMinimum() ) {
-                    draft = trackDecay.getMinimum();
+                if ( draft < trackDecay.Minimum ) {
+                    draft = trackDecay.Minimum;
                     txtDecay.setText( draft + "" );
-                } else if ( trackDecay.getMaximum() < draft ) {
-                    draft = trackDecay.getMaximum();
+                } else if ( trackDecay.Maximum < draft ) {
+                    draft = trackDecay.Maximum;
                     txtDecay.setText( draft + "" );
                 }
-                if ( draft != trackDecay.getValue() ) {
-                    trackDecay.setValue( draft );
+                if ( draft != trackDecay.Value ) {
+                    trackDecay.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDecay_TextChanged; ex=" + ex + "\n" );
@@ -388,7 +388,7 @@ namespace cadencii
 
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
-            String s = trackAccent.getValue() + "";
+            String s = trackAccent.Value + "";
             if( !str.compare( s, txtAccent.getText() ) ){
                 txtAccent.setText( s );
             }
@@ -398,15 +398,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtAccent.getText() );
-                if ( draft < trackAccent.getMinimum() ) {
-                    draft = trackAccent.getMinimum();
+                if ( draft < trackAccent.Minimum ) {
+                    draft = trackAccent.Minimum;
                     txtAccent.setText( draft + "" );
-                } else if ( trackAccent.getMaximum() < draft ) {
-                    draft = trackAccent.getMaximum();
+                } else if ( trackAccent.Maximum < draft ) {
+                    draft = trackAccent.Maximum;
                     txtAccent.setText( draft + "" );
                 }
-                if ( draft != trackAccent.getValue() ) {
-                    trackAccent.setValue( draft );
+                if ( draft != trackAccent.Value ) {
+                    trackAccent.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtAccent_TextChanged; ex=" + ex + "\n" );
@@ -449,23 +449,23 @@ namespace cadencii
 
         public void trackDuration_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDuration.getValue() + "";
+            String s = trackDuration.Value + "";
             if( !str.compare( s, txtDuration.getText() ) ){
                 txtDuration.setText( s );
             }
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.setDuration( trackDuration.getValue() );
+                m_note_head_handle.setDuration( trackDuration.Value );
             }
         }
 
         public void trackDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDepth.getValue() + "";
+            String s = trackDepth.Value + "";
             if( !str.compare( s, txtDepth.getText() ) ){
                 txtDepth.setText( s );
             }
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.setDepth( trackDepth.getValue() );
+                m_note_head_handle.setDepth( trackDepth.Value );
             }
         }
 
@@ -473,15 +473,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtDuration.getText() );
-                if ( draft < trackDuration.getMinimum() ) {
-                    draft = trackDuration.getMinimum();
+                if ( draft < trackDuration.Minimum ) {
+                    draft = trackDuration.Minimum;
                     txtDuration.setText( draft + "" );
-                } else if ( trackDuration.getMaximum() < draft ) {
-                    draft = trackDuration.getMaximum();
+                } else if ( trackDuration.Maximum < draft ) {
+                    draft = trackDuration.Maximum;
                     txtDuration.setText( draft + "" );
                 }
-                if ( draft != trackDuration.getValue() ) {
-                    trackDuration.setValue( draft );
+                if ( draft != trackDuration.Value ) {
+                    trackDuration.Value = draft;
                 }
                 if ( m_note_head_handle != null ) {
                     m_note_head_handle.setDuration( draft );
@@ -498,18 +498,18 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtDepth.getText() );
-                if ( draft < trackDepth.getMinimum() ) {
-                    draft = trackDepth.getMinimum();
+                if ( draft < trackDepth.Minimum ) {
+                    draft = trackDepth.Minimum;
                     txtDepth.setText( draft + "" );
-                } else if ( trackDepth.getMaximum() < draft ) {
-                    draft = trackDepth.getMaximum();
+                } else if ( trackDepth.Maximum < draft ) {
+                    draft = trackDepth.Maximum;
                     txtDepth.setText( draft + "" );
                 }
-                if ( draft != trackDepth.getValue() ) {
-                    trackDepth.setValue( draft );
+                if ( draft != trackDepth.Value ) {
+                    trackDepth.Value = draft;
                 }
                 if ( m_note_head_handle != null ) {
-                    m_note_head_handle.setDepth( trackDepth.getValue() );
+                    m_note_head_handle.setDepth( trackDepth.Value );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDepth_TextChanged; ex=" + ex + "\n" );
@@ -563,8 +563,8 @@ namespace cadencii
             this.label4 = new Label();
             this.txtBendLength = new cadencii.NumberTextBox();
             this.txtBendDepth = new cadencii.NumberTextBox();
-            this.trackBendLength = new BSlider();
-            this.trackBendDepth = new BSlider();
+            this.trackBendLength = new TrackBar();
+            this.trackBendDepth = new TrackBar();
             this.chkDownPortamento = new CheckBox();
             this.chkUpPortamento = new CheckBox();
             this.lblBendLength = new Label();
@@ -574,8 +574,8 @@ namespace cadencii
             this.label6 = new Label();
             this.txtAccent = new cadencii.NumberTextBox();
             this.txtDecay = new cadencii.NumberTextBox();
-            this.trackAccent = new BSlider();
-            this.trackDecay = new BSlider();
+            this.trackAccent = new TrackBar();
+            this.trackDecay = new TrackBar();
             this.lblAccent = new Label();
             this.lblDecay = new Label();
             this.lblTemplate = new Label();
@@ -587,8 +587,8 @@ namespace cadencii
             this.comboAttackTemplate = new ComboBox();
             this.txtDepth = new cadencii.NumberTextBox();
             this.txtDuration = new cadencii.NumberTextBox();
-            this.trackDepth = new BSlider();
-            this.trackDuration = new BSlider();
+            this.trackDepth = new TrackBar();
+            this.trackDuration = new TrackBar();
             this.lblDepth = new Label();
             this.lblDuration = new Label();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -1052,10 +1052,10 @@ namespace cadencii
         private Label lblBendLength;
         private CheckBox chkDownPortamento;
         private CheckBox chkUpPortamento;
-        private BSlider trackBendDepth;
-        private BSlider trackBendLength;
-        private BSlider trackAccent;
-        private BSlider trackDecay;
+        private TrackBar trackBendDepth;
+        private TrackBar trackBendLength;
+        private TrackBar trackAccent;
+        private TrackBar trackDecay;
         private Label lblAccent;
         private Label lblDecay;
         private NumberTextBox txtBendLength;
@@ -1072,8 +1072,8 @@ namespace cadencii
         private GroupBox groupAttack;
         private NumberTextBox txtDepth;
         private NumberTextBox txtDuration;
-        private BSlider trackDepth;
-        private BSlider trackDuration;
+        private TrackBar trackDepth;
+        private TrackBar trackDuration;
         private Label lblDepth;
         private Label lblDuration;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;

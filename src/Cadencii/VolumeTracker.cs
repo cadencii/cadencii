@@ -275,12 +275,12 @@ namespace cadencii
 
         public int getPanpot()
         {
-            return trackPanpot.getValue();
+            return trackPanpot.Value;
         }
 
         public void setPanpot( int value )
         {
-            trackPanpot.setValue( value );
+            trackPanpot.Value = value;
         }
 
         public boolean isSoloButtonVisible()
@@ -318,7 +318,7 @@ namespace cadencii
                 }
             }
             int v = 177 - getYCoordFromFeder( mFeder );
-            trackFeder.setValue( v );
+            trackFeder.Value = v;
         }
 
         private static int getFederFromYCoord( int y )
@@ -410,7 +410,7 @@ namespace cadencii
 
         public void trackFeder_ValueChanged( Object sender, EventArgs e )
         {
-            mFeder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
+            mFeder = getFederFromYCoord( 151 - (trackFeder.Value - 26) );
             txtFeder.setText( (mFeder / 10.0) + "" );
             try {
 #if JAVA
@@ -429,7 +429,7 @@ namespace cadencii
 
         public void trackPanpot_ValueChanged( Object sender, EventArgs e )
         {
-            mPanpot = trackPanpot.getValue();
+            mPanpot = trackPanpot.Value;
             txtPanpot.setText( mPanpot + "" );
             try {
 #if JAVA
@@ -588,8 +588,8 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.trackFeder = new cadencii.windows.forms.BSlider();
-            this.trackPanpot = new cadencii.windows.forms.BSlider();
+            this.trackFeder = new TrackBar();
+            this.trackPanpot = new TrackBar();
             this.txtPanpot = new cadencii.windows.forms.BTextBox();
             this.lblTitle = new Label();
             this.txtFeder = new cadencii.windows.forms.BTextBox();
@@ -711,8 +711,8 @@ namespace cadencii
 
         #endregion
 
-        private BSlider trackFeder;
-        private BSlider trackPanpot;
+        private TrackBar trackFeder;
+        private TrackBar trackPanpot;
         private BTextBox txtPanpot;
         private Label lblTitle;
         private BTextBox txtFeder;

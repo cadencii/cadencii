@@ -773,7 +773,7 @@ namespace cadencii
             // hScroll
             hScroll.Left = pictureBox3.Width;
             hScroll.Top = panel1.Height - hScroll.Height;
-            hScroll.Width = panel1.Width - pictureBox3.Width - trackBar.getWidth() - pictureBox2.Width;
+            hScroll.Width = panel1.Width - pictureBox3.Width - trackBar.Width - pictureBox2.Width;
             // trackBar
             trackBar.Left = pictureBox3.Width + hScroll.Width;
             trackBar.Top = panel1.Height - hScroll.Height;
@@ -889,7 +889,7 @@ namespace cadencii
                 }
             }
 
-            trackBar.setValue( AppManager.editorConfig.DefaultXScale );
+            trackBar.Value = AppManager.editorConfig.DefaultXScale;
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
@@ -9602,11 +9602,11 @@ namespace cadencii
             if ( (modifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK ) {
                 // ピアノロール拡大率を変更
                 if ( horizontal ) {
-                    int max = trackBar.getMaximum();
-                    int min = trackBar.getMinimum();
+                    int max = trackBar.Maximum;
+                    int min = trackBar.Minimum;
                     int width = max - min;
                     int delta = (width / 10) * (e.Delta > 0 ? 1 : -1);
-                    int old_tbv = trackBar.getValue();
+                    int old_tbv = trackBar.Value;
                     int draft = old_tbv + delta;
                     if ( draft < min ) {
                         draft = min;
@@ -9642,7 +9642,7 @@ namespace cadencii
                         controller.setScaleX( scale1 );
                         controller.setStartToDrawX( stdx1 );
                         hScroll.Value = hscroll_value;
-                        trackBar.setValue( draft );
+                        trackBar.Value = draft;
                     }
                 } else {
                     zoomY( e.Delta > 0 ? 1 : -1 );
@@ -14816,7 +14816,7 @@ namespace cadencii
 
         public void trackBar_ValueChanged( Object sender, EventArgs e )
         {
-            controller.setScaleX( getScaleXFromTrackBarValue( trackBar.getValue() ) );
+            controller.setScaleX( getScaleXFromTrackBarValue( trackBar.Value ) );
             controller.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
             repaint();

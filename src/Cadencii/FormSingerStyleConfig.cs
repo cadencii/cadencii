@@ -107,23 +107,23 @@ namespace cadencii
 
         public int getPMBendDepth()
         {
-            return trackBendDepth.getValue();
+            return trackBendDepth.Value;
         }
 
         public void setPMBendDepth( int value )
         {
-            trackBendDepth.setValue( value );
+            trackBendDepth.Value = value;
             txtBendDepth.setText( value + "" );
         }
 
         public int getPMBendLength()
         {
-            return trackBendLength.getValue();
+            return trackBendLength.Value;
         }
 
         public void setPMBendLength( int value )
         {
-            trackBendLength.setValue( value );
+            trackBendLength.Value = value;
             txtBendLength.setText( value + "" );
         }
 
@@ -155,23 +155,23 @@ namespace cadencii
 
         public int getDEMdecGainRate()
         {
-            return trackDecay.getValue();
+            return trackDecay.Value;
         }
 
         public void setDEMdecGainRate( int value )
         {
-            trackDecay.setValue( value );
+            trackDecay.Value = value;
             txtDecay.setText( value + "" );
         }
 
         public int getDEMaccent()
         {
-            return trackAccent.getValue();
+            return trackAccent.Value;
         }
 
         public void setDEMaccent( int value )
         {
-            trackAccent.setValue( value );
+            trackAccent.Value = value;
             txtAccent.setText( value + "" );
         }
 
@@ -211,7 +211,7 @@ namespace cadencii
         #region event handlers
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendDepth.getValue() + "";
+            String s = trackBendDepth.Value + "";
             if( !str.compare( s, txtBendDepth.getText() ) ){
                 txtBendDepth.setText( s );
             }
@@ -221,15 +221,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtBendDepth.getText() );
-                if ( draft < trackBendDepth.getMinimum() ) {
-                    draft = trackBendDepth.getMinimum();
+                if ( draft < trackBendDepth.Minimum ) {
+                    draft = trackBendDepth.Minimum;
                     txtBendDepth.setText( draft + "" );
-                } else if ( trackBendDepth.getMaximum() < draft ) {
-                    draft = trackBendDepth.getMaximum();
+                } else if ( trackBendDepth.Maximum < draft ) {
+                    draft = trackBendDepth.Maximum;
                     txtBendDepth.setText( draft + "" );
                 }
-                if ( draft != trackBendDepth.getValue() ) {
-                    trackBendDepth.setValue( draft );
+                if ( draft != trackBendDepth.Value ) {
+                    trackBendDepth.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtBendDepth.Text = trackBendDepth.Value + "";
@@ -238,7 +238,7 @@ namespace cadencii
 
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendLength.getValue() + "";
+            String s = trackBendLength.Value + "";
             if( !str.compare( s, txtBendLength.getText() ) ){
                 txtBendLength.setText( s );
             }
@@ -248,15 +248,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtBendLength.getText() );
-                if ( draft < trackBendLength.getMinimum() ) {
-                    draft = trackBendLength.getMinimum();
+                if ( draft < trackBendLength.Minimum ) {
+                    draft = trackBendLength.Minimum;
                     txtBendLength.setText( draft + "" );
-                } else if ( trackBendLength.getMaximum() < draft ) {
-                    draft = trackBendLength.getMaximum();
+                } else if ( trackBendLength.Maximum < draft ) {
+                    draft = trackBendLength.Maximum;
                     txtBendLength.setText( draft + "" );
                 }
-                if ( draft != trackBendLength.getValue() ) {
-                    trackBendLength.setValue( draft );
+                if ( draft != trackBendLength.Value ) {
+                    trackBendLength.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtBendLength.Text = trackBendLength.Value + "";
@@ -265,7 +265,7 @@ namespace cadencii
 
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDecay.getValue() + "";
+            String s = trackDecay.Value + "";
             if( !str.compare( s, txtDecay.getText() ) ){
                 txtDecay.setText( s );
             }
@@ -275,15 +275,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtDecay.getText() );
-                if ( draft < trackDecay.getMinimum() ) {
-                    draft = trackDecay.getMinimum();
+                if ( draft < trackDecay.Minimum ) {
+                    draft = trackDecay.Minimum;
                     txtDecay.setText( draft + "" );
-                } else if ( trackDecay.getMaximum() < draft ) {
-                    draft = trackDecay.getMaximum();
+                } else if ( trackDecay.Maximum < draft ) {
+                    draft = trackDecay.Maximum;
                     txtDecay.setText( draft + "" );
                 }
-                if ( draft != trackDecay.getValue() ) {
-                    trackDecay.setValue( draft );
+                if ( draft != trackDecay.Value ) {
+                    trackDecay.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtDecay.Text = trackDecay.Value + "";
@@ -292,7 +292,7 @@ namespace cadencii
 
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
-            String s = trackAccent.getValue() + "";
+            String s = trackAccent.Value + "";
             if( !str.compare( s, txtAccent.getText() ) ){
                 txtAccent.setText( s );
             }
@@ -302,15 +302,15 @@ namespace cadencii
         {
             try {
                 int draft = str.toi( txtAccent.getText() );
-                if ( draft < trackAccent.getMinimum() ) {
-                    draft = trackAccent.getMinimum();
+                if ( draft < trackAccent.Minimum ) {
+                    draft = trackAccent.Minimum;
                     txtAccent.setText( draft + "" );
-                } else if ( trackAccent.getMaximum() < draft ) {
-                    draft = trackAccent.getMaximum();
+                } else if ( trackAccent.Maximum < draft ) {
+                    draft = trackAccent.Maximum;
                     txtAccent.setText( draft + "" );
                 }
-                if ( draft != trackAccent.getValue() ) {
-                    trackAccent.setValue( draft );
+                if ( draft != trackAccent.Value ) {
+                    trackAccent.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtAccent.Text = trackAccent.Value + "";
@@ -395,8 +395,8 @@ namespace cadencii
             this.label4 = new Label();
             this.txtBendLength = new cadencii.NumberTextBox();
             this.txtBendDepth = new cadencii.NumberTextBox();
-            this.trackBendLength = new BSlider();
-            this.trackBendDepth = new BSlider();
+            this.trackBendLength = new TrackBar();
+            this.trackBendDepth = new TrackBar();
             this.chkDownPortamento = new CheckBox();
             this.chkUpPortamento = new CheckBox();
             this.lblBendLength = new Label();
@@ -406,8 +406,8 @@ namespace cadencii
             this.label6 = new Label();
             this.txtAccent = new cadencii.NumberTextBox();
             this.txtDecay = new cadencii.NumberTextBox();
-            this.trackAccent = new BSlider();
-            this.trackDecay = new BSlider();
+            this.trackAccent = new TrackBar();
+            this.trackDecay = new TrackBar();
             this.lblAccent = new Label();
             this.lblDecay = new Label();
             this.lblTemplate = new Label();
@@ -742,10 +742,10 @@ namespace cadencii
         private Label lblBendLength;
         private CheckBox chkDownPortamento;
         private CheckBox chkUpPortamento;
-        private BSlider trackBendDepth;
-        private BSlider trackBendLength;
-        private BSlider trackAccent;
-        private BSlider trackDecay;
+        private TrackBar trackBendDepth;
+        private TrackBar trackBendLength;
+        private TrackBar trackAccent;
+        private TrackBar trackDecay;
         private Label lblAccent;
         private Label lblDecay;
         private NumberTextBox txtBendLength;

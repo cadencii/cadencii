@@ -267,7 +267,7 @@ namespace cadencii
             this.cMenuTrackSelectorDeleteBezier = new ToolStripMenuItem();
             this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackSelectorSelectAll = new ToolStripMenuItem();
-            this.trackBar = new cadencii.windows.forms.BSlider();
+            this.trackBar = new TrackBar();
             this.pictureBox3 = new cadencii.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new cadencii.windows.forms.BPictureBox();
             this.pictureBox2 = new cadencii.windows.forms.BPictureBox();
@@ -3090,7 +3090,7 @@ namespace cadencii
         public ToolStripMenuItem menuJobReloadVsti;
         public ToolStripMenuItem cMenuPianoCurve;
         public ToolStripMenuItem cMenuTrackSelectorCurve;
-        public BSlider trackBar;
+        public TrackBar trackBar;
         public System.Windows.Forms.ToolBarButton stripBtnPointer;
         public System.Windows.Forms.ToolBarButton stripBtnLine;
         public System.Windows.Forms.ToolBarButton stripBtnPencil;
