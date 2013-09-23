@@ -2187,17 +2187,17 @@ namespace cadencii
         {
 #if !JAVA
             if ( mGameMode == GameControlMode.DISABLED ) {
-                stripLblGameCtrlMode.setText( _( "Disabled" ) );
-                stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
+                stripLblGameCtrlMode.Text = _( "Disabled" );
+                stripLblGameCtrlMode.Image = Resources.get_slash().image;
             } else if ( mGameMode == GameControlMode.CURSOR ) {
-                stripLblGameCtrlMode.setText( _( "Cursor" ) );
-                stripLblGameCtrlMode.setIcon( null );
+                stripLblGameCtrlMode.Text = _( "Cursor" );
+                stripLblGameCtrlMode.Image = null;
             } else if ( mGameMode == GameControlMode.KEYBOARD ) {
-                stripLblGameCtrlMode.setText( _( "Keyboard" ) );
-                stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
+                stripLblGameCtrlMode.Text = _( "Keyboard" );
+                stripLblGameCtrlMode.Image = Resources.get_piano().image;
             } else if ( mGameMode == GameControlMode.NORMAL ) {
-                stripLblGameCtrlMode.setText( _( "Normal" ) );
-                stripLblGameCtrlMode.setIcon( null );
+                stripLblGameCtrlMode.Text = _( "Normal" );
+                stripLblGameCtrlMode.Image = null;
             }
 #endif
         }
@@ -3379,8 +3379,8 @@ namespace cadencii
                 }
                 if ( init_success ) {
                     mGameMode = GameControlMode.NORMAL;
-                    stripLblGameCtrlMode.setIcon( null );
-                    stripLblGameCtrlMode.setText( mGameMode.ToString() );
+                    stripLblGameCtrlMode.Image = null;
+                    stripLblGameCtrlMode.Text = mGameMode.ToString();
                     mTimer = new BTimer();
                     mTimer.setDelay( 10 );
                     mTimer.Tick += new EventHandler( mTimer_Tick );
@@ -3486,8 +3486,8 @@ namespace cadencii
 #if JAVA
                 stripBtnStepSequencer.setEnabled( false );
 #else
-                stripLblMidiIn.setText( _( "Disabled" ) );
-                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                stripLblMidiIn.Text = _( "Disabled" );
+                stripLblMidiIn.Image = Resources.get_slash().image;
 #endif
             } else {
                 if ( midiport >= vec.size( devices ) ) {
@@ -3497,8 +3497,8 @@ namespace cadencii
 #if JAVA
                 stripBtnStepSequencer.setEnabled( true );
 #else
-                stripLblMidiIn.setText( vec.get( devices, midiport ).getName() );
-                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_piano() ) );
+                stripLblMidiIn.Text = vec.get( devices, midiport ).getName();
+                stripLblMidiIn.Image = Resources.get_piano().image;
 #endif
             }
         }
@@ -4440,7 +4440,7 @@ namespace cadencii
             }
 
 #if !JAVA
-            stripLblGameCtrlMode.setToolTipText( _( "Game controler" ) );
+            stripLblGameCtrlMode.ToolTipText = _( "Game controler" );
 #endif
 
             this.Invoke( new EventHandler( updateGameControlerStatus ) );
@@ -4814,7 +4814,7 @@ namespace cadencii
             #endregion
 
 #if !JAVA
-            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
+            stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
 #endif
 
             // Palette Tool
@@ -7462,8 +7462,8 @@ namespace cadencii
         {
             try {
 #if !JAVA
-                this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
-                this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripLblGameCtrlMode.Image = Resources.get_slash().image;
+                this.stripLblMidiIn.Image = Resources.get_slash().image;
 #endif
 
 #if JAVA
@@ -10749,8 +10749,8 @@ namespace cadencii
                         event_processed = true;
                         mGameMode = GameControlMode.KEYBOARD;
 #if !JAVA
-                        stripLblGameCtrlMode.setText( mGameMode.ToString() );
-                        stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
+                        stripLblGameCtrlMode.Text = mGameMode.ToString();
+                        stripLblGameCtrlMode.Image = Resources.get_piano().image;
 #endif
                     }
                     mLastBtnSelect = SELECT;

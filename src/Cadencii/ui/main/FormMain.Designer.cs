@@ -274,11 +274,11 @@ namespace cadencii
             this.vScroll = new VScrollBar();
             this.picturePositionIndicator = new cadencii.windows.forms.BPictureBox();
             this.toolStripBottom = new cadencii.windows.forms.BToolBar();
-            this.toolStripStatusLabel1 = new cadencii.windows.forms.BStatusLabel();
-            this.stripLblGameCtrlMode = new cadencii.windows.forms.BStatusLabel();
+            this.toolStripStatusLabel1 = new ToolStripStatusLabel();
+            this.stripLblGameCtrlMode = new ToolStripStatusLabel();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel2 = new cadencii.windows.forms.BStatusLabel();
-            this.stripLblMidiIn = new cadencii.windows.forms.BStatusLabel();
+            this.toolStripStatusLabel2 = new ToolStripStatusLabel();
+            this.stripLblMidiIn = new ToolStripStatusLabel();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStepSequencer = new System.Windows.Forms.ToolStripButton();
             this.splitContainerProperty = new cadencii.apputil.BSplitContainer();
@@ -3122,7 +3122,7 @@ namespace cadencii
         public ToolStripMenuItem cMenuPianoVibratoProperty;
         public ToolStripMenuItem menuScriptUpdate;
         public ToolStripMenuItem menuSettingGameControler;
-        public BStatusLabel stripLblGameCtrlMode;
+        public ToolStripStatusLabel stripLblGameCtrlMode;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         public ToolStripMenuItem menuSettingGameControlerSetting;
         public ToolStripMenuItem menuSettingGameControlerLoad;
@@ -3133,7 +3133,7 @@ namespace cadencii
         public ToolStripMenuItem menuVisualWaveform;
         private WaveformZoomUiImpl panelWaveformZoom;
         public ToolStripMenuItem cMenuTrackSelectorDeleteBezier;
-        public BStatusLabel stripLblMidiIn;
+        public ToolStripStatusLabel stripLblMidiIn;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         //public ToolStripMenuItem menuJobRealTime;
         public ToolStripMenuItem cMenuTrackTabRenderer;
@@ -3143,8 +3143,8 @@ namespace cadencii
         private System.Windows.Forms.ToolStripMenuItem cMenuTrackTabRendererAquesTone2;
         public ToolStripMenuItem menuVisualPitchLine;
         public ToolStripMenuItem menuFileImportMidi;
-        public BStatusLabel toolStripStatusLabel1;
-        public BStatusLabel toolStripStatusLabel2;
+        public ToolStripStatusLabel toolStripStatusLabel1;
+        public ToolStripStatusLabel toolStripStatusLabel2;
         public BToolBarButton stripBtnFileSave;
         public BToolBarButton stripBtnFileOpen;
         public BToolBarButton stripBtnCut;
