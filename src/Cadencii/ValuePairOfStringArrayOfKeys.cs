@@ -17,6 +17,8 @@ package cadencii;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Xml.Serialization;
+using System.Windows.Forms;
 using cadencii.windows.forms;
 
 namespace cadencii {
@@ -24,12 +26,13 @@ namespace cadencii {
 
     public class ValuePairOfStringArrayOfKeys {
         public String Key;
-        public BKeys[] Value;
+        [XmlArrayItem("Keys")]
+        public Keys[] Value;
 
         public ValuePairOfStringArrayOfKeys() {
         }
 
-        public ValuePairOfStringArrayOfKeys( String key, BKeys[] value ) {
+        public ValuePairOfStringArrayOfKeys( String key, Keys[] value ) {
             Key = key;
             Value = value;
         }

@@ -34,15 +34,13 @@ using cadencii.java.awt.event_;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormNoteExpressionConfig extends BDialog {
 #else
-    public class FormNoteExpressionConfig : BDialog
+    public class FormNoteExpressionConfig : Form
     {
 #endif
         boolean m_apply_current_track = false;
@@ -85,36 +83,32 @@ namespace cadencii
 
             //comboAttackTemplateを更新
             NoteHeadHandle empty = new NoteHeadHandle();
-            comboAttackTemplate.removeAllItems();
+            comboAttackTemplate.Items.Clear();
             empty.IconID = "$01010000";
             empty.setCaption( "[Non Attack]" );
-            comboAttackTemplate.addItem( empty );
-            comboAttackTemplate.setSelectedItem( empty );
+            comboAttackTemplate.Items.Add( empty );
+            comboAttackTemplate.SelectedItem = empty;
             String icon_id = "";
             if ( m_note_head_handle != null ) {
                 icon_id = m_note_head_handle.IconID;
-                txtDuration.setText( m_note_head_handle.getDuration() + "" );
-                txtDepth.setText( m_note_head_handle.getDepth() + "" );
+                txtDuration.Text = m_note_head_handle.getDuration() + "";
+                txtDepth.Text = m_note_head_handle.getDepth() + "";
             } else {
-                txtDuration.setEnabled( false );
-                txtDepth.setEnabled( false );
-                trackDuration.setEnabled( false );
-                trackDepth.setEnabled( false );
+                txtDuration.Enabled = false;
+                txtDepth.Enabled = false;
+                trackDuration.Enabled = false;
+                trackDepth.Enabled = false;
             }
             for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 NoteHeadHandle item = itr.next();
-                comboAttackTemplate.addItem( item );
+                comboAttackTemplate.Items.Add( item );
                 if ( item.IconID.Equals( icon_id ) ) {
-                    comboAttackTemplate.setSelectedItem( comboAttackTemplate.getItemAt( comboAttackTemplate.getItemCount() - 1 ) );
+                    comboAttackTemplate.SelectedItem = comboAttackTemplate.Items[comboAttackTemplate.Items.Count - 1];
                 }
             }
-#if JAVA
-            comboAttackTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboAttackTemplate_SelectedIndexChanged" ) );
-#else
-            comboAttackTemplate.SelectedIndexChanged += new BEventHandler( comboAttackTemplate_SelectedIndexChanged );
-#endif
+            comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
-            comboTemplate.removeAllItems();
+            comboTemplate.Items.Clear();
             String[] strs = new String[]{
                 "[Select a template]",
                 "normal",
@@ -124,7 +118,7 @@ namespace cadencii
                 "slow legate",
             };
             for( int i = 0; i < strs.Length; i++ ){
-                comboTemplate.addItem( strs[i] );
+                comboTemplate.Items.Add( strs[i] );
             }
 
 #if JAVA
@@ -148,63 +142,63 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            lblTemplate.setText( _( "Template" ) );
-            lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
-            groupPitchControl.setTitle( _( "Pitch Control" ) );
-            lblBendDepth.setText( _( "Bend Depth" ) );
-            lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
-            lblBendLength.setText( _( "Bend Length" ) );
-            lblBendLength.setMnemonic( KeyEvent.VK_L, txtBendLength );
-            chkUpPortamento.setText( _( "Add portamento in rising movement" ) );
-            chkUpPortamento.setMnemonic( KeyEvent.VK_R );
-            chkDownPortamento.setText( _( "Add portamento in falling movement" ) );
-            chkDownPortamento.setMnemonic( KeyEvent.VK_F );
+            lblTemplate.Text = _( "Template" );
+            lblTemplate.Mnemonic( KeyEvent.VK_T );
+            groupPitchControl.Text = _( "Pitch Control" );
+            lblBendDepth.Text = _( "Bend Depth" );
+            lblBendDepth.Mnemonic( KeyEvent.VK_B );
+            lblBendLength.Text = _( "Bend Length" );
+            lblBendLength.Mnemonic( KeyEvent.VK_L );
+            chkUpPortamento.Text = _("Add portamento in rising movement");
+            chkUpPortamento.Mnemonic(KeyEvent.VK_R);
+            chkDownPortamento.Text = _("Add portamento in falling movement");
+            chkDownPortamento.Mnemonic(KeyEvent.VK_F);
 
-            groupAttack.setTitle( _( "Attack Control (VOCALOID1)" ) );
-            groupDynamicsControl.setTitle( _( "Dynamics Control (VOCALOID2)" ) );
-            lblDecay.setText( _( "Decay" ) );
-            lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
-            lblAccent.setText( _( "Accent" ) );
-            lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
+            groupAttack.Text = _( "Attack Control (VOCALOID1)" );
+            groupDynamicsControl.Text = _( "Dynamics Control (VOCALOID2)" );
+            lblDecay.Text = _( "Decay" );
+            lblDecay.Mnemonic( KeyEvent.VK_D );
+            lblAccent.Text = _( "Accent" );
+            lblAccent.Mnemonic( KeyEvent.VK_A );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
 
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
 #endif
-            setTitle( _( "Expression control property" ) );
+            this.Text = _( "Expression control property" );
         }
 
         public int getPMBendDepth()
         {
-            return trackBendDepth.getValue();
+            return trackBendDepth.Value;
         }
 
         public void setPMBendDepth( int value )
         {
-            trackBendDepth.setValue( value );
-            txtBendDepth.setText( value + "" );
+            trackBendDepth.Value = value;
+            txtBendDepth.Text = value + "";
         }
 
         public int getPMBendLength()
         {
-            return trackBendLength.getValue();
+            return trackBendLength.Value;
         }
 
         public void setPMBendLength( int value )
         {
-            trackBendLength.setValue( value );
-            txtBendLength.setText( value + "" );
+            trackBendLength.Value = value;
+            txtBendLength.Text = value + "";
         }
 
         public int getPMbPortamentoUse()
         {
             int ret = 0;
-            if ( chkUpPortamento.isSelected() ) {
+            if ( chkUpPortamento.Checked ) {
                 ret += 1;
             }
-            if ( chkDownPortamento.isSelected() ) {
+            if ( chkDownPortamento.Checked ) {
                 ret += 2;
             }
             return ret;
@@ -213,37 +207,37 @@ namespace cadencii
         public void setPMbPortamentoUse( int value )
         {
             if ( value % 2 == 1 ) {
-                chkUpPortamento.setSelected( true );
+                chkUpPortamento.Checked = true;
             } else {
-                chkUpPortamento.setSelected( false );
+                chkUpPortamento.Checked = false;
             }
             if ( value >= 2 ) {
-                chkDownPortamento.setSelected( true );
+                chkDownPortamento.Checked = true;
             } else {
-                chkDownPortamento.setSelected( false );
+                chkDownPortamento.Checked = false;
             }
         }
 
         public int getDEMdecGainRate()
         {
-            return trackDecay.getValue();
+            return trackDecay.Value;
         }
 
         public void setDEMdecGainRate( int value )
         {
-            trackDecay.setValue( value );
-            txtDecay.setText( value + "" );
+            trackDecay.Value = value;
+            txtDecay.Text = value + "";
         }
 
         public int getDEMaccent()
         {
-            return trackAccent.getValue();
+            return trackAccent.Value;
         }
 
         public void setDEMaccent( int value )
         {
-            trackAccent.setValue( value );
-            txtAccent.setText( value + "" );
+            trackAccent.Value = value;
+            txtAccent.Text = value + "";
         }
 
         public boolean getApplyCurrentTrack()
@@ -260,21 +254,21 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            txtBendLength.TextChanged += new BEventHandler( txtBendLength_TextChanged );
-            txtBendDepth.TextChanged += new BEventHandler( txtBendDepth_TextChanged );
-            trackBendLength.ValueChanged += new BEventHandler( trackBendLength_Scroll );
-            trackBendDepth.ValueChanged += new BEventHandler( trackBendDepth_Scroll );
-            txtAccent.TextChanged += new BEventHandler( txtAccent_TextChanged );
-            txtDecay.TextChanged += new BEventHandler( txtDecay_TextChanged );
-            trackAccent.ValueChanged += new BEventHandler( trackAccent_Scroll );
-            trackDecay.ValueChanged += new BEventHandler( trackDecay_Scroll );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            comboTemplate.SelectedIndexChanged += new BEventHandler( comboBox1_SelectedIndexChanged );
-            txtDepth.TextChanged += new BEventHandler( txtDepth_TextChanged );
-            txtDuration.TextChanged += new BEventHandler( txtDuration_TextChanged );
-            trackDepth.ValueChanged += new BEventHandler( trackDepth_Scroll );
-            trackDuration.ValueChanged += new BEventHandler( trackDuration_Scroll );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
+            txtDepth.TextChanged += new EventHandler( txtDepth_TextChanged );
+            txtDuration.TextChanged += new EventHandler( txtDuration_TextChanged );
+            trackDepth.ValueChanged += new EventHandler( trackDepth_Scroll );
+            trackDuration.ValueChanged += new EventHandler( trackDuration_Scroll );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -283,150 +277,150 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void comboAttackTemplate_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboAttackTemplate_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboAttackTemplate.getSelectedIndex();
+            int index = comboAttackTemplate.SelectedIndex;
             if ( index < 0 ) {
                 return;
             }
             if ( index == 0 ) {
                 m_note_head_handle = null;
-                txtDuration.setEnabled( false );
-                trackDuration.setEnabled( false );
-                txtDepth.setEnabled( false );
-                trackDepth.setEnabled( false );
+                txtDuration.Enabled = false;
+                trackDuration.Enabled = false;
+                txtDepth.Enabled = false;
+                trackDepth.Enabled = false;
                 return;
             }
-            txtDuration.setEnabled( true );
-            trackDuration.setEnabled( true );
-            txtDepth.setEnabled( true );
-            trackDepth.setEnabled( true );
-            NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.getSelectedItem();
+            txtDuration.Enabled = true;
+            trackDuration.Enabled = true;
+            txtDepth.Enabled = true;
+            trackDepth.Enabled = true;
+            NoteHeadHandle aconfig = (NoteHeadHandle)comboAttackTemplate.SelectedItem;
             if ( m_note_head_handle == null ) {
-                txtDuration.setText( aconfig.getDuration() + "" );
-                txtDepth.setText( aconfig.getDepth() + "" );
+                txtDuration.Text = aconfig.getDuration() + "";
+                txtDepth.Text = aconfig.getDepth() + "";
             }
             m_note_head_handle = (NoteHeadHandle)aconfig.clone();
-            m_note_head_handle.setDuration( trackDuration.getValue() );
-            m_note_head_handle.setDepth( trackDepth.getValue() );
+            m_note_head_handle.setDuration( trackDuration.Value );
+            m_note_head_handle.setDepth( trackDepth.Value );
         }
 
-        public void trackBendDepth_Scroll( Object sender, BEventArgs e )
+        public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendDepth.getValue() + "";
-            if( !str.compare( s, txtBendDepth.getText() ) ){
-                txtBendDepth.setText( s );
+            String s = trackBendDepth.Value + "";
+            if( !str.compare( s, txtBendDepth.Text ) ){
+                txtBendDepth.Text = s;
             }
         }
 
-        public void txtBendDepth_TextChanged( Object sender, BEventArgs e )
+        public void txtBendDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendDepth.getText() );
-                if ( draft < trackBendDepth.getMinimum() ) {
-                    draft = trackBendDepth.getMinimum();
-                    txtBendDepth.setText( draft + "" );
-                } else if ( trackBendDepth.getMaximum() < draft ) {
-                    draft = trackBendDepth.getMaximum();
-                    txtBendDepth.setText( draft + "" );
+                int draft = str.toi( txtBendDepth.Text );
+                if ( draft < trackBendDepth.Minimum ) {
+                    draft = trackBendDepth.Minimum;
+                    txtBendDepth.Text = draft + "";
+                } else if ( trackBendDepth.Maximum < draft ) {
+                    draft = trackBendDepth.Maximum;
+                    txtBendDepth.Text = draft + "";
                 }
-                if ( draft != trackBendDepth.getValue() ) {
-                    trackBendDepth.setValue( draft );
+                if ( draft != trackBendDepth.Value ) {
+                    trackBendDepth.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendDepth_TextChanged; ex=" + ex + "\n" );
             }
         }
 
-        public void trackBendLength_Scroll( Object sender, BEventArgs e )
+        public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendLength.getValue() + "";
-            if( !str.compare( s, txtBendLength.getText() ) ){
-                txtBendLength.setText( s );
+            String s = trackBendLength.Value + "";
+            if( !str.compare( s, txtBendLength.Text ) ){
+                txtBendLength.Text = s;
             }
         }
 
-        public void txtBendLength_TextChanged( Object sender, BEventArgs e )
+        public void txtBendLength_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendLength.getText() );
-                if ( draft < trackBendLength.getMinimum() ) {
-                    draft = trackBendLength.getMinimum();
-                    txtBendLength.setText( draft + "" );
-                } else if ( trackBendLength.getMaximum() < draft ) {
-                    draft = trackBendLength.getMaximum();
-                    txtBendLength.setText( draft + "" );
+                int draft = str.toi( txtBendLength.Text );
+                if ( draft < trackBendLength.Minimum ) {
+                    draft = trackBendLength.Minimum;
+                    txtBendLength.Text = draft + "";
+                } else if ( trackBendLength.Maximum < draft ) {
+                    draft = trackBendLength.Maximum;
+                    txtBendLength.Text = draft + "";
                 }
-                if ( draft != trackBendLength.getValue() ) {
-                    trackBendLength.setValue( draft );
+                if ( draft != trackBendLength.Value ) {
+                    trackBendLength.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendLength_TextChanged; ex=" + ex + "\n" );
             }
         }
 
-        public void trackDecay_Scroll( Object sender, BEventArgs e )
+        public void trackDecay_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDecay.getValue() + "";
-            if( !str.compare( s, txtDecay.getText() ) ){
-                txtDecay.setText( s );
+            String s = trackDecay.Value + "";
+            if( !str.compare( s, txtDecay.Text ) ){
+                txtDecay.Text = s;
             }
         }
 
-        public void txtDecay_TextChanged( Object sender, BEventArgs e )
+        public void txtDecay_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDecay.getText() );
-                if ( draft < trackDecay.getMinimum() ) {
-                    draft = trackDecay.getMinimum();
-                    txtDecay.setText( draft + "" );
-                } else if ( trackDecay.getMaximum() < draft ) {
-                    draft = trackDecay.getMaximum();
-                    txtDecay.setText( draft + "" );
+                int draft = str.toi( txtDecay.Text );
+                if ( draft < trackDecay.Minimum ) {
+                    draft = trackDecay.Minimum;
+                    txtDecay.Text = draft + "";
+                } else if ( trackDecay.Maximum < draft ) {
+                    draft = trackDecay.Maximum;
+                    txtDecay.Text = draft + "";
                 }
-                if ( draft != trackDecay.getValue() ) {
-                    trackDecay.setValue( draft );
+                if ( draft != trackDecay.Value ) {
+                    trackDecay.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDecay_TextChanged; ex=" + ex + "\n" );
             }
         }
 
-        public void trackAccent_Scroll( Object sender, BEventArgs e )
+        public void trackAccent_Scroll( Object sender, EventArgs e )
         {
-            String s = trackAccent.getValue() + "";
-            if( !str.compare( s, txtAccent.getText() ) ){
-                txtAccent.setText( s );
+            String s = trackAccent.Value + "";
+            if( !str.compare( s, txtAccent.Text ) ){
+                txtAccent.Text = s;
             }
         }
 
-        public void txtAccent_TextChanged( Object sender, BEventArgs e )
+        public void txtAccent_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtAccent.getText() );
-                if ( draft < trackAccent.getMinimum() ) {
-                    draft = trackAccent.getMinimum();
-                    txtAccent.setText( draft + "" );
-                } else if ( trackAccent.getMaximum() < draft ) {
-                    draft = trackAccent.getMaximum();
-                    txtAccent.setText( draft + "" );
+                int draft = str.toi( txtAccent.Text );
+                if ( draft < trackAccent.Minimum ) {
+                    draft = trackAccent.Minimum;
+                    txtAccent.Text = draft + "";
+                } else if ( trackAccent.Maximum < draft ) {
+                    draft = trackAccent.Maximum;
+                    txtAccent.Text = draft + "";
                 }
-                if ( draft != trackAccent.getValue() ) {
-                    trackAccent.setValue( draft );
+                if ( draft != trackAccent.Value ) {
+                    trackAccent.Value = draft;
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtAccent_TextChanged; ex=" + ex + "\n" );
             }
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboTemplate.getSelectedIndex() - 1;
+            int index = comboTemplate.SelectedIndex - 1;
             if( index < 0 || 4 < index ){
                 return;
             }
@@ -442,52 +436,52 @@ namespace cadencii
             setDEMaccent( dem_accent[index] );
         }
 
-        public void btnApply_Click( Object sender, BEventArgs e )
+        public void btnApply_Click( Object sender, EventArgs e )
         {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == DialogResult.Yes ) {
                 m_apply_current_track = true;
-                setDialogResult( BDialogResult.OK );
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
         }
 
-        public void trackDuration_Scroll( Object sender, BEventArgs e )
+        public void trackDuration_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDuration.getValue() + "";
-            if( !str.compare( s, txtDuration.getText() ) ){
-                txtDuration.setText( s );
+            String s = trackDuration.Value + "";
+            if( !str.compare( s, txtDuration.Text ) ){
+                txtDuration.Text = s;
             }
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.setDuration( trackDuration.getValue() );
+                m_note_head_handle.setDuration( trackDuration.Value );
             }
         }
 
-        public void trackDepth_Scroll( Object sender, BEventArgs e )
+        public void trackDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDepth.getValue() + "";
-            if( !str.compare( s, txtDepth.getText() ) ){
-                txtDepth.setText( s );
+            String s = trackDepth.Value + "";
+            if( !str.compare( s, txtDepth.Text ) ){
+                txtDepth.Text = s;
             }
             if ( m_note_head_handle != null ) {
-                m_note_head_handle.setDepth( trackDepth.getValue() );
+                m_note_head_handle.setDepth( trackDepth.Value );
             }
         }
 
-        public void txtDuration_TextChanged( Object sender, BEventArgs e )
+        public void txtDuration_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDuration.getText() );
-                if ( draft < trackDuration.getMinimum() ) {
-                    draft = trackDuration.getMinimum();
-                    txtDuration.setText( draft + "" );
-                } else if ( trackDuration.getMaximum() < draft ) {
-                    draft = trackDuration.getMaximum();
-                    txtDuration.setText( draft + "" );
+                int draft = str.toi( txtDuration.Text );
+                if ( draft < trackDuration.Minimum ) {
+                    draft = trackDuration.Minimum;
+                    txtDuration.Text = draft + "";
+                } else if ( trackDuration.Maximum < draft ) {
+                    draft = trackDuration.Maximum;
+                    txtDuration.Text = draft + "";
                 }
-                if ( draft != trackDuration.getValue() ) {
-                    trackDuration.setValue( draft );
+                if ( draft != trackDuration.Value ) {
+                    trackDuration.Value = draft;
                 }
                 if ( m_note_head_handle != null ) {
                     m_note_head_handle.setDuration( draft );
@@ -500,22 +494,22 @@ namespace cadencii
             }
         }
 
-        public void txtDepth_TextChanged( Object sender, BEventArgs e )
+        public void txtDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDepth.getText() );
-                if ( draft < trackDepth.getMinimum() ) {
-                    draft = trackDepth.getMinimum();
-                    txtDepth.setText( draft + "" );
-                } else if ( trackDepth.getMaximum() < draft ) {
-                    draft = trackDepth.getMaximum();
-                    txtDepth.setText( draft + "" );
+                int draft = str.toi( txtDepth.Text );
+                if ( draft < trackDepth.Minimum ) {
+                    draft = trackDepth.Minimum;
+                    txtDepth.Text = draft + "";
+                } else if ( trackDepth.Maximum < draft ) {
+                    draft = trackDepth.Maximum;
+                    txtDepth.Text = draft + "";
                 }
-                if ( draft != trackDepth.getValue() ) {
-                    trackDepth.setValue( draft );
+                if ( draft != trackDepth.Value ) {
+                    trackDepth.Value = draft;
                 }
                 if ( m_note_head_handle != null ) {
-                    m_note_head_handle.setDepth( trackDepth.getValue() );
+                    m_note_head_handle.setDepth( trackDepth.Value );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDepth_TextChanged; ex=" + ex + "\n" );
@@ -525,9 +519,9 @@ namespace cadencii
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -564,42 +558,42 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPitchControl = new BGroupBox();
-            this.label5 = new BLabel();
-            this.label4 = new BLabel();
+            this.groupPitchControl = new GroupBox();
+            this.label5 = new Label();
+            this.label4 = new Label();
             this.txtBendLength = new cadencii.NumberTextBox();
             this.txtBendDepth = new cadencii.NumberTextBox();
-            this.trackBendLength = new BSlider();
-            this.trackBendDepth = new BSlider();
-            this.chkDownPortamento = new BCheckBox();
-            this.chkUpPortamento = new BCheckBox();
-            this.lblBendLength = new BLabel();
-            this.lblBendDepth = new BLabel();
-            this.groupDynamicsControl = new BGroupBox();
-            this.label7 = new BLabel();
-            this.label6 = new BLabel();
+            this.trackBendLength = new TrackBar();
+            this.trackBendDepth = new TrackBar();
+            this.chkDownPortamento = new CheckBox();
+            this.chkUpPortamento = new CheckBox();
+            this.lblBendLength = new Label();
+            this.lblBendDepth = new Label();
+            this.groupDynamicsControl = new GroupBox();
+            this.label7 = new Label();
+            this.label6 = new Label();
             this.txtAccent = new cadencii.NumberTextBox();
             this.txtDecay = new cadencii.NumberTextBox();
-            this.trackAccent = new BSlider();
-            this.trackDecay = new BSlider();
-            this.lblAccent = new BLabel();
-            this.lblDecay = new BLabel();
-            this.lblTemplate = new BLabel();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.comboTemplate = new BComboBox();
-            this.groupAttack = new BGroupBox();
-            this.lblAttackTemplate = new BLabel();
-            this.comboAttackTemplate = new BComboBox();
+            this.trackAccent = new TrackBar();
+            this.trackDecay = new TrackBar();
+            this.lblAccent = new Label();
+            this.lblDecay = new Label();
+            this.lblTemplate = new Label();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.comboTemplate = new ComboBox();
+            this.groupAttack = new GroupBox();
+            this.lblAttackTemplate = new Label();
+            this.comboAttackTemplate = new ComboBox();
             this.txtDepth = new cadencii.NumberTextBox();
             this.txtDuration = new cadencii.NumberTextBox();
-            this.trackDepth = new BSlider();
-            this.trackDuration = new BSlider();
-            this.lblDepth = new BLabel();
-            this.lblDuration = new BLabel();
+            this.trackDepth = new TrackBar();
+            this.trackDuration = new TrackBar();
+            this.lblDepth = new Label();
+            this.lblDuration = new Label();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.panelVocaloid2Template = new BPanel();
-            this.panelButtons = new BPanel();
+            this.panelVocaloid2Template = new UserControl();
+            this.panelButtons = new UserControl();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendDepth)).BeginInit();
@@ -1051,42 +1045,42 @@ namespace cadencii
 
         #endregion
 
-        private BGroupBox groupPitchControl;
-        private BGroupBox groupDynamicsControl;
-        private BLabel lblBendDepth;
-        private BLabel lblTemplate;
-        private BLabel lblBendLength;
-        private BCheckBox chkDownPortamento;
-        private BCheckBox chkUpPortamento;
-        private BSlider trackBendDepth;
-        private BSlider trackBendLength;
-        private BSlider trackAccent;
-        private BSlider trackDecay;
-        private BLabel lblAccent;
-        private BLabel lblDecay;
+        private GroupBox groupPitchControl;
+        private GroupBox groupDynamicsControl;
+        private Label lblBendDepth;
+        private Label lblTemplate;
+        private Label lblBendLength;
+        private CheckBox chkDownPortamento;
+        private CheckBox chkUpPortamento;
+        private TrackBar trackBendDepth;
+        private TrackBar trackBendLength;
+        private TrackBar trackAccent;
+        private TrackBar trackDecay;
+        private Label lblAccent;
+        private Label lblDecay;
         private NumberTextBox txtBendLength;
         private NumberTextBox txtBendDepth;
         private NumberTextBox txtAccent;
         private NumberTextBox txtDecay;
-        private BLabel label5;
-        private BLabel label4;
-        private BLabel label7;
-        private BLabel label6;
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BComboBox comboTemplate;
-        private BGroupBox groupAttack;
+        private Label label5;
+        private Label label4;
+        private Label label7;
+        private Label label6;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private ComboBox comboTemplate;
+        private GroupBox groupAttack;
         private NumberTextBox txtDepth;
         private NumberTextBox txtDuration;
-        private BSlider trackDepth;
-        private BSlider trackDuration;
-        private BLabel lblDepth;
-        private BLabel lblDuration;
+        private TrackBar trackDepth;
+        private TrackBar trackDuration;
+        private Label lblDepth;
+        private Label lblDuration;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
-        private BPanel panelButtons;
-        private BPanel panelVocaloid2Template;
-        private BComboBox comboAttackTemplate;
-        private BLabel lblAttackTemplate;
+        private UserControl panelButtons;
+        private UserControl panelVocaloid2Template;
+        private ComboBox comboAttackTemplate;
+        private Label lblAttackTemplate;
         #endregion
 #endif
         #endregion

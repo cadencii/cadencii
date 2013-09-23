@@ -11,21 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
 
-import cadencii.BEventHandler;
-
-public class TopMostChangedEventHandler extends BEventHandler{
-    public TopMostChangedEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-    }
-    
-    public TopMostChangedEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-    }
-}
-#else
 using System;
 
 namespace cadencii {
@@ -33,4 +19,3 @@ namespace cadencii {
     public delegate void TopMostChangedEventHandler( Object sender, bool top_most );
 
 }
-#endif

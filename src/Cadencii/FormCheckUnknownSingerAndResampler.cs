@@ -33,17 +33,13 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormCheckUnknownSingerAndResampler extends BDialog
 #else
-    public class FormCheckUnknownSingerAndResampler : BDialog
+    public class FormCheckUnknownSingerAndResampler : System.Windows.Forms.Form
 #endif
     {
         /// <summary>
@@ -65,29 +61,29 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 
             // singers
-            checkSingerImport.setSelected( apply_singer );
-            checkSingerImport.setEnabled( apply_singer );
-            textSingerPath.setEditable( false );
-            textSingerPath.setEnabled( apply_singer );
+            checkSingerImport.Checked = apply_singer;
+            checkSingerImport.Enabled = apply_singer;
+            textSingerPath.ReadOnly = true;
+            textSingerPath.Enabled = apply_singer;
             if ( apply_singer ) {
-                textSingerPath.setText( singer );
+                textSingerPath.Text = singer;
                 SingerConfig sc = new SingerConfig();
                 String path_image = Utility.readUtauSingerConfig( singer, sc );
 #if DEBUG
                 sout.println( "FormCheckUnknownSingerAndResampler#.ctor;  path_image=" + path_image );
 #endif
                 Image img = IconParader.createIconImage( path_image, sc.VOICENAME );
-                pictureSinger.setImage( img );
-                labelSingerName.setText( sc.VOICENAME );
+                pictureSinger.Image = img.image;
+                labelSingerName.Text = sc.VOICENAME;
             }
 
             // resampler
-            checkResamplerImport.setSelected( apply_resampler );
-            checkResamplerImport.setEnabled( apply_resampler );
-            textResamplerPath.setEditable( false );
-            textResamplerPath.setEnabled( apply_resampler );
+            checkResamplerImport.Checked = apply_resampler;
+            checkResamplerImport.Enabled = apply_resampler;
+            textResamplerPath.ReadOnly = true;
+            textResamplerPath.Enabled = apply_resampler;
             if ( apply_resampler ) {
-                textResamplerPath.setText( resampler );
+                textResamplerPath.Text = resampler;
             }
 
             registerEventHandlers();
@@ -100,7 +96,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isSingerChecked()
         {
-            return checkSingerImport.isSelected();
+            return checkSingerImport.Checked;
         }
 
         /// <summary>
@@ -109,7 +105,7 @@ namespace cadencii
         /// <returns></returns>
         public String getSingerPath()
         {
-            return textSingerPath.getText();
+            return textSingerPath.Text;
         }
 
         /// <summary>
@@ -118,7 +114,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isResamplerChecked()
         {
-            return checkResamplerImport.isSelected();
+            return checkResamplerImport.Checked;
         }
 
         /// <summary>
@@ -127,7 +123,7 @@ namespace cadencii
         /// <returns></returns>
         public String getResamplerPath()
         {
-            return textResamplerPath.getText();
+            return textResamplerPath.Text;
         }
         #endregion
 
@@ -146,10 +142,10 @@ namespace cadencii
 
         private void applyLanguage()
         {
-            setTitle( _( "Unknown singers and resamplers" ) );
-            labelMessage.setText( _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." ) );
-            checkSingerImport.setText( _( "Import singer" ) );
-            checkResamplerImport.setText( _( "Import resampler" ) );
+            this.Text = _( "Unknown singers and resamplers" );
+            labelMessage.Text = _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." );
+            checkSingerImport.Text = _( "Import singer" );
+            checkResamplerImport.Text = _( "Import resampler" );
         }
         #endregion
 
@@ -185,15 +181,15 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new cadencii.windows.forms.BButton();
-            this.buttonOk = new cadencii.windows.forms.BButton();
-            this.labelMessage = new cadencii.windows.forms.BLabel();
-            this.checkSingerImport = new cadencii.windows.forms.BCheckBox();
+            this.buttonCancel = new System.Windows.Forms.Button();
+            this.buttonOk = new System.Windows.Forms.Button();
+            this.labelMessage = new System.Windows.Forms.Label();
+            this.checkSingerImport = new System.Windows.Forms.CheckBox();
             this.pictureSinger = new cadencii.IconParader();
-            this.labelSingerName = new cadencii.windows.forms.BLabel();
-            this.textSingerPath = new cadencii.windows.forms.BTextBox();
-            this.checkResamplerImport = new cadencii.windows.forms.BCheckBox();
-            this.textResamplerPath = new cadencii.windows.forms.BTextBox();
+            this.labelSingerName = new System.Windows.Forms.Label();
+            this.textSingerPath = new System.Windows.Forms.TextBox();
+            this.checkResamplerImport = new System.Windows.Forms.CheckBox();
+            this.textResamplerPath = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).BeginInit();
             this.SuspendLayout();
             //
@@ -325,14 +321,14 @@ namespace cadencii
         }
         #endregion
 
-        private BButton buttonCancel;
-        private BButton buttonOk;
-        private cadencii.windows.forms.BLabel labelMessage;
-        private BCheckBox checkSingerImport;
-        private BLabel labelSingerName;
-        private BTextBox textSingerPath;
-        private BCheckBox checkResamplerImport;
-        private BTextBox textResamplerPath;
+        private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.Label labelMessage;
+        private System.Windows.Forms.CheckBox checkSingerImport;
+        private System.Windows.Forms.Label labelSingerName;
+        private System.Windows.Forms.TextBox textSingerPath;
+        private System.Windows.Forms.CheckBox checkResamplerImport;
+        private System.Windows.Forms.TextBox textResamplerPath;
         private IconParader pictureSinger;
 
         #endregion

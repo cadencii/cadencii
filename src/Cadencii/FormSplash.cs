@@ -28,8 +28,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
 #endif
 
@@ -39,7 +37,7 @@ namespace cadencii
 #if JAVA
     public class FormSplash extends BDialog {
 #else
-    public class FormSplash : BDialog
+    public class FormSplash : Form
     {
 #endif
 
@@ -95,11 +93,11 @@ namespace cadencii
         public void addIcon( String path_image, String singer_name )
         {
             IconParader p = new IconParader();
-            Image img = IconParader.createIconImage( path_image, singer_name );
-            p.setImage( img );
-            p.MouseDown += new BMouseEventHandler( handleMouseDown );
-            p.MouseUp += new BMouseEventHandler( handleMouseUp );
-            p.MouseMove += new BMouseEventHandler( handleMouseMove );
+            var img = IconParader.createIconImage( path_image, singer_name );
+            p.Image = img.image;
+            p.MouseDown += new MouseEventHandler( handleMouseDown );
+            p.MouseUp += new MouseEventHandler( handleMouseUp );
+            p.MouseMove += new MouseEventHandler( handleMouseMove );
 #if JAVA
             panelIcon.add( p );
 #else
@@ -139,18 +137,19 @@ namespace cadencii
         /// </summary>
         /// <param name="screen_x"></param>
         /// <param name="screen_y"></param>
-        public void handleMouseDown( Object sender, BMouseEventArgs arg )
+        public void handleMouseDown( Object sender, MouseEventArgs arg )
         {
             mouseDowned = true;
             Point screen = PortUtil.getMousePosition();
-            Point p = pointToClient( screen );
+            var point = this.PointToClient(new System.Drawing.Point(screen.x, screen.y));
+            Point p = new Point(point.X, point.Y);
             mouseDownedLocation = p;
         }
 
         /// <summary>
         /// このスプラッシュウィンドウに，MouseUpイベントを通知します
         /// </summary>
-        public void handleMouseUp( Object sender, BMouseEventArgs arg )
+        public void handleMouseUp( Object sender, MouseEventArgs arg )
         {
             mouseDowned = false;
         }
@@ -158,15 +157,15 @@ namespace cadencii
         /// <summary>
         /// このスプラッシュウィンドウに，MouseMoveイベントを通知します
         /// </summary>
-        public void handleMouseMove( Object sender, BMouseEventArgs arg )
+        public void handleMouseMove( Object sender, MouseEventArgs arg )
         {
             if ( !mouseDowned ) {
                 return;
             }
 
             Point screen = PortUtil.getMousePosition();
-            Point p = new Point( screen.x - mouseDownedLocation.x, screen.y - mouseDownedLocation.y );
-            setLocation( p );
+            var p = new System.Drawing.Point( screen.x - mouseDownedLocation.x, screen.y - mouseDownedLocation.y );
+            this.Location = p;
         }
         #endregion
 

@@ -34,20 +34,13 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
-    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
 #if JAVA
     public class FormShortcutKeys extends BDialog {
 #else
-    public class FormShortcutKeys : BDialog
+    public class FormShortcutKeys : Form
     {
 #endif
         /// <summary>
@@ -61,8 +54,8 @@ namespace cadencii
         private static int mWindowWidth = 541;
         private static int mWindowHeight = 572;
 
-        private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
-        private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
+        private TreeMap<String, ValuePair<String, Keys[]>> mDict;
+        private TreeMap<String, ValuePair<String, Keys[]>> mFirstDict;
         private Vector<String> mFieldName = new Vector<String>();
         private FormMain mMainForm = null;
 
@@ -70,7 +63,7 @@ namespace cadencii
         /// コンストラクタ
         /// </summary>
         /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
-        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict, FormMain main_form )
+        public FormShortcutKeys( TreeMap<String, ValuePair<String, Keys[]>> dict, FormMain main_form )
         {
 #if JAVA
             super();
@@ -92,23 +85,23 @@ namespace cadencii
             sout.println( "FormShortcutKeys#.ctor; mColumnWidthCommand=" + mColumnWidthCommand + "; mColumnWidthShortcutKey=" + mColumnWidthShortcutKey );
 #endif
             mMainForm = main_form;
-            list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
-            list.setColumnWidth( 0, mColumnWidthCommand );
-            list.setColumnWidth( 1, mColumnWidthShortcutKey );
+            list.SetColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+            list.Columns[0].Width = mColumnWidthCommand;
+            list.Columns[1].Width = mColumnWidthShortcutKey;
 
             applyLanguage();
             setResources();
 
             mDict = dict;
-            comboCategory.setSelectedIndex( 0 );
-            mFirstDict = new TreeMap<String, ValuePair<String, BKeys[]>>();
+            comboCategory.SelectedIndex = 0;
+            mFirstDict = new TreeMap<String, ValuePair<String, Keys[]>>();
             copyDict( mDict, mFirstDict );
 
-            comboEditKey.removeAllItems();
-            comboEditKey.addItem( BKeys.None );
+            comboEditKey.Items.Clear();
+            comboEditKey.Items.Add( Keys.None );
             // アルファベット順になるように一度配列に入れて並べ替える
             int size = AppManager.SHORTCUT_ACCEPTABLE.size();
-            BKeys[] keys = new BKeys[size];
+            Keys[] keys = new Keys[size];
             for ( int i = 0; i < size; i++ ){
                 keys[i] = AppManager.SHORTCUT_ACCEPTABLE.get( i );
             }
@@ -124,7 +117,7 @@ namespace cadencii
 #else
                         if( itemi.CompareTo( itemj ) > 0 ){
 #endif
-                            BKeys t = keys[i];
+                            Keys t = keys[i];
                             keys[i] = keys[j];
                             keys[j] = t;
                             changed = true;
@@ -132,10 +125,10 @@ namespace cadencii
                     }
                 }
             }
-            foreach( BKeys key in keys ){
-                comboEditKey.addItem( key );
+            foreach( Keys key in keys ){
+                comboEditKey.Items.Add( key );
             }
-            this.setSize( mWindowWidth, mWindowHeight );
+            this.Size = new System.Drawing.Size( mWindowWidth, mWindowHeight );
 
             registerEventHandlers();
             updateList();
@@ -145,18 +138,18 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Shortcut Config" ) );
+            this.Text = _( "Shortcut Config" );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnRevert.setText( _( "Revert" ) );
-            btnLoadDefault.setText( _( "Load Default" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            btnRevert.Text = _( "Revert" );
+            btnLoadDefault.Text = _( "Load Default" );
 
-            list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+            list.SetColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
 
-            labelCategory.setText( _( "Category" ) );
-            int selected = comboCategory.getSelectedIndex();
-            comboCategory.removeAllItems();
+            labelCategory.Text = _( "Category" );
+            int selected = comboCategory.SelectedIndex;
+            comboCategory.Items.Clear();
             foreach ( String category in mCategories ) {
                 String c = category;
                 if ( str.compare( category, "menuFile" ) ) {
@@ -180,22 +173,22 @@ namespace cadencii
                 } else {
                     c = _( "Other" );
                 }
-                comboCategory.addItem( c );
+                comboCategory.Items.Add( c );
             }
-            if ( comboCategory.getItemCount() <= selected ) {
-                selected = comboCategory.getItemCount() - 1;
+            if ( comboCategory.Items.Count <= selected ) {
+                selected = comboCategory.Items.Count - 1;
             }
-            comboCategory.setSelectedIndex( selected );
+            comboCategory.SelectedIndex = selected;
 
-            labelCommand.setText( _( "Command" ) );
-            labelEdit.setText( _( "Edit" ) );
-            labelEditKey.setText( _( "Key:" ) );
-            labelEditModifier.setText( _( "Modifier:" ) );
+            labelCommand.Text = _( "Command" );
+            labelEdit.Text = _( "Edit" );
+            labelEditKey.Text = _( "Key:" );
+            labelEditModifier.Text = _( "Modifier:" );
         }
 
-        public TreeMap<String, ValuePair<String, BKeys[]>> getResult()
+        public TreeMap<String, ValuePair<String, Keys[]>> getResult()
         {
-            TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
+            TreeMap<String, ValuePair<String, Keys[]>> ret = new TreeMap<String, ValuePair<String, Keys[]>>();
             copyDict( mDict, ret );
             return ret;
         }
@@ -207,18 +200,18 @@ namespace cadencii
             return Messaging.getMessage( id );
         }
 
-        private static void copyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest )
+        private static void copyDict( TreeMap<String, ValuePair<String, Keys[]>> src, TreeMap<String, ValuePair<String, Keys[]>> dest )
         {
             dest.clear();
             for ( Iterator<String> itr = src.keySet().iterator(); itr.hasNext(); ) {
                 String name = itr.next();
                 String key = src.get( name ).getKey();
-                BKeys[] values = src.get( name ).getValue();
-                Vector<BKeys> cp = new Vector<BKeys>();
-                foreach ( BKeys k in values ) {
+                Keys[] values = src.get( name ).getValue();
+                Vector<Keys> cp = new Vector<Keys>();
+                foreach ( Keys k in values ) {
                     cp.add( k );
                 }
-                dest.put( name, new ValuePair<String, BKeys[]>( key, cp.toArray( new BKeys[] { } ) ) );
+                dest.put( name, new ValuePair<String, Keys[]>( key, cp.toArray( new Keys[] { } ) ) );
             }
         }
 
@@ -227,13 +220,13 @@ namespace cadencii
         /// </summary>
         private void updateList()
         {
-            list.SelectedIndexChanged -= new BEventHandler( list_SelectedIndexChanged );
-            list.clear();
-            list.SelectedIndexChanged += new BEventHandler( list_SelectedIndexChanged );
+            list.SelectedIndexChanged -= new EventHandler( list_SelectedIndexChanged );
+            list.Items.Clear();
+            list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
             mFieldName.clear();
 
             // 現在のカテゴリーを取得
-            int selected = comboCategory.getSelectedIndex();
+            int selected = comboCategory.SelectedIndex;
             if ( selected < 0 ) {
                 selected = 0;
             }
@@ -242,9 +235,9 @@ namespace cadencii
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
             for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                 String display = itr.next();
-                ValuePair<String, BKeys[]> item = mDict.get( display );
+                ValuePair<String, Keys[]> item = mDict.get( display );
                 String field_name = item.getKey();
-                BKeys[] keys = item.getValue();
+                Keys[] keys = item.getValue();
                 boolean add_this_one = false;
                 if ( str.compare( category, ".other" ) ) {
                     add_this_one = true;
@@ -264,7 +257,7 @@ namespace cadencii
                     }
                 }
                 if ( add_this_one ) {
-                     list.addRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
+                     list.AddRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
                      mFieldName.add( field_name );
                 }
             }
@@ -279,27 +272,27 @@ namespace cadencii
         /// </summary>
         private void updateColor()
         {
-            int size = list.getItemCountRow();
+            int size = list.Items.Count;
             for ( int i = 0; i < size; i++ ) {
                 //BListViewItem list_item = list.getItemAt( i );
                 String field_name = mFieldName.get( i );
-                String key_display = list.getItemAt( i, 1 );
+                String key_display = list.Items[i].SubItems[1].Text;
                 if ( str.compare( key_display, "" ) ){
                     // ショートカットキーが割り当てられていないのでスルー
-                    list.setRowBackColor( i, java.awt.Color.white );
+                    list.Items[i].BackColor = System.Drawing.Color.White;
                     continue;
                 }
 
                 boolean found = false;
                 for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                     String display1 = itr.next();
-                    ValuePair<String, BKeys[]> item1 = mDict.get( display1 );
+                    ValuePair<String, Keys[]> item1 = mDict.get( display1 );
                     String field_name1 = item1.getKey();
                     if ( str.compare( field_name, field_name1 ) ) {
                         // 自分自身なのでスルー
                         continue;
                     }
-                    BKeys[] keys1 = item1.getValue();
+                    Keys[] keys1 = item1.getValue();
                     String key_display1 = Utility.getShortcutDisplayString( keys1 );
                     if ( str.compare( key_display, key_display1 ) ) {
                         // 同じキーが割り当てられてる！！
@@ -310,43 +303,42 @@ namespace cadencii
 
                 // 背景色を変える
                 if ( found ) {
-                    list.setRowBackColor( i, java.awt.Color.yellow );
+                    list.Items[i].BackColor = System.Drawing.Color.Yellow;
                 } else {
-                    list.setRowBackColor(  i, java.awt.Color.white );
+                    list.Items[i].BackColor = System.Drawing.Color.White;
                 }
             }
         }
 
         private void registerEventHandlers()
         {
-            //this.list.KeyDown += new BKeyEventHandler( list_KeyDown );
-            btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
-            btnRevert.Click += new BEventHandler( btnRevert_Click );
-            this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            comboCategory.SelectedIndexChanged += new BEventHandler( comboCategory_SelectedIndexChanged );
-            list.SelectedIndexChanged += new BEventHandler( list_SelectedIndexChanged );
-            this.SizeChanged += new BEventHandler( FormShortcutKeys_SizeChanged );
+            btnLoadDefault.Click += new EventHandler( btnLoadDefault_Click );
+            btnRevert.Click += new EventHandler( btnRevert_Click );
+            this.FormClosing += new FormClosingEventHandler( FormShortcutKeys_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            comboCategory.SelectedIndexChanged += new EventHandler( comboCategory_SelectedIndexChanged );
+            list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
+            this.SizeChanged += new EventHandler( FormShortcutKeys_SizeChanged );
             reRegisterHandlers();
         }
 
         private void unRegisterHandlers()
         {
-            comboEditKey.SelectedIndexChanged -= new BEventHandler( comboEditKey_SelectedIndexChanged );
-            checkCommand.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
-            checkShift.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
-            checkControl.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
-            checkOption.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
+            comboEditKey.SelectedIndexChanged -= new EventHandler( comboEditKey_SelectedIndexChanged );
+            checkCommand.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
+            checkShift.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
+            checkControl.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
+            checkOption.CheckedChanged -= new EventHandler( handleModifier_CheckedChanged );
         }
         
         private void reRegisterHandlers()
         {
-            comboEditKey.SelectedIndexChanged += new BEventHandler( comboEditKey_SelectedIndexChanged );
-            checkCommand.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
-            checkShift.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
-            checkControl.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
-            checkOption.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
+            comboEditKey.SelectedIndexChanged += new EventHandler( comboEditKey_SelectedIndexChanged );
+            checkCommand.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
+            checkShift.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
+            checkControl.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
+            checkOption.CheckedChanged += new EventHandler( handleModifier_CheckedChanged );
         }
 
         private void setResources()
@@ -355,18 +347,18 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void FormShortcutKeys_SizeChanged( Object sender, BEventArgs e )
+        public void FormShortcutKeys_SizeChanged( Object sender, EventArgs e )
         {
-            mWindowWidth = getWidth();
-            mWindowHeight = getHeight();
+            mWindowWidth = this.Width;
+            mWindowHeight = this.Height;
         }
         
-        public void handleModifier_CheckedChanged( Object sender, BEventArgs e )
+        public void handleModifier_CheckedChanged( Object sender, EventArgs e )
         {
             updateSelectionKeys();
         }
 
-        public void comboEditKey_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboEditKey_SelectedIndexChanged( Object sender, EventArgs e )
         {
             updateSelectionKeys();
         }
@@ -377,64 +369,64 @@ namespace cadencii
         /// </summary>
         private void updateSelectionKeys()
         {
-            int indx = comboEditKey.getSelectedIndex();
+            int indx = comboEditKey.SelectedIndex;
             if( indx < 0 ){
                 return;
             }
-            int indx_row = list.getSelectedRow();
-            if( indx_row < 0 ){
+            if( list.SelectedIndices.Count == 0 ){
                 return;
             }
-            BKeys key = (BKeys)comboEditKey.getItemAt( indx );
-            String display = list.getItemAt( indx_row, 0 );
+            int indx_row = list.SelectedIndices[0];
+            Keys key = (Keys)comboEditKey.Items[indx];
+            String display = list.Items[indx_row].SubItems[0].Text;
             if ( !mDict.containsKey( display ) ) {
                 return;
             }
-            Vector<BKeys> capturelist = new Vector<BKeys>();
-            if( key != BKeys.None ){
+            Vector<Keys> capturelist = new Vector<Keys>();
+            if( key != Keys.None ){
                 capturelist.add( key );
-                if( checkCommand.isSelected() ){
-                    capturelist.add( BKeys.Menu );
+                if (checkCommand.Checked) {
+                    capturelist.add( Keys.Menu );
                 }
-                if( checkShift.isSelected() ){
-                    capturelist.add( BKeys.Shift );
+                if (checkShift.Checked) {
+                    capturelist.add( Keys.Shift );
                 }
-                if( checkControl.isSelected() ){
-                    capturelist.add( BKeys.Control );
+                if( checkControl.Checked ){
+                    capturelist.add( Keys.Control );
                 }
-                if( checkOption.isSelected() ){
-                    capturelist.add( BKeys.Alt );
+                if( checkOption.Checked ){
+                    capturelist.add( Keys.Alt );
                 }
             }
-            BKeys[] keys = capturelist.toArray( new BKeys[] { } );
+            Keys[] keys = capturelist.toArray( new Keys[] { } );
             mDict.get( display ).setValue( keys );
-            list.setItemAt( indx_row, 1, Utility.getShortcutDisplayString( keys ) ); 
+            list.Items[indx_row].SubItems[1].Text = Utility.getShortcutDisplayString( keys ); 
         } 
 
-        public void list_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void list_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int indx = list.getSelectedRow();
-            if( indx < 0 ){
+            if( list.SelectedIndices.Count == 0 ){
                 return;
             }
-            String display = list.getItemAt( indx, 0 );
+            int indx = list.SelectedIndices[0];
+            String display = list.Items[indx].SubItems[0].Text;
             if( !mDict.containsKey( display ) ){
                 return;
             }
             unRegisterHandlers();
-            ValuePair<String, BKeys[]> item = mDict.get( display );
-            BKeys[] keys = item.getValue();
-            Vector<BKeys> vkeys = new Vector<BKeys>( Arrays.asList( keys ) );
-            checkCommand.setSelected( vkeys.contains( BKeys.Menu ) );
-            checkShift.setSelected( vkeys.contains( BKeys.Shift ) );
-            checkControl.setSelected( vkeys.contains( BKeys.Control ) );
-            checkOption.setSelected( vkeys.contains( BKeys.Alt ) );
-            int size = comboEditKey.getItemCount();
-            comboEditKey.setSelectedIndex( -1 );
+            ValuePair<String, Keys[]> item = mDict.get( display );
+            Keys[] keys = item.getValue();
+            Vector<Keys> vkeys = new Vector<Keys>( Arrays.asList( keys ) );
+            checkCommand.Checked = vkeys.contains( Keys.Menu );
+            checkShift.Checked = vkeys.contains( Keys.Shift );
+            checkControl.Checked = vkeys.contains( Keys.Control );
+            checkOption.Checked = vkeys.contains( Keys.Alt );
+            int size = comboEditKey.Items.Count;
+            comboEditKey.SelectedIndex = -1;
             for( int i = 0; i < size; i++ ){
-                BKeys k = (BKeys)comboEditKey.getItemAt( i );
+                Keys k = (Keys)comboEditKey.Items[i];
                 if( vkeys.contains( k ) ){
-                    comboEditKey.setSelectedIndex( i );
+                    comboEditKey.SelectedIndex = i;
                     break;
                 }
             }
@@ -443,30 +435,30 @@ namespace cadencii
         
         public void comboCategory_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int selected = comboCategory.getSelectedIndex();
+            int selected = comboCategory.SelectedIndex;
 #if DEBUG
             sout.println( "FormShortcutKeys#comboCategory_selectedIndexChanged; selected=" + selected );
 #endif
             if ( selected < 0 ) {
-                comboCategory.setSelectedIndex( 0 );
+                comboCategory.SelectedIndex = 0;
                 //updateList();
                 return;
             }
             updateList();
         }
 
-        public void btnRevert_Click( Object sender, BEventArgs e )
+        public void btnRevert_Click( Object sender, EventArgs e )
         {
             copyDict( mFirstDict, mDict );
             updateList();
         }
 
-        public void btnLoadDefault_Click( Object sender, BEventArgs e )
+        public void btnLoadDefault_Click( Object sender, EventArgs e )
         {
             Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
             for ( int i = 0; i < defaults.size(); i++ ) {
                 String name = defaults.get( i ).Key;
-                BKeys[] keys = defaults.get( i ).Value;
+                Keys[] keys = defaults.get( i ).Value;
                 for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                     String display = itr.next();
                     if ( name.Equals( mDict.get( display ).getKey() ) ) {
@@ -478,23 +470,23 @@ namespace cadencii
             updateList();
         }
 
-        public void FormShortcutKeys_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormShortcutKeys_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            mColumnWidthCommand = list.getColumnWidth( 0 );
-            mColumnWidthShortcutKey = list.getColumnWidth( 1 );
+            mColumnWidthCommand = list.Columns[0].Width;
+            mColumnWidthShortcutKey = list.Columns[1].Width;
 #if DEBUG
             sout.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + mColumnWidthCommand + "," + mColumnWidthShortcutKey );
 #endif
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
@@ -532,23 +524,23 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.list = new cadencii.windows.forms.BListView();
-            this.btnLoadDefault = new cadencii.windows.forms.BButton();
-            this.btnRevert = new cadencii.windows.forms.BButton();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.list = new ListView();
+            this.btnLoadDefault = new Button();
+            this.btnRevert = new Button();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.labelCategory = new cadencii.windows.forms.BLabel();
-            this.comboCategory = new cadencii.windows.forms.BComboBox();
-            this.labelCommand = new cadencii.windows.forms.BLabel();
-            this.labelEdit = new cadencii.windows.forms.BLabel();
-            this.labelEditKey = new cadencii.windows.forms.BLabel();
-            this.labelEditModifier = new cadencii.windows.forms.BLabel();
-            this.comboEditKey = new cadencii.windows.forms.BComboBox();
-            this.checkCommand = new cadencii.windows.forms.BCheckBox();
-            this.checkShift = new cadencii.windows.forms.BCheckBox();
-            this.checkControl = new cadencii.windows.forms.BCheckBox();
-            this.checkOption = new cadencii.windows.forms.BCheckBox();
+            this.labelCategory = new Label();
+            this.comboCategory = new System.Windows.Forms.ComboBox();
+            this.labelCommand = new Label();
+            this.labelEdit = new Label();
+            this.labelEditKey = new Label();
+            this.labelEditModifier = new Label();
+            this.comboEditKey = new System.Windows.Forms.ComboBox();
+            this.checkCommand = new CheckBox();
+            this.checkShift = new CheckBox();
+            this.checkControl = new CheckBox();
+            this.checkOption = new CheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -760,23 +752,23 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BListView list;
-        private BButton btnLoadDefault;
-        private BButton btnRevert;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private ListView list;
+        private System.Windows.Forms.Button btnLoadDefault;
+        private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.ToolTip toolTip;
-        private BLabel labelCategory;
-        private BComboBox comboCategory;
-        private cadencii.windows.forms.BLabel labelCommand;
-        private cadencii.windows.forms.BLabel labelEdit;
-        private cadencii.windows.forms.BLabel labelEditKey;
-        private cadencii.windows.forms.BLabel labelEditModifier;
-        private cadencii.windows.forms.BComboBox comboEditKey;
-        private BCheckBox checkCommand;
-        private BCheckBox checkShift;
-        private BCheckBox checkControl;
-        private BCheckBox checkOption;
+        private Label labelCategory;
+        private ComboBox comboCategory;
+        private Label labelCommand;
+        private Label labelEdit;
+        private Label labelEditKey;
+        private Label labelEditModifier;
+        private ComboBox comboEditKey;
+        private System.Windows.Forms.CheckBox checkCommand;
+        private System.Windows.Forms.CheckBox checkShift;
+        private System.Windows.Forms.CheckBox checkControl;
+        private System.Windows.Forms.CheckBox checkOption;
 
         #endregion
 #endif

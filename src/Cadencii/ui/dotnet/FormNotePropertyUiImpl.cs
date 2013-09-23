@@ -66,9 +66,9 @@ namespace cadencii
             this.Close();
         }
 
-        public void setMenuCloseAccelerator( javax.swing.KeyStroke value )
+        public void setMenuCloseAccelerator( Keys value )
         {
-            this.menuClose.ShortcutKeys = value.keys;
+            this.menuClose.ShortcutKeys = value;
         }
 
         public void setAlwaysOnTop( bool alwaysOnTop )

@@ -28,14 +28,13 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormRandomize extends BDialog {
 #else
-    public class FormRandomize : BDialog
+    public class FormRandomize : System.Windows.Forms.Form
     {
 #endif
         private static boolean lastPositionRandomizeEnabled = true;
@@ -64,7 +63,7 @@ namespace cadencii
             registerEventHandlers();
             applyLanguage();
 
-            comboShiftValue.removeAllItems();
+            comboShiftValue.Items.Clear();
             String[] shift_items = new String[]{
                 "1(small)",
                 "2",
@@ -72,19 +71,19 @@ namespace cadencii
                 "4",
                 "5(large)"};
             for( int i = 0; i < shift_items.Length; i++ ){
-                comboShiftValue.addItem( shift_items[i] );
+                comboShiftValue.Items.Add( shift_items[i] );
             }
             
-            comboPitPattern.removeAllItems();
+            comboPitPattern.Items.Clear();
             String[] pit_pat_items = new String[]{
                 "Pattern 1",
                 "Pattern 2",
                 "Pattern 3"};
             for( int i = 0; i < pit_pat_items.Length; i++ ){
-                comboPitPattern.addItem( pit_pat_items[i] );
+                comboPitPattern.Items.Add( pit_pat_items[i] );
             }
 
-            comboPitValue.removeAllItems();
+            comboPitValue.Items.Clear();
             String[] pit_value_items = new String[]{
                 "1(small)",
                 "2",
@@ -92,20 +91,20 @@ namespace cadencii
                 "4",
                 "5(large)"};
             for( int i = 0; i < pit_value_items.Length; i++ ){
-                comboPitValue.addItem( pit_value_items[i] );
+                comboPitValue.Items.Add( pit_value_items[i] );
             }
 
-            chkShift.setSelected( lastPositionRandomizeEnabled );
-            comboShiftValue.setSelectedIndex( lastPositionRandomizeValue - 1 );
-            chkPit.setSelected( lastPitRandomizeEnabled );
-            numResolution.setFloatValue( lastResolution );
-            comboPitPattern.setSelectedIndex( lastPitRandomizePattern - 1 );
-            comboPitValue.setSelectedIndex( lastPitRandomizeValue - 1 );
+            chkShift.Checked = lastPositionRandomizeEnabled;
+            comboShiftValue.SelectedIndex = lastPositionRandomizeValue - 1;
+            chkPit.Checked = lastPitRandomizeEnabled;
+            numResolution.Value = lastResolution;
+            comboPitPattern.SelectedIndex = lastPitRandomizePattern - 1;
+            comboPitValue.SelectedIndex = lastPitRandomizeValue - 1;
             lockRequired = true;
-            numStartBar.setFloatValue( lastStartBar );
-            numStartBeat.setFloatValue( lastStartBeat );
-            numEndBar.setFloatValue( lastEndBar );
-            numEndBeat.setFloatValue( lastEndBeat );
+            numStartBar.Value = lastStartBar;
+            numStartBeat.Value = lastStartBeat;
+            numEndBar.Value = lastEndBar;
+            numEndBeat.Value = lastEndBeat;
             lockRequired = false;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -178,14 +177,14 @@ namespace cadencii
             }
 
             lockRequired = true;
-            numStartBar.setMaximum( startBarMax );
-            numStartBar.setMinimum( startBarMin );
-            numStartBeat.setMaximum( startBeatMax );
-            numStartBeat.setMinimum( startBeatMin );
-            numEndBar.setMaximum( endBarMax );
-            numEndBar.setMinimum( endBarMin );
-            numEndBeat.setMaximum( endBeatMax );
-            numEndBeat.setMinimum( endBeatMin );
+            numStartBar.Maximum = startBarMax;
+            numStartBar.Minimum = startBarMin;
+            numStartBeat.Maximum = startBeatMax;
+            numStartBeat.Minimum = startBeatMin;
+            numEndBar.Maximum = endBarMax;
+            numEndBar.Minimum = endBarMin;
+            numEndBeat.Maximum = endBeatMax;
+            numEndBeat.Minimum = endBeatMin;
             lockRequired = false;
         }
 
@@ -196,30 +195,30 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            numStartBar.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            numStartBeat.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            numEndBar.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            numEndBeat.ValueChanged += new BEventHandler( numCommon_ValueChanged );
-            chkShift.CheckedChanged += new BEventHandler( chkShift_CheckedChanged );
-            chkPit.CheckedChanged += new BEventHandler( chkPit_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            numStartBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numStartBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numEndBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numEndBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            chkShift.CheckedChanged += new EventHandler( chkShift_CheckedChanged );
+            chkPit.CheckedChanged += new EventHandler( chkPit_CheckedChanged );
         }
         #endregion
 
         #region event handlers
         public void chkShift_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean v = chkShift.isSelected();
-            comboShiftValue.setEnabled( v );
+            boolean v = chkShift.Checked;
+            comboShiftValue.Enabled = v;
         }
 
         public void chkPit_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean v = chkPit.isSelected();
-            numResolution.setEnabled( v );
-            comboPitPattern.setEnabled( v );
-            comboPitValue.setEnabled( v );
+            boolean v = chkPit.Checked;
+            numResolution.Enabled = v;
+            comboPitPattern.Enabled = v;
+            comboPitValue.Enabled = v;
         }
 
         public void numCommon_ValueChanged( Object sender, EventArgs e )
@@ -232,7 +231,7 @@ namespace cadencii
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
         public void btnOK_Click( Object sender, EventArgs e )
@@ -247,44 +246,44 @@ namespace cadencii
             lastStartBeat = getStartBeat();
             lastEndBar = getEndBar();
             lastEndBeat = getEndBeat();
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
         #region public methods
         public int getResolution()
         {
-            return (int)numResolution.getFloatValue();
+            return (int)numResolution.Value;
         }
 
         public int getStartBar()
         {
-            return (int)numStartBar.getFloatValue();
+            return (int)numStartBar.Value;
         }
 
         public int getStartBeat()
         {
-            return (int)numStartBeat.getFloatValue();
+            return (int)numStartBeat.Value;
         }
 
         public int getEndBar()
         {
-            return (int)numEndBar.getFloatValue();
+            return (int)numEndBar.Value;
         }
 
         public int getEndBeat()
         {
-            return (int)numEndBeat.getFloatValue();
+            return (int)numEndBeat.Value;
         }
 
         public boolean isPositionRandomizeEnabled()
         {
-            return chkShift.isSelected();
+            return chkShift.Checked;
         }
 
         public int getPositionRandomizeValue()
         {
-            int draft = comboShiftValue.getSelectedIndex() + 1;
+            int draft = comboShiftValue.SelectedIndex + 1;
             if ( draft <= 0 ) {
                 draft = 1;
             }
@@ -293,12 +292,12 @@ namespace cadencii
 
         public boolean isPitRandomizeEnabled()
         {
-            return chkPit.isSelected();
+            return chkPit.Checked;
         }
 
         public int getPitRandomizeValue()
         {
-            int draft = comboPitValue.getSelectedIndex() + 1;
+            int draft = comboPitValue.SelectedIndex + 1;
             if ( draft <= 0 ) {
                 draft = 1;
             }
@@ -307,7 +306,7 @@ namespace cadencii
 
         public int getPitRandomizePattern()
         {
-            int draft = comboPitPattern.getSelectedIndex() + 1;
+            int draft = comboPitPattern.SelectedIndex + 1;
             if ( draft <= 0 ) {
                 draft = 1;
             }
@@ -316,25 +315,25 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            lblStart.setText( _( "Start" ) );
-            lblStartBar.setText( _( "bar" ) );
-            lblStartBeat.setText( _( "beat" ) );
-            lblEnd.setText( _( "End" ) );
-            lblEndBar.setText( _( "bar" ) );
-            lblEndBeat.setText( _( "beat" ) );
+            lblStart.Text = _( "Start" );
+            lblStartBar.Text = _( "bar" );
+            lblStartBeat.Text = _( "beat" );
+            lblEnd.Text = _( "End" );
+            lblEndBar.Text = _( "bar" );
+            lblEndBeat.Text = _( "beat" );
 
-            chkShift.setText( _( "Note Shift" ) );
-            lblShiftValue.setText( _( "Value" ) );
+            chkShift.Text = _( "Note Shift" );
+            lblShiftValue.Text = _( "Value" );
 
-            chkPit.setText( _( "Pitch Fluctuation" ) );
-            lblResolution.setText( _( "Resolution" ) );
-            lblPitPattern.setText( _( "Pattern" ) );
-            lblPitValue.setText( _( "Value" ) );
+            chkPit.Text = _( "Pitch Fluctuation" );
+            lblResolution.Text = _( "Resolution" );
+            lblPitPattern.Text = _( "Pattern" );
+            lblPitValue.Text = _( "Value" );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
 
-            setTitle( _( "Randomize" ) );
+            this.Text = _( "Randomize" );
         }
         #endregion
 
@@ -369,24 +368,24 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblStart = new cadencii.windows.forms.BLabel();
-            this.lblStartBar = new cadencii.windows.forms.BLabel();
-            this.lblStartBeat = new cadencii.windows.forms.BLabel();
-            this.bLabel1 = new cadencii.windows.forms.BLabel();
-            this.lblEndBeat = new cadencii.windows.forms.BLabel();
-            this.lblEndBar = new cadencii.windows.forms.BLabel();
-            this.lblEnd = new cadencii.windows.forms.BLabel();
-            this.chkShift = new cadencii.windows.forms.BCheckBox();
-            this.lblShiftValue = new cadencii.windows.forms.BLabel();
-            this.comboShiftValue = new cadencii.windows.forms.BComboBox();
-            this.comboPitPattern = new cadencii.windows.forms.BComboBox();
-            this.lblPitPattern = new cadencii.windows.forms.BLabel();
-            this.chkPit = new cadencii.windows.forms.BCheckBox();
-            this.comboPitValue = new cadencii.windows.forms.BComboBox();
-            this.lblPitValue = new cadencii.windows.forms.BLabel();
-            this.lblResolution = new cadencii.windows.forms.BLabel();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.lblStart = new System.Windows.Forms.Label();
+            this.lblStartBar = new System.Windows.Forms.Label();
+            this.lblStartBeat = new System.Windows.Forms.Label();
+            this.bLabel1 = new System.Windows.Forms.Label();
+            this.lblEndBeat = new System.Windows.Forms.Label();
+            this.lblEndBar = new System.Windows.Forms.Label();
+            this.lblEnd = new System.Windows.Forms.Label();
+            this.chkShift = new System.Windows.Forms.CheckBox();
+            this.lblShiftValue = new System.Windows.Forms.Label();
+            this.comboShiftValue = new System.Windows.Forms.ComboBox();
+            this.comboPitPattern = new System.Windows.Forms.ComboBox();
+            this.lblPitPattern = new System.Windows.Forms.Label();
+            this.chkPit = new System.Windows.Forms.CheckBox();
+            this.comboPitValue = new System.Windows.Forms.ComboBox();
+            this.lblPitValue = new System.Windows.Forms.Label();
+            this.lblResolution = new System.Windows.Forms.Label();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.numResolution = new cadencii.NumericUpDownEx();
             this.numEndBeat = new cadencii.NumericUpDownEx();
             this.numEndBar = new cadencii.NumericUpDownEx();
@@ -708,28 +707,28 @@ namespace cadencii
         #endregion
 
         private NumericUpDownEx numStartBar;
-        private BLabel lblStart;
-        private BLabel lblStartBar;
+        private System.Windows.Forms.Label lblStart;
+        private System.Windows.Forms.Label lblStartBar;
         private NumericUpDownEx numStartBeat;
-        private BLabel lblStartBeat;
-        private BLabel bLabel1;
-        private BLabel lblEndBeat;
+        private System.Windows.Forms.Label lblStartBeat;
+        private System.Windows.Forms.Label bLabel1;
+        private System.Windows.Forms.Label lblEndBeat;
         private NumericUpDownEx numEndBeat;
-        private BLabel lblEndBar;
-        private BLabel lblEnd;
+        private System.Windows.Forms.Label lblEndBar;
+        private System.Windows.Forms.Label lblEnd;
         private NumericUpDownEx numEndBar;
-        private BCheckBox chkShift;
-        private BLabel lblShiftValue;
-        private BComboBox comboShiftValue;
-        private BComboBox comboPitPattern;
-        private BLabel lblPitPattern;
-        private BCheckBox chkPit;
-        private BComboBox comboPitValue;
-        private BLabel lblPitValue;
-        private BLabel lblResolution;
+        private System.Windows.Forms.CheckBox chkShift;
+        private System.Windows.Forms.Label lblShiftValue;
+        private System.Windows.Forms.ComboBox comboShiftValue;
+        private System.Windows.Forms.ComboBox comboPitPattern;
+        private System.Windows.Forms.Label lblPitPattern;
+        private System.Windows.Forms.CheckBox chkPit;
+        private System.Windows.Forms.ComboBox comboPitValue;
+        private System.Windows.Forms.Label lblPitValue;
+        private System.Windows.Forms.Label lblResolution;
         private NumericUpDownEx numResolution;
-        private BButton btnCancel;
-        private BButton btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
 
         #endregion
 #endif

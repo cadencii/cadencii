@@ -36,18 +36,14 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BEventHandler = System.EventHandler;
     using Graphics = cadencii.java.awt.Graphics2D;
 #endif
 
 #if JAVA
     public class VersionInfo extends BDialog {
 #else
-    public class VersionInfo : BDialog
+    public class VersionInfo : Form
     {
 #endif
         const float m_speed = 35f;
@@ -75,7 +71,7 @@ namespace cadencii
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
         private boolean m_shadow_enablde = false;
-        private BTimer timer;
+        private System.Windows.Forms.Timer timer;
         private boolean m_show_twitter_id = false;
 
         public VersionInfo( String app_name, String version )
@@ -89,12 +85,12 @@ namespace cadencii
             if ( this.components == null ) {
                 this.components = new System.ComponentModel.Container();
             }
-            timer = new BTimer( this.components );
+            timer = new Timer( this.components );
 #endif
             m_version = version;
             m_app_name = app_name;
 
-            timer.setDelay( 30 );
+            timer.Interval = 30;
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -106,12 +102,12 @@ namespace cadencii
 #endif
 
             m_credit = new AuthorListEntry[] { };
-            lblVstLogo.setForeground( m_version_color );
+            lblVstLogo.ForeColor = m_version_color.color;
 #if DEBUG
             //m_scroll = generateAuthorListB( false );
             //m_scroll_with_id = generateAuthorListB( true );
 #endif
-            chkTwitterID.setVisible( false );
+            chkTwitterID.Visible = false;
         }
 
         public boolean isShowTwitterID()
@@ -128,22 +124,18 @@ namespace cadencii
         {
             String about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
-            Dimension size1 = Util.measureString( about, btnFlip.getFont() );
-            Dimension size2 = Util.measureString( credit, btnFlip.getFont() );
+            Dimension size1 = Util.measureString( about, btnFlip.Font );
+            Dimension size2 = Util.measureString( credit, btnFlip.Font );
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if ( m_credit_mode ) {
-#if !JAVA
-                btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
-#endif
-                btnFlip.setText( about );
+                btnFlip.Size = new System.Drawing.Size( m_button_width_about, btnFlip.Height );
+                btnFlip.Text = about;
             } else {
-#if !JAVA
-                btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
-#endif
-                btnFlip.setText( credit );
+                btnFlip.Size = new System.Drawing.Size( m_button_width_credit, btnFlip.Height );
+                btnFlip.Text = credit;
             }
-            setTitle( about );
+            this.Text = about;
         }
 
         public static String _( String s )
@@ -162,7 +154,7 @@ namespace cadencii
         public void setVersionColor( Color value )
         {
             m_version_color = value;
-            lblVstLogo.setForeground( value );
+            lblVstLogo.ForeColor = value.color;
         }
 
         /// <summary>
@@ -208,7 +200,7 @@ namespace cadencii
             String font_name = "Arial";
             Font font = new Font( font_name, java.awt.Font.PLAIN, FONT_SIZE );
             Dimension size = Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
-            int width = getWidth();
+            int width = this.Width;
             int height = size.height;
             //StringFormat sf = new StringFormat();
             BufferedImage ret = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
@@ -283,7 +275,7 @@ namespace cadencii
             return ret;
         }
 
-        void btnSaveAuthorList_Click( Object sender, BEventArgs e )
+        void btnSaveAuthorList_Click( Object sender, EventArgs e )
         {
 #if !JAVA
 #if DEBUG
@@ -304,50 +296,46 @@ namespace cadencii
 #endif
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
-            timer.stop();
-            close();
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            timer.Stop();
+            Close();
         }
 
-        public void btnFlip_Click( Object sender, BEventArgs e )
+        public void btnFlip_Click( Object sender, EventArgs e )
         {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
                 try {
-                    btnFlip.setText( PortUtil.formatMessage( _( "About {0}" ), m_app_name ) );
+                    btnFlip.Text = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
                 } catch ( Exception ex ) {
-                    btnFlip.setText( "About " + m_app_name );
+                    btnFlip.Text = "About " + m_app_name;
                 }
                 m_scroll_started = PortUtil.getCurrentTime();
                 m_last_speed = 0f;
                 m_last_t = 0f;
                 m_shift = 0f;
-                pictVstLogo.setVisible( false );
-                lblVstLogo.setVisible( false );
-                chkTwitterID.setVisible( true );
-                timer.start();
+                pictVstLogo.Visible = false;
+                lblVstLogo.Visible = false;
+                chkTwitterID.Visible = true;
+                timer.Start();
             } else {
-                timer.stop();
-                btnFlip.setText( _( "Credit" ) );
-                pictVstLogo.setVisible( true );
-                lblVstLogo.setVisible( true );
-                chkTwitterID.setVisible( false );
+                timer.Stop();
+                btnFlip.Text = _( "Credit" );
+                pictVstLogo.Visible = true;
+                lblVstLogo.Visible = true;
+                chkTwitterID.Visible = false;
             }
-            this.repaint();
+            this.Refresh();
         }
 
-        public void timer_Tick( Object sender, BEventArgs e )
+        public void timer_Tick( Object sender, EventArgs e )
         {
-#if JAVA
-            this.repaint();
-#else
-            invalidate();
-#endif
+            Invalidate();
         }
 
-        public void VersionInfo_Paint( Object sender, BPaintEventArgs e )
+        public void VersionInfo_Paint( Object sender, PaintEventArgs e )
         {
             try {
 #if JAVA
@@ -367,9 +355,9 @@ namespace cadencii
         private void paintCor( Graphics g1 )
         {
             Graphics2D g = (Graphics2D)g1;
-            g.clipRect( 0, 0, getWidth(), m_height );
+            g.clipRect( 0, 0, this.Width, m_height );
             g.setColor( Color.white );
-            g.fillRect( 0, 0, getWidth(), getHeight() );
+            g.fillRect( 0, 0, this.Width, this.Height );
             //g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
                 float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
@@ -380,16 +368,16 @@ namespace cadencii
                 m_last_speed = speed;
                 BufferedImage image = m_show_twitter_id ? m_scroll_with_id : m_scroll;
                 if ( image != null ) {
-                    float dx = (getWidth() - image.getWidth( null )) * 0.5f;
+                    float dx = (this.Width - image.getWidth( null )) * 0.5f;
                     g.drawImage( image, (int)dx, (int)(90f - m_shift), null );
                     if ( 90f - m_shift + image.getHeight( null ) < 0 ) {
                         m_shift = -m_height * 1.5f;
                     }
                 }
                 int grad_height = 60;
-                Rectangle top = new Rectangle( 0, 0, getWidth(), grad_height );
-                Rectangle bottom = new Rectangle( 0, m_height - grad_height, getWidth(), grad_height );
-                g.clipRect( 0, m_height - grad_height + 1, getWidth(), grad_height - 1 );
+                Rectangle top = new Rectangle( 0, 0, this.Width, grad_height );
+                Rectangle bottom = new Rectangle( 0, m_height - grad_height, this.Width, grad_height );
+                g.clipRect( 0, m_height - grad_height + 1, this.Width, grad_height - 1 );
                 g.setClip( null );
             } else {
                 g.setFont( new Font( "Century Gorhic", java.awt.Font.BOLD, FONT_SIZE * 2 ) );
@@ -409,20 +397,15 @@ namespace cadencii
             }
         }
 
-        private void VersionInfo_KeyDown( Object sender, BKeyEventArgs e )
+        private void VersionInfo_KeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if( (e.getKeyCode() & KeyEvent.VK_ESCAPE) == KeyEvent.VK_ESCAPE )
-#else
-            if ( (e.KeyCode & Keys.Escape) == Keys.Escape )
-#endif
- {
-                setDialogResult( BDialogResult.CANCEL );
-                close();
+            if ((e.KeyCode & Keys.Escape) == Keys.Escape) {
+                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                Close();
             }
         }
 
-        private void VersionInfo_FontChanged( Object sender, BEventArgs e )
+        private void VersionInfo_FontChanged( Object sender, EventArgs e )
         {
 #if JAVA
             Util.applyFontRecurse( this, getFont() );
@@ -433,30 +416,26 @@ namespace cadencii
 #endif
         }
 
-        public void chkTwitterID_CheckedChanged( Object sender, BEventArgs e )
+        public void chkTwitterID_CheckedChanged( Object sender, EventArgs e )
         {
-            m_show_twitter_id = chkTwitterID.isSelected();
-            repaint();
+            m_show_twitter_id = chkTwitterID.Checked;
+            Refresh();
         }
 
         private void registerEventHandlers()
         {
-#if JAVA
-            this.panelCredit.paintEvent.add( new BPaintEventHandler( this, "VersionInfo_Paint" ) );
-#else
-            this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfo_Paint );
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
-            this.FontChanged += new BEventHandler( this.VersionInfo_FontChanged );
-#endif
-            this.timer.Tick += new BEventHandler( timer_Tick );
-            this.btnFlip.Click += new BEventHandler( btnFlip_Click );
-            this.btnOK.Click += new BEventHandler( btnOK_Click );
-            this.chkTwitterID.CheckedChanged += new BEventHandler( chkTwitterID_CheckedChanged );
+            this.Paint += new PaintEventHandler( this.VersionInfo_Paint );
+            this.KeyDown += new KeyEventHandler( this.VersionInfo_KeyDown );
+            this.FontChanged += new EventHandler( this.VersionInfo_FontChanged );
+            this.timer.Tick += new EventHandler( timer_Tick );
+            this.btnFlip.Click += new EventHandler( btnFlip_Click );
+            this.btnOK.Click += new EventHandler( btnOK_Click );
+            this.chkTwitterID.CheckedChanged += new EventHandler( chkTwitterID_CheckedChanged );
         }
 
         private void setResources()
         {
-            pictVstLogo.setImage( Resources.get_VSTonWht() );
+            pictVstLogo.Image = Resources.get_VSTonWht().image;
         }
 
         #region ui implementation
@@ -489,11 +468,11 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnFlip = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.lblVstLogo = new cadencii.windows.forms.BLabel();
-            this.pictVstLogo = new cadencii.windows.forms.BPictureBox();
-            this.chkTwitterID = new cadencii.windows.forms.BCheckBox();
+            this.btnFlip = new Button();
+            this.btnOK = new Button();
+            this.lblVstLogo = new System.Windows.Forms.Label();
+            this.pictVstLogo = new PictureBox();
+            this.chkTwitterID = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -577,11 +556,11 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnFlip;
-        private BButton btnOK;
-        private BPictureBox pictVstLogo;
-        private BLabel lblVstLogo;
-        private BCheckBox chkTwitterID;
+        private System.Windows.Forms.Button btnFlip;
+        private System.Windows.Forms.Button btnOK;
+        private PictureBox pictVstLogo;
+        private Label lblVstLogo;
+        private CheckBox chkTwitterID;
 #endif
         #endregion
     }

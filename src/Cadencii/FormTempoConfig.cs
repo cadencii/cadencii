@@ -29,14 +29,12 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormTempoConfig extends BDialog {
 #else
-    class FormTempoConfig : BDialog
+    class FormTempoConfig : System.Windows.Forms.Form
     {
 #endif
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure )
@@ -50,61 +48,61 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            numBar.setMinimum( -pre_measure + 1 );
-            numBar.setMaximum( 100000 );
-            numBar.setFloatValue( bar_count );
+            numBar.Minimum = -pre_measure + 1;
+            numBar.Maximum = 100000;
+            numBar.Value = bar_count;
 
-            numBeat.setMinimum( 1 );
-            numBeat.setMaximum( beat_max );
-            numBeat.setFloatValue( beat );
-            numClock.setMinimum( 0 );
-            numClock.setMaximum( clock_max );
-            numClock.setFloatValue( clock );
-            numTempo.setFloatValue( tempo );
+            numBeat.Minimum = 1;
+            numBeat.Maximum = beat_max;
+            numBeat.Value = beat;
+            numClock.Minimum = 0;
+            numClock.Maximum = clock_max;
+            numClock.Value = clock;
+            numTempo.Value = (decimal)tempo;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Global Tempo" ) );
-            groupPosition.setTitle( _( "Position" ) );
-            lblBar.setText( _( "Measure" ) );
-            lblBar.setMnemonic( KeyEvent.VK_M, numBar );
-            lblBeat.setText( _( "Beat" ) );
-            lblBeat.setMnemonic( KeyEvent.VK_B, numBeat );
-            lblClock.setText( _( "Clock" ) );
-            lblClock.setMnemonic( KeyEvent.VK_L, numClock );
-            groupTempo.setTitle( _( "Tempo" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            this.Text = _( "Global Tempo" );
+            groupPosition.Text = _( "Position" );
+            lblBar.Text = _( "Measure" );
+            lblBar.Mnemonic( KeyEvent.VK_M );
+            lblBeat.Text = _( "Beat" );
+            lblBeat.Mnemonic( KeyEvent.VK_B );
+            lblClock.Text = _( "Clock" );
+            lblClock.Mnemonic( KeyEvent.VK_L );
+            groupTempo.Text = _( "Tempo" );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
         }
 
         public int getBeatCount()
         {
-            return (int)numBeat.getFloatValue();
+            return (int)numBeat.Value;
         }
 
         public int getClock()
         {
-            return (int)numClock.getFloatValue();
+            return (int)numClock.Value;
         }
 
         public float getTempo()
         {
-            return numTempo.getFloatValue();
+            return (float)numTempo.Value;
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -116,8 +114,8 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -155,18 +153,18 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPosition = new BGroupBox();
+            this.groupPosition = new System.Windows.Forms.GroupBox();
             this.numClock = new cadencii.NumericUpDownEx();
             this.numBeat = new cadencii.NumericUpDownEx();
             this.numBar = new cadencii.NumericUpDownEx();
-            this.lblClock = new BLabel();
-            this.lblBeat = new BLabel();
-            this.lblBar = new BLabel();
-            this.groupTempo = new BGroupBox();
-            this.lblTempoRange = new BLabel();
+            this.lblClock = new System.Windows.Forms.Label();
+            this.lblBeat = new System.Windows.Forms.Label();
+            this.lblBar = new System.Windows.Forms.Label();
+            this.groupTempo = new System.Windows.Forms.GroupBox();
+            this.lblTempoRange = new System.Windows.Forms.Label();
             this.numTempo = new cadencii.NumericUpDownEx();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.groupPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numClock)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numBeat)).BeginInit();
@@ -334,17 +332,17 @@ namespace cadencii
 
         #endregion
 
-        private BGroupBox groupPosition;
-        private BLabel lblClock;
-        private BLabel lblBeat;
-        private BLabel lblBar;
-        private BGroupBox groupTempo;
-        private BButton btnOK;
-        private BButton btnCancel;
+        private System.Windows.Forms.GroupBox groupPosition;
+        private System.Windows.Forms.Label lblClock;
+        private System.Windows.Forms.Label lblBeat;
+        private System.Windows.Forms.Label lblBar;
+        private System.Windows.Forms.GroupBox groupTempo;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
         private NumericUpDownEx numBar;
         private NumericUpDownEx numClock;
         private NumericUpDownEx numBeat;
-        private BLabel lblTempoRange;
+        private System.Windows.Forms.Label lblTempoRange;
         private NumericUpDownEx numTempo;
 #endif
         #endregion

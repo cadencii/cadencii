@@ -29,6 +29,8 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
+using System.Linq;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -38,20 +40,10 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
 
-#if JAVA
-    class DraggableBButton extends BButton
-#else
-    class DraggableBButton : BButton
-#endif
+    class DraggableBButton : Button
     {
         private IconDynamicsHandle mHandle = null;
 #if JAVA
@@ -97,12 +89,12 @@ namespace cadencii
 #if JAVA
     public class FormIconPalette extends BForm
 #else
-    public class FormIconPalette : BForm
+    public class FormIconPalette : Form
 #endif
     {
-        private Vector<BButton> dynaffButtons = new Vector<BButton>();
-        private Vector<BButton> crescendButtons = new Vector<BButton>();
-        private Vector<BButton> decrescendButtons = new Vector<BButton>();
+        private Vector<Button> dynaffButtons = new Vector<Button>();
+        private Vector<Button> crescendButtons = new Vector<Button>();
+        private Vector<Button> decrescendButtons = new Vector<Button>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
         private boolean mPreviousAlwaysOnTop;
@@ -120,11 +112,12 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             init();
             registerEventHandlers();
-            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
+            TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
             if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                BKeys[] keys = dict.get( "menuVisualIconPalette" );
-                KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );
-                menuWindowHide.setAccelerator( shortcut );
+                Keys[] keys = dict.get( "menuVisualIconPalette" );
+                Keys shortcut = Keys.None;
+                keys.Aggregate(shortcut, (seed, key) => seed | key);
+                menuWindowHide.ShortcutKeys = shortcut;
             }
         }
     
@@ -147,12 +140,12 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            setTitle( _( "Icon Palette" ) );
+            this.Text = _( "Icon Palette" );
         }
 
-        public void applyShortcut( KeyStroke shortcut )
+        public void applyShortcut( Keys shortcut )
         {
-            menuWindowHide.setAccelerator( shortcut );
+            menuWindowHide.ShortcutKeys = shortcut;
         }
         #endregion
 
@@ -164,9 +157,9 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            this.Load += new BEventHandler( FormIconPalette_Load );
-            this.FormClosing += new BFormClosingEventHandler( FormIconPalette_FormClosing );
-            menuWindowHide.Click += new BEventHandler( menuWindowHide_Click );
+            this.Load += new EventHandler( FormIconPalette_Load );
+            this.FormClosing += new FormClosingEventHandler( FormIconPalette_FormClosing );
+            menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
         }
 
         private void init()
@@ -179,25 +172,13 @@ namespace cadencii
 #else
                 DraggableBButton btn = new DraggableBButton();
 #endif
-                btn.setName( icon_id );
+                btn.Name = icon_id;
                 btn.setHandle( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
                 boolean setimg = fsys.isFileExists( buttonIconPath );
                 if ( setimg ) {
-                    Image img = null;
-#if JAVA
-                    try{
-                        img = ImageIO.read( new File( buttonIconPath ) );
-                    }catch( Exception ex ){
-                        Logger.write( FormIconPalette.class + "; ex=" + ex + "\n" );
-                        serr.println( "FormIconPalette#init; ex=" + ex );
-                    }
-#else
-                    img = new Image();
-                    img.image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
-#endif
-                    btn.setIcon( new ImageIcon( img ) );
+                    btn.Image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
                 } else {
                     Image img = null;
                     String str = "";
@@ -240,13 +221,13 @@ namespace cadencii
                         str = "ppp";
                     }
                     if ( img != null ) {
-                        btn.setIcon( new ImageIcon( img ) );
+                        btn.Image = img.image;
                     } else {
-                        btn.setText( str );
+                        btn.Text = str;
                     }
                 }
-                btn.MouseDown += new BMouseEventHandler( handleCommonMouseDown );
-                btn.setPreferredSize( new Dimension( buttonWidth, buttonWidth ) );
+                btn.MouseDown += new MouseEventHandler( handleCommonMouseDown );
+                btn.Size = new System.Drawing.Size( buttonWidth, buttonWidth );
                 int iw = 0;
                 int ih = 0;
                 if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
@@ -312,41 +293,39 @@ namespace cadencii
             setResizable( false );
 #else
             this.ClientSize = new System.Drawing.Size( width, height );
-            Dimension size = getSize();
+            var size = this.Size;
 #endif
-            setMaximumSize( size );
-            setMinimumSize( size );
+            this.MaximumSize = new System.Drawing.Size(size.Width, size.Height);
+            this.MinimumSize = new System.Drawing.Size(size.Width, size.Height);
         }
         #endregion
 
         #region event handlers
-        public void FormIconPalette_Load( Object sender, BEventArgs e )
+        public void FormIconPalette_Load( Object sender, EventArgs e )
         {
             // コンストラクタから呼ぶと、スレッドが違うので（たぶん）うまく行かない
-            setAlwaysOnTop( true );
+            this.TopMost = true;
         }
 
-        public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormIconPalette_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            setVisible( false );
-#if !JAVA
+            this.Visible = false;
             e.Cancel = true;
-#endif
         }
 
         public void menuWindowHide_Click( Object sender, EventArgs e )
         {
-            setVisible( false );
+            this.Visible = false;
         }
 
-        public void handleCommonMouseDown( Object sender, BMouseEventArgs e )
+        public void handleCommonMouseDown( Object sender, MouseEventArgs e )
         {
             if ( AppManager.getEditMode() != EditMode.NONE ) {
                 return;
             }
             DraggableBButton btn = (DraggableBButton)sender;
             if ( mMainWindow != null ) {
-                mMainWindow.toFront();
+                mMainWindow.BringToFront();
             }
 
             IconDynamicsHandle handle = btn.getHandle();
@@ -377,9 +356,9 @@ namespace cadencii
 #else
         private void InitializeComponent()
         {
-            this.menuBar = new cadencii.windows.forms.BMenuBar();
-            this.menuWindow = new cadencii.windows.forms.BMenuItem();
-            this.menuWindowHide = new cadencii.windows.forms.BMenuItem();
+            this.menuBar = new MenuStrip();
+            this.menuWindow = new ToolStripMenuItem();
+            this.menuWindowHide = new ToolStripMenuItem();
             this.menuBar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -426,9 +405,9 @@ namespace cadencii
 
         }
 
-        private BMenuBar menuBar;
-        private BMenuItem menuWindow;
-        private BMenuItem menuWindowHide;
+        private MenuStrip menuBar;
+        private ToolStripMenuItem menuWindow;
+        private ToolStripMenuItem menuWindowHide;
 
 #endif
         #endregion

@@ -29,8 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -38,13 +36,13 @@ namespace cadencii
 #if JAVA
     public class FormGameControlerConfig extends BDialog
 #else
-    public class FormGameControlerConfig : BDialog
+    public class FormGameControlerConfig : System.Windows.Forms.Form
 #endif
     {
         private Vector<Integer> m_list = new Vector<Integer>();
         private Vector<Integer> m_povs = new Vector<Integer>();
         private int index;
-        private BTimer timer;
+        private System.Windows.Forms.Timer timer;
 
         public FormGameControlerConfig()
         {
@@ -55,11 +53,7 @@ namespace cadencii
             InitializeComponent();
 #endif
 
-#if JAVA
-            timer = new BTimer();
-#else
-            timer = new BTimer( this.components );
-#endif
+            timer = new System.Windows.Forms.Timer( this.components );
             registerEventHandlers();
             setResources();
             for ( int i = 0; i < 10; i++ ) {
@@ -75,17 +69,17 @@ namespace cadencii
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
             if ( num_dev > 0 ) {
-                pictButton.setImage( Resources.get_btn1() );
-                progressCount.setMaximum( 8 );
-                progressCount.setMinimum( 0 );
-                progressCount.setValue( 0 );
+                pictButton.Image = Resources.get_btn1().image;
+                progressCount.Maximum = 8;
+                progressCount.Minimum = 0;
+                progressCount.Value = 0;
                 index = 1;
-                btnSkip.setEnabled( true );
-                btnReset.setEnabled( true );
-                timer.start();
+                btnSkip.Enabled = true;
+                btnReset.Enabled = true;
+                timer.Start();
             } else {
-                btnSkip.setEnabled( false );
-                btnReset.setEnabled( false );
+                btnSkip.Enabled = false;
+                btnReset.Enabled = false;
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -99,15 +93,15 @@ namespace cadencii
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
             if ( num_dev > 0 ) {
-                lblMessage.setText( _( "Push buttons in turn as shown below" ) );
+                lblMessage.Text = _( "Push buttons in turn as shown below" );
             } else {
-                lblMessage.setText( _( "Game controler is not available" ) );
+                lblMessage.Text = _( "Game controler is not available" );
             }
-            setTitle( _( "Game Controler Configuration" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnReset.setText( _( "Reset And Exit" ) );
-            btnSkip.setText( _( "Skip" ) );
+            this.Text = _( "Game Controler Configuration" );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            btnReset.Text = _( "Reset And Exit" );
+            btnSkip.Text = _( "Skip" );
         }
 
         public int getRectangle()
@@ -189,11 +183,11 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            timer.Tick += new BEventHandler( timer_Tick );
-            btnSkip.Click += new BEventHandler( btnSkip_Click );
-            btnReset.Click += new BEventHandler( btnReset_Click );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            timer.Tick += new EventHandler( timer_Tick );
+            btnSkip.Click += new EventHandler( btnSkip_Click );
+            btnReset.Click += new EventHandler( btnReset_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -202,7 +196,7 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void timer_Tick( Object sender, BEventArgs e )
+        public void timer_Tick( Object sender, EventArgs e )
         {
             //int num_btn = vstidrv.JoyGetNumButtons( 0 );
             byte[] btn;
@@ -235,32 +229,32 @@ namespace cadencii
             }
             if ( added ) {
                 if ( index <= 8 ) {
-                    progressCount.setValue( index );
+                    progressCount.Value = index;
                 } else if ( index <= 12 ) {
-                    progressCount.setValue( index - 8 );
+                    progressCount.Value = index - 8;
                 } else {
-                    progressCount.setValue( index - 12 );
+                    progressCount.Value = index - 12;
                 }
 
                 if ( index == 8 ) {
-                    pictButton.setImage( Resources.get_btn2() );
-                    progressCount.setValue( 0 );
-                    progressCount.setMaximum( 4 );
+                    pictButton.Image = Resources.get_btn2().image;
+                    progressCount.Value = 0;
+                    progressCount.Maximum = 4;
                 } else if ( index == 12 ) {
-                    pictButton.setImage( Resources.get_btn3() );
-                    progressCount.setValue( 0 );
-                    progressCount.setMaximum( 2 );
+                    pictButton.Image = Resources.get_btn3().image;
+                    progressCount.Value = 0;
+                    progressCount.Maximum = 2;
                 }
                 if ( index == 14 ) {
-                    btnSkip.setEnabled( false );
-                    btnOK.setEnabled( true );
-                    timer.stop();
+                    btnSkip.Enabled = false;
+                    btnOK.Enabled = true;
+                    timer.Stop();
                 }
                 index++;
             }
         }
 
-        public void btnSkip_Click( Object sender, BEventArgs e )
+        public void btnSkip_Click( Object sender, EventArgs e )
         {
             if ( index <= 4 ) {
                 m_povs.set( index - 1, int.MinValue );
@@ -268,31 +262,31 @@ namespace cadencii
                 m_list.set( index - 5, -1 );
             }
             if ( index <= 8 ) {
-                progressCount.setValue( index );
+                progressCount.Value = index;
             } else if ( index <= 12 ) {
-                progressCount.setValue( index - 8 );
+                progressCount.Value = index - 8;
             } else {
-                progressCount.setValue( index - 12 );
+                progressCount.Value = index - 12;
             }
 
             if ( index == 8 ) {
-                pictButton.setImage( Resources.get_btn2() );
-                progressCount.setValue( 0 );
-                progressCount.setMaximum( 4 );
+                pictButton.Image = Resources.get_btn2().image;
+                progressCount.Value = 0;
+                progressCount.Maximum = 4;
             } else if ( index == 12 ) {
-                pictButton.setImage( Resources.get_btn3() );
-                progressCount.setValue( 0 );
-                progressCount.setMaximum( 2 );
+                pictButton.Image = Resources.get_btn3().image;
+                progressCount.Value = 0;
+                progressCount.Maximum = 2;
             }
             if ( index == 14 ) {
-                btnSkip.setEnabled( false );
-                btnOK.setEnabled( true );
-                timer.stop();
+                btnSkip.Enabled = false;
+                btnOK.Enabled = true;
+                timer.Stop();
             }
             index++;
         }
 
-        public void btnReset_Click( Object sender, BEventArgs e )
+        public void btnReset_Click( Object sender, EventArgs e )
         {
             m_list.set( 0, 3 ); // □
             m_list.set( 1, 0 ); // △
@@ -308,17 +302,17 @@ namespace cadencii
             m_povs.set( 1, 27000 ); // left
             m_povs.set( 2, 0 ); // up
             m_povs.set( 3, 9000 ); // right
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
@@ -351,13 +345,13 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.lblMessage = new BLabel();
-            this.pictButton = new BPictureBox();
-            this.progressCount = new BProgressBar();
-            this.btnSkip = new BButton();
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
-            this.btnReset = new BButton();
+            this.lblMessage = new System.Windows.Forms.Label();
+            this.pictButton = new System.Windows.Forms.PictureBox();
+            this.progressCount = new System.Windows.Forms.ProgressBar();
+            this.btnSkip = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictButton)).BeginInit();
             this.SuspendLayout();
             // 
@@ -461,13 +455,13 @@ namespace cadencii
 
         }
 
-        private BLabel lblMessage;
-        private BPictureBox pictButton;
-        private BProgressBar progressCount;
-        private BButton btnSkip;
-        private BButton btnOK;
-        private BButton btnCancel;
-        private BButton btnReset;
+        private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.PictureBox pictButton;
+        private System.Windows.Forms.ProgressBar progressCount;
+        private System.Windows.Forms.Button btnSkip;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnReset;
 
 #endif
         #endregion

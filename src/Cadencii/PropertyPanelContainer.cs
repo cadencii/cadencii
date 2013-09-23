@@ -29,9 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -42,11 +39,7 @@ namespace cadencii
 #endif
     {
         public const int _TITLE_HEIGHT = 29;
-#if JAVA
-        public BEvent<StateChangeRequiredEventHandler> stateChangeRequiredEvent = new BEvent<StateChangeRequiredEventHandler>();
-#else
         public event StateChangeRequiredEventHandler StateChangeRequired;
-#endif
 
         public PropertyPanelContainer()
         {
@@ -69,7 +62,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public void panelTitle_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             handleRestoreWindow();
         }
@@ -134,19 +127,17 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-#if !JAVA
-            this.panelMain.SizeChanged += new BEventHandler( panelMain_SizeChanged );
-            this.btnClose.Click += new BEventHandler( btnClose_Click );
-            this.btnWindow.Click += new BEventHandler( btnWindow_Click );
-            this.panelTitle.MouseDoubleClick += new BMouseEventHandler( panelTitle_MouseDoubleClick );
-#endif
+            this.panelMain.SizeChanged += new EventHandler( panelMain_SizeChanged );
+            this.btnClose.Click += new EventHandler( btnClose_Click );
+            this.btnWindow.Click += new EventHandler( btnWindow_Click );
+            this.panelTitle.MouseDoubleClick += new MouseEventHandler( panelTitle_MouseDoubleClick );
         }
 
         private void setResources()
         {
 #if !JAVA
-            this.btnClose.setIcon( new ImageIcon( Resources.get_cross_small() ) );
-            this.btnWindow.setIcon( new ImageIcon( Resources.get_chevron_small_collapse() ) );
+            this.btnClose.Image = Resources.get_cross_small().image;
+            this.btnWindow.Image = Resources.get_chevron_small_collapse().image;
 #endif
         }
 
@@ -183,8 +174,8 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.panelMain = new System.Windows.Forms.Panel();
-            this.btnClose = new BButton();
-            this.btnWindow = new BButton();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.btnWindow = new System.Windows.Forms.Button();
             this.panelTitle = new System.Windows.Forms.Panel();
             this.panelTitle.SuspendLayout();
             this.SuspendLayout();
@@ -245,8 +236,8 @@ namespace cadencii
         #endregion
 
         private System.Windows.Forms.Panel panelMain;
-        private BButton btnClose;
-        private BButton btnWindow;
+        private Button btnClose;
+        private Button btnWindow;
         private System.Windows.Forms.Panel panelTitle;
         #endregion
 #endif

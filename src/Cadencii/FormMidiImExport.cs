@@ -22,23 +22,20 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormMidiImExport extends BDialog {
 #else
-    public class FormMidiImExport : BDialog
+    public class FormMidiImExport : Form
     {
 #endif
         public enum FormMidiMode
@@ -65,13 +62,13 @@ namespace cadencii
             applyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
-            listTrack.setColumnWidth( 0, columnWidthTrack );
-            listTrack.setColumnWidth( 1, columnWidthName );
-            listTrack.setColumnWidth( 2, columnWidthNotes );
+            listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            listTrack.Columns[0].Width = columnWidthTrack;
+            listTrack.Columns[1].Width = columnWidthName;
+            listTrack.Columns[2].Width = columnWidthNotes;
 
-            Point p = btnCheckAll.getLocation();
-            btnUncheckAll.setLocation( p.x + btnCheckAll.getWidth() + 6, p.y );
+            System.Drawing.Point p = btnCheckAll.Location;
+            btnUncheckAll.Location = new System.Drawing.Point( p.X + btnCheckAll.Width + 6, p.Y );
 
             registerEventHandlers();
             setResources();
@@ -81,31 +78,31 @@ namespace cadencii
         public void applyLanguage()
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                setTitle( _( "Midi Export" ) );
+                this.Text = _( "Midi Export" );
             } else if ( m_mode == FormMidiMode.IMPORT ) {
-                setTitle( _( "Midi Import" ) );
+                this.Text = _( "Midi Import" );
             } else {
-                setTitle( _( "VSQ/Vocaloid Midi Import" ) );
+                this.Text = _( "VSQ/Vocaloid Midi Import" );
             }
-            groupMode.setTitle( _( "Import Basis" ) );
-            radioGateTime.setText( _( "gate-time" ) );
-            radioPlayTime.setText( _( "play-time" ) );
-            listTrack.setColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
-            btnCheckAll.setText( _( "Check All" ) );
-            btnUncheckAll.setText( _( "Uncheck All" ) );
-            groupCommonOption.setTitle( _( "Option" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            chkTempo.setText( _( "Tempo" ) );
-            chkBeat.setText( _( "Beat" ) );
-            chkNote.setText( _( "Note" ) );
-            chkLyric.setText( _( "Lyrics" ) );
-            chkExportVocaloidNrpn.setText( _( "vocaloid NRPN" ) );
-            lblOffset.setText( _( "offset" ) );
-            if ( radioGateTime.isSelected() ) {
-                lblOffsetUnit.setText( _( "clocks" ) );
+            groupMode.Text = _( "Import Basis" );
+            radioGateTime.Text = _( "gate-time" );
+            radioPlayTime.Text = _( "play-time" );
+            listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            btnCheckAll.Text = _( "Check All" );
+            btnUncheckAll.Text = _( "Uncheck All" );
+            groupCommonOption.Text = _( "Option" );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            chkTempo.Text = _( "Tempo" );
+            chkBeat.Text = _( "Beat" );
+            chkNote.Text = _( "Note" );
+            chkLyric.Text = _( "Lyrics" );
+            chkExportVocaloidNrpn.Text = _( "vocaloid NRPN" );
+            lblOffset.Text = _( "offset" );
+            if ( radioGateTime.Checked ) {
+                lblOffsetUnit.Text = _( "clocks" );
             } else {
-                lblOffsetUnit.setText( _( "seconds" ) );
+                lblOffsetUnit.Text = _( "seconds" );
             }
         }
 
@@ -113,7 +110,7 @@ namespace cadencii
         {
             double v = 0.0;
             try {
-                v = str.tof( txtOffset.getText() );
+                v = str.tof( txtOffset.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMidiImExport ) + ".getOffsetSeconds; ex=" + ex + "\n" );
                 serr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
@@ -125,7 +122,7 @@ namespace cadencii
         {
             int v = 0;
             try {
-                v = str.toi( txtOffset.getText() );
+                v = str.toi( txtOffset.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMidiImExport ) + ".getOffsetClocks; ex=" + ex + "\n" );
                 serr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
@@ -135,7 +132,7 @@ namespace cadencii
 
         public boolean isSecondBasis()
         {
-            return radioPlayTime.isSelected();
+            return radioPlayTime.Checked;
         }
 
         public FormMidiMode getMode()
@@ -146,92 +143,92 @@ namespace cadencii
         public void setMode( FormMidiMode value )
         {
             m_mode = value;
-            chkExportVocaloidNrpn.setEnabled( (m_mode == FormMidiMode.EXPORT) );
-            chkLyric.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
-            chkNote.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
-            chkPreMeasure.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
+            chkExportVocaloidNrpn.Enabled = (m_mode == FormMidiMode.EXPORT);
+            chkLyric.Enabled = (m_mode != FormMidiMode.IMPORT_VSQ);
+            chkNote.Enabled = (m_mode != FormMidiMode.IMPORT_VSQ);
+            chkPreMeasure.Enabled = (m_mode != FormMidiMode.IMPORT_VSQ);
             if ( m_mode == FormMidiMode.EXPORT ) {
-                setTitle( _( "Midi Export" ) );
-                chkPreMeasure.setText( _( "Export pre-measure part" ) );
-                if ( chkExportVocaloidNrpn.isSelected() ) {
-                    chkPreMeasure.setEnabled( false );
-                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.isSelected();
-                    chkPreMeasure.setSelected( true );
+                this.Text = _( "Midi Export" );
+                chkPreMeasure.Text = _( "Export pre-measure part" );
+                if ( chkExportVocaloidNrpn.Checked ) {
+                    chkPreMeasure.Enabled = false;
+                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.Checked;
+                    chkPreMeasure.Checked = true;
                 } else {
-                    chkPreMeasure.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus );
+                    chkPreMeasure.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus;
                 }
-                if ( chkNote.isSelected() ) {
-                    chkMetaText.setEnabled( false );
-                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
-                    chkMetaText.setSelected( false );
+                if ( chkNote.Checked ) {
+                    chkMetaText.Enabled = false;
+                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
+                    chkMetaText.Checked = false;
                 } else {
-                    chkMetaText.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus );
+                    chkMetaText.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus;
                 }
-                groupMode.setEnabled( false );
+                groupMode.Enabled = false;
             } else if ( m_mode == FormMidiMode.IMPORT ) {
-                setTitle( _( "Midi Import" ) );
-                chkPreMeasure.setText( _( "Inserting start at pre-measure" ) );
-                chkMetaText.setEnabled( false );
-                AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.isSelected();
-                chkMetaText.setSelected( false );
-                groupMode.setEnabled( true );
+                this.Text = _( "Midi Import" );
+                chkPreMeasure.Text = _( "Inserting start at pre-measure" );
+                chkMetaText.Enabled = false;
+                AppManager.editorConfig.MidiImExportConfigImport.LastMetatextCheckStatus = chkMetaText.Checked;
+                chkMetaText.Checked = false;
+                groupMode.Enabled = true;
             } else {
-                setTitle( _( "VSQ/Vocaloid Midi Import" ) );
-                chkPreMeasure.setText( _( "Inserting start at pre-measure" ) );
-                chkPreMeasure.setSelected( false );
-                AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.isSelected();
-                chkMetaText.setSelected( true );
-                groupMode.setEnabled( false );
+                this.Text = _( "VSQ/Vocaloid Midi Import" );
+                chkPreMeasure.Text = _( "Inserting start at pre-measure" );
+                chkPreMeasure.Checked = false;
+                AppManager.editorConfig.MidiImExportConfigImportVsq.LastMetatextCheckStatus = chkMetaText.Checked;
+                chkMetaText.Checked = true;
+                groupMode.Enabled = false;
             }
         }
 
         public boolean isVocaloidMetatext()
         {
-            if ( chkNote.isSelected() ) {
+            if ( chkNote.Checked ) {
                 return false;
             } else {
-                return chkMetaText.isSelected();
+                return chkMetaText.Checked;
             }
         }
 
         public boolean isVocaloidNrpn()
         {
-            return chkExportVocaloidNrpn.isSelected();
+            return chkExportVocaloidNrpn.Checked;
         }
 
         public boolean isTempo()
         {
-            return chkTempo.isSelected();
+            return chkTempo.Checked;
         }
 
         public void setTempo( boolean value )
         {
-            chkTempo.setSelected( value );
+            chkTempo.Checked = value;
         }
 
         public boolean isTimesig()
         {
-            return chkBeat.isSelected();
+            return chkBeat.Checked;
         }
 
         public void setTimesig( boolean value )
         {
-            chkBeat.setSelected( value );
+            chkBeat.Checked = value;
         }
 
         public boolean isNotes()
         {
-            return chkNote.isSelected();
+            return chkNote.Checked;
         }
 
         public boolean isLyric()
         {
-            return chkLyric.isSelected();
+            return chkLyric.Checked;
         }
 
         public boolean isPreMeasure()
         {
-            return chkPreMeasure.isSelected();
+            return chkPreMeasure.Checked;
         }
         #endregion
 
@@ -243,17 +240,17 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnCheckAll.Click += new BEventHandler( btnCheckAll_Click );
-            btnUncheckAll.Click += new BEventHandler( btnUnckeckAll_Click );
-            chkNote.CheckedChanged += new BEventHandler( chkNote_CheckedChanged );
-            chkMetaText.Click += new BEventHandler( chkMetaText_Click );
-            chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            this.FormClosing += new BFormClosingEventHandler( FormMidiImExport_FormClosing );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            radioGateTime.CheckedChanged += new BEventHandler( radioGateTime_CheckedChanged );
-            radioPlayTime.CheckedChanged += new BEventHandler( radioPlayTime_CheckedChanged );
+            btnCheckAll.Click += new EventHandler( btnCheckAll_Click );
+            btnUncheckAll.Click += new EventHandler( btnUnckeckAll_Click );
+            chkNote.CheckedChanged += new EventHandler( chkNote_CheckedChanged );
+            chkMetaText.Click += new EventHandler( chkMetaText_Click );
+            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            this.FormClosing += new FormClosingEventHandler( FormMidiImExport_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioGateTime.CheckedChanged += new EventHandler( radioGateTime_CheckedChanged );
+            radioPlayTime.CheckedChanged += new EventHandler( radioPlayTime_CheckedChanged );
         }
 
         private void setResources()
@@ -262,84 +259,84 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnCheckAll_Click( Object sender, BEventArgs e )
+        public void btnCheckAll_Click( Object sender, EventArgs e )
         {
-            for ( int i = 0; i < listTrack.getItemCountRow(); i++ ) {
-                listTrack.setRowChecked( i, true );
+            for ( int i = 0; i < listTrack.Items.Count; i++ ) {
+                listTrack.Items[i].Checked = true;
             }
         }
 
-        public void btnUnckeckAll_Click( Object sender, BEventArgs e )
+        public void btnUnckeckAll_Click( Object sender, EventArgs e )
         {
-            for ( int i = 0; i < listTrack.getItemCountRow(); i++ ) {
-                listTrack.setRowChecked( i, false );
+            for ( int i = 0; i < listTrack.Items.Count; i++ ) {
+                listTrack.Items[i].Checked = false;
             }
         }
 
-        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e )
+        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, EventArgs e )
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                if ( chkExportVocaloidNrpn.isSelected() ) {
-                    chkPreMeasure.setEnabled( false );
-                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.isSelected();
-                    chkPreMeasure.setSelected( true );
+                if ( chkExportVocaloidNrpn.Checked ) {
+                    chkPreMeasure.Enabled = false;
+                    AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus = chkPreMeasure.Checked;
+                    chkPreMeasure.Checked = true;
                 } else {
-                    chkPreMeasure.setEnabled( true );
-                    chkPreMeasure.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus );
+                    chkPreMeasure.Enabled = true;
+                    chkPreMeasure.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastPremeasureCheckStatus;
                 }
             }
         }
 
-        public void chkNote_CheckedChanged( Object sender, BEventArgs e )
+        public void chkNote_CheckedChanged( Object sender, EventArgs e )
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                if ( chkNote.isSelected() ) {
-                    chkMetaText.setEnabled( false );
-                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
-                    chkMetaText.setSelected( false );
+                if (chkNote.Checked) {
+                    chkMetaText.Enabled = false;
+                    AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
+                    chkMetaText.Checked = false;
                 } else {
-                    chkMetaText.setEnabled( true );
-                    chkMetaText.setSelected( AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus );
+                    chkMetaText.Enabled = true;
+                    chkMetaText.Checked = AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus;
                 }
             }
         }
 
-        public void chkMetaText_Click( Object sender, BEventArgs e )
+        public void chkMetaText_Click( Object sender, EventArgs e )
         {
             if ( m_mode == FormMidiMode.EXPORT ) {
-                AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
+                AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.Checked;
             }
         }
 
-        public void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormMidiImExport_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            columnWidthTrack = listTrack.getColumnWidth( 0 );
-            columnWidthName = listTrack.getColumnWidth( 1 );
-            columnWidthNotes = listTrack.getColumnWidth( 2 );
+            columnWidthTrack = listTrack.Columns[0].Width;
+            columnWidthName = listTrack.Columns[1].Width;
+            columnWidthNotes = listTrack.Columns[2].Width;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void radioGateTime_CheckedChanged( Object sender, EventArgs e )
         {
-            if ( radioGateTime.isSelected() ) {
-                lblOffsetUnit.setText( _( "clocks" ) );
+            if ( radioGateTime.Checked ) {
+                lblOffsetUnit.Text = _( "clocks" );
                 txtOffset.setType( NumberTextBox.ValueType.Integer );
             }
         }
 
         public void radioPlayTime_CheckedChanged( Object sender, EventArgs e )
         {
-            if ( radioPlayTime.isSelected() ) {
-                lblOffsetUnit.setText( _( "seconds" ) );
+            if ( radioPlayTime.Checked ) {
+                lblOffsetUnit.Text = _( "seconds" );
                 txtOffset.setType( NumberTextBox.ValueType.Double );
             }
         }
@@ -377,25 +374,25 @@ namespace cadencii
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.listTrack = new cadencii.windows.forms.BListView();
-            this.btnCheckAll = new cadencii.windows.forms.BButton();
-            this.btnUncheckAll = new cadencii.windows.forms.BButton();
-            this.chkBeat = new cadencii.windows.forms.BCheckBox();
-            this.chkTempo = new cadencii.windows.forms.BCheckBox();
-            this.chkNote = new cadencii.windows.forms.BCheckBox();
-            this.chkLyric = new cadencii.windows.forms.BCheckBox();
-            this.groupCommonOption = new cadencii.windows.forms.BGroupBox();
-            this.chkMetaText = new cadencii.windows.forms.BCheckBox();
-            this.chkPreMeasure = new cadencii.windows.forms.BCheckBox();
-            this.chkExportVocaloidNrpn = new cadencii.windows.forms.BCheckBox();
-            this.groupMode = new cadencii.windows.forms.BGroupBox();
-            this.lblOffsetUnit = new cadencii.windows.forms.BLabel();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.listTrack = new ListView();
+            this.btnCheckAll = new Button();
+            this.btnUncheckAll = new Button();
+            this.chkBeat = new CheckBox();
+            this.chkTempo = new CheckBox();
+            this.chkNote = new CheckBox();
+            this.chkLyric = new CheckBox();
+            this.groupCommonOption = new System.Windows.Forms.GroupBox();
+            this.chkMetaText = new CheckBox();
+            this.chkPreMeasure = new CheckBox();
+            this.chkExportVocaloidNrpn = new CheckBox();
+            this.groupMode = new System.Windows.Forms.GroupBox();
+            this.lblOffsetUnit = new Label();
             this.txtOffset = new cadencii.NumberTextBox();
-            this.lblOffset = new cadencii.windows.forms.BLabel();
-            this.radioPlayTime = new cadencii.windows.forms.BRadioButton();
-            this.radioGateTime = new cadencii.windows.forms.BRadioButton();
+            this.lblOffset = new Label();
+            this.radioPlayTime = new RadioButton();
+            this.radioGateTime = new RadioButton();
             this.groupCommonOption.SuspendLayout();
             this.groupMode.SuspendLayout();
             this.SuspendLayout();
@@ -676,25 +673,25 @@ namespace cadencii
 
         }
 
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BButton btnCheckAll;
-        private BButton btnUncheckAll;
-        private BCheckBox chkBeat;
-        private BCheckBox chkTempo;
-        private BCheckBox chkNote;
-        private BCheckBox chkLyric;
-        private BGroupBox groupCommonOption;
-        private BCheckBox chkExportVocaloidNrpn;
-        public BListView listTrack;
-        private BCheckBox chkPreMeasure;
-        private BCheckBox chkMetaText;
-        private BGroupBox groupMode;
-        private BRadioButton radioPlayTime;
-        private BRadioButton radioGateTime;
-        private BLabel lblOffset;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCheckAll;
+        private System.Windows.Forms.Button btnUncheckAll;
+        private CheckBox chkBeat;
+        private CheckBox chkTempo;
+        private CheckBox chkNote;
+        private CheckBox chkLyric;
+        private GroupBox groupCommonOption;
+        private CheckBox chkExportVocaloidNrpn;
+        public ListView listTrack;
+        private CheckBox chkPreMeasure;
+        private CheckBox chkMetaText;
+        private GroupBox groupMode;
+        private RadioButton radioPlayTime;
+        private RadioButton radioGateTime;
+        private Label lblOffset;
         private NumberTextBox txtOffset;
-        private BLabel lblOffsetUnit;
+        private Label lblOffsetUnit;
 
 #endif
         #endregion

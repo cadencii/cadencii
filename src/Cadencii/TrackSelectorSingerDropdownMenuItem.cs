@@ -20,6 +20,7 @@ import cadencii.windows.forms.*;
 #else
 
 using System;
+using System.Windows.Forms;
 using cadencii.windows.forms;
 
 namespace cadencii
@@ -29,7 +30,7 @@ namespace cadencii
 #if JAVA
     public class TrackSelectorSingerDropdownMenuItem extends BMenuItem
 #else
-    public class TrackSelectorSingerDropdownMenuItem : BMenuItem
+    public class TrackSelectorSingerDropdownMenuItem : ToolStripMenuItem
 #endif
     {
         public int ToolTipPxWidth;

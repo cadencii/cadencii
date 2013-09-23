@@ -13,6 +13,7 @@
  */
 using System;
 using System.Linq;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
@@ -25,13 +26,9 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 
-    partial class Preference : BDialog
+    partial class Preference : Form
     {
         private static int columnWidthHeaderProgramChange = 60;
         private static int columnWidthHeaderName = 100;
@@ -43,101 +40,93 @@ namespace cadencii
         private PlatformEnum m_platform = PlatformEnum.Windows;
         private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
 
-        private BFileChooser openUtauCore;
-        private BFontChooser fontDialog;
-#if DEBUG
-        private BFileChooser folderBrowserSingers;
-#else
-        private BFolderBrowser folderBrowserSingers;
-#endif
+        private OpenFileDialog openUtauCore;
+        private FontDialog fontDialog;
+        private FolderBrowserDialog folderBrowserSingers;
 
         public Preference()
         {
             InitializeComponent();
-            fontDialog = new BFontChooser();
-            fontDialog.dialog.AllowVectorFonts = false;
-            fontDialog.dialog.AllowVerticalFonts = false;
-            fontDialog.dialog.FontMustExist = true;
-            fontDialog.dialog.ShowEffects = false;
-            openUtauCore = new BFileChooser();
+            fontDialog = new FontDialog();
+            fontDialog.AllowVectorFonts = false;
+            fontDialog.AllowVerticalFonts = false;
+            fontDialog.FontMustExist = true;
+            fontDialog.ShowEffects = false;
+            openUtauCore = new OpenFileDialog();
 
-#if DEBUG
-            folderBrowserSingers = new BFileChooser();
-#else
-            folderBrowserSingers = new BFolderBrowser();
-            folderBrowserSingers.setNewFolderButtonVisible( false );
-#endif
+            folderBrowserSingers = new FolderBrowserDialog();
+            folderBrowserSingers.ShowNewFolderButton = false;
             applyLanguage();
 
-            comboVibratoLength.removeAllItems();
+            comboVibratoLength.Items.Clear();
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
-                comboVibratoLength.addItem( DefaultVibratoLengthUtil.toString( dvl ) );
+                comboVibratoLength.Items.Add( DefaultVibratoLengthUtil.toString( dvl ) );
             }
-            comboVibratoLength.setSelectedIndex( 1 );
+            comboVibratoLength.SelectedIndex = 1;
 
-            txtAutoVibratoThresholdLength.setText( "480" );
+            txtAutoVibratoThresholdLength.Text = "480";
 
-            comboAutoVibratoType1.removeAllItems();
+            comboAutoVibratoType1.Items.Clear();
             for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 VibratoHandle vconfig = itr.next();
-                comboAutoVibratoType1.addItem( vconfig );
+                comboAutoVibratoType1.Items.Add( vconfig );
             }
-            if ( comboAutoVibratoType1.getItemCount() > 0 ) {
-                comboAutoVibratoType1.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType1.Items.Count > 0 ) {
+                comboAutoVibratoType1.SelectedIndex = 0;
             }
 
-            comboAutoVibratoType2.removeAllItems();
+            comboAutoVibratoType2.Items.Clear();
             for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 ); itr.hasNext(); ) {
                 VibratoHandle vconfig = itr.next();
-                comboAutoVibratoType2.addItem( vconfig );
+                comboAutoVibratoType2.Items.Add( vconfig );
             }
-            if ( comboAutoVibratoType2.getItemCount() > 0 ) {
-                comboAutoVibratoType2.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType2.Items.Count > 0 ) {
+                comboAutoVibratoType2.SelectedIndex = 0;
             }
 
             updateCustomVibrato();
 
-            comboResolControlCurve.removeAllItems();
+            comboResolControlCurve.Items.Clear();
             for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = itr.next();
-                comboResolControlCurve.addItem( ClockResolutionUtility.toString( cr ) );
+                comboResolControlCurve.Items.Add( ClockResolutionUtility.toString( cr ) );
             }
-            comboResolControlCurve.setSelectedIndex( 0 );
+            comboResolControlCurve.SelectedIndex = 0;
 
-            comboLanguage.removeAllItems();
+            comboLanguage.Items.Clear();
             String[] list = Messaging.getRegisteredLanguage();
             int index = 0;
-            comboLanguage.addItem( "Default" );
+            comboLanguage.Items.Add( "Default" );
             int count = 0;
             foreach ( String s in list ) {
                 count++;
-                comboLanguage.addItem( s );
+                comboLanguage.Items.Add( s );
                 if ( s.Equals( Messaging.getLanguage() ) ) {
                     index = count;
                 }
             }
-            comboLanguage.setSelectedIndex( index );
+            comboLanguage.SelectedIndex = index;
 
             SingerConfig[] dict = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
             m_program_change = new Vector<String>();
-            comboDefualtSinger.removeAllItems();
+            comboDefualtSinger.Items.Clear();
             foreach ( SingerConfig kvp in dict ) {
                 m_program_change.add( kvp.VOICENAME );
-                comboDefualtSinger.addItem( kvp.VOICENAME );
+                comboDefualtSinger.Items.Add( kvp.VOICENAME );
             }
-            comboDefualtSinger.setEnabled( (comboDefualtSinger.getItemCount() > 0) );
-            if ( comboDefualtSinger.getItemCount() > 0 ) {
-                comboDefualtSinger.setSelectedIndex( 0 );
+            comboDefualtSinger.Enabled = (comboDefualtSinger.Items.Count > 0);
+            if ( comboDefualtSinger.Items.Count > 0 ) {
+                comboDefualtSinger.SelectedIndex = 0;
             }
 
             updateMidiDevice();
 
-            txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
-            txtVOCALOID2.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+            txtVOCALOID1.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
+            txtVOCALOID2.Text = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
 
-            listSingers.setColumnWidth( 0, columnWidthHeaderProgramChange );
-            listSingers.setColumnWidth( 1, columnWidthHeaderName );
-            listSingers.setColumnWidth( 2, columnWidthHeaderPath );
+            listSingers.Columns[0].Width = columnWidthHeaderProgramChange;
+            listSingers.Columns[1].Width = columnWidthHeaderName;
+            listSingers.Columns[2].Width = columnWidthHeaderPath;
 
             // default synthesizer
             comboDefaultSynthesizer.Items.Clear();
@@ -149,10 +138,10 @@ namespace cadencii
             .Distinct()
             .OrderBy( ( kind ) => kind ).ToList()
             .ForEach( ( kind ) => comboDefaultSynthesizer.Items.Add( kind ) );
-            comboDefaultSynthesizer.setSelectedIndex( 0 );
+            comboDefaultSynthesizer.SelectedIndex = 0;
 
-            numBuffer.setMaximum( EditorConfig.MAX_BUFFER_MILLISEC );
-            numBuffer.setMinimum( EditorConfig.MIN_BUFFER_MILLIXEC );
+            numBuffer.Maximum = EditorConfig.MAX_BUFFER_MILLISEC;
+            numBuffer.Minimum = EditorConfig.MIN_BUFFER_MILLIXEC;
 
             registerEventHandlers();
             setResources();
@@ -165,7 +154,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isEnableWideCharacterWorkaround()
         {
-            return checkEnableWideCharacterWorkaround.isSelected();
+            return checkEnableWideCharacterWorkaround.Checked;
         }
 
         /// <summary>
@@ -174,14 +163,14 @@ namespace cadencii
         /// <param name="value"></param>
         public void setEnableWideCharacterWorkaround( boolean value )
         {
-            checkEnableWideCharacterWorkaround.setSelected( value );
+            checkEnableWideCharacterWorkaround.Checked = value;
         }
 
-        public override BDialogResult showDialog( System.Windows.Forms.Form parent )
+        public DialogResult ShowDialog( System.Windows.Forms.Form parent )
         {
             updateMidiDevice();
             updateCustomVibrato();
-            return base.showDialog( parent );
+            return base.ShowDialog( parent );
         }
 
         /// <summary>
@@ -189,7 +178,7 @@ namespace cadencii
         /// </summary>
         public String getWinePrefix()
         {
-            return textWinePrefix.getText();
+            return textWinePrefix.Text;
         }
 
         /// <summary>
@@ -197,7 +186,7 @@ namespace cadencii
         /// </summary>
         public void setWinePrefix( String value )
         {
-            textWinePrefix.setText( value );
+            textWinePrefix.Text = value;
         }
 
         /// <summary>
@@ -205,7 +194,7 @@ namespace cadencii
         /// </summary>
         public String getWineTop()
         {
-            return textWineTop.getText();
+            return textWineTop.Text;
         }
 
         /// <summary>
@@ -213,7 +202,7 @@ namespace cadencii
         /// </summary>
         public void setWineTop( String value )
         {
-            textWineTop.setText( value );
+            textWineTop.Text = value;
         }
 
         /// <summary>
@@ -221,7 +210,7 @@ namespace cadencii
         /// </summary>
         public boolean isWineBuiltin()
         {
-            return radioWineBuiltin.isSelected();
+            return radioWineBuiltin.Checked;
         }
 
         /// <summary>
@@ -229,8 +218,8 @@ namespace cadencii
         /// </summary>        
         public void setWineBuiltin( boolean value )
         {
-            radioWineBuiltin.setSelected( value );
-            radioWineCustom.setSelected( !value );
+            radioWineBuiltin.Checked = value;
+            radioWineCustom.Checked = !value;
         }
 
         /// <summary>
@@ -239,7 +228,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isUseUserDefinedAutoVibratoType()
         {
-            return radioUserDefined.isSelected();
+            return radioUserDefined.Checked;
         }
 
         /// <summary>
@@ -249,8 +238,8 @@ namespace cadencii
         /// <returns></returns>
         public void setUseUserDefinedAutoVibratoType( boolean value )
         {
-            radioUserDefined.setSelected( value );
-            radioVocaloidEditorCompatible.setSelected( !value );
+            radioUserDefined.Checked = value;
+            radioVocaloidEditorCompatible.Checked = !value;
         }
 
         /// <summary>
@@ -259,17 +248,17 @@ namespace cadencii
         /// <param name="value"></param>
         public void setDefaultSynthesizer( RendererKind value )
         {
-            int c = comboDefaultSynthesizer.getItemCount();
+            int c = comboDefaultSynthesizer.Items.Count;
             int select_indx = 0;
             for ( int i = 0; i < c; i++ ) {
-                String str = (String)comboDefaultSynthesizer.getItemAt( i );
+                String str = (String)comboDefaultSynthesizer.Items[i];
                 RendererKind p = RendererKindUtil.fromString( str );
                 if ( p == value ) {
                     select_indx = i;
                     break;
                 }
             }
-            comboDefaultSynthesizer.setSelectedIndex( select_indx );
+            comboDefaultSynthesizer.SelectedIndex = select_indx;
         }
 
         /// <summary>
@@ -278,7 +267,7 @@ namespace cadencii
         /// <returns></returns>
         public RendererKind getDefaultSynthesizer()
         {
-            String selstr = (String)comboDefaultSynthesizer.getSelectedItem();
+            String selstr = (String)comboDefaultSynthesizer.SelectedItem;
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
                 String str = p.getString();
                 if ( str.Equals( selstr ) ) {
@@ -294,7 +283,7 @@ namespace cadencii
         /// <returns></returns>
         public int getBufferSize()
         {
-            return (int)numBuffer.getFloatValue();
+            return (int)numBuffer.Value;
         }
 
         /// <summary>
@@ -303,12 +292,12 @@ namespace cadencii
         /// <param name="value"></param>
         public void setBufferSize( int value )
         {
-            if ( value < numBuffer.getMinimum() ) {
-                value = (int)numBuffer.getMinimum();
-            } else if ( numBuffer.getMaximum() < value ) {
-                value = (int)numBuffer.getMaximum();
+            if ( value < numBuffer.Minimum ) {
+                value = (int)numBuffer.Minimum;
+            } else if ( numBuffer.Maximum < value ) {
+                value = (int)numBuffer.Maximum;
             }
-            numBuffer.setFloatValue( value );
+            numBuffer.Value = value;
         }
 
         /// <summary>
@@ -317,8 +306,8 @@ namespace cadencii
         /// <returns></returns>
         public boolean isVocaloid1Required()
         {
-            if ( chkLoadVocaloid1.isEnabled() ) {
-                return chkLoadVocaloid1.isSelected();
+            if ( chkLoadVocaloid1.Enabled ) {
+                return chkLoadVocaloid1.Checked;
             } else {
                 return false;
             }
@@ -330,8 +319,8 @@ namespace cadencii
         /// <param name="value"></param>
         public void setVocaloid1Required( boolean value )
         {
-            if ( chkLoadVocaloid1.isEnabled() ) {
-                chkLoadVocaloid1.setSelected( value );
+            if ( chkLoadVocaloid1.Enabled ) {
+                chkLoadVocaloid1.Checked = value;
             }
         }
 
@@ -341,7 +330,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isVocaloid2Required()
         {
-            return chkLoadVocaloid2.isSelected();
+            return chkLoadVocaloid2.Checked;
         }
 
         /// <summary>
@@ -350,7 +339,7 @@ namespace cadencii
         /// <param name="value"></param>
         public void setVocaloid2Required( boolean value )
         {
-            chkLoadVocaloid2.setSelected( value );
+            chkLoadVocaloid2.Checked = value;
         }
 
         /// <summary>
@@ -359,7 +348,7 @@ namespace cadencii
         /// <returns></returns>
         public boolean isAquesToneRequired()
         {
-            return chkLoadAquesTone.isSelected();
+            return chkLoadAquesTone.Checked;
         }
 
         /// <summary>
@@ -368,7 +357,7 @@ namespace cadencii
         /// <param name="value"></param>
         public void setAquesToneRequired( boolean value )
         {
-            chkLoadAquesTone.setSelected( value );
+            chkLoadAquesTone.Checked = value;
         }
 
         public bool isAquesTone2Required() { return chkLoadAquesTone2.Checked; }
@@ -376,28 +365,28 @@ namespace cadencii
 
         public boolean isUseProjectCache()
         {
-            return chkKeepProjectCache.isSelected();
+            return chkKeepProjectCache.Checked;
         }
 
         public void setUseProjectCache( boolean value )
         {
-            chkKeepProjectCache.setSelected( value );
+            chkKeepProjectCache.Checked = value;
         }
 
         public boolean isUseSpaceKeyAsMiddleButtonModifier()
         {
-            return chkUseSpaceKeyAsMiddleButtonModifier.isSelected();
+            return chkUseSpaceKeyAsMiddleButtonModifier.Checked;
         }
 
         public void setUseSpaceKeyAsMiddleButtonModifier( boolean value )
         {
-            chkUseSpaceKeyAsMiddleButtonModifier.setSelected( value );
+            chkUseSpaceKeyAsMiddleButtonModifier.Checked = value;
         }
 
         public int getAutoBackupIntervalMinutes()
         {
-            if ( chkAutoBackup.isSelected() ) {
-                return (int)numAutoBackupInterval.getFloatValue();
+            if ( chkAutoBackup.Checked ) {
+                return (int)numAutoBackupInterval.Value;
             } else {
                 return 0;
             }
@@ -406,21 +395,21 @@ namespace cadencii
         public void setAutoBackupIntervalMinutes( int value )
         {
             if ( value <= 0 ) {
-                chkAutoBackup.setSelected( false );
+                chkAutoBackup.Checked = false;
             } else {
-                chkAutoBackup.setSelected( true );
-                numAutoBackupInterval.setFloatValue( value );
+                chkAutoBackup.Checked = true;
+                numAutoBackupInterval.Value = value;
             }
         }
 
         public boolean isSelfDeRomantization()
         {
-            return chkTranslateRoman.isSelected();
+            return chkTranslateRoman.Checked;
         }
 
         public void setSelfDeRomantization( boolean value )
         {
-            chkTranslateRoman.setSelected( value );
+            chkTranslateRoman.Checked = value;
         }
 
 #if ENABLE_MTC
@@ -441,9 +430,9 @@ namespace cadencii
 #if ENABLE_MIDI
         public int getMidiInPort()
         {
-            if ( comboMidiInPortNumber.isEnabled() ) {
-                if ( comboMidiInPortNumber.getSelectedIndex() >= 0 ) {
-                    return comboMidiInPortNumber.getSelectedIndex();
+            if ( comboMidiInPortNumber.Enabled ) {
+                if ( comboMidiInPortNumber.SelectedIndex >= 0 ) {
+                    return comboMidiInPortNumber.SelectedIndex;
                 } else {
                     return 0;
                 }
@@ -468,11 +457,11 @@ namespace cadencii
 #if ENABLE_MIDI
         public void setMidiInPort( int value )
         {
-            if ( comboMidiInPortNumber.isEnabled() ) {
-                if ( 0 <= value && value < comboMidiInPortNumber.getItemCount() ) {
-                    comboMidiInPortNumber.setSelectedIndex( value );
+            if ( comboMidiInPortNumber.Enabled ) {
+                if ( 0 <= value && value < comboMidiInPortNumber.Items.Count ) {
+                    comboMidiInPortNumber.SelectedIndex = value;
                 } else {
-                    comboMidiInPortNumber.setSelectedIndex( 0 );
+                    comboMidiInPortNumber.SelectedIndex = 0;
                 }
             }
         }
@@ -480,303 +469,297 @@ namespace cadencii
 
         public boolean isCurveVisibleVel()
         {
-            return chkVel.isSelected();
+            return chkVel.Checked;
         }
 
         public void setCurveVisibleVel( boolean value )
         {
-            chkVel.setSelected( value );
+            chkVel.Checked = value;
         }
 
         public boolean isCurveVisibleAccent()
         {
-            return chkAccent.isSelected();
+            return chkAccent.Checked;
         }
 
         public void setCurveVisibleAccent( boolean value )
         {
-            chkAccent.setSelected( value );
+            chkAccent.Checked = value;
         }
 
         public boolean isCurveVisibleDecay()
         {
-            return chkDecay.isSelected();
+            return chkDecay.Checked;
         }
 
         public void setCurveVisibleDecay( boolean value )
         {
-            chkDecay.setSelected( value );
+            chkDecay.Checked = value;
         }
 
         public boolean isCurveVisibleVibratoRate()
         {
-            return chkVibratoRate.isSelected();
+            return chkVibratoRate.Checked;
         }
 
         public void setCurveVisibleVibratoRate( boolean value )
         {
-            chkVibratoRate.setSelected( value );
+            chkVibratoRate.Checked = value;
         }
 
         public boolean isCurveVisibleVibratoDepth()
         {
-            return chkVibratoDepth.isSelected();
+            return chkVibratoDepth.Checked;
         }
 
         public void setCurveVisibleVibratoDepth( boolean value )
         {
-            chkVibratoDepth.setSelected( value );
+            chkVibratoDepth.Checked = value;
         }
 
         public boolean isCurveVisibleDyn()
         {
-            return chkDyn.isSelected();
+            return chkDyn.Checked;
         }
 
         public void setCurveVisibleDyn( boolean value )
         {
-            chkDyn.setSelected( value );
+            chkDyn.Checked = value;
         }
 
         public boolean isCurveVisibleBre()
         {
-            return chkBre.isSelected();
+            return chkBre.Checked;
         }
 
         public void setCurveVisibleBre( boolean value )
         {
-            chkBre.setSelected( value );
+            chkBre.Checked = value;
         }
 
         public boolean isCurveVisibleBri()
         {
-            return chkBri.isSelected();
+            return chkBri.Checked;
         }
 
         public void setCurveVisibleBri( boolean value )
         {
-            chkBri.setSelected( value );
+            chkBri.Checked = value;
         }
 
         public boolean isCurveVisibleCle()
         {
-            return chkCle.isSelected();
+            return chkCle.Checked;
         }
 
         public void setCurveVisibleCle( boolean value )
         {
-            chkCle.setSelected( value );
+            chkCle.Checked = value;
         }
 
         public boolean isCurveVisibleOpe()
         {
-            return chkOpe.isSelected();
+            return chkOpe.Checked;
         }
 
         public void setCurveVisibleOpe( boolean value )
         {
-            chkOpe.setSelected( value );
+            chkOpe.Checked = value;
         }
 
         public boolean isCurveVisiblePor()
         {
-            return chkPor.isSelected();
+            return chkPor.Checked;
         }
 
         public void setCurveVisiblePor( boolean value )
         {
-            chkPor.setSelected( value );
+            chkPor.Checked = value;
         }
 
         public boolean isCurveVisibleGen()
         {
-            return chkGen.isSelected();
+            return chkGen.Checked;
         }
 
         public void setCurveVisibleGen( boolean value )
         {
-            chkGen.setSelected( value );
+            chkGen.Checked = value;
         }
 
         public boolean isCurveVisiblePit()
         {
-            return chkPit.isSelected();
+            return chkPit.Checked;
         }
 
         public void setCurveVisiblePit( boolean value )
         {
-            chkPit.setSelected( value );
+            chkPit.Checked = value;
         }
 
         public boolean isCurveVisiblePbs()
         {
-            return chkPbs.isSelected();
+            return chkPbs.Checked;
         }
 
         public void setCurveVisiblePbs( boolean value )
         {
-            chkPbs.setSelected( value );
+            chkPbs.Checked = value;
         }
 
         public boolean isCurveVisibleFx2Depth()
         {
-            return chkFx2Depth.isSelected();
+            return chkFx2Depth.Checked;
         }
 
         public void setCurveVisibleFx2Depth( boolean value )
         {
-            chkFx2Depth.setSelected( value );
+            chkFx2Depth.Checked = value;
         }
 
         public boolean isCurveVisibleHarmonics()
         {
-            return chkHarmonics.isSelected();
+            return chkHarmonics.Checked;
         }
 
         public void setCurveVisibleHarmonics( boolean value )
         {
-            chkHarmonics.setSelected( value );
+            chkHarmonics.Checked = value;
         }
 
         public boolean isCurveVisibleReso1()
         {
-            return chkReso1.isSelected();
+            return chkReso1.Checked;
         }
 
         public void setCurveVisibleReso1( boolean value )
         {
-            chkReso1.setSelected( value );
+            chkReso1.Checked = value;
         }
 
         public boolean isCurveVisibleReso2()
         {
-            return chkReso2.isSelected();
+            return chkReso2.Checked;
         }
 
         public void setCurveVisibleReso2( boolean value )
         {
-            chkReso2.setSelected( value );
+            chkReso2.Checked = value;
         }
 
         public boolean isCurveVisibleReso3()
         {
-            return chkReso3.isSelected();
+            return chkReso3.Checked;
         }
 
         public void setCurveVisibleReso3( boolean value )
         {
-            chkReso3.setSelected( value );
+            chkReso3.Checked = value;
         }
 
         public boolean isCurveVisibleReso4()
         {
-            return chkReso4.isSelected();
+            return chkReso4.Checked;
         }
 
         public void setCurveVisibleReso4( boolean value )
         {
-            chkReso4.setSelected( value );
+            chkReso4.Checked = value;
         }
 
         public boolean isCurveVisibleEnvelope()
         {
-            return chkEnvelope.isSelected();
+            return chkEnvelope.Checked;
         }
 
         public void setCurveVisibleEnvelope( boolean value )
         {
-            chkEnvelope.setSelected( value );
+            chkEnvelope.Checked = value;
         }
 
         public boolean isCurveSelectingQuantized()
         {
-            return chkCurveSelectingQuantized.isSelected();
+            return chkCurveSelectingQuantized.Checked;
         }
 
         public void setCurveSelectingQuantized( boolean value )
         {
-            chkCurveSelectingQuantized.setSelected( value );
+            chkCurveSelectingQuantized.Checked = value;
         }
 
         public boolean isPlayPreviewWhenRightClick()
         {
-            return chkPlayPreviewWhenRightClick.isSelected();
+            return chkPlayPreviewWhenRightClick.Checked;
         }
 
         public void setPlayPreviewWhenRightClick( boolean value )
         {
-            chkPlayPreviewWhenRightClick.setSelected( value );
+            chkPlayPreviewWhenRightClick.Checked = value;
         }
 
         public int getMouseHoverTime()
         {
-            return (int)numMouseHoverTime.getFloatValue();
+            return (int)numMouseHoverTime.Value;
         }
 
         public void setMouseHoverTime( int value )
         {
-            numMouseHoverTime.setFloatValue( value );
+            numMouseHoverTime.Value = value;
         }
 
         public int getPxTrackHeight()
         {
-            return (int)numTrackHeight.getFloatValue();
+            return (int)numTrackHeight.Value;
         }
 
         public void setPxTrackHeight( int value )
         {
-            numTrackHeight.setFloatValue( value );
+            numTrackHeight.Value = value;
         }
 
         public boolean isKeepLyricInputMode()
         {
-            return chkKeepLyricInputMode.isSelected();
+            return chkKeepLyricInputMode.Checked;
         }
 
         public void setKeepLyricInputMode( boolean value )
         {
-            chkKeepLyricInputMode.setSelected( value );
+            chkKeepLyricInputMode.Checked = value;
         }
 
         public int getMaximumFrameRate()
         {
-            return (int)numMaximumFrameRate.getFloatValue();
+            return (int)numMaximumFrameRate.Value;
         }
 
         public void setMaximumFrameRate( int value )
         {
-            numMaximumFrameRate.setFloatValue( value );
+            numMaximumFrameRate.Value = value;
         }
 
         public boolean isScrollHorizontalOnWheel()
         {
-            return chkScrollHorizontal.isSelected();
+            return chkScrollHorizontal.Checked;
         }
 
         public void setScrollHorizontalOnWheel( boolean value )
         {
-            chkScrollHorizontal.setSelected( value );
+            chkScrollHorizontal.Checked = value;
         }
 
         public void applyLanguage()
         {
-            setTitle( _( "Preference" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnOK.setText( _( "OK" ) );
-            openUtauCore.clearChoosableFileFilter();
+            this.Text = _( "Preference" );
+            btnCancel.Text = _( "Cancel" );
+            btnOK.Text = _( "OK" );
+            openUtauCore.Filter = string.Empty;
             try {
-                openUtauCore.addFileFilter( _( "Executable(*.exe)|*.exe" ) );
-                openUtauCore.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openUtauCore.Filter = string.Join("|", new[] { _( "Executable(*.exe)|*.exe" ), _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
-                openUtauCore.addFileFilter( "Executable(*.exe)|*.exe" );
-                openUtauCore.addFileFilter( "All Files(*.*)|*.*" );
+                openUtauCore.Filter = string.Join("|", new[] { "Executable(*.exe)|*.exe", "All Files(*.*)|*.*" });
             }
 
-#if DEBUG
-            folderBrowserSingers.setDialogTitle( _( "Select Singer Directory" ) );
-#else
-            folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
-#endif
+            folderBrowserSingers.Description = _( "Select Singer Directory" );
 
             #region tabのタイトル
             tabSequence.Text = _( "Sequence" );
@@ -790,111 +773,111 @@ namespace cadencii
             #endregion
 
             #region tabSequence
-            lblResolution.setText( _( "Resolution(VSTi)" ) );
-            lblResolControlCurve.setText( _( "Control Curve" ) );
-            lblResolControlCurve.setMnemonic( KeyEvent.VK_C, comboResolControlCurve );
+            lblResolution.Text = _( "Resolution(VSTi)" );
+            lblResolControlCurve.Text = _( "Control Curve" );
+            lblResolControlCurve.Mnemonic( KeyEvent.VK_C );
 
-            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) );
-            chkEnableAutoVibrato.setMnemonic( KeyEvent.VK_E );
-            lblVibratoLength.setText( _( "Default Vibrato Length" ) );
-            lblVibratoLength.setMnemonic( KeyEvent.VK_L, comboVibratoLength );
-            lblAutoVibratoThresholdLength.setText( _( "Minimum note length for Automatic Vibrato" ) );
-            lblAutoVibratoThresholdLength.setMnemonic( KeyEvent.VK_M, txtAutoVibratoThresholdLength );
+            chkEnableAutoVibrato.Text = _("Enable Automatic Vibrato");
+            chkEnableAutoVibrato.Mnemonic(KeyEvent.VK_E);
+            lblVibratoLength.Text = _( "Default Vibrato Length" );
+            lblVibratoLength.Mnemonic( KeyEvent.VK_L );
+            lblAutoVibratoThresholdLength.Text = _( "Minimum note length for Automatic Vibrato" );
+            lblAutoVibratoThresholdLength.Mnemonic( KeyEvent.VK_M );
 
-            lblAutoVibratoType.setText( _( "Auto Vibrato Type" ) );
-            groupVocaloidEditorCompatible.setTitle( _( "VOCALOID Editor Compatible" ) );
-            groupUserDefined.setTitle( _( "User Defined" ) );
-            radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
-            radioUserDefined.setText( _( "User Defined" ) );
-            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) );
-            chkEnableAutoVibrato.setMnemonic( KeyEvent.VK_E );
-            lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1" );
-            lblAutoVibratoType1.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType1 );
-            lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2" );
-            lblAutoVibratoType2.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType2 );
+            lblAutoVibratoType.Text = _( "Auto Vibrato Type" );
+            groupVocaloidEditorCompatible.Text = _( "VOCALOID Editor Compatible" );
+            groupUserDefined.Text = _( "User Defined" );
+            radioVocaloidEditorCompatible.Text = _( "VOCALOID Editor Compatible" );
+            radioUserDefined.Text = _( "User Defined" );
+            chkEnableAutoVibrato.Text = _("Enable Automatic Vibrato");
+            chkEnableAutoVibrato.Mnemonic(KeyEvent.VK_E);
+            lblAutoVibratoType1.Text = _( "Vibrato Type" ) + ": VOCALOID1";
+            lblAutoVibratoType1.Mnemonic( KeyEvent.VK_T );
+            lblAutoVibratoType2.Text = _( "Vibrato Type" ) + ": VOCALOID2";
+            lblAutoVibratoType2.Mnemonic( KeyEvent.VK_T );
             #endregion
 
             #region tabAnother
-            lblDefaultSinger.setText( _( "Default Singer" ) );
-            lblDefaultSinger.setMnemonic( KeyEvent.VK_S, comboDefualtSinger );
-            lblPreSendTime.setText( _( "Pre-Send time" ) );
-            lblPreSendTime.setMnemonic( KeyEvent.VK_P, numPreSendTime );
-            lblWait.setText( _( "Waiting Time" ) );
-            lblWait.setMnemonic( KeyEvent.VK_W, numWait );
-            chkChasePastEvent.setText( _( "Chase Event" ) );
-            chkChasePastEvent.setMnemonic( KeyEvent.VK_C );
-            lblBuffer.setText( _( "Buffer Size" ) );
-            lblBuffer.setMnemonic( KeyEvent.VK_B, numBuffer );
-            lblBufferSize.setText( "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")" );
+            lblDefaultSinger.Text = _( "Default Singer" );
+            lblDefaultSinger.Mnemonic( KeyEvent.VK_S );
+            lblPreSendTime.Text = _( "Pre-Send time" );
+            lblPreSendTime.Mnemonic( KeyEvent.VK_P );
+            lblWait.Text = _( "Waiting Time" );
+            lblWait.Mnemonic( KeyEvent.VK_W );
+            chkChasePastEvent.Text = _("Chase Event");
+            chkChasePastEvent.Mnemonic(KeyEvent.VK_C);
+            lblBuffer.Text = _( "Buffer Size" );
+            lblBuffer.Mnemonic( KeyEvent.VK_B );
+            lblBufferSize.Text = "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")";
             #endregion
 
             #region tabAppearance
-            groupFont.setTitle( _( "Font" ) );
-            labelMenu.setText( _( "Menu / Lyrics" ) );
-            labelScreen.setText( _( "Screen" ) );
-            lblLanguage.setText( _( "UI Language" ) );
-            btnChangeMenuFont.setText( _( "Change" ) );
-            btnChangeScreenFont.setText( _( "Change" ) );
-            lblTrackHeight.setText( _( "Track Height (pixel)" ) );
-            groupVisibleCurve.setTitle( _( "Visible Control Curve" ) );
+            groupFont.Text = _( "Font" );
+            labelMenu.Text = _( "Menu / Lyrics" );
+            labelScreen.Text = _( "Screen" );
+            lblLanguage.Text = _( "UI Language" );
+            btnChangeMenuFont.Text = _( "Change" );
+            btnChangeScreenFont.Text = _( "Change" );
+            lblTrackHeight.Text = _( "Track Height (pixel)" );
+            groupVisibleCurve.Text = _( "Visible Control Curve" );
             #endregion
 
             #region tabOperation
-            groupPianoroll.setTitle( _( "Piano Roll" ) );
-            labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
+            groupPianoroll.Text = _( "Piano Roll" );
+            labelWheelOrder.Text = _( "Mouse wheel Rate" );
 
-            chkCursorFix.setText( _( "Fix Song position to Center" ) );
-            chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
-            chkKeepLyricInputMode.setText( _( "Keep Lyric Input Mode" ) );
-            chkPlayPreviewWhenRightClick.setText( _( "Play Preview On Right Click" ) );
-            chkCurveSelectingQuantized.setText( _( "Enable Quantize for Curve Selecting" ) );
-            chkUseSpaceKeyAsMiddleButtonModifier.setText( _( "Use space key as Middle button modifier" ) );
+            chkCursorFix.Text = _( "Fix Song position to Center" );
+            chkScrollHorizontal.Text = _( "Horizontal Scroll when Mouse wheel" );
+            chkKeepLyricInputMode.Text = _( "Keep Lyric Input Mode" );
+            chkPlayPreviewWhenRightClick.Text = _( "Play Preview On Right Click" );
+            chkCurveSelectingQuantized.Text = _( "Enable Quantize for Curve Selecting" );
+            chkUseSpaceKeyAsMiddleButtonModifier.Text = _( "Use space key as Middle button modifier" );
 
-            groupMisc.setTitle( _( "Misc" ) );
-            lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
-            lblMilliSecond.setText( _( "frame per second" ) );
-            lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
-            lblMidiInPort.setText( _( "MIDI In Port Number" ) );
-            labelMtcMidiInPort.setText( _( "MTC MIDI In Port Number" ) );
-            chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
+            groupMisc.Text = _( "Misc" );
+            lblMaximumFrameRate.Text = _( "Maximum Frame Rate" );
+            lblMilliSecond.Text = _( "frame per second" );
+            lblMouseHoverTime.Text = _( "Waiting Time for Preview" );
+            lblMidiInPort.Text = _( "MIDI In Port Number" );
+            labelMtcMidiInPort.Text = _( "MTC MIDI In Port Number" );
+            chkTranslateRoman.Text = _( "Translate Roman letters into Kana" );
             #endregion
 
             #region tabPlatform
-            groupUtauCores.setTitle( _( "UTAU Cores" ) );
-            labelWavtoolPath.setText( _( "Path:" ) );
-            chkWavtoolWithWine.setText( _( "Invoke wavtool with Wine" ) );
-            listResampler.setColumnHeaders( new String[] { _( "path" ) } );
-            labelResamplerWithWine.setText( _( "Check the box to use Wine" ) );
-            checkEnableWideCharacterWorkaround.setText( _( "Enable Workaround for Wide-Character Path" ) );
+            groupUtauCores.Text = _( "UTAU Cores" );
+            labelWavtoolPath.Text = _( "Path:" );
+            chkWavtoolWithWine.Text = _( "Invoke wavtool with Wine" );
+            listResampler.SetColumnHeaders( new String[] { _( "path" ) } );
+            labelResamplerWithWine.Text = _( "Check the box to use Wine" );
+            checkEnableWideCharacterWorkaround.Text = _( "Enable Workaround for Wide-Character Path" );
             #endregion
 
             #region tabUtausingers
-            listSingers.setColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
-            btnAdd.setText( _( "Add" ) );
-            btnRemove.setText( _( "Remove" ) );
-            btnUp.setText( _( "Up" ) );
-            btnDown.setText( _( "Down" ) );
+            listSingers.SetColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
+            btnAdd.Text = _( "Add" );
+            btnRemove.Text = _( "Remove" );
+            btnUp.Text = _( "Up" );
+            btnDown.Text = _( "Down" );
             #endregion
 
             #region tabFile
-            chkAutoBackup.setText( _( "Automatical Backup" ) );
-            lblAutoBackupInterval.setText( _( "interval" ) );
-            lblAutoBackupMinutes.setText( _( "minute(s)" ) );
-            chkKeepProjectCache.setText( _( "Keep Project Cache" ) );
+            chkAutoBackup.Text = _( "Automatical Backup" );
+            lblAutoBackupInterval.Text = _( "interval" );
+            lblAutoBackupMinutes.Text = _( "minute(s)" );
+            chkKeepProjectCache.Text = _( "Keep Project Cache" );
             #endregion
 
             #region tabSingingSynth
-            groupSynthesizerDll.setTitle( _( "Synthesizer DLL Usage" ) );
+            groupSynthesizerDll.Text = _( "Synthesizer DLL Usage" );
 
-            groupDefaultSynthesizer.setTitle( _( "Default Synthesizer" ) );
+            groupDefaultSynthesizer.Text = _( "Default Synthesizer" );
             #endregion
         }
 
         public String getLanguage()
         {
-            int index = comboLanguage.getSelectedIndex();
-            if ( 0 <= index && index < comboLanguage.getItemCount() ) {
-                String title = (String)comboLanguage.getItemAt( index );
+            int index = comboLanguage.SelectedIndex;
+            if ( 0 <= index && index < comboLanguage.Items.Count ) {
+                String title = (String)comboLanguage.Items[index];
                 if ( title.Equals( "Default" ) ) {
                     return "";
                 } else {
@@ -912,7 +895,7 @@ namespace cadencii
         public ClockResolution getControlCurveResolution()
         {
             int count = -1;
-            int index = comboResolControlCurve.getSelectedIndex();
+            int index = comboResolControlCurve.SelectedIndex;
             for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution vt = itr.next();
                 count++;
@@ -920,7 +903,7 @@ namespace cadencii
                     return vt;
                 }
             }
-            comboResolControlCurve.setSelectedIndex( 0 );
+            comboResolControlCurve.SelectedIndex = 0;
             return ClockResolution.L30;
         }
 
@@ -935,7 +918,7 @@ namespace cadencii
                 ClockResolution vt = itr.next();
                 count++;
                 if ( vt.Equals( value ) ) {
-                    comboResolControlCurve.setSelectedIndex( count );
+                    comboResolControlCurve.SelectedIndex = count;
                     break;
                 }
             }
@@ -943,30 +926,30 @@ namespace cadencii
 
         public int getPreSendTime()
         {
-            return (int)numPreSendTime.getFloatValue();
+            return (int)numPreSendTime.Value;
         }
 
         public void setPreSendTime( int value )
         {
-            numPreSendTime.setFloatValue( value );
+            numPreSendTime.Value = value;
         }
 
         public boolean isEnableAutoVibrato()
         {
-            return chkEnableAutoVibrato.isSelected();
+            return chkEnableAutoVibrato.Checked;
         }
 
         public void setEnableAutoVibrato( boolean value )
         {
-            chkEnableAutoVibrato.setSelected( value );
+            chkEnableAutoVibrato.Checked = value;
         }
 
         public String getAutoVibratoType1()
         {
             int count = -1;
-            int index = comboAutoVibratoType1.getSelectedIndex();
+            int index = comboAutoVibratoType1.SelectedIndex;
             if ( 0 <= index ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.getSelectedItem();
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.SelectedItem;
                 return vconfig.IconID;
             } else {
                 return "$04040001";
@@ -975,24 +958,24 @@ namespace cadencii
 
         public void setAutoVibratoType1( String value )
         {
-            for ( int i = 0; i < comboAutoVibratoType1.getItemCount(); i++ ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.getItemAt( i );
+            for ( int i = 0; i < comboAutoVibratoType1.Items.Count; i++ ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.Items[i];
                 if ( vconfig.IconID.Equals( value ) ) {
-                    comboAutoVibratoType1.setSelectedIndex( i );
+                    comboAutoVibratoType1.SelectedIndex = i;
                     return;
                 }
             }
-            if ( comboAutoVibratoType1.getItemCount() > 0 ) {
-                comboAutoVibratoType1.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType1.Items.Count > 0 ) {
+                comboAutoVibratoType1.SelectedIndex = 0;
             }
         }
 
         public String getAutoVibratoType2()
         {
             int count = -1;
-            int index = comboAutoVibratoType2.getSelectedIndex();
+            int index = comboAutoVibratoType2.SelectedIndex;
             if ( 0 <= index ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.getSelectedItem();
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.SelectedItem;
                 return vconfig.IconID;
             } else {
                 return "$04040001";
@@ -1001,24 +984,24 @@ namespace cadencii
 
         public void setAutoVibratoType2( String value )
         {
-            for ( int i = 0; i < comboAutoVibratoType2.getItemCount(); i++ ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.getItemAt( i );
+            for ( int i = 0; i < comboAutoVibratoType2.Items.Count; i++ ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.Items[i];
                 if ( vconfig.IconID.Equals( value ) ) {
-                    comboAutoVibratoType2.setSelectedIndex( i );
+                    comboAutoVibratoType2.SelectedIndex = i;
                     return;
                 }
             }
-            if ( comboAutoVibratoType2.getItemCount() > 0 ) {
-                comboAutoVibratoType2.setSelectedIndex( 0 );
+            if ( comboAutoVibratoType2.Items.Count > 0 ) {
+                comboAutoVibratoType2.SelectedIndex = 0;
             }
         }
 
         public String getAutoVibratoTypeCustom()
         {
             int count = -1;
-            int index = comboAutoVibratoTypeCustom.getSelectedIndex();
+            int index = comboAutoVibratoTypeCustom.SelectedIndex;
             if ( 0 <= index ) {
-                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoTypeCustom.getSelectedItem();
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoTypeCustom.SelectedItem;
                 return vconfig.IconID;
             } else {
                 return "$04040001";
@@ -1027,10 +1010,10 @@ namespace cadencii
 
         public void setAutoVibratoTypeCustom( String icon_id )
         {
-            for ( int i = 0; i < comboAutoVibratoTypeCustom.getItemCount(); i++ ) {
-                VibratoHandle handle = (VibratoHandle)comboAutoVibratoTypeCustom.getItemAt( i );
+            for ( int i = 0; i < comboAutoVibratoTypeCustom.Items.Count; i++ ) {
+                VibratoHandle handle = (VibratoHandle)comboAutoVibratoTypeCustom.Items[i];
                 if ( handle.IconID.Equals( icon_id ) ) {
-                    comboAutoVibratoTypeCustom.setSelectedIndex( i );
+                    comboAutoVibratoTypeCustom.SelectedIndex = i;
                     return;
                 }
             }
@@ -1039,7 +1022,7 @@ namespace cadencii
         public int getAutoVibratoThresholdLength()
         {
             try {
-                int ret = str.toi( txtAutoVibratoThresholdLength.getText() );
+                int ret = str.toi( txtAutoVibratoThresholdLength.Text );
                 if ( ret < 0 ) {
                     ret = 0;
                 }
@@ -1054,20 +1037,20 @@ namespace cadencii
             if ( value < 0 ) {
                 value = 0;
             }
-            txtAutoVibratoThresholdLength.setText( value + "" );
+            txtAutoVibratoThresholdLength.Text = value + "";
         }
 
         public DefaultVibratoLengthEnum getDefaultVibratoLength()
         {
             int count = -1;
-            int index = comboVibratoLength.getSelectedIndex();
+            int index = comboVibratoLength.SelectedIndex;
             foreach ( DefaultVibratoLengthEnum vt in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( index == count ) {
                     return vt;
                 }
             }
-            comboVibratoLength.setSelectedIndex( 1 );
+            comboVibratoLength.SelectedIndex = 1;
             return DefaultVibratoLengthEnum.L66;
         }
 
@@ -1077,7 +1060,7 @@ namespace cadencii
             foreach ( DefaultVibratoLengthEnum dvl in Enum.GetValues( typeof( DefaultVibratoLengthEnum ) ) ) {
                 count++;
                 if ( dvl == value ) {
-                    comboVibratoLength.setSelectedIndex( count );
+                    comboVibratoLength.SelectedIndex = count;
                     break;
                 }
             }
@@ -1085,27 +1068,27 @@ namespace cadencii
 
         public boolean isCursorFixed()
         {
-            return chkCursorFix.isSelected();
+            return chkCursorFix.Checked;
         }
 
         public void setCursorFixed( boolean value )
         {
-            chkCursorFix.setSelected( value );
+            chkCursorFix.Checked = value;
         }
 
         public int getWheelOrder()
         {
-            return (int)numericUpDownEx1.getFloatValue();
+            return (int)numericUpDownEx1.Value;
         }
 
         public void setWheelOrder( int value )
         {
-            if ( value < numericUpDownEx1.getMinimum() ) {
-                numericUpDownEx1.setFloatValue( numericUpDownEx1.getMinimum() );
-            } else if ( numericUpDownEx1.getMaximum() < value ) {
-                numericUpDownEx1.setFloatValue( numericUpDownEx1.getMaximum() );
+            if ( value < numericUpDownEx1.Minimum ) {
+                numericUpDownEx1.Value = numericUpDownEx1.Minimum;
+            } else if ( numericUpDownEx1.Maximum < value ) {
+                numericUpDownEx1.Value = numericUpDownEx1.Maximum;
             } else {
-                numericUpDownEx1.setFloatValue( value );
+                numericUpDownEx1.Value = value;
             }
         }
 
@@ -1117,7 +1100,7 @@ namespace cadencii
         public void setScreenFont( Font value )
         {
             m_screen_font = value;
-            labelScreenFontName.setText( m_screen_font.getName() );
+            labelScreenFontName.Text = m_screen_font.getName();
         }
 
         public java.awt.Font getBaseFont()
@@ -1128,14 +1111,14 @@ namespace cadencii
         public void setBaseFont( java.awt.Font value )
         {
             m_base_font = value;
-            labelMenuFontName.setText( m_base_font.getName() );
+            labelMenuFontName.Text = m_base_font.getName();
             UpdateFonts( m_base_font.getName() );
         }
 
         public String getDefaultSingerName()
         {
-            if ( comboDefualtSinger.getSelectedIndex() >= 0 ) {
-                return m_program_change.get( comboDefualtSinger.getSelectedIndex() );
+            if ( comboDefualtSinger.SelectedIndex >= 0 ) {
+                return m_program_change.get( comboDefualtSinger.SelectedIndex );
             } else {
                 return "Miku";
             }
@@ -1151,61 +1134,61 @@ namespace cadencii
                 }
             }
             if ( index >= 0 ) {
-                comboDefualtSinger.setSelectedIndex( index );
+                comboDefualtSinger.SelectedIndex = index;
             }
         }
 
         public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
         {
-            for ( int i = 0; i < listResampler.getItemCountRow(); i++ ) {
-                ret.add( (String)listResampler.getItemAt( i, 0 ) );
-                with_wine.add( listResampler.isRowChecked( i ) );
+            for ( int i = 0; i < listResampler.Items.Count; i++ ) {
+                ret.add( (String)listResampler.Items[i].SubItems[0].Text );
+                with_wine.add( listResampler.Items[i].Checked );
             }
         }
 
         public void setResamplersConfig( Vector<String> path, Vector<Boolean> with_wine )
         {
-            int size = listResampler.getItemCountRow();
+            int size = listResampler.Items.Count;
             for ( int i = 0; i < size; i++ ) {
-                listResampler.removeRow( 0 );
+                listResampler.Items.RemoveAt( 0 );
             }
             if ( path == null ) {
                 return;
             }
             for ( int i = 0; i < vec.size( path ); i++ ) {
-                listResampler.addRow(
+                listResampler.AddRow(
                     new String[] { vec.get( path, i ) }, vec.get( with_wine, i ) );
             }
         }
 
         public void setWavtoolWithWine( boolean value )
         {
-            chkWavtoolWithWine.setSelected( value );
+            chkWavtoolWithWine.Checked = value;
         }
 
         public boolean isWavtoolWithWine()
         {
-            return chkWavtoolWithWine.isSelected();
+            return chkWavtoolWithWine.Checked;
         }
 
         public String getPathWavtool()
         {
-            return txtWavtool.getText();
+            return txtWavtool.Text;
         }
 
         public void setPathWavtool( String value )
         {
-            txtWavtool.setText( value );
+            txtWavtool.Text = value;
         }
 
         public String getPathAquesTone()
         {
-            return txtAquesTone.getText();
+            return txtAquesTone.Text;
         }
 
         public void setPathAquesTone( String value )
         {
-            txtAquesTone.setText( value );
+            txtAquesTone.Text = value;
         }
 
         public string getPathAquesTone2() { return txtAquesTone2.Text; }
@@ -1228,20 +1211,19 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnChangeMenuFont_Click( Object sender, BEventArgs e )
+        public void btnChangeMenuFont_Click( Object sender, EventArgs e )
         {
-            fontDialog.setSelectedFont( getBaseFont() );
-            fontDialog.setVisible( true );
-            if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
-                java.awt.Font f = fontDialog.getSelectedFont();
-                if ( f != null ) {
+            fontDialog.Font = getBaseFont().font;
+            if ( fontDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
+                if ( fontDialog.Font != null ) {
+                    java.awt.Font f = new java.awt.Font(fontDialog.Font);
                     m_base_font = f;
-                    labelMenuFontName.setText( f.getName() );
+                    labelMenuFontName.Text = f.getName();
                 }
             }
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
             boolean was_modified = false;
             if ( AppManager.editorConfig.DoNotUseVocaloid2 != (!isVocaloid2Required()) ) {
@@ -1257,45 +1239,44 @@ namespace cadencii
                                            cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void btnChangeScreenFont_Click( Object sender, BEventArgs e )
+        public void btnChangeScreenFont_Click( Object sender, EventArgs e )
         {
-            fontDialog.setSelectedFont( m_screen_font );
-            fontDialog.setVisible( true );
-            if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
-                java.awt.Font f = fontDialog.getSelectedFont();
-                if ( f != null ) {
+            fontDialog.Font = m_screen_font.font;
+            if ( fontDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
+                if ( fontDialog.Font != null ) {
+                    java.awt.Font f = new java.awt.Font(fontDialog.Font);
                     m_screen_font = f;
-                    labelScreenFontName.setText( f.getName() );
+                    labelScreenFontName.Text = f.getName();
                 }
             }
         }
 
-        public void buttonResamplerAdd_Click( Object sender, BEventArgs e )
+        public void buttonResamplerAdd_Click( Object sender, EventArgs e )
         {
-            openUtauCore.setSelectedFile( "resampler.exe" );
-            int dr = AppManager.showModalDialog( openUtauCore, true, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String path = openUtauCore.getSelectedFile();
+            openUtauCore.SetSelectedFile("resampler.exe");
+            var dr = AppManager.showModalDialog( openUtauCore, true, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String path = openUtauCore.FileName;
                 boolean check = false;
                 boolean is_mac = isMac();
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
-                listResampler.addRow( new String[] { path }, check );
-                if ( str.compare( txtWavtool.getText(), "" ) ) {
+                listResampler.AddRow( new String[] { path }, check );
+                if ( str.compare( txtWavtool.Text, "" ) ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
                     String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if ( fsys.isFileExists( wavtool ) ) {
-                        txtWavtool.setText( wavtool );
+                        txtWavtool.Text = wavtool;
                         check = false;
                         if ( is_mac ) {
                             check = isWindowsExecutable( wavtool );
                         }
-                        chkWavtoolWithWine.setSelected( check );
+                        chkWavtoolWithWine.Checked = check;
                     }
                 }
             }
@@ -1307,64 +1288,70 @@ namespace cadencii
             if ( sender == buttonResamplerUp ) {
                 delta = -1;
             }
-            int index = listResampler.getSelectedRow();
-            int count = listResampler.getItemCountRow();
-            if ( index < 0 || count <= index ) {
+            int count = listResampler.Items.Count;
+            if ( listResampler.SelectedIndices.Count == 0 ) {
                 return;
             }
-            if ( index + delta < 0 || count <= index + delta ) {
+            int index = listResampler.SelectedIndices[0];
+            if (index + delta < 0 || count <= index + delta) {
                 return;
             }
 
-            String sel = (String)listResampler.getItemAt( index, 0 );
-            boolean chk = listResampler.isRowChecked( index );
-            listResampler.setItemAt( index, 0, listResampler.getItemAt( index + delta, 0 ) );
-            listResampler.setRowChecked( index, listResampler.isRowChecked( index + delta ) );
-            listResampler.setItemAt( index + delta, 0, sel );
-            listResampler.setRowChecked( index + delta, chk );
-            listResampler.setSelectedRow( index + delta );
+            String sel = (String)listResampler.Items[index].SubItems[0].Text;
+            boolean chk = listResampler.Items[index].Checked;
+            listResampler.Items[index].SubItems[0].Text = listResampler.Items[index + delta].SubItems[0].Text;
+            listResampler.Items[index].Checked = listResampler.Items[index + delta].Checked;
+            listResampler.Items[index + delta].SubItems[0].Text = sel;
+            listResampler.Items[index + delta].Checked = chk;
+            if (!listResampler.Items[index + delta].Selected) {
+                listResampler.SelectedIndices.Clear();
+                listResampler.Items[index + delta].Selected = true;
+            }
         }
 
         public void buttonResamplerRemove_Click( Object sender, EventArgs e )
         {
-            int index = listResampler.getSelectedRow();
-            int count = listResampler.getItemCountRow();
-            if ( index < 0 || count <= index ) {
+            int count = listResampler.Items.Count;
+            if ( listResampler.SelectedIndices.Count == 0 ) {
                 return;
             }
-            listResampler.removeRow( index );
+            int index = listResampler.SelectedIndices[0];
+            listResampler.Items.RemoveAt(index);
             // 選択し直す
             if ( index >= count - 1 ) {
                 index--;
             }
             if ( 0 <= index && index < count - 1 ) {
-                listResampler.setSelectedRow( index );
+                if (!listResampler.Items[index].Selected) {
+                    listResampler.SelectedIndices.Clear();
+                    listResampler.Items[index].Selected = true;
+                }
             }
         }
 
-        public void btnWavtool_Click( Object sender, BEventArgs e )
+        public void btnWavtool_Click( Object sender, EventArgs e )
         {
-            if ( !txtWavtool.getText().Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
-                openUtauCore.setSelectedFile( txtWavtool.getText() );
+            if ( !txtWavtool.Text.Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.Text ) ) ) {
+                openUtauCore.SetSelectedFile(txtWavtool.Text);
             }
-            int dr = AppManager.showModalDialog( openUtauCore, true, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String path = openUtauCore.getSelectedFile();
-                txtWavtool.setText( path );
+            var dr = AppManager.showModalDialog( openUtauCore, true, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String path = openUtauCore.FileName;
+                txtWavtool.Text = path;
                 boolean is_mac = isMac();
                 boolean check = false;
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
-                chkWavtoolWithWine.setSelected( check );
-                if ( listResampler.getItemCountRow() == 0 ) {
+                chkWavtoolWithWine.Checked = check;
+                if ( listResampler.Items.Count == 0 ) {
                     String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( fsys.isFileExists( resampler ) ) {
                         check = false;
                         if ( is_mac ) {
                             check = isWindowsExecutable( resampler );
                         }
-                        listResampler.addRow( new String[] { resampler }, check );
+                        listResampler.AddRow( new String[] { resampler }, check );
                     }
                 }
             }
@@ -1376,26 +1363,21 @@ namespace cadencii
 
         private void onAquesToneChooseButtonClicked( System.Windows.Forms.TextBox text_box )
         {
-            BFileChooser dialog = new BFileChooser();
+            OpenFileDialog dialog = new OpenFileDialog();
             if ( text_box.Text != "" && fsys.isDirectoryExists( PortUtil.getDirectoryName( text_box.Text ) ) ) {
-                dialog.setSelectedFile( text_box.Text );
+                dialog.SetSelectedFile(text_box.Text);
             }
-            int dr = AppManager.showModalDialog( dialog, true, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String path = dialog.getSelectedFile();
+            var dr = AppManager.showModalDialog( dialog, true, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String path = dialog.FileName;
                 text_box.Text = path;
             }
         }
 
-        public void btnAdd_Click( Object sender, BEventArgs e )
+        public void btnAdd_Click( Object sender, EventArgs e )
         {
-#if DEBUG
-            if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String dir = folderBrowserSingers.getSelectedFile();
-#else
-            if ( folderBrowserSingers.showDialog( this ) == BDialogResult.OK ) {
-                String dir = folderBrowserSingers.getSelectedPath();
-#endif
+            if ( folderBrowserSingers.ShowDialog( this ) == DialogResult.OK ) {
+                String dir = folderBrowserSingers.SelectedPath;
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
                 sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + fsys.isDirectoryExists( dir ) );
@@ -1413,21 +1395,21 @@ namespace cadencii
             }
         }
 
-        public void listSingers_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void listSingers_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
             if ( index < 0 ) {
-                btnRemove.setEnabled( false );
-                btnUp.setEnabled( false );
-                btnDown.setEnabled( false );
+                btnRemove.Enabled = false;
+                btnUp.Enabled = false;
+                btnDown.Enabled = false;
             } else {
-                btnRemove.setEnabled( true );
-                btnUp.setEnabled( 0 <= index - 1 && index - 1 < m_utau_singers.size() );
-                btnDown.setEnabled( 0 <= index + 1 && index + 1 < m_utau_singers.size() );
+                btnRemove.Enabled = true;
+                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.size();
+                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.size();
             }
         }
 
-        public void btnRemove_Click( Object sender, BEventArgs e )
+        public void btnRemove_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
             if ( 0 <= index && index < m_utau_singers.size() ) {
@@ -1436,7 +1418,7 @@ namespace cadencii
             UpdateUtausingerList();
         }
 
-        public void btnDown_Click( Object sender, BEventArgs e )
+        public void btnDown_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
 #if DEBUG
@@ -1447,11 +1429,14 @@ namespace cadencii
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
                 UpdateUtausingerList();
-                listSingers.setSelectedRow( index + 1 );
+                if (!listSingers.Items[index + 1].Selected) {
+                    listSingers.SelectedIndices.Clear();
+                    listSingers.Items[index + 1].Selected = true;
+                }
             }
         }
 
-        public void btnUp_Click( Object sender, BEventArgs e )
+        public void btnUp_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
 #if DEBUG
@@ -1462,88 +1447,91 @@ namespace cadencii
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
                 UpdateUtausingerList();
-                listSingers.setSelectedRow( index - 1 );
+                if (!listSingers.Items[index - 1].Selected) {
+                    listSingers.SelectedIndices.Clear();
+                    listSingers.Items[index - 1].Selected = true;
+                }
             }
         }
 
-        public void chkAutoBackup_CheckedChanged( Object sender, BEventArgs e )
+        public void chkAutoBackup_CheckedChanged( Object sender, EventArgs e )
         {
-            numAutoBackupInterval.setEnabled( chkAutoBackup.isSelected() );
+            numAutoBackupInterval.Enabled = chkAutoBackup.Checked;
         }
 
-        public void Preference_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void Preference_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            columnWidthHeaderProgramChange = listSingers.getColumnWidth( 0 );
-            columnWidthHeaderName = listSingers.getColumnWidth( 1 );
-            columnWidthHeaderPath = listSingers.getColumnWidth( 2 );
+            columnWidthHeaderProgramChange = listSingers.Columns[0].Width;
+            columnWidthHeaderName = listSingers.Columns[1].Width;
+            columnWidthHeaderPath = listSingers.Columns[2].Width;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        public void commonChangeAutoVibratoType( Object sender, BEventArgs e )
+        public void commonChangeAutoVibratoType( Object sender, EventArgs e )
         {
-            boolean v = radioVocaloidEditorCompatible.isSelected();
-            boolean ud = radioUserDefined.isSelected();
-            groupVocaloidEditorCompatible.setEnabled( v );
-            groupUserDefined.setEnabled( ud );
-            comboAutoVibratoType1.setEnabled( v );
-            comboAutoVibratoType2.setEnabled( v );
-            comboAutoVibratoTypeCustom.setEnabled( ud );
-            lblAutoVibratoType1.setEnabled( v );
-            lblAutoVibratoType2.setEnabled( v );
-            lblAutoVibratoTypeCustom.setEnabled( ud );
+            boolean v = radioVocaloidEditorCompatible.Checked;
+            boolean ud = radioUserDefined.Checked;
+            groupVocaloidEditorCompatible.Enabled = v;
+            groupUserDefined.Enabled = ud;
+            comboAutoVibratoType1.Enabled = v;
+            comboAutoVibratoType2.Enabled = v;
+            comboAutoVibratoTypeCustom.Enabled = ud;
+            lblAutoVibratoType1.Enabled = v;
+            lblAutoVibratoType2.Enabled = v;
+            lblAutoVibratoTypeCustom.Enabled = ud;
         }
 
-        public void buttonWinePrefix_Click( Object sender, BEventArgs e )
+        public void buttonWinePrefix_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            OpenFileDialog dialog = null;
             try {
-                dialog = new BFileChooser();
-                String dir = textWinePrefix.getText();
+                dialog = new OpenFileDialog();
+                String dir = textWinePrefix.Text;
                 if ( dir != null && str.length( dir ) > 0 ) {
-                    dialog.setSelectedFile( fsys.combine( dir, "a" ) );
+                    dialog.SetSelectedFile(fsys.combine( dir, "a" ));
                 }
-                if ( AppManager.showModalDialog( dialog, true, this ) == BFileChooser.APPROVE_OPTION ) {
-                    dir = dialog.getSelectedFile();
+                if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
+                    dir = dialog.FileName;
                     if ( fsys.isFileExists( dir ) ) {
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
                     }
-                    textWinePrefix.setText( dir );
+                    textWinePrefix.Text = dir;
                 }
             } catch ( Exception ex ) {
             }
         }
 
-        public void buttonWineTop_Click( Object sender, BEventArgs e )
+        public void buttonWineTop_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            OpenFileDialog dialog = null;
             try {
-                dialog = new BFileChooser();
-                String dir = textWineTop.getText();
+                dialog = new OpenFileDialog();
+                String dir = textWineTop.Text;
                 if ( dir != null && str.length( dir ) > 0 ) {
-                    dialog.setSelectedFile( fsys.combine( dir, "a" ) );
+                    dialog.SetSelectedFile(fsys.combine( dir, "a" ));
                 }
-                if ( AppManager.showModalDialog( dialog, true, this ) == BFileChooser.APPROVE_OPTION ) {
-                    dir = dialog.getSelectedFile();
+                if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
+                    dir = dialog.FileName;
                     if ( fsys.isFileExists( dir ) ) {
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
                     }
-                    textWineTop.setText( dir );
+                    textWineTop.Text = dir;
                 }
             } catch ( Exception ex ) {
             }
         }
 
-        public void radioWineBuiltin_CheckedChanged( Object sender, BEventArgs e )
+        public void radioWineBuiltin_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean enable = !radioWineBuiltin.isSelected();
-            textWineTop.setEnabled( enable );
-            buttonWineTop.setEnabled( enable );
+            boolean enable = !radioWineBuiltin.Checked;
+            textWineTop.Enabled = enable;
+            buttonWineTop.Enabled = enable;
         }
         #endregion
 
@@ -1585,10 +1573,10 @@ namespace cadencii
         private void updateCustomVibrato()
         {
             int size = AppManager.editorConfig.AutoVibratoCustom.size();
-            comboAutoVibratoTypeCustom.removeAllItems();
+            comboAutoVibratoTypeCustom.Items.Clear();
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                comboAutoVibratoTypeCustom.addItem( handle );
+                comboAutoVibratoTypeCustom.Items.Add( handle );
             }
         }
 
@@ -1597,11 +1585,11 @@ namespace cadencii
         /// </summary>
         private void updateMidiDevice()
         {
-            int sel_midi = comboMidiInPortNumber.getSelectedIndex();
-            int sel_mtc = comboMtcMidiInPortNumber.getSelectedIndex();
+            int sel_midi = comboMidiInPortNumber.SelectedIndex;
+            int sel_mtc = comboMtcMidiInPortNumber.SelectedIndex;
 
-            comboMidiInPortNumber.removeAllItems();
-            comboMtcMidiInPortNumber.removeAllItems();
+            comboMidiInPortNumber.Items.Clear();
+            comboMtcMidiInPortNumber.Items.Clear();
 #if ENABLE_MIDI
             Vector<MidiDevice.Info> midiins = new Vector<MidiDevice.Info>();
             foreach ( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ) {
@@ -1628,19 +1616,19 @@ namespace cadencii
             }
 
             foreach ( MidiDevice.Info info in midiins ) {
-                comboMidiInPortNumber.addItem( info );
-                comboMtcMidiInPortNumber.addItem( info );
+                comboMidiInPortNumber.Items.Add( info );
+                comboMtcMidiInPortNumber.Items.Add( info );
             }
             if ( vec.size( midiins ) <= 0 ) {
-                comboMtcMidiInPortNumber.setEnabled( false );
-                comboMidiInPortNumber.setEnabled( false );
+                comboMtcMidiInPortNumber.Enabled = false;
+                comboMidiInPortNumber.Enabled = false;
             } else {
 #if ENABLE_MTC
                 comboMtcMidiInPortNumber.setEnabled( true );
 #else // ENABLE_MTC
-                comboMtcMidiInPortNumber.setEnabled( false );
+                comboMtcMidiInPortNumber.Enabled = false;
 #endif // ENABLE_MTC
-                comboMidiInPortNumber.setEnabled( true );
+                comboMidiInPortNumber.Enabled = true;
             }
 #else // ENABLE_MIDI
             comboMtcMidiInPortNumber.setEnabled( false );
@@ -1649,17 +1637,17 @@ namespace cadencii
 
             // 可能なら選択状態を復帰
             if ( sel_midi >= 0 ) {
-                if ( comboMidiInPortNumber.getItemCount() <= sel_midi ) {
-                    sel_midi = comboMidiInPortNumber.getItemCount() - 1;
+                if ( comboMidiInPortNumber.Items.Count <= sel_midi ) {
+                    sel_midi = comboMidiInPortNumber.Items.Count - 1;
                 }
-                comboMidiInPortNumber.setSelectedIndex( sel_midi );
+                comboMidiInPortNumber.SelectedIndex = sel_midi;
             }
 
             if ( sel_mtc >= 0 ) {
-                if ( comboMtcMidiInPortNumber.getItemCount() <= sel_mtc ) {
-                    sel_mtc = comboMtcMidiInPortNumber.getItemCount() - 1;
+                if ( comboMtcMidiInPortNumber.Items.Count <= sel_mtc ) {
+                    sel_mtc = comboMtcMidiInPortNumber.Items.Count - 1;
                 }
-                comboMtcMidiInPortNumber.setSelectedIndex( sel_mtc );
+                comboMtcMidiInPortNumber.SelectedIndex = sel_mtc;
             }
         }
 
@@ -1676,20 +1664,20 @@ namespace cadencii
             if ( font_name.Equals( "" ) ) {
                 return;
             }
-            Font f = this.getFont();
+            var f = this.Font;
             if ( f == null ) {
                 return;
             }
-            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)f.getSize() );
+            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)f.SizeInPoints );
             Util.applyFontRecurse( this, font );
         }
 
         private void UpdateUtausingerList()
         {
-            listSingers.clear();
+            listSingers.Items.Clear();
             for ( int i = 0; i < m_utau_singers.size(); i++ ) {
                 m_utau_singers.get( i ).Program = i;
-                listSingers.addRow(
+                listSingers.AddRow(
                     new String[] { 
                         m_utau_singers.get( i ).Program + "",
                         m_utau_singers.get( i ).VOICENAME, 
@@ -1699,32 +1687,36 @@ namespace cadencii
 
         private int getUtausingersSelectedIndex()
         {
-            return listSingers.getSelectedRow();
+            if (listSingers.SelectedIndices.Count == 0) {
+                return -1;
+            } else {
+                return listSingers.SelectedIndices[0];
+            }
         }
 
         private void registerEventHandlers()
         {
-            btnChangeScreenFont.Click += new BEventHandler( btnChangeScreenFont_Click );
-            btnChangeMenuFont.Click += new BEventHandler( btnChangeMenuFont_Click );
-            btnWavtool.Click += new BEventHandler( btnWavtool_Click );
-            buttonResamplerAdd.Click += new BEventHandler( buttonResamplerAdd_Click );
-            buttonResamplerRemove.Click += new BEventHandler( buttonResamplerRemove_Click );
-            buttonResamplerUp.Click += new BEventHandler( buttonResamplerUpDown_Click );
-            buttonResamplerDown.Click += new BEventHandler( buttonResamplerUpDown_Click );
-            btnAquesTone.Click += new BEventHandler( btnAquesTone_Click );
-            btnRemove.Click += new BEventHandler( btnRemove_Click );
-            btnAdd.Click += new BEventHandler( btnAdd_Click );
-            btnUp.Click += new BEventHandler( btnUp_Click );
-            btnDown.Click += new BEventHandler( btnDown_Click );
-            listSingers.SelectedIndexChanged += new BEventHandler( listSingers_SelectedIndexChanged );
-            chkAutoBackup.CheckedChanged += new BEventHandler( chkAutoBackup_CheckedChanged );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            this.FormClosing += new BFormClosingEventHandler( Preference_FormClosing );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            radioVocaloidEditorCompatible.CheckedChanged += new BEventHandler( commonChangeAutoVibratoType );
-            buttonWinePrefix.Click += new BEventHandler( buttonWinePrefix_Click );
-            buttonWineTop.Click += new BEventHandler( buttonWineTop_Click );
-            radioWineBuiltin.CheckedChanged += new BEventHandler( radioWineBuiltin_CheckedChanged );
+            btnChangeScreenFont.Click += new EventHandler( btnChangeScreenFont_Click );
+            btnChangeMenuFont.Click += new EventHandler( btnChangeMenuFont_Click );
+            btnWavtool.Click += new EventHandler( btnWavtool_Click );
+            buttonResamplerAdd.Click += new EventHandler( buttonResamplerAdd_Click );
+            buttonResamplerRemove.Click += new EventHandler( buttonResamplerRemove_Click );
+            buttonResamplerUp.Click += new EventHandler( buttonResamplerUpDown_Click );
+            buttonResamplerDown.Click += new EventHandler( buttonResamplerUpDown_Click );
+            btnAquesTone.Click += new EventHandler( btnAquesTone_Click );
+            btnRemove.Click += new EventHandler( btnRemove_Click );
+            btnAdd.Click += new EventHandler( btnAdd_Click );
+            btnUp.Click += new EventHandler( btnUp_Click );
+            btnDown.Click += new EventHandler( btnDown_Click );
+            listSingers.SelectedIndexChanged += new EventHandler( listSingers_SelectedIndexChanged );
+            chkAutoBackup.CheckedChanged += new EventHandler( chkAutoBackup_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            this.FormClosing += new FormClosingEventHandler( Preference_FormClosing );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioVocaloidEditorCompatible.CheckedChanged += new EventHandler( commonChangeAutoVibratoType );
+            buttonWinePrefix.Click += new EventHandler( buttonWinePrefix_Click );
+            buttonWineTop.Click += new EventHandler( buttonWineTop_Click );
+            radioWineBuiltin.CheckedChanged += new EventHandler( radioWineBuiltin_CheckedChanged );
         }
 
         private void setResources()

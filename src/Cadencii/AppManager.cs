@@ -48,8 +48,6 @@ using cadencii.xml;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -283,88 +281,88 @@ namespace cadencii
         /// <summary>
         /// ショートカットキーとして受付可能なキーのリスト
         /// </summary>
-        public static readonly Vector<BKeys> SHORTCUT_ACCEPTABLE = new Vector<BKeys>( Arrays.asList( new BKeys[]{
-            BKeys.A,
-            BKeys.B,
-            BKeys.Back,
-            BKeys.C,
-            BKeys.D,
-            BKeys.D0,
-            BKeys.D1,
-            BKeys.D2,
-            BKeys.D3,
-            BKeys.D4,
-            BKeys.D5,
-            BKeys.D6,
-            BKeys.D7,
-            BKeys.D8,
-            BKeys.D9,
-            BKeys.Down,
-            BKeys.E,
-            BKeys.F,
-            BKeys.F1,
-            BKeys.F2,
-            BKeys.F3,
-            BKeys.F4,
-            BKeys.F5,
-            BKeys.F6,
-            BKeys.F7,
-            BKeys.F8,
-            BKeys.F9,
-            BKeys.F10,
-            BKeys.F11,
-            BKeys.F12,
-            BKeys.F13,
-            BKeys.F14,
-            BKeys.F15,
-            BKeys.F16,
-            BKeys.F17,
-            BKeys.F18,
-            BKeys.F19,
-            BKeys.F20,
-            BKeys.F21,
-            BKeys.F22,
-            BKeys.F23,
-            BKeys.F24,
-            BKeys.G,
-            BKeys.H,
-            BKeys.I,
-            BKeys.J,
-            BKeys.K,
-            BKeys.L,
-            BKeys.Left,
-            BKeys.M,
-            BKeys.N,
-            BKeys.NumPad0,
-            BKeys.NumPad1,
-            BKeys.NumPad2,
-            BKeys.NumPad3,
-            BKeys.NumPad4,
-            BKeys.NumPad5,
-            BKeys.NumPad6,
-            BKeys.NumPad7,
-            BKeys.NumPad8,
-            BKeys.NumPad9,
-            BKeys.O,
-            BKeys.P,
-            BKeys.PageDown,
-            BKeys.PageUp,
-            BKeys.Q,
-            BKeys.R,
-            BKeys.Right,
-            BKeys.S,
-            BKeys.Space,
-            BKeys.T,
-            BKeys.U,
-            BKeys.Up,
-            BKeys.V,
-            BKeys.W,
-            BKeys.X,
-            BKeys.Y,
-            BKeys.Z,
-            BKeys.Delete,
-            BKeys.Home,
-            BKeys.End,
+        public static readonly Vector<Keys> SHORTCUT_ACCEPTABLE = new Vector<Keys>( Arrays.asList( new Keys[]{
+            Keys.A,
+            Keys.B,
+            Keys.Back,
+            Keys.C,
+            Keys.D,
+            Keys.D0,
+            Keys.D1,
+            Keys.D2,
+            Keys.D3,
+            Keys.D4,
+            Keys.D5,
+            Keys.D6,
+            Keys.D7,
+            Keys.D8,
+            Keys.D9,
+            Keys.Down,
+            Keys.E,
+            Keys.F,
+            Keys.F1,
+            Keys.F2,
+            Keys.F3,
+            Keys.F4,
+            Keys.F5,
+            Keys.F6,
+            Keys.F7,
+            Keys.F8,
+            Keys.F9,
+            Keys.F10,
+            Keys.F11,
+            Keys.F12,
+            Keys.F13,
+            Keys.F14,
+            Keys.F15,
+            Keys.F16,
+            Keys.F17,
+            Keys.F18,
+            Keys.F19,
+            Keys.F20,
+            Keys.F21,
+            Keys.F22,
+            Keys.F23,
+            Keys.F24,
+            Keys.G,
+            Keys.H,
+            Keys.I,
+            Keys.J,
+            Keys.K,
+            Keys.L,
+            Keys.Left,
+            Keys.M,
+            Keys.N,
+            Keys.NumPad0,
+            Keys.NumPad1,
+            Keys.NumPad2,
+            Keys.NumPad3,
+            Keys.NumPad4,
+            Keys.NumPad5,
+            Keys.NumPad6,
+            Keys.NumPad7,
+            Keys.NumPad8,
+            Keys.NumPad9,
+            Keys.O,
+            Keys.P,
+            Keys.PageDown,
+            Keys.PageUp,
+            Keys.Q,
+            Keys.R,
+            Keys.Right,
+            Keys.S,
+            Keys.Space,
+            Keys.T,
+            Keys.U,
+            Keys.Up,
+            Keys.V,
+            Keys.W,
+            Keys.X,
+            Keys.Y,
+            Keys.Z,
+            Keys.Delete,
+            Keys.Home,
+            Keys.End,
         } ) );
         /// <summary>
         /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
@@ -379,7 +377,7 @@ namespace cadencii
         #region Private Static Fields
         private static Color mHilightBrush = PortUtil.CornflowerBlue;
         private static Object mLocker;
-        private static BTimer mAutoBackupTimer;
+        private static System.Windows.Forms.Timer mAutoBackupTimer;
         /// <summary>
         /// 現在稼働しているWaveGenerator．稼働していないときはnull
         /// </summary>
@@ -582,92 +580,44 @@ namespace cadencii
         /// <summary>
         /// メイン画面で、グリッド表示のOn/Offが切り替わった時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void gridVisibleChanged( QObject sender, QObject e );
-#else
-        public static event BEventHandler GridVisibleChanged;
-#endif
+        public static event EventHandler GridVisibleChanged;
 
         /// <summary>
         /// プレビュー再生が開始された時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void previewStartedEvent( QObject sender, QObject e );
-#else
-        public static event BEventHandler PreviewStarted;
-#endif
+        public static event EventHandler PreviewStarted;
 
         /// <summary>
         /// プレビュー再生が終了した時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void previewAborted( QObject sender, QObject e );
-#else
-        public static event BEventHandler PreviewAborted;
-#endif
+        public static event EventHandler PreviewAborted;
 
         /// <summary>
         /// 編集ツールが変化した時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void selectedToolChanged( QObject sender, QObject e );
-#else
-        public static event BEventHandler SelectedToolChanged;
-#endif
+        public static event EventHandler SelectedToolChanged;
 
         /// <summary>
         /// BGMに何らかの変更があった時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> updateBgmStatusRequiredEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void updateBgmStatusRequired( QObject sender, QObject e );
-#else
-        public static event BEventHandler UpdateBgmStatusRequired;
-#endif
+        public static event EventHandler UpdateBgmStatusRequired;
 
         /// <summary>
         /// メインウィンドウにフォーカスを当てる要求があった時発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> mainWindowFocusRequiredEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void mainWindowFocusRequired( QObject sender, QObject e );
-#else
-        public static event BEventHandler MainWindowFocusRequired;
-#endif
+        public static event EventHandler MainWindowFocusRequired;
 
         /// <summary>
         /// 編集されたかどうかを表す値に変更が要求されたときに発生するイベント
         /// </summary>
-#if JAVA
-        public static BEvent<EditedStateChangedEventHandler> editedStateChangedEvent = new BEvent<EditedStateChangedEventHandler>();
-#elif QT_VERSION
-        public: signals: void editedStateChanged( QObject sender, bool edited );
-#else
         public static event EditedStateChangedEventHandler EditedStateChanged;
-#endif
 
         /// <summary>
         /// 波形ビューのリロードが要求されたとき発生するイベント．
         /// GeneralEventArgsの引数は，トラック番号,waveファイル名,開始時刻(秒),終了時刻(秒)が格納されたObject[]配列
         /// 開始時刻＞終了時刻の場合は，partialではなく全体のリロード要求
         /// </summary>
-#if JAVA
-        public static BEvent<WaveViewRealoadRequiredEventHandler> waveViewReloadRequiredEvent = new BEvent<WaveViewRealoadRequiredEventHandler>();
-#elif QT_VERSION
-        public: signals: void waveViewReloadRequired( QObject sender, int track, QString path, double sec_start, double sec_end );
-#else
         public static event WaveViewRealoadRequiredEventHandler WaveViewReloadRequired;
-#endif
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -1678,17 +1628,17 @@ namespace cadencii
         #endregion
 
         #region MessageBoxのラッパー
-        public static BDialogResult showMessageBox( String text )
+        public static DialogResult showMessageBox( String text )
         {
             return showMessageBox( text, "", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption )
+        public static DialogResult showMessageBox( String text, String caption )
         {
             return showMessageBox( text, caption, cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType )
+        public static DialogResult showMessageBox( String text, String caption, int optionType )
         {
             return showMessageBox( text, caption, optionType, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
@@ -1699,14 +1649,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-#if JAVA
-        public static BDialogResult showModalDialog( BDialog dialog, Component parent_form )
-#else
-        public static BDialogResult showModalDialog( BDialog dialog, System.Windows.Forms.Form parent_form )
-#endif
+        public static DialogResult showModalDialog( Form dialog, Form parent_form )
         {
             beginShowDialog();
-            BDialogResult ret = dialog.showDialog( parent_form );
+            DialogResult ret = dialog.ShowDialog( parent_form );
             endShowDialog();
             return ret;
         }
@@ -1735,14 +1681,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-#if JAVA
-        public static BDialogResult showModalDialog( BFolderBrowser dialog, Frame main_form )
-#else
-        public static BDialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )
-#endif
+        public static DialogResult showModalDialog( FolderBrowserDialog dialog, Form main_form )
         {
             beginShowDialog();
-            BDialogResult ret = dialog.showDialog( main_form );
+            DialogResult ret = dialog.ShowDialog( main_form );
             endShowDialog();
             return ret;
         }
@@ -1757,37 +1699,11 @@ namespace cadencii
 #if JAVA
         public static int showModalDialog( BFileChooser dialog, boolean open_mode, Object main_form )
 #else
-        public static int showModalDialog( BFileChooser dialog, boolean open_mode, System.Windows.Forms.Form main_form )
+        public static DialogResult showModalDialog( FileDialog dialog, boolean open_mode, Form main_form )
 #endif
         {
             beginShowDialog();
-            int ret = 0;
-
-            if ( open_mode ) {
-#if JAVA
-                if( main_form instanceof Frame ){
-                    ret = dialog.showOpenDialog( (Frame)main_form );
-                }else if( main_form instanceof Dialog ){
-                    ret = dialog.showOpenDialog( (Dialog)main_form );
-                }else{
-                    ret = BFileChooser.ERROR_OPTION;
-                }
-#else
-                ret = dialog.showOpenDialog( main_form );
-#endif
-            } else {
-#if JAVA
-                if( main_form instanceof Frame ){
-                    ret = dialog.showSaveDialog( (Frame)main_form );
-                }else if( main_form instanceof Dialog ){
-                    ret = dialog.showSaveDialog( (Dialog)main_form );
-                }else{
-                    ret = BFileChooser.ERROR_OPTION;
-                }
-#else
-                ret = dialog.showSaveDialog( main_form );
-#endif
-            }
+            DialogResult ret = dialog.ShowDialog( main_form );
             endShowDialog();
             return ret;
         }
@@ -1817,18 +1733,18 @@ namespace cadencii
             }
 #endif
             if ( mMixerWindow != null ) {
-                boolean previous = mMixerWindow.isAlwaysOnTop();
+                boolean previous = mMixerWindow.TopMost;
                 mMixerWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
-                    mMixerWindow.setAlwaysOnTop( false );
+                    mMixerWindow.TopMost = false;
                 }
             }
 
             if ( iconPalette != null ) {
-                boolean previous = iconPalette.isAlwaysOnTop();
+                boolean previous = iconPalette.TopMost;
                 iconPalette.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
-                    iconPalette.setAlwaysOnTop( false );
+                    iconPalette.TopMost = false;
                 }
             }
         }
@@ -1844,23 +1760,17 @@ namespace cadencii
             }
 #endif
             if ( mMixerWindow != null ) {
-                mMixerWindow.setAlwaysOnTop( mMixerWindow.getPreviousAlwaysOnTop() );
+                mMixerWindow.TopMost = mMixerWindow.getPreviousAlwaysOnTop();
             }
 
             if ( iconPalette != null ) {
-                iconPalette.setAlwaysOnTop( iconPalette.getPreviousAlwaysOnTop() );
+                iconPalette.TopMost = iconPalette.getPreviousAlwaysOnTop();
             }
 
             try {
-#if JAVA
-                mainWindowFocusRequiredEvent.raise( AppManager.class, new BEventArgs() );
-#elif QT_VERSION
-                mainWindowFocusRequired( this, null );
-#else
                 if ( MainWindowFocusRequired != null ) {
                     MainWindowFocusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".endShowDialog; ex=" + ex + "\n" );
                 sout.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
@@ -1868,10 +1778,10 @@ namespace cadencii
             mShowingDialog = false;
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType )
+        public static DialogResult showMessageBox( String text, String caption, int optionType, int messageType )
         {
             beginShowDialog();
-            BDialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
+            DialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
             endShowDialog();
             return ret;
         }
@@ -1995,14 +1905,14 @@ namespace cadencii
                 if ( millisec > int.MaxValue ) {
                     draft = int.MaxValue;
                 }
-                mAutoBackupTimer.setDelay( draft );
-                mAutoBackupTimer.start();
+                mAutoBackupTimer.Interval = draft;
+                mAutoBackupTimer.Start();
             } else {
-                mAutoBackupTimer.stop();
+                mAutoBackupTimer.Stop();
             }
         }
 
-        public static void handleAutoBackupTimerTick( Object sender, BEventArgs e )
+        public static void handleAutoBackupTimerTick( Object sender, EventArgs e )
         {
 #if DEBUG
             sout.println( "AppManager::handleAutoBackupTimerTick" );
@@ -2123,15 +2033,9 @@ namespace cadencii
             mIsCurveMode = value;
             if ( old != mIsCurveMode ) {
                 try {
-#if JAVA
-                    selectedToolChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                    selectedToolChanged( this, null );
-#else
                     if ( SelectedToolChanged != null ) {
                         SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "AppManager#setCurveMode; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setCurveMode; ex=" + ex + "\n" );
@@ -2165,15 +2069,9 @@ namespace cadencii
                 ICommand inv = mVsq.executeCommand( run );
                 if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
                     try {
-#if JAVA
-                        updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                        updateBgmStatusRequired( this, null );
-#else
                         if ( UpdateBgmStatusRequired != null ) {
                             UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                         }
-#endif
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".undo; ex=" + ex + "\n" );
                         serr.println( typeof( AppManager ) + ".undo; ex=" + ex );
@@ -2355,15 +2253,9 @@ namespace cadencii
             if ( value != mGridVisible ) {
                 mGridVisible = value;
                 try {
-#if JAVA
-                    gridVisibleChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                    gridVisibleChanged( this, null );
-#else
                     if ( GridVisibleChanged != null ) {
                         GridVisibleChanged.Invoke( typeof( AppManager ), new EventArgs() );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "AppManager#setGridVisible; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setGridVisible; ex=" + ex + "\n" );
@@ -2419,15 +2311,9 @@ namespace cadencii
                                 mPlaying = false;
                                 return;
                             }
-#if JAVA
-                            previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                            previewStarted( this, null );
-#else
                             if ( PreviewStarted != null ) {
                                 PreviewStarted.Invoke( typeof( AppManager ), new EventArgs() );
                             }
-#endif
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
@@ -2441,15 +2327,9 @@ namespace cadencii
 #if DEBUG
                             sout.println( "AppManager#setPlaying; raise previewAbortedEvent" );
 #endif
-#if JAVA
-                            previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
-#elif QT_VERSION
-                            previewAbortedEvent( this, null );
-#else
                             if ( PreviewAborted != null ) {
                                 PreviewAborted.Invoke( typeof( AppManager ), new EventArgs() );
                             }
-#endif
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
@@ -2578,14 +2458,14 @@ namespace cadencii
             if ( mVsq != null ) {
                 mFile = file;
                 editorConfig.pushRecentFiles( mFile );
-                if ( !mAutoBackupTimer.isRunning() && editorConfig.AutoBackupIntervalMinutes > 0 ) {
+                if ( !mAutoBackupTimer.Enabled && editorConfig.AutoBackupIntervalMinutes > 0 ) {
                     double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                     int draft = (int)millisec;
                     if ( millisec > int.MaxValue ) {
                         draft = int.MaxValue;
                     }
-                    mAutoBackupTimer.setDelay( draft );
-                    mAutoBackupTimer.start();
+                    mAutoBackupTimer.Interval = draft;
+                    mAutoBackupTimer.Start();
                 }
             }
         }
@@ -2725,7 +2605,7 @@ namespace cadencii
             //mStartMarker = mVsq.getPreMeasureClocks();
             //int bar = mVsq.getPreMeasure() + 1;
             //mEndMarker = mVsq.getClockFromBarCount( bar );
-            mAutoBackupTimer.stop();
+            mAutoBackupTimer.Stop();
             setCurrentClock( mVsq.getPreMeasureClocks() );
             try {
 #if JAVA
@@ -2977,12 +2857,8 @@ namespace cadencii
 
             reloadUtauVoiceDB();
 
-            mAutoBackupTimer = new BTimer();
-#if JAVA
-            mAutoBackupTimer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
-#else
-            mAutoBackupTimer.Tick += new BEventHandler( handleAutoBackupTimerTick );
-#endif
+            mAutoBackupTimer = new System.Windows.Forms.Timer();
+            mAutoBackupTimer.Tick += new EventHandler( handleAutoBackupTimerTick );
         }
 
         /// <summary>

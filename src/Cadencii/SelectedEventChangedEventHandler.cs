@@ -11,21 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
 
-import cadencii.BEventHandler;
-
-public class SelectedEventChangedEventHandler extends BEventHandler{
-    public SelectedEventChangedEventHandler( Object invoker, String method_name ){
-        super( invoker, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-    }
-
-    public SelectedEventChangedEventHandler( Class<?> invoker, String method_name ){
-        super( invoker, method_name, Void.TYPE, Object.class, Boolean.TYPE );
-    }
-}
-#else
 using System;
 using cadencii;
 
@@ -34,4 +20,3 @@ namespace cadencii {
     public delegate void SelectedEventChangedEventHandler( Object sender, bool foo );
 
 }
-#endif

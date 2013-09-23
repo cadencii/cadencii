@@ -25,6 +25,8 @@ import cadencii.windows.forms.*;
 #else
 
 using System;
+using System.Windows.Forms;
+using System.Xml.Serialization;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -35,8 +37,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -396,7 +396,8 @@ namespace cadencii
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>
-        public BKeys[] SpecialShortcutGoToFirst = new BKeys[] { BKeys.Home };
+        [XmlArrayItem("BKeys")]
+        public Keys[] SpecialShortcutGoToFirst = new Keys[] { Keys.Home };
         /// <summary>
         /// waveファイル出力時のチャンネル数（1または2）
         /// 3.3で廃止
@@ -606,7 +607,7 @@ namespace cadencii
 #if JAVA
         private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
 #else
-        private static XmlSerializer s_serializer = new XmlSerializer( typeof( EditorConfig ) );
+        private static cadencii.xml.XmlSerializer s_serializer = new cadencii.xml.XmlSerializer( typeof( EditorConfig ) );
 #endif
         #endregion
 
@@ -614,13 +615,7 @@ namespace cadencii
         /// PositionQuantize, PositionQuantizeTriplet, LengthQuantize, LengthQuantizeTripletの描くプロパティのいずれかが
         /// 変更された時発生します
         /// </summary>
-#if JAVA
-        public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void quantizeModeChanged( QObject sender, QObject e );
-#else
-        public static event BEventHandler QuantizeModeChanged;
-#endif
+        public static event EventHandler QuantizeModeChanged;
 
         /// <summary>
         /// コンストラクタ．起動したOSによって動作を変える場合がある
@@ -660,7 +655,7 @@ namespace cadencii
         /// EditorConfigのインスタンスをxmlシリアライズするためのシリアライザを取得します
         /// </summary>
         /// <returns></returns>
-        public static XmlSerializer getSerializer()
+        public static cadencii.xml.XmlSerializer getSerializer()
         {
             return s_serializer;
         }
@@ -1049,9 +1044,9 @@ namespace cadencii
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public TreeMap<String, BKeys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
+        public TreeMap<String, Keys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
         {
-            TreeMap<String, BKeys[]> ret = new TreeMap<String, BKeys[]>();
+            TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
             for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
                 ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
             }
@@ -1223,19 +1218,10 @@ namespace cadencii
         /// QuantizeModeChangedイベントを発行します
         /// </summary>
         private void invokeQuantizeModeChangedEvent()
-#if JAVA
-            throws java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException
-#endif
         {
-#if JAVA
-            quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
-#elif QT_VERSION
-            quantizeModeChanged( null, null );
-#else
             if ( QuantizeModeChanged != null ) {
                 QuantizeModeChanged.Invoke( typeof( EditorConfig ), new EventArgs() );
             }
-#endif
         }
 
 #if !JAVA

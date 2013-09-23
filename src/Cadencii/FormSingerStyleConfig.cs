@@ -32,7 +32,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 
 #endif
@@ -40,7 +39,7 @@ namespace cadencii
 #if JAVA
     public class FormSingerStyleConfig extends BDialog {
 #else
-    class FormSingerStyleConfig : BDialog
+    class FormSingerStyleConfig : Form
     {
 #endif
         boolean m_apply_current_track = false;
@@ -54,7 +53,7 @@ namespace cadencii
             InitializeComponent();
 #endif
 
-            comboTemplate.removeAllItems();
+            comboTemplate.Items.Clear();
             String[] strs = new String[]{
                 "[Select a template]",
                 "normal",
@@ -64,77 +63,76 @@ namespace cadencii
                 "slow legate",
             };
             for( int i = 0; i < strs.Length; i++ ){
-                comboTemplate.addItem( strs[i] );
+                comboTemplate.Items.Add( strs[i] );
             }
 
             registerEventHandlers();
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             applyLanguage();
-            Dimension current_size = getClientSize();
         }
 
         #region public methods
         public void applyLanguage()
         {
-            lblTemplate.setText( _( "Template" ) );
-            lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
-            groupPitchControl.setTitle( _( "Pitch Control" ) );
-            lblBendDepth.setText( _( "Bend Depth" ) );
-            lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
-            lblBendLength.setText( _( "Bend Length" ) );
-            lblBendLength.setMnemonic( KeyEvent.VK_L, txtBendLength );
-            chkUpPortamento.setText( _( "Add portamento in rising movement" ) );
-            chkUpPortamento.setMnemonic( KeyEvent.VK_R );
-            chkDownPortamento.setText( _( "Add portamento in falling movement" ) );
-            chkDownPortamento.setMnemonic( KeyEvent.VK_F );
+            lblTemplate.Text = _( "Template" );
+            lblTemplate.Mnemonic( KeyEvent.VK_T );
+            groupPitchControl.Text = _( "Pitch Control" );
+            lblBendDepth.Text = _( "Bend Depth" );
+            lblBendDepth.Mnemonic( KeyEvent.VK_B );
+            lblBendLength.Text = _( "Bend Length" );
+            lblBendLength.Mnemonic( KeyEvent.VK_L );
+            chkUpPortamento.Text = _("Add portamento in rising movement");
+            chkUpPortamento.Mnemonic(KeyEvent.VK_R);
+            chkDownPortamento.Text = _("Add portamento in falling movement");
+            chkDownPortamento.Mnemonic(KeyEvent.VK_F);
 
-            groupDynamicsControl.setTitle( _( "Dynamics Control" ) );
-            lblDecay.setText( _( "Decay" ) );
-            lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
-            lblAccent.setText( _( "Accent" ) );
-            lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
+            groupDynamicsControl.Text = _( "Dynamics Control" );
+            lblDecay.Text = _( "Decay" );
+            lblDecay.Mnemonic( KeyEvent.VK_D );
+            lblAccent.Text = _( "Accent" );
+            lblAccent.Mnemonic( KeyEvent.VK_A );
 
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnApply.setText( _( "Apply to current track" ) );
-            btnApply.setMnemonic( KeyEvent.VK_C );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            btnApply.Text = _( "Apply to current track" );
+            btnApply.Mnemonic(KeyEvent.VK_C);
 
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
 #endif
-            setTitle( _( "Default Singer Style" ) );
+            this.Text = _( "Default Singer Style" );
         }
 
         public int getPMBendDepth()
         {
-            return trackBendDepth.getValue();
+            return trackBendDepth.Value;
         }
 
         public void setPMBendDepth( int value )
         {
-            trackBendDepth.setValue( value );
-            txtBendDepth.setText( value + "" );
+            trackBendDepth.Value = value;
+            txtBendDepth.Text = value + "";
         }
 
         public int getPMBendLength()
         {
-            return trackBendLength.getValue();
+            return trackBendLength.Value;
         }
 
         public void setPMBendLength( int value )
         {
-            trackBendLength.setValue( value );
-            txtBendLength.setText( value + "" );
+            trackBendLength.Value = value;
+            txtBendLength.Text = value + "";
         }
 
         public int getPMbPortamentoUse()
         {
             int ret = 0;
-            if ( chkUpPortamento.isSelected() ) {
+            if ( chkUpPortamento.Checked ) {
                 ret += 1;
             }
-            if ( chkDownPortamento.isSelected() ) {
+            if ( chkDownPortamento.Checked ) {
                 ret += 2;
             }
             return ret;
@@ -143,37 +141,37 @@ namespace cadencii
         public void setPMbPortamentoUse( int value )
         {
             if ( value % 2 == 1 ) {
-                chkUpPortamento.setSelected( true );
+                chkUpPortamento.Checked = true;
             } else {
-                chkUpPortamento.setSelected( false );
+                chkUpPortamento.Checked = false;
             }
             if ( value >= 2 ) {
-                chkDownPortamento.setSelected( true );
+                chkDownPortamento.Checked = true;
             } else {
-                chkDownPortamento.setSelected( false );
+                chkDownPortamento.Checked = false;
             }
         }
 
         public int getDEMdecGainRate()
         {
-            return trackDecay.getValue();
+            return trackDecay.Value;
         }
 
         public void setDEMdecGainRate( int value )
         {
-            trackDecay.setValue( value );
-            txtDecay.setText( value + "" );
+            trackDecay.Value = value;
+            txtDecay.Text = value + "";
         }
 
         public int getDEMaccent()
         {
-            return trackAccent.getValue();
+            return trackAccent.Value;
         }
 
         public void setDEMaccent( int value )
         {
-            trackAccent.setValue( value );
-            txtAccent.setText( value + "" );
+            trackAccent.Value = value;
+            txtAccent.Text = value + "";
         }
 
         public boolean getApplyCurrentTrack()
@@ -190,18 +188,18 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            txtBendLength.TextChanged += new BEventHandler( txtBendLength_TextChanged );
-            txtBendDepth.TextChanged += new BEventHandler( txtBendDepth_TextChanged );
-            trackBendLength.ValueChanged += new BEventHandler( trackBendLength_Scroll );
-            trackBendDepth.ValueChanged += new BEventHandler( trackBendDepth_Scroll );
-            txtAccent.TextChanged += new BEventHandler( txtAccent_TextChanged );
-            txtDecay.TextChanged += new BEventHandler( txtDecay_TextChanged );
-            trackAccent.ValueChanged += new BEventHandler( trackAccent_Scroll );
-            trackDecay.ValueChanged += new BEventHandler( trackDecay_Scroll );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnApply.Click += new BEventHandler( btnApply_Click );
-            comboTemplate.SelectedIndexChanged += new BEventHandler( comboBox1_SelectedIndexChanged );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnApply.Click += new EventHandler( btnApply_Click );
+            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -212,25 +210,25 @@ namespace cadencii
         #region event handlers
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendDepth.getValue() + "";
-            if( !str.compare( s, txtBendDepth.getText() ) ){
-                txtBendDepth.setText( s );
+            String s = trackBendDepth.Value + "";
+            if( !str.compare( s, txtBendDepth.Text ) ){
+                txtBendDepth.Text = s;
             }
         }
 
         public void txtBendDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendDepth.getText() );
-                if ( draft < trackBendDepth.getMinimum() ) {
-                    draft = trackBendDepth.getMinimum();
-                    txtBendDepth.setText( draft + "" );
-                } else if ( trackBendDepth.getMaximum() < draft ) {
-                    draft = trackBendDepth.getMaximum();
-                    txtBendDepth.setText( draft + "" );
+                int draft = str.toi( txtBendDepth.Text );
+                if ( draft < trackBendDepth.Minimum ) {
+                    draft = trackBendDepth.Minimum;
+                    txtBendDepth.Text = draft + "";
+                } else if ( trackBendDepth.Maximum < draft ) {
+                    draft = trackBendDepth.Maximum;
+                    txtBendDepth.Text = draft + "";
                 }
-                if ( draft != trackBendDepth.getValue() ) {
-                    trackBendDepth.setValue( draft );
+                if ( draft != trackBendDepth.Value ) {
+                    trackBendDepth.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtBendDepth.Text = trackBendDepth.Value + "";
@@ -239,25 +237,25 @@ namespace cadencii
 
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendLength.getValue() + "";
-            if( !str.compare( s, txtBendLength.getText() ) ){
-                txtBendLength.setText( s );
+            String s = trackBendLength.Value + "";
+            if( !str.compare( s, txtBendLength.Text ) ){
+                txtBendLength.Text = s;
             }
         }
 
         public void txtBendLength_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendLength.getText() );
-                if ( draft < trackBendLength.getMinimum() ) {
-                    draft = trackBendLength.getMinimum();
-                    txtBendLength.setText( draft + "" );
-                } else if ( trackBendLength.getMaximum() < draft ) {
-                    draft = trackBendLength.getMaximum();
-                    txtBendLength.setText( draft + "" );
+                int draft = str.toi( txtBendLength.Text );
+                if ( draft < trackBendLength.Minimum ) {
+                    draft = trackBendLength.Minimum;
+                    txtBendLength.Text = draft + "";
+                } else if ( trackBendLength.Maximum < draft ) {
+                    draft = trackBendLength.Maximum;
+                    txtBendLength.Text = draft + "";
                 }
-                if ( draft != trackBendLength.getValue() ) {
-                    trackBendLength.setValue( draft );
+                if ( draft != trackBendLength.Value ) {
+                    trackBendLength.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtBendLength.Text = trackBendLength.Value + "";
@@ -266,25 +264,25 @@ namespace cadencii
 
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDecay.getValue() + "";
-            if( !str.compare( s, txtDecay.getText() ) ){
-                txtDecay.setText( s );
+            String s = trackDecay.Value + "";
+            if( !str.compare( s, txtDecay.Text ) ){
+                txtDecay.Text = s;
             }
         }
 
         public void txtDecay_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDecay.getText() );
-                if ( draft < trackDecay.getMinimum() ) {
-                    draft = trackDecay.getMinimum();
-                    txtDecay.setText( draft + "" );
-                } else if ( trackDecay.getMaximum() < draft ) {
-                    draft = trackDecay.getMaximum();
-                    txtDecay.setText( draft + "" );
+                int draft = str.toi( txtDecay.Text );
+                if ( draft < trackDecay.Minimum ) {
+                    draft = trackDecay.Minimum;
+                    txtDecay.Text = draft + "";
+                } else if ( trackDecay.Maximum < draft ) {
+                    draft = trackDecay.Maximum;
+                    txtDecay.Text = draft + "";
                 }
-                if ( draft != trackDecay.getValue() ) {
-                    trackDecay.setValue( draft );
+                if ( draft != trackDecay.Value ) {
+                    trackDecay.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtDecay.Text = trackDecay.Value + "";
@@ -293,25 +291,25 @@ namespace cadencii
 
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
-            String s = trackAccent.getValue() + "";
-            if( !str.compare( s, txtAccent.getText() ) ){
-                txtAccent.setText( s );
+            String s = trackAccent.Value + "";
+            if( !str.compare( s, txtAccent.Text ) ){
+                txtAccent.Text = s;
             }
         }
 
         public void txtAccent_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtAccent.getText() );
-                if ( draft < trackAccent.getMinimum() ) {
-                    draft = trackAccent.getMinimum();
-                    txtAccent.setText( draft + "" );
-                } else if ( trackAccent.getMaximum() < draft ) {
-                    draft = trackAccent.getMaximum();
-                    txtAccent.setText( draft + "" );
+                int draft = str.toi( txtAccent.Text );
+                if ( draft < trackAccent.Minimum ) {
+                    draft = trackAccent.Minimum;
+                    txtAccent.Text = draft + "";
+                } else if ( trackAccent.Maximum < draft ) {
+                    draft = trackAccent.Maximum;
+                    txtAccent.Text = draft + "";
                 }
-                if ( draft != trackAccent.getValue() ) {
-                    trackAccent.setValue( draft );
+                if ( draft != trackAccent.Value ) {
+                    trackAccent.Value = draft;
                 }
             } catch ( Exception ex ) {
                 //txtAccent.Text = trackAccent.Value + "";
@@ -320,12 +318,12 @@ namespace cadencii
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboTemplate.getSelectedIndex() - 1;
+            int index = comboTemplate.SelectedIndex - 1;
             if( index < 0 || 4 < index ){
                 return;
             }
@@ -346,15 +344,15 @@ namespace cadencii
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE ) == DialogResult.Yes ) {
                 m_apply_current_track = true;
-                setDialogResult( BDialogResult.OK );
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
             }
         }
 
         public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -391,31 +389,31 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupPitchControl = new BGroupBox();
-            this.label5 = new BLabel();
-            this.label4 = new BLabel();
+            this.groupPitchControl = new GroupBox();
+            this.label5 = new Label();
+            this.label4 = new Label();
             this.txtBendLength = new cadencii.NumberTextBox();
             this.txtBendDepth = new cadencii.NumberTextBox();
-            this.trackBendLength = new BSlider();
-            this.trackBendDepth = new BSlider();
-            this.chkDownPortamento = new BCheckBox();
-            this.chkUpPortamento = new BCheckBox();
-            this.lblBendLength = new BLabel();
-            this.lblBendDepth = new BLabel();
-            this.groupDynamicsControl = new BGroupBox();
-            this.label7 = new BLabel();
-            this.label6 = new BLabel();
+            this.trackBendLength = new TrackBar();
+            this.trackBendDepth = new TrackBar();
+            this.chkDownPortamento = new CheckBox();
+            this.chkUpPortamento = new CheckBox();
+            this.lblBendLength = new Label();
+            this.lblBendDepth = new Label();
+            this.groupDynamicsControl = new GroupBox();
+            this.label7 = new Label();
+            this.label6 = new Label();
             this.txtAccent = new cadencii.NumberTextBox();
             this.txtDecay = new cadencii.NumberTextBox();
-            this.trackAccent = new BSlider();
-            this.trackDecay = new BSlider();
-            this.lblAccent = new BLabel();
-            this.lblDecay = new BLabel();
-            this.lblTemplate = new BLabel();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.btnApply = new BButton();
-            this.comboTemplate = new BComboBox();
+            this.trackAccent = new TrackBar();
+            this.trackDecay = new TrackBar();
+            this.lblAccent = new Label();
+            this.lblDecay = new Label();
+            this.lblTemplate = new Label();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.btnApply = new Button();
+            this.comboTemplate = new ComboBox();
             this.groupPitchControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBendDepth)).BeginInit();
@@ -736,31 +734,31 @@ namespace cadencii
 
         #endregion
 
-        private BGroupBox groupPitchControl;
-        private BGroupBox groupDynamicsControl;
-        private BLabel lblBendDepth;
-        private BLabel lblTemplate;
-        private BLabel lblBendLength;
-        private BCheckBox chkDownPortamento;
-        private BCheckBox chkUpPortamento;
-        private BSlider trackBendDepth;
-        private BSlider trackBendLength;
-        private BSlider trackAccent;
-        private BSlider trackDecay;
-        private BLabel lblAccent;
-        private BLabel lblDecay;
+        private GroupBox groupPitchControl;
+        private GroupBox groupDynamicsControl;
+        private Label lblBendDepth;
+        private Label lblTemplate;
+        private Label lblBendLength;
+        private CheckBox chkDownPortamento;
+        private CheckBox chkUpPortamento;
+        private TrackBar trackBendDepth;
+        private TrackBar trackBendLength;
+        private TrackBar trackAccent;
+        private TrackBar trackDecay;
+        private Label lblAccent;
+        private Label lblDecay;
         private NumberTextBox txtBendLength;
         private NumberTextBox txtBendDepth;
         private NumberTextBox txtAccent;
         private NumberTextBox txtDecay;
-        private BLabel label5;
-        private BLabel label4;
-        private BLabel label7;
-        private BLabel label6;
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BButton btnApply;
-        private BComboBox comboTemplate;
+        private Label label5;
+        private Label label4;
+        private Label label7;
+        private Label label6;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.ComboBox comboTemplate;
         #endregion
 #endif
         #endregion

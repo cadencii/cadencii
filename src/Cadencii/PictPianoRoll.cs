@@ -44,7 +44,7 @@ namespace cadencii {
 #if JAVA
     public class PictPianoRoll extends BPanel {
 #else
-    public class PictPianoRoll : BPictureBox {
+    public class PictPianoRoll : PictureBox {
 #endif
         private readonly Color COLOR_R192G192B192 = new Color( 192, 192, 192 );
         private readonly Color COLOR_A098R000G000B000 = new Color( 0, 0, 0, 98 );
@@ -212,16 +212,6 @@ namespace cadencii {
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
-            java.awt.Point p = getLocationOnScreen();
-            return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
-        }
-
-        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
-            java.awt.Point p = getLocationOnScreen();
-            return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
-        }
-
 #if JAVA
         Object tag = null;
         public Object getTag(){
@@ -323,7 +313,8 @@ namespace cadencii {
                     int selected = AppManager.getSelected();
                     VsqTrack vsq_track = vsq.Track.get(selected);
 
-                    Point mouse_position = pointToClient(PortUtil.getMousePosition());
+                    var p = PortUtil.getMousePosition();
+                    var mouse_position = this.PointToClient(new System.Drawing.Point(p.x, p.y));
                     int stdx = AppManager.mMainWindowController.getStartToDrawX();
                     int stdy = AppManager.mMainWindowController.getStartToDrawY();
                     int key_width = AppManager.keyWidth;
@@ -344,7 +335,7 @@ namespace cadencii {
                     float scalex = AppManager.mMainWindowController.getScaleX();
                     float inv_scalex = AppManager.mMainWindowController.getScaleXInv();
 
-                    if (AppManager.itemSelection.getEventCount() > 0 && AppManager.mInputTextBox.isVisible()) {
+                    if (AppManager.itemSelection.getEventCount() > 0 && AppManager.mInputTextBox.Visible) {
                         VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                         int event_x = (int)(original.Clock * scalex + xoffset);
                         int event_y = -original.ID.Note * track_height + yoffset;
@@ -496,9 +487,9 @@ namespace cadencii {
                                 hilighted_note = i;
                             }
                         } else {
-                            if (3 <= mouse_position.x && mouse_position.x <= width - 17 &&
-                                0 <= mouse_position.y && mouse_position.y <= height - 1) {
-                                if (y <= mouse_position.y && mouse_position.y < y + track_height) {
+                            if (3 <= mouse_position.X && mouse_position.X <= width - 17 &&
+                                0 <= mouse_position.Y && mouse_position.Y <= height - 1) {
+                                if (y <= mouse_position.Y && mouse_position.Y < y + track_height) {
                                     hilighted = true;
                                     hilighted_note = i;
                                 }
@@ -1129,7 +1120,7 @@ namespace cadencii {
                         PortUtil.drawStringEx(g,
                                                VsqNote.getNoteString(hilighted_note),
                                                AppManager.baseFont10Bold,
-                                               new Rectangle(mouse_position.x - 110, mouse_position.y - 50, 100, 100),
+                                               new Rectangle(mouse_position.X - 110, mouse_position.Y - 50, 100, 100),
                                                align,
                                                valign);
                     }
@@ -1151,7 +1142,8 @@ namespace cadencii {
                         }
                     } else if (AppManager.mIsPointerDowned) {
                         // 選択範囲を半透明で塗りつぶす
-                        Point mouse = pointToClient(PortUtil.getMousePosition());
+                        var mouse_location = PortUtil.getMousePosition();
+                        var mouse = this.PointToClient(new System.Drawing.Point(mouse_location.x, mouse_location.y));
                         // 描く四角形の位置とサイズ
                         int tx, ty, twidth, theight;
                         // 上下左右の枠を表示していいかどうか
@@ -1161,20 +1153,20 @@ namespace cadencii {
                         boolean vright = true;
                         // マウスが下りた位置のx座標
                         int lx = AppManager.mMouseDownLocation.x - stdx;
-                        if (lx < mouse.x) {
+                        if (lx < mouse.X) {
                             tx = lx;
-                            twidth = mouse.x - lx;
+                            twidth = mouse.X - lx;
                         } else {
-                            tx = mouse.x;
-                            twidth = lx - mouse.x;
+                            tx = mouse.X;
+                            twidth = lx - mouse.X;
                         }
                         int ly = AppManager.mMouseDownLocation.y - stdy;
-                        if (ly < mouse.y) {
+                        if (ly < mouse.Y) {
                             ty = ly;
-                            theight = mouse.y - ly;
+                            theight = mouse.Y - ly;
                         } else {
-                            ty = mouse.y;
-                            theight = ly - mouse.y;
+                            ty = mouse.Y;
+                            theight = ly - mouse.Y;
                         }
                         if (tx < key_width) {
                             int txold = tx;

@@ -29,7 +29,7 @@ namespace cadencii
 #if JAVA
     public class TrackSelectorSingerPopupMenu extends BPopupMenu
 #else
-    public class TrackSelectorSingerPopupMenu : BPopupMenu
+    public class TrackSelectorSingerPopupMenu : System.Windows.Forms.ContextMenuStrip
 #endif
     {
         public boolean SingerChangeExists;

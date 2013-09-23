@@ -26,14 +26,12 @@ using cadencii.windows.forms;
 
 namespace cadencii.windows.forms
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class InputBox extends BDialog
 #else
-    public class InputBox : BDialog
+    public class InputBox : Form
 #endif
     {
         public InputBox( String message )
@@ -45,36 +43,36 @@ namespace cadencii.windows.forms
             InitializeComponent();
 #endif
             registerEventHandlers();
-            lblMessage.setText( message );
+            lblMessage.Text = message;
         }
 
         public String getResult()
         {
-            return txtInput.getText();
+            return txtInput.Text;
         }
 
         public void setResult( String value )
         {
-            txtInput.setText( value );
+            txtInput.Text = value;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        public void btnOk_Click( Object sender, BEventArgs e )
+        public void btnOk_Click( Object sender, EventArgs e )
         {
 #if DEBUG
             sout.println( "InputBox#btnOk_Click" );
 #endif
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         private void registerEventHandlers()
         {
-            btnOk.Click += new BEventHandler( btnOk_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOk.Click += new EventHandler( btnOk_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
 #if JAVA
@@ -104,10 +102,10 @@ namespace cadencii.windows.forms
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtInput = new cadencii.windows.forms.BTextBox();
-            this.btnOk = new cadencii.windows.forms.BButton();
-            this.lblMessage = new cadencii.windows.forms.BLabel();
-            this.btnCancel = new cadencii.windows.forms.BButton();
+            this.txtInput = new TextBox();
+            this.btnOk = new Button();
+            this.lblMessage = new Label();
+            this.btnCancel = new Button();
             this.SuspendLayout();
             //
             // txtInput
@@ -172,10 +170,10 @@ namespace cadencii.windows.forms
         }
         #endregion
 
-        private BLabel lblMessage;
-        private BButton btnCancel;
-        private BTextBox txtInput;
-        private BButton btnOk;
+        private Label lblMessage;
+        private Button btnCancel;
+        private TextBox txtInput;
+        private Button btnOk;
 #endif
     }
 

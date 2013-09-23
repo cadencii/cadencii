@@ -726,6 +726,15 @@ namespace cadencii.apputil
                 return new java.awt.Dimension( (int)tmp.Width, (int)tmp.Height );
             }
         }
+
+        public static java.awt.Dimension measureString(string text, Font font)
+        {
+            using (Bitmap dumy = new Bitmap(1, 1))
+            using (Graphics g = Graphics.FromImage(dumy)) {
+                SizeF tmp = g.MeasureString(text, font);
+                return new java.awt.Dimension((int)tmp.Width, (int)tmp.Height);
+            }
+        }
 #endif
 
         /// <summary>

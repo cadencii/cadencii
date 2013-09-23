@@ -48,11 +48,7 @@ namespace cadencii.media
         private boolean mReceiveSystemRealtimeMessage = false;
         private boolean mIsActive = false;
 
-#if JAVA
-        public final BEvent<MidiReceivedEventHandler> midiReceivedEvent = new BEvent<MidiReceivedEventHandler>();
-#else         
         public event MidiReceivedEventHandler MidiReceived;
-#endif
 
         public MidiInDevice( int port_number ) {
             m_port_number = port_number;

@@ -24,6 +24,7 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -32,17 +33,13 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
 #if JAVA
     public class FormCurvePointEdit extends BDialog {
 #else
-    public class FormCurvePointEdit : BDialog
+    public class FormCurvePointEdit : Form
     {
 #endif
         private long m_editing_id = -1;
@@ -66,22 +63,22 @@ namespace cadencii
             m_curve = curve;
 
             VsqBPPairSearchContext context = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() ).findElement( m_editing_id );
-            txtDataPointClock.setText( context.clock + "" );
-            txtDataPointValue.setText( context.point.value + "" );
-            txtDataPointValue.selectAll();
+            txtDataPointClock.Text = context.clock + "";
+            txtDataPointValue.Text = context.point.value + "";
+            txtDataPointValue.SelectAll();
 
-            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
+            btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+            btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
         }
 
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Edit Value" ) );
-            lblDataPointClock.setText( _( "Clock" ) );
-            lblDataPointValue.setText( _( "Value" ) );
-            btnApply.setText( _( "Apply" ) );
-            btnExit.setText( _( "Exit" ) );
+            this.Text = _( "Edit Value" );
+            lblDataPointClock.Text = _( "Clock" );
+            lblDataPointValue.Text = _( "Value" );
+            btnApply.Text = _( "Apply" );
+            btnExit.Text = _( "Exit" );
         }
         #endregion
 
@@ -98,7 +95,7 @@ namespace cadencii
             }
             int value = m_curve.getDefault();
             try {
-                value = str.toi( txtDataPointValue.getText() );
+                value = str.toi( txtDataPointValue.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
@@ -111,7 +108,7 @@ namespace cadencii
 
             int clock = 0;
             try {
-                clock = str.toi( txtDataPointClock.getText() );
+                clock = str.toi( txtDataPointClock.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
@@ -135,8 +132,8 @@ namespace cadencii
             }
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
 
-            txtDataPointClock.setText( clock + "" );
-            txtDataPointValue.setText( value + "" );
+            txtDataPointClock.Text = clock + "";
+            txtDataPointValue.Text = value + "";
 
             if ( mMainWindow != null ) {
                 mMainWindow.setEdited( true );
@@ -145,13 +142,13 @@ namespace cadencii
             }
 
             if ( mode_clock ) {
-                txtDataPointClock.selectAll();
+                txtDataPointClock.SelectAll();
             } else {
-                txtDataPointValue.selectAll();
+                txtDataPointValue.SelectAll();
             }
 
-            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
+            btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+            btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
             m_changed = false;
         }
 
@@ -162,25 +159,25 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnForward.Click += new BEventHandler( commonButton_Click );
-            btnBackward.Click += new BEventHandler( commonButton_Click );
-            btnBackward2.Click += new BEventHandler( commonButton_Click );
-            btnForward2.Click += new BEventHandler( commonButton_Click );
-            btnApply.Click += new BEventHandler( btnApply_Click );
-            txtDataPointClock.TextChanged += new BEventHandler( commonTextBox_TextChanged );
-            txtDataPointClock.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
-            txtDataPointValue.TextChanged += new BEventHandler( commonTextBox_TextChanged );
-            txtDataPointValue.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
-            btnBackward3.Click += new BEventHandler( commonButton_Click );
-            btnForward3.Click += new BEventHandler( commonButton_Click );
-            btnUndo.Click += new BEventHandler( handleUndoRedo_Click );
-            btnRedo.Click += new BEventHandler( handleUndoRedo_Click );
-            btnExit.Click += new BEventHandler( btnExit_Click );
+            btnForward.Click += new EventHandler( commonButton_Click );
+            btnBackward.Click += new EventHandler( commonButton_Click );
+            btnBackward2.Click += new EventHandler( commonButton_Click );
+            btnForward2.Click += new EventHandler( commonButton_Click );
+            btnApply.Click += new EventHandler( btnApply_Click );
+            txtDataPointClock.TextChanged += new EventHandler( commonTextBox_TextChanged );
+            txtDataPointClock.KeyUp += new KeyEventHandler( commonTextBox_KeyUp );
+            txtDataPointValue.TextChanged += new EventHandler( commonTextBox_TextChanged );
+            txtDataPointValue.KeyUp += new KeyEventHandler( commonTextBox_KeyUp );
+            btnBackward3.Click += new EventHandler( commonButton_Click );
+            btnForward3.Click += new EventHandler( commonButton_Click );
+            btnUndo.Click += new EventHandler( handleUndoRedo_Click );
+            btnRedo.Click += new EventHandler( handleUndoRedo_Click );
+            btnExit.Click += new EventHandler( btnExit_Click );
         }
         #endregion
 
         #region event handlers
-        public void commonTextBox_KeyUp( Object sender, BKeyEventArgs e )
+        public void commonTextBox_KeyUp( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
@@ -192,7 +189,7 @@ namespace cadencii
             applyValue( (sender == txtDataPointClock) );
         }
 
-        public void commonButton_Click( Object sender, BEventArgs e )
+        public void commonButton_Click( Object sender, EventArgs e )
         {
             VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() );
             VsqBPPairSearchContext search = list.findElement( m_editing_id );
@@ -222,25 +219,15 @@ namespace cadencii
             VsqBPPair bp = list.getElementB( index );
             m_editing_id = bp.id;
             int clock = list.getKeyClock( index );
-#if JAVA
-            txtDataPointClock.textChangedEvent.remove( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            txtDataPointValue.textChangedEvent.remove( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-#else
             txtDataPointClock.TextChanged -= commonTextBox_TextChanged;
             txtDataPointValue.TextChanged -= commonTextBox_TextChanged;
-#endif
-            txtDataPointClock.setText( clock + "" );
-            txtDataPointValue.setText( bp.value + "" );
-#if JAVA
-            txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-#else
+            txtDataPointClock.Text = clock + "";
+            txtDataPointValue.Text = bp.value + "";
             txtDataPointClock.TextChanged += commonTextBox_TextChanged;
             txtDataPointValue.TextChanged += commonTextBox_TextChanged;
-#endif
 
-            txtDataPointValue.requestFocus();
-            txtDataPointValue.selectAll();
+            txtDataPointValue.Focus();
+            txtDataPointValue.SelectAll();
 
             AppManager.itemSelection.clearPoint();
             AppManager.itemSelection.addPoint( m_curve, bp.id );
@@ -250,17 +237,17 @@ namespace cadencii
             }
         }
 
-        public void btnApply_Click( Object sender, BEventArgs e )
+        public void btnApply_Click( Object sender, EventArgs e )
         {
             applyValue( true );
         }
 
-        public void commonTextBox_TextChanged( Object sender, BEventArgs e )
+        public void commonTextBox_TextChanged( Object sender, EventArgs e )
         {
             m_changed = true;
         }
 
-        public void handleUndoRedo_Click( Object sender, BEventArgs e )
+        public void handleUndoRedo_Click( Object sender, EventArgs e )
         {
             if ( sender == btnUndo ) {
                 AppManager.undo();
@@ -277,15 +264,15 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormCurvePointEdit#handleUndoRedo_Click; exists=" + exists );
 #endif
-            txtDataPointClock.setEnabled( exists );
-            txtDataPointValue.setEnabled( exists );
-            btnApply.setEnabled( exists );
-            btnBackward.setEnabled( exists );
-            btnBackward2.setEnabled( exists );
-            btnBackward3.setEnabled( exists );
-            btnForward.setEnabled( exists );
-            btnForward2.setEnabled( exists );
-            btnForward3.setEnabled( exists );
+            txtDataPointClock.Enabled = exists;
+            txtDataPointValue.Enabled = exists;
+            btnApply.Enabled = exists;
+            btnBackward.Enabled = exists;
+            btnBackward2.Enabled = exists;
+            btnBackward3.Enabled = exists;
+            btnForward.Enabled = exists;
+            btnForward2.Enabled = exists;
+            btnForward3.Enabled = exists;
 
             if ( exists ) {
                 AppManager.itemSelection.clearPoint();
@@ -296,13 +283,13 @@ namespace cadencii
                 mMainWindow.updateDrawObjectList();
                 mMainWindow.refreshScreen();
             }
-            btnUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-            btnRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
+            btnUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+            btnRedo.Enabled = AppManager.editHistory.hasRedoHistory();
         }
 
-        public void btnExit_Click( Object sender, BEventArgs e )
+        public void btnExit_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -334,20 +321,20 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnForward = new cadencii.windows.forms.BButton();
-            this.btnBackward = new cadencii.windows.forms.BButton();
-            this.lblDataPointValue = new cadencii.windows.forms.BLabel();
-            this.lblDataPointClock = new cadencii.windows.forms.BLabel();
-            this.btnExit = new cadencii.windows.forms.BButton();
-            this.btnBackward2 = new cadencii.windows.forms.BButton();
-            this.btnForward2 = new cadencii.windows.forms.BButton();
-            this.btnApply = new cadencii.windows.forms.BButton();
+            this.btnForward = new Button();
+            this.btnBackward = new Button();
+            this.lblDataPointValue = new Label();
+            this.lblDataPointClock = new Label();
+            this.btnExit = new Button();
+            this.btnBackward2 = new Button();
+            this.btnForward2 = new Button();
+            this.btnApply = new Button();
             this.txtDataPointClock = new cadencii.NumberTextBox();
             this.txtDataPointValue = new cadencii.NumberTextBox();
-            this.btnBackward3 = new cadencii.windows.forms.BButton();
-            this.btnForward3 = new cadencii.windows.forms.BButton();
-            this.btnUndo = new cadencii.windows.forms.BButton();
-            this.btnRedo = new cadencii.windows.forms.BButton();
+            this.btnBackward3 = new Button();
+            this.btnForward3 = new Button();
+            this.btnUndo = new Button();
+            this.btnRedo = new Button();
             this.SuspendLayout();
             // 
             // btnForward
@@ -510,20 +497,20 @@ namespace cadencii
 
         }
 
-        private BButton btnForward;
-        private BButton btnBackward;
-        private BLabel lblDataPointValue;
+        private System.Windows.Forms.Button btnForward;
+        private System.Windows.Forms.Button btnBackward;
+        private Label lblDataPointValue;
         private NumberTextBox txtDataPointClock;
-        private BLabel lblDataPointClock;
+        private Label lblDataPointClock;
         private NumberTextBox txtDataPointValue;
-        private BButton btnExit;
-        private BButton btnBackward2;
-        private BButton btnForward2;
-        private BButton btnApply;
-        private BButton btnBackward3;
-        private BButton btnForward3;
-        private BButton btnUndo;
-        private BButton btnRedo;
+        private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.Button btnBackward2;
+        private System.Windows.Forms.Button btnForward2;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button btnBackward3;
+        private System.Windows.Forms.Button btnForward3;
+        private System.Windows.Forms.Button btnUndo;
+        private System.Windows.Forms.Button btnRedo;
 
 #endif
         #endregion

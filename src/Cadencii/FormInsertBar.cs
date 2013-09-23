@@ -21,20 +21,19 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormInsertBar extends BDialog {
 #else
-    public class FormInsertBar : BDialog
+    public class FormInsertBar : Form
     {
 #endif
         public FormInsertBar( int max_position )
@@ -48,26 +47,26 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            numPosition.setMaximum( max_position );
+            numPosition.Maximum = max_position;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Insert Bars" ) );
+            this.Text = _( "Insert Bars" );
             String th_prefix = _( "_PREFIX_TH_" );
             if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
-                lblPositionPrefix.setText( "" );
+                lblPositionPrefix.Text = "";
             } else {
-                lblPositionPrefix.setText( th_prefix );
+                lblPositionPrefix.Text = th_prefix;
             }
-            lblPosition.setText( _( "Position" ) );
-            lblLength.setText( _( "Length" ) );
-            lblThBar.setText( _( "th bar" ) );
-            lblBar.setText( _( "bar" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            lblPosition.Text = _( "Position" );
+            lblLength.Text = _( "Length" );
+            lblThBar.Text = _( "th bar" );
+            lblBar.Text = _( "bar" );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
 #if !JAVA
             lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
 #endif
@@ -75,22 +74,22 @@ namespace cadencii
 
         public int getLength()
         {
-            return (int)numLength.getFloatValue();
+            return (int)numLength.Value;
         }
 
         public void setLength( int value )
         {
-            numLength.setFloatValue( value );
+            numLength.Value = value;
         }
 
         public int getPosition()
         {
-            return (int)numPosition.getFloatValue();
+            return (int)numPosition.Value;
         }
 
         public void setPosition( int value )
         {
-            numPosition.setFloatValue( value );
+            numPosition.Value = value;
         }
         #endregion
 
@@ -102,8 +101,8 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -112,14 +111,14 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -131,13 +130,13 @@ namespace cadencii
         private System.ComponentModel.IContainer components = null;
         private NumericUpDownEx numPosition;
         private NumericUpDownEx numLength;
-        private BLabel lblPosition;
-        private BLabel lblLength;
-        private BLabel lblThBar;
-        private BLabel lblBar;
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BLabel lblPositionPrefix;
+        private Label lblPosition;
+        private Label lblLength;
+        private Label lblThBar;
+        private Label lblBar;
+        private Button btnCancel;
+        private Button btnOK;
+        private Label lblPositionPrefix;
 
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
@@ -157,13 +156,13 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblPosition = new cadencii.windows.forms.BLabel();
-            this.lblLength = new cadencii.windows.forms.BLabel();
-            this.lblThBar = new cadencii.windows.forms.BLabel();
-            this.lblBar = new cadencii.windows.forms.BLabel();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.lblPositionPrefix = new cadencii.windows.forms.BLabel();
+            this.lblPosition = new Label();
+            this.lblLength = new Label();
+            this.lblThBar = new Label();
+            this.lblBar = new Label();
+            this.btnCancel = new Button();
+            this.btnOK = new Button();
+            this.lblPositionPrefix = new Label();
             this.numLength = new cadencii.NumericUpDownEx();
             this.numPosition = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numLength)).BeginInit();

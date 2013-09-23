@@ -29,14 +29,12 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using boolean = System.Boolean;
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormTrackProperty extends BDialog {
 #else
-    public class FormTrackProperty : BDialog
+    public class FormTrackProperty : Form
     {
 #endif
         private int m_master_tuning;
@@ -53,17 +51,17 @@ namespace cadencii
             setResources();
             applyLanguage();
             m_master_tuning = master_tuning_in_cent;
-            txtMasterTuning.setText( master_tuning_in_cent + "" );
+            txtMasterTuning.Text = master_tuning_in_cent + "";
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
         public void applyLanguage()
         {
-            lblMasterTuning.setText( _( "Master Tuning in Cent" ) );
-            setTitle( _( "Track Property" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            lblMasterTuning.Text = _( "Master Tuning in Cent" );
+            this.Text = _( "Track Property" );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
         }
 
         public int getMasterTuningInCent()
@@ -80,9 +78,9 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            txtMasterTuning.TextChanged += new BEventHandler( txtMasterTuning_TextChanged );
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            txtMasterTuning.TextChanged += new EventHandler( txtMasterTuning_TextChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -91,24 +89,24 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void txtMasterTuning_TextChanged( Object sender, BEventArgs e )
+        public void txtMasterTuning_TextChanged( Object sender, EventArgs e )
         {
             int v = m_master_tuning;
             try {
-                v = str.toi( txtMasterTuning.getText() );
+                v = str.toi( txtMasterTuning.Text );
                 m_master_tuning = v;
             } catch ( Exception ex ) {
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
@@ -145,10 +143,10 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
-            this.lblMasterTuning = new BLabel();
-            this.txtMasterTuning = new BTextBox();
+            this.btnOK = new Button();
+            this.btnCancel = new Button();
+            this.lblMasterTuning = new Label();
+            this.txtMasterTuning = new TextBox();
             this.SuspendLayout();
             // 
             // btnOK
@@ -215,10 +213,10 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnOK;
-        private BButton btnCancel;
-        private BLabel lblMasterTuning;
-        private BTextBox txtMasterTuning;
+        private Button btnOK;
+        private Button btnCancel;
+        private Label lblMasterTuning;
+        private TextBox txtMasterTuning;
         #endregion
 #endif
         #endregion

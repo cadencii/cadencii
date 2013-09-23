@@ -28,8 +28,6 @@ package cadencii;
             using cadencii.apputil;
 
             using boolean = System.Boolean;
-            using BEventArgs = System.EventArgs;
-            using BEventHandler = System.EventHandler;
 #endif // CSHARP
 
 #endif

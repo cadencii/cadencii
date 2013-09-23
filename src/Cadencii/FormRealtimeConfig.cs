@@ -27,20 +27,18 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormRealtimeConfig extends BDialog {
 #else
-    public class FormRealtimeConfig : BDialog
+    public class FormRealtimeConfig : System.Windows.Forms.Form
     {
 #endif
         private boolean m_game_ctrl_enabled = false;
         private double m_last_event_processed;
-        private BTimer timer;
+        private System.Windows.Forms.Timer timer;
 
         public FormRealtimeConfig()
         {
@@ -50,9 +48,9 @@ namespace cadencii
             timer = new BTimer();
 #else
             InitializeComponent();
-            timer = new BTimer( this.components );
+            timer = new System.Windows.Forms.Timer( this.components );
 #endif
-            timer.setDelay( 10 );
+            timer.Interval = 10;
             registerEventHandlers();
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -61,12 +59,12 @@ namespace cadencii
         #region public methods
         public float getSpeed()
         {
-            return (float)numSpeed.getFloatValue();
+            return (float)numSpeed.Value;
         }
         #endregion
 
         #region event handlers
-        public void FormRealtimeConfig_Load( Object sender, BEventArgs e )
+        public void FormRealtimeConfig_Load( Object sender, EventArgs e )
         {
 #if JAVA
             System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
@@ -76,11 +74,11 @@ namespace cadencii
 #endif
             m_game_ctrl_enabled = (num_joydev > 0);
             if ( m_game_ctrl_enabled ) {
-                timer.start();
+                timer.Start();
             }
         }
 
-        public void timer_Tick( Object sender, BEventArgs e )
+        public void timer_Tick( Object sender, EventArgs e )
         {
 #if !JAVA
             try {
@@ -107,46 +105,46 @@ namespace cadencii
                 boolean R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
                 boolean SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
                 if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                    if ( btnStart.isFocusOwner() ) {
+                    if ( btnStart.Focused ) {
                         if ( btn_o ) {
-                            timer.stop();
+                            timer.Stop();
                             btnStart_Click( this, new EventArgs() );
                             m_last_event_processed = now;
                         } else if ( pov_r ) {
-                            btnCancel.requestFocus();
+                            btnCancel.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_d ) {
-                            numSpeed.requestFocus();
+                            numSpeed.Focus();
                             m_last_event_processed = now;
                         }
-                    } else if ( btnCancel.isFocusOwner() ) {
+                    } else if ( btnCancel.Focused ) {
                         if ( btn_o ) {
-                            timer.stop();
-                            setDialogResult( BDialogResult.CANCEL );
-                            close();
+                            timer.Stop();
+                            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                            Close();
                         } else if ( pov_l ) {
-                            btnStart.requestFocus();
+                            btnStart.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_d || pov_r ) {
-                            numSpeed.requestFocus();
+                            numSpeed.Focus();
                             m_last_event_processed = now;
                         }
-                    } else if ( numSpeed.isFocusOwner() ) {
+                    } else if ( numSpeed.Focused ) {
                         if ( R1 ) {
-                            if ( numSpeed.getFloatValue() + numSpeed.getIncrement() <= numSpeed.getMaximum() ) {
-                                numSpeed.setFloatValue( numSpeed.getFloatValue() + numSpeed.getIncrement() );
+                            if ( numSpeed.Value + numSpeed.Increment <= numSpeed.Maximum ) {
+                                numSpeed.Value = numSpeed.Value + numSpeed.Increment;
                                 m_last_event_processed = now;
                             }
                         } else if ( L1 ) {
-                            if ( numSpeed.getFloatValue() - numSpeed.getIncrement() >= numSpeed.getMinimum() ) {
-                                numSpeed.setFloatValue( numSpeed.getFloatValue() - numSpeed.getIncrement() );
+                            if ( numSpeed.Value - numSpeed.Increment >= numSpeed.Minimum ) {
+                                numSpeed.Value = numSpeed.Value - numSpeed.Increment;
                                 m_last_event_processed = now;
                             }
                         } else if ( pov_l ) {
-                            btnCancel.requestFocus();
+                            btnCancel.Focus();
                             m_last_event_processed = now;
                         } else if ( pov_u ) {
-                            btnStart.requestFocus();
+                            btnStart.Focus();
                             m_last_event_processed = now;
                         }
                     }
@@ -156,25 +154,25 @@ namespace cadencii
 #endif
         }
 
-        public void btnStart_Click( Object sender, BEventArgs e )
+        public void btnStart_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
-            close();
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            Close();
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
         #region helper methods
         private void registerEventHandlers()
         {
-            this.Load += new BEventHandler( FormRealtimeConfig_Load );
-            timer.Tick += new BEventHandler( timer_Tick );
-            btnStart.Click += new BEventHandler( btnStart_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            this.Load += new EventHandler( FormRealtimeConfig_Load );
+            timer.Tick += new EventHandler( timer_Tick );
+            btnStart.Click += new EventHandler( btnStart_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -216,11 +214,11 @@ namespace cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnStart = new BButton();
-            this.btnCancel = new BButton();
-            this.lblRealTimeInput = new BLabel();
-            this.lblSpeed = new BLabel();
-            this.numSpeed = new BNumericUpDown();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.lblRealTimeInput = new System.Windows.Forms.Label();
+            this.lblSpeed = new System.Windows.Forms.Label();
+            this.numSpeed = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
             this.SuspendLayout();
             // 
@@ -322,11 +320,11 @@ namespace cadencii
 
         #endregion
 
-        private BButton btnStart;
-        private BButton btnCancel;
-        private BLabel lblRealTimeInput;
-        private BLabel lblSpeed;
-        private BNumericUpDown numSpeed;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Label lblRealTimeInput;
+        private System.Windows.Forms.Label lblSpeed;
+        private System.Windows.Forms.NumericUpDown numSpeed;
         #endregion
 #endif
         #endregion

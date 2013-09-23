@@ -36,10 +36,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -47,7 +43,7 @@ namespace cadencii
 #if JAVA
     public class FormMixer extends BForm
 #else
-    public class FormMixer : BForm
+    public class FormMixer : Form
 #endif
     {
 #if JAVA
@@ -57,37 +53,13 @@ namespace cadencii
         private Vector<VolumeTracker> m_tracker = null;
         private boolean mPreviousAlwaysOnTop;
 
-#if JAVA
-        public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
-#elif __cplusplus
-        public: signals: void federChanged( int track, int feder );
-#else
         public event FederChangedEventHandler FederChanged;
-#endif
 
-#if JAVA
-        public BEvent<PanpotChangedEventHandler> panpotChangedEvent = new BEvent<PanpotChangedEventHandler>();
-#elif __cplusplus
-        public: signals: void panpotChanged( int track, int panpot );
-#else
         public event PanpotChangedEventHandler PanpotChanged;
-#endif
 
-#if JAVA
-        public BEvent<SoloChangedEventHandler> soloChangedEvent = new BEvent<SoloChangedEventHandler>();
-#elif __cplusplus
-        public signals: void soloChanged( int track, bool solo );
-#else
         public event SoloChangedEventHandler SoloChanged;
-#endif
 
-#if JAVA
-        public BEvent<MuteChangedEventHandler> muteChangedEvent = new BEvent<MuteChangedEventHandler>();
-#elif __cplusplus
-        public signals: void muteChanged( int track, bool mute );
-#else
         public event MuteChangedEventHandler MuteChanged;
-#endif
 
         public FormMixer( FormMain parent )
         {
@@ -109,7 +81,7 @@ namespace cadencii
             applyLanguage();
             m_parent = parent;
 #if !JAVA
-            setAlwaysOnTop( true );
+            this.TopMost = true;
             this.SetStyle( ControlStyles.DoubleBuffer, true );
 #endif
         }
@@ -216,17 +188,17 @@ namespace cadencii
                 m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
             }
 
-            this.repaint();
+            this.Refresh();
         }
 
-        public void applyShortcut( KeyStroke shortcut )
+        public void applyShortcut( Keys shortcut )
         {
-            menuVisualReturn.setAccelerator( shortcut );
+            menuVisualReturn.ShortcutKeys = shortcut;
         }
 
         public void applyLanguage()
         {
-            setTitle( _( "Mixer" ) );
+            this.Text = _( "Mixer" );
         }
 
         /// <summary>
@@ -293,20 +265,20 @@ namespace cadencii
 #if !JAVA
             if ( panel_capacity >= num_vtracker_on_panel ) {
                 // volumeMaster以外の全てのVolumeTrackerを，画面上に同時表示可能
-                hScroll.setMinimum( 0 );
-                hScroll.setValue( 0 );
-                hScroll.setMaximum( 0 );
-                hScroll.setVisibleAmount( 1 );
-                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, 15 ) );
+                hScroll.Minimum = 0;
+                hScroll.Value = 0;
+                hScroll.Maximum = 0;
+                hScroll.LargeChange = 1;
+                hScroll.Size = new Size( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, 15 );
             } else {
                 // num_vtracker_on_panel個のVolumeTrackerのうち，panel_capacity個しか，画面上に同時表示できない
-                hScroll.setMinimum( 0 );
-                hScroll.setValue( 0 );
-                hScroll.setMaximum( num_vtracker_on_panel * VolumeTracker.WIDTH );
-                hScroll.setVisibleAmount( panel_capacity * VolumeTracker.WIDTH );
-                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * panel_capacity, 15 ) );
+                hScroll.Minimum = 0;
+                hScroll.Value = 0;
+                hScroll.Maximum = num_vtracker_on_panel * VolumeTracker.WIDTH;
+                hScroll.LargeChange = panel_capacity * VolumeTracker.WIDTH;
+                hScroll.Size = new Size( (VolumeTracker.WIDTH + 1) * panel_capacity, 15 );
             }
-            hScroll.setLocation( 0, VolumeTracker.HEIGHT );
+            hScroll.Location = new System.Drawing.Point( 0, VolumeTracker.HEIGHT );
 #endif
 
             int j = -1;
@@ -426,12 +398,12 @@ namespace cadencii
                 VolumeTracker item = m_tracker.get( i );
                 item.PanpotChanged -= new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged -= new FederChangedEventHandler( FormMixer_FederChanged );
-                item.MuteButtonClick -= new BEventHandler( FormMixer_MuteButtonClick );
-                item.SoloButtonClick -= new BEventHandler( FormMixer_SoloButtonClick );
+                item.MuteButtonClick -= new EventHandler( FormMixer_MuteButtonClick );
+                item.SoloButtonClick -= new EventHandler( FormMixer_SoloButtonClick );
             }
             volumeMaster.PanpotChanged -= new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
             volumeMaster.FederChanged -= new FederChangedEventHandler( volumeMaster_FederChanged );
-            volumeMaster.MuteButtonClick -= new BEventHandler( volumeMaster_MuteButtonClick );
+            volumeMaster.MuteButtonClick -= new EventHandler( volumeMaster_MuteButtonClick );
         }
 
         /// <summary>
@@ -447,28 +419,26 @@ namespace cadencii
                 VolumeTracker item = m_tracker.get( i );
                 item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
-                item.MuteButtonClick += new BEventHandler( FormMixer_MuteButtonClick );
-                item.SoloButtonClick += new BEventHandler( FormMixer_SoloButtonClick );
+                item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
+                item.SoloButtonClick += new EventHandler( FormMixer_SoloButtonClick );
             }
             volumeMaster.PanpotChanged += new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
             volumeMaster.FederChanged += new FederChangedEventHandler( volumeMaster_FederChanged );
-            volumeMaster.MuteButtonClick += new BEventHandler( volumeMaster_MuteButtonClick );
+            volumeMaster.MuteButtonClick += new EventHandler( volumeMaster_MuteButtonClick );
         }
 
         private void registerEventHandlers()
         {
-            menuVisualReturn.Click += new BEventHandler( menuVisualReturn_Click );
-#if !JAVA
-            hScroll.ValueChanged += new BEventHandler( veScrollBar_ValueChanged );
-#endif
-            this.FormClosing += new BFormClosingEventHandler( FormMixer_FormClosing );
-            this.Load += new BEventHandler( FormMixer_Load );
+            menuVisualReturn.Click += new EventHandler( menuVisualReturn_Click );
+            hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
+            this.FormClosing += new FormClosingEventHandler( FormMixer_FormClosing );
+            this.Load += new EventHandler( FormMixer_Load );
             reregisterEventHandlers();
         }
 
         private void setResources()
         {
-            setIconImage( Resources.get_icon() );
+            this.Icon = Resources.get_icon();
         }
 
         private void invokePanpotChangedEvent( int track, int panpot )
@@ -542,7 +512,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMixer#FormMixer_Load" );
 #endif
-            setAlwaysOnTop( true );
+            this.TopMost = true;
         }
         
         public void FormMixer_PanpotChanged( int track, int panpot )
@@ -565,7 +535,7 @@ namespace cadencii
             }
         }
 
-        public void FormMixer_SoloButtonClick( Object sender, BEventArgs e )
+        public void FormMixer_SoloButtonClick( Object sender, EventArgs e )
         {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = parent.getTrack();
@@ -578,7 +548,7 @@ namespace cadencii
             updateSoloMute();
         }
 
-        public void FormMixer_MuteButtonClick( Object sender, BEventArgs e )
+        public void FormMixer_MuteButtonClick( Object sender, EventArgs e )
         {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = parent.getTrack();
@@ -591,27 +561,27 @@ namespace cadencii
             updateSoloMute();
         }
 
-        public void menuVisualReturn_Click( Object sender, BEventArgs e )
+        public void menuVisualReturn_Click( Object sender, EventArgs e )
         {
-            this.setVisible( false );
+            this.Visible = false;
         }
 
-        public void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormMixer_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            this.setVisible( false );
+            this.Visible = false;
 #if !JAVA
             e.Cancel = true;
 #endif
         }
 
 #if !JAVA
-        public void veScrollBar_ValueChanged( Object sender, BEventArgs e )
+        public void veScrollBar_ValueChanged( Object sender, EventArgs e )
         {
-            int stdx = hScroll.getValue();
+            int stdx = hScroll.Value;
             for ( int i = 0; i < m_tracker.size(); i++ ) {
                 m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
             }
-            this.invalidate();
+            this.Invalidate();
         }
 #endif
 
@@ -635,7 +605,7 @@ namespace cadencii
             }
         }
 
-        public void volumeMaster_MuteButtonClick( Object sender, BEventArgs e )
+        public void volumeMaster_MuteButtonClick( Object sender, EventArgs e )
         {
             try {
                 invokeMuteChangedEvent( 0, volumeMaster.isMuted() );
@@ -679,11 +649,11 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuMain = new cadencii.windows.forms.BMenuBar();
-            this.menuVisual = new cadencii.windows.forms.BMenuItem();
-            this.menuVisualReturn = new cadencii.windows.forms.BMenuItem();
-            this.panelSlaves = new cadencii.windows.forms.BPanel();
-            this.hScroll = new cadencii.windows.forms.BHScrollBar();
+            this.menuMain = new MenuStrip();
+            this.menuVisual = new ToolStripMenuItem();
+            this.menuVisualReturn = new ToolStripMenuItem();
+            this.panelSlaves = new UserControl();
+            this.hScroll = new HScrollBar();
             this.volumeMaster = new cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
@@ -766,12 +736,12 @@ namespace cadencii
 
         #endregion
 
-        private BMenuBar menuMain;
-        private BMenuItem menuVisual;
-        private BMenuItem menuVisualReturn;
+        private MenuStrip menuMain;
+        private ToolStripMenuItem menuVisual;
+        private ToolStripMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
-        private BPanel panelSlaves;
-        private BHScrollBar hScroll;
+        private UserControl panelSlaves;
+        private HScrollBar hScroll;
         #endregion
 #endif
         #endregion

@@ -33,15 +33,13 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormVibratoConfig extends BDialog{
 #else
-    public class FormVibratoConfig : BDialog
+    public class FormVibratoConfig : System.Windows.Forms.Form
     {
 #endif
         private VibratoHandle m_vibrato;
@@ -75,12 +73,12 @@ namespace cadencii
             sout.println( "    type=" + type );
 #endif
             if ( use_original ) {
-                radioUserDefined.setSelected( true );
+                radioUserDefined.Checked = true;
             } else {
                 if ( type == SynthesizerType.VOCALOID1 ) {
-                    radioVocaloid1.setSelected( true );
+                    radioVocaloid1.Checked = true;
                 } else {
-                    radioVocaloid2.setSelected( true );
+                    radioVocaloid2.Checked = true;
                 }
             }
             if ( vibrato_handle != null ) {
@@ -94,21 +92,21 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
 #endif
-                for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
-                    VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
+                for ( int i = 0; i < comboVibratoType.Items.Count; i++ ) {
+                    VibratoHandle handle = (VibratoHandle)comboVibratoType.Items[i];
 #if DEBUG
                     sout.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
 #endif
                     if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
-                        comboVibratoType.setSelectedIndex( i );
+                        comboVibratoType.SelectedIndex = i;
                         break;
                     }
                 }
             }
 
-            txtVibratoLength.setEnabled( vibrato_handle != null );
+            txtVibratoLength.Enabled = (vibrato_handle != null);
             if ( vibrato_handle != null ) {
-                txtVibratoLength.setText( (int)((float)vibrato_handle.getLength() / (float)note_length * 100.0f) + "" );
+                txtVibratoLength.Text = (int)((float)vibrato_handle.getLength() / (float)note_length * 100.0f) + "";
             } else {
                 String s = "";
                 if ( default_vibrato_length == DefaultVibratoLengthEnum.L100 ) {
@@ -120,7 +118,7 @@ namespace cadencii
                 } else if ( default_vibrato_length == DefaultVibratoLengthEnum.L75 ) {
                     s = "75";
                 }
-                txtVibratoLength.setText( s );
+                txtVibratoLength.Text = s;
             }
   
             m_note_length = note_length;
@@ -135,14 +133,14 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Vibrato property" ) );
-            lblVibratoLength.setText( _( "Vibrato length" ) );
-            lblVibratoLength.setMnemonic( KeyEvent.VK_L, txtVibratoLength );
-            lblVibratoType.setText( _( "Vibrato Type" ) );
-            lblVibratoType.setMnemonic( KeyEvent.VK_T, comboVibratoType );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            groupSelect.setTitle( _( "Select from" ) );
+            this.Text = _( "Vibrato property" );
+            lblVibratoLength.Text = _( "Vibrato length" );
+            lblVibratoLength.Mnemonic( KeyEvent.VK_L );
+            lblVibratoType.Text = _( "Vibrato Type" );
+            lblVibratoType.Mnemonic( KeyEvent.VK_T );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
+            groupSelect.Text = _( "Select from" );
         }
 
         /// <summary>
@@ -166,58 +164,58 @@ namespace cadencii
         private void updateComboBoxStatus()
         {
             // 選択位置
-            int old = comboVibratoType.getSelectedIndex();
+            int old = comboVibratoType.SelectedIndex;
 
             // 全部削除
-            comboVibratoType.removeAllItems();
+            comboVibratoType.Items.Clear();
 
             // 「ビブラート無し」を表すアイテムを追加
             VibratoHandle empty = new VibratoHandle();
             empty.setCaption( "[Non Vibrato]" );
             empty.IconID = "$04040000";
-            comboVibratoType.addItem( empty );
+            comboVibratoType.Items.Add( empty );
 
             // 選択元を元に，選択肢を追加する
-            if ( radioUserDefined.isSelected() ) {
+            if ( radioUserDefined.Checked ) {
                 // ユーザー定義のを使う場合
                 int size = AppManager.editorConfig.AutoVibratoCustom.size();
                 for ( int i = 0; i < size; i++ ) {
                     VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                    comboVibratoType.addItem( handle );
+                    comboVibratoType.Items.Add( handle );
                 }
             } else {
                 // VOCALOID1/VOCALOID2のシステム定義のを使う場合
-                SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                 for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                     VibratoHandle vconfig = itr.next();
-                    comboVibratoType.addItem( vconfig );
+                    comboVibratoType.Items.Add( vconfig );
                 }
             }
 
             // 選択位置を戻せるなら戻す
             int index = old;
-            if ( index >= comboVibratoType.getItemCount() ) {
-                index = comboVibratoType.getItemCount() - 1;
+            if ( index >= comboVibratoType.Items.Count ) {
+                index = comboVibratoType.Items.Count - 1;
             }
             if ( 0 <= index ) {
-                comboVibratoType.setSelectedIndex( index );
+                comboVibratoType.SelectedIndex = index;
             }
         }
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
-            radioUserDefined.CheckedChanged += new BEventHandler( handleRadioCheckedChanged );
-            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
-              txtVibratoLength.TextChanged += new BEventHandler( txtVibratoLength_TextChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioUserDefined.CheckedChanged += new EventHandler( handleRadioCheckedChanged );
+            comboVibratoType.SelectedIndexChanged += new EventHandler( comboVibratoType_SelectedIndexChanged );
+              txtVibratoLength.TextChanged += new EventHandler( txtVibratoLength_TextChanged );
         }
 
         public void handleRadioCheckedChanged( Object sender, EventArgs e )
         {
-            comboVibratoType.SelectedIndexChanged -= new BEventHandler( comboVibratoType_SelectedIndexChanged );
+            comboVibratoType.SelectedIndexChanged -= new EventHandler( comboVibratoType_SelectedIndexChanged );
             updateComboBoxStatus();
-            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
+            comboVibratoType.SelectedIndexChanged += new EventHandler( comboVibratoType_SelectedIndexChanged );
         }
 
         private void setResources()
@@ -226,19 +224,19 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e )
+        public void comboVibratoType_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            int index = comboVibratoType.getSelectedIndex();
+            int index = comboVibratoType.SelectedIndex;
 #if DEBUG
             sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index );
 #endif
             if ( index >= 0 ) {
-                String s = ((VibratoHandle)comboVibratoType.getItemAt( index )).IconID;
+                String s = ((VibratoHandle)comboVibratoType.Items[index]).IconID;
 #if DEBUG
                 sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index + "; iconid=" + s );
 #endif
@@ -247,12 +245,12 @@ namespace cadencii
                     sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; B; m_vibrato -> null" );
 #endif
                     m_vibrato = null;
-                    txtVibratoLength.setEnabled( false );
+                    txtVibratoLength.Enabled = false;
                     return;
                 } else {
-                    txtVibratoLength.setEnabled( true );
+                    txtVibratoLength.Enabled = true;
                     VibratoHandle src = null;
-                    if ( radioUserDefined.isSelected() ) {
+                    if ( radioUserDefined.Checked ) {
                         int size = vec.size( AppManager.editorConfig.AutoVibratoCustom );
                         for ( int i = 0; i < size; i++ ) {
                             VibratoHandle handle = vec.get( AppManager.editorConfig.AutoVibratoCustom, i );
@@ -262,7 +260,7 @@ namespace cadencii
                             }
                         }
                     } else {
-                        SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                        SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                             VibratoHandle vconfig = itr.next();
                             if ( str.compare( s, vconfig.IconID ) ) {
@@ -277,7 +275,7 @@ namespace cadencii
                     if ( src != null ) {
                         int percent;
                         try {
-                            percent = str.toi( txtVibratoLength.getText() );
+                            percent = str.toi( txtVibratoLength.Text );
                         } catch ( Exception ex ) {
                             return;
                         }
@@ -289,7 +287,7 @@ namespace cadencii
             }
         }
 
-        public void txtVibratoLength_TextChanged( Object sender, BEventArgs e )
+        public void txtVibratoLength_TextChanged( Object sender, EventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "txtVibratoLength_TextChanged" );
@@ -297,7 +295,7 @@ namespace cadencii
 #endif
             int percent = 0;
             try {
-                percent = str.toi( txtVibratoLength.getText() );
+                percent = str.toi( txtVibratoLength.Text );
                 if ( percent < 0 ) {
                     percent = 0;
                 } else if ( 100 < percent ) {
@@ -311,7 +309,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoConfig#txtVibratoLength_TextChanged; A; m_vibrato -> null" );
 #endif
-                txtVibratoLength.setEnabled( false );
+                txtVibratoLength.Enabled = false;
             } else {
                 if ( m_vibrato != null ) {
                     int new_length = (int)(m_note_length * percent / 100.0f);
@@ -320,9 +318,9 @@ namespace cadencii
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -358,17 +356,17 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblVibratoLength = new cadencii.windows.forms.BLabel();
-            this.lblVibratoType = new cadencii.windows.forms.BLabel();
+            this.lblVibratoLength = new System.Windows.Forms.Label();
+            this.lblVibratoType = new System.Windows.Forms.Label();
             this.txtVibratoLength = new cadencii.NumberTextBox();
-            this.label3 = new cadencii.windows.forms.BLabel();
-            this.comboVibratoType = new cadencii.windows.forms.BComboBox();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.groupSelect = new BGroupBox();
-            this.radioUserDefined = new BRadioButton();
-            this.radioVocaloid2 = new BRadioButton();
-            this.radioVocaloid1 = new BRadioButton();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboVibratoType = new System.Windows.Forms.ComboBox();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.groupSelect = new System.Windows.Forms.GroupBox();
+            this.radioUserDefined = new System.Windows.Forms.RadioButton();
+            this.radioVocaloid2 = new System.Windows.Forms.RadioButton();
+            this.radioVocaloid1 = new System.Windows.Forms.RadioButton();
             this.groupSelect.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -519,17 +517,17 @@ namespace cadencii
         }
         #endregion
 
-        private BLabel lblVibratoLength;
-        private BLabel lblVibratoType;
+        private System.Windows.Forms.Label lblVibratoLength;
+        private System.Windows.Forms.Label lblVibratoType;
         private NumberTextBox txtVibratoLength;
-        private BLabel label3;
-        private BComboBox comboVibratoType;
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BGroupBox groupSelect;
-        private BRadioButton radioVocaloid2;
-        private BRadioButton radioVocaloid1;
-        private BRadioButton radioUserDefined;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboVibratoType;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.GroupBox groupSelect;
+        private System.Windows.Forms.RadioButton radioVocaloid2;
+        private System.Windows.Forms.RadioButton radioVocaloid1;
+        private System.Windows.Forms.RadioButton radioUserDefined;
         #endregion
 #endif
     }

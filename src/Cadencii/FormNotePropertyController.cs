@@ -24,6 +24,7 @@ import cadencii.ui.*;
 #else
 
 using System;
+using System.Windows.Forms;
 using cadencii.javax.swing;
 using cadencii.apputil;
 using cadencii;
@@ -74,7 +75,7 @@ namespace cadencii
             this.ui.setTitle( _( "Note Property" ) );
         }
 
-        public void applyShortcut( KeyStroke value )
+        public void applyShortcut( Keys value )
         {
             this.ui.setMenuCloseAccelerator( value );
         }

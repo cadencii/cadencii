@@ -31,7 +31,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using BPropertyValueChangedEventHandler = System.Windows.Forms.PropertyValueChangedEventHandler;
     using BPropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
@@ -43,11 +42,7 @@ namespace cadencii
     public class PropertyPanel : UserControl
 #endif
     {
-#if JAVA
-        public final BEvent<CommandExecuteRequiredEventHandler> commandExecuteRequiredEvent = new BEvent<CommandExecuteRequiredEventHandler>();
-#else
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
-#endif
         private Vector<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
@@ -278,11 +273,9 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-#if !JAVA
             propertyGrid.SelectedGridItemChanged += new SelectedGridItemChangedEventHandler( propertyGrid_SelectedGridItemChanged );
-#endif
-            propertyGrid.Leave += new BEventHandler( propertyGrid_Leave );
-            propertyGrid.Enter += new BEventHandler( propertyGrid_Enter );
+            propertyGrid.Leave += new EventHandler( propertyGrid_Leave );
+            propertyGrid.Enter += new EventHandler( propertyGrid_Enter );
             propertyGrid.PropertyValueChanged += new BPropertyValueChangedEventHandler( propertyGrid_PropertyValueChanged );
         }
 

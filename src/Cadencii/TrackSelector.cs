@@ -31,6 +31,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Threading;
 using System.Linq;
+using System.Windows.Forms;
 using cadencii;
 using cadencii.apputil;
 using cadencii.java.awt;
@@ -41,14 +42,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
-
-    using BEventHandler = System.EventHandler;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
 
     using boolean = System.Boolean;
     using Float = System.Single;
@@ -63,7 +57,7 @@ namespace cadencii
 #if JAVA
     public class TrackSelector extends BPanel
 #else
-    public class TrackSelector : BPanel
+    public class TrackSelector : UserControl
 #endif
     {
         #region constants and internal enums
@@ -398,7 +392,7 @@ namespace cadencii
         /// <summary>
         /// カーブ種類とメニューアイテムを紐付けるマップ
         /// </summary>
-        private TreeMap<CurveType, BMenuItem> mMenuMap = new TreeMap<CurveType, BMenuItem>();
+        private TreeMap<CurveType, ToolStripMenuItem> mMenuMap = new TreeMap<CurveType, ToolStripMenuItem>();
         /// <summary>
         /// ツールチップに表示されるプログラム
         /// </summary>
@@ -415,43 +409,23 @@ namespace cadencii
         /// <summary>
         /// 最前面に表示するカーブの種類が変更されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
-#else
         public event SelectedCurveChangedEventHandler SelectedCurveChanged;
-#endif
         /// <summary>
         /// 表示するトラック番号が変更されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
-#else
         public event SelectedTrackChangedEventHandler SelectedTrackChanged;
-#endif
         /// <summary>
         /// VSQの編集コマンドが発行されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<BEventHandler> commandExecutedEvent = new BEvent<BEventHandler>();
-#else
-        public event BEventHandler CommandExecuted;
-#endif
+        public event EventHandler CommandExecuted;
         /// <summary>
         /// トラックの歌声合成が要求されたとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<RenderRequiredEventHandler> renderRequiredEvent = new BEvent<RenderRequiredEventHandler>();
-#else
         public event RenderRequiredEventHandler RenderRequired;
-#endif
         /// <summary>
         /// このコントロールの推奨最少表示高さが変わったとき発生するイベント．
         /// </summary>
-#if JAVA
-        public BEvent<BEventHandler> preferredMinHeightChangedEvent = new BEvent<BEventHandler>();
-#else
-        public event BEventHandler PreferredMinHeightChanged;
-#endif
+        public event EventHandler PreferredMinHeightChanged;
 
 #if JAVA
         /**
@@ -606,11 +580,11 @@ namespace cadencii
         /// <summary>
         /// メニューアイテムから，そのアイテムが担当しているカーブ種類を取得します
         /// </summary>
-        private CurveType getCurveTypeFromMenu( BMenuItem menu )
+        private CurveType getCurveTypeFromMenu(ToolStripMenuItem menu)
         {
             for( Iterator<CurveType> itr = mMenuMap.keySet().iterator(); itr.hasNext(); ){
                 CurveType curve = itr.next();
-                BMenuItem search = mMenuMap.get( curve );
+                ToolStripMenuItem search = mMenuMap.get(curve);
                 if( menu == search ){
                     return curve;
                 }
@@ -965,15 +939,9 @@ namespace cadencii
                 AppManager.getVsqFile().executeCommand( command );
             }
             try {
-#if JAVA
-                commandExecutedEvent.raise( this, new BEventArgs() );
-#elif QT_VERSION
-                commandExecuted( this, new BEventArgs() );
-#else
                 if ( CommandExecuted != null ) {
-                    CommandExecuted.Invoke( this, new BEventArgs() );
+                    CommandExecuted.Invoke( this, new EventArgs() );
                 }
-#endif
             } catch ( Exception ex ) {
                 serr.println( "TrackSelector#executeCommand; ex=" + ex );
             }
@@ -1150,13 +1118,9 @@ namespace cadencii
             int min_size = getPreferredMinSize();
             if ( mLastPreferredMinHeight != min_size ) {
                 try {
-#if JAVA
-                    preferredMinHeightChangedEvent.raise( this, new BEventArgs() );
-#else
                     if ( PreferredMinHeightChanged != null ) {
-                        PreferredMinHeightChanged.Invoke( this, new BEventArgs() );
+                        PreferredMinHeightChanged.Invoke( this, new EventArgs() );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
                 }
@@ -2421,11 +2385,11 @@ namespace cadencii
             }
             if ( cursor_should_be_hand ) {
                 if ( getCursor().getType() != java.awt.Cursor.HAND_CURSOR ) {
-                    setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
+                    setCursor( new java.awt.Cursor( java.awt.Cursor.HAND_CURSOR ) );
                 }
             } else {
                 if ( getCursor().getType() != java.awt.Cursor.DEFAULT_CURSOR ) {
-                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                    setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 }
             }
             g.setClip( last_clip );
@@ -2838,16 +2802,14 @@ namespace cadencii
             return getWidth() - AppManager.keyWidth;
         }
 
-#if !JAVA
-        public void TrackSelector_Load( Object sender, BEventArgs e )
+        public void TrackSelector_Load( Object sender, EventArgs e )
         {
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true );
         }
-#endif
 
-        public void TrackSelector_MouseClick( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( mCurveVisible ) {
                 if ( e.Button == BMouseButtons.Left ) {
@@ -2863,152 +2825,145 @@ namespace cadencii
                 } else if ( e.Button == BMouseButtons.Right ) {
                     if ( 0 <= e.X && e.X <= AppManager.keyWidth &&
                          0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
-                        MenuElement[] sub_cmenu_curve = cmenuCurve.getSubElements();
-                        for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
-                            MenuElement tsi = sub_cmenu_curve[i];
-                            if ( tsi is BMenuItem ) {
-                                BMenuItem tsmi = (BMenuItem)tsi;
-                                tsmi.setSelected( false );
-                                MenuElement[] sub_tsmi = tsmi.getSubElements();
-                                for ( int j = 0; j < sub_tsmi.Length; j++ ) {
-                                    MenuElement tsi2 = sub_tsmi[j];
-                                    if ( tsi2 is BMenuItem ) {
-                                        BMenuItem tsmi2 = (BMenuItem)tsi2;
-                                        tsmi2.setSelected( false );
+                        foreach (var tsi in cmenuCurve.Items) {
+                            if (tsi is ToolStripMenuItem) {
+                                ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
+                                tsmi.Checked = false;
+                                foreach (var tsi2 in tsmi.DropDownItems) {
+                                    if ( tsi2 is System.Windows.Forms.ToolStripMenuItem ) {
+                                        System.Windows.Forms.ToolStripMenuItem tsmi2 = (System.Windows.Forms.ToolStripMenuItem)tsi2;
+                                        tsmi2.Checked = false;
                                     }
                                 }
                             }
                         }
                         RendererKind kind = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) );
                         if ( kind == RendererKind.VOCALOID1 ) {
-                            cmenuCurveVelocity.setVisible( true );
-                            cmenuCurveAccent.setVisible( true );
-                            cmenuCurveDecay.setVisible( true );
+                            cmenuCurveVelocity.Visible = true;
+                            cmenuCurveAccent.Visible = true;
+                            cmenuCurveDecay.Visible = true;
 
-                            cmenuCurveSeparator1.setVisible( true );
-                            cmenuCurveDynamics.setVisible( true );
-                            cmenuCurveVibratoRate.setVisible( true );
-                            cmenuCurveVibratoDepth.setVisible( true );
+                            cmenuCurveSeparator1.Visible = true;
+                            cmenuCurveDynamics.Visible = true;
+                            cmenuCurveVibratoRate.Visible = true;
+                            cmenuCurveVibratoDepth.Visible = true;
 
-                            cmenuCurveSeparator2.setVisible( true );
-                            cmenuCurveReso1.setVisible( true );
-                            cmenuCurveReso2.setVisible( true );
-                            cmenuCurveReso3.setVisible( true );
-                            cmenuCurveReso4.setVisible( true );
+                            cmenuCurveSeparator2.Visible = true;
+                            cmenuCurveReso1.Visible = true;
+                            cmenuCurveReso2.Visible = true;
+                            cmenuCurveReso3.Visible = true;
+                            cmenuCurveReso4.Visible = true;
 
-                            cmenuCurveSeparator3.setVisible( true );
-                            cmenuCurveHarmonics.setVisible( true );
-                            cmenuCurveBreathiness.setVisible( true );
-                            cmenuCurveBrightness.setVisible( true );
-                            cmenuCurveClearness.setVisible( true );
-                            cmenuCurveOpening.setVisible( false );
-                            cmenuCurveGenderFactor.setVisible( true );
+                            cmenuCurveSeparator3.Visible = true;
+                            cmenuCurveHarmonics.Visible = true;
+                            cmenuCurveBreathiness.Visible = true;
+                            cmenuCurveBrightness.Visible = true;
+                            cmenuCurveClearness.Visible = true;
+                            cmenuCurveOpening.Visible = false;
+                            cmenuCurveGenderFactor.Visible = true;
 
-                            cmenuCurveSeparator4.setVisible( true );
-                            cmenuCurvePortamentoTiming.setVisible( true );
-                            cmenuCurvePitchBend.setVisible( true );
-                            cmenuCurvePitchBendSensitivity.setVisible( true );
+                            cmenuCurveSeparator4.Visible = true;
+                            cmenuCurvePortamentoTiming.Visible = true;
+                            cmenuCurvePitchBend.Visible = true;
+                            cmenuCurvePitchBendSensitivity.Visible = true;
 
-                            cmenuCurveSeparator5.setVisible( true );
-                            cmenuCurveEffect2Depth.setVisible( true );
-                            cmenuCurveEnvelope.setVisible( false );
+                            cmenuCurveSeparator5.Visible = true;
+                            cmenuCurveEffect2Depth.Visible = true;
+                            cmenuCurveEnvelope.Visible = false;
 
-                            cmenuCurveBreathiness.setText( "Noise" );
-                            cmenuCurveVelocity.setText( "Velocity" );
+                            cmenuCurveBreathiness.Text = "Noise";
+                            cmenuCurveVelocity.Text = "Velocity";
                         } else if ( kind == RendererKind.UTAU || kind == RendererKind.VCNT ) {
-                            cmenuCurveVelocity.setVisible( (kind == RendererKind.UTAU) );
-                            cmenuCurveAccent.setVisible( false );
-                            cmenuCurveDecay.setVisible( false );
+                            cmenuCurveVelocity.Visible = (kind == RendererKind.UTAU);
+                            cmenuCurveAccent.Visible = false;
+                            cmenuCurveDecay.Visible = false;
 
-                            cmenuCurveSeparator1.setVisible( false );
-                            cmenuCurveDynamics.setVisible( false );
-                            cmenuCurveVibratoRate.setVisible( true );
-                            cmenuCurveVibratoDepth.setVisible( true );
+                            cmenuCurveSeparator1.Visible = false;
+                            cmenuCurveDynamics.Visible = false;
+                            cmenuCurveVibratoRate.Visible = true;
+                            cmenuCurveVibratoDepth.Visible = true;
 
-                            cmenuCurveSeparator2.setVisible( false );
-                            cmenuCurveReso1.setVisible( false );
-                            cmenuCurveReso2.setVisible( false );
-                            cmenuCurveReso3.setVisible( false );
-                            cmenuCurveReso4.setVisible( false );
+                            cmenuCurveSeparator2.Visible = false;
+                            cmenuCurveReso1.Visible = false;
+                            cmenuCurveReso2.Visible = false;
+                            cmenuCurveReso3.Visible = false;
+                            cmenuCurveReso4.Visible = false;
 
-                            cmenuCurveSeparator3.setVisible( false );
-                            cmenuCurveHarmonics.setVisible( false );
-                            cmenuCurveBreathiness.setVisible( false );
-                            cmenuCurveBrightness.setVisible( false );
-                            cmenuCurveClearness.setVisible( false );
-                            cmenuCurveOpening.setVisible( false );
-                            cmenuCurveGenderFactor.setVisible( false );
+                            cmenuCurveSeparator3.Visible = false;
+                            cmenuCurveHarmonics.Visible = false;
+                            cmenuCurveBreathiness.Visible = false;
+                            cmenuCurveBrightness.Visible = false;
+                            cmenuCurveClearness.Visible = false;
+                            cmenuCurveOpening.Visible = false;
+                            cmenuCurveGenderFactor.Visible = false;
 
-                            cmenuCurveSeparator4.setVisible( true );
-                            cmenuCurvePortamentoTiming.setVisible( false );
-                            cmenuCurvePitchBend.setVisible( true );
-                            cmenuCurvePitchBendSensitivity.setVisible( true );
+                            cmenuCurveSeparator4.Visible = true;
+                            cmenuCurvePortamentoTiming.Visible = false;
+                            cmenuCurvePitchBend.Visible = true;
+                            cmenuCurvePitchBendSensitivity.Visible = true;
 
-                            cmenuCurveSeparator5.setVisible( true );
-                            cmenuCurveEffect2Depth.setVisible( false );
-                            cmenuCurveEnvelope.setVisible( true );
+                            cmenuCurveSeparator5.Visible = true;
+                            cmenuCurveEffect2Depth.Visible = false;
+                            cmenuCurveEnvelope.Visible = true;
 
                             if ( kind == RendererKind.UTAU ) {
-                                cmenuCurveVelocity.setText( "Intensity" );
+                                cmenuCurveVelocity.Text = "Intensity";
                             }
                         } else {
-                            cmenuCurveVelocity.setVisible( true );
-                            cmenuCurveAccent.setVisible( true );
-                            cmenuCurveDecay.setVisible( true );
+                            cmenuCurveVelocity.Visible = true;
+                            cmenuCurveAccent.Visible = true;
+                            cmenuCurveDecay.Visible = true;
 
-                            cmenuCurveSeparator1.setVisible( true );
-                            cmenuCurveDynamics.setVisible( true );
-                            cmenuCurveVibratoRate.setVisible( true );
-                            cmenuCurveVibratoDepth.setVisible( true );
+                            cmenuCurveSeparator1.Visible = true;
+                            cmenuCurveDynamics.Visible = true;
+                            cmenuCurveVibratoRate.Visible = true;
+                            cmenuCurveVibratoDepth.Visible = true;
 
-                            cmenuCurveSeparator2.setVisible( false );
-                            cmenuCurveReso1.setVisible( false );
-                            cmenuCurveReso2.setVisible( false );
-                            cmenuCurveReso3.setVisible( false );
-                            cmenuCurveReso4.setVisible( false );
+                            cmenuCurveSeparator2.Visible = false;
+                            cmenuCurveReso1.Visible = false;
+                            cmenuCurveReso2.Visible = false;
+                            cmenuCurveReso3.Visible = false;
+                            cmenuCurveReso4.Visible = false;
 
-                            cmenuCurveSeparator3.setVisible( true );
-                            cmenuCurveHarmonics.setVisible( false );
-                            cmenuCurveBreathiness.setVisible( true );
-                            cmenuCurveBrightness.setVisible( true );
-                            cmenuCurveClearness.setVisible( true );
-                            cmenuCurveOpening.setVisible( true );
-                            cmenuCurveGenderFactor.setVisible( true );
+                            cmenuCurveSeparator3.Visible = true;
+                            cmenuCurveHarmonics.Visible = false;
+                            cmenuCurveBreathiness.Visible = true;
+                            cmenuCurveBrightness.Visible = true;
+                            cmenuCurveClearness.Visible = true;
+                            cmenuCurveOpening.Visible = true;
+                            cmenuCurveGenderFactor.Visible = true;
 
-                            cmenuCurveSeparator4.setVisible( true );
-                            cmenuCurvePortamentoTiming.setVisible( true );
-                            cmenuCurvePitchBend.setVisible( true );
-                            cmenuCurvePitchBendSensitivity.setVisible( true );
+                            cmenuCurveSeparator4.Visible = true;
+                            cmenuCurvePortamentoTiming.Visible = true;
+                            cmenuCurvePitchBend.Visible = true;
+                            cmenuCurvePitchBendSensitivity.Visible = true;
 
-                            cmenuCurveSeparator5.setVisible( false );
-                            cmenuCurveEffect2Depth.setVisible( false );
-                            cmenuCurveEnvelope.setVisible( false );
+                            cmenuCurveSeparator5.Visible = false;
+                            cmenuCurveEffect2Depth.Visible = false;
+                            cmenuCurveEnvelope.Visible = false;
 
-                            cmenuCurveBreathiness.setText( "Breathiness" );
-                            cmenuCurveVelocity.setText( "Velocity" );
+                            cmenuCurveBreathiness.Text = "Breathiness";
+                            cmenuCurveVelocity.Text = "Velocity";
                         }
-                        for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
-                            MenuElement tsi = sub_cmenu_curve[i];
-                            if ( tsi is BMenuItem ) {
-                                BMenuItem tsmi = (BMenuItem)tsi;
+                        foreach (var tsi in cmenuCurve.Items) {
+                            if ( tsi is ToolStripMenuItem ) {
+                                ToolStripMenuItem tsmi = (ToolStripMenuItem)tsi;
                                 CurveType ct = getCurveTypeFromMenu( tsmi );
                                 if ( ct.equals( mSelectedCurve ) ) {
-                                    tsmi.setSelected( true );
+                                    tsmi.Checked = true;
                                     break;
                                 }
-                                MenuElement[] sub_tsmi = tsmi.getSubElements();
-                                for ( int j = 0; j < sub_tsmi.Length; j++ ) {
-                                    MenuElement tsi2 = sub_tsmi[j];
-                                    if ( tsi2 is BMenuItem ) {
-                                        BMenuItem tsmi2 = (BMenuItem)tsi2;
+                                foreach (var tsi2 in tsmi.DropDownItems) {
+                                    if (tsi2 is System.Windows.Forms.ToolStripMenuItem) {
+                                        var tsmi2 = (System.Windows.Forms.ToolStripMenuItem)tsi2;
                                         CurveType ct2 = getCurveTypeFromMenu( tsmi2 );
                                         if ( ct2.equals( mSelectedCurve ) ) {
-                                            tsmi2.setSelected( true );
+                                            tsmi2.Checked = true;
                                             if ( ct2.equals( CurveType.reso1amp ) || ct2.equals( CurveType.reso1bw ) || ct2.equals( CurveType.reso1freq ) ||
                                                  ct2.equals( CurveType.reso2amp ) || ct2.equals( CurveType.reso2bw ) || ct2.equals( CurveType.reso2freq ) ||
                                                  ct2.equals( CurveType.reso3amp ) || ct2.equals( CurveType.reso3bw ) || ct2.equals( CurveType.reso3freq ) ||
                                                  ct2.equals( CurveType.reso4amp ) || ct2.equals( CurveType.reso4bw ) || ct2.equals( CurveType.reso4freq ) ) {
-                                                tsmi.setSelected( true );//親アイテムもチェック。Resonance*用
+                                                tsmi.Checked = true;//親アイテムもチェック。Resonance*用
                                             }
                                             break;
                                         }
@@ -3017,7 +2972,7 @@ namespace cadencii
                             }
                         }
 
-                        cmenuCurve.show( this, e.X, e.Y );
+                        cmenuCurve.Show( this, e.X, e.Y );
                     }
                 }
             }
@@ -3210,7 +3165,7 @@ namespace cadencii
                 length * Math.Sin( theta ) / scaley + base_point.getY() );
         }
 
-        public BezierPoint HandleMouseMoveForBezierMove( BMouseEventArgs e, BezierPickedSide picked )
+        public BezierPoint HandleMouseMoveForBezierMove( MouseEventArgs e, BezierPickedSide picked )
         {
             int clock = AppManager.clockFromXCoord( e.X );
             int value = valueFromYCoord( e.Y );
@@ -3229,7 +3184,7 @@ namespace cadencii
             return HandleMouseMoveForBezierMove( clock, value, value_raw, picked );
         }
 
-        public void TrackSelector_MouseMove( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseMove( Object sender, MouseEventArgs e )
         {
             int value = valueFromYCoord( e.Y );
             int value_raw = value;
@@ -3509,7 +3464,7 @@ namespace cadencii
             }
         }
 
-        private void processMouseDownSelectRegion( BMouseEventArgs e )
+        private void processMouseDownSelectRegion( MouseEventArgs e )
         {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
                 AppManager.itemSelection.clearPoint();
@@ -3540,7 +3495,7 @@ namespace cadencii
             }
         }
 
-        public void TrackSelector_MouseDown( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseDown( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseDown" );
@@ -3599,7 +3554,7 @@ namespace cadencii
                                         } catch ( Exception ex ) {
                                             serr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                         }
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     } else if ( x + selecter_width - PX_WIDTH_RENDER <= e.X && e.X < e.X + selecter_width ) {
                                         if ( AppManager.getRenderRequired( AppManager.getSelected() ) && !AppManager.isPlaying() ) {
@@ -3725,11 +3680,11 @@ namespace cadencii
                             if ( AppManager.isCurveMode() ) {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else if ( !mSelectedCurve.equals( CurveType.VEL ) &&
@@ -3737,18 +3692,18 @@ namespace cadencii
                                             !mSelectedCurve.equals( CurveType.Decay ) &&
                                             !mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownBezier( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
                             } else {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
@@ -3764,11 +3719,11 @@ namespace cadencii
                                     // todo: TrackSelector_MouseDownのベジエ曲線
                                 } else if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else if ( !mSelectedCurve.equals( CurveType.VEL ) &&
@@ -3776,7 +3731,7 @@ namespace cadencii
                                             !mSelectedCurve.equals( CurveType.Decay ) &&
                                             !mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownBezier( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else {
@@ -3787,11 +3742,11 @@ namespace cadencii
                                 #region NOT CurveMode
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
@@ -3816,11 +3771,11 @@ namespace cadencii
                             if ( mSelectedCurve.isScalar() || mSelectedCurve.isAttachNote() ) {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                     if ( processMouseDownPreutteranceAndOverlap( e ) ) {
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 }
@@ -3955,7 +3910,7 @@ namespace cadencii
                                     mMouseHoverThread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
                                     mMouseHoverThread.Start();
 #endif
-                                    invalidate();
+                                    Invalidate();
                                     return;
                                 }
 
@@ -3966,7 +3921,7 @@ namespace cadencii
                                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                             AppManager.itemSelection.removePoint( id );
                                             mMouseDownMode = MouseDownMode.NONE;
-                                            invalidate();
+                                            Invalidate();
                                             return;
                                         }
                                     } else {
@@ -3987,7 +3942,7 @@ namespace cadencii
                                                 mMovingPoints.add( new BPPair( list.getKeyClock( i ), item.value ) );
                                             }
                                         }
-                                        invalidate();
+                                        Invalidate();
                                         return;
                                     }
                                 } else {
@@ -4047,7 +4002,7 @@ namespace cadencii
                                                                                                                        AppManager.editorConfig.getControlCurveResolutionValue() );
                                                     executeCommand( run, true );
                                                     mMouseDownMode = MouseDownMode.NONE;
-                                                    invalidate();
+                                                    Invalidate();
                                                     return;
                                                 } else {
                                                     // 1個しかデータ点がないので、BezierChainを削除
@@ -4057,7 +4012,7 @@ namespace cadencii
                                                                                                                       AppManager.editorConfig.getControlCurveResolutionValue() );
                                                     executeCommand( run, true );
                                                     mMouseDownMode = MouseDownMode.NONE;
-                                                    invalidate();
+                                                    Invalidate();
                                                     return;
                                                 }
                                             } else {
@@ -4079,7 +4034,7 @@ namespace cadencii
                                                                                                                    AppManager.editorConfig.getControlCurveResolutionValue() );
                                                 executeCommand( run, true );
                                                 mMouseDownMode = MouseDownMode.NONE;
-                                                invalidate();
+                                                Invalidate();
                                                 return;
                                             }
                                         }
@@ -4099,7 +4054,7 @@ namespace cadencii
                                                                                                  work ) );
                                                 executeCommand( run, true );
                                                 mMouseDownMode = MouseDownMode.NONE;
-                                                invalidate();
+                                                Invalidate();
                                                 return;
                                             }
                                         }
@@ -4147,10 +4102,10 @@ namespace cadencii
                 }
                 #endregion
             }
-            invalidate();
+            Invalidate();
         }
 
-        private boolean processMouseDownBezier( BMouseEventArgs e )
+        private boolean processMouseDownBezier( MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "TrackSelector::processMouseDownBezier" );
@@ -4288,7 +4243,7 @@ namespace cadencii
             return true;
         }
 
-        private boolean processMouseDownPreutteranceAndOverlap( BMouseEventArgs e )
+        private boolean processMouseDownPreutteranceAndOverlap( MouseEventArgs e )
         {
             ByRef<Integer> internal_id = new ByRef<Integer>();
             ByRef<Boolean> found_flag_was_overlap = new ByRef<Boolean>();
@@ -4318,7 +4273,7 @@ namespace cadencii
             return false;
         }
 
-        private boolean processMouseDownEnvelope( BMouseEventArgs e )
+        private boolean processMouseDownEnvelope( MouseEventArgs e )
         {
             ByRef<Integer> internal_id = new ByRef<Integer>( -1 );
             ByRef<Integer> point_kind = new ByRef<Integer>( -1 );
@@ -4493,7 +4448,7 @@ namespace cadencii
             return null;
         }
 
-        public void TrackSelector_MouseUp( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseUp( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseUp" );
@@ -4513,7 +4468,7 @@ namespace cadencii
 
             if ( !mCurveVisible ) {
                 mMouseDownMode = MouseDownMode.NONE;
-                invalidate();
+                Invalidate();
                 return;
             }
 
@@ -5353,14 +5308,10 @@ namespace cadencii
                 mMovingPoints.clear();
             }
             mMouseDownMode = MouseDownMode.NONE;
-#if JAVA
-            repaint();
-#else
-            invalidate();
-#endif
+            Invalidate();
         }
 
-        public void TrackSelector_MouseHover( Object sender, BEventArgs e )
+        public void TrackSelector_MouseHover( Object sender, EventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseHover" );
@@ -5536,30 +5487,17 @@ namespace cadencii
                 AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + mVelEditSelected.containsKey( mVelEditLastSelectedID ) );
 #endif
                 mMouseDownMode = MouseDownMode.VEL_EDIT;
-                invalidate();
+                Invalidate();
             }
         }
 
-#if JAVA
-        private class MouseHoverEventGeneratorProc extends Thread{
-            public void run(){
-                try{
-                    Thread.sleep( 1000 );
-                }catch( Exception ex ){
-                    return;
-                }
-                TrackSelector_MouseHover( this, new BEventArgs() );
-            }
-        }
-#else
         private void MouseHoverEventGenerator()
         {
             Thread.Sleep( (int)(System.Windows.Forms.SystemInformation.MouseHoverTime * 0.8) );
-            Invoke( new BEventHandler( TrackSelector_MouseHover ) );
+            Invoke( new EventHandler( TrackSelector_MouseHover ) );
         }
-#endif
 
-        public void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void TrackSelector_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
 #if JAVA
             if( mMouseHoverThread != null && mMouseHoverThread.isAlive() ){
@@ -5720,9 +5658,9 @@ namespace cadencii
                                         new FormCurvePointEdit( mMainWindow, bp_id, mSelectedCurve );
                                     int tx = AppManager.xCoordFromClocks( tclock );
                                     Point pt = pointToScreen( new Point( tx, 0 ) );
-                                    invalidate();
-                                    dialog.setLocation(
-                                        new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
+                                    Invalidate();
+                                    dialog.Location =
+                                        new System.Drawing.Point( pt.x - dialog.Width / 2, pt.y - dialog.Height );
                                     AppManager.showModalDialog( dialog, mMainWindow );
                                 }
                                 #endregion
@@ -5762,18 +5700,16 @@ namespace cadencii
                             }
                             cmenuSinger.SingerChangeExists = true;
                             cmenuSinger.InternalID = ve.InternalID;
-                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-                            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                                TrackSelectorSingerDropdownMenuItem tsmi =
-                                    (TrackSelectorSingerDropdownMenuItem)sub_cmenu_singer[i];
+                            foreach (var item in cmenuSinger.Items) {
+                                var tsmi = item as TrackSelectorSingerDropdownMenuItem;
                                 if ( tsmi.Language == ve.ID.IconHandle.Language &&
                                      tsmi.Program == ve.ID.IconHandle.Program ) {
-                                    tsmi.setSelected( true );
+                                    tsmi.Checked = true;
                                 } else {
-                                    tsmi.setSelected( false );
+                                    tsmi.Checked = false;
                                 }
                             }
-                            cmenuSinger.show( this, e.X, e.Y );
+                            cmenuSinger.Show( this, e.X, e.Y );
                         } else if ( key_width <= e.X && e.X <= width ) {
                             // マウス位置に何もアイテムが無かった場合
                             if ( !mCMenuSingerPrepared.Equals( renderer ) ) {
@@ -5792,12 +5728,11 @@ namespace cadencii
                             }
                             cmenuSinger.SingerChangeExists = false;
                             cmenuSinger.Clock = clock;
-                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-                            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                                BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
-                                tsmi.setSelected( false );
+                            foreach (var item in cmenuSinger.Items) {
+                                var tsmi = item as ToolStripMenuItem;
+                                tsmi.Checked = false;
                             }
-                            cmenuSinger.show( this, e.X, e.Y );
+                            cmenuSinger.Show( this, e.X, e.Y );
                         }
                     }
                     #endregion
@@ -5811,7 +5746,7 @@ namespace cadencii
         /// <param name="renderer"></param>
         public void prepareSingerMenu( RendererKind renderer )
         {
-            cmenuSinger.removeAll();
+            cmenuSinger.Items.Clear();
             Vector<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
@@ -5869,26 +5804,18 @@ namespace cadencii
                 if ( sc != null ) {
                     TrackSelectorSingerDropdownMenuItem tsmi =
                         new TrackSelectorSingerDropdownMenuItem();
-                    tsmi.setText( sc.VOICENAME );
+                    tsmi.Text = sc.VOICENAME;
                     tsmi.ToolTipText = tip;
                     tsmi.ToolTipPxWidth = 0;
                     tsmi.Language = sc.Language;
                     tsmi.Program = sc.Program;
-                    tsmi.Click += new BEventHandler( cmenusinger_Click );
-#if JAVA
-                    // TODO: tsmi.MouseHover
-#else
-                    tsmi.MouseHover += new BEventHandler( cmenusinger_MouseHover );
-#endif
-                    cmenuSinger.add( tsmi );
+                    tsmi.Click += new EventHandler( cmenusinger_Click );
+                    tsmi.MouseHover += new EventHandler( cmenusinger_MouseHover );
+                    cmenuSinger.Items.Add( tsmi );
                     count++;
                 }
             }
-#if JAVA
-            cmenuSinger.visibleChangedEvent.add( new BEventHandler( this, "cmenuSinger_VisibleChanged" ) );
-#else
-            cmenuSinger.VisibleChanged += new BEventHandler( cmenuSinger_VisibleChanged );
-#endif
+            cmenuSinger.VisibleChanged += new EventHandler( cmenuSinger_VisibleChanged );
             mCMenuSingerTooltipWidth = new int[count];
             //m_cmenusinger_map = list.ToArray();
             for ( int i = 0; i < count; i++ ) {
@@ -5897,20 +5824,17 @@ namespace cadencii
             mCMenuSingerPrepared = renderer;
         }
 
-        public void cmenuSinger_VisibleChanged( Object sender, BEventArgs e )
+        public void cmenuSinger_VisibleChanged( Object sender, EventArgs e )
         {
-#if JAVA
-#else
             toolTip.Hide( cmenuSinger );
-#endif
         }
 
-        public void cmenusinger_MouseEnter( Object sender, BEventArgs e )
+        public void cmenusinger_MouseEnter( Object sender, EventArgs e )
         {
             cmenusinger_MouseHover( sender, e );
         }
 
-        public void cmenusinger_MouseHover( Object sender, BEventArgs e )
+        public void cmenusinger_MouseHover( Object sender, EventArgs e )
         {
 #if !JAVA
             try {
@@ -5922,25 +5846,23 @@ namespace cadencii
 
                 // tooltipを表示するy座標を決める
                 int y = 0;
-                MenuElement[] sub = cmenuSinger.getSubElements();
-                for ( int i = 0; i < sub.Length; i++ ) {
-                    TrackSelectorSingerDropdownMenuItem item =
-                        (TrackSelectorSingerDropdownMenuItem)sub[i];
+                foreach (var i in cmenuSinger.Items) {
+                    var item = i as TrackSelectorSingerDropdownMenuItem;
                     if ( language == item.Language &&
                          program == item.Program ) {
                         break;
                     }
-                    y += item.getHeight();
+                    y += item.Height;
                 }
 
                 int tip_width = menu.ToolTipPxWidth;
-                Point ppts = cmenuSinger.pointToScreen( new Point( 0, 0 ) );
-                Point pts = new Point( ppts.x, ppts.y );
+                var ppts = cmenuSinger.PointToScreen(new System.Drawing.Point( 0, 0 ) );
+                Point pts = new Point( ppts.X, ppts.Y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
                 mTooltipProgram = program;
                 mTooltipLanguage = language;
-                if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
+                if ( pts.x + cmenuSinger.Width + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( cmenuSinger.Width, y ), 5000 );
@@ -5952,7 +5874,7 @@ namespace cadencii
 #endif
         }
 
-        public void cmenusinger_Click( Object sender, BEventArgs e )
+        public void cmenusinger_Click( Object sender, EventArgs e )
         {
             if ( !(sender is TrackSelectorSingerDropdownMenuItem) ) {
                 return;
@@ -5993,9 +5915,7 @@ namespace cadencii
             sout.println( "TrackSelector#toolTip_Draw; sender.GetType()=" + sender.GetType() );
 #endif
 
-            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                MenuElement tsi = sub_cmenu_singer[i];
+            foreach (var tsi in cmenuSinger.Items) {
                 if ( !(tsi is TrackSelectorSingerDropdownMenuItem) ) {
                     continue;
                 }
@@ -6004,7 +5924,6 @@ namespace cadencii
                 if ( menu.Language == mTooltipLanguage &&
                      menu.Program == mTooltipProgram ) {
                     menu.ToolTipPxWidth = rc.width;
-                    //((BMenuItem)tsi).setTag( tag ); <- ??
                     break;
                 }
             }
@@ -6014,7 +5933,7 @@ namespace cadencii
         }
 #endif
 
-        public void TrackSelector_KeyDown( Object sender, BKeyEventArgs e )
+        public void TrackSelector_KeyDown( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
@@ -6026,7 +5945,7 @@ namespace cadencii
             }
         }
 
-        public void TrackSelector_KeyUp( Object sender, BKeyEventArgs e )
+        public void TrackSelector_KeyUp( Object sender, KeyEventArgs e )
         {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
@@ -6038,10 +5957,10 @@ namespace cadencii
             }
         }
 
-        public void cmenuCurveCommon_Click( Object sender, BEventArgs e )
+        public void cmenuCurveCommon_Click( Object sender, EventArgs e )
         {
-            if ( sender is BMenuItem ) {
-                BMenuItem tsmi = (BMenuItem)sender;
+            if ( sender is ToolStripMenuItem ) {
+                ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
                 CurveType curve = getCurveTypeFromMenu( tsmi );
                 if( !curve.Equals( CurveType.Empty ) ){
                     changeCurve( curve );
@@ -6055,46 +5974,44 @@ namespace cadencii
 #else
             this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
 #endif
-            this.cmenuCurveVelocity.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveAccent.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveDecay.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveDynamics.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveVibratoRate.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveVibratoDepth.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso1Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso1BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso1Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso2Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso2BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso2Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso3Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso3BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso3Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso4Freq.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso4BW.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveReso4Amp.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveHarmonics.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveBreathiness.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveBrightness.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveClearness.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveOpening.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveGenderFactor.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurvePortamentoTiming.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurvePitchBend.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurvePitchBendSensitivity.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveEffect2Depth.Click += new BEventHandler( cmenuCurveCommon_Click );
-            this.cmenuCurveEnvelope.Click += new BEventHandler( cmenuCurveCommon_Click );
-#if !JAVA
-            this.Load += new BEventHandler( this.TrackSelector_Load );
-#endif
+            this.cmenuCurveVelocity.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveAccent.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveDecay.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveDynamics.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveVibratoRate.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveVibratoDepth.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso1Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso1BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso1Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso2Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso2BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso2Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso3Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso3BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso3Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso4Freq.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso4BW.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveReso4Amp.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveHarmonics.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveBreathiness.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveBrightness.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveClearness.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveOpening.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveGenderFactor.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurvePortamentoTiming.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurvePitchBend.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurvePitchBendSensitivity.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveEffect2Depth.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.cmenuCurveEnvelope.Click += new EventHandler( cmenuCurveCommon_Click );
+            this.Load += new EventHandler( this.TrackSelector_Load );
 
-            this.MouseMove += new BMouseEventHandler( TrackSelector_MouseMove );
-            this.MouseDoubleClick += new BMouseEventHandler( TrackSelector_MouseDoubleClick );
-            this.KeyUp += new BKeyEventHandler( TrackSelector_KeyUp );
-            this.MouseClick += new BMouseEventHandler( TrackSelector_MouseClick );
-            this.MouseDown += new BMouseEventHandler( TrackSelector_MouseDown );
-            this.MouseUp += new BMouseEventHandler( TrackSelector_MouseUp );
-            this.KeyDown += new BKeyEventHandler( TrackSelector_KeyDown );
+            this.MouseMove += new MouseEventHandler( TrackSelector_MouseMove );
+            this.MouseDoubleClick += new MouseEventHandler( TrackSelector_MouseDoubleClick );
+            this.KeyUp += new KeyEventHandler( TrackSelector_KeyUp );
+            this.MouseClick += new MouseEventHandler( TrackSelector_MouseClick );
+            this.MouseDown += new MouseEventHandler( TrackSelector_MouseDown );
+            this.MouseUp += new MouseEventHandler( TrackSelector_MouseUp );
+            this.KeyDown += new KeyEventHandler( TrackSelector_KeyDown );
         }
 
         private void setResources()
@@ -6136,45 +6053,45 @@ namespace cadencii
             this.components = new System.ComponentModel.Container();
             this.cmenuSinger = new TrackSelectorSingerPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
-            this.cmenuCurve = new cadencii.windows.forms.BPopupMenu( this.components );
-            this.cmenuCurveVelocity = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveAccent = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveDecay = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator1 = new cadencii.windows.forms.BMenuSeparator();
-            this.cmenuCurveDynamics = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveVibratoRate = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveVibratoDepth = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator2 = new cadencii.windows.forms.BMenuSeparator();
-            this.cmenuCurveReso1 = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso1Freq = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso1BW = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso1Amp = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso2 = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso2Freq = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso2BW = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso2Amp = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso3 = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso3Freq = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso3BW = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso3Amp = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso4 = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso4Freq = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso4BW = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveReso4Amp = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator3 = new cadencii.windows.forms.BMenuSeparator();
-            this.cmenuCurveHarmonics = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveBreathiness = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveBrightness = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveClearness = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveOpening = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveGenderFactor = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator4 = new cadencii.windows.forms.BMenuSeparator();
-            this.cmenuCurvePortamentoTiming = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurvePitchBend = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurvePitchBendSensitivity = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveSeparator5 = new cadencii.windows.forms.BMenuSeparator();
-            this.cmenuCurveEffect2Depth = new cadencii.windows.forms.BMenuItem();
-            this.cmenuCurveEnvelope = new cadencii.windows.forms.BMenuItem();
+            this.cmenuCurve = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmenuCurveVelocity = new ToolStripMenuItem();
+            this.cmenuCurveAccent = new ToolStripMenuItem();
+            this.cmenuCurveDecay = new ToolStripMenuItem();
+            this.cmenuCurveSeparator1 = new ToolStripSeparator();
+            this.cmenuCurveDynamics = new ToolStripMenuItem();
+            this.cmenuCurveVibratoRate = new ToolStripMenuItem();
+            this.cmenuCurveVibratoDepth = new ToolStripMenuItem();
+            this.cmenuCurveSeparator2 = new ToolStripSeparator();
+            this.cmenuCurveReso1 = new ToolStripMenuItem();
+            this.cmenuCurveReso1Freq = new ToolStripMenuItem();
+            this.cmenuCurveReso1BW = new ToolStripMenuItem();
+            this.cmenuCurveReso1Amp = new ToolStripMenuItem();
+            this.cmenuCurveReso2 = new ToolStripMenuItem();
+            this.cmenuCurveReso2Freq = new ToolStripMenuItem();
+            this.cmenuCurveReso2BW = new ToolStripMenuItem();
+            this.cmenuCurveReso2Amp = new ToolStripMenuItem();
+            this.cmenuCurveReso3 = new ToolStripMenuItem();
+            this.cmenuCurveReso3Freq = new ToolStripMenuItem();
+            this.cmenuCurveReso3BW = new ToolStripMenuItem();
+            this.cmenuCurveReso3Amp = new ToolStripMenuItem();
+            this.cmenuCurveReso4 = new ToolStripMenuItem();
+            this.cmenuCurveReso4Freq = new ToolStripMenuItem();
+            this.cmenuCurveReso4BW = new ToolStripMenuItem();
+            this.cmenuCurveReso4Amp = new ToolStripMenuItem();
+            this.cmenuCurveSeparator3 = new ToolStripSeparator();
+            this.cmenuCurveHarmonics = new ToolStripMenuItem();
+            this.cmenuCurveBreathiness = new ToolStripMenuItem();
+            this.cmenuCurveBrightness = new ToolStripMenuItem();
+            this.cmenuCurveClearness = new ToolStripMenuItem();
+            this.cmenuCurveOpening = new ToolStripMenuItem();
+            this.cmenuCurveGenderFactor = new ToolStripMenuItem();
+            this.cmenuCurveSeparator4 = new ToolStripSeparator();
+            this.cmenuCurvePortamentoTiming = new ToolStripMenuItem();
+            this.cmenuCurvePitchBend = new ToolStripMenuItem();
+            this.cmenuCurvePitchBendSensitivity = new ToolStripMenuItem();
+            this.cmenuCurveSeparator5 = new ToolStripSeparator();
+            this.cmenuCurveEffect2Depth = new ToolStripMenuItem();
+            this.cmenuCurveEnvelope = new ToolStripMenuItem();
             this.cmenuCurve.SuspendLayout();
             this.SuspendLayout();
             //
@@ -6483,45 +6400,45 @@ namespace cadencii
 
         private TrackSelectorSingerPopupMenu cmenuSinger;
         private System.Windows.Forms.ToolTip toolTip;
-        private BPopupMenu cmenuCurve;
-        private BMenuItem cmenuCurveVelocity;
-        private BMenuSeparator cmenuCurveSeparator2;
-        private BMenuItem cmenuCurveReso1;
-        private BMenuItem cmenuCurveReso1Freq;
-        private BMenuItem cmenuCurveReso1BW;
-        private BMenuItem cmenuCurveReso1Amp;
-        private BMenuItem cmenuCurveReso2;
-        private BMenuItem cmenuCurveReso2Freq;
-        private BMenuItem cmenuCurveReso2BW;
-        private BMenuItem cmenuCurveReso2Amp;
-        private BMenuItem cmenuCurveReso3;
-        private BMenuItem cmenuCurveReso3Freq;
-        private BMenuItem cmenuCurveReso3BW;
-        private BMenuItem cmenuCurveReso3Amp;
-        private BMenuItem cmenuCurveReso4;
-        private BMenuItem cmenuCurveReso4Freq;
-        private BMenuItem cmenuCurveReso4BW;
-        private BMenuItem cmenuCurveReso4Amp;
-        private BMenuSeparator cmenuCurveSeparator3;
-        private BMenuItem cmenuCurveHarmonics;
-        private BMenuItem cmenuCurveDynamics;
-        private BMenuSeparator cmenuCurveSeparator1;
-        private BMenuItem cmenuCurveBreathiness;
-        private BMenuItem cmenuCurveBrightness;
-        private BMenuItem cmenuCurveClearness;
-        private BMenuItem cmenuCurveGenderFactor;
-        private BMenuSeparator cmenuCurveSeparator4;
-        private BMenuItem cmenuCurvePortamentoTiming;
-        private BMenuSeparator cmenuCurveSeparator5;
-        private BMenuItem cmenuCurveEffect2Depth;
-        private BMenuItem cmenuCurveOpening;
-        private BMenuItem cmenuCurveAccent;
-        private BMenuItem cmenuCurveDecay;
-        private BMenuItem cmenuCurveVibratoRate;
-        private BMenuItem cmenuCurveVibratoDepth;
-        private BMenuItem cmenuCurvePitchBend;
-        private BMenuItem cmenuCurvePitchBendSensitivity;
-        private BMenuItem cmenuCurveEnvelope;
+        private ContextMenuStrip cmenuCurve;
+        private ToolStripMenuItem cmenuCurveVelocity;
+        private ToolStripSeparator cmenuCurveSeparator2;
+        private ToolStripMenuItem cmenuCurveReso1;
+        private ToolStripMenuItem cmenuCurveReso1Freq;
+        private ToolStripMenuItem cmenuCurveReso1BW;
+        private ToolStripMenuItem cmenuCurveReso1Amp;
+        private ToolStripMenuItem cmenuCurveReso2;
+        private ToolStripMenuItem cmenuCurveReso2Freq;
+        private ToolStripMenuItem cmenuCurveReso2BW;
+        private ToolStripMenuItem cmenuCurveReso2Amp;
+        private ToolStripMenuItem cmenuCurveReso3;
+        private ToolStripMenuItem cmenuCurveReso3Freq;
+        private ToolStripMenuItem cmenuCurveReso3BW;
+        private ToolStripMenuItem cmenuCurveReso3Amp;
+        private ToolStripMenuItem cmenuCurveReso4;
+        private ToolStripMenuItem cmenuCurveReso4Freq;
+        private ToolStripMenuItem cmenuCurveReso4BW;
+        private ToolStripMenuItem cmenuCurveReso4Amp;
+        private ToolStripSeparator cmenuCurveSeparator3;
+        private ToolStripMenuItem cmenuCurveHarmonics;
+        private ToolStripMenuItem cmenuCurveDynamics;
+        private ToolStripSeparator cmenuCurveSeparator1;
+        private ToolStripMenuItem cmenuCurveBreathiness;
+        private ToolStripMenuItem cmenuCurveBrightness;
+        private ToolStripMenuItem cmenuCurveClearness;
+        private ToolStripMenuItem cmenuCurveGenderFactor;
+        private ToolStripSeparator cmenuCurveSeparator4;
+        private ToolStripMenuItem cmenuCurvePortamentoTiming;
+        private ToolStripSeparator cmenuCurveSeparator5;
+        private ToolStripMenuItem cmenuCurveEffect2Depth;
+        private ToolStripMenuItem cmenuCurveOpening;
+        private ToolStripMenuItem cmenuCurveAccent;
+        private ToolStripMenuItem cmenuCurveDecay;
+        private ToolStripMenuItem cmenuCurveVibratoRate;
+        private ToolStripMenuItem cmenuCurveVibratoDepth;
+        private ToolStripMenuItem cmenuCurvePitchBend;
+        private ToolStripMenuItem cmenuCurvePitchBendSensitivity;
+        private ToolStripMenuItem cmenuCurveEnvelope;
 
         #endregion
 #endif

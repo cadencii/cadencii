@@ -27,14 +27,12 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormCompileResult extends BDialog {
 #else
-    public class FormCompileResult : BDialog
+    public class FormCompileResult : System.Windows.Forms.Form
     {
 #endif
         public FormCompileResult( String message, String errors )
@@ -48,15 +46,15 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            label1.setText( message );
-            textBox1.setText( errors );
+            label1.Text = message;
+            textBox1.Text = errors;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
         public void applyLanguage()
         {
-            textBox1.setText( _( "Script Compilation Result" ) );
+            textBox1.Text = _( "Script Compilation Result" );
         }
         #endregion
 
@@ -72,14 +70,14 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
@@ -111,9 +109,9 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new cadencii.windows.forms.BLabel();
-            this.textBox1 = new cadencii.windows.forms.BTextBox();
-            this.btnOK = new cadencii.windows.forms.BButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
             // label1
@@ -169,9 +167,9 @@ namespace cadencii
 
         }
 
-        private BLabel label1;
-        private BTextBox textBox1;
-        private BButton btnOK;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btnOK;
 
 #endif
         #endregion

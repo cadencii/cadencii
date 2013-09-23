@@ -24,6 +24,7 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -32,17 +33,13 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BEventHandler = System.EventHandler;
-    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormVibratoPreset extends BDialog
 #else
-    public class FormVibratoPreset : BDialog
+    public class FormVibratoPreset : Form
 #endif
     {
         /// <summary>
@@ -98,7 +95,7 @@ namespace cadencii
 #endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            this.setSize( mPreviousWidth, mPreviousHeight );
+            this.Size = new System.Drawing.Size( mPreviousWidth, mPreviousHeight );
             registerEventHandlers();
 
             // ハンドルのリストをクローン
@@ -111,7 +108,7 @@ namespace cadencii
             // 表示状態を更新
             updateStatus();
             if ( size > 0 ) {
-                listPresets.setSelectedIndex( 0 );
+                listPresets.SelectedIndex = 0;
             }
         }
 
@@ -137,18 +134,18 @@ namespace cadencii
         #region event handlers
         public void buttonOk_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         
         public void buttonCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         
         public void listPresets_SelectedIndexChanged( Object sender, EventArgs e )
         {
             // インデックスを取得
-            int index = listPresets.getSelectedIndex();
+            int index = listPresets.SelectedIndex;
 #if DEBUG
             sout.println( "FormVibratoPreset#listPresets_SelectedIndexChanged; index=" + index );
 #endif
@@ -163,20 +160,20 @@ namespace cadencii
             }
 
             // イベントハンドラを一時的に取り除く
-            textDepth.TextChanged -= new BEventHandler( textDepth_TextChanged );
-            textRate.TextChanged -= new BEventHandler( textRate_TextChanged );
-            textName.TextChanged -= new BEventHandler( textName_TextChanged );
+            textDepth.TextChanged -= new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged -= new EventHandler( textRate_TextChanged );
+            textName.TextChanged -= new EventHandler( textName_TextChanged );
 
             // テクストボックスに値を反映
             mSelected = mHandles.get( index );
-            textDepth.setText( mSelected.getStartDepth() + "" );
-            textRate.setText( mSelected.getStartRate() + "" );
-            textName.setText( mSelected.getCaption() );
+            textDepth.Text = mSelected.getStartDepth() + "";
+            textRate.Text = mSelected.getStartRate() + "";
+            textName.Text = mSelected.getCaption();
 
             // イベントハンドラを再登録
-            textDepth.TextChanged += new BEventHandler( textDepth_TextChanged );
-            textRate.TextChanged += new BEventHandler( textRate_TextChanged );
-            textName.TextChanged += new BEventHandler( textName_TextChanged );
+            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new EventHandler( textRate_TextChanged );
+            textName.TextChanged += new EventHandler( textName_TextChanged );
 
             // 再描画
             repaintPictures();
@@ -188,10 +185,10 @@ namespace cadencii
                 return;
             }
 
-            mSelected.setCaption( textName.getText() );
-            int index = listPresets.getSelectedIndex();
+            mSelected.setCaption( textName.Text );
+            int index = listPresets.SelectedIndex;
             if( index >= 0 ){
-                listPresets.setItemAt( index, mSelected.getCaption() );
+                listPresets.Items[index] = mSelected.getCaption();
             }
         }
 
@@ -203,7 +200,7 @@ namespace cadencii
 
             int old = mSelected.getStartRate();
             int value = old;
-            String s = textRate.getText();
+            String s = textRate.Text;
             try {
                 value = str.toi( s );
             } catch ( Exception ex ) {
@@ -218,7 +215,7 @@ namespace cadencii
             mSelected.setStartRate( value );
             String nstr = value + "";
             if ( !str.compare( s, nstr ) ) {
-                textRate.setText( nstr );
+                textRate.Text = nstr;
 #if JAVA
                 textRate.setCaretPosition( nstr.length() );
 #else
@@ -237,7 +234,7 @@ namespace cadencii
 
             int old = mSelected.getStartDepth();
             int value = old;
-            String s = textDepth.getText();
+            String s = textDepth.Text;
             try {
                 value = str.toi( s );
             } catch ( Exception ex ) {
@@ -252,7 +249,7 @@ namespace cadencii
             mSelected.setStartDepth( value );
             String nstr = value + "";
             if ( !str.compare( s, nstr ) ) {
-                textDepth.setText( nstr );
+                textDepth.Text = nstr;
 #if JAVA
                 textDepth.setCaretPosition( nstr.length() );
 #else
@@ -269,17 +266,17 @@ namespace cadencii
             VibratoHandle handle = new VibratoHandle();
             handle.setCaption( "No-Name" );
             mHandles.add( handle );
-            listPresets.clearSelection();
+            listPresets.SelectedIndices.Clear();
             // 表示反映させて
             updateStatus();
             // 追加したのを選択状態にする
-            listPresets.setSelectedIndex( mHandles.size() - 1 );
+            listPresets.SelectedIndex = mHandles.size() - 1;
         }
 
         public void buttonRemove_Click( Object sender, EventArgs e )
         {
-            int index = listPresets.getSelectedIndex();
-            if ( index < 0 || listPresets.getItemCount() <= index ) {
+            int index = listPresets.SelectedIndex;
+            if ( index < 0 || listPresets.Items.Count <= index ) {
                 return;
             }
 
@@ -296,7 +293,7 @@ namespace cadencii
             }
 
             // 移動後のインデックスは？
-            int index = listPresets.getSelectedIndex();
+            int index = listPresets.SelectedIndex;
             int move_to = index + delta;
 
             // 範囲内かどうか
@@ -314,16 +311,16 @@ namespace cadencii
             mHandles.set( move_to, buff );
 
             // 選択状態を変える
-            listPresets.clearSelection();
+            listPresets.SelectedIndices.Clear();
             updateStatus();
-            listPresets.setSelectedIndex( move_to );
+            listPresets.SelectedIndex = move_to;
         }
 
-        public void pictureResulting_Paint( Object sender, BPaintEventArgs e )
+        public void pictureResulting_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
-            int raw_width = pictureResulting.getWidth();
-            int raw_height = pictureResulting.getHeight();
+            int raw_width = pictureResulting.Width;
+            int raw_height = pictureResulting.Height;
 #if JAVA
             Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
@@ -397,11 +394,11 @@ namespace cadencii
             d.flush();
         }
 
-        public void pictureRate_Paint( Object sender, BPaintEventArgs e )
+        public void pictureRate_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
-            int width = pictureRate.getWidth();
-            int height = pictureRate.getHeight();
+            int width = pictureRate.Width;
+            int height = pictureRate.Height;
 #if JAVA
             Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
@@ -428,11 +425,11 @@ namespace cadencii
                 width, height );
         }
 
-        public void pictureDepth_Paint( Object sender, BPaintEventArgs e )
+        public void pictureDepth_Paint( Object sender, PaintEventArgs e )
         {
             // 背景を描画
-            int width = pictureDepth.getWidth();
-            int height = pictureDepth.getHeight();
+            int width = pictureDepth.Width;
+            int height = pictureDepth.Height;
 #if JAVA
             Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
@@ -463,8 +460,8 @@ namespace cadencii
         {
 #if !JAVA
             if ( this.WindowState == System.Windows.Forms.FormWindowState.Normal ) {
-                mPreviousWidth = this.getWidth();
-                mPreviousHeight = this.getHeight();
+                mPreviousWidth = this.Width;
+                mPreviousHeight = this.Height;
             }
 #endif
             repaintPictures();
@@ -477,22 +474,22 @@ namespace cadencii
         /// </summary>
         private void registerEventHandlers()
         {
-            listPresets.SelectedIndexChanged += new BEventHandler( listPresets_SelectedIndexChanged );
-            textDepth.TextChanged += new BEventHandler( textDepth_TextChanged );
-            textRate.TextChanged += new BEventHandler( textRate_TextChanged );
-            textName.TextChanged += new BEventHandler( textName_TextChanged );
-            buttonAdd.Click += new BEventHandler( buttonAdd_Click );
-            buttonRemove.Click += new BEventHandler( buttonRemove_Click );
-            buttonUp.Click += new BEventHandler( handleUpDownButtonClick );
-            buttonDown.Click += new BEventHandler( handleUpDownButtonClick );
+            listPresets.SelectedIndexChanged += new EventHandler( listPresets_SelectedIndexChanged );
+            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new EventHandler( textRate_TextChanged );
+            textName.TextChanged += new EventHandler( textName_TextChanged );
+            buttonAdd.Click += new EventHandler( buttonAdd_Click );
+            buttonRemove.Click += new EventHandler( buttonRemove_Click );
+            buttonUp.Click += new EventHandler( handleUpDownButtonClick );
+            buttonDown.Click += new EventHandler( handleUpDownButtonClick );
 
-            pictureDepth.Paint += new BPaintEventHandler( pictureDepth_Paint );
-            pictureRate.Paint += new BPaintEventHandler( pictureRate_Paint );
-            pictureResulting.Paint += new BPaintEventHandler( pictureResulting_Paint );
+            pictureDepth.Paint += new PaintEventHandler( pictureDepth_Paint );
+            pictureRate.Paint += new PaintEventHandler( pictureRate_Paint );
+            pictureResulting.Paint += new PaintEventHandler( pictureResulting_Paint );
 
-            this.Resize += new BEventHandler( FormVibratoPreset_Resize );
-            buttonOk.Click += new BEventHandler( buttonOk_Click );
-            buttonCancel.Click += new BEventHandler( buttonCancel_Click );
+            this.Resize += new EventHandler( FormVibratoPreset_Resize );
+            buttonOk.Click += new EventHandler( buttonOk_Click );
+            buttonCancel.Click += new EventHandler( buttonCancel_Click );
         }
 
         private static String _( String id )
@@ -502,25 +499,25 @@ namespace cadencii
 
         private void applyLanguage()
         {
-            this.setTitle( _( "Vibrato preset" ) );
+            this.Text = _( "Vibrato preset" );
 
-            labelPresets.setText( _( "List of vibrato preset" ) );
+            labelPresets.Text = _( "List of vibrato preset" );
 
-            groupEdit.setTitle( _( "Edit" ) );
-            labelName.setText( _( "Name" ) );
+            groupEdit.Text = _( "Edit" );
+            labelName.Text = _( "Name" );
 
-            groupPreview.setTitle( _( "Preview" ) );
-            labelDepthCurve.setText( _( "Depth curve" ) );
-            labelRateCurve.setText( _( "Rate curve" ) );
-            labelResulting.setText( _( "Resulting pitch bend" ) );
+            groupPreview.Text = _( "Preview" );
+            labelDepthCurve.Text = _( "Depth curve" );
+            labelRateCurve.Text = _( "Rate curve" );
+            labelResulting.Text = _( "Resulting pitch bend" );
 
-            buttonAdd.setText( _( "Add" ) );
-            buttonRemove.setText( _( "Remove" ) );
-            buttonUp.setText( _( "Up" ) );
-            buttonDown.setText( _( "Down" ) );
+            buttonAdd.Text = _( "Add" );
+            buttonRemove.Text = _( "Remove" );
+            buttonUp.Text = _( "Up" );
+            buttonDown.Text = _( "Down" );
 
-            buttonOk.setText( _( "OK" ) );
-            buttonCancel.setText( _( "Cancel" ) );
+            buttonOk.Text = _( "OK" );
+            buttonCancel.Text = _( "Cancel" );
         }
 
         /// <summary>
@@ -528,9 +525,9 @@ namespace cadencii
         /// </summary>
         private void repaintPictures()
         {
-            pictureDepth.repaint();
-            pictureRate.repaint();
-            pictureResulting.repaint();
+            pictureDepth.Refresh();
+            pictureRate.Refresh();
+            pictureResulting.Refresh();
         }
 
         /// <summary>
@@ -612,29 +609,29 @@ namespace cadencii
         /// </summary>
         private void updateStatus()
         {
-            int old_select = listPresets.getSelectedIndex();
-            listPresets.clearSelection();
+            int old_select = listPresets.SelectedIndex;
+            listPresets.SelectedIndices.Clear();
 
             // アイテムの個数に過不足があれば数を整える
             int size = mHandles.size();
-            int delta = size - listPresets.getItemCount();
+            int delta = size - listPresets.Items.Count;
 #if DEBUG
             sout.println( "FormVibratoPreset#updateStatus; delta=" + delta );
 #endif
             if ( delta > 0 ) {
                 for ( int i = 0; i < delta; i++ ) {
-                    listPresets.addItem( "" );
+                    listPresets.Items.Add( "" );
                 }
             } else if ( delta < 0 ) {
                 for ( int i = 0; i < -delta; i++ ) {
-                    listPresets.removeItemAt( 0 );
+                    listPresets.Items.RemoveAt( 0 );
                 }
             }
 
             // アイテムを更新
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = mHandles.get( i );
-                listPresets.setItemAt( i, handle.getCaption() );
+                listPresets.Items[i] = handle.getCaption();
             }
 
             // 選択状態を復帰
@@ -648,9 +645,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormVibratoPreset#updateStatus; B; old_selected=" + old_select );
 #endif
-                //listPresets.SelectedIndexChanged -= new BEventHandler( listPresets_SelectedIndexChanged );
-                listPresets.setSelectedIndex( old_select );
-                //listPresets.SelectedIndexChanged += new BEventHandler( listPresets_SelectedIndexChanged );
+                listPresets.SelectedIndex = old_select;
             }
         }
         #endregion
@@ -687,28 +682,28 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonCancel = new cadencii.windows.forms.BButton();
-            this.buttonOk = new cadencii.windows.forms.BButton();
-            this.buttonRemove = new cadencii.windows.forms.BButton();
-            this.buttonAdd = new cadencii.windows.forms.BButton();
-            this.buttonUp = new cadencii.windows.forms.BButton();
-            this.buttonDown = new cadencii.windows.forms.BButton();
-            this.labelRate = new cadencii.windows.forms.BLabel();
-            this.labelDepth = new cadencii.windows.forms.BLabel();
-            this.labelPresets = new cadencii.windows.forms.BLabel();
-            this.pictureRate = new cadencii.windows.forms.BPictureBox();
-            this.labelRateCurve = new cadencii.windows.forms.BLabel();
-            this.labelDepthCurve = new cadencii.windows.forms.BLabel();
-            this.pictureDepth = new cadencii.windows.forms.BPictureBox();
+            this.buttonCancel = new Button();
+            this.buttonOk = new Button();
+            this.buttonRemove = new Button();
+            this.buttonAdd = new Button();
+            this.buttonUp = new Button();
+            this.buttonDown = new Button();
+            this.labelRate = new Label();
+            this.labelDepth = new Label();
+            this.labelPresets = new Label();
+            this.pictureRate = new PictureBox();
+            this.labelRateCurve = new Label();
+            this.labelDepthCurve = new Label();
+            this.pictureDepth = new PictureBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.labelResulting = new cadencii.windows.forms.BLabel();
-            this.pictureResulting = new cadencii.windows.forms.BPictureBox();
-            this.groupEdit = new cadencii.windows.forms.BGroupBox();
-            this.textName = new cadencii.windows.forms.BTextBox();
-            this.labelName = new cadencii.windows.forms.BLabel();
-            this.groupPreview = new cadencii.windows.forms.BGroupBox();
-            this.listPresets = new BListBox();
+            this.labelResulting = new Label();
+            this.pictureResulting = new PictureBox();
+            this.groupEdit = new System.Windows.Forms.GroupBox();
+            this.textName = new TextBox();
+            this.labelName = new Label();
+            this.groupPreview = new System.Windows.Forms.GroupBox();
+            this.listPresets = new ListBox();
             this.textDepth = new cadencii.NumberTextBox();
             this.textRate = new cadencii.NumberTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureRate)).BeginInit();
@@ -1040,30 +1035,30 @@ namespace cadencii
         }
         #endregion
 
-        private BButton buttonCancel;
-        private BButton buttonOk;
-        private cadencii.windows.forms.BButton buttonRemove;
-        private cadencii.windows.forms.BButton buttonAdd;
-        private cadencii.windows.forms.BButton buttonUp;
-        private cadencii.windows.forms.BLabel labelRate;
-        private cadencii.windows.forms.BLabel labelDepth;
+        private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.Button buttonRemove;
+        private System.Windows.Forms.Button buttonAdd;
+        private System.Windows.Forms.Button buttonUp;
+        private Label labelRate;
+        private Label labelDepth;
         private NumberTextBox textRate;
         private NumberTextBox textDepth;
-        private BLabel labelPresets;
-        private BPictureBox pictureRate;
-        private BLabel labelRateCurve;
-        private BLabel labelDepthCurve;
-        private BPictureBox pictureDepth;
+        private Label labelPresets;
+        private PictureBox pictureRate;
+        private Label labelRateCurve;
+        private Label labelDepthCurve;
+        private PictureBox pictureDepth;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private BLabel labelResulting;
-        private BPictureBox pictureResulting;
-        private BGroupBox groupEdit;
-        private BLabel labelName;
-        private BTextBox textName;
-        private BGroupBox groupPreview;
-        private BListBox listPresets;
-        private cadencii.windows.forms.BButton buttonDown;
+        private Label labelResulting;
+        private PictureBox pictureResulting;
+        private GroupBox groupEdit;
+        private Label labelName;
+        private TextBox textName;
+        private GroupBox groupPreview;
+        private ListBox listPresets;
+        private System.Windows.Forms.Button buttonDown;
         #endregion
 #endif
     }

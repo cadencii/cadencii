@@ -12,20 +12,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Windows.Forms;
 
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
 
     /// <summary>
     /// 波形表示の拡大・縮小を行うためのパネルです．
     /// </summary>
-    class WaveformZoomUiImpl : BPanel, WaveformZoomUi
+    class WaveformZoomUiImpl : UserControl, WaveformZoomUi
     {
 
         /// <summary>
@@ -37,6 +36,21 @@ namespace cadencii
         public void setListener( WaveformZoomUiListener listener )
         {
             mListener = listener;
+        }
+
+        public void repaint()
+        {
+            Refresh();
+        }
+
+        public int getHeight()
+        {
+            return Height;
+        }
+
+        public int getWidth()
+        {
+            return Width;
         }
 
         protected override void OnPaint( System.Windows.Forms.PaintEventArgs e )
@@ -68,7 +82,6 @@ namespace cadencii
             base.OnMouseUp( e );
             mListener.receiveMouseUpSignal( e.X, e.Y );
         }
-
     }
 
 }

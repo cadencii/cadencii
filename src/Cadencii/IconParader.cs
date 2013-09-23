@@ -37,7 +37,7 @@ namespace cadencii
 #if JAVA
     public class IconParader extends BPictureBox
 #else
-    public class IconParader : BPictureBox
+    public class IconParader : System.Windows.Forms.PictureBox
 #endif
     {
         const int RADIUS = 6; // 角の丸み
@@ -54,14 +54,11 @@ namespace cadencii
 
         public IconParader()
         {
-            Dimension d = new Dimension( ICON_WIDTH, ICON_HEIGHT );
-            setSize( d );
-            setMaximumSize( d );
-            setMinimumSize( d );
-            setPreferredSize( d );
-#if !JAVA
-            base.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-#endif
+            var d = new System.Drawing.Size( ICON_WIDTH, ICON_HEIGHT );
+            this.Size = d;
+            this.MaximumSize = d;
+            this.MinimumSize = d;
+            this.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
         }
 
         public static Image createIconImage( String path_image, String singer_name )
@@ -177,7 +174,7 @@ namespace cadencii
                 }
 #endif
             }
-            base.setImage( bmp );
+            base.Image = bmp.image;
         }
 
 #if !JAVA

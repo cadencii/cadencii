@@ -44,6 +44,7 @@ using System.Text;
 using System.Threading;
 using System.Linq;
 using System.IO;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.componentmodel;
 using cadencii.java.awt;
@@ -62,25 +63,10 @@ namespace cadencii
 {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
-    using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
-    using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
-    using BKeyPressEventArgs = System.Windows.Forms.KeyPressEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
-    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
-    using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
-    using BEventArgs = System.EventArgs;
 
-    using BEventHandler = System.EventHandler;
-    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
-    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
-    using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
     using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
-    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
-    using BFormClosedEventHandler = System.Windows.Forms.FormClosedEventHandler;
-    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
 
     using Integer = System.Int32;
@@ -93,7 +79,7 @@ namespace cadencii
 #if JAVA
     public class FormMain extends BForm implements FormMainUi, PropertyWindowListener
 #else
-    public partial class FormMain : BForm, FormMainUi, PropertyWindowListener
+    public partial class FormMain : Form, FormMainUi, PropertyWindowListener
 #endif
     {
         /// <summary>
@@ -104,18 +90,18 @@ namespace cadencii
             /// <summary>
             /// ショートカットキーを表すKeyStrokeクラスのインスタンス
             /// </summary>
-            public KeyStroke shortcut;
+            public Keys shortcut;
             /// <summary>
             /// ショートカットキーとの紐付けを行う相手先のメニューアイテム
             /// </summary>
-            public BMenuItem menu;
+            public ToolStripMenuItem menu;
 
             /// <summary>
             /// ショートカットキーとメニューアイテムを指定したコンストラクタ
             /// </summary>
             /// <param name="shortcut">ショートカットキー</param>
             /// <param name="menu">ショートカットキーとの紐付けを行うメニューアイテム</param>
-            public SpecialShortcutHolder( KeyStroke shortcut, BMenuItem menu )
+            public SpecialShortcutHolder(Keys shortcut, ToolStripMenuItem menu)
             {
                 this.shortcut = shortcut;
                 this.menu = menu;
@@ -432,7 +418,7 @@ namespace cadencii
         /// </summary>
         public boolean mFormActivated = true;
         private GameControlMode mGameMode = GameControlMode.DISABLED;
-        public BTimer mTimer;
+        public System.Windows.Forms.Timer mTimer;
         public boolean mLastPovR = false;
         public boolean mLastPovL = false;
         public boolean mLastPovU = false;
@@ -454,7 +440,7 @@ namespace cadencii
         public MidiInDevice m_midi_in_mtc = null;
 #endif
         public FormMidiImExport mDialogMidiImportAndExport = null;
-        public TreeMap<EditTool, Cursor> mCursor = new TreeMap<EditTool, Cursor>();
+        public TreeMap<EditTool, java.awt.Cursor> mCursor = new TreeMap<EditTool, java.awt.Cursor>();
         private Preference mDialogPreference;
 #if ENABLE_PROPERTY
         public PropertyPanelContainer mPropertyPanelContainer;
@@ -487,13 +473,13 @@ namespace cadencii
         /// AppManager.keyWidthを調節するモードに入る直前での、splitContainer1のSplitterLocationの値
         /// </summary>
         public int mKeyLengthSplitterDistance = 0;
-        public BFileChooser openXmlVsqDialog;
-        public BFileChooser saveXmlVsqDialog;
-        public BFileChooser openUstDialog;
-        public BFileChooser openMidiDialog;
-        public BFileChooser saveMidiDialog;
-        public BFileChooser openWaveDialog;
-        public BTimer timer;
+        public OpenFileDialog openXmlVsqDialog;
+        public SaveFileDialog saveXmlVsqDialog;
+        public OpenFileDialog openUstDialog;
+        public OpenFileDialog openMidiDialog;
+        public SaveFileDialog saveMidiDialog;
+        public OpenFileDialog openWaveDialog;
+        public System.Windows.Forms.Timer timer;
         public BBackgroundWorker bgWorkScreen;
         /// <summary>
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
@@ -550,6 +536,7 @@ namespace cadencii
         /// 合成器の種類のメニュー項目を管理するハンドラをまとめたリスト
         /// </summary>
         private List<RendererMenuHandler> renderer_menu_handler_;
+        private FormWindowState mWindowState = FormWindowState.Normal;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -633,7 +620,7 @@ namespace cadencii
 //            toolStripTool.remove( getStripBtnStepSequencer() );
 #else
             InitializeComponent();
-            timer = new BTimer( this.components );
+            timer = new System.Windows.Forms.Timer( this.components );
 #endif
 
             panelOverview.setMainForm( this );
@@ -654,27 +641,23 @@ namespace cadencii
             this.waveView.Size = new System.Drawing.Size( 355, 59 );
             this.waveView.TabIndex = 17;
 #endif
-            openXmlVsqDialog = new BFileChooser();
-            openXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-            openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
+            openXmlVsqDialog = new OpenFileDialog();
+            openXmlVsqDialog.Filter = string.Join("|", new[] { "VSQ Format(*.vsq)|*.vsq", "XML-VSQ Format(*.xvsq)|*.xvsq" });
 
-            saveXmlVsqDialog = new BFileChooser();
-            saveXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-            saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-            saveXmlVsqDialog.addFileFilter( "All files(*.*)|*.*" );
+            saveXmlVsqDialog = new SaveFileDialog();
+            saveXmlVsqDialog.Filter = string.Join("|", new[] { "VSQ Format(*.vsq)|*.vsq", "XML-VSQ Format(*.xvsq)|*.xvsq", "All files(*.*)|*.*" });
 
-            openUstDialog = new BFileChooser();
-            openUstDialog.addFileFilter( "UTAU Project File(*.ust)|*.ust" );
-            openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
+            openUstDialog = new OpenFileDialog();
+            openUstDialog.Filter = string.Join("|", new[] { "UTAU Project File(*.ust)|*.ust", "All Files(*.*)|*.*" });
 
-            openMidiDialog = new BFileChooser();
-            saveMidiDialog = new BFileChooser();
-            openWaveDialog = new BFileChooser();
+            openMidiDialog = new OpenFileDialog();
+            saveMidiDialog = new SaveFileDialog();
+            openWaveDialog = new OpenFileDialog();
 
             /*mOverviewScaleCount = AppManager.editorConfig.OverviewScaleCount;
             mOverviewPixelPerClock = getOverviewScaleX( mOverviewScaleCount );*/
 
-            menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
+            menuVisualOverview.Checked = AppManager.editorConfig.OverviewEnabled;
 #if ENABLE_PROPERTY
             mPropertyPanelContainer = new PropertyPanelContainer();
 #endif
@@ -697,22 +680,23 @@ namespace cadencii
             trackSelector.setSize( 446, 250 );
             trackSelector.TabIndex = 0;
 #endif
-            trackSelector.MouseClick += new BMouseEventHandler( trackSelector_MouseClick );
-            trackSelector.MouseUp += new BMouseEventHandler( trackSelector_MouseUp );
-            trackSelector.MouseDown += new BMouseEventHandler( trackSelector_MouseDown );
-            trackSelector.MouseMove += new BMouseEventHandler( trackSelector_MouseMove );
-            trackSelector.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            trackSelector.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
-            trackSelector.PreviewKeyDown += new BPreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
+            trackSelector.MouseClick += new MouseEventHandler( trackSelector_MouseClick );
+            trackSelector.MouseUp += new MouseEventHandler( trackSelector_MouseUp );
+            trackSelector.MouseDown += new MouseEventHandler( trackSelector_MouseDown );
+            trackSelector.MouseMove += new MouseEventHandler( trackSelector_MouseMove );
+            trackSelector.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
+            trackSelector.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
+            trackSelector.PreviewKeyDown += new PreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
             trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( trackSelector_SelectedTrackChanged );
             trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( trackSelector_SelectedCurveChanged );
             trackSelector.RenderRequired += new RenderRequiredEventHandler( trackSelector_RenderRequired );
-            trackSelector.PreferredMinHeightChanged += new BEventHandler( trackSelector_PreferredMinHeightChanged );
-            trackSelector.MouseDoubleClick += new BMouseEventHandler( trackSelector_MouseDoubleClick );
+            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
+            trackSelector.MouseDoubleClick += new MouseEventHandler( trackSelector_MouseDoubleClick );
 
 #if !JAVA
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
-            this.setMinimumSize( getWindowMinimumSize() );
+            var minimum_size = getWindowMinimumSize();
+            this.MinimumSize = new System.Drawing.Size(minimum_size.width, minimum_size.height);
 #endif
 #if JAVA
             stripBtnScroll.setSelected( AppManager.mAutoScroll );
@@ -776,19 +760,19 @@ namespace cadencii
             picturePositionIndicator.Top = 0;
             picturePositionIndicator.Width = panel1.Width;
             // pictPianoRoll
-            pictPianoRoll.setBounds( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.Height );
+            pictPianoRoll.Bounds = new System.Drawing.Rectangle( 0, picturePositionIndicator.Height, panel1.Width - vScroll.Width, panel1.Height - picturePositionIndicator.Height - hScroll.Height );
             // vScroll
             vScroll.Left = pictPianoRoll.getWidth();
             vScroll.Top = picturePositionIndicator.Height;
             vScroll.Height = pictPianoRoll.getHeight();
             // pictureBox3
             pictureBox3.Left = 0;
-            pictureBox3.Top = panel1.Height - hScroll.getHeight();
+            pictureBox3.Top = panel1.Height - hScroll.Height;
             pictureBox3.Height = hScroll.Height;
             // hScroll
             hScroll.Left = pictureBox3.Width;
             hScroll.Top = panel1.Height - hScroll.Height;
-            hScroll.Width = panel1.Width - pictureBox3.Width - trackBar.getWidth() - pictureBox2.Width;
+            hScroll.Width = panel1.Width - pictureBox3.Width - trackBar.Width - pictureBox2.Width;
             // trackBar
             trackBar.Left = pictureBox3.Width + hScroll.Width;
             trackBar.Top = panel1.Height - hScroll.Height;
@@ -804,17 +788,17 @@ namespace cadencii
 
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 
-            pictPianoRoll.MouseWheel += new BMouseEventHandler( pictPianoRoll_MouseWheel );
-            trackSelector.MouseWheel += new BMouseEventHandler( trackSelector_MouseWheel );
-            picturePositionIndicator.MouseWheel += new BMouseEventHandler( picturePositionIndicator_MouseWheel );
+            pictPianoRoll.MouseWheel += new MouseEventHandler( pictPianoRoll_MouseWheel );
+            trackSelector.MouseWheel += new MouseEventHandler( trackSelector_MouseWheel );
+            picturePositionIndicator.MouseWheel += new MouseEventHandler( picturePositionIndicator_MouseWheel );
 
-            menuVisualOverview.CheckedChanged += new BEventHandler( menuVisualOverview_CheckedChanged );
+            menuVisualOverview.CheckedChanged += new EventHandler( menuVisualOverview_CheckedChanged );
 
-            hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
-            hScroll.setVisibleAmount( 240 * 4 );
+            hScroll.Maximum = AppManager.getVsqFile().TotalClocks + 240;
+            hScroll.LargeChange = 240 * 4;
 
-            vScroll.setMaximum( (int)(controller.getScaleY() * 100 * 128) );
-            vScroll.setVisibleAmount( 24 * 4 );
+            vScroll.Maximum = (int)(controller.getScaleY() * 100 * 128);
+            vScroll.LargeChange = 24 * 4;
 #if !JAVA
             hScroll.SmallChange = 240;
             vScroll.SmallChange = 24;
@@ -823,30 +807,20 @@ namespace cadencii
             trackSelector.setCurveVisible( true );
 
             // inputTextBoxの初期化
-#if JAVA
-            AppManager.mInputTextBox = new LyricTextBox( this );
-            AppManager.mInputTextBox.setVisible( false );
-            AppManager.mInputTextBox.setSize( 80, 22 );
-            AppManager.mInputTextBox.setBackground( Color.white );
-            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
-            AppManager.mInputTextBox.setEnabled( false );
-            AppManager.mInputTextBox.keyPressEvent.add( new BKeyPressEventHandler( this, "mInputTextBox_KeyPress" ) );
-#else
             AppManager.mInputTextBox = new LyricTextBox();
-            AppManager.mInputTextBox.setVisible( false );
+            AppManager.mInputTextBox.Visible = false;
             AppManager.mInputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             AppManager.mInputTextBox.Width = 80;
             AppManager.mInputTextBox.AcceptsReturn = true;
-            AppManager.mInputTextBox.setBackground( Color.white );
-            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            AppManager.mInputTextBox.setEnabled( false );
+            AppManager.mInputTextBox.BackColor = System.Drawing.Color.White;
+            AppManager.mInputTextBox.Font = new System.Drawing.Font(AppManager.editorConfig.BaseFontName, AppManager.FONT_SIZE9, System.Drawing.FontStyle.Regular);
+            AppManager.mInputTextBox.Enabled = false;
             AppManager.mInputTextBox.KeyPress += mInputTextBox_KeyPress;
             AppManager.mInputTextBox.Parent = pictPianoRoll;
             panel1.Controls.Add( AppManager.mInputTextBox );
-#endif
 
             int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
-            timer.setDelay( (fps <= 0) ? 1 : fps );
+            timer.Interval = (fps <= 0) ? 1 : fps;
 
 #if JAVA
 #if !DEBUG
@@ -854,7 +828,7 @@ namespace cadencii
 #endif // !DEBUG
 #else // JAVA
 #if DEBUG
-            menuHelpDebug.setVisible( true );
+            menuHelpDebug.Visible = true;
 #endif // DEBUG
 #endif // else JAVA
 
@@ -887,7 +861,7 @@ namespace cadencii
             }
 #endif
 
-            menuHelpLogSwitch.setSelected( Logger.isEnabled() );
+            menuHelpLogSwitch.Checked = Logger.isEnabled();
             applyShortcut();
 
             AppManager.mMixerWindow = new FormMixer( this );
@@ -914,20 +888,20 @@ namespace cadencii
                 }
             }
 
-            trackBar.setValue( AppManager.editorConfig.DefaultXScale );
+            trackBar.Value = AppManager.editorConfig.DefaultXScale;
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
-            AppManager.PreviewStarted += new BEventHandler( AppManager_PreviewStarted );
-            AppManager.PreviewAborted += new BEventHandler( AppManager_PreviewAborted );
-            AppManager.GridVisibleChanged += new BEventHandler( AppManager_GridVisibleChanged );
+            AppManager.PreviewStarted += new EventHandler( AppManager_PreviewStarted );
+            AppManager.PreviewAborted += new EventHandler( AppManager_PreviewAborted );
+            AppManager.GridVisibleChanged += new EventHandler( AppManager_GridVisibleChanged );
             AppManager.itemSelection.SelectedEventChanged += new SelectedEventChangedEventHandler( ItemSelectionModel_SelectedEventChanged );
-            AppManager.SelectedToolChanged += new BEventHandler( AppManager_SelectedToolChanged );
-            AppManager.UpdateBgmStatusRequired += new BEventHandler( AppManager_UpdateBgmStatusRequired );
-            AppManager.MainWindowFocusRequired += new BEventHandler( AppManager_MainWindowFocusRequired );
+            AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
+            AppManager.UpdateBgmStatusRequired += new EventHandler( AppManager_UpdateBgmStatusRequired );
+            AppManager.MainWindowFocusRequired += new EventHandler( AppManager_MainWindowFocusRequired );
             AppManager.EditedStateChanged += new EditedStateChangedEventHandler( AppManager_EditedStateChanged );
             AppManager.WaveViewReloadRequired += new WaveViewRealoadRequiredEventHandler( AppManager_WaveViewRealoadRequired );
-            EditorConfig.QuantizeModeChanged += new BEventHandler( handleEditorConfig_QuantizeModeChanged );
+            EditorConfig.QuantizeModeChanged += new EventHandler( handleEditorConfig_QuantizeModeChanged );
 
 #if ENABLE_PROPERTY
             mPropertyPanelContainer.StateChangeRequired += new StateChangeRequiredEventHandler( mPropertyPanelContainer_StateChangeRequired );
@@ -937,9 +911,9 @@ namespace cadencii
 
             // C3が画面中央に来るように調整
             int draft_start_to_draw_y = 68 * (int)(100 * controller.getScaleY()) - pictPianoRoll.getHeight() / 2;
-            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * (int)(100 * controller.getScaleY()) - vScroll.getHeight()));
+            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.Maximum) / (128 * (int)(100 * controller.getScaleY()) - vScroll.Height));
             try {
-                vScroll.setValue( draft_vscroll_value );
+                vScroll.Value = draft_vscroll_value;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
@@ -948,7 +922,7 @@ namespace cadencii
             int cp = AppManager.getVsqFile().getPreMeasureClocks();
             int draft_hscroll_value = (int)(cp - 24.0 * controller.getScaleXInv());
             try {
-                hScroll.setValue( draft_hscroll_value );
+                hScroll.Value = draft_hscroll_value;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
@@ -956,10 +930,10 @@ namespace cadencii
             //s_pen_dashed_171_171_171.DashPattern = new float[] { 3, 3 };
             //s_pen_dashed_209_204_172.DashPattern = new float[] { 3, 3 };
 
-            menuVisualNoteProperty.setSelected( AppManager.editorConfig.ShowExpLine );
-            menuVisualLyrics.setSelected( AppManager.editorConfig.ShowLyric );
-            menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
-            menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
+            menuVisualNoteProperty.Checked = AppManager.editorConfig.ShowExpLine;
+            menuVisualLyrics.Checked = AppManager.editorConfig.ShowLyric;
+            menuVisualMixer.Checked = AppManager.editorConfig.MixerVisible;
+            menuVisualPitchLine.Checked = AppManager.editorConfig.ViewAtcualPitch;
 
             updateMenuFonts();
 
@@ -969,23 +943,23 @@ namespace cadencii
             AppManager.mMixerWindow.SoloChanged += new SoloChangedEventHandler( mixerWindow_SoloChanged );
             AppManager.mMixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
-                AppManager.mMixerWindow.setVisible( true );
+                AppManager.mMixerWindow.Visible = true;
             }
-            AppManager.mMixerWindow.FormClosing += new BFormClosingEventHandler( mixerWindow_FormClosing );
+            AppManager.mMixerWindow.FormClosing += new FormClosingEventHandler( mixerWindow_FormClosing );
 
             Point p1 = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
             if ( !PortUtil.isPointInScreens( p1 ) ) {
                 Rectangle workingArea = PortUtil.getWorkingArea( this );
                 p1 = new Point( workingArea.x, workingArea.y );
             }
-            AppManager.iconPalette.setLocation( p1 );
+            AppManager.iconPalette.Location = new System.Drawing.Point(p1.x, p1.y);
             if ( AppManager.editorConfig.IconPaletteVisible ) {
-                AppManager.iconPalette.setVisible( true );
+                AppManager.iconPalette.Visible = true;
             }
-            AppManager.iconPalette.FormClosing += new BFormClosingEventHandler( iconPalette_FormClosing );
-            AppManager.iconPalette.LocationChanged += new BEventHandler( iconPalette_LocationChanged );
+            AppManager.iconPalette.FormClosing += new FormClosingEventHandler( iconPalette_FormClosing );
+            AppManager.iconPalette.LocationChanged += new EventHandler( iconPalette_LocationChanged );
 
-            trackSelector.CommandExecuted += new BEventHandler( trackSelector_CommandExecuted );
+            trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
 
 #if ENABLE_SCRIPT
             updateScriptShortcut();
@@ -1007,18 +981,18 @@ namespace cadencii
 #if ENABLE_MIDI
             reloadMidiIn();
 #endif
-            menuVisualWaveform.setSelected( AppManager.editorConfig.ViewWaveform );
+            menuVisualWaveform.Checked = AppManager.editorConfig.ViewWaveform;
 
             updateRendererMenu();
 
             // ウィンドウの位置・サイズを再現
             if ( AppManager.editorConfig.WindowMaximized ) {
-                setExtendedState( BForm.MAXIMIZED_BOTH );
+                this.WindowState = FormWindowState.Maximized;
             } else {
-                setExtendedState( BForm.NORMAL );
+                this.WindowState = FormWindowState.Normal;
             }
             Rectangle bounds = AppManager.editorConfig.WindowRect;
-            this.setBounds( bounds );
+            this.Bounds = new System.Drawing.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
             // ウィンドウ位置・サイズの設定値が、使えるディスプレイのどれにも被っていない場合
             Rectangle rc2 = PortUtil.getScreenBounds( this );
             if ( bounds.x < rc2.x ||
@@ -1027,11 +1001,10 @@ namespace cadencii
                  rc2.y + rc2.height < bounds.y + bounds.height ) {
                 bounds.x = rc2.x;
                 bounds.y = rc2.y;
-                this.setBounds( bounds );
+                this.Bounds = new System.Drawing.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
                 AppManager.editorConfig.WindowRect = bounds;
             }
-            this.WindowStateChanged += new BEventHandler( FormMain_WindowStateChanged );
-            this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
+            this.LocationChanged += new EventHandler( FormMain_LocationChanged );
 
             updateScrollRangeHorizontal();
             updateScrollRangeVertical();
@@ -1039,10 +1012,10 @@ namespace cadencii
             // プロパティウィンドウの位置を復元
             Rectangle rc1 = PortUtil.getScreenBounds( this );
             Rectangle rcScreen = new Rectangle( rc1.x, rc1.y, rc1.width, rc1.height );
-            Point p = this.getLocation();
+            var p = this.Location;
             XmlRectangle xr = AppManager.editorConfig.PropertyWindowStatus.Bounds;
             Point p0 = new Point( xr.x, xr.y );
-            Point a = new Point( p.x + p0.x, p.y + p0.y );
+            Point a = new Point( p.X + p0.x, p.Y + p0.y );
             Rectangle rc = new Rectangle( a.x,
                                           a.y,
                                           AppManager.editorConfig.PropertyWindowStatus.Bounds.getWidth(),
@@ -1066,22 +1039,18 @@ namespace cadencii
 
 #if ENABLE_PROPERTY
             AppManager.propertyWindow.getUi().setBounds( a.x, a.y, rc.width, rc.height );
-            //AppManager.propertyWindow.WindowStateChanged += new BEventHandler( propertyWindow_WindowStateChanged );
-            //AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            //AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            //AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
 #endif
             updateBgmMenuState();
             AppManager.mLastTrackSelectorHeight = trackSelector.getPreferredMinSize();
             flipControlCurveVisible( true );
 
-            repaint();
+            Refresh();
             updateLayout();
 #if DEBUG
-            menuHidden.setVisible( true );
+            menuHidden.Visible = true;
 #else
-            menuHidden.setVisible( false );
+            menuHidden.Visible = false;
 #endif
 
 #if !ENABLE_VOCALOID
@@ -1335,9 +1304,9 @@ namespace cadencii
             try {
                 if ( check_unknown_singer || check_unknwon_resampler ) {
                     dialog = new FormCheckUnknownSingerAndResampler( singer_path.value, check_unknown_singer, resampler_path.value, check_unknwon_resampler );
-                    dialog.setLocation( getFormPreferedLocation( dialog ) );
-                    BDialogResult dr = AppManager.showModalDialog( dialog, this );
-                    if ( dr != BDialogResult.OK ) {
+                    dialog.Location = getFormPreferedLocation( dialog );
+                    DialogResult dr = AppManager.showModalDialog( dialog, this );
+                    if ( dr != DialogResult.OK ) {
                         return;
                     }
 
@@ -1365,7 +1334,7 @@ namespace cadencii
             } finally {
                 if ( dialog != null ) {
                     try {
-                        dialog.close();
+                        dialog.Close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -1389,7 +1358,7 @@ namespace cadencii
             if ( scaley != draft ) {
                 AppManager.editorConfig.PianoRollScaleY = draft;
                 updateScrollRangeVertical();
-                controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
                 updateDrawObjectList();
             }
         }
@@ -1409,17 +1378,6 @@ namespace cadencii
         /// </summary>
         private void updateVibratoPresetMenu()
         {
-#if JAVA
-            menuLyricCopyVibratoToPreset.removeAll();
-            int size = AppManager.editorConfig.AutoVibratoCustom.size();
-            for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                BMenuItem item = new BMenuItem();
-                item.setText( handle.getCaption() );
-                item.clickEvent.add( new BEventHandler( this, "handleVibratoPresetSubelementClick" ) );
-                menuLyricCopyVibratoToPreset.add( item );
-            }
-#else
             // 現在の項目数に過不足があれば調節する
             int size = AppManager.editorConfig.AutoVibratoCustom.size();
             int delta = size - menuLyricCopyVibratoToPreset.DropDownItems.Count;
@@ -1428,7 +1386,7 @@ namespace cadencii
                 for ( int i = 0; i < delta; i++ ) {
                     System.Windows.Forms.ToolStripMenuItem item =
                         new System.Windows.Forms.ToolStripMenuItem(
-                            "", null, new BEventHandler( handleVibratoPresetSubelementClick ) );
+                            "", null, new EventHandler( handleVibratoPresetSubelementClick ) );
                     menuLyricCopyVibratoToPreset.DropDownItems.Add( item );
                 }
             } else if ( delta < 0 ) {
@@ -1445,7 +1403,6 @@ namespace cadencii
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
                 menuLyricCopyVibratoToPreset.DropDownItems[i].Text = handle.getCaption();
             }
-#endif
         }
 
         /// <summary>
@@ -1957,8 +1914,8 @@ namespace cadencii
         private int computeVScrollValueForMiddleDrag( int mouse_y )
         {
             int dy = mouse_y - mButtonInitial.y;
-            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
-            int min = vScroll.getMinimum();
+            int max = vScroll.Maximum - vScroll.LargeChange;
+            int min = vScroll.Minimum;
             double new_vscroll_value = (double)mMiddleButtonVScroll - dy * max / (128.0 * (int)(100.0 * controller.getScaleY()) - (double)pictPianoRoll.getHeight());
             int value = (int)new_vscroll_value;
             if ( value < min ) {
@@ -1977,8 +1934,8 @@ namespace cadencii
         private int computeHScrollValueForMiddleDrag( int mouse_x )
         {
             int dx = mouse_x - mButtonInitial.x;
-            int max = hScroll.getMaximum() - hScroll.getVisibleAmount();
-            int min = hScroll.getMinimum();
+            int max = hScroll.Maximum - hScroll.LargeChange;
+            int min = hScroll.Minimum;
             double new_hscroll_value = (double)mMiddleButtonHScroll - (double)dx * controller.getScaleXInv();
             int value = (int)new_hscroll_value;
             if ( value < min ) {
@@ -2003,8 +1960,8 @@ namespace cadencii
         /// </summary>
         private int calculateStartToDrawY( int vscroll_value )
         {
-            int min = vScroll.getMinimum();
-            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+            int min = vScroll.Minimum;
+            int max = vScroll.Maximum - vScroll.LargeChange;
             int value = vscroll_value;
             if ( value < min ) {
                 value = min;
@@ -2022,91 +1979,91 @@ namespace cadencii
         public Vector<ValuePairOfStringArrayOfKeys> getDefaultShortcutKeys()
         {
 #if JAVA_MAC
-            BKeys ctrl = BKeys.Menu;
+            Keys ctrl = Keys.Menu;
 #else
-            BKeys ctrl = BKeys.Control;
+            Keys ctrl = Keys.Control;
 #endif
             Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
                 new ValuePairOfStringArrayOfKeys[]{
-                new ValuePairOfStringArrayOfKeys( menuFileNew.getName(), new BKeys[]{ ctrl, BKeys.N } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpen.getName(), new BKeys[]{ ctrl, BKeys.O } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileSave.getName(), new BKeys[]{ ctrl, BKeys.S } ),
-                new ValuePairOfStringArrayOfKeys( menuFileQuit.getName(), new BKeys[]{ ctrl, BKeys.Q } ),
-                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportWave.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuEditUndo.getName(), new BKeys[]{ ctrl, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditRedo.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCut.getName(), new BKeys[]{ ctrl, BKeys.X } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCopy.getName(), new BKeys[]{ ctrl, BKeys.C } ),
-                new ValuePairOfStringArrayOfKeys( menuEditPaste.getName(), new BKeys[]{ ctrl, BKeys.V } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.getName(), new BKeys[]{ ctrl, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditDelete.getName(), new BKeys[]{ BKeys.Back } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualMixer.getName(), new BKeys[]{ BKeys.F3 } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualProperty.getName(), new BKeys[]{ BKeys.F6 } ),
-                new ValuePairOfStringArrayOfKeys( menuVisualGridline.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.getName(), new BKeys[]{ BKeys.F4 } ),
-                new ValuePairOfStringArrayOfKeys( menuJobNormalize.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobRandomize.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobConnect.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuJobLyric.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackOn.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackAdd.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackCopy.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackDelete.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingPreference.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.getName(), new BKeys[]{} ),
-                //new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileNew.Name, new Keys[]{ ctrl, Keys.N } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpen.Name, new Keys[]{ ctrl, Keys.O } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileSave.Name, new Keys[]{ ctrl, Keys.S } ),
+                new ValuePairOfStringArrayOfKeys( menuFileQuit.Name, new Keys[]{ ctrl, Keys.Q } ),
+                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportWave.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuEditUndo.Name, new Keys[]{ ctrl, Keys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditRedo.Name, new Keys[]{ ctrl, Keys.Shift, Keys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCut.Name, new Keys[]{ ctrl, Keys.X } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCopy.Name, new Keys[]{ ctrl, Keys.C } ),
+                new ValuePairOfStringArrayOfKeys( menuEditPaste.Name, new Keys[]{ ctrl, Keys.V } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.Name, new Keys[]{ ctrl, Keys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.Name, new Keys[]{ ctrl, Keys.Shift, Keys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditDelete.Name, new Keys[]{ Keys.Back } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualMixer.Name, new Keys[]{ Keys.F3 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualProperty.Name, new Keys[]{ Keys.F6 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualGridline.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.Name, new Keys[]{ Keys.F4 } ),
+                new ValuePairOfStringArrayOfKeys( menuJobNormalize.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobRandomize.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobConnect.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobLyric.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOn.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackAdd.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackCopy.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackDelete.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPreference.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.Name, new Keys[]{} ),
+                //new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new Keys[]{} ),
 #if JAVA
-                new ValuePairOfStringArrayOfKeys( menuWindowMinimize.getName(), new BKeys[]{ ctrl, BKeys.M } ),
+                new ValuePairOfStringArrayOfKeys( menuWindowMinimize.getName(), new Keys[]{ ctrl, Keys.M } ),
 #endif
-                new ValuePairOfStringArrayOfKeys( menuHelpAbout.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.getName(), new BKeys[]{ BKeys.F2 } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ ctrl, BKeys.W } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ ctrl, BKeys.E } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ ctrl, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ ctrl, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.getName(), new BKeys[]{ BKeys.Shift, BKeys.Up } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.getName(), new BKeys[]{ BKeys.Shift, BKeys.Down } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.getName(), new BKeys[]{ BKeys.Shift, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.getName(), new BKeys[]{ BKeys.Shift, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ ctrl, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ ctrl, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ ctrl, BKeys.End } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Home } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Enter } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.getName(), new BKeys[]{ BKeys.Tab } ),
+                new ValuePairOfStringArrayOfKeys( menuHelpAbout.Name, new Keys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.Name, new Keys[]{ Keys.F2 } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.Name, new Keys[]{ ctrl, Keys.W } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.Name, new Keys[]{ ctrl, Keys.E } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.Name, new Keys[]{ ctrl, Keys.Alt, Keys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.Name, new Keys[]{ ctrl, Keys.Alt, Keys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.Name, new Keys[]{ ctrl, Keys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.Name, new Keys[]{ ctrl, Keys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.Name, new Keys[]{ Keys.Alt, Keys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.Name, new Keys[]{ Keys.Alt, Keys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.Name, new Keys[]{ Keys.Shift, Keys.Up } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.Name, new Keys[]{ Keys.Shift, Keys.Down } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.Name, new Keys[]{ Keys.Shift, Keys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.Name, new Keys[]{ Keys.Shift, Keys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.Name, new Keys[]{ ctrl, Keys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.Name, new Keys[]{ ctrl, Keys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.Name, new Keys[]{ ctrl, Keys.End } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.Name, new Keys[]{ ctrl, Keys.Home } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.Name, new Keys[]{ ctrl, Keys.Enter } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.Name, new Keys[]{ Keys.Tab } ),
             } ) );
             return ret;
         }
@@ -2187,15 +2144,15 @@ namespace cadencii
 #if MONITOR_FPS
             double t0 = PortUtil.getCurrentTime();
 #endif
-            pictPianoRoll.repaint();
-            picturePositionIndicator.repaint();
-            trackSelector.repaint();
-            pictureBox2.repaint();
-            if ( menuVisualWaveform.isSelected() ) {
-                waveView.repaint();
+            pictPianoRoll.Refresh();
+            picturePositionIndicator.Refresh();
+            trackSelector.Refresh();
+            pictureBox2.Refresh();
+            if ( menuVisualWaveform.Checked ) {
+                waveView.Refresh();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
-                panelOverview.repaint();
+                panelOverview.Refresh();
             }
 #if MONITOR_FPS
             double t = PortUtil.getCurrentTime();
@@ -2228,24 +2185,24 @@ namespace cadencii
         {
 #if !JAVA
             if ( mGameMode == GameControlMode.DISABLED ) {
-                stripLblGameCtrlMode.setText( _( "Disabled" ) );
-                stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
+                stripLblGameCtrlMode.Text = _( "Disabled" );
+                stripLblGameCtrlMode.Image = Resources.get_slash().image;
             } else if ( mGameMode == GameControlMode.CURSOR ) {
-                stripLblGameCtrlMode.setText( _( "Cursor" ) );
-                stripLblGameCtrlMode.setIcon( null );
+                stripLblGameCtrlMode.Text = _( "Cursor" );
+                stripLblGameCtrlMode.Image = null;
             } else if ( mGameMode == GameControlMode.KEYBOARD ) {
-                stripLblGameCtrlMode.setText( _( "Keyboard" ) );
-                stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
+                stripLblGameCtrlMode.Text = _( "Keyboard" );
+                stripLblGameCtrlMode.Image = Resources.get_piano().image;
             } else if ( mGameMode == GameControlMode.NORMAL ) {
-                stripLblGameCtrlMode.setText( _( "Normal" ) );
-                stripLblGameCtrlMode.setIcon( null );
+                stripLblGameCtrlMode.Text = _( "Normal" );
+                stripLblGameCtrlMode.Image = null;
             }
 #endif
         }
 
         public int calculateStartToDrawX()
         {
-            return (int)(hScroll.getValue() * controller.getScaleX());
+            return (int)(hScroll.Value * controller.getScaleX());
         }
 
         /// <summary>
@@ -2369,48 +2326,48 @@ namespace cadencii
 
         public void invalidatePictOverview( Object sender, EventArgs e )
         {
-            panelOverview.invalidate();
+            panelOverview.Invalidate();
         }
 
         public void updateBgmMenuState()
         {
-            menuTrackBgm.removeAll();
+            menuTrackBgm.DropDownItems.Clear();
             int count = AppManager.getBgmCount();
             if ( count > 0 ) {
                 for ( int i = 0; i < count; i++ ) {
                     BgmFile item = AppManager.getBgm( i );
-                    BMenu menu = new BMenu();
-                    menu.setText( PortUtil.getFileName( item.file ) );
-                    menu.setToolTipText( item.file );
+                    var menu = new ToolStripMenuItem();
+                    menu.Text = PortUtil.getFileName( item.file );
+                    menu.ToolTipText = item.file;
 
                     BgmMenuItem menu_remove = new BgmMenuItem( i );
-                    menu_remove.setText( _( "Remove" ) );
-                    menu_remove.setToolTipText( item.file );
-                    menu_remove.Click += new BEventHandler( handleBgmRemove_Click );
-                    menu.add( menu_remove );
+                    menu_remove.Text = _( "Remove" );
+                    menu_remove.ToolTipText = item.file;
+                    menu_remove.Click += new EventHandler( handleBgmRemove_Click );
+                    menu.DropDownItems.Add( menu_remove );
 
                     BgmMenuItem menu_start_after_premeasure = new BgmMenuItem( i );
-                    menu_start_after_premeasure.setText( _( "Start After Premeasure" ) );
-                    menu_start_after_premeasure.setName( "menu_start_after_premeasure" + i );
-                    menu_start_after_premeasure.setCheckOnClick( true );
-                    menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
-                    menu_start_after_premeasure.CheckedChanged += new BEventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
-                    menu.add( menu_start_after_premeasure );
+                    menu_start_after_premeasure.Text = _( "Start After Premeasure" );
+                    menu_start_after_premeasure.Name = "menu_start_after_premeasure" + i;
+                    menu_start_after_premeasure.CheckOnClick = true;
+                    menu_start_after_premeasure.Checked = item.startAfterPremeasure;
+                    menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
+                    menu.DropDownItems.Add( menu_start_after_premeasure );
 
                     BgmMenuItem menu_offset_second = new BgmMenuItem( i );
-                    menu_offset_second.setText( _( "Set Offset Seconds" ) );
-                    menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
-                    menu_offset_second.Click += new BEventHandler( handleBgmOffsetSeconds_Click );
-                    menu.add( menu_offset_second );
+                    menu_offset_second.Text = _( "Set Offset Seconds" );
+                    menu_offset_second.ToolTipText = item.readOffsetSeconds + " " + _( "seconds" );
+                    menu_offset_second.Click += new EventHandler( handleBgmOffsetSeconds_Click );
+                    menu.DropDownItems.Add( menu_offset_second );
 
-                    menuTrackBgm.add( menu );
+                    menuTrackBgm.DropDownItems.Add( menu );
                 }
-                menuTrackBgm.addSeparator();
+                menuTrackBgm.DropDownItems.Add(new ToolStripSeparator());
             }
-            BMenuItem menu_add = new BMenuItem();
-            menu_add.setText( _( "Add" ) );
-            menu_add.Click += new BEventHandler( handleBgmAdd_Click );
-            menuTrackBgm.add( menu_add );
+            var menu_add = new ToolStripMenuItem();
+            menu_add.Text = _( "Add" );
+            menu_add.Click += new EventHandler( handleBgmAdd_Click );
+            menuTrackBgm.DropDownItems.Add( menu_add );
         }
 
 
@@ -2422,7 +2379,7 @@ namespace cadencii
 #endif
             if ( state == PanelState.Docked ) {
                 mPropertyPanelContainer.addComponent( AppManager.propertyPanel );
-                menuVisualProperty.setSelected( true );
+                menuVisualProperty.Checked = true;
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
                 splitContainerProperty.setPanel1Hidden( false );
                 splitContainerProperty.setSplitterFixed( false );
@@ -2440,13 +2397,13 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormMain#updatePropertyPanelState; state=Docked; w=" + w );
 #endif
-                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
+                AppManager.editorConfig.PropertyWindowStatus.WindowState = FormWindowState.Minimized;
                 AppManager.propertyWindow.getUi().hideWindow();
             } else if ( state == PanelState.Hidden ) {
                 if( AppManager.propertyWindow.getUi().isVisible() ){
                     AppManager.propertyWindow.getUi().hideWindow();
                 }
-                menuVisualProperty.setSelected( false );
+                menuVisualProperty.Checked = false;
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
@@ -2462,11 +2419,11 @@ namespace cadencii
                 splitContainerProperty.setSplitterFixed( true );
             } else if ( state == PanelState.Window ) {
                 AppManager.propertyWindow.getUi().addComponent( AppManager.propertyPanel );
-                Point parent = this.getLocation();
+                var parent = this.Location;
                 XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
                 Point property = new Point( rc.x, rc.y );
-                int x = parent.x + property.x;
-                int y = parent.y + property.y;
+                int x = parent.X + property.x;
+                int y = parent.Y + property.y;
                 int width = rc.width;
                 int height = rc.height;
                 AppManager.propertyWindow.getUi().setBounds( x, y, width, height );
@@ -2489,7 +2446,7 @@ namespace cadencii
 #if JAVA
                 AppManager.propertyWindow.getUi().setVisible( true );
 #endif
-                menuVisualProperty.setSelected( true );
+                menuVisualProperty.Checked = true;
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
@@ -2503,7 +2460,7 @@ namespace cadencii
                 splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
-                AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
+                AppManager.editorConfig.PropertyWindowStatus.WindowState = FormWindowState.Normal;
             }
         }
 #endif
@@ -2517,9 +2474,9 @@ namespace cadencii
         /// <returns></returns>
         public Object searchMenuItemFromName( String name, ByRef<Object> parent )
         {
-            int count = menuStripMain.getMenuCount();
+            int count = menuStripMain.Items.Count;
             for ( int i = 0; i < count; i++ ) {
-                Object tsi = menuStripMain.getMenu( i );
+                Object tsi = menuStripMain.Items[i];
                 Object ret = searchMenuItemRecurse( name, tsi, parent );
                 if ( ret != null ) {
                     if ( parent.value == null ) {
@@ -2617,7 +2574,7 @@ namespace cadencii
         /// </summary>
         /// <param name="dlg"></param>
         /// <returns></returns>
-        public Point getFormPreferedLocation( int dialogWidth, int dialogHeight )
+        public System.Drawing.Point getFormPreferedLocation( int dialogWidth, int dialogHeight )
         {
             Point mouse = PortUtil.getMousePosition();
             Rectangle rcScreen = PortUtil.getWorkingArea( this );
@@ -2643,7 +2600,7 @@ namespace cadencii
                 // ダイアログの左端が隠れる場合，位置をずらす
                 left = rcScreen.x;
             }
-            return new Point( left, top );
+            return new System.Drawing.Point( left, top );
         }
 
         /// <summary>
@@ -2651,9 +2608,9 @@ namespace cadencii
         /// </summary>
         /// <param name="dlg"></param>
         /// <returns></returns>
-        public Point getFormPreferedLocation( BDialog dlg )
+        public System.Drawing.Point getFormPreferedLocation( Form dlg )
         {
-            return getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+            return getFormPreferedLocation( dlg.Width, dlg.Height );
         }
 
         public void updateLayout()
@@ -2758,8 +2715,8 @@ namespace cadencii
             if ( delta > 0 ) {
                 // 増やす
                 for ( int i = 0; i < delta; i++ ) {
-                    cMenuTrackTabRendererUtau.DropDownItems.Add( "", null, new BEventHandler( handleChangeRenderer ) );
-                    menuTrackRendererUtau.DropDownItems.Add( "", null, new BEventHandler( handleChangeRenderer ) );
+                    cMenuTrackTabRendererUtau.DropDownItems.Add( "", null, new EventHandler( handleChangeRenderer ) );
+                    menuTrackRendererUtau.DropDownItems.Add( "", null, new EventHandler( handleChangeRenderer ) );
                 }
             } else if ( delta < 0 ) {
                 // 減らす
@@ -2912,9 +2869,6 @@ namespace cadencii
                 tsb.Text = name;
                 tsb.ToolTipText = desc;
                 tsb.Tag = id;
-#if JAVA
-                tsb.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
-#endif
                 if ( first ) {
                     var sep = new System.Windows.Forms.ToolBarButton();
                     sep.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
@@ -2926,33 +2880,33 @@ namespace cadencii
 
                 // cMenuTrackSelector
                 PaletteToolMenuItem tsmi = new PaletteToolMenuItem( id );
-                tsmi.setText( name );
-                tsmi.setToolTipText( desc );
-                tsmi.Click += new BEventHandler( handleStripPaletteTool_Click );
-                cMenuTrackSelectorPaletteTool.add( tsmi );
+                tsmi.Text = name;
+                tsmi.ToolTipText = desc;
+                tsmi.Click += new EventHandler( handleStripPaletteTool_Click );
+                cMenuTrackSelectorPaletteTool.DropDownItems.Add( tsmi );
 
                 // cMenuPiano
                 PaletteToolMenuItem tsmi2 = new PaletteToolMenuItem( id );
-                tsmi2.setText( name );
-                tsmi2.setToolTipText( desc );
-                tsmi2.Click += new BEventHandler( handleStripPaletteTool_Click );
-                cMenuPianoPaletteTool.add( tsmi2 );
+                tsmi2.Text = name;
+                tsmi2.ToolTipText = desc;
+                tsmi2.Click += new EventHandler( handleStripPaletteTool_Click );
+                cMenuPianoPaletteTool.DropDownItems.Add( tsmi2 );
 
                 // menuSettingPaletteTool
                 if ( ipt.hasDialog() ) {
                     PaletteToolMenuItem tsmi3 = new PaletteToolMenuItem( id );
-                    tsmi3.setText( name );
-                    tsmi3.Click += new BEventHandler( handleSettingPaletteTool );
-                    menuSettingPaletteTool.add( tsmi3 );
+                    tsmi3.Text = name;
+                    tsmi3.Click += new EventHandler( handleSettingPaletteTool );
+                    menuSettingPaletteTool.DropDownItems.Add( tsmi3 );
                     num_has_dialog++;
                 }
             }
             if ( count == 0 ) {
-                cMenuTrackSelectorPaletteTool.setVisible( false );
-                cMenuPianoPaletteTool.setVisible( false );
+                cMenuTrackSelectorPaletteTool.Visible = false;
+                cMenuPianoPaletteTool.Visible = false;
             }
             if ( num_has_dialog == 0 ) {
-                menuSettingPaletteTool.setVisible( false );
+                menuSettingPaletteTool.Visible = false;
             }
         }
 #endif
@@ -2966,27 +2920,27 @@ namespace cadencii
                                        (AppManager.itemSelection.getPointIDCount() == 0);
 
             int selected_point_id_count = AppManager.itemSelection.getPointIDCount();
-            cMenuTrackSelectorCopy.setEnabled( selected_point_id_count > 0 );
-            cMenuTrackSelectorCut.setEnabled( selected_point_id_count > 0 );
-            cMenuTrackSelectorDeleteBezier.setEnabled( (AppManager.isCurveMode() && AppManager.itemSelection.getLastBezier() != null) );
+            cMenuTrackSelectorCopy.Enabled = selected_point_id_count > 0;
+            cMenuTrackSelectorCut.Enabled = selected_point_id_count > 0;
+            cMenuTrackSelectorDeleteBezier.Enabled = (AppManager.isCurveMode() && AppManager.itemSelection.getLastBezier() != null);
             if ( selected_point_id_count > 0 ) {
-                cMenuTrackSelectorDelete.setEnabled( true );
+                cMenuTrackSelectorDelete.Enabled = true;
             } else {
                 SelectedEventEntry last = AppManager.itemSelection.getLastEvent();
                 if ( last == null ) {
-                    cMenuTrackSelectorDelete.setEnabled( false );
+                    cMenuTrackSelectorDelete.Enabled = false;
                 } else {
-                    cMenuTrackSelectorDelete.setEnabled( last.original.ID.type == VsqIDType.Singer );
+                    cMenuTrackSelectorDelete.Enabled = last.original.ID.type == VsqIDType.Singer;
                 }
             }
 
-            cMenuPianoCopy.setEnabled( !selected_is_null );
-            cMenuPianoCut.setEnabled( !selected_is_null );
-            cMenuPianoDelete.setEnabled( !selected_is_null );
+            cMenuPianoCopy.Enabled = !selected_is_null;
+            cMenuPianoCut.Enabled = !selected_is_null;
+            cMenuPianoDelete.Enabled = !selected_is_null;
 
-            menuEditCopy.setEnabled( !selected_is_null );
-            menuEditCut.setEnabled( !selected_is_null );
-            menuEditDelete.setEnabled( !selected_is_null );
+            menuEditCopy.Enabled = !selected_is_null;
+            menuEditCut.Enabled = !selected_is_null;
+            menuEditDelete.Enabled = !selected_is_null;
 
             ClipboardEntry ce = AppManager.clipboard.getCopiedItems();
             int copy_started_clock = ce.copyStartedClock;
@@ -3017,9 +2971,9 @@ namespace cadencii
                 // 複数種類のカーブがコピーされている場合→そのままペーストすればOK
                 enabled = true;
             }
-            cMenuTrackSelectorPaste.setEnabled( enabled );
-            cMenuPianoPaste.setEnabled( enabled );
-            menuEditPaste.setEnabled( enabled );
+            cMenuTrackSelectorPaste.Enabled = enabled;
+            cMenuPianoPaste.Enabled = enabled;
+            menuEditPaste.Enabled = enabled;
 
             /*int copy_started_clock;
             boolean copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
@@ -3071,15 +3025,15 @@ namespace cadencii
                 } else {
                     file = PortUtil.getFileName( file );
                 }
-                BDialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
+                DialogResult dr = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                               _( "Affirmation" ),
                                                               cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
                                                               cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
-                if ( dr == BDialogResult.YES ) {
+                if ( dr == DialogResult.Yes ) {
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
-                        int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-                        if ( dr2 == BFileChooser.APPROVE_OPTION ) {
-                            String sf = saveXmlVsqDialog.getSelectedFile();
+                        var dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+                        if ( dr2 == System.Windows.Forms.DialogResult.OK ) {
+                            String sf = saveXmlVsqDialog.FileName;
                             AppManager.saveTo( sf );
                             return true;
                         } else {
@@ -3089,7 +3043,7 @@ namespace cadencii
                         AppManager.saveTo( AppManager.getFileName() );
                         return true;
                     }
-                } else if ( dr == BDialogResult.NO ) {
+                } else if ( dr == DialogResult.No ) {
                     return true;
                 } else {
                     return false;
@@ -3165,7 +3119,7 @@ namespace cadencii
         /// <returns></returns>
         public Dimension getWindowMinimumSize()
         {
-            Dimension current_minsize = new Dimension( getMinimumSize().width, getMinimumSize().height );
+            Dimension current_minsize = new Dimension( MinimumSize.Width, MinimumSize.Height );
 #if JAVA
             Dimension client = getContentPane().getSize();
             Dimension current = getSize();
@@ -3182,7 +3136,7 @@ namespace cadencii
                                   splitContainer1.getPanel2MinSize() +
                                   _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
                                   rebar.Height +
-                                  menuStripMain.getHeight() + statusStrip.Height +
+                                  menuStripMain.Height + statusStrip.Height +
                                   (current.height - client.height) +
                                   20 );
 #endif
@@ -3267,7 +3221,7 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol[0] );
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
-            AppManager.debugWriteLine( "    AppManager.mInputTextBox.setText(=" + AppManager.mInputTextBox.getText() );
+            AppManager.debugWriteLine( "    AppManager.mInputTextBox.setText(=" + AppManager.mInputTextBox.Text );
 #endif
             String[] phrase = new String[count];
             String[] phonetic_symbol = new String[count];
@@ -3275,7 +3229,7 @@ namespace cadencii
                 phrase[i] = original_phrase[i];
                 phonetic_symbol[i] = original_symbol[i];
             }
-            String txt = AppManager.mInputTextBox.getText();
+            String txt = AppManager.mInputTextBox.Text;
             int txtlen = PortUtil.getStringLength( txt );
             if ( txtlen > 0 ) {
                 // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
@@ -3293,12 +3247,12 @@ namespace cadencii
             }
 
             // 発音記号または歌詞が変更された場合の処理
-            if ( (phonetic_symbol_edit_mode && !str.compare( AppManager.mInputTextBox.getText(), original_symbol[0] )) ||
+            if ( (phonetic_symbol_edit_mode && !str.compare( AppManager.mInputTextBox.Text, original_symbol[0] )) ||
                  (!phonetic_symbol_edit_mode && !str.compare( phrase[0], original_phrase[0] )) ) {
                 if ( phonetic_symbol_edit_mode ) {
                     // 発音記号を編集するモード
                     phrase[0] = AppManager.mInputTextBox.getBufferText();
-                    phonetic_symbol[0] = AppManager.mInputTextBox.getText();
+                    phonetic_symbol[0] = AppManager.mInputTextBox.Text;
 
                     // 入力された発音記号のうち、有効なものだけをピックアップ
                     String[] spl = PortUtil.splitString( phonetic_symbol[0], new char[] { ' ' }, true );
@@ -3398,7 +3352,7 @@ namespace cadencii
         {
 #if !JAVA
             if ( mTimer != null ) {
-                mTimer.stop();
+                mTimer.Stop();
                 mTimer.Dispose();
                 mTimer = null;
             }
@@ -3423,12 +3377,12 @@ namespace cadencii
                 }
                 if ( init_success ) {
                     mGameMode = GameControlMode.NORMAL;
-                    stripLblGameCtrlMode.setIcon( null );
-                    stripLblGameCtrlMode.setText( mGameMode.ToString() );
-                    mTimer = new BTimer();
-                    mTimer.setDelay( 10 );
-                    mTimer.Tick += new BEventHandler( mTimer_Tick );
-                    mTimer.start();
+                    stripLblGameCtrlMode.Image = null;
+                    stripLblGameCtrlMode.Text = mGameMode.ToString();
+                    mTimer = new System.Windows.Forms.Timer();
+                    mTimer.Interval = 10;
+                    mTimer.Tick += new EventHandler( mTimer_Tick );
+                    mTimer.Start();
                 } else {
                     mGameMode = GameControlMode.DISABLED;
                 }
@@ -3530,8 +3484,8 @@ namespace cadencii
 #if JAVA
                 stripBtnStepSequencer.setEnabled( false );
 #else
-                stripLblMidiIn.setText( _( "Disabled" ) );
-                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                stripLblMidiIn.Text = _( "Disabled" );
+                stripLblMidiIn.Image = Resources.get_slash().image;
 #endif
             } else {
                 if ( midiport >= vec.size( devices ) ) {
@@ -3541,8 +3495,8 @@ namespace cadencii
 #if JAVA
                 stripBtnStepSequencer.setEnabled( true );
 #else
-                stripLblMidiIn.setText( vec.get( devices, midiport ).getName() );
-                stripLblMidiIn.setIcon( new ImageIcon( Resources.get_piano() ) );
+                stripLblMidiIn.Text = vec.get( devices, midiport ).getName();
+                stripLblMidiIn.Image = Resources.get_piano().image;
 #endif
             }
         }
@@ -3555,7 +3509,7 @@ namespace cadencii
         public void updateScriptShortcut()
         {
             // 既存のアイテムを削除
-            menuScript.removeAll();
+            menuScript.DropDownItems.Clear();
             // スクリプトをリロード
             ScriptServer.reload();
 
@@ -3572,18 +3526,18 @@ namespace cadencii
                 // menuScriptの子だと自動で認識される
                 String name = "menuScript" + id.Replace( '.', '_' );
                 PaletteToolMenuItem item = new PaletteToolMenuItem( id );
-                item.setText( display );
-                item.setName( name );
-                item.Click += new BEventHandler( handleScriptMenuItem_Click );
-                menuScript.add( item );
+                item.Text = display;
+                item.Name = name;
+                item.Click += new EventHandler( handleScriptMenuItem_Click );
+                menuScript.DropDownItems.Add( item );
                 count++;
             }
 
             // 「スクリプトのリストを更新」を追加
             if ( count > 0 ) {
-                menuScript.addSeparator();
+                menuScript.DropDownItems.Add(new ToolStripSeparator());
             }
-            menuScript.add( menuScriptUpdate );
+            menuScript.DropDownItems.Add( menuScriptUpdate );
             Util.applyToolStripFontRecurse( menuScript, AppManager.editorConfig.getBaseFont() );
             applyShortcut();
         }
@@ -3599,17 +3553,17 @@ namespace cadencii
                 vScroll.Value = draft;
             };
             if ( note <= 0 ) {
-                setVScrollValue(vScroll.getMaximum() - vScroll.getVisibleAmount());
+                setVScrollValue(vScroll.Maximum - vScroll.LargeChange);
                 return;
             } else if ( note >= 127 ) {
-                vScroll.setValue( vScroll.getMinimum() );
+                vScroll.Value = vScroll.Minimum;
                 return;
             }
             int height = pictPianoRoll.getHeight();
             int noteTop = AppManager.noteFromYCoord( 0 ); //画面上端でのノートナンバー
             int noteBottom = AppManager.noteFromYCoord( height ); // 画面下端でのノートナンバー
 
-            int maximum = vScroll.getMaximum();
+            int maximum = vScroll.Maximum;
             int track_height = (int)(100 * controller.getScaleY());
             // ノートナンバーnoteの現在のy座標がいくらか？
             int note_y = AppManager.yCoordFromNote( note );
@@ -3644,14 +3598,14 @@ namespace cadencii
                     f_draft = 0;
                 }
                 int draft = (int)(f_draft);
-                if ( draft < hScroll.getMinimum() ) {
-                    draft = hScroll.getMinimum();
-                } else if ( hScroll.getMaximum() < draft ) {
-                    draft = hScroll.getMaximum();
+                if ( draft < hScroll.Minimum ) {
+                    draft = hScroll.Minimum;
+                } else if ( hScroll.Maximum < draft ) {
+                    draft = hScroll.Maximum;
                 }
-                if ( hScroll.getValue() != draft ) {
+                if ( hScroll.Value != draft ) {
                     AppManager.mDrawStartIndex[AppManager.getSelected() - 1] = 0;
-                    hScroll.setValue( draft );
+                    hScroll.Value = draft;
                 }
             }
         }
@@ -3669,7 +3623,7 @@ namespace cadencii
         /// </summary>
         /// <param name="e"></param>
         /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
-        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown )
+        public void processSpecialShortcutKey( KeyEventArgs e, boolean onPreviewKeyDown )
         {
 #if DEBUG
             sout.println( "FormMain#processSpecialShortcutKey" );
@@ -3680,7 +3634,7 @@ namespace cadencii
 #else
             if ( AppManager.mInputTextBox.Enabled ) {
 #endif
-                AppManager.mInputTextBox.requestFocus();
+                AppManager.mInputTextBox.Focus();
                 return;
             }
 
@@ -3700,13 +3654,9 @@ namespace cadencii
                     if ( stroke.Equals( holder.shortcut ) ) {
                         try {
 #if DEBUG
-                            sout.println( "FormMain#processSpecialShortcutKey; perform click: name=" + holder.menu.getName() );
+                            sout.println( "FormMain#processSpecialShortcutKey; perform click: name=" + holder.menu.Name );
 #endif
-#if JAVA
-                            holder.menu.clickEvent.raise( holder.menu, new BEventArgs() );
-#else
                             holder.menu.PerformClick();
-#endif
                         } catch ( Exception ex ) {
                             Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
                             serr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
@@ -3811,15 +3761,10 @@ namespace cadencii
             } else {
                 if ( !AppManager.isPlaying() ) {
                     // 最初に戻る、の機能を発動
-                    BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
+                    Keys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
                     if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
-                        KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( specialGoToFirst );
-#if JAVA
-                        if( e.KeyCode == ks.getKeyCode() )
-#else
-                        if ( e.KeyCode == ks.keys )
-#endif
-                        {
+                        Keys shortcut = specialGoToFirst.Aggregate(Keys.None, (seed, key) => seed | key);
+                        if ( e.KeyCode == shortcut ) {
                             AppManager.setCurrentClock( 0 );
                             ensureCursorVisible();
                             refreshScreen();
@@ -3835,7 +3780,7 @@ namespace cadencii
                         threshold = 0.0;
                     }
                     if ( elapsed > threshold ) {
-                        timer.stop();
+                        timer.Stop();
                         AppManager.setPlaying( false, this );
                     }
                 } else {
@@ -3855,7 +3800,7 @@ namespace cadencii
         {
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
             int pwidth = pictPianoRoll.getWidth();
-            int hwidth = hScroll.getWidth();
+            int hwidth = hScroll.Width;
             if ( pwidth <= 0 || hwidth <= 0 ) {
                 return;
             }
@@ -3885,8 +3830,8 @@ namespace cadencii
 
             if ( large_change <= 0 ) large_change = 1;
             if ( maximum <= 0 ) maximum = 1;
-            hScroll.setVisibleAmount( large_change );
-            hScroll.setMaximum( maximum );
+            hScroll.LargeChange = large_change;
+            hScroll.Maximum = maximum;
 #if JAVA
             int unit_increment = large_change / 10;
             if( unit_increment <= 0 ){
@@ -3896,9 +3841,9 @@ namespace cadencii
             hScroll.setBlockIncrement( large_change );
 #endif
 
-            int old_value = hScroll.getValue();
+            int old_value = hScroll.Value;
             if ( old_value > maximum - large_change ) {
-                hScroll.setValue( maximum - large_change );
+                hScroll.Value = maximum - large_change;
             }
         }
 
@@ -3906,7 +3851,7 @@ namespace cadencii
         {
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
             int pheight = pictPianoRoll.getHeight();
-            int vheight = vScroll.getHeight();
+            int vheight = vScroll.Height;
             if ( pheight <= 0 || vheight <= 0 ) {
                 return;
             }
@@ -3930,8 +3875,8 @@ namespace cadencii
 
             if ( large_change <= 0 ) large_change = 1;
             if ( maximum <= 0 ) maximum = 1;
-            vScroll.setVisibleAmount( large_change );
-            vScroll.setMaximum( maximum );
+            vScroll.LargeChange = large_change;
+            vScroll.Maximum = maximum;
 #if !JAVA
             vScroll.SmallChange = 100;
 #endif
@@ -3982,10 +3927,10 @@ namespace cadencii
         /// <param name="visible">表示状態にする場合true，そうでなければfalse</param>
         public void flipMixerDialogVisible( boolean visible )
         {
-            AppManager.mMixerWindow.setVisible( visible );
+            AppManager.mMixerWindow.Visible = visible;
             AppManager.editorConfig.MixerVisible = visible;
-            if( visible != menuVisualMixer.isSelected() ){
-                menuVisualMixer.setSelected( visible );
+            if( visible != menuVisualMixer.Checked ){
+                menuVisualMixer.Checked = visible;
             }
         }
 
@@ -3994,10 +3939,10 @@ namespace cadencii
         /// </summary>
         public void flipIconPaletteVisible( boolean visible )
         {
-            AppManager.iconPalette.setVisible( visible );
+            AppManager.iconPalette.Visible = visible;
             AppManager.editorConfig.IconPaletteVisible = visible;
-            if( visible != menuVisualIconPalette.isSelected() ){
-                menuVisualIconPalette.setSelected( visible );
+            if( visible != menuVisualIconPalette.Checked ){
+                menuVisualIconPalette.Checked = visible;
             }
         }
 
@@ -4008,7 +3953,7 @@ namespace cadencii
         {
             mSpecialShortcutHolders.clear();
 
-            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
             #region menuStripMain
             ByRef<Object> parent = new ByRef<Object>( null );
             for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
@@ -4026,8 +3971,8 @@ namespace cadencii
                         continue;
                     }
 #else
-                    if ( menu is BMenuItem ) {
-                        menu_name = ((BMenuItem)menu).Name;
+                    if ( menu is ToolStripMenuItem ) {
+                        menu_name = ((ToolStripMenuItem)menu).Name;
                     } else {
                         continue;
                     }
@@ -4046,35 +3991,35 @@ namespace cadencii
             }
             #endregion
 
-            Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererAquesTone", new BMenuItem[] { menuTrackRendererAquesTone } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVCNT", new BMenuItem[] { menuTrackRendererVCNT } ) );
+            Vector<ValuePair<String, ToolStripMenuItem[]>> work = new Vector<ValuePair<String, ToolStripMenuItem[]>>();
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditUndo", new ToolStripMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditRedo", new ToolStripMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCut", new ToolStripMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCopy", new ToolStripMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditPaste", new ToolStripMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAll", new ToolStripMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAllEvents", new ToolStripMenuItem[] { cMenuPianoSelectAllEvents } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditDelete", new ToolStripMenuItem[] { menuEditDelete } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuVisualGridline", new ToolStripMenuItem[] { cMenuPianoGrid } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuJobLyric", new ToolStripMenuItem[] { cMenuPianoImportLyric } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricExpressionProperty", new ToolStripMenuItem[] { cMenuPianoExpressionProperty } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricVibratoProperty", new ToolStripMenuItem[] { cMenuPianoVibratoProperty } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOn", new ToolStripMenuItem[] { cMenuTrackTabTrackOn } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackAdd", new ToolStripMenuItem[] { cMenuTrackTabAdd } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackCopy", new ToolStripMenuItem[] { cMenuTrackTabCopy } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackDelete", new ToolStripMenuItem[] { cMenuTrackTabDelete } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderCurrent", new ToolStripMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderAll", new ToolStripMenuItem[] { cMenuTrackTabRenderAll } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOverlay", new ToolStripMenuItem[] { cMenuTrackTabOverlay } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID1", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID2", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererAquesTone", new ToolStripMenuItem[] { menuTrackRendererAquesTone } ) );
+            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
             int c = work.size();
             for ( int j = 0; j < c; j++ ) {
-                ValuePair<String, BMenuItem[]> item = work.get( j );
+                ValuePair<String, ToolStripMenuItem[]> item = work.get( j );
                 if ( dict.containsKey( item.getKey() ) ) {
-                    BKeys[] k = dict.get( item.getKey() );
+                    Keys[] k = dict.get( item.getKey() );
                     String s = Utility.getShortcutDisplayString( k );
 #if !JAVA
                     if ( s != "" ) {
@@ -4089,7 +4034,7 @@ namespace cadencii
             // ミキサーウィンドウ
             if ( AppManager.mMixerWindow != null ) {
                 if ( dict.containsKey( "menuVisualMixer" ) ) {
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
+                    Keys shortcut = dict.get( "menuVisualMixer" ).Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.mMixerWindow.applyShortcut( shortcut );
                 }
             }
@@ -4097,7 +4042,7 @@ namespace cadencii
             // アイコンパレット
             if ( AppManager.iconPalette != null ) {
                 if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
+                    Keys shortcut = dict.get( "menuVisualIconPalette" ).Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.iconPalette.applyShortcut( shortcut );
                 }
             }
@@ -4105,8 +4050,8 @@ namespace cadencii
 #if ENABLE_PROPERTY
             // プロパティ
             if( AppManager.propertyWindow != null ){
-                if( dict.containsKey( menuVisualProperty.getName() ) ){
-                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.getName() ) );
+                if( dict.containsKey( menuVisualProperty.Name ) ){
+                    Keys shortcut = dict.get( menuVisualProperty.Name ).Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.propertyWindow.applyShortcut( shortcut );
                 }
             }
@@ -4155,7 +4100,7 @@ namespace cadencii
         /// <param name="item"></param>
         /// <param name="item_name"></param>
         /// <param name="default_shortcut"></param>
-        public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name )
+        public void applyMenuItemShortcut( TreeMap<String, Keys[]> dict, Object item, String item_name )
         {
 #if JAVA
             if( item == null ){
@@ -4172,7 +4117,7 @@ namespace cadencii
             if( !dict.containsKey( item_name ) ){
                 return;
             }
-            BKeys[] k = dict.get( item_name );
+            Keys[] k = dict.get( item_name );
             if( k == null ){
                 return;
             }
@@ -4196,20 +4141,19 @@ namespace cadencii
             try {
                 if ( dict.containsKey( item_name ) ) {
 #if DEBUG
-                    if ( !(item is BMenuItem) ) {
+                    if ( !(item is ToolStripMenuItem) ) {
                         throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
                     }
 #endif // DEBUG
-                    if ( item is BMenuItem ) {
-                        BMenuItem menu = (BMenuItem)item;
-                        BKeys[] keys = dict.get( item_name );
-                        System.Windows.Forms.Keys shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys ).keys;
+                    if ( item is ToolStripMenuItem ) {
+                        ToolStripMenuItem menu = (ToolStripMenuItem)item;
+                        Keys[] keys = dict.get( item_name );
+                        Keys shortcut = keys.Aggregate(Keys.None, (seed, key) => seed | key);
 
                         if ( shortcut == System.Windows.Forms.Keys.Delete ) {
                             menu.ShortcutKeyDisplayString = "Delete";
-                            menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-                            mSpecialShortcutHolders.add(
-                                new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
+                            menu.ShortcutKeys = Keys.None;
+                            mSpecialShortcutHolders.add(new SpecialShortcutHolder( shortcut, menu ) );
                         } else {
                             try {
                                 menu.ShortcutKeyDisplayString = "";
@@ -4217,15 +4161,14 @@ namespace cadencii
                             } catch ( Exception ex ) {
                                 // ショートカットの適用に失敗する→特殊な取り扱いが必要
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
-                                menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-                                mSpecialShortcutHolders.add(
-                                    new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
+                                menu.ShortcutKeys = Keys.None;
+                                mSpecialShortcutHolders.add(new SpecialShortcutHolder( shortcut, menu ) );
                             }
                         }
                     }
                 } else {
-                    if ( item is BMenuItem ) {
-                        ((BMenuItem)item).setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
+                    if (item is System.Windows.Forms.ToolStripMenuItem) {
+                        ((System.Windows.Forms.ToolStripMenuItem)item).ShortcutKeys = Keys.None;
                     }
                 }
             } catch ( Exception ex ) {
@@ -4253,7 +4196,7 @@ namespace cadencii
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
             int cl_new = doQuantize( cl_clock + unit, unit );
 
-            if ( cl_new <= hScroll.getMaximum() + (pictPianoRoll.getWidth() - AppManager.keyWidth) * controller.getScaleXInv() ) {
+            if ( cl_new <= hScroll.Maximum + (pictPianoRoll.getWidth() - AppManager.keyWidth) * controller.getScaleXInv() ) {
                 // 表示の更新など
                 AppManager.setCurrentClock( cl_new );
 
@@ -4303,39 +4246,39 @@ namespace cadencii
         /// </summary>
         public void updateCMenuPianoFixed()
         {
-            cMenuPianoFixed01.setSelected( false );
-            cMenuPianoFixed02.setSelected( false );
-            cMenuPianoFixed04.setSelected( false );
-            cMenuPianoFixed08.setSelected( false );
-            cMenuPianoFixed16.setSelected( false );
-            cMenuPianoFixed32.setSelected( false );
-            cMenuPianoFixed64.setSelected( false );
-            cMenuPianoFixed128.setSelected( false );
-            cMenuPianoFixedOff.setSelected( false );
-            cMenuPianoFixedTriplet.setSelected( false );
-            cMenuPianoFixedDotted.setSelected( false );
+            cMenuPianoFixed01.Checked = false;
+            cMenuPianoFixed02.Checked = false;
+            cMenuPianoFixed04.Checked = false;
+            cMenuPianoFixed08.Checked = false;
+            cMenuPianoFixed16.Checked = false;
+            cMenuPianoFixed32.Checked = false;
+            cMenuPianoFixed64.Checked = false;
+            cMenuPianoFixed128.Checked = false;
+            cMenuPianoFixedOff.Checked = false;
+            cMenuPianoFixedTriplet.Checked = false;
+            cMenuPianoFixedDotted.Checked = false;
             PencilModeEnum mode = mPencilMode.getMode();
             if ( mode == PencilModeEnum.L1 ) {
-                cMenuPianoFixed01.setSelected( true );
+                cMenuPianoFixed01.Checked = true;
             } else if ( mode == PencilModeEnum.L2 ) {
-                cMenuPianoFixed02.setSelected( true );
+                cMenuPianoFixed02.Checked = true;
             } else if ( mode == PencilModeEnum.L4 ) {
-                cMenuPianoFixed04.setSelected( true );
+                cMenuPianoFixed04.Checked = true;
             } else if ( mode == PencilModeEnum.L8 ) {
-                cMenuPianoFixed08.setSelected( true );
+                cMenuPianoFixed08.Checked = true;
             } else if ( mode == PencilModeEnum.L16 ) {
-                cMenuPianoFixed16.setSelected( true );
+                cMenuPianoFixed16.Checked = true;
             } else if ( mode == PencilModeEnum.L32 ) {
-                cMenuPianoFixed32.setSelected( true );
+                cMenuPianoFixed32.Checked = true;
             } else if ( mode == PencilModeEnum.L64 ) {
-                cMenuPianoFixed64.setSelected( true );
+                cMenuPianoFixed64.Checked = true;
             } else if ( mode == PencilModeEnum.L128 ) {
-                cMenuPianoFixed128.setSelected( true );
+                cMenuPianoFixed128.Checked = true;
             } else if ( mode == PencilModeEnum.Off ) {
-                cMenuPianoFixedOff.setSelected( true );
+                cMenuPianoFixedOff.Checked = true;
             }
-            cMenuPianoFixedTriplet.setSelected( mPencilMode.isTriplet() );
-            cMenuPianoFixedDotted.setSelected( mPencilMode.isDot() );
+            cMenuPianoFixedTriplet.Checked = mPencilMode.isTriplet();
+            cMenuPianoFixedDotted.Checked = mPencilMode.isDot();
         }
 
         public void clearTempWave()
@@ -4421,81 +4364,77 @@ namespace cadencii
         /// </summary>
         public void applyLanguage()
         {
-            openXmlVsqDialog.clearChoosableFileFilter();
+            openXmlVsqDialog.Filter = string.Empty;
             try {
-                openXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
-                openXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openXmlVsqDialog.Filter = string.Join("|", new[] { _("XML-VSQ Format(*.xvsq)|*.xvsq"), _("All Files(*.*)|*.*") });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-                openXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openXmlVsqDialog.Filter = string.Join("|", new[] { "XML-VSQ Format(*.xvsq)|*.xvsq", "All Files(*.*)|*.*" });
             }
 
-            saveXmlVsqDialog.clearChoosableFileFilter();
+            saveXmlVsqDialog.Filter = string.Empty;
             try {
-                saveXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
-                saveXmlVsqDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                saveXmlVsqDialog.Filter = string.Join("|", new[] { _("XML-VSQ Format(*.xvsq)|*.xvsq"), _("All Files(*.*)|*.*") });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
-                saveXmlVsqDialog.addFileFilter( "All Files(*.*)|*.*" );
+                saveXmlVsqDialog.Filter = string.Join("|", new[] { "XML-VSQ Format(*.xvsq)|*.xvsq", "All Files(*.*)|*.*" });
             }
 
-            openUstDialog.clearChoosableFileFilter();
+            openUstDialog.Filter = string.Empty;
             try {
-                openUstDialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
-                openUstDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openUstDialog.Filter = string.Join("|", new[] { _("UTAU Script Format(*.ust)|*.ust"), _("All Files(*.*)|*.*") });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openUstDialog.addFileFilter( "UTAU Script Format(*.ust)|*.ust" );
-                openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openUstDialog.Filter = string.Join("|", new[] { "UTAU Script Format(*.ust)|*.ust", "All Files(*.*)|*.*" });
             }
 
-            openMidiDialog.clearChoosableFileFilter();
+            openMidiDialog.Filter = string.Empty;
             try {
-                openMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
-                openMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                openMidiDialog.addFileFilter( _( "VSQX Format(*.vsqx)|*.vsqx" ) );
-                openMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openMidiDialog.Filter = string.Join("|", new[] {
+                    _( "MIDI Format(*.mid)|*.mid" ),
+                    _( "VSQ Format(*.vsq)|*.vsq" ),
+                    _( "VSQX Format(*.vsqx)|*.vsqx" ),
+                    _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
-                openMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-                openMidiDialog.addFileFilter( "VSQX Format(*.vsqx)|*.vsqx" );
-                openMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openMidiDialog.Filter = string.Join("|", new[] {
+                    "MIDI Format(*.mid)|*.mid",
+                    "VSQ Format(*.vsq)|*.vsq",
+                    "VSQX Format(*.vsqx)|*.vsqx",
+                    "All Files(*.*)|*.*" });
             }
 
-            saveMidiDialog.clearChoosableFileFilter();
+            saveMidiDialog.Filter = string.Empty;
             try {
-                saveMidiDialog.addFileFilter( _( "MIDI Format(*.mid)|*.mid" ) );
-                saveMidiDialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                saveMidiDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                saveMidiDialog.Filter = string.Join("|", new[] {
+                    _( "MIDI Format(*.mid)|*.mid" ),
+                    _( "VSQ Format(*.vsq)|*.vsq" ),
+                    _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                saveMidiDialog.addFileFilter( "MIDI Format(*.mid)|*.mid" );
-                saveMidiDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-                saveMidiDialog.addFileFilter( "All Files(*.*)|*.*" );
+                saveMidiDialog.Filter = string.Join("|", new[] {
+                    "MIDI Format(*.mid)|*.mid",
+                    "VSQ Format(*.vsq)|*.vsq",
+                    "All Files(*.*)|*.*" });
             }
 
-            openWaveDialog.clearChoosableFileFilter();
+            openWaveDialog.Filter = string.Empty;
             try {
-                openWaveDialog.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
-                openWaveDialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                openWaveDialog.Filter = string.Join("|", new[] {
+                    _( "Wave File(*.wav)|*.wav" ),
+                    _( "All Files(*.*)|*.*" ) });
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyLanguage; ex=" + ex + "\n" );
-                openWaveDialog.addFileFilter( "Wave File(*.wav)|*.wav" );
-                openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
+                openWaveDialog.Filter = string.Join("|", new[] {
+                    "Wave File(*.wav)|*.wav",
+                    "All Files(*.*)|*.*" });
             }
 
 #if !JAVA
-            stripLblGameCtrlMode.setToolTipText( _( "Game controler" ) );
+            stripLblGameCtrlMode.ToolTipText = _( "Game controler" );
 #endif
 
-#if JAVA
-            updateGameControlerStatus( this, new EventArgs() );
-#else
-            this.Invoke( new BEventHandler( updateGameControlerStatus ) );
-#endif
+            this.Invoke( new EventHandler( updateGameControlerStatus ) );
 
 #if JAVA
             stripBtnPointer.setText( _( "Pointer" ) );
@@ -4545,331 +4484,332 @@ namespace cadencii
 #endif
 
             #region main menu
-            menuFile.setText( _( "File" ) );
-            menuFile.setMnemonic( KeyEvent.VK_F );
-            menuFileNew.setText( _( "New" ) );
-            menuFileNew.setMnemonic( KeyEvent.VK_N );
-            menuFileOpen.setText( _( "Open" ) );
-            menuFileOpen.setMnemonic( KeyEvent.VK_O );
-            menuFileOpenVsq.setText( _( "Open VSQX/VSQ/Vocaloid MIDI" ) );
-            menuFileOpenVsq.setMnemonic( KeyEvent.VK_V );
-            menuFileOpenUst.setText( _( "Open UTAU project file" ) );
-            menuFileOpenUst.setMnemonic( KeyEvent.VK_U );
-            menuFileSave.setText( _( "Save" ) );
-            menuFileSave.setMnemonic( KeyEvent.VK_S );
-            menuFileSaveNamed.setText( _( "Save as" ) );
-            menuFileSaveNamed.setMnemonic( KeyEvent.VK_A );
-            menuFileImport.setText( _( "Import" ) );
-            menuFileImport.setMnemonic( KeyEvent.VK_I );
-            menuFileImportVsq.setText( _( "VSQ / Vocaloid Midi" ) );
-            menuFileExport.setText( _( "Export" ) );
-            menuFileExport.setMnemonic( KeyEvent.VK_E );
-            menuFileExportWave.setText( _( "WAVE" ) );
-            menuFileExportParaWave.setText( _( "Serial numbered WAVEs" ) );
-            menuFileExportUst.setText( _( "UTAU project file" ) );
-            menuFileExportVxt.setText( _( "Metatext for vConnect" ) );
+            menuFile.Text = _( "File" );
+            menuFile.Mnemonic( KeyEvent.VK_F );
+            menuFileNew.Text = _( "New" );
+            menuFileNew.Mnemonic( KeyEvent.VK_N );
+            menuFileOpen.Text = _( "Open" );
+            menuFileOpen.Mnemonic( KeyEvent.VK_O );
+            menuFileOpenVsq.Text = _( "Open VSQX/VSQ/Vocaloid MIDI" );
+            menuFileOpenVsq.Mnemonic( KeyEvent.VK_V );
+            menuFileOpenUst.Text = _( "Open UTAU project file" );
+            menuFileOpenUst.Mnemonic( KeyEvent.VK_U );
+            menuFileSave.Text = _( "Save" );
+            menuFileSave.Mnemonic( KeyEvent.VK_S );
+            menuFileSaveNamed.Text = _( "Save as" );
+            menuFileSaveNamed.Mnemonic( KeyEvent.VK_A );
+            menuFileImport.Text = _( "Import" );
+            menuFileImport.Mnemonic( KeyEvent.VK_I );
+            menuFileImportVsq.Text = _( "VSQ / Vocaloid Midi" );
+            menuFileExport.Text = _( "Export" );
+            menuFileExport.Mnemonic( KeyEvent.VK_E );
+            menuFileExportWave.Text = _( "WAVE" );
+            menuFileExportParaWave.Text = _( "Serial numbered WAVEs" );
+            menuFileExportUst.Text = _( "UTAU project file" );
+            menuFileExportVxt.Text = _( "Metatext for vConnect" );
             menuFileExportVsq.Text = _("VSQ File");
             menuFileExportVsqx.Text = _("VSQX File");
-            menuFileRecent.setText( _( "Open Recent" ) );
-            menuFileRecent.setMnemonic( KeyEvent.VK_R );
-            menuFileRecentClear.setText( _( "Clear Menu" ) );
-            menuFileQuit.setText( _( "Quit" ) );
-            menuFileQuit.setMnemonic( KeyEvent.VK_Q );
+            menuFileRecent.Text = _( "Open Recent" );
+            menuFileRecent.Mnemonic( KeyEvent.VK_R );
+            menuFileRecentClear.Text = _( "Clear Menu" );
+            menuFileQuit.Text = _( "Quit" );
+            menuFileQuit.Mnemonic( KeyEvent.VK_Q );
 
-            menuEdit.setText( _( "Edit" ) );
-            menuEdit.setMnemonic( KeyEvent.VK_E );
-            menuEditUndo.setText( _( "Undo" ) );
-            menuEditUndo.setMnemonic( KeyEvent.VK_U );
-            menuEditRedo.setText( _( "Redo" ) );
-            menuEditRedo.setMnemonic( KeyEvent.VK_R );
-            menuEditCut.setText( _( "Cut" ) );
-            menuEditCut.setMnemonic( KeyEvent.VK_T );
-            menuEditCopy.setText( _( "Copy" ) );
-            menuEditCopy.setMnemonic( KeyEvent.VK_C );
-            menuEditPaste.setText( _( "Paste" ) );
-            menuEditPaste.setMnemonic( KeyEvent.VK_P );
-            menuEditDelete.setText( _( "Delete" ) );
-            menuEditDelete.setMnemonic( KeyEvent.VK_D );
-            menuEditAutoNormalizeMode.setText( _( "Auto normalize mode" ) );
-            menuEditAutoNormalizeMode.setMnemonic( KeyEvent.VK_N );
-            menuEditSelectAll.setText( _( "Select All" ) );
-            menuEditSelectAll.setMnemonic( KeyEvent.VK_A );
-            menuEditSelectAllEvents.setText( _( "Select all events" ) );
-            menuEditSelectAllEvents.setMnemonic( KeyEvent.VK_E );
+            menuEdit.Text = _( "Edit" );
+            menuEdit.Mnemonic( KeyEvent.VK_E );
+            menuEditUndo.Text = _( "Undo" );
+            menuEditUndo.Mnemonic( KeyEvent.VK_U );
+            menuEditRedo.Text = _( "Redo" );
+            menuEditRedo.Mnemonic( KeyEvent.VK_R );
+            menuEditCut.Text = _( "Cut" );
+            menuEditCut.Mnemonic( KeyEvent.VK_T );
+            menuEditCopy.Text = _( "Copy" );
+            menuEditCopy.Mnemonic( KeyEvent.VK_C );
+            menuEditPaste.Text = _( "Paste" );
+            menuEditPaste.Mnemonic( KeyEvent.VK_P );
+            menuEditDelete.Text = _( "Delete" );
+            menuEditDelete.Mnemonic( KeyEvent.VK_D );
+            menuEditAutoNormalizeMode.Text = _( "Auto normalize mode" );
+            menuEditAutoNormalizeMode.Mnemonic( KeyEvent.VK_N );
+            menuEditSelectAll.Text = _( "Select All" );
+            menuEditSelectAll.Mnemonic( KeyEvent.VK_A );
+            menuEditSelectAllEvents.Text = _( "Select all events" );
+            menuEditSelectAllEvents.Mnemonic( KeyEvent.VK_E );
 
-            menuVisual.setText( _( "View" ) );
-            menuVisual.setMnemonic( KeyEvent.VK_V );
-            menuVisualControlTrack.setText( _( "Control track" ) );
-            menuVisualControlTrack.setMnemonic( KeyEvent.VK_C );
-            menuVisualMixer.setText( _( "Mixer" ) );
-            menuVisualMixer.setMnemonic( KeyEvent.VK_X );
-            menuVisualWaveform.setText( _( "Waveform" ) );
-            menuVisualWaveform.setMnemonic( KeyEvent.VK_W );
-            menuVisualProperty.setText( _( "Property window" ) );
-            menuVisualOverview.setText( _( "Navigation" ) );
-            menuVisualOverview.setMnemonic( KeyEvent.VK_V );
-            menuVisualGridline.setText( _( "Grid line" ) );
-            menuVisualGridline.setMnemonic( KeyEvent.VK_G );
-            menuVisualStartMarker.setText( _( "Start marker" ) );
-            menuVisualStartMarker.setMnemonic( KeyEvent.VK_S );
-            menuVisualEndMarker.setText( _( "End marker" ) );
-            menuVisualEndMarker.setMnemonic( KeyEvent.VK_E );
-            menuVisualLyrics.setText( _( "Lyrics/Phoneme" ) );
-            menuVisualLyrics.setMnemonic( KeyEvent.VK_L );
-            menuVisualNoteProperty.setText( _( "Note expression/vibrato" ) );
-            menuVisualNoteProperty.setMnemonic( KeyEvent.VK_N );
-            menuVisualPitchLine.setText( _( "Pitch line" ) );
-            menuVisualPitchLine.setMnemonic( KeyEvent.VK_P );
-            menuVisualPluginUi.setText( _( "VSTi plugin UI" ) );
-            menuVisualPluginUi.setMnemonic( KeyEvent.VK_U );
-            menuVisualIconPalette.setText( _( "Icon palette" ) );
-            menuVisualIconPalette.setMnemonic( KeyEvent.VK_I );
+            menuVisual.Text = _( "View" );
+            menuVisual.Mnemonic( KeyEvent.VK_V );
+            menuVisualControlTrack.Text = _( "Control track" );
+            menuVisualControlTrack.Mnemonic( KeyEvent.VK_C );
+            menuVisualMixer.Text = _( "Mixer" );
+            menuVisualMixer.Mnemonic( KeyEvent.VK_X );
+            menuVisualWaveform.Text = _( "Waveform" );
+            menuVisualWaveform.Mnemonic( KeyEvent.VK_W );
+            menuVisualProperty.Text = _( "Property window" );
+            menuVisualOverview.Text = _( "Navigation" );
+            menuVisualOverview.Mnemonic( KeyEvent.VK_V );
+            menuVisualGridline.Text = _( "Grid line" );
+            menuVisualGridline.Mnemonic( KeyEvent.VK_G );
+            menuVisualStartMarker.Text = _( "Start marker" );
+            menuVisualStartMarker.Mnemonic( KeyEvent.VK_S );
+            menuVisualEndMarker.Text = _( "End marker" );
+            menuVisualEndMarker.Mnemonic( KeyEvent.VK_E );
+            menuVisualLyrics.Text = _( "Lyrics/Phoneme" );
+            menuVisualLyrics.Mnemonic( KeyEvent.VK_L );
+            menuVisualNoteProperty.Text = _( "Note expression/vibrato" );
+            menuVisualNoteProperty.Mnemonic( KeyEvent.VK_N );
+            menuVisualPitchLine.Text = _( "Pitch line" );
+            menuVisualPitchLine.Mnemonic( KeyEvent.VK_P );
+            menuVisualPluginUi.Text = _( "VSTi plugin UI" );
+            menuVisualPluginUi.Mnemonic( KeyEvent.VK_U );
+            menuVisualIconPalette.Text = _( "Icon palette" );
+            menuVisualIconPalette.Mnemonic( KeyEvent.VK_I );
 
-            menuJob.setText( _( "Job" ) );
-            menuJob.setMnemonic( KeyEvent.VK_J );
-            menuJobNormalize.setText( _( "Normalize notes" ) );
-            menuJobNormalize.setMnemonic( KeyEvent.VK_N );
-            menuJobInsertBar.setText( _( "Insert bars" ) );
-            menuJobInsertBar.setMnemonic( KeyEvent.VK_I );
-            menuJobDeleteBar.setText( _( "Delete bars" ) );
-            menuJobDeleteBar.setMnemonic( KeyEvent.VK_D );
-            menuJobRandomize.setText( _( "Randomize" ) );
-            menuJobRandomize.setMnemonic( KeyEvent.VK_R );
-            menuJobConnect.setText( _( "Connect notes" ) );
-            menuJobConnect.setMnemonic( KeyEvent.VK_C );
-            menuJobLyric.setText( _( "Insert lyrics" ) );
-            menuJobLyric.setMnemonic( KeyEvent.VK_L );
+            menuJob.Text = _( "Job" );
+            menuJob.Mnemonic( KeyEvent.VK_J );
+            menuJobNormalize.Text = _( "Normalize notes" );
+            menuJobNormalize.Mnemonic( KeyEvent.VK_N );
+            menuJobInsertBar.Text = _( "Insert bars" );
+            menuJobInsertBar.Mnemonic( KeyEvent.VK_I );
+            menuJobDeleteBar.Text = _( "Delete bars" );
+            menuJobDeleteBar.Mnemonic( KeyEvent.VK_D );
+            menuJobRandomize.Text = _( "Randomize" );
+            menuJobRandomize.Mnemonic( KeyEvent.VK_R );
+            menuJobConnect.Text = _( "Connect notes" );
+            menuJobConnect.Mnemonic( KeyEvent.VK_C );
+            menuJobLyric.Text = _( "Insert lyrics" );
+            menuJobLyric.Mnemonic( KeyEvent.VK_L );
 
-            menuTrack.setText( _( "Track" ) );
-            menuTrack.setMnemonic( KeyEvent.VK_T );
-            menuTrackOn.setText( _( "Track on" ) );
-            menuTrackOn.setMnemonic( KeyEvent.VK_K );
-            menuTrackAdd.setText( _( "Add track" ) );
-            menuTrackAdd.setMnemonic( KeyEvent.VK_A );
-            menuTrackCopy.setText( _( "Copy track" ) );
-            menuTrackCopy.setMnemonic( KeyEvent.VK_C );
-            menuTrackChangeName.setText( _( "Rename track" ) );
-            menuTrackDelete.setText( _( "Delete track" ) );
-            menuTrackDelete.setMnemonic( KeyEvent.VK_D );
-            menuTrackRenderCurrent.setText( _( "Render current track" ) );
-            menuTrackRenderCurrent.setMnemonic( KeyEvent.VK_T );
-            menuTrackRenderAll.setText( _( "Render all tracks" ) );
-            menuTrackRenderAll.setMnemonic( KeyEvent.VK_S );
-            menuTrackOverlay.setText( _( "Overlay" ) );
-            menuTrackOverlay.setMnemonic( KeyEvent.VK_O );
-            menuTrackRenderer.setText( _( "Renderer" ) );
-            menuTrackRenderer.setMnemonic( KeyEvent.VK_R );
-            menuTrackRendererVOCALOID1.setMnemonic( KeyEvent.VK_1 );
-            menuTrackRendererVOCALOID2.setMnemonic( KeyEvent.VK_3 );
-            menuTrackRendererUtau.setMnemonic( KeyEvent.VK_4 );
-            menuTrackRendererVCNT.setMnemonic( KeyEvent.VK_5 );
-            menuTrackRendererAquesTone.setMnemonic( KeyEvent.VK_6 );
+            menuTrack.Text = _( "Track" );
+            menuTrack.Mnemonic( KeyEvent.VK_T );
+            menuTrackOn.Text = _( "Track on" );
+            menuTrackOn.Mnemonic( KeyEvent.VK_K );
+            menuTrackAdd.Text = _( "Add track" );
+            menuTrackAdd.Mnemonic( KeyEvent.VK_A );
+            menuTrackCopy.Text = _( "Copy track" );
+            menuTrackCopy.Mnemonic( KeyEvent.VK_C );
+            menuTrackChangeName.Text = _( "Rename track" );
+            menuTrackDelete.Text = _( "Delete track" );
+            menuTrackDelete.Mnemonic( KeyEvent.VK_D );
+            menuTrackRenderCurrent.Text = _( "Render current track" );
+            menuTrackRenderCurrent.Mnemonic( KeyEvent.VK_T );
+            menuTrackRenderAll.Text = _( "Render all tracks" );
+            menuTrackRenderAll.Mnemonic( KeyEvent.VK_S );
+            menuTrackOverlay.Text = _( "Overlay" );
+            menuTrackOverlay.Mnemonic( KeyEvent.VK_O );
+            menuTrackRenderer.Text = _( "Renderer" );
+            menuTrackRenderer.Mnemonic( KeyEvent.VK_R );
+            menuTrackRendererVOCALOID1.Mnemonic( KeyEvent.VK_1 );
+            menuTrackRendererVOCALOID2.Mnemonic( KeyEvent.VK_3 );
+            menuTrackRendererUtau.Mnemonic( KeyEvent.VK_4 );
+            menuTrackRendererVCNT.Mnemonic( KeyEvent.VK_5 );
+            menuTrackRendererAquesTone.Mnemonic( KeyEvent.VK_6 );
 
-            menuLyric.setText( _( "Lyrics" ) );
-            menuLyric.setMnemonic( KeyEvent.VK_L );
-            menuLyricExpressionProperty.setText( _( "Note expression property" ) );
-            menuLyricExpressionProperty.setMnemonic( KeyEvent.VK_E );
-            menuLyricVibratoProperty.setText( _( "Note vibrato property" ) );
-            menuLyricVibratoProperty.setMnemonic( KeyEvent.VK_V );
-            menuLyricApplyUtauParameters.setText( _( "Apply UTAU Parameters" ) );
-            menuLyricApplyUtauParameters.setMnemonic( KeyEvent.VK_A );
-            menuLyricPhonemeTransformation.setText( _( "Phoneme transformation" ) );
-            menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
-            menuLyricDictionary.setText( _( "User word dictionary" ) );
-            menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
-            menuLyricCopyVibratoToPreset.setText( _( "Copy vibrato config to preset" ) );
-            menuLyricCopyVibratoToPreset.setMnemonic( KeyEvent.VK_P );
+            menuLyric.Text = _( "Lyrics" );
+            menuLyric.Mnemonic( KeyEvent.VK_L );
+            menuLyricExpressionProperty.Text = _( "Note expression property" );
+            menuLyricExpressionProperty.Mnemonic( KeyEvent.VK_E );
+            menuLyricVibratoProperty.Text = _( "Note vibrato property" );
+            menuLyricVibratoProperty.Mnemonic( KeyEvent.VK_V );
+            menuLyricApplyUtauParameters.Text = _( "Apply UTAU Parameters" );
+            menuLyricApplyUtauParameters.Mnemonic( KeyEvent.VK_A );
+            menuLyricPhonemeTransformation.Text = _( "Phoneme transformation" );
+            menuLyricPhonemeTransformation.Mnemonic( KeyEvent.VK_T );
+            menuLyricDictionary.Text = _( "User word dictionary" );
+            menuLyricDictionary.Mnemonic( KeyEvent.VK_C );
+            menuLyricCopyVibratoToPreset.Text = _( "Copy vibrato config to preset" );
+            menuLyricCopyVibratoToPreset.Mnemonic( KeyEvent.VK_P );
 
-            menuScript.setText( _( "Script" ) );
-            menuScript.setMnemonic( KeyEvent.VK_C );
-            menuScriptUpdate.setText( _( "Update script list" ) );
-            menuScriptUpdate.setMnemonic( KeyEvent.VK_U );
+            menuScript.Text = _( "Script" );
+            menuScript.Mnemonic( KeyEvent.VK_C );
+            menuScriptUpdate.Text = _( "Update script list" );
+            menuScriptUpdate.Mnemonic( KeyEvent.VK_U );
 
-            menuSetting.setText( _( "Setting" ) );
-            menuSetting.setMnemonic( KeyEvent.VK_S );
-            menuSettingPreference.setText( _( "Preference" ) );
-            menuSettingPreference.setMnemonic( KeyEvent.VK_P );
-            menuSettingGameControler.setText( _( "Game controler" ) );
-            menuSettingGameControler.setMnemonic( KeyEvent.VK_G );
-            menuSettingGameControlerLoad.setText( _( "Load" ) );
-            menuSettingGameControlerLoad.setMnemonic( KeyEvent.VK_L );
-            menuSettingGameControlerRemove.setText( _( "Remove" ) );
-            menuSettingGameControlerRemove.setMnemonic( KeyEvent.VK_R );
-            menuSettingGameControlerSetting.setText( _( "Setting" ) );
-            menuSettingGameControlerSetting.setMnemonic( KeyEvent.VK_S );
-            menuSettingSequence.setText( _( "Sequence config" ) );
-            menuSettingSequence.setMnemonic( KeyEvent.VK_S );
-            menuSettingShortcut.setText( _( "Shortcut key" ) );
-            menuSettingShortcut.setMnemonic( KeyEvent.VK_K );
-            menuSettingDefaultSingerStyle.setText( _( "Singing style defaults" ) );
-            menuSettingDefaultSingerStyle.setMnemonic( KeyEvent.VK_D );
-            menuSettingPositionQuantize.setText( _( "Quantize" ) );
-            menuSettingPositionQuantize.setMnemonic( KeyEvent.VK_Q );
-            menuSettingPositionQuantizeOff.setText( _( "Off" ) );
-            menuSettingPositionQuantizeTriplet.setText( _( "Triplet" ) );
+            menuSetting.Text = _( "Setting" );
+            menuSetting.Mnemonic( KeyEvent.VK_S );
+            menuSettingPreference.Text = _( "Preference" );
+            menuSettingPreference.Mnemonic( KeyEvent.VK_P );
+            menuSettingGameControler.Text = _( "Game controler" );
+            menuSettingGameControler.Mnemonic( KeyEvent.VK_G );
+            menuSettingGameControlerLoad.Text = _( "Load" );
+            menuSettingGameControlerLoad.Mnemonic( KeyEvent.VK_L );
+            menuSettingGameControlerRemove.Text = _( "Remove" );
+            menuSettingGameControlerRemove.Mnemonic( KeyEvent.VK_R );
+            menuSettingGameControlerSetting.Text = _( "Setting" );
+            menuSettingGameControlerSetting.Mnemonic( KeyEvent.VK_S );
+            menuSettingSequence.Text = _( "Sequence config" );
+            menuSettingSequence.Mnemonic( KeyEvent.VK_S );
+            menuSettingShortcut.Text = _( "Shortcut key" );
+            menuSettingShortcut.Mnemonic( KeyEvent.VK_K );
+            menuSettingDefaultSingerStyle.Text = _( "Singing style defaults" );
+            menuSettingDefaultSingerStyle.Mnemonic( KeyEvent.VK_D );
+            menuSettingPositionQuantize.Text = _( "Quantize" );
+            menuSettingPositionQuantize.Mnemonic( KeyEvent.VK_Q );
+            menuSettingPositionQuantizeOff.Text = _( "Off" );
+            menuSettingPositionQuantizeTriplet.Text = _( "Triplet" );
             //menuSettingSingerProperty.setText( _( "Singer Properties" ) );
             //menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
-            menuSettingPaletteTool.setText( _( "Palette Tool" ) );
-            menuSettingPaletteTool.setMnemonic( KeyEvent.VK_T );
-            menuSettingVibratoPreset.setText( _( "Vibrato preset" ) );
-            menuSettingVibratoPreset.setMnemonic( KeyEvent.VK_V );
+            menuSettingPaletteTool.Text = _( "Palette Tool" );
+            menuSettingPaletteTool.Mnemonic( KeyEvent.VK_T );
+            menuSettingVibratoPreset.Text = _( "Vibrato preset" );
+            menuSettingVibratoPreset.Mnemonic( KeyEvent.VK_V );
 
 #if JAVA
             menuWindow.setText( _( "Window" ) );
             menuWindowMinimize.setText( _( "Minimize" ) );
 #endif
 
-            menuTools.Text = BMenuItem.setMnemonicFromText(_("Tools"), KeyEvent.VK_O);
+            menuTools.Text = _("Tools");
+            menuTools.Mnemonic(KeyEvent.VK_O);
             menuToolsCreateVConnectSTANDDb.Text = _("Create vConnect-STAND DB");
 
-            menuHelp.setText( _( "Help" ) );
-            menuHelp.setMnemonic( KeyEvent.VK_H );
-            menuHelpLog.setText( _( "Log" ) );
-            menuHelpLog.setMnemonic( KeyEvent.VK_L );
-            menuHelpLogSwitch.setText( Logger.isEnabled() ? _( "Disable" ) : _( "Enable" ) );
-            menuHelpLogSwitch.setMnemonic( KeyEvent.VK_L );
-            menuHelpLogOpen.setText( _( "Open" ) );
-            menuHelpLogOpen.setMnemonic( KeyEvent.VK_O );
-            menuHelpAbout.setText( _( "About Cadencii" ) );
-            menuHelpAbout.setMnemonic( KeyEvent.VK_A );
-            menuHelpManual.setText( _( "Manual" ) + " (PDF)" );
+            menuHelp.Text = _( "Help" );
+            menuHelp.Mnemonic( KeyEvent.VK_H );
+            menuHelpLog.Text = _( "Log" );
+            menuHelpLog.Mnemonic( KeyEvent.VK_L );
+            menuHelpLogSwitch.Text = Logger.isEnabled() ? _( "Disable" ) : _( "Enable" );
+            menuHelpLogSwitch.Mnemonic( KeyEvent.VK_L );
+            menuHelpLogOpen.Text = _( "Open" );
+            menuHelpLogOpen.Mnemonic( KeyEvent.VK_O );
+            menuHelpAbout.Text = _( "About Cadencii" );
+            menuHelpAbout.Mnemonic( KeyEvent.VK_A );
+            menuHelpManual.Text = _( "Manual" ) + " (PDF)";
 
-            menuHiddenCopy.setText( _( "Copy" ) );
-            menuHiddenCut.setText( _( "Cut" ) );
-            menuHiddenEditFlipToolPointerEraser.setText( _( "Chagne tool pointer / eraser" ) );
-            menuHiddenEditFlipToolPointerPencil.setText( _( "Change tool pointer / pencil" ) );
-            menuHiddenEditLyric.setText( _( "Start lyric input" ) );
-            menuHiddenGoToEndMarker.setText( _( "GoTo end marker" ) );
-            menuHiddenGoToStartMarker.setText( _( "Goto start marker" ) );
-            menuHiddenLengthen.setText( _( "Lengthen" ) );
-            menuHiddenMoveDown.setText( _( "Move down" ) );
-            menuHiddenMoveLeft.setText( _( "Move left" ) );
-            menuHiddenMoveRight.setText( _( "Move right" ) );
-            menuHiddenMoveUp.setText( _( "Move up" ) );
-            menuHiddenPaste.setText( _( "Paste" ) );
-            menuHiddenPlayFromStartMarker.setText( _( "Play from start marker" ) );
-            menuHiddenSelectBackward.setText( _( "Select backward" ) );
-            menuHiddenSelectForward.setText( _( "Select forward" ) );
-            menuHiddenShorten.setText( _( "Shorten" ) );
-            menuHiddenTrackBack.setText( _( "Previous track" ) );
-            menuHiddenTrackNext.setText( _( "Next track" ) );
-            menuHiddenVisualBackwardParameter.setText( _( "Previous control curve" ) );
-            menuHiddenVisualForwardParameter.setText( _( "Next control curve" ) );
-            menuHiddenFlipCurveOnPianorollMode.setText( _( "Change pitch drawing mode" ) );
+            menuHiddenCopy.Text = _( "Copy" );
+            menuHiddenCut.Text = _( "Cut" );
+            menuHiddenEditFlipToolPointerEraser.Text = _( "Chagne tool pointer / eraser" );
+            menuHiddenEditFlipToolPointerPencil.Text = _( "Change tool pointer / pencil" );
+            menuHiddenEditLyric.Text = _( "Start lyric input" );
+            menuHiddenGoToEndMarker.Text = _( "GoTo end marker" );
+            menuHiddenGoToStartMarker.Text = _( "Goto start marker" );
+            menuHiddenLengthen.Text = _( "Lengthen" );
+            menuHiddenMoveDown.Text = _( "Move down" );
+            menuHiddenMoveLeft.Text = _( "Move left" );
+            menuHiddenMoveRight.Text = _( "Move right" );
+            menuHiddenMoveUp.Text = _( "Move up" );
+            menuHiddenPaste.Text = _( "Paste" );
+            menuHiddenPlayFromStartMarker.Text = _( "Play from start marker" );
+            menuHiddenSelectBackward.Text = _( "Select backward" );
+            menuHiddenSelectForward.Text = _( "Select forward" );
+            menuHiddenShorten.Text = _( "Shorten" );
+            menuHiddenTrackBack.Text = _( "Previous track" );
+            menuHiddenTrackNext.Text = _( "Next track" );
+            menuHiddenVisualBackwardParameter.Text = _( "Previous control curve" );
+            menuHiddenVisualForwardParameter.Text = _( "Next control curve" );
+            menuHiddenFlipCurveOnPianorollMode.Text = _( "Change pitch drawing mode" );
             #endregion
 
             #region cMenuPiano
-            cMenuPianoPointer.setText( _( "Arrow" ) );
-            cMenuPianoPointer.setMnemonic( KeyEvent.VK_A );
-            cMenuPianoPencil.setText( _( "Pencil" ) );
-            cMenuPianoPencil.setMnemonic( KeyEvent.VK_W );
-            cMenuPianoEraser.setText( _( "Eraser" ) );
-            cMenuPianoEraser.setMnemonic( KeyEvent.VK_E );
-            cMenuPianoPaletteTool.setText( _( "Palette Tool" ) );
+            cMenuPianoPointer.Text = _( "Arrow" );
+            cMenuPianoPointer.Mnemonic( KeyEvent.VK_A );
+            cMenuPianoPencil.Text = _( "Pencil" );
+            cMenuPianoPencil.Mnemonic( KeyEvent.VK_W );
+            cMenuPianoEraser.Text = _( "Eraser" );
+            cMenuPianoEraser.Mnemonic( KeyEvent.VK_E );
+            cMenuPianoPaletteTool.Text = _( "Palette Tool" );
 
-            cMenuPianoCurve.setText( _( "Curve" ) );
-            cMenuPianoCurve.setMnemonic( KeyEvent.VK_V );
+            cMenuPianoCurve.Text = _( "Curve" );
+            cMenuPianoCurve.Mnemonic( KeyEvent.VK_V );
 
-            cMenuPianoFixed.setText( _( "Note Fixed Length" ) );
-            cMenuPianoFixed.setMnemonic( KeyEvent.VK_N );
-            cMenuPianoFixedTriplet.setText( _( "Triplet" ) );
-            cMenuPianoFixedOff.setText( _( "Off" ) );
-            cMenuPianoFixedDotted.setText( _( "Dot" ) );
-            cMenuPianoQuantize.setText( _( "Quantize" ) );
-            cMenuPianoQuantize.setMnemonic( KeyEvent.VK_Q );
-            cMenuPianoQuantizeTriplet.setText( _( "Triplet" ) );
-            cMenuPianoQuantizeOff.setText( _( "Off" ) );
-            cMenuPianoGrid.setText( _( "Show/Hide Grid Line" ) );
-            cMenuPianoGrid.setMnemonic( KeyEvent.VK_S );
+            cMenuPianoFixed.Text = _( "Note Fixed Length" );
+            cMenuPianoFixed.Mnemonic( KeyEvent.VK_N );
+            cMenuPianoFixedTriplet.Text = _( "Triplet" );
+            cMenuPianoFixedOff.Text = _( "Off" );
+            cMenuPianoFixedDotted.Text = _( "Dot" );
+            cMenuPianoQuantize.Text = _( "Quantize" );
+            cMenuPianoQuantize.Mnemonic( KeyEvent.VK_Q );
+            cMenuPianoQuantizeTriplet.Text = _( "Triplet" );
+            cMenuPianoQuantizeOff.Text = _( "Off" );
+            cMenuPianoGrid.Text = _( "Show/Hide Grid Line" );
+            cMenuPianoGrid.Mnemonic( KeyEvent.VK_S );
 
-            cMenuPianoUndo.setText( _( "Undo" ) );
-            cMenuPianoUndo.setMnemonic( KeyEvent.VK_U );
-            cMenuPianoRedo.setText( _( "Redo" ) );
-            cMenuPianoRedo.setMnemonic( KeyEvent.VK_R );
+            cMenuPianoUndo.Text = _( "Undo" );
+            cMenuPianoUndo.Mnemonic( KeyEvent.VK_U );
+            cMenuPianoRedo.Text = _( "Redo" );
+            cMenuPianoRedo.Mnemonic( KeyEvent.VK_R );
 
-            cMenuPianoCut.setText( _( "Cut" ) );
-            cMenuPianoCut.setMnemonic( KeyEvent.VK_T );
-            cMenuPianoPaste.setText( _( "Paste" ) );
-            cMenuPianoPaste.setMnemonic( KeyEvent.VK_P );
-            cMenuPianoCopy.setText( _( "Copy" ) );
-            cMenuPianoCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuPianoDelete.setText( _( "Delete" ) );
-            cMenuPianoDelete.setMnemonic( KeyEvent.VK_D );
+            cMenuPianoCut.Text = _( "Cut" );
+            cMenuPianoCut.Mnemonic( KeyEvent.VK_T );
+            cMenuPianoPaste.Text = _( "Paste" );
+            cMenuPianoPaste.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoCopy.Text = _( "Copy" );
+            cMenuPianoCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuPianoDelete.Text = _( "Delete" );
+            cMenuPianoDelete.Mnemonic( KeyEvent.VK_D );
 
-            cMenuPianoSelectAll.setText( _( "Select All" ) );
-            cMenuPianoSelectAll.setMnemonic( KeyEvent.VK_A );
-            cMenuPianoSelectAllEvents.setText( _( "Select All Events" ) );
-            cMenuPianoSelectAllEvents.setMnemonic( KeyEvent.VK_E );
+            cMenuPianoSelectAll.Text = _( "Select All" );
+            cMenuPianoSelectAll.Mnemonic( KeyEvent.VK_A );
+            cMenuPianoSelectAllEvents.Text = _( "Select All Events" );
+            cMenuPianoSelectAllEvents.Mnemonic( KeyEvent.VK_E );
 
-            cMenuPianoExpressionProperty.setText( _( "Note Expression Property" ) );
-            cMenuPianoExpressionProperty.setMnemonic( KeyEvent.VK_P );
-            cMenuPianoVibratoProperty.setText( _( "Note Vibrato Property" ) );
-            cMenuPianoImportLyric.setText( _( "Insert Lyrics" ) );
-            cMenuPianoImportLyric.setMnemonic( KeyEvent.VK_P );
+            cMenuPianoExpressionProperty.Text = _( "Note Expression Property" );
+            cMenuPianoExpressionProperty.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoVibratoProperty.Text = _( "Note Vibrato Property" );
+            cMenuPianoImportLyric.Text = _( "Insert Lyrics" );
+            cMenuPianoImportLyric.Mnemonic( KeyEvent.VK_P );
             #endregion
 
             #region cMenuTrackTab
-            cMenuTrackTabTrackOn.setText( _( "Track On" ) );
-            cMenuTrackTabTrackOn.setMnemonic( KeyEvent.VK_K );
-            cMenuTrackTabAdd.setText( _( "Add Track" ) );
-            cMenuTrackTabAdd.setMnemonic( KeyEvent.VK_A );
-            cMenuTrackTabCopy.setText( _( "Copy Track" ) );
-            cMenuTrackTabCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuTrackTabChangeName.setText( _( "Rename Track" ) );
-            cMenuTrackTabDelete.setText( _( "Delete Track" ) );
-            cMenuTrackTabDelete.setMnemonic( KeyEvent.VK_D );
+            cMenuTrackTabTrackOn.Text = _( "Track On" );
+            cMenuTrackTabTrackOn.Mnemonic( KeyEvent.VK_K );
+            cMenuTrackTabAdd.Text = _( "Add Track" );
+            cMenuTrackTabAdd.Mnemonic( KeyEvent.VK_A );
+            cMenuTrackTabCopy.Text = _( "Copy Track" );
+            cMenuTrackTabCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuTrackTabChangeName.Text = _( "Rename Track" );
+            cMenuTrackTabDelete.Text = _( "Delete Track" );
+            cMenuTrackTabDelete.Mnemonic( KeyEvent.VK_D );
 
-            cMenuTrackTabRenderCurrent.setText( _( "Render Current Track" ) );
-            cMenuTrackTabRenderCurrent.setMnemonic( KeyEvent.VK_T );
-            cMenuTrackTabRenderAll.setText( _( "Render All Tracks" ) );
-            cMenuTrackTabRenderAll.setMnemonic( KeyEvent.VK_S );
-            cMenuTrackTabOverlay.setText( _( "Overlay" ) );
-            cMenuTrackTabOverlay.setMnemonic( KeyEvent.VK_O );
-            cMenuTrackTabRenderer.setText( _( "Renderer" ) );
-            cMenuTrackTabRenderer.setMnemonic( KeyEvent.VK_R );
+            cMenuTrackTabRenderCurrent.Text = _( "Render Current Track" );
+            cMenuTrackTabRenderCurrent.Mnemonic( KeyEvent.VK_T );
+            cMenuTrackTabRenderAll.Text = _( "Render All Tracks" );
+            cMenuTrackTabRenderAll.Mnemonic( KeyEvent.VK_S );
+            cMenuTrackTabOverlay.Text = _( "Overlay" );
+            cMenuTrackTabOverlay.Mnemonic( KeyEvent.VK_O );
+            cMenuTrackTabRenderer.Text = _( "Renderer" );
+            cMenuTrackTabRenderer.Mnemonic( KeyEvent.VK_R );
             #endregion
 
             #region cMenuTrackSelector
-            cMenuTrackSelectorPointer.setText( _( "Arrow" ) );
-            cMenuTrackSelectorPointer.setMnemonic( KeyEvent.VK_A );
-            cMenuTrackSelectorPencil.setText( _( "Pencil" ) );
-            cMenuTrackSelectorPencil.setMnemonic( KeyEvent.VK_W );
-            cMenuTrackSelectorLine.setText( _( "Line" ) );
-            cMenuTrackSelectorLine.setMnemonic( KeyEvent.VK_L );
-            cMenuTrackSelectorEraser.setText( _( "Eraser" ) );
-            cMenuTrackSelectorEraser.setMnemonic( KeyEvent.VK_E );
-            cMenuTrackSelectorPaletteTool.setText( _( "Palette Tool" ) );
+            cMenuTrackSelectorPointer.Text = _( "Arrow" );
+            cMenuTrackSelectorPointer.Mnemonic( KeyEvent.VK_A );
+            cMenuTrackSelectorPencil.Text = _( "Pencil" );
+            cMenuTrackSelectorPencil.Mnemonic( KeyEvent.VK_W );
+            cMenuTrackSelectorLine.Text = _( "Line" );
+            cMenuTrackSelectorLine.Mnemonic( KeyEvent.VK_L );
+            cMenuTrackSelectorEraser.Text = _( "Eraser" );
+            cMenuTrackSelectorEraser.Mnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorPaletteTool.Text = _( "Palette Tool" );
 
-            cMenuTrackSelectorCurve.setText( _( "Curve" ) );
-            cMenuTrackSelectorCurve.setMnemonic( KeyEvent.VK_V );
+            cMenuTrackSelectorCurve.Text = _( "Curve" );
+            cMenuTrackSelectorCurve.Mnemonic( KeyEvent.VK_V );
 
-            cMenuTrackSelectorUndo.setText( _( "Undo" ) );
-            cMenuTrackSelectorUndo.setMnemonic( KeyEvent.VK_U );
-            cMenuTrackSelectorRedo.setText( _( "Redo" ) );
-            cMenuTrackSelectorRedo.setMnemonic( KeyEvent.VK_R );
+            cMenuTrackSelectorUndo.Text = _( "Undo" );
+            cMenuTrackSelectorUndo.Mnemonic( KeyEvent.VK_U );
+            cMenuTrackSelectorRedo.Text = _( "Redo" );
+            cMenuTrackSelectorRedo.Mnemonic( KeyEvent.VK_R );
 
-            cMenuTrackSelectorCut.setText( _( "Cut" ) );
-            cMenuTrackSelectorCut.setMnemonic( KeyEvent.VK_T );
-            cMenuTrackSelectorCopy.setText( _( "Copy" ) );
-            cMenuTrackSelectorCopy.setMnemonic( KeyEvent.VK_C );
-            cMenuTrackSelectorPaste.setText( _( "Paste" ) );
-            cMenuTrackSelectorPaste.setMnemonic( KeyEvent.VK_P );
-            cMenuTrackSelectorDelete.setText( _( "Delete" ) );
-            cMenuTrackSelectorDelete.setMnemonic( KeyEvent.VK_D );
-            cMenuTrackSelectorDeleteBezier.setText( _( "Delete Bezier Point" ) );
-            cMenuTrackSelectorDeleteBezier.setMnemonic( KeyEvent.VK_B );
+            cMenuTrackSelectorCut.Text = _( "Cut" );
+            cMenuTrackSelectorCut.Mnemonic( KeyEvent.VK_T );
+            cMenuTrackSelectorCopy.Text = _( "Copy" );
+            cMenuTrackSelectorCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuTrackSelectorPaste.Text = _( "Paste" );
+            cMenuTrackSelectorPaste.Mnemonic( KeyEvent.VK_P );
+            cMenuTrackSelectorDelete.Text = _( "Delete" );
+            cMenuTrackSelectorDelete.Mnemonic( KeyEvent.VK_D );
+            cMenuTrackSelectorDeleteBezier.Text = _( "Delete Bezier Point" );
+            cMenuTrackSelectorDeleteBezier.Mnemonic( KeyEvent.VK_B );
 
-            cMenuTrackSelectorSelectAll.setText( _( "Select All Events" ) );
-            cMenuTrackSelectorSelectAll.setMnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorSelectAll.Text = _( "Select All Events" );
+            cMenuTrackSelectorSelectAll.Mnemonic( KeyEvent.VK_E );
             #endregion
 
             #region cMenuPositionIndicator
-            cMenuPositionIndicatorStartMarker.setText( _( "Set start marker" ) );
-            cMenuPositionIndicatorEndMarker.setText( _( "Set end marker" ) );
+            cMenuPositionIndicatorStartMarker.Text = _( "Set start marker" );
+            cMenuPositionIndicatorEndMarker.Text = _( "Set end marker" );
             #endregion
 
 #if !JAVA
-            stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
+            stripLblGameCtrlMode.ToolTipText = _( "Game Controler" );
 #endif
 
             // Palette Tool
@@ -4893,42 +4833,42 @@ namespace cadencii
                 }
             }
 
-            foreach ( MenuElement tsi in cMenuPianoPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
+            foreach ( var tsi in cMenuPianoPaletteTool.DropDownItems ) {
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                        String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
                 }
             }
 
-            foreach ( MenuElement tsi in cMenuTrackSelectorPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
+            foreach ( var tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                        String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsmi.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
+                            tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
                 }
             }
 
-            foreach ( MenuElement tsi in menuSettingPaletteTool.getSubElements() ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                        String id = (String)tsmi.getTag();
+            foreach ( var tsi in menuSettingPaletteTool.DropDownItems ) {
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                        String id = (String)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsmi.setText( ipt.getName( Messaging.getLanguage() ) );
+                            tsmi.Text = ipt.getName( Messaging.getLanguage() );
                         }
                     }
                 }
@@ -4966,9 +4906,9 @@ namespace cadencii
                 } else {
                     mDialogImportLyric.setMaxNotes( count );
                 }
-                mDialogImportLyric.setLocation( getFormPreferedLocation( mDialogImportLyric ) );
-                BDialogResult dr = AppManager.showModalDialog( mDialogImportLyric, this );
-                if ( dr == BDialogResult.OK ) {
+                mDialogImportLyric.Location = getFormPreferedLocation( mDialogImportLyric );
+                DialogResult dr = AppManager.showModalDialog( mDialogImportLyric, this );
+                if ( dr == DialogResult.OK ) {
                     String[] phrases = mDialogImportLyric.getLetters();
 #if DEBUG
                     foreach ( String s in phrases ) {
@@ -5030,12 +4970,12 @@ namespace cadencii
                         VsqCommand.generateCommandEventReplaceRange( selected, new_events ) );
                     AppManager.editHistory.register( vsq.executeCommand( run ) );
                     setEdited( true );
-                    repaint();
+                    Refresh();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".importLyric; ex=" + ex + "\n" );
             } finally {
-                mDialogImportLyric.setVisible( false );
+                mDialogImportLyric.Hide();
             }
         }
 
@@ -5065,9 +5005,9 @@ namespace cadencii
                     AppManager.editorConfig.DefaultVibratoLength,
                     type,
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType );
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dlg.getDialogResult() == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dlg.DialogResult == DialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     if ( dlg.getVibratoHandle() != null ) {
                         edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
@@ -5088,7 +5028,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".editNoteVibratoProperty; ex=" + ex2 + "\n" );
                     }
@@ -5123,9 +5063,9 @@ namespace cadencii
                 dlg.setDEMdecGainRate( ev.ID.DEMdecGainRate );
                 dlg.setDEMaccent( ev.ID.DEMaccent );
 
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     edited.ID.PMBendDepth = dlg.getPMBendDepth();
                     edited.ID.PMBendLength = dlg.getPMBendLength();
@@ -5144,7 +5084,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".editNoteExpressionProperty; ex=" + ex2 + "\n" );
                     }
@@ -5159,16 +5099,16 @@ namespace cadencii
         /// <returns></returns>
         public int computeScrollValueFromWheelDelta( int delta )
         {
-            double new_val = (double)hScroll.getValue() - delta * AppManager.editorConfig.WheelOrder / (5.0 * controller.getScaleX());
+            double new_val = (double)hScroll.Value - delta * AppManager.editorConfig.WheelOrder / (5.0 * controller.getScaleX());
             if ( new_val < 0.0 ) {
                 new_val = 0;
             }
-            int max = hScroll.getMaximum() - hScroll.getVisibleAmount();
+            int max = hScroll.Maximum - hScroll.LargeChange;
             int draft = (int)new_val;
             if ( draft > max ) {
                 draft = max;
-            } else if ( draft < hScroll.getMinimum() ) {
-                draft = hScroll.getMinimum();
+            } else if ( draft < hScroll.Minimum ) {
+                draft = hScroll.Minimum;
             }
             return draft;
         }
@@ -5259,10 +5199,10 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine(
                 "FormMain#deleteEvent(); AppManager.mInputTextBox.isEnabled()=" +
-                AppManager.mInputTextBox.isEnabled() );
+                AppManager.mInputTextBox.Enabled );
 #endif
 
-            if ( AppManager.mInputTextBox.isVisible() ) {
+            if ( AppManager.mInputTextBox.Visible ) {
                 return;
             }
 #if ENABLE_PROPERTY
@@ -5336,7 +5276,7 @@ namespace cadencii
                     setEdited( true );
                     AppManager.itemSelection.clearEvent();
                 }
-                repaint();
+                Refresh();
             } else if ( AppManager.itemSelection.getTempoCount() > 0 ) {
                 Vector<Integer> clocks = new Vector<Integer>();
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
@@ -5366,7 +5306,7 @@ namespace cadencii
                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                 setEdited( true );
                 AppManager.itemSelection.clearTempo();
-                repaint();
+                Refresh();
             } else if ( AppManager.itemSelection.getTimesigCount() > 0 ) {
 #if DEBUG
                 AppManager.debugWriteLine( "    Timesig" );
@@ -5401,7 +5341,7 @@ namespace cadencii
                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                 setEdited( true );
                 AppManager.itemSelection.clearTimesig();
-                repaint();
+                Refresh();
             }
             if ( AppManager.itemSelection.getPointIDCount() > 0 ) {
 #if DEBUG
@@ -6037,9 +5977,9 @@ namespace cadencii
                 VsqFileEx vsq = AppManager.getVsqFile();
                 ib = new InputBox( _( "Input new name of track" ) );
                 ib.setResult( vsq.Track.get( selected ).getName() );
-                ib.setLocation( getFormPreferedLocation( ib ) );
-                BDialogResult dr = AppManager.showModalDialog( ib, this );
-                if( dr == BDialogResult.OK ){
+                ib.Location = getFormPreferedLocation( ib );
+                DialogResult dr = AppManager.showModalDialog( ib, this );
+                if( dr == DialogResult.OK ){
                     String ret = ib.getResult();
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandTrackChangeName( selected, ret ) );
@@ -6050,39 +5990,9 @@ namespace cadencii
             }catch( Exception ex ){
             }finally{
                 if( ib != null ){
-                    ib.close();
+                    ib.Close();
                 }
             }
-
-/*            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
-#if JAVA
-            mTextBoxTrackName = new LyricTextBox( this );
-#else
-            mTextBoxTrackName = new LyricTextBox();
-#endif
-            mTextBoxTrackName.setVisible( false );
-            int selector_width = trackSelector.getSelectorWidth();
-            int x = AppManager.keyWidth + (AppManager.getSelected() - 1) * selector_width;
-            mTextBoxTrackName.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
-            mTextBoxTrackName.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
-#if JAVA
-            mTextBoxTrackName.keyUpEvent.add( new BKeyEventHandler( this, "mTextBoxTrackName_KeyUp" ) );
-#else
-            mTextBoxTrackName.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            mTextBoxTrackName.KeyUp += new System.Windows.Forms.KeyEventHandler( mTextBoxTrackName_KeyUp );
-            mTextBoxTrackName.Parent = trackSelector;
-#endif
-            mTextBoxTrackName.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
-            mTextBoxTrackName.setVisible( true );
-            mTextBoxTrackName.requestFocus();
-            mTextBoxTrackName.selectAll();*/
         }
 
         /// <summary>
@@ -6096,7 +6006,7 @@ namespace cadencii
                     PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
                     _APP_NAME,
                     cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                    cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == BDialogResult.YES ) {
+                    cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == DialogResult.Yes ) {
                 CadenciiCommand run = VsqFileEx.generateCommandDeleteTrack( selected );
                 if ( selected >= 2 ) {
                     AppManager.setSelected( selected - 1 );
@@ -6144,13 +6054,13 @@ namespace cadencii
         /// </summary>
         public void applyQuantizeMode()
         {
-            cMenuPianoQuantize04.setSelected( false );
-            cMenuPianoQuantize08.setSelected( false );
-            cMenuPianoQuantize16.setSelected( false );
-            cMenuPianoQuantize32.setSelected( false );
-            cMenuPianoQuantize64.setSelected( false );
-            cMenuPianoQuantize128.setSelected( false );
-            cMenuPianoQuantizeOff.setSelected( false );
+            cMenuPianoQuantize04.Checked = false;
+            cMenuPianoQuantize08.Checked = false;
+            cMenuPianoQuantize16.Checked = false;
+            cMenuPianoQuantize32.Checked = false;
+            cMenuPianoQuantize64.Checked = false;
+            cMenuPianoQuantize128.Checked = false;
+            cMenuPianoQuantizeOff.Checked = false;
 
 #if ENABLE_STRIP_DROPDOWN
             stripDDBtnQuantize04.Checked = false;
@@ -6162,13 +6072,13 @@ namespace cadencii
             stripDDBtnQuantizeOff.Checked = false;
 #endif
 
-            menuSettingPositionQuantize04.setSelected( false );
-            menuSettingPositionQuantize08.setSelected( false );
-            menuSettingPositionQuantize16.setSelected( false );
-            menuSettingPositionQuantize32.setSelected( false );
-            menuSettingPositionQuantize64.setSelected( false );
-            menuSettingPositionQuantize128.setSelected( false );
-            menuSettingPositionQuantizeOff.setSelected( false );
+            menuSettingPositionQuantize04.Checked = false;
+            menuSettingPositionQuantize08.Checked = false;
+            menuSettingPositionQuantize16.Checked = false;
+            menuSettingPositionQuantize32.Checked = false;
+            menuSettingPositionQuantize64.Checked = false;
+            menuSettingPositionQuantize128.Checked = false;
+            menuSettingPositionQuantizeOff.Checked = false;
 
 #if !JAVA
             QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
@@ -6178,74 +6088,74 @@ namespace cadencii
                 ((qm != QuantizeMode.off && triplet) ? " [3]" : "");
 #endif
             if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
-                cMenuPianoQuantize04.setSelected( true );
+                cMenuPianoQuantize04.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize04.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note004.png";
 #endif
-                menuSettingPositionQuantize04.setSelected( true );
+                menuSettingPositionQuantize04.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
-                cMenuPianoQuantize08.setSelected( true );
+                cMenuPianoQuantize08.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize08.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note008.png";
 #endif
-                menuSettingPositionQuantize08.setSelected( true );
+                menuSettingPositionQuantize08.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
-                cMenuPianoQuantize16.setSelected( true );
+                cMenuPianoQuantize16.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize16.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note016.png";
 #endif
-                menuSettingPositionQuantize16.setSelected( true );
+                menuSettingPositionQuantize16.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
-                cMenuPianoQuantize32.setSelected( true );
+                cMenuPianoQuantize32.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize32.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note032.png";
 #endif
-                menuSettingPositionQuantize32.setSelected( true );
+                menuSettingPositionQuantize32.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
-                cMenuPianoQuantize64.setSelected( true );
+                cMenuPianoQuantize64.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize64.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note064.png";
 #endif
-                menuSettingPositionQuantize64.setSelected( true );
+                menuSettingPositionQuantize64.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
-                cMenuPianoQuantize128.setSelected( true );
+                cMenuPianoQuantize128.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize128.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "note128.png";
 #endif
-                menuSettingPositionQuantize128.setSelected( true );
+                menuSettingPositionQuantize128.Checked = true;
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
-                cMenuPianoQuantizeOff.setSelected( true );
+                cMenuPianoQuantizeOff.Checked = true;
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantizeOff.Checked = true;
 #endif
 #if !JAVA
                 stripDDBtnQuantizeParent.ImageKey = "notenull.png";
 #endif
-                menuSettingPositionQuantizeOff.setSelected( true );
+                menuSettingPositionQuantizeOff.Checked = true;
             }
-            cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            cMenuPianoQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
 #if ENABLE_STRIP_DROPDOWN
             stripDDBtnQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
 #endif
-            menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            menuSettingPositionQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
         }
 
         /// <summary>
@@ -6298,8 +6208,7 @@ namespace cadencii
                 }
 #endif // JAVA
             }
-            MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
-            foreach ( MenuElement tsi in items ) {
+            foreach ( var tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
                     String id = tsmi.getPaletteToolID();
@@ -6309,12 +6218,11 @@ namespace cadencii
                         sel = str.compare( AppManager.mSelectedPaletteTool, id );
                     }
 #endif
-                    tsmi.setSelected( sel );
+                    tsmi.Checked = sel;
                 }
             }
 
-            items = cMenuPianoPaletteTool.getSubElements();
-            foreach ( MenuElement tsi in items ) {
+            foreach ( var tsi in cMenuPianoPaletteTool.DropDownItems ) {
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
                     String id = tsmi.getPaletteToolID();
@@ -6324,19 +6232,19 @@ namespace cadencii
                         sel = str.compare( AppManager.mSelectedPaletteTool, id );
                     }
 #endif
-                    tsmi.setSelected( sel );
+                    tsmi.Checked = sel;
                 }
             }
 
             EditTool selected_tool = AppManager.getSelectedTool();
-            cMenuPianoPointer.setSelected( (selected_tool == EditTool.ARROW) );
-            cMenuPianoPencil.setSelected( (selected_tool == EditTool.PENCIL) );
-            cMenuPianoEraser.setSelected( (selected_tool == EditTool.ERASER) );
+            cMenuPianoPointer.Checked = (selected_tool == EditTool.ARROW);
+            cMenuPianoPencil.Checked = (selected_tool == EditTool.PENCIL);
+            cMenuPianoEraser.Checked = (selected_tool == EditTool.ERASER);
 
-            cMenuTrackSelectorPointer.setSelected( (selected_tool == EditTool.ARROW) );
-            cMenuTrackSelectorPencil.setSelected( (selected_tool == EditTool.PENCIL) );
-            cMenuTrackSelectorLine.setSelected( (selected_tool == EditTool.LINE) );
-            cMenuTrackSelectorEraser.setSelected( (selected_tool == EditTool.ERASER) );
+            cMenuTrackSelectorPointer.Checked = (selected_tool == EditTool.ARROW);
+            cMenuTrackSelectorPencil.Checked = (selected_tool == EditTool.PENCIL);
+            cMenuTrackSelectorLine.Checked = (selected_tool == EditTool.LINE);
+            cMenuTrackSelectorEraser.Checked = (selected_tool == EditTool.ERASER);
 
 #if JAVA
             stripBtnPointer.setSelected( (selected_tool == EditTool.ARROW) );
@@ -6351,13 +6259,9 @@ namespace cadencii
 #endif
 
 
-            cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
-            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
-#if JAVA
-            stripBtnCurve.setSelected( AppManager.isCurveMode() );
-#else
+            cMenuPianoCurve.Checked = AppManager.isCurveMode();
+            cMenuTrackSelectorCurve.Checked = AppManager.isCurveMode();
             stripBtnCurve.Pushed = AppManager.isCurveMode();
-#endif
         }
 
         /// <summary>
@@ -6635,7 +6539,7 @@ namespace cadencii
         public void updateRecentFileMenu()
         {
             int added = 0;
-            menuFileRecent.removeAll();
+            menuFileRecent.DropDownItems.Clear();
             if ( AppManager.editorConfig.RecentFiles != null ) {
                 for ( int i = 0; i < AppManager.editorConfig.RecentFiles.size(); i++ ) {
                     String item = AppManager.editorConfig.RecentFiles.get( i );
@@ -6646,26 +6550,26 @@ namespace cadencii
                         String short_name = PortUtil.getFileName( item );
                         boolean available = fsys.isFileExists( item );
                         RecentFileMenuItem itm = new RecentFileMenuItem( item );
-                        itm.setText( short_name );
+                        itm.Text = short_name;
                         String tooltip = "";
                         if ( !available ) {
                             tooltip = _( "[file not found]" ) + " ";
                         }
                         tooltip += item;
-                        itm.setToolTipText( tooltip );
-                        itm.setEnabled( available );
-                        itm.Click += new BEventHandler( handleRecentFileMenuItem_Click );
-                        itm.MouseEnter += new BEventHandler( handleRecentFileMenuItem_MouseEnter );
-                        menuFileRecent.add( itm );
+                        itm.ToolTipText = tooltip;
+                        itm.Enabled = available;
+                        itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
+                        itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
+                        menuFileRecent.DropDownItems.Add( itm );
                         added++;
                     }
                 }
             } else {
                 AppManager.editorConfig.pushRecentFiles( "" );
             }
-            menuFileRecent.addSeparator();
-            menuFileRecent.add( menuFileRecentClear );
-            menuFileRecent.setEnabled( true );
+            menuFileRecent.DropDownItems.Add(new ToolStripSeparator());
+            menuFileRecent.DropDownItems.Add( menuFileRecentClear );
+            menuFileRecent.Enabled = true;
         }
 
         /// <summary>
@@ -6689,17 +6593,17 @@ namespace cadencii
                 file += " *";
             }
             String title = file + " - " + _APP_NAME;
-            if ( !str.compare( getTitle(), title ) ) {
-                setTitle( title );
+            if ( !str.compare( this.Text, title ) ) {
+                this.Text = title;
             }
             boolean redo = AppManager.editHistory.hasRedoHistory();
             boolean undo = AppManager.editHistory.hasUndoHistory();
-            menuEditRedo.setEnabled( redo );
-            menuEditUndo.setEnabled( undo );
-            cMenuPianoRedo.setEnabled( redo );
-            cMenuPianoUndo.setEnabled( undo );
-            cMenuTrackSelectorRedo.setEnabled( redo );
-            cMenuTrackSelectorUndo.setEnabled( undo );
+            menuEditRedo.Enabled = redo;
+            menuEditUndo.Enabled = undo;
+            cMenuPianoRedo.Enabled = redo;
+            cMenuPianoUndo.Enabled = undo;
+            cMenuTrackSelectorRedo.Enabled = redo;
+            cMenuTrackSelectorUndo.Enabled = undo;
 #if JAVA
             stripBtnUndo.setEnabled( undo );
             stripBtnRedo.setEnabled( redo );
@@ -6727,58 +6631,52 @@ namespace cadencii
 #endif
             hideInputTextBox();
 
-            AppManager.mInputTextBox.KeyUp += new BKeyEventHandler( mInputTextBox_KeyUp );
-            AppManager.mInputTextBox.KeyDown += new BKeyEventHandler( mInputTextBox_KeyDown );
+            AppManager.mInputTextBox.KeyUp += new KeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown += new KeyEventHandler( mInputTextBox_KeyDown );
             //TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #if !JAVA
             AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #endif
 
-            AppManager.mInputTextBox.setImeModeOn( mLastIsImeModeOn );
+            AppManager.mInputTextBox.ImeMode = mLastIsImeModeOn ? System.Windows.Forms.ImeMode.Hiragana : System.Windows.Forms.ImeMode.Off;
             if ( phonetic_symbol_edit_mode ) {
                 AppManager.mInputTextBox.setBufferText( phrase );
                 AppManager.mInputTextBox.setPhoneticSymbolEditMode( true );
-                AppManager.mInputTextBox.setText( phonetic_symbol );
-                AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
+                AppManager.mInputTextBox.Text = phonetic_symbol;
+                AppManager.mInputTextBox.BackColor = mColorTextboxBackcolor.color;
             } else {
                 AppManager.mInputTextBox.setBufferText( phonetic_symbol );
                 AppManager.mInputTextBox.setPhoneticSymbolEditMode( false );
-                AppManager.mInputTextBox.setText( phrase );
-                AppManager.mInputTextBox.setBackground( Color.white );
+                AppManager.mInputTextBox.Text = phrase;
+                AppManager.mInputTextBox.BackColor = System.Drawing.Color.White;
             }
-            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            Point p = new Point( position.x + 4, position.y + 2 );
+            AppManager.mInputTextBox.Font = new System.Drawing.Font( AppManager.editorConfig.BaseFontName, AppManager.FONT_SIZE9, System.Drawing.FontStyle.Regular );
+            System.Drawing.Point p = new System.Drawing.Point( position.x + 4, position.y + 2 );
 #if JAVA
             p = pictPianoRoll.pointToScreen( p );
 #endif
-            AppManager.mInputTextBox.setLocation( p );
+            AppManager.mInputTextBox.Location = p;
 
 #if !JAVA
             AppManager.mInputTextBox.Parent = pictPianoRoll;
 #endif
-            AppManager.mInputTextBox.setEnabled( true );
-            AppManager.mInputTextBox.setVisible( true );
-            AppManager.mInputTextBox.requestFocusInWindow();
-            AppManager.mInputTextBox.selectAll();
+            AppManager.mInputTextBox.Enabled = true;
+            AppManager.mInputTextBox.Visible = true;
+            AppManager.mInputTextBox.Focus();
+            AppManager.mInputTextBox.SelectAll();
         }
 
         public void hideInputTextBox()
         {
-#if JAVA
-            AppManager.mInputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
-            AppManager.mInputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
-            // TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
-#else
-            AppManager.mInputTextBox.KeyUp -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
-            AppManager.mInputTextBox.KeyDown -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
+            AppManager.mInputTextBox.KeyUp -= new KeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown -= new KeyEventHandler( mInputTextBox_KeyDown );
             AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
-#endif
             mLastSymbolEditMode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
-            AppManager.mInputTextBox.setVisible( false );
+            AppManager.mInputTextBox.Visible = false;
 #if !JAVA
             AppManager.mInputTextBox.Parent = null;
 #endif
-            AppManager.mInputTextBox.setEnabled( false );
+            AppManager.mInputTextBox.Enabled = false;
             focusPianoRoll();
         }
 
@@ -6787,13 +6685,13 @@ namespace cadencii
         /// </summary>
         public void flipInputTextBoxMode()
         {
-            String new_value = AppManager.mInputTextBox.getText();
+            String new_value = AppManager.mInputTextBox.Text;
             if ( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
-                AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
+                AppManager.mInputTextBox.BackColor = mColorTextboxBackcolor.color;
             } else {
-                AppManager.mInputTextBox.setBackground( Color.white );
+                AppManager.mInputTextBox.BackColor = System.Drawing.Color.White;
             }
-            AppManager.mInputTextBox.setText( AppManager.mInputTextBox.getBufferText() );
+            AppManager.mInputTextBox.Text = AppManager.mInputTextBox.getBufferText();
             AppManager.mInputTextBox.setBufferText( new_value );
             AppManager.mInputTextBox.setPhoneticSymbolEditMode( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() );
         }
@@ -6805,12 +6703,12 @@ namespace cadencii
         {
             if ( AppManager.editHistory.hasUndoHistory() ) {
                 AppManager.undo();
-                menuEditRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                menuEditUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuPianoRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuPianoUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuTrackSelectorRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuTrackSelectorUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+                menuEditRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                menuEditUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuPianoRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuPianoUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuTrackSelectorRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuTrackSelectorUndo.Enabled = AppManager.editHistory.hasUndoHistory();
                 AppManager.mMixerWindow.updateStatus();
                 setEdited( true );
                 updateDrawObjectList();
@@ -6830,12 +6728,12 @@ namespace cadencii
         {
             if ( AppManager.editHistory.hasRedoHistory() ) {
                 AppManager.redo();
-                menuEditRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                menuEditUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuPianoRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuPianoUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
-                cMenuTrackSelectorRedo.setEnabled( AppManager.editHistory.hasRedoHistory() );
-                cMenuTrackSelectorUndo.setEnabled( AppManager.editHistory.hasUndoHistory() );
+                menuEditRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                menuEditUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuPianoRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuPianoUndo.Enabled = AppManager.editHistory.hasUndoHistory();
+                cMenuTrackSelectorRedo.Enabled = AppManager.editHistory.hasRedoHistory();
+                cMenuTrackSelectorUndo.Enabled = AppManager.editHistory.hasUndoHistory();
                 AppManager.mMixerWindow.updateStatus();
                 setEdited( true );
                 updateDrawObjectList();
@@ -7029,8 +6927,8 @@ namespace cadencii
             int small_font_offset = AppManager.baseFont8OffsetHeight;
             try {
                 int key_width = AppManager.keyWidth;
-                int width = picturePositionIndicator.getWidth();
-                int height = picturePositionIndicator.getHeight();
+                int width = picturePositionIndicator.Width;
+                int height = picturePositionIndicator.Height;
                 VsqFileEx vsq = AppManager.getVsqFile();
 
                 #region 小節ごとの線
@@ -7094,10 +6992,10 @@ namespace cadencii
                                 int edit_clock_x = AppManager.xCoordFromClocks( vsq.getClockFromBarCount( AppManager.itemSelection.getTimesig( barcount ).editing.BarCount ) );
                                 g.setColor( mColorR187G187B255 );
                                 g.drawLine( edit_clock_x - 1, 32,
-                                            edit_clock_x - 1, picturePositionIndicator.getHeight() - 1 );
+                                            edit_clock_x - 1, picturePositionIndicator.Height - 1 );
                                 g.setColor( mColorR007G007B151 );
                                 g.drawLine( edit_clock_x, 32,
-                                            edit_clock_x, picturePositionIndicator.getHeight() - 1 );
+                                            edit_clock_x, picturePositionIndicator.Height - 1 );
                             }
                         }
                     }
@@ -7193,7 +7091,7 @@ namespace cadencii
 
                 #region TEMPO & BEAT
                 // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
-                g.setColor( picturePositionIndicator.getBackground() );
+                g.setColor(new Color(picturePositionIndicator.BackColor));
                 g.fillRect( 0, 0, AppManager.keyWidth, 48 );
                 // 横ライン上
                 g.setColor( new Color( 104, 104, 104 ) );
@@ -7222,375 +7120,318 @@ namespace cadencii
         /// </summary>
         public void registerEventHandlers()
         {
-            this.Load += new BEventHandler( FormMain_Load );
-            menuFileNew.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileNew.Click += new BEventHandler( handleFileNew_Click );
-            menuFileOpen.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileOpen.Click += new BEventHandler( handleFileOpen_Click );
-            menuFileSave.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileSave.Click += new BEventHandler( handleFileSave_Click );
-            menuFileSaveNamed.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileSaveNamed.Click += new BEventHandler( menuFileSaveNamed_Click );
-            menuFileOpenVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileOpenVsq.Click += new BEventHandler( menuFileOpenVsq_Click );
-            menuFileOpenUst.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileOpenUst.Click += new BEventHandler( menuFileOpenUst_Click );
-            menuFileImport.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileImportMidi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileImportMidi.Click += new BEventHandler( menuFileImportMidi_Click );
-            menuFileImportUst.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileImportUst.Click += new BEventHandler( menuFileImportUst_Click );
-            menuFileImportVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileImportVsq.Click += new BEventHandler( menuFileImportVsq_Click );
-            menuFileExport.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExport.DropDownOpening += new BEventHandler( menuFileExport_DropDownOpening );
-            menuFileExportWave.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportWave.Click += new BEventHandler( menuFileExportWave_Click );
-            menuFileExportParaWave.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportParaWave.Click += new BEventHandler( menuFileExportParaWave_Click );
-            menuFileExportMidi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportMidi.Click += new BEventHandler( menuFileExportMidi_Click );
-            menuFileExportMusicXml.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportMusicXml.Click += new BEventHandler( menuFileExportMusicXml_Click );
-            menuFileExportUst.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportUst.Click += new BEventHandler( menuFileExportUst_Click );
-            menuFileExportVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportVsq.Click += new BEventHandler( menuFileExportVsq_Click );
+            this.Load += new EventHandler( FormMain_Load );
+            menuFileNew.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileNew.Click += new EventHandler( handleFileNew_Click );
+            menuFileOpen.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileOpen.Click += new EventHandler( handleFileOpen_Click );
+            menuFileSave.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileSave.Click += new EventHandler( handleFileSave_Click );
+            menuFileSaveNamed.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileSaveNamed.Click += new EventHandler( menuFileSaveNamed_Click );
+            menuFileOpenVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileOpenVsq.Click += new EventHandler( menuFileOpenVsq_Click );
+            menuFileOpenUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileOpenUst.Click += new EventHandler( menuFileOpenUst_Click );
+            menuFileImport.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportMidi.Click += new EventHandler( menuFileImportMidi_Click );
+            menuFileImportUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportUst.Click += new EventHandler( menuFileImportUst_Click );
+            menuFileImportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportVsq.Click += new EventHandler( menuFileImportVsq_Click );
+            menuFileExport.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExport.DropDownOpening += new EventHandler( menuFileExport_DropDownOpening );
+            menuFileExportWave.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportWave.Click += new EventHandler( menuFileExportWave_Click );
+            menuFileExportParaWave.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportParaWave.Click += new EventHandler( menuFileExportParaWave_Click );
+            menuFileExportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportMidi.Click += new EventHandler( menuFileExportMidi_Click );
+            menuFileExportMusicXml.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportMusicXml.Click += new EventHandler( menuFileExportMusicXml_Click );
+            menuFileExportUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportUst.Click += new EventHandler( menuFileExportUst_Click );
+            menuFileExportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportVsq.Click += new EventHandler( menuFileExportVsq_Click );
             menuFileExportVsqx.MouseEnter += new EventHandler(handleMenuMouseEnter);
             menuFileExportVsqx.Click += new EventHandler(menuFileExportVsqx_Click);
-            menuFileExportVxt.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileExportVxt.Click += new BEventHandler( menuFileExportVxt_Click );
-            menuFileRecent.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileRecentClear.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileRecentClear.Click += new BEventHandler( menuFileRecentClear_Click );
-            menuFileQuit.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuFileQuit.Click += new BEventHandler( menuFileQuit_Click );
-            menuEdit.DropDownOpening += new BEventHandler( menuEdit_DropDownOpening );
-            menuEditUndo.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditUndo.Click += new BEventHandler( handleEditUndo_Click );
-            menuEditRedo.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditRedo.Click += new BEventHandler( handleEditRedo_Click );
-            menuEditCut.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditCut.Click += new BEventHandler( handleEditCut_Click );
-            menuEditCopy.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditCopy.Click += new BEventHandler( handleEditCopy_Click );
-            menuEditPaste.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditPaste.Click += new BEventHandler( handleEditPaste_Click );
-            menuEditDelete.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditDelete.Click += new BEventHandler( menuEditDelete_Click );
-            menuEditAutoNormalizeMode.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditAutoNormalizeMode.Click += new BEventHandler( menuEditAutoNormalizeMode_Click );
-            menuEditSelectAll.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditSelectAll.Click += new BEventHandler( menuEditSelectAll_Click );
-            menuEditSelectAllEvents.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuEditSelectAllEvents.Click += new BEventHandler( menuEditSelectAllEvents_Click );
-            menuVisualOverview.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualControlTrack.CheckedChanged += new BEventHandler( menuVisualControlTrack_CheckedChanged );
-            menuVisualControlTrack.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualMixer.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualMixer.Click += new BEventHandler( menuVisualMixer_Click );
-            menuVisualWaveform.CheckedChanged += new BEventHandler( menuVisualWaveform_CheckedChanged );
-            menuVisualWaveform.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualProperty.CheckedChanged += new BEventHandler( menuVisualProperty_CheckedChanged );
-            menuVisualGridline.CheckedChanged += new BEventHandler( menuVisualGridline_CheckedChanged );
-            menuVisualGridline.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualIconPalette.Click += new BEventHandler( menuVisualIconPalette_Click );
-            menuVisualIconPalette.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualStartMarker.Click += new BEventHandler( handleStartMarker_Click );
-            menuVisualStartMarker.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualEndMarker.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualEndMarker.Click += new BEventHandler( handleEndMarker_Click );
-            menuVisualLyrics.CheckedChanged += new BEventHandler( menuVisualLyrics_CheckedChanged );
-            menuVisualLyrics.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualNoteProperty.CheckedChanged += new BEventHandler( menuVisualNoteProperty_CheckedChanged );
-            menuVisualNoteProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualPitchLine.CheckedChanged += new BEventHandler( menuVisualPitchLine_CheckedChanged );
-            menuVisualPitchLine.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualPluginUi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualPluginUi.DropDownOpening += new BEventHandler( menuVisualPluginUi_DropDownOpening );
-            menuVisualPluginUiVocaloid1.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
-            menuVisualPluginUiVocaloid2.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
-            menuVisualPluginUiAquesTone.Click += new BEventHandler( menuVisualPluginUiAquesTone_Click );
-            menuJob.DropDownOpening += new BEventHandler( menuJob_DropDownOpening );
-            menuJobNormalize.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobNormalize.Click += new BEventHandler( menuJobNormalize_Click );
-            menuJobInsertBar.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobInsertBar.Click += new BEventHandler( menuJobInsertBar_Click );
-            menuJobDeleteBar.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobDeleteBar.Click += new BEventHandler( menuJobDeleteBar_Click );
-            menuJobRandomize.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobRandomize.Click += new BEventHandler( menuJobRandomize_Click );
-            menuJobConnect.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobConnect.Click += new BEventHandler( menuJobConnect_Click );
-            menuJobLyric.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobLyric.Click += new BEventHandler( menuJobLyric_Click );
-            menuTrack.DropDownOpening += new BEventHandler( menuTrack_DropDownOpening );
-            menuTrackOn.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackBgm.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackOn.Click += new BEventHandler( handleTrackOn_Click );
-            menuTrackAdd.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackAdd.Click += new BEventHandler( menuTrackAdd_Click );
-            menuTrackCopy.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackCopy.Click += new BEventHandler( menuTrackCopy_Click );
-            menuTrackChangeName.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackChangeName.Click += new BEventHandler( menuTrackChangeName_Click );
-            menuTrackDelete.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackDelete.Click += new BEventHandler( menuTrackDelete_Click );
-            menuTrackRenderCurrent.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRenderCurrent.Click += new BEventHandler( menuTrackRenderCurrent_Click );
-            menuTrackRenderAll.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRenderAll.Click += new BEventHandler( handleTrackRenderAll_Click );
-            menuTrackOverlay.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackOverlay.Click += new BEventHandler( menuTrackOverlay_Click );
-            menuTrackRenderer.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRenderer.DropDownOpening += new BEventHandler( menuTrackRenderer_DropDownOpening );
-            menuTrackRendererVOCALOID1.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID1.Click += new BEventHandler( handleChangeRenderer );
-            menuTrackRendererVOCALOID2.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
-            menuTrackRendererUtau.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportVxt.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportVxt.Click += new EventHandler( menuFileExportVxt_Click );
+            menuFileRecent.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileRecentClear.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileRecentClear.Click += new EventHandler( menuFileRecentClear_Click );
+            menuFileQuit.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileQuit.Click += new EventHandler( menuFileQuit_Click );
+            menuEdit.DropDownOpening += new EventHandler( menuEdit_DropDownOpening );
+            menuEditUndo.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditUndo.Click += new EventHandler( handleEditUndo_Click );
+            menuEditRedo.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditRedo.Click += new EventHandler( handleEditRedo_Click );
+            menuEditCut.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditCut.Click += new EventHandler( handleEditCut_Click );
+            menuEditCopy.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditCopy.Click += new EventHandler( handleEditCopy_Click );
+            menuEditPaste.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditPaste.Click += new EventHandler( handleEditPaste_Click );
+            menuEditDelete.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditDelete.Click += new EventHandler( menuEditDelete_Click );
+            menuEditAutoNormalizeMode.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditAutoNormalizeMode.Click += new EventHandler( menuEditAutoNormalizeMode_Click );
+            menuEditSelectAll.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditSelectAll.Click += new EventHandler( menuEditSelectAll_Click );
+            menuEditSelectAllEvents.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditSelectAllEvents.Click += new EventHandler( menuEditSelectAllEvents_Click );
+            menuVisualOverview.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualControlTrack.CheckedChanged += new EventHandler( menuVisualControlTrack_CheckedChanged );
+            menuVisualControlTrack.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualMixer.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualMixer.Click += new EventHandler( menuVisualMixer_Click );
+            menuVisualWaveform.CheckedChanged += new EventHandler( menuVisualWaveform_CheckedChanged );
+            menuVisualWaveform.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualProperty.CheckedChanged += new EventHandler( menuVisualProperty_CheckedChanged );
+            menuVisualGridline.CheckedChanged += new EventHandler( menuVisualGridline_CheckedChanged );
+            menuVisualGridline.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualIconPalette.Click += new EventHandler( menuVisualIconPalette_Click );
+            menuVisualIconPalette.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualStartMarker.Click += new EventHandler( handleStartMarker_Click );
+            menuVisualStartMarker.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualEndMarker.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualEndMarker.Click += new EventHandler( handleEndMarker_Click );
+            menuVisualLyrics.CheckedChanged += new EventHandler( menuVisualLyrics_CheckedChanged );
+            menuVisualLyrics.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualNoteProperty.CheckedChanged += new EventHandler( menuVisualNoteProperty_CheckedChanged );
+            menuVisualNoteProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualPitchLine.CheckedChanged += new EventHandler( menuVisualPitchLine_CheckedChanged );
+            menuVisualPitchLine.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualPluginUi.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualPluginUi.DropDownOpening += new EventHandler( menuVisualPluginUi_DropDownOpening );
+            menuVisualPluginUiVocaloid1.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiVocaloid2.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiAquesTone.Click += new EventHandler( menuVisualPluginUiAquesTone_Click );
+            menuJob.DropDownOpening += new EventHandler( menuJob_DropDownOpening );
+            menuJobNormalize.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobNormalize.Click += new EventHandler( menuJobNormalize_Click );
+            menuJobInsertBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobInsertBar.Click += new EventHandler( menuJobInsertBar_Click );
+            menuJobDeleteBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobDeleteBar.Click += new EventHandler( menuJobDeleteBar_Click );
+            menuJobRandomize.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobRandomize.Click += new EventHandler( menuJobRandomize_Click );
+            menuJobConnect.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobConnect.Click += new EventHandler( menuJobConnect_Click );
+            menuJobLyric.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobLyric.Click += new EventHandler( menuJobLyric_Click );
+            menuTrack.DropDownOpening += new EventHandler( menuTrack_DropDownOpening );
+            menuTrackOn.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackBgm.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackOn.Click += new EventHandler( handleTrackOn_Click );
+            menuTrackAdd.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackAdd.Click += new EventHandler( menuTrackAdd_Click );
+            menuTrackCopy.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackCopy.Click += new EventHandler( menuTrackCopy_Click );
+            menuTrackChangeName.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackChangeName.Click += new EventHandler( menuTrackChangeName_Click );
+            menuTrackDelete.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackDelete.Click += new EventHandler( menuTrackDelete_Click );
+            menuTrackRenderCurrent.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRenderCurrent.Click += new EventHandler( menuTrackRenderCurrent_Click );
+            menuTrackRenderAll.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRenderAll.Click += new EventHandler( handleTrackRenderAll_Click );
+            menuTrackOverlay.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackOverlay.Click += new EventHandler( menuTrackOverlay_Click );
+            menuTrackRenderer.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRenderer.DropDownOpening += new EventHandler( menuTrackRenderer_DropDownOpening );
+            menuTrackRendererVOCALOID1.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID1.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererVOCALOID2.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererUtau.MouseEnter += new EventHandler( handleMenuMouseEnter );
             //UTAUはresamplerを識別するのでmenuTrackRendererUtauのサブアイテムのClickイベントを拾う
-            //menuTrackRendererUtau.Click += new BEventHandler( handleChangeRenderer );
-            menuTrackRendererVCNT.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererVCNT.Click += new BEventHandler( handleChangeRenderer );
-            menuTrackRendererAquesTone.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererAquesTone.Click += new BEventHandler( handleChangeRenderer );
-            menuLyric.DropDownOpening += new BEventHandler( menuLyric_DropDownOpening );
-            menuLyricCopyVibratoToPreset.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuLyricExpressionProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuLyricExpressionProperty.Click += new BEventHandler( menuLyricExpressionProperty_Click );
-            menuLyricVibratoProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuLyricVibratoProperty.Click += new BEventHandler( menuLyricVibratoProperty_Click );
-            menuLyricPhonemeTransformation.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuLyricDictionary.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuLyricDictionary.Click += new BEventHandler( menuLyricDictionary_Click );
-            menuLyricPhonemeTransformation.Click += new BEventHandler( menuLyricPhonemeTransformation_Click );
-            menuLyricApplyUtauParameters.Click += new BEventHandler( menuLyricApplyUtauParameters_Click );
-            menuScriptUpdate.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuScriptUpdate.Click += new BEventHandler( menuScriptUpdate_Click );
-            menuSettingPreference.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingPreference.Click += new BEventHandler( menuSettingPreference_Click );
-            menuSettingGameControler.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingGameControlerSetting.Click += new BEventHandler( menuSettingGameControlerSetting_Click );
-            menuSettingGameControlerLoad.Click += new BEventHandler( menuSettingGameControlerLoad_Click );
-            menuSettingGameControlerRemove.Click += new BEventHandler( menuSettingGameControlerRemove_Click );
-            menuSettingSequence.Click += new BEventHandler( menuSettingSequence_Click );
-            menuSettingSequence.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingShortcut.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingShortcut.Click += new BEventHandler( menuSettingShortcut_Click );
-            menuSettingVibratoPreset.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingVibratoPreset.Click += new BEventHandler( menuSettingVibratoPreset_Click );
-            menuSettingDefaultSingerStyle.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingDefaultSingerStyle.Click += new BEventHandler( menuSettingDefaultSingerStyle_Click );
-            menuSettingPaletteTool.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingPositionQuantize.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuSettingPositionQuantize04.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize08.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize16.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize32.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize64.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize128.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantizeOff.Click += new BEventHandler( handlePositionQuantize );
-            menuSettingPositionQuantizeTriplet.Click += new BEventHandler( handlePositionQuantizeTriplet_Click );
-#if JAVA
-            menuWindowMinimize.Click += new BEventHandler( menuWindowMinimize_Click );
-#endif
-            menuHelpAbout.Click += new BEventHandler( menuHelpAbout_Click );
-            menuHelpManual.Click += new BEventHandler( menuHelpManual_Click );
-            menuHelpLogSwitch.CheckedChanged += new BEventHandler( menuHelpLogSwitch_CheckedChanged );
-            menuHelpLogOpen.Click += new BEventHandler( menuHelpLogOpen_Click );
-            menuHelpDebug.Click += new BEventHandler( menuHelpDebug_Click );
-            menuHiddenEditLyric.Click += new BEventHandler( menuHiddenEditLyric_Click );
-            menuHiddenEditFlipToolPointerPencil.Click += new BEventHandler( menuHiddenEditFlipToolPointerPencil_Click );
-            menuHiddenEditFlipToolPointerEraser.Click += new BEventHandler( menuHiddenEditFlipToolPointerEraser_Click );
-            menuHiddenVisualForwardParameter.Click += new BEventHandler( menuHiddenVisualForwardParameter_Click );
-            menuHiddenVisualBackwardParameter.Click += new BEventHandler( menuHiddenVisualBackwardParameter_Click );
-            menuHiddenTrackNext.Click += new BEventHandler( menuHiddenTrackNext_Click );
-            menuHiddenTrackBack.Click += new BEventHandler( menuHiddenTrackBack_Click );
-            menuHiddenCopy.Click += new BEventHandler( handleEditCopy_Click );
-            menuHiddenPaste.Click += new BEventHandler( handleEditPaste_Click );
-            menuHiddenCut.Click += new BEventHandler( handleEditCut_Click );
-            menuHiddenSelectBackward.Click += new BEventHandler( menuHiddenSelectBackward_Click );
-            menuHiddenSelectForward.Click += new BEventHandler( menuHiddenSelectForward_Click );
-            menuHiddenMoveUp.Click += new BEventHandler( menuHiddenMoveUp_Click );
-            menuHiddenMoveDown.Click += new BEventHandler( menuHiddenMoveDown_Click );
-            menuHiddenMoveLeft.Click += new BEventHandler( menuHiddenMoveLeft_Click );
-            menuHiddenMoveRight.Click += new BEventHandler( menuHiddenMoveRight_Click );
-            menuHiddenLengthen.Click += new BEventHandler( menuHiddenLengthen_Click );
-            menuHiddenShorten.Click += new BEventHandler( menuHiddenShorten_Click );
-            menuHiddenGoToEndMarker.Click += new BEventHandler( menuHiddenGoToEndMarker_Click );
-            menuHiddenGoToStartMarker.Click += new BEventHandler( menuHiddenGoToStartMarker_Click );
-            menuHiddenPlayFromStartMarker.Click += new BEventHandler( menuHiddenPlayFromStartMarker_Click );
-            menuHiddenPrintPoToCSV.Click += new BEventHandler( menuHiddenPrintPoToCSV_Click );
-            menuHiddenFlipCurveOnPianorollMode.Click += new BEventHandler( menuHiddenFlipCurveOnPianorollMode_Click );
+            //menuTrackRendererUtau.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererVCNT.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererVCNT.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererAquesTone.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
+            menuLyric.DropDownOpening += new EventHandler( menuLyric_DropDownOpening );
+            menuLyricCopyVibratoToPreset.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuLyricExpressionProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuLyricExpressionProperty.Click += new EventHandler( menuLyricExpressionProperty_Click );
+            menuLyricVibratoProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuLyricVibratoProperty.Click += new EventHandler( menuLyricVibratoProperty_Click );
+            menuLyricPhonemeTransformation.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuLyricDictionary.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuLyricDictionary.Click += new EventHandler( menuLyricDictionary_Click );
+            menuLyricPhonemeTransformation.Click += new EventHandler( menuLyricPhonemeTransformation_Click );
+            menuLyricApplyUtauParameters.Click += new EventHandler( menuLyricApplyUtauParameters_Click );
+            menuScriptUpdate.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuScriptUpdate.Click += new EventHandler( menuScriptUpdate_Click );
+            menuSettingPreference.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingPreference.Click += new EventHandler( menuSettingPreference_Click );
+            menuSettingGameControler.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingGameControlerSetting.Click += new EventHandler( menuSettingGameControlerSetting_Click );
+            menuSettingGameControlerLoad.Click += new EventHandler( menuSettingGameControlerLoad_Click );
+            menuSettingGameControlerRemove.Click += new EventHandler( menuSettingGameControlerRemove_Click );
+            menuSettingSequence.Click += new EventHandler( menuSettingSequence_Click );
+            menuSettingSequence.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingShortcut.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingShortcut.Click += new EventHandler( menuSettingShortcut_Click );
+            menuSettingVibratoPreset.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingVibratoPreset.Click += new EventHandler( menuSettingVibratoPreset_Click );
+            menuSettingDefaultSingerStyle.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingDefaultSingerStyle.Click += new EventHandler( menuSettingDefaultSingerStyle_Click );
+            menuSettingPaletteTool.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingPositionQuantize.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuSettingPositionQuantize04.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize08.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize16.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize32.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize64.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize128.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantizeOff.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
+            menuHelpAbout.Click += new EventHandler( menuHelpAbout_Click );
+            menuHelpManual.Click += new EventHandler( menuHelpManual_Click );
+            menuHelpLogSwitch.CheckedChanged += new EventHandler( menuHelpLogSwitch_CheckedChanged );
+            menuHelpLogOpen.Click += new EventHandler( menuHelpLogOpen_Click );
+            menuHelpDebug.Click += new EventHandler( menuHelpDebug_Click );
+            menuHiddenEditLyric.Click += new EventHandler( menuHiddenEditLyric_Click );
+            menuHiddenEditFlipToolPointerPencil.Click += new EventHandler( menuHiddenEditFlipToolPointerPencil_Click );
+            menuHiddenEditFlipToolPointerEraser.Click += new EventHandler( menuHiddenEditFlipToolPointerEraser_Click );
+            menuHiddenVisualForwardParameter.Click += new EventHandler( menuHiddenVisualForwardParameter_Click );
+            menuHiddenVisualBackwardParameter.Click += new EventHandler( menuHiddenVisualBackwardParameter_Click );
+            menuHiddenTrackNext.Click += new EventHandler( menuHiddenTrackNext_Click );
+            menuHiddenTrackBack.Click += new EventHandler( menuHiddenTrackBack_Click );
+            menuHiddenCopy.Click += new EventHandler( handleEditCopy_Click );
+            menuHiddenPaste.Click += new EventHandler( handleEditPaste_Click );
+            menuHiddenCut.Click += new EventHandler( handleEditCut_Click );
+            menuHiddenSelectBackward.Click += new EventHandler( menuHiddenSelectBackward_Click );
+            menuHiddenSelectForward.Click += new EventHandler( menuHiddenSelectForward_Click );
+            menuHiddenMoveUp.Click += new EventHandler( menuHiddenMoveUp_Click );
+            menuHiddenMoveDown.Click += new EventHandler( menuHiddenMoveDown_Click );
+            menuHiddenMoveLeft.Click += new EventHandler( menuHiddenMoveLeft_Click );
+            menuHiddenMoveRight.Click += new EventHandler( menuHiddenMoveRight_Click );
+            menuHiddenLengthen.Click += new EventHandler( menuHiddenLengthen_Click );
+            menuHiddenShorten.Click += new EventHandler( menuHiddenShorten_Click );
+            menuHiddenGoToEndMarker.Click += new EventHandler( menuHiddenGoToEndMarker_Click );
+            menuHiddenGoToStartMarker.Click += new EventHandler( menuHiddenGoToStartMarker_Click );
+            menuHiddenPlayFromStartMarker.Click += new EventHandler( menuHiddenPlayFromStartMarker_Click );
+            menuHiddenPrintPoToCSV.Click += new EventHandler( menuHiddenPrintPoToCSV_Click );
+            menuHiddenFlipCurveOnPianorollMode.Click += new EventHandler( menuHiddenFlipCurveOnPianorollMode_Click );
 
             cMenuPiano.Opening += new BCancelEventHandler( cMenuPiano_Opening );
-            cMenuPianoPointer.Click += new BEventHandler( cMenuPianoPointer_Click );
-            cMenuPianoPencil.Click += new BEventHandler( cMenuPianoPencil_Click );
-            cMenuPianoEraser.Click += new BEventHandler( cMenuPianoEraser_Click );
-            cMenuPianoCurve.Click += new BEventHandler( cMenuPianoCurve_Click );
-            cMenuPianoFixed01.Click += new BEventHandler( cMenuPianoFixed01_Click );
-            cMenuPianoFixed02.Click += new BEventHandler( cMenuPianoFixed02_Click );
-            cMenuPianoFixed04.Click += new BEventHandler( cMenuPianoFixed04_Click );
-            cMenuPianoFixed08.Click += new BEventHandler( cMenuPianoFixed08_Click );
-            cMenuPianoFixed16.Click += new BEventHandler( cMenuPianoFixed16_Click );
-            cMenuPianoFixed32.Click += new BEventHandler( cMenuPianoFixed32_Click );
-            cMenuPianoFixed64.Click += new BEventHandler( cMenuPianoFixed64_Click );
-            cMenuPianoFixed128.Click += new BEventHandler( cMenuPianoFixed128_Click );
-            cMenuPianoFixedOff.Click += new BEventHandler( cMenuPianoFixedOff_Click );
-            cMenuPianoFixedTriplet.Click += new BEventHandler( cMenuPianoFixedTriplet_Click );
-            cMenuPianoFixedDotted.Click += new BEventHandler( cMenuPianoFixedDotted_Click );
-            cMenuPianoQuantize04.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantize08.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantize16.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantize32.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantize64.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantize128.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantizeOff.Click += new BEventHandler( handlePositionQuantize );
-            cMenuPianoQuantizeTriplet.Click += new BEventHandler( handlePositionQuantizeTriplet_Click );
-            cMenuPianoGrid.Click += new BEventHandler( cMenuPianoGrid_Click );
-            cMenuPianoUndo.Click += new BEventHandler( cMenuPianoUndo_Click );
-            cMenuPianoRedo.Click += new BEventHandler( cMenuPianoRedo_Click );
-            cMenuPianoCut.Click += new BEventHandler( cMenuPianoCut_Click );
-            cMenuPianoCopy.Click += new BEventHandler( cMenuPianoCopy_Click );
-            cMenuPianoPaste.Click += new BEventHandler( cMenuPianoPaste_Click );
-            cMenuPianoDelete.Click += new BEventHandler( cMenuPianoDelete_Click );
-            cMenuPianoSelectAll.Click += new BEventHandler( cMenuPianoSelectAll_Click );
-            cMenuPianoSelectAllEvents.Click += new BEventHandler( cMenuPianoSelectAllEvents_Click );
-            cMenuPianoImportLyric.Click += new BEventHandler( cMenuPianoImportLyric_Click );
-            cMenuPianoExpressionProperty.Click += new BEventHandler( cMenuPianoProperty_Click );
-            cMenuPianoVibratoProperty.Click += new BEventHandler( cMenuPianoVibratoProperty_Click );
+            cMenuPianoPointer.Click += new EventHandler( cMenuPianoPointer_Click );
+            cMenuPianoPencil.Click += new EventHandler( cMenuPianoPencil_Click );
+            cMenuPianoEraser.Click += new EventHandler( cMenuPianoEraser_Click );
+            cMenuPianoCurve.Click += new EventHandler( cMenuPianoCurve_Click );
+            cMenuPianoFixed01.Click += new EventHandler( cMenuPianoFixed01_Click );
+            cMenuPianoFixed02.Click += new EventHandler( cMenuPianoFixed02_Click );
+            cMenuPianoFixed04.Click += new EventHandler( cMenuPianoFixed04_Click );
+            cMenuPianoFixed08.Click += new EventHandler( cMenuPianoFixed08_Click );
+            cMenuPianoFixed16.Click += new EventHandler( cMenuPianoFixed16_Click );
+            cMenuPianoFixed32.Click += new EventHandler( cMenuPianoFixed32_Click );
+            cMenuPianoFixed64.Click += new EventHandler( cMenuPianoFixed64_Click );
+            cMenuPianoFixed128.Click += new EventHandler( cMenuPianoFixed128_Click );
+            cMenuPianoFixedOff.Click += new EventHandler( cMenuPianoFixedOff_Click );
+            cMenuPianoFixedTriplet.Click += new EventHandler( cMenuPianoFixedTriplet_Click );
+            cMenuPianoFixedDotted.Click += new EventHandler( cMenuPianoFixedDotted_Click );
+            cMenuPianoQuantize04.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize08.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize16.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize32.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize64.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize128.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantizeOff.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
+            cMenuPianoGrid.Click += new EventHandler( cMenuPianoGrid_Click );
+            cMenuPianoUndo.Click += new EventHandler( cMenuPianoUndo_Click );
+            cMenuPianoRedo.Click += new EventHandler( cMenuPianoRedo_Click );
+            cMenuPianoCut.Click += new EventHandler( cMenuPianoCut_Click );
+            cMenuPianoCopy.Click += new EventHandler( cMenuPianoCopy_Click );
+            cMenuPianoPaste.Click += new EventHandler( cMenuPianoPaste_Click );
+            cMenuPianoDelete.Click += new EventHandler( cMenuPianoDelete_Click );
+            cMenuPianoSelectAll.Click += new EventHandler( cMenuPianoSelectAll_Click );
+            cMenuPianoSelectAllEvents.Click += new EventHandler( cMenuPianoSelectAllEvents_Click );
+            cMenuPianoImportLyric.Click += new EventHandler( cMenuPianoImportLyric_Click );
+            cMenuPianoExpressionProperty.Click += new EventHandler( cMenuPianoProperty_Click );
+            cMenuPianoVibratoProperty.Click += new EventHandler( cMenuPianoVibratoProperty_Click );
             cMenuTrackTab.Opening += new BCancelEventHandler( cMenuTrackTab_Opening );
-            cMenuTrackTabTrackOn.Click += new BEventHandler( handleTrackOn_Click );
-            cMenuTrackTabAdd.Click += new BEventHandler( cMenuTrackTabAdd_Click );
-            cMenuTrackTabCopy.Click += new BEventHandler( cMenuTrackTabCopy_Click );
-            cMenuTrackTabChangeName.Click += new BEventHandler( cMenuTrackTabChangeName_Click );
-            cMenuTrackTabDelete.Click += new BEventHandler( cMenuTrackTabDelete_Click );
-            cMenuTrackTabRenderCurrent.Click += new BEventHandler( cMenuTrackTabRenderCurrent_Click );
-            cMenuTrackTabRenderAll.Click += new BEventHandler( handleTrackRenderAll_Click );
-            cMenuTrackTabOverlay.Click += new BEventHandler( cMenuTrackTabOverlay_Click );
-            cMenuTrackTabRenderer.DropDownOpening += new BEventHandler( cMenuTrackTabRenderer_DropDownOpening );
-            cMenuTrackTabRendererVOCALOID1.Click += new BEventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererStraight.Click += new BEventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererAquesTone.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabTrackOn.Click += new EventHandler( handleTrackOn_Click );
+            cMenuTrackTabAdd.Click += new EventHandler( cMenuTrackTabAdd_Click );
+            cMenuTrackTabCopy.Click += new EventHandler( cMenuTrackTabCopy_Click );
+            cMenuTrackTabChangeName.Click += new EventHandler( cMenuTrackTabChangeName_Click );
+            cMenuTrackTabDelete.Click += new EventHandler( cMenuTrackTabDelete_Click );
+            cMenuTrackTabRenderCurrent.Click += new EventHandler( cMenuTrackTabRenderCurrent_Click );
+            cMenuTrackTabRenderAll.Click += new EventHandler( handleTrackRenderAll_Click );
+            cMenuTrackTabOverlay.Click += new EventHandler( cMenuTrackTabOverlay_Click );
+            cMenuTrackTabRenderer.DropDownOpening += new EventHandler( cMenuTrackTabRenderer_DropDownOpening );
+            cMenuTrackTabRendererVOCALOID1.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererStraight.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
             cMenuTrackSelector.Opening += new BCancelEventHandler( cMenuTrackSelector_Opening );
-            cMenuTrackSelectorPointer.Click += new BEventHandler( cMenuTrackSelectorPointer_Click );
-            cMenuTrackSelectorPencil.Click += new BEventHandler( cMenuTrackSelectorPencil_Click );
-            cMenuTrackSelectorLine.Click += new BEventHandler( cMenuTrackSelectorLine_Click );
-            cMenuTrackSelectorEraser.Click += new BEventHandler( cMenuTrackSelectorEraser_Click );
-            cMenuTrackSelectorCurve.Click += new BEventHandler( cMenuTrackSelectorCurve_Click );
-            cMenuTrackSelectorUndo.Click += new BEventHandler( cMenuTrackSelectorUndo_Click );
-            cMenuTrackSelectorRedo.Click += new BEventHandler( cMenuTrackSelectorRedo_Click );
-            cMenuTrackSelectorCut.Click += new BEventHandler( cMenuTrackSelectorCut_Click );
-            cMenuTrackSelectorCopy.Click += new BEventHandler( cMenuTrackSelectorCopy_Click );
-            cMenuTrackSelectorPaste.Click += new BEventHandler( cMenuTrackSelectorPaste_Click );
-            cMenuTrackSelectorDelete.Click += new BEventHandler( cMenuTrackSelectorDelete_Click );
-            cMenuTrackSelectorDeleteBezier.Click += new BEventHandler( cMenuTrackSelectorDeleteBezier_Click );
-            cMenuTrackSelectorSelectAll.Click += new BEventHandler( cMenuTrackSelectorSelectAll_Click );
-            cMenuPositionIndicatorEndMarker.Click += new BEventHandler( cMenuPositionIndicatorEndMarker_Click );
-            cMenuPositionIndicatorStartMarker.Click += new BEventHandler( cMenuPositionIndicatorStartMarker_Click );
-            trackBar.ValueChanged += new BEventHandler( trackBar_ValueChanged );
-            trackBar.Enter += new BEventHandler( trackBar_Enter );
+            cMenuTrackSelectorPointer.Click += new EventHandler( cMenuTrackSelectorPointer_Click );
+            cMenuTrackSelectorPencil.Click += new EventHandler( cMenuTrackSelectorPencil_Click );
+            cMenuTrackSelectorLine.Click += new EventHandler( cMenuTrackSelectorLine_Click );
+            cMenuTrackSelectorEraser.Click += new EventHandler( cMenuTrackSelectorEraser_Click );
+            cMenuTrackSelectorCurve.Click += new EventHandler( cMenuTrackSelectorCurve_Click );
+            cMenuTrackSelectorUndo.Click += new EventHandler( cMenuTrackSelectorUndo_Click );
+            cMenuTrackSelectorRedo.Click += new EventHandler( cMenuTrackSelectorRedo_Click );
+            cMenuTrackSelectorCut.Click += new EventHandler( cMenuTrackSelectorCut_Click );
+            cMenuTrackSelectorCopy.Click += new EventHandler( cMenuTrackSelectorCopy_Click );
+            cMenuTrackSelectorPaste.Click += new EventHandler( cMenuTrackSelectorPaste_Click );
+            cMenuTrackSelectorDelete.Click += new EventHandler( cMenuTrackSelectorDelete_Click );
+            cMenuTrackSelectorDeleteBezier.Click += new EventHandler( cMenuTrackSelectorDeleteBezier_Click );
+            cMenuTrackSelectorSelectAll.Click += new EventHandler( cMenuTrackSelectorSelectAll_Click );
+            cMenuPositionIndicatorEndMarker.Click += new EventHandler( cMenuPositionIndicatorEndMarker_Click );
+            cMenuPositionIndicatorStartMarker.Click += new EventHandler( cMenuPositionIndicatorStartMarker_Click );
+            trackBar.ValueChanged += new EventHandler( trackBar_ValueChanged );
+            trackBar.Enter += new EventHandler( trackBar_Enter );
             bgWorkScreen.DoWork += new BDoWorkEventHandler( bgWorkScreen_DoWork );
-            timer.Tick += new BEventHandler( timer_Tick );
-            pictKeyLengthSplitter.MouseMove += new BMouseEventHandler( pictKeyLengthSplitter_MouseMove );
-            pictKeyLengthSplitter.MouseDown += new BMouseEventHandler( pictKeyLengthSplitter_MouseDown );
-            pictKeyLengthSplitter.MouseUp += new BMouseEventHandler( pictKeyLengthSplitter_MouseUp );
-            panelOverview.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
-            panelOverview.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            vScroll.ValueChanged += new BEventHandler( vScroll_ValueChanged );
-            //this.Resize += new BEventHandler( handleVScrollResize );
-            pictPianoRoll.Resize += new BEventHandler( handleVScrollResize );
-            vScroll.Enter += new BEventHandler( vScroll_Enter );
-            hScroll.ValueChanged += new BEventHandler( hScroll_ValueChanged );
-            hScroll.Resize += new BEventHandler( hScroll_Resize );
-            hScroll.Enter += new BEventHandler( hScroll_Enter );
-            picturePositionIndicator.PreviewKeyDown += new BPreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
-            picturePositionIndicator.MouseMove += new BMouseEventHandler( picturePositionIndicator_MouseMove );
-            picturePositionIndicator.MouseClick += new BMouseEventHandler( picturePositionIndicator_MouseClick );
-            picturePositionIndicator.MouseDoubleClick += new BMouseEventHandler( picturePositionIndicator_MouseDoubleClick );
-            picturePositionIndicator.MouseDown += new BMouseEventHandler( picturePositionIndicator_MouseDown );
-            picturePositionIndicator.MouseUp += new BMouseEventHandler( picturePositionIndicator_MouseUp );
-            picturePositionIndicator.Paint += new BPaintEventHandler( picturePositionIndicator_Paint );
-            pictPianoRoll.PreviewKeyDown += new BPreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
-            pictPianoRoll.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
-            pictPianoRoll.KeyUp += new BKeyEventHandler( pictPianoRoll_KeyUp );
-            pictPianoRoll.MouseMove += new BMouseEventHandler( pictPianoRoll_MouseMove );
-            pictPianoRoll.MouseDoubleClick += new BMouseEventHandler( pictPianoRoll_MouseDoubleClick );
-            pictPianoRoll.MouseClick += new BMouseEventHandler( pictPianoRoll_MouseClick );
-            pictPianoRoll.MouseDown += new BMouseEventHandler( pictPianoRoll_MouseDown );
-            pictPianoRoll.MouseUp += new BMouseEventHandler( pictPianoRoll_MouseUp );
-            pictPianoRoll.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            waveView.MouseDoubleClick += new BMouseEventHandler( waveView_MouseDoubleClick );
-            waveView.MouseDown += new BMouseEventHandler( waveView_MouseDown );
-            waveView.MouseUp += new BMouseEventHandler( waveView_MouseUp );
-            waveView.MouseMove += new BMouseEventHandler( waveView_MouseMove );
-#if !JAVA
+            timer.Tick += new EventHandler( timer_Tick );
+            pictKeyLengthSplitter.MouseMove += new MouseEventHandler( pictKeyLengthSplitter_MouseMove );
+            pictKeyLengthSplitter.MouseDown += new MouseEventHandler( pictKeyLengthSplitter_MouseDown );
+            pictKeyLengthSplitter.MouseUp += new MouseEventHandler( pictKeyLengthSplitter_MouseUp );
+            panelOverview.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
+            panelOverview.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
+            vScroll.ValueChanged += new EventHandler( vScroll_ValueChanged );
+            //this.Resize += new EventHandler( handleVScrollResize );
+            pictPianoRoll.Resize += new EventHandler( handleVScrollResize );
+            vScroll.Enter += new EventHandler( vScroll_Enter );
+            hScroll.ValueChanged += new EventHandler( hScroll_ValueChanged );
+            hScroll.Resize += new EventHandler( hScroll_Resize );
+            hScroll.Enter += new EventHandler( hScroll_Enter );
+            picturePositionIndicator.PreviewKeyDown += new PreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
+            picturePositionIndicator.MouseMove += new MouseEventHandler( picturePositionIndicator_MouseMove );
+            picturePositionIndicator.MouseClick += new MouseEventHandler( picturePositionIndicator_MouseClick );
+            picturePositionIndicator.MouseDoubleClick += new MouseEventHandler( picturePositionIndicator_MouseDoubleClick );
+            picturePositionIndicator.MouseDown += new MouseEventHandler( picturePositionIndicator_MouseDown );
+            picturePositionIndicator.MouseUp += new MouseEventHandler( picturePositionIndicator_MouseUp );
+            picturePositionIndicator.Paint += new PaintEventHandler( picturePositionIndicator_Paint );
+            pictPianoRoll.PreviewKeyDown += new PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
+            pictPianoRoll.KeyUp += new KeyEventHandler( handleSpaceKeyUp );
+            pictPianoRoll.KeyUp += new KeyEventHandler( pictPianoRoll_KeyUp );
+            pictPianoRoll.MouseMove += new MouseEventHandler( pictPianoRoll_MouseMove );
+            pictPianoRoll.MouseDoubleClick += new MouseEventHandler( pictPianoRoll_MouseDoubleClick );
+            pictPianoRoll.MouseClick += new MouseEventHandler( pictPianoRoll_MouseClick );
+            pictPianoRoll.MouseDown += new MouseEventHandler( pictPianoRoll_MouseDown );
+            pictPianoRoll.MouseUp += new MouseEventHandler( pictPianoRoll_MouseUp );
+            pictPianoRoll.KeyDown += new KeyEventHandler( handleSpaceKeyDown );
+            waveView.MouseDoubleClick += new MouseEventHandler( waveView_MouseDoubleClick );
+            waveView.MouseDown += new MouseEventHandler( waveView_MouseDown );
+            waveView.MouseUp += new MouseEventHandler( waveView_MouseUp );
+            waveView.MouseMove += new MouseEventHandler( waveView_MouseMove );
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
             this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
-            this.DragLeave += new BEventHandler( FormMain_DragLeave );
-#endif
+            this.DragLeave += new EventHandler( FormMain_DragLeave );
 
-#if JAVA
-            buttonVZoom.clickEvent.add( new BEventHandler( this, "buttonVZoom_Click" ) );
-            buttonVMooz.clickEvent.add( new BEventHandler( this, "buttonVMooz_Click" ) );
-#else
-            pictureBox2.MouseDown += new BMouseEventHandler( pictureBox2_MouseDown );
-            pictureBox2.MouseUp += new BMouseEventHandler( pictureBox2_MouseUp );
-            pictureBox2.Paint += new BPaintEventHandler( pictureBox2_Paint );
-#endif
-#if JAVA
-            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
-            stripBtnFileNew.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
-            stripBtnFileOpen.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
-            stripBtnFileSave.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
-            stripBtnCut.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
-            stripBtnCopy.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
-            stripBtnPaste.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
-            stripBtnUndo.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
-            stripBtnRedo.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-
-            stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
-            stripBtnMoveTop.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
-            stripBtnRewind.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
-            stripBtnForward.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
-            stripBtnMoveEnd.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
-            stripBtnPlay.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnScroll.checkedChangedEvent.add( new BEventHandler( this, "stripBtnScroll_CheckedChanged" ) );
-            stripBtnScroll.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnLoop.checkedChangedEvent.add( new BEventHandler( this, "stripBtnLoop_CheckedChanged" ) );
-            stripBtnLoop.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-
-            stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
-            stripBtnPointer.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
-            stripBtnPencil.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
-            stripBtnLine.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
-            stripBtnEraser.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnGrid.clickEvent.add( new BEventHandler( this, "stripBtnGrid_Click" ) );
-            stripBtnGrid.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
-            stripBtnCurve.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-            stripBtnStepSequencer.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
-#else
+            pictureBox2.MouseDown += new MouseEventHandler( pictureBox2_MouseDown );
+            pictureBox2.MouseUp += new MouseEventHandler( pictureBox2_MouseUp );
+            pictureBox2.Paint += new PaintEventHandler( pictureBox2_Paint );
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
-            rebar.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
+            rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
             stripDDBtnQuantize04.Click += handlePositionQuantize;
             stripDDBtnQuantize08.Click += handlePositionQuantize;
             stripDDBtnQuantize16.Click += handlePositionQuantize;
@@ -7602,23 +7443,23 @@ namespace cadencii
             toolBarFile.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarFile_ButtonClick );
             toolBarPosition.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarPosition_ButtonClick );
             toolBarMeasure.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarMeasure_ButtonClick );
-            toolBarMeasure.MouseDown += new BMouseEventHandler( toolBarMeasure_MouseDown );
-#endif
-            stripBtnStepSequencer.CheckedChanged += new BEventHandler( stripBtnStepSequencer_CheckedChanged );
-            this.Deactivate += new BEventHandler( FormMain_Deactivate );
-            this.Activated += new BEventHandler( FormMain_Activated );
-            this.FormClosed += new BFormClosedEventHandler( FormMain_FormClosed );
-            this.FormClosing += new BFormClosingEventHandler( FormMain_FormClosing );
-            this.PreviewKeyDown += new BPreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
-            panelOverview.Enter += new BEventHandler( panelOverview_Enter );
+            toolBarMeasure.MouseDown += new MouseEventHandler( toolBarMeasure_MouseDown );
+            stripBtnStepSequencer.CheckedChanged += new EventHandler( stripBtnStepSequencer_CheckedChanged );
+            this.Deactivate += new EventHandler( FormMain_Deactivate );
+            this.Activated += new EventHandler( FormMain_Activated );
+            this.FormClosed += new FormClosedEventHandler( FormMain_FormClosed );
+            this.FormClosing += new FormClosingEventHandler( FormMain_FormClosing );
+            this.PreviewKeyDown += new PreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
+            this.SizeChanged += FormMain_SizeChanged;
+            panelOverview.Enter += new EventHandler( panelOverview_Enter );
         }
 
         public void setResources()
         {
             try {
 #if !JAVA
-                this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
-                this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripLblGameCtrlMode.Image = Resources.get_slash().image;
+                this.stripLblMidiIn.Image = Resources.get_slash().image;
 #endif
 
 #if JAVA
@@ -7654,7 +7495,7 @@ namespace cadencii
                 buttonVZoom.setIcon( new ImageIcon( Resources.get_plus8x8() ) );
                 buttonVMooz.setIcon( new ImageIcon( Resources.get_minus8x8() ) );
 #endif
-                setIconImage( Resources.get_icon() );
+                this.Icon = Resources.get_icon();
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
                 serr.println( "FormMain#setResources; ex=" + ex );
@@ -7663,11 +7504,11 @@ namespace cadencii
         #endregion // public methods
 
         #region event handlers
-        public void menuWindowMinimize_Click( Object sender, BEventArgs e )
+        public void menuWindowMinimize_Click( Object sender, EventArgs e )
         {
-            int state = this.getExtendedState();
-            if( state != BForm.ICONIFIED ){
-                setExtendedState( BForm.ICONIFIED );
+            var state = this.WindowState;
+            if( state != FormWindowState.Minimized ){
+                this.WindowState = FormWindowState.Minimized;
             }
         }
 
@@ -7681,7 +7522,7 @@ namespace cadencii
 
         //BOOKMARK: inputTextBox
         #region AppManager.mInputTextBox
-        public void mInputTextBox_KeyDown( Object sender, BKeyEventArgs e )
+        public void mInputTextBox_KeyDown( Object sender, KeyEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyDown" );
@@ -7755,14 +7596,14 @@ namespace cadencii
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
                         new Point( x, y ),
                         phonetic_symbol_edit_mode );
-                    int clWidth = (int)(AppManager.mInputTextBox.getWidth() * controller.getScaleXInv());
+                    int clWidth = (int)(AppManager.mInputTextBox.Width * controller.getScaleXInv());
 
                     // 画面上にAppManager.mInputTextBoxが見えるように，移動
                     int SPACE = 20;
                     // vScrollやhScrollをいじった場合はfalseにする．
                     boolean refresh_screen = true;
                     // X軸方向について，見えるように移動
-                    if ( x < key_width || width < x + AppManager.mInputTextBox.getWidth() ) {
+                    if ( x < key_width || width < x + AppManager.mInputTextBox.Width ) {
                         int clock, clock_x;
                         if ( x < key_width ) {
                             // 左に隠れてしまう場合
@@ -7784,13 +7625,13 @@ namespace cadencii
                             draft_d = 0.0;
                         }
                         int draft = (int)draft_d;
-                        if ( draft < hScroll.getMinimum() ) {
-                            draft = hScroll.getMinimum();
-                        } else if ( hScroll.getMaximum() < draft ) {
-                            draft = hScroll.getMaximum();
+                        if ( draft < hScroll.Minimum ) {
+                            draft = hScroll.Minimum;
+                        } else if ( hScroll.Maximum < draft ) {
+                            draft = hScroll.Maximum;
                         }
                         refresh_screen = false;
-                        hScroll.setValue( draft );
+                        hScroll.Value = draft;
                     }
                     // y軸方向について，見えるように移動
                     int track_height = (int)(100 * controller.getScaleY());
@@ -7823,7 +7664,7 @@ namespace cadencii
             }
         }
 
-        public void mInputTextBox_KeyUp( Object sender, BKeyEventArgs e )
+        public void mInputTextBox_KeyUp( Object sender, KeyEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyUp" );
@@ -7837,7 +7678,7 @@ namespace cadencii
 #endif
 
             if ( flip ) {
-                if ( AppManager.mInputTextBox.isVisible() ) {
+                if ( AppManager.mInputTextBox.Visible ) {
                     flipInputTextBoxMode();
                 }
             } else if ( hide ) {
@@ -7847,10 +7688,10 @@ namespace cadencii
 
         public void mInputTextBox_ImeModeChanged( Object sender, EventArgs e )
         {
-            mLastIsImeModeOn = AppManager.mInputTextBox.isImeModeOn();
+            mLastIsImeModeOn = AppManager.mInputTextBox.ImeMode == System.Windows.Forms.ImeMode.Hiragana;
         }
 
-        public void mInputTextBox_KeyPress( Object sender, BKeyPressEventArgs e )
+        public void mInputTextBox_KeyPress( Object sender, KeyPressEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyPress" );
@@ -7871,18 +7712,14 @@ namespace cadencii
 
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e )
         {
-            menuVisualGridline.setSelected( AppManager.isGridVisible() );
-#if JAVA
-            stripBtnGrid.setSelected( AppManager.isGridVisible() );
-#else
+            menuVisualGridline.Checked = AppManager.isGridVisible();
             stripBtnGrid.Pushed = AppManager.isGridVisible();
-#endif
-            cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
+            cMenuPianoGrid.Checked = AppManager.isGridVisible();
         }
 
         public void AppManager_MainWindowFocusRequired( Object sender, EventArgs e )
         {
-            this.requestFocus();
+            this.Focus();
         }
 
         public void AppManager_PreviewAborted( Object sender, EventArgs e )
@@ -7897,7 +7734,7 @@ namespace cadencii
             stripBtnPlay.ImageKey = "control.png";
             stripBtnPlay.Text = _( "Play" );
 #endif
-            timer.stop();
+            timer.Stop();
 
             for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
                 AppManager.mDrawStartIndex[i] = 0;
@@ -7920,7 +7757,7 @@ namespace cadencii
             mLastClock = clock;
             double now = PortUtil.getCurrentTime();
             AppManager.mPreviewStartedTime = now;
-            timer.start();
+            timer.Start();
 #if JAVA
             stripBtnPlay.setIcon( new ImageIcon( Resources.get_control_pause() ) );
             stripBtnPlay.setText( _( "Stop" ) );
@@ -7937,15 +7774,15 @@ namespace cadencii
 
         public void ItemSelectionModel_SelectedEventChanged( Object sender, boolean selected_event_is_null )
         {
-            menuEditCut.setEnabled( !selected_event_is_null );
-            menuEditPaste.setEnabled( !selected_event_is_null );
-            menuEditDelete.setEnabled( !selected_event_is_null );
-            cMenuPianoCut.setEnabled( !selected_event_is_null );
-            cMenuPianoCopy.setEnabled( !selected_event_is_null );
-            cMenuPianoDelete.setEnabled( !selected_event_is_null );
-            cMenuPianoExpressionProperty.setEnabled( !selected_event_is_null );
-            menuLyricVibratoProperty.setEnabled( !selected_event_is_null );
-            menuLyricExpressionProperty.setEnabled( !selected_event_is_null );
+            menuEditCut.Enabled = !selected_event_is_null;
+            menuEditPaste.Enabled = !selected_event_is_null;
+            menuEditDelete.Enabled = !selected_event_is_null;
+            cMenuPianoCut.Enabled = !selected_event_is_null;
+            cMenuPianoCopy.Enabled = !selected_event_is_null;
+            cMenuPianoDelete.Enabled = !selected_event_is_null;
+            cMenuPianoExpressionProperty.Enabled = !selected_event_is_null;
+            menuLyricVibratoProperty.Enabled = !selected_event_is_null;
+            menuLyricExpressionProperty.Enabled = !selected_event_is_null;
 #if JAVA
             stripBtnCut.setEnabled( !selected_event_is_null );
             stripBtnCopy.setEnabled( !selected_event_is_null );
@@ -7976,12 +7813,12 @@ namespace cadencii
 
         //BOOKMARK: pictPianoRoll
         #region pictPianoRoll
-        public void pictPianoRoll_KeyUp( Object sender, BKeyEventArgs e )
+        public void pictPianoRoll_KeyUp( Object sender, KeyEventArgs e )
         {
             processSpecialShortcutKey( e, false );
         }
 
-        public void pictPianoRoll_MouseClick( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseClick( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseClick" );
@@ -8135,18 +7972,18 @@ namespace cadencii
                         AppManager.itemSelection.addEvent( item.InternalID );
                     }
                     boolean item_is_null = (item == null);
-                    cMenuPianoCopy.setEnabled( !item_is_null );
-                    cMenuPianoCut.setEnabled( !item_is_null );
-                    cMenuPianoDelete.setEnabled( !item_is_null );
-                    cMenuPianoImportLyric.setEnabled( !item_is_null );
-                    cMenuPianoExpressionProperty.setEnabled( !item_is_null );
+                    cMenuPianoCopy.Enabled = !item_is_null;
+                    cMenuPianoCut.Enabled = !item_is_null;
+                    cMenuPianoDelete.Enabled = !item_is_null;
+                    cMenuPianoImportLyric.Enabled = !item_is_null;
+                    cMenuPianoExpressionProperty.Enabled = !item_is_null;
 
                     int clock = AppManager.clockFromXCoord( e.X );
-                    cMenuPianoPaste.setEnabled( ((AppManager.clipboard.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks())) );
+                    cMenuPianoPaste.Enabled = ((AppManager.clipboard.getCopiedItems().events.size() != 0) && (clock >= AppManager.getVsqFile().getPreMeasureClocks()));
                     refreshScreen();
 
                     mContextMenuOpenedPosition = new Point( e.X, e.Y );
-                    cMenuPiano.show( pictPianoRoll, e.X, e.Y );
+                    cMenuPiano.Show( pictPianoRoll, e.X, e.Y );
                 } else {
                     ByRef<Rectangle> out_id_rect = new ByRef<Rectangle>();
                     VsqEvent item = getItemAtClickedPosition( mButtonInitial, out_id_rect );
@@ -8188,7 +8025,7 @@ namespace cadencii
             }
         }
 
-        public void pictPianoRoll_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#pictPianoRoll_MouseDoubleClick" );
@@ -8262,9 +8099,9 @@ namespace cadencii
                                     dlg.setPMbPortamentoUse( selectedEvent.ID.PMbPortamentoUse );
                                     dlg.setDEMdecGainRate( selectedEvent.ID.DEMdecGainRate );
                                     dlg.setDEMaccent( selectedEvent.ID.DEMaccent );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                    if ( dr == BDialogResult.OK ) {
+                                    dlg.Location = getFormPreferedLocation( dlg );
+                                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                    if ( dr == DialogResult.OK ) {
                                         VsqID id = (VsqID)selectedEvent.ID.clone();
                                         id.PMBendDepth = dlg.getPMBendDepth();
                                         id.PMBendLength = dlg.getPMBendLength();
@@ -8284,7 +8121,7 @@ namespace cadencii
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-                                            dlg.close();
+                                            dlg.Close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
                                             serr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" );
@@ -8333,9 +8170,9 @@ namespace cadencii
                                         AppManager.editorConfig.DefaultVibratoLength,
                                         type,
                                         AppManager.editorConfig.UseUserDefinedAutoVibratoType );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                    if ( dr == BDialogResult.OK ) {
+                                    dlg.Location = getFormPreferedLocation( dlg );
+                                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                    if ( dr == DialogResult.OK ) {
                                         VsqID t = (VsqID)selectedEvent.ID.clone();
                                         VibratoHandle handle = dlg.getVibratoHandle();
 #if DEBUG
@@ -8364,7 +8201,7 @@ namespace cadencii
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-                                            dlg.close();
+                                            dlg.Close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
                                         }
@@ -8397,7 +8234,7 @@ namespace cadencii
             }
         }
 
-        public void pictPianoRoll_MouseDown( Object sender, BMouseEventArgs e0 )
+        public void pictPianoRoll_MouseDown( Object sender, MouseEventArgs e0 )
         {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseDown" );
@@ -8406,7 +8243,7 @@ namespace cadencii
             if ( isMouseMiddleButtonDowned( btn0 ) ) {
                 btn0 = BMouseButtons.Middle;
             }
-            BMouseEventArgs e = new BMouseEventArgs( btn0, e0.Clicks, e0.X, e0.Y, e0.Delta );
+            MouseEventArgs e = new MouseEventArgs( btn0, e0.Clicks, e0.X, e0.Y, e0.Delta );
 
             mMouseMoved = false;
             if ( !AppManager.isPlaying() && 0 <= e.X && e.X <= AppManager.keyWidth ) {
@@ -8437,8 +8274,8 @@ namespace cadencii
             if ( e.Button == BMouseButtons.Middle ) {
 #endif
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
-                mMiddleButtonVScroll = vScroll.getValue();
-                mMiddleButtonHScroll = hScroll.getValue();
+                mMiddleButtonVScroll = vScroll.Value;
+                mMiddleButtonHScroll = hScroll.Value;
                 return;
             }
 
@@ -8447,7 +8284,7 @@ namespace cadencii
             if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mMouseTracer.clear();
                 pictPianoRoll.mMouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
                 AppManager.setEditMode( EditMode.CURVE_ON_PIANOROLL );
                 return;
             }
@@ -8459,8 +8296,8 @@ namespace cadencii
 #if ENABLE_SCRIPT
             if ( selected_tool == EditTool.PALETTE_TOOL && item == null && e.Button == BMouseButtons.Middle ) {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
-                mMiddleButtonVScroll = vScroll.getValue();
-                mMiddleButtonHScroll = hScroll.getValue();
+                mMiddleButtonVScroll = vScroll.Value;
+                mMiddleButtonHScroll = hScroll.Value;
                 return;
             }
 #endif
@@ -8569,7 +8406,7 @@ namespace cadencii
                                     mButtonInitial = new Point( e.X, e.Y );
                                     AppManager.mAddingEvent.ID.setLength( 0 );
                                     AppManager.mAddingEvent.ID.Note = note;
-                                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                                    this.Cursor = Cursors.Default;
 #if DEBUG
                                     AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
 #endif
@@ -8577,7 +8414,7 @@ namespace cadencii
                                     AppManager.setEditMode( EditMode.ADD_FIXED_LENGTH_ENTRY );
                                     AppManager.mAddingEvent.ID.setLength( mPencilMode.getUnitLength() );
                                     AppManager.mAddingEvent.ID.Note = note;
-                                    setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                                    this.Cursor = Cursors.Default;
                                 }
                             } else {
 #if !JAVA
@@ -8768,7 +8605,7 @@ namespace cadencii
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
                             }
 
-                            setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
+                            this.Cursor = Cursors.Hand;
 #if DEBUG
                             AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
                             AppManager.debugWriteLine( "    m_config.SelectedEvent.Count=" + AppManager.itemSelection.getEventCount() );
@@ -8780,14 +8617,14 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseMove( Object sender, MouseEventArgs e )
         {
             lock (AppManager.mDrawObjects) {
                 if (mFormActivated) {
 #if ENABLE_PROPERTY
-                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing()) {
+                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.Visible && !AppManager.propertyPanel.isEditing()) {
 #else
-                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible()) {
+                    if (AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.Visible) {
 #endif
                         focusPianoRoll();
                     }
@@ -8801,7 +8638,7 @@ namespace cadencii
 
                 if (edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.mCurveOnPianoroll) {
                     pictPianoRoll.mMouseTracer.append(e.X + stdx, e.Y + stdy);
-                    if (!timer.isRunning()) {
+                    if (!timer.Enabled) {
                         refreshScreen();
                     }
                     return;
@@ -8896,24 +8733,24 @@ namespace cadencii
                         d_draft = 0.0;
                     }
                     int draft = (int)d_draft;
-                    if (hScroll.getMaximum() < draft) {
+                    if (hScroll.Maximum < draft) {
                         if (edit_mode == EditMode.ADD_ENTRY ||
                              edit_mode == EditMode.MOVE_ENTRY ||
                              edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
                              edit_mode == EditMode.DRAG_DROP) {
-                            hScroll.setMaximum(draft);
+                            hScroll.Maximum = draft;
                         } else {
-                            draft = hScroll.getMaximum();
+                            draft = hScroll.Maximum;
                         }
                     }
-                    if (draft < hScroll.getMinimum()) {
-                        draft = hScroll.getMinimum();
+                    if (draft < hScroll.Minimum) {
+                        draft = hScroll.Minimum;
                     }
-                    hScroll.setValue(draft);
+                    hScroll.Value = draft;
                 }
                 if (mExtDragY == ExtDragYMode.UP || mExtDragY == ExtDragYMode.DOWN) {
-                    int min = vScroll.getMinimum();
-                    int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                    int min = vScroll.Minimum;
+                    int max = vScroll.Maximum - vScroll.LargeChange;
                     int px_move = AppManager.editorConfig.MouseDragIncrement;
                     if (px_move / dt > AppManager.editorConfig.MouseDragMaximumRate) {
                         px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
@@ -8922,7 +8759,7 @@ namespace cadencii
                     if (mExtDragY == ExtDragYMode.UP) {
                         px_move *= -1;
                     }
-                    int draft = vScroll.getValue() + px_move;
+                    int draft = vScroll.Value + px_move;
                     if (draft < 0) {
                         draft = 0;
                     }
@@ -8932,7 +8769,7 @@ namespace cadencii
                     } else if (max < df) {
                         df = max;
                     }
-                    vScroll.setValue(df);
+                    vScroll.Value = df;
                 }
                 if (mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE) {
                     mTimerDragLastIgnitted = now;
@@ -9034,15 +8871,15 @@ namespace cadencii
                     int drafth = computeHScrollValueForMiddleDrag(e.X);
                     int draftv = computeVScrollValueForMiddleDrag(e.Y);
                     boolean moved = false;
-                    if (drafth != hScroll.getValue()) {
+                    if (drafth != hScroll.Value) {
                         //moved = true;
                         //hScroll.beQuiet();
-                        hScroll.setValue(drafth);
+                        hScroll.Value = drafth;
                     }
-                    if (draftv != vScroll.getValue()) {
+                    if (draftv != vScroll.Value) {
                         //moved = true;
                         //vScroll.beQuiet();
-                        vScroll.setValue(draftv);
+                        vScroll.Value = draftv;
                     }
                     //if ( moved ) {
                     //    vScroll.setQuiet( false );
@@ -9179,7 +9016,7 @@ namespace cadencii
                     }
                     AppManager.mAddingEvent.Clock = new_vibrato_start;
                     AppManager.mAddingEvent.ID.setLength(new_vibrato_length);
-                    if (!timer.isRunning()) {
+                    if (!timer.Enabled) {
                         refreshScreen();
                     }
                     #endregion
@@ -9272,12 +9109,12 @@ namespace cadencii
                     if (split_cursor) {
                         Cursor = System.Windows.Forms.Cursors.VSplit;
                     } else if (hand_cursor) {
-                        setCursor(new Cursor(java.awt.Cursor.HAND_CURSOR));
+                        this.Cursor = Cursors.Hand;
                     } else {
-                        setCursor(new Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+                        this.Cursor = Cursors.Default;
                     }
                 }
-                if (!timer.isRunning()) {
+                if (!timer.Enabled) {
                     refreshScreen(true);
                 }
             }
@@ -9288,7 +9125,7 @@ namespace cadencii
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void pictPianoRoll_MouseUp( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseUp( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             AppManager.debugWriteLine( "pictureBox1_MouseUp" );
@@ -9443,7 +9280,7 @@ namespace cadencii
             }
 
             if ( edit_mode == EditMode.MIDDLE_DRAG ) {
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
             } else if ( edit_mode == EditMode.ADD_ENTRY || edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
                 #region AddEntry || AddFixedLengthEntry
                 if ( AppManager.getSelected() >= 0 ) {
@@ -9751,7 +9588,7 @@ namespace cadencii
             refreshScreen( true );
         }
 
-        public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e )
+        public void pictPianoRoll_MouseWheel( Object sender, MouseEventArgs e )
         {
             int modifier = PortUtil.getCurrentModifierKey();
             boolean horizontal = (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
@@ -9761,11 +9598,11 @@ namespace cadencii
             if ( (modifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK ) {
                 // ピアノロール拡大率を変更
                 if ( horizontal ) {
-                    int max = trackBar.getMaximum();
-                    int min = trackBar.getMinimum();
+                    int max = trackBar.Maximum;
+                    int min = trackBar.Minimum;
                     int width = max - min;
                     int delta = (width / 10) * (e.Delta > 0 ? 1 : -1);
-                    int old_tbv = trackBar.getValue();
+                    int old_tbv = trackBar.Value;
                     int draft = old_tbv + delta;
                     if ( draft < min ) {
                         draft = min;
@@ -9779,7 +9616,7 @@ namespace cadencii
                         // マウスのスクリーン座標
                         Point screen_p_at_mouse = PortUtil.getMousePosition();
                         // ピアノロール上でのマウスのx座標
-                        int x_at_mouse = pictPianoRoll.pointToClient( screen_p_at_mouse ).x;
+                        int x_at_mouse = pictPianoRoll.PointToClient(new System.Drawing.Point(screen_p_at_mouse.x, screen_p_at_mouse.y)).X;
                         // マウス位置でのクロック -> こいつが保存される
                         int clock_at_mouse = AppManager.clockFromXCoord( x_at_mouse );
                         // 古い拡大率
@@ -9791,17 +9628,17 @@ namespace cadencii
                         int stdx1 = (int)(clock_at_mouse * (scale1 - scale0) + stdx0);
                         // 新しいhScroll.Value
                         int hscroll_value = (int)(stdx1 / scale1);
-                        if ( hscroll_value < hScroll.getMinimum() ) {
-                            hscroll_value = hScroll.getMinimum();
+                        if ( hscroll_value < hScroll.Minimum ) {
+                            hscroll_value = hScroll.Minimum;
                         }
-                        if ( hScroll.getMaximum() < hscroll_value ) {
-                            hscroll_value = hScroll.getMaximum();
+                        if ( hScroll.Maximum < hscroll_value ) {
+                            hscroll_value = hScroll.Maximum;
                         }
 
                         controller.setScaleX( scale1 );
                         controller.setStartToDrawX( stdx1 );
-                        hScroll.setValue( hscroll_value );
-                        trackBar.setValue( draft );
+                        hScroll.Value = hscroll_value;
+                        trackBar.Value = draft;
                     }
                 } else {
                     zoomY( e.Delta > 0 ? 1 : -1 );
@@ -9812,30 +9649,26 @@ namespace cadencii
                     horizontal = false;
                 }
                 if ( horizontal ) {
-                    hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+                    hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
                 } else {
-                    double new_val = (double)vScroll.getValue() - e.Delta * 10;
-                    int min = vScroll.getMinimum();
-                    int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                    double new_val = (double)vScroll.Value - e.Delta * 10;
+                    int min = vScroll.Minimum;
+                    int max = vScroll.Maximum - vScroll.LargeChange;
                     if ( new_val > max ) {
-                        vScroll.setValue( max );
+                        vScroll.Value = max;
                     } else if ( new_val < min ) {
-                        vScroll.setValue( min );
+                        vScroll.Value = min;
                     } else {
-                        vScroll.setValue( (int)new_val );
+                        vScroll.Value = (int)new_val;
                     }
                 }
             }
             refreshScreen();
         }
 
-        public void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void pictPianoRoll_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
-#if JAVA
-            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
         }
         #endregion
@@ -9844,12 +9677,13 @@ namespace cadencii
         #region iconPalette
         public void iconPalette_LocationChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
+            var point = AppManager.iconPalette.Location;
+            AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint(point.X, point.Y);
         }
 
-        public void iconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void iconPalette_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            flipIconPaletteVisible( AppManager.iconPalette.isVisible() );
+            flipIconPaletteVisible( AppManager.iconPalette.Visible );
         }
         #endregion
 
@@ -9858,8 +9692,8 @@ namespace cadencii
         public void menuVisualProperty_CheckedChanged( Object sender, EventArgs e )
         {
 #if ENABLE_PROPERTY
-            if ( menuVisualProperty.isSelected() ) {
-                if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
+            if ( menuVisualProperty.Checked ) {
+                if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == FormWindowState.Minimized ) {
                     updatePropertyPanelState( PanelState.Docked );
                 } else {
                     updatePropertyPanelState( PanelState.Window );
@@ -9873,9 +9707,9 @@ namespace cadencii
         public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e )
         {
 #if DEBUG
-            sout.println( "FormMain#menuVisualOverview_CheckedChanged; menuVisualOverview.isSelected()=" + menuVisualOverview.isSelected() );
+            sout.println( "FormMain#menuVisualOverview_CheckedChanged; menuVisualOverview.isSelected()=" + menuVisualOverview.Checked );
 #endif
-            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
+            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.Checked;
             updateLayout();
         }
 
@@ -9883,12 +9717,12 @@ namespace cadencii
         {
             boolean v = !AppManager.editorConfig.MixerVisible;
             flipMixerDialogVisible( v );
-            requestFocus();
+            this.Focus();
         }
 
         public void menuVisualGridline_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.setGridVisible( menuVisualGridline.isSelected() );
+            AppManager.setGridVisible( menuVisualGridline.Checked );
             refreshScreen();
         }
 
@@ -9900,28 +9734,28 @@ namespace cadencii
 
         public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ShowLyric = menuVisualLyrics.isSelected();
+            AppManager.editorConfig.ShowLyric = menuVisualLyrics.Checked;
         }
 
         public void menuVisualNoteProperty_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.isSelected();
+            AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.Checked;
             refreshScreen();
         }
 
         public void menuVisualPitchLine_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.isSelected();
+            AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.Checked;
         }
 
         public void menuVisualControlTrack_CheckedChanged( Object sender, EventArgs e )
         {
-            flipControlCurveVisible( menuVisualControlTrack.isSelected() );
+            flipControlCurveVisible( menuVisualControlTrack.Checked );
         }
 
         public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.ViewWaveform = menuVisualWaveform.isSelected();
+            AppManager.editorConfig.ViewWaveform = menuVisualWaveform.Checked;
             updateSplitContainer2Size( true );
         }
 
@@ -9942,14 +9776,14 @@ namespace cadencii
                     chkv = false;
                 } else if ( vd.getUi( this ).IsDisposed ) {
                     chkv = false;
-                } else if ( !vd.getUi( this ).isVisible() ) {
+                } else if ( !vd.getUi( this ).Visible ) {
                     chkv = false;
                 }
                 RendererKind kind = vd.getRendererKind();
                 if ( kind == RendererKind.VOCALOID1 ) {
-                    menuVisualPluginUiVocaloid1.setSelected( chkv );
+                    menuVisualPluginUiVocaloid1.Checked = chkv;
                 } else if ( kind == RendererKind.VOCALOID2 ) {
-                    menuVisualPluginUiVocaloid2.setSelected( chkv );
+                    menuVisualPluginUiVocaloid2.Checked = chkv;
                 }
             }
 #endif
@@ -9969,11 +9803,11 @@ namespace cadencii
                     chk = false;
                 } else if ( ui.IsDisposed ) {
                     chk = false;
-                } else if ( !ui.isVisible() ) {
+                } else if ( !ui.Visible ) {
                     chk = false;
                 }
             }
-            menuVisualPluginUiAquesTone.setSelected( chk );
+            menuVisualPluginUiAquesTone.Checked = chk;
 #endif
         }
 
@@ -10019,13 +9853,13 @@ namespace cadencii
                 boolean v = true;
                 if ( kind == search ) {
                     if ( search == RendererKind.VOCALOID1 ) {
-                        v = !menuVisualPluginUiVocaloid1.isSelected();
-                        menuVisualPluginUiVocaloid1.setSelected( v );
-                        vd.getUi( this ).setVisible( v );
+                        v = !menuVisualPluginUiVocaloid1.Checked;
+                        menuVisualPluginUiVocaloid1.Checked = v;
+                        vd.getUi( this ).Visible = v;
                     } else if ( search == RendererKind.VOCALOID2 ) {
-                        v = !menuVisualPluginUiVocaloid2.isSelected();
-                        menuVisualPluginUiVocaloid2.setSelected( v );
-                        vd.getUi( this ).setVisible( v );
+                        v = !menuVisualPluginUiVocaloid2.Checked;
+                        menuVisualPluginUiVocaloid2.Checked = v;
+                        vd.getUi( this ).Visible = v;
                     }
                     break;
                 }
@@ -10058,7 +9892,7 @@ namespace cadencii
                 return;
             }
             if ( ui != null && !ui.IsDisposed ) {
-                ui.setVisible( visible );
+                ui.Visible = visible;
             }
 #endif
         }
@@ -10068,7 +9902,7 @@ namespace cadencii
             onClickVisualPluginUiAquesTone( menuVisualPluginUiAquesTone, VSTiDllManager.getAquesToneDriver() );
         }
 
-        private void menuVisualPluginUiAquesTone2_Click( object sender, BEventArgs e )
+        private void menuVisualPluginUiAquesTone2_Click( object sender, EventArgs e )
         {
             onClickVisualPluginUiAquesTone( menuVisualPluginUiAquesTone2, VSTiDllManager.getAquesTone2Driver() );
         }
@@ -10076,9 +9910,9 @@ namespace cadencii
 
         //BOOKMARK: mixerWindow
         #region mixerWindow
-        public void mixerWindow_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void mixerWindow_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
+            flipMixerDialogVisible( AppManager.mMixerWindow.Visible );
         }
 
         public void mixerWindow_SoloChanged( int track, boolean solo )
@@ -10207,12 +10041,12 @@ namespace cadencii
 #endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow != null && false == AppManager.propertyWindow.getUi().isWindowMinimized() ) {
-                    Point parent = this.getLocation();
+                    var parent = this.Location;
                     int propertyX = AppManager.propertyWindow.getUi().getX();
                     int propertyY = AppManager.propertyWindow.getUi().getY();
                     AppManager.editorConfig.PropertyWindowStatus.Bounds =
-                        new XmlRectangle( propertyX - parent.x,
-                                          propertyY - parent.y,
+                        new XmlRectangle( propertyX - parent.X,
+                                          propertyY - parent.Y,
                                           AppManager.propertyWindow.getUi().getWidth(),
                                           AppManager.propertyWindow.getUi().getHeight() );
                 }
@@ -10244,21 +10078,21 @@ namespace cadencii
             if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
                 return;
             }
-            Point pt = pictPianoRoll.getLocationOnScreen();
+            var pt = pictPianoRoll.PointToScreen(System.Drawing.Point.Empty);
             if ( !mIconPaletteOnceDragEntered ) {
                 int keywidth = AppManager.keyWidth;
-                Rectangle rc = new Rectangle( pt.x + keywidth, pt.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
+                Rectangle rc = new Rectangle( pt.X + keywidth, pt.Y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
                 if ( Utility.isInRect( new Point( screen_x, screen_y ), rc ) ) {
                     mIconPaletteOnceDragEntered = true;
                 } else {
                     return;
                 }
             }
-            BMouseEventArgs e0 = new BMouseEventArgs( BMouseButtons.Left,
-                                                      1,
-                                                      screen_x - pt.x,
-                                                      screen_y - pt.y,
-                                                      0 );
+            MouseEventArgs e0 = new MouseEventArgs( BMouseButtons.Left,
+                                                    1,
+                                                    screen_x - pt.X,
+                                                    screen_y - pt.Y,
+                                                    0 );
             pictPianoRoll_MouseMove( this, e0 );
         }
 
@@ -10277,10 +10111,10 @@ namespace cadencii
             if( handle == null ){
                 return;
             }
-            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            var locPianoroll = pictPianoRoll.PointToScreen(System.Drawing.Point.Empty);
             // ドロップ位置を特定して，アイテムを追加する
-            int x = screen_x - locPianoroll.x;
-            int y = screen_y - locPianoroll.y;
+            int x = screen_x - locPianoroll.X;
+            int y = screen_y - locPianoroll.Y;
             int clock1 = AppManager.clockFromXCoord( x );
 
             // クオンタイズの処理
@@ -10326,10 +10160,10 @@ namespace cadencii
             if ( !e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
                 return;
             }
-            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            var locPianoroll = pictPianoRoll.PointToScreen(System.Drawing.Point.Empty);
             int keywidth = AppManager.keyWidth;
-            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
-                                                   locPianoroll.y,
+            Rectangle rcPianoroll = new Rectangle( locPianoroll.X + keywidth,
+                                                   locPianoroll.Y,
                                                    pictPianoRoll.getWidth() - keywidth,
                                                    pictPianoRoll.getHeight() );
             if ( !Utility.isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
@@ -10368,7 +10202,7 @@ namespace cadencii
             }
         }
 #endif
-        public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e )
+        public void FormMain_FormClosed( Object sender, FormClosedEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#FormMain_FormClosed" );
@@ -10411,7 +10245,7 @@ namespace cadencii
 #endif
         }
 
-        public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void FormMain_FormClosing( Object sender, FormClosingEventArgs e )
         {
             // 設定値を格納
             if( AppManager.editorConfig.ViewWaveform ){
@@ -10448,15 +10282,15 @@ namespace cadencii
                 } else {
                     file = PortUtil.getFileName( file );
                 }
-                BDialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
+                DialogResult ret = AppManager.showMessageBox( _( "Save this sequence?" ),
                                                                _( "Affirmation" ),
                                                                cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
                                                                cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
-                if ( ret == BDialogResult.YES ) {
+                if ( ret == DialogResult.Yes ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
-                        int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-                        if ( dr == BFileChooser.APPROVE_OPTION ) {
-                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
+                        var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+                        if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                            AppManager.saveTo( saveXmlVsqDialog.FileName );
                         } else {
                             return true;
                         }
@@ -10464,11 +10298,11 @@ namespace cadencii
                         AppManager.saveTo( AppManager.getFileName() );
                     }
 
-                } else if ( ret == BDialogResult.CANCEL ) {
+                } else if ( ret == DialogResult.Cancel ) {
                     return true;
                 }
             }
-            AppManager.editorConfig.WindowMaximized = (getExtendedState() == BForm.MAXIMIZED_BOTH);
+            AppManager.editorConfig.WindowMaximized = (this.WindowState == FormWindowState.Maximized);
             AppManager.saveConfig();
             UtauWaveGenerator.clearCache();
             VConnectWaveGenerator.clearCache();
@@ -10486,8 +10320,9 @@ namespace cadencii
 
         public void FormMain_LocationChanged( Object sender, EventArgs e )
         {
-            if ( getExtendedState() == BForm.NORMAL ) {
-                AppManager.editorConfig.WindowRect = this.getBounds();
+            if ( this.WindowState == FormWindowState.Normal ) {
+                var bounds = this.Bounds;
+                AppManager.editorConfig.WindowRect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height);
             }
         }
 
@@ -10694,8 +10529,8 @@ namespace cadencii
                     FormGenerateKeySound form = null;
                     try {
                         form = new FormGenerateKeySound( true );
-                        form.FormClosed += new BFormClosedEventHandler( FormGenerateKeySound_FormClosed );
-                        form.setVisible( true );
+                        form.FormClosed += new FormClosedEventHandler( FormGenerateKeySound_FormClosed );
+                        form.ShowDialog();
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                         serr.println( "FormMain#FormMain_Load; ex=" + ex );
@@ -10715,7 +10550,7 @@ namespace cadencii
             }
         }
 
-        public void FormGenerateKeySound_FormClosed( Object sender, BFormClosedEventArgs e )
+        public void FormGenerateKeySound_FormClosed( Object sender, FormClosedEventArgs e )
         {
             try {
                 KeySoundPlayer.init();
@@ -10725,12 +10560,16 @@ namespace cadencii
             }
         }
 
-        public void FormMain_WindowStateChanged( Object sender, EventArgs e )
+        void FormMain_SizeChanged(object sender, EventArgs e)
         {
-            int state = getExtendedState();
-            if ( state == BForm.NORMAL || state == BForm.MAXIMIZED_BOTH ) {
-                if( state == BForm.NORMAL ){
-                    AppManager.editorConfig.WindowRect = this.getBounds();
+            if (mWindowState == this.WindowState) {
+                return;
+            }
+            var state = this.WindowState;
+            if ( state == FormWindowState.Normal || state == FormWindowState.Maximized ) {
+                if( state == FormWindowState.Normal ){
+                    var bounds = this.Bounds;
+                    AppManager.editorConfig.WindowRect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height);
                 }
 #if ENABLE_PROPERTY
                 // プロパティウィンドウの状態を更新
@@ -10745,25 +10584,25 @@ namespace cadencii
 #endif
                 // ミキサーウィンドウの状態を更新
                 boolean vm = AppManager.editorConfig.MixerVisible;
-                if( vm != AppManager.mMixerWindow.isVisible() ){
-                    AppManager.mMixerWindow.setVisible( vm );
+                if( vm != AppManager.mMixerWindow.Visible ){
+                    AppManager.mMixerWindow.Visible = vm;
                 }
 
                 // アイコンパレットの状態を更新
-                if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
-                    if( !AppManager.iconPalette.isVisible() ){
-                        AppManager.iconPalette.setVisible( true );
+                if ( AppManager.iconPalette != null && menuVisualIconPalette.Checked ) {
+                    if( !AppManager.iconPalette.Visible ){
+                        AppManager.iconPalette.Visible = true;
                     }
                 }
                 updateLayout();
-                this.requestFocus();
-            } else if ( state == BForm.ICONIFIED ) {
+                this.Focus();
+            } else if ( state == FormWindowState.Minimized ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.getUi().setVisible( false );
 #endif
-                AppManager.mMixerWindow.setVisible( false );
+                AppManager.mMixerWindow.Visible = false;
                 if ( AppManager.iconPalette != null ) {
-                    AppManager.iconPalette.setVisible( false );
+                    AppManager.iconPalette.Visible = false;
                 }
             }/* else if ( state == BForm.MAXIMIZED_BOTH ) {
 #if ENABLE_PROPERTY
@@ -10778,46 +10617,42 @@ namespace cadencii
             }*/
         }
 
-        public void FormMain_MouseWheel( Object sender, BMouseEventArgs e )
+        public void FormMain_MouseWheel( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#FormMain_MouseWheel" );
 #endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             } else {
-                int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
-                int min = vScroll.getMinimum();
-                double new_val = (double)vScroll.getValue() - e.Delta;
+                int max = vScroll.Maximum - vScroll.LargeChange;
+                int min = vScroll.Minimum;
+                double new_val = (double)vScroll.Value - e.Delta;
                 if ( new_val > max ) {
-                    vScroll.setValue( max );
+                    vScroll.Value = max;
                 } else if ( new_val < min ) {
-                    vScroll.setValue( min );
+                    vScroll.Value = min;
                 } else {
-                    vScroll.setValue( (int)new_val );
+                    vScroll.Value = (int)new_val;
                 }
             }
             refreshScreen();
         }
 
-        public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void FormMain_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#FormMain_PreviewKeyDown" );
 #endif
-#if JAVA
-            BKeyEventArgs ex = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs ex = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs ex = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( ex, true );
         }
 
         public void handleVScrollResize( Object sender, EventArgs e )
         {
-            if ( getExtendedState() != BForm.ICONIFIED ) {
+            if ( this.WindowState != FormWindowState.Minimized ) {
                 updateScrollRangeVertical();
-                controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
             }
         }
 
@@ -10868,7 +10703,7 @@ namespace cadencii
 
                     if ( !event_processed && !btn_o && mLastBtnO ) {
                         if ( AppManager.isPlaying() ) {
-                            timer.stop();
+                            timer.Stop();
                         }
                         AppManager.setPlaying( !AppManager.isPlaying(), this );
                         mLastEventProcessed = now;
@@ -10891,22 +10726,22 @@ namespace cadencii
                     mLastPovL = pov_l;
 
                     if ( !event_processed && pov_u && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() - (int)(100 * controller.getScaleY()) * 3;
-                        if ( draft_vscroll < vScroll.getMinimum() ) {
-                            draft_vscroll = vScroll.getMinimum();
+                        int draft_vscroll = vScroll.Value - (int)(100 * controller.getScaleY()) * 3;
+                        if ( draft_vscroll < vScroll.Minimum ) {
+                            draft_vscroll = vScroll.Minimum;
                         }
-                        vScroll.setValue( draft_vscroll );
+                        vScroll.Value = draft_vscroll;
                         refreshScreen();
                         mLastEventProcessed = now;
                         event_processed = true;
                     }
 
                     if ( !event_processed && pov_d && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() + (int)(100 * controller.getScaleY()) * 3;
-                        if ( draft_vscroll > vScroll.getMaximum() ) {
-                            draft_vscroll = vScroll.getMaximum();
+                        int draft_vscroll = vScroll.Value + (int)(100 * controller.getScaleY()) * 3;
+                        if ( draft_vscroll > vScroll.Maximum ) {
+                            draft_vscroll = vScroll.Maximum;
                         }
-                        vScroll.setValue( draft_vscroll );
+                        vScroll.Value = draft_vscroll;
                         refreshScreen();
                         mLastEventProcessed = now;
                         event_processed = true;
@@ -10916,8 +10751,8 @@ namespace cadencii
                         event_processed = true;
                         mGameMode = GameControlMode.KEYBOARD;
 #if !JAVA
-                        stripLblGameCtrlMode.setText( mGameMode.ToString() );
-                        stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
+                        stripLblGameCtrlMode.Text = mGameMode.ToString();
+                        stripLblGameCtrlMode.Image = Resources.get_piano().image;
 #endif
                     }
                     mLastBtnSelect = SELECT;
@@ -11008,7 +10843,7 @@ namespace cadencii
 #endif
                 mGameMode = GameControlMode.DISABLED;
                 updateGameControlerStatus( null, null );
-                mTimer.stop();
+                mTimer.Stop();
             }
         }
 #endif
@@ -11016,7 +10851,7 @@ namespace cadencii
 
         //BOOKMARK: menuFile
         #region menuFile*
-        public void menuFileRecentClear_Click( Object sender, BEventArgs e )
+        public void menuFileRecentClear_Click( Object sender, EventArgs e )
         {
             if( AppManager.editorConfig.RecentFiles != null ){
                 AppManager.editorConfig.RecentFiles.clear();
@@ -11040,10 +10875,10 @@ namespace cadencii
             }
 
             String dir = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
-            saveXmlVsqDialog.setSelectedFile( dir );
-            int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-            if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String file = saveXmlVsqDialog.getSelectedFile();
+            saveXmlVsqDialog.SetSelectedFile(dir);
+            var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                String file = saveXmlVsqDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
@@ -11053,12 +10888,12 @@ namespace cadencii
 
         public void menuFileQuit_Click( Object sender, EventArgs e )
         {
-            close();
+            Close();
         }
 
         public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
         {
-            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
+            menuFileExportWave.Enabled = (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0);
         }
 
         public void menuFileExportMidi_Click( Object sender, EventArgs e )
@@ -11066,7 +10901,7 @@ namespace cadencii
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
-            mDialogMidiImportAndExport.listTrack.clear();
+            mDialogMidiImportAndExport.listTrack.Items.Clear();
             VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
 
             for ( int i = 0; i < vsq.Track.size(); i++ ) {
@@ -11076,18 +10911,18 @@ namespace cadencii
                     VsqEvent obj = itr.next();
                     notes++;
                 }
-                mDialogMidiImportAndExport.listTrack.addRow( new String[] { i + "", track.getName(), notes + "" }, true );
+                mDialogMidiImportAndExport.listTrack.AddRow( new String[] { i + "", track.getName(), notes + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr == BDialogResult.OK ) {
+            mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
+            DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr == DialogResult.OK ) {
                 if ( !mDialogMidiImportAndExport.isPreMeasure() ) {
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
                 int track_count = 0;
-                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                    if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                    if ( mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                         track_count++;
                     }
                 }
@@ -11096,12 +10931,12 @@ namespace cadencii
                 }
 
                 String dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
-                saveMidiDialog.setSelectedFile( dir );
-                int dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
+                saveMidiDialog.SetSelectedFile(dir);
+                var dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
 
-                if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result == System.Windows.Forms.DialogResult.OK ) {
                     RandomAccessFile fs = null;
-                    String filename = saveMidiDialog.getSelectedFile();
+                    String filename = saveMidiDialog.FileName;
                     AppManager.editorConfig.setLastUsedPathOut( filename, ".mid" );
                     try {
                         fs = new RandomAccessFile( filename, "rw" );
@@ -11121,8 +10956,8 @@ namespace cadencii
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
                         int count = -1;
-                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                            if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                            if ( !mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                                 continue;
                             }
                             VsqTrack track = vsq.Track.get( i );
@@ -11313,22 +11148,21 @@ namespace cadencii
 
         public void menuFileExportMusicXml_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            SaveFileDialog dialog = null;
             try {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq == null ) {
                     return;
                 }
                 String first = AppManager.editorConfig.getLastUsedPathOut( "xml" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( first );
-                dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-                int result = AppManager.showModalDialog( dialog, false, this );
-                if ( result != BFileChooser.APPROVE_OPTION ) {
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(first);
+                dialog.Filter = string.Join("|", new[] { _( "MusicXML(*.xml)|*.xml" ), _( "All Files(*.*)|*.*" ) });
+                var result = AppManager.showModalDialog( dialog, false, this );
+                if ( result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                String file = dialog.getSelectedFile();
+                String file = dialog.FileName;
                 var writer = new MusicXmlWriter();
                 writer.write(vsq, file);
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xml" );
@@ -11353,17 +11187,17 @@ namespace cadencii
         {
             // 出力するディレクトリを選択
             String dir = "";
-            BFolderBrowser file_dialog = null;
+            FolderBrowserDialog file_dialog = null;
             try {
-                file_dialog = new BFolderBrowser();
+                file_dialog = new FolderBrowserDialog();
                 String initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
-                file_dialog.setDescription( _( "Choose destination directory" ) );
-                file_dialog.setSelectedPath( initial_dir );
-                BDialogResult ret = AppManager.showModalDialog( file_dialog, this );
-                if ( ret != BDialogResult.OK ) {
+                file_dialog.Description = _( "Choose destination directory" );
+                file_dialog.SelectedPath = initial_dir;
+                DialogResult ret = AppManager.showModalDialog( file_dialog, this );
+                if ( ret != DialogResult.OK ) {
                     return;
                 }
-                dir = file_dialog.getSelectedPath();
+                dir = file_dialog.SelectedPath;
                 // 1.wavはダミー
                 initial_dir = fsys.combine( dir, "1.wav" );
                 AppManager.editorConfig.setLastUsedPathOut( initial_dir, ".wav" );
@@ -11371,7 +11205,7 @@ namespace cadencii
             } finally {
                 if ( file_dialog != null ) {
                     try {
-                        file_dialog.close();
+                        file_dialog.Dispose();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -11445,21 +11279,20 @@ namespace cadencii
             int selected = AppManager.getSelected();
 
             // 出力先のファイル名を選ぶ
-            BFileChooser dialog = null;
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            SaveFileDialog dialog = null;
+            var dialog_result = DialogResult.Cancel;
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "ust" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( last_path );
-                dialog.setDialogTitle( _( "Export UTAU (*.ust)" ) );
-                dialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(last_path);
+                dialog.Title = _( "Export UTAU (*.ust)" );
+                dialog.Filter = string.Join("|", new[] { _( "UTAU Script Format(*.ust)|*.ust" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( dialog, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".ust" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
@@ -11505,21 +11338,20 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
 
             // 出力先のファイル名を選ぶ
-            BFileChooser dialog = null;
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            SaveFileDialog dialog = null;
+            var dialog_result = DialogResult.Cancel;
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "vsq" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( last_path );
-                dialog.setDialogTitle( _( "Export VSQ (*.vsq)" ) );
-                dialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(last_path);
+                dialog.Title = _( "Export VSQ (*.vsq)" );
+                dialog.Filter = string.Join("|", new[] { _( "VSQ Format(*.vsq)|*.vsq" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( dialog, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".vsq" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
@@ -11558,12 +11390,12 @@ namespace cadencii
         {
             // UTAUの歌手が登録されていない場合は警告を表示
             if ( AppManager.editorConfig.UtauSingers.size() <= 0 ) {
-                BDialogResult dr = AppManager.showMessageBox(
+                DialogResult dr = AppManager.showMessageBox(
                     _( "UTAU singer not registered yet.\nContinue ?" ),
                     _( "Info" ),
                     cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
                     cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                if ( dr != BDialogResult.YES ) {
+                if ( dr != DialogResult.Yes ) {
                     return;
                 }
             }
@@ -11571,21 +11403,20 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
 
             // 出力先のファイル名を選ぶ
-            BFileChooser dialog = null;
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            SaveFileDialog dialog = null;
+            var dialog_result = DialogResult.Cancel;
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "txt" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( last_path );
-                dialog.setDialogTitle( _( "Metatext for vConnect" ) );
-                dialog.addFileFilter( _( "Text File(*.txt)|*.txt" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog = new SaveFileDialog();
+                dialog.SetSelectedFile(last_path);
+                dialog.Title = _( "Metatext for vConnect" );
+                dialog.Filter = string.Join("|", new[] { _( "Text File(*.txt)|*.txt" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( dialog, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file_name, ".txt" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
@@ -11649,24 +11480,23 @@ namespace cadencii
 
         public void menuFileExportWave_Click( Object sender, EventArgs e )
         {
-            int dialog_result = BFileChooser.CANCEL_OPTION;
+            var dialog_result = DialogResult.Cancel;
             String filename = "";
-            BFileChooser sfd = null;
+            SaveFileDialog sfd = null;
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "wav" );
 #if DEBUG
                 sout.println( "FormMain#menuFileExportWave_Click; last_path=" + last_path );
 #endif
-                sfd = new BFileChooser();
-                sfd.setSelectedFile( last_path );
-                sfd.setDialogTitle( _( "Wave Export" ) );
-                sfd.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
-                sfd.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                sfd = new SaveFileDialog();
+                sfd.SetSelectedFile(last_path);
+                sfd.Title = _( "Wave Export" );
+                sfd.Filter = string.Join("|", new[] { _( "Wave File(*.wav)|*.wav" ), _( "All Files(*.*)|*.*" ) });
                 dialog_result = AppManager.showModalDialog( sfd, false, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                filename = sfd.getSelectedFile();
+                filename = sfd.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( filename, ".wav" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
@@ -11746,20 +11576,20 @@ namespace cadencii
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
-            mDialogMidiImportAndExport.listTrack.clear();
+            mDialogMidiImportAndExport.listTrack.Items.Clear();
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
-            openMidiDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            openMidiDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
+            mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
             MidiFile mf = null;
             try {
-                String filename = openMidiDialog.getSelectedFile();
+                String filename = openMidiDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".mid" );
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
@@ -11807,12 +11637,12 @@ namespace cadencii
                         notes++;
                     }
                 }
-                mDialogMidiImportAndExport.listTrack.addRow(
+                mDialogMidiImportAndExport.listTrack.AddRow(
                     new String[] { i + "", track_name, notes + "" }, true );
             }
 
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr != BDialogResult.OK ) {
+            DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr != DialogResult.OK ) {
                 return;
             }
 
@@ -11977,14 +11807,14 @@ namespace cadencii
                 work.updateTimesigInfo();
             }
 
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                if ( !mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                     continue;
                 }
                 if ( vec.size( work.Track ) + 1 > AppManager.MAX_NUM_TRACK ) {
                     break;
                 }
-                VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.getItemAt( i, 1 ), "Miku" );
+                VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.Items[i].SubItems[1].Text, "Miku" );
 
                 // デフォルトの音声合成システムに切り替え
                 RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
@@ -12132,17 +11962,17 @@ namespace cadencii
 
         public void menuFileImportUst_Click( Object sender, EventArgs e )
         {
-            BFileChooser dialog = null;
+            OpenFileDialog dialog = null;
             try {
                 // 読み込むファイルを選ぶ
                 String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-                dialog = new BFileChooser();
-                dialog.setSelectedFile( dir );
-                int dialog_result = AppManager.showModalDialog( dialog, true, this );
-                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                dialog = new OpenFileDialog();
+                dialog.SetSelectedFile(dir);
+                var dialog_result = AppManager.showModalDialog( dialog, true, this );
+                if ( dialog_result != DialogResult.OK ) {
                     return;
                 }
-                String file = dialog.getSelectedFile();
+                String file = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( file, ".ust" );
 
                 // ustを読み込む
@@ -12248,14 +12078,14 @@ namespace cadencii
         public void menuFileImportVsq_Click( Object sender, EventArgs e )
         {
             String dir = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
-            openMidiDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            openMidiDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
             VsqFileEx vsq = null;
-            String filename = openMidiDialog.getSelectedFile();
+            String filename = openMidiDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( filename, ".vsq" );
             try {
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
@@ -12267,9 +12097,9 @@ namespace cadencii
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
-            mDialogMidiImportAndExport.listTrack.clear();
+            mDialogMidiImportAndExport.listTrack.Items.Clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                mDialogMidiImportAndExport.listTrack.addRow( new String[] {
+                mDialogMidiImportAndExport.listTrack.AddRow( new String[] {
                     track + "",
                     vsq.Track.get( track ).getName(),
                     vsq.Track.get( track ).getEventCount() + "" }, true );
@@ -12277,15 +12107,15 @@ namespace cadencii
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             mDialogMidiImportAndExport.setTempo( false );
             mDialogMidiImportAndExport.setTimesig( false );
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr != BDialogResult.OK ) {
+            mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
+            DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr != DialogResult.OK ) {
                 return;
             }
 
             Vector<Integer> add_track = new Vector<Integer>();
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
-                if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
+                if ( mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                     add_track.add( i + 1 );
                 }
             }
@@ -12404,15 +12234,15 @@ namespace cadencii
             }
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-            openUstDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
+            openUstDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
 
             try {
-                String filename = openUstDialog.getSelectedFile();
+                String filename = openUstDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".ust" );
 
                 // ust読み込み
@@ -12500,31 +12330,33 @@ namespace cadencii
                 return;
             }
 
-            String[] filters = openMidiDialog.getChoosableFileFilter();
-            String filter = "";
+            String[] filters = openMidiDialog.Filter.Split('|');
+            int filter_index = -1;
+            string filter = "";
             foreach ( String f in filters ) {
-                if ( f.EndsWith( AppManager.editorConfig.LastUsedExtension ) ) {
-                    filter = f;
+                ++filter_index;
+                if (f.EndsWith(AppManager.editorConfig.LastUsedExtension)) {
                     break;
                 }
             }
 
-            openMidiDialog.setFileFilter( filter );
+            openMidiDialog.FilterIndex = filter_index;
             String dir = AppManager.editorConfig.getLastUsedPathIn( filter );
-            openMidiDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            openMidiDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
             String ext = ".vsq";
-            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+            if ( dialog_result == System.Windows.Forms.DialogResult.OK ) {
 #if DEBUG
-                AppManager.debugWriteLine( "openMidiDialog.getFileFilter()=" + openMidiDialog.getFileFilter() );
+                AppManager.debugWriteLine( "openMidiDialog.Filter=" + openMidiDialog.Filter );
 #endif
-                if ( openMidiDialog.getFileFilter().EndsWith( ".mid" ) ) {
+                string selected_filter = openMidiDialog.SelectedFilter();
+                if ( selected_filter.EndsWith( ".mid" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".mid";
                     ext = ".mid";
-                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
+                } else if ( selected_filter.EndsWith( ".vsq" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".vsq";
                     ext = ".vsq";
-                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsqx" ) ) {
+                } else if ( selected_filter.EndsWith( ".vsqx" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".vsqx";
                     ext = ".vsqx";
                 }
@@ -12532,7 +12364,7 @@ namespace cadencii
                 return;
             }
             try {
-                String filename = openMidiDialog.getSelectedFile();
+                String filename = openMidiDialog.FileName;
                 String actualReadFile = filename;
                 bool isVsqx = str.endsWith( filename, ".vsqx" );
                 if ( isVsqx ) {
@@ -12582,9 +12414,9 @@ namespace cadencii
                 dlg.setDEMaccent( AppManager.editorConfig.DefaultDEMaccent );
 
                 int selected = AppManager.getSelected();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     AppManager.editorConfig.DefaultPMBendDepth = dlg.getPMBendDepth();
                     AppManager.editorConfig.DefaultPMBendLength = dlg.getPMBendLength();
                     AppManager.editorConfig.DefaultPMbPortamentoUse = dlg.getPMbPortamentoUse();
@@ -12618,7 +12450,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex2 + "\n" );
                     }
@@ -12641,9 +12473,9 @@ namespace cadencii
             FormGameControlerConfig dlg = null;
             try {
                 dlg = new FormGameControlerConfig();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     AppManager.editorConfig.GameControlerRectangle = dlg.getRectangle();
                     AppManager.editorConfig.GameControlerTriangle = dlg.getTriangle();
                     AppManager.editorConfig.GameControlerCircle = dlg.getCircle();
@@ -12664,7 +12496,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingGameControlerSetting_Click; ex=" + ex2 + "\n" );
                     }
@@ -12758,10 +12590,10 @@ namespace cadencii
                 String old_wine_prefix = AppManager.editorConfig.WinePrefix;
                 String old_wine_top = AppManager.editorConfig.getWineTop();
 
-                mDialogPreference.setLocation( getFormPreferedLocation( mDialogPreference ) );
+                mDialogPreference.Location = getFormPreferedLocation( mDialogPreference );
 
-                BDialogResult dr = AppManager.showModalDialog( mDialogPreference, this );
-                if ( dr == BDialogResult.OK ) {
+                DialogResult dr = AppManager.showModalDialog( mDialogPreference, this );
+                if ( dr == DialogResult.OK ) {
                     String old_base_font_name = AppManager.editorConfig.BaseFontName;
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
                     Font new_base_font = mDialogPreference.getBaseFont();
@@ -12807,7 +12639,7 @@ namespace cadencii
                     AppManager.editorConfig.ScrollHorizontalOnWheel = mDialogPreference.isScrollHorizontalOnWheel();
                     AppManager.editorConfig.MaximumFrameRate = mDialogPreference.getMaximumFrameRate();
                     int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
-                    timer.setDelay( (fps <= 0) ? 1 : fps );
+                    timer.Interval = (fps <= 0) ? 1 : fps;
                     applyShortcut();
                     AppManager.editorConfig.KeepLyricInputMode = mDialogPreference.isKeepLyricInputMode();
                     if ( AppManager.editorConfig.PxTrackHeight != mDialogPreference.getPxTrackHeight() ) {
@@ -12984,9 +12816,9 @@ namespace cadencii
                     AppManager.updateAutoBackupTimerStatus();
 
                     // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
-                    controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+                    controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
 
-                    if ( menuVisualControlTrack.isSelected() ) {
+                    if ( menuVisualControlTrack.Checked ) {
                         splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
                     }
 
@@ -13007,13 +12839,13 @@ namespace cadencii
 
         public void menuSettingShortcut_Click( Object sender, EventArgs e )
         {
-            TreeMap<String, ValuePair<String, BKeys[]>> dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            TreeMap<String, ValuePair<String, Keys[]>> dict = new TreeMap<String, ValuePair<String, Keys[]>>();
+            TreeMap<String, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
 #if DEBUG
             sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
             for( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ){
                 String name = itr.next();
-                BKeys[] keys = configured.get( name );
+                Keys[] keys = configured.get( name );
                 String disp = Utility.getShortcutDisplayString( keys );
                 sout.println( "    " + name + " -> " + disp );
             }
@@ -13021,15 +12853,13 @@ namespace cadencii
 
             // スクリプトのToolStripMenuITemを蒐集
             Vector<String> script_shortcut = new Vector<String>();
-            MenuElement[] sub_menu_script = menuScript.getSubElements();
-            for ( int i = 0; i < sub_menu_script.Length; i++ ) {
-                MenuElement tsi = sub_menu_script[i];
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    String name = tsmi.getName();
+            foreach (var tsi in menuScript.DropDownItems) {
+                if (tsi is System.Windows.Forms.ToolStripMenuItem) {
+                    var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    String name = tsmi.Name;
                     script_shortcut.add( name );
                     if ( !configured.containsKey( name ) ) {
-                        configured.put( name, new BKeys[] { } );
+                        configured.put( name, new Keys[] { } );
                     }
                 }
             }
@@ -13050,17 +12880,17 @@ namespace cadencii
                     casted_owner_item = (JMenuItem)owner.value;
                 }
 #else
-                BMenuItem casted_owner_item = null;
-                if ( owner.value is BMenuItem ) {
-                    casted_owner_item = (BMenuItem)owner.value;
+                ToolStripMenuItem casted_owner_item = null;
+                if (owner.value is ToolStripMenuItem) {
+                    casted_owner_item = (ToolStripMenuItem)owner.value;
                 }
 #endif
                 if ( casted_owner_item == null ) {
                     continue;
                 }
                 String parent = "";
-                if ( !casted_owner_item.getName().Equals( menuHidden.getName() ) ) {
-                    String s = casted_owner_item.getText();
+                if ( !casted_owner_item.Name.Equals( menuHidden.Name ) ) {
+                    String s = casted_owner_item.Text;
                     int i = s.IndexOf( "(&" );
                     if ( i > 0 ) {
                         s = str.sub( s, 0, i );
@@ -13073,40 +12903,40 @@ namespace cadencii
                     casted_menu = (JMenuItem)menu;
                 }
 #else
-                BMenuItem casted_menu = null;
-                if ( menu is BMenuItem ) {
-                    casted_menu = (BMenuItem)menu;
+                ToolStripMenuItem casted_menu = null;
+                if (menu is ToolStripMenuItem) {
+                    casted_menu = (ToolStripMenuItem)menu;
                 }
 #endif
                 if ( casted_menu == null ) {
                     continue;
                 }
-                String s1 = casted_menu.getText();
+                String s1 = casted_menu.Text;
                 int i1 = s1.IndexOf( "(&" );
                 if ( i1 > 0 ) {
                     s1 = str.sub( s1, 0, i1 );
                 }
-                dict.put( parent + s1, new ValuePair<String, BKeys[]>( name, configured.get( name ) ) );
+                dict.put( parent + s1, new ValuePair<String, Keys[]>( name, configured.get( name ) ) );
             }
 
             // 最初に戻る、のショートカットキー
-            BKeys[] keysGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
+            Keys[] keysGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
             if ( keysGoToFirst == null ) {
-                keysGoToFirst = new BKeys[] { };
+                keysGoToFirst = new Keys[] { };
             }
-            dict.put( _( "Go to the first" ), new ValuePair<String, BKeys[]>( "SpecialShortcutGoToFirst", keysGoToFirst ) );
+            dict.put( _( "Go to the first" ), new ValuePair<String, Keys[]>( "SpecialShortcutGoToFirst", keysGoToFirst ) );
 
             FormShortcutKeys form = null;
             try {
                 form = new FormShortcutKeys( dict, this );
-                form.setLocation( getFormPreferedLocation( form ) );
-                BDialogResult dr = AppManager.showModalDialog( form, this );
-                if ( dr == BDialogResult.OK ) {
-                    TreeMap<String, ValuePair<String, BKeys[]>> res = form.getResult();
+                form.Location = getFormPreferedLocation( form );
+                DialogResult dr = AppManager.showModalDialog( form, this );
+                if ( dr == DialogResult.OK ) {
+                    TreeMap<String, ValuePair<String, Keys[]>> res = form.getResult();
                     for ( Iterator<String> itr = res.keySet().iterator(); itr.hasNext(); ) {
                         String display = itr.next();
                         String name = res.get( display ).getKey();
-                        BKeys[] keys = res.get( display ).getValue();
+                        Keys[] keys = res.get( display ).getValue();
                         boolean found = false;
                         if ( name.Equals( "SpecialShortcutGoToFirst" ) ) {
                             AppManager.editorConfig.SpecialShortcutGoToFirst = keys;
@@ -13130,7 +12960,7 @@ namespace cadencii
             } finally {
                 if ( form != null ) {
                     try {
-                        form.close();
+                        form.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingSHortcut_Click; ex=" + ex2 + "\n" );
                     }
@@ -13143,9 +12973,9 @@ namespace cadencii
             FormVibratoPreset dialog = null;
             try {
                 dialog = new FormVibratoPreset( AppManager.editorConfig.AutoVibratoCustom );
-                dialog.setLocation( getFormPreferedLocation( dialog ) );
-                BDialogResult ret = AppManager.showModalDialog( dialog, this );
-                if ( ret != BDialogResult.OK ) {
+                dialog.Location = getFormPreferedLocation( dialog );
+                DialogResult ret = AppManager.showModalDialog( dialog, this );
+                if ( ret != DialogResult.OK ) {
                     return;
                 }
 
@@ -13221,7 +13051,7 @@ namespace cadencii
         public void menuEditAutoNormalizeMode_Click( Object sender, EventArgs e )
         {
             AppManager.mAutoNormalize = !AppManager.mAutoNormalize;
-            menuEditAutoNormalizeMode.setSelected( AppManager.mAutoNormalize );
+            menuEditAutoNormalizeMode.Checked = AppManager.mAutoNormalize;
         }
         #endregion
 
@@ -13229,7 +13059,7 @@ namespace cadencii
         #region menuLyric*
         public void menuLyric_DropDownOpening( Object sender, EventArgs e )
         {
-            menuLyricCopyVibratoToPreset.setEnabled( false );
+            menuLyricCopyVibratoToPreset.Enabled = false;
 
             int num = AppManager.itemSelection.getEventCount();
             if ( num <= 0 ) {
@@ -13243,7 +13073,7 @@ namespace cadencii
                 return;
             }
 
-            menuLyricCopyVibratoToPreset.setEnabled( true );
+            menuLyricCopyVibratoToPreset.Enabled = true;
         }
 
         public void menuLyricExpressionProperty_Click( Object sender, EventArgs e )
@@ -13301,7 +13131,7 @@ namespace cadencii
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void menuLyricApplyUtauParameters_Click( Object sender, BEventArgs e )
+        public void menuLyricApplyUtauParameters_Click( Object sender, EventArgs e )
         {
             // 選択されているトラックの番号
             int selected = AppManager.getSelected();
@@ -13341,8 +13171,8 @@ namespace cadencii
             FormWordDictionaryController dlg = null;
             try {
                 dlg = new FormWordDictionaryController();
-                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
-                dlg.setLocation( p.x, p.y );
+                var p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                dlg.setLocation(p.X, p.Y);
                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                 if ( dr == 1 ) {
                     Vector<ValuePair<String, Boolean>> result = dlg.getResult();
@@ -13378,7 +13208,7 @@ namespace cadencii
         public void menuJob_DropDownOpening( Object sender, EventArgs e )
         {
             if ( AppManager.itemSelection.getEventCount() <= 1 ) {
-                menuJobConnect.setEnabled( false );
+                menuJobConnect.Enabled = false;
             } else {
                 // menuJobConnect(音符の結合)がEnableされるかどうかは、選択されている音符がピアノロール上で連続かどうかで決まる
                 int[] list = new int[AppManager.itemSelection.getEventCount()];
@@ -13413,10 +13243,10 @@ namespace cadencii
                         break;
                     }
                 }
-                menuJobConnect.setEnabled( continued );
+                menuJobConnect.Enabled = continued;
             }
 
-            menuJobLyric.setEnabled( AppManager.itemSelection.getLastEvent() != null );
+            menuJobLyric.Enabled = AppManager.itemSelection.getLastEvent() != null;
         }
 
         public void menuJobLyric_Click( Object sender, EventArgs e )
@@ -13464,7 +13294,7 @@ namespace cadencii
                 VsqCommand.generateCommandEventChangeIDContaintsRange( AppManager.getSelected(), internalids, ids ) );
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
             setEdited( true );
-            repaint();
+            Refresh();
         }
 
         public void menuJobInsertBar_Click( Object sender, EventArgs e )
@@ -13482,9 +13312,9 @@ namespace cadencii
                 }
                 dlg.setPosition( draft );
 
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     int pos = dlg.getPosition() + AppManager.getVsqFile().getPreMeasure() - 1;
                     int length = dlg.getLength();
 
@@ -13579,14 +13409,14 @@ namespace cadencii
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
                     AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    repaint();
+                    Refresh();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuJobInsertBar_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobInsertBar_Click; ex=" + ex2 + "\n" );
                     }
@@ -13601,9 +13431,9 @@ namespace cadencii
                 dialog = new InputBox( _( "input pre-measure" ) );
                 int old_pre_measure = AppManager.getVsqFile().getPreMeasure();
                 dialog.setResult( old_pre_measure + "" );
-                dialog.setLocation( getFormPreferedLocation( dialog ) );
-                BDialogResult ret = AppManager.showModalDialog( dialog, this );
-                if ( ret == BDialogResult.OK ) {
+                dialog.Location = getFormPreferedLocation( dialog );
+                DialogResult ret = AppManager.showModalDialog( dialog, this );
+                if ( ret == DialogResult.OK ) {
                     String str_result = dialog.getResult();
                     int result = old_pre_measure;
                     try {
@@ -13630,7 +13460,7 @@ namespace cadencii
             } finally {
                 if ( dialog != null ) {
                     try {
-                        dialog.close();
+                        dialog.Close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -13652,8 +13482,8 @@ namespace cadencii
             dialog.setSampleRate( old_sample_rate );
             dialog.setPreMeasure( old_pre_measure );
 
-            dialog.setLocation( getFormPreferedLocation( dialog ) );
-            if ( AppManager.showModalDialog( dialog, this ) != BDialogResult.OK ) {
+            dialog.Location = getFormPreferedLocation( dialog );
+            if ( AppManager.showModalDialog( dialog, this ) != DialogResult.OK ) {
                 return;
             }
 
@@ -13688,9 +13518,9 @@ namespace cadencii
                 dlg.setStart( draft );
                 dlg.setEnd( draft + 1 );
 
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
                     int start = dlg.getStart() + AppManager.getVsqFile().getPreMeasure() - 1;
                     int end = dlg.getEnd() + AppManager.getVsqFile().getPreMeasure() - 1;
@@ -13766,14 +13596,14 @@ namespace cadencii
                     CadenciiCommand run = VsqFileEx.generateCommandReplace( temp );
                     AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
                     setEdited( true );
-                    repaint();
+                    Refresh();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuJobDeleteBar_Click; ex=" + ex + "\n" );
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobDeleteBar_Click; ex=" + ex2 + "\n" );
                     }
@@ -13842,9 +13672,9 @@ namespace cadencii
             FormRandomize dlg = null;
             try {
                 dlg = new FormRandomize();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                if ( dr == BDialogResult.OK ) {
+                dlg.Location = getFormPreferedLocation( dlg );
+                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                if ( dr == DialogResult.OK ) {
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int preMeasure = vsq.getPreMeasure();
                     int startBar = dlg.getStartBar() + (preMeasure - 1);
@@ -14063,7 +13893,7 @@ namespace cadencii
             } finally {
                 if ( dlg != null ) {
                     try {
-                        dlg.close();
+                        dlg.Close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex2 + "\n" );
                         serr.println( "FormMain#menuJobRandomize; ex2=" + ex2 );
@@ -14094,7 +13924,7 @@ namespace cadencii
 
         public void vScroll_ValueChanged( Object sender, EventArgs e )
         {
-            controller.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
+            controller.setStartToDrawY( calculateStartToDrawY( vScroll.Value ) );
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -14104,7 +13934,7 @@ namespace cadencii
 
         //BOOKMARK: waveView
         #region waveView
-        public void waveView_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void waveView_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
@@ -14118,7 +13948,7 @@ namespace cadencii
             }
         }
 
-        public void waveView_MouseDown( Object sender, BMouseEventArgs e )
+        public void waveView_MouseDown( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "waveView_MouseDown; isMiddleButtonDowned=" + isMouseMiddleButtonDowned( e.Button ) );
@@ -14126,27 +13956,27 @@ namespace cadencii
             if ( isMouseMiddleButtonDowned( e.Button ) ) {
                 mEditCurveMode = CurveEditMode.MIDDLE_DRAG;
                 mButtonInitial = new Point( e.X, e.Y );
-                mMiddleButtonHScroll = hScroll.getValue();
+                mMiddleButtonHScroll = hScroll.Value;
 #if !JAVA
                 this.Cursor = HAND;
 #endif
             }
         }
 
-        public void waveView_MouseUp( Object sender, BMouseEventArgs e )
+        public void waveView_MouseUp( Object sender, MouseEventArgs e )
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
             }
         }
 
-        public void waveView_MouseMove( Object sender, BMouseEventArgs e )
+        public void waveView_MouseMove( Object sender, MouseEventArgs e )
         {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 int draft = computeHScrollValueForMiddleDrag( e.X );
-                if ( hScroll.getValue() != draft ) {
-                    hScroll.setValue( draft );
+                if ( hScroll.Value != draft ) {
+                    hScroll.Value = draft;
                 }
             }
         }
@@ -14161,7 +13991,7 @@ namespace cadencii
 
         public void hScroll_Resize( Object sender, EventArgs e )
         {
-            if ( getExtendedState() != BForm.ICONIFIED ) {
+            if ( this.WindowState != FormWindowState.Minimized ) {
                 updateScrollRangeHorizontal();
             }
         }
@@ -14179,15 +14009,15 @@ namespace cadencii
 
         //BOOKMARK: picturePositionIndicator
         #region picturePositionIndicator
-        public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseWheel( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#picturePositionIndicator_MouseWheel" );
 #endif
-            hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+            hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
         }
 
-        public void picturePositionIndicator_MouseClick( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Right && 0 < e.Y && e.Y <= 18 && AppManager.keyWidth < e.X ) {
                 // クリックされた位置でのクロックを保存
@@ -14198,13 +14028,13 @@ namespace cadencii
                     clock = 0;
                 }
                 mPositionIndicatorPopupShownClock = clock;
-                cMenuPositionIndicator.show( picturePositionIndicator, e.X, e.Y );
+                cMenuPositionIndicator.Show( picturePositionIndicator, e.X, e.Y );
             }
         }
 
-        public void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
-            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || this.Width - 3 < e.X ) {
                 return;
             }
             if ( e.Button == BMouseButtons.Left ) {
@@ -14265,9 +14095,9 @@ namespace cadencii
                                 FormTempoConfig dlg = null;
                                 try {
                                     dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (float)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
-                                    dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                    if ( dr == BDialogResult.OK ) {
+                                    dlg.Location = getFormPreferedLocation( dlg );
+                                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                    if ( dr == DialogResult.OK ) {
                                         int new_beat = dlg.getBeatCount();
                                         int new_clocks_in_beat = dlg.getClock();
                                         int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
@@ -14283,7 +14113,7 @@ namespace cadencii
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
-                                            dlg.close();
+                                            dlg.Close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                             serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex2=" + ex2 );
@@ -14336,9 +14166,9 @@ namespace cadencii
                                                            clock_per_beat,
                                                            (float)(6e7 / changing_tempo),
                                                            vsq.getPreMeasure() );
-                                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                                BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                                if ( dr == BDialogResult.OK ) {
+                                dlg.Location = getFormPreferedLocation( dlg );
+                                DialogResult dr = AppManager.showModalDialog( dlg, this );
+                                if ( dr == DialogResult.OK ) {
                                     int new_beat = dlg.getBeatCount();
                                     int new_clocks_in_beat = dlg.getClock();
                                     int new_clock = bar_top_clock + (new_beat - 1) * clock_per_beat + new_clocks_in_beat;
@@ -14359,7 +14189,7 @@ namespace cadencii
                             } finally {
                                 if ( dlg != null ) {
                                     try {
-                                        dlg.close();
+                                        dlg.Close();
                                     } catch ( Exception ex2 ) {
                                         Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
                                     }
@@ -14370,7 +14200,7 @@ namespace cadencii
                     }
                     mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
                     #endregion
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
                     #region 拍子の変更
                     AppManager.itemSelection.clearEvent();
                     AppManager.itemSelection.clearTempo();
@@ -14414,8 +14244,8 @@ namespace cadencii
                             FormBeatConfigController dlg = null;
                             try {
                                 dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
-                                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
-                                dlg.setLocation( p.x, p.y );
+                                var p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                                dlg.setLocation( p.X, p.Y );
                                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                                 if ( dr == 1 ) {
                                     if ( dlg.isEndSpecified() ) {
@@ -14488,8 +14318,8 @@ namespace cadencii
                             FormBeatConfigController dlg = null;
                             try {
                                 dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
-                                Point p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
-                                dlg.setLocation( p.x, p.y );
+                                var p = getFormPreferedLocation( dlg.getWidth(), dlg.getHeight() );
+                                dlg.setLocation( p.X, p.Y );
                                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                                 if ( dr == 1 ) {
                                     if ( dlg.isEndSpecified() ) {
@@ -14538,14 +14368,14 @@ namespace cadencii
                     mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
                     #endregion
                 }
-                picturePositionIndicator.repaint();
-                pictPianoRoll.repaint();
+                picturePositionIndicator.Refresh();
+                pictPianoRoll.Refresh();
             }
         }
 
-        public void picturePositionIndicator_MouseDown( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseDown( Object sender, MouseEventArgs e )
         {
-            if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
+            if ( e.X < AppManager.keyWidth || this.Width - 3 < e.X ) {
                 return;
             }
 
@@ -14596,7 +14426,7 @@ namespace cadencii
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( x < 0 ) {
                             continue;
-                        } else if ( getWidth() < x ) {
+                        } else if ( this.Width < x ) {
                             break;
                         }
                         String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
@@ -14651,7 +14481,7 @@ namespace cadencii
                         AppManager.itemSelection.clearTimesig();
                     }
                     #endregion
-                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
                     #region 拍子
                     // クリック位置に拍子が表示されているかどうか検査
                     int index = -1;
@@ -14715,7 +14545,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseUp( Object sender, MouseEventArgs e )
         {
             int modifiers = PortUtil.getCurrentModifierKey();
 #if DEBUG
@@ -14783,7 +14613,7 @@ namespace cadencii
                         }
                         mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
                         #endregion
-                    } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.getHeight() - 1 ) {
+                    } else if ( 32 < e.Y && e.Y <= picturePositionIndicator.Height - 1 ) {
                         #region 拍子の変更
                         AppManager.itemSelection.clearEvent();
                         AppManager.itemSelection.clearTempo();
@@ -14885,11 +14715,11 @@ namespace cadencii
                 }
             }
             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
-            pictPianoRoll.repaint();
-            picturePositionIndicator.repaint();
+            pictPianoRoll.Refresh();
+            picturePositionIndicator.Refresh();
         }
 
-        public void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e )
+        public void picturePositionIndicator_MouseMove( Object sender, MouseEventArgs e )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TEMPO ) {
@@ -14903,7 +14733,7 @@ namespace cadencii
                     int key = item.getKey();
                     AppManager.itemSelection.getTempo( key ).editing.Clock = AppManager.itemSelection.getTempo( key ).original.Clock + dclock;
                 }
-                picturePositionIndicator.repaint();
+                picturePositionIndicator.Refresh();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TIMESIG ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - mTimesigDraggingDeltaClock;
                 int barcount = vsq.getBarCountFromClock( clock );
@@ -14914,7 +14744,7 @@ namespace cadencii
                     int bar = item.getKey();
                     AppManager.itemSelection.getTimesig( bar ).editing.BarCount = AppManager.itemSelection.getTimesig( bar ).original.BarCount + dbarcount;
                 }
-                picturePositionIndicator.repaint();
+                picturePositionIndicator.Refresh();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.MARK_START ) {
                 int clock = AppManager.clockFromXCoord( e.X );
                 int unit = AppManager.getPositionQuantizeClock();
@@ -14954,7 +14784,7 @@ namespace cadencii
             }
         }
 
-        public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e )
+        public void picturePositionIndicator_Paint( Object sender, PaintEventArgs e )
         {
 #if JAVA
             Graphics g = e.Graphics;
@@ -14969,13 +14799,9 @@ namespace cadencii
 #endif
         }
 
-        public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void picturePositionIndicator_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
-#if JAVA
-            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
         }
         #endregion
@@ -14989,10 +14815,10 @@ namespace cadencii
 
         public void trackBar_ValueChanged( Object sender, EventArgs e )
         {
-            controller.setScaleX( getScaleXFromTrackBarValue( trackBar.getValue() ) );
+            controller.setScaleX( getScaleXFromTrackBarValue( trackBar.Value ) );
             controller.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
-            repaint();
+            Refresh();
         }
         #endregion
 
@@ -15016,7 +14842,7 @@ namespace cadencii
             if ( mVersionInfo == null ) {
                 mVersionInfo = new VersionInfo( _APP_NAME, version_str );
                 mVersionInfo.setAuthorList( _CREDIT );
-                mVersionInfo.setVisible( true );
+                mVersionInfo.Show();
             } else {
 #if !JAVA
                 if ( mVersionInfo.IsDisposed ) {
@@ -15024,7 +14850,7 @@ namespace cadencii
                     mVersionInfo.setAuthorList( _CREDIT );
                 }
 #endif
-                mVersionInfo.setVisible( true );
+                mVersionInfo.Show();
             }
         }
 
@@ -15040,7 +14866,7 @@ namespace cadencii
 #endif
         }
 
-        public void menuHelpManual_Click( Object sender, BEventArgs e )
+        public void menuHelpManual_Click( Object sender, EventArgs e )
         {
             // 現在のUI言語と同じ版のマニュアルファイルがあるかどうか探す
             String lang = Messaging.getLanguage();
@@ -15071,11 +14897,11 @@ namespace cadencii
 
         public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e )
         {
-            Logger.setEnabled( menuHelpLogSwitch.isSelected() );
-            if ( menuHelpLogSwitch.isSelected() ) {
-                menuHelpLogSwitch.setText( _( "Enabled" ) );
+            Logger.setEnabled( menuHelpLogSwitch.Checked );
+            if ( menuHelpLogSwitch.Checked ) {
+                menuHelpLogSwitch.Text = _( "Enabled" );
             } else {
-                menuHelpLogSwitch.setText( _( "Disabled" ) );
+                menuHelpLogSwitch.Text = _( "Disabled" );
             }
         }
 
@@ -15117,20 +14943,20 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void trackSelector_MouseClick( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Right ) {
                 if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() ) {
                     if ( trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.getHeight() ) {
-                        cMenuTrackTab.show( trackSelector, e.X, e.Y );
+                        cMenuTrackTab.Show( trackSelector, e.X, e.Y );
                     } else {
-                        cMenuTrackSelector.show( trackSelector, e.X, e.Y );
+                        cMenuTrackSelector.Show( trackSelector, e.X, e.Y );
                     }
                 }
             }
         }
 
-        public void trackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
@@ -15145,14 +14971,14 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseDown( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseDown( Object sender, MouseEventArgs e )
         {
             if ( AppManager.keyWidth < e.X ) {
                 mMouseDownedTrackSelector = true;
                 if ( isMouseMiddleButtonDowned( e.Button ) ) {
                     mEditCurveMode = CurveEditMode.MIDDLE_DRAG;
                     mButtonInitial = new Point( e.X, e.Y );
-                    mMiddleButtonHScroll = hScroll.getValue();
+                    mMiddleButtonHScroll = hScroll.Value;
 #if !JAVA
                     this.Cursor = HAND;
 #endif
@@ -15160,13 +14986,13 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_MouseMove( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseMove( Object sender, MouseEventArgs e )
         {
             if ( mFormActivated && AppManager.mInputTextBox != null ){
 #if JAVA
                 boolean input_visible = AppManager.mInputTextBox.isVisible();
 #else
-                boolean input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.isVisible();
+                boolean input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.Visible;
 #endif
 #if ENABLE_PROPERTY
                 boolean prop_editing = AppManager.propertyPanel.isEditing();
@@ -15178,7 +15004,7 @@ namespace cadencii
                 }
             }
             if ( e.Button == BMouseButtons.None ) {
-                if ( !timer.isRunning() ) {
+                if ( !timer.Enabled ) {
                     refreshScreen( true );
                 }
                 return;
@@ -15190,8 +15016,8 @@ namespace cadencii
                 }
 
                 int draft = computeHScrollValueForMiddleDrag( e.X );
-                if ( hScroll.getValue() != draft ) {
-                    hScroll.setValue( draft );
+                if ( hScroll.Value != draft ) {
+                    hScroll.Value = draft;
                 }
             } else {
                 if ( mMouseDownedTrackSelector ) {
@@ -15222,59 +15048,59 @@ namespace cadencii
                     if ( mExtDragXTrackSelector == ExtDragXMode.LEFT ) {
                         px_move *= -1;
                     }
-                    double d_draft = hScroll.getValue() + px_move * controller.getScaleXInv();
+                    double d_draft = hScroll.Value + px_move * controller.getScaleXInv();
                     if ( d_draft < 0.0 ) {
                         d_draft = 0.0;
                     }
                     int draft = (int)d_draft;
-                    if ( hScroll.getMaximum() < draft ) {
-                        hScroll.setMaximum( draft );
+                    if ( hScroll.Maximum < draft ) {
+                        hScroll.Maximum = draft;
                     }
-                    if ( draft < hScroll.getMinimum() ) {
-                        draft = hScroll.getMinimum();
+                    if ( draft < hScroll.Minimum ) {
+                        draft = hScroll.Minimum;
                     }
-                    hScroll.setValue( draft );
+                    hScroll.Value = draft;
                 }
             }
-            if ( !timer.isRunning() ) {
+            if ( !timer.Enabled ) {
                 refreshScreen( true );
             }
         }
 
-        public void trackSelector_MouseUp( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseUp( Object sender, MouseEventArgs e )
         {
             mMouseDownedTrackSelector = false;
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
-                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
+                this.Cursor = Cursors.Default;
             }
         }
 
-        public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e )
+        public void trackSelector_MouseWheel( Object sender, MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#trackSelector_MouseWheel" );
 #endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                double new_val = (double)vScroll.getValue() - e.Delta;
-                int max = vScroll.getMaximum() - vScroll.getMinimum();
-                int min = vScroll.getMinimum();
+                double new_val = (double)vScroll.Value - e.Delta;
+                int max = vScroll.Maximum - vScroll.Minimum;
+                int min = vScroll.Minimum;
                 if ( new_val > max ) {
-                    vScroll.setValue( max );
+                    vScroll.Value = max;
                 } else if ( new_val < min ) {
-                    vScroll.setValue( min );
+                    vScroll.Value = min;
                 } else {
-                    vScroll.setValue( (int)new_val );
+                    vScroll.Value = (int)new_val;
                 }
             } else {
-                hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             }
             refreshScreen();
         }
 
         public void trackSelector_PreferredMinHeightChanged( Object sender, EventArgs e )
         {
-            if ( menuVisualControlTrack.isSelected() ) {
+            if ( menuVisualControlTrack.Checked ) {
                 splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
 #if DEBUG
                 sout.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
@@ -15282,13 +15108,9 @@ namespace cadencii
             }
         }
 
-        public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void trackSelector_PreviewKeyDown( Object sender, PreviewKeyDownEventArgs e )
         {
-#if JAVA
-            BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
-#else
-            BKeyEventArgs e0 = new BKeyEventArgs( e.KeyData );
-#endif
+            KeyEventArgs e0 = new KeyEventArgs( e.KeyData );
             processSpecialShortcutKey( e0, true );
         }
 
@@ -15376,8 +15198,8 @@ namespace cadencii
                     dlg.setPMbPortamentoUse( original.ID.PMbPortamentoUse );
                     dlg.setDEMdecGainRate( original.ID.DEMdecGainRate );
                     dlg.setDEMaccent( original.ID.DEMaccent );
-                    BDialogResult dr = AppManager.showModalDialog( dlg, this );
-                    if ( dr == BDialogResult.OK ) {
+                    DialogResult dr = AppManager.showModalDialog( dlg, this );
+                    if ( dr == DialogResult.OK ) {
                         VsqID copy = (VsqID)original.ID.clone();
                         copy.PMBendDepth = dlg.getPMBendDepth();
                         copy.PMBendLength = dlg.getPMBendLength();
@@ -15395,7 +15217,7 @@ namespace cadencii
                 } finally {
                     if ( dlg != null ) {
                         try {
-                            dlg.close();
+                            dlg.Close();
                         } catch ( Exception ex2 ) {
                             Logger.write( typeof( FormMain ) + ".cMenuPianoExpression_Click; ex=" + ex2 + "\n" );
                         }
@@ -15422,7 +15244,7 @@ namespace cadencii
         public void cMenuPianoGrid_Click( Object sender, EventArgs e )
         {
             boolean new_v = !AppManager.isGridVisible();
-            cMenuPianoGrid.setSelected( new_v );
+            cMenuPianoGrid.Checked = new_v;
             AppManager.setGridVisible( new_v );
         }
 
@@ -15454,7 +15276,7 @@ namespace cadencii
         public void cMenuPiano_Opening( Object sender, BCancelEventArgs e )
         {
             updateCopyAndPasteButtonStatus();
-            cMenuPianoImportLyric.setEnabled( AppManager.itemSelection.getLastEvent() != null );
+            cMenuPianoImportLyric.Enabled = AppManager.itemSelection.getLastEvent() != null;
         }
 
         public void cMenuPianoSelectAll_Click( Object sender, EventArgs e )
@@ -15861,32 +15683,32 @@ namespace cadencii
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
             int tracks = vsq.Track.size();
-            cMenuTrackTabDelete.setEnabled( tracks >= 3 );
-            menuTrackDelete.setEnabled( tracks >= 3 );
-            cMenuTrackTabAdd.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
-            menuTrackAdd.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
-            cMenuTrackTabCopy.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
-            menuTrackCopy.setEnabled( tracks <= AppManager.MAX_NUM_TRACK );
+            cMenuTrackTabDelete.Enabled = tracks >= 3;
+            menuTrackDelete.Enabled = tracks >= 3;
+            cMenuTrackTabAdd.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
+            menuTrackAdd.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
+            cMenuTrackTabCopy.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
+            menuTrackCopy.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
 
             boolean on = vsq_track.isTrackOn();
-            cMenuTrackTabTrackOn.setSelected( on );
-            menuTrackOn.setSelected( on );
+            cMenuTrackTabTrackOn.Checked = on;
+            menuTrackOn.Checked = on;
 
             if ( tracks > 2 ) {
-                cMenuTrackTabOverlay.setEnabled( true );
-                menuTrackOverlay.setEnabled( true );
-                cMenuTrackTabOverlay.setSelected( AppManager.isOverlay() );
-                menuTrackOverlay.setSelected( AppManager.isOverlay() );
+                cMenuTrackTabOverlay.Enabled = true;
+                menuTrackOverlay.Enabled = true;
+                cMenuTrackTabOverlay.Checked = AppManager.isOverlay();
+                menuTrackOverlay.Checked = AppManager.isOverlay();
             } else {
-                cMenuTrackTabOverlay.setEnabled( false );
-                menuTrackOverlay.setEnabled( false );
-                cMenuTrackTabOverlay.setSelected( false );
-                menuTrackOverlay.setSelected( false );
+                cMenuTrackTabOverlay.Enabled = false;
+                menuTrackOverlay.Enabled = false;
+                cMenuTrackTabOverlay.Checked = false;
+                menuTrackOverlay.Checked = false;
             }
-            cMenuTrackTabRenderCurrent.setEnabled( !AppManager.isPlaying() );
-            menuTrackRenderCurrent.setEnabled( !AppManager.isPlaying() );
-            cMenuTrackTabRenderAll.setEnabled( !AppManager.isPlaying() );
-            menuTrackRenderAll.setEnabled( !AppManager.isPlaying() );
+            cMenuTrackTabRenderCurrent.Enabled = !AppManager.isPlaying();
+            menuTrackRenderCurrent.Enabled = !AppManager.isPlaying();
+            cMenuTrackTabRenderAll.Enabled = !AppManager.isPlaying();
+            menuTrackRenderAll.Enabled = !AppManager.isPlaying();
 
             var kind = VsqFileEx.getTrackRendererKind( vsq_track );
             renderer_menu_handler_.ForEach( ( handler ) => handler.updateCheckedState( kind ) );
@@ -15921,9 +15743,9 @@ namespace cadencii
             if ( vsq.config.EndMarker < clock ) {
                 vsq.config.EndMarker = clock;
             }
-            menuVisualStartMarker.setSelected( true );
+            menuVisualStartMarker.Checked = true;
             setEdited( true );
-            picturePositionIndicator.repaint();
+            picturePositionIndicator.Refresh();
         }
 
         public void cMenuPositionIndicatorEndMarker_Click( Object sender, EventArgs e )
@@ -15935,9 +15757,9 @@ namespace cadencii
             if ( vsq.config.StartMarker > clock ) {
                 vsq.config.StartMarker = clock;
             }
-            menuVisualEndMarker.setSelected( true );
+            menuVisualEndMarker.Checked = true;
             setEdited( true );
-            picturePositionIndicator.repaint();
+            picturePositionIndicator.Refresh();
         }
         #endregion
 
@@ -15948,21 +15770,21 @@ namespace cadencii
             updateCopyAndPasteButtonStatus();
 
             // 選択ツールの状態に合わせて表示を更新
-            cMenuTrackSelectorPointer.setSelected( false );
-            cMenuTrackSelectorPencil.setSelected( false );
-            cMenuTrackSelectorLine.setSelected( false );
-            cMenuTrackSelectorEraser.setSelected( false );
+            cMenuTrackSelectorPointer.Checked = false;
+            cMenuTrackSelectorPencil.Checked = false;
+            cMenuTrackSelectorLine.Checked = false;
+            cMenuTrackSelectorEraser.Checked = false;
             EditTool tool = AppManager.getSelectedTool();
             if ( tool == EditTool.ARROW ) {
-                cMenuTrackSelectorPointer.setSelected( true );
+                cMenuTrackSelectorPointer.Checked = true;
             } else if ( tool == EditTool.PENCIL ) {
-                cMenuTrackSelectorPencil.setSelected( true );
+                cMenuTrackSelectorPencil.Checked = true;
             } else if ( tool == EditTool.LINE ) {
-                cMenuTrackSelectorLine.setSelected( true );
+                cMenuTrackSelectorLine.Checked = true;
             } else if ( tool == EditTool.ERASER ) {
-                cMenuTrackSelectorEraser.setSelected( true );
+                cMenuTrackSelectorEraser.Checked = true;
             }
-            cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
+            cMenuTrackSelectorCurve.Checked = AppManager.isCurveMode();
         }
 
         public void cMenuTrackSelectorPointer_Click( Object sender, EventArgs e )
@@ -16076,12 +15898,12 @@ namespace cadencii
         #endregion
 
         #region buttonVZoom & buttonVMooz
-        public void buttonVZoom_Click( Object sender, BEventArgs e )
+        public void buttonVZoom_Click( Object sender, EventArgs e )
         {
             zoomY( 1 );
         }
 
-        public void buttonVMooz_Click( Object sender, BEventArgs e )
+        public void buttonVMooz_Click( Object sender, EventArgs e )
         {
             zoomY( -1 );
         }
@@ -16089,14 +15911,14 @@ namespace cadencii
 
         #region pictureBox2
 #if !JAVA
-        public void pictureBox2_Paint( Object sender, BPaintEventArgs e )
+        public void pictureBox2_Paint( Object sender, PaintEventArgs e )
         {
             if ( mGraphicsPictureBox2 == null ) {
                 mGraphicsPictureBox2 = new Graphics2D( null );
             }
             mGraphicsPictureBox2.nativeGraphics = e.Graphics;
-            int width = pictureBox2.getWidth();
-            int height = pictureBox2.getHeight();
+            int width = pictureBox2.Width;
+            int height = pictureBox2.Height;
             int unit_height = height / 4;
             mGraphicsPictureBox2.setColor( mColorR214G214B214 );
             mGraphicsPictureBox2.fillRect( 0, 0, width, height );
@@ -16125,11 +15947,11 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e )
+        public void pictureBox2_MouseDown( Object sender, MouseEventArgs e )
         {
             // 拡大・縮小ボタンが押されたかどうか判定
-            int height = pictureBox2.getHeight();
-            int width = pictureBox2.getWidth();
+            int height = pictureBox2.Height;
+            int width = pictureBox2.Width;
             int height4 = height / 4;
             if ( 0 <= e.X && e.X < width ) {
                 int scaley = AppManager.editorConfig.PianoRollScaleY;
@@ -16158,10 +15980,10 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public void pictureBox2_MouseUp( Object sender, BMouseEventArgs e )
+        public void pictureBox2_MouseUp( Object sender, MouseEventArgs e )
         {
             mPianoRollScaleYMouseStatus = 0;
-            pictureBox2.invalidate();
+            pictureBox2.Invalidate();
         }
 #endif
         #endregion
@@ -16259,7 +16081,7 @@ namespace cadencii
         public void stripBtnStop_Click( Object sender, EventArgs e )
         {
             AppManager.setPlaying( false, this );
-            timer.stop();
+            timer.Stop();
             focusPianoRoll();
         }
 
@@ -16296,7 +16118,7 @@ namespace cadencii
 
         //BOOKMARK: pictKeyLengthSplitter
         #region pictKeyLengthSplitter
-        public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e )
+        public void pictKeyLengthSplitter_MouseDown( Object sender, MouseEventArgs e )
         {
             mKeyLengthSplitterMouseDowned = true;
             mKeyLengthSplitterInitialMouse = PortUtil.getMousePosition();
@@ -16305,7 +16127,7 @@ namespace cadencii
             mKeyLengthSplitterDistance = splitContainer1.getDividerLocation();
         }
 
-        public void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e )
+        public void pictKeyLengthSplitter_MouseMove( Object sender, MouseEventArgs e )
         {
             if ( !mKeyLengthSplitterMouseDowned ) {
                 return;
@@ -16331,7 +16153,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e )
+        public void pictKeyLengthSplitter_MouseUp( Object sender, MouseEventArgs e )
         {
             mKeyLengthSplitterMouseDowned = false;
         }
@@ -16568,7 +16390,7 @@ namespace cadencii
 #if JAVA
                 refreshScreenCore( this, new EventArgs() );
 #else
-                this.Invoke( new BEventHandler( this.refreshScreenCore ) );
+                this.Invoke( new EventHandler( this.refreshScreenCore ) );
 #endif
             } catch ( Exception ex ) {
                 serr.println( "FormMain#bgWorkScreen_DoWork; ex=" + ex );
@@ -16600,12 +16422,12 @@ namespace cadencii
 
         public void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e )
         {
-            if ( getExtendedState() == BForm.ICONIFIED ) {
+            if ( this.WindowState == FormWindowState.Minimized ) {
                 return;
             }
             Dimension minsize = getWindowMinimumSize();
-            int wid = getWidth();
-            int hei = getHeight();
+            int wid = this.Width;
+            int hei = this.Height;
             boolean change_size_required = false;
             if ( minsize.width > wid ) {
                 wid = minsize.width;
@@ -16615,9 +16437,10 @@ namespace cadencii
                 hei = minsize.height;
                 change_size_required = true;
             }
-            setMinimumSize( getWindowMinimumSize() );
+            var min_size = getWindowMinimumSize();
+            this.MinimumSize = new System.Drawing.Size(min_size.width, min_size.height);
             if ( change_size_required ) {
-                setSize( wid, hei );
+                this.Size = new System.Drawing.Size( wid, hei );
             }
         }
 
@@ -16662,13 +16485,13 @@ namespace cadencii
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
                     tsb.Pushed = true;
                 }
-            } else if ( sender is BMenuItem ) {
-                BMenuItem tsmi = (BMenuItem)sender;
-                if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                    id = (String)tsmi.getTag();
+            } else if (sender is ToolStripMenuItem) {
+                ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+                if ( tsmi.Tag != null && tsmi.Tag is String ) {
+                    id = (String)tsmi.Tag;
                     AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
-                    tsmi.setSelected( true );
+                    tsmi.Checked = true;
                 }
             }
 #endif
@@ -16708,23 +16531,22 @@ namespace cadencii
 #endif
             }
 
-            MenuElement[] sub_cmenu_piano_palette_tool = cMenuPianoPaletteTool.getSubElements();
-            for ( int i = 0; i < sub_cmenu_piano_palette_tool.Length; i++ ) {
-                MenuElement item = sub_cmenu_piano_palette_tool[i];
+            foreach (var item in cMenuPianoPaletteTool.DropDownItems) {
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
                     String tagged_id = menu.getPaletteToolID();
-                    menu.setSelected( str.compare( id, tagged_id ) );
+                    menu.Checked = str.compare( id, tagged_id );
                 }
             }
 
-            MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
-            for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
-                MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
+            //MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
+            //for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
+                //MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
+            foreach (var item in cMenuTrackSelectorPaletteTool.DropDownItems) {
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
                     String tagged_id = menu.getPaletteToolID();
-                    menu.setSelected( str.compare( id, tagged_id ) );
+                    menu.Checked = str.compare( id, tagged_id );
                 }
             }
         }
@@ -16742,8 +16564,8 @@ namespace cadencii
                     new_status ? last_play_mode : PlayMode.Off,
                     last_play_mode ) );
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
-            menuTrackOn.setSelected( new_status );
-            cMenuTrackTabTrackOn.setSelected( new_status );
+            menuTrackOn.Checked = new_status;
+            cMenuTrackTabTrackOn.Checked = new_status;
             setEdited( true );
             refreshScreen();
         }
@@ -16788,11 +16610,11 @@ namespace cadencii
                 String last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
                 if ( !last_file.Equals( "" ) ) {
                     String dir = PortUtil.getDirectoryName( last_file );
-                    saveXmlVsqDialog.setSelectedFile( dir );
+                    saveXmlVsqDialog.SetSelectedFile(dir);
                 }
-                int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
-                if ( dr == BFileChooser.APPROVE_OPTION ) {
-                    file = saveXmlVsqDialog.getSelectedFile();
+                var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
+                if ( dr == System.Windows.Forms.DialogResult.OK ) {
+                    file = saveXmlVsqDialog.FileName;
                     AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 }
             }
@@ -16809,15 +16631,15 @@ namespace cadencii
                 return;
             }
             String dir = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
-            openXmlVsqDialog.setSelectedFile( dir );
-            int dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+            openXmlVsqDialog.SetSelectedFile(dir);
+            var dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
+            if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false, this );
             }
-            String file = openXmlVsqDialog.getSelectedFile();
+            String file = openXmlVsqDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( file, ".xvsq" );
             if( openVsqCor( file ) ){
                 AppManager.showMessageBox(
@@ -16951,7 +16773,7 @@ namespace cadencii
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             vsq.config.StartMarkerEnabled = !vsq.config.StartMarkerEnabled;
-            menuVisualStartMarker.setSelected( vsq.config.StartMarkerEnabled );
+            menuVisualStartMarker.Checked = vsq.config.StartMarkerEnabled;
             setEdited( true );
             focusPianoRoll();
             refreshScreen();
@@ -16964,7 +16786,7 @@ namespace cadencii
 #if !JAVA
             stripBtnEndMarker.Pushed = vsq.config.EndMarkerEnabled;
 #endif
-            menuVisualEndMarker.setSelected( vsq.config.EndMarkerEnabled );
+            menuVisualEndMarker.Checked = vsq.config.EndMarkerEnabled;
             setEdited( true );
             focusPianoRoll();
             refreshScreen();
@@ -17152,9 +16974,9 @@ namespace cadencii
             }
 
 #if DEBUG && !JAVA
-            if ( notfound && sender is BMenuItem ) {
-                BMenuItem item = (BMenuItem)sender;
-                Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
+            if ( notfound && sender is ToolStripMenuItem ) {
+                ToolStripMenuItem item = (ToolStripMenuItem)sender;
+                Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.Name + "\n" );
             }
 #endif
 #if JAVA
@@ -17164,24 +16986,16 @@ namespace cadencii
 #endif
         }
 
-        public void handleSpaceKeyDown( Object sender, BKeyEventArgs e )
+        public void handleSpaceKeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space ) {
-#endif
                 mSpacekeyDowned = true;
             }
         }
 
-        public void handleSpaceKeyUp( Object sender, BKeyEventArgs e )
+        public void handleSpaceKeyUp( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space ) {
-#endif
                 mSpacekeyDowned = false;
             }
         }
@@ -17264,10 +17078,10 @@ namespace cadencii
             InputBox ib = null;
             try {
                 ib = new InputBox( _( "Input Offset Seconds" ) );
-                ib.setLocation( getFormPreferedLocation( ib ) );
+                ib.Location = getFormPreferedLocation( ib );
                 ib.setResult( AppManager.getBgm( index ).readOffsetSeconds + "" );
-                BDialogResult dr = AppManager.showModalDialog( ib, this );
-                if ( dr != BDialogResult.OK ) {
+                DialogResult dr = AppManager.showModalDialog( ib, this );
+                if ( dr != DialogResult.OK ) {
                     return;
                 }
                 Vector<BgmFile> list = new Vector<BgmFile>();
@@ -17285,7 +17099,7 @@ namespace cadencii
                 try {
                     draft = str.tof( ib.getResult() );
                     item.readOffsetSeconds = draft;
-                    menu.setToolTipText( draft + " " + _( "seconds" ) );
+                    menu.ToolTipText = draft + " " + _( "seconds" );
                 } catch ( Exception ex3 ) {
                     Logger.write( typeof( FormMain ) + ".handleBgmOffsetSeconds_Click; ex=" + ex3 + "\n" );
                 }
@@ -17319,7 +17133,7 @@ namespace cadencii
             for ( int i = 0; i < count; i++ ) {
                 if ( i == index ) {
                     BgmFile item = (BgmFile)AppManager.getBgm( i ).clone();
-                    item.startAfterPremeasure = menu.isSelected();
+                    item.startAfterPremeasure = menu.Checked;
                     list.add( item );
                 } else {
                     list.add( AppManager.getBgm( i ) );
@@ -17333,13 +17147,13 @@ namespace cadencii
         public void handleBgmAdd_Click( Object sender, EventArgs e )
         {
             String dir = AppManager.editorConfig.getLastUsedPathIn( "wav" );
-            openWaveDialog.setSelectedFile( dir );
-            int ret = AppManager.showModalDialog( openWaveDialog, true, this );
-            if ( ret != BFileChooser.APPROVE_OPTION ) {
+            openWaveDialog.SetSelectedFile(dir);
+            var ret = AppManager.showModalDialog( openWaveDialog, true, this );
+            if ( ret != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
 
-            String file = openWaveDialog.getSelectedFile();
+            String file = openWaveDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( file, ".wav" );
 
             // 既に開かれていたらキャンセル
@@ -17378,7 +17192,7 @@ namespace cadencii
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
                                   cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
-                                  cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != BDialogResult.YES ) {
+                                  cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) != DialogResult.Yes ) {
                 return;
             }
             AppManager.removeBgm( index );
@@ -17467,7 +17281,7 @@ namespace cadencii
                     } finally {
                         if ( dlg != null ) {
                             try {
-                                dlg.close();
+                                dlg.Close();
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex2 + "\n" );
                             }
@@ -17532,7 +17346,7 @@ namespace cadencii
                 /*if ( !AppManager.isPlaying() ) {
                     AppManager.setEditMode( EditMode.REALTIME_MTC );
                     AppManager.setPlaying( true );
-                    BEventHandler handler = new BEventHandler( AppManager_PreviewStarted );
+                    EventHandler handler = new EventHandler( AppManager_PreviewStarted );
                     if ( handler != null ) {
                         this.Invoke( handler );
                         while ( VSTiProxy.getPlayTime() <= 0.0 ) {
@@ -17786,18 +17600,18 @@ namespace cadencii
         /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
         /// </summary>
         /// <param name="form"></param>
-        public static void normalizeFormLocation( BForm dlg )
+        public static void normalizeFormLocation( Form dlg )
         {
             Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
             Point p = getAppropriateDialogLocation(
-                dlg.getX(), dlg.getY(), dlg.getWidth(), dlg.getHeight(),
+                dlg.Left, dlg.Top, dlg.Width, dlg.Height,
                 rcScreen.x, rcScreen.y, rcScreen.width, rcScreen.height
             );
-            dlg.setLocation( p.x, p.y );
+            dlg.Location = new System.Drawing.Point(p.x, p.y);
         }
         #endregion
 
-        private void menuToolsCreateVConnectSTANDDb_Click(object sender, BEventArgs e)
+        private void menuToolsCreateVConnectSTANDDb_Click(object sender, EventArgs e)
         {
             string creator = Path.Combine(System.Windows.Forms.Application.StartupPath, "vConnectStandDBConvert.exe");
             if (System.IO.File.Exists(creator)) {

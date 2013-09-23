@@ -22,7 +22,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventHandler = System.EventHandler;
 #endif
 
     /// <summary>
@@ -31,16 +30,14 @@ namespace cadencii
 #if JAVA
     public class NumericUpDownEx extends BNumericUpDown {
 #else
-    public class NumericUpDownEx : BNumericUpDown
+    public class NumericUpDownEx : NumericUpDown
     {
 #endif
         private const long serialVersionUID = -4608658084088065812L;
 
         public NumericUpDownEx()
         {
-#if !JAVA
-            this.GotFocus += new BEventHandler( NumericUpDownEx_GotFocus );
-#endif
+            this.GotFocus += new EventHandler( NumericUpDownEx_GotFocus );
         }
 
 #if !JAVA

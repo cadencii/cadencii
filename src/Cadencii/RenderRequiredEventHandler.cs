@@ -11,21 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
 
-import cadencii.BEventHandler;
-
-public class RenderRequiredEventHandler extends BEventHandler{
-    public RenderRequiredEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Integer.TYPE );
-    }
-    
-    public RenderRequiredEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Integer.TYPE );
-    }
-}
-#else
 using System;
 
 namespace cadencii {
@@ -33,4 +19,3 @@ namespace cadencii {
     public delegate void RenderRequiredEventHandler( Object sender, int tracks );
 
 }
-#endif

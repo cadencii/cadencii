@@ -27,14 +27,12 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormDeleteBar extends BDialog {
 #else
-    class FormDeleteBar : BDialog
+    class FormDeleteBar : System.Windows.Forms.Form
     {
 #endif
         public FormDeleteBar( int max_barcount )
@@ -48,39 +46,39 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             applyLanguage();
-            numStart.setMaximum( max_barcount );
-            numEnd.setMaximum( max_barcount );
+            numStart.Maximum = max_barcount;
+            numEnd.Maximum = max_barcount;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "Delete Bars" ) );
-            lblStart.setText( _( "Start" ) );
-            lblEnd.setText( _( "End" ) );
-            btnOK.setText( _( "OK" ) );
-            btnCancel.setText( _( "Cancel" ) );
+            this.Text = _( "Delete Bars" );
+            lblStart.Text = _( "Start" );
+            lblEnd.Text = _( "End" );
+            btnOK.Text = _( "OK" );
+            btnCancel.Text = _( "Cancel" );
         }
 
         public int getStart()
         {
-            return (int)numStart.getFloatValue();
+            return (int)numStart.Value;
         }
 
         public void setStart( int value )
         {
-            numStart.setFloatValue( value );
+            numStart.Value = value;
         }
 
         public int getEnd()
         {
-            return (int)numEnd.getFloatValue();
+            return (int)numEnd.Value;
         }
 
         public void setEnd( int value )
         {
-            numEnd.setFloatValue( value );
+            numEnd.Value = value;
         }
         #endregion
 
@@ -92,8 +90,8 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -102,14 +100,14 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -141,12 +139,12 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.label4 = new cadencii.windows.forms.BLabel();
-            this.label3 = new cadencii.windows.forms.BLabel();
-            this.lblEnd = new cadencii.windows.forms.BLabel();
-            this.lblStart = new cadencii.windows.forms.BLabel();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblEnd = new System.Windows.Forms.Label();
+            this.lblStart = new System.Windows.Forms.Label();
             this.numEnd = new cadencii.NumericUpDownEx();
             this.numStart = new cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
@@ -277,12 +275,12 @@ namespace cadencii
 
         }
 
-        private BButton btnOK;
-        private BButton btnCancel;
-        private BLabel label4;
-        private BLabel label3;
-        private BLabel lblEnd;
-        private BLabel lblStart;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblEnd;
+        private System.Windows.Forms.Label lblStart;
         private NumericUpDownEx numEnd;
         private NumericUpDownEx numStart;
 

@@ -27,7 +27,7 @@ namespace cadencii {
 #if JAVA
     public class FormPluginUi extends BForm{
 #else
-    public class FormPluginUi : BForm {
+    public class FormPluginUi : Form {
 #endif
         private System.ComponentModel.IContainer components;
         public IntPtr childWnd = IntPtr.Zero;
@@ -45,7 +45,7 @@ namespace cadencii {
 
         public void FormPluginUi_FormClosing( Object sender, FormClosingEventArgs e ) {
             e.Cancel = true;
-            setVisible( false );
+            this.Visible = false;
         }
 
         private void InitializeComponent() {

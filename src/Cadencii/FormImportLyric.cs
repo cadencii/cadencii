@@ -29,8 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BEventArgs = System.EventArgs;
-    using BEventHandler = System.EventHandler;
     using Character = System.Char;
     using boolean = System.Boolean;
 #endif
@@ -38,7 +36,7 @@ namespace cadencii
 #if JAVA
     public class FormImportLyric extends BDialog {
 #else
-    class FormImportLyric : BDialog
+    class FormImportLyric : System.Windows.Forms.Form
     {
 #endif
         private int m_max_notes = 1;
@@ -63,9 +61,9 @@ namespace cadencii
         public void setVisible( boolean value ){
             super.setVisible( value );
 #else
-        public override void setVisible( boolean value )
+        public void __setVisible( boolean value )
         {
-            base.setVisible( value );
+            base.Visible = value;
 #endif
 #if JAVA
             //TODO: FormImportLyric#setVisible
@@ -78,9 +76,9 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            setTitle( _( "Import lyrics" ) );
-            btnCancel.setText( _( "Cancel" ) );
-            btnOK.setText( _( "OK" ) );
+            this.Text = _( "Import lyrics" );
+            btnCancel.Text = _( "Cancel" );
+            btnOK.Text = _( "OK" );
         }
 
         /// <summary>
@@ -90,7 +88,7 @@ namespace cadencii
         public void setMaxNotes( int max_notes )
         {
             String notes = (max_notes > 1) ? " [notes]" : " [note]";
-            this.lblNotes.setText( "Max : " + max_notes + notes );
+            this.lblNotes.Text = "Max : " + max_notes + notes;
             this.m_max_notes = max_notes;
         }
 
@@ -102,13 +100,13 @@ namespace cadencii
                                                                                                'ャ', 'ュ', 'ョ' } ) );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
-                if ( i >= txtLyrics.getLineCount() ) {
+                if ( i >= txtLyrics.Lines.Length ) {
                     break;
                 }
                 try {
-                    int start = txtLyrics.getLineStartOffset( i );
-                    int end = txtLyrics.getLineEndOffset( i );
-                    tmp += txtLyrics.getText( start, end - start ) + " ";
+                    int start = txtLyrics.GetFirstCharIndexFromLine(i);
+                    int end = txtLyrics.GetFirstCharIndexFromLine(i) + txtLyrics.Lines[i].Length;
+                    tmp += txtLyrics.Text.Substring( start, end - start ) + " ";
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormImportLyric ) + ".getLetters; ex=" + ex + "\n" );
                 }
@@ -158,8 +156,8 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new BEventHandler( btnOK_Click );
-            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources()
@@ -168,14 +166,14 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e )
+        public void btnOK_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.OK );
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e )
+        public void btnCancel_Click( Object sender, EventArgs e )
         {
-            setDialogResult( BDialogResult.CANCEL );
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
         #endregion
 
@@ -207,10 +205,10 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtLyrics = new cadencii.windows.forms.BTextArea();
-            this.btnCancel = new cadencii.windows.forms.BButton();
-            this.btnOK = new cadencii.windows.forms.BButton();
-            this.lblNotes = new cadencii.windows.forms.BLabel();
+            this.txtLyrics = new System.Windows.Forms.TextBox();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.lblNotes = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtLyrics
@@ -277,10 +275,10 @@ namespace cadencii
 
         }
 
-        private BTextArea txtLyrics;
-        private BButton btnCancel;
-        private BButton btnOK;
-        private BLabel lblNotes;
+        private System.Windows.Forms.TextBox txtLyrics;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label lblNotes;
 #endif
         #endregion
 
