@@ -11189,17 +11189,17 @@ namespace cadencii
         {
             // 出力するディレクトリを選択
             String dir = "";
-            BFolderBrowser file_dialog = null;
+            FolderBrowserDialog file_dialog = null;
             try {
-                file_dialog = new BFolderBrowser();
+                file_dialog = new FolderBrowserDialog();
                 String initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
-                file_dialog.setDescription( _( "Choose destination directory" ) );
-                file_dialog.setSelectedPath( initial_dir );
+                file_dialog.Description = _( "Choose destination directory" );
+                file_dialog.SelectedPath = initial_dir;
                 DialogResult ret = AppManager.showModalDialog( file_dialog, this );
                 if ( ret != DialogResult.OK ) {
                     return;
                 }
-                dir = file_dialog.getSelectedPath();
+                dir = file_dialog.SelectedPath;
                 // 1.wavはダミー
                 initial_dir = fsys.combine( dir, "1.wav" );
                 AppManager.editorConfig.setLastUsedPathOut( initial_dir, ".wav" );
@@ -11207,7 +11207,7 @@ namespace cadencii
             } finally {
                 if ( file_dialog != null ) {
                     try {
-                        file_dialog.close();
+                        file_dialog.Dispose();
                     } catch ( Exception ex2 ) {
                     }
                 }

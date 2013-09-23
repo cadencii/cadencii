@@ -42,11 +42,7 @@ namespace cadencii
 
         private OpenFileDialog openUtauCore;
         private FontDialog fontDialog;
-#if DEBUG
-        private BFolderBrowser folderBrowserSingers;
-#else
-        private BFolderBrowser folderBrowserSingers;
-#endif
+        private FolderBrowserDialog folderBrowserSingers;
 
         public Preference()
         {
@@ -58,12 +54,8 @@ namespace cadencii
             fontDialog.ShowEffects = false;
             openUtauCore = new OpenFileDialog();
 
-#if DEBUG
-            folderBrowserSingers = new BFolderBrowser();
-#else
-            folderBrowserSingers = new BFolderBrowser();
-            folderBrowserSingers.setNewFolderButtonVisible( false );
-#endif
+            folderBrowserSingers = new FolderBrowserDialog();
+            folderBrowserSingers.ShowNewFolderButton = false;
             applyLanguage();
 
             comboVibratoLength.Items.Clear();
@@ -767,7 +759,7 @@ namespace cadencii
                 openUtauCore.Filter = string.Join("|", new[] { "Executable(*.exe)|*.exe", "All Files(*.*)|*.*" });
             }
 
-            folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
+            folderBrowserSingers.Description = _( "Select Singer Directory" );
 
             #region tabのタイトル
             tabSequence.Text = _( "Sequence" );
@@ -1384,8 +1376,8 @@ namespace cadencii
 
         public void btnAdd_Click( Object sender, EventArgs e )
         {
-            if ( folderBrowserSingers.showDialog( this ) == DialogResult.OK ) {
-                String dir = folderBrowserSingers.getSelectedPath();
+            if ( folderBrowserSingers.ShowDialog( this ) == DialogResult.OK ) {
+                String dir = folderBrowserSingers.SelectedPath;
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
                 sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + fsys.isDirectoryExists( dir ) );

@@ -60,7 +60,7 @@ namespace cadencii {
 
         const int _SAMPLE_RATE = 44100;
 
-        private BFolderBrowser folderBrowser;
+        private FolderBrowserDialog folderBrowser;
         private BBackgroundWorker bgWork;
         private SingerConfig[] m_singer_config1;
         private SingerConfig[] m_singer_config2;
@@ -82,7 +82,7 @@ namespace cadencii {
             bgWork.WorkerReportsProgress = true;
             bgWork.WorkerSupportsCancellation = true;
 #endif
-            folderBrowser = new BFolderBrowser();
+            folderBrowser = new FolderBrowserDialog();
             
             m_close_when_finished = close_when_finished;
             m_singer_config1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
@@ -168,11 +168,11 @@ namespace cadencii {
         }
 
         public void btnBrowse_Click( Object sender, EventArgs e ) {
-            folderBrowser.setSelectedPath( txtDir.Text );
-            if ( folderBrowser.showDialog( this ) != DialogResult.OK ) {
+            folderBrowser.SelectedPath = txtDir.Text;
+            if ( folderBrowser.ShowDialog( this ) != DialogResult.OK ) {
                 return;
             }
-            txtDir.Text = folderBrowser.getSelectedPath();
+            txtDir.Text = folderBrowser.SelectedPath;
         }
 
         public void btnCancel_Click( Object sender, EventArgs e ) {

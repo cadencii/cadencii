@@ -1681,14 +1681,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-#if JAVA
-        public static DialogResult showModalDialog( BFolderBrowser dialog, Frame main_form )
-#else
-        public static DialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )
-#endif
+        public static DialogResult showModalDialog( FolderBrowserDialog dialog, Form main_form )
         {
             beginShowDialog();
-            DialogResult ret = dialog.showDialog( main_form );
+            DialogResult ret = dialog.ShowDialog( main_form );
             endShowDialog();
             return ret;
         }
