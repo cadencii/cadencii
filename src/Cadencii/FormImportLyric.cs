@@ -100,13 +100,13 @@ namespace cadencii
                                                                                                'ャ', 'ュ', 'ョ' } ) );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
-                if ( i >= txtLyrics.getLineCount() ) {
+                if ( i >= txtLyrics.Lines.Length ) {
                     break;
                 }
                 try {
-                    int start = txtLyrics.getLineStartOffset( i );
-                    int end = txtLyrics.getLineEndOffset( i );
-                    tmp += txtLyrics.getText( start, end - start ) + " ";
+                    int start = txtLyrics.GetFirstCharIndexFromLine(i);
+                    int end = txtLyrics.GetFirstCharIndexFromLine(i) + txtLyrics.Lines[i].Length;
+                    tmp += txtLyrics.Text.Substring( start, end - start ) + " ";
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormImportLyric ) + ".getLetters; ex=" + ex + "\n" );
                 }
@@ -205,7 +205,7 @@ namespace cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtLyrics = new cadencii.windows.forms.BTextArea();
+            this.txtLyrics = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.lblNotes = new System.Windows.Forms.Label();
@@ -275,7 +275,7 @@ namespace cadencii
 
         }
 
-        private BTextArea txtLyrics;
+        private System.Windows.Forms.TextBox txtLyrics;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lblNotes;
