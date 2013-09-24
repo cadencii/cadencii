@@ -501,7 +501,7 @@ namespace cadencii
 #endif
                     RenderQueue rq2 = new RenderQueue();
                     String wavPath = "";
-                    if ( oa.fileName != null && str.length( oa.fileName ) > 0 ) {
+                    if ( oa.fileName != null && oa.fileName.Length > 0 ) {
                         wavPath = fsys.combine( singer, oa.fileName );
                     } else {
                         wavPath = fsys.combine( singer, lyric + ".wav" );
@@ -687,7 +687,7 @@ namespace cadencii
 
                     String str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
 #if DEBUG
-                    double act_t_temp = str.tof( str_t_temp );
+                    double act_t_temp = double.Parse( str_t_temp );
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif

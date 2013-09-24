@@ -78,13 +78,13 @@ namespace cadencii.vsq
                         ue = new UstEvent();
                     }
                     int index = 0;
-                    if ( str.compare( line, "[#TRACKEND]" ) ) {
+                    if ( line == "[#TRACKEND]" ) {
                         break;
-                    } else if ( str.compare( line.ToUpper(), "[#NEXT]" ) ) {
+                    } else if ( line.ToUpper() == "[#NEXT]" ) {
                         index = NEXT_INDEX;
-                    } else if ( str.compare( line.ToUpper(), "[#PREV]" ) ) {
+                    } else if ( line.ToUpper() == "[#PREV]" ) {
                         index = PREV_INDEX;
-                    } else if ( str.compare( line.ToUpper(), "[#SETTING]" ) ) {
+                    } else if ( line.ToUpper() == "[#SETTING]" ) {
                         type = 0;
                     } else {
                         if ( type != 1 ) {
@@ -93,7 +93,7 @@ namespace cadencii.vsq
                         }
                         String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
-                            index = str.toi( s );
+                            index = int.Parse( s );
                         } catch ( Exception ex ) {
 #if DEBUG
                             sout.println( "UstFile#.ctor; ex=" + ex );
@@ -114,81 +114,81 @@ namespace cadencii.vsq
                         String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
                         if ( type == 0 ) {
                             // reading "SETTING" section
-                            if ( str.compare( spl[0], "Tempo" ) ) {
+                            if ( spl[0] == "Tempo" ) {
                                 m_tempo = 125f;
                                 float v = 125f;
                                 try {
-                                    v = (float)str.tof( spl[1] );
+                                    v = (float)double.Parse( spl[1] );
                                     m_tempo = v;
                                 } catch ( Exception ex ) {
                                 }
-                            } else if ( str.compare( spl[0], "ProjectName" ) ) {
+                            } else if ( spl[0] == "ProjectName" ) {
                                 m_project_name = spl[1];
-                            } else if ( str.compare( spl[0], "VoiceDir" ) ) {
+                            } else if ( spl[0] == "VoiceDir" ) {
                                 m_voice_dir = spl[1];
-                            } else if ( str.compare( spl[0], "OutFile" ) ) {
+                            } else if ( spl[0] == "OutFile" ) {
                                 m_out_file = spl[1];
-                            } else if ( str.compare( spl[0], "CacheDir" ) ) {
+                            } else if ( spl[0] == "CacheDir" ) {
                                 m_cache_dir = spl[1];
-                            } else if ( str.compare( spl[0], "Tool1" ) ) {
+                            } else if ( spl[0] == "Tool1" ) {
                                 m_tool1 = spl[1];
-                            } else if ( str.compare( spl[0], "Tool2" ) ) {
+                            } else if ( spl[0] == "Tool2" ) {
                                 m_tool2 = spl[1];
                             }
                         } else if ( type == 1 ) {
                             if ( spl.Length >= 2 ) {
                                 // readin event section
-                                if ( str.compare( spl[0], "Length" ) ) {
+                                if ( spl[0] == "Length" ) {
                                     ue.setLength( 0 );
                                     int v = 0;
                                     try {
-                                        v = str.toi( spl[1] );
+                                        v = int.Parse( spl[1] );
                                         ue.setLength( v );
                                     } catch ( Exception ex ) {
                                     }
-                                } else if ( str.compare( spl[0], "Lyric" ) ) {
+                                } else if ( spl[0] == "Lyric" ) {
                                     ue.setLyric( spl[1] );
-                                } else if ( str.compare( spl[0], "NoteNum" ) ) {
+                                } else if ( spl[0] == "NoteNum" ) {
                                     int v = 0;
                                     try {
-                                        v = str.toi( spl[1] );
+                                        v = int.Parse( spl[1] );
                                         ue.setNote( v );
                                     } catch ( Exception ex ) {
                                     }
-                                } else if ( str.compare( spl[0], "Intensity" ) ) {
+                                } else if ( spl[0] == "Intensity" ) {
                                     int v = 100;
                                     try {
-                                        v = str.toi( spl[1] );
+                                        v = int.Parse( spl[1] );
                                         ue.setIntensity( v );
                                     } catch ( Exception ex ) {
                                     }
-                                } else if ( str.compare( spl[0], "PBType" ) ) {
+                                } else if ( spl[0] == "PBType" ) {
                                     int v = 5;
                                     try {
-                                        v = str.toi( spl[1] );
+                                        v = int.Parse( spl[1] );
                                         ue.setPBType( v );
                                     } catch ( Exception ex ) {
                                     }
-                                } else if ( str.compare( spl[0], "Piches" ) ) {
+                                } else if ( spl[0] == "Piches" ) {
                                     String[] spl2 = PortUtil.splitString( spl[1], ',' );
                                     float[] t = new float[spl2.Length];
                                     for ( int i = 0; i < spl2.Length; i++ ) {
                                         float v = 0;
                                         try {
-                                            v = (float)str.tof( spl2[i] );
+                                            v = (float)double.Parse( spl2[i] );
                                             t[i] = v;
                                         } catch ( Exception ex ) {
                                         }
                                     }
                                     ue.setPitches( t );
-                                } else if ( str.compare( spl[0], "Tempo" ) ) {
+                                } else if ( spl[0] == "Tempo" ) {
                                     float v;
                                     try {
-                                        v = (float)str.tof( spl[1] );
+                                        v = (float)double.Parse( spl[1] );
                                         ue.setTempo( v );
                                     } catch ( Exception ex ) {
                                     }
-                                } else if ( str.compare( spl[0], "VBR" ) ) {
+                                } else if ( spl[0] == "VBR" ) {
                                     ue.setVibrato( new UstVibrato( line ) );
                                     /*
                                     PBW=50,50,46,48,56,50,50,50,50
@@ -196,34 +196,34 @@ namespace cadencii.vsq
                                     PBY=-15.9,-20,-31.5,-26.6
                                     PBM=,s,r,j,s,s,s,s,s
                                     */
-                                } else if ( str.compare( spl[0], "PBW" ) || str.compare( spl[0], "PBS" ) || str.compare( spl[0], "PBY" ) || str.compare( spl[0], "PBM" ) ) {
+                                } else if ( spl[0] == "PBW" || spl[0] == "PBS" || spl[0] == "PBY" || spl[0] == "PBM" ) {
                                     if ( ue.getPortamento() == null ) {
                                         ue.setPortamento( new UstPortamento() );
                                     }
                                     ue.getPortamento().parseLine( line );
-                                } else if ( str.compare( spl[0], "Envelope" ) ) {
+                                } else if ( spl[0] == "Envelope" ) {
                                     ue.setEnvelope( new UstEnvelope( line ) );
                                     //PreUtterance=1
                                     //VoiceOverlap=6
-                                } else if ( str.compare( spl[0], "VoiceOverlap" ) ) {
-                                    if ( !str.compare( spl[1], "" ) ) {
-                                        ue.setVoiceOverlap( (float)str.tof( spl[1] ) );
+                                } else if ( spl[0] == "VoiceOverlap" ) {
+                                    if ( spl[1] != "" ) {
+                                        ue.setVoiceOverlap( (float)double.Parse( spl[1] ) );
                                     }
-                                } else if ( str.compare( spl[0], "PreUtterance" ) ) {
-                                    if ( !str.compare( spl[1], "" ) ) {
-                                        ue.setPreUtterance( (float)str.tof( spl[1] ) );
+                                } else if ( spl[0] == "PreUtterance" ) {
+                                    if ( spl[1] != "" ) {
+                                        ue.setPreUtterance( (float)double.Parse( spl[1] ) );
                                     }
-                                } else if ( str.compare( spl[0], "Flags" ) ) {
-                                    ue.Flags = str.sub( line, 6 );
-                                } else if ( str.compare( spl[0], "StartPoint" ) ) {
+                                } else if ( spl[0] == "Flags" ) {
+                                    ue.Flags = line.Substring( 6 );
+                                } else if ( spl[0] == "StartPoint" ) {
                                     try {
-                                        float stp = (float)str.tof( spl[1] );
+                                        float stp = (float)double.Parse( spl[1] );
                                         ue.setStartPoint( stp );
                                     } catch ( Exception ex ) {
                                     }
-                                } else if ( str.compare( spl[0], "Moduration" ) ) {
+                                } else if ( spl[0] == "Moduration" ) {
                                     try {
-                                        int moduration = str.toi( spl[1] );
+                                        int moduration = int.Parse( spl[1] );
                                         ue.setModuration( moduration );
                                     } catch ( Exception ex ) {
                                     }
@@ -334,7 +334,7 @@ namespace cadencii.vsq
                 int draft = (int)(480.0 * sec * 1e6 / (double)delta);
                 // 丸め誤差が入るので、Timeを更新
                 // ustに実際に記録されるテンポはいくらか？
-                float act_tempo = (float)str.tof( PortUtil.formatDecimal( "0.00", 60e6 / draft ) );
+                float act_tempo = (float)double.Parse( PortUtil.formatDecimal( "0.00", 60e6 / draft ) );
                 int i_act_tempo = (int)(60e6 / act_tempo);
                 prev.Tempo = i_act_tempo;
                 item.Time = prev.Time + 1e-6 * delta * prev.Tempo / 480.0;
@@ -423,7 +423,7 @@ namespace cadencii.vsq
                 int c = clock;
                 int len = item.getLength();
                 clock += len;
-                if ( str.compare( item.getLyric(), "R" ) ) {
+                if ( item.getLyric() == "R" ) {
                     continue;
                 }
                 // 音符の先頭のpitは必ず入れる

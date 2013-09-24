@@ -63,7 +63,7 @@ using System.Collections.Generic;
             public static String separator()
 #endif
             {
-                if ( str.compare( mSeparator, "" ) ) {
+                if ( mSeparator == "" ) {
 #if JAVA
                     mSeparator = File.separator;
 #elif __cplusplus
@@ -104,11 +104,11 @@ using System.Collections.Generic;
 #endif
 #endif
                 separator();
-                if ( str.endsWith( path1, mSeparator ) ) {
-                    path1 = str.sub( path1, 0, str.length( path1 ) - 1 );
+                if ( path1.EndsWith( mSeparator ) ) {
+                    path1 = path1.Substring( 0, path1.Length - 1 );
                 }
-                if ( str.startsWith( path2, mSeparator ) ) {
-                    path2 = str.sub( path2, 1 );
+                if ( path2.StartsWith( mSeparator ) ) {
+                    path2 = path2.Substring( 1 );
                 }
                 return path1 + mSeparator + path2;
             }

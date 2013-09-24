@@ -111,8 +111,8 @@ namespace cadencii
         {
             try {
                 int x, y;
-                x = str.toi( this.ui.getDataPointClockText() );
-                y = str.toi( this.ui.getDataPointValueText() );
+                x = int.Parse( this.ui.getDataPointClockText() );
+                y = int.Parse( this.ui.getDataPointValueText() );
                 if( y < this.m_min || this.m_max < y ) {
                     AppManager.showMessageBox(
                         _( "Invalid value" ),
@@ -123,10 +123,10 @@ namespace cadencii
                     return;
                 }
                 if( ui.isEnableSmoothSelected() ) {
-                    x = str.toi( this.ui.getLeftClockText() );
-                    y = str.toi( this.ui.getLeftValueText() );
-                    x = str.toi( this.ui.getRightClockText() );
-                    y = str.toi( this.ui.getRightValueText() );
+                    x = int.Parse( this.ui.getLeftClockText() );
+                    y = int.Parse( this.ui.getLeftValueText() );
+                    x = int.Parse( this.ui.getRightClockText() );
+                    y = int.Parse( this.ui.getRightValueText() );
                 }
                 this.ui.setDialogResult( true );
             } catch( Exception ex ) {

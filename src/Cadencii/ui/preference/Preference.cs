@@ -1022,7 +1022,7 @@ namespace cadencii
         public int getAutoVibratoThresholdLength()
         {
             try {
-                int ret = str.toi( txtAutoVibratoThresholdLength.Text );
+                int ret = int.Parse( txtAutoVibratoThresholdLength.Text );
                 if ( ret < 0 ) {
                     ret = 0;
                 }
@@ -1266,7 +1266,7 @@ namespace cadencii
                     check = isWindowsExecutable( path );
                 }
                 listResampler.AddRow( new String[] { path }, check );
-                if ( str.compare( txtWavtool.Text, "" ) ) {
+                if ( txtWavtool.Text == "" ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
                     String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
@@ -1491,7 +1491,7 @@ namespace cadencii
             try {
                 dialog = new OpenFileDialog();
                 String dir = textWinePrefix.Text;
-                if ( dir != null && str.length( dir ) > 0 ) {
+                if ( dir != null && dir.Length > 0 ) {
                     dialog.SetSelectedFile(fsys.combine( dir, "a" ));
                 }
                 if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
@@ -1512,7 +1512,7 @@ namespace cadencii
             try {
                 dialog = new OpenFileDialog();
                 String dir = textWineTop.Text;
-                if ( dir != null && str.length( dir ) > 0 ) {
+                if ( dir != null && dir.Length > 0 ) {
                     dialog.SetSelectedFile(fsys.combine( dir, "a" ));
                 }
                 if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {

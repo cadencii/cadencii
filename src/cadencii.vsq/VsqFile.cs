@@ -107,7 +107,7 @@ namespace cadencii.vsq
             int last_clock = -1;
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
-                if ( !str.compare( ue.getLyric(), "R" ) ) {
+                if ( ue.getLyric() != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
                     String psymbol = "a";
@@ -2313,9 +2313,9 @@ namespace cadencii.vsq
         private static String substring127Bytes( String s, String encoding )
         {
             int count = Math.Min( 127, PortUtil.getStringLength( s ) );
-            int c = PortUtil.getEncodedByteCount( encoding, str.sub( s, 0, count ) );
+            int c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             if ( c == 127 ) {
-                return str.sub( s, 0, count );
+                return s.Substring( 0, count );
             }
             int delta = c > 127 ? -1 : 1;
             while ( (delta == -1 && c > 127) || (delta == 1 && c < 127) ) {
@@ -2325,9 +2325,9 @@ namespace cadencii.vsq
                 } else if ( delta == 1 && count == PortUtil.getStringLength( s ) ) {
                     break;
                 }
-                c = PortUtil.getEncodedByteCount( encoding, str.sub( s, 0, count ) );
+                c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             }
-            return str.sub( s, 0, count );
+            return s.Substring( 0, count );
         }
 
         private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, String encoding )
@@ -2602,7 +2602,7 @@ namespace cadencii.vsq
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
-                String num = str.sub( icon_id, PortUtil.getStringLength( icon_id ) - 4 );
+                String num = icon_id.Substring( PortUtil.getStringLength( icon_id ) - 4 );
                 int vibrato_type = (int)PortUtil.fromHexString( num );
                 int note_length = ve.ID.getLength();
                 int vibrato_delay = ve.ID.VibratoDelay;
@@ -2665,7 +2665,7 @@ namespace cadencii.vsq
                 byte accent = (byte)((byte)0x64 * ve.ID.DEMaccent / 100.0);
                 add.append( NRPN.CVM_NM_ACCENT, accent, true );// (byte)0x5a(Accent)
             }
-            if ( str.startsWith( renderer, "UTU0" ) ) {
+            if ( renderer.StartsWith( "UTU0" ) ) {
                 // エンベロープ
                 if ( ve.UstEvent != null ) {
                     UstEnvelope env = ve.UstEvent.getEnvelope();

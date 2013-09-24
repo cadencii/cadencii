@@ -1015,7 +1015,7 @@ namespace cadencii.vsq
                     while ( (line = sr.readLine()) != null ) {
                         int index_semicollon = line.IndexOf( ';' );
                         if ( index_semicollon >= 0 ) {
-                            line = str.sub( line, 0, index_semicollon );
+                            line = line.Substring( 0, index_semicollon );
                         }
                         line = line.Trim();
                         if ( line.StartsWith( "[" ) ) {
@@ -1156,7 +1156,7 @@ namespace cadencii.vsq
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
                                 String aic_file = fsys.combine( vexp_dir, file );
-                                int index = str.toi( spl2[0] );
+                                int index = int.Parse( spl2[0] );
                                 String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
                                 String ids = "";//spl2[2].Replace( "\"", "" );
                                 String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
@@ -1176,7 +1176,7 @@ namespace cadencii.vsq
                                 }
                                 String ids = "";// spl2[2].Replace( "\"", "" );
                                 String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
-                                int index = str.toi( spl2[0] );
+                                int index = int.Parse( spl2[0] );
                                 String icon_id = "$0101" + PortUtil.toHexString( index, 4 );
                                 NoteHeadHandle item = new NoteHeadHandle( aic_path, ids, icon_id, index );
                                 item.setCaption( caption );

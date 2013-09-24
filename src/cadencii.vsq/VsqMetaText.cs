@@ -207,51 +207,51 @@ namespace cadencii.vsq
         {
             if( curve == null ) return null;
             String search = curve.Trim().ToLower();
-            if ( str.compare( search, "bre" ) ) {
+            if ( search == "bre" ) {
                 return this.BRE;
-            } else if ( str.compare( search, "bri" ) ) {
+            } else if ( search == "bri" ) {
                 return this.BRI;
-            } else if ( str.compare( search, "cle" ) ) {
+            } else if ( search == "cle" ) {
                 return this.CLE;
-            } else if ( str.compare( search, "dyn" ) ) {
+            } else if ( search == "dyn" ) {
                 return this.DYN;
-            } else if ( str.compare( search, "gen" ) ) {
+            } else if ( search == "gen" ) {
                 return this.GEN;
-            } else if ( str.compare( search, "ope" ) ) {
+            } else if ( search == "ope" ) {
                 return this.OPE;
-            } else if ( str.compare( search, "pbs" ) ) {
+            } else if ( search == "pbs" ) {
                 return this.PBS;
-            } else if ( str.compare( search, "pit" ) ) {
+            } else if ( search == "pit" ) {
                 return this.PIT;
-            } else if ( str.compare( search, "por" ) ) {
+            } else if ( search == "por" ) {
                 return this.POR;
-            } else if ( str.compare( search, "harmonics" ) ) {
+            } else if ( search == "harmonics" ) {
                 return this.harmonics;
-            } else if ( str.compare( search, "fx2depth" ) ) {
+            } else if ( search == "fx2depth" ) {
                 return this.fx2depth;
-            } else if ( str.compare( search, "reso1amp" ) ) {
+            } else if ( search == "reso1amp" ) {
                 return this.reso1AmpBPList;
-            } else if ( str.compare( search, "reso1bw" ) ) {
+            } else if ( search == "reso1bw" ) {
                 return this.reso1BWBPList;
-            } else if ( str.compare( search, "reso1freq" ) ) {
+            } else if ( search == "reso1freq" ) {
                 return this.reso1FreqBPList;
-            } else if ( str.compare( search, "reso2amp" ) ) {
+            } else if ( search == "reso2amp" ) {
                 return this.reso2AmpBPList;
-            } else if ( str.compare( search, "reso2bw" ) ) {
+            } else if ( search == "reso2bw" ) {
                 return this.reso2BWBPList;
-            } else if ( str.compare( search, "reso2freq" ) ) {
+            } else if ( search == "reso2freq" ) {
                 return this.reso2FreqBPList;
-            } else if ( str.compare( search, "reso3amp" ) ) {
+            } else if ( search == "reso3amp" ) {
                 return this.reso3AmpBPList;
-            } else if ( str.compare( search, "reso3bw" ) ) {
+            } else if ( search == "reso3bw" ) {
                 return this.reso3BWBPList;
-            } else if ( str.compare( search, "reso3freq" ) ) {
+            } else if ( search == "reso3freq" ) {
                 return this.reso3FreqBPList;
-            } else if ( str.compare( search, "reso4amp" ) ) {
+            } else if ( search == "reso4amp" ) {
                 return this.reso4AmpBPList;
-            } else if ( str.compare( search, "reso4bw" ) ) {
+            } else if ( search == "reso4bw" ) {
                 return this.reso4BWBPList;
-            } else if ( str.compare( search, "reso4freq" ) ) {
+            } else if ( search == "reso4freq" ) {
                 return this.reso4FreqBPList;
             } else {
                 return null;
@@ -262,51 +262,51 @@ namespace cadencii.vsq
         {
             if( curve == null ) return;
             String search = curve.Trim().ToLower();
-            if ( str.compare( search, "bre" ) ) {
+            if ( search == "bre" ) {
                 this.BRE = value;
-            } else if ( str.compare( search, "bri" ) ) {
+            } else if ( search == "bri" ) {
                 this.BRI = value;
-            } else if ( str.compare( search, "cle" ) ) {
+            } else if ( search == "cle" ) {
                 this.CLE = value;
-            } else if ( str.compare( search, "dyn" ) ) {
+            } else if ( search == "dyn" ) {
                 this.DYN = value;
-            } else if ( str.compare( search, "gen" ) ) {
+            } else if ( search == "gen" ) {
                 this.GEN = value;
-            } else if ( str.compare( search, "ope" ) ) {
+            } else if ( search == "ope" ) {
                 this.OPE = value;
-            } else if ( str.compare( search, "pbs" ) ) {
+            } else if ( search == "pbs" ) {
                 this.PBS = value;
-            } else if ( str.compare( search, "pit" ) ) {
+            } else if ( search == "pit" ) {
                 this.PIT = value;
-            } else if ( str.compare( search, "por" ) ) {
+            } else if ( search == "por" ) {
                 this.POR = value;
-            } else if ( str.compare( search, "harmonics" ) ) {
+            } else if ( search == "harmonics" ) {
                 this.harmonics = value;
-            } else if ( str.compare( search, "fx2depth" ) ) {
+            } else if ( search == "fx2depth" ) {
                 this.fx2depth = value;
-            } else if ( str.compare( search, "reso1amp" ) ) {
+            } else if ( search == "reso1amp" ) {
                 this.reso1AmpBPList = value;
-            } else if ( str.compare( search, "reso1bw" ) ) {
+            } else if ( search == "reso1bw" ) {
                 this.reso1BWBPList = value;
-            } else if ( str.compare( search, "reso1freq" ) ) {
+            } else if ( search == "reso1freq" ) {
                 this.reso1FreqBPList = value;
-            } else if ( str.compare( search, "reso2amp" ) ) {
+            } else if ( search == "reso2amp" ) {
                 this.reso2AmpBPList = value;
-            } else if ( str.compare( search, "reso2bw" ) ) {
+            } else if ( search == "reso2bw" ) {
                 this.reso2BWBPList = value;
-            } else if ( str.compare( search, "reso2freq" ) ) {
+            } else if ( search == "reso2freq" ) {
                 this.reso2FreqBPList = value;
-            } else if ( str.compare( search, "reso3amp" ) ) {
+            } else if ( search == "reso3amp" ) {
                 this.reso3AmpBPList = value;
-            } else if ( str.compare( search, "reso3bw" ) ) {
+            } else if ( search == "reso3bw" ) {
                 this.reso3BWBPList = value;
-            } else if ( str.compare( search, "reso3freq" ) ) {
+            } else if ( search == "reso3freq" ) {
                 this.reso3FreqBPList = value;
-            } else if ( str.compare( search, "reso4amp" ) ) {
+            } else if ( search == "reso4amp" ) {
                 this.reso4AmpBPList = value;
-            } else if ( str.compare( search, "reso4bw" ) ) {
+            } else if ( search == "reso4bw" ) {
                 this.reso4BWBPList = value;
-            } else if ( str.compare( search, "reso4freq" ) ) {
+            } else if ( search == "reso4freq" ) {
                 this.reso4FreqBPList = value;
             } else {
 #if DEBUG
@@ -437,8 +437,8 @@ namespace cadencii.vsq
             int current_id = -1;
             int current_handle = -1;
             boolean add_quotation_mark = true;
-            boolean is_vocalo1 = str.startsWith( Common.Version, "DSB2" );
-            boolean is_vocalo2 = str.startsWith( Common.Version, "DSB3" );
+            boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
+            boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 current_id++;
@@ -772,26 +772,26 @@ namespace cadencii.vsq
             ByRef<String> last_line = new ByRef<String>( sr.readLine() );
             while ( true ) {
                 #region "TextMemoryStreamから順次読込み"
-                if ( str.length( last_line.value ) == 0 ) {
+                if ( last_line.value.Length == 0 ) {
                     break;
                 }
-                if ( str.compare( last_line.value, "[Common]" ) ) {
+                if ( last_line.value == "[Common]" ) {
                     Common = new VsqCommon( sr, last_line );
-                } else if ( str.compare( last_line.value, "[Master]" ) ) {
+                } else if ( last_line.value == "[Master]" ) {
                     master = new VsqMaster( sr, last_line );
-                } else if ( str.compare( last_line.value, "[Mixer]" ) ) {
+                } else if ( last_line.value == "[Mixer]" ) {
                     mixer = new VsqMixer( sr, last_line );
-                } else if ( str.compare( last_line.value, "[EventList]" ) ) {
+                } else if ( last_line.value == "[EventList]" ) {
                     last_line.value = sr.readLine();
-                    while ( !str.startsWith( last_line.value, "[" ) ) {
+                    while ( !last_line.value.StartsWith( "[" ) ) {
                         String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                        int clock = str.toi( spl2[0] );
+                        int clock = int.Parse( spl2[0] );
                         int id_number = -1;
-                        if ( !str.compare( spl2[1], "EOS" ) ) {
+                        if ( spl2[1] != "EOS" ) {
                             String[] ids = PortUtil.splitString( spl2[1], ',' );
                             for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
-                                id_number = str.toi( spl3[1] );
+                                id_number = int.Parse( spl3[1] );
                                 t_event_list.Add( new ValuePair<Integer, Integer>( clock, id_number ) );
                             }
                         } else {
@@ -803,51 +803,51 @@ namespace cadencii.vsq
                             last_line.value = sr.readLine();
                         }
                     }
-                } else if ( str.compare( last_line.value, "[PitchBendBPList]" ) ) {
+                } else if ( last_line.value == "[PitchBendBPList]" ) {
                     last_line.value = PIT.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[PitchBendSensBPList]" ) ) {
+                } else if ( last_line.value == "[PitchBendSensBPList]" ) {
                     last_line.value = PBS.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[DynamicsBPList]" ) ) {
+                } else if ( last_line.value == "[DynamicsBPList]" ) {
                     last_line.value = DYN.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[EpRResidualBPList]" ) ) {
+                } else if ( last_line.value == "[EpRResidualBPList]" ) {
                     last_line.value = BRE.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[EpRESlopeBPList]" ) ) {
+                } else if ( last_line.value == "[EpRESlopeBPList]" ) {
                     last_line.value = BRI.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[EpRESlopeDepthBPList]" ) ) {
+                } else if ( last_line.value == "[EpRESlopeDepthBPList]" ) {
                     last_line.value = CLE.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[EpRSineBPList]" ) ) {
+                } else if ( last_line.value == "[EpRSineBPList]" ) {
                     last_line.value = harmonics.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[VibTremDepthBPList]" ) ) {
+                } else if ( last_line.value == "[VibTremDepthBPList]" ) {
                     last_line.value = fx2depth.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso1FreqBPList]" ) ) {
+                } else if ( last_line.value == "[Reso1FreqBPList]" ) {
                     last_line.value = reso1FreqBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso2FreqBPList]" ) ) {
+                } else if ( last_line.value == "[Reso2FreqBPList]" ) {
                     last_line.value = reso2FreqBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso3FreqBPList]" ) ) {
+                } else if ( last_line.value == "[Reso3FreqBPList]" ) {
                     last_line.value = reso3FreqBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso4FreqBPList]" ) ) {
+                } else if ( last_line.value == "[Reso4FreqBPList]" ) {
                     last_line.value = reso4FreqBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso1BWBPList]" ) ) {
+                } else if ( last_line.value == "[Reso1BWBPList]" ) {
                     last_line.value = reso1BWBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso2BWBPList]" ) ) {
+                } else if ( last_line.value == "[Reso2BWBPList]" ) {
                     last_line.value = reso2BWBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso3BWBPList]" ) ) {
+                } else if ( last_line.value == "[Reso3BWBPList]" ) {
                     last_line.value = reso3BWBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso4BWBPList]" ) ) {
+                } else if ( last_line.value == "[Reso4BWBPList]" ) {
                     last_line.value = reso4BWBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso1AmpBPList]" ) ) {
+                } else if ( last_line.value == "[Reso1AmpBPList]" ) {
                     last_line.value = reso1AmpBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso2AmpBPList]" ) ) {
+                } else if ( last_line.value == "[Reso2AmpBPList]" ) {
                     last_line.value = reso2AmpBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso3AmpBPList]" ) ) {
+                } else if ( last_line.value == "[Reso3AmpBPList]" ) {
                     last_line.value = reso3AmpBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[Reso4AmpBPList]" ) ) {
+                } else if ( last_line.value == "[Reso4AmpBPList]" ) {
                     last_line.value = reso4AmpBPList.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[GenderFactorBPList]" ) ) {
+                } else if ( last_line.value == "[GenderFactorBPList]" ) {
                     last_line.value = GEN.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[PortamentoTimingBPList]" ) ) {
+                } else if ( last_line.value == "[PortamentoTimingBPList]" ) {
                     last_line.value = POR.appendFromText( sr );
-                } else if ( str.compare( last_line.value, "[OpeningBPList]" ) ) {
+                } else if ( last_line.value == "[OpeningBPList]" ) {
                     last_line.value = OPE.appendFromText( sr );
                 } else {
                     String buffer = last_line.value;
@@ -857,10 +857,10 @@ namespace cadencii.vsq
                     sout.println( "VsqMetaText#.ctor; buffer=" + buffer );
 #endif
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
-                    int index = str.toi( spl[1] );
-                    if ( str.startsWith( last_line.value, "[ID#" ) ) {
+                    int index = int.Parse( spl[1] );
+                    if ( last_line.value.StartsWith( "[ID#" ) ) {
                         __id.put( index, new VsqID( sr, index, last_line ) );
-                    } else if ( str.startsWith( last_line.value, "[h#" ) ) {
+                    } else if ( last_line.value.StartsWith( "[h#" ) ) {
                         __handle.put( index, new VsqHandle( sr, index, last_line ) );
                     }
                 }

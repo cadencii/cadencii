@@ -326,7 +326,7 @@ namespace cadencii {
             }
             String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
             String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-            if ( !str.compare( vocalo2_dll_path, "" ) &&
+            if ( vocalo2_dll_path != "" &&
                     fsys.isFileExists( vocalo2_dll_path ) &&
                     !AppManager.editorConfig.DoNotUseVocaloid2 ) {
                 VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID2 );
@@ -334,7 +334,7 @@ namespace cadencii {
                 vr.loaded = false;
                 vocaloidDriver.add( vr );
             }
-            if ( !str.compare( vocalo1_dll_path, "" ) &&
+            if ( vocalo1_dll_path != "" &&
                     fsys.isFileExists( vocalo1_dll_path ) &&
                     !AppManager.editorConfig.DoNotUseVocaloid1 ) {
                 VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID1 );

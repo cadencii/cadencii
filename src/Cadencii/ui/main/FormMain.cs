@@ -867,7 +867,7 @@ namespace cadencii
             AppManager.iconPalette = new FormIconPalette( this );
 
             // ファイルを開く
-            if ( !str.compare( file, "" ) ) {
+            if ( file != "" ) {
                 if ( fsys.isFileExists( file ) ) {
                     String low_file = file.ToLower();
                     if ( low_file.EndsWith( ".xvsq" ) ) {
@@ -965,7 +965,7 @@ namespace cadencii
             // RunOnceという名前のスクリプトがあれば，そいつを実行
             for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
                 String id = itr.next();
-                if ( str.compare( PortUtil.getFileNameWithoutExtension( id ).ToLower(), "runonce" ) ) {
+                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower() == "runonce" ) {
                     ScriptServer.invokeScript( id, AppManager.getVsqFile() );
                     break;
                 }
@@ -1243,14 +1243,14 @@ namespace cadencii
         {
             String utau = Utility.getExecutingUtau();
             String utau_dir = "";
-            if ( !str.compare( utau, "" ) ) {
+            if ( utau != "" ) {
                 utau_dir = PortUtil.getDirectoryName( utau );
             }
 
             // 可能なら，VOICEの文字列を置換する
             String search = "%VOICE%";
-            if ( str.startsWith( singer_path.value, search ) && str.length( singer_path.value ) > str.length( search ) ) {
-                singer_path.value = str.sub( singer_path.value, str.length( search ) );
+            if ( singer_path.value.StartsWith( search ) && singer_path.value.Length > search.Length ) {
+                singer_path.value = singer_path.value.Substring( search.Length );
                 singer_path.value = fsys.combine( fsys.combine( utau_dir, "voice" ), singer_path.value );
             }
 
@@ -1266,7 +1266,7 @@ namespace cadencii
                     if ( sc == null ) {
                         continue;
                     }
-                    if ( str.compare( sc.VOICEIDSTR, singer_path.value ) ) {
+                    if ( sc.VOICEIDSTR == singer_path.value ) {
                         found = true;
                         break;
                     }
@@ -1280,16 +1280,16 @@ namespace cadencii
             sout.println( "FormMain#checkUnknownResamplerAndSinger; resampler_path.value=" + resampler_path.value );
 #endif
             String resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
-            if ( str.compare( resampler_dir, "" ) ) {
+            if ( resampler_dir == "" ) {
                 // ディレクトリが空欄なので，UTAUのデフォルトのリサンプラー指定である
                 resampler_path.value = fsys.combine( utau_dir, resampler_path.value );
                 resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
             }
-            if ( !str.compare( resampler_dir, "" ) &&  fsys.isFileExists( resampler_path.value ) ) {
+            if ( resampler_dir != "" &&  fsys.isFileExists( resampler_path.value ) ) {
                 boolean found = false;
                 for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                     String resampler = AppManager.editorConfig.getResamplerAt( i );
-                    if ( str.compare( resampler, resampler_path.value ) ) {
+                    if ( resampler == resampler_path.value ) {
                         found = true;
                         break;
                     }
@@ -2537,7 +2537,7 @@ namespace cadencii
                 return null;
             }
 
-            if ( str.compare( tree_name, name ) ) {
+            if ( tree_name == name ) {
                 parent.value = null;
                 return tree;
             } else {
@@ -2554,7 +2554,7 @@ namespace cadencii
                         continue;
                     }
 
-                    if ( str.compare( tsi_name, name ) ) {
+                    if ( tsi_name == name ) {
                         return tsi;
                     }
                     Object ret = searchMenuItemRecurse( name, tsi, parent );
@@ -3019,7 +3019,7 @@ namespace cadencii
         {
             if ( mEdited ) {
                 String file = AppManager.getFileName();
-                if ( str.compare( file, "" ) ) {
+                if ( file == "" ) {
                     file = "Untitled";
                 } else {
                     file = PortUtil.getFileName( file );
@@ -3029,7 +3029,7 @@ namespace cadencii
                                                               cadencii.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
                                                               cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == DialogResult.Yes ) {
-                    if ( str.compare( AppManager.getFileName(), "" ) ) {
+                    if ( AppManager.getFileName() == "" ) {
                         var dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr2 == System.Windows.Forms.DialogResult.OK ) {
                             String sf = saveXmlVsqDialog.FileName;
@@ -3232,7 +3232,7 @@ namespace cadencii
             int txtlen = PortUtil.getStringLength( txt );
             if ( txtlen > 0 ) {
                 // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
-                phrase[0] = str.sub( txt, 0, 1 ) + ((txtlen > 1) ? str.sub( txt, 1 ).Replace( "-", "" ) : "");
+                phrase[0] = txt.Substring( 0, 1 ) + ((txtlen > 1) ? txt.Substring( 1 ).Replace( "-", "" ) : "");
             } else {
                 phrase[0] = "";
             }
@@ -3246,8 +3246,8 @@ namespace cadencii
             }
 
             // 発音記号または歌詞が変更された場合の処理
-            if ( (phonetic_symbol_edit_mode && !str.compare( AppManager.mInputTextBox.Text, original_symbol[0] )) ||
-                 (!phonetic_symbol_edit_mode && !str.compare( phrase[0], original_phrase[0] )) ) {
+            if ( (phonetic_symbol_edit_mode && AppManager.mInputTextBox.Text != original_symbol[0]) ||
+                 (!phonetic_symbol_edit_mode && phrase[0] != original_phrase[0]) ) {
                 if ( phonetic_symbol_edit_mode ) {
                     // 発音記号を編集するモード
                     phrase[0] = AppManager.mInputTextBox.getBufferText();
@@ -3323,7 +3323,7 @@ namespace cadencii
                         items[j].ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol[j] );
                         AppManager.applyUtauParameter( vsq_track, items[j] );
                     }
-                    if ( !str.compare( original_symbol[j], phonetic_symbol[j] ) ) {
+                    if ( original_symbol[j] != phonetic_symbol[j] ) {
 #if JAVA
                         Vector<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #else
@@ -3516,7 +3516,7 @@ namespace cadencii
             int count = 0;
             for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
                 String id = itr.next();
-                if ( str.compare( PortUtil.getFileNameWithoutExtension( id ).ToLower(), "runonce" ) ) {
+                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower() == "runonce" ) {
                     continue;
                 }
                 String display = ScriptServer.getDisplayName( id );
@@ -3957,7 +3957,7 @@ namespace cadencii
             ByRef<Object> parent = new ByRef<Object>( null );
             for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
                 String key = itr.next();
-                if ( str.compare( key, "menuEditCopy" ) || str.compare( key, "menuEditCut" ) || str.compare( key, "menuEditPaste" ) || str.compare( key, "SpecialShortcutGoToFirst" ) ) {
+                if ( key == "menuEditCopy" || key == "menuEditCut" || key == "menuEditPaste" || key == "SpecialShortcutGoToFirst" ) {
                     continue;
                 }
                 Object menu = searchMenuItemFromName( key, parent );
@@ -6193,7 +6193,7 @@ namespace cadencii
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tag;
-                            tsb.Pushed = str.compare( AppManager.mSelectedPaletteTool, id );
+                            tsb.Pushed = (AppManager.mSelectedPaletteTool == id);
                         } else
 #endif // ENABLE_SCRIPT
  {
@@ -6210,7 +6210,7 @@ namespace cadencii
                     boolean sel = false;
 #if ENABLE_SCRIPT
                     if ( tool == EditTool.PALETTE_TOOL ) {
-                        sel = str.compare( AppManager.mSelectedPaletteTool, id );
+                        sel = (AppManager.mSelectedPaletteTool == id);
                     }
 #endif
                     tsmi.Checked = sel;
@@ -6224,7 +6224,7 @@ namespace cadencii
                     boolean sel = false;
 #if ENABLE_SCRIPT
                     if ( tool == EditTool.PALETTE_TOOL ) {
-                        sel = str.compare( AppManager.mSelectedPaletteTool, id );
+                        sel = (AppManager.mSelectedPaletteTool == id);
                     }
 #endif
                     tsmi.Checked = sel;
@@ -6353,7 +6353,7 @@ namespace cadencii
                                     UtauVoiceDB db = AppManager.mUtauVoiceDB.get(sc.VOICEIDSTR);
                                     OtoArgs oa = db.attachFileNameFromLyric(lyric_jp);
                                     if (oa.fileName == null ||
-                                        (oa.fileName != null && str.compare(oa.fileName, ""))) {
+                                        (oa.fileName != null && oa.fileName == "")) {
                                         is_valid_for_utau = false;
                                     } else {
                                         is_valid_for_utau = fsys.isFileExists(fsys.combine(sc.VOICEIDSTR, oa.fileName));
@@ -6579,7 +6579,7 @@ namespace cadencii
         {
             mEdited = value;
             String file = AppManager.getFileName();
-            if ( str.compare( file, "" ) ) {
+            if ( file == "" ) {
                 file = "Untitled";
             } else {
                 file = PortUtil.getFileNameWithoutExtension( file );
@@ -6588,7 +6588,7 @@ namespace cadencii
                 file += " *";
             }
             String title = file + " - " + _APP_NAME;
-            if ( !str.compare( this.Text, title ) ) {
+            if ( this.Text != title ) {
                 this.Text = title;
             }
             boolean redo = AppManager.editHistory.hasRedoHistory();
@@ -6770,10 +6770,10 @@ namespace cadencii
                 if ( cacheDir == null ) {
                     cacheDir = "";
                 }
-                if ( !str.compare( cacheDir, "" ) &&
+                if ( cacheDir != "" &&
                      fsys.isDirectoryExists( cacheDir ) &&
-                     !str.compare( estimatedCacheDir, "" ) &&
-                     !str.compare( cacheDir, estimatedCacheDir ) ) {
+                     estimatedCacheDir != "" &&
+                     cacheDir != estimatedCacheDir ) {
                     // ファイル名から推測されるキャッシュディレクトリ名と
                     // xvsqに指定されているキャッシュディレクトリと異なる場合
                     // cacheDirの必要な部分をestimatedCacheDirに移す
@@ -6865,7 +6865,7 @@ namespace cadencii
 
         public void updateMenuFonts()
         {
-            if ( str.compare( AppManager.editorConfig.BaseFontName, "" ) ) {
+            if ( AppManager.editorConfig.BaseFontName == "" ) {
                 return;
             }
             Font font = AppManager.editorConfig.getBaseFont();
@@ -11995,7 +11995,7 @@ namespace cadencii
                     if ( sc == null ) {
                         continue;
                     }
-                    if ( str.compare( sc.VOICEIDSTR, ref_singer.value ) ) {
+                    if ( sc.VOICEIDSTR == ref_singer.value ) {
                         program = i;
                         break;
                     }
@@ -12026,7 +12026,7 @@ namespace cadencii
                     VsqTrack vsq_track = vsq.Track[j];
                     for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                         String resampler = AppManager.editorConfig.getResamplerAt( i );
-                        if ( str.compare( resampler, ref_resampler.value ) ) {
+                        if ( resampler == ref_resampler.value ) {
                             VsqFileEx.setTrackResamplerUsed( vsq_track, i );
                             break;
                         }
@@ -12265,7 +12265,7 @@ namespace cadencii
                     if ( sc == null ) {
                         continue;
                     }
-                    if ( str.compare( sc.VOICEIDSTR, ref_singer.value ) ) {
+                    if ( sc.VOICEIDSTR == ref_singer.value ) {
                         program = i;
                         break;
                     }
@@ -12296,7 +12296,7 @@ namespace cadencii
                     VsqTrack vsq_track = vsq.Track[j];
                     for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                         String resampler = AppManager.editorConfig.getResamplerAt( i );
-                        if ( str.compare( resampler, ref_resampler.value ) ) {
+                        if ( resampler == ref_resampler.value ) {
                             VsqFileEx.setTrackResamplerUsed( vsq_track, i );
                             break;
                         }
@@ -12361,7 +12361,7 @@ namespace cadencii
             try {
                 String filename = openMidiDialog.FileName;
                 String actualReadFile = filename;
-                bool isVsqx = str.endsWith( filename, ".vsqx" );
+                bool isVsqx = filename.EndsWith( ".vsqx" );
                 if ( isVsqx ) {
                     actualReadFile = PortUtil.createTempFile();
                     VsqFile temporarySequence = VsqxReader.readFromVsqx( filename );
@@ -12888,7 +12888,7 @@ namespace cadencii
                     String s = casted_owner_item.Text;
                     int i = s.IndexOf( "(&" );
                     if ( i > 0 ) {
-                        s = str.sub( s, 0, i );
+                        s = s.Substring( 0, i );
                     }
                     parent = s + " -> ";
                 }
@@ -12909,7 +12909,7 @@ namespace cadencii
                 String s1 = casted_menu.Text;
                 int i1 = s1.IndexOf( "(&" );
                 if ( i1 > 0 ) {
-                    s1 = str.sub( s1, 0, i1 );
+                    s1 = s1.Substring( 0, i1 );
                 }
                 dict.put( parent + s1, new ValuePair<String, Keys[]>( name, configured.get( name ) ) );
             }
@@ -13432,7 +13432,7 @@ namespace cadencii
                     String str_result = dialog.getResult();
                     int result = old_pre_measure;
                     try {
-                        result = str.toi( str_result );
+                        result = int.Parse( str_result );
                     } catch ( Exception ex ) {
                         result = old_pre_measure;
                     }
@@ -16530,7 +16530,7 @@ namespace cadencii
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
                     String tagged_id = menu.getPaletteToolID();
-                    menu.Checked = str.compare( id, tagged_id );
+                    menu.Checked = (id == tagged_id);
                 }
             }
 
@@ -16541,7 +16541,7 @@ namespace cadencii
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
                     String tagged_id = menu.getPaletteToolID();
-                    menu.Checked = str.compare( id, tagged_id );
+                    menu.Checked = (id == tagged_id);
                 }
             }
         }
@@ -17092,7 +17092,7 @@ namespace cadencii
                 }
                 double draft;
                 try {
-                    draft = str.tof( ib.getResult() );
+                    draft = double.Parse( ib.getResult() );
                     item.readOffsetSeconds = draft;
                     menu.ToolTipText = draft + " " + _( "seconds" );
                 } catch ( Exception ex3 ) {
@@ -17156,7 +17156,7 @@ namespace cadencii
             boolean found = false;
             for ( int i = 0; i < count; i++ ) {
                 BgmFile item = AppManager.getBgm( i );
-                if ( str.compare( file, item.file ) ) {
+                if ( file == item.file ) {
                     found = true;
                     break;
                 }

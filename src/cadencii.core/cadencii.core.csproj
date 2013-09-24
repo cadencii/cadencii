@@ -102,7 +102,6 @@
     <Compile Include="serr.cs" />
     <Compile Include="sound.midi.cs" />
     <Compile Include="sout.cs" />
-    <Compile Include="str.cs" />
     <Compile Include="swing.cs">
     </Compile>
     <Compile Include="util.cs" />

@@ -76,9 +76,9 @@ namespace cadencii
             double end = this.vsq.getSecFromClock( cend );
             int istart = (int)Math.Floor( start );
             int iend = (int)Math.Floor( end );
-            message += istart + "." + str.format( (int)((start - istart) * 100), 2 ) + " " + _( "sec" );
+            message += istart + "." + ((int)((start - istart) * 100)).ToString("D2") + " " + _("sec");
             message += " - ";
-            message += iend + "." + str.format( (int)((end - iend) * 100), 2 ) + " " + _( "sec" );
+            message += iend + "." + ((int)((end - iend) * 100)).ToString("D2") + " " + _( "sec" );
 
             return message;
         }

@@ -68,14 +68,14 @@ namespace cadencii.vsq
                 spl = PortUtil.splitString( spl[1], ',' );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
                 if ( spl.Length >= 8 ) {
-                    Length = (float)str.tof( spl[0] );
-                    Period = (float)str.tof( spl[1] );
-                    Depth = (float)str.tof( spl[2] );
-                    In = (float)str.tof( spl[3] );
-                    Out = (float)str.tof( spl[4] );
-                    Phase = (float)str.tof( spl[5] );
-                    Shift = (float)str.tof( spl[6] );
-                    Unknown = (float)str.tof( spl[7] );
+                    Length = (float)double.Parse( spl[0] );
+                    Period = (float)double.Parse( spl[1] );
+                    Depth = (float)double.Parse( spl[2] );
+                    In = (float)double.Parse( spl[3] );
+                    Out = (float)double.Parse( spl[4] );
+                    Phase = (float)double.Parse( spl[5] );
+                    Shift = (float)double.Parse( spl[6] );
+                    Unknown = (float)double.Parse( spl[7] );
                 }
             }
         }

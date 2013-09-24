@@ -117,7 +117,7 @@ namespace cadencii.vsq
             if ( file == null ) {
                 return;
             }
-            if ( str.compare( file, "" ) ) {
+            if ( file == "" ) {
                 return;
             }
             BufferedReader sr = null;
@@ -137,7 +137,7 @@ namespace cadencii.vsq
                     // コメントを除去する
                     int indx_colon = line.IndexOf( ';' );
                     if ( indx_colon >= 0 ) {
-                        line = str.sub( line, 0, indx_colon );
+                        line = line.Substring( 0, indx_colon );
                     }
                     // セクション名の指定行
                     if ( line.StartsWith( "[" ) ) {
@@ -150,93 +150,93 @@ namespace cadencii.vsq
                     }
                     String name = spl[0].Trim();// new char[]{ ' ', '\t' } );
                     String value = spl[1].Trim();// new char[]{ ' ', '\t' } );
-                    if ( str.compare( name, "Articulation" ) ) {
-                        if ( str.compare( value, "Vibrato" ) ) {
+                    if ( name == "Articulation" ) {
+                        if ( value == "Vibrato" ) {
                             articulation = ArticulationType.Vibrato;
-                        } else if ( str.compare( value, "Crescendo" ) ) {
+                        } else if ( value == "Crescendo" ) {
                             articulation = ArticulationType.Crescendo;
-                        } else if ( str.compare( value, "Dynaff" ) ) {
+                        } else if ( value == "Dynaff" ) {
                             articulation = ArticulationType.Dynaff;
-                        } else if ( str.compare( value, "NoteAttack" ) ) {
+                        } else if ( value == "NoteAttack" ) {
                             articulation = ArticulationType.NoteAttack;
-                        } else if ( str.compare( value, "NoteTransition" ) ) {
+                        } else if ( value == "NoteTransition" ) {
                             articulation = ArticulationType.NoteTransition;
                         }
-                    } else if ( str.compare( name, "Button" ) ) {
+                    } else if ( name == "Button" ) {
                         button = value;
-                    } else if ( str.compare( name, "Caption" ) ) {
+                    } else if ( name == "Caption" ) {
                         caption = value;
-                    } else if ( str.compare( name, "Length" ) ) {
+                    } else if ( name == "Length" ) {
                         try {
-                            length = str.toi( value );
+                            length = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "StartDepth" ) ) {
+                    } else if ( name == "StartDepth" ) {
                         try {
-                            startDepth = str.toi( value );
+                            startDepth = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "EndDepth" ) ) {
+                    } else if ( name == "EndDepth" ) {
                         try {
-                            endDepth = str.toi( value );
+                            endDepth = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "StartRate" ) ) {
+                    } else if ( name == "StartRate" ) {
                         try {
-                            startRate = str.toi( value );
+                            startRate = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "EndRate" ) ) {
+                    } else if ( name == "EndRate" ) {
                         try {
-                            endRate = str.toi( value );
+                            endRate = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "StartDyn" ) ) {
+                    } else if ( name == "StartDyn" ) {
                         try {
-                            startDyn = str.toi( value );
+                            startDyn = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "EndDyn" ) ) {
+                    } else if ( name == "EndDyn" ) {
                         try {
-                            endDyn = str.toi( value );
+                            endDyn = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "Duration" ) ) {
+                    } else if ( name == "Duration" ) {
                         try {
-                            duration = str.toi( value );
+                            duration = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "Depth" ) ) {
+                    } else if ( name == "Depth" ) {
                         try {
-                            depth = str.toi( value );
+                            depth = int.Parse( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( str.compare( name, "DynBPNum" ) ) {
+                    } else if ( name == "DynBPNum" ) {
                         strDynBPNum = value;
-                    } else if ( str.compare( name, "DynBPX" ) ) {
+                    } else if ( name == "DynBPX" ) {
                         strDynBPX = value;
-                    } else if ( str.compare( name, "DynBPY" ) ) {
+                    } else if ( name == "DynBPY" ) {
                         strDynBPY = value;
-                    } else if ( str.compare( name, "DepthBPNum" ) ) {
+                    } else if ( name == "DepthBPNum" ) {
                         strDepthBPNum = value;
-                    } else if ( str.compare( name, "DepthBPX" ) ) {
+                    } else if ( name == "DepthBPX" ) {
                         strDepthBPX = value;
-                    } else if ( str.compare( name, "DepthBPY" ) ) {
+                    } else if ( name == "DepthBPY" ) {
                         strDepthBPY = value;
-                    } else if ( str.compare( name, "RateBPNum" ) ) {
+                    } else if ( name == "RateBPNum" ) {
                         strRateBPNum = value;
-                    } else if ( str.compare( name, "RateBPX" ) ) {
+                    } else if ( name == "RateBPX" ) {
                         strRateBPX = value;
-                    } else if ( str.compare( name, "RateBPY" ) ) {
+                    } else if ( name == "RateBPY" ) {
                         strRateBPY = value;
                     }
                 }
@@ -265,12 +265,12 @@ namespace cadencii.vsq
         private static VibratoBPList getBPListFromText( String strNum, String strBPX, String strBPY )
         {
             VibratoBPList ret = null;
-            if ( strNum == null || (strNum != null && str.compare( strNum, "" )) ) {
+            if ( strNum == null || (strNum != null && strNum == "") ) {
                 return ret;
             }
             int num = 0;
             try {
-                num = str.toi( strNum );
+                num = int.Parse( strNum );
             } catch ( Exception ex ) {
                 serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                 num = 0;
@@ -283,8 +283,8 @@ namespace cadencii.vsq
                 int[] y = new int[actNum];
                 for ( int i = 0; i < actNum; i++ ) {
                     try {
-                        x[i] = (float)str.tof( sx[i] );
-                        y[i] = str.toi( sy[i] );
+                        x[i] = (float)double.Parse( sx[i] );
+                        y[i] = int.Parse( sy[i] );
                     } catch ( Exception ex ) {
                         serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                     }

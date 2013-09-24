@@ -58,7 +58,7 @@ namespace cadencii.vsq
         /// <param name="line">ustに記録されるエンベロープの記述行</param>
         public UstEnvelope( String line )
         {
-            if ( !str.startsWith( str.toLower( line ), "envelope=" ) ) {
+            if ( !line.ToLower().StartsWith( "envelope=" ) ) {
                 return;
             }
             String[] spl = PortUtil.splitString( line, '=' );
@@ -70,17 +70,17 @@ namespace cadencii.vsq
                 return;
             }
             try {
-                p1 = (int)str.tof( spl[0] );
-                p2 = (int)str.tof( spl[1] );
-                p3 = (int)str.tof( spl[2] );
-                v1 = (int)str.tof( spl[3] );
-                v2 = (int)str.tof( spl[4] );
-                v3 = (int)str.tof( spl[5] );
-                v4 = (int)str.tof( spl[6] );
+                p1 = (int)double.Parse( spl[0] );
+                p2 = (int)double.Parse( spl[1] );
+                p3 = (int)double.Parse( spl[2] );
+                v1 = (int)double.Parse( spl[3] );
+                v2 = (int)double.Parse( spl[4] );
+                v3 = (int)double.Parse( spl[5] );
+                v4 = (int)double.Parse( spl[6] );
                 if ( spl.Length == 11 ) {
-                    p4 = (int)str.tof( spl[8] );
-                    p5 = (int)str.tof( spl[9] );
-                    v5 = (int)str.tof( spl[10] );
+                    p4 = (int)double.Parse( spl[8] );
+                    p5 = (int)double.Parse( spl[9] );
+                    v5 = (int)double.Parse( spl[10] );
                 }
             } catch ( Exception ex ) {
             }

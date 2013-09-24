@@ -278,10 +278,10 @@ namespace cadencii.vsq
                     continue;
                 }
                 try {
-                    int clock = str.toi( spl2[0] );
+                    int clock = int.Parse( spl2[0] );
                     ensureBufferLength( length + 1 );
                     clocks[length] = clock;
-                    items[length] = new VsqBPPair( str.toi( spl2[1] ), maxId + 1 );
+                    items[length] = new VsqBPPair( int.Parse( spl2[1] ), maxId + 1 );
                     maxId++;
                     length++;
                 } catch ( Exception ex ) {

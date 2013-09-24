@@ -148,7 +148,7 @@ namespace cadencii.vsq
                 }
             }
             foreach ( String s in _SYMBOL_CONSONANT_EN ) {
-                if ( str.compare( s, symbol ) ) {
+                if ( s == symbol ) {
                     return true;
                 }
             }
@@ -163,22 +163,22 @@ namespace cadencii.vsq
         public static boolean isValidSymbol( String symbol )
         {
             foreach ( String s in _SYMBOL_VOWEL_JP ) {
-                if ( str.compare( s, symbol ) ) {
+                if ( s == symbol ) {
                     return true;
                 }
             }
             foreach ( String s in _SYMBOL_CONSONANT_JP ) {
-                if ( str.compare( s, symbol ) ) {
+                if ( s == symbol ) {
                     return true;
                 }
             }
             foreach ( String s in _SYMBOL_VOWEL_EN ) {
-                if ( str.compare( s, symbol ) ) {
+                if ( s == symbol ) {
                     return true;
                 }
             }
             foreach ( String s in _SYMBOL_CONSONANT_EN ) {
-                if ( str.compare( s, symbol ) ) {
+                if ( s == symbol ) {
                     return true;
                 }
             }
@@ -186,10 +186,10 @@ namespace cadencii.vsq
             // ブレスの判定
             int strlen = PortUtil.getStringLength( symbol );
             if ( symbol.StartsWith( "br" ) && strlen > 2 ) {
-                String s = str.sub( symbol, 2 );
+                String s = symbol.Substring( 2 );
                 try {
                     // br001とかをfalseにするためのチェック
-                    int num = str.toi( s );
+                    int num = int.Parse( s );
                     if ( s.Equals( "" + num ) ) {
                         return true;
                     }

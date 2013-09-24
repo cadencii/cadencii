@@ -58,19 +58,19 @@ using System;
                     String[] spl = PortUtil.splitString( s, '.' );
                     if ( spl.Length >= 1 ) {
                         try {
-                            major = str.toi( spl[0] );
+                            major = int.Parse( spl[0] );
                         } catch ( Exception ex ) {
                         }
                     }
                     if ( spl.Length >= 2 ) {
                         try {
-                            minor = str.toi( spl[1] );
+                            minor = int.Parse( spl[1] );
                         } catch ( Exception ex ) {
                         }
                     }
                     if ( spl.Length >= 3 ) {
                         try {
-                            build = str.toi( spl[2] );
+                            build = int.Parse( spl[2] );
                         } catch ( Exception ex ) {
                         }
                     }

@@ -104,7 +104,7 @@ namespace cadencii
             String str_indx = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED );
             int ret = 0;
             try {
-                ret = str.toi( str_indx );
+                ret = int.Parse( str_indx );
             } catch ( Exception ex ) {
                 ret = 0;
             }

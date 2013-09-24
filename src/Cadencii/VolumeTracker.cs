@@ -228,9 +228,9 @@ namespace cadencii
 
         private void updateTitle()
         {
-            if ( str.compare( m_number, "" ) ) {
+            if ( m_number == "" ) {
                 lblTitle.Text = m_title;
-            } else if ( str.compare( m_title, "" ) ) {
+            } else if ( m_title == "" ) {
                 lblTitle.Text = m_number;
             } else {
                 lblTitle.Text = m_number + " " + m_title;
@@ -458,7 +458,7 @@ namespace cadencii
             }
 #endif
             try {
-                int feder = (int)((float)str.tof( txtFeder.Text ) * 10.0f);
+                int feder = (int)((float)double.Parse( txtFeder.Text ) * 10.0f);
                 if ( 55 < feder ) {
                     feder = 55;
                 }
@@ -486,7 +486,7 @@ namespace cadencii
             }
 #endif
             try {
-                int panpot = str.toi( txtPanpot.Text );
+                int panpot = int.Parse( txtPanpot.Text );
                 if ( panpot < -64 ) {
                     panpot = -64;
                 }

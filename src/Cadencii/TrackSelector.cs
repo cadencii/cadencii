@@ -1855,10 +1855,10 @@ namespace cadencii
                 Font font = AppManager.baseFont10;
 #endif
                 Dimension s = Util.measureString( flag_title + " ", font );
-                mTextWidthPerLetter = s.width / (float)str.length( flag_title );
+                mTextWidthPerLetter = s.width / (float)flag_title.Length;
                 mTextHeight = s.height;
             }
-            return new Dimension( (int)(str.length( flag_title) * mTextWidthPerLetter), mTextHeight );
+            return new Dimension( (int)(flag_title.Length * mTextWidthPerLetter), mTextHeight );
         }
 
         /// <summary>

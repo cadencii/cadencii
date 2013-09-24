@@ -56,16 +56,16 @@ namespace cadencii
 
             for ( int i = 0; i < arg.Length; i++ ) {
                 String argi = arg[i];
-                if ( str.startsWith( argi, "-" ) ) {
+                if ( argi.StartsWith( "-" ) ) {
                     currentparse = argi;
-                    if ( str.compare( argi, "--version" ) ) {
+                    if ( argi == "--version" ) {
                         mPrintVersion = true;
                         currentparse = "";
                     }
                 } else {
-                    if ( str.compare( currentparse, "" ) ) {
+                    if ( currentparse == "" ) {
                         mPathVsq = argi;
-                    } else if ( str.compare( currentparse, "-resources" ) ) {
+                    } else if ( currentparse == "-resources" ) {
                         mPathResource = argi;
                     }
                     currentparse = "";
@@ -141,7 +141,7 @@ namespace cadencii
                 return;
             }
             String file = mPathVsq;
-            if (!str.compare(mPathResource, "")) {
+            if (mPathResource != "") {
                 Resources.setBasePath(mPathResource);
             }
 
@@ -173,7 +173,7 @@ namespace cadencii
             String str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
-                minor = str.toi(str_minor);
+                minor = int.Parse(str_minor);
             } catch (Exception ex) {
             }
             if ((minor % 2) != 0) {

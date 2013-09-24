@@ -85,8 +85,8 @@ namespace cadencii.vsq
         public boolean equalsForSynth( Lyric item )
         {
             if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
-            if ( !str.compare( this.getPhoneticSymbol(), item.getPhoneticSymbol() ) ) return false;
-            if ( !str.compare( this.getConsonantAdjustment(), item.getConsonantAdjustment() ) ) return false;
+            if ( this.getPhoneticSymbol() != item.getPhoneticSymbol() ) return false;
+            if ( this.getConsonantAdjustment() != item.getConsonantAdjustment() ) return false;
             return true;
         }
 
@@ -98,7 +98,7 @@ namespace cadencii.vsq
         public boolean equals( Lyric item )
         {
             if ( !equalsForSynth( item ) ) return false;
-            if ( !str.compare( this.Phrase, item.Phrase ) ) return false;
+            if ( this.Phrase != item.Phrase ) return false;
             if ( this.UnknownFloat != item.UnknownFloat ) return false;
             return true;
         }
@@ -127,16 +127,8 @@ namespace cadencii.vsq
         /// <param name="value"></param>
         public void setConsonantAdjustment( String value )
         {
-#if __cplusplus
-            vector<string> spl;
-            vector<string> tokenizer;
-#else
             List<String> spl = new List<String>();
-            List<String> tokenizer = new List<String>();
-#endif
-            tokenizer.Add( " " );
-            tokenizer.Add( "," );
-            str.split( value, spl, tokenizer, true );
+            spl = new List<string>(value.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries));
 
             int size = spl.Count;
 #if __cplusplus
@@ -149,7 +141,7 @@ namespace cadencii.vsq
                 int v = 64;
                 try
                 {
-                    v = str.toi( spl[i] );
+                    v = int.Parse( spl[i] );
                 }
                 catch ( Exception ex )
                 {
@@ -325,10 +317,10 @@ namespace cadencii.vsq
                             work = work.Replace( "\"\"", "\"" );  // "は""として保存される
                             if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) )
                             {
-                                int l = str.length( work );
+                                int l = work.Length;
                                 if ( l > 2 )
                                 {
-                                    Phrase = str.sub( work, 1, l - 2 );
+                                    Phrase = work.Substring( 1, l - 2 );
                                 }
                                 else
                                 {
@@ -350,7 +342,7 @@ namespace cadencii.vsq
                                 int l = PortUtil.getStringLength( work );
                                 if ( l > 2 )
                                 {
-                                    symbols = str.sub( work, 1, l - 2 );
+                                    symbols = work.Substring( 1, l - 2 );
                                 }
                                 else
                                 {
@@ -367,7 +359,7 @@ namespace cadencii.vsq
                         else if ( indx == 2 )
                         {
                             // UnknownFloat
-                            UnknownFloat = (float)str.tof( work );
+                            UnknownFloat = (float)double.Parse( work );
                             work = "";
                         }
                         else
@@ -387,7 +379,7 @@ namespace cadencii.vsq
                             else
                             {
                                 // protected
-                                PhoneticSymbolProtected = str.compare( work, "1" );
+                                PhoneticSymbolProtected = (work == "1");
                             }
                             work = "";
                         }
@@ -499,7 +491,7 @@ namespace cadencii.vsq
                     String s0 = mPhoneticSymbols[i];
                     String s1 = old_symbol[i];
                     boolean use_old_value = (old_symbol != null && i < old_symbol.Count) &&
-                                            (str.compare( s0, s1 )) &&
+                                            (s0 == s1) &&
                                             (old_adjustment != null && i < old_adjustment.Count);
                     if ( use_old_value )
                     {
@@ -556,7 +548,7 @@ namespace cadencii.vsq
             String strSymbol = getPhoneticSymbol();
             if ( !add_quatation_mark )
             {
-                if ( strSymbol == null || (strSymbol != null && str.compare( strSymbol, "" )) )
+                if ( strSymbol == null || (strSymbol != null && strSymbol == "") )
                 {
                     strSymbol = "u:";
                 }

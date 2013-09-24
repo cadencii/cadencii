@@ -122,13 +122,13 @@ namespace cadencii.vsq
             if( full_path == null ){
                 return wine_prefix;
             }
-            int full_path_len = str.length( full_path );
+            int full_path_len = full_path.Length;
             if( full_path_len <= 0 ){
                 return wine_prefix;
             }
-            char drive_letter = str.charAt( full_path, 0 );
-            String drive = str.toLower( new String( new char[]{ drive_letter } ) );
-            String inner_path = (full_path_len >= 3) ? str.sub( full_path, 2 ).Replace( "\\", "/" ) : "";
+            char drive_letter = full_path[0];
+            String drive = new String( new char[]{ drive_letter } ).ToLower();
+            String inner_path = (full_path_len >= 3) ? full_path.Substring( 2 ).Replace( "\\", "/" ) : "";
             return fsys.combine( fsys.combine( wine_prefix, "drive_" + drive ), inner_path );
         }
 
@@ -156,11 +156,11 @@ namespace cadencii.vsq
             Vector<String> dir1 = new Vector<String>();
             Vector<String> dir2 = new Vector<String>();
             foreach( String s in reg_list ){
-                if( str.startsWith( s, header1 + "\\" ) ||
-                    str.startsWith( s, header1 + "\t" ) ){
+                if( s.StartsWith( header1 + "\\" ) ||
+                    s.StartsWith( header1 + "\t" ) ){
                     dir1.add( s );
-                }else if( str.startsWith( s, header2 + "\\" ) ||
-                          str.startsWith( s, header2 + "\t" ) ){
+                }else if( s.StartsWith( header2 + "\\" ) ||
+                          s.StartsWith( header2 + "\t" ) ){
                     dir2.add( s );
                 }
             }
@@ -189,7 +189,7 @@ namespace cadencii.vsq
                 String act_path_editor1 = path_editor.value;
                 String act_path_expdb1 = path_expdb1.value;
                 String act_vsti1 = path_vsti.value;
-                if( str.length( wine_prefix ) > 0 ){
+                if( wine_prefix.Length > 0 ){
                     for( int i = 0; i < act_installed_singers1.Length; i++ ){
                         act_installed_singers1[i] = combineWinePath( wine_prefix, act_installed_singers1[i] );
                     }
@@ -233,7 +233,7 @@ namespace cadencii.vsq
                                     if ( spl.Length >= 2 ) {
                                         String str_dse_version = spl[1];
                                         try {
-                                            defaultDseVersion = str.toi( str_dse_version );
+                                            defaultDseVersion = int.Parse( str_dse_version );
                                         } catch ( Exception ex ) {
                                             serr.println( "VocaloSysUtil#init; ex=" + ex );
 #if JAVA
@@ -299,7 +299,7 @@ namespace cadencii.vsq
                 String act_path_voicedb2 = path_voicedb2.value;
                 String act_path_editor2 = path_editor.value;
                 String act_vsti2 = path_vsti.value;
-                if( str.length( wine_prefix ) > 0 ){
+                if( wine_prefix.Length > 0 ){
                     for( int i = 0; i < act_installed_singers2.Length; i++ ){
                         act_installed_singers2[i] = combineWinePath( wine_prefix, act_installed_singers2[i] );
                     }
@@ -380,11 +380,11 @@ namespace cadencii.vsq
             for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
-                    application.add( str.sub( s, PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
+                    application.add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
-                    expression.add( str.sub( s, PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
+                    expression.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\VOICE" ) ) {
-                    voice.add( str.sub( s, PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
+                    voice.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
                 }
             }
 

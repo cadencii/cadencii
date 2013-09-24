@@ -95,7 +95,7 @@ namespace cadencii
             }
             int value = m_curve.getDefault();
             try {
-                value = str.toi( txtDataPointValue.Text );
+                value = int.Parse( txtDataPointValue.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
@@ -108,7 +108,7 @@ namespace cadencii
 
             int clock = 0;
             try {
-                clock = str.toi( txtDataPointClock.Text );
+                clock = int.Parse( txtDataPointClock.Text );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;

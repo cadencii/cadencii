@@ -308,7 +308,7 @@ namespace cadencii
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
             String s = trackBendDepth.Value + "";
-            if( !str.compare( s, txtBendDepth.Text ) ){
+            if( s != txtBendDepth.Text ){
                 txtBendDepth.Text = s;
             }
         }
@@ -316,7 +316,7 @@ namespace cadencii
         public void txtBendDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendDepth.Text );
+                int draft = int.Parse( txtBendDepth.Text );
                 if ( draft < trackBendDepth.Minimum ) {
                     draft = trackBendDepth.Minimum;
                     txtBendDepth.Text = draft + "";
@@ -335,7 +335,7 @@ namespace cadencii
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
             String s = trackBendLength.Value + "";
-            if( !str.compare( s, txtBendLength.Text ) ){
+            if( s != txtBendLength.Text ){
                 txtBendLength.Text = s;
             }
         }
@@ -343,7 +343,7 @@ namespace cadencii
         public void txtBendLength_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtBendLength.Text );
+                int draft = int.Parse( txtBendLength.Text );
                 if ( draft < trackBendLength.Minimum ) {
                     draft = trackBendLength.Minimum;
                     txtBendLength.Text = draft + "";
@@ -362,7 +362,7 @@ namespace cadencii
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
             String s = trackDecay.Value + "";
-            if( !str.compare( s, txtDecay.Text ) ){
+            if( s != txtDecay.Text ){
                 txtDecay.Text = s;
             }
         }
@@ -370,7 +370,7 @@ namespace cadencii
         public void txtDecay_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDecay.Text );
+                int draft = int.Parse( txtDecay.Text );
                 if ( draft < trackDecay.Minimum ) {
                     draft = trackDecay.Minimum;
                     txtDecay.Text = draft + "";
@@ -389,7 +389,7 @@ namespace cadencii
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
             String s = trackAccent.Value + "";
-            if( !str.compare( s, txtAccent.Text ) ){
+            if( s != txtAccent.Text ){
                 txtAccent.Text = s;
             }
         }
@@ -397,7 +397,7 @@ namespace cadencii
         public void txtAccent_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtAccent.Text );
+                int draft = int.Parse( txtAccent.Text );
                 if ( draft < trackAccent.Minimum ) {
                     draft = trackAccent.Minimum;
                     txtAccent.Text = draft + "";
@@ -450,7 +450,7 @@ namespace cadencii
         public void trackDuration_Scroll( Object sender, EventArgs e )
         {
             String s = trackDuration.Value + "";
-            if( !str.compare( s, txtDuration.Text ) ){
+            if( s != txtDuration.Text ){
                 txtDuration.Text = s;
             }
             if ( m_note_head_handle != null ) {
@@ -461,7 +461,7 @@ namespace cadencii
         public void trackDepth_Scroll( Object sender, EventArgs e )
         {
             String s = trackDepth.Value + "";
-            if( !str.compare( s, txtDepth.Text ) ){
+            if( s != txtDepth.Text ){
                 txtDepth.Text = s;
             }
             if ( m_note_head_handle != null ) {
@@ -472,7 +472,7 @@ namespace cadencii
         public void txtDuration_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDuration.Text );
+                int draft = int.Parse( txtDuration.Text );
                 if ( draft < trackDuration.Minimum ) {
                     draft = trackDuration.Minimum;
                     txtDuration.Text = draft + "";
@@ -497,7 +497,7 @@ namespace cadencii
         public void txtDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = str.toi( txtDepth.Text );
+                int draft = int.Parse( txtDepth.Text );
                 if ( draft < trackDepth.Minimum ) {
                     draft = trackDepth.Minimum;
                     txtDepth.Text = draft + "";

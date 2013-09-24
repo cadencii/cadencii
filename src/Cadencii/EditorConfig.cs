@@ -669,7 +669,7 @@ namespace cadencii
             if ( extension.Equals( "." ) ) return "";
 
             if ( extension.StartsWith( "." ) ) {
-                extension = str.sub( extension, 1 );
+                extension = extension.Substring( 1 );
             }
 
             int c = list.size();
@@ -692,7 +692,7 @@ namespace cadencii
             if ( extension == null ) return;
             if ( extension.Equals( "." ) ) return;
             if ( extension.StartsWith( "." ) ) {
-                extension = str.sub( extension, 1 );
+                extension = extension.Substring( 1 );
             }
 
             int c = list.size();
@@ -998,7 +998,7 @@ namespace cadencii
                         trimlen = len;
                     }
                     if ( trimlen > 0 ) {
-                        String s = str.sub( this.AutoVibratoTypeCustom, len - trimlen, trimlen );
+                        String s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
                         try {
                             index = (int)PortUtil.fromHexString( s );
                             index--;

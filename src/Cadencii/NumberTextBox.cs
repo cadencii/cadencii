@@ -88,7 +88,7 @@ namespace cadencii {
             if ( m_value_type == ValueType.Double ) {
                 double dou;
                 try {
-                    dou = str.tof( text );
+                    dou = double.Parse( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
@@ -96,7 +96,7 @@ namespace cadencii {
             } else if ( m_value_type == ValueType.Float ) {
                 float flo;
                 try {
-                    flo = (float)str.tof( text );
+                    flo = (float)double.Parse( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
@@ -104,7 +104,7 @@ namespace cadencii {
             } else if ( m_value_type == ValueType.Integer ) {
                 int inte;
                 try {
-                    inte = str.toi( text );
+                    inte = int.Parse( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;

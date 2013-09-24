@@ -202,7 +202,7 @@ namespace cadencii
             int value = old;
             String s = textRate.Text;
             try {
-                value = str.toi( s );
+                value = int.Parse( s );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -214,7 +214,7 @@ namespace cadencii
             }
             mSelected.setStartRate( value );
             String nstr = value + "";
-            if ( !str.compare( s, nstr ) ) {
+            if ( s != nstr ) {
                 textRate.Text = nstr;
 #if JAVA
                 textRate.setCaretPosition( nstr.length() );
@@ -236,7 +236,7 @@ namespace cadencii
             int value = old;
             String s = textDepth.Text;
             try {
-                value = str.toi( s );
+                value = int.Parse( s );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -248,7 +248,7 @@ namespace cadencii
             }
             mSelected.setStartDepth( value );
             String nstr = value + "";
-            if ( !str.compare( s, nstr ) ) {
+            if ( s != nstr ) {
                 textDepth.Text = nstr;
 #if JAVA
                 textDepth.setCaretPosition( nstr.length() );

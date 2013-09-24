@@ -77,7 +77,7 @@ namespace cadencii
 #endif
         {
             foreach( WaveUnitConfigElement item in this.Elements ) {
-                if( str.compare( key, item.getKey() ) ) {
+                if( key == item.getKey() ) {
                     item.setValue( value );
                     return;
                 }
@@ -96,7 +96,7 @@ namespace cadencii
         public string getElement( string key )
         {
             foreach( WaveUnitConfigElement item in this.Elements ) {
-                if( str.compare( key, item.getKey() ) ) {
+                if( key == item.getKey() ) {
                     return item.getValue();
                 }
             }

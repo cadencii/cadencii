@@ -272,7 +272,7 @@ public class Utau_Plugin_Invoker : Form {
             }
         }
         String md5_after = PortUtil.getMD5FromString( after.ToString() );
-        if ( str.compare( md5_before, md5_after ) ) {
+        if ( md5_before == md5_after ) {
             // 編集されなかったようだ
             return ScriptReturnStatus.NOT_EDITED;
         }
@@ -441,7 +441,7 @@ public class Utau_Plugin_Invoker : Form {
                 }
             } else {
                 // マップに入っていないので，新しい音符の追加だと思う
-                if ( str.compare( ue.getLyric(), "R" ) ) {
+                if ( ue.getLyric() == "R" ) {
                     // 休符．なにもしない
                 } else {
                     VsqEvent newe = new VsqEvent();

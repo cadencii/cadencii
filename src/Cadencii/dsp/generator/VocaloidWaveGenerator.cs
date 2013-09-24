@@ -296,11 +296,11 @@ namespace cadencii
                 for ( int i = 0; i < vsq_nrpn.Length; i++ ) {
                     VsqNrpn item = vsq_nrpn[i];
                     String name = NRPN.getName( item.Nrpn );
-                    int len = str.length( name );
+                    int len = name.Length;
                     for( int j = len; j < 35; j++ ){
                         name += " ";
                     }
-                    bw.write( "     " + str.format( item.Clock, 8, 10 ) + " 0x" + str.format( item.Nrpn, 4, 16 ) + " " + name + " 0x" + str.format( item.DataMsb, 2, 16 ) + " 0x" + str.format( item.DataLsb, 2, 16 ) );
+                    bw.write( "     " + item.Clock.ToString("D8") + " 0x" + item.Nrpn.ToString("X4") + " " + name + " 0x" + item.DataMsb.ToString("X2") + " 0x" + item.DataLsb.ToString("X2") );
                     bw.newLine();
                 }
             } catch ( Exception ex ) {

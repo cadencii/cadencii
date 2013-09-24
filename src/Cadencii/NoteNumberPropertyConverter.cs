@@ -134,7 +134,7 @@ namespace cadencii
 
             value = value.ToUpper();
             try {
-                int draft_note_number = str.toi( value );
+                int draft_note_number = int.Parse( value );
                 if ( AppManager.editorConfig != null ) {
                     AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression = NoteNumberExpressionType.Numeric;
                 }
@@ -278,15 +278,15 @@ namespace cadencii
                     offset = -1;
                 }
                 first = false;
-                int len = str.length( value );
+                int len = value.Length;
                 if ( len == trim ) {
                     break;
                 }
 
-                value = str.sub( value, trim );
+                value = value.Substring( trim );
                 int draft_scale;
                 try {
-                    draft_scale = str.toi( value );
+                    draft_scale = int.Parse( value );
                     scale = draft_scale;
                     break;
                 } catch ( Exception ex ) {

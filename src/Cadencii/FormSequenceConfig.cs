@@ -120,7 +120,7 @@ namespace cadencii
 #if !JAVA
                 String s = comboPreMeasure.Text;
                 try {
-                    ret = str.toi( s );
+                    ret = int.Parse( s );
                 } catch ( Exception ex ) {
                     ret = AppManager.MIN_PRE_MEASURE;
                 }
@@ -168,7 +168,7 @@ namespace cadencii
             }
             int ret = 44100;
             try {
-                ret = str.toi( s );
+                ret = int.Parse( s );
             } catch ( Exception ex ) {
                 ret = 44100;
             }
@@ -186,7 +186,7 @@ namespace cadencii
                 String s = (String)comboSampleRate.Items[i];
                 int rate = 0;
                 try {
-                    rate = str.toi( s );
+                    rate = int.Parse( s );
                 } catch ( Exception ex ) {
                     rate = 0;
                 }

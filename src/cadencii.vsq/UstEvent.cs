@@ -702,7 +702,7 @@ namespace cadencii.vsq
                 sw.write( mEnvelope.ToString() );
                 sw.newLine();
             }
-            if ( !str.compare( Flags, "" ) ) {
+            if ( Flags != "" ) {
                 sw.write( "Flags=" + Flags );
                 sw.newLine();
             }

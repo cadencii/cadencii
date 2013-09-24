@@ -152,23 +152,23 @@ namespace cadencii
             comboCategory.Items.Clear();
             foreach ( String category in mCategories ) {
                 String c = category;
-                if ( str.compare( category, "menuFile" ) ) {
+                if ( category == "menuFile" ) {
                     c = _( "File" );
-                } else if ( str.compare( category, "menuEdit" ) ) {
+                } else if ( category == "menuEdit" ) {
                     c = _( "Edit" );
-                } else if ( str.compare( category, "menuVisual" ) ) {
+                } else if ( category == "menuVisual" ) {
                     c = _( "Visual" );
-                } else if ( str.compare( category, "menuJob" ) ) {
+                } else if ( category == "menuJob" ) {
                     c = _( "Job" );
-                } else if ( str.compare( category, "menuLyric" ) ) {
+                } else if ( category == "menuLyric" ) {
                     c = _( "Lyric" );
-                } else if ( str.compare( category, "menuTrack" ) ) {
+                } else if ( category == "menuTrack" ) {
                     c = _( "Track" );
-                } else if ( str.compare( category, "menuScript" ) ) {
+                } else if ( category == "menuScript" ) {
                     c = _( "Script" );
-                } else if ( str.compare( category, "menuSetting" ) ){
+                } else if ( category == "menuSetting" ){
                     c = _( "Setting" );
-                } else if ( str.compare( category, "menuHelp" ) ) {
+                } else if ( category == "menuHelp" ) {
                     c = _( "Help" );
                 } else {
                     c = _( "Other" );
@@ -239,20 +239,20 @@ namespace cadencii
                 String field_name = item.getKey();
                 Keys[] keys = item.getValue();
                 boolean add_this_one = false;
-                if ( str.compare( category, ".other" ) ) {
+                if ( category == ".other" ) {
                     add_this_one = true;
                     for ( int i = 0; i < mCategories.Length; i++ ) {
                         String c = mCategories[i];
-                        if ( str.compare( c, ".other" ) ) {
+                        if ( c == ".other" ) {
                             continue;
                         }
-                        if ( str.startsWith( field_name, c ) ) {
+                        if ( field_name.StartsWith( c ) ) {
                             add_this_one = false;
                             break;
                         }
                     }
                 } else {
-                    if ( str.startsWith( field_name, category ) ) {
+                    if ( field_name.StartsWith( category ) ) {
                         add_this_one = true;
                     }
                 }
@@ -277,7 +277,7 @@ namespace cadencii
                 //BListViewItem list_item = list.getItemAt( i );
                 String field_name = mFieldName.get( i );
                 String key_display = list.Items[i].SubItems[1].Text;
-                if ( str.compare( key_display, "" ) ){
+                if ( key_display == "" ){
                     // ショートカットキーが割り当てられていないのでスルー
                     list.Items[i].BackColor = System.Drawing.Color.White;
                     continue;
@@ -288,13 +288,13 @@ namespace cadencii
                     String display1 = itr.next();
                     ValuePair<String, Keys[]> item1 = mDict.get( display1 );
                     String field_name1 = item1.getKey();
-                    if ( str.compare( field_name, field_name1 ) ) {
+                    if ( field_name == field_name1 ) {
                         // 自分自身なのでスルー
                         continue;
                     }
                     Keys[] keys1 = item1.getValue();
                     String key_display1 = Utility.getShortcutDisplayString( keys1 );
-                    if ( str.compare( key_display, key_display1 ) ) {
+                    if ( key_display == key_display1 ) {
                         // 同じキーが割り当てられてる！！
                         found = true;
                         break;
