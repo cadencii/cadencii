@@ -26,7 +26,6 @@ import cadencii.*;
 using System;
 using System.Windows.Forms;
 using System.IO;
-using cadencii.componentmodel;
 using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
@@ -62,7 +61,7 @@ namespace cadencii {
         const int _SAMPLE_RATE = 44100;
 
         private FolderBrowserDialog folderBrowser;
-        private BBackgroundWorker bgWork;
+        private System.ComponentModel.BackgroundWorker bgWork;
         private SingerConfig[] m_singer_config1;
         private SingerConfig[] m_singer_config2;
         private SingerConfig[] m_singer_config_utau;
@@ -79,7 +78,7 @@ namespace cadencii {
             bgWork = new BBackgroundWorker();
 #else
             InitializeComponent();
-            bgWork = new BBackgroundWorker();
+            bgWork = new System.ComponentModel.BackgroundWorker();
             bgWork.WorkerReportsProgress = true;
             bgWork.WorkerSupportsCancellation = true;
 #endif
@@ -177,7 +176,7 @@ namespace cadencii {
         }
 
         public void btnCancel_Click( Object sender, EventArgs e ) {
-            if ( bgWork.isBusy() ) {
+            if ( bgWork.IsBusy ) {
                 m_cancel_required = true;
                 while ( m_cancel_required ) {
 #if JAVA
@@ -203,7 +202,7 @@ namespace cadencii {
             arg.directory = txtDir.Text;
             arg.replace = chkIgnoreExistingWavs.Checked;
             updateEnabled( false );
-            bgWork.runWorkerAsync( arg );
+            bgWork.RunWorkerAsync( arg );
         }
 
         public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
@@ -247,7 +246,7 @@ namespace cadencii {
                     m_cancel_required = false;
                     break;
                 }
-                bgWork.reportProgress( (int)(i / 127.0 * 100.0) );
+                bgWork.ReportProgress( (int)(i / 127.0 * 100.0), null );
             }
             m_cancel_required = false;
         }

@@ -768,10 +768,6 @@
       <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
       <Name>cadencii.apputil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\cadencii.componentmodel\cadencii.componentmodel.csproj">
-      <Project>{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}</Project>
-      <Name>cadencii.componentmodel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\cadencii.helper\cadencii.helper.vcxproj">
       <Project>{5b7732b0-3322-4b24-9ed2-15b2e5d39432}</Project>
       <Name>cadencii.helper</Name>

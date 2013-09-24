@@ -46,7 +46,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using cadencii.apputil;
-using cadencii.componentmodel;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
 using cadencii.java.io;
@@ -480,7 +479,7 @@ namespace cadencii
         public SaveFileDialog saveMidiDialog;
         public OpenFileDialog openWaveDialog;
         public System.Windows.Forms.Timer timer;
-        public BBackgroundWorker bgWorkScreen;
+        public System.ComponentModel.BackgroundWorker bgWorkScreen;
         /// <summary>
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
         /// </summary>
@@ -625,7 +624,7 @@ namespace cadencii
 
             panelOverview.setMainForm( this );
             pictPianoRoll.setMainForm( this );
-            bgWorkScreen = new BBackgroundWorker();
+            bgWorkScreen = new System.ComponentModel.BackgroundWorker();
             initializeRendererMenuHandler();
 
 #if JAVA

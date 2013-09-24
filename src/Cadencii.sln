@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.core", "cadencii.c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.windows.forms", "cadencii.windows.forms\cadencii.windows.forms.csproj", "{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.componentmodel", "cadencii.componentmodel\cadencii.componentmodel.csproj", "{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cadencii.xml", "cadencii.xml\cadencii.xml.csproj", "{23C7549D-A0FD-402A-8470-95DB4BE6081C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadencii", "Cadencii\Cadencii.csproj", "{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}"
@@ -83,14 +81,6 @@ Global
 		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.Release|Win32.Build.0 = Release|x86
 		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.Release|x86.ActiveCfg = Release|x86
 		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.Release|x86.Build.0 = Release|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Debug|Win32.ActiveCfg = Debug|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Debug|Win32.Build.0 = Debug|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Debug|x86.ActiveCfg = Debug|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Debug|x86.Build.0 = Debug|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Release|Win32.ActiveCfg = Release|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Release|Win32.Build.0 = Release|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Release|x86.ActiveCfg = Release|x86
-		{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}.Release|x86.Build.0 = Release|x86
 		{23C7549D-A0FD-402A-8470-95DB4BE6081C}.Debug|Win32.ActiveCfg = Debug|x86
 		{23C7549D-A0FD-402A-8470-95DB4BE6081C}.Debug|Win32.Build.0 = Debug|x86
 		{23C7549D-A0FD-402A-8470-95DB4BE6081C}.Debug|x86.ActiveCfg = Debug|x86
