@@ -211,7 +211,7 @@ namespace cadencii
         /// </summary>
         public void startJob()
         {
-            int size = vec.size( mLabels );
+            int size = mLabels.Count;
             if ( size <= 0 ) return;
             startWorker( 0 );
         }
@@ -249,8 +249,8 @@ namespace cadencii
             ptrUi.addProgressBar( ui );
 
             // ラベルのリストに登録
-            int index = vec.size( mLabels );
-            vec.add( mLabels, label );
+            int index = mLabels.Count;
+            mLabels.Add( label );
             mMemManager.add( label );
 
             // スレッドを作成して起動(platform依存)
@@ -273,11 +273,11 @@ namespace cadencii
             worker.DoWork += new DoWorkEventHandler( worker_DoWork );
             worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler( worker_RunWorkerCompleted );
             worker.ProgressChanged += new ProgressChangedEventHandler( worker_ProgressChanged );
-            vec.add( mThreads, worker );
+            mThreads.Add( worker );
 
             arg.state = new FormWorkerJobStateImp( worker, job_amount );
 #endif
-            vec.add( mArguments, arg );
+            mArguments.Add( arg );
         }
 
         /// <summary>
@@ -285,9 +285,9 @@ namespace cadencii
         /// </summary>
         public void cancelJobSlot()
         {
-            int size = vec.size( mArguments );
+            int size = mArguments.Count;
             for ( int i = 0; i < size; i++ ) {
-                FormWorkerJobArgument arg = vec.get( mArguments, i );
+                FormWorkerJobArgument arg = mArguments[i];
                 arg.state.requestCancel();
             }
         }
@@ -303,15 +303,15 @@ namespace cadencii
 
         public void workerProgressChanged( int index, int percentage )
         {
-            ProgressBarWithLabel label = vec.get( mLabels, index );
+            ProgressBarWithLabel label = mLabels[index];
             if ( label != null ) {
                 label.setProgress( percentage );
             }
-            int size = vec.size( mArguments );
+            int size = mArguments.Count;
             double total = 0.0;
             double processed = 0.0;
             for ( int i = 0; i < size; i++ ) {
-                FormWorkerJobArgument arg = vec.get( mArguments, i );
+                FormWorkerJobArgument arg = mArguments[i];
                 total += arg.state.getJobAmount();
                 if ( i < index ) {
                     processed += arg.state.getJobAmount();
@@ -328,11 +328,11 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormWorker#workerCompleted; index=" + index );
 #endif
-            ProgressBarWithLabel label = vec.get( mLabels, index );
+            ProgressBarWithLabel label = mLabels[index];
             ptrUi.removeProgressBar( label.getUi() );
             mman.del( label );
-            vec.set( mLabels, index, null );
-            int size = vec.size( mLabels );
+            mLabels[index] = null;
+            int size = mLabels.Count;
             index++;
             if ( index < size ) {
                 startWorker( index );
@@ -343,12 +343,12 @@ namespace cadencii
 
         private void startWorker( int index )
         {
-            FormWorkerJobArgument arg = vec.get( mArguments, index );
+            FormWorkerJobArgument arg = mArguments[index];
 #if JAVA
             vec.get( mThreads, index ).start();
 #elif __cplusplus
 #else
-            vec.get( mThreads, index ).RunWorkerAsync( arg );
+            mThreads[index].RunWorkerAsync( arg );
 #endif
         }
 
@@ -375,7 +375,7 @@ namespace cadencii
                 BackgroundWorker w = mThreads[i];
                 if ( w == null ) continue;
                 if ( w == sender ) {
-                    WorkerState state = vec.get( mArguments, i ).state;
+                    WorkerState state = mArguments[i].state;
                     if ( state.isCancelRequested() == false ) {
                         workerCompleted( i );
                     }

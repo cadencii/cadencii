@@ -437,7 +437,7 @@ namespace cadencii
                 mColor = Color.black;
             }
             points.add( bp );
-            Collections.sort( points );
+            points.Sort();
         }
 
         public void removeElementAt( int id_ ) {

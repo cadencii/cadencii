@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Win32;
 using cadencii;
 using cadencii.java.util;
@@ -122,14 +123,14 @@ namespace cadencii.vsq
             if( full_path == null ){
                 return wine_prefix;
             }
-            int full_path_len = str.length( full_path );
+            int full_path_len = full_path.Length;
             if( full_path_len <= 0 ){
                 return wine_prefix;
             }
-            char drive_letter = str.charAt( full_path, 0 );
-            String drive = str.toLower( new String( new char[]{ drive_letter } ) );
-            String inner_path = (full_path_len >= 3) ? str.sub( full_path, 2 ).Replace( "\\", "/" ) : "";
-            return fsys.combine( fsys.combine( wine_prefix, "drive_" + drive ), inner_path );
+            char drive_letter = full_path[0];
+            String drive = new String( new char[]{ drive_letter } ).ToLower();
+            String inner_path = (full_path_len >= 3) ? full_path.Substring( 2 ).Replace( "\\", "/" ) : "";
+            return Path.Combine( Path.Combine( wine_prefix, "drive_" + drive ), inner_path );
         }
 
         /// <summary>
@@ -156,11 +157,11 @@ namespace cadencii.vsq
             Vector<String> dir1 = new Vector<String>();
             Vector<String> dir2 = new Vector<String>();
             foreach( String s in reg_list ){
-                if( str.startsWith( s, header1 + "\\" ) ||
-                    str.startsWith( s, header1 + "\t" ) ){
+                if( s.StartsWith( header1 + "\\" ) ||
+                    s.StartsWith( header1 + "\t" ) ){
                     dir1.add( s );
-                }else if( str.startsWith( s, header2 + "\\" ) ||
-                          str.startsWith( s, header2 + "\t" ) ){
+                }else if( s.StartsWith( header2 + "\\" ) ||
+                          s.StartsWith( header2 + "\t" ) ){
                     dir2.add( s );
                 }
             }
@@ -189,7 +190,7 @@ namespace cadencii.vsq
                 String act_path_editor1 = path_editor.value;
                 String act_path_expdb1 = path_expdb1.value;
                 String act_vsti1 = path_vsti.value;
-                if( str.length( wine_prefix ) > 0 ){
+                if( wine_prefix.Length > 0 ){
                     for( int i = 0; i < act_installed_singers1.Length; i++ ){
                         act_installed_singers1[i] = combineWinePath( wine_prefix, act_installed_singers1[i] );
                     }
@@ -198,10 +199,10 @@ namespace cadencii.vsq
                     act_path_expdb1 = combineWinePath( wine_prefix, act_path_expdb1 );
                     act_vsti1 = combineWinePath( wine_prefix, act_vsti1 );
                 }
-                String expression_map1 = fsys.combine( act_path_expdb1, "expression.map" );
+                String expression_map1 = Path.Combine( act_path_expdb1, "expression.map" );
                 SingerConfigSys singer_config_sys =
                     new SingerConfigSys( act_path_voicedb1, act_installed_singers1 );
-                if ( fsys.isFileExists( expression_map1 ) ) {
+                if (System.IO.File.Exists(expression_map1)) {
                     exp_config_sys1 = new ExpressionConfigSys( act_path_editor1, act_path_expdb1 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -209,18 +210,18 @@ namespace cadencii.vsq
                 // DSE1_1.dllがあるかどうか？
                 if ( !act_vsti1.Equals( "" ) ) {
                     String path_dll = PortUtil.getDirectoryName( act_vsti1 );
-                    String dse1_1 = fsys.combine( path_dll, "DSE1_1.dll" );
-                    dseVersion101Available = fsys.isFileExists( dse1_1 );
+                    String dse1_1 = Path.Combine( path_dll, "DSE1_1.dll" );
+                    dseVersion101Available = System.IO.File.Exists(dse1_1);
                 } else {
                     dseVersion101Available = false;
                 }
 
                 // VOCALOID.iniから、DSEVersionを取得
                 if ( act_path_editor1 != null && !act_path_editor1.Equals( "" ) &&
-                     fsys.isFileExists( act_path_editor1 ) ) {
+                     System.IO.File.Exists(act_path_editor1)) {
                     String dir = PortUtil.getDirectoryName( act_path_editor1 );
-                    String ini = fsys.combine( dir, "VOCALOID.ini" );
-                    if ( fsys.isFileExists( ini ) ) {
+                    String ini = Path.Combine( dir, "VOCALOID.ini" );
+                    if (System.IO.File.Exists(ini)) {
                         BufferedReader br = null;
                         try {
                             br = new BufferedReader( new InputStreamReader( new FileInputStream( ini ), "Shift_JIS" ) );
@@ -233,7 +234,7 @@ namespace cadencii.vsq
                                     if ( spl.Length >= 2 ) {
                                         String str_dse_version = spl[1];
                                         try {
-                                            defaultDseVersion = str.toi( str_dse_version );
+                                            defaultDseVersion = int.Parse( str_dse_version );
                                         } catch ( Exception ex ) {
                                             serr.println( "VocaloSysUtil#init; ex=" + ex );
 #if JAVA
@@ -299,7 +300,7 @@ namespace cadencii.vsq
                 String act_path_voicedb2 = path_voicedb2.value;
                 String act_path_editor2 = path_editor.value;
                 String act_vsti2 = path_vsti.value;
-                if( str.length( wine_prefix ) > 0 ){
+                if( wine_prefix.Length > 0 ){
                     for( int i = 0; i < act_installed_singers2.Length; i++ ){
                         act_installed_singers2[i] = combineWinePath( wine_prefix, act_installed_singers2[i] );
                     }
@@ -308,9 +309,9 @@ namespace cadencii.vsq
                     act_path_editor2 = combineWinePath( wine_prefix, act_path_editor2 );
                     act_vsti2 = combineWinePath( wine_prefix, act_vsti2 );
                 }
-                String expression_map2 = fsys.combine( act_path_expdb2, "expression.map" );
+                String expression_map2 = Path.Combine( act_path_expdb2, "expression.map" );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( act_path_voicedb2, act_installed_singers2 );
-                if ( fsys.isFileExists( expression_map2 ) ) {
+                if (System.IO.File.Exists(expression_map2)) {
                     exp_config_sys2 = new ExpressionConfigSys( act_path_editor2, act_path_expdb2 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
@@ -380,11 +381,11 @@ namespace cadencii.vsq
             for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
-                    application.add( str.sub( s, PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
+                    application.add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
-                    expression.add( str.sub( s, PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
+                    expression.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\VOICE" ) ) {
-                    voice.add( str.sub( s, PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
+                    voice.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
                 }
             }
 
@@ -422,7 +423,7 @@ namespace cadencii.vsq
                         if ( spl[1].Equals( "INSTALLDIR" ) ) {
                             // VOCALOID1の場合は、ここには到達しないはず
                             String installdir = spl[2];
-                            install_dirs.put( id, fsys.combine( installdir, id ) );
+                            install_dirs.put( id, Path.Combine( installdir, id ) );
                         }
                     }
                 }
@@ -433,7 +434,7 @@ namespace cadencii.vsq
                 String id = itr.next();
                 String install = install_dirs.get( id );
                 if ( install.Equals( "" ) ) {
-                    install = fsys.combine( path_voicedb.value, id );
+                    install = Path.Combine( path_voicedb.value, id );
                 }
                 installed_singers.add( install );
             }

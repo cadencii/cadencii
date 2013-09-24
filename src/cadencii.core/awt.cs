@@ -18,22 +18,6 @@ using cadencii.java.awt.geom;
 
 namespace cadencii.java.awt {
 
-    public class Icon {
-        public System.Drawing.Image image;
-    }
-
-    public class ImageIcon : Icon {
-        public ImageIcon( System.Drawing.Image image ) {
-            this.image = image;
-        }
-
-        public ImageIcon( Image image ) {
-            if ( image != null ) {
-                this.image = image.image;
-            }
-        }
-    }
-
     public class Image{
         public System.Drawing.Image image;
 

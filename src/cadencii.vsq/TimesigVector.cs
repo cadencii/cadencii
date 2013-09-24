@@ -51,7 +51,7 @@ namespace cadencii.vsq
                 return;
             }
             get( 0 ).Clock = 0;
-            Collections.sort( this );
+            this.Sort();
             int count = size();
             for ( int j = 1; j < count; j++ ) {
                 TimeSigTableEntry item = get( j - 1 );

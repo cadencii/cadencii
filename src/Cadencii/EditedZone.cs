@@ -79,7 +79,7 @@ namespace cadencii {
                 mSeries.add( (EditedZoneUnit)item.clone() );
             }
 
-            Collections.sort( mSeries );
+            mSeries.Sort();
 
             return new EditedZoneCommand( run.mRemove, run.mAdd );
         }
@@ -198,7 +198,7 @@ namespace cadencii {
                     }
                 }
             }
-            Collections.sort( mSeries );
+            mSeries.Sort();
         }
 
 #if !JAVA

@@ -265,7 +265,7 @@ namespace cadencii.vsq
         public VsqEvent( String line )
         {
             String[] spl = PortUtil.splitString( line, new char[] { '=' } );
-            Clock = str.toi( spl[0] );
+            Clock = int.Parse( spl[0] );
             if ( spl[1].Equals( "EOS" ) ) {
                 ID = VsqID.EOS;
             }

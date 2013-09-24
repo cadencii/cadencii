@@ -24,7 +24,6 @@ import cadencii.windows.forms.*;
 using System;
 using cadencii.java.awt;
 using cadencii.java.awt.image;
-using cadencii.javax.imageio;
 using cadencii.windows.forms;
 
 namespace cadencii
@@ -69,7 +68,7 @@ namespace cadencii
 #endif
 #endif
             Image ret = null;
-            if ( fsys.isFileExists( path_image ) ) {
+            if (System.IO.File.Exists(path_image)) {
 #if JAVA
                 try{
                     ret = ImageIO.read( new File( path_image ) );

@@ -45,7 +45,7 @@ namespace cadencii.vsq
         {
             int num = 0;
             try {
-                num = str.toi( strNum );
+                num = int.Parse( strNum );
             } catch ( Exception ex ) {
                 serr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
                 num = 0;
@@ -58,8 +58,8 @@ namespace cadencii.vsq
                 int[] y = new int[actNum];
                 for ( int i = 0; i < actNum; i++ ) {
                     try {
-                        x[i] = (float)str.tof( bpx[i] );
-                        y[i] = str.toi( bpy[i] );
+                        x[i] = (float)double.Parse( bpx[i] );
+                        y[i] = int.Parse( bpy[i] );
                     } catch ( Exception ex ) {
                         serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                     }
@@ -70,7 +70,7 @@ namespace cadencii.vsq
                 for ( int i = 0; i < len; i++ ) {
                     m_list.add( new VibratoBPPair( x[i], y[i] ) );
                 }
-                Collections.sort( m_list );
+                m_list.Sort();
             } else {
                 m_list = new Vector<VibratoBPPair>();
             }
@@ -100,7 +100,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < len; i++ ) {
                 m_list.add( new VibratoBPPair( x[i], y[i] ) );
             }
-            Collections.sort( m_list );
+            m_list.Sort();
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace cadencii.vsq
                 if ( spl2.Length < 2 ) {
                     continue;
                 }
-                m_list.add( new VibratoBPPair( (float)str.tof( spl2[0] ), str.toi( spl2[1] ) ) );
+                m_list.add( new VibratoBPPair( (float)double.Parse( spl2[0] ), int.Parse( spl2[1] ) ) );
             }
         }
 

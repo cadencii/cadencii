@@ -20,6 +20,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -102,7 +103,7 @@ namespace cadencii.vsq
                 }
                 m_time_format = 480;
 #if DEBUG && MIDI_PRINT_TO_FILE && !JAVA
-                String dbg = fsys.combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
+                String dbg = Path.Combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
                 BufferedWriter sw = null;
                 try {
                     sw = new BufferedWriter( new FileWriter( dbg ) );

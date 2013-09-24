@@ -74,21 +74,14 @@
     <Compile Include="awt.event.cs" />
     <Compile Include="awt.geom.cs" />
     <Compile Include="awt.image.cs" />
-    <Compile Include="BArray.cs" />
     <Compile Include="Base64.cs" />
-    <Compile Include="BDelegate.cs" />
     <Compile Include="BufferedReader.cs" />
     <Compile Include="BufferedWriter.cs" />
     <Compile Include="ByRef.cs" />
-    <Compile Include="Collections.cs" />
     <Compile Include="cp932.cs" />
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />
-    <Compile Include="dic.cs" />
-    <Compile Include="dicitr.cs" />
     <Compile Include="fft.cs" />
-    <Compile Include="fsys.cs" />
-    <Compile Include="imageio.cs" />
     <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="lang.cs" />
@@ -102,13 +95,10 @@
     <Compile Include="serr.cs" />
     <Compile Include="sound.midi.cs" />
     <Compile Include="sout.cs" />
-    <Compile Include="str.cs" />
     <Compile Include="swing.cs">
     </Compile>
     <Compile Include="util.cs" />
     <Compile Include="ValuePair.cs" />
-    <Compile Include="vec.cs" />
-    <Compile Include="vecitr.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="winmm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

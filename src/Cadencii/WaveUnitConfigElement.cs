@@ -70,10 +70,10 @@ namespace cadencii
             if( value == null ) {
                 throw new Exception( "key must not be null" );
             }
-            if( str.length( value ) == 0 ) {
+            if( value.Length == 0 ) {
                 throw new Exception( "key must not be empty" );
             }
-            if( str.find( value, SEPARATOR ) >= 0 ) {
+            if( value.IndexOf( SEPARATOR, 0 ) >= 0 ) {
                 throw new Exception( "key must not contain \":\"" );
             }
             this.key = value;
@@ -104,7 +104,7 @@ namespace cadencii
             if( value == null ) {
                 value = "";
             }
-            if( str.find( value, SEPARATOR ) >= 0 ) {
+            if( value.IndexOf( SEPARATOR, 0 ) >= 0 ) {
                 throw new Exception( "value must not contain \":\"" );
             }
             this.value = value;

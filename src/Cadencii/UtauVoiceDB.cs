@@ -20,6 +20,7 @@ import cadencii.*;
 import cadencii.vsq.*;
 #else
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -42,7 +43,7 @@ namespace cadencii {
         /// <param name="singer_config"></param>
         public UtauVoiceDB( SingerConfig singer_config ) {
             _name = singer_config.VOICENAME;
-            String oto_ini = fsys.combine( singer_config.VOICEIDSTR, "oto.ini" );
+            String oto_ini = Path.Combine( singer_config.VOICEIDSTR, "oto.ini" );
             readOtoIni( oto_ini );
         }
 
@@ -51,7 +52,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="oto_ini">原音設定のパス</param>
         private void readOtoIni( String oto_ini ) {
-            if ( !fsys.isFileExists( oto_ini ) ) {
+            if (!System.IO.File.Exists(oto_ini)) {
                 return;
             }
 
@@ -77,8 +78,8 @@ namespace cadencii {
                         }
 
                         // ファイルがちゃんとあるかどうか？
-                        String fullpath = fsys.combine( dir, file_name );
-                        if ( !fsys.isFileExists( fullpath ) ) {
+                        String fullpath = Path.Combine( dir, file_name );
+                        if (!System.IO.File.Exists(fullpath)) {
                             continue;
                         }
 
@@ -86,27 +87,27 @@ namespace cadencii {
                         oa.fileName = file_name;
                         oa.Alias = spl[0];
                         try {
-                            oa.msOffset = (float)str.tof( spl[1] );
+                            oa.msOffset = (float)double.Parse( spl[1] );
                         } catch ( Exception ex ) {
                             oa.msOffset = 0;
                         }
                         try {
-                            oa.msConsonant = (float)str.tof( spl[2] );
+                            oa.msConsonant = (float)double.Parse( spl[2] );
                         } catch ( Exception ex ) {
                             oa.msConsonant = 0;
                         }
                         try {
-                            oa.msBlank = (float)str.tof( spl[3] );
+                            oa.msBlank = (float)double.Parse( spl[3] );
                         } catch ( Exception ex ) {
                             oa.msBlank = 0;
                         }
                         try {
-                            oa.msPreUtterance = (float)str.tof( spl[4] );
+                            oa.msPreUtterance = (float)double.Parse( spl[4] );
                         } catch ( Exception ex ) {
                             oa.msPreUtterance = 0;
                         }
                         try {
-                            oa.msOverlap = (float)str.tof( spl[5] );
+                            oa.msOverlap = (float)double.Parse( spl[5] );
                         } catch ( Exception ex ) {
                             oa.msOverlap = 0;
                         }
@@ -151,10 +152,10 @@ namespace cadencii {
             int count = _configs.size();
             for ( Iterator<OtoArgs> itr = _configs.iterator(); itr.hasNext(); ) {
                 OtoArgs item = itr.next();
-                if ( str.compare( PortUtil.getFileNameWithoutExtension( item.fileName ), lyric ) ) {
+                if ( PortUtil.getFileNameWithoutExtension( item.fileName ) == lyric ) {
                     return item;
                 }
-                if ( str.compare( item.Alias, lyric ) ) {
+                if ( item.Alias == lyric ) {
                     return item;
                 }
             }

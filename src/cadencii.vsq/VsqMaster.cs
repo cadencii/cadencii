@@ -84,7 +84,7 @@ namespace cadencii.vsq
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 if ( spl[0].Equals( "PreMeasure" ) ) {
-                    this.PreMeasure = str.toi( spl[1] );
+                    this.PreMeasure = int.Parse( spl[1] );
                 }
                 if ( !sr.ready() ) {
                     break;

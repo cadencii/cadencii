@@ -1,2 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: pp_cs2java.Preprocessor

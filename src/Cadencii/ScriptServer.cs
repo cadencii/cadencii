@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
 using cadencii.apputil;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -32,11 +33,11 @@ namespace cadencii {
         /// <param name="id"></param>
         public static void reload( String id ) {
             String dir = Utility.getScriptPath();
-            String file = fsys.combine( dir, id );
+            String file = Path.Combine( dir, id );
 #if DEBUG
-            sout.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + fsys.isFileExists( file ) );
+            sout.println("ScriptServer#reload; file=" + file + "; isFileExists(file)=" + System.IO.File.Exists(file));
 #endif
-            if ( !fsys.isFileExists( file ) ) {
+            if (!System.IO.File.Exists(file)) {
                 return;
             }
 
@@ -174,11 +175,11 @@ namespace cadencii {
         /// <param name="script_file"></param>
         /// <returns></returns>
         public static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = fsys.combine( Utility.getApplicationDataPath(), "script" );
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            String dir = Path.Combine( Utility.getApplicationDataPath(), "script" );
+            if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
-            return fsys.combine( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
+            return Path.Combine( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
         }
 
         private static String _( String id ) {

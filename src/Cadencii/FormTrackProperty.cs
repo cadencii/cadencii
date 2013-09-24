@@ -93,7 +93,7 @@ namespace cadencii
         {
             int v = m_master_tuning;
             try {
-                v = str.toi( txtMasterTuning.Text );
+                v = int.Parse( txtMasterTuning.Text );
                 m_master_tuning = v;
             } catch ( Exception ex ) {
             }

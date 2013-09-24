@@ -155,12 +155,12 @@ namespace cadencii.vsq
                     char[] chs = s.ToCharArray();
                     String id = new String( chs, first, first_end - first + 1 );
                     String value = new String( chs, second, second_end - second + 1 );
-                    id = str.sub( id, 1, PortUtil.getStringLength( id ) - 2 );
-                    value = str.sub( value, 1, PortUtil.getStringLength( value ) - 2 );
+                    id = id.Substring( 1, PortUtil.getStringLength( id ) - 2 );
+                    value = value.Substring( 1, PortUtil.getStringLength( value ) - 2 );
                     value = value.Replace( "\\" + "\"", "\"" );
                     int parsed_int = 64;
                     try {
-                        parsed_int = str.toi( value );
+                        parsed_int = int.Parse( value );
                     } catch ( Exception ex ) {
                     }
                     if ( id.Equals( "ID" ) ) {

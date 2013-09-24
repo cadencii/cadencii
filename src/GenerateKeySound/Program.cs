@@ -14,6 +14,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.media;
@@ -31,7 +32,7 @@ namespace cadencii.generatekeysound {
             String singer = "Miku";
             object locker = new object();
             double amp = 1.0;
-            String dir = fsys.combine( Application.StartupPath, "cache" );
+            String dir = Path.Combine( Application.StartupPath, "cache" );
             bool replace = true;
             int search = -1;
             int arguments = 0;
@@ -151,17 +152,17 @@ namespace cadencii.generatekeysound {
             String dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            if (!Directory.Exists(dir)) {
                 System.IO.Directory.CreateDirectory( dir );
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                string path = fsys.combine( dir, i + ".wav" );
+                string path = Path.Combine( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !fsys.isFileExists( path )) ) {
+                if ( replace || (!replace && !File.Exists( path )) ) {
                     try {
                         FormGenerateKeySound.GenerateSinglePhone( i, singer, path, amp );
-                        if ( fsys.isFileExists( path ) ) {
+                        if ( File.Exists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
                                 wv.trimSilence();

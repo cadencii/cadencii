@@ -1694,7 +1694,7 @@ namespace cadencii
             int clock_end = AppManager.clockFromXCoord( width );
 
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack track = vec.get( vsq.Track, track_index );
+            VsqTrack track = vsq.Track[track_index];
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
@@ -1855,10 +1855,10 @@ namespace cadencii
                 Font font = AppManager.baseFont10;
 #endif
                 Dimension s = Util.measureString( flag_title + " ", font );
-                mTextWidthPerLetter = s.width / (float)str.length( flag_title );
+                mTextWidthPerLetter = s.width / (float)flag_title.Length;
                 mTextHeight = s.height;
             }
-            return new Dimension( (int)(str.length( flag_title) * mTextWidthPerLetter), mTextHeight );
+            return new Dimension( (int)(flag_title.Length * mTextWidthPerLetter), mTextHeight );
         }
 
         /// <summary>
@@ -3508,7 +3508,7 @@ namespace cadencii
             int height = getHeight();
             int width = getWidth();
             int key_width = AppManager.keyWidth;
-            VsqTrack vsq_track = vec.get( vsq.Track, selected );
+            VsqTrack vsq_track = vsq.Track[selected];
             mMouseMoved = false;
             mMouseDowned = true;
             if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
@@ -3538,7 +3538,7 @@ namespace cadencii
                     if ( vsq != null ) {
                         for ( int i = 0; i < AppManager.MAX_NUM_TRACK; i++ ) {
                             int x = key_width + i * selecter_width;
-                            if ( vec.size( vsq.Track ) > i + 1 ) {
+                            if ( vsq.Track.Count > i + 1 ) {
                                 if ( x <= e.X && e.X < x + selecter_width ) {
                                     int new_selected = i + 1;
                                     if ( AppManager.getSelected() != new_selected ) {
@@ -4179,7 +4179,7 @@ namespace cadencii
                         int tmax = -1;
                         for ( int i = 0; i < dict.size(); i++ ) {
                             BezierChain bc = dict.get( i );
-                            Collections.sort( bc.points );
+                            bc.points.Sort();
                             // check most nearest data point from clicked position
                             int last = (int)bc.points.get( bc.points.size() - 1 ).getBase().getX();
                             if ( tmax < last && last < clock ) {
@@ -4224,7 +4224,7 @@ namespace cadencii
                         point_id = target_chain.getNextId();
                         bp.setID( point_id );
                         target_chain.add( bp );
-                        Collections.sort( target_chain.points );
+                        target_chain.points.Sort();
                         chain_id = target_chain.id;
                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( track,
                                                                                     mSelectedCurve,
@@ -4992,7 +4992,7 @@ namespace cadencii
                                             }
                                         }
                                     }
-                                    Collections.sort( edit );
+                                    edit.Sort();
                                     VsqID id = (VsqID)ve.ID.clone();
                                     float[] bpx = new float[edit.size()];
                                     int[] bpy = new int[edit.size()];
@@ -5332,7 +5332,7 @@ namespace cadencii
 
                 int selected = AppManager.getSelected();
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack vsq_track = vec.get( vsq.Track, selected );
+                VsqTrack vsq_track = vsq.Track[selected];
 
                 if ( value < min ) {
                     value = min;

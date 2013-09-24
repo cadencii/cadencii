@@ -69,7 +69,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="script\PluginLoaderTest.cs" />
-    <Compile Include="strTest.cs" />
     <Compile Include="VsqIDTest.cs" />
     <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
     <Compile Include="vsti\aquestone\EventQueueSequenceTest.cs" />
@@ -87,10 +86,6 @@
     <ProjectReference Include="..\..\src\cadencii.apputil\cadencii.apputil.csproj">
       <Project>{0c58b068-272f-4390-a14f-3d72afcf3dfb}</Project>
       <Name>cadencii.apputil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\cadencii.componentmodel\cadencii.componentmodel.csproj">
-      <Project>{d4f87d2e-caaf-4dee-ab43-be151b410931}</Project>
-      <Name>cadencii.componentmodel</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\cadencii.media\cadencii.media.csproj">
       <Project>{f4f8f601-4e3d-43f5-a8a8-aa1fb7f48452}</Project>

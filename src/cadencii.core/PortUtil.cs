@@ -941,7 +941,7 @@ namespace cadencii {
             if ( path == null ) {
                 return "";
             }
-            if ( str.length( path ) == 0 ) {
+            if ( path.Length == 0 ) {
                 return "";
             }
             return System.IO.Path.GetDirectoryName( path );
@@ -1141,7 +1141,7 @@ namespace cadencii {
         #region Number Formatting
         public static boolean tryParseInt( String s, ByRef<Integer> value ) {
             try {
-                value.value = str.toi( s );
+                value.value = int.Parse( s );
             } catch ( Exception ex ) {
                 return false;
             }
@@ -1150,7 +1150,7 @@ namespace cadencii {
 
         public static boolean tryParseFloat( String s, ByRef<Float> value ) {
             try {
-                value.value = (float)str.tof( s );
+                value.value = (float)double.Parse( s );
             } catch ( Exception ex ) {
                 return false;
             }

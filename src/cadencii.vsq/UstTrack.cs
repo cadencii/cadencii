@@ -89,9 +89,9 @@ namespace cadencii.vsq
         public Object clone()
         {
             UstTrack ret = new UstTrack();
-            int c = vec.size( m_events );
+            int c = m_events.Count;
             for ( int i = 0; i < c; i++ ) {
-                vec.add( ret.m_events, (UstEvent)vec.get( m_events, i ).clone() );
+                ret.m_events.Add( (UstEvent)m_events[i].clone() );
             }
             return ret;
         }

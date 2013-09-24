@@ -258,24 +258,24 @@ namespace cadencii.vsq
                 String search = spl[0];
                 if ( search.Equals( "Language" ) ) {
                     m_type = VsqHandleType.Singer;
-                    Language = str.toi( spl[1] );
+                    Language = int.Parse( spl[1] );
                 } else if ( search.Equals( "Program" ) ) {
-                    Program = str.toi( spl[1] );
+                    Program = int.Parse( spl[1] );
                 } else if ( search.Equals( "IconID" ) ) {
                     IconID = spl[1];
                 } else if ( search.Equals( "IDS" ) ) {
                     IDS = spl[1];
                 } else if ( search.Equals( "Original" ) ) {
-                    Original = str.toi( spl[1] );
+                    Original = int.Parse( spl[1] );
                 } else if ( search.Equals( "Caption" ) ) {
                     Caption = spl[1];
                     for ( int i = 2; i < spl.Length; i++ ) {
                         Caption += "=" + spl[i];
                     }
                 } else if ( search.Equals( "Length" ) ) {
-                    Length = str.toi( spl[1] );
+                    Length = int.Parse( spl[1] );
                 } else if ( search.Equals( "StartDepth" ) ) {
-                    StartDepth = str.toi( spl[1] );
+                    StartDepth = int.Parse( spl[1] );
                 } else if ( search.Equals( "DepthBPNum" ) ) {
                     tmpDepthBPNum = spl[1];
                 } else if ( search.Equals( "DepthBPX" ) ) {
@@ -284,7 +284,7 @@ namespace cadencii.vsq
                     tmpDepthBPY = spl[1];
                 } else if ( search.Equals( "StartRate" ) ) {
                     m_type = VsqHandleType.Vibrato;
-                    StartRate = str.toi( spl[1] );
+                    StartRate = int.Parse( spl[1] );
                 } else if ( search.Equals( "RateBPNum" ) ) {
                     tmpRateBPNum = spl[1];
                 } else if ( search.Equals( "RateBPX" ) ) {
@@ -293,15 +293,15 @@ namespace cadencii.vsq
                     tmpRateBPY = spl[1];
                 } else if ( search.Equals( "Duration" ) ) {
                     m_type = VsqHandleType.NoteHeadHandle;
-                    Duration = str.toi( spl[1] );
+                    Duration = int.Parse( spl[1] );
                 } else if ( search.Equals( "Depth" ) ) {
-                    Depth = str.toi( spl[1] );
+                    Depth = int.Parse( spl[1] );
                 } else if ( search.Equals( "StartDyn" ) ) {
                     m_type = VsqHandleType.DynamicsHandle;
-                    StartDyn = str.toi( spl[1] );
+                    StartDyn = int.Parse( spl[1] );
                 } else if ( search.Equals( "EndDyn" ) ) {
                     m_type = VsqHandleType.DynamicsHandle;
-                    EndDyn = str.toi( spl[1] );
+                    EndDyn = int.Parse( spl[1] );
                 } else if ( search.Equals( "DynBPNum" ) ) {
                     tmpDynBPNum = spl[1];
                 } else if ( search.Equals( "DynBPX" ) ) {
@@ -309,7 +309,7 @@ namespace cadencii.vsq
                 } else if ( search.Equals( "DynBPY" ) ) {
                     tmpDynBPY = spl[1];
                 } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ) {
-                    String num = str.sub( search, 1 );
+                    String num = search.Substring( 1 );
                     ByRef<Integer> vals = new ByRef<Integer>( 0 );
                     if ( PortUtil.tryParseInt( num, vals ) ) {
                         Lyric lyric = new Lyric( spl[1] );
@@ -367,7 +367,7 @@ namespace cadencii.vsq
         public static int HandleIndexFromString( String _string )
         {
             String[] spl = PortUtil.splitString( _string, new char[] { '#' } );
-            return str.toi( spl[1] );
+            return int.Parse( spl[1] );
         }
 
         /// <summary>

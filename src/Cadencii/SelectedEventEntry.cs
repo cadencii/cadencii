@@ -267,8 +267,8 @@ namespace cadencii
                     // 「+ 480)*1.1」みたいな書式を許容したいので。「+ 480)*1.1」=>「(x+ 480)*1.1」
                     int num_bla = 0; // "("の個数
                     int num_cket = 0; // ")"の個数
-                    for ( int i = 0; i < str.length( eq ); i++ ) {
-                        char c = str.charAt( eq, i );
+                    for ( int i = 0; i < eq.Length; i++ ) {
+                        char c = eq[i];
                         if ( c == '(' ) {
                             num_bla++;
                         } else if ( c == ')' ) {
@@ -466,7 +466,7 @@ namespace cadencii
                 if ( VsqPhoneticSymbol.isConsonant( symbol[i] ) ) {
                     int v = 64;
                     try {
-                        v = str.toi( adjustment[i] );
+                        v = int.Parse( adjustment[i] );
                     } catch ( Exception ex ) {
                     }
                     if ( v < 0 ) {
@@ -1711,7 +1711,7 @@ namespace cadencii
             int value = 64;
             if ( !v.Equals( "" ) ) {
                 try {
-                    value = str.toi( v );
+                    value = int.Parse( v );
                 } catch ( Exception ex ) {
                     serr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
                     value = 64;

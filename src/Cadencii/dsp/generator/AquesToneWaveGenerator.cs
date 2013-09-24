@@ -93,7 +93,7 @@ namespace cadencii
                         String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                         int release = 64;
                         try {
-                            release = str.toi( strRelease );
+                            release = int.Parse( strRelease );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AquesToneWaveGenerator ) + ".generateMidiEvent; ex=" + ex + "\n" );
                             release = 64;

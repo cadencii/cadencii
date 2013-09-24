@@ -18,6 +18,7 @@ import cadencii.*;
 import cadencii.media.*;
 #else
 using System;
+using System.IO;
 using cadencii.media;
 using cadencii;
 
@@ -42,8 +43,8 @@ namespace cadencii {
             m_prepared = new boolean[127];
             String cache_path = Utility.getKeySoundPath();
             for ( int i = 0; i <= 126; i++ ) {
-                String path = fsys.combine( cache_path, i + ".wav" );
-                if ( fsys.isFileExists( path ) ) {
+                String path = Path.Combine( cache_path, i + ".wav" );
+                if ( File.Exists( path ) ) {
                     m_prepared[i] = true;
                     if ( 36 <= i && i <= 83 ) {
                         try {
@@ -77,8 +78,8 @@ namespace cadencii {
                 if ( m_temp_player == null ) {
                     m_temp_player = new BSoundPlayer();
                 }
-                String path = fsys.combine( Utility.getKeySoundPath(), note + ".wav" );
-                if ( fsys.isFileExists( path ) ) {
+                String path = Path.Combine( Utility.getKeySoundPath(), note + ".wav" );
+                if ( File.Exists( path ) ) {
                     m_temp_player.setSoundLocation( path );
                     m_temp_player.play();
                 }

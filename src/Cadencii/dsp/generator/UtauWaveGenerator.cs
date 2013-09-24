@@ -26,6 +26,7 @@ import cadencii.vsq.*;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.IO;
 using cadencii.media;
 using cadencii.vsq;
 using cadencii;
@@ -190,16 +191,16 @@ namespace cadencii
             mResampler = mConfig.getResamplerAt( resampler_index );
             mWavtool = mConfig.PathWavtool;
 #if DEBUG
-            sout.println( "UtauWaveGenerator#init; mResampler=" + mResampler + "; exists=" + fsys.isFileExists( mResampler ) );
-            sout.println( "UtauWaveGenerator#init; mWavtool=" + mWavtool + "; exists=" + fsys.isFileExists( mWavtool ) );
+            sout.println("UtauWaveGenerator#init; mResampler=" + mResampler + "; exists=" + System.IO.File.Exists(mResampler));
+            sout.println("UtauWaveGenerator#init; mWavtool=" + mWavtool + "; exists=" + System.IO.File.Exists(mWavtool));
 #endif
             mSampleRate = sample_rate;
             String id = AppManager.getID();
-            mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), id );
+            mTempDir = Path.Combine( AppManager.getCadenciiTempDir(), id );
 #if !JAVA
             if ( mUseWideCharacterWorkaround ) {
                 String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
-                if ( !fsys.isDirectoryExists( junction_path ) ) {
+                if (!Directory.Exists(junction_path)) {
                     cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
                     mJunctions.add( junction_path );
                 }
@@ -207,7 +208,7 @@ namespace cadencii
             }
 #endif
 #if DEBUG
-            sout.println( "UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + fsys.isDirectoryExists( mTempDir ) );
+            sout.println("UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + Directory.Exists(mTempDir));
 #endif
             mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
             mWavtoolWithWine = mConfig.WavtoolWithWine;
@@ -341,7 +342,7 @@ namespace cadencii
                 double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * mSampleRate;
                 //mAbortRequired = false;
                 mRunning = true;
-                if ( !fsys.isDirectoryExists( mTempDir ) ) {
+                if (!Directory.Exists(mTempDir)) {
                     PortUtil.createDirectory( mTempDir );
                 }
 
@@ -351,16 +352,16 @@ namespace cadencii
                 // 原音設定を読み込み
                 VsqTrack target = mVsq.Track.get( mTrack );
 
-                String file = fsys.combine( mTempDir, FILEBASE );
-                if ( fsys.isFileExists( file ) ) {
+                String file = Path.Combine( mTempDir, FILEBASE );
+                if (System.IO.File.Exists(file)) {
                     PortUtil.deleteFile( file );
                 }
-                String file_whd = fsys.combine( mTempDir, FILEBASE + ".whd" );
-                if ( fsys.isFileExists( file_whd ) ) {
+                String file_whd = Path.Combine( mTempDir, FILEBASE + ".whd" );
+                if (System.IO.File.Exists(file_whd)) {
                     PortUtil.deleteFile( file_whd );
                 }
-                String file_dat = fsys.combine( mTempDir, FILEBASE + ".dat" );
-                if ( fsys.isFileExists( file_dat ) ) {
+                String file_dat = Path.Combine( mTempDir, FILEBASE + ".dat" );
+                if (System.IO.File.Exists(file_dat)) {
                     PortUtil.deleteFile( file_dat );
                 }
 #if DEBUG
@@ -413,8 +414,8 @@ namespace cadencii
                         singer = singer_raw;
 #if !JAVA
                         if ( mUseWideCharacterWorkaround ) {
-                            String junction = fsys.combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
-                            if ( !fsys.isDirectoryExists( junction ) ) {
+                            String junction = Path.Combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
+                            if (!Directory.Exists(junction)) {
                                 cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
                                 mJunctions.add( junction );
                             }
@@ -467,7 +468,7 @@ namespace cadencii
                         //rq.WavtoolArgPrefix = "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@" + BASE_TEMPO;
                         rq.WavtoolArgPrefix.clear();
                         rq.WavtoolArgPrefix.add( "\"" + file + "\"" );
-                        rq.WavtoolArgPrefix.add( "\"" + fsys.combine( singer, "R.wav" ) + "\"" );
+                        rq.WavtoolArgPrefix.add( "\"" + Path.Combine( singer, "R.wav" ) + "\"" );
                         rq.WavtoolArgPrefix.add( "0" );
                         rq.WavtoolArgPrefix.add( draft_length + "@" + BASE_TEMPO );
                         //rq.WavtoolArgSuffix = " 0 0";
@@ -501,10 +502,10 @@ namespace cadencii
 #endif
                     RenderQueue rq2 = new RenderQueue();
                     String wavPath = "";
-                    if ( oa.fileName != null && str.length( oa.fileName ) > 0 ) {
-                        wavPath = fsys.combine( singer, oa.fileName );
+                    if ( oa.fileName != null && oa.fileName.Length > 0 ) {
+                        wavPath = Path.Combine( singer, oa.fileName );
                     } else {
-                        wavPath = fsys.combine( singer, lyric + ".wav" );
+                        wavPath = Path.Combine( singer, lyric + ".wav" );
                     }
 #if DEBUG
                     debugWriteLine( "UtauWaveGenerator#run; wavPath=" + wavPath );
@@ -552,7 +553,7 @@ namespace cadencii
 #if DEBUG
 #if !JAVA
                     String logname =
-                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
+                        Path.Combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
                     System.IO.StreamWriter sw3 = new System.IO.StreamWriter( logname );
                     int prevx = 0;
                     float max = -100;
@@ -566,11 +567,11 @@ namespace cadencii
                         // dst_noteに，clockでの，音符のノートナンバー(あれば．なければ元の音符と同じ値)
                         int dst_note = base_note;
                         if ( k > 0 ) {
-                            VsqEvent prev = vec.get( events, k - 1 );
+                            VsqEvent prev = events[k - 1];
                             dst_note = base_note;
                         }
                         for ( int i = indx; i < events_count; i++ ) {
-                            VsqEvent itemi = vec.get( events, i );
+                            VsqEvent itemi = events[i];
                             if ( clock < itemi.Clock ) {
                                 continue;
                             }
@@ -593,9 +594,9 @@ namespace cadencii
 
                         // リストに入れる
                         if ( totalcount == 0 ) {
-                            vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) + "Q" + tempo );
+                            pitch.Add( PortUtil.formatDecimal( "0.00", pvalue ) + "Q" + tempo );
                         } else {
-                            vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) );
+                            pitch.Add( PortUtil.formatDecimal( "0.00", pvalue ) );
                         }
                         totalcount++;
 #if DEBUG
@@ -646,7 +647,7 @@ namespace cadencii
 //                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
 //#else
                     String filename =
-                        fsys.combine( mTempDir, PortUtil.getMD5FromString( mCache.size() + rq2.hashSource ) + ".wav" );
+                        Path.Combine( mTempDir, PortUtil.getMD5FromString( mCache.size() + rq2.hashSource ) + ".wav" );
 //#endif
 
                     rq2.appendArgRange( resampler_arg_prefix );
@@ -687,7 +688,7 @@ namespace cadencii
 
                     String str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
 #if DEBUG
-                    double act_t_temp = str.tof( str_t_temp );
+                    double act_t_temp = double.Parse( str_t_temp );
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif
@@ -837,17 +838,17 @@ namespace cadencii
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     //String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
                     Vector<String> arg_wavtool = new Vector<String>();
-                    int size = vec.size( p.WavtoolArgPrefix );
+                    int size = p.WavtoolArgPrefix.Count;
                     for ( int j = 0; j < size; j++ ) {
-                        String s = vec.get( p.WavtoolArgPrefix, j );
+                        String s = p.WavtoolArgPrefix[j];
                         if ( j == size - 1 ) {
                             s += (mten >= 0 ? ("+" + mten) : ("-" + (-mten)));
                         }
-                        vec.add( arg_wavtool, s );
+                        arg_wavtool.Add( s );
                     }
-                    size = vec.size( p.WavtoolArgSuffix );
+                    size = p.WavtoolArgSuffix.Count;
                     for ( int j = 0; j < size; j++ ) {
-                        vec.add( arg_wavtool, vec.get( p.WavtoolArgSuffix, j ) );
+                        arg_wavtool.Add( p.WavtoolArgSuffix[j] );
                     }
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
@@ -1260,9 +1261,9 @@ namespace cadencii
                 process = new Process();
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
                 String argument = "";
-                int size = vec.size( arg );
+                int size = arg.Count;
                 for ( int i = 0; i < size; i++ ) {
-                    argument += vec.get( arg, i ) + (i == size - 1 ? "" : " ");
+                    argument += arg[i] + (i == size - 1 ? "" : " ");
                 }
                 /*if ( __a != arg ) {
                     serr.println( "UtauWaveGenerator#processWavtool; warning; (__a != arg);" );

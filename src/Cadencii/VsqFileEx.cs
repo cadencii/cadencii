@@ -24,6 +24,7 @@ import cadencii.xml.*;
 #else
 
 using System;
+using System.IO;
 using cadencii.vsq;
 using cadencii;
 using cadencii.java.io;
@@ -104,7 +105,7 @@ namespace cadencii
             String str_indx = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED );
             int ret = 0;
             try {
-                ret = str.toi( str_indx );
+                ret = int.Parse( str_indx );
             } catch ( Exception ex ) {
                 ret = 0;
             }
@@ -266,9 +267,9 @@ namespace cadencii
         {
             base.insertBlank( clock_start, clock_amount );
             Vector<BezierCurves> curves = AttachedCurves.getCurves();
-            int size = vec.size( curves );
+            int size = curves.Count;
             for ( int i = 0; i < size; i++ ) {
-                BezierCurves bcs = vec.get( curves, i );
+                BezierCurves bcs = curves[i];
                 bcs.insertBlank( clock_start, clock_amount );
             }
         }
@@ -281,7 +282,7 @@ namespace cadencii
         /// <param name="clock_amount">挿入する空白の量</param>
         public void insertBlank( int track, int clock_start, int clock_amount )
         {
-            VsqTrack vsq_track = vec.get( Track, track );
+            VsqTrack vsq_track = Track[track];
             vsq_track.insertBlank( clock_start, clock_amount );
             BezierCurves bcs = AttachedCurves.get( track - 1 );
             bcs.insertBlank( clock_start, clock_amount );
@@ -300,9 +301,9 @@ namespace cadencii
         {
             base.removePart( clock_start, clock_end );
             Vector<BezierCurves> curves = AttachedCurves.getCurves();
-            int size = vec.size( curves );
+            int size = curves.Count;
             for ( int i = 0; i < size; i++ ) {
-                BezierCurves bcs = vec.get( curves, i );
+                BezierCurves bcs = curves[i];
                 bcs.removePart( clock_start, clock_end );
             }
         }
@@ -315,7 +316,7 @@ namespace cadencii
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
         public void removePart( int track, int clock_start, int clock_end )
         {
-            VsqTrack vsq_track = vec.get( Track, track );
+            VsqTrack vsq_track = Track[track];
             vsq_track.removePart( clock_start, clock_end );
             BezierCurves bcs = AttachedCurves.get( track - 1 );
             bcs.removePart( clock_start, clock_end );
@@ -622,7 +623,7 @@ namespace cadencii
                     }
                 }
                 // 削除が要求されたものを削除
-                Collections.sort( remove_required_event );
+                remove_required_event.Sort();
                 int count = remove_required_event.size();
                 for ( int j = count - 1; j >= 0; j-- ) {
                     int index = remove_required_event.get( j );
@@ -1385,7 +1386,7 @@ namespace cadencii
 #endif
             AttachedCurves = new AttachedCurve();
 
-            String xml = fsys.combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
+            String xml = Path.Combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
             for ( int i = 1; i < Track.size(); i++ ) {
                 AttachedCurves.add( new BezierCurves() );
             }

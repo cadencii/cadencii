@@ -129,15 +129,15 @@ namespace cadencii.vsq
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 if ( spl[0].Equals( "MasterFeder" ) ) {
-                    MasterFeder = str.toi( spl[1] );
+                    MasterFeder = int.Parse( spl[1] );
                 } else if ( spl[0].Equals( "MasterPanpot" ) ) {
-                    MasterPanpot = str.toi( spl[1] );
+                    MasterPanpot = int.Parse( spl[1] );
                 } else if ( spl[0].Equals( "MasterMute" ) ) {
-                    MasterMute = str.toi( spl[1] );
+                    MasterMute = int.Parse( spl[1] );
                 } else if ( spl[0].Equals( "OutputMode" ) ) {
-                    OutputMode = str.toi( spl[1] );
+                    OutputMode = int.Parse( spl[1] );
                 } else if ( spl[0].Equals( "Tracks" ) ) {
-                    tracks = str.toi( spl[1] );
+                    tracks = int.Parse( spl[1] );
                 } else {
                     if ( spl[0].StartsWith( "Feder" ) ||
                          spl[0].StartsWith( "Panpot" ) ||
@@ -164,20 +164,20 @@ namespace cadencii.vsq
                 spl2 = PortUtil.splitString( spl[i], new char[] { '=' } );
                 if ( spl2[0].StartsWith( "Feder" ) ) {
                     ind = spl2[0].Replace( "Feder", "" );
-                    index = str.toi( ind );
-                    Slave.get( index ).Feder = str.toi( spl2[1] );
+                    index = int.Parse( ind );
+                    Slave.get( index ).Feder = int.Parse( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Panpot" ) ) {
                     ind = spl2[0].Replace( "Panpot", "" );
-                    index = str.toi( ind );
-                    Slave.get( index ).Panpot = str.toi( spl2[1] );
+                    index = int.Parse( ind );
+                    Slave.get( index ).Panpot = int.Parse( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Mute" ) ) {
                     ind = spl2[0].Replace( "Mute", "" );
-                    index = str.toi( ind );
-                    Slave.get( index ).Mute = str.toi( spl2[1] );
+                    index = int.Parse( ind );
+                    Slave.get( index ).Mute = int.Parse( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Solo" ) ) {
                     ind = spl2[0].Replace( "Solo", "" );
-                    index = str.toi( ind );
-                    Slave.get( index ).Solo = str.toi( spl2[1] );
+                    index = int.Parse( ind );
+                    Slave.get( index ).Solo = int.Parse( spl2[1] );
                 }
 
             }

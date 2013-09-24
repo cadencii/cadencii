@@ -251,10 +251,10 @@ namespace cadencii
                     txtVibratoLength.Enabled = true;
                     VibratoHandle src = null;
                     if ( radioUserDefined.Checked ) {
-                        int size = vec.size( AppManager.editorConfig.AutoVibratoCustom );
+                        int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                         for ( int i = 0; i < size; i++ ) {
-                            VibratoHandle handle = vec.get( AppManager.editorConfig.AutoVibratoCustom, i );
-                            if ( str.compare( s, handle.IconID ) ) {
+                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[i];
+                            if ( s == handle.IconID ) {
                                 src = handle;
                                 break;
                             }
@@ -263,7 +263,7 @@ namespace cadencii
                         SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                             VibratoHandle vconfig = itr.next();
-                            if ( str.compare( s, vconfig.IconID ) ) {
+                            if ( s == vconfig.IconID ) {
                                 src = vconfig;
                                 break;
                             }
@@ -275,7 +275,7 @@ namespace cadencii
                     if ( src != null ) {
                         int percent;
                         try {
-                            percent = str.toi( txtVibratoLength.Text );
+                            percent = int.Parse( txtVibratoLength.Text );
                         } catch ( Exception ex ) {
                             return;
                         }
@@ -295,7 +295,7 @@ namespace cadencii
 #endif
             int percent = 0;
             try {
-                percent = str.toi( txtVibratoLength.Text );
+                percent = int.Parse( txtVibratoLength.Text );
                 if ( percent < 0 ) {
                     percent = 0;
                 } else if ( 100 < percent ) {

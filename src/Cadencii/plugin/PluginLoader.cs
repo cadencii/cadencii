@@ -41,10 +41,10 @@ namespace cadencii
             Assembly ret = null;
 
             String md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
-            String cached_asm_file = fsys.combine( Utility.getCachedAssemblyPath(), md5 + ".dll" );
+            String cached_asm_file = Path.Combine( Utility.getCachedAssemblyPath(), md5 + ".dll" );
             bool compiled = false;
 
-            if ( fsys.isFileExists( cached_asm_file ) ) {
+            if ( File.Exists( cached_asm_file ) ) {
                 ret = Assembly.LoadFile( cached_asm_file );
                 if ( !isValidCachedAssembly( ret ) ){
                     ret = null;
@@ -74,12 +74,12 @@ namespace cadencii
                 }
 
                 CompilerParameters parameters = new CompilerParameters( new String[] {
-                    fsys.combine( path, "cadencii.vsq.dll" ),
-                    fsys.combine( path, "Cadencii.exe" ),
-                    fsys.combine( path, "cadencii.media.dll" ),
-                    fsys.combine( path, "cadencii.apputil.dll" ),
-                    fsys.combine( path, "cadencii.windows.forms.dll" ),
-                    fsys.combine( path, "cadencii.core.dll" )
+                    Path.Combine( path, "cadencii.vsq.dll" ),
+                    Path.Combine( path, "Cadencii.exe" ),
+                    Path.Combine( path, "cadencii.media.dll" ),
+                    Path.Combine( path, "cadencii.apputil.dll" ),
+                    Path.Combine( path, "cadencii.windows.forms.dll" ),
+                    Path.Combine( path, "cadencii.core.dll" )
                 } );
                 parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
                 parameters.ReferencedAssemblies.Add( "System.dll" );
@@ -108,7 +108,7 @@ namespace cadencii
                 if ( !usedAssemblyChache.Contains( cached_asm_file ) ) {
                     usedAssemblyChache.Add( cached_asm_file );
                 }
-                if ( fsys.isFileExists( cached_asm_file ) ) {
+                if ( File.Exists( cached_asm_file ) ) {
                     try {
                         PortUtil.deleteFile( cached_asm_file );
                     } catch ( Exception ex ) {
@@ -147,7 +147,7 @@ namespace cadencii
             String[] files = PortUtil.listFiles( dir, ".dll" );
             foreach ( String file in files ) {
                 String name = PortUtil.getFileName( file );
-                String full = fsys.combine( dir, name );
+                String full = Path.Combine( dir, name );
                 if ( !usedAssemblyChache.Contains( full ) ) {
                     try {
                         PortUtil.deleteFile( full );
@@ -231,7 +231,7 @@ namespace cadencii
                         ret.Serializer = new XmlStaticMemberSerializerEx( implemented );
                         ret.getDisplayNameDelegate = getDisplayNameDelegate;
 
-                        if ( !fsys.isFileExists( config_file ) ) {
+                        if ( !File.Exists( config_file ) ) {
                             continue;
                         }
 

@@ -25,6 +25,7 @@ import cadencii.xml.*;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -95,7 +96,7 @@ namespace cadencii.vsq
 #endif
 #if DEBUG
 #if !JAVA
-            System.IO.StreamWriter sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor.log" ) );
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( Path.Combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor.log" ) );
             int max = int.MinValue;
             int min = int.MaxValue;
             int lastc = 0;
@@ -103,11 +104,11 @@ namespace cadencii.vsq
 #endif
             int clock_count = 0;
             VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
-            VsqTrack vsq_track = vec.get( this.Track, 1 );
+            VsqTrack vsq_track = this.Track[1];
             int last_clock = -1;
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
-                if ( !str.compare( ue.getLyric(), "R" ) ) {
+                if ( ue.getLyric() != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
                     String psymbol = "a";
@@ -239,7 +240,7 @@ namespace cadencii.vsq
 #if !JAVA
 
 
-            sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
+            sw = new System.IO.StreamWriter( Path.Combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
 
             max = int.MinValue;
             min = int.MaxValue;
@@ -959,7 +960,7 @@ namespace cadencii.vsq
                         }
 
                         // 並べ替え
-                        Collections.sort( edit );
+                        edit.Sort();
                         inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, edit );
                     } else if ( com.size() == 0 ) {
                         inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, new Vector<BPPair>() );
@@ -1121,7 +1122,7 @@ namespace cadencii.vsq
                             }
 
                             // 並べ替え
-                            Collections.sort( edit );
+                            edit.Sort();
                             inv_coms.add( edit );
                             //inv = generateCommandTrackEditCurve( track, curve, edit );
                         } else if ( com.size() == 0 ) {
@@ -1465,9 +1466,9 @@ namespace cadencii.vsq
         public void insertBlank( int clock_start, int clock_amount )
         {
             // テンポを挿入
-            int size = vec.size( TempoTable );
+            int size = TempoTable.Count;
             for ( int i = 0; i < size; i++ ) {
-                TempoTableEntry itemi = vec.get( TempoTable, i );
+                TempoTableEntry itemi = TempoTable[i];
                 if ( itemi.Clock <= 0 ) {
                     continue;
                 }
@@ -1478,9 +1479,9 @@ namespace cadencii.vsq
             TempoTable.updateTempoInfo();
 
             // 各トラックに空白を挿入
-            size = vec.size( Track );
+            size = Track.Count;
             for ( int i = 1; i < size; i++ ) {
-                VsqTrack vsq_track = vec.get( Track, i );
+                VsqTrack vsq_track = Track[i];
                 vsq_track.insertBlank( clock_start, clock_amount );
             }
         }
@@ -1995,7 +1996,7 @@ namespace cadencii.vsq
                         prev_time = thistime;
                     }
                 }
-                Collections.sort( TempoTable );
+                TempoTable.Sort();
                 #endregion
 
                 #region TimeSigTableの作成
@@ -2313,9 +2314,9 @@ namespace cadencii.vsq
         private static String substring127Bytes( String s, String encoding )
         {
             int count = Math.Min( 127, PortUtil.getStringLength( s ) );
-            int c = PortUtil.getEncodedByteCount( encoding, str.sub( s, 0, count ) );
+            int c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             if ( c == 127 ) {
-                return str.sub( s, 0, count );
+                return s.Substring( 0, count );
             }
             int delta = c > 127 ? -1 : 1;
             while ( (delta == -1 && c > 127) || (delta == 1 && c < 127) ) {
@@ -2325,9 +2326,9 @@ namespace cadencii.vsq
                 } else if ( delta == 1 && count == PortUtil.getStringLength( s ) ) {
                     break;
                 }
-                c = PortUtil.getEncodedByteCount( encoding, str.sub( s, 0, count ) );
+                c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             }
-            return str.sub( s, 0, count );
+            return s.Substring( 0, count );
         }
 
         private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, String encoding )
@@ -2367,7 +2368,7 @@ namespace cadencii.vsq
 #else
             String suffix = "_win";
 #endif 
-            String path = fsys.combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
+            String path = Path.Combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
             BufferedWriter bw = null;
             try{
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
@@ -2392,7 +2393,7 @@ namespace cadencii.vsq
 #endif // DEBUG
             NrpnData[] nrpns = VsqNrpn.convert( data );
 #if DEBUG
-            path = fsys.combine( PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt" );
+            path = Path.Combine( PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt" );
             try{
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
                 for( int i = 0; i < nrpns.Length; i++ ){
@@ -2602,7 +2603,7 @@ namespace cadencii.vsq
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
-                String num = str.sub( icon_id, PortUtil.getStringLength( icon_id ) - 4 );
+                String num = icon_id.Substring( PortUtil.getStringLength( icon_id ) - 4 );
                 int vibrato_type = (int)PortUtil.fromHexString( num );
                 int note_length = ve.ID.getLength();
                 int vibrato_delay = ve.ID.VibratoDelay;
@@ -2617,7 +2618,7 @@ namespace cadencii.vsq
             List<String> spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
             String s = "";
             for ( int j = 0; j < spl.Count; j++ ) {
-                s += vec.get( spl, j );
+                s += spl[j];
             }
             char[] symbols = s.ToCharArray();
             if ( renderer.StartsWith( "DSB2" ) ) {
@@ -2626,12 +2627,12 @@ namespace cadencii.vsq
             add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
             List<Integer> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
-            for ( int j = 0; j < vec.size( spl ); j++ ) {
-                char[] chars = vec.get( spl, j ).ToCharArray();
+            for ( int j = 0; j < spl.Count; j++ ) {
+                char[] chars = spl[j].ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;
                     if ( k == 0 ) {
-                        int v = vec.get( consonantAdjustment, j );
+                        int v = consonantAdjustment[j];
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)v, true ); // Phonetic symbol j
                     } else {
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], true ); // Phonetic symbol j
@@ -2665,7 +2666,7 @@ namespace cadencii.vsq
                 byte accent = (byte)((byte)0x64 * ve.ID.DEMaccent / 100.0);
                 add.append( NRPN.CVM_NM_ACCENT, accent, true );// (byte)0x5a(Accent)
             }
-            if ( str.startsWith( renderer, "UTU0" ) ) {
+            if ( renderer.StartsWith( "UTU0" ) ) {
                 // エンベロープ
                 if ( ve.UstEvent != null ) {
                     UstEnvelope env = ve.UstEvent.getEnvelope();
@@ -3013,7 +3014,7 @@ namespace cadencii.vsq
                     }
                 }
             }
-            Collections.sort( ret );
+            ret.Sort();
             return ret.toArray( new VsqNrpn[] { } );
         }
 
@@ -3061,7 +3062,7 @@ namespace cadencii.vsq
                     }
                 }
             }
-            Collections.sort( res );
+            res.Sort();
             return res.toArray( new VsqNrpn[] { } );
         }
 
@@ -3142,7 +3143,7 @@ namespace cadencii.vsq
                 }
             }
 
-            if ( fsys.isFileExists( file ) ) {
+            if (System.IO.File.Exists(file)) {
                 try {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {
@@ -3199,7 +3200,7 @@ namespace cadencii.vsq
 #if DEBUG
                 sout.println( "    events.Count=" + events.size() );
 #endif
-                Collections.sort( events );
+                events.Sort();
                 long last = 0;
                 for ( Iterator<MidiEvent> itr = events.iterator(); itr.hasNext(); ) {
                     MidiEvent me = itr.next();

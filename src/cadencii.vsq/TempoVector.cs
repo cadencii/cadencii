@@ -36,8 +36,8 @@ namespace cadencii.vsq
             tv.add( new TempoTableEntry( 1920, 500000, 0.0 ) );
             tv.add( new TempoTableEntry( 3820, 500000, 0.0 ) );
             tv.updateTempoInfo();
-            for ( int i = 0; i < vec.size( tv ); i++ ) {
-                TempoTableEntry itemi = vec.get( tv, i );
+            for ( int i = 0; i < tv.Count; i++ ) {
+                TempoTableEntry itemi = tv[i];
                 sout.println( "   #" + i + "; " + itemi.Clock + "; " + itemi.Time + "; " + (60e6 / itemi.Tempo) );
             }
             TempoVectorSearchContext c = new TempoVectorSearchContext();
@@ -164,7 +164,7 @@ namespace cadencii.vsq
             if ( c == 0 ) {
                 add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
             }
-            Collections.sort( this );
+            this.Sort();
             TempoTableEntry item0 = get( 0 );
             if ( item0.Clock != 0 ) {
                 item0.Time = (double)baseTempo * (double)item0.Clock / (gatetimePerQuater * 1000000.0);

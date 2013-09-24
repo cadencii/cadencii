@@ -86,26 +86,26 @@ namespace cadencii.vsq
         public static Vector<VsqNrpn> sort( Vector<VsqNrpn> list )
         {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
-            Collections.sort( list );
-            int list_size = vec.size( list );
+            list.Sort();
+            int list_size = list.Count;
             if ( list_size >= 2 ) {
                 Vector<VsqNrpn> work = new Vector<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
-                int last_clock = vec.get( list, 0 ).Clock;
-                work.add( vec.get( list, 0 ) );
+                int last_clock = list[0].Clock;
+                work.add( list[0] );
                 for ( int i = 1; i < list_size; i++ ) {
-                    VsqNrpn itemi = vec.get( list, i );
+                    VsqNrpn itemi = list[i];
                     if ( itemi.Clock == last_clock ) {
                         work.add( itemi );
                     } else {
                         // まずworkを並べ替え
                         last_clock = itemi.Clock;
                         boolean changed = true;
-                        int work_size = vec.size( work );
+                        int work_size = work.Count;
                         while ( changed ) {
                             changed = false;
                             for ( int j = 0; j < work_size - 1; j++ ) {
-                                VsqNrpn itemj = vec.get( work, j );
-                                VsqNrpn itemjn = vec.get( work, j + 1 );
+                                VsqNrpn itemj = work[j];
+                                VsqNrpn itemjn = work[j + 1];
 #if JAVA
                                 int nrpn_msb0 = (itemj.Nrpn >>> 8) & 0xff;
                                 int nrpn_msb1 = (itemjn.Nrpn >>> 8) & 0xff;
@@ -115,25 +115,25 @@ namespace cadencii.vsq
 #endif
                                 if ( nrpn_msb1 > nrpn_msb0 ) {
                                     VsqNrpn buf = itemj;
-                                    vec.set( work, j, itemjn );
-                                    vec.set( work, j + 1, buf );
+                                    work[j] = itemjn;
+                                    work[j + 1] = buf;
                                     changed = true;
                                 }
                             }
                         }
                         for ( int j = 0; j < work_size; j++ ) {
-                            vec.add( ret, vec.get( work, j ) );
+                            ret.Add( work[j] );
                         }
-                        vec.clear( work );
-                        vec.add( work, vec.get( list, i ) );
+                        work.Clear();
+                        work.Add( list[i] );
                     }
                 }
                 for ( int j = 0; j < work.size(); j++ ) {
-                    vec.add( ret, vec.get( work, j ) );
+                    ret.Add( work[j] );
                 }
             } else {
                 for ( int i = 0; i < list.size(); i++ ) {
-                    vec.add( ret, vec.get( list, i ) );
+                    ret.Add( list[i] );
                 }
             }
             return ret;
@@ -148,7 +148,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < src2.Length; i++ ) {
                 ret.add( src2[i] );
             }
-            Collections.sort( ret );
+            ret.Sort();
             return ret.toArray( new VsqNrpn[] { } );
         }
 

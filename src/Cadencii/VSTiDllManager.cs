@@ -25,6 +25,7 @@ import cadencii.vsq.*;
 
 using System;
 using System.Threading;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.media;
@@ -322,20 +323,20 @@ namespace cadencii {
             String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
             String ini = "";
             if( !editor_dir.Equals( "" ) ){
-                ini = fsys.combine( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
+                ini = Path.Combine( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
             }
             String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
             String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-            if ( !str.compare( vocalo2_dll_path, "" ) &&
-                    fsys.isFileExists( vocalo2_dll_path ) &&
+            if ( vocalo2_dll_path != "" &&
+                    System.IO.File.Exists(vocalo2_dll_path) &&
                     !AppManager.editorConfig.DoNotUseVocaloid2 ) {
                 VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID2 );
                 vr.path = vocalo2_dll_path;
                 vr.loaded = false;
                 vocaloidDriver.add( vr );
             }
-            if ( !str.compare( vocalo1_dll_path, "" ) &&
-                    fsys.isFileExists( vocalo1_dll_path ) &&
+            if ( vocalo1_dll_path != "" &&
+                    System.IO.File.Exists(vocalo1_dll_path) &&
                     !AppManager.editorConfig.DoNotUseVocaloid1 ) {
                 VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID1 );
                 vr.path = vocalo1_dll_path;
@@ -441,21 +442,21 @@ namespace cadencii {
                 int size = AppManager.editorConfig.getResamplerCount();
                 for ( int i = 0; i < size; i++ ) {
                     String path = AppManager.editorConfig.getResamplerAt( i );
-                    if ( fsys.isFileExists( path ) ) {
+                    if (System.IO.File.Exists(path)) {
                         resampler_exists = true;
                         break;
                     }
                 }
                 if ( resampler_exists &&
-                     !AppManager.editorConfig.PathWavtool.Equals( "" ) && fsys.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
+                     !AppManager.editorConfig.PathWavtool.Equals("") && System.IO.File.Exists(AppManager.editorConfig.PathWavtool)) {
                     if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
                         return true;
                     }
                 }
             }
             if ( renderer == RendererKind.VCNT ) {
-                String synth_path = fsys.combine( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
-                if ( fsys.isFileExists( synth_path ) ) {
+                String synth_path = Path.Combine( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
+                if (System.IO.File.Exists(synth_path)) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     if ( count > 0 ) {
                         return true;

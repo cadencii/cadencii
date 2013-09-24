@@ -269,19 +269,19 @@ namespace cadencii.vsq
                         type = VsqIDType.Unknown;
                     }
                 } else if ( search.Equals( "Length" ) ) {
-                    this.setLength( str.toi( spl[1] ) );
+                    this.setLength( int.Parse( spl[1] ) );
                 } else if ( search.Equals( "Note#" ) ) {
-                    this.Note = str.toi( spl[1] );
+                    this.Note = int.Parse( spl[1] );
                 } else if ( search.Equals( "Dynamics" ) ) {
-                    this.Dynamics = str.toi( spl[1] );
+                    this.Dynamics = int.Parse( spl[1] );
                 } else if ( search.Equals( "PMBendDepth" ) ) {
-                    this.PMBendDepth = str.toi( spl[1] );
+                    this.PMBendDepth = int.Parse( spl[1] );
                 } else if ( search.Equals( "PMBendLength" ) ) {
-                    this.PMBendLength = str.toi( spl[1] );
+                    this.PMBendLength = int.Parse( spl[1] );
                 } else if ( search.Equals( "DEMdecGainRate" ) ) {
-                    this.DEMdecGainRate = str.toi( spl[1] );
+                    this.DEMdecGainRate = int.Parse( spl[1] );
                 } else if ( search.Equals( "DEMaccent" ) ) {
-                    this.DEMaccent = str.toi( spl[1] );
+                    this.DEMaccent = int.Parse( spl[1] );
                 } else if ( search.Equals( "LyricHandle" ) ) {
                     this.LyricHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 } else if ( search.Equals( "IconHandle" ) ) {
@@ -289,9 +289,9 @@ namespace cadencii.vsq
                 } else if ( search.Equals( "VibratoHandle" ) ) {
                     this.VibratoHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 } else if ( search.Equals( "VibratoDelay" ) ) {
-                    this.VibratoDelay = str.toi( spl[1] );
+                    this.VibratoDelay = int.Parse( spl[1] );
                 } else if ( search.Equals( "PMbPortamentoUse" ) ) {
-                    PMbPortamentoUse = str.toi( spl[1] );
+                    PMbPortamentoUse = int.Parse( spl[1] );
                 } else if ( search.Equals( "NoteHeadHandle" ) ) {
                     NoteHeadHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 }

@@ -52,7 +52,7 @@ import cadencii.ui.*;
                 {
                     int count = 0;
                     string message = "";
-                    message += "[version]\r\n" + str.replace( Utility.getVersion(), "\n\n", "\n" ) + "\r\n";
+                    message += "[version]\r\n" + Utility.getVersion().Replace( "\n\n", "\n" ) + "\r\n";
                     message += "[system]\r\n" + this.getSystemInfo() + "\r\n";
                     message += this.extractMessageString( ex, count );
                     this.exceptionMessage = message;

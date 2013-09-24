@@ -47,7 +47,7 @@ namespace cadencii
             this.track = track;
             this.tempo = new TempoVector();
             for ( Iterator<TempoTableEntry> itr = tempo.iterator(); itr.hasNext(); ) {
-                vec.add( this.tempo, (TempoTableEntry)itr.next().clone() );
+                this.tempo.Add( (TempoTableEntry)itr.next().clone() );
             }
             this.config = config;
         }

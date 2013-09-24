@@ -145,7 +145,7 @@ class makeRes{
 			sw.newLine();
 			sw.write( cs_space + "        if( basePath == null ){" );
 			sw.newLine();
-			sw.write( cs_space + "            basePath = fsys.combine( PortUtil.getApplicationStartupPath(), \"resources\" );" );
+			sw.write( cs_space + "            basePath = Path.Combine( PortUtil.getApplicationStartupPath(), \"resources\" );" );
 			sw.newLine();
 			sw.write( cs_space + "        }" );
 			sw.newLine();
@@ -177,7 +177,7 @@ class makeRes{
 					sw.newLine();
 					sw.write( cs_space + "        if( " + instance + " == null ){" );
 					sw.newLine();
-					sw.write( cs_space + "            String res_path = fsys.combine( getBasePath(), \"" + fname + "\" );" );
+					sw.write( cs_space + "            String res_path = Path.Combine( getBasePath(), \"" + fname + "\" );" );
 					sw.newLine();
 					sw.write( cs_space + "            try{" );
 					sw.newLine();
@@ -225,7 +225,7 @@ class makeRes{
 					sw.newLine();
 					sw.write( cs_space + "        if( " + instance + " == null ){" );
 					sw.newLine();
-					sw.write( cs_space + "            String res_path = fsys.combine( getBasePath(), \"" + fname + "\" );" );
+					sw.write( cs_space + "            String res_path = Path.Combine( getBasePath(), \"" + fname + "\" );" );
 					sw.newLine();
 					sw.write( cs_space + "            try{" );
 					sw.newLine();
@@ -261,7 +261,7 @@ class makeRes{
 			        sw.newLine();
 			        sw.write( cs_space + "        if( " + instance + " == null ){" );
 			        sw.newLine();
-			        sw.write( cs_space + "            String res_path = fsys.combine( getBasePath(), \"" + fname + "\" );" );
+			        sw.write( cs_space + "            String res_path = Path.Combine( getBasePath(), \"" + fname + "\" );" );
 			        sw.newLine();
 			        sw.write( cs_space + "            try{" );
 			        sw.newLine();

@@ -92,7 +92,7 @@ namespace cadencii.vsq
             sw.newLine();
             sw.write( "PBS=" + Start + (mIsUnknownIntSpecified ? (";" + mUnknownInt) : "") );
             sw.newLine();
-            if ( vec.size( Points ) >= 2 ) {
+            if ( Points.Count >= 2 ) {
                 sw.write( "PBY=" + pby );
                 sw.newLine();
                 sw.write( "PBM=" + pbm );
@@ -136,35 +136,35 @@ namespace cadencii.vsq
             String[] values = PortUtil.splitString( spl[1], ',' );
             if ( line.StartsWith( "pbs=" ) ) {
                 String v = values[0];
-                int indx = str.find( values[0], ";" );
+                int indx = values[0].IndexOf( ";", 0 );
                 if ( indx >= 0 ) {
-                    v = str.sub( values[0], 0, indx );
-                    if ( str.length( values[0] ) > indx + 1 ) {
-                        String unknown = str.sub( values[0], indx + 1 );
+                    v = values[0].Substring( 0, indx );
+                    if ( values[0].Length > indx + 1 ) {
+                        String unknown = values[0].Substring( indx + 1 );
                         mIsUnknownIntSpecified = true;
-                        mUnknownInt = str.toi( unknown );
+                        mUnknownInt = int.Parse( unknown );
                     }
                 }
-                Start = str.toi( v );
+                Start = int.Parse( v );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {
                         Points.add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
-                    up.Step = str.toi( values[i] );
+                    up.Step = int.Parse( values[i] );
                     Points.set( i, up );
                 }
             } else if ( line.StartsWith( "pby=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
-                    if ( str.length( values[i] ) <= 0 ) {
+                    if ( values[i].Length <= 0 ) {
                         continue;
                     }
                     if ( i >= Points.size() ) {
                         Points.add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
-                    up.Value = (float)str.tof( values[i] );
+                    up.Value = (float)double.Parse( values[i] );
                     Points.set( i, up );
                 }
             } else if ( line.StartsWith( "pbm=" ) ) {
@@ -174,11 +174,11 @@ namespace cadencii.vsq
                     }
                     UstPortamentoPoint up = Points.get( i );
                     String search = values[i].ToLower();
-                    if ( str.compare( search, "s" ) ) {
+                    if ( search == "s" ) {
                         up.Type = UstPortamentoType.Linear;
-                    } else if ( str.compare( search, "r" ) ) {
+                    } else if ( search == "r" ) {
                         up.Type = UstPortamentoType.R;
-                    } else if ( str.compare( search, "j" ) ) {
+                    } else if ( search == "j" ) {
                         up.Type = UstPortamentoType.J;
                     } else {
                         up.Type = UstPortamentoType.S;

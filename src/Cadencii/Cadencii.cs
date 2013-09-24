@@ -37,7 +37,6 @@ namespace cadencii
 #endif
     {
 #if !JAVA
-        delegate void VoidDelegate();
         public static FormSplash splash = null;
         static Thread splashThread = null;
 #endif
@@ -56,16 +55,16 @@ namespace cadencii
 
             for ( int i = 0; i < arg.Length; i++ ) {
                 String argi = arg[i];
-                if ( str.startsWith( argi, "-" ) ) {
+                if ( argi.StartsWith( "-" ) ) {
                     currentparse = argi;
-                    if ( str.compare( argi, "--version" ) ) {
+                    if ( argi == "--version" ) {
                         mPrintVersion = true;
                         currentparse = "";
                     }
                 } else {
-                    if ( str.compare( currentparse, "" ) ) {
+                    if ( currentparse == "" ) {
                         mPathVsq = argi;
-                    } else if ( str.compare( currentparse, "-resources" ) ) {
+                    } else if ( currentparse == "-resources" ) {
                         mPathResource = argi;
                     }
                     currentparse = "";
@@ -141,7 +140,7 @@ namespace cadencii
                 return;
             }
             String file = mPathVsq;
-            if (!str.compare(mPathResource, "")) {
+            if (mPathResource != "") {
                 Resources.setBasePath(mPathResource);
             }
 
@@ -173,7 +172,7 @@ namespace cadencii
             String str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
-                minor = str.toi(str_minor);
+                minor = int.Parse(str_minor);
             } catch (Exception ex) {
             }
             if ((minor % 2) != 0) {
@@ -217,13 +216,10 @@ namespace cadencii
                 FormCompileResult dialog = new FormCompileResult(
                     _( "Failed to launch Cadencii. Please send the exception report to developer" ),
                     str_ex );
-                dialog.setTitle( _( "Error" ) );
-                dialog.showDialog();
+                dialog.Text = _( "Error" );
+                dialog.ShowDialog();
                 if ( splash != null ) {
-                    VoidDelegate splash_close = new VoidDelegate( splash.close );
-                    if ( splash != null ) {
-                        splash.Invoke( splash_close );
-                    }
+                    splash.Invoke(new Action(splash.Close));
                 }
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
@@ -280,10 +276,7 @@ namespace cadencii
         public static void mainWindow_Load( Object sender, EventArgs e )
         {
             if ( splash != null ) {
-                VoidDelegate deleg = new VoidDelegate( closeSplash );
-                if ( deleg != null ) {
-                    splash.Invoke( deleg );
-                }
+                splash.Invoke(new Action(closeSplash));
             }
             splash = null;
 

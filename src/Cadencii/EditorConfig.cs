@@ -27,6 +27,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using System.IO;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -669,7 +670,7 @@ namespace cadencii
             if ( extension.Equals( "." ) ) return "";
 
             if ( extension.StartsWith( "." ) ) {
-                extension = str.sub( extension, 1 );
+                extension = extension.Substring( 1 );
             }
 
             int c = list.size();
@@ -692,7 +693,7 @@ namespace cadencii
             if ( extension == null ) return;
             if ( extension.Equals( "." ) ) return;
             if ( extension.StartsWith( "." ) ) {
-                extension = str.sub( extension, 1 );
+                extension = extension.Substring( 1 );
             }
 
             int c = list.size();
@@ -744,21 +745,21 @@ namespace cadencii
             // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
             String parent = PortUtil.getDirectoryName( appstart );
-            String ret = fsys.combine( parent, bundle_name );
-            if( !fsys.isDirectoryExists( ret ) ){
+            String ret = Path.Combine( parent, bundle_name );
+            if (!Directory.Exists(ret)) {
                 // ../Wine.bundleが無い場合
-                ret = fsys.combine( appstart, bundle_name );
+                ret = Path.Combine( appstart, bundle_name );
             }
-            ret = fsys.combine( ret, "Contents" );
-            ret = fsys.combine( ret, "SharedSupport" );
+            ret = Path.Combine( ret, "Contents" );
+            ret = Path.Combine( ret, "SharedSupport" );
             return ret;
         }
 
         public String getBuiltinWineMinimumExecutable()
         {
             String ret = getBuiltinWineTop( "WineMinimum.bundle" );
-            ret = fsys.combine( ret, "bin" );
-            ret = fsys.combine( ret, "wine" );
+            ret = Path.Combine( ret, "bin" );
+            ret = Path.Combine( ret, "wine" );
             return ret;
         }
 
@@ -768,8 +769,8 @@ namespace cadencii
         public String getBuiltinWineExecutable__()
         {
             String ret = getBuiltinWineTop( "Wine.bundle" );
-            ret = fsys.combine( ret, "bin" );
-            ret = fsys.combine( ret, "wine" );
+            ret = Path.Combine( ret, "bin" );
+            ret = Path.Combine( ret, "wine" );
             return ret;
         }
 
@@ -807,8 +808,8 @@ namespace cadencii
                 return ResamplerWithWine;
             } else {
                 index--;
-                if ( 0 <= index && index < vec.size( ResamplersWithWine ) ) {
-                    return vec.get( ResamplersWithWine, index );
+                if ( 0 <= index && index < ResamplersWithWine.Count ) {
+                    return ResamplersWithWine[index];
                 }
                 return false;
             }
@@ -825,8 +826,8 @@ namespace cadencii
                 ResamplerWithWine = with_wine;
             } else {
                 index--;
-                if ( 0 <= index && index < vec.size( ResamplersWithWine ) ) {
-                    vec.set( ResamplersWithWine, index, with_wine );
+                if ( 0 <= index && index < ResamplersWithWine.Count ) {
+                    ResamplersWithWine[index] = with_wine;
                 }
             }
         }
@@ -998,7 +999,7 @@ namespace cadencii
                         trimlen = len;
                     }
                     if ( trimlen > 0 ) {
-                        String s = str.sub( this.AutoVibratoTypeCustom, len - trimlen, trimlen );
+                        String s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
                         try {
                             index = (int)PortUtil.fromHexString( s );
                             index--;
@@ -1337,15 +1338,15 @@ namespace cadencii
             if ( ResamplersWithWine == null ) {
                 ResamplersWithWine = new Vector<Boolean>();
             }
-            if ( vec.size( PathResamplers ) != vec.size( ResamplersWithWine ) ) {
-                int delta = vec.size( ResamplersWithWine ) - vec.size( PathResamplers );
+            if ( PathResamplers.Count != ResamplersWithWine.Count ) {
+                int delta = ResamplersWithWine.Count - PathResamplers.Count;
                 if ( delta > 0 ) {
                     for ( int i = 0; i < delta; i++ ) {
-                        ResamplersWithWine.removeElementAt( vec.size( ResamplersWithWine ) - 1 );
+                        ResamplersWithWine.removeElementAt( ResamplersWithWine.Count - 1 );
                     }
                 } else if ( delta < 0 ) {
                     for ( int i = 0; i < -delta; i++ ) {
-                        vec.add( ResamplersWithWine, false );
+                        ResamplersWithWine.Add( false );
                     }
                 }
             }

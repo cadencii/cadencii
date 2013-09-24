@@ -24,6 +24,7 @@ import cadencii.vsq.*;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.IO;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -236,8 +237,8 @@ namespace cadencii
             //mAbortRequired = false;
             double[] bufL = new double[BUFLEN];
             double[] bufR = new double[BUFLEN];
-            String straight_synth = fsys.combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
-            if ( !fsys.isFileExists( straight_synth ) ) {
+            String straight_synth = Path.Combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
+            if (!System.IO.File.Exists(straight_synth)) {
 #if DEBUG
                 sout.println( "VConnectWaveGenerator#begin; \"" + straight_synth + "\" does not exists" );
 #endif
@@ -295,7 +296,7 @@ namespace cadencii
                 VConnectRenderingQueue queue = mQueue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
 
-                String tmp_file = fsys.combine( tmp_dir, "tmp.usq" );
+                String tmp_file = Path.Combine( tmp_dir, "tmp.usq" );
 #if DEBUG
                 sout.println( "VConnectWaveGenerator#begin; tmp_file=" + tmp_file );
 #endif
@@ -330,12 +331,12 @@ namespace cadencii
 #endif
                 }
                 try {
-                    PortUtil.copyFile( tmp_file, fsys.combine( tmp_dir, hash + ".usq" ) );
+                    PortUtil.copyFile( tmp_file, Path.Combine( tmp_dir, hash + ".usq" ) );
                     PortUtil.deleteFile( tmp_file );
                 } catch ( Exception ex ) {
                 }
-                tmp_file = fsys.combine( tmp_dir, hash );
-                if ( !mCache.containsKey( hash ) || !fsys.isFileExists( tmp_file + ".wav" ) ) {
+                tmp_file = Path.Combine( tmp_dir, hash );
+                if (!mCache.containsKey(hash) || !System.IO.File.Exists(tmp_file + ".wav")) {
 #if JAVA
                     String[] args = new String[]{ 
                         straight_synth.replace( "\\", "\\" + "\\" ), 
@@ -410,7 +411,7 @@ namespace cadencii
                         }
                         mCache.remove( old_key );
                         try {
-                            PortUtil.deleteFile( fsys.combine( tmp_dir, old_key + ".wav" ) );
+                            PortUtil.deleteFile( Path.Combine( tmp_dir, old_key + ".wav" ) );
                         } catch ( Exception ex ) {
                         }
                     }
@@ -426,7 +427,7 @@ namespace cadencii
                 //WaveReader wr = null;
                 WaveRateConverter wr = null;
                 try {
-                    if ( fsys.isFileExists( tmp_file + ".wav" ) ) {
+                    if (System.IO.File.Exists(tmp_file + ".wav")) {
                         wr = new WaveRateConverter( new WaveReader( tmp_file + ".wav" ), mSampleRate );
                     }
                 } catch ( Exception ex ) {
@@ -911,8 +912,8 @@ namespace cadencii
             if ( singer_path.Equals( "" ) ) {
                 return;
             }
-            String oto_ini = fsys.combine( singer_path, "oto.ini" );
-            if ( !fsys.isFileExists( oto_ini ) ) {
+            String oto_ini = Path.Combine( singer_path, "oto.ini" );
+            if (!System.IO.File.Exists(oto_ini)) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
             }
@@ -1185,7 +1186,7 @@ namespace cadencii
             for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
                 String key = itr.next();
                 try {
-                    PortUtil.deleteFile( fsys.combine( tmp_dir, key + ".wav" ) );
+                    PortUtil.deleteFile( Path.Combine( tmp_dir, key + ".wav" ) );
                 } catch ( Exception ex ) {
                 }
             }
