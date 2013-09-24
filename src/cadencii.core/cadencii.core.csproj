@@ -84,8 +84,6 @@
     <Compile Include="cp932.cs" />
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />
-    <Compile Include="dic.cs" />
-    <Compile Include="dicitr.cs" />
     <Compile Include="fft.cs" />
     <Compile Include="fsys.cs" />
     <Compile Include="imageio.cs" />

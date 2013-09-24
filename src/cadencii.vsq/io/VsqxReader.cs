@@ -198,8 +198,8 @@ namespace cadencii.vsq.io
         private static int getOpening( XmlNode node )
         {
             var attributes = getNoteAttributes( node );
-            if ( dic.containsKey( attributes, "opening" ) ) {
-                return dic.get( attributes, "opening" );
+            if ( attributes.ContainsKey( "opening" ) ) {
+                return attributes["opening"];
             } else {
                 return 127;
             }
@@ -217,7 +217,7 @@ namespace cadencii.vsq.io
             foreach ( XmlNode attr in noteStyle.GetElementsByTagName( "attr" ) ) {
                 string id = attr.Attributes["id"].Value;
                 int value = int.Parse( attr.InnerText );
-                dic.put( result, id, value );
+                result[id] = value;
             }
             return result;
         }
@@ -255,29 +255,29 @@ namespace cadencii.vsq.io
             item.ID.Dynamics = int.Parse( note["velocity"].InnerText );
 
             var attributes = getNoteAttributes( note );
-            if ( dic.containsKey( attributes, "accent" ) ) {
+            if ( attributes.ContainsKey( "accent" ) ) {
                 item.ID.DEMaccent = attributes["accent"];
             }
-            if ( dic.containsKey( attributes, "bendDep" ) ) {
+            if ( attributes.ContainsKey( "bendDep" ) ) {
                 item.ID.PMBendDepth = attributes["bendDep"];
             }
-            if ( dic.containsKey( attributes, "bendLen" ) ) {
+            if ( attributes.ContainsKey( "bendLen" ) ) {
                 item.ID.PMBendLength = attributes["bendLen"];
             }
-            if ( dic.containsKey( attributes, "decay" ) ) {
+            if ( attributes.ContainsKey( "decay" ) ) {
                 item.ID.DEMdecGainRate = attributes["decay"];
             }
-            if ( dic.containsKey( attributes, "fallPort" ) ) {
+            if ( attributes.ContainsKey( "fallPort" ) ) {
                 item.ID.setFallPortamento( attributes["fallPort"] == 1 );
             }
-            if ( dic.containsKey( attributes, "risePort" ) ) {
+            if ( attributes.ContainsKey( "risePort" ) ) {
                 item.ID.setRisePortamento( attributes["risePort"] == 1 );
             }
 
             // vibrato
-            if ( dic.containsKey( attributes, "vibLen" ) && dic.containsKey( attributes, "vibType" ) ) {
-                int lengthPercentage = dic.get( attributes, "vibLen" );
-                int vibratoType = dic.get( attributes, "vibType" ) - 1;
+            if ( attributes.ContainsKey( "vibLen" ) && attributes.ContainsKey( "vibType" ) ) {
+                int lengthPercentage = attributes["vibLen"];
+                int vibratoType = attributes["vibType"] - 1;
                 if ( lengthPercentage > 0 ) {
                     var vibratoHandle = new VibratoHandle();
                     int length = item.ID.getLength();
