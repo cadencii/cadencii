@@ -75,7 +75,6 @@
     <Compile Include="awt.geom.cs" />
     <Compile Include="awt.image.cs" />
     <Compile Include="Base64.cs" />
-    <Compile Include="BDelegate.cs" />
     <Compile Include="BufferedReader.cs" />
     <Compile Include="BufferedWriter.cs" />
     <Compile Include="ByRef.cs" />
