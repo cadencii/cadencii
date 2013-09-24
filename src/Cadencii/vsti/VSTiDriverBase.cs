@@ -30,8 +30,6 @@ namespace cadencii
     using VstInt32 = Int32;
     using VstIntPtr = Int32;
 
-    delegate void VoidDelegate();
-
     public struct TempoInfo
     {
         /// <summary>
@@ -315,11 +313,8 @@ namespace cadencii
         {
             if ( ui == null ) {
                 if ( main_window != null ) {
-                    VoidDelegate temp = new VoidDelegate( this.createPluginUi );
-                    if ( temp != null ) {
-                        // mainWindowのスレッドで、uiが作成されるようにする
-                        main_window.Invoke( temp );
-                    }
+                    // mainWindowのスレッドで、uiが作成されるようにする
+                    main_window.Invoke(new Action(createPluginUi));
                 }
             }
             return ui;

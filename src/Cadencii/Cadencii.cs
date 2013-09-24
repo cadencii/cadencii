@@ -37,7 +37,6 @@ namespace cadencii
 #endif
     {
 #if !JAVA
-        delegate void VoidDelegate();
         public static FormSplash splash = null;
         static Thread splashThread = null;
 #endif
@@ -220,10 +219,7 @@ namespace cadencii
                 dialog.Text = _( "Error" );
                 dialog.ShowDialog();
                 if ( splash != null ) {
-                    VoidDelegate splash_close = new VoidDelegate( splash.Close );
-                    if ( splash != null ) {
-                        splash.Invoke( splash_close );
-                    }
+                    splash.Invoke(new Action(splash.Close));
                 }
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
@@ -280,10 +276,7 @@ namespace cadencii
         public static void mainWindow_Load( Object sender, EventArgs e )
         {
             if ( splash != null ) {
-                VoidDelegate deleg = new VoidDelegate( closeSplash );
-                if ( deleg != null ) {
-                    splash.Invoke( deleg );
-                }
+                splash.Invoke(new Action(closeSplash));
             }
             splash = null;
 
