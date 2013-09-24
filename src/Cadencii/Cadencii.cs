@@ -217,10 +217,10 @@ namespace cadencii
                 FormCompileResult dialog = new FormCompileResult(
                     _( "Failed to launch Cadencii. Please send the exception report to developer" ),
                     str_ex );
-                dialog.setTitle( _( "Error" ) );
-                dialog.showDialog();
+                dialog.Text = _( "Error" );
+                dialog.ShowDialog();
                 if ( splash != null ) {
-                    VoidDelegate splash_close = new VoidDelegate( splash.close );
+                    VoidDelegate splash_close = new VoidDelegate( splash.Close );
                     if ( splash != null ) {
                         splash.Invoke( splash_close );
                     }
