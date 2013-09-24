@@ -20,6 +20,7 @@ import cadencii.*;
 import cadencii.vsq.*;
 #else
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -42,7 +43,7 @@ namespace cadencii {
         /// <param name="singer_config"></param>
         public UtauVoiceDB( SingerConfig singer_config ) {
             _name = singer_config.VOICENAME;
-            String oto_ini = fsys.combine( singer_config.VOICEIDSTR, "oto.ini" );
+            String oto_ini = Path.Combine( singer_config.VOICEIDSTR, "oto.ini" );
             readOtoIni( oto_ini );
         }
 
@@ -51,7 +52,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="oto_ini">原音設定のパス</param>
         private void readOtoIni( String oto_ini ) {
-            if ( !fsys.isFileExists( oto_ini ) ) {
+            if (!System.IO.File.Exists(oto_ini)) {
                 return;
             }
 
@@ -77,8 +78,8 @@ namespace cadencii {
                         }
 
                         // ファイルがちゃんとあるかどうか？
-                        String fullpath = fsys.combine( dir, file_name );
-                        if ( !fsys.isFileExists( fullpath ) ) {
+                        String fullpath = Path.Combine( dir, file_name );
+                        if (!System.IO.File.Exists(fullpath)) {
                             continue;
                         }
 

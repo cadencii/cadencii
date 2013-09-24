@@ -237,7 +237,7 @@ class UtauPluginManager : Form {
     }
 
     private static string getPluginName( string plugin_txt_file ) {
-        if ( !fsys.isFileExists( plugin_txt_file ) ) {
+        if ( !File.Exists( plugin_txt_file ) ) {
             return "";
         }
 
@@ -339,8 +339,8 @@ class UtauPluginManager : Form {
                 if ( !getPlugins().Contains( file ) ) {
                     string name = getPluginName( file );
                     if ( name != "" ) {
-                        string script_path = fsys.combine( Utility.getScriptPath(), name + ".txt" );
-                        if ( fsys.isFileExists( script_path ) ) {
+                        string script_path = Path.Combine( Utility.getScriptPath(), name + ".txt" );
+                        if ( File.Exists( script_path ) ) {
                             PortUtil.deleteFile( script_path );
                         }
                     }
@@ -349,7 +349,7 @@ class UtauPluginManager : Form {
         }
 
         foreach ( string file in getPlugins() ) {
-            if ( !fsys.isFileExists( file ) ) {
+            if ( !File.Exists( file ) ) {
                 continue;
             }
 
@@ -364,7 +364,7 @@ class UtauPluginManager : Form {
             string text = TEXT;
             string code = text.Replace( "{0}", name );
             code = code.Replace( "{1}", file );
-            using ( StreamWriter sw = new StreamWriter( fsys.combine( Utility.getScriptPath(), name + ".txt" ) ) ) {
+            using ( StreamWriter sw = new StreamWriter( Path.Combine( Utility.getScriptPath(), name + ".txt" ) ) ) {
                 sw.WriteLine( code );
             }
         }

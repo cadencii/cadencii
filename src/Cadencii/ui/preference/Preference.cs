@@ -14,6 +14,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
@@ -1269,8 +1270,8 @@ namespace cadencii
                 if ( txtWavtool.Text == "" ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
-                    String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
-                    if ( fsys.isFileExists( wavtool ) ) {
+                    String wavtool = Path.Combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
+                    if (System.IO.File.Exists(wavtool)) {
                         txtWavtool.Text = wavtool;
                         check = false;
                         if ( is_mac ) {
@@ -1331,7 +1332,7 @@ namespace cadencii
 
         public void btnWavtool_Click( Object sender, EventArgs e )
         {
-            if ( !txtWavtool.Text.Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.Text ) ) ) {
+            if (!txtWavtool.Text.Equals("") && Directory.Exists(PortUtil.getDirectoryName(txtWavtool.Text))) {
                 openUtauCore.SetSelectedFile(txtWavtool.Text);
             }
             var dr = AppManager.showModalDialog( openUtauCore, true, this );
@@ -1345,8 +1346,8 @@ namespace cadencii
                 }
                 chkWavtoolWithWine.Checked = check;
                 if ( listResampler.Items.Count == 0 ) {
-                    String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
-                    if ( fsys.isFileExists( resampler ) ) {
+                    String resampler = Path.Combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
+                    if (System.IO.File.Exists(resampler)) {
                         check = false;
                         if ( is_mac ) {
                             check = isWindowsExecutable( resampler );
@@ -1364,7 +1365,7 @@ namespace cadencii
         private void onAquesToneChooseButtonClicked( System.Windows.Forms.TextBox text_box )
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            if ( text_box.Text != "" && fsys.isDirectoryExists( PortUtil.getDirectoryName( text_box.Text ) ) ) {
+            if (text_box.Text != "" && Directory.Exists(PortUtil.getDirectoryName(text_box.Text))) {
                 dialog.SetSelectedFile(text_box.Text);
             }
             var dr = AppManager.showModalDialog( dialog, true, this );
@@ -1380,10 +1381,10 @@ namespace cadencii
                 String dir = folderBrowserSingers.SelectedPath;
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
-                sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + fsys.isDirectoryExists( dir ) );
-                sout.println( "Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + fsys.isFileExists( dir ) );
+                sout.println("Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + Directory.Exists(dir));
+                sout.println("Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + System.IO.File.Exists(dir));
 #endif
-                if ( !fsys.isDirectoryExists( dir ) && fsys.isFileExists( dir ) ) {
+                if (!Directory.Exists(dir) && System.IO.File.Exists(dir)) {
                     // dirの指すパスがフォルダではなくファイルだった場合、
                     // そのファイルの存在するパスに修正
                     dir = PortUtil.getDirectoryName( dir );
@@ -1492,11 +1493,11 @@ namespace cadencii
                 dialog = new OpenFileDialog();
                 String dir = textWinePrefix.Text;
                 if ( dir != null && dir.Length > 0 ) {
-                    dialog.SetSelectedFile(fsys.combine( dir, "a" ));
+                    dialog.SetSelectedFile(Path.Combine( dir, "a" ));
                 }
                 if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
                     dir = dialog.FileName;
-                    if ( fsys.isFileExists( dir ) ) {
+                    if (System.IO.File.Exists(dir)) {
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
                     }
@@ -1513,11 +1514,11 @@ namespace cadencii
                 dialog = new OpenFileDialog();
                 String dir = textWineTop.Text;
                 if ( dir != null && dir.Length > 0 ) {
-                    dialog.SetSelectedFile(fsys.combine( dir, "a" ));
+                    dialog.SetSelectedFile(Path.Combine( dir, "a" ));
                 }
                 if ( AppManager.showModalDialog( dialog, true, this ) == DialogResult.OK ) {
                     dir = dialog.FileName;
-                    if ( fsys.isFileExists( dir ) ) {
+                    if (System.IO.File.Exists(dir)) {
                         // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
                         dir = PortUtil.getDirectoryName( dir );
                     }
@@ -1543,7 +1544,7 @@ namespace cadencii
 
         private boolean isWindowsExecutable( String path )
         {
-            if ( !fsys.isFileExists( path ) ) {
+            if (!System.IO.File.Exists(path)) {
                 return false;
             }
             RandomAccessFile fs = null;

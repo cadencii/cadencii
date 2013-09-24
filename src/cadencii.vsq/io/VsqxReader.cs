@@ -29,6 +29,7 @@ public class VsqxConverter
 using System;
 using System.Xml;
 using System.Collections.Generic;
+using System.IO;
 
 namespace cadencii.vsq.io
 {
@@ -50,7 +51,7 @@ namespace cadencii.vsq.io
                 throw new ArgumentNullException( "filePath" );
             }
 
-            if ( false == fsys.isFileExists( filePath ) ) {
+            if ( false == File.Exists( filePath ) ) {
                 throw new Exception( "file not found" );
             }
 

@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -43,8 +44,8 @@ namespace cadencii.vsq
         {
             m_installed_singers = new Vector<SingerConfig>();
             m_singer_configs = new Vector<SingerConfig>();
-            String map = fsys.combine( path_voicedb, "voice.map" );
-            if ( !fsys.isFileExists( map ) ) {
+            String map = Path.Combine( path_voicedb, "voice.map" );
+            if (!System.IO.File.Exists(map)) {
                 return;
             }
 
@@ -57,7 +58,7 @@ namespace cadencii.vsq
                 //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
                 //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
                 //      これで治っているかどうか要確認
-                if ( fsys.isDirectoryExists( ipath ) ) {
+                if (Directory.Exists(ipath)) {
                     String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                     if ( vvds.Length > 0 ) {
                         SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
@@ -78,7 +79,7 @@ namespace cadencii.vsq
                         fs.read( dat, 0, 8 );
                         long value = PortUtil.make_int64_le( dat );
                         if ( value >= 1 ) {
-                            String vvd = fsys.combine( path_voicedb, "vvoice" + value + ".vvd" );
+                            String vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
                             SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
                             m_singer_configs.add( item );
                         }

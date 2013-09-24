@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii.java.io;
 using cadencii.java.util;
 
@@ -123,14 +124,14 @@ using cadencii.java.util;
                     // 辞書フォルダからの読込み
                     String editor_path = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID2 );
                     if ( editor_path != "" ) {
-                        String path = fsys.combine( PortUtil.getDirectoryName( editor_path ), "UDIC" );
-                        if ( !fsys.isDirectoryExists( path ) ) {
+                        String path = Path.Combine( PortUtil.getDirectoryName( editor_path ), "UDIC" );
+                        if (!Directory.Exists(path)) {
                             return;
                         }
                         String[] files = PortUtil.listFiles( path, "*.udc" );
                         for ( int i = 0; i < files.Length; i++ ) {
                             files[i] = PortUtil.getFileName( files[i] );
-                            String dict = fsys.combine( path, files[i] );
+                            String dict = Path.Combine( path, files[i] );
                             mTable.add( new SymbolTable( dict, true, false, "Shift_JIS" ) );
                         }
                     }
@@ -144,11 +145,11 @@ using cadencii.java.util;
                 public static void loadAllDictionaries( String directory )
                 {
                     // 起動ディレクトリ
-                    if ( fsys.isDirectoryExists( directory ) ) {
+                    if (Directory.Exists(directory)) {
                         String[] files2 = PortUtil.listFiles( directory, "*.eudc" );
                         for ( int i = 0; i < files2.Length; i++ ) {
                             files2[i] = PortUtil.getFileName( files2[i] );
-                            String dict = fsys.combine( directory, files2[i] );
+                            String dict = Path.Combine( directory, files2[i] );
                             mTable.add( new SymbolTable( dict, true, false, "UTF-8" ) );
                         }
                     }
@@ -317,7 +318,7 @@ using cadencii.java.util;
                 {
                     mDict = new TreeMap<String, SymbolTableEntry>();
                     mEnabled = enabled;
-                    if ( !fsys.isFileExists( path ) ) {
+                    if (!System.IO.File.Exists(path)) {
                         return;
                     }
                     mName = PortUtil.getFileName( path );

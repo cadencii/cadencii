@@ -22,6 +22,7 @@ import java.util.Iterator;
 #else
 
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 
@@ -90,7 +91,7 @@ namespace cadencii.apputil
             String[] files = PortUtil.listFiles( directory, ".po" );
             for ( int i = 0; i < files.Length; i++ ){
                 String name = PortUtil.getFileName( files[i] );
-                String fname = fsys.combine( directory, name );
+                String fname = Path.Combine( directory, name );
                 appendFromFile( fname );
             }
         }

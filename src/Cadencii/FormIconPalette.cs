@@ -176,7 +176,7 @@ namespace cadencii
                 btn.setHandle( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
-                boolean setimg = fsys.isFileExists( buttonIconPath );
+                boolean setimg = System.IO.File.Exists(buttonIconPath);
                 if ( setimg ) {
                     btn.Image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
                 } else {

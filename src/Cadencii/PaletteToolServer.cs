@@ -88,7 +88,7 @@ namespace cadencii {
                             String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
                             String cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
                             String config = Path.Combine( dir, cfg );
-                            if ( fsys.isFileExists( config ) ) {
+                            if ( File.Exists( config ) ) {
                                 XmlStaticMemberSerializer xsms = new XmlStaticMemberSerializer( instance.GetType() );
                                 FileStream fs = null;
                                 boolean errorOnDeserialize = false;

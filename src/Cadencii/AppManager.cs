@@ -36,6 +36,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
+using System.IO;
 using Microsoft.CSharp;
 using cadencii.apputil;
 using cadencii.java.awt;
@@ -637,7 +638,7 @@ namespace cadencii
             Vector<String> ret = new Vector<String>();
             ret.add( "/bin/sh" );
             String vocaloidrv_sh =
-                Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
+                Utility.normalizePath( Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
             ret.add( vocaloidrv_sh );
 
             String wine_prefix =
@@ -682,7 +683,7 @@ namespace cadencii
             Vector<Amplifier> waves = new Vector<Amplifier>();
             for ( int i = 0; i < tracks.size(); i++ ) {
                 int track = tracks.get( i );
-                String file = fsys.combine( tmppath, track + ".wav" );
+                String file = Path.Combine( tmppath, track + ".wav" );
                 WaveReader wr = null;
                 try {
                     wr = new WaveReader( file );
@@ -882,7 +883,7 @@ namespace cadencii
                 startIndex[k] = queue.size();
                 int track = tracks.get( k );
                 VsqTrack vsq_track = mVsq.Track.get( track );
-                String wavePath = fsys.combine( temppath, track + ".wav" );
+                String wavePath = Path.Combine( temppath, track + ".wav" );
 
                 if ( mLastRenderedStatus[track - 1] == null ) {
                     // この場合は全部レンダリングする必要がある
@@ -912,7 +913,7 @@ namespace cadencii
 
                 // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
                 // 編集範囲を無音部分まで延長する。
-                if ( fsys.isFileExists( wavePath ) ) {
+                if ( System.IO.File.Exists( wavePath ) ) {
                     WaveReader wr = null;
                     try {
                         wr = new WaveReader( wavePath );
@@ -1053,7 +1054,7 @@ namespace cadencii
 #if DEBUG
                     sout.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
 #endif
-                    q.file = fsys.combine( temppath, track + "_" + j + ".wav" );
+                    q.file = Path.Combine( temppath, track + "_" + j + ".wav" );
                     q.vsq = mVsq;
                     queue.add( q );
                 }
@@ -1498,9 +1499,9 @@ namespace cadencii
         /// <param name="track">読み込みを行うトラックの番号</param>
         public static void deserializeRenderingStatus( String directory, int track )
         {
-            String xml = fsys.combine( directory, track + ".xml" );
+            String xml = Path.Combine( directory, track + ".xml" );
             RenderedStatus status = null;
-            if ( fsys.isFileExists( xml ) ) {
+            if (System.IO.File.Exists(xml)) {
                 FileInputStream fs = null;
                 try {
                     fs = new FileInputStream( xml );
@@ -1535,7 +1536,7 @@ namespace cadencii
         {
             FileOutputStream fs = null;
             boolean failed = true;
-            String xml = fsys.combine( temppath, track + ".xml" );
+            String xml = Path.Combine( temppath, track + ".xml" );
             try {
                 fs = new FileOutputStream( xml );
                 mRenderingStatusSerializer.serialize( fs, mLastRenderedStatus[track - 1] );
@@ -1556,7 +1557,7 @@ namespace cadencii
 
             // シリアライズに失敗した場合，該当するxmlを削除する
             if( failed ){
-                if( fsys.isFileExists( xml ) ){
+                if (System.IO.File.Exists(xml)) {
                     try{
                         PortUtil.deleteFile( xml );
                     }catch( Exception ex ){
@@ -1917,11 +1918,11 @@ namespace cadencii
 #if DEBUG
             sout.println( "AppManager::handleAutoBackupTimerTick" );
 #endif
-            if ( !mFile.Equals( "" ) && fsys.isFileExists( mFile ) ) {
+            if (!mFile.Equals("") && System.IO.File.Exists(mFile)) {
                 String path = PortUtil.getDirectoryName( mFile );
-                String backup = fsys.combine( path, "~$" + PortUtil.getFileName( mFile ) );
-                String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
-                if ( fsys.isFileExists( backup ) ) {
+                String backup = Path.Combine( path, "~$" + PortUtil.getFileName( mFile ) );
+                String file2 = Path.Combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
+                if (System.IO.File.Exists(backup)) {
                     try {
                         PortUtil.deleteFile( backup );
                     } catch ( Exception ex ) {
@@ -1929,7 +1930,7 @@ namespace cadencii
                         Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
                     }
                 }
-                if ( fsys.isFileExists( file2 ) ) {
+                if (System.IO.File.Exists(file2)) {
                     try {
                         PortUtil.deleteFile( file2 );
                     } catch ( Exception ex ) {
@@ -1947,7 +1948,7 @@ namespace cadencii
 #if DEBUG
             try {
                 if ( mDebugLog == null ) {
-                    String log_file = fsys.combine( PortUtil.getApplicationStartupPath(), "log.txt" );
+                    String log_file = Path.Combine( PortUtil.getApplicationStartupPath(), "log.txt" );
                     mDebugLog = new BufferedWriter( new FileWriter( log_file ) );
                 }
                 mDebugLog.write( message );
@@ -2007,8 +2008,8 @@ namespace cadencii
         /// <returns></returns>
         public static String getCadenciiTempDir()
         {
-            String temp = fsys.combine( PortUtil.getTempPath(), TEMPDIR_NAME );
-            if ( !fsys.isDirectoryExists( temp ) ) {
+            String temp = Path.Combine( PortUtil.getTempPath(), TEMPDIR_NAME );
+            if (!Directory.Exists(temp)) {
                 PortUtil.createDirectory( temp );
             }
             return temp;
@@ -2379,9 +2380,9 @@ namespace cadencii
                     // キャッシュディレクトリの処理
                     String dir = PortUtil.getDirectoryName( file );
                     String name = PortUtil.getFileNameWithoutExtension( file );
-                    String cacheDir = fsys.combine( dir, name + ".cadencii" );
+                    String cacheDir = Path.Combine( dir, name + ".cadencii" );
 
-                    if ( !fsys.isDirectoryExists( cacheDir ) ) {
+                    if (!Directory.Exists(cacheDir)) {
                         try {
                             PortUtil.createDirectory( cacheDir );
                         } catch ( Exception ex ) {
@@ -2398,10 +2399,10 @@ namespace cadencii
                     String currentCacheDir = getTempWaveDir();
                     if ( !currentCacheDir.Equals( cacheDir ) ) {
                         for ( int i = 1; i < mVsq.Track.size(); i++ ) {
-                            String wavFrom = fsys.combine( currentCacheDir, i + ".wav" );
-                            String wavTo = fsys.combine( cacheDir, i + ".wav" );
-                            if ( fsys.isFileExists( wavFrom ) ) {
-                                if ( fsys.isFileExists( wavTo ) ) {
+                            String wavFrom = Path.Combine( currentCacheDir, i + ".wav" );
+                            String wavTo = Path.Combine( cacheDir, i + ".wav" );
+                            if (System.IO.File.Exists(wavFrom)) {
+                                if (System.IO.File.Exists(wavTo)) {
                                     try {
                                         PortUtil.deleteFile( wavTo );
                                     } catch ( Exception ex ) {
@@ -2422,10 +2423,10 @@ namespace cadencii
                                 }
                             }
 
-                            String xmlFrom = fsys.combine( currentCacheDir, i + ".xml" );
-                            String xmlTo = fsys.combine( cacheDir, i + ".xml" );
-                            if ( fsys.isFileExists( xmlFrom ) ) {
-                                if ( fsys.isFileExists( xmlTo ) ) {
+                            String xmlFrom = Path.Combine( currentCacheDir, i + ".xml" );
+                            String xmlTo = Path.Combine( cacheDir, i + ".xml" );
+                            if (System.IO.File.Exists(xmlFrom)) {
+                                if (System.IO.File.Exists(xmlTo)) {
                                     try {
                                         PortUtil.deleteFile( xmlTo );
                                     } catch ( Exception ex ) {
@@ -2740,8 +2741,8 @@ namespace cadencii
                         continue;
                     }
                     String name = sc.VOICENAME.ToLower();
-                    String path_image = fsys.combine(
-                                            fsys.combine(
+                    String path_image = Path.Combine(
+                                            Path.Combine(
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
 #if DEBUG
@@ -2766,8 +2767,8 @@ namespace cadencii
                         continue;
                     }
                     String name = sc.VOICENAME.ToLower();
-                    String path_image = fsys.combine(
-                                            fsys.combine(
+                    String path_image = Path.Combine(
+                                            Path.Combine(
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
 #if DEBUG
@@ -2791,14 +2792,14 @@ namespace cadencii
             SymbolTable.loadSystemDictionaries();
             // 日本語辞書
             SymbolTable.loadDictionary(
-                fsys.combine( fsys.combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ),
+                Path.Combine( Path.Combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ),
                 "DEFAULT_JP" );
             // 英語辞書
             SymbolTable.loadDictionary(
-                fsys.combine( fsys.combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
+                Path.Combine( Path.Combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
                 "DEFAULT_EN" );
             // 拡張辞書
-            SymbolTable.loadAllDictionaries( fsys.combine( PortUtil.getApplicationStartupPath(), "udic" ) );
+            SymbolTable.loadAllDictionaries( Path.Combine( PortUtil.getApplicationStartupPath(), "udic" ) );
             //VSTiProxy.CurrentUser = "";
 #if JAVA
             Util.isApplyFontRecurseEnabled = false;
@@ -2848,11 +2849,11 @@ namespace cadencii
 
 #if !TREECOM
             mID = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
-            mTempWaveDir = fsys.combine( getCadenciiTempDir(), mID );
-            if ( !fsys.isDirectoryExists( mTempWaveDir ) ) {
+            mTempWaveDir = Path.Combine( getCadenciiTempDir(), mID );
+            if (!Directory.Exists(mTempWaveDir)) {
                 PortUtil.createDirectory( mTempWaveDir );
             }
-            String log = fsys.combine( getTempWaveDir(), "run.log" );
+            String log = Path.Combine( getTempWaveDir(), "run.log" );
 #endif
 
             reloadUtauVoiceDB();
@@ -2997,7 +2998,7 @@ namespace cadencii
 #endif
 
             // シリアライズして保存
-            String file = fsys.combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            String file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
 #if DEBUG
             sout.println( "AppManager#saveConfig; file=" + file );
 #endif
@@ -3028,12 +3029,12 @@ namespace cadencii
             }
 
             // バージョン番号付きのファイル
-            String config_file = fsys.combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            String config_file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
 #if DEBUG
             sout.println( "AppManager#loadConfig; config_file=" + config_file );
 #endif
             EditorConfig ret = null;
-            if ( fsys.isFileExists( config_file ) ) {
+            if (System.IO.File.Exists(config_file)) {
                 // このバージョン用の設定ファイルがあればそれを利用
                 try {
                     ret = deserializeEditorConfig( config_file );
@@ -3102,8 +3103,8 @@ namespace cadencii
                         // 読み込んではいけない
                         continue;
                     }
-                    config_file = fsys.combine( fsys.combine( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
-                    if ( fsys.isFileExists( config_file ) ) {
+                    config_file = Path.Combine( Path.Combine( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
+                    if (System.IO.File.Exists(config_file)) {
                         try {
                             ret = deserializeEditorConfig( config_file );
                         } catch ( Exception ex ) {
@@ -3119,8 +3120,8 @@ namespace cadencii
                 // それでも読み込めなかった場合，旧来のデフォルトの位置にある
                 // 設定ファイルを読みに行く
                 if ( ret == null ) {
-                    config_file = fsys.combine( appdata, CONFIG_FILE_NAME );
-                    if ( fsys.isFileExists( config_file ) ) {
+                    config_file = Path.Combine( appdata, CONFIG_FILE_NAME );
+                    if (System.IO.File.Exists(config_file)) {
                         try {
                             ret = deserializeEditorConfig( config_file );
                         } catch ( Exception ex ) {

@@ -30,6 +30,7 @@ namespace cadencii{
 #else
 
 using System;
+using System.IO;
 using cadencii.media;
 using cadencii.vsq;
 using cadencii.java.util;
@@ -63,7 +64,7 @@ namespace cadencii
             String temppath = AppManager.getTempWaveDir();
             for ( int k = 0; k < tracks.size(); k++ ) {
                 int track = tracks.get( k );
-                String wavePath = fsys.combine( temppath, track + ".wav" );
+                String wavePath = Path.Combine( temppath, track + ".wav" );
                 Vector<Integer> queueIndex = new Vector<Integer>();
 
                 for ( int i = 0; i < queue.size(); i++ ) {
@@ -322,8 +323,8 @@ namespace cadencii
                 if ( numTrack > 2 ) {
                     for ( int i = 1; i < numTrack; i++ ) {
                         if ( i == track ) continue;
-                        String file = fsys.combine( tmppath, i + ".wav" );
-                        if ( !fsys.isFileExists( file ) ) {
+                        String file = Path.Combine( tmppath, i + ".wav" );
+                        if ( !File.Exists( file ) ) {
                             // mixするべきファイルが揃っていないのでbailout
                             return;// true;
                         }

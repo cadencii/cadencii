@@ -44,6 +44,7 @@ using System.Text;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 using cadencii.apputil;
 using cadencii.componentmodel;
 using cadencii.java.awt;
@@ -868,7 +869,7 @@ namespace cadencii
 
             // ファイルを開く
             if ( file != "" ) {
-                if ( fsys.isFileExists( file ) ) {
+                if (System.IO.File.Exists(file)) {
                     String low_file = file.ToLower();
                     if ( low_file.EndsWith( ".xvsq" ) ) {
                         openVsqCor( low_file );
@@ -1251,13 +1252,13 @@ namespace cadencii
             String search = "%VOICE%";
             if ( singer_path.value.StartsWith( search ) && singer_path.value.Length > search.Length ) {
                 singer_path.value = singer_path.value.Substring( search.Length );
-                singer_path.value = fsys.combine( fsys.combine( utau_dir, "voice" ), singer_path.value );
+                singer_path.value = Path.Combine( Path.Combine( utau_dir, "voice" ), singer_path.value );
             }
 
             // 歌手はknownかunknownか？
             // 歌手指定が知らない歌手だった場合に，ダイアログを出すかどうか
             boolean check_unknown_singer = false;
-            if ( fsys.isFileExists( fsys.combine( singer_path.value, "oto.ini" ) ) ) {
+            if (System.IO.File.Exists(Path.Combine(singer_path.value, "oto.ini"))) {
                 // oto.iniが存在する場合
                 // editorConfigに入っていない場合に，ダイアログを出す
                 boolean found = false;
@@ -1282,10 +1283,10 @@ namespace cadencii
             String resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
             if ( resampler_dir == "" ) {
                 // ディレクトリが空欄なので，UTAUのデフォルトのリサンプラー指定である
-                resampler_path.value = fsys.combine( utau_dir, resampler_path.value );
+                resampler_path.value = Path.Combine( utau_dir, resampler_path.value );
                 resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
             }
-            if ( resampler_dir != "" &&  fsys.isFileExists( resampler_path.value ) ) {
+            if (resampler_dir != "" && System.IO.File.Exists(resampler_path.value)) {
                 boolean found = false;
                 for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                     String resampler = AppManager.editorConfig.getResamplerAt( i );
@@ -1313,14 +1314,14 @@ namespace cadencii
                     // リサンプラー
                     if ( dialog.isResamplerChecked() ) {
                         String path = dialog.getResamplerPath();
-                        if ( fsys.isFileExists( path ) ) {
+                        if (System.IO.File.Exists(path)) {
                             AppManager.editorConfig.addResampler( path, false );
                         }
                     }
                     // 歌手
                     if ( dialog.isSingerChecked() ) {
                         String path = dialog.getSingerPath();
-                        if ( fsys.isDirectoryExists( path ) ) {
+                        if (Directory.Exists(path)) {
                             SingerConfig sc = new SingerConfig();
                             Utility.readUtauSingerConfig( path, sc );
                             AppManager.editorConfig.UtauSingers.Add( sc );
@@ -4282,8 +4283,8 @@ namespace cadencii
 
         public void clearTempWave()
         {
-            String tmppath = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !fsys.isDirectoryExists( tmppath ) ) {
+            String tmppath = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if (!Directory.Exists(tmppath)) {
                 return;
             }
 
@@ -4292,8 +4293,8 @@ namespace cadencii
 
             // このFormMainのインスタンスが使用したデータを消去する
             for ( int i = 1; i <= AppManager.MAX_NUM_TRACK; i++ ) {
-                String file = fsys.combine( tmppath, i + ".wav" );
-                if ( fsys.isFileExists( file ) ) {
+                String file = Path.Combine( tmppath, i + ".wav" );
+                if (System.IO.File.Exists(file)) {
                     for ( int error = 0; error < 100; error++ ) {
                         try {
                             PortUtil.deleteFile( file );
@@ -4321,16 +4322,16 @@ namespace cadencii
                     }
                 }
             }
-            String whd = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
-            if ( fsys.isFileExists( whd ) ) {
+            String whd = Path.Combine( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
+            if (System.IO.File.Exists(whd)) {
                 try {
                     PortUtil.deleteFile( whd );
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
                 }
             }
-            String dat = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
-            if ( fsys.isFileExists( dat ) ) {
+            String dat = Path.Combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
+            if (System.IO.File.Exists(dat)) {
                 try {
                     PortUtil.deleteFile( dat );
                 } catch ( Exception ex ) {
@@ -6356,7 +6357,7 @@ namespace cadencii
                                         (oa.fileName != null && oa.fileName == "")) {
                                         is_valid_for_utau = false;
                                     } else {
-                                        is_valid_for_utau = fsys.isFileExists(fsys.combine(sc.VOICEIDSTR, oa.fileName));
+                                        is_valid_for_utau = System.IO.File.Exists(Path.Combine(sc.VOICEIDSTR, oa.fileName));
                                     }
                                 }
                             }
@@ -6543,7 +6544,7 @@ namespace cadencii
                     }
                     if ( item != "" ) {
                         String short_name = PortUtil.getFileName( item );
-                        boolean available = fsys.isFileExists( item );
+                        boolean available = System.IO.File.Exists(item);
                         RecentFileMenuItem itm = new RecentFileMenuItem( item );
                         itm.Text = short_name;
                         String tooltip = "";
@@ -6766,12 +6767,12 @@ namespace cadencii
                 String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
                 String dir = PortUtil.getDirectoryName( file );
                 String name = PortUtil.getFileNameWithoutExtension( file );
-                String estimatedCacheDir = fsys.combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
+                String estimatedCacheDir = Path.Combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
                 if ( cacheDir == null ) {
                     cacheDir = "";
                 }
                 if ( cacheDir != "" &&
-                     fsys.isDirectoryExists( cacheDir ) &&
+                     Directory.Exists(cacheDir) &&
                      estimatedCacheDir != "" &&
                      cacheDir != estimatedCacheDir ) {
                     // ファイル名から推測されるキャッシュディレクトリ名と
@@ -6780,9 +6781,9 @@ namespace cadencii
 
                     // estimatedCacheDirが存在しない場合、新しく作る
 #if DEBUG
-                    sout.println( "FormMain#openVsqCor;fsys.isDirectoryExists( estimatedCacheDir )=" + fsys.isDirectoryExists( estimatedCacheDir ) );
+                         sout.println("FormMain#openVsqCor;fsys.isDirectoryExists( estimatedCacheDir )=" + Directory.Exists(estimatedCacheDir));
 #endif
-                    if ( !fsys.isDirectoryExists( estimatedCacheDir ) ) {
+                         if (!Directory.Exists(estimatedCacheDir)) {
                         try {
                             PortUtil.createDirectory( estimatedCacheDir );
                         } catch ( Exception ex ) {
@@ -6798,12 +6799,12 @@ namespace cadencii
 
                     // ファイルを移す
                     for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                        String wavFrom = fsys.combine( cacheDir, i + ".wav" );
-                        String xmlFrom = fsys.combine( cacheDir, i + ".xml" );
+                        String wavFrom = Path.Combine( cacheDir, i + ".wav" );
+                        String xmlFrom = Path.Combine( cacheDir, i + ".xml" );
 
-                        String wavTo = fsys.combine( estimatedCacheDir, i + ".wav" );
-                        String xmlTo = fsys.combine( estimatedCacheDir, i + ".xml" );
-                        if ( fsys.isFileExists( wavFrom ) ) {
+                        String wavTo = Path.Combine( estimatedCacheDir, i + ".wav" );
+                        String xmlTo = Path.Combine( estimatedCacheDir, i + ".xml" );
+                        if (System.IO.File.Exists(wavFrom)) {
                             try {
                                 PortUtil.moveFile( wavFrom, wavTo );
                             } catch ( Exception ex ) {
@@ -6811,7 +6812,7 @@ namespace cadencii
                                 serr.println( "FormMain#openVsqCor; ex=" + ex );
                             }
                         }
-                        if ( fsys.isFileExists( xmlFrom ) ) {
+                        if (System.IO.File.Exists(xmlFrom)) {
                             try {
                                 PortUtil.moveFile( xmlFrom, xmlTo );
                             } catch ( Exception ex ) {
@@ -6824,7 +6825,7 @@ namespace cadencii
                 cacheDir = estimatedCacheDir;
 
                 // キャッシュが無かったら作成
-                if ( !fsys.isDirectoryExists( cacheDir ) ) {
+                if (!Directory.Exists(cacheDir)) {
                     try {
                         PortUtil.createDirectory( cacheDir );
                     } catch ( Exception ex ) {
@@ -6846,11 +6847,11 @@ namespace cadencii
                 // キャッシュ内のwavを、waveViewに読み込む
                 waveView.unloadAll();
                 for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                    String wav = fsys.combine( cacheDir, i + ".wav" );
+                    String wav = Path.Combine( cacheDir, i + ".wav" );
 #if DEBUG
-                    sout.println( "FormMain#openVsqCor; wav=" + wav + "; isExists=" + fsys.isFileExists( wav ) );
+                    sout.println("FormMain#openVsqCor; wav=" + wav + "; isExists=" + System.IO.File.Exists(wav));
 #endif
-                    if ( !fsys.isFileExists( wav ) ) {
+                    if (!System.IO.File.Exists(wav)) {
                         continue;
                     }
                     waveView.load( i - 1, wav );
@@ -10203,16 +10204,16 @@ namespace cadencii
             sout.println( "FormMain#FormMain_FormClosed" );
 #endif
             clearTempWave();
-            String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !fsys.isDirectoryExists( tempdir ) ) {
+            String tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if (!Directory.Exists(tempdir)) {
                 PortUtil.createDirectory( tempdir );
             }
-            String log = fsys.combine( tempdir, "run.log" );
+            String log = Path.Combine( tempdir, "run.log" );
 #if !JAVA
             cadencii.debug.close();
 #endif
             try {
-                if ( fsys.isFileExists( log ) ) {
+                if (System.IO.File.Exists(log)) {
                     PortUtil.deleteFile( log );
                 }
                 PortUtil.deleteDirectory( tempdir, true );
@@ -10453,12 +10454,12 @@ namespace cadencii
             // 鍵盤用の音源の準備．Javaはこの機能は削除で．
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
-            String cache_old = fsys.combine( PortUtil.getApplicationStartupPath(), "cache" );
-            if ( fsys.isDirectoryExists( cache_old ) ) {
+            String cache_old = Path.Combine( PortUtil.getApplicationStartupPath(), "cache" );
+            if (Directory.Exists(cache_old)) {
                 boolean exists = false;
                 for ( int i = 0; i < 127; i++ ) {
-                    String s = fsys.combine( cache_new, i + ".wav" );
-                    if ( fsys.isFileExists( s ) ) {
+                    String s = Path.Combine( cache_new, i + ".wav" );
+                    if (System.IO.File.Exists(s)) {
                         exists = true;
                         break;
                     }
@@ -10467,9 +10468,9 @@ namespace cadencii
                 // 新しいキャッシュが1つも無い場合に、古いディレクトリからコピーする
                 if ( !exists ) {
                     for ( int i = 0; i < 127; i++ ) {
-                        String wav_from = fsys.combine( cache_old, i + ".wav" );
-                        String wav_to = fsys.combine( cache_new, i + ".wav" );
-                        if ( fsys.isFileExists( wav_from ) ) {
+                        String wav_from = Path.Combine( cache_old, i + ".wav" );
+                        String wav_to = Path.Combine( cache_new, i + ".wav" );
+                        if (System.IO.File.Exists(wav_from)) {
                             try {
                                 PortUtil.copyFile( wav_from, wav_to );
                                 PortUtil.deleteFile( wav_from );
@@ -10485,8 +10486,8 @@ namespace cadencii
             // 足りてないキャッシュがひとつでもあればFormGenerateKeySound発動する
             boolean cache_is_incomplete = false;
             for ( int i = 0; i < 127; i++ ) {
-                String wav = fsys.combine( cache_new, i + ".wav" );
-                if ( !fsys.isFileExists( wav ) ) {
+                String wav = Path.Combine( cache_new, i + ".wav" );
+                if (!System.IO.File.Exists(wav)) {
                     cache_is_incomplete = true;
                     break;
                 }
@@ -11194,7 +11195,7 @@ namespace cadencii
                 }
                 dir = file_dialog.SelectedPath;
                 // 1.wavはダミー
-                initial_dir = fsys.combine( dir, "1.wav" );
+                initial_dir = Path.Combine( dir, "1.wav" );
                 AppManager.editorConfig.setLastUsedPathOut( initial_dir, ".wav" );
             } catch ( Exception ex ) {
             } finally {
@@ -11231,7 +11232,7 @@ namespace cadencii
                 q.track = i;
                 q.clockStart = clockStart;
                 q.clockEnd = clockEnd;
-                q.file = fsys.combine( dir, i + ".wav" );
+                q.file = Path.Combine( dir, i + ".wav" );
                 q.renderAll = true;
                 q.vsq = vsq;
                 queue.add( q );
@@ -11454,7 +11455,7 @@ namespace cadencii
 
                 // oto.iniで終わってる？
                 if ( !oto_ini.EndsWith( "oto.ini" ) ) {
-                    oto_ini = fsys.combine( oto_ini, "oto.ini" );
+                    oto_ini = Path.Combine( oto_ini, "oto.ini" );
                 }
 
                 // 出力
@@ -12727,18 +12728,18 @@ namespace cadencii
                         if ( file != null && !file.Equals( "" ) ) {
                             String dir = PortUtil.getDirectoryName( file );
                             String name = PortUtil.getFileNameWithoutExtension( file );
-                            String projectCacheDir = fsys.combine( dir, name + ".cadencii" );
-                            String commonCacheDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-                            if ( fsys.isDirectoryExists( projectCacheDir ) ) {
+                            String projectCacheDir = Path.Combine( dir, name + ".cadencii" );
+                            String commonCacheDir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+                            if (Directory.Exists(projectCacheDir)) {
                                 VsqFileEx vsq = AppManager.getVsqFile();
                                 for ( int i = 1; i < vsq.Track.size(); i++ ) {
                                     // wavを移動
-                                    String wavFrom = fsys.combine( projectCacheDir, i + ".wav" );
-                                    String wavTo = fsys.combine( commonCacheDir, i + ".wav" );
-                                    if ( !fsys.isFileExists( wavFrom ) ) {
+                                    String wavFrom = Path.Combine( projectCacheDir, i + ".wav" );
+                                    String wavTo = Path.Combine( commonCacheDir, i + ".wav" );
+                                    if (!System.IO.File.Exists(wavFrom)) {
                                         continue;
                                     }
-                                    if ( fsys.isFileExists( wavTo ) ) {
+                                    if (System.IO.File.Exists(wavTo)) {
                                         try {
                                             PortUtil.deleteFile( wavTo );
                                         } catch ( Exception ex ) {
@@ -12755,12 +12756,12 @@ namespace cadencii
                                     }
 
                                     // xmlを移動
-                                    String xmlFrom = fsys.combine( projectCacheDir, i + ".xml" );
-                                    String xmlTo = fsys.combine( commonCacheDir, i + ".xml" );
-                                    if ( !fsys.isFileExists( xmlFrom ) ) {
+                                    String xmlFrom = Path.Combine( projectCacheDir, i + ".xml" );
+                                    String xmlTo = Path.Combine( commonCacheDir, i + ".xml" );
+                                    if (!System.IO.File.Exists(xmlFrom)) {
                                         continue;
                                     }
-                                    if ( fsys.isFileExists( xmlTo ) ) {
+                                    if (System.IO.File.Exists(xmlTo)) {
                                         try {
                                             PortUtil.deleteFile( xmlTo );
                                         } catch ( Exception ex ) {
@@ -14865,12 +14866,12 @@ namespace cadencii
         {
             // 現在のUI言語と同じ版のマニュアルファイルがあるかどうか探す
             String lang = Messaging.getLanguage();
-            String pdf = fsys.combine( PortUtil.getApplicationStartupPath(), "manual_" + lang + ".pdf" );
-            if( !fsys.isFileExists( pdf ) ){
+            String pdf = Path.Combine( PortUtil.getApplicationStartupPath(), "manual_" + lang + ".pdf" );
+            if (!System.IO.File.Exists(pdf)) {
                 // 無ければ英語版のマニュアルを表示することにする
-                pdf = fsys.combine( PortUtil.getApplicationStartupPath(), "manual_en.pdf" );
+                pdf = Path.Combine( PortUtil.getApplicationStartupPath(), "manual_en.pdf" );
             }
-            if( !fsys.isFileExists( pdf ) ){
+            if (!System.IO.File.Exists(pdf)) {
                 AppManager.showMessageBox(
                     _( "file not found" ),
                     _APP_NAME,
@@ -14903,7 +14904,7 @@ namespace cadencii
         public void menuHelpLogOpen_Click( Object sender, EventArgs e )
         {
             String file = Logger.getPath();
-            if ( file == null || (file != null && (!fsys.isFileExists( file ))) ) {
+            if (file == null || (file != null && (!System.IO.File.Exists(file)))) {
                 // ログがまだできてないのでダイアログ出す
                 AppManager.showMessageBox(
                     _( "Log file has not generated yet." ),
@@ -15530,7 +15531,7 @@ namespace cadencii
 
             Collections.sort( keys );
             String dir = PortUtil.getApplicationStartupPath();
-            String fname = fsys.combine( dir, "cadencii_trans.csv" );
+            String fname = Path.Combine( dir, "cadencii_trans.csv" );
 #if DEBUG
             sout.println( "FormMain#menuHiddenPrintPoToCSV_Click; fname=" + fname );
 #endif
@@ -16681,7 +16682,7 @@ namespace cadencii
             clearTempWave();
 
             // キャッシュディレクトリのパスを、デフォルトに戻す
-            AppManager.setTempWaveDir( fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() ) );
+            AppManager.setTempWaveDir( Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() ) );
 
             updateDrawObjectList();
             refreshScreen();
@@ -17210,12 +17211,12 @@ namespace cadencii
             IPaletteTool ipt = (IPaletteTool)instance;
             if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                 XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
-                String dir = fsys.combine( Utility.getApplicationDataPath(), "tool" );
-                if ( !fsys.isDirectoryExists( dir ) ) {
+                String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
+                if (!Directory.Exists(dir)) {
                     PortUtil.createDirectory( dir );
                 }
                 String cfg = id + ".config";
-                String config = fsys.combine( dir, cfg );
+                String config = Path.Combine( dir, cfg );
                 FileOutputStream fs = null;
                 try {
                     fs = new FileOutputStream( config );
@@ -17250,7 +17251,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
 #endif
-                String script_file = fsys.combine( dir, id );
+                String script_file = Path.Combine( dir, id );
                 if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
                     ScriptServer.reload( id );
                 }

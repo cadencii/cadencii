@@ -69,7 +69,7 @@ namespace cadencii
 #endif
 #endif
             Image ret = null;
-            if ( fsys.isFileExists( path_image ) ) {
+            if (System.IO.File.Exists(path_image)) {
 #if JAVA
                 try{
                     ret = ImageIO.read( new File( path_image ) );

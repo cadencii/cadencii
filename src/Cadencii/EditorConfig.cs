@@ -27,6 +27,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using System.IO;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -744,21 +745,21 @@ namespace cadencii
             // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
             String parent = PortUtil.getDirectoryName( appstart );
-            String ret = fsys.combine( parent, bundle_name );
-            if( !fsys.isDirectoryExists( ret ) ){
+            String ret = Path.Combine( parent, bundle_name );
+            if (!Directory.Exists(ret)) {
                 // ../Wine.bundleが無い場合
-                ret = fsys.combine( appstart, bundle_name );
+                ret = Path.Combine( appstart, bundle_name );
             }
-            ret = fsys.combine( ret, "Contents" );
-            ret = fsys.combine( ret, "SharedSupport" );
+            ret = Path.Combine( ret, "Contents" );
+            ret = Path.Combine( ret, "SharedSupport" );
             return ret;
         }
 
         public String getBuiltinWineMinimumExecutable()
         {
             String ret = getBuiltinWineTop( "WineMinimum.bundle" );
-            ret = fsys.combine( ret, "bin" );
-            ret = fsys.combine( ret, "wine" );
+            ret = Path.Combine( ret, "bin" );
+            ret = Path.Combine( ret, "wine" );
             return ret;
         }
 
@@ -768,8 +769,8 @@ namespace cadencii
         public String getBuiltinWineExecutable__()
         {
             String ret = getBuiltinWineTop( "Wine.bundle" );
-            ret = fsys.combine( ret, "bin" );
-            ret = fsys.combine( ret, "wine" );
+            ret = Path.Combine( ret, "bin" );
+            ret = Path.Combine( ret, "wine" );
             return ret;
         }
 

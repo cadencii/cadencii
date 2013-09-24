@@ -25,6 +25,7 @@ import cadencii.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.IO;
 using cadencii.componentmodel;
 using cadencii.java.util;
 using cadencii.media;
@@ -98,8 +99,8 @@ namespace cadencii {
             // 取りあえず最初に登録されているresamplerを使うってことで
             String resampler = AppManager.editorConfig.getResamplerAt( 0 );
             if ( m_singer_config_utau.Length > 0 &&
-                 AppManager.editorConfig.PathWavtool != null && fsys.isFileExists( AppManager.editorConfig.PathWavtool ) &&
-                 resampler != null && fsys.isFileExists( resampler ) ) {
+                 AppManager.editorConfig.PathWavtool != null && File.Exists( AppManager.editorConfig.PathWavtool ) &&
+                 resampler != null && File.Exists( resampler ) ) {
                 comboSingingSynthSystem.Items.Add( "UTAU" );
             }
             if ( comboSingingSynthSystem.Items.Count > 0 ) {
@@ -215,17 +216,17 @@ namespace cadencii {
             String dir = arg.directory;
             boolean replace = arg.replace;
             // 音源を準備
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                String path = fsys.combine( dir, i + ".wav" );
+                String path = Path.Combine( dir, i + ".wav" );
                 sout.println( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !fsys.isFileExists( path )) ) {
+                if ( replace || (!replace && !File.Exists( path )) ) {
                     try {
                         GenerateSinglePhone( i, singer, path, amp );
-                        if ( fsys.isFileExists( path ) ) {
+                        if ( File.Exists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
                                 wv.trimSilence();
@@ -330,8 +331,8 @@ namespace cadencii {
             vsq.Track.get( 1 ).addEvent( item );
             vsq.updateTotalClocks();
             int ms_presend = 500;
-            String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !fsys.isDirectoryExists( tempdir ) ) {
+            String tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            if (!Directory.Exists(tempdir)) {
                 try {
                     PortUtil.createDirectory( tempdir );
                 } catch ( Exception ex ) {

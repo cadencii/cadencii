@@ -108,7 +108,7 @@ namespace cadencii {
                     serr.println( "Logger#setPath; ex=" + ex );
                 }
                 log = null;
-                if( fsys.isFileExists( file ) ){
+                if( File.Exists( file ) ){
                     try{
                         PortUtil.deleteFile( file );
                     }catch( Exception ex ){

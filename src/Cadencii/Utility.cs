@@ -28,6 +28,7 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.IO;
 using Microsoft.CSharp;
 using cadencii.apputil;
 using cadencii.java.io;
@@ -661,11 +662,11 @@ namespace cadencii
             sc.VOICEIDSTR = directory;
 
             // character.txt読込み
-            String character = fsys.combine( directory, "character.txt" );
+            String character = Path.Combine( directory, "character.txt" );
             String name = null;
             String image = "";
             int mode = 0;
-            if ( fsys.isFileExists( character ) ) {
+            if (System.IO.File.Exists(character)) {
                 // 読み込みを試みるエンコーディングのリスト
                 foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
                     BufferedReader sr2 = null;
@@ -680,7 +681,7 @@ namespace cadencii
                                     name = spl[1];
                                     mode |= 1;
                                 } else if ( s == "image" ) {
-                                    image = fsys.combine( directory, spl[1] );
+                                    image = Path.Combine( directory, spl[1] );
                                     mode |= 2;
                                 }
                                 if ( mode == 3 ) {
@@ -1402,14 +1403,14 @@ namespace cadencii
             }
             String dir = fsys.combine( appdata, "Boare" );
 #else
-            String dir = fsys.combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            String dir = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
 
-            String dir2 = fsys.combine( dir, CONFIG_DIR_NAME );
-            if ( !fsys.isDirectoryExists( dir2 ) ) {
+            String dir2 = Path.Combine( dir, CONFIG_DIR_NAME );
+            if (!Directory.Exists(dir2)) {
                 PortUtil.createDirectory( dir2 );
             }
             sout.println( "Cadencii accesses ApplicationData at" + dir2 + "\n" );//Keep this line for debuging.
@@ -1423,8 +1424,8 @@ namespace cadencii
         /// <returns></returns>
         public static String getConfigPath() {
             String dir2 = getApplicationDataPath();
-            String dir3 = fsys.combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
-            if ( !fsys.isDirectoryExists( dir3 ) ) {
+            String dir3 = Path.Combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
+            if (!Directory.Exists(dir3)) {
                 PortUtil.createDirectory( dir3 );
             }
             return dir3;
@@ -1466,8 +1467,8 @@ namespace cadencii
         /// </summary>
         /// <returns></returns>
         public static String getScriptPath() {
-            String dir = fsys.combine( PortUtil.getApplicationStartupPath(), "script" );
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            String dir = Path.Combine( PortUtil.getApplicationStartupPath(), "script" );
+            if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
@@ -1478,8 +1479,8 @@ namespace cadencii
         /// </summary>
         /// <returns></returns>
         public static String getCachedAssemblyPath() {
-            String dir = fsys.combine( Utility.getApplicationDataPath(), "cachedAssembly" );
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            String dir = Path.Combine( Utility.getApplicationDataPath(), "cachedAssembly" );
+            if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
@@ -1490,8 +1491,8 @@ namespace cadencii
         /// </summary>
         /// <returns></returns>
         public static String getToolPath() {
-            String dir = fsys.combine( PortUtil.getApplicationStartupPath(), "tool" );
-            if ( !fsys.isDirectoryExists( dir ) ) {
+            String dir = Path.Combine( PortUtil.getApplicationStartupPath(), "tool" );
+            if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
@@ -1503,8 +1504,8 @@ namespace cadencii
         /// <returns></returns>
         public static String getKeySoundPath() {
             String data_path = getApplicationDataPath();
-            String ret = fsys.combine( data_path, "cache" );
-            if ( !fsys.isDirectoryExists( ret ) ) {
+            String ret = Path.Combine( data_path, "cache" );
+            if (!Directory.Exists(ret)) {
                 PortUtil.createDirectory( ret );
             }
             return ret;

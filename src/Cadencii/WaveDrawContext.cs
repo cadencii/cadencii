@@ -204,7 +204,7 @@ namespace cadencii
         /// <param name="sec_to"></param>
         public void reloadPartial( String file, double sec_from, double sec_to )
         {
-            if ( !fsys.isFileExists( file ) ) {
+            if (!System.IO.File.Exists(file)) {
                 return;
             }
 
@@ -321,7 +321,7 @@ namespace cadencii
         /// <param name="file">読み込むWAVEファイルのパス</param>
         public void load( String file )
         {
-            if ( !fsys.isFileExists( file ) ) {
+            if (!System.IO.File.Exists(file)) {
 #if JAVA
                 mWave = new byte[0];
 #else

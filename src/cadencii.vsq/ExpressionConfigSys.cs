@@ -21,6 +21,7 @@ import cadencii.*;
 namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
+using System.IO;
 using cadencii.java.io;
 using cadencii.java.util;
 
@@ -1003,8 +1004,8 @@ namespace cadencii.vsq
             m_dynamics_configs = new Vector<IconDynamicsHandle>();
 
             String base_path = PortUtil.getDirectoryName( path_editor );
-            String aiconDB_def = fsys.combine( base_path, "AiconDB.def" );
-            if ( fsys.isFileExists( aiconDB_def ) ) {
+            String aiconDB_def = Path.Combine( base_path, "AiconDB.def" );
+            if (System.IO.File.Exists(aiconDB_def)) {
                 String folder_name = "";
                 TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
                 BufferedReader sr = null;
@@ -1058,13 +1059,13 @@ namespace cadencii.vsq
                 }
 
                 if ( !folder_name.Equals( "" ) ) {
-                    String aiconDB_path = fsys.combine( base_path, folder_name );
-                    if ( fsys.isDirectoryExists( aiconDB_path ) ) {
+                    String aiconDB_path = Path.Combine( base_path, folder_name );
+                    if (Directory.Exists(aiconDB_path)) {
                         for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ) {
                             String key = itr.next();
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
-                            String section_path = fsys.combine( aiconDB_path, section_name );
-                            if ( fsys.isDirectoryExists( section_path ) ) {
+                            String section_path = Path.Combine( aiconDB_path, section_name );
+                            if (Directory.Exists(section_path)) {
                                 for ( Iterator<String> itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
                                     String line = itr2.next();
                                     String[] spl = PortUtil.splitString( line, '=' );
@@ -1086,12 +1087,12 @@ namespace cadencii.vsq
                                         if ( !aic_name.EndsWith( ".aic" ) ) {
                                             aic_name += ".aic";
                                         }
-                                        String aic_path = fsys.combine( section_path, aic_name );
+                                        String aic_path = Path.Combine( section_path, aic_name );
                                         String ids = spl2[i];
                                         String icon_id = preset + PortUtil.formatDecimal( "0000", i );
-                                        if ( fsys.isFileExists( aic_path ) ) {
+                                        if (System.IO.File.Exists(aic_path)) {
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
-                                            handle.setButtonImageFullPath( fsys.combine( section_path, handle.getButton() ) );
+                                            handle.setButtonImageFullPath( Path.Combine( section_path, handle.getButton() ) );
                                             m_dynamics_configs.add( handle );
                                         }
                                     }
@@ -1102,8 +1103,8 @@ namespace cadencii.vsq
                 }
             }
 
-            String expression = fsys.combine( path_expdb, "expression.map" );
-            if ( !fsys.isFileExists( expression ) ) {
+            String expression = Path.Combine( path_expdb, "expression.map" );
+            if (!System.IO.File.Exists(expression)) {
                 return;
             }
             RandomAccessFile fs = null;
@@ -1118,12 +1119,12 @@ namespace cadencii.vsq
                         continue;
                     }
 
-                    String ved = fsys.combine( path_expdb, "vexp" + value + ".ved" );
-                    if ( !fsys.isFileExists( ved ) ) {
+                    String ved = Path.Combine( path_expdb, "vexp" + value + ".ved" );
+                    if (!System.IO.File.Exists(ved)) {
                         continue;
                     }
-                    String vexp_dir = fsys.combine( path_expdb, "vexp" + value );
-                    if ( !fsys.isDirectoryExists( vexp_dir ) ) {
+                    String vexp_dir = Path.Combine( path_expdb, "vexp" + value );
+                    if (!Directory.Exists(vexp_dir)) {
                         continue;
                     }
 
@@ -1155,7 +1156,7 @@ namespace cadencii.vsq
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
-                                String aic_file = fsys.combine( vexp_dir, file );
+                                String aic_file = Path.Combine( vexp_dir, file );
                                 int index = int.Parse( spl2[0] );
                                 String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
                                 String ids = "";//spl2[2].Replace( "\"", "" );
@@ -1170,8 +1171,8 @@ namespace cadencii.vsq
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
-                                String aic_path = fsys.combine( vexp_dir, file );
-                                if ( !fsys.isFileExists( aic_path ) ) {
+                                String aic_path = Path.Combine( vexp_dir, file );
+                                if (!System.IO.File.Exists(aic_path)) {
                                     continue;
                                 }
                                 String ids = "";// spl2[2].Replace( "\"", "" );

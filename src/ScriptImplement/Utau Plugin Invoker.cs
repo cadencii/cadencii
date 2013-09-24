@@ -229,7 +229,7 @@ public class Utau_Plugin_Invoker : Form {
         TreeMap<int, int> map = new TreeMap<int, int>();
         UstFile u = new UstFile( v, 1, map );
 
-        u.write( fsys.combine( PortUtil.getApplicationStartupPath(), "u.ust" ) );
+        u.write( Path.Combine( PortUtil.getApplicationStartupPath(), "u.ust" ) );
 
         // PREV, NEXTのIndex値を設定する
         if ( ve_prev != null || prev_is_rest ) {

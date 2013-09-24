@@ -25,6 +25,7 @@ import cadencii.xml.*;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -95,7 +96,7 @@ namespace cadencii.vsq
 #endif
 #if DEBUG
 #if !JAVA
-            System.IO.StreamWriter sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor.log" ) );
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( Path.Combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor.log" ) );
             int max = int.MinValue;
             int min = int.MaxValue;
             int lastc = 0;
@@ -239,7 +240,7 @@ namespace cadencii.vsq
 #if !JAVA
 
 
-            sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
+            sw = new System.IO.StreamWriter( Path.Combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
 
             max = int.MinValue;
             min = int.MaxValue;
@@ -2367,7 +2368,7 @@ namespace cadencii.vsq
 #else
             String suffix = "_win";
 #endif 
-            String path = fsys.combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
+            String path = Path.Combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
             BufferedWriter bw = null;
             try{
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
@@ -2392,7 +2393,7 @@ namespace cadencii.vsq
 #endif // DEBUG
             NrpnData[] nrpns = VsqNrpn.convert( data );
 #if DEBUG
-            path = fsys.combine( PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt" );
+            path = Path.Combine( PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt" );
             try{
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
                 for( int i = 0; i < nrpns.Length; i++ ){
@@ -3142,7 +3143,7 @@ namespace cadencii.vsq
                 }
             }
 
-            if ( fsys.isFileExists( file ) ) {
+            if (System.IO.File.Exists(file)) {
                 try {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {

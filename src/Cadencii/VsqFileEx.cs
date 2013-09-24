@@ -24,6 +24,7 @@ import cadencii.xml.*;
 #else
 
 using System;
+using System.IO;
 using cadencii.vsq;
 using cadencii;
 using cadencii.java.io;
@@ -1385,7 +1386,7 @@ namespace cadencii
 #endif
             AttachedCurves = new AttachedCurve();
 
-            String xml = fsys.combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
+            String xml = Path.Combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
             for ( int i = 1; i < Track.size(); i++ ) {
                 AttachedCurves.add( new BezierCurves() );
             }

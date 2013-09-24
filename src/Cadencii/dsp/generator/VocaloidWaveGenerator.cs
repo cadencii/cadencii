@@ -28,6 +28,7 @@ import cadencii.vsq.*;
 using System;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -289,7 +290,7 @@ namespace cadencii
 #else
             String suffix = "_win";
 #endif
-            String path = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
+            String path = Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
@@ -606,7 +607,7 @@ namespace cadencii
             // master
             RandomAccessFile fos_master =
                 new RandomAccessFile(
-                    fsys.combine(
+                    Path.Combine(
                         PortUtil.getApplicationStartupPath(),
                         "src_master.bin" ), "rw" ); 
             fos_master.write( 0x01 );
@@ -624,7 +625,7 @@ namespace cadencii
             // body
             RandomAccessFile fos_body =
                 new RandomAccessFile(
-                    fsys.combine(
+                    Path.Combine(
                         PortUtil.getApplicationStartupPath(),
                         "src_body.bin" ), "rw" ); 
             buf = PortUtil.getbytes_uint32_le( numEvents );
@@ -644,7 +645,7 @@ namespace cadencii
             buf = PortUtil.getbytes_int64_le( act_total_samples );
             RandomAccessFile fos_synth =
                 new RandomAccessFile(
-                    fsys.combine(
+                    Path.Combine(
                         PortUtil.getApplicationStartupPath(),
                         "src_synth.bin" ), "rw" ); 
             fos_synth.write( 0x03 );
