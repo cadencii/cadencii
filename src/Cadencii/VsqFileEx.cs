@@ -623,7 +623,7 @@ namespace cadencii
                     }
                 }
                 // 削除が要求されたものを削除
-                Collections.sort( remove_required_event );
+                remove_required_event.Sort();
                 int count = remove_required_event.size();
                 for ( int j = count - 1; j >= 0; j-- ) {
                     int index = remove_required_event.get( j );

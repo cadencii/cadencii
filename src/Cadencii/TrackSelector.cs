@@ -4179,7 +4179,7 @@ namespace cadencii
                         int tmax = -1;
                         for ( int i = 0; i < dict.size(); i++ ) {
                             BezierChain bc = dict.get( i );
-                            Collections.sort( bc.points );
+                            bc.points.Sort();
                             // check most nearest data point from clicked position
                             int last = (int)bc.points.get( bc.points.size() - 1 ).getBase().getX();
                             if ( tmax < last && last < clock ) {
@@ -4224,7 +4224,7 @@ namespace cadencii
                         point_id = target_chain.getNextId();
                         bp.setID( point_id );
                         target_chain.add( bp );
-                        Collections.sort( target_chain.points );
+                        target_chain.points.Sort();
                         chain_id = target_chain.id;
                         CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( track,
                                                                                     mSelectedCurve,
@@ -4992,7 +4992,7 @@ namespace cadencii
                                             }
                                         }
                                     }
-                                    Collections.sort( edit );
+                                    edit.Sort();
                                     VsqID id = (VsqID)ve.ID.clone();
                                     float[] bpx = new float[edit.size()];
                                     int[] bpy = new int[edit.size()];

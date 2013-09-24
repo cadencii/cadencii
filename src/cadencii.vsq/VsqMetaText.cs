@@ -617,7 +617,7 @@ namespace cadencii.vsq
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
                 temp.add( itr.next() );
             }
-            Collections.sort( temp );
+            temp.Sort();
             int i = 0;
             while ( i < temp.Count ) {
                 VsqEvent item = temp[i];

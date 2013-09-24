@@ -1321,7 +1321,7 @@ namespace cadencii
                     list2.add( key );
                 }
             }
-            Collections.sort( list2 );
+            list2.Sort();
             for ( int i = 0; i < list2.size(); i++ ) {
                 ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2.get( i ) );
             }

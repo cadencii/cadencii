@@ -6511,7 +6511,7 @@ namespace cadencii
                                 itemi.mIsOverlapped = true;
                             }
                         }
-                        Collections.sort(tmp);
+                        tmp.Sort();
                     }
                 } catch (Exception ex) {
                     Logger.write(typeof(FormMain) + ".updateDrawObjectList; ex=" + ex + "\n");
@@ -9357,7 +9357,7 @@ namespace cadencii
                         }*/
                     }
                     lock ( AppManager.mDrawObjects ) {
-                        Collections.sort( AppManager.mDrawObjects[selected - 1] );
+                        AppManager.mDrawObjects[selected - 1].Sort();
                     }
                 }
                 #endregion
@@ -11074,7 +11074,7 @@ namespace cadencii
 #endif
 
                             // midi eventを出力
-                            Collections.sort( events );
+                            events.Sort();
                             long last_clock = 0;
                             int events_count = events.size();
                             if ( events_count > 0 ) {
@@ -11799,7 +11799,7 @@ namespace cadencii
                             item.Denominator,
                             item.BarCount ) );
                 }
-                Collections.sort( work.TimesigTable );
+                work.TimesigTable.Sort();
                 work.updateTimesigInfo();
             }
 
@@ -11819,7 +11819,7 @@ namespace cadencii
                 work_track.changeRenderer( renderer, singers );
 
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
-                Collections.sort( events );
+                events.Sort();
                 int events_count = events.Count;
 
                 // note
@@ -15529,7 +15529,7 @@ namespace cadencii
                 }
             }
 
-            Collections.sort( keys );
+            keys.Sort();
             String dir = PortUtil.getApplicationStartupPath();
             String fname = Path.Combine( dir, "cadencii_trans.csv" );
 #if DEBUG

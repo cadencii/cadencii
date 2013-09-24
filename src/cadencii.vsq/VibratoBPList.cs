@@ -70,7 +70,7 @@ namespace cadencii.vsq
                 for ( int i = 0; i < len; i++ ) {
                     m_list.add( new VibratoBPPair( x[i], y[i] ) );
                 }
-                Collections.sort( m_list );
+                m_list.Sort();
             } else {
                 m_list = new Vector<VibratoBPPair>();
             }
@@ -100,7 +100,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < len; i++ ) {
                 m_list.add( new VibratoBPPair( x[i], y[i] ) );
             }
-            Collections.sort( m_list );
+            m_list.Sort();
         }
 
         /// <summary>

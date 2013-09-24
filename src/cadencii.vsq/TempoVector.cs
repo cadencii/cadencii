@@ -164,7 +164,7 @@ namespace cadencii.vsq
             if ( c == 0 ) {
                 add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
             }
-            Collections.sort( this );
+            this.Sort();
             TempoTableEntry item0 = get( 0 );
             if ( item0.Clock != 0 ) {
                 item0.Time = (double)baseTempo * (double)item0.Clock / (gatetimePerQuater * 1000000.0);

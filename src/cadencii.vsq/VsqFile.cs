@@ -960,7 +960,7 @@ namespace cadencii.vsq
                         }
 
                         // 並べ替え
-                        Collections.sort( edit );
+                        edit.Sort();
                         inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, edit );
                     } else if ( com.size() == 0 ) {
                         inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, new Vector<BPPair>() );
@@ -1122,7 +1122,7 @@ namespace cadencii.vsq
                             }
 
                             // 並べ替え
-                            Collections.sort( edit );
+                            edit.Sort();
                             inv_coms.add( edit );
                             //inv = generateCommandTrackEditCurve( track, curve, edit );
                         } else if ( com.size() == 0 ) {
@@ -1996,7 +1996,7 @@ namespace cadencii.vsq
                         prev_time = thistime;
                     }
                 }
-                Collections.sort( TempoTable );
+                TempoTable.Sort();
                 #endregion
 
                 #region TimeSigTableの作成
@@ -3014,7 +3014,7 @@ namespace cadencii.vsq
                     }
                 }
             }
-            Collections.sort( ret );
+            ret.Sort();
             return ret.toArray( new VsqNrpn[] { } );
         }
 
@@ -3062,7 +3062,7 @@ namespace cadencii.vsq
                     }
                 }
             }
-            Collections.sort( res );
+            res.Sort();
             return res.toArray( new VsqNrpn[] { } );
         }
 
@@ -3200,7 +3200,7 @@ namespace cadencii.vsq
 #if DEBUG
                 sout.println( "    events.Count=" + events.size() );
 #endif
-                Collections.sort( events );
+                events.Sort();
                 long last = 0;
                 for ( Iterator<MidiEvent> itr = events.iterator(); itr.hasNext(); ) {
                     MidiEvent me = itr.next();

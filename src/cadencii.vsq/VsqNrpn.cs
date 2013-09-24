@@ -86,7 +86,7 @@ namespace cadencii.vsq
         public static Vector<VsqNrpn> sort( Vector<VsqNrpn> list )
         {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
-            Collections.sort( list );
+            list.Sort();
             int list_size = list.Count;
             if ( list_size >= 2 ) {
                 Vector<VsqNrpn> work = new Vector<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
@@ -148,7 +148,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < src2.Length; i++ ) {
                 ret.add( src2[i] );
             }
-            Collections.sort( ret );
+            ret.Sort();
             return ret.toArray( new VsqNrpn[] { } );
         }
 

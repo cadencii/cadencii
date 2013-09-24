@@ -101,7 +101,7 @@ namespace cadencii.vsq
         public void sort()
         {
             lock ( this ) {
-                Collections.sort( Events );
+                Events.Sort();
                 updateIDList();
             }
         }
@@ -122,7 +122,7 @@ namespace cadencii.vsq
         {
             int id = getNextId( 0 );
             add( item, id );
-            Collections.sort( Events );
+            Events.Sort();
             int count = Events.size();
             for ( int i = 0; i < count; i++ ) {
                 m_ids.set( i, Events.get( i ).InternalID );
