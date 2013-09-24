@@ -153,9 +153,11 @@ namespace cadencii.apputil {
 
         void btnSaveAuthorList_Click( object sender, EventArgs e ) {
 #if DEBUG
-            using ( System.Windows.Forms.SaveFileDialog dlg = new System.Windows.Forms.SaveFileDialog() ){
-                if( dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK ){
-                    javax.imageio.ImageIO.write( m_scroll, "png", new java.io.File( dlg.FileName ) );
+            using (var dlg = new System.Windows.Forms.SaveFileDialog()) {
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    using (var stream = new System.IO.FileStream(dlg.FileName, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
+                        m_scroll.image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    }
                 }
             }
 #endif

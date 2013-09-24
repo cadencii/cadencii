@@ -277,22 +277,14 @@ namespace cadencii
 
         void btnSaveAuthorList_Click( Object sender, EventArgs e )
         {
-#if !JAVA
 #if DEBUG
-            SaveFileDialog dlg = null;
-            try {
-                dlg = new SaveFileDialog();
-                if ( dlg.ShowDialog() == DialogResult.OK ) {
-                    javax.imageio.ImageIO.write( m_scroll, "png", new java.io.File( dlg.FileName ) );
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( VersionInfo ) + ".btnSaveAuthorList_Click; ex=" + ex + "\n" );
-            } finally {
-                if ( dlg != null ) {
-                    dlg.Dispose();
+            using (var dlg = new SaveFileDialog()) {
+                if (dlg.ShowDialog() == DialogResult.OK) {
+                    using (var stream = new System.IO.FileStream(dlg.FileName, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
+                        m_scroll.image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    }
                 }
             }
-#endif
 #endif
         }
 

@@ -24,7 +24,6 @@ import cadencii.windows.forms.*;
 using System;
 using cadencii.java.awt;
 using cadencii.java.awt.image;
-using cadencii.javax.imageio;
 using cadencii.windows.forms;
 
 namespace cadencii

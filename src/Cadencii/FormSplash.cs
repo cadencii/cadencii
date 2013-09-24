@@ -23,7 +23,6 @@ import cadencii.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using cadencii.java.awt;
-using cadencii.javax.imageio;
 using cadencii.windows.forms;
 
 namespace cadencii

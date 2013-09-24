@@ -82,7 +82,6 @@
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />
     <Compile Include="fft.cs" />
-    <Compile Include="imageio.cs" />
     <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="lang.cs" />
