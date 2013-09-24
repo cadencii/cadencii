@@ -275,6 +275,7 @@
     <Compile Include="ui\preference\Preference.Designer.cs">
       <DependentUpon>Preference.cs</DependentUpon>
     </Compile>
+    <Compile Include="updater\UpdateInfo.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
