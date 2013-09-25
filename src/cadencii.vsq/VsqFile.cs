@@ -339,7 +339,7 @@ namespace cadencii.vsq
             }
 
             // テンポテーブルを刷新
-            TempoTable.clear();
+            TempoTable.Clear();
             TempoTable.add( new TempoTableEntry( 0, (int)(60e6 / tempo), 0.0 ) );
             updateTempoInfo();
             updateTimesigInfo();
@@ -715,19 +715,19 @@ namespace cadencii.vsq
                 #region REPLACE
                 VsqFile vsq = (VsqFile)command.Args[0];
                 VsqFile inv = (VsqFile)this.clone();
-                Track.clear();
+                Track.Clear();
                 int track_count = vsq.Track.size();
                 for ( int i = 0; i < track_count; i++ ) {
                     Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
                 }
 
-                TempoTable.clear();
+                TempoTable.Clear();
                 int tempo_table_count = vsq.TempoTable.size();
                 for ( int i = 0; i < tempo_table_count; i++ ) {
                     TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                 }
 
-                TimesigTable.clear();
+                TimesigTable.Clear();
                 int timesig_table_count = vsq.TimesigTable.size();
                 for ( int i = 0; i < timesig_table_count; i++ ) {
                     TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
@@ -1435,7 +1435,7 @@ namespace cadencii.vsq
             VsqBPList list = Track.get( track ).getCurve( curve );
 
             // 逆コマンド発行用
-            inv_delete.clear();
+            inv_delete.Clear();
             inv_add.clear();
 
             // 最初に削除コマンドを実行

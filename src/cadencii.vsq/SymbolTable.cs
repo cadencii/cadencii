@@ -227,7 +227,7 @@ using cadencii.java.util;
                     }
 
                     // 現在の辞書をいったんクリア
-                    mTable.clear();
+                    mTable.Clear();
 
                     int count = list.size();
                     for ( int i = 0; i < count; i++ ) {

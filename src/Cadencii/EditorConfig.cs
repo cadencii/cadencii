@@ -792,9 +792,9 @@ namespace cadencii
         /// </summary>
         public void clearResampler()
         {
-            PathResamplers.clear();
+            PathResamplers.Clear();
             PathResampler = "";
-            ResamplersWithWine.clear();
+            ResamplersWithWine.Clear();
         }
 
         /// <summary>
@@ -1270,7 +1270,7 @@ namespace cadencii
                     dict.add( s );
                 }
             }
-            RecentFiles.clear();
+            RecentFiles.Clear();
             for ( Iterator<String> itr = dict.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
                 RecentFiles.add( s );

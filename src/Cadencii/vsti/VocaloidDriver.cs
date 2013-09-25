@@ -70,7 +70,7 @@ namespace cadencii
         {
             lock ( locker ) {
                 for ( int i = 0; i < s_track_events.size(); i++ ) {
-                    s_track_events.get( i ).clear();
+                    s_track_events.get( i ).Clear();
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace cadencii
                     if ( g_tempoList == null ) {
                         g_tempoList = new Vector<TempoInfo>();
                     } else {
-                        g_tempoList.clear();
+                        g_tempoList.Clear();
                     }
                     if ( numEvents <= 0 ) {
                         g_numTempoList = 1;
@@ -197,7 +197,7 @@ namespace cadencii
                 // 与えられたイベント情報をs_track_eventsに収納
                 count = -3;
                 int pPrev = 0;
-                s_track_events.get( targetTrack ).clear();
+                s_track_events.get( targetTrack ).Clear();
 #if VOCALO_DRIVER_PRINT_EVENTS
                 sout.println( "VocaloidDriver#SendEvent" );
                 byte msb = 0x0;
@@ -529,7 +529,7 @@ namespace cadencii
                     }
 
                     aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
-                    lpEvents.clear();
+                    lpEvents.Clear();
 #if DEBUG
                     sout.println( "VocaloidDriver#startRendering; done; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
 #endif
@@ -547,9 +547,9 @@ namespace cadencii
                 rendering = false;
                 g_saProcessed = 0;
                 for ( int i = 0; i < s_track_events.size(); i++ ) {
-                    s_track_events.get( i ).clear();
+                    s_track_events.get( i ).Clear();
                 }
-                g_tempoList.clear();
+                g_tempoList.Clear();
                 //g_cancelRequired = false;
             }
             return 1;

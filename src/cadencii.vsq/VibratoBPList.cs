@@ -209,7 +209,7 @@ namespace cadencii.vsq
 
         public void setData( String value )
         {
-            m_list.clear();
+            m_list.Clear();
             String[] spl = PortUtil.splitString( value, ',' );
             for ( int i = 0; i < spl.Length; i++ ) {
                 String[] spl2 = PortUtil.splitString( spl[i], '=' );
@@ -222,7 +222,7 @@ namespace cadencii.vsq
 
         public void clear()
         {
-            m_list.clear();
+            m_list.Clear();
         }
     }
 

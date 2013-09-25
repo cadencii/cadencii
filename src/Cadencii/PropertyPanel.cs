@@ -156,7 +156,7 @@ namespace cadencii
         public void updateValue( int track )
         {
             m_track = track;
-            m_items.clear();
+            m_items.Clear();
 
             // 現在のGridItemの展開状態を取得
             pushGridItemExpandStatus();

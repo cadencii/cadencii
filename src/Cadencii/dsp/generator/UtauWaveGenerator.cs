@@ -374,7 +374,7 @@ namespace cadencii
                 double sec_end = 0;
                 double sec_end_old = 0;
                 int program_change = 0;
-                mResamplerQueue.clear();
+                mResamplerQueue.Clear();
 #if DEBUG
                 double error_sum = 0.0;
 #endif
@@ -466,13 +466,13 @@ namespace cadencii
 #endif
                         RenderQueue rq = new RenderQueue();
                         //rq.WavtoolArgPrefix = "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@" + BASE_TEMPO;
-                        rq.WavtoolArgPrefix.clear();
+                        rq.WavtoolArgPrefix.Clear();
                         rq.WavtoolArgPrefix.add( "\"" + file + "\"" );
                         rq.WavtoolArgPrefix.add( "\"" + Path.Combine( singer, "R.wav" ) + "\"" );
                         rq.WavtoolArgPrefix.add( "0" );
                         rq.WavtoolArgPrefix.add( draft_length + "@" + BASE_TEMPO );
                         //rq.WavtoolArgSuffix = " 0 0";
-                        rq.WavtoolArgSuffix.clear();
+                        rq.WavtoolArgSuffix.Clear();
                         rq.WavtoolArgSuffix.add( "0" );
                         rq.WavtoolArgSuffix.add( "0" );
                         rq.Oto = new OtoArgs();
@@ -693,7 +693,7 @@ namespace cadencii
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif
                     //rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" " + item.UstEvent.getStartPoint() + " " + item.ID.getLength() + "@" + str_t_temp;
-                    rq2.WavtoolArgPrefix.clear();
+                    rq2.WavtoolArgPrefix.Clear();
                     rq2.WavtoolArgPrefix.add( "\"" + file + "\"" );
                     rq2.WavtoolArgPrefix.add( "\"" + filename + "\"" );
                     rq2.WavtoolArgPrefix.add( "" + item.UstEvent.getStartPoint() );
@@ -704,7 +704,7 @@ namespace cadencii
                     }
                     //rq2.WavtoolArgSuffix = " " + env.p1 + " " + env.p2 + " " + env.p3 + " " + env.v1 + " " + env.v2 + " " + env.v3 + " " + env.v4;
                     //rq2.WavtoolArgSuffix += " " + oa.msOverlap + " " + env.p4 + " " + env.p5 + " " + env.v5;
-                    rq2.WavtoolArgSuffix.clear();
+                    rq2.WavtoolArgSuffix.Clear();
                     rq2.WavtoolArgSuffix.add( "" + env.p1 );
                     rq2.WavtoolArgSuffix.add( "" + env.p2 );
                     rq2.WavtoolArgSuffix.add( "" + env.p3 );

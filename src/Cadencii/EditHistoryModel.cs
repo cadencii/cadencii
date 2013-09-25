@@ -59,7 +59,7 @@ using cadencii.java.util;
                 /// </summary>
                 public void clear()
                 {
-                    mCommands.clear();
+                    mCommands.Clear();
                     mCommandIndex = -1;
                 }
 

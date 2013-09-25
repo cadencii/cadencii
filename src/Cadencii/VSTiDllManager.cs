@@ -473,7 +473,7 @@ namespace cadencii {
                     vocaloidDriver.get( i ).close();
                 }
             }
-            vocaloidDriver.clear();
+            vocaloidDriver.Clear();
 #endif // !ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE

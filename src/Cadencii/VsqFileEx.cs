@@ -512,7 +512,7 @@ namespace cadencii
             // 最初にテンポをずらす．
             // 古いのから情報をコピー
             VsqFile tempo = new VsqFile( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
-            tempo.TempoTable.clear();
+            tempo.TempoTable.Clear();
             for ( Iterator<TempoTableEntry> itr = vsq.TempoTable.iterator(); itr.hasNext(); ) {
                 TempoTableEntry item = itr.next();
                 tempo.TempoTable.add( item );
@@ -533,7 +533,7 @@ namespace cadencii
                     }
                 }
             }
-            vsq.TempoTable.clear();
+            vsq.TempoTable.Clear();
             vsq.TempoTable.add( new TempoTableEntry( 0, first_tempo, 0.0 ) );
             for ( int i = 0; i < tempo_count; i++ ) {
                 TempoTableEntry item = tempo.TempoTable.get( i );
@@ -665,7 +665,7 @@ namespace cadencii
                     if ( list == null ) {
                         continue;
                     }
-                    remove_required_event.clear(); //削除するBezierChainのID
+                    remove_required_event.Clear(); //削除するBezierChainのID
                     int list_count = list.size();
                     for ( int j = 0; j < list_count; j++ ) {
                         BezierChain chain = list.get( j );
@@ -1178,17 +1178,17 @@ namespace cadencii
                     #region Replace
                     VsqFileEx vsq = (VsqFileEx)command.args[0];
                     VsqFileEx inv = (VsqFileEx)this.clone();
-                    Track.clear();
+                    Track.Clear();
                     int c = vsq.Track.size();
                     for ( int i = 0; i < c; i++ ) {
                         Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
                     }
-                    TempoTable.clear();
+                    TempoTable.Clear();
                     c = vsq.TempoTable.size();
                     for ( int i = 0; i < c; i++ ) {
                         TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                     }
-                    TimesigTable.clear();
+                    TimesigTable.Clear();
                     c = vsq.TimesigTable.size();
                     for ( int i = 0; i < c; i++ ) {
                         TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
@@ -1224,7 +1224,7 @@ namespace cadencii
                         }
                         inv.put( ct, chains );
 
-                        this.AttachedCurves.get( track - 1 ).get( ct ).clear();
+                        this.AttachedCurves.get( track - 1 ).get( ct ).Clear();
                         for ( Iterator<BezierChain> itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ) {
                             BezierChain bc = itr2.next();
                             this.AttachedCurves.get( track - 1 ).get( ct ).add( bc );
@@ -1282,7 +1282,7 @@ namespace cadencii
                     #region BGM_UPDATE
                     Vector<BgmFile> list = (Vector<BgmFile>)command.args[0];
                     ret = VsqFileEx.generateCommandBgmUpdate( BgmFiles );
-                    BgmFiles.clear();
+                    BgmFiles.Clear();
                     int count = list.size();
                     for ( int i = 0; i < count; i++ ) {
                         BgmFiles.add( list.get( i ) );
@@ -1328,9 +1328,9 @@ namespace cadencii
 #else
         {
 #endif
-            Track.clear();
-            TempoTable.clear();
-            TimesigTable.clear();
+            Track.Clear();
+            TempoTable.Clear();
+            TimesigTable.Clear();
         }
 
         public VsqFileEx( String singer, int pre_measure, int numerator, int denominator, int tempo )
@@ -1462,7 +1462,7 @@ namespace cadencii
                 int numTrack = ret.Track.size();
                 if ( ret.AttachedCurves.getCurves().size() + 1 != numTrack ) {
                     // ベジエ曲線のデータコンテナの個数と、トラックの個数が一致しなかった場合
-                    ret.AttachedCurves.getCurves().clear();
+                    ret.AttachedCurves.getCurves().Clear();
                     for ( int i = 1; i < numTrack; i++ ) {
                         ret.AttachedCurves.add( new BezierCurves() );
                     }

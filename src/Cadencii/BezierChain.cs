@@ -254,7 +254,7 @@ namespace cadencii
         /// 登録されているデータ点を消去します
         /// </summary>
         public void clear() {
-            points.clear();
+            points.Clear();
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace cadencii
 
         public void Dispose() {
             if ( points != null ) {
-                points.clear();
+                points.Clear();
             }
         }
 

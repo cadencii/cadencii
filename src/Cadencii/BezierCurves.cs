@@ -563,7 +563,7 @@ namespace cadencii {
                         tmp.add( (BezierChain)bc.clone() );
                     }
                 }
-                this.get( curve ).clear();
+                this.get( curve ).Clear();
                 for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
                     BezierChain bc = itr.next();
                     if ( bc.id >= 0 ) {

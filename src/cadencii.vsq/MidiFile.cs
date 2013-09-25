@@ -201,9 +201,9 @@ namespace cadencii.vsq
             if ( m_events != null ) {
                 int c = m_events.size();
                 for ( int i = 0; i < c; i++ ) {
-                    m_events.get( i ).clear();
+                    m_events.get( i ).Clear();
                 }
-                m_events.clear();
+                m_events.Clear();
             }
         }
     }

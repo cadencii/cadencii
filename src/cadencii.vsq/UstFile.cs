@@ -299,7 +299,7 @@ namespace cadencii.vsq
                 m_tempo = (float)(60e6 / (double)work.TempoTable.get( 0 ).Tempo);
             }
             m_tempo_table = new Vector<TempoTableEntry>();
-            m_tempo_table.clear();
+            m_tempo_table.Clear();
             // ustには、テンポチェンジを音符の先頭にしか入れられない
             // あとで音符に反映させるためのテンプレートを作っておく
             TempoVector tempo = new TempoVector();
@@ -564,7 +564,7 @@ namespace cadencii.vsq
             if ( m_tempo_table == null ) {
                 m_tempo_table = new Vector<TempoTableEntry>();
             } else {
-                m_tempo_table.clear();
+                m_tempo_table.Clear();
             }
             if ( m_tracks.size() <= 0 ) {
                 return;

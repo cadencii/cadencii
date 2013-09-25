@@ -141,7 +141,7 @@ namespace cadencii
                             int notehead_pit = pit.getValue( item.Clock );
                             MidiEvent pit0 = getPitMidiEvent( notehead_pit );
                             MidiEventQueue queue = list.get( item.Clock );
-                            queue.pit.clear();
+                            queue.pit.Clear();
                             queue.pit.add( pit0 );
                             int notehead_pbs = pbs.getValue( item.Clock );
                             ParameterEvent pe = new ParameterEvent();
@@ -218,7 +218,7 @@ namespace cadencii
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
                                 MidiEventQueue q = list.get( clock );
                                 MidiEvent me = getPitMidiEvent( pit_value );
-                                q.pit.clear();
+                                q.pit.Clear();
                                 q.pit.add( me );
                             } else if ( clock_end < clock ) {
                                 break;
@@ -284,7 +284,7 @@ namespace cadencii
                         int value = pit.getElementA( i );
                         MidiEvent pbs0 = getPitMidiEvent( value );
                         MidiEventQueue queue = list.get( clock );
-                        queue.pit.clear();
+                        queue.pit.Clear();
                         queue.pit.add( pbs0 );
                     } else if ( clock_end < clock ) {
                         break;

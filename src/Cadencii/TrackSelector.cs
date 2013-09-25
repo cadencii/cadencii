@@ -497,7 +497,7 @@ namespace cadencii
         /// </summary>
         public void updateVisibleCurves()
         {
-            mViewingCurves.clear();
+            mViewingCurves.Clear();
             if ( AppManager.editorConfig.CurveVisibleVelocity ) {
                 mViewingCurves.add( CurveType.VEL );
             }
@@ -3926,7 +3926,7 @@ namespace cadencii
                                     }
 
                                     mMouseDownMode = MouseDownMode.POINT_MOVE;
-                                    mMovingPoints.clear();
+                                    mMovingPoints.Clear();
                                     VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( mSelectedCurve.getName() );
                                     if ( list != null ) {
                                         int count = list.size();
@@ -5299,7 +5299,7 @@ namespace cadencii
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, beziers );
                     executeCommand( run, true );
                 }
-                mMovingPoints.clear();
+                mMovingPoints.Clear();
             }
             mMouseDownMode = MouseDownMode.NONE;
             Invalidate();

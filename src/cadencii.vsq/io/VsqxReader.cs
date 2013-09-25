@@ -67,7 +67,7 @@ namespace cadencii.vsq.io
             VsqFile result = new VsqFile( "", preMeasure, 4, 4, 500000 );
 
             // テンポ変更を読み取る
-            result.TempoTable.clear();
+            result.TempoTable.Clear();
             foreach ( XmlNode node in masterTrack.GetElementsByTagName( "tempo" ) ) {
                 int posTick = int.Parse( node["posTick"].InnerText );
                 int bpm = int.Parse( node["bpm"].InnerText );
@@ -77,7 +77,7 @@ namespace cadencii.vsq.io
             }
             result.TempoTable.updateTempoInfo();
             // 拍子変更を読み取る
-            result.TimesigTable.clear();
+            result.TimesigTable.Clear();
             foreach ( XmlNode node in masterTrack.GetElementsByTagName( "timeSig" ) ) {
                 int posMes = int.Parse( node["posMes"].InnerText );
                 int numerator = int.Parse( node["nume"].InnerText );
@@ -115,7 +115,7 @@ namespace cadencii.vsq.io
             result.Mixer.MasterPanpot = 64;
 
             // SlaveMixerをパース
-            result.Mixer.Slave.clear();
+            result.Mixer.Slave.Clear();
             for ( int i = 1; i < result.Track.size(); i++ ) {
                 result.Mixer.Slave.add( null );
             }

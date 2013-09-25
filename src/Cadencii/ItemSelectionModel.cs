@@ -131,7 +131,7 @@ import cadencii.vsq.*;
                 /// </summary>
                 public void clearBezier()
                 {
-                    mBezier.clear();
+                    mBezier.Clear();
                     mSelectedBezier.chainID = -1;
                     mSelectedBezier.pointID = -1;
                     checkSelectedItemExistence();
@@ -475,7 +475,7 @@ import cadencii.vsq.*;
 
                 public void clearEvent()
                 {
-                    mEvents.clear();
+                    mEvents.Clear();
 #if ENABLE_PROPERTY
                     AppManager.propertyPanel.updateValue( AppManager.getSelected() );
 #endif
@@ -522,7 +522,7 @@ import cadencii.vsq.*;
                 #region Point
                 public void clearPoint()
                 {
-                    mPointIDs.clear();
+                    mPointIDs.Clear();
                     mPointCurveType = CurveType.Empty;
                     checkSelectedItemExistence();
                 }
@@ -537,7 +537,7 @@ import cadencii.vsq.*;
                 {
                     if ( !curve.equals( mPointCurveType ) )
                     {
-                        mPointIDs.clear();
+                        mPointIDs.Clear();
                         mPointCurveType = curve;
                     }
                     for ( int i = 0; i < ids.Length; i++ )

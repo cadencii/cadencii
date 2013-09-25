@@ -87,7 +87,7 @@ namespace cadencii.apputil
         /// </summary>
         /// <param name="directory"></param>
         public static void loadMessages( String directory ) {
-            s_messages.clear();
+            s_messages.Clear();
             String[] files = PortUtil.listFiles( directory, ".po" );
             for ( int i = 0; i < files.Length; i++ ){
                 String name = PortUtil.getFileName( files[i] );

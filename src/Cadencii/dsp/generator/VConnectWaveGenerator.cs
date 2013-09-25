@@ -193,12 +193,12 @@ namespace cadencii
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)mVsq.clone();
             TempoVector tempo = new TempoVector();
-            tempo.clear();
+            tempo.Clear();
             tempo.add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
             tempo.updateTempoInfo();
             work.adjustClockToMatchWith( tempo );
             // テンポテーブルをクリア
-            work.TempoTable.clear();
+            work.TempoTable.Clear();
             work.TempoTable.add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
             work.updateTempoInfo();
             VsqTrack vsq_track = work.Track.get( track );
@@ -212,7 +212,7 @@ namespace cadencii
                     if ( events.size() > 0 && current_singer_event != null ) {
                         // eventsに格納されたノートイベントについて，StraightRenderingQueueを順次作成し，登録
                         appendQueue( work, track, events, current_singer_event );
-                        events.clear();
+                        events.Clear();
                     }
                     current_singer_event = item;
                 } else if ( item.ID.type == VsqIDType.Anote ) {
@@ -966,7 +966,7 @@ namespace cadencii
                 // 前の音符との間隔が100ms以下なら，連続していると判断
                 if ( next_sec_start - current_sec_end > 0.1 && list.size() > 0 ) {
                     appendQueueCor( vsq, track, list, oto_ini );
-                    list.clear();
+                    list.Clear();
                 }
 
                 // 処理後

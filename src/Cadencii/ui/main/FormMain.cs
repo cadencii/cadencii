@@ -3905,7 +3905,7 @@ namespace cadencii
         /// </summary>
         public void applyShortcut()
         {
-            mSpecialShortcutHolders.clear();
+            mSpecialShortcutHolders.Clear();
 
             TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
             #region menuStripMain
@@ -10795,7 +10795,7 @@ namespace cadencii
         public void menuFileRecentClear_Click( Object sender, EventArgs e )
         {
             if( AppManager.editorConfig.RecentFiles != null ){
-                AppManager.editorConfig.RecentFiles.clear();
+                AppManager.editorConfig.RecentFiles.Clear();
             }
             updateRecentFileMenu();
         }
@@ -11029,7 +11029,7 @@ namespace cadencii
                                             VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
                                             meta.get( k ).writeData( fs );
                                         }
-                                        meta.clear();
+                                        meta.Clear();
                                         last_clock = 0;
                                     }
                                     long clock = events.get( j ).clock;
@@ -11049,7 +11049,7 @@ namespace cadencii
                                     VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
                                     meta.get( k ).writeData( fs );
                                 }
-                                meta.clear();
+                                meta.Clear();
                                 last_clock = 0;
                                 for ( int j = 0; j < c; j++ ) {
                                     MidiEvent item = vocaloid_nrpn_midievent.get( j );
@@ -11597,8 +11597,8 @@ namespace cadencii
             tempo.executeCommand( VsqCommand.generateCommandChangePreMeasure( 0 ) );
             boolean tempo_added = false;
             boolean timesig_added = false;
-            tempo.TempoTable.clear();
-            tempo.TimesigTable.clear();
+            tempo.TempoTable.Clear();
+            tempo.TimesigTable.Clear();
             int mf_getTrackCount = mf.getTrackCount();
             for ( int i = 0; i < mf_getTrackCount; i++ ) {
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
@@ -11720,7 +11720,7 @@ namespace cadencii
                     shiftClockToMatchWith( work, copy_src, sec_at_premeasure );
                 }
 
-                work.TempoTable.clear();
+                work.TempoTable.Clear();
                 Vector<TempoTableEntry> list = copy_src.TempoTable;
                 int list_count = list.size();
                 for ( int i = 0; i < list_count; i++ ) {
@@ -11732,7 +11732,7 @@ namespace cadencii
 
             // timesig
             if ( mDialogMidiImportAndExport.isTimesig() ) {
-                work.TimesigTable.clear();
+                work.TimesigTable.Clear();
                 Vector<TimeSigTableEntry> list = tempo.TimesigTable;
                 int list_count = list.Count;
                 for ( int i = 0; i < list_count; i++ ) {
@@ -12071,7 +12071,7 @@ namespace cadencii
             if ( mDialogMidiImportAndExport.isTempo() ) {
                 shiftClockToMatchWith( replace, vsq, premeasure_sec_replace - premeasure_sec_vsq );
                 // テンポテーブルを置き換え
-                replace.TempoTable.clear();
+                replace.TempoTable.Clear();
                 for ( int i = 0; i < vsq.TempoTable.size(); i++ ) {
                     replace.TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                 }
@@ -12081,7 +12081,7 @@ namespace cadencii
 
             if ( mDialogMidiImportAndExport.isTimesig() ) {
                 // 拍子をリプレースする場合
-                replace.TimesigTable.clear();
+                replace.TimesigTable.Clear();
                 for ( int i = 0; i < vsq.TimesigTable.size(); i++ ) {
                     replace.TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                 }
@@ -12634,7 +12634,7 @@ namespace cadencii
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
                     AppManager.editorConfig.WavtoolWithWine = mDialogPreference.isWavtoolWithWine();
 
-                    AppManager.editorConfig.UtauSingers.clear();
+                    AppManager.editorConfig.UtauSingers.Clear();
                     for ( Iterator<SingerConfig> itr = mDialogPreference.getUtausingers().iterator(); itr.hasNext(); ) {
                         SingerConfig sc = itr.next();
                         AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
@@ -12926,7 +12926,7 @@ namespace cadencii
                 // ダイアログ結果を，設定値にコピー
                 // ダイアログのコンストラクタであらかじめcloneされているので，
                 // ここではcloneする必要はない．
-                AppManager.editorConfig.AutoVibratoCustom.clear();
+                AppManager.editorConfig.AutoVibratoCustom.Clear();
                 for ( int i = 0; i < result.size(); i++ ) {
                     AppManager.editorConfig.AutoVibratoCustom.add( result.get( i ) );
                 }

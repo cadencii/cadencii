@@ -108,8 +108,8 @@ namespace cadencii.vsq
 
         public void clear()
         {
-            Events.clear();
-            m_ids.clear();
+            Events.Clear();
+            m_ids.Clear();
         }
 
         public Iterator<VsqEvent> iterator()
@@ -183,7 +183,7 @@ namespace cadencii.vsq
         public void updateIDList()
         {
             if ( m_ids.size() != Events.size() ) {
-                m_ids.clear();
+                m_ids.Clear();
                 int count = Events.size();
                 for ( int i = 0; i < count; i++ ) {
                     m_ids.add( Events.get( i ).InternalID );

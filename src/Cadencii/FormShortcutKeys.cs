@@ -221,7 +221,7 @@ namespace cadencii
             list.SelectedIndexChanged -= new EventHandler( list_SelectedIndexChanged );
             list.Items.Clear();
             list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
-            mFieldName.clear();
+            mFieldName.Clear();
 
             // 現在のカテゴリーを取得
             int selected = comboCategory.SelectedIndex;

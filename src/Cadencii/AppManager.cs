@@ -2982,7 +2982,7 @@ namespace cadencii
         public static void saveConfig()
         {
             // ユーザー辞書の情報を取り込む
-            editorConfig.UserDictionaries.clear();
+            editorConfig.UserDictionaries.Clear();
             int count = SymbolTable.getCount();
             for ( int i = 0; i < count; i++ ) {
                 SymbolTable table = SymbolTable.getSymbolTable( i );

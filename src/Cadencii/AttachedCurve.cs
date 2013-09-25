@@ -84,7 +84,7 @@ namespace cadencii
 
         public Object clone() {
             AttachedCurve ret = new AttachedCurve();
-            ret.mCurves.clear();
+            ret.mCurves.Clear();
             int c = mCurves.size();
             for ( int i = 0; i < c; i++ ) {
                 ret.mCurves.add( (BezierCurves)mCurves.get( i ).clone() );

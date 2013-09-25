@@ -1169,7 +1169,7 @@ namespace cadencii.vsq
                                     d[j] = 0xff & buffer.get( j );
                                 }
                                 track_name = PortUtil.getDecodedString( encoding, d );
-                                buffer.clear();
+                                buffer.Clear();
                             }
                         }
                     } else {

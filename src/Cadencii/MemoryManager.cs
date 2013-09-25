@@ -65,7 +65,7 @@ namespace cadencii {
                     serr.println( "MemoryManager#dispose; ex=" + ex );
                 }
             }
-            mList.clear();
+            mList.Clear();
         }
 
         /// <summary>

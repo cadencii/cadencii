@@ -1202,7 +1202,7 @@ namespace cadencii
 
         public void setUtausingers( Vector<SingerConfig> value )
         {
-            m_utau_singers.clear();
+            m_utau_singers.Clear();
             for ( int i = 0; i < value.size(); i++ ) {
                 m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
             }
