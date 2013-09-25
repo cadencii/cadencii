@@ -40,7 +40,7 @@ namespace cadencii {
         public const String id = "$Id$";
         public const String fileVersionMeasure = "3";
         public const String fileVersionMinor = "5";
-        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".2";
+        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".3";
     }
 
 #if !JAVA

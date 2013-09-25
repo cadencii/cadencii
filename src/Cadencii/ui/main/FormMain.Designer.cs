@@ -45,6 +45,7 @@ namespace cadencii
             this.menuFileExportWave = new ToolStripMenuItem();
             this.menuFileExportParaWave = new ToolStripMenuItem();
             this.menuFileExportVsq = new ToolStripMenuItem();
+            this.menuFileExportVsqx = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileExportMidi = new ToolStripMenuItem();
             this.menuFileExportMusicXml = new ToolStripMenuItem();
             this.menuFileExportUst = new ToolStripMenuItem();
@@ -150,6 +151,8 @@ namespace cadencii
             this.menuSettingVibratoPreset = new ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettingDefaultSingerStyle = new ToolStripMenuItem();
+            this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuToolsCreateVConnectSTANDDb = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelp = new ToolStripMenuItem();
             this.menuHelpAbout = new ToolStripMenuItem();
             this.menuHelpManual = new ToolStripMenuItem();
@@ -181,7 +184,7 @@ namespace cadencii
             this.menuHiddenPlayFromStartMarker = new ToolStripMenuItem();
             this.menuHiddenFlipCurveOnPianorollMode = new ToolStripMenuItem();
             this.menuHiddenPrintPoToCSV = new ToolStripMenuItem();
-            this.cMenuPiano = new ContextMenuStrip(this.components);
+            this.cMenuPiano = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cMenuPianoPointer = new ToolStripMenuItem();
             this.cMenuPianoPencil = new ToolStripMenuItem();
             this.cMenuPianoEraser = new ToolStripMenuItem();
@@ -378,6 +381,7 @@ namespace cadencii
             this.menuLyric,
             this.menuScript,
             this.menuSetting,
+            this.menuTools,
             this.menuHelp,
             this.menuHidden});
             this.menuStripMain.Location = new System.Drawing.Point(0, 0);
@@ -526,6 +530,12 @@ namespace cadencii
             this.menuFileExportVsq.Name = "menuFileExportVsq";
             this.menuFileExportVsq.Size = new System.Drawing.Size(268, 22);
             this.menuFileExportVsq.Text = "VSQ File";
+            // 
+            // menuFileExportVsqx
+            // 
+            this.menuFileExportVsqx.Name = "menuFileExportVsqx";
+            this.menuFileExportVsqx.Size = new System.Drawing.Size(268, 22);
+            this.menuFileExportVsqx.Text = "VSQX File";
             // 
             // menuFileExportMidi
             // 
@@ -1279,6 +1289,21 @@ namespace cadencii
             this.menuSettingDefaultSingerStyle.Name = "menuSettingDefaultSingerStyle";
             this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size(223, 22);
             this.menuSettingDefaultSingerStyle.Text = "Singing Style Defaults(&D)";
+            // 
+            // menuTools
+            // 
+            this.menuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuToolsCreateVConnectSTANDDb});
+            this.menuTools.Name = "menuTools";
+            this.menuTools.Size = new System.Drawing.Size(69, 22);
+            this.menuTools.Text = "Tools(&O)";
+            // 
+            // menuToolsCreateVConnectSTANDDb
+            // 
+            this.menuToolsCreateVConnectSTANDDb.Name = "menuToolsCreateVConnectSTANDDb";
+            this.menuToolsCreateVConnectSTANDDb.Size = new System.Drawing.Size(240, 22);
+            this.menuToolsCreateVConnectSTANDDb.Text = "Create vConnect-STAND DB";
+            this.menuToolsCreateVConnectSTANDDb.Click += new System.EventHandler(this.menuToolsCreateVConnectSTANDDb_Click);
             // 
             // menuHelp
             // 
@@ -2873,12 +2898,6 @@ namespace cadencii
             this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size(150, 22);
             this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
             // 
-            // menuFileExportVsqx
-            // 
-            this.menuFileExportVsqx.Name = "menuFileExportVsqx";
-            this.menuFileExportVsqx.Size = new System.Drawing.Size(268, 22);
-            this.menuFileExportVsqx.Text = "VSQX File";
-            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -3254,5 +3273,7 @@ namespace cadencii
         public ToolStripMenuItem menuLyricApplyUtauParameters;
         private System.Windows.Forms.ToolStripMenuItem menuVisualPluginUiAquesTone2;
         private System.Windows.Forms.ToolStripMenuItem menuFileExportVsqx;
+        private System.Windows.Forms.ToolStripMenuItem menuTools;
+        private System.Windows.Forms.ToolStripMenuItem menuToolsCreateVConnectSTANDDb;
     }
 }

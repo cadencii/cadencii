@@ -1,0 +1,3 @@
+[submodule "src/vConnect"]
+	path = src/vConnect
+	url = https://github.com/cadencii/vConnect.git

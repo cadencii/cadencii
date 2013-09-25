@@ -374,8 +374,9 @@ namespace cadencii {
         /// <returns></returns>
         public static AquesToneDriver getAquesToneDriver()
         {
-            if ( aquesToneDriver == null && !AppManager.editorConfig.DoNotUseAquesTone ) {
-                aquesToneDriver = new AquesToneDriver( AppManager.editorConfig.PathAquesTone );
+            string path = AppManager.editorConfig.PathAquesTone;
+            if (aquesToneDriver == null && !AppManager.editorConfig.DoNotUseAquesTone && System.IO.File.Exists(path)) {
+                aquesToneDriver = new AquesToneDriver(path);
             }
             return aquesToneDriver;
         }
@@ -386,13 +387,14 @@ namespace cadencii {
         /// <returns></returns>
         public static AquesTone2Driver getAquesTone2Driver()
         {
-            if ( aquesTone2Driver == null && !AppManager.editorConfig.DoNotUseAquesTone2 ) {
-                aquesTone2Driver = new AquesTone2Driver( AppManager.editorConfig.PathAquesTone2 );
-                if ( AppManager.mMainWindow != null ) {
+            string path = AppManager.editorConfig.PathAquesTone2;
+            if (aquesTone2Driver == null && !AppManager.editorConfig.DoNotUseAquesTone2 && System.IO.File.Exists(path)) {
+                aquesTone2Driver = new AquesTone2Driver(path);
+                if (AppManager.mMainWindow != null) {
                     // AquesTone2 は UI のインスタンスを生成してからでないと、合成時にクラッシュする。
                     // これを回避するため、UI インスタンスの生成をココで行う。
                     // Cadencii 起動時にも同様の処理が必要だが、これは Cadencii::mainWindow_Load ハンドラで行う。
-                    aquesTone2Driver.getUi( AppManager.mMainWindow );
+                    aquesTone2Driver.getUi(AppManager.mMainWindow);
                 }
             }
             return aquesTone2Driver;

@@ -20,18 +20,18 @@
 #   define CADENCII_MEDIA_HELPER_EXTERN_C
 #endif
 
-#define CADENCII_MEDIA_HELPER_EXPORT CADENCII_MEDIA_HELPER_EXTERN_C __declspec(dllexport)
+#define CADENCII_MEDIA_HELPER_API(__return_type, __function_name) CADENCII_MEDIA_HELPER_EXTERN_C __declspec(dllexport) __return_type __cdecl __function_name
 
-CADENCII_MEDIA_HELPER_EXPORT void SoundInit();
-CADENCII_MEDIA_HELPER_EXPORT int SoundPrepare( int sample_rate );
-CADENCII_MEDIA_HELPER_EXPORT void SoundAppend( double *left, double *right, int length );
-CADENCII_MEDIA_HELPER_EXPORT void SoundExit();
-CADENCII_MEDIA_HELPER_EXPORT double SoundGetPosition();
-CADENCII_MEDIA_HELPER_EXPORT bool SoundIsBusy();
-CADENCII_MEDIA_HELPER_EXPORT void SoundWaitForExit();
-CADENCII_MEDIA_HELPER_EXPORT void SoundSetResolution( int resolution );
-CADENCII_MEDIA_HELPER_EXPORT void SoundKill();
-CADENCII_MEDIA_HELPER_EXPORT void SoundUnprepare();
+CADENCII_MEDIA_HELPER_API(void, SoundInit)();
+CADENCII_MEDIA_HELPER_API(int, SoundPrepare)(int sample_rate);
+CADENCII_MEDIA_HELPER_API(void, SoundAppend)(double *left, double *right, int length);
+CADENCII_MEDIA_HELPER_API(void, SoundExit)();
+CADENCII_MEDIA_HELPER_API(double, SoundGetPosition)();
+CADENCII_MEDIA_HELPER_API(bool, SoundIsBusy)();
+CADENCII_MEDIA_HELPER_API(void, SoundWaitForExit)();
+CADENCII_MEDIA_HELPER_API(void, SoundSetResolution)(int resolution);
+CADENCII_MEDIA_HELPER_API(void, SoundKill)();
+CADENCII_MEDIA_HELPER_API(void, SoundUnprepare)();
 
 CADENCII_MEDIA_HELPER_EXTERN_C void CALLBACK SoundCallback( HWAVEOUT hwo, unsigned int uMsg, unsigned long dwInstance, unsigned long dwParam1, unsigned long dwParam2 );
 

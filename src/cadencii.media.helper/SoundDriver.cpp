@@ -27,11 +27,7 @@ static bool abort_required;
 static int block_size = 4410; // ブロックサイズ
 static int block_size_used; // SoundPrepareで初期化されたブロックサイズ
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void SoundUnprepare() {
+CADENCII_MEDIA_HELPER_API(void, SoundUnprepare)() {
     if ( NULL == wave_out ) {
         return;
     }
@@ -48,16 +44,16 @@ void SoundUnprepare() {
     LeaveCriticalSection( &locker );
 }
 
-void SoundInit() {
+CADENCII_MEDIA_HELPER_API(void, SoundInit)() {
     InitializeCriticalSection( &locker );
 }
 
-void SoundKill() {
+CADENCII_MEDIA_HELPER_API(void, SoundKill)() {
     SoundExit();
     DeleteCriticalSection( &locker );
 }
 
-double SoundGetPosition() {
+CADENCII_MEDIA_HELPER_API(double, SoundGetPosition)() {
     if ( NULL == wave_out ) {
         return 0.0;
     }
@@ -81,7 +77,7 @@ double SoundGetPosition() {
     return 0.0;
 }
 
-void SoundWaitForExit() {
+CADENCII_MEDIA_HELPER_API(void, SoundWaitForExit)() {
     if ( NULL == wave_out ) {
         return;
     }
@@ -139,11 +135,11 @@ void SoundWaitForExit() {
     SoundExit();
 }
 
-void SoundSetResolution( int resolution ){
+CADENCII_MEDIA_HELPER_API(void, SoundSetResolution)( int resolution ){
     block_size = resolution;
 }
 
-void SoundAppend( double *left, double *right, int length ) {
+CADENCII_MEDIA_HELPER_API(void, SoundAppend)( double *left, double *right, int length ) {
     if ( NULL == wave_out ) {
         return;
     }
@@ -200,7 +196,7 @@ void SoundAppend( double *left, double *right, int length ) {
 /// <param name="dwInstance"></param>
 /// <param name="dwParam1"></param>
 /// <param name="dwParam2"></param>
-extern void CALLBACK SoundCallback(
+CADENCII_MEDIA_HELPER_EXTERN_C void CALLBACK SoundCallback(
     HWAVEOUT hwo,
     UINT uMsg,
     DWORD dwInstance,
@@ -223,7 +219,7 @@ extern void CALLBACK SoundCallback(
 /// デバイスを初期化する
 /// </summary>
 /// <param name="sample_rate"></param>
-int SoundPrepare( int sample_rate ) {
+CADENCII_MEDIA_HELPER_API(int, SoundPrepare)( int sample_rate ) {
     // デバイスを使用中の場合、使用を停止する
     if ( NULL != wave_out ) {
         SoundExit();
@@ -276,7 +272,7 @@ int SoundPrepare( int sample_rate ) {
 /// <summary>
 /// 再生をとめる。
 /// </summary>
-void SoundExit() {
+CADENCII_MEDIA_HELPER_API(void, SoundExit)() {
     if ( NULL != wave_out ) {
         abort_required = true;
         EnterCriticalSection( &locker );
@@ -284,7 +280,3 @@ void SoundExit() {
         LeaveCriticalSection( &locker );
     }
 }
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
