@@ -15,26 +15,6 @@
 namespace cadencii.java.awt.event_
 {
 
-    public class InputEvent
-    {
-        public const int ALT_DOWN_MASK = 512;
-        public const int ALT_GRAPH_DOWN_MASK = 8192;
-        public const int ALT_GRAPH_MASK = 32;
-        public const int ALT_MASK = 8;
-        public const int BUTTON1_DOWN_MASK = 1024;
-        public const int BUTTON1_MASK = 16;
-        public const int BUTTON2_DOWN_MASK = 2048;
-        public const int BUTTON2_MASK = 8;
-        public const int BUTTON3_DOWN_MASK = 4096;
-        public const int BUTTON3_MASK = 4;
-        public const int CTRL_DOWN_MASK = 128;
-        public const int CTRL_MASK = 2;
-        public const int META_DOWN_MASK = 256;
-        public const int META_MASK = 4;
-        public const int SHIFT_DOWN_MASK = 64;
-        public const int SHIFT_MASK = 1;
-    }
-
     public class KeyEvent
     {
         //public const char CHAR_UNDEFINED = 65535;

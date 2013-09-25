@@ -45,13 +45,11 @@ using System.Threading;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
-using System.IO;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
 using cadencii.java.io;
 using cadencii.java.util;
-using cadencii.javax.swing;
 using cadencii.javax.sound.midi;
 using cadencii.media;
 using cadencii.vsq;
@@ -334,7 +332,7 @@ namespace cadencii
         /// <summary>
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
-        public int s_modifier_key = InputEvent.CTRL_MASK;
+        public Keys s_modifier_key = Keys.Control;
         #endregion
 
         #region fields
@@ -583,12 +581,7 @@ namespace cadencii
             AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
             AppManager.baseFont50Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE50 );
 
-            s_modifier_key =
-#if JAVA_MAC
-                InputEvent.META_MASK;
-#else
-                InputEvent.CTRL_MASK;
-#endif
+            s_modifier_key = Keys.Control;
             VsqFileEx tvsq =
                 new VsqFileEx(
                     AppManager.editorConfig.DefaultSingerName,
@@ -3641,16 +3634,11 @@ namespace cadencii
 
             // 最初に、特殊な取り扱いが必要なショートカット、について、
             // 該当するショートカットがあればそいつらを発動する。
-            int modifier = PortUtil.getCurrentModifierKey();
-            KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
-            int keycode = e.KeyValue;
-#if DEBUG
-            sout.println( "FormMain#processSpecialShortcutKey; stroke=" + stroke );
-#endif
+            Keys stroke = e.KeyCode | e.Modifiers;
 
-            if ( onPreviewKeyDown && keycode != 0 ) {
+            if ( onPreviewKeyDown && e.KeyCode != Keys.None ) {
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
-                    if ( stroke.Equals( holder.shortcut ) ) {
+                    if ( stroke == holder.shortcut ) {
                         try {
 #if DEBUG
                             sout.println( "FormMain#processSpecialShortcutKey; perform click: name=" + holder.menu.Name );
@@ -3672,7 +3660,7 @@ namespace cadencii
                 }
             }
 
-            if ( modifier != KeyEvent.VK_UNDEFINED ) {
+            if ( e.Modifiers != Keys.None ) {
 #if DEBUG
                 sout.println( "FormMain#processSpecialShortcutKey; bailout with (modifier != VK_UNDEFINED)" );
 #endif
@@ -7672,8 +7660,8 @@ namespace cadencii
             boolean flip = (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
             boolean hide = (e.getKeyCode() == KeyEvent.VK_ESCAPE);
 #else
-            bool flip = (e.KeyCode == System.Windows.Forms.Keys.Up || e.KeyCode == System.Windows.Forms.Keys.Down) && (PortUtil.getCurrentModifierKey() == InputEvent.ALT_MASK);
-            bool hide = e.KeyCode == System.Windows.Forms.Keys.Escape;
+            bool flip = (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && (e.Modifiers == Keys.Alt);
+            bool hide = e.KeyCode == Keys.Escape;
 #endif
 
             if ( flip ) {
@@ -7822,7 +7810,7 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseClick" );
 #endif
-            int modefiers = PortUtil.getCurrentModifierKey();
+            Keys modefiers = Control.ModifierKeys;
             EditMode edit_mode = AppManager.getEditMode();
 
             boolean is_button_left = e.Button == BMouseButtons.Left;
@@ -7851,7 +7839,7 @@ namespace cadencii
                      edit_mode != EditMode.EDIT_RIGHT_EDGE &&
                      edit_mode != EditMode.MIDDLE_DRAG &&
                      edit_mode != EditMode.CURVE_ON_PIANOROLL ) {
-                    if ( (modefiers & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (modefiers & s_modifier_key) != s_modifier_key ) {
+                    if ( (modefiers & Keys.Shift) != Keys.Shift && (modefiers & s_modifier_key) != s_modifier_key ) {
                         AppManager.itemSelection.clearEvent();
                     }
                     AppManager.itemSelection.addEvent( item.InternalID );
@@ -8264,7 +8252,7 @@ namespace cadencii
 
             mMouseDowned = true;
             mButtonInitial = new Point( e.X, e.Y );
-            int modefier = PortUtil.getCurrentModifierKey();
+            Keys modefier = Control.ModifierKeys;
 
             EditTool selected_tool = AppManager.getSelectedTool();
 #if ENABLE_SCRIPT
@@ -8539,7 +8527,7 @@ namespace cadencii
                             mMouseMoveInit = new Point( e.X + stdx, e.Y + stdy );
                             int head_x = AppManager.xCoordFromClocks( item.Clock );
                             mMouseMoveOffset = e.X - head_x;
-                            if ( (modefier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                            if ( (modefier & Keys.Shift) == Keys.Shift ) {
                                 // シフトキー同時押しによる範囲選択
                                 Vector<Integer> add_required = new Vector<Integer>();
                                 add_required.add( item.InternalID );
@@ -9133,7 +9121,7 @@ namespace cadencii
             AppManager.mIsPointerDowned = false;
             mMouseDowned = false;
 
-            int modefiers = PortUtil.getCurrentModifierKey();
+            Keys modefiers = Control.ModifierKeys;
 
             EditMode edit_mode = AppManager.getEditMode();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -9589,12 +9577,12 @@ namespace cadencii
 
         public void pictPianoRoll_MouseWheel( Object sender, MouseEventArgs e )
         {
-            int modifier = PortUtil.getCurrentModifierKey();
-            boolean horizontal = (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
+            Keys modifier = Control.ModifierKeys;
+            boolean horizontal = (modifier & Keys.Shift) == Keys.Shift;
             if ( AppManager.editorConfig.ScrollHorizontalOnWheel ) {
                 horizontal = !horizontal;
             }
-            if ( (modifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK ) {
+            if ( (modifier & Keys.Control) == Keys.Control ) {
                 // ピアノロール拡大率を変更
                 if ( horizontal ) {
                     int max = trackBar.Maximum;
@@ -10621,7 +10609,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#FormMain_MouseWheel" );
 #endif
-            if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+            if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
                 hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             } else {
                 int max = vScroll.Maximum - vScroll.LargeChange;
@@ -14379,7 +14367,7 @@ namespace cadencii
             }
 
             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
-            int modifiers = PortUtil.getCurrentModifierKey();
+            Keys modifiers = Control.ModifierKeys;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
@@ -14443,7 +14431,7 @@ namespace cadencii
                             mTempoDraggingDeltaClock = mouse_clock - clock;
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.TEMPO;
                         }
-                        if ( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                        if ( (modifiers & Keys.Shift) == Keys.Shift ) {
                             if ( AppManager.itemSelection.getTempoCount() > 0 ) {
                                 int last_clock = AppManager.itemSelection.getLastTempoClock();
                                 int start = Math.Min( last_clock, clock );
@@ -14502,7 +14490,7 @@ namespace cadencii
                             mTimesigDraggingDeltaClock = mouse_clock - barcount_clock;
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.TIMESIG;
                         }
-                        if ( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                        if ( (modifiers & Keys.Shift) == Keys.Shift ) {
                             if ( AppManager.itemSelection.getTimesigCount() > 0 ) {
                                 int last_barcount = AppManager.itemSelection.getLastTimesigBarcount();
                                 int start = Math.Min( last_barcount, barcount );
@@ -14546,7 +14534,7 @@ namespace cadencii
 
         public void picturePositionIndicator_MouseUp( Object sender, MouseEventArgs e )
         {
-            int modifiers = PortUtil.getCurrentModifierKey();
+            Keys modifiers = Control.ModifierKeys;
 #if DEBUG
             AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
 #endif
@@ -15080,7 +15068,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#trackSelector_MouseWheel" );
 #endif
-            if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+            if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
                 double new_val = (double)vScroll.Value - e.Delta;
                 int max = vScroll.Maximum - vScroll.Minimum;
                 int min = vScroll.Minimum;

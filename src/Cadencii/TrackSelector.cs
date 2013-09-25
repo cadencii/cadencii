@@ -290,7 +290,7 @@ namespace cadencii
         /// <summary>
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
-        private int mModifierKey = InputEvent.CTRL_MASK;
+        private Keys mModifierKey = Keys.Control;
         /// <summary>
         /// スペースキーが押されているかどうか。
         /// MouseDown時に範囲選択モードをスキップする必要があるので、FormMainでの処理に加えてこのクラス内部でも処理する必要がある
@@ -354,7 +354,7 @@ namespace cadencii
         /// <summary>
         /// MouseDown時のControl.Modifiersの状態。
         /// </summary>
-        private int mModifierOnMouseDown = 0;
+        private Keys mModifierOnMouseDown = Keys.None;
         /// <summary>
         /// 移動しているデータ点のリスト
         /// </summary>
@@ -456,12 +456,7 @@ namespace cadencii
             mMainWindow = main_window;
             registerEventHandlers();
             setResources();
-            mModifierKey =
-#if JAVA_MAC
-            InputEvent.META_MASK;
-#else
-            InputEvent.CTRL_MASK;
-#endif
+            mModifierKey = Keys.Control;
             mMenuMap.put( CurveType.VEL, cmenuCurveVelocity );
             mMenuMap.put( CurveType.Accent, cmenuCurveAccent );
             mMenuMap.put( CurveType.Decay, cmenuCurveDecay );
@@ -3466,7 +3461,7 @@ namespace cadencii
 
         private void processMouseDownSelectRegion( MouseEventArgs e )
         {
-            if ( (PortUtil.getCurrentModifierKey() & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
+            if ( (Control.ModifierKeys & Keys.Control) != Keys.Control ) {
                 AppManager.itemSelection.clearPoint();
             }
 
@@ -3518,7 +3513,7 @@ namespace cadencii
                 return;
             }
             int stdx = AppManager.mMainWindowController.getStartToDrawX();
-            mModifierOnMouseDown = PortUtil.getCurrentModifierKey();
+            mModifierOnMouseDown = Control.ModifierKeys;
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
             int value = valueFromYCoord( e.Y );
@@ -3610,7 +3605,7 @@ namespace cadencii
                             } else {
                                 AppManager.itemSelection.addEvent( ve.InternalID );
                             }
-                        } else if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                        } else if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
                             int last_clock = AppManager.itemSelection.getLastEvent().original.Clock;
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
@@ -3849,7 +3844,7 @@ namespace cadencii
                                         }
                                         AppManager.itemSelection.clearEvent();
                                         AppManager.itemSelection.addEventAll( list );
-                                    } else if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
+                                    } else if ( (Control.ModifierKeys & Keys.Shift) == Keys.Shift ) {
                                         // clicked with Shift key
                                         SelectedEventEntry last_selected = AppManager.itemSelection.getLastEvent();
                                         if ( last_selected != null ) {
@@ -3946,10 +3941,10 @@ namespace cadencii
                                         return;
                                     }
                                 } else {
-                                    if ( (mModifierOnMouseDown & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
+                                    if ( (mModifierOnMouseDown & Keys.Control) != Keys.Control ) {
                                         AppManager.itemSelection.clearPoint();
                                     }
-                                    if ( (mModifierOnMouseDown & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
+                                    if ( (mModifierOnMouseDown & Keys.Shift) != Keys.Shift && (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
                                         AppManager.itemSelection.clearPoint();
                                     }
                                 }
@@ -4061,7 +4056,7 @@ namespace cadencii
                                     }
                                 }
 
-                                if ( (mModifierOnMouseDown & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
+                                if ( (mModifierOnMouseDown & Keys.Shift) != Keys.Shift && (mModifierOnMouseDown & mModifierKey) != mModifierKey ) {
                                     AppManager.itemSelection.clearPoint();
                                 }
                                 if ( AppManager.editorConfig.CurveSelectingQuantized ) {
@@ -4121,7 +4116,7 @@ namespace cadencii
             }
             int px_shift = DOT_WID + AppManager.editorConfig.PxToleranceBezier;
             int px_width = px_shift * 2 + 1;
-            int modifier = PortUtil.getCurrentModifierKey();
+            Keys modifier = Control.ModifierKeys;
 
             int track = AppManager.getSelected();
             boolean too_near = false; // clicked position is too near to existing bezier points
@@ -4559,7 +4554,7 @@ namespace cadencii
                                     AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 }
 
-                                if ( (mModifierOnMouseDown & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
+                                if ( (mModifierOnMouseDown & Keys.Control) != Keys.Control ) {
 #if DEBUG
                                     sout.println( "TrackSelector#TrackSelector_MouseUp; CTRL was not pressed" );
 #endif

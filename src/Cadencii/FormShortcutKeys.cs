@@ -29,7 +29,6 @@ using cadencii.apputil;
 using cadencii;
 using cadencii.java.awt.event_;
 using cadencii.java.util;
-using cadencii.javax.swing;
 using cadencii.windows.forms;
 
 namespace cadencii

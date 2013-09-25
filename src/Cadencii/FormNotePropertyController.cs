@@ -25,7 +25,6 @@ import cadencii.ui.*;
 
 using System;
 using System.Windows.Forms;
-using cadencii.javax.swing;
 using cadencii.apputil;
 using cadencii;
 using cadencii.windows.forms;

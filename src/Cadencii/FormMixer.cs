@@ -30,7 +30,6 @@ using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
-using cadencii.javax.swing;
 using cadencii.vsq;
 using cadencii.windows.forms;
 

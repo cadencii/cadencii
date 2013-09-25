@@ -63,7 +63,6 @@ using System.Text;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
 using cadencii.java.util;
-using cadencii.javax.swing;
 
 namespace cadencii {
     using boolean = System.Boolean;
@@ -297,69 +296,6 @@ namespace cadencii {
             return DateTime.Now.Ticks * 100.0 / 1e9;
 #endif
         }
-
-#if JAVA
-        public void eventDispatched( AWTEvent e ){
-            if( e instanceof KeyEvent ){
-                KeyEvent ke = (KeyEvent)e;
-                int code = ke.getKeyCode();
-                int id = ke.getID();
-                if( id == KeyEvent.KEY_PRESSED ){
-                    if( code == KeyEvent.VK_ALT ){
-                        s_alt = true;
-                    }else if( code == KeyEvent.VK_CONTROL ){
-                        s_ctrl = true;
-                    }else if( code == KeyEvent.VK_SHIFT ){
-                        s_shift = true;
-                    }else if( code == KeyEvent.VK_META ){
-                        s_meta = true;
-                    }
-                }else if( id == KeyEvent.KEY_RELEASED ){
-                    if( code == KeyEvent.VK_ALT ){
-                        s_alt = false;
-                    }else if( code == KeyEvent.VK_CONTROL ){
-                        s_ctrl = false;
-                    }else if( code == KeyEvent.VK_SHIFT ){
-                        s_shift = false;
-                    }else if( code == KeyEvent.VK_META ){
-                        s_meta = false;
-                    }
-                }
-            }
-        }
-
-        public static int getCurrentModifierKey() {
-            int ret = 0;
-            if( s_ctrl ){
-                ret += InputEvent.CTRL_MASK;
-            }
-            if( s_alt ){
-                ret += InputEvent.ALT_MASK;
-            }
-            if( s_shift ){
-                ret += InputEvent.SHIFT_MASK;
-            }
-            if( s_meta ){
-                ret += InputEvent.META_MASK;
-            }
-            return ret;
-        }
-#else
-        public static int getCurrentModifierKey() {
-            int ret = 0;
-            System.Windows.Forms.Keys k = System.Windows.Forms.Control.ModifierKeys;
-            if ( (k & System.Windows.Forms.Keys.Control) == System.Windows.Forms.Keys.Control ) {
-                ret += InputEvent.CTRL_MASK;
-            }
-            if ( (k & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt ) {
-                ret += InputEvent.ALT_MASK;
-            }
-            if ( (k & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift ) {
-                ret += InputEvent.SHIFT_MASK;
-            }
-            return ret;
-        }
-#endif
 
 #if JAVA
         public static Rectangle getScreenBounds( Component w ){
