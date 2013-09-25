@@ -92,10 +92,6 @@ namespace cadencii.java.util {
             : base( capacity ) {
         }
 
-        public Vector( Vector<T> array )
-            : base( array.toArray( new T[]{} ) ){
-        }
-
         public Vector()
             : base() {
         }
@@ -106,24 +102,6 @@ namespace cadencii.java.util {
 
         public void set( int index, T value ) {
             base[index] = value;
-        }
-
-        public Object[] toArray() {
-            int c = Count;
-            Object[] ret = new Object[c];
-            for( int i = 0; i < c; i++ ){
-                ret[i] = base[i];
-            }
-            return ret;
-        }
-
-        public T[] toArray( T[] array ) {
-            int c = Count;
-            T[] ret = new T[c];
-            for( int i = 0; i < c; i++ ){
-                ret[i] = base[i];
-            }
-            return ret;
         }
 
         public Iterator<T> iterator() {

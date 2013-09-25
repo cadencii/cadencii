@@ -4749,13 +4749,13 @@ namespace cadencii
                                         if ( mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
                                             item.VibratoHandle.setDepthBP(
                                                 new VibratoBPList(
-                                                    PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
-                                                    PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
+                                                    PortUtil.convertFloatArray( bpx.ToArray() ),
+                                                    PortUtil.convertIntArray( bpy.ToArray() ) ) );
                                         } else {
                                             item.VibratoHandle.setRateBP(
                                                 new VibratoBPList(
-                                                    PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
-                                                    PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
+                                                    PortUtil.convertFloatArray( bpx.ToArray() ),
+                                                    PortUtil.convertIntArray( bpy.ToArray() ) ) );
                                         }
                                         internal_ids.Add( ve.InternalID );
                                         items.Add( item );
@@ -4763,8 +4763,8 @@ namespace cadencii
                                 }
                                 CadenciiCommand run = new CadenciiCommand(
                                     VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
-                                                                                           PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
-                                                                                           items.toArray( new VsqID[] { } ) ) );
+                                                                                           PortUtil.convertIntArray( internal_ids.ToArray() ),
+                                                                                           items.ToArray() ) );
                                 executeCommand( run, true );
                                 #endregion
                             } else if ( mSelectedCurve.equals( CurveType.Env ) ) {
@@ -5005,8 +5005,8 @@ namespace cadencii
                                 if ( internal_ids.Count > 0 ) {
                                     CadenciiCommand run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
-                                                                                               PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
-                                                                                               items.toArray( new VsqID[] { } ) ) );
+                                                                                               PortUtil.convertIntArray( internal_ids.ToArray() ),
+                                                                                               items.ToArray() ) );
                                     executeCommand( run, true );
                                 }
                                 #endregion
@@ -5394,8 +5394,8 @@ namespace cadencii
                                     }
                                     edited.VibratoHandle.setRateBP(
                                         new VibratoBPList(
-                                            PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
-                                            PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
+                                            PortUtil.convertFloatArray( xs.ToArray() ),
+                                            PortUtil.convertIntArray( vals.ToArray() ) ) );
                                 }
                             }
                         } else {
@@ -5436,8 +5436,8 @@ namespace cadencii
                                     }
                                     edited.VibratoHandle.setDepthBP(
                                         new VibratoBPList(
-                                            PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
-                                            PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
+                                            PortUtil.convertFloatArray( xs.ToArray() ),
+                                            PortUtil.convertIntArray( vals.ToArray() ) ) );
                                 }
                             }
                         }

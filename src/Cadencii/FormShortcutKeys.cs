@@ -209,7 +209,7 @@ namespace cadencii
                 foreach ( Keys k in values ) {
                     cp.Add( k );
                 }
-                dest.put( name, new ValuePair<String, Keys[]>( key, cp.toArray( new Keys[] { } ) ) );
+                dest.put( name, new ValuePair<String, Keys[]>( key, cp.ToArray() ) );
             }
         }
 
@@ -396,7 +396,7 @@ namespace cadencii
                     capturelist.Add( Keys.Alt );
                 }
             }
-            Keys[] keys = capturelist.toArray( new Keys[] { } );
+            Keys[] keys = capturelist.ToArray();
             mDict.get( display ).setValue( keys );
             list.Items[indx_row].SubItems[1].Text = Utility.getShortcutDisplayString( keys ); 
         } 

@@ -285,7 +285,7 @@ namespace cadencii
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteoff; " + str );
                         }
 #endif
-                        mDriver.send( queue.noteoff.toArray( new MidiEvent[] { } ) );
+                        mDriver.send( queue.noteoff.ToArray() );
                         noteoff_send = true;
                     }
                     // parameterの変更
@@ -316,7 +316,7 @@ namespace cadencii
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteon;  " + str );
                         }
 #endif
-                        mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
+                        mDriver.send( queue.noteon.ToArray() );
                     }
                     // PIT
                     if ( queue.pit.Count > 0 && !noteoff_send ) {
@@ -331,7 +331,7 @@ namespace cadencii
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         pit;     " + str );
                         }
 #endif
-                        mDriver.send( queue.pit.toArray( new MidiEvent[] { } ) );
+                        mDriver.send( queue.pit.ToArray() );
                     }
                     if ( mDriver.getUi( mMainWindow ) != null ) {
                         mDriver.getUi( mMainWindow ).invalidateUi();

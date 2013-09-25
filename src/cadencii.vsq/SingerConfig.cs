@@ -262,7 +262,7 @@ namespace cadencii.vsq
             ret.Add( "\"Clearness\":=:\"" + Clearness + "\"" );
             ret.Add( "\"Opening\":=:\"" + Opening + "\"" );
             ret.Add( "\"Gender:Factor\":=:\"" + GenderFactor + "\"" );
-            return ret.toArray( new String[] { } );
+            return ret.ToArray();
         }
 
 #if !JAVA

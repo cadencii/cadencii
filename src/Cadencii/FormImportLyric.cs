@@ -144,7 +144,7 @@ namespace cadencii
                     ret.Add( t );
                 }
             }
-            return ret.toArray( new String[] { } );
+            return ret.ToArray();
         }
         #endregion
 

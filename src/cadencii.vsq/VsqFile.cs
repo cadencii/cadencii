@@ -824,7 +824,7 @@ namespace cadencii.vsq
                     }
                 }
                 updateTotalClocks();
-                return VsqCommand.generateCommandEventAddRange( track, inv.toArray( new VsqEvent[] { } ) );
+                return VsqCommand.generateCommandEventAddRange( track, inv.ToArray() );
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK ) {
                 #region EVENT_CHANGE_CLOCK
@@ -1350,8 +1350,8 @@ namespace cadencii.vsq
                 return VsqCommand.generateCommandEventChangeClockAndIDContaintsRange(
                     track,
                     internal_ids,
-                    PortUtil.convertIntArray( inv_clock.toArray( new Integer[] { } ) ),
-                    inv_id.toArray( new VsqID[] { } ) );
+                    PortUtil.convertIntArray( inv_clock.ToArray() ),
+                    inv_id.ToArray() );
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CHANGE_NAME ) {
                 #region TRACK_CHANGE_NAME
@@ -2480,7 +2480,7 @@ namespace cadencii.vsq
                     ret.Add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         public static VsqNrpn[] generateFx2DepthNRPN( VsqFile vsq, int track, int msPreSend )
@@ -2498,7 +2498,7 @@ namespace cadencii.vsq
                     ret.Add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         /// <summary>
@@ -2904,7 +2904,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < list.Count; i++ ) {
                 merged.AddRange( new Vector<VsqNrpn>( list.get( i ).expand() ) );
             }
-            return merged.toArray( new VsqNrpn[] { } );
+            return merged.ToArray();
         }
 
         /// <summary>
@@ -2933,7 +2933,7 @@ namespace cadencii.vsq
                     ret.Add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         /// <summary>
@@ -2959,7 +2959,7 @@ namespace cadencii.vsq
                     ret.Add( add );
                 }
             }
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         /// <summary>
@@ -3015,7 +3015,7 @@ namespace cadencii.vsq
                 }
             }
             ret.Sort();
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         /// <summary>
@@ -3063,7 +3063,7 @@ namespace cadencii.vsq
                 }
             }
             res.Sort();
-            return res.toArray( new VsqNrpn[] { } );
+            return res.ToArray();
         }
 
         /// <summary>

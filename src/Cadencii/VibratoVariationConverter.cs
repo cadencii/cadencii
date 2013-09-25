@@ -57,7 +57,7 @@ namespace cadencii
 #if !JAVA
         public override StandardValuesCollection GetStandardValues( ITypeDescriptorContext context )
         {
-            return new StandardValuesCollection( getStandardValues().toArray( new VibratoVariation[] { } ) );
+            return new StandardValuesCollection( getStandardValues().ToArray() );
         }
 #endif
 

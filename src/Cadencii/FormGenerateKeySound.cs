@@ -87,7 +87,7 @@ namespace cadencii {
             m_close_when_finished = close_when_finished;
             m_singer_config1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
             m_singer_config2 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-            m_singer_config_utau = AppManager.editorConfig.UtauSingers.toArray( new SingerConfig[] { } );
+            m_singer_config_utau = AppManager.editorConfig.UtauSingers.ToArray();
             if ( m_singer_config1.Length > 0 ) {
                 comboSingingSynthSystem.Items.Add( "VOCALOID1" );
             }

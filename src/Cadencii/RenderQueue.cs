@@ -62,7 +62,7 @@ namespace cadencii {
         /// </summary>
         /// <returns></returns>
         public String[] getResamplerArg() {
-            return _resampler_arg.toArray( new String[0] );
+            return _resampler_arg.ToArray();
         }
 
         /// <summary>

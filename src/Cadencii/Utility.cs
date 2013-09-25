@@ -1129,7 +1129,7 @@ namespace cadencii
             for ( Iterator<EditedZoneUnit> itr = ret.iterator(); itr.hasNext(); ) {
                 list3.Add( itr.next() );
             }
-            return list3.toArray( new EditedZoneUnit[] { } );
+            return list3.ToArray();
         }
 
         /// <summary>
@@ -1183,7 +1183,7 @@ namespace cadencii
             for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
                 ret.Add( itr.next() );
             }
-            return ret.toArray( new EditedZoneUnit[] { } );
+            return ret.ToArray();
         }
 
         /// <summary>

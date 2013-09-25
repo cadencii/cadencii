@@ -80,7 +80,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < m_list.Count; i++ ) {
                 ret.AddRange( new Vector<VsqNrpn>( m_list.get( i ).expand() ) );
             }
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         public static Vector<VsqNrpn> sort( Vector<VsqNrpn> list )
@@ -149,7 +149,7 @@ namespace cadencii.vsq
                 ret.Add( src2[i] );
             }
             ret.Sort();
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret.ToArray();
         }
 
         public static NrpnData[] convert( VsqNrpn[] source )
@@ -184,7 +184,7 @@ namespace cadencii.vsq
                     }
                 }
             }
-            return ret.toArray( new NrpnData[] { } );
+            return ret.ToArray();
         }
 
         public int compareTo( VsqNrpn item )

@@ -654,7 +654,7 @@ namespace cadencii
                     rq2.appendArg( "\"" + filename + "\"" );
                     rq2.appendArgRange( resampler_arg_suffix );
                     if ( !allzero ) {
-                        rq2.appendArgRange( pitch.toArray( new String[0] ) );
+                        rq2.appendArgRange( pitch.ToArray() );
                     }
 
                     boolean exist_in_cache = mCache.containsKey( rq2.hashSource );

@@ -185,7 +185,7 @@ namespace cadencii.vsq
                          installed_singers1 );
                 s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
-                String[] act_installed_singers1 = installed_singers1.toArray( new String[]{} );
+                String[] act_installed_singers1 = installed_singers1.ToArray();
                 String act_path_voicedb1 = path_voicedb1.value;
                 String act_path_editor1 = path_editor.value;
                 String act_path_expdb1 = path_expdb1.value;
@@ -295,7 +295,7 @@ namespace cadencii.vsq
                          installed_singers2 );
                 s_path_vsti.put( SynthesizerType.VOCALOID2, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID2, path_editor.value );
-                String[] act_installed_singers2 = installed_singers2.toArray( new String[]{} );
+                String[] act_installed_singers2 = installed_singers2.ToArray();
                 String act_path_expdb2 = path_expdb2.value;
                 String act_path_voicedb2 = path_voicedb2.value;
                 String act_path_editor2 = path_editor.value;

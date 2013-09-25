@@ -113,7 +113,7 @@ namespace cadencii.vsq
 
         public SingerConfig[] getInstalledSingers()
         {
-            return m_installed_singers.toArray( new SingerConfig[] { } );
+            return m_installed_singers.ToArray();
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public SingerConfig[] getSingerConfigs()
         {
-            return m_singer_configs.toArray( new SingerConfig[] { } );
+            return m_singer_configs.ToArray();
         }
     }
 

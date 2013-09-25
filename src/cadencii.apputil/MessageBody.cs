@@ -237,7 +237,7 @@ namespace cadencii.apputil {
                     }
                 }
             }
-            locations.value = location.toArray( new String[] { } );
+            locations.value = location.ToArray();
             String ret = "";
             while ( (line = sr.readLine()) != null ) {
                 if ( !line.StartsWith( "\"" ) ) {

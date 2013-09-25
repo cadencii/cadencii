@@ -43,7 +43,7 @@ namespace cadencii.apputil
                         String key = itr2.next();
                         list.Add( key );
                     }
-                    return list.toArray( new String[] { } );
+                    return list.ToArray();
                 }
             }
             return null;
@@ -55,7 +55,7 @@ namespace cadencii.apputil
                 MessageBody dict = itr.next();
                 res.Add( dict.lang );
             }
-            return res.toArray( new String[] { } );
+            return res.ToArray();
         }
 
         public static String getLanguage() {

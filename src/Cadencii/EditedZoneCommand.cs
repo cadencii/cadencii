@@ -57,7 +57,7 @@ namespace cadencii {
 #else
             :
 #endif
-            this( add.toArray( new EditedZoneUnit[] { } ), remove.toArray( new EditedZoneUnit[] { } ) )
+            this( add.ToArray(), remove.ToArray() )
 #if JAVA
             ;
 #else

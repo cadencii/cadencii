@@ -1709,7 +1709,7 @@ namespace cadencii
             // コマンドを発行
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandEventReplaceRange(
-                    selected, items.toArray( new VsqEvent[] { } ) ) );
+                    selected, items.ToArray() ) );
             AppManager.editHistory.register( vsq.executeCommand( run ) );
 
             // 編集されたものを再選択する
@@ -1782,7 +1782,7 @@ namespace cadencii
             // コマンドを発行
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandEventReplaceRange(
-                    selected, items.toArray( new VsqEvent[] { } ) ) );
+                    selected, items.ToArray() ) );
             AppManager.editHistory.register( vsq.executeCommand( run ) );
 
             // 編集されたものを再選択する
@@ -5254,8 +5254,8 @@ namespace cadencii
                     dum[i] = -1;
                 }
                 CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
-                                                                PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
+                    VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.ToArray() ),
+                                                                PortUtil.convertIntArray( clocks.ToArray() ),
                                                                 dum ) );
                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                 setEdited( true );
@@ -5359,7 +5359,7 @@ namespace cadencii
                         paste.Add( item );
                     }
                     add_event = VsqCommand.generateCommandEventAddRange(
-                        AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
+                        AppManager.getSelected(), paste.ToArray() );
                 }
             }
             Vector<TempoTableEntry> copied_tempo = ce.tempo;
@@ -7818,7 +7818,7 @@ namespace cadencii
                         }
                         boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                               selected,
-                                                                              internal_ids.toArray( new Integer[] { } ),
+                                                                              internal_ids.ToArray(),
                                                                               btn );
                         if ( result ) {
                             setEdited( true );
@@ -7953,7 +7953,7 @@ namespace cadencii
                         }
                         boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                            AppManager.getSelected(),
-                                                                           internal_ids.toArray( new Integer[] { } ),
+                                                                           internal_ids.ToArray(),
                                                                            e.Button );
                         if ( result ) {
                             setEdited( true );
@@ -8795,7 +8795,7 @@ namespace cadencii
                             }
                         }
                         if (remove_required.Count > 0) {
-                            AppManager.itemSelection.removeEventRange(PortUtil.convertIntArray(remove_required.toArray(new Integer[] { })));
+                            AppManager.itemSelection.removeEventRange(PortUtil.convertIntArray(remove_required.ToArray()));
                         }
                         for (Iterator<Integer> itr = add_required.iterator(); itr.hasNext(); ) {
                             int id = itr.next();
@@ -9521,7 +9521,7 @@ namespace cadencii
                 }
                 if ( add_required_point.Count > 0 ) {
                     AppManager.itemSelection.addPointAll( selected_curve,
-                                                    PortUtil.convertLongArray( add_required_point.toArray( new Long[] { } ) ) );
+                                                    PortUtil.convertLongArray( add_required_point.ToArray() ) );
                 }
             }
         heaven:
@@ -13060,8 +13060,8 @@ namespace cadencii
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandEventChangeIDContaintsRange(
                     selected,
-                    PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
-                    ids.toArray( new VsqID[] { } ) ) );
+                    PortUtil.convertIntArray( internal_ids.ToArray() ),
+                    ids.ToArray() ) );
             AppManager.editHistory.register( vsq.executeCommand( run ) );
             setEdited( true );
         }
@@ -13101,7 +13101,7 @@ namespace cadencii
 
             // コマンドを発行
             CadenciiCommand run = new CadenciiCommand(
-                VsqCommand.generateCommandEventReplaceRange( selected, replace.toArray( new VsqEvent[] { } ) ) );
+                VsqCommand.generateCommandEventReplaceRange( selected, replace.ToArray() ) );
             // コマンドを実行
             AppManager.editHistory.register( vsq.executeCommand( run ) );
             setEdited( true );

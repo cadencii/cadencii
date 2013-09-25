@@ -472,7 +472,7 @@ namespace cadencii.vsq
                     pitch.Add( pit );
                 }
                 if ( !allzero ) {
-                    item.setPitches( PortUtil.convertFloatArray( pitch.toArray( new Float[] { } ) ) );
+                    item.setPitches( PortUtil.convertFloatArray( pitch.ToArray() ) );
                     item.setPBType( PBTYPE );
                 } else {
                     item.setPBType( -1 );
