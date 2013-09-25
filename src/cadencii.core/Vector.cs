@@ -108,15 +108,6 @@ namespace cadencii.java.util {
             base[index] = value;
         }
 
-        public void setSize( int size ) {
-            int c = base.Count;
-            if ( c < size ) {
-                for ( int i = c; i < size; i++ ) {
-                    base.Add( default( T ) );
-                }
-            }
-        }
-
         public Object[] toArray() {
             int c = Count;
             Object[] ret = new Object[c];

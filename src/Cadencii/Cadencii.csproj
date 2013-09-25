@@ -296,7 +296,6 @@
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
     <Compile Include="DrawObjectType.cs" />
-    <Compile Include="Matrix2D.cs" />
     <Compile Include="DynaffComparisonContext.cs" />
     <Compile Include="EditedZone.cs" />
     <Compile Include="EditedZoneCommand.cs" />
