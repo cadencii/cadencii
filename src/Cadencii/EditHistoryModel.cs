@@ -40,14 +40,14 @@ using cadencii.java.util;
                 /// <param name="command">登録する履歴</param>
                 public void register( ICommand command )
                 {
-                    if( mCommandIndex == mCommands.size() - 1 ) {
+                    if( mCommandIndex == mCommands.Count - 1 ) {
                         // 新しいコマンドバッファを追加する場合
                         mCommands.Add( command );
-                        mCommandIndex = mCommands.size() - 1;
+                        mCommandIndex = mCommands.Count - 1;
                     } else {
                         // 既にあるコマンドバッファを上書きする場合
                         mCommands.set( mCommandIndex + 1, command );
-                        for( int i = mCommands.size() - 1; i >= mCommandIndex + 2; i-- ) {
+                        for( int i = mCommands.Count - 1; i >= mCommandIndex + 2; i-- ) {
                             mCommands.RemoveAt( i );
                         }
                         mCommandIndex++;
@@ -69,7 +69,7 @@ using cadencii.java.util;
                 /// <returns>UNDO用のヒストリーを取得できる場合trueを，そうでなければfalseを返す</returns>
                 public bool hasUndoHistory()
                 {
-                    if( mCommands.size() > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.size() ) {
+                    if( mCommands.Count > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.Count ) {
                         return true;
                     } else {
                         return false;
@@ -82,7 +82,7 @@ using cadencii.java.util;
                 /// <returns>REDO用のヒストリーを取得できる場合trueを，そうでなければfalseを返す</returns>
                 public bool hasRedoHistory()
                 {
-                    if( mCommands.size() > 0 && 0 <= mCommandIndex + 1 && mCommandIndex + 1 < mCommands.size() ) {
+                    if( mCommands.Count > 0 && 0 <= mCommandIndex + 1 && mCommandIndex + 1 < mCommands.Count ) {
                         return true;
                     } else {
                         return false;

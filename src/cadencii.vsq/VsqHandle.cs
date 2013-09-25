@@ -318,8 +318,8 @@ namespace cadencii.vsq
                         if ( index == 0 ) {
                             L0 = lyric;
                         } else {
-                            if ( Trailing.size() < index ) {
-                                for ( int i = Trailing.size(); i < index; i++ ) {
+                            if ( Trailing.Count < index ) {
+                                for ( int i = Trailing.Count; i < index; i++ ) {
                                     Trailing.Add( new Lyric( "a", "a" ) );
                                 }
                             }
@@ -403,7 +403,7 @@ namespace cadencii.vsq
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
                 result += "\n" + "L0=" + L0.toString( addQuotationMark );
-                int c = Trailing.size();
+                int c = Trailing.Count;
                 for ( int i = 0; i < c; i++ ) {
                     result += "\n" + "L" + (i + 1) + "=" + Trailing.get( i ).toString( addQuotationMark );
                 }

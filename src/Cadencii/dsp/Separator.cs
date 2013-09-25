@@ -77,7 +77,7 @@ namespace cadencii
 
         public void push( double[] l, double[] r, int length )
         {
-            if ( mReceivers.size() <= 0 ) {
+            if ( mReceivers.Count <= 0 ) {
                 return;
             }
 

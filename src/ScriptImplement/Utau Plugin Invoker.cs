@@ -201,7 +201,7 @@ public class Utau_Plugin_Invoker : Form {
         for ( int i = 1; i < selected; i++ ) {
             v.Track.RemoveAt( 1 );
         }
-        for ( int i = selected + 1; i < v.Track.size(); i++ ) {
+        for ( int i = selected + 1; i < v.Track.Count; i++ ) {
             v.Track.RemoveAt( selected + 1 );
         }
         // 選択トラックの音符を全消去する
@@ -546,7 +546,7 @@ public class Utau_Plugin_Invoker : Form {
     private static void insertTempoInto( VsqFileEx vsq, int clock, float t )
     {
         // clockの位置にテンポ変更があるかどうか？
-        int num_tempo = vsq.TempoTable.size();
+        int num_tempo = vsq.TempoTable.Count;
         int index = -1;
         for ( int j = 0; j < num_tempo; j++ ) {
             TempoTableEntry itemj = vsq.TempoTable[j];

@@ -517,13 +517,13 @@ namespace cadencii.vsq
             command.Args = new Object[3];
             command.Args[0] = track;
             Vector<String> cp_targets = new Vector<String>();
-            int count = targets.size();
+            int count = targets.Count;
             for ( int i = 0; i < count; i++ ) {
                 cp_targets.Add( targets.get( i ) );
             }
             command.Args[1] = cp_targets;
             Vector<Vector<BPPair>> cp_edits = new Vector<Vector<BPPair>>();
-            count = edits.size();
+            count = edits.Count;
             for ( int i = 0; i < count; i++ ) {
                 Vector<BPPair> copied = new Vector<BPPair>();
                 for ( Iterator<BPPair> itr = edits.get( i ).iterator(); itr.hasNext(); ) {
@@ -551,14 +551,14 @@ namespace cadencii.vsq
             command.Args = new Object[4];
             command.Args[0] = track;
             Vector<String> cp_target = new Vector<String>();
-            int c = target.size();
+            int c = target.Count;
             for ( int i = 0; i < c; i++ ) {
                 cp_target.Add( target.get( i ) );
             }
             command.Args[1] = cp_target;
 
             Vector<Vector<Long>> cp_vec_delete = new Vector<Vector<Long>>();
-            c = delete.size();
+            c = delete.Count;
             for ( int i = 0; i < c; i++ ) {
                 Vector<Long> cp_delete = new Vector<Long>();
                 for ( Iterator<Long> itr = delete.get( i ).iterator(); itr.hasNext(); ) {
@@ -570,7 +570,7 @@ namespace cadencii.vsq
             command.Args[2] = cp_vec_delete;
 
             Vector<TreeMap<Integer, VsqBPPair>> cp_vec_add = new Vector<TreeMap<Integer, VsqBPPair>>();
-            c = add.size();
+            c = add.Count;
             for ( int i = 0; i < c; i++ ) {
                 TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
                 TreeMap<Integer, VsqBPPair> tmp = add.get( i );
@@ -728,7 +728,7 @@ namespace cadencii.vsq
         private static Vector<Integer> copyIntVector( Vector<Integer> value )
         {
             Vector<Integer> ret = new Vector<Integer>();
-            int count = value.size();
+            int count = value.Count;
             for ( int i = 0; i < count; i++ ) {
                 ret.Add( value.get( i ) );
             }

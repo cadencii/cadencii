@@ -395,7 +395,7 @@ namespace cadencii
 #if MAKEBAT_SP
                 log.WriteLine( "making resampler queue..." );
 #endif
-                int events_count = events.size();
+                int events_count = events.Count;
                 for ( int k = 0; k < events_count; k++ ) {
                     VsqEvent item = events.get( k );
 #if MAKEBAT_SP
@@ -409,7 +409,7 @@ namespace cadencii
                     }
                     String singer_raw = "";
                     String singer = "";
-                    if ( 0 <= program_change && program_change < mConfig.UtauSingers.size() ) {
+                    if ( 0 <= program_change && program_change < mConfig.UtauSingers.Count ) {
                         singer_raw = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
                         singer = singer_raw;
 #if !JAVA
@@ -729,7 +729,7 @@ namespace cadencii
                 log.WriteLine( "...done" );
 #endif
 
-                int num_queues = mResamplerQueue.size();
+                int num_queues = mResamplerQueue.Count;
                 int processed_sample = 0; //WaveIncomingで受け渡した波形の合計サンプル数
                 int channel = 0; // .whdに記録されたチャンネル数
                 int byte_per_sample = 0;

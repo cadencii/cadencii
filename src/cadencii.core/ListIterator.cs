@@ -23,7 +23,7 @@ namespace cadencii.java.util {
 
         public ListIterator( Vector<T> list ) {
             m_list = new List<T>();
-            int c = list.size();
+            int c = list.Count;
             for( int i = 0; i < c; i++ ){
                 m_list.Add( list.get( i ) );
             }

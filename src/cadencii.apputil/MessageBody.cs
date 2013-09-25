@@ -170,7 +170,7 @@ namespace cadencii.apputil {
                     MessageBodyEntry mbe = list.get( key );
                     String s = mbe.message;
                     Vector<String> location = mbe.location;
-                    int count = location.size();
+                    int count = location.Count;
                     for ( int i = 0; i < count; i++ ) {
                         sw.write( "#: " + location.get( i ) );
                         sw.newLine();

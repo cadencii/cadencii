@@ -91,8 +91,8 @@ namespace cadencii.vsq.io
             foreach ( XmlNode node in xml.DocumentElement.GetElementsByTagName( "vsTrack" ) ) {
                 int trackIndex = int.Parse( node["vsTrackNo"].InnerText ) + 1;
                 VsqTrack track = null;
-                if ( result.Track.size() <= trackIndex ) {
-                    int amount = trackIndex + 1 - result.Track.size();
+                if ( result.Track.Count <= trackIndex ) {
+                    int amount = trackIndex + 1 - result.Track.Count;
                     for ( int i = 0; i < amount; i++ ) {
                         result.Track.Add( new VsqTrack( "", "" ) );
                     }
@@ -116,7 +116,7 @@ namespace cadencii.vsq.io
 
             // SlaveMixerをパース
             result.Mixer.Slave.Clear();
-            for ( int i = 1; i < result.Track.size(); i++ ) {
+            for ( int i = 1; i < result.Track.Count; i++ ) {
                 result.Mixer.Slave.Add( null );
             }
             foreach ( XmlNode vsUnit in mixer.GetElementsByTagName( "vsUnit" ) ) {

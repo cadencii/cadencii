@@ -896,8 +896,8 @@ namespace cadencii
         public int getRowsPerColumn()
         {
             int max_columns = getMaxColumns();
-            int row_per_column = mViewingCurves.size() / max_columns;
-            if ( row_per_column * max_columns < mViewingCurves.size() ) {
+            int row_per_column = mViewingCurves.Count / max_columns;
+            if ( row_per_column * max_columns < mViewingCurves.Count ) {
                 row_per_column++;
             }
             return row_per_column;
@@ -1099,7 +1099,7 @@ namespace cadencii
 
             int centre = (getGraphHeight() + UNIT_HEIGHT_PER_CURVE) / 2 + 3;
             int index = 100;
-            for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+            for ( int i = 0; i < mViewingCurves.Count; i++ ) {
                 if ( mViewingCurves.get( i ).equals( curve ) ) {
                     index = i;
                     break;
@@ -1239,7 +1239,7 @@ namespace cadencii
 #endif
                             drawTrackTab( g,
                                           new Rectangle( x, size.height - OFFSET_TRACK_TAB + 1, selecter_width, OFFSET_TRACK_TAB - 1 ),
-                                          (i + 1 < vsq.Track.size()) ? (i + 1) + " " + vsq.Track.get( i + 1 ).getName() : "",
+                                          (i + 1 < vsq.Track.Count) ? (i + 1) + " " + vsq.Track.get( i + 1 ).getName() : "",
                                           (i == selected - 1),
                                           vsq_track.getCommon().PlayMode >= 0,
                                           AppManager.getRenderRequired( i + 1 ),
@@ -1596,7 +1596,7 @@ namespace cadencii
                     String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
                     g.drawString( name, 7, text_font_height / 2 - text_font_offset + 1 );
 
-                    for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                    for ( int i = 0; i < mViewingCurves.Count; i++ ) {
                         CurveType curve = mViewingCurves.get( i );
                         Rectangle rc = getRectFromCurveType( curve );
                         if ( curve.equals( mSelectedCurve ) || curve.equals( mLastSelectedCurve ) ) {
@@ -2247,7 +2247,7 @@ namespace cadencii
             int numTrack = 1;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
-                numTrack = vsq.Track.size();
+                numTrack = vsq.Track.Count;
             }
             if ( draft * (numTrack - 1) <= maxTotalWidth ) {
                 return draft;
@@ -2302,7 +2302,7 @@ namespace cadencii
             boolean cursor_should_be_hand = false;
             lock ( AppManager.mDrawObjects ) {
                 Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
-                int count = target_list.size();
+                int count = target_list.Count;
                 int i_start = AppManager.mDrawStartIndex[selected - 1];
                 for ( int i = i_start; i < count; i++ ) {
                     DrawObject dobj = target_list.get( i );
@@ -2402,18 +2402,18 @@ namespace cadencii
                 int visibleMinX = AppManager.keyWidth;
                 int visibleMaxX = mMainWindow.pictPianoRoll.getWidth() + AppManager.keyWidth + AppManager.keyOffset;
                 Color hilight = Color.blue;// AppManager.getHilightColor();
-                int chains_count = chains.size();
+                int chains_count = chains.Count;
                 for ( int i = 0; i < chains_count; i++ ) {
                     BezierChain target_chain = chains.get( i );
                     int chain_id = target_chain.id;
-                    if ( target_chain.points.size() <= 0 ) {
+                    if ( target_chain.points.Count <= 0 ) {
                         continue;
                     }
                     BezierPoint next;
                     BezierPoint current = target_chain.points.get( 0 );
                     Point pxNext;
                     Point pxCurrent = getScreenCoord( current.getBase() );
-                    int target_chain_points_count = target_chain.points.size();
+                    int target_chain_points_count = target_chain.points.Count;
                     boolean breaked = false;
                     for ( int j = 0; j < target_chain_points_count; j++ ) {
                         next = target_chain.points.get( j );
@@ -2515,7 +2515,7 @@ namespace cadencii
                         current = next;
                     }
                     if ( !breaked ) {
-                        next = target_chain.points.get( target_chain.points.size() - 1 );
+                        next = target_chain.points.get( target_chain.points.Count - 1 );
                         pxNext = getScreenCoord( next.getBase() );
                         Rectangle rc_last = new Rectangle( pxNext.x - DOT_WID,
                                                            pxNext.y - DOT_WID,
@@ -2808,7 +2808,7 @@ namespace cadencii
             if ( mCurveVisible ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
-                    for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+                    for ( int i = 0; i < mViewingCurves.Count; i++ ) {
                         CurveType curve = mViewingCurves.get( i );
                         Rectangle r = getRectFromCurveType( curve );
                         if ( isInRect( e.X, e.Y, r ) ) {
@@ -2975,15 +2975,15 @@ namespace cadencii
         public void SelectNextCurve()
         {
             int index = 0;
-            if ( mViewingCurves.size() >= 2 ) {
-                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+            if ( mViewingCurves.Count >= 2 ) {
+                for ( int i = 0; i < mViewingCurves.Count; i++ ) {
                     if ( mViewingCurves.get( i ).equals( mSelectedCurve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index++;
-                if ( mViewingCurves.size() <= index ) {
+                if ( mViewingCurves.Count <= index ) {
                     index = 0;
                 }
                 changeCurve( mViewingCurves.get( index ) );
@@ -2993,8 +2993,8 @@ namespace cadencii
         public void SelectPreviousCurve()
         {
             int index = 0;
-            if ( mViewingCurves.size() >= 2 ) {
-                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
+            if ( mViewingCurves.Count >= 2 ) {
+                for ( int i = 0; i < mViewingCurves.Count; i++ ) {
                     if ( mViewingCurves.get( i ).equals( mSelectedCurve ) ) {
                         index = i;
                         break;
@@ -3002,7 +3002,7 @@ namespace cadencii
                 }
                 index--;
                 if ( index < 0 ) {
-                    index = mViewingCurves.size() - 1;
+                    index = mViewingCurves.Count - 1;
                 }
                 changeCurve( mViewingCurves.get( index ) );
             }
@@ -3013,7 +3013,7 @@ namespace cadencii
             BezierChain target = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, AppManager.itemSelection.getLastBezier().chainID );
             int point_id = AppManager.itemSelection.getLastBezier().pointID;
             int index = -1;
-            for ( int i = 0; i < target.points.size(); i++ ) {
+            for ( int i = 0; i < target.points.Count; i++ ) {
                 if ( target.points.get( i ).getID() == point_id ) {
                     index = i;
                     break;
@@ -3320,7 +3320,7 @@ namespace cadencii
                 BezierChain target = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, AppManager.itemSelection.getLastBezier().chainID );
                 int point_id = AppManager.itemSelection.getLastBezier().pointID;
                 int index = -1;
-                for ( int i = 0; i < target.points.size(); i++ ) {
+                for ( int i = 0; i < target.points.Count; i++ ) {
                     if ( target.points.get( i ).getID() == point_id ) {
                         index = i;
                         break;
@@ -3418,7 +3418,7 @@ namespace cadencii
             found_side.value = BezierPickedSide.BASE;
             int shift = dot_width + px_tolerance;
             int width = (dot_width + px_tolerance) * 2;
-            int c = list.size();
+            int c = list.Count;
             Point location = new Point( locx, locy );
             for ( int i = 0; i < c; i++ ) {
                 BezierChain bc = list.get( i );
@@ -3778,7 +3778,7 @@ namespace cadencii
                                 // まずベジエ曲線の点にヒットしてないかどうかを検査
                                 Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
-                                for ( int i = 0; i < dict.size(); i++ ) {
+                                for ( int i = 0; i < dict.Count; i++ ) {
                                     BezierChain bc = dict.get( i );
                                     for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
                                         BezierPoint bp = itr.next();
@@ -3979,7 +3979,7 @@ namespace cadencii
                                             if ( side.value == BezierPickedSide.BASE ) {
                                                 // データ点自体を削除
                                                 BezierChain work = (BezierChain)chain.value.clone();
-                                                int count = work.points.size();
+                                                int count = work.points.Count;
                                                 if ( count > 1 ) {
                                                     // 2個以上のデータ点があるので、BezierChainを置換
                                                     for ( int i = 0; i < count; i++ ) {
@@ -4012,7 +4012,7 @@ namespace cadencii
                                             } else {
                                                 // 滑らかにするオプションを解除する
                                                 BezierChain work = (BezierChain)chain.value.clone();
-                                                int count = work.points.size();
+                                                int count = work.points.Count;
                                                 for ( int i = 0; i < count; i++ ) {
                                                     BezierPoint bp = work.points.get( i );
                                                     if ( bp.getID() == point.value.getID() ) {
@@ -4072,7 +4072,7 @@ namespace cadencii
                                 Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
                                 boolean found = false;
-                                for ( int i = 0; i < dict.size(); i++ ) {
+                                for ( int i = 0; i < dict.Count; i++ ) {
                                     BezierChain bc = dict.get( i );
                                     for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
                                         BezierPoint bp = itr.next();
@@ -4146,7 +4146,7 @@ namespace cadencii
                     return false;
                 }
                 BezierChain target_chain = null;
-                for ( int j = 0; j < dict.size(); j++ ) {
+                for ( int j = 0; j < dict.Count; j++ ) {
                     BezierChain bc = dict.get( j );
                     for ( int i = 1; i < bc.size(); i++ ) {
                         if ( !is_middle && bc.points.get( i - 1 ).getBase().getX() <= clock && clock <= bc.points.get( i ).getBase().getX() ) {
@@ -4171,11 +4171,11 @@ namespace cadencii
                     if ( (modifier & mModifierKey) != mModifierKey && target_chain == null ) {
                         // search BezierChain just before the clicked position
                         int tmax = -1;
-                        for ( int i = 0; i < dict.size(); i++ ) {
+                        for ( int i = 0; i < dict.Count; i++ ) {
                             BezierChain bc = dict.get( i );
                             bc.points.Sort();
                             // check most nearest data point from clicked position
-                            int last = (int)bc.points.get( bc.points.size() - 1 ).getBase().getX();
+                            int last = (int)bc.points.get( bc.points.Count - 1 ).getBase().getX();
                             if ( tmax < last && last < clock ) {
                                 tmax = last;
                                 target_chain = (BezierChain)bc.clone();
@@ -4361,7 +4361,7 @@ namespace cadencii
         private void changeCurve( CurveType curve )
         {
 #if DEBUG
-            sout.println( "TrackSelector#changCurve; getViewingCurveCount()=" + mViewingCurves.size() );
+            sout.println( "TrackSelector#changCurve; getViewingCurveCount()=" + mViewingCurves.Count );
 #endif
             if ( !mSelectedCurve.equals( curve ) ) {
                 mLastSelectedCurve = mSelectedCurve;
@@ -4599,7 +4599,7 @@ namespace cadencii
 
                                 boolean changed = false; //1箇所でも削除が実行されたらtrue
 
-                                int count = list.size();
+                                int count = list.Count;
                                 Vector<BezierChain> work = new Vector<BezierChain>();
                                 for ( int i = 0; i < count; i++ ) {
                                     BezierChain chain = list.get( i );
@@ -4607,7 +4607,7 @@ namespace cadencii
                                     chain_copy.setColor( chain.getColor() );
                                     chain_copy.Default = chain.Default;
                                     chain_copy.id = chain.id;
-                                    int point_count = chain.points.size();
+                                    int point_count = chain.points.Count;
                                     for ( int j = 0; j < point_count; j++ ) {
                                         BezierPoint point = chain.points.get( j );
                                         Point basepoint = point.getBase().toPoint();
@@ -4633,7 +4633,7 @@ namespace cadencii
                                             }
                                         }
                                     }
-                                    if ( chain_copy.points.size() > 0 ) {
+                                    if ( chain_copy.points.Count > 0 ) {
                                         work.Add( chain_copy );
                                     }
                                 }
@@ -4661,7 +4661,7 @@ namespace cadencii
                                         deleting.Add( ev.InternalID );
                                     }
                                 }
-                                if ( deleting.size() > 0 ) {
+                                if ( deleting.Count > 0 ) {
                                     CadenciiCommand er_run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventDeleteRange( selected, deleting ) );
                                     executeCommand( er_run, true );
@@ -4787,7 +4787,7 @@ namespace cadencii
                                     }
                                 }
 
-                                if ( delete.size() > 0 ) {
+                                if ( delete.Count > 0 ) {
                                     CadenciiCommand run_eraser = new CadenciiCommand(
                                         VsqCommand.generateCommandTrackCurveEdit2( selected, mSelectedCurve.getName(), delete, new TreeMap<Integer, VsqBPPair>() ) );
                                     executeCommand( run_eraser, true );
@@ -4988,9 +4988,9 @@ namespace cadencii
                                     }
                                     edit.Sort();
                                     VsqID id = (VsqID)ve.ID.clone();
-                                    float[] bpx = new float[edit.size()];
-                                    int[] bpy = new int[edit.size()];
-                                    for ( int i = 0; i < edit.size(); i++ ) {
+                                    float[] bpx = new float[edit.Count];
+                                    int[] bpy = new int[edit.Count];
+                                    for ( int i = 0; i < edit.Count; i++ ) {
                                         bpx[i] = edit.get( i ).getKey();
                                         bpy[i] = edit.get( i ).getValue();
                                     }
@@ -5002,7 +5002,7 @@ namespace cadencii
                                     internal_ids.Add( ve.InternalID );
                                     items.Add( id );
                                 }
-                                if ( internal_ids.size() > 0 ) {
+                                if ( internal_ids.Count > 0 ) {
                                     CadenciiCommand run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
                                                                                                PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
@@ -5525,7 +5525,7 @@ namespace cadencii
                             BezierChain target_chain = null;
                             BezierPoint target_point = null;
                             boolean found = false;
-                            int dict_size = dict.size();
+                            int dict_size = dict.Count;
                             for ( int i = 0; i < dict_size; i++ ) {
                                 BezierChain bc = dict.get( i );
                                 for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {

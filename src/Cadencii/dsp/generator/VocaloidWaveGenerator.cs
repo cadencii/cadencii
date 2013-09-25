@@ -260,7 +260,7 @@ namespace cadencii
 #if !JAVA
             // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
-            for ( int i = 0; i < VSTiDllManager.vocaloidDriver.size(); i++ ) {
+            for ( int i = 0; i < VSTiDllManager.vocaloidDriver.Count; i++ ) {
                 if ( VSTiDllManager.vocaloidDriver.get( i ).getRendererKind() == s_working_renderer ) {
                     mDriver = VSTiDllManager.vocaloidDriver.get( i );
                     break;
@@ -323,7 +323,7 @@ namespace cadencii
             // 最初のテンポ指定を検索
             // VOCALOID VSTiが返してくる波形にはなぜかずれがある。このズレは最初のテンポで決まるので。
             float first_tempo = 125.0f;
-            if ( split.TempoTable.size() > 0 ) {
+            if ( split.TempoTable.Count > 0 ) {
                 first_tempo = (float)(60e6 / (double)split.TempoTable.get( 0 ).Tempo);
             }
             // ずれるサンプル数
@@ -382,7 +382,7 @@ namespace cadencii
 #endif
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
-            int tempo_count = split.TempoTable.size();
+            int tempo_count = split.TempoTable.Count;
             byte[] masterEventsSrc = new byte[tempo_count * 3];
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;

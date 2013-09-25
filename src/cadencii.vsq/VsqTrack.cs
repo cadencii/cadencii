@@ -935,7 +935,7 @@ namespace cadencii.vsq
         public void changeRenderer( String new_renderer, Vector<VsqID> singers )
         {
             VsqID default_id = null;
-            int singers_size = singers.size();
+            int singers_size = singers.Count;
             if ( singers_size <= 0 ) {
                 default_id = new VsqID();
                 default_id.type = VsqIDType.Singer;
@@ -1112,7 +1112,7 @@ namespace cadencii.vsq
             TextStream sw = null;
             try {
                 sw = new TextStream();
-                int count = midi_event.size();
+                int count = midi_event.Count;
                 Vector<Integer> buffer = new Vector<Integer>();
                 for ( int i = 0; i < count; i++ ) {
                     MidiEvent item = midi_event.get( i );
@@ -1163,7 +1163,7 @@ namespace cadencii.vsq
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
                                     buffer.Add( item.data[j + 1] );
                                 }
-                                int c = buffer.size();
+                                int c = buffer.Count;
                                 int[] d = new int[c];
                                 for ( int j = 0; j < c; j++ ) {
                                     d[j] = 0xff & buffer.get( j );
@@ -1177,7 +1177,7 @@ namespace cadencii.vsq
                     }
                 }
                 // oketa ketaoさんありがとう =>
-                int remain = buffer.size();
+                int remain = buffer.Count;
                 if ( remain > 0 ) {
                     int[] cpy = new int[remain];
                     for ( int j = 0; j < remain; j++ ) {

@@ -532,7 +532,7 @@ namespace cadencii
             int sStart0 = (int)(secStart * mSampleRate) - 1;
             int sEnd0 = (int)(secEnd * mSampleRate) + 1;
 
-            int count = tempo_table.size();
+            int count = tempo_table.Count;
             int sStart = 0;
             double cStart = 0.0;
             float order_y = 1.0f;

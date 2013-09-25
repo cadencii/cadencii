@@ -1554,7 +1554,7 @@ namespace cadencii
                 if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
                     String description = value.description;
                     if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
-                        int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                        int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                         for ( int i = 0; i < size; i++ ) {
                             VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
                             String display_string = handle.getDisplayString();

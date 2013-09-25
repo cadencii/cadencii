@@ -197,7 +197,7 @@ namespace cadencii.vsq
             sw.writeLine( "MasterPanpot=" + MasterPanpot );
             sw.writeLine( "MasterMute=" + MasterMute );
             sw.writeLine( "OutputMode=" + OutputMode );
-            int count = Slave.size();
+            int count = Slave.Count;
             sw.writeLine( "Tracks=" + count );
             for ( int i = 0; i < count; i++ ) {
                 VsqMixerEntry item = Slave.get( i );

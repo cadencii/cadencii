@@ -113,8 +113,8 @@ namespace cadencii.vsq
             if ( item == null ) {
                 return false;
             }
-            int size = this.m_list.size();
-            if ( size != item.m_list.size() ) {
+            int size = this.m_list.Count;
+            if ( size != item.m_list.Count ) {
                 return false;
             }
             for ( int i = 0; i < size; i++ ) {
@@ -132,11 +132,11 @@ namespace cadencii.vsq
 
         public int getValue( float x, int default_value )
         {
-            if ( m_list.size() <= 0 ) {
+            if ( m_list.Count <= 0 ) {
                 return default_value;
             }
             int index = -1;
-            int size = m_list.size();
+            int size = m_list.Count;
             for ( int i = 0; i < size; i++ ) {
                 if ( x < m_list.get( i ).X ) {
                     break;
@@ -153,7 +153,7 @@ namespace cadencii.vsq
         public Object clone()
         {
             VibratoBPList ret = new VibratoBPList();
-            for ( int i = 0; i < m_list.size(); i++ ) {
+            for ( int i = 0; i < m_list.Count; i++ ) {
                 ret.m_list.Add( new VibratoBPPair( m_list.get( i ).X, m_list.get( i ).Y ) );
             }
             return ret;
@@ -168,7 +168,7 @@ namespace cadencii.vsq
 
         public int getCount()
         {
-            return m_list.size();
+            return m_list.Count;
         }
 
         public VibratoBPPair getElement( int index )
@@ -201,7 +201,7 @@ namespace cadencii.vsq
         public String getData()
         {
             String ret = "";
-            for ( int i = 0; i < m_list.size(); i++ ) {
+            for ( int i = 0; i < m_list.Count; i++ ) {
                 ret += (i == 0 ? "" : ",") + m_list.get( i ).X + "=" + m_list.get( i ).Y;
             }
             return ret;

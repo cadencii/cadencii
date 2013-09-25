@@ -67,8 +67,8 @@ namespace cadencii.vsq
                 if ( this.ID.LyricHandle != null && item.ID.LyricHandle == null ) return false;
                 if ( this.ID.LyricHandle != null && item.ID.LyricHandle != null ) {
                     if ( !this.ID.LyricHandle.L0.equalsForSynth( item.ID.LyricHandle.L0 ) ) return false;
-                    int count = this.ID.LyricHandle.Trailing.size();
-                    if ( count != item.ID.LyricHandle.Trailing.size() ) return false;
+                    int count = this.ID.LyricHandle.Trailing.Count;
+                    if ( count != item.ID.LyricHandle.Trailing.Count ) return false;
                     for ( int k = 0; k < count; k++ ) {
                         if ( !this.ID.LyricHandle.Trailing.get( k ).equalsForSynth( item.ID.LyricHandle.Trailing.get( k ) ) ) return false;
                     }

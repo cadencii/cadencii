@@ -126,7 +126,7 @@ namespace cadencii.vsq
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             SingerConfig sc = null;
-            for ( int i = 0; i < m_singer_configs.size(); i++ ) {
+            for ( int i = 0; i < m_singer_configs.Count; i++ ) {
                 SingerConfig itemi = m_singer_configs.get( i );
                 if ( itemi.Language == language && itemi.Program == program ) {
                     sc = itemi;

@@ -43,7 +43,7 @@ namespace cadencii.vsq
         {
 #if DEBUG
             sout.println( "TimesigVector#updateTimesigInfo; before:" );
-            for ( int i = 0; i < size(); i++ ) {
+            for ( int i = 0; i < Count; i++ ) {
                 sout.println( "    " + get( i ).Clock + " " + get( i ).Numerator + "/" + get( i ).Denominator );
             }
 #endif
@@ -52,7 +52,7 @@ namespace cadencii.vsq
             }
             get( 0 ).Clock = 0;
             this.Sort();
-            int count = size();
+            int count = Count;
             for ( int j = 1; j < count; j++ ) {
                 TimeSigTableEntry item = get( j - 1 );
                 int numerator = item.Numerator;
@@ -65,7 +65,7 @@ namespace cadencii.vsq
             }
 #if DEBUG
             sout.println( "TimesigVector#updateTimesigInfo; after:" );
-            for ( int i = 0; i < size(); i++ ) {
+            for ( int i = 0; i < Count; i++ ) {
                 sout.println( "    " + get( i ).Clock + " " + get( i ).Numerator + "/" + get( i ).Denominator );
             }
 #endif
@@ -77,7 +77,7 @@ namespace cadencii.vsq
             ret.numerator = 4;
             ret.denominator = 4;
             int index = 0;
-            int c = size();
+            int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
                 if ( get( i ).Clock <= clock ) {
@@ -92,7 +92,7 @@ namespace cadencii.vsq
         public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count )
         {
             int index = 0;
-            int c = size();
+            int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
                 if ( get( i ).Clock <= clock ) {
@@ -117,7 +117,7 @@ namespace cadencii.vsq
         public int getClockFromBarCount( int bar_count )
         {
             int index = 0;
-            int c = size();
+            int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
                 if ( get( i ).BarCount <= bar_count ) {
@@ -141,7 +141,7 @@ namespace cadencii.vsq
         public int getBarCountFromClock( int clock )
         {
             int index = 0;
-            int c = size();
+            int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
                 if ( get( i ).Clock <= clock ) {

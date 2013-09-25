@@ -77,7 +77,7 @@ namespace cadencii.vsq
                 v.msbOmitRequired = msbOmitRequired;
                 ret.Add( v );
             }
-            for ( int i = 0; i < m_list.size(); i++ ) {
+            for ( int i = 0; i < m_list.Count; i++ ) {
                 ret.AddRange( new Vector<VsqNrpn>( m_list.get( i ).expand() ) );
             }
             return ret.toArray( new VsqNrpn[] { } );
@@ -128,11 +128,11 @@ namespace cadencii.vsq
                         work.Add( list[i] );
                     }
                 }
-                for ( int j = 0; j < work.size(); j++ ) {
+                for ( int j = 0; j < work.Count; j++ ) {
                     ret.Add( work[j] );
                 }
             } else {
-                for ( int i = 0; i < list.size(); i++ ) {
+                for ( int i = 0; i < list.Count; i++ ) {
                     ret.Add( list[i] );
                 }
             }

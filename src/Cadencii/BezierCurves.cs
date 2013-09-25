@@ -193,7 +193,7 @@ namespace cadencii {
         public BezierChain getBezierChain( CurveType curve_type, int chain_id )
         {
             Vector<BezierChain> list = this.get( curve_type );
-            int count = list.size();
+            int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
                 if ( list.get( i ).id == chain_id ) {
                     return list.get( i );
@@ -205,7 +205,7 @@ namespace cadencii {
         public void setBezierChain( CurveType curve_type, int chain_id, BezierChain item )
         {
             Vector<BezierChain> list = this.get( curve_type );
-            int count = list.size();
+            int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
                 if ( list.get( i ).id == chain_id ) {
                     list.set( i, item );
@@ -223,7 +223,7 @@ namespace cadencii {
         /// <param name="chain"></param>
         public void mergeBezierChain( CurveType curve, BezierChain chain )
         {
-            if ( chain.points.size() <= 1 ) {
+            if ( chain.points.Count <= 1 ) {
                 return;
             }
             int chain_start = (int)chain.getStart();
@@ -233,10 +233,10 @@ namespace cadencii {
             Vector<Integer> delete_list = new Vector<Integer>();
             Vector<BezierChain> src = this.get( curve );
             //foreach ( int id in this[curve].Keys ) {
-            for ( int j = 0; j < src.size(); j++ ) {
+            for ( int j = 0; j < src.Count; j++ ) {
                 //BezierChain bc = this[curve][id];
                 BezierChain bc = src.get( j );
-                if ( bc.points.size() <= 0 ) {
+                if ( bc.points.Count <= 0 ) {
                     continue;
                 }
                 int bc_start = (int)bc.getStart();
@@ -259,7 +259,7 @@ namespace cadencii {
                 processed = false;
                 Vector<BezierChain> list = this.get( curve );
                 //foreach ( int id in this[curve].Keys ) {
-                for ( int j = 0; j < list.size(); j++ ) {
+                for ( int j = 0; j < list.Count; j++ ) {
                     //BezierChain bc = this[curve][id];
                     BezierChain bc = list.get( j );
                     int id = bc.id;
@@ -295,7 +295,7 @@ namespace cadencii {
                             }
                             copy_start = 1;
                         }
-                        for ( int i = copy_start; i < chain.points.size(); i++ ) {
+                        for ( int i = copy_start; i < chain.points.Count; i++ ) {
                             chain.points.get( i ).setID( bc_edit.getNextId() );
                             bc_edit.add( chain.points.get( i ) );
                         }
@@ -402,7 +402,7 @@ namespace cadencii {
                             chain.points.get( i ).setID( left.getNextId() );
                             left.add( chain.points.get( i ) );
                         }
-                        for ( int i = 0; i < right.points.size(); i++ ) {
+                        for ( int i = 0; i < right.points.Count; i++ ) {
                             right.points.get( i ).setID( left.getNextId() );
                             left.add( right.points.get( i ) );
                         }
@@ -511,7 +511,7 @@ namespace cadencii {
                 Vector<BezierChain> tmp = new Vector<BezierChain>();
                 for ( Iterator<BezierChain> itr = this.get( curve ).iterator(); itr.hasNext(); ) {
                     BezierChain bc = itr.next();
-                    int len = bc.points.size();
+                    int len = bc.points.Count;
                     if ( len < 1 ) {
                         continue;
                     }
@@ -584,7 +584,7 @@ namespace cadencii {
         public void remove( CurveType curve_type, int chain_id )
         {
             Vector<BezierChain> list = this.get( curve_type );
-            for ( int i = 0; i < list.size(); i++ ) {
+            for ( int i = 0; i < list.Count; i++ ) {
                 if ( list.get( i ).id == chain_id ) {
                     list.RemoveAt( i );
                     break;
@@ -611,7 +611,7 @@ namespace cadencii {
                 CurveType ct = Utility.CURVE_USAGE[j];
                 Vector<BezierChain> src = this.get( ct );
                 ret.set( ct, new Vector<BezierChain>() );
-                int count = src.size();
+                int count = src.Count;
                 for ( int i = 0; i < count; i++ ) {
                     ret.get( ct ).Add( (BezierChain)src.get( i ).clone() );
                 }
@@ -629,11 +629,11 @@ namespace cadencii {
         public int getNextId( CurveType curve_type )
         {
             Vector<BezierChain> bc = this.get( curve_type );
-            int ret = bc.size();
+            int ret = bc.Count;
             boolean found = true;
             while ( found ) {
                 found = false;
-                for ( int i = 0; i < bc.size(); i++ ) {
+                for ( int i = 0; i < bc.Count; i++ ) {
                     if ( bc.get( i ).id == ret ) {
                         found = true;
                         ret++;

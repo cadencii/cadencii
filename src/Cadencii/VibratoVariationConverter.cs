@@ -72,7 +72,7 @@ namespace cadencii
 
             if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                 // ユーザー定義の中から選ぶ場合
-                int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                int size = AppManager.editorConfig.AutoVibratoCustom.Count;
 #if DEBUG
                 sout.println( "VibratoVariationConverter#GetStandardValues; size=" + size );
 #endif
@@ -156,7 +156,7 @@ namespace cadencii
                 return new VibratoVariation( VibratoVariation.empty.description );
             } else {
                 if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
-                    int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                    int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                     for ( int i = 0; i < size; i++ ) {
                         String display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
                         if ( value.Equals( display_string ) ) {

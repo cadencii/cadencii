@@ -273,9 +273,9 @@ namespace cadencii
                     MidiEventQueue queue = list.get( clock );
                     // まずnoteoff
                     boolean noteoff_send = false;
-                    if ( queue.noteoff.size() > 0 ) {
+                    if ( queue.noteoff.Count > 0 ) {
 #if DEBUG
-                        for ( int i = 0; i < queue.noteoff.size(); i++ ) {
+                        for ( int i = 0; i < queue.noteoff.Count; i++ ) {
                             String str = "";
                             MidiEvent itemi = queue.noteoff.get( i );
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
@@ -289,7 +289,7 @@ namespace cadencii
                         noteoff_send = true;
                     }
                     // parameterの変更
-                    if ( queue.param.size() > 0 ) {
+                    if ( queue.param.Count > 0 ) {
                         for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
                             ParameterEvent pe = itr3.next();
 #if DEBUG
@@ -299,14 +299,14 @@ namespace cadencii
                         }
                     }
                     // ついでnoteon
-                    if ( queue.noteon.size() > 0 ) {
+                    if ( queue.noteon.Count > 0 ) {
                         // 同ゲートタイムにピッチベンドも指定されている場合、同時に送信しないと反映されないようだ！
-                        if ( queue.pit.size() > 0 ) {
+                        if ( queue.pit.Count > 0 ) {
                             queue.noteon.AddRange( queue.pit );
                             queue.pit.Clear();
                         }
 #if DEBUG
-                        for ( int i = 0; i < queue.noteon.size(); i++ ) {
+                        for ( int i = 0; i < queue.noteon.Count; i++ ) {
                             String str = "";
                             MidiEvent itemi = queue.noteon.get( i );
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
@@ -319,9 +319,9 @@ namespace cadencii
                         mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
                     }
                     // PIT
-                    if ( queue.pit.size() > 0 && !noteoff_send ) {
+                    if ( queue.pit.Count > 0 && !noteoff_send ) {
 #if DEBUG
-                        for ( int i = 0; i < queue.pit.size(); i++ ) {
+                        for ( int i = 0; i < queue.pit.Count; i++ ) {
                             String str = "";
                             MidiEvent itemi = queue.pit.get( i );
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";

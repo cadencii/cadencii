@@ -51,7 +51,7 @@ namespace cadencii
         /// このベジエ曲線の開始位置を取得します。データ点が1つも無い場合はdouble.NaNを返します
         /// </summary>
         public double getStart() {
-            if ( points.size() <= 0 ) {
+            if ( points.Count <= 0 ) {
                 return Double.NaN;
             } else {
                 return points.get( 0 ).getBase().getX();
@@ -62,10 +62,10 @@ namespace cadencii
         /// このベジエ曲線の終了位置を取得します。データ点が1つも無い場合はdouble.NaNを返します
         /// </summary>
         public double getEnd() {
-            if ( points.size() <= 0 ) {
+            if ( points.Count <= 0 ) {
                 return Double.NaN;
             } else {
-                return points.get( points.size() - 1 ).getBase().getX();
+                return points.get( points.Count - 1 ).getBase().getX();
             }
         }
 
@@ -152,7 +152,7 @@ namespace cadencii
             boolean t_start_added = false; // 最初の区間が追加された直後だけ立つフラグ
             BezierChain edited = new BezierChain( mColor );
             int count = 0;
-            for ( int i = 0; i < this.points.size() - 1; i++ ) {
+            for ( int i = 0; i < this.points.Count - 1; i++ ) {
                 if ( this.points.get( i ).getBase().getX() < t_start && t_start < this.points.get( i + 1 ).getBase().getX() ) {
                     if ( this.points.get( i ).getBase().getX() < t_end && t_end < this.points.get( i + 1 ).getBase().getX() ) {
 #if DEBUG
@@ -239,8 +239,8 @@ namespace cadencii
                 }
             }
 
-            if ( this.points.get( this.points.size() - 1 ).getBase().getX() == t_end && !t_start_added ) {
-                edited.add( (BezierPoint)this.points.get( this.points.size() - 1 ).clone() );
+            if ( this.points.get( this.points.Count - 1 ).getBase().getX() == t_end && !t_start_added ) {
+                edited.add( (BezierPoint)this.points.get( this.points.Count - 1 ).clone() );
                 count++;
             }
 
@@ -263,7 +263,7 @@ namespace cadencii
         /// <param name="chain"></param>
         /// <returns></returns>
         public static boolean isBezierImplicit( BezierChain chain ) {
-            int size = chain.points.size();
+            int size = chain.points.Count;
             if( size < 2 ){
                 return true;
             }
@@ -340,7 +340,7 @@ namespace cadencii
 #if !JAVA
         [OnDeserialized]
         private void onDeserialized( StreamingContext sc ) {
-            for ( int i = 0; i < points.size(); i++ ) {
+            for ( int i = 0; i < points.Count; i++ ) {
                 points.get( i ).setID( i );
             }
         }
@@ -353,9 +353,9 @@ namespace cadencii
         }
 
         public int getNextId() {
-            if ( points.size() > 0 ) {
+            if ( points.Count > 0 ) {
                 int max = points.get( 0 ).getID();
-                for ( int i = 1; i < points.size(); i++ ) {
+                for ( int i = 1; i < points.Count; i++ ) {
                     max = Math.Max( max, points.get( i ).getID() );
                 }
                 return max + 1;
@@ -441,7 +441,7 @@ namespace cadencii
         }
 
         public void removeElementAt( int id_ ) {
-            for ( int i = 0; i < points.size(); i++ ) {
+            for ( int i = 0; i < points.Count; i++ ) {
                 if ( points.get( i ).getID() == id_ ) {
                     points.RemoveAt( i );
                     break;
@@ -453,11 +453,11 @@ namespace cadencii
             if ( points == null ) {
                 return 0;
             }
-            return points.size();
+            return points.Count;
         }
 
         public double getValue( double x ) {
-            int count = points.size();
+            int count = points.Count;
             for ( int i = 0; i < count - 1; i++ ) {
                 BezierPoint bpi = points.get( i );
                 BezierPoint bpi1 = points.get( i + 1 );

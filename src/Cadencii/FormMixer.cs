@@ -119,8 +119,8 @@ namespace cadencii
         public VolumeTracker getVolumeTracker( int track )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
-            if ( 1 <= track && track < vsq.Track.size() &&
-                 0 <= track - 1 && track - 1 < m_tracker.size() ) {
+            if ( 1 <= track && track < vsq.Track.Count &&
+                 0 <= track - 1 && track - 1 < m_tracker.Count ) {
                 return m_tracker.get( track - 1 );
             } else if ( track == 0 ) {
                 return volumeMaster;
@@ -137,8 +137,8 @@ namespace cadencii
         public VolumeTracker getVolumeTrackerBgm( int index )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
-            int offset = vsq.Track.size() - 1;
-            if ( 0 <= index + offset && index + offset < m_tracker.size() ) {
+            int offset = vsq.Track.Count - 1;
+            if ( 0 <= index + offset && index + offset < m_tracker.Count ) {
                 return m_tracker.get( index + offset );
             } else {
                 return null;
@@ -160,13 +160,13 @@ namespace cadencii
 
             // VSQのトラック
             boolean soloSpecificationExists = false; // 1トラックでもソロ指定があればtrue
-            for ( int i = 1; i < vsq.Track.size(); i++ ) {
+            for ( int i = 1; i < vsq.Track.Count; i++ ) {
                 if ( vsq.getSolo( i ) ) {
                     soloSpecificationExists = true;
                     break;
                 }
             }
-            for ( int track = 1; track < vsq.Track.size(); track++ ) {
+            for ( int track = 1; track < vsq.Track.Count; track++ ) {
                 if ( soloSpecificationExists ) {
                     if ( vsq.getSolo( track ) ) {
                         m_tracker.get( track - 1 ).setSolo( true );
@@ -182,8 +182,8 @@ namespace cadencii
             }
 
             // BGM
-            int offset = vsq.Track.size() - 1;
-            for ( int i = 0; i < vsq.BgmFiles.size(); i++ ) {
+            int offset = vsq.Track.Count - 1;
+            for ( int i = 0; i < vsq.BgmFiles.Count; i++ ) {
                 m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
             }
 
@@ -206,7 +206,7 @@ namespace cadencii
         public void updateStatus()
         {
             VsqFileEx vsq = AppManager.getVsqFile();
-            int num = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
+            int num = vsq.Mixer.Slave.Count + AppManager.getBgmCount();
             if ( m_tracker == null ) {
                 m_tracker = new Vector<VolumeTracker>();
             }
@@ -222,11 +222,11 @@ namespace cadencii
 #endif
 
             // trackerの総数が変化したかどうか
-            boolean num_changed = (m_tracker.size() != num);
+            boolean num_changed = (m_tracker.Count != num);
             
             // trackerに過不足があれば数を調節
-            if ( m_tracker.size() < num ) {
-                int remain = num - m_tracker.size();
+            if ( m_tracker.Count < num ) {
+                int remain = num - m_tracker.Count;
                 for ( int i = 0; i < remain; i++ ) {
                     VolumeTracker item = new VolumeTracker();
 #if !JAVA
@@ -235,10 +235,10 @@ namespace cadencii
 #endif
                     m_tracker.Add( item );
                 }
-            } else if ( m_tracker.size() > num ) {
-                int delete = m_tracker.size() - num;
+            } else if ( m_tracker.Count > num ) {
+                int delete = m_tracker.Count - num;
                 for ( int i = 0; i < delete; i++ ) {
-                    int indx = m_tracker.size() - 1;
+                    int indx = m_tracker.Count - 1;
                     VolumeTracker tr = m_tracker.get( indx );
                     m_tracker.RemoveAt( indx );
 #if !JAVA
@@ -257,7 +257,7 @@ namespace cadencii
             int screen_num = num <= max_num ? num : max_num; //スクリーン上に表示するVolumeTrackerの個数
 
             // panelSlaves上に配置するVolumeTrackerの個数
-            int num_vtracker_on_panel = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
+            int num_vtracker_on_panel = vsq.Mixer.Slave.Count + AppManager.getBgmCount();
             // panelSlaves上に一度に表示可能なVolumeTrackerの個数
             int panel_capacity = max_num - 1;
 
@@ -391,7 +391,7 @@ namespace cadencii
         {
             int size = 0;
             if ( m_tracker != null ) {
-                size = m_tracker.size();
+                size = m_tracker.Count;
             }
             for ( int i = 0; i < size; i++ ) {
                 VolumeTracker item = m_tracker.get( i );
@@ -412,7 +412,7 @@ namespace cadencii
         {
             int size = 0;
             if ( m_tracker != null ) {
-                size = m_tracker.size();
+                size = m_tracker.Count;
             }
             for ( int i = 0; i < size; i++ ) {
                 VolumeTracker item = m_tracker.get( i );
@@ -577,7 +577,7 @@ namespace cadencii
         public void veScrollBar_ValueChanged( Object sender, EventArgs e )
         {
             int stdx = hScroll.Value;
-            for ( int i = 0; i < m_tracker.size(); i++ ) {
+            for ( int i = 0; i < m_tracker.Count; i++ ) {
                 m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
             }
             this.Invalidate();

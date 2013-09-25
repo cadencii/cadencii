@@ -66,7 +66,7 @@ namespace cadencii.vsq
 
         public boolean hasNext()
         {
-            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.size() ) {
+            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.Count ) {
                 return true;
             } else {
                 return false;

@@ -178,7 +178,7 @@ namespace cadencii
             // 選択元を元に，選択肢を追加する
             if ( radioUserDefined.Checked ) {
                 // ユーザー定義のを使う場合
-                int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                 for ( int i = 0; i < size; i++ ) {
                     VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
                     comboVibratoType.Items.Add( handle );

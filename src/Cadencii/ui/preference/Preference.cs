@@ -1127,7 +1127,7 @@ namespace cadencii
         public void setDefaultSingerName( String value )
         {
             int index = -1;
-            for ( int i = 0; i < m_program_change.size(); i++ ) {
+            for ( int i = 0; i < m_program_change.Count; i++ ) {
                 if ( m_program_change.get( i ).Equals( value ) ) {
                     index = i;
                     break;
@@ -1203,7 +1203,7 @@ namespace cadencii
         public void setUtausingers( Vector<SingerConfig> value )
         {
             m_utau_singers.Clear();
-            for ( int i = 0; i < value.size(); i++ ) {
+            for ( int i = 0; i < value.Count; i++ ) {
                 m_utau_singers.Add( (SingerConfig)value.get( i ).clone() );
             }
             UpdateUtausingerList();
@@ -1404,15 +1404,15 @@ namespace cadencii
                 btnDown.Enabled = false;
             } else {
                 btnRemove.Enabled = true;
-                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.size();
-                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.size();
+                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.Count;
+                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.Count;
             }
         }
 
         public void btnRemove_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
-            if ( 0 <= index && index < m_utau_singers.size() ) {
+            if ( 0 <= index && index < m_utau_singers.Count ) {
                 m_utau_singers.RemoveAt( index );
             }
             UpdateUtausingerList();
@@ -1424,7 +1424,7 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
 #endif
-            if ( 0 <= index && index + 1 < m_utau_singers.size() ) {
+            if ( 0 <= index && index + 1 < m_utau_singers.Count ) {
                 SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
@@ -1442,7 +1442,7 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
 #endif
-            if ( 0 <= index - 1 && index < m_utau_singers.size() ) {
+            if ( 0 <= index - 1 && index < m_utau_singers.Count ) {
                 SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
@@ -1572,7 +1572,7 @@ namespace cadencii
         /// </summary>
         private void updateCustomVibrato()
         {
-            int size = AppManager.editorConfig.AutoVibratoCustom.size();
+            int size = AppManager.editorConfig.AutoVibratoCustom.Count;
             comboAutoVibratoTypeCustom.Items.Clear();
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
@@ -1675,7 +1675,7 @@ namespace cadencii
         private void UpdateUtausingerList()
         {
             listSingers.Items.Clear();
-            for ( int i = 0; i < m_utau_singers.size(); i++ ) {
+            for ( int i = 0; i < m_utau_singers.Count; i++ ) {
                 m_utau_singers.get( i ).Program = i;
                 listSingers.AddRow(
                     new String[] { 

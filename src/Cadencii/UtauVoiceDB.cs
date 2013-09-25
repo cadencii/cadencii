@@ -149,7 +149,7 @@ namespace cadencii {
         /// <param name="lyric"></param>
         /// <returns></returns>
         public OtoArgs attachFileNameFromLyric( String lyric ) {
-            int count = _configs.size();
+            int count = _configs.Count;
             for ( Iterator<OtoArgs> itr = _configs.iterator(); itr.hasNext(); ) {
                 OtoArgs item = itr.next();
                 if ( PortUtil.getFileNameWithoutExtension( item.fileName ) == lyric ) {

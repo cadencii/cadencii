@@ -673,7 +673,7 @@ namespace cadencii
                 extension = extension.Substring( 1 );
             }
 
-            int c = list.size();
+            int c = list.Count;
             for ( int i = 0; i < c; i++ ) {
                 String s = list.get( i );
                 if ( s.StartsWith( extension ) ) {
@@ -696,7 +696,7 @@ namespace cadencii
                 extension = extension.Substring( 1 );
             }
 
-            int c = list.size();
+            int c = list.Count;
             String entry = extension + "\t" + path;
             for ( int i = 0; i < c; i++ ) {
                 String s = list.get( i );
@@ -780,7 +780,7 @@ namespace cadencii
         /// <returns></returns>
         public int getResamplerCount()
         {
-            int ret = PathResamplers.size();
+            int ret = PathResamplers.Count;
             if ( !PathResampler.Equals( "" ) ) {
                 ret++;
             }
@@ -843,7 +843,7 @@ namespace cadencii
                 return PathResampler;
             } else {
                 index--;
-                if ( 0 <= index && index < PathResamplers.size() ) {
+                if ( 0 <= index && index < PathResamplers.Count ) {
                     return PathResamplers.get( index );
                 }
             }
@@ -867,7 +867,7 @@ namespace cadencii
                 PathResampler = path;
             } else {
                 index--;
-                if ( 0 <= index && index < PathResamplers.size() ) {
+                if ( 0 <= index && index < PathResamplers.Count ) {
                     PathResamplers.set( index, path );
                 }
             }
@@ -879,7 +879,7 @@ namespace cadencii
         /// <param name="index"></param>
         public void removeResamplerAt( int index )
         {
-            int size = PathResamplers.size();
+            int size = PathResamplers.Count;
             if ( index == 0 ) {
                 if ( size > 0 ) {
                     PathResampler = PathResamplers.get( 0 );
@@ -1014,7 +1014,7 @@ namespace cadencii
                 sout.println( "EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index );
 #endif
                 VibratoHandle ret = null;
-                if ( 0 <= index && index < this.AutoVibratoCustom.size() ) {
+                if ( 0 <= index && index < this.AutoVibratoCustom.Count ) {
                     ret = this.AutoVibratoCustom.get( index );
                     if ( ret != null ) {
                         ret = (VibratoHandle)ret.clone();
@@ -1048,7 +1048,7 @@ namespace cadencii
         public TreeMap<String, Keys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
         {
             TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
-            for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
+            for ( int i = 0; i < ShortcutKeys.Count; i++ ) {
                 ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
             }
             for ( Iterator<ValuePairOfStringArrayOfKeys> itr = defs.iterator(); itr.hasNext(); ) {
@@ -1261,7 +1261,7 @@ namespace cadencii
             for ( Iterator<String> itr = RecentFiles.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
                 boolean found = false;
-                for ( int i = 0; i < dict.size(); i++ ) {
+                for ( int i = 0; i < dict.Count; i++ ) {
                     if ( s.Equals( dict.get( i ) ) ) {
                         found = true;
                     }
@@ -1277,15 +1277,15 @@ namespace cadencii
             }
 
             // 現在登録されているRecentFilesのサイズが規定より大きければ，下の方から消す
-            if ( RecentFiles.size() > NumRecentFiles ) {
-                for ( int i = RecentFiles.size() - 1; i > NumRecentFiles; i-- ) {
+            if ( RecentFiles.Count > NumRecentFiles ) {
+                for ( int i = RecentFiles.Count - 1; i > NumRecentFiles; i-- ) {
                     RecentFiles.RemoveAt( i );
                 }
             }
 
             // 登録しようとしているファイルは，RecentFilesの中に既に登録されているかs？
             int index = -1;
-            for ( int i = 0; i < RecentFiles.size(); i++ ) {
+            for ( int i = 0; i < RecentFiles.Count; i++ ) {
                 if ( RecentFiles.get( i ).Equals( new_file ) ) {
                     index = i;
                     break;

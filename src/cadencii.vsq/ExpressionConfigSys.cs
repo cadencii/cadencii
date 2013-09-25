@@ -928,7 +928,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int getVibratoConfigCount()
         {
-            return m_vibrato_configs.size();
+            return m_vibrato_configs.Count;
         }
 
         /// <summary>
@@ -937,7 +937,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int getAttackConfigCount()
         {
-            return m_attack_configs.size();
+            return m_attack_configs.Count;
         }
 
         /// <summary>
@@ -946,7 +946,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int getDynamicsConfigCount()
         {
-            return m_dynamics_configs.size();
+            return m_dynamics_configs.Count;
         }
 
         /// <summary>

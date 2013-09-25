@@ -60,29 +60,29 @@ namespace cadencii
             Object[] args = (Object[])arg;
             Vector<PatchWorkQueue> queue = (Vector<PatchWorkQueue>)args[0];
             Vector<Integer> tracks = (Vector<Integer>)args[1];
-            int finished = queue.size();
+            int finished = queue.Count;
             String temppath = AppManager.getTempWaveDir();
-            for ( int k = 0; k < tracks.size(); k++ ) {
+            for ( int k = 0; k < tracks.Count; k++ ) {
                 int track = tracks.get( k );
                 String wavePath = Path.Combine( temppath, track + ".wav" );
                 Vector<Integer> queueIndex = new Vector<Integer>();
 
-                for ( int i = 0; i < queue.size(); i++ ) {
+                for ( int i = 0; i < queue.Count; i++ ) {
                     if ( queue.get( i ).track == track ) {
                         queueIndex.Add( i );
                     }
                 }
 
-                if ( queueIndex.size() <= 0 ) {
+                if ( queueIndex.Count <= 0 ) {
                     // 第trackトラックに対してパッチワークを行う必要無し
                     continue;
                 }
 
 #if DEBUG
                 sout.println( "AppManager#pathWorkToFreeze; wavePath=" + wavePath + "; queue.get( queueIndex.get( 0 ) ).file=" + queue.get( queueIndex.get( 0 ) ).file );
-                sout.println( "AppManager#pathWorkToFreeze; queueIndex.size()=" + queueIndex.size() );
+                sout.println( "AppManager#pathWorkToFreeze; queueIndex.size()=" + queueIndex.Count );
 #endif
-                if ( queueIndex.size() == 1 && wavePath.Equals( queue.get( queueIndex.get( 0 ) ).file ) ) {
+                if ( queueIndex.Count == 1 && wavePath.Equals( queue.get( queueIndex.get( 0 ) ).file ) ) {
                     // 第trackトラック全体の合成を指示するキューだった場合．
                     // このとき，パッチワークを行う必要なし．
                     AppManager.mLastRenderedStatus[track - 1] =
@@ -101,7 +101,7 @@ namespace cadencii
                     double[] bufl = new double[BUFLEN];
                     double[] bufr = new double[BUFLEN];
                     double total = 0.0;
-                    for ( int m = 0; m < queueIndex.size(); m++ ) {
+                    for ( int m = 0; m < queueIndex.Count; m++ ) {
                         int i = queueIndex.get( m );
                         if ( finished <= i ) {
                             break;
@@ -165,7 +165,7 @@ namespace cadencii
                     }
 
                     VsqTrack vsq_track = vsq.Track.get( track );
-                    if ( queueIndex.get( queueIndex.size() - 1 ) <= finished ) {
+                    if ( queueIndex.get( queueIndex.Count - 1 ) <= finished ) {
                         // 途中で終了せず，このトラックの全てのパッチワークが完了した．
                         AppManager.mLastRenderedStatus[track - 1] =
                             new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable, (SequenceConfig)vsq.config.clone() );
@@ -179,7 +179,7 @@ namespace cadencii
                         dumy.ID.type = VsqIDType.Singer;
                         dumy.ID.IconHandle = new IconHandle();
                         dumy.ID.IconHandle.Program = 17;
-                        for ( int m = 0; m < queueIndex.size(); m++ ) {
+                        for ( int m = 0; m < queueIndex.Count; m++ ) {
                             int i = queueIndex.get( m );
                             if ( i < finished ) {
                                 continue;
@@ -285,7 +285,7 @@ namespace cadencii
             double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.MasterFeder );
             double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.MasterPanpot );
             double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.MasterPanpot );
-            int numTrack = vsq.Track.size();
+            int numTrack = vsq.Track.Count;
             String tmppath = AppManager.getTempWaveDir();
             int track = q.track;
 

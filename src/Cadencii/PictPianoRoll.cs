@@ -576,7 +576,7 @@ namespace cadencii {
                             int j_start = AppManager.mDrawStartIndex[i];
                             boolean first = true;
                             int shift_center = half_track_height;
-                            int target_list_count = target_list.size();
+                            int target_list_count = target_list.Count;
                             for (int j = j_start; j < target_list_count; j++) {
                                 DrawObject dobj = target_list.get(j);
                                 if (dobj.mType != DrawObjectType.Note) {
@@ -624,7 +624,7 @@ namespace cadencii {
                         ByRef<Integer> indx_pit = new ByRef<Integer>(0);
                         ByRef<Integer> indx_pbs = new ByRef<Integer>(0);
 
-                        int c = target_list.size();
+                        int c = target_list.Count;
                         for (int j = j_start; j < c; j++) {
                             DrawObject dobj = target_list.get(j);
                             int x = dobj.mRectangleInPixel.x + key_width - stdx;
@@ -1235,7 +1235,7 @@ namespace cadencii {
                         g.setStroke(getStroke2px());
                         Vector<DrawObject> list = AppManager.mDrawObjects[selected - 1];
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
-                        int c = list.size();
+                        int c = list.Count;
                         int last_x = key_width;
 
                         int pbs_count = pbs.size();

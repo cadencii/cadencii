@@ -34,7 +34,7 @@ namespace cadencii {
         }
 
         public int size() {
-            return mSeries.size();
+            return mSeries.Count;
         }
 
         public Iterator<EditedZoneUnit> iterator() {
@@ -43,7 +43,7 @@ namespace cadencii {
 
         public Object clone() {
             EditedZone ret = new EditedZone();
-            int count = mSeries.size();
+            int count = mSeries.Count;
             for ( int i = 0; i < count; i++ ) {
                 EditedZoneUnit p = mSeries.get( i );
                 ret.mSeries.Add( (EditedZoneUnit)p.clone() );
@@ -64,7 +64,7 @@ namespace cadencii {
         public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
             for ( Iterator<EditedZoneUnit> itr = run.mRemove.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = itr.next();
-                int count = mSeries.size();
+                int count = mSeries.Count;
                 for ( int i = 0; i < count; i++ ) {
                     EditedZoneUnit item2 = mSeries.get( i );
                     if ( item.mStart == item2.mStart && item.mEnd == item2.mEnd ) {
@@ -154,7 +154,7 @@ namespace cadencii {
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                int count = mSeries.size();
+                int count = mSeries.Count;
                 for ( int i = 0; i < count - 1; i++ ) {
                     EditedZoneUnit itemi = mSeries.get( i );
                     if ( itemi.mEnd < itemi.mStart ) {

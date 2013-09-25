@@ -344,7 +344,7 @@ namespace cadencii {
                 vocaloidDriver.Add( vr );
             }
 
-            for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+            for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
                 String dll_path = vocaloidDriver.get( i ).path;
                 boolean loaded = false;
                 try {
@@ -420,7 +420,7 @@ namespace cadencii {
 
         public static boolean isRendererAvailable( RendererKind renderer, String wine_prefix, String wine_top ) {
 #if ENABLE_VOCALOID
-            for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+            for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
                 if ( renderer == vocaloidDriver.get( i ).getRendererKind() && vocaloidDriver.get( i ).loaded ) {
                     return true;
                 }
@@ -449,7 +449,7 @@ namespace cadencii {
                 }
                 if ( resampler_exists &&
                      !AppManager.editorConfig.PathWavtool.Equals("") && System.IO.File.Exists(AppManager.editorConfig.PathWavtool)) {
-                    if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
+                    if ( AppManager.editorConfig.UtauSingers.Count > 0 ) {
                         return true;
                     }
                 }
@@ -457,7 +457,7 @@ namespace cadencii {
             if ( renderer == RendererKind.VCNT ) {
                 String synth_path = Path.Combine( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
                 if (System.IO.File.Exists(synth_path)) {
-                    int count = AppManager.editorConfig.UtauSingers.size();
+                    int count = AppManager.editorConfig.UtauSingers.Count;
                     if ( count > 0 ) {
                         return true;
                     }
@@ -468,7 +468,7 @@ namespace cadencii {
 
         public static void terminate() {
 #if ENABLE_VOCALOID
-            for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
+            for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
                 if ( vocaloidDriver.get( i ) != null ) {
                     vocaloidDriver.get( i ).close();
                 }

@@ -313,7 +313,7 @@ public static class PrintLyric {
 
 public static class UpHalfStep {
     public static bool Edit( cadencii.vsq.VsqFile Vsq ) {
-        for ( int i = 1; i < Vsq.Track.size(); i++ ) {
+        for ( int i = 1; i < Vsq.Track.Count; i++ ) {
             for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
                 cadencii.vsq.VsqEvent item = itr.next();
                 if ( item.ID.Note < 127 ) {
@@ -327,7 +327,7 @@ public static class UpHalfStep {
 
 public static class Trim32 {
     public static bool Edit( cadencii.vsq.VsqFile Vsq ) {
-        for ( int i = 1; i < Vsq.Track.size(); i++ ) {
+        for ( int i = 1; i < Vsq.Track.Count; i++ ) {
             for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
                 cadencii.vsq.VsqEvent item = itr.next();
                 // 32分音符の長さは，クロック数に直すと60クロック

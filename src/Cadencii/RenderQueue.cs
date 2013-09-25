@@ -71,7 +71,7 @@ namespace cadencii {
         /// <returns></returns>
         public String getResamplerArgString() {
             String ret = "";
-            int c = _resampler_arg.size();
+            int c = _resampler_arg.Count;
             for ( int i = 0; i < c; i++ ) {
                 ret += _resampler_arg.get( i ) + ((i < c - 1) ? " " : "");
             }

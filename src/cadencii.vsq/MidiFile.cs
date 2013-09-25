@@ -92,7 +92,7 @@ namespace cadencii.vsq
                         track_events.Add( mi );
                     }
                     if ( m_time_format != 480 ) {
-                        int count = track_events.size();
+                        int count = track_events.Count;
                         for ( int i = 0; i < count; i++ ) {
                             MidiEvent mi = track_events.get( i );
                             mi.clock = mi.clock * 480 / m_time_format;
@@ -109,12 +109,12 @@ namespace cadencii.vsq
                     sw = new BufferedWriter( new FileWriter( dbg ) );
                     const String format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
                     const String format0 = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2}";
-                    for ( int track = 1; track < m_events.size(); track++ ) {
+                    for ( int track = 1; track < m_events.Count; track++ ) {
                         sw.write( "MidiFile..ctor; track=" + track );
                         sw.newLine();
                         byte msb, lsb, data_msb, data_lsb;
                         msb = lsb = data_msb = data_lsb = 0x0;
-                        for ( int i = 0; i < m_events.get( track ).size(); i++ ) {
+                        for ( int i = 0; i < m_events.get( track ).Count; i++ ) {
                             if ( m_events.get( track ).get( i ).firstByte == 0xb0 ) {
                                 switch ( m_events.get( track ).get( i ).data[0] ) {
                                     case 0x63:
@@ -180,7 +180,7 @@ namespace cadencii.vsq
         {
             if ( m_events == null ) {
                 return new Vector<MidiEvent>();
-            } else if ( 0 <= track && track < m_events.size() ) {
+            } else if ( 0 <= track && track < m_events.Count ) {
                 return m_events.get( track );
             } else {
                 return new Vector<MidiEvent>();
@@ -192,14 +192,14 @@ namespace cadencii.vsq
             if ( m_events == null ) {
                 return 0;
             } else {
-                return m_events.size();
+                return m_events.Count;
             }
         }
 
         public void close()
         {
             if ( m_events != null ) {
-                int c = m_events.size();
+                int c = m_events.Count;
                 for ( int i = 0; i < c; i++ ) {
                     m_events.get( i ).Clear();
                 }

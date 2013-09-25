@@ -523,7 +523,7 @@ namespace cadencii.vsq
                 VsqEvent item = itr.next();
                 item.write( sw );
             }
-            for ( int i = 0; i < handle.size(); i++ ) {
+            for ( int i = 0; i < handle.Count; i++ ) {
                 handle.get( i ).write( sw );
             }
             String version = Common.Version;

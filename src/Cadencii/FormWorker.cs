@@ -357,7 +357,7 @@ namespace cadencii
 #else
         private void worker_ProgressChanged( object sender, ProgressChangedEventArgs e )
         {
-            int size = mThreads.size();
+            int size = mThreads.Count;
             for ( int i = 0; i < size; i++ ) {
                 BackgroundWorker w = mThreads[i];
                 if ( w == null ) continue;
@@ -370,7 +370,7 @@ namespace cadencii
 
         private void worker_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e )
         {
-            int size = mThreads.size();
+            int size = mThreads.Count;
             for ( int i = 0; i < size; i++ ) {
                 BackgroundWorker w = mThreads[i];
                 if ( w == null ) continue;

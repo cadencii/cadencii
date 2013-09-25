@@ -233,17 +233,17 @@ namespace cadencii
                     // dynaff
                     dynaffButtons.Add( btn );
                     ih = 0;
-                    iw = dynaffButtons.size() - 1;
+                    iw = dynaffButtons.Count - 1;
                 } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_CRESCEND ) ) {
                     // crescend
                     crescendButtons.Add( btn );
                     ih = 1;
-                    iw = crescendButtons.size() - 1;
+                    iw = crescendButtons.Count - 1;
                 } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DECRESCEND ) ) {
                     // decrescend
                     decrescendButtons.Add( btn );
                     ih = 2;
-                    iw = decrescendButtons.size() - 1;
+                    iw = decrescendButtons.Count - 1;
                 } else {
                     continue;
                 }
@@ -271,18 +271,18 @@ namespace cadencii
             // ウィンドウのサイズを固定化する
             int height = 0;
             int width = 0;
-            if ( dynaffButtons.size() > 0 ) {
+            if ( dynaffButtons.Count > 0 ) {
                 height += buttonWidth;
             }
-            width = Math.Max( width, buttonWidth * dynaffButtons.size() );
-            if ( crescendButtons.size() > 0 ) {
+            width = Math.Max( width, buttonWidth * dynaffButtons.Count );
+            if ( crescendButtons.Count > 0 ) {
                 height += buttonWidth;
             }
-            width = Math.Max( width, buttonWidth * crescendButtons.size() );
-            if ( decrescendButtons.size() > 0 ) {
+            width = Math.Max( width, buttonWidth * crescendButtons.Count );
+            if ( decrescendButtons.Count > 0 ) {
                 height += buttonWidth;
             }
-            width = Math.Max( width, buttonWidth * decrescendButtons.size() );
+            width = Math.Max( width, buttonWidth * decrescendButtons.Count );
 #if JAVA
             pack();
             Insets i = getInsets();

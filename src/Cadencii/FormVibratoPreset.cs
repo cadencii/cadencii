@@ -100,7 +100,7 @@ namespace cadencii
 
             // ハンドルのリストをクローン
             mHandles = new Vector<VibratoHandle>();
-            int size = handles.size();
+            int size = handles.Count;
             for ( int i = 0; i < size; i++ ) {
                 mHandles.Add( (VibratoHandle)handles.get( i ).clone() );
             }
@@ -123,7 +123,7 @@ namespace cadencii
             if ( mHandles == null ) {
                 mHandles = new Vector<VibratoHandle>();
             }
-            int size = mHandles.size();
+            int size = mHandles.Count;
             for ( int i = 0; i < size; i++ ) {
                 mHandles.get( i ).IconID = "$0404" + PortUtil.toHexString( i + 1, 4 );
             }
@@ -151,7 +151,7 @@ namespace cadencii
 #endif
 
             // 範囲外ならbailout
-            if ( (index < 0) || (mHandles.size() <= index) ) {
+            if ( (index < 0) || (mHandles.Count <= index) ) {
 #if DEBUG
                 sout.println( "FormVibratoPreset#listPresets_SelectedIndexChanged; bail-out, mSelected -> null; index=" + index );
 #endif
@@ -270,7 +270,7 @@ namespace cadencii
             // 表示反映させて
             updateStatus();
             // 追加したのを選択状態にする
-            listPresets.SelectedIndex = mHandles.size() - 1;
+            listPresets.SelectedIndex = mHandles.Count - 1;
         }
 
         public void buttonRemove_Click( Object sender, EventArgs e )
@@ -300,7 +300,7 @@ namespace cadencii
             if ( index < 0 ) {
                 return;
             }
-            if ( move_to < 0 || mHandles.size() <= move_to ) {
+            if ( move_to < 0 || mHandles.Count <= move_to ) {
                 // 範囲外なら何もしない
                 return;
             }
@@ -613,7 +613,7 @@ namespace cadencii
             listPresets.SelectedIndices.Clear();
 
             // アイテムの個数に過不足があれば数を整える
-            int size = mHandles.size();
+            int size = mHandles.Count;
             int delta = size - listPresets.Items.Count;
 #if DEBUG
             sout.println( "FormVibratoPreset#updateStatus; delta=" + delta );

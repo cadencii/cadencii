@@ -70,7 +70,7 @@ namespace cadencii.vsq
             String pbw = "";
             String pby = "";
             String pbm = "";
-            int count = Points.size();
+            int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
                 String comma = (i == 0 ? "" : ",");
                 pbw += comma + Points.get( i ).Step;
@@ -103,7 +103,7 @@ namespace cadencii.vsq
         public Object clone()
         {
             UstPortamento ret = new UstPortamento();
-            int count = Points.size();
+            int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
                 ret.Points.Add( Points.get( i ) );
             }
@@ -148,7 +148,7 @@ namespace cadencii.vsq
                 Start = int.Parse( v );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
-                    if ( i >= Points.size() ) {
+                    if ( i >= Points.Count ) {
                         Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
@@ -160,7 +160,7 @@ namespace cadencii.vsq
                     if ( values[i].Length <= 0 ) {
                         continue;
                     }
-                    if ( i >= Points.size() ) {
+                    if ( i >= Points.Count ) {
                         Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
@@ -169,7 +169,7 @@ namespace cadencii.vsq
                 }
             } else if ( line.StartsWith( "pbm=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
-                    if ( i >= Points.size() ) {
+                    if ( i >= Points.Count ) {
                         Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );

@@ -100,10 +100,6 @@ namespace cadencii.java.util {
             : base() {
         }
 
-        public int size() {
-            return base.Count;
-        }
-
         public T get( int index ) {
             return base[index];
         }
@@ -122,7 +118,7 @@ namespace cadencii.java.util {
         }
 
         public Object[] toArray() {
-            int c = size();
+            int c = Count;
             Object[] ret = new Object[c];
             for( int i = 0; i < c; i++ ){
                 ret[i] = base[i];
@@ -131,7 +127,7 @@ namespace cadencii.java.util {
         }
 
         public T[] toArray( T[] array ) {
-            int c = size();
+            int c = Count;
             T[] ret = new T[c];
             for( int i = 0; i < c; i++ ){
                 ret[i] = base[i];

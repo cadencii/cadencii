@@ -16,7 +16,7 @@ namespace cadencii
         {
             VsqFile vsq = VsqxReader.readFromVsqx( "./fixture/track2.vsqx" );
 
-            Assert.AreEqual( 3, vsq.Track.size() );
+            Assert.AreEqual( 3, vsq.Track.Count );
 
             // 1トラック目
             var track = vsq.Track.get( 1 );
@@ -41,7 +41,7 @@ namespace cadencii
             VsqFile vsq = VsqxReader.readFromVsqx( "./fixture/track1.vsqx" );
 
             // トラック数
-            Assert.AreEqual( 2, vsq.Track.size() );
+            Assert.AreEqual( 2, vsq.Track.Count );
 
             // プリメジャー
             Assert.AreEqual( 4, vsq.getPreMeasure() );
@@ -182,14 +182,14 @@ namespace cadencii
             Assert.AreEqual( "Track", track.getName() );
 
             // テンポ変更
-            Assert.AreEqual( 2, vsq.TempoTable.size() );
+            Assert.AreEqual( 2, vsq.TempoTable.Count );
             Assert.AreEqual( 0, vsq.TempoTable.get( 0 ).Clock );
             Assert.AreEqual( 500000, vsq.TempoTable.get( 0 ).Tempo );
             Assert.AreEqual( 8640, vsq.TempoTable.get( 1 ).Clock );
             Assert.AreEqual( 1199760, vsq.TempoTable.get( 1 ).Tempo );
 
             // 拍子変更
-            Assert.AreEqual( 2, vsq.TimesigTable.size() );
+            Assert.AreEqual( 2, vsq.TimesigTable.Count );
             Assert.AreEqual( 0, vsq.TimesigTable.get( 0 ).Clock );
             Assert.AreEqual( 4, vsq.TimesigTable.get( 0 ).Numerator );
             Assert.AreEqual( 4, vsq.TimesigTable.get( 0 ).Denominator );
@@ -235,7 +235,7 @@ namespace cadencii
             // Mixerが正しく読み込まれているか
             Assert.AreEqual( 2, vsq.Mixer.MasterFeder );
 
-            Assert.AreEqual( 1, vsq.Mixer.Slave.size() );
+            Assert.AreEqual( 1, vsq.Mixer.Slave.Count );
             Assert.AreEqual( 1, vsq.Mixer.Slave.get( 0 ).Solo );
             Assert.AreEqual( 0, vsq.Mixer.Slave.get( 0 ).Mute );
             Assert.AreEqual( 64, vsq.Mixer.Slave.get( 0 ).Panpot );

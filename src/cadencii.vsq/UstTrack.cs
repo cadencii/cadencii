@@ -78,7 +78,7 @@ namespace cadencii.vsq
 
         public int getEventCount()
         {
-            return m_events.size();
+            return m_events.Count;
         }
 
         public Iterator<UstEvent> getNoteEventIterator()

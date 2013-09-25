@@ -1052,7 +1052,7 @@ namespace cadencii
         }
 
         public static EditedZoneUnit[] detectTempotableDifference( TempoVector tempo1, TempoVector tempo2 ) {
-            int len = Math.Min( tempo1.size(), tempo2.size() );
+            int len = Math.Min( tempo1.Count, tempo2.Count );
             int clockDifferenceStarted = int.MaxValue;
             for ( int i = 0; i < len; i++ ) {
                 TempoTableEntry item1 = tempo1.get( i );
@@ -1063,10 +1063,10 @@ namespace cadencii
                 }
             }
             if ( clockDifferenceStarted == int.MaxValue ) {
-                if ( len < tempo1.size() ) {
+                if ( len < tempo1.Count ) {
                     clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1.get( len ).Clock );
                 }
-                if ( len < tempo2.size() ) {
+                if ( len < tempo2.Count ) {
                     clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2.get( len ).Clock );
                 }
             }
@@ -1322,7 +1322,7 @@ namespace cadencii
                 }
             }
             list2.Sort();
-            for ( int i = 0; i < list2.size(); i++ ) {
+            for ( int i = 0; i < list2.Count; i++ ) {
                 ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2.get( i ) );
             }
             return ret;

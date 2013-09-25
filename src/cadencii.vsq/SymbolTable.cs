@@ -76,7 +76,7 @@ using cadencii.java.util;
                 public static int getMaxDivisions()
                 {
                     int max = 1;
-                    int size = mTable.size();
+                    int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
                         SymbolTable table = mTable.get( i );
                         max = Math.Max( max, table.mMaxDivisions );
@@ -94,7 +94,7 @@ using cadencii.java.util;
                     if ( !mInitialized ) {
                         loadSystemDictionaries();
                     }
-                    if ( 0 <= index && index < mTable.size() ) {
+                    if ( 0 <= index && index < mTable.Count ) {
                         return mTable.get( index );
                     } else {
                         return null;
@@ -162,7 +162,7 @@ using cadencii.java.util;
                 /// <returns></returns>
                 public static SymbolTableEntry attatch( String phrase )
                 {
-                    int size = mTable.size();
+                    int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
                         SymbolTable table = mTable.get( i );
                         if ( table.isEnabled() ) {
@@ -210,7 +210,7 @@ using cadencii.java.util;
                     if ( !mInitialized ) {
                         loadSystemDictionaries();
                     }
-                    return mTable.size();
+                    return mTable.Count;
                 }
 
                 /// <summary>
@@ -221,7 +221,7 @@ using cadencii.java.util;
                 {
                     // 現在の辞書をバッファに退避
                     Vector<SymbolTable> buff = new Vector<SymbolTable>();
-                    int size = mTable.size();
+                    int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
                         buff.Add( mTable.get( i ) );
                     }
@@ -229,7 +229,7 @@ using cadencii.java.util;
                     // 現在の辞書をいったんクリア
                     mTable.Clear();
 
-                    int count = list.size();
+                    int count = list.Count;
                     for ( int i = 0; i < count; i++ ) {
                         ValuePair<String, Boolean> itemi = list.get( i );
                         for ( int j = 0; j < size; j++ ) {

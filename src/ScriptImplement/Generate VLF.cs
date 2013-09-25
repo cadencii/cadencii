@@ -18,7 +18,7 @@ public class GenerateVLF{
             MessageBox.Show( "integer parse error" );
             return false;
         }
-        if ( track <= 0 || vsq.Track.size() <= track ) {
+        if ( track <= 0 || vsq.Track.Count <= track ) {
             MessageBox.Show( "invalid target track" );
             return false;
         }

@@ -69,7 +69,7 @@ namespace cadencii
         public void clearSendEvents()
         {
             lock ( locker ) {
-                for ( int i = 0; i < s_track_events.size(); i++ ) {
+                for ( int i = 0; i < s_track_events.Count; i++ ) {
                     s_track_events.get( i ).Clear();
                 }
             }
@@ -107,7 +107,7 @@ namespace cadencii
         {
             double ret = 0.0;
             int index = -1;
-            int c = g_tempoList.size();
+            int c = g_tempoList.Count;
             for ( int i = 0; i < c; i++ ) {
                 if ( timeCode <= g_tempoList.get( i ).Clock ) {
                     break;
@@ -321,7 +321,7 @@ namespace cadencii
 #endif
                     dwDelay = 0;
                     Vector<MidiEvent> list = s_track_events.get( 1 );
-                    int list_size = list.size();
+                    int list_size = list.Count;
                     for ( int i = 0; i < list_size; i++ ) {
                         MidiEvent work = list.get( i );
                         if ( (work.firstByte & 0xf0) == 0xb0 ) {
@@ -389,7 +389,7 @@ namespace cadencii
                             }
 
                             nEvents++;
-                            if ( current_count + 1 < lpEvents.size() ) {
+                            if ( current_count + 1 < lpEvents.Count ) {
                                 current_count++;
                                 current = lpEvents.get( current_count );
                             } else {
@@ -397,7 +397,7 @@ namespace cadencii
                             }
                         }
 
-                        if ( current_count + 1 >= lpEvents.size() ) {
+                        if ( current_count + 1 >= lpEvents.Count ) {
                             break;
                         }
 
@@ -546,7 +546,7 @@ namespace cadencii
                 }
                 rendering = false;
                 g_saProcessed = 0;
-                for ( int i = 0; i < s_track_events.size(); i++ ) {
+                for ( int i = 0; i < s_track_events.Count; i++ ) {
                     s_track_events.get( i ).Clear();
                 }
                 g_tempoList.Clear();
@@ -573,16 +573,16 @@ namespace cadencii
         private Vector<MidiEvent> merge_events( Vector<MidiEvent> x0, Vector<MidiEvent> y0 )
         {
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
-            for ( int i = 0; i < x0.size(); i++ ) {
+            for ( int i = 0; i < x0.Count; i++ ) {
                 ret.Add( x0.get( i ) );
             }
-            for ( int i = 0; i < y0.size(); i++ ) {
+            for ( int i = 0; i < y0.Count; i++ ) {
                 ret.Add( y0.get( i ) );
             }
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                for ( int i = 0; i < ret.size() - 1; i++ ) {
+                for ( int i = 0; i < ret.Count - 1; i++ ) {
                     if ( ret.get( i ).CompareTo( ret.get( i + 1 ) ) > 0 ) {
                         MidiEvent m = ret.get( i );
                         ret.set( i, ret.get( i + 1 ) );

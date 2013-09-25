@@ -81,7 +81,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             BezierCurves attached = vsq.AttachedCurves.get( m_track - 1 );
             Vector<BezierChain> chains = attached.get( m_curve_type );
-            for ( int i = 0; i < chains.size(); i++ ) {
+            for ( int i = 0; i < chains.Count; i++ ) {
                 if ( chains.get( i ).id == m_chain_id ) {
                     found = true;
                     break;

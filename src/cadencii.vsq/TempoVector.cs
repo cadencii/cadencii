@@ -111,7 +111,7 @@ namespace cadencii.vsq
             int tempo = baseTempo;
             double base_clock = 0;
             double base_time = 0.0;
-            int c = size();
+            int c = Count;
             if ( c == 0 ) {
                 tempo = baseTempo;
                 base_clock = 0;
@@ -160,7 +160,7 @@ namespace cadencii.vsq
         /// </summary>
         public void updateTempoInfo()
         {
-            int c = size();
+            int c = Count;
             if ( c == 0 ) {
                 Add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
             }
@@ -191,7 +191,7 @@ namespace cadencii.vsq
         /// <returns>時刻(秒)</returns>
         public double getSecFromClock( double clock )
         {
-            int c = size();
+            int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 TempoTableEntry item = get( i );
                 if ( item.Clock <= clock ) {

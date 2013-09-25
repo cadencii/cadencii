@@ -98,7 +98,7 @@ namespace cadencii
             comboEditKey.Items.Clear();
             comboEditKey.Items.Add( Keys.None );
             // アルファベット順になるように一度配列に入れて並べ替える
-            int size = AppManager.SHORTCUT_ACCEPTABLE.size();
+            int size = AppManager.SHORTCUT_ACCEPTABLE.Count;
             Keys[] keys = new Keys[size];
             for ( int i = 0; i < size; i++ ){
                 keys[i] = AppManager.SHORTCUT_ACCEPTABLE.get( i );
@@ -454,7 +454,7 @@ namespace cadencii
         public void btnLoadDefault_Click( Object sender, EventArgs e )
         {
             Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
-            for ( int i = 0; i < defaults.size(); i++ ) {
+            for ( int i = 0; i < defaults.Count; i++ ) {
                 String name = defaults.get( i ).Key;
                 Keys[] keys = defaults.get( i ).Value;
                 for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
