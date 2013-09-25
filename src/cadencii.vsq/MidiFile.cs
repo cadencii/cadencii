@@ -96,7 +96,7 @@ namespace cadencii.vsq
                         for ( int i = 0; i < count; i++ ) {
                             MidiEvent mi = track_events[ i ];
                             mi.clock = mi.clock * 480 / m_time_format;
-                            track_events.set( i, mi );
+                            track_events[ i] =  mi ;
                         }
                     }
                     m_events.Add( track_events );

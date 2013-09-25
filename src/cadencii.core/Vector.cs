@@ -96,10 +96,6 @@ namespace cadencii.java.util {
             : base() {
         }
 
-        public void set( int index, T value ) {
-            base[index] = value;
-        }
-
         public Iterator<T> iterator() {
             return new ListIterator<T>( this );
         }

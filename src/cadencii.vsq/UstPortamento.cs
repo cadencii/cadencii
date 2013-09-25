@@ -153,7 +153,7 @@ namespace cadencii.vsq
                     }
                     UstPortamentoPoint up = Points[ i ];
                     up.Step = int.Parse( values[i] );
-                    Points.set( i, up );
+                    Points[ i] =  up ;
                 }
             } else if ( line.StartsWith( "pby=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
@@ -165,7 +165,7 @@ namespace cadencii.vsq
                     }
                     UstPortamentoPoint up = Points[ i ];
                     up.Value = (float)double.Parse( values[i] );
-                    Points.set( i, up );
+                    Points[ i] =  up ;
                 }
             } else if ( line.StartsWith( "pbm=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
@@ -183,7 +183,7 @@ namespace cadencii.vsq
                     } else {
                         up.Type = UstPortamentoType.S;
                     }
-                    Points.set( i, up );
+                    Points[ i] =  up ;
                 }
             } else if ( line.StartsWith( "pbs=" ) ) {
 

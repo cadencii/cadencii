@@ -126,7 +126,7 @@ namespace cadencii.vsq.io
                 int pan = int.Parse( vsUnit["pan"].InnerText );
                 int vol = int.Parse( vsUnit["vol"].InnerText );
                 var slave = new VsqMixerEntry( vol, pan, mute, solo );
-                result.Mixer.Slave.set( vsTrackNo, slave );
+                result.Mixer.Slave[ vsTrackNo] =  slave ;
             }
 
             return result;

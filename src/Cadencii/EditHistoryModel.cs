@@ -46,7 +46,7 @@ using cadencii.java.util;
                         mCommandIndex = mCommands.Count - 1;
                     } else {
                         // 既にあるコマンドバッファを上書きする場合
-                        mCommands.set( mCommandIndex + 1, command );
+                        mCommands[ mCommandIndex + 1] =  command ;
                         for( int i = mCommands.Count - 1; i >= mCommandIndex + 2; i-- ) {
                             mCommands.RemoveAt( i );
                         }
@@ -113,7 +113,7 @@ using cadencii.java.util;
                 /// <param name="command"></param>
                 public void registerAfterUndo( ICommand command )
                 {
-                    mCommands.set( mCommandIndex, command );
+                    mCommands[ mCommandIndex] =  command ;
                     mCommandIndex--;
                 }
 
@@ -123,7 +123,7 @@ using cadencii.java.util;
                 /// <param name="command"></param>
                 public void registerAfterRedo( ICommand command )
                 {
-                    mCommands.set( mCommandIndex + 1, command );
+                    mCommands[ mCommandIndex + 1] =  command ;
                     mCommandIndex++;
                 }
             }

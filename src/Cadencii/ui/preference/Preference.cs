@@ -1426,8 +1426,8 @@ namespace cadencii
 #endif
             if ( 0 <= index && index + 1 < m_utau_singers.Count ) {
                 SingerConfig buf = (SingerConfig)m_utau_singers[ index ].clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers[ index + 1 ].clone() );
-                m_utau_singers.set( index + 1, buf );
+                m_utau_singers[index] = (SingerConfig)m_utau_singers[ index + 1 ].clone();
+                m_utau_singers[ index + 1] =  buf ;
                 UpdateUtausingerList();
                 if (!listSingers.Items[index + 1].Selected) {
                     listSingers.SelectedIndices.Clear();
@@ -1444,8 +1444,8 @@ namespace cadencii
 #endif
             if ( 0 <= index - 1 && index < m_utau_singers.Count ) {
                 SingerConfig buf = (SingerConfig)m_utau_singers[ index ].clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers[ index - 1 ].clone() );
-                m_utau_singers.set( index - 1, buf );
+                m_utau_singers[index] = (SingerConfig)m_utau_singers[ index - 1 ].clone();
+                m_utau_singers[ index - 1] =  buf ;
                 UpdateUtausingerList();
                 if (!listSingers.Items[index - 1].Selected) {
                     listSingers.SelectedIndices.Clear();

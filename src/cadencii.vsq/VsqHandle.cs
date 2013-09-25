@@ -323,7 +323,7 @@ namespace cadencii.vsq
                                     Trailing.Add( new Lyric( "a", "a" ) );
                                 }
                             }
-                            Trailing.set( index - 1, lyric );
+                            Trailing[ index - 1] =  lyric ;
                         }
                     }
                 }

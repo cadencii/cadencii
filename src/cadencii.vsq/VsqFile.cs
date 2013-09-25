@@ -1366,7 +1366,7 @@ namespace cadencii.vsq
                 int track = (Integer)command.Args[0];
                 VsqTrack item = (VsqTrack)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackReplace( track, Track[ track ] );
-                Track.set( track, item );
+                Track[ track] =  item ;
                 updateTotalClocks();
                 return ret;
                 #endregion

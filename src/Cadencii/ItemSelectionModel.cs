@@ -117,7 +117,7 @@ import cadencii.vsq.*;
                     }
                     if ( index >= 0 )
                     {
-                        mBezier.set( index, selected );
+                        mBezier[ index] =  selected ;
                     }
                     else
                     {
@@ -601,7 +601,7 @@ import cadencii.vsq.*;
                         }
                         if ( ev != null )
                         {
-                            mEvents.set( i, new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
+                            mEvents[i] = new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() );
                         }
                         else
                         {

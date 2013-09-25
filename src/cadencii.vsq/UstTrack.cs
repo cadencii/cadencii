@@ -63,7 +63,7 @@ namespace cadencii.vsq
 
         public void setEvent( int index, UstEvent item )
         {
-            m_events.set( index, item );
+            m_events[ index] =  item ;
         }
 
         public void addEvent( UstEvent item )

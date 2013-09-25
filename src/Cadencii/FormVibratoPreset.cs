@@ -307,8 +307,8 @@ namespace cadencii
 
             // 入れ替える
             VibratoHandle buff = mHandles[ index ];
-            mHandles.set( index, mHandles[ move_to ] );
-            mHandles.set( move_to, buff );
+            mHandles[ index] =  mHandles[ move_to ] ;
+            mHandles[ move_to] =  buff ;
 
             // 選択状態を変える
             listPresets.SelectedIndices.Clear();

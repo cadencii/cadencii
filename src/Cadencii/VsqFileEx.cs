@@ -693,7 +693,7 @@ namespace cadencii
                                 try {
                                     new_chain = chain.extractPartialBezier( pre_measure_clocks, end );
                                     new_chain.id = chain.id;
-                                    list.set( j, new_chain );
+                                    list[ j] =  new_chain ;
                                 } catch ( Exception ex ) {
                                     serr.println( "VsqFileEx#shift; ex=" + ex );
                                     Logger.write( typeof( VsqFileEx ) + ".shift; ex=" + ex + "\n" );
@@ -1272,7 +1272,7 @@ namespace cadencii
                     VsqTrack item = (VsqTrack)command.args[1];
                     BezierCurves bezier_curves = (BezierCurves)command.args[2];
                     ret = VsqFileEx.generateCommandTrackReplace( track, Track[ track ], AttachedCurves.get( track - 1 ) );
-                    Track.set( track, item );
+                    Track[ track] =  item ;
                     AttachedCurves.set( track - 1, bezier_curves );
                     updateTotalClocks();
 

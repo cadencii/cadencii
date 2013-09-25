@@ -178,7 +178,7 @@ namespace cadencii.vsq
 
         public void setElement( int index, VibratoBPPair value )
         {
-            m_list.set( index, value );
+            m_list[ index] =  value ;
         }
 
 #if !JAVA

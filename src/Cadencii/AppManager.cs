@@ -3087,8 +3087,8 @@ namespace cadencii
                         VersionString item1 = dirs[ i ];
                         VersionString item2 = dirs[ i + 1 ];
                         if ( item1.compareTo( item2 ) > 0 ) {
-                            dirs.set( i, item2 );
-                            dirs.set( i + 1, item1 );
+                            dirs[ i] =  item2 ;
+                            dirs[ i + 1] =  item1 ;
                             changed = true;
                         }
                     }

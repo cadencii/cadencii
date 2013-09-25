@@ -92,7 +92,7 @@ namespace cadencii.vsq
             int c = Events.Count;
             for ( int i = 0; i < c; i++ ) {
                 if ( Events[ i ].InternalID == internal_id ) {
-                    Events.set( i, value );
+                    Events[ i] =  value ;
                     break;
                 }
             }
@@ -125,7 +125,7 @@ namespace cadencii.vsq
             Events.Sort();
             int count = Events.Count;
             for ( int i = 0; i < count; i++ ) {
-                m_ids.set( i, Events[ i ].InternalID );
+                m_ids[ i] =  Events[ i ].InternalID ;
             }
             return id;
         }
@@ -177,7 +177,7 @@ namespace cadencii.vsq
         public void setElement( int index, VsqEvent value )
         {
             value.InternalID = Events[ index ].InternalID;
-            Events.set( index, value );
+            Events[ index] =  value ;
         }
 
         public void updateIDList()
@@ -191,7 +191,7 @@ namespace cadencii.vsq
             } else {
                 int count = Events.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    m_ids.set( i, Events[ i ].InternalID );
+                    m_ids[ i] =  Events[ i ].InternalID ;
                 }
             }
         }

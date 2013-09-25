@@ -701,7 +701,7 @@ namespace cadencii
             for ( int i = 0; i < c; i++ ) {
                 String s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
-                    list.set( i, entry );
+                    list[ i] =  entry ;
                     return;
                 }
             }
@@ -868,7 +868,7 @@ namespace cadencii
             } else {
                 index--;
                 if ( 0 <= index && index < PathResamplers.Count ) {
-                    PathResamplers.set( index, path );
+                    PathResamplers[ index] =  path ;
                 }
             }
         }
@@ -885,8 +885,8 @@ namespace cadencii
                     PathResampler = PathResamplers[ 0 ];
                     ResamplerWithWine = ResamplersWithWine[ 0 ];
                     for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers[ i + 1 ] );
-                        ResamplersWithWine.set( i, ResamplersWithWine[ i + 1 ] );
+                        PathResamplers[ i] =  PathResamplers[ i + 1 ] ;
+                        ResamplersWithWine[ i] =  ResamplersWithWine[ i + 1 ] ;
                     }
                     PathResamplers.RemoveAt( size - 1 );
                     ResamplersWithWine.RemoveAt( size - 1 );
@@ -897,8 +897,8 @@ namespace cadencii
                 index--;
                 if ( 0 <= index && index < size ) {
                     for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers[ i + 1 ] );
-                        ResamplersWithWine.set( i, ResamplersWithWine[ i + 1 ] );
+                        PathResamplers[ i] =  PathResamplers[ i + 1 ] ;
+                        ResamplersWithWine[ i] =  ResamplersWithWine[ i + 1 ] ;
                     }
                     PathResamplers.RemoveAt( size - 1 );
                     ResamplersWithWine.RemoveAt( size - 1 );

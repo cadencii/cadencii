@@ -208,7 +208,7 @@ namespace cadencii {
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
                 if ( list[ i ].id == chain_id ) {
-                    list.set( i, item );
+                    list[ i] =  item ;
                     break;
                 }
             }

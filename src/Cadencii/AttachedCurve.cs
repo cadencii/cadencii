@@ -67,7 +67,7 @@ namespace cadencii
         }
 
         public void set( int index, BezierCurves value ) {
-            mCurves.set( index, value );
+            mCurves[ index] =  value ;
         }
 
         public void add( BezierCurves item ) {
