@@ -53,7 +53,7 @@ namespace cadencii
             if ( receiver == null ) {
                 return;
             }
-            if ( !mReceivers.contains( receiver ) ) {
+            if ( !mReceivers.Contains( receiver ) ) {
                 mReceivers.add( receiver );
             }
         }
@@ -70,7 +70,7 @@ namespace cadencii
             if ( receiver == null ) {
                 return;
             }
-            if ( !mReceivers.contains( receiver ) ) {
+            if ( !mReceivers.Contains( receiver ) ) {
                 mReceivers.add( receiver );
             }
         }

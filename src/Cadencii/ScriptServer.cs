@@ -86,7 +86,7 @@ namespace cadencii {
                 changed = false;
                 for ( Iterator<String> itr = scripts.keySet().iterator(); itr.hasNext(); ) {
                     String id = itr.next();
-                    if ( !added.contains( id ) ) {
+                    if ( !added.Contains( id ) ) {
                         scripts.remove( id );
                         changed = true;
                         break;

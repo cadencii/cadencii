@@ -187,16 +187,16 @@ namespace cadencii.vsq
             writer.writeLine( "[ID#" + PortUtil.formatDecimal( "0000", ID.value ) + "]" );
             writer.writeLine( "Type=" + ID.type );
             if ( ID.type == VsqIDType.Anote ) {
-                if ( print_targets.contains( "Length" ) ) writer.writeLine( "Length=" + ID.getLength() );
-                if ( print_targets.contains( "Note#" ) ) writer.writeLine( "Note#=" + ID.Note );
-                if ( print_targets.contains( "Dynamics" ) ) writer.writeLine( "Dynamics=" + ID.Dynamics );
-                if ( print_targets.contains( "PMBendDepth" ) ) writer.writeLine( "PMBendDepth=" + ID.PMBendDepth );
-                if ( print_targets.contains( "PMBendLength" ) ) writer.writeLine( "PMBendLength=" + ID.PMBendLength );
-                if ( print_targets.contains( "PMbPortamentoUse" ) ) writer.writeLine( "PMbPortamentoUse=" + ID.PMbPortamentoUse );
-                if ( print_targets.contains( "DEMdecGainRate" ) ) writer.writeLine( "DEMdecGainRate=" + ID.DEMdecGainRate );
-                if ( print_targets.contains( "DEMaccent" ) ) writer.writeLine( "DEMaccent=" + ID.DEMaccent );
-                if ( print_targets.contains( "PreUtterance" ) ) writer.writeLine( "PreUtterance=" + UstEvent.getPreUtterance() );
-                if ( print_targets.contains( "VoiceOverlap" ) ) writer.writeLine( "VoiceOverlap=" + UstEvent.getVoiceOverlap() );
+                if ( print_targets.Contains( "Length" ) ) writer.writeLine( "Length=" + ID.getLength() );
+                if ( print_targets.Contains( "Note#" ) ) writer.writeLine( "Note#=" + ID.Note );
+                if ( print_targets.Contains( "Dynamics" ) ) writer.writeLine( "Dynamics=" + ID.Dynamics );
+                if ( print_targets.Contains( "PMBendDepth" ) ) writer.writeLine( "PMBendDepth=" + ID.PMBendDepth );
+                if ( print_targets.Contains( "PMBendLength" ) ) writer.writeLine( "PMBendLength=" + ID.PMBendLength );
+                if ( print_targets.Contains( "PMbPortamentoUse" ) ) writer.writeLine( "PMbPortamentoUse=" + ID.PMbPortamentoUse );
+                if ( print_targets.Contains( "DEMdecGainRate" ) ) writer.writeLine( "DEMdecGainRate=" + ID.DEMdecGainRate );
+                if ( print_targets.Contains( "DEMaccent" ) ) writer.writeLine( "DEMaccent=" + ID.DEMaccent );
+                if ( print_targets.Contains( "PreUtterance" ) ) writer.writeLine( "PreUtterance=" + UstEvent.getPreUtterance() );
+                if ( print_targets.Contains( "VoiceOverlap" ) ) writer.writeLine( "VoiceOverlap=" + UstEvent.getVoiceOverlap() );
                 if ( ID.LyricHandle != null ) {
                     writer.writeLine( "LyricHandle=h#" + PortUtil.formatDecimal( "0000", ID.LyricHandle_index ) );
                 }

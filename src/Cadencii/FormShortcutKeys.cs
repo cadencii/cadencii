@@ -415,15 +415,15 @@ namespace cadencii
             ValuePair<String, Keys[]> item = mDict.get( display );
             Keys[] keys = item.getValue();
             Vector<Keys> vkeys = new Vector<Keys>( keys );
-            checkCommand.Checked = vkeys.contains( Keys.Menu );
-            checkShift.Checked = vkeys.contains( Keys.Shift );
-            checkControl.Checked = vkeys.contains( Keys.Control );
-            checkOption.Checked = vkeys.contains( Keys.Alt );
+            checkCommand.Checked = vkeys.Contains( Keys.Menu );
+            checkShift.Checked = vkeys.Contains( Keys.Shift );
+            checkControl.Checked = vkeys.Contains( Keys.Control );
+            checkOption.Checked = vkeys.Contains( Keys.Alt );
             int size = comboEditKey.Items.Count;
             comboEditKey.SelectedIndex = -1;
             for( int i = 0; i < size; i++ ){
                 Keys k = (Keys)comboEditKey.Items[i];
-                if( vkeys.contains( k ) ){
+                if( vkeys.Contains( k ) ){
                     comboEditKey.SelectedIndex = i;
                     break;
                 }

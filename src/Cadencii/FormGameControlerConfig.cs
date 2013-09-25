@@ -214,13 +214,13 @@ namespace cadencii
 #endif
             boolean added = false;
             if ( index <= 4 ) {
-                if ( pov >= 0 && !m_povs.contains( pov ) ) {
+                if ( pov >= 0 && !m_povs.Contains( pov ) ) {
                     m_povs.set( index - 1, pov );
                     added = true;
                 }
             } else {
                 for ( int i = 0; i < btn.Length; i++ ) {
-                    if ( btn[i] > 0x0 && !m_list.contains( i ) ) {
+                    if ( btn[i] > 0x0 && !m_list.Contains( i ) ) {
                         m_list.set( index - 5, i );
                         added = true;
                         break;

@@ -1303,16 +1303,16 @@ namespace cadencii
             String command = "Meta";
 #endif
             Vector<Keys> list = new Vector<Keys>( keys );
-            if ( list.contains( Keys.Control ) ) {
+            if ( list.Contains( Keys.Control ) ) {
                 ret += ((ret == "") ? "" : plus) + ctrl;
             }
-            if ( list.contains( Keys.Alt ) ) {
+            if ( list.Contains( Keys.Alt ) ) {
                 ret += ((ret == "") ? "" : plus) + option;
             }
-            if ( list.contains( Keys.Shift ) ) {
+            if ( list.Contains( Keys.Shift ) ) {
                 ret += ((ret == "") ? "" : plus) + shift;
             }
-            if ( list.contains( Keys.Menu ) ) {
+            if ( list.Contains( Keys.Menu ) ) {
                 ret += ((ret == "") ? "" : plus) + command;
             }
             Vector<Keys> list2 = new Vector<Keys>();

@@ -451,7 +451,7 @@ namespace cadencii.vsq
                     } else if ( spl.Length >= 3 ) {
                         String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
-                            if ( !exp_ids.contains( spl2[0] ) ) {
+                            if ( !exp_ids.Contains( spl2[0] ) ) {
                                 exp_ids.add( spl2[0] );
                             }
                         }

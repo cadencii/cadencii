@@ -8513,7 +8513,7 @@ namespace cadencii
                                     for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                                         VsqEvent ev = itr.next();
                                         if ( start <= ev.Clock && ev.Clock <= end ) {
-                                            if ( !add_required.contains( ev.InternalID ) ) {
+                                            if ( !add_required.Contains( ev.InternalID ) ) {
                                                 add_required.add( ev.InternalID );
                                             }
                                         }
@@ -8790,7 +8790,7 @@ namespace cadencii
                         Vector<Integer> remove_required = new Vector<Integer>();
                         for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry selectedEvent = itr.next();
-                            if (!add_required.contains(selectedEvent.original.InternalID)) {
+                            if (!add_required.Contains(selectedEvent.original.InternalID)) {
                                 remove_required.add(selectedEvent.original.InternalID);
                             }
                         }
@@ -15468,7 +15468,7 @@ namespace cadencii
             String[] langs = Messaging.getRegisteredLanguage();
             foreach ( String lang in langs ) {
                 foreach ( String key in Messaging.getKeys( lang ) ) {
-                    if ( !keys.contains( key ) ) {
+                    if ( !keys.Contains( key ) ) {
                         keys.add( key );
                     }
                 }

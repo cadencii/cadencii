@@ -153,7 +153,7 @@ namespace cadencii.vsq
             int nfound = 0;
             while ( true ) {
                 index++;
-                if ( !current.contains( index ) ) {
+                if ( !current.Contains( index ) ) {
                     nfound++;
                     if ( nfound == next + 1 ) {
                         return index;

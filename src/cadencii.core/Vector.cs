@@ -100,10 +100,6 @@ namespace cadencii.java.util {
             : base() {
         }
 
-        public bool contains( T obj ){
-            return base.Contains( obj );
-        }
-    
         public void add( T obj ) {
             base.Add( obj );
         }

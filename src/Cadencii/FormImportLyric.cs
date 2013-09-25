@@ -128,7 +128,7 @@ namespace cadencii
                             t = "";
                         }
                         if ( i + 1 < list.Length ) {
-                            if ( _SMALL.contains( list[i + 1] ) ) {
+                            if ( _SMALL.Contains( list[i + 1] ) ) {
                                 // 次の文字が拗音の場合
                                 ret.add( list[i] + "" + list[i + 1] + "" );
                                 i++;

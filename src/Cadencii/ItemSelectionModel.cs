@@ -357,7 +357,7 @@ import cadencii.vsq.*;
                     int count = mEvents.size();
                     for ( int i = 0; i < count; i++ )
                     {
-                        if ( v_ids.contains( mEvents.get( i ).original.InternalID ) )
+                        if ( v_ids.Contains( mEvents.get( i ).original.InternalID ) )
                         {
                             index.add( i );
                             if ( index.size() == ids.Length )
@@ -542,7 +542,7 @@ import cadencii.vsq.*;
                     }
                     for ( int i = 0; i < ids.Length; i++ )
                     {
-                        if ( !mPointIDs.contains( ids[i] ) )
+                        if ( !mPointIDs.Contains( ids[i] ) )
                         {
                             mPointIDs.add( ids[i] );
                         }
@@ -552,7 +552,7 @@ import cadencii.vsq.*;
 
                 public bool isPointContains( long id )
                 {
-                    return mPointIDs.contains( id );
+                    return mPointIDs.Contains( id );
                 }
 
                 public CurveType getPointCurveType()
