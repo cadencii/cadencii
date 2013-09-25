@@ -675,7 +675,7 @@ namespace cadencii
 
             int c = list.Count;
             for ( int i = 0; i < c; i++ ) {
-                String s = list.get( i );
+                String s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
                     String[] spl = PortUtil.splitString( s, '\t' );
                     if ( spl.Length >= 2 ) {
@@ -699,7 +699,7 @@ namespace cadencii
             int c = list.Count;
             String entry = extension + "\t" + path;
             for ( int i = 0; i < c; i++ ) {
-                String s = list.get( i );
+                String s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
                     list.set( i, entry );
                     return;
@@ -844,7 +844,7 @@ namespace cadencii
             } else {
                 index--;
                 if ( 0 <= index && index < PathResamplers.Count ) {
-                    return PathResamplers.get( index );
+                    return PathResamplers[ index ];
                 }
             }
             return "";
@@ -882,11 +882,11 @@ namespace cadencii
             int size = PathResamplers.Count;
             if ( index == 0 ) {
                 if ( size > 0 ) {
-                    PathResampler = PathResamplers.get( 0 );
-                    ResamplerWithWine = ResamplersWithWine.get( 0 );
+                    PathResampler = PathResamplers[ 0 ];
+                    ResamplerWithWine = ResamplersWithWine[ 0 ];
                     for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
-                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
+                        PathResamplers.set( i, PathResamplers[ i + 1 ] );
+                        ResamplersWithWine.set( i, ResamplersWithWine[ i + 1 ] );
                     }
                     PathResamplers.RemoveAt( size - 1 );
                     ResamplersWithWine.RemoveAt( size - 1 );
@@ -897,8 +897,8 @@ namespace cadencii
                 index--;
                 if ( 0 <= index && index < size ) {
                     for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
-                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
+                        PathResamplers.set( i, PathResamplers[ i + 1 ] );
+                        ResamplersWithWine.set( i, ResamplersWithWine[ i + 1 ] );
                     }
                     PathResamplers.RemoveAt( size - 1 );
                     ResamplersWithWine.RemoveAt( size - 1 );
@@ -1015,7 +1015,7 @@ namespace cadencii
 #endif
                 VibratoHandle ret = null;
                 if ( 0 <= index && index < this.AutoVibratoCustom.Count ) {
-                    ret = this.AutoVibratoCustom.get( index );
+                    ret = this.AutoVibratoCustom[ index ];
                     if ( ret != null ) {
                         ret = (VibratoHandle)ret.clone();
                     }
@@ -1049,7 +1049,7 @@ namespace cadencii
         {
             TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
             for ( int i = 0; i < ShortcutKeys.Count; i++ ) {
-                ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
+                ret.put( ShortcutKeys[ i ].Key, ShortcutKeys[ i ].Value );
             }
             for ( Iterator<ValuePairOfStringArrayOfKeys> itr = defs.iterator(); itr.hasNext(); ) {
                 ValuePairOfStringArrayOfKeys item = itr.next();
@@ -1262,7 +1262,7 @@ namespace cadencii
                 String s = itr.next();
                 boolean found = false;
                 for ( int i = 0; i < dict.Count; i++ ) {
-                    if ( s.Equals( dict.get( i ) ) ) {
+                    if ( s.Equals( dict[ i ] ) ) {
                         found = true;
                     }
                 }
@@ -1286,7 +1286,7 @@ namespace cadencii
             // 登録しようとしているファイルは，RecentFilesの中に既に登録されているかs？
             int index = -1;
             for ( int i = 0; i < RecentFiles.Count; i++ ) {
-                if ( RecentFiles.get( i ).Equals( new_file ) ) {
+                if ( RecentFiles[ i ].Equals( new_file ) ) {
                     index = i;
                     break;
                 }

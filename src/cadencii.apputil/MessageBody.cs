@@ -172,7 +172,7 @@ namespace cadencii.apputil {
                     Vector<String> location = mbe.location;
                     int count = location.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        sw.write( "#: " + location.get( i ) );
+                        sw.write( "#: " + location[ i ] );
                         sw.newLine();
                     }
                     sw.write( "msgid \"" + skey + "\"" );

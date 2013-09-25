@@ -950,7 +950,7 @@ namespace cadencii.vsq
                 singer_handle.Caption = "";
                 default_id.IconHandle = singer_handle;
             } else {
-                default_id = singers.get( 0 );
+                default_id = singers[ 0 ];
             }
 
             for ( Iterator<VsqEvent> itr = getSingerEventIterator(); itr.hasNext(); ) {
@@ -959,7 +959,7 @@ namespace cadencii.vsq
                 int program = singer_handle.Program;
                 boolean found = false;
                 for ( int i = 0; i < singers_size; i++ ) {
-                    VsqID id = singers.get( i );
+                    VsqID id = singers[ i ];
                     if ( program == singer_handle.Program ) {
                         ve.ID = (VsqID)id.clone();
                         found = true;
@@ -1115,7 +1115,7 @@ namespace cadencii.vsq
                 int count = midi_event.Count;
                 Vector<Integer> buffer = new Vector<Integer>();
                 for ( int i = 0; i < count; i++ ) {
-                    MidiEvent item = midi_event.get( i );
+                    MidiEvent item = midi_event[ i ];
                     if ( item.firstByte == 0xff && item.data.Length > 0 ) {
                         // meta textを抽出
                         int type = item.data[0];
@@ -1145,7 +1145,7 @@ namespace cadencii.vsq
                                 while ( index_0x0a >= 0 ) {
                                     int[] cpy = new int[index_0x0a];
                                     for ( int j = 0; j < index_0x0a; j++ ) {
-                                        cpy[j] = 0xff & (int)buffer.get( 0 );
+                                        cpy[j] = 0xff & (int)buffer[ 0 ];
                                         buffer.RemoveAt( 0 );
                                     }
 
@@ -1166,7 +1166,7 @@ namespace cadencii.vsq
                                 int c = buffer.Count;
                                 int[] d = new int[c];
                                 for ( int j = 0; j < c; j++ ) {
-                                    d[j] = 0xff & buffer.get( j );
+                                    d[j] = 0xff & buffer[ j ];
                                 }
                                 track_name = PortUtil.getDecodedString( encoding, d );
                                 buffer.Clear();
@@ -1181,7 +1181,7 @@ namespace cadencii.vsq
                 if ( remain > 0 ) {
                     int[] cpy = new int[remain];
                     for ( int j = 0; j < remain; j++ ) {
-                        cpy[j] = 0xff & buffer.get( j );
+                        cpy[j] = 0xff & buffer[ j ];
                     }
                     String line = PortUtil.getDecodedString( encoding, cpy );
 #if DEBUG

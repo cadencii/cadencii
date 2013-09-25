@@ -524,7 +524,7 @@ namespace cadencii.vsq
                 item.write( sw );
             }
             for ( int i = 0; i < handle.Count; i++ ) {
-                handle.get( i ).write( sw );
+                handle[ i ].write( sw );
             }
             String version = Common.Version;
             if ( PIT.size() > 0 ) {

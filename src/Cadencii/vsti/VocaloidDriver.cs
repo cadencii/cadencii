@@ -70,7 +70,7 @@ namespace cadencii
         {
             lock ( locker ) {
                 for ( int i = 0; i < s_track_events.Count; i++ ) {
-                    s_track_events.get( i ).Clear();
+                    s_track_events[ i ].Clear();
                 }
             }
         }
@@ -109,13 +109,13 @@ namespace cadencii
             int index = -1;
             int c = g_tempoList.Count;
             for ( int i = 0; i < c; i++ ) {
-                if ( timeCode <= g_tempoList.get( i ).Clock ) {
+                if ( timeCode <= g_tempoList[ i ].Clock ) {
                     break;
                 }
                 index = i;
             }
             if ( index >= 0 ) {
-                TempoInfo item = g_tempoList.get( index );
+                TempoInfo item = g_tempoList[ index ];
                 ret = item.TotalSec + (timeCode - item.Clock) * (double)item.Tempo / (1000.0 * TIME_FORMAT);
             } else {
                 ret = timeCode * (double)DEF_TEMPO / (1000.0 * TIME_FORMAT);
@@ -197,7 +197,7 @@ namespace cadencii
                 // 与えられたイベント情報をs_track_eventsに収納
                 count = -3;
                 int pPrev = 0;
-                s_track_events.get( targetTrack ).Clear();
+                s_track_events[ targetTrack ].Clear();
 #if VOCALO_DRIVER_PRINT_EVENTS
                 sout.println( "VocaloidDriver#SendEvent" );
                 byte msb = 0x0;
@@ -238,7 +238,7 @@ namespace cadencii
                         pEvent.data[1] = src[count + 2];
                         pEvent.data[2] = 0x00;
                     }
-                    s_track_events.get( targetTrack ).Add( pEvent );
+                    s_track_events[ targetTrack ].Add( pEvent );
                 }
             }
 
@@ -264,7 +264,7 @@ namespace cadencii
                 g_progress = 0.0;
                 sampleRate = sample_rate;
 
-                Vector<MidiEvent> lpEvents = merge_events( s_track_events.get( 0 ), s_track_events.get( 1 ) );
+                Vector<MidiEvent> lpEvents = merge_events( s_track_events[ 0 ], s_track_events[ 1 ] );
                 int current_count = -1;
                 MidiEvent current = new MidiEvent();// = lpEvents;
 
@@ -320,10 +320,10 @@ namespace cadencii
                     org.kbinani.debug.push_log( "    getting dwDelay..." );
 #endif
                     dwDelay = 0;
-                    Vector<MidiEvent> list = s_track_events.get( 1 );
+                    Vector<MidiEvent> list = s_track_events[ 1 ];
                     int list_size = list.Count;
                     for ( int i = 0; i < list_size; i++ ) {
-                        MidiEvent work = list.get( i );
+                        MidiEvent work = list[ i ];
                         if ( (work.firstByte & 0xf0) == 0xb0 ) {
                             switch ( work.data[0] ) {
                                 case 0x63:
@@ -361,7 +361,7 @@ namespace cadencii
 #endif
                         if ( current_count < 0 ) {
                             current_count = 0;
-                            current = lpEvents.get( current_count );
+                            current = lpEvents[ current_count ];
                             process_event_count = current_count;
                         }
                         while ( current.clock == dwNow ) {
@@ -391,7 +391,7 @@ namespace cadencii
                             nEvents++;
                             if ( current_count + 1 < lpEvents.Count ) {
                                 current_count++;
-                                current = lpEvents.get( current_count );
+                                current = lpEvents[ current_count ];
                             } else {
                                 break;
                             }
@@ -413,7 +413,7 @@ namespace cadencii
                         pVSTEvents->reserved = (VstIntPtr)0;
 
                         for ( int i = 0; i < nEvents; i++ ) {
-                            MidiEvent pProcessEvent = lpEvents.get( process_event_count );
+                            MidiEvent pProcessEvent = lpEvents[ process_event_count ];
                             int event_code = pProcessEvent.firstByte;
                             VstEvent* pVSTEvent = (VstEvent*)0;
                             VstMidiEvent* pMidiEvent;
@@ -547,7 +547,7 @@ namespace cadencii
                 rendering = false;
                 g_saProcessed = 0;
                 for ( int i = 0; i < s_track_events.Count; i++ ) {
-                    s_track_events.get( i ).Clear();
+                    s_track_events[ i ].Clear();
                 }
                 g_tempoList.Clear();
                 //g_cancelRequired = false;
@@ -574,18 +574,18 @@ namespace cadencii
         {
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
             for ( int i = 0; i < x0.Count; i++ ) {
-                ret.Add( x0.get( i ) );
+                ret.Add( x0[ i ] );
             }
             for ( int i = 0; i < y0.Count; i++ ) {
-                ret.Add( y0.get( i ) );
+                ret.Add( y0[ i ] );
             }
             boolean changed = true;
             while ( changed ) {
                 changed = false;
                 for ( int i = 0; i < ret.Count - 1; i++ ) {
-                    if ( ret.get( i ).CompareTo( ret.get( i + 1 ) ) > 0 ) {
-                        MidiEvent m = ret.get( i );
-                        ret.set( i, ret.get( i + 1 ) );
+                    if ( ret[ i ].CompareTo( ret[ i + 1 ] ) > 0 ) {
+                        MidiEvent m = ret[ i ];
+                        ret.set( i, ret[ i + 1 ] );
                         ret.set( i + 1, m );
                         changed = true;
                     }

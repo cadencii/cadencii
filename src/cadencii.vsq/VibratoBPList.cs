@@ -118,8 +118,8 @@ namespace cadencii.vsq
                 return false;
             }
             for ( int i = 0; i < size; i++ ) {
-                VibratoBPPair p0 = this.m_list.get( i );
-                VibratoBPPair p1 = item.m_list.get( i );
+                VibratoBPPair p0 = this.m_list[ i ];
+                VibratoBPPair p1 = item.m_list[ i ];
                 if ( p0.X != p1.X ) {
                     return false;
                 }
@@ -138,7 +138,7 @@ namespace cadencii.vsq
             int index = -1;
             int size = m_list.Count;
             for ( int i = 0; i < size; i++ ) {
-                if ( x < m_list.get( i ).X ) {
+                if ( x < m_list[ i ].X ) {
                     break;
                 }
                 index = i;
@@ -146,7 +146,7 @@ namespace cadencii.vsq
             if ( index == -1 ) {
                 return default_value;
             } else {
-                return m_list.get( index ).Y;
+                return m_list[ index ].Y;
             }
         }
 
@@ -154,7 +154,7 @@ namespace cadencii.vsq
         {
             VibratoBPList ret = new VibratoBPList();
             for ( int i = 0; i < m_list.Count; i++ ) {
-                ret.m_list.Add( new VibratoBPPair( m_list.get( i ).X, m_list.get( i ).Y ) );
+                ret.m_list.Add( new VibratoBPPair( m_list[ i ].X, m_list[ i ].Y ) );
             }
             return ret;
         }
@@ -173,7 +173,7 @@ namespace cadencii.vsq
 
         public VibratoBPPair getElement( int index )
         {
-            return m_list.get( index );
+            return m_list[ index ];
         }
 
         public void setElement( int index, VibratoBPPair value )
@@ -202,7 +202,7 @@ namespace cadencii.vsq
         {
             String ret = "";
             for ( int i = 0; i < m_list.Count; i++ ) {
-                ret += (i == 0 ? "" : ",") + m_list.get( i ).X + "=" + m_list.get( i ).Y;
+                ret += (i == 0 ? "" : ",") + m_list[ i ].X + "=" + m_list[ i ].Y;
             }
             return ret;
         }

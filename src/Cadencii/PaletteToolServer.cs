@@ -144,7 +144,7 @@ namespace cadencii {
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.containsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack item = (VsqTrack)vsq.Track.get( track ).clone();
+                VsqTrack item = (VsqTrack)vsq.Track[ track ].clone();
                 Object objPal = loadedTools.get( id );
                 if ( objPal == null ) {
                     return false;

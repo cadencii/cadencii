@@ -192,7 +192,7 @@ namespace cadencii
             log.WriteLine( "mTrimRemain=" + mTrimRemain );
 #endif
 
-            VsqTrack track = mVsq.Track.get( mTrack );
+            VsqTrack track = mVsq.Track[ mTrack ];
             int BUFLEN = mSampleRate / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
@@ -220,7 +220,7 @@ namespace cadencii
 #if DEBUG
             log.WriteLine( "pre-process done" );
             log.WriteLine( "-----------------------------------------------------" );
-            VsqTrack vsq_track = mVsq.Track.get( mTrack );
+            VsqTrack vsq_track = mVsq.Track[ mTrack ];
             for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 log.WriteLine( "c" + item.Clock + "; " + item.ID.LyricHandle.L0.Phrase );
@@ -277,7 +277,7 @@ namespace cadencii
 #if DEBUG
                         for ( int i = 0; i < queue.noteoff.Count; i++ ) {
                             String str = "";
-                            MidiEvent itemi = queue.noteoff.get( i );
+                            MidiEvent itemi = queue.noteoff[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
@@ -308,7 +308,7 @@ namespace cadencii
 #if DEBUG
                         for ( int i = 0; i < queue.noteon.Count; i++ ) {
                             String str = "";
-                            MidiEvent itemi = queue.noteon.get( i );
+                            MidiEvent itemi = queue.noteon[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
@@ -323,7 +323,7 @@ namespace cadencii
 #if DEBUG
                         for ( int i = 0; i < queue.pit.Count; i++ ) {
                             String str = "";
-                            MidiEvent itemi = queue.pit.get( i );
+                            MidiEvent itemi = queue.pit[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";

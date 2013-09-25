@@ -54,7 +54,7 @@ namespace cadencii
         protected override EventQueueSequence generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end )
         {
             EventQueueSequence list = new EventQueueSequence();
-            VsqTrack t = vsq.Track.get( track );
+            VsqTrack t = vsq.Track[ track ];
 
             addSingerEvents( list, t, clock_start, clock_end );
 

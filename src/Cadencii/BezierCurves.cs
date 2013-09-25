@@ -195,8 +195,8 @@ namespace cadencii {
             Vector<BezierChain> list = this.get( curve_type );
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
-                if ( list.get( i ).id == chain_id ) {
-                    return list.get( i );
+                if ( list[ i ].id == chain_id ) {
+                    return list[ i ];
                 }
             }
             return null;
@@ -207,7 +207,7 @@ namespace cadencii {
             Vector<BezierChain> list = this.get( curve_type );
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
-                if ( list.get( i ).id == chain_id ) {
+                if ( list[ i ].id == chain_id ) {
                     list.set( i, item );
                     break;
                 }
@@ -235,7 +235,7 @@ namespace cadencii {
             //foreach ( int id in this[curve].Keys ) {
             for ( int j = 0; j < src.Count; j++ ) {
                 //BezierChain bc = this[curve][id];
-                BezierChain bc = src.get( j );
+                BezierChain bc = src[ j ];
                 if ( bc.points.Count <= 0 ) {
                     continue;
                 }
@@ -261,7 +261,7 @@ namespace cadencii {
                 //foreach ( int id in this[curve].Keys ) {
                 for ( int j = 0; j < list.Count; j++ ) {
                     //BezierChain bc = this[curve][id];
-                    BezierChain bc = list.get( j );
+                    BezierChain bc = list[ j ];
                     int id = bc.id;
                     int start = (int)bc.getStart();
                     int end = (int)bc.getEnd();
@@ -280,24 +280,24 @@ namespace cadencii {
                         int last = bc_edit.size() - 1;
 
                         // 接合部分では、制御点無しでステップ変化する
-                        bc_edit.points.get( last ).setControlRightType( BezierControlType.None );
-                        chain.points.get( 0 ).setControlLeftType( BezierControlType.None );
+                        bc_edit.points[ last ].setControlRightType( BezierControlType.None );
+                        chain.points[ 0 ].setControlLeftType( BezierControlType.None );
 
                         int copy_start = 0;
-                        if ( bc_edit.points.get( last ).getBase().getY() == chain.points.get( 0 ).getBase().getY() ) {
+                        if ( bc_edit.points[ last ].getBase().getY() == chain.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( bc_edit.points.get( last ).getControlLeftType() != BezierControlType.None ) {
-                                bc_edit.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            if ( bc_edit.points[ last ].getControlLeftType() != BezierControlType.None ) {
+                                bc_edit.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
-                            bc_edit.points.get( last ).setControlRight( chain.points.get( 0 ).controlLeft );
-                            if ( chain.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                bc_edit.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            bc_edit.points[ last ].setControlRight( chain.points[ 0 ].controlLeft );
+                            if ( chain.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                bc_edit.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
                             copy_start = 1;
                         }
                         for ( int i = copy_start; i < chain.points.Count; i++ ) {
-                            chain.points.get( i ).setID( bc_edit.getNextId() );
-                            bc_edit.add( chain.points.get( i ) );
+                            chain.points[ i ].setID( bc_edit.getNextId() );
+                            bc_edit.add( chain.points[ i ] );
                         }
                         //this[curve].Remove( id );
                         remove( curve, id );
@@ -319,24 +319,24 @@ namespace cadencii {
                         int last = chain.size() - 1;
 
                         // 接合部分では、制御点無しでステップ変化する
-                        bc_edit.points.get( 0 ).setControlLeftType( BezierControlType.None );
-                        chain.points.get( last ).setControlRightType( BezierControlType.None );
+                        bc_edit.points[ 0 ].setControlLeftType( BezierControlType.None );
+                        chain.points[ last ].setControlRightType( BezierControlType.None );
 
                         int copy_end = last;
-                        if ( chain.points.get( last ).getBase().getY() == bc_edit.points.get( 0 ).getBase().getY() ) {
+                        if ( chain.points[ last ].getBase().getY() == bc_edit.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( chain.points.get( last ).getControlLeftType() != BezierControlType.None ) {
-                                chain.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            if ( chain.points[ last ].getControlLeftType() != BezierControlType.None ) {
+                                chain.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
-                            chain.points.get( last ).setControlRight( bc_edit.points.get( 0 ).controlLeft );
-                            if ( bc_edit.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                chain.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            chain.points[ last ].setControlRight( bc_edit.points[ 0 ].controlLeft );
+                            if ( bc_edit.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                chain.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
                             copy_end = last - 1;
                         }
                         for ( int i = 0; i <= copy_end; i++ ) {
-                            chain.points.get( i ).setID( bc_edit.getNextId() );
-                            bc_edit.add( chain.points.get( i ) );
+                            chain.points[ i ].setID( bc_edit.getNextId() );
+                            bc_edit.add( chain.points[ i ] );
                         }
                         //this[curve].Remove( id );
                         remove( curve, id );
@@ -365,46 +365,46 @@ namespace cadencii {
                         left.id = bc.id;
 
                         // 接合部ではステップ変化
-                        left.points.get( left.size() - 1 ).setControlRightType( BezierControlType.None );
-                        chain.points.get( 0 ).setControlLeftType( BezierControlType.None );
-                        chain.points.get( chain.size() - 1 ).setControlRightType( BezierControlType.None );
-                        right.points.get( 0 ).setControlLeftType( BezierControlType.None );
+                        left.points[left.size() - 1].setControlRightType( BezierControlType.None );
+                        chain.points[ 0 ].setControlLeftType( BezierControlType.None );
+                        chain.points[chain.size() - 1].setControlRightType( BezierControlType.None );
+                        right.points[ 0 ].setControlLeftType( BezierControlType.None );
 
                         int copy_start = 0;
                         int copy_end = chain.size() - 1;
 
-                        if ( left.points.get( left.size() - 1 ).getBase().getY() == chain.points.get( 0 ).getBase().getY() ) {
+                        if ( left.points[left.size() - 1].getBase().getY() == chain.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( left.points.get( left.size() - 1 ).getControlLeftType() != BezierControlType.None ) {
-                                left.points.get( left.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            if ( left.points[left.size() - 1].getControlLeftType() != BezierControlType.None ) {
+                                left.points[left.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
-                            left.points.get( left.size() - 1 ).setControlRight( chain.points.get( 0 ).controlLeft );
-                            if ( chain.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                left.points.get( left.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            left.points[left.size() - 1].setControlRight( chain.points[ 0 ].controlLeft );
+                            if ( chain.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                left.points[left.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
                             copy_start = 1;
                         }
 
-                        if ( chain.points.get( chain.size() - 1 ).getBase().getY() == right.points.get( 0 ).getBase().getY() ) {
+                        if ( chain.points[chain.size() - 1].getBase().getY() == right.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( chain.points.get( chain.size() - 1 ).getControlLeftType() != BezierControlType.None ) {
-                                chain.points.get( chain.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            if ( chain.points[chain.size() - 1].getControlLeftType() != BezierControlType.None ) {
+                                chain.points[chain.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
-                            chain.points.get( chain.size() - 1 ).setControlRight( right.points.get( 0 ).controlLeft );
-                            if ( right.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                chain.points.get( chain.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            chain.points[chain.size() - 1].setControlRight( right.points[ 0 ].controlLeft );
+                            if ( right.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                chain.points[chain.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
                             copy_end = chain.size() - 2;
                         }
 
                         // 追加
                         for ( int i = copy_start; i <= copy_end; i++ ) {
-                            chain.points.get( i ).setID( left.getNextId() );
-                            left.add( chain.points.get( i ) );
+                            chain.points[ i ].setID( left.getNextId() );
+                            left.add( chain.points[ i ] );
                         }
                         for ( int i = 0; i < right.points.Count; i++ ) {
-                            right.points.get( i ).setID( left.getNextId() );
-                            left.add( right.points.get( i ) );
+                            right.points[ i ].setID( left.getNextId() );
+                            left.add( right.points[ i ] );
                         }
                         //this[curve].Remove( id );
                         remove( curve, id );
@@ -515,12 +515,12 @@ namespace cadencii {
                     if ( len < 1 ) {
                         continue;
                     }
-                    int chain_start = (int)bc.points.get( 0 ).getBase().getX();
+                    int chain_start = (int)bc.points[ 0 ].getBase().getX();
                     int chain_end;
                     if ( len < 2 ) {
                         chain_end = chain_start;
                     } else {
-                        chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
+                        chain_end = (int)bc.points[ len - 1 ].getBase().getX();
                     }
                     if ( clock_start < chain_start && chain_start < clock_end && clock_end < chain_end ) {
                         // end ~ chain_endを残す
@@ -585,7 +585,7 @@ namespace cadencii {
         {
             Vector<BezierChain> list = this.get( curve_type );
             for ( int i = 0; i < list.Count; i++ ) {
-                if ( list.get( i ).id == chain_id ) {
+                if ( list[ i ].id == chain_id ) {
                     list.RemoveAt( i );
                     break;
                 }
@@ -613,7 +613,7 @@ namespace cadencii {
                 ret.set( ct, new Vector<BezierChain>() );
                 int count = src.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    ret.get( ct ).Add( (BezierChain)src.get( i ).clone() );
+                    ret.get( ct ).Add( (BezierChain)src[ i ].clone() );
                 }
             }
             return ret;
@@ -634,7 +634,7 @@ namespace cadencii {
             while ( found ) {
                 found = false;
                 for ( int i = 0; i < bc.Count; i++ ) {
-                    if ( bc.get( i ).id == ret ) {
+                    if ( bc[ i ].id == ret ) {
                         found = true;
                         ret++;
                         break;

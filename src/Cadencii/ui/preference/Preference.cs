@@ -1118,7 +1118,7 @@ namespace cadencii
         public String getDefaultSingerName()
         {
             if ( comboDefualtSinger.SelectedIndex >= 0 ) {
-                return m_program_change.get( comboDefualtSinger.SelectedIndex );
+                return m_program_change[ comboDefualtSinger.SelectedIndex ];
             } else {
                 return "Miku";
             }
@@ -1128,7 +1128,7 @@ namespace cadencii
         {
             int index = -1;
             for ( int i = 0; i < m_program_change.Count; i++ ) {
-                if ( m_program_change.get( i ).Equals( value ) ) {
+                if ( m_program_change[ i ].Equals( value ) ) {
                     index = i;
                     break;
                 }
@@ -1204,7 +1204,7 @@ namespace cadencii
         {
             m_utau_singers.Clear();
             for ( int i = 0; i < value.Count; i++ ) {
-                m_utau_singers.Add( (SingerConfig)value.get( i ).clone() );
+                m_utau_singers.Add( (SingerConfig)value[ i ].clone() );
             }
             UpdateUtausingerList();
         }
@@ -1425,8 +1425,8 @@ namespace cadencii
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
 #endif
             if ( 0 <= index && index + 1 < m_utau_singers.Count ) {
-                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
+                SingerConfig buf = (SingerConfig)m_utau_singers[ index ].clone();
+                m_utau_singers.set( index, (SingerConfig)m_utau_singers[ index + 1 ].clone() );
                 m_utau_singers.set( index + 1, buf );
                 UpdateUtausingerList();
                 if (!listSingers.Items[index + 1].Selected) {
@@ -1443,8 +1443,8 @@ namespace cadencii
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
 #endif
             if ( 0 <= index - 1 && index < m_utau_singers.Count ) {
-                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
+                SingerConfig buf = (SingerConfig)m_utau_singers[ index ].clone();
+                m_utau_singers.set( index, (SingerConfig)m_utau_singers[ index - 1 ].clone() );
                 m_utau_singers.set( index - 1, buf );
                 UpdateUtausingerList();
                 if (!listSingers.Items[index - 1].Selected) {
@@ -1575,7 +1575,7 @@ namespace cadencii
             int size = AppManager.editorConfig.AutoVibratoCustom.Count;
             comboAutoVibratoTypeCustom.Items.Clear();
             for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                 comboAutoVibratoTypeCustom.Items.Add( handle );
             }
         }
@@ -1676,12 +1676,12 @@ namespace cadencii
         {
             listSingers.Items.Clear();
             for ( int i = 0; i < m_utau_singers.Count; i++ ) {
-                m_utau_singers.get( i ).Program = i;
+                m_utau_singers[ i ].Program = i;
                 listSingers.AddRow(
                     new String[] { 
-                        m_utau_singers.get( i ).Program + "",
-                        m_utau_singers.get( i ).VOICENAME, 
-                        m_utau_singers.get( i ).VOICEIDSTR } );
+                        m_utau_singers[ i ].Program + "",
+                        m_utau_singers[ i ].VOICENAME, 
+                        m_utau_singers[ i ].VOICEIDSTR } );
             }
         }
 

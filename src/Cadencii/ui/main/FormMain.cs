@@ -591,7 +591,7 @@ namespace cadencii
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
             String renderer = kind.getVersionString();
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
-            tvsq.Track.get( 1 ).changeRenderer( renderer, singers );
+            tvsq.Track[ 1 ].changeRenderer( renderer, singers );
             AppManager.setVsqFile( tvsq );
 
             trackSelector = new TrackSelector( this ); // initializeで引数なしのコンストラクタが呼ばれるのを予防
@@ -1392,7 +1392,7 @@ namespace cadencii
 
             // 表示状態を更新
             for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                 menuLyricCopyVibratoToPreset.DropDownItems[i].Text = handle.getCaption();
             }
         }
@@ -1432,7 +1432,7 @@ namespace cadencii
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             LyricHandle lyric = new LyricHandle( "あ", "a" );
             VibratoHandle vibrato = null;
             int vibrato_delay = 0;
@@ -1455,7 +1455,7 @@ namespace cadencii
                         vibrato_clocks = note_length * 3 / 4;
                     }
                     SynthesizerType type = SynthesizerType.VOCALOID2;
-                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
                     if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
@@ -1856,11 +1856,11 @@ namespace cadencii
                 int start_to_draw_x = controller.getStartToDrawX();
                 int start_to_draw_y = controller.getStartToDrawY();
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack vsq_track = vsq.Track.get( selected );
+                VsqTrack vsq_track = vsq.Track[ selected ];
 
                 for ( int i = 0; i < count; i++ )
                 {
-                    DrawObject dobj = dobj_list.get( i );
+                    DrawObject dobj = dobj_list[ i ];
                     int x = dobj.mRectangleInPixel.x + key_width - start_to_draw_x;
                     int y = dobj.mRectangleInPixel.y - start_to_draw_y;
                     if ( mouse_position.x < x )
@@ -2210,7 +2210,7 @@ namespace cadencii
                 return;
             }
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
 
             // 選択されている音符のうち、最も前方にあるものがどれかを調べる
             int min_clock = int.MaxValue;
@@ -2266,7 +2266,7 @@ namespace cadencii
                 return;
             }
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
 
             // 選択されている音符のうち、最も後方にあるものがどれかを調べる
             int max_clock = int.MinValue;
@@ -3155,7 +3155,7 @@ namespace cadencii
 
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
 
             // 後続に、連続している音符が何個あるか検査
             int maxcount = SymbolTable.getMaxDivisions(); // 音節の分割によって，高々maxcount個までにしか分割されない
@@ -3971,7 +3971,7 @@ namespace cadencii
             work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
             int c = work.Count;
             for ( int j = 0; j < c; j++ ) {
-                ValuePair<String, ToolStripMenuItem[]> item = work.get( j );
+                ValuePair<String, ToolStripMenuItem[]> item = work[ j ];
                 if ( dict.containsKey( item.getKey() ) ) {
                     Keys[] k = dict.get( item.getKey() );
                     String s = Utility.getShortcutDisplayString( k );
@@ -4844,7 +4844,7 @@ namespace cadencii
             int start = 0;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             int selectedid = AppManager.itemSelection.getLastEvent().original.InternalID;
             int numEvents = vsq_track.getEventCount();
             for ( int i = 0; i < numEvents; i++ ) {
@@ -4913,8 +4913,8 @@ namespace cadencii
                         indx++;
                         VsqEvent item = vsq_track.getEvent( index );
                         new_events[indx] = (VsqEvent)item.clone();
-                        new_events[indx].ID.LyricHandle.L0.Phrase = new_phrases.get( indx );
-                        new_events[indx].ID.LyricHandle.L0.setPhoneticSymbol( new_symbols.get( indx ) );
+                        new_events[indx].ID.LyricHandle.L0.Phrase = new_phrases[ indx ];
+                        new_events[indx].ID.LyricHandle.L0.setPhoneticSymbol( new_symbols[ indx ] );
                         AppManager.applyUtauParameter( vsq_track, new_events[indx] );
                         if ( indx + 1 >= new_phrases.Count ) {
                             break;
@@ -4946,7 +4946,7 @@ namespace cadencii
             VsqEvent ev = item.original;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
             SynthesizerType type = SynthesizerType.VOCALOID2;
             if ( kind == RendererKind.VOCALOID1 ) {
                 type = SynthesizerType.VOCALOID1;
@@ -5004,7 +5004,7 @@ namespace cadencii
             SynthesizerType type = SynthesizerType.VOCALOID2;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
             if ( kind == RendererKind.VOCALOID1 ) {
                 type = SynthesizerType.VOCALOID1;
             }
@@ -5079,7 +5079,7 @@ namespace cadencii
             int max = int.MinValue;
             int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
             Vector<Integer> add_required = new Vector<Integer>();
-            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = itr.next();
                 if ( premeasure <= ve.Clock ) {
                     add_required.Add( ve.InternalID );
@@ -5094,7 +5094,7 @@ namespace cadencii
                 if ( vct.isScalar() || vct.isAttachNote() ) {
                     continue;
                 }
-                VsqBPList target = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
+                VsqBPList target = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( vct.getName() );
                 if ( target == null ) {
                     continue;
                 }
@@ -5133,7 +5133,7 @@ namespace cadencii
             AppManager.itemSelection.clearPoint();
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             int premeasureclock = vsq.getPreMeasureClocks();
             Vector<Integer> add_required = new Vector<Integer>();
             for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
@@ -5167,7 +5167,7 @@ namespace cadencii
 
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
 
             if ( AppManager.itemSelection.getEventCount() > 0 ) {
                 Vector<Integer> ids = new Vector<Integer>();
@@ -5188,7 +5188,7 @@ namespace cadencii
                     int end_clock = AppManager.mWholeSelectedInterval.getEnd();
                     Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
                     Vector<CurveType> types = new Vector<CurveType>();
-                    VsqTrack work_vsq_track = work.Track.get( selected );
+                    VsqTrack work_vsq_track = work.Track[ selected ];
                     foreach ( CurveType vct in Utility.CURVE_USAGE ) {
                         if ( vct.isScalar() || vct.isAttachNote() ) {
                             continue;
@@ -5202,13 +5202,13 @@ namespace cadencii
                     }
                     Vector<String> strs = new Vector<String>();
                     for ( int i = 0; i < types.Count; i++ ) {
-                        strs.Add( types.get( i ).getName() );
+                        strs.Add( types[ i ].getName() );
                     }
                     CadenciiCommand delete_curve = new CadenciiCommand(
                         VsqCommand.generateCommandTrackCurveEditRange( selected, strs, curves ) );
                     work.executeCommand( delete_curve );
                     if ( contains_aicon ) {
-                        work.Track.get( selected ).reflectDynamics();
+                        work.Track[ selected ].reflectDynamics();
                     }
                     CadenciiCommand run2 = new CadenciiCommand( VsqCommand.generateCommandReplace( work ) );
                     AppManager.editHistory.register( vsq.executeCommand( run2 ) );
@@ -5218,7 +5218,7 @@ namespace cadencii
                     if ( contains_aicon ) {
                         VsqFileEx work = (VsqFileEx)vsq.clone();
                         work.executeCommand( run );
-                        VsqTrack vsq_track_copied = work.Track.get( selected );
+                        VsqTrack vsq_track_copied = work.Track[ selected ];
                         vsq_track_copied.reflectDynamics();
                         run2 = VsqFileEx.generateCommandTrackReplace( selected,
                                                                       vsq_track_copied,
@@ -5316,7 +5316,7 @@ namespace cadencii
                     }
                     count = remove_clock_queue.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        list.remove( remove_clock_queue.get( i ) );
+                        list.remove( remove_clock_queue[ i ] );
                     }
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandTrackCurveReplace( selected,
@@ -5354,8 +5354,8 @@ namespace cadencii
                     Vector<VsqEvent> paste = new Vector<VsqEvent>();
                     int count = copied_events.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        VsqEvent item = (VsqEvent)copied_events.get( i ).clone();
-                        item.Clock = copied_events.get( i ).Clock + dclock;
+                        VsqEvent item = (VsqEvent)copied_events[ i ].clone();
+                        item.Clock = copied_events[ i ].Clock + dclock;
                         paste.Add( item );
                     }
                     add_event = VsqCommand.generateCommandEventAddRange(
@@ -5370,7 +5370,7 @@ namespace cadencii
                 int[] clocks = new int[count];
                 int[] tempos = new int[count];
                 for ( int i = 0; i < count; i++ ) {
-                    TempoTableEntry item = copied_tempo.get( i );
+                    TempoTableEntry item = copied_tempo[ i ];
                     clocks[i] = item.Clock + dclock;
                     tempos[i] = item.Tempo;
                 }
@@ -5385,7 +5385,7 @@ namespace cadencii
             if ( copied_timesig.Count > 0 ) {
                 // 拍子変更の貼付けを実行
                 int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
-                int min_barcount = copied_timesig.get( 0 ).BarCount;
+                int min_barcount = copied_timesig[ 0 ].BarCount;
                 for ( Iterator<TimeSigTableEntry> itr = copied_timesig.iterator(); itr.hasNext(); ) {
                     TimeSigTableEntry tste = itr.next();
                     min_barcount = Math.Min( min_barcount, tste.BarCount );
@@ -5396,7 +5396,7 @@ namespace cadencii
                 int[] numerators = new int[count];
                 int[] denominators = new int[count];
                 for ( int i = 0; i < count; i++ ) {
-                    TimeSigTableEntry item = copied_timesig.get( i );
+                    TimeSigTableEntry item = copied_timesig[ i ];
                     barcounts[i] = item.BarCount + dbarcount;
                     numerators[i] = item.Numerator;
                     denominators[i] = item.Denominator;
@@ -5435,7 +5435,7 @@ namespace cadencii
                     if ( curve.isAttachNote() ) {
                         //todo: FormMain+PasteEvent; VibratoRate, VibratoDepthカーブのペースト処理
                     } else {
-                        VsqBPList target = (VsqBPList)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() ).clone();
+                        VsqBPList target = (VsqBPList)AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( curve.getName() ).clone();
                         int count = list.size();
 #if DEBUG
                         sout.println( "FormMain#pasteEvent; list.getCount()=" + count );
@@ -5586,7 +5586,7 @@ namespace cadencii
                 ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
                 for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
                     CurveType vct = Utility.CURVE_USAGE[i];
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
+                    VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( vct.getName() );
                     if ( list == null ) {
                         continue;
                     }
@@ -5670,7 +5670,7 @@ namespace cadencii
                     // 範囲内のデータ点を追加する
                     ce.beziers.put( trackSelector.getSelectedCurve(), tmp_bezier );
                     CurveType curve = trackSelector.getSelectedCurve();
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
+                    VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( curve.getName() );
                     if ( list != null ) {
                         VsqBPList tmp_bplist = new VsqBPList( list.getName(), list.getDefault(), list.getMinimum(), list.getMaximum() );
                         int c = list.size();
@@ -5688,7 +5688,7 @@ namespace cadencii
                     // ベジエ曲線がコピーされなかった場合
                     // AppManager.selectedPointIDIteratorの中身のみを選択
                     CurveType curve = trackSelector.getSelectedCurve();
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() );
+                    VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( curve.getName() );
                     if ( list != null ) {
                         VsqBPList tmp_bplist = new VsqBPList( curve.getName(), curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
                         for ( Iterator<Long> itr = AppManager.itemSelection.getPointIDIterator(); itr.hasNext(); ) {
@@ -5749,7 +5749,7 @@ namespace cadencii
                 // BPListに削除処理を施す
                 for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
                     CurveType curve = Utility.CURVE_USAGE[i];
-                    VsqBPList list = work.Track.get( track ).getCurve( curve.getName() );
+                    VsqBPList list = work.Track[ track ].getCurve( curve.getName() );
                     if ( list == null ) {
                         continue;
                     }
@@ -5862,8 +5862,8 @@ namespace cadencii
                 if ( len < 2 ) {
                     continue;
                 }
-                int chain_start = (int)bc.points.get( 0 ).getBase().getX();
-                int chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
+                int chain_start = (int)bc.points[ 0 ].getBase().getX();
+                int chain_end = (int)bc.points[ len - 1 ].getBase().getX();
                 BezierChain add = null;
                 if ( start < chain_start && chain_start < end && end < chain_end ) {
                     // (1) chain_start ~ end をコピー
@@ -5908,10 +5908,10 @@ namespace cadencii
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
-            VsqTrack track = (VsqTrack)vsq.Track.get( selected ).clone();
+            VsqTrack track = (VsqTrack)vsq.Track[ selected ].clone();
             track.setName( track.getName() + " (1)" );
             CadenciiCommand run = VsqFileEx.generateCommandAddTrack( track,
-                                                                     vsq.Mixer.Slave.get( selected - 1 ),
+                                                                     vsq.Mixer.Slave[ selected - 1 ],
                                                                      vsq.Track.Count,
                                                                      vsq.AttachedCurves.get( selected - 1 ) ); ;
             AppManager.editHistory.register( vsq.executeCommand( run ) );
@@ -5930,7 +5930,7 @@ namespace cadencii
                 int selected = AppManager.getSelected();
                 VsqFileEx vsq = AppManager.getVsqFile();
                 ib = new InputBox( _( "Input new name of track" ) );
-                ib.setResult( vsq.Track.get( selected ).getName() );
+                ib.setResult( vsq.Track[ selected ].getName() );
                 ib.Location = getFormPreferedLocation( ib );
                 DialogResult dr = AppManager.showModalDialog( ib, this );
                 if( dr == DialogResult.OK ){
@@ -5957,7 +5957,7 @@ namespace cadencii
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( AppManager.showMessageBox(
-                    PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track.get( selected ).getName() ),
+                    PortUtil.formatMessage( _( "Do you wish to remove track? {0} : '{1}'" ), selected, vsq.Track[ selected ].getName() ),
                     _APP_NAME,
                     cadencii.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
                     cadencii.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE ) == DialogResult.Yes ) {
@@ -6246,7 +6246,7 @@ namespace cadencii
                     Polygon env = new Polygon(new int[7], new int[7], 7);
                     ByRef<Integer> overlap_x = new ByRef<Integer>(0);
                     for (int track = 1; track < track_count; track++) {
-                        VsqTrack vsq_track = vsq.Track.get(track);
+                        VsqTrack vsq_track = vsq.Track[track];
                         Vector<DrawObject> tmp = AppManager.mDrawObjects[track - 1];
                         RendererKind kind = VsqFileEx.getTrackRendererKind(vsq_track);
                         AppManager.mDrawIsUtau[track - 1] = kind == RendererKind.UTAU;
@@ -6306,7 +6306,7 @@ namespace cadencii
                             VsqEvent singer_at_clock = vsq_track.getSingerEventAt(timesig);
                             int program = singer_at_clock.ID.IconHandle.Program;
                             if (0 <= program && program < AppManager.editorConfig.UtauSingers.Count) {
-                                SingerConfig sc = AppManager.editorConfig.UtauSingers.get(program);
+                                SingerConfig sc = AppManager.editorConfig.UtauSingers[program];
                                 // 通常のUTAU音源
                                 if (AppManager.mUtauVoiceDB.containsKey(sc.VOICEIDSTR)) {
                                     UtauVoiceDB db = AppManager.mUtauVoiceDB.get(sc.VOICEIDSTR);
@@ -6432,7 +6432,7 @@ namespace cadencii
                         // 重複部分があるかどうかを判定
                         int count = tmp.Count;
                         for (int i = 0; i < count - 1; i++) {
-                            DrawObject itemi = tmp.get(i);
+                            DrawObject itemi = tmp[i];
                             DrawObjectType parent_type = itemi.mType;
                             /*if ( itemi.type != DrawObjectType.Note ) {
                                 continue;
@@ -6444,7 +6444,7 @@ namespace cadencii
                                 continue;
                             }
                             for (int j = i + 1; j < count; j++) {
-                                DrawObject itemj = tmp.get(j);
+                                DrawObject itemj = tmp[j];
                                 if ((itemj.mType == DrawObjectType.Note && parent_type != DrawObjectType.Note) ||
                                      (itemj.mType != DrawObjectType.Note && parent_type == DrawObjectType.Note)) {
                                     continue;
@@ -6496,7 +6496,7 @@ namespace cadencii
             menuFileRecent.DropDownItems.Clear();
             if ( AppManager.editorConfig.RecentFiles != null ) {
                 for ( int i = 0; i < AppManager.editorConfig.RecentFiles.Count; i++ ) {
-                    String item = AppManager.editorConfig.RecentFiles.get( i );
+                    String item = AppManager.editorConfig.RecentFiles[ i ];
                     if ( item == null ) {
                         continue;
                     }
@@ -6924,7 +6924,7 @@ namespace cadencii
                     #region 拍子の変更
                     int c = vsq.TimesigTable.Count;
                     for ( int i = 0; i < c; i++ ) {
-                        TimeSigTableEntry itemi = vsq.TimesigTable.get( i );
+                        TimeSigTableEntry itemi = vsq.TimesigTable[ i ];
                         int clock = itemi.Clock;
                         int barcount = itemi.BarCount;
                         int x = AppManager.xCoordFromClocks( clock );
@@ -6959,7 +6959,7 @@ namespace cadencii
                     g.setFont( SMALL_FONT );
                     c = vsq.TempoTable.Count;
                     for ( int i = 0; i < c; i++ ) {
-                        TempoTableEntry itemi = vsq.TempoTable.get( i );
+                        TempoTableEntry itemi = vsq.TempoTable[ i ];
                         int clock = itemi.Clock;
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( width < x ) {
@@ -7491,7 +7491,7 @@ namespace cadencii
                 int width = pictPianoRoll.getWidth();
                 int height = pictPianoRoll.getHeight();
                 int key_width = AppManager.keyWidth;
-                VsqTrack track = AppManager.getVsqFile().Track.get( selected );
+                VsqTrack track = AppManager.getVsqFile().Track[ selected ];
                 track.sortEvent();
                 if( tab ) {
                     int clock = 0;
@@ -7693,7 +7693,7 @@ namespace cadencii
             AppManager.mAddingEvent = null;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+            RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
             int clock = AppManager.getCurrentClock();
             mLastClock = clock;
             double now = PortUtil.getCurrentTime();
@@ -7845,7 +7845,7 @@ namespace cadencii
                         int stdx = controller.getStartToDrawX();
                         int stdy = controller.getStartToDrawY();
                         for ( int i = 0; i < AppManager.mDrawObjects[selected - 1].Count; i++ ) {
-                            DrawObject dobj = AppManager.mDrawObjects[selected - 1].get( i );
+                            DrawObject dobj = AppManager.mDrawObjects[selected - 1][ i ];
                             if ( dobj.mRectangleInPixel.x + controller.getStartToDrawX() + dobj.mRectangleInPixel.width - stdx < 0 ) {
                                 continue;
                             } else if ( pictPianoRoll.getWidth() < dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx ) {
@@ -7861,7 +7861,7 @@ namespace cadencii
                                 VsqID item2 = null;
                                 int internal_id = -1;
                                 internal_id = dobj.mInternalID;
-                                for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
+                                for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[ selected ].getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = itr.next();
                                     if ( ve.InternalID == dobj.mInternalID ) {
                                         item2 = (VsqID)ve.ID.clone();
@@ -8014,7 +8014,7 @@ namespace cadencii
                             (int)(100 * controller.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
-                            for ( Iterator<VsqEvent> itr2 = vsq.Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
+                            for ( Iterator<VsqEvent> itr2 = vsq.Track[ selected ].getEventIterator(); itr2.hasNext(); ) {
                                 VsqEvent ev = itr2.next();
                                 if ( ev.InternalID == dobj.mInternalID ) {
                                     selectedEvent = ev;
@@ -8028,7 +8028,7 @@ namespace cadencii
                                 }
 #endif
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
                                 if ( kind == RendererKind.VOCALOID1 ) {
                                     type = SynthesizerType.VOCALOID1;
                                 }
@@ -8082,7 +8082,7 @@ namespace cadencii
                             (int)(100 * controller.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
-                            for ( Iterator<VsqEvent> itr2 = vsq.Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
+                            for ( Iterator<VsqEvent> itr2 = vsq.Track[ selected ].getEventIterator(); itr2.hasNext(); ) {
                                 VsqEvent ev = itr2.next();
                                 if ( ev.InternalID == dobj.mInternalID ) {
                                     selectedEvent = ev;
@@ -8096,7 +8096,7 @@ namespace cadencii
                                 }
 #endif
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
 #if DEBUG
                                 sout.println( "FormMain#pictPianoRoll_MouseDoubleClick; kind=" + kind );
 #endif
@@ -8245,7 +8245,7 @@ namespace cadencii
 
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             int key_width = AppManager.keyWidth;
 
             // マウス位置にある音符を検索
@@ -8285,7 +8285,7 @@ namespace cadencii
                         Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                         int count = target_list.Count;
                         for ( int i = 0; i < count; i++ ) {
-                            DrawObject dobj = target_list.get( i );
+                            DrawObject dobj = target_list[ i ];
                             if ( dobj.mRectangleInPixel.width <= dobj.mVibratoDelayInPixel ) {
                                 continue;
                             }
@@ -9080,7 +9080,7 @@ namespace cadencii
             EditMode edit_mode = AppManager.getEditMode();
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             CurveType selected_curve = trackSelector.getSelectedCurve();
             int stdx = controller.getStartToDrawX();
             int stdy = controller.getStartToDrawY();
@@ -9338,7 +9338,7 @@ namespace cadencii
                                                                                            clocks,
                                                                                            values );
                         copied_vsq.executeCommand( vsq_command );
-                        VsqTrack copied = (VsqTrack)copied_vsq.Track.get( selected ).clone();
+                        VsqTrack copied = (VsqTrack)copied_vsq.Track[ selected ].clone();
                         copied.reflectDynamics();
                         run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                      copied,
@@ -9707,7 +9707,7 @@ namespace cadencii
             // VOCALOID1, 2
             int c = VSTiDllManager.vocaloidDriver.Count;
             for ( int i = 0; i < c; i++ ) {
-                VocaloidDriver vd = VSTiDllManager.vocaloidDriver.get( i );
+                VocaloidDriver vd = VSTiDllManager.vocaloidDriver[ i ];
                 boolean chkv = true;
                 if ( vd == null ) {
                     chkv = false;
@@ -9773,7 +9773,7 @@ namespace cadencii
 #if !JAVA
             int c = VSTiDllManager.vocaloidDriver.Count;
             for ( int i = 0; i < c; i++ ) {
-                VocaloidDriver vd = VSTiDllManager.vocaloidDriver.get( i );
+                VocaloidDriver vd = VSTiDllManager.vocaloidDriver[ i ];
                 boolean chk = true;
                 if ( vd == null ) {
                     chk = false;
@@ -9901,7 +9901,7 @@ namespace cadencii
                 AppManager.getVsqFile().Mixer.MasterPanpot = panpot;
             } else if ( track > 0 ) {
                 // slave
-                AppManager.getVsqFile().Mixer.Slave.get( track - 1 ).Panpot = panpot;
+                AppManager.getVsqFile().Mixer.Slave[ track - 1 ].Panpot = panpot;
             } else {
                 AppManager.getBgm( -track - 1 ).panpot = panpot;
             }
@@ -9915,7 +9915,7 @@ namespace cadencii
             if ( track == 0 ) {
                 AppManager.getVsqFile().Mixer.MasterFeder = feder;
             } else if ( track > 0 ) {
-                AppManager.getVsqFile().Mixer.Slave.get( track - 1 ).Feder = feder;
+                AppManager.getVsqFile().Mixer.Slave[ track - 1 ].Feder = feder;
             } else {
                 AppManager.getBgm( -track - 1 ).feder = feder;
             }
@@ -10073,7 +10073,7 @@ namespace cadencii
             }
 
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             VsqTrack work = (VsqTrack)vsq_track.clone();
 
             if ( AppManager.mAddingEvent == null ) {
@@ -10803,10 +10803,10 @@ namespace cadencii
         public void menuFileSaveNamed_Click( Object sender, EventArgs e )
         {
             for ( int track = 1; track < AppManager.getVsqFile().Track.Count; track++ ) {
-                if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
+                if ( AppManager.getVsqFile().Track[ track ].getEventCount() == 0 ) {
                     AppManager.showMessageBox(
                         PortUtil.formatMessage(
-                            _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
+                            _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track[ track ].getName()
                         ),
                         _APP_NAME,
                         cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
@@ -10834,7 +10834,7 @@ namespace cadencii
 
         public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
         {
-            menuFileExportWave.Enabled = (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0);
+            menuFileExportWave.Enabled = (AppManager.getVsqFile().Track[AppManager.getSelected()].getEventCount() > 0);
         }
 
         public void menuFileExportMidi_Click( Object sender, EventArgs e )
@@ -10846,7 +10846,7 @@ namespace cadencii
             VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
 
             for ( int i = 0; i < vsq.Track.Count; i++ ) {
-                VsqTrack track = vsq.Track.get( i );
+                VsqTrack track = vsq.Track[ i ];
                 int notes = 0;
                 for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent obj = itr.next();
@@ -10901,7 +10901,7 @@ namespace cadencii
                             if ( !mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                                 continue;
                             }
-                            VsqTrack track = vsq.Track.get( i );
+                            VsqTrack track = vsq.Track[ i ];
                             count++;
                             fs.write( new byte[] { 0x4d, 0x54, 0x72, 0x6b }, 0, 4 );
                             //データ長。とりあえず0を入れておく
@@ -10922,7 +10922,7 @@ namespace cadencii
                             if ( print_tempo && count == 0 ) {
                                 Vector<MidiEvent> tempo_events = vsq.generateTempoChange();
                                 for ( int j = 0; j < tempo_events.Count; j++ ) {
-                                    events.Add( tempo_events.get( j ) );
+                                    events.Add( tempo_events[ j ] );
                                 }
                             }
 
@@ -10930,7 +10930,7 @@ namespace cadencii
                             if ( mDialogMidiImportAndExport.isTimesig() && count == 0 ) {
                                 Vector<MidiEvent> timesig_events = vsq.generateTimeSig();
                                 for ( int j = 0; j < timesig_events.Count; j++ ) {
-                                    events.Add( timesig_events.get( j ) );
+                                    events.Add( timesig_events[ j ] );
                                 }
                             }
 
@@ -11024,35 +11024,35 @@ namespace cadencii
                             int events_count = events.Count;
                             if ( events_count > 0 ) {
                                 for ( int j = 0; j < events_count; j++ ) {
-                                    if ( events.get( j ).clock > 0 && meta.Count > 0 ) {
+                                    if ( events[ j ].clock > 0 && meta.Count > 0 ) {
                                         for ( int k = 0; k < meta.Count; k++ ) {
                                             VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
-                                            meta.get( k ).writeData( fs );
+                                            meta[ k ].writeData( fs );
                                         }
                                         meta.Clear();
                                         last_clock = 0;
                                     }
-                                    long clock = events.get( j ).clock;
-                                    while ( vocaloid_nrpn_midievent.Count > 0 && vocaloid_nrpn_midievent.get( 0 ).clock < clock ) {
-                                        VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(vocaloid_nrpn_midievent.get( 0 ).clock - last_clock) );
-                                        last_clock = vocaloid_nrpn_midievent.get( 0 ).clock;
-                                        vocaloid_nrpn_midievent.get( 0 ).writeData( fs );
+                                    long clock = events[ j ].clock;
+                                    while ( vocaloid_nrpn_midievent.Count > 0 && vocaloid_nrpn_midievent[ 0 ].clock < clock ) {
+                                        VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(vocaloid_nrpn_midievent[ 0 ].clock - last_clock) );
+                                        last_clock = vocaloid_nrpn_midievent[ 0 ].clock;
+                                        vocaloid_nrpn_midievent[ 0 ].writeData( fs );
                                         vocaloid_nrpn_midievent.RemoveAt( 0 );
                                     }
-                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(events.get( j ).clock - last_clock) );
-                                    events.get( j ).writeData( fs );
-                                    last_clock = events.get( j ).clock;
+                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(events[ j ].clock - last_clock) );
+                                    events[ j ].writeData( fs );
+                                    last_clock = events[ j ].clock;
                                 }
                             } else {
                                 int c = vocaloid_nrpn_midievent.Count;
                                 for ( int k = 0; k < meta.Count; k++ ) {
                                     VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
-                                    meta.get( k ).writeData( fs );
+                                    meta[ k ].writeData( fs );
                                 }
                                 meta.Clear();
                                 last_clock = 0;
                                 for ( int j = 0; j < c; j++ ) {
-                                    MidiEvent item = vocaloid_nrpn_midievent.get( j );
+                                    MidiEvent item = vocaloid_nrpn_midievent[ j ];
                                     long clock = item.clock;
                                     VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(clock - last_clock) );
                                     item.writeData( fs );
@@ -11253,14 +11253,14 @@ namespace cadencii
             vsq.removePart( 0, vsq.getPreMeasureClocks() );
             UstFile ust = new UstFile( vsq, selected );
             // voice dirを設定
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             VsqEvent singer = vsq_track.getSingerEventAt( 0 );
             String voice_dir = "";
             if ( singer != null ) {
                 int program = singer.ID.IconHandle.Program;
                 int size = AppManager.editorConfig.UtauSingers.Count;
                 if ( 0 <= program && program < size ) {
-                    SingerConfig cfg = AppManager.editorConfig.UtauSingers.get( program );
+                    SingerConfig cfg = AppManager.editorConfig.UtauSingers[ program ];
                     voice_dir = cfg.VOICEIDSTR;
                 }
             }
@@ -11375,11 +11375,11 @@ namespace cadencii
 
             // 出力処理
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file_name ), "UTF-8" ) );
-                String oto_ini = AppManager.editorConfig.UtauSingers.get( 0 ).VOICEIDSTR;
+                String oto_ini = AppManager.editorConfig.UtauSingers[ 0 ].VOICEIDSTR;
                 // 先頭に登録されている歌手変更を検出
                 VsqEvent singer = null;
                 int c = vsq_track.getEventCount();
@@ -11394,7 +11394,7 @@ namespace cadencii
                 if ( singer != null ) {
                     int indx = singer.ID.IconHandle.Program;
                     if ( 0 <= indx && indx < AppManager.editorConfig.UtauSingers.Count ) {
-                        oto_ini = AppManager.editorConfig.UtauSingers.get( indx ).VOICEIDSTR;
+                        oto_ini = AppManager.editorConfig.UtauSingers[ indx ].VOICEIDSTR;
                     }
                 }
 
@@ -11560,7 +11560,7 @@ namespace cadencii
 
                 // トラック名を取得
                 for ( int j = 0; j < events_count; j++ ) {
-                    MidiEvent item = events.get( j );
+                    MidiEvent item = events[ j ];
                     if ( item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03 ) {
                         int[] d = new int[item.data.Length];
                         for ( int k = 0; k < item.data.Length; k++ ) {
@@ -11573,7 +11573,7 @@ namespace cadencii
 
                 // イベント数を数える
                 for ( int j = 0; j < events_count; j++ ) {
-                    MidiEvent item = events.get( j );
+                    MidiEvent item = events[ j ];
                     if ( (item.firstByte & 0xf0) == 0x90 && item.data.Length > 1 && item.data[1] > 0x00 ) {
                         notes++;
                     }
@@ -11610,13 +11610,13 @@ namespace cadencii
                 int last_barcount = 0;
                 int events_Count = events.Count;
                 for ( int j = 0; j < events_Count; j++ ) {
-                    MidiEvent itemj = events.get( j );
+                    MidiEvent itemj = events[ j ];
                     if ( !tempo_added && itemj.firstByte == 0xff && itemj.data.Length >= 4 && itemj.data[0] == 0x51 ) {
                         boolean contains_same_clock = false;
                         int size = tempo.TempoTable.Count;
                         // 同時刻のテンポ変更は、最初以外無視する
                         for ( int k = 0; k < size; k++ ) {
-                            if ( tempo.TempoTable.get( k ).Clock == itemj.clock ) {
+                            if ( tempo.TempoTable[ k ].Clock == itemj.clock ) {
                                 contains_same_clock = true;
                                 break;
                             }
@@ -11639,7 +11639,7 @@ namespace cadencii
                         int size = tempo.TimesigTable.Count;
                         boolean contains_same_clock = false;
                         for ( int k = 0; k < size; k++ ) {
-                            if ( tempo.TimesigTable.get( k ).Clock == itemj.clock ) {
+                            if ( tempo.TimesigTable[ k ].Clock == itemj.clock ) {
                                 contains_same_clock = true;
                                 break;
                             }
@@ -11668,7 +11668,7 @@ namespace cadencii
             boolean contains_zero = false;
             int c = tempo.TempoTable.Count;
             for ( int i = 0; i < c; i++ ) {
-                if ( tempo.TempoTable.get( i ).Clock == 0 ) {
+                if ( tempo.TempoTable[ i ].Clock == 0 ) {
                     contains_zero = true;
                     break;
                 }
@@ -11685,7 +11685,7 @@ namespace cadencii
             c = tempo.TimesigTable.Count;
             // <=
             for ( int i = 0; i < c; i++ ) {
-                if ( tempo.TimesigTable.get( i ).Clock == 0 ) {
+                if ( tempo.TimesigTable[ i ].Clock == 0 ) {
                     contains_zero = true;
                     break;
                 }
@@ -11701,7 +11701,7 @@ namespace cadencii
             }
             VsqFileEx copy_src = (VsqFileEx)tempo.clone();
             if ( sec_at_premeasure != 0.0 ) {
-                int t = work.TempoTable.get( 0 ).Tempo;
+                int t = work.TempoTable[ 0 ].Tempo;
                 VsqFileEx.shift( copy_src, sec_at_premeasure, t );
             }
             tempo.updateTempoInfo();
@@ -11724,7 +11724,7 @@ namespace cadencii
                 Vector<TempoTableEntry> list = copy_src.TempoTable;
                 int list_count = list.Count;
                 for ( int i = 0; i < list_count; i++ ) {
-                    TempoTableEntry item = list.get( i );
+                    TempoTableEntry item = list[ i ];
                     work.TempoTable.Add( new TempoTableEntry( item.Clock, item.Tempo, item.Time ) );
                 }
                 work.updateTempoInfo();
@@ -11736,7 +11736,7 @@ namespace cadencii
                 Vector<TimeSigTableEntry> list = tempo.TimesigTable;
                 int list_count = list.Count;
                 for ( int i = 0; i < list_count; i++ ) {
-                    TimeSigTableEntry item = list.get( i );
+                    TimeSigTableEntry item = list[ i ];
                     work.TimesigTable.Add(
                         new TimeSigTableEntry(
                             item.Clock,
@@ -11991,7 +11991,7 @@ namespace cadencii
                         // トラック数の上限
                         break;
                     }
-                    dst.Track.Add( vsq.Track.get( i ) );
+                    dst.Track.Add( vsq.Track[ i ] );
                     dst.AttachedCurves.add( new BezierCurves() );
                     dst.Mixer.Slave.Add( new VsqMixerEntry() );
                 }
@@ -12042,8 +12042,8 @@ namespace cadencii
             for ( int track = 1; track < vsq.Track.Count; track++ ) {
                 mDialogMidiImportAndExport.listTrack.AddRow( new String[] {
                     track + "",
-                    vsq.Track.get( track ).getName(),
-                    vsq.Track.get( track ).getEventCount() + "" }, true );
+                    vsq.Track[ track ].getName(),
+                    vsq.Track[ track ].getEventCount() + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             mDialogMidiImportAndExport.setTempo( false );
@@ -12073,7 +12073,7 @@ namespace cadencii
                 // テンポテーブルを置き換え
                 replace.TempoTable.Clear();
                 for ( int i = 0; i < vsq.TempoTable.Count; i++ ) {
-                    replace.TempoTable.Add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
+                    replace.TempoTable.Add( (TempoTableEntry)vsq.TempoTable[ i ].clone() );
                 }
                 replace.updateTempoInfo();
                 replace.updateTotalClocks();
@@ -12083,7 +12083,7 @@ namespace cadencii
                 // 拍子をリプレースする場合
                 replace.TimesigTable.Clear();
                 for ( int i = 0; i < vsq.TimesigTable.Count; i++ ) {
-                    replace.TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
+                    replace.TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable[ i ].clone() );
                 }
                 replace.updateTimesigInfo();
             }
@@ -12095,7 +12095,7 @@ namespace cadencii
                 }
                 if ( !mDialogMidiImportAndExport.isTempo() ) {
                     // テンポをリプレースしない場合。インポートするトラックのクロックを調節する
-                    for ( Iterator<VsqEvent> itr2 = vsq.Track.get( track ).getEventIterator(); itr2.hasNext(); ) {
+                    for ( Iterator<VsqEvent> itr2 = vsq.Track[ track ].getEventIterator(); itr2.hasNext(); ) {
                         VsqEvent item = itr2.next();
                         if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
                             continue;
@@ -12117,7 +12117,7 @@ namespace cadencii
 
                     // コントロールカーブをシフト
                     foreach ( CurveType ct in Utility.CURVE_USAGE ) {
-                        VsqBPList item = vsq.Track.get( track ).getCurve( ct.getName() );
+                        VsqBPList item = vsq.Track[ track ].getCurve( ct.getName() );
                         if ( item == null ) {
                             continue;
                         }
@@ -12131,7 +12131,7 @@ namespace cadencii
                                 repl.add( clock_new, value );
                             }
                         }
-                        vsq.Track.get( track ).setCurve( ct.getName(), repl );
+                        vsq.Track[ track ].setCurve( ct.getName(), repl );
                     }
 
                     // ベジエカーブをシフト
@@ -12158,7 +12158,7 @@ namespace cadencii
                     }
                 }
                 replace.Mixer.Slave.Add( new VsqMixerEntry() );
-                replace.Track.Add( vsq.Track.get( track ) );
+                replace.Track.Add( vsq.Track[ track ] );
                 replace.AttachedCurves.add( vsq.AttachedCurves.get( track - 1 ) );
             }
 
@@ -12365,7 +12365,7 @@ namespace cadencii
                     AppManager.editorConfig.DefaultDEMaccent = dlg.getDEMaccent();
                     if ( dlg.getApplyCurrentTrack() ) {
                         VsqFileEx vsq = AppManager.getVsqFile();
-                        VsqTrack vsq_track = vsq.Track.get( selected );
+                        VsqTrack vsq_track = vsq.Track[ selected ];
                         VsqTrack copy = (VsqTrack)vsq_track.clone();
                         boolean changed = false;
                         for ( int i = 0; i < copy.getEventCount(); i++ ) {
@@ -12629,7 +12629,7 @@ namespace cadencii
                     mDialogPreference.copyResamplersConfig( new_resamplers, new_with_wine );
                     AppManager.editorConfig.clearResampler();
                     for ( int i = 0; i < new_resamplers.Count; i++ ) {
-                        AppManager.editorConfig.addResampler( new_resamplers.get( i ), new_with_wine.get( i ) );
+                        AppManager.editorConfig.addResampler( new_resamplers[ i ], new_with_wine[ i ] );
                     }
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
                     AppManager.editorConfig.WavtoolWithWine = mDialogPreference.isWavtoolWithWine();
@@ -12750,7 +12750,7 @@ namespace cadencii
                     AppManager.editorConfig.WineTopBuiltin = mDialogPreference.isWineBuiltin();
                     AppManager.editorConfig.UseWideCharacterWorkaround = mDialogPreference.isEnableWideCharacterWorkaround();
 
-                    trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
+                    trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track[AppManager.getSelected()] ) );
                     trackSelector.updateVisibleCurves();
 
                     updateRendererMenu();
@@ -12883,8 +12883,8 @@ namespace cadencii
                             AppManager.editorConfig.SpecialShortcutGoToFirst = keys;
                         } else {
                             for ( int i = 0; i < AppManager.editorConfig.ShortcutKeys.Count; i++ ) {
-                                if ( AppManager.editorConfig.ShortcutKeys.get( i ).Key.Equals( name ) ) {
-                                    AppManager.editorConfig.ShortcutKeys.get( i ).Value = keys;
+                                if ( AppManager.editorConfig.ShortcutKeys[ i ].Key.Equals( name ) ) {
+                                    AppManager.editorConfig.ShortcutKeys[ i ].Value = keys;
                                     found = true;
                                     break;
                                 }
@@ -12928,7 +12928,7 @@ namespace cadencii
                 // ここではcloneする必要はない．
                 AppManager.editorConfig.AutoVibratoCustom.Clear();
                 for ( int i = 0; i < result.Count; i++ ) {
-                    AppManager.editorConfig.AutoVibratoCustom.Add( result.get( i ) );
+                    AppManager.editorConfig.AutoVibratoCustom.Add( result[ i ] );
                 }
 
                 // メニューの表示状態を更新
@@ -13031,7 +13031,7 @@ namespace cadencii
                 return;
             }
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 VsqID id = item.ID;
@@ -13078,7 +13078,7 @@ namespace cadencii
             int selected = AppManager.getSelected();
             // シーケンス
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
 
             // 選択状態にあるイベントを取り出す
             Vector<VsqEvent> replace = new Vector<VsqEvent>();
@@ -13153,13 +13153,13 @@ namespace cadencii
             } else {
                 // menuJobConnect(音符の結合)がEnableされるかどうかは、選択されている音符がピアノロール上で連続かどうかで決まる
                 int[] list = new int[AppManager.itemSelection.getEventCount()];
-                for ( int i = 0; i < AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount(); i++ ) {
+                for ( int i = 0; i < AppManager.getVsqFile().Track[AppManager.getSelected()].getEventCount(); i++ ) {
                     int count = -1;
                     for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                         SelectedEventEntry item = itr.next();
                         int key = item.original.InternalID;
                         count++;
-                        if ( key == AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEvent( i ).InternalID ) {
+                        if ( key == AppManager.getVsqFile().Track[AppManager.getSelected()].getEvent( i ).InternalID ) {
                             list[count] = i;
                             break;
                         }
@@ -13278,26 +13278,26 @@ namespace cadencii
                                 if ( bc.size() < 2 ) {
                                     continue;
                                 }
-                                int chain_start = (int)bc.points.get( 0 ).getBase().getX();
-                                int chain_end = (int)bc.points.get( bc.points.Count - 1 ).getBase().getX();
+                                int chain_start = (int)bc.points[ 0 ].getBase().getX();
+                                int chain_end = (int)bc.points[ bc.points.Count - 1 ].getBase().getX();
 
                                 if ( clock_start <= chain_start ) {
                                     for ( int i = 0; i < bc.points.Count; i++ ) {
-                                        PointD t = bc.points.get( i ).getBase();
-                                        bc.points.get( i ).setBase( new PointD( t.getX() + dclock, t.getY() ) );
+                                        PointD t = bc.points[ i ].getBase();
+                                        bc.points[ i ].setBase( new PointD( t.getX() + dclock, t.getY() ) );
                                     }
                                     list.Add( bc );
                                 } else if ( chain_start < clock_start && clock_start < chain_end ) {
                                     BezierChain adding1 = bc.extractPartialBezier( chain_start, clock_start );
                                     BezierChain adding2 = bc.extractPartialBezier( clock_start, chain_end );
                                     for ( int i = 0; i < adding2.points.Count; i++ ) {
-                                        PointD t = adding2.points.get( i ).getBase();
-                                        adding2.points.get( i ).setBase( new PointD( t.getX() + dclock, t.getY() ) );
+                                        PointD t = adding2.points[ i ].getBase();
+                                        adding2.points[ i ].setBase( new PointD( t.getX() + dclock, t.getY() ) );
                                     }
-                                    adding1.points.get( adding1.points.Count - 1 ).setControlRightType( BezierControlType.None );
-                                    adding2.points.get( 0 ).setControlLeftType( BezierControlType.None );
+                                    adding1.points[ adding1.points.Count - 1 ].setControlRightType( BezierControlType.None );
+                                    adding2.points[ 0 ].setControlLeftType( BezierControlType.None );
                                     for ( int i = 0; i < adding2.points.Count; i++ ) {
-                                        adding1.points.Add( adding2.points.get( i ) );
+                                        adding1.points.Add( adding2.points[ i ] );
                                     }
                                     adding1.id = bc.id;
                                     list.Add( adding1 );
@@ -13312,17 +13312,17 @@ namespace cadencii
                     }
 
                     for ( int track = 1; track < AppManager.getVsqFile().Track.Count; track++ ) {
-                        for ( int i = 0; i < temp.Track.get( track ).getEventCount(); i++ ) {
-                            if ( temp.Track.get( track ).getEvent( i ).Clock >= clock_start ) {
-                                temp.Track.get( track ).getEvent( i ).Clock += dclock;
+                        for ( int i = 0; i < temp.Track[ track ].getEventCount(); i++ ) {
+                            if ( temp.Track[ track ].getEvent( i ).Clock >= clock_start ) {
+                                temp.Track[ track ].getEvent( i ).Clock += dclock;
                             }
                         }
                         foreach ( CurveType curve in Utility.CURVE_USAGE ) {
                             if ( curve.isScalar() || curve.isAttachNote() ) {
                                 continue;
                             }
-                            VsqBPList target = temp.Track.get( track ).getCurve( curve.getName() );
-                            VsqBPList src = AppManager.getVsqFile().Track.get( track ).getCurve( curve.getName() );
+                            VsqBPList target = temp.Track[ track ].getCurve( curve.getName() );
+                            VsqBPList src = AppManager.getVsqFile().Track[ track ].getCurve( curve.getName() );
                             target.clear();
                             for ( Iterator<Integer> itr = src.keyClockIterator(); itr.hasNext(); ) {
                                 int key = itr.next();
@@ -13335,13 +13335,13 @@ namespace cadencii
                         }
                     }
                     for ( int i = 0; i < temp.TempoTable.Count; i++ ) {
-                        if ( temp.TempoTable.get( i ).Clock >= clock_start ) {
-                            temp.TempoTable.get( i ).Clock = temp.TempoTable.get( i ).Clock + dclock;
+                        if ( temp.TempoTable[ i ].Clock >= clock_start ) {
+                            temp.TempoTable[ i ].Clock = temp.TempoTable[ i ].Clock + dclock;
                         }
                     }
                     for ( int i = 0; i < temp.TimesigTable.Count; i++ ) {
-                        if ( temp.TimesigTable.get( i ).Clock >= clock_start ) {
-                            temp.TimesigTable.get( i ).Clock = temp.TimesigTable.get( i ).Clock + dclock;
+                        if ( temp.TimesigTable[ i ].Clock >= clock_start ) {
+                            temp.TimesigTable[ i ].Clock = temp.TimesigTable[ i ].Clock + dclock;
                         }
                     }
                     temp.updateTempoInfo();
@@ -13487,30 +13487,30 @@ namespace cadencii
                                 if ( bc.size() < 2 ) {
                                     continue;
                                 }
-                                int chain_start = (int)bc.points.get( 0 ).getBase().getX();
-                                int chain_end = (int)bc.points.get( bc.points.Count - 1 ).getBase().getX();
+                                int chain_start = (int)bc.points[ 0 ].getBase().getX();
+                                int chain_end = (int)bc.points[ bc.points.Count - 1 ].getBase().getX();
 
                                 if ( clock_start < chain_start && chain_start < clock_end && clock_end < chain_end ) {
                                     BezierChain adding = bc.extractPartialBezier( clock_end, chain_end );
                                     adding.id = bc.id;
                                     for ( int i = 0; i < adding.points.Count; i++ ) {
-                                        PointD t = adding.points.get( i ).getBase();
-                                        adding.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
+                                        PointD t = adding.points[ i ].getBase();
+                                        adding.points[ i ].setBase( new PointD( t.getX() - dclock, t.getY() ) );
                                     }
                                     list.Add( adding );
                                 } else if ( chain_start < clock_start && clock_end < chain_end ) {
                                     BezierChain adding1 = bc.extractPartialBezier( chain_start, clock_start );
                                     adding1.id = bc.id;
-                                    adding1.points.get( adding1.points.Count - 1 ).setControlRightType( BezierControlType.None );
+                                    adding1.points[ adding1.points.Count - 1 ].setControlRightType( BezierControlType.None );
                                     BezierChain adding2 = bc.extractPartialBezier( clock_end, chain_end );
-                                    adding2.points.get( 0 ).setControlLeftType( BezierControlType.None );
-                                    PointD t = adding2.points.get( 0 ).getBase();
-                                    adding2.points.get( 0 ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
-                                    adding1.points.Add( adding2.points.get( 0 ) );
+                                    adding2.points[ 0 ].setControlLeftType( BezierControlType.None );
+                                    PointD t = adding2.points[ 0 ].getBase();
+                                    adding2.points[ 0 ].setBase( new PointD( t.getX() - dclock, t.getY() ) );
+                                    adding1.points.Add( adding2.points[ 0 ] );
                                     for ( int i = 1; i < adding2.points.Count; i++ ) {
-                                        t = adding2.points.get( i ).getBase();
-                                        adding2.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
-                                        adding1.points.Add( adding2.points.get( i ) );
+                                        t = adding2.points[ i ].getBase();
+                                        adding2.points[ i ].setBase( new PointD( t.getX() - dclock, t.getY() ) );
+                                        adding1.points.Add( adding2.points[ i ] );
                                     }
                                     list.Add( adding1 );
                                 } else if ( chain_start < clock_start && clock_start < chain_end && chain_end < clock_end ) {
@@ -13520,8 +13520,8 @@ namespace cadencii
                                 } else if ( clock_end <= chain_start || chain_end <= clock_start ) {
                                     if ( clock_end <= chain_start ) {
                                         for ( int i = 0; i < bc.points.Count; i++ ) {
-                                            PointD t = bc.points.get( i ).getBase();
-                                            bc.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
+                                            PointD t = bc.points[ i ].getBase();
+                                            bc.points[ i ].setBase( new PointD( t.getX() - dclock, t.getY() ) );
                                         }
                                     }
                                     list.Add( (BezierChain)bc.clone() );
@@ -13562,15 +13562,15 @@ namespace cadencii
             // 最初、開始時刻が同じになっている奴を削除
             while ( changed ) {
                 changed = false;
-                for ( int i = 0; i < work.Track.get( track ).getEventCount() - 1; i++ ) {
-                    int clock = work.Track.get( track ).getEvent( i ).Clock;
-                    int id = work.Track.get( track ).getEvent( i ).InternalID;
-                    for ( int j = i + 1; j < work.Track.get( track ).getEventCount(); j++ ) {
-                        if ( clock == work.Track.get( track ).getEvent( j ).Clock ) {
-                            if ( id < work.Track.get( track ).getEvent( j ).InternalID ) { //内部IDが小さい＝より高年齢（音符追加時刻が古い）
-                                work.Track.get( track ).removeEvent( i );
+                for ( int i = 0; i < work.Track[ track ].getEventCount() - 1; i++ ) {
+                    int clock = work.Track[ track ].getEvent( i ).Clock;
+                    int id = work.Track[ track ].getEvent( i ).InternalID;
+                    for ( int j = i + 1; j < work.Track[ track ].getEventCount(); j++ ) {
+                        if ( clock == work.Track[ track ].getEvent( j ).Clock ) {
+                            if ( id < work.Track[ track ].getEvent( j ).InternalID ) { //内部IDが小さい＝より高年齢（音符追加時刻が古い）
+                                work.Track[ track ].removeEvent( i );
                             } else {
-                                work.Track.get( track ).removeEvent( j );
+                                work.Track[ track ].removeEvent( j );
                             }
                             changed = true;
                             total_changed = true;
@@ -13586,13 +13586,13 @@ namespace cadencii
             changed = true;
             while ( changed ) {
                 changed = false;
-                for ( int i = 0; i < work.Track.get( track ).getEventCount() - 1; i++ ) {
-                    int start_clock = work.Track.get( track ).getEvent( i ).Clock;
-                    int end_clock = work.Track.get( track ).getEvent( i ).ID.getLength() + start_clock;
-                    for ( int j = i + 1; j < work.Track.get( track ).getEventCount(); j++ ) {
-                        int this_start_clock = work.Track.get( track ).getEvent( j ).Clock;
+                for ( int i = 0; i < work.Track[ track ].getEventCount() - 1; i++ ) {
+                    int start_clock = work.Track[ track ].getEvent( i ).Clock;
+                    int end_clock = work.Track[ track ].getEvent( i ).ID.getLength() + start_clock;
+                    for ( int j = i + 1; j < work.Track[ track ].getEventCount(); j++ ) {
+                        int this_start_clock = work.Track[ track ].getEvent( j ).Clock;
                         if ( this_start_clock < end_clock ) {
-                            work.Track.get( track ).getEvent( i ).ID.setLength( this_start_clock - start_clock );
+                            work.Track[ track ].getEvent( i ).ID.setLength( this_start_clock - start_clock );
                             changed = true;
                             total_changed = true;
                         }
@@ -13630,7 +13630,7 @@ namespace cadencii
                     int endClock = endBarClock + endBeat * 480 * 4 / endTimesig.denominator;
 
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    VsqTrack vsq_track = vsq.Track[ selected ];
                     VsqTrack work = (VsqTrack)vsq_track.clone();
                     Random r = new Random();
 
@@ -13993,7 +13993,7 @@ namespace cadencii
                         int index = -1;
                         int clock = AppManager.itemSelection.getLastTempoClock();
                         for ( int i = 0; i < vsq.TempoTable.Count; i++ ) {
-                            if ( clock == vsq.TempoTable.get( i ).Clock ) {
+                            if ( clock == vsq.TempoTable[ i ].Clock ) {
                                 index = i;
                                 break;
                             }
@@ -14001,7 +14001,7 @@ namespace cadencii
                         if ( index >= 0 ) {
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
-                                if ( vsq.TempoTable.get( index ).Clock == 0 ) {
+                                if ( vsq.TempoTable[ index ].Clock == 0 ) {
                                     String msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                     statusLabel.setText( msg );
@@ -14014,15 +14014,15 @@ namespace cadencii
                                     return;
                                 }
                                 CadenciiCommand run = new CadenciiCommand(
-                                    VsqCommand.generateCommandUpdateTempo( vsq.TempoTable.get( index ).Clock,
-                                                                           vsq.TempoTable.get( index ).Clock,
+                                    VsqCommand.generateCommandUpdateTempo( vsq.TempoTable[ index ].Clock,
+                                                                           vsq.TempoTable[ index ].Clock,
                                                                            -1 ) );
                                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                                 setEdited( true );
                                 #endregion
                             } else {
                                 #region ツールがEraser以外
-                                TempoTableEntry tte = vsq.TempoTable.get( index );
+                                TempoTableEntry tte = vsq.TempoTable[ index ];
                                 AppManager.itemSelection.clearTempo();
                                 AppManager.itemSelection.addTempo( tte.Clock );
                                 int bar_count = vsq.getBarCountFromClock( tte.Clock );
@@ -14082,17 +14082,17 @@ namespace cadencii
                             bar_top_clock = vsq.getClockFromBarCount( bar_count );
                             int index2 = -1;
                             for ( int i = 0; i < vsq.TimesigTable.Count; i++ ) {
-                                if ( vsq.TimesigTable.get( i ).BarCount > bar_count ) {
+                                if ( vsq.TimesigTable[ i ].BarCount > bar_count ) {
                                     index2 = i;
                                     break;
                                 }
                             }
                             if ( index2 >= 1 ) {
-                                local_denominator = vsq.TimesigTable.get( index2 - 1 ).Denominator;
-                                local_numerator = vsq.TimesigTable.get( index2 - 1 ).Numerator;
+                                local_denominator = vsq.TimesigTable[ index2 - 1 ].Denominator;
+                                local_numerator = vsq.TimesigTable[ index2 - 1 ].Numerator;
                             } else {
-                                local_denominator = vsq.TimesigTable.get( 0 ).Denominator;
-                                local_numerator = vsq.TimesigTable.get( 0 ).Numerator;
+                                local_denominator = vsq.TimesigTable[ 0 ].Denominator;
+                                local_numerator = vsq.TimesigTable[ 0 ].Numerator;
                             }
                             int clock_per_beat = 480 * 4 / local_denominator;
                             int clocks_in_bar = changing_clock - bar_top_clock;
@@ -14150,14 +14150,14 @@ namespace cadencii
                         int index = 0;
                         int last_barcount = AppManager.itemSelection.getLastTimesigBarcount();
                         for ( int i = 0; i < vsq.TimesigTable.Count; i++ ) {
-                            if ( vsq.TimesigTable.get( i ).BarCount == last_barcount ) {
+                            if ( vsq.TimesigTable[ i ].BarCount == last_barcount ) {
                                 index = i;
                                 break;
                             }
                         }
                         if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                             #region ツールがEraser
-                            if ( vsq.TimesigTable.get( index ).Clock == 0 ) {
+                            if ( vsq.TimesigTable[ index ].Clock == 0 ) {
                                 String msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                 statusLabel.setText( msg );
@@ -14169,7 +14169,7 @@ namespace cadencii
 #endif
                                 return;
                             }
-                            int barcount = vsq.TimesigTable.get( index ).BarCount;
+                            int barcount = vsq.TimesigTable[ index ].BarCount;
                             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTimesig( barcount, barcount, -1, -1 ) );
                             AppManager.editHistory.register( vsq.executeCommand( run ) );
                             setEdited( true );
@@ -14363,14 +14363,14 @@ namespace cadencii
                     int index = -1;
                     int count = AppManager.getVsqFile().TempoTable.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        int clock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
+                        int clock = AppManager.getVsqFile().TempoTable[ i ].Clock;
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( x < 0 ) {
                             continue;
                         } else if ( this.Width < x ) {
                             break;
                         }
-                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
+                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable[ i ].Tempo );
                         Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 ) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), new Rectangle( x, 14, (int)size.width, 14 ) ) ) {
                             index = i;
@@ -14379,7 +14379,7 @@ namespace cadencii
                     }
 
                     if ( index >= 0 ) {
-                        int clock = AppManager.getVsqFile().TempoTable.get( index ).Clock;
+                        int clock = AppManager.getVsqFile().TempoTable[ index ].Clock;
                         if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
                             int mouse_clock = AppManager.clockFromXCoord( e.X );
                             mTempoDraggingDeltaClock = mouse_clock - clock;
@@ -14391,7 +14391,7 @@ namespace cadencii
                                 int start = Math.Min( last_clock, clock );
                                 int end = Math.Max( last_clock, clock );
                                 for ( int i = 0; i < AppManager.getVsqFile().TempoTable.Count; i++ ) {
-                                    int tclock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
+                                    int tclock = AppManager.getVsqFile().TempoTable[ i ].Clock;
                                     if ( tclock < start ) {
                                         continue;
                                     } else if ( end < tclock ) {
@@ -14427,8 +14427,8 @@ namespace cadencii
                     // クリック位置に拍子が表示されているかどうか検査
                     int index = -1;
                     for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.Count; i++ ) {
-                        String s = AppManager.getVsqFile().TimesigTable.get( i ).Numerator + "/" + AppManager.getVsqFile().TimesigTable.get( i ).Denominator;
-                        int x = AppManager.xCoordFromClocks( AppManager.getVsqFile().TimesigTable.get( i ).Clock );
+                        String s = AppManager.getVsqFile().TimesigTable[ i ].Numerator + "/" + AppManager.getVsqFile().TimesigTable[ i ].Denominator;
+                        int x = AppManager.xCoordFromClocks( AppManager.getVsqFile().TimesigTable[ i ].Clock );
                         Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 ) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), new Rectangle( x, 28, (int)size.width, 14 ) ) ) {
                             index = i;
@@ -14437,7 +14437,7 @@ namespace cadencii
                     }
 
                     if ( index >= 0 ) {
-                        int barcount = AppManager.getVsqFile().TimesigTable.get( index ).BarCount;
+                        int barcount = AppManager.getVsqFile().TimesigTable[ index ].BarCount;
                         if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
                             int barcount_clock = AppManager.getVsqFile().getClockFromBarCount( barcount );
                             int mouse_clock = AppManager.clockFromXCoord( e.X );
@@ -14450,14 +14450,14 @@ namespace cadencii
                                 int start = Math.Min( last_barcount, barcount );
                                 int end = Math.Max( last_barcount, barcount );
                                 for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.Count; i++ ) {
-                                    int tbarcount = AppManager.getVsqFile().TimesigTable.get( i ).BarCount;
+                                    int tbarcount = AppManager.getVsqFile().TimesigTable[ i ].BarCount;
                                     if ( tbarcount < start ) {
                                         continue;
                                     } else if ( end < tbarcount ) {
                                         break;
                                     }
                                     if ( start <= tbarcount && tbarcount <= end ) {
-                                        AppManager.itemSelection.addTimesig( AppManager.getVsqFile().TimesigTable.get( i ).BarCount );
+                                        AppManager.itemSelection.addTimesig( AppManager.getVsqFile().TimesigTable[ i ].BarCount );
                                     }
                                 }
                             } else {
@@ -14523,14 +14523,14 @@ namespace cadencii
                             int index = -1;
                             int clock = AppManager.itemSelection.getLastTempoClock();
                             for ( int i = 0; i < vsq.TempoTable.Count; i++ ) {
-                                if ( clock == vsq.TempoTable.get( i ).Clock ) {
+                                if ( clock == vsq.TempoTable[ i ].Clock ) {
                                     index = i;
                                     break;
                                 }
                             }
                             if ( index >= 0 && AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
-                                if ( vsq.TempoTable.get( index ).Clock == 0 ) {
+                                if ( vsq.TempoTable[ index ].Clock == 0 ) {
                                     String msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                     statusLabel.setText( msg );
@@ -14543,8 +14543,8 @@ namespace cadencii
                                     return;
                                 }
                                 CadenciiCommand run = new CadenciiCommand(
-                                    VsqCommand.generateCommandUpdateTempo( vsq.TempoTable.get( index ).Clock,
-                                                                           vsq.TempoTable.get( index ).Clock,
+                                    VsqCommand.generateCommandUpdateTempo( vsq.TempoTable[ index ].Clock,
+                                                                           vsq.TempoTable[ index ].Clock,
                                                                            -1 ) );
                                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                                 setEdited( true );
@@ -14563,14 +14563,14 @@ namespace cadencii
                             int index = 0;
                             int last_barcount = AppManager.itemSelection.getLastTimesigBarcount();
                             for ( int i = 0; i < vsq.TimesigTable.Count; i++ ) {
-                                if ( vsq.TimesigTable.get( i ).BarCount == last_barcount ) {
+                                if ( vsq.TimesigTable[ i ].BarCount == last_barcount ) {
                                     index = i;
                                     break;
                                 }
                             }
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
-                                if ( vsq.TimesigTable.get( index ).Clock == 0 ) {
+                                if ( vsq.TimesigTable[ index ].Clock == 0 ) {
                                     String msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                     statusLabel.setText( msg );
@@ -14582,7 +14582,7 @@ namespace cadencii
 #endif
                                     return;
                                 }
-                                int barcount = vsq.TimesigTable.get( index ).BarCount;
+                                int barcount = vsq.TimesigTable[ index ].BarCount;
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTimesig( barcount, barcount, -1, -1 ) );
                                 AppManager.editHistory.register( vsq.executeCommand( run ) );
                                 setEdited( true );
@@ -15125,7 +15125,7 @@ namespace cadencii
                 VsqFileEx vsq = AppManager.getVsqFile();
                 int selected = AppManager.getSelected();
                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ selected ] );
                 if ( kind == RendererKind.VOCALOID1 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
@@ -15622,7 +15622,7 @@ namespace cadencii
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             int tracks = vsq.Track.Count;
             cMenuTrackTabDelete.Enabled = tracks >= 3;
             menuTrackDelete.Enabled = tracks >= 3;
@@ -15786,7 +15786,7 @@ namespace cadencii
                 BezierChain chain = (BezierChain)vsq.AttachedCurves.get( selected - 1 ).getBezierChain( trackSelector.getSelectedCurve(), chain_id ).clone();
                 int index = -1;
                 for ( int i = 0; i < chain.points.Count; i++ ) {
-                    if ( chain.points.get( i ).getID() == point_id ) {
+                    if ( chain.points[ i ].getID() == point_id ) {
                         index = i;
                         break;
                     }
@@ -16243,7 +16243,7 @@ namespace cadencii
             VibratoHandle target = null;
             int size = AppManager.editorConfig.AutoVibratoCustom.Count;
             for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                 if ( text.Equals( handle.getCaption() ) ) {
                     target = handle;
                     break;
@@ -16495,7 +16495,7 @@ namespace cadencii
         public void handleTrackOn_Click( Object sender, EventArgs e )
         {
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+            VsqTrack vsq_track = AppManager.getVsqFile().Track[ selected ];
             boolean old_status = vsq_track.isTrackOn();
             boolean new_status = !old_status;
             int last_play_mode = vsq_track.getCommon().LastPlayMode;
@@ -16534,12 +16534,12 @@ namespace cadencii
         public void handleFileSave_Click( Object sender, EventArgs e )
         {
             for ( int track = 1; track < AppManager.getVsqFile().Track.Count; track++ ) {
-                if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
+                if ( AppManager.getVsqFile().Track[ track ].getEventCount() == 0 ) {
                     AppManager.showMessageBox(
                         PortUtil.formatMessage(
                             _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ),
                             track,
-                            AppManager.getVsqFile().Track.get( track ).getName() ),
+                            AppManager.getVsqFile().Track[ track ].getName() ),
                         _APP_NAME,
                         cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
                         cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
@@ -16615,7 +16615,7 @@ namespace cadencii
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
             String renderer = kind.getVersionString();
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
-            vsq.Track.get( 1 ).changeRenderer( renderer, singers );
+            vsq.Track[ 1 ].changeRenderer( renderer, singers );
 
             AppManager.setVsqFile( vsq );
             clearExistingData();
@@ -16970,7 +16970,7 @@ namespace cadencii
 
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             RendererKind old = VsqFileEx.getTrackRendererKind( vsq_track );
             int old_resampler_index = VsqFileEx.getTrackResamplerUsed( vsq_track );
             boolean changed = (old != kind);
@@ -17444,7 +17444,7 @@ namespace cadencii
             // まずクロック値を、リプレース後のモノに置き換え
             for ( int track = 1; track < target.Track.Count; track++ ) {
                 // ノート・歌手イベントをシフト
-                for ( Iterator<VsqEvent> itr = target.Track.get( track ).getEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<VsqEvent> itr = target.Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
                     if ( item.ID.type == VsqIDType.Singer && item.Clock == 0 ) {
                         continue;
@@ -17467,7 +17467,7 @@ namespace cadencii
                 // コントロールカーブをシフト
                 for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
                     CurveType ct = Utility.CURVE_USAGE[j];
-                    VsqBPList item = target.Track.get( track ).getCurve( ct.getName() );
+                    VsqBPList item = target.Track[ track ].getCurve( ct.getName() );
                     if ( item == null ) {
                         continue;
                     }
@@ -17481,7 +17481,7 @@ namespace cadencii
                             repl.add( clock_new, value );
                         }
                     }
-                    target.Track.get( track ).setCurve( ct.getName(), repl );
+                    target.Track[ track ].setCurve( ct.getName(), repl );
                 }
 
                 // ベジエカーブをシフト

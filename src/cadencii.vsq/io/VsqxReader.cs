@@ -97,7 +97,7 @@ namespace cadencii.vsq.io
                         result.Track.Add( new VsqTrack( "", "" ) );
                     }
                 }
-                track = result.Track.get( trackIndex );
+                track = result.Track[ trackIndex ];
                 track.setName( node["trackName"].InnerText );
 
                 foreach ( XmlNode child in node.ChildNodes ) {

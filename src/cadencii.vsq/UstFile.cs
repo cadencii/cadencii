@@ -290,13 +290,13 @@ namespace cadencii.vsq
             VsqFile work = (VsqFile)vsq.clone();
             //work.removePart( 0, work.getPreMeasureClocks() );
 
-            VsqTrack vsq_track = work.Track.get( track_index );
+            VsqTrack vsq_track = work.Track[ track_index ];
 
             // デフォルトのテンポ
             if ( work.TempoTable.Count <= 0 ) {
                 m_tempo = 120.0f;
             } else {
-                m_tempo = (float)(60e6 / (double)work.TempoTable.get( 0 ).Tempo);
+                m_tempo = (float)(60e6 / (double)work.TempoTable[ 0 ].Tempo);
             }
             m_tempo_table = new Vector<TempoTableEntry>();
             m_tempo_table.Clear();
@@ -348,7 +348,7 @@ namespace cadencii.vsq
             }
             sout.println( "UstFile#.ctor; vsq.TempoTable=" );
             for ( int i = 0; i < work.TempoTable.Count; i++ ) {
-                TempoTableEntry item = work.TempoTable.get( i );
+                TempoTableEntry item = work.TempoTable[ i ];
                 sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
             }
 #endif
@@ -532,8 +532,8 @@ namespace cadencii.vsq
             int max = 0;
             for ( int track = 0; track < m_tracks.Count; track++ ) {
                 int count = 0;
-                for ( int i = 0; i < m_tracks.get( track ).getEventCount(); i++ ) {
-                    count += (int)m_tracks.get( track ).getEvent( i ).getLength();
+                for ( int i = 0; i < m_tracks[ track ].getEventCount(); i++ ) {
+                    count += (int)m_tracks[ track ].getEvent( i ).getLength();
                 }
                 max = Math.Max( max, count );
             }
@@ -547,7 +547,7 @@ namespace cadencii.vsq
 
         public UstTrack getTrack( int track )
         {
-            return m_tracks.get( track );
+            return m_tracks[ track ];
         }
 
         public int getTrackCount()
@@ -573,7 +573,7 @@ namespace cadencii.vsq
             double time = 0.0;
             int last_tempo_clock = 0;  //最後にTempo値が代入されていたイベントのクロック
             float last_tempo = m_tempo;   //最後に代入されていたテンポの値
-            UstTrack ust_track = m_tracks.get( 0 );
+            UstTrack ust_track = m_tracks[ 0 ];
             for ( int i = 0; i < ust_track.getEventCount(); i++ ) {
                 UstEvent itemi = ust_track.getEvent( i );
                 if ( ust_track.getEvent( i ).isTempoSpecified() ) {
@@ -598,7 +598,7 @@ namespace cadencii.vsq
         {
             int c = m_tempo_table.Count;
             for ( int i = c - 1; i >= 0; i-- ) {
-                TempoTableEntry item = m_tempo_table.get( i );
+                TempoTableEntry item = m_tempo_table[ i ];
                 if ( item.Clock < clock ) {
                     double init = item.Time;
                     int dclock = clock - item.Clock;
@@ -670,7 +670,7 @@ namespace cadencii.vsq
                 if ( options.settingTool2 ) {
                     sw.write( "Tool2=" + m_tool2 ); sw.newLine();
                 }
-                UstTrack target = m_tracks.get( 0 );
+                UstTrack target = m_tracks[ 0 ];
                 int count = target.getEventCount();
                 for ( int i = 0; i < count; i++ ) {
                     target.getEvent( i ).print( sw );
@@ -709,7 +709,7 @@ namespace cadencii.vsq
             }
             ret.m_tempo_table = new Vector<TempoTableEntry>();
             for ( int i = 0; i < m_tempo_table.Count; i++ ) {
-                ret.m_tempo_table.Add( (TempoTableEntry)m_tempo_table.get( i ).clone() );
+                ret.m_tempo_table.Add( (TempoTableEntry)m_tempo_table[ i ].clone() );
             }
             return ret;
         }

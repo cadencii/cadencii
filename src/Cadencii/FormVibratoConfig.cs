@@ -180,7 +180,7 @@ namespace cadencii
                 // ユーザー定義のを使う場合
                 int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                 for ( int i = 0; i < size; i++ ) {
-                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                     comboVibratoType.Items.Add( handle );
                 }
             } else {

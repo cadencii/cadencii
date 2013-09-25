@@ -311,7 +311,7 @@ namespace cadencii {
                     PolylineDrawer commonDrawer = getCommonPolylineDrawer(g);
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get(selected);
+                    VsqTrack vsq_track = vsq.Track[selected];
 
                     var p = PortUtil.getMousePosition();
                     var mouse_position = this.PointToClient(new System.Drawing.Point(p.x, p.y));
@@ -578,7 +578,7 @@ namespace cadencii {
                             int shift_center = half_track_height;
                             int target_list_count = target_list.Count;
                             for (int j = j_start; j < target_list_count; j++) {
-                                DrawObject dobj = target_list.get(j);
+                                DrawObject dobj = target_list[j];
                                 if (dobj.mType != DrawObjectType.Note) {
                                     continue;
                                 }
@@ -626,7 +626,7 @@ namespace cadencii {
 
                         int c = target_list.Count;
                         for (int j = j_start; j < c; j++) {
-                            DrawObject dobj = target_list.get(j);
+                            DrawObject dobj = target_list[j];
                             int x = dobj.mRectangleInPixel.x + key_width - stdx;
                             y = dobj.mRectangleInPixel.y - stdy;
                             int lyric_width = dobj.mRectangleInPixel.width;
@@ -1245,7 +1245,7 @@ namespace cadencii {
                         //ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
 
                         for (int j = j_start; j < c; j++) {
-                            DrawObject dobj = list.get(j);
+                            DrawObject dobj = list[j];
                             int clock = dobj.mClock;
                             int x_at_clock = (int)(clock * scalex + xoffset);
                             last_x = x_at_clock;

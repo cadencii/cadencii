@@ -102,7 +102,7 @@ namespace cadencii
             mHandles = new Vector<VibratoHandle>();
             int size = handles.Count;
             for ( int i = 0; i < size; i++ ) {
-                mHandles.Add( (VibratoHandle)handles.get( i ).clone() );
+                mHandles.Add( (VibratoHandle)handles[ i ].clone() );
             }
 
             // 表示状態を更新
@@ -125,7 +125,7 @@ namespace cadencii
             }
             int size = mHandles.Count;
             for ( int i = 0; i < size; i++ ) {
-                mHandles.get( i ).IconID = "$0404" + PortUtil.toHexString( i + 1, 4 );
+                mHandles[ i ].IconID = "$0404" + PortUtil.toHexString( i + 1, 4 );
             }
             return mHandles;
         }
@@ -165,7 +165,7 @@ namespace cadencii
             textName.TextChanged -= new EventHandler( textName_TextChanged );
 
             // テクストボックスに値を反映
-            mSelected = mHandles.get( index );
+            mSelected = mHandles[ index ];
             textDepth.Text = mSelected.getStartDepth() + "";
             textRate.Text = mSelected.getStartRate() + "";
             textName.Text = mSelected.getCaption();
@@ -306,8 +306,8 @@ namespace cadencii
             }
 
             // 入れ替える
-            VibratoHandle buff = mHandles.get( index );
-            mHandles.set( index, mHandles.get( move_to ) );
+            VibratoHandle buff = mHandles[ index ];
+            mHandles.set( index, mHandles[ move_to ] );
             mHandles.set( move_to, buff );
 
             // 選択状態を変える
@@ -630,7 +630,7 @@ namespace cadencii
 
             // アイテムを更新
             for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = mHandles.get( i );
+                VibratoHandle handle = mHandles[ i ];
                 listPresets.Items[i] = handle.getCaption();
             }
 

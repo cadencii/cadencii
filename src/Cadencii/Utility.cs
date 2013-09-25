@@ -1055,8 +1055,8 @@ namespace cadencii
             int len = Math.Min( tempo1.Count, tempo2.Count );
             int clockDifferenceStarted = int.MaxValue;
             for ( int i = 0; i < len; i++ ) {
-                TempoTableEntry item1 = tempo1.get( i );
-                TempoTableEntry item2 = tempo2.get( i );
+                TempoTableEntry item1 = tempo1[ i ];
+                TempoTableEntry item2 = tempo2[ i ];
                 if ( item1.Clock != item2.Clock || item1.Tempo != item2.Tempo ) {
                     clockDifferenceStarted = Math.Min( item1.Clock, item2.Clock );
                     break;
@@ -1064,10 +1064,10 @@ namespace cadencii
             }
             if ( clockDifferenceStarted == int.MaxValue ) {
                 if ( len < tempo1.Count ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1.get( len ).Clock );
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1[ len ].Clock );
                 }
                 if ( len < tempo2.Count ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2.get( len ).Clock );
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2[ len ].Clock );
                 }
             }
             if ( clockDifferenceStarted != int.MaxValue ) {
@@ -1323,7 +1323,7 @@ namespace cadencii
             }
             list2.Sort();
             for ( int i = 0; i < list2.Count; i++ ) {
-                ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2.get( i ) );
+                ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2[ i ] );
             }
             return ret;
         }

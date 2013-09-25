@@ -78,7 +78,7 @@ namespace cadencii.vsq
                 ret.Add( v );
             }
             for ( int i = 0; i < m_list.Count; i++ ) {
-                ret.AddRange( new Vector<VsqNrpn>( m_list.get( i ).expand() ) );
+                ret.AddRange( new Vector<VsqNrpn>( m_list[ i ].expand() ) );
             }
             return ret.ToArray();
         }

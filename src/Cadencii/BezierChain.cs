@@ -54,7 +54,7 @@ namespace cadencii
             if ( points.Count <= 0 ) {
                 return Double.NaN;
             } else {
-                return points.get( 0 ).getBase().getX();
+                return points[ 0 ].getBase().getX();
             }
         }
 
@@ -65,7 +65,7 @@ namespace cadencii
             if ( points.Count <= 0 ) {
                 return Double.NaN;
             } else {
-                return points.get( points.Count - 1 ).getBase().getX();
+                return points[ points.Count - 1 ].getBase().getX();
             }
         }
 
@@ -140,8 +140,8 @@ namespace cadencii
             if ( this.size() <= 1 ) {
                 throw new Exception( "chain must has two or more bezier points" );
             }
-            double start = this.points.get( 0 ).getBase().getX();
-            double end = this.points.get( this.size() - 1 ).getBase().getX();
+            double start = this.points[ 0 ].getBase().getX();
+            double end = this.points[this.size() - 1].getBase().getX();
             
             // [from, to]が、このベジエ曲線の範囲内にあるかどうかを検査
             if ( start > t_start || t_end > end ) {
@@ -153,17 +153,17 @@ namespace cadencii
             BezierChain edited = new BezierChain( mColor );
             int count = 0;
             for ( int i = 0; i < this.points.Count - 1; i++ ) {
-                if ( this.points.get( i ).getBase().getX() < t_start && t_start < this.points.get( i + 1 ).getBase().getX() ) {
-                    if ( this.points.get( i ).getBase().getX() < t_end && t_end < this.points.get( i + 1 ).getBase().getX() ) {
+                if ( this.points[ i ].getBase().getX() < t_start && t_start < this.points[ i + 1 ].getBase().getX() ) {
+                    if ( this.points[ i ].getBase().getX() < t_end && t_end < this.points[ i + 1 ].getBase().getX() ) {
 #if DEBUG
                         AppManager.debugWriteLine( "points[i].Base.X < t_start < t_end < points[i + 1].Base.X" );
 #endif
-                        PointD x0 = this.points.get( i ).getBase();
-                        PointD x1 = this.points.get( i + 1 ).getBase();
-                        PointD c0 = (this.points.get( i ).getControlRightType() == BezierControlType.None) ?
-                                                x0 : this.points.get( i ).getControlRight();
-                        PointD c1 = (this.points.get( i + 1 ).getControlLeftType() == BezierControlType.None) ?
-                                                x1 : this.points.get( i + 1 ).getControlLeft();
+                        PointD x0 = this.points[ i ].getBase();
+                        PointD x1 = this.points[ i + 1 ].getBase();
+                        PointD c0 = (this.points[ i ].getControlRightType() == BezierControlType.None) ?
+                                                x0 : this.points[ i ].getControlRight();
+                        PointD c1 = (this.points[ i + 1 ].getControlLeftType() == BezierControlType.None) ?
+                                                x1 : this.points[ i + 1 ].getControlLeft();
                         PointD[] res = cutUnitBezier( x0, c0, c1, x1, t_start );
                         
                         x0 = res[3];
@@ -176,8 +176,8 @@ namespace cadencii
                         BezierPoint right = new BezierPoint( res[3] );
                         left.setControlRight( res[1] );
                         right.setControlLeft( res[2] );
-                        left.setControlRightType( this.points.get( i ).getControlRightType() );
-                        right.setControlLeftType( this.points.get( i + 1 ).getControlLeftType() );
+                        left.setControlRightType( this.points[ i ].getControlRightType() );
+                        right.setControlLeftType( this.points[ i + 1 ].getControlLeftType() );
                         edited.add( left );
                         edited.add( right );
                         t_start_added = true;
@@ -186,24 +186,24 @@ namespace cadencii
 #if DEBUG
                         AppManager.debugWriteLine( "points[i].Base.X < t_start < points[i + 1].Base.X" );
 #endif
-                        PointD x0 = this.points.get( i ).getBase();
-                        PointD x1 = this.points.get( i + 1 ).getBase();
-                        PointD c0 = (this.points.get( i ).getControlRightType() == BezierControlType.None) ?
-                                                x0 : this.points.get( i ).getControlRight();
-                        PointD c1 = (this.points.get( i + 1 ).getControlLeftType() == BezierControlType.None) ?
-                                                x1 : this.points.get( i + 1 ).getControlLeft();
+                        PointD x0 = this.points[ i ].getBase();
+                        PointD x1 = this.points[ i + 1 ].getBase();
+                        PointD c0 = (this.points[ i ].getControlRightType() == BezierControlType.None) ?
+                                                x0 : this.points[ i ].getControlRight();
+                        PointD c1 = (this.points[ i + 1 ].getControlLeftType() == BezierControlType.None) ?
+                                                x1 : this.points[ i + 1 ].getControlLeft();
                         PointD[] res = cutUnitBezier( x0, c0, c1, x1, t_start );
 
                         BezierPoint left = new BezierPoint( res[3] );
                         BezierPoint right = new BezierPoint( res[6] );
 
                         left.setControlRight( res[4] );
-                        left.setControlRightType( this.points.get( i ).getControlRightType() );
+                        left.setControlRightType( this.points[ i ].getControlRightType() );
 
                         right.setControlLeft( res[5] );
-                        right.setControlRight( this.points.get( i + 1 ).getControlRight() );
-                        right.setControlRightType( this.points.get( i + 1 ).getControlRightType() );
-                        right.setControlLeftType( this.points.get( i + 1 ).getControlLeftType() );
+                        right.setControlRight( this.points[ i + 1 ].getControlRight() );
+                        right.setControlRightType( this.points[ i + 1 ].getControlRightType() );
+                        right.setControlLeftType( this.points[ i + 1 ].getControlLeftType() );
                         edited.points.Add( left );
                         count++;
                         edited.points.Add( right );
@@ -211,41 +211,41 @@ namespace cadencii
                         t_start_added = true;
                     }
                 }
-                if ( t_start <= this.points.get( i ).getBase().getX() && this.points.get( i ).getBase().getX() <= t_end ) {
+                if ( t_start <= this.points[ i ].getBase().getX() && this.points[ i ].getBase().getX() <= t_end ) {
                     if ( !t_start_added ) {
-                        edited.points.Add( (BezierPoint)this.points.get( i ).clone() );
+                        edited.points.Add( (BezierPoint)this.points[ i ].clone() );
                         count++;
                     } else {
                         t_start_added = false;
                     }
                 }
-                if ( this.points.get( i ).getBase().getX() < t_end && t_end < this.points.get( i + 1 ).getBase().getX() ) {
-                    PointD x0 = this.points.get( i ).getBase();
-                    PointD x1 = this.points.get( i + 1 ).getBase();
-                    PointD c0 = (this.points.get( i ).getControlRightType() == BezierControlType.None) ?
-                                            x0 : this.points.get( i ).getControlRight();
-                    PointD c1 = (this.points.get( i + 1 ).getControlLeftType() == BezierControlType.None) ?
-                                            x1 : this.points.get( i + 1 ).getControlLeft();
+                if ( this.points[ i ].getBase().getX() < t_end && t_end < this.points[ i + 1 ].getBase().getX() ) {
+                    PointD x0 = this.points[ i ].getBase();
+                    PointD x1 = this.points[ i + 1 ].getBase();
+                    PointD c0 = (this.points[ i ].getControlRightType() == BezierControlType.None) ?
+                                            x0 : this.points[ i ].getControlRight();
+                    PointD c1 = (this.points[ i + 1 ].getControlLeftType() == BezierControlType.None) ?
+                                            x1 : this.points[ i + 1 ].getControlLeft();
                     PointD[] res = cutUnitBezier( x0, c0, c1, x1, t_end );
 
-                    edited.points.get( count - 1 ).setControlRight( res[1] );
+                    edited.points[ count - 1 ].setControlRight( res[1] );
 
                     BezierPoint right = new BezierPoint( res[3] );
                     right.setControlLeft( res[2] );
-                    right.setControlLeftType( this.points.get( i + 1 ).getControlLeftType() );
+                    right.setControlLeftType( this.points[ i + 1 ].getControlLeftType() );
                     edited.add( right );
                     count++;
                     break;
                 }
             }
 
-            if ( this.points.get( this.points.Count - 1 ).getBase().getX() == t_end && !t_start_added ) {
-                edited.add( (BezierPoint)this.points.get( this.points.Count - 1 ).clone() );
+            if ( this.points[ this.points.Count - 1 ].getBase().getX() == t_end && !t_start_added ) {
+                edited.add( (BezierPoint)this.points[ this.points.Count - 1 ].clone() );
                 count++;
             }
 
             for ( int i = 0; i < edited.size(); i++ ) {
-                edited.points.get( i ).setID( i );
+                edited.points[ i ].setID( i );
             }
             return edited;
         }
@@ -267,9 +267,9 @@ namespace cadencii
             if( size < 2 ){
                 return true;
             }
-            BezierPoint last_point = chain.points.get( 0 );
+            BezierPoint last_point = chain.points[ 0 ];
             for ( int i = 1; i < size; i++ ) {
-                BezierPoint point = chain.points.get( i );
+                BezierPoint point = chain.points[ i ];
                 double pt1 = last_point.getBase().getX();
                 double pt2 = (last_point.getControlRightType() == BezierControlType.None) ? pt1 : last_point.getControlRight().getX();
                 double pt4 = point.getBase().getX();
@@ -341,7 +341,7 @@ namespace cadencii
         [OnDeserialized]
         private void onDeserialized( StreamingContext sc ) {
             for ( int i = 0; i < points.Count; i++ ) {
-                points.get( i ).setID( i );
+                points[ i ].setID( i );
             }
         }
 #endif
@@ -354,9 +354,9 @@ namespace cadencii
 
         public int getNextId() {
             if ( points.Count > 0 ) {
-                int max = points.get( 0 ).getID();
+                int max = points[ 0 ].getID();
                 for ( int i = 1; i < points.Count; i++ ) {
-                    max = Math.Max( max, points.get( i ).getID() );
+                    max = Math.Max( max, points[ i ].getID() );
                 }
                 return max + 1;
             } else {
@@ -442,7 +442,7 @@ namespace cadencii
 
         public void removeElementAt( int id_ ) {
             for ( int i = 0; i < points.Count; i++ ) {
-                if ( points.get( i ).getID() == id_ ) {
+                if ( points[ i ].getID() == id_ ) {
                     points.RemoveAt( i );
                     break;
                 }
@@ -459,8 +459,8 @@ namespace cadencii
         public double getValue( double x ) {
             int count = points.Count;
             for ( int i = 0; i < count - 1; i++ ) {
-                BezierPoint bpi = points.get( i );
-                BezierPoint bpi1 = points.get( i + 1 );
+                BezierPoint bpi = points[ i ];
+                BezierPoint bpi1 = points[ i + 1 ];
                 if ( bpi.getBase().getX() <= x && x <= bpi1.getBase().getX() ) {
                     double x1 = bpi.getBase().getX();
                     double x4 = bpi1.getBase().getX();

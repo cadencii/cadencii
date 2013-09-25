@@ -45,7 +45,7 @@ namespace cadencii {
             EditedZone ret = new EditedZone();
             int count = mSeries.Count;
             for ( int i = 0; i < count; i++ ) {
-                EditedZoneUnit p = mSeries.get( i );
+                EditedZoneUnit p = mSeries[ i ];
                 ret.mSeries.Add( (EditedZoneUnit)p.clone() );
             }
             return ret;
@@ -66,7 +66,7 @@ namespace cadencii {
                 EditedZoneUnit item = itr.next();
                 int count = mSeries.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    EditedZoneUnit item2 = mSeries.get( i );
+                    EditedZoneUnit item2 = mSeries[ i ];
                     if ( item.mStart == item2.mStart && item.mEnd == item2.mEnd ) {
                         mSeries.RemoveAt( i );
                         break;
@@ -156,14 +156,14 @@ namespace cadencii {
                 changed = false;
                 int count = mSeries.Count;
                 for ( int i = 0; i < count - 1; i++ ) {
-                    EditedZoneUnit itemi = mSeries.get( i );
+                    EditedZoneUnit itemi = mSeries[ i ];
                     if ( itemi.mEnd < itemi.mStart ) {
                         int d = itemi.mStart;
                         itemi.mStart = itemi.mEnd;
                         itemi.mEnd = d;
                     }
                     for ( int j = i + 1; j < count; j++ ) {
-                        EditedZoneUnit itemj = mSeries.get( j );
+                        EditedZoneUnit itemj = mSeries[ j ];
                         if ( itemj.mEnd < itemj.mStart ) {
                             int d = itemj.mStart;
                             itemj.mStart = itemj.mEnd;

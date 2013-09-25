@@ -332,7 +332,7 @@ namespace cadencii
             if ( track < 1 || Track.Count <= track ) return true;
             if ( getMasterMute() ) return true;
             if ( getMute( track ) ) return true;
-            if ( !Track.get( track ).isTrackOn() ) return true;
+            if ( !Track[ track ].isTrackOn() ) return true;
 
             boolean soloSpecificationExists = false;
             for ( int i = 1; i < Track.Count; i++ ) {
@@ -384,7 +384,7 @@ namespace cadencii
             if ( track == 0 ) {
                 return Mixer.MasterMute == 1;
             } else if ( track - 1 < Mixer.Slave.Count ) {
-                return Mixer.Slave.get( track - 1 ).Mute == 1;
+                return Mixer.Slave[ track - 1 ].Mute == 1;
             } else {
                 return false;
             }
@@ -404,7 +404,7 @@ namespace cadencii
             } else if ( track == 0 ) {
                 Mixer.MasterMute = value ? 1 : 0;
             } else if ( track - 1 < Mixer.Slave.Count ) {
-                Mixer.Slave.get( track - 1 ).Mute = value ? 1 : 0;
+                Mixer.Slave[ track - 1 ].Mute = value ? 1 : 0;
             }
         }
 
@@ -421,7 +421,7 @@ namespace cadencii
             if ( track == 0 ) {
                 return false;
             } else if ( track - 1 < Mixer.Slave.Count ) {
-                return Mixer.Slave.get( track - 1 ).Solo == 1;
+                return Mixer.Slave[ track - 1 ].Solo == 1;
             } else {
                 return false;
             }
@@ -441,11 +441,11 @@ namespace cadencii
             } else if ( track == 0 ) {
                 return;
             } else if ( track - 1 < Mixer.Slave.Count ) {
-                Mixer.Slave.get( track - 1 ).Solo = value ? 1 : 0;
+                Mixer.Slave[ track - 1 ].Solo = value ? 1 : 0;
                 if ( value ) {
                     for ( int i = 0; i < Mixer.Slave.Count; i++ ) {
-                        if ( i + 1 != track && Mixer.Slave.get( i ).Solo == 1 ) {
-                            Mixer.Slave.get( i ).Solo = 0;
+                        if ( i + 1 != track && Mixer.Slave[ i ].Solo == 1 ) {
+                            Mixer.Slave[ i ].Solo = 0;
                         }
                     }
                 }
@@ -522,7 +522,7 @@ namespace cadencii
             if ( sec < 0.0 ) {
                 first = true;
                 for ( int i = tempo_count - 1; i >= 0; i-- ) {
-                    TempoTableEntry item = tempo.TempoTable.get( i );
+                    TempoTableEntry item = tempo.TempoTable[ i ];
                     if ( item.Time + sec <= 0.0 ) {
                         if ( first ) {
                             first_tempo = item.Tempo;
@@ -536,7 +536,7 @@ namespace cadencii
             vsq.TempoTable.Clear();
             vsq.TempoTable.Add( new TempoTableEntry( 0, first_tempo, 0.0 ) );
             for ( int i = 0; i < tempo_count; i++ ) {
-                TempoTableEntry item = tempo.TempoTable.get( i );
+                TempoTableEntry item = tempo.TempoTable[ i ];
                 double t = item.Time + sec;
                 int new_clock = (int)vsq.getClockFromSec( t );
                 double new_time = vsq.getSecFromClock( new_clock );
@@ -547,7 +547,7 @@ namespace cadencii
             int tracks = vsq.Track.Count;
             int pre_measure_clocks = vsq.getPreMeasureClocks();
             for ( int i = 1; i < tracks; i++ ) {
-                VsqTrack track = vsq.Track.get( i );
+                VsqTrack track = vsq.Track[ i ];
                 Vector<Integer> remove_required_event = new Vector<Integer>(); // 削除が要求されたイベントのインデクス
 
                 // 歌手変更・音符イベントをシフト
@@ -626,7 +626,7 @@ namespace cadencii
                 remove_required_event.Sort();
                 int count = remove_required_event.Count;
                 for ( int j = count - 1; j >= 0; j-- ) {
-                    int index = remove_required_event.get( j );
+                    int index = remove_required_event[ j ];
                     track.removeEvent( index );
                 }
 
@@ -668,7 +668,7 @@ namespace cadencii
                     remove_required_event.Clear(); //削除するBezierChainのID
                     int list_count = list.Count;
                     for ( int j = 0; j < list_count; j++ ) {
-                        BezierChain chain = list.get( j );
+                        BezierChain chain = list[ j ];
                         for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
                             BezierPoint point = itr2.next();
                             PointD bse = new PointD( vsq.getClockFromSec( vsq.getSecFromClock( point.getBase().getX() ) + sec ),
@@ -707,10 +707,10 @@ namespace cadencii
                     // 削除が要求されたベジエカーブを削除
                     count = remove_required_event.Count;
                     for ( int j = 0; j < count; j++ ) {
-                        int id = remove_required_event.get( j );
+                        int id = remove_required_event[ j ];
                         list_count = list.Count;
                         for ( int m = 0; m < list_count; m++ ) {
-                            if ( id == list.get( m ).id ) {
+                            if ( id == list[ m ].id ) {
                                 list.RemoveAt( m );
                                 break;
                             }
@@ -737,17 +737,17 @@ namespace cadencii
             ret.Track = new Vector<VsqTrack>();
             int c = Track.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret.Track.Add( (VsqTrack)Track.get( i ).clone() );
+                ret.Track.Add( (VsqTrack)Track[ i ].clone() );
             }
             ret.TempoTable = new TempoVector();
             c = TempoTable.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret.TempoTable.Add( (TempoTableEntry)TempoTable.get( i ).clone() );
+                ret.TempoTable.Add( (TempoTableEntry)TempoTable[ i ].clone() );
             }
             ret.TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
             c = TimesigTable.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret.TimesigTable.Add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
+                ret.TimesigTable.Add( (TimeSigTableEntry)TimesigTable[ i ].clone() );
             }
             ret.TotalClocks = TotalClocks;
             ret.Master = (VsqMaster)Master.clone();
@@ -755,7 +755,7 @@ namespace cadencii
             ret.AttachedCurves = (AttachedCurve)AttachedCurves.clone();
             c = BgmFiles.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret.BgmFiles.Add( (BgmFile)BgmFiles.get( i ).clone() );
+                ret.BgmFiles.Add( (BgmFile)BgmFiles[ i ].clone() );
             }
             ret.cacheDir = cacheDir;
             ret.config = (SequenceConfig)this.config.clone();
@@ -775,7 +775,7 @@ namespace cadencii
             Vector<BgmFile> copy = new Vector<BgmFile>();
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
-                copy.Add( (BgmFile)list.get( i ).clone() );
+                copy.Add( (BgmFile)list[ i ].clone() );
             }
             command.args[0] = copy;
             return command;
@@ -978,18 +978,18 @@ namespace cadencii
                     ret = generateCommandDeleteBezierChain( track, curve_type, added_id, clock_resolution );
                     if ( chain.size() >= 1 ) {
                         // ベジエ曲線が，時間軸方向のどの範囲にわたって指定されているか判定
-                        int min = (int)chain.points.get( 0 ).getBase().getX();
+                        int min = (int)chain.points[ 0 ].getBase().getX();
                         int max = min;
                         int points_size = chain.points.Count;
                         for ( int i = 1; i < points_size; i++ ) {
-                            int x = (int)chain.points.get( i ).getBase().getX();
+                            int x = (int)chain.points[ i ].getBase().getX();
                             min = Math.Min( min, x );
                             max = Math.Max( max, x );
                         }
 
                         int max_value = curve_type.getMaximum();
                         int min_value = curve_type.getMinimum();
-                        VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
+                        VsqBPList list = Track[ track ].getCurve( curve_type.getName() );
                         if ( min <= max && list != null ) {
                             // minクロック以上maxクロック以下のコントロールカーブに対して，編集を実行
 
@@ -1007,7 +1007,7 @@ namespace cadencii
                             // 追加するデータ点を列挙
                             TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
                             if ( chain.points.Count == 1 ) {
-                                BezierPoint p = chain.points.get( 0 );
+                                BezierPoint p = chain.points[ 0 ];
                                 add.put( (int)p.getBase().getX(), new VsqBPPair( (int)p.getBase().getY(), list.getMaxID() + 1 ) );
                             } else {
                                 int last_value = int.MaxValue;
@@ -1045,14 +1045,14 @@ namespace cadencii
                     AttachedCurves.get( track - 1 ).remove( curve_type, chain_id );
                     ret = generateCommandAddBezierChain( track, curve_type, chain_id, clock_resolution, chain );
                     int points_size = chain.points.Count;
-                    int min = (int)chain.points.get( 0 ).getBase().getX();
+                    int min = (int)chain.points[ 0 ].getBase().getX();
                     int max = min;
                     for ( int i = 1; i < points_size; i++ ) {
-                        int x = (int)chain.points.get( i ).getBase().getX();
+                        int x = (int)chain.points[ i ].getBase().getX();
                         min = Math.Min( min, x );
                         max = Math.Max( max, x );
                     }
-                    VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
+                    VsqBPList list = Track[ track ].getCurve( curve_type.getName() );
                     int list_size = list.size();
                     Vector<Long> delete = new Vector<Long>();
                     for ( int i = 0; i < list_size; i++ ) {
@@ -1075,17 +1075,17 @@ namespace cadencii
                     int clock_resolution = (Integer)command.args[4];
                     BezierChain target = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).clone();
                     AttachedCurves.get( track - 1 ).setBezierChain( curve_type, chain_id, chain );
-                    VsqBPList list = Track.get( track ).getCurve( curve_type.getName() );
+                    VsqBPList list = Track[ track ].getCurve( curve_type.getName() );
                     ret = generateCommandReplaceBezierChain( track, curve_type, chain_id, target, clock_resolution );
                     if ( chain.size() == 1 ) {
                         // リプレース後のベジエ曲線が，1個のデータ点のみからなる場合
-                        int ex_min = (int)chain.points.get( 0 ).getBase().getX();
+                        int ex_min = (int)chain.points[ 0 ].getBase().getX();
                         int ex_max = ex_min;
                         if ( target.points.Count > 1 ) {
                             // リプレースされる前のベジエ曲線が，どの時間範囲にあったか？
                             int points_size = target.points.Count;
                             for ( int i = 1; i < points_size; i++ ) {
-                                int x = (int)target.points.get( i ).getBase().getX();
+                                int x = (int)target.points[ i ].getBase().getX();
                                 ex_min = Math.Min( ex_min, x );
                                 ex_max = Math.Max( ex_max, x );
                             }
@@ -1105,7 +1105,7 @@ namespace cadencii
 
                                 // リプレース後のデータ点は1個だけ
                                 TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
-                                PointD p = chain.points.get( 0 ).getBase();
+                                PointD p = chain.points[ 0 ].getBase();
                                 add.put( (int)p.getX(), new VsqBPPair( (int)p.getY(), list.getMaxID() + 1 ) );
 
                                 command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, add );
@@ -1113,11 +1113,11 @@ namespace cadencii
                         }
                     } else if ( chain.size() > 1 ) {
                         // リプレース後のベジエ曲線の範囲
-                        int min = (int)chain.points.get( 0 ).getBase().getX();
+                        int min = (int)chain.points[ 0 ].getBase().getX();
                         int max = min;
                         int points_size = chain.points.Count;
                         for ( int i = 1; i < points_size; i++ ) {
-                            int x = (int)chain.points.get( i ).getBase().getX();
+                            int x = (int)chain.points[ i ].getBase().getX();
                             min = Math.Min( min, x );
                             max = Math.Max( max, x );
                         }
@@ -1126,11 +1126,11 @@ namespace cadencii
                         int ex_min = min;
                         int ex_max = max;
                         if ( target.points.Count > 0 ) {
-                            ex_min = (int)target.points.get( 0 ).getBase().getX();
+                            ex_min = (int)target.points[ 0 ].getBase().getX();
                             ex_max = ex_min;
                             int target_points_size = target.points.Count;
                             for ( int i = 1; i < target_points_size; i++ ) {
-                                int x = (int)target.points.get( i ).getBase().getX();
+                                int x = (int)target.points[ i ].getBase().getX();
                                 ex_min = Math.Min( ex_min, x );
                                 ex_max = Math.Max( ex_max, x );
                             }
@@ -1181,17 +1181,17 @@ namespace cadencii
                     Track.Clear();
                     int c = vsq.Track.Count;
                     for ( int i = 0; i < c; i++ ) {
-                        Track.Add( (VsqTrack)vsq.Track.get( i ).clone() );
+                        Track.Add( (VsqTrack)vsq.Track[ i ].clone() );
                     }
                     TempoTable.Clear();
                     c = vsq.TempoTable.Count;
                     for ( int i = 0; i < c; i++ ) {
-                        TempoTable.Add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
+                        TempoTable.Add( (TempoTableEntry)vsq.TempoTable[ i ].clone() );
                     }
                     TimesigTable.Clear();
                     c = vsq.TimesigTable.Count;
                     for ( int i = 0; i < c; i++ ) {
-                        TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
+                        TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable[ i ].clone() );
                     }
                     //m_tpq = vsq.m_tpq;
                     TotalClocks = vsq.TotalClocks;
@@ -1220,7 +1220,7 @@ namespace cadencii
                         Vector<BezierChain> chains = new Vector<BezierChain>();
                         Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.Count; i++ ) {
-                            chains.Add( (BezierChain)src.get( i ).clone() );
+                            chains.Add( (BezierChain)src[ i ].clone() );
                         }
                         inv.put( ct, chains );
 
@@ -1255,7 +1255,7 @@ namespace cadencii
                 } else if ( command.type == CadenciiCommandType.TRACK_DELETE ) {
                     #region DeleteTrack
                     int track = (Integer)command.args[0];
-                    ret = VsqFileEx.generateCommandAddTrack( Track.get( track ), Mixer.Slave.get( track - 1 ), track, AttachedCurves.get( track - 1 ) );
+                    ret = VsqFileEx.generateCommandAddTrack( Track[ track ], Mixer.Slave[ track - 1 ], track, AttachedCurves.get( track - 1 ) );
                     Track.RemoveAt( track );
                     AttachedCurves.removeElementAt( track - 1 );
                     Mixer.Slave.RemoveAt( track - 1 );
@@ -1271,7 +1271,7 @@ namespace cadencii
                     int track = (Integer)command.args[0];
                     VsqTrack item = (VsqTrack)command.args[1];
                     BezierCurves bezier_curves = (BezierCurves)command.args[2];
-                    ret = VsqFileEx.generateCommandTrackReplace( track, Track.get( track ), AttachedCurves.get( track - 1 ) );
+                    ret = VsqFileEx.generateCommandTrackReplace( track, Track[ track ], AttachedCurves.get( track - 1 ) );
                     Track.set( track, item );
                     AttachedCurves.set( track - 1, bezier_curves );
                     updateTotalClocks();
@@ -1285,7 +1285,7 @@ namespace cadencii
                     BgmFiles.Clear();
                     int count = list.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        BgmFiles.Add( list.get( i ) );
+                        BgmFiles.Add( list[ i ] );
                     }
                     #endregion
                 } else if ( command.type == CadenciiCommandType.CHANGE_SEQUENCE_CONFIG ) {
@@ -1394,7 +1394,7 @@ namespace cadencii
             // UTAUでエクスポートしたIconHandleは、IDS=UTAUとなっているので探知する
             int count = Track.Count;
             for ( int i = 1; i < count; i++ ) {
-                VsqTrack track = Track.get( i );
+                VsqTrack track = Track[ i ];
                 for ( Iterator<VsqEvent> itr = track.getSingerEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = itr.next();
                     if ( ((IconHandle)ve.ID.IconHandle).IDS.ToLower().Equals( "utau" ) ) {
@@ -1474,11 +1474,11 @@ namespace cadencii
                             Vector<BezierChain> list = bc.get( ct );
                             int list_size = list.Count;
                             for ( int i = 0; i < list_size; i++ ) {
-                                BezierChain chain = list.get( i );
+                                BezierChain chain = list[ i ];
                                 chain.id = i + 1;
                                 int points_size = chain.points.Count;
                                 for ( int j = 0; j < points_size; j++ ) {
-                                    chain.points.get( j ).setID( j + 1 );
+                                    chain.points[ j ].setID( j + 1 );
                                 }
                             }
                         }
@@ -1494,7 +1494,7 @@ namespace cadencii
             // VsqBPListのNameを更新
             int c = ret.Track.Count;
             for ( int i = 0; i < c; i++ ) {
-                VsqTrack track = ret.Track.get( i );
+                VsqTrack track = ret.Track[ i ];
                 foreach ( CurveType s in Utility.CURVE_USAGE ) {
                     VsqBPList list = track.getCurve( s.getName() );
                     if ( list != null ) {

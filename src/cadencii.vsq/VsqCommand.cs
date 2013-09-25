@@ -519,14 +519,14 @@ namespace cadencii.vsq
             Vector<String> cp_targets = new Vector<String>();
             int count = targets.Count;
             for ( int i = 0; i < count; i++ ) {
-                cp_targets.Add( targets.get( i ) );
+                cp_targets.Add( targets[ i ] );
             }
             command.Args[1] = cp_targets;
             Vector<Vector<BPPair>> cp_edits = new Vector<Vector<BPPair>>();
             count = edits.Count;
             for ( int i = 0; i < count; i++ ) {
                 Vector<BPPair> copied = new Vector<BPPair>();
-                for ( Iterator<BPPair> itr = edits.get( i ).iterator(); itr.hasNext(); ) {
+                for ( Iterator<BPPair> itr = edits[ i ].iterator(); itr.hasNext(); ) {
                     BPPair item = itr.next();
                     copied.Add( new BPPair( item.Clock, item.Value ) );
                 }
@@ -553,7 +553,7 @@ namespace cadencii.vsq
             Vector<String> cp_target = new Vector<String>();
             int c = target.Count;
             for ( int i = 0; i < c; i++ ) {
-                cp_target.Add( target.get( i ) );
+                cp_target.Add( target[ i ] );
             }
             command.Args[1] = cp_target;
 
@@ -561,7 +561,7 @@ namespace cadencii.vsq
             c = delete.Count;
             for ( int i = 0; i < c; i++ ) {
                 Vector<Long> cp_delete = new Vector<Long>();
-                for ( Iterator<Long> itr = delete.get( i ).iterator(); itr.hasNext(); ) {
+                for ( Iterator<Long> itr = delete[ i ].iterator(); itr.hasNext(); ) {
                     long id = itr.next();
                     cp_delete.Add( id );
                 }
@@ -573,7 +573,7 @@ namespace cadencii.vsq
             c = add.Count;
             for ( int i = 0; i < c; i++ ) {
                 TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
-                TreeMap<Integer, VsqBPPair> tmp = add.get( i );
+                TreeMap<Integer, VsqBPPair> tmp = add[ i ];
                 for ( Iterator<Integer> itr = tmp.keySet().iterator(); itr.hasNext(); ) {
                     int clock = itr.next();
                     VsqBPPair item = tmp.get( clock );
@@ -730,7 +730,7 @@ namespace cadencii.vsq
             Vector<Integer> ret = new Vector<Integer>();
             int count = value.Count;
             for ( int i = 0; i < count; i++ ) {
-                ret.Add( value.get( i ) );
+                ret.Add( value[ i ] );
             }
             return ret;
         }

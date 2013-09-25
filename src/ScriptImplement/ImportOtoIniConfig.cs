@@ -14,7 +14,7 @@ public class ImportOtoIniConfig
     public static ScriptReturnStatus Edit( VsqFileEx vsq )
     {
         int selected = AppManager.getSelected();
-        VsqTrack vsq_track = vsq.Track.get( selected );
+        VsqTrack vsq_track = vsq.Track[ selected ];
         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
         if ( kind != RendererKind.UTAU ) {
             return ScriptReturnStatus.NOT_EDITED;

@@ -558,13 +558,13 @@ namespace cadencii
                 int tempo = 500000;
                 int cEnd = 0;
                 if ( i < count ) {
-                    TempoTableEntry entry = tempo_table.get( i );
+                    TempoTableEntry entry = tempo_table[ i ];
                     time = entry.Time;
                     tempo = entry.Tempo;
                     cEnd = entry.Clock;
                 } else {
                     time = tempo_table.getSecFromClock( clock_end );
-                    tempo = tempo_table.get( i - 1 ).Tempo;
+                    tempo = tempo_table[ i - 1 ].Tempo;
                     cEnd = clock_end;
                 }
                 int sEnd = (int)(time * mSampleRate);

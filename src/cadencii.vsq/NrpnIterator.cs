@@ -76,7 +76,7 @@ namespace cadencii.vsq
         public ValuePair<String, Integer> next()
         {
             m_pos++;
-            return nrpns.get( m_pos );
+            return nrpns[ m_pos ];
         }
 
         public void remove()

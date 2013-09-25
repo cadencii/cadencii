@@ -73,10 +73,10 @@ namespace cadencii.vsq
             int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
                 String comma = (i == 0 ? "" : ",");
-                pbw += comma + Points.get( i ).Step;
-                pby += Points.get( i ).Value + ",";
+                pbw += comma + Points[ i ].Step;
+                pby += Points[ i ].Value + ",";
                 String type = "";
-                UstPortamentoType ut = Points.get( i ).Type;
+                UstPortamentoType ut = Points[ i ].Type;
                 if ( ut == UstPortamentoType.S ) {
                     type = "";
                 } else if ( ut == UstPortamentoType.Linear ) {
@@ -105,7 +105,7 @@ namespace cadencii.vsq
             UstPortamento ret = new UstPortamento();
             int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
-                ret.Points.Add( Points.get( i ) );
+                ret.Points.Add( Points[ i ] );
             }
             ret.Start = Start;
             ret.mIsUnknownIntSpecified = mIsUnknownIntSpecified;
@@ -151,7 +151,7 @@ namespace cadencii.vsq
                     if ( i >= Points.Count ) {
                         Points.Add( new UstPortamentoPoint() );
                     }
-                    UstPortamentoPoint up = Points.get( i );
+                    UstPortamentoPoint up = Points[ i ];
                     up.Step = int.Parse( values[i] );
                     Points.set( i, up );
                 }
@@ -163,7 +163,7 @@ namespace cadencii.vsq
                     if ( i >= Points.Count ) {
                         Points.Add( new UstPortamentoPoint() );
                     }
-                    UstPortamentoPoint up = Points.get( i );
+                    UstPortamentoPoint up = Points[ i ];
                     up.Value = (float)double.Parse( values[i] );
                     Points.set( i, up );
                 }
@@ -172,7 +172,7 @@ namespace cadencii.vsq
                     if ( i >= Points.Count ) {
                         Points.Add( new UstPortamentoPoint() );
                     }
-                    UstPortamentoPoint up = Points.get( i );
+                    UstPortamentoPoint up = Points[ i ];
                     String search = values[i].ToLower();
                     if ( search == "s" ) {
                         up.Type = UstPortamentoType.Linear;

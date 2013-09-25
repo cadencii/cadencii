@@ -62,7 +62,7 @@ namespace cadencii
             m_editing_id = editing_id;
             m_curve = curve;
 
-            VsqBPPairSearchContext context = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() ).findElement( m_editing_id );
+            VsqBPPairSearchContext context = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( m_curve.getName() ).findElement( m_editing_id );
             txtDataPointClock.Text = context.clock + "";
             txtDataPointValue.Text = context.point.value + "";
             txtDataPointValue.SelectAll();
@@ -115,7 +115,7 @@ namespace cadencii
             }
 
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+            VsqTrack vsq_track = AppManager.getVsqFile().Track[ selected ];
             VsqBPList src = vsq_track.getCurve( m_curve.getName() );
             VsqBPList list = (VsqBPList)src.clone();
 
@@ -187,7 +187,7 @@ namespace cadencii
 
         public void commonButton_Click( Object sender, EventArgs e )
         {
-            VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() );
+            VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( m_curve.getName() );
             VsqBPPairSearchContext search = list.findElement( m_editing_id );
             int index = search.index;
             if ( sender == btnForward ) {
@@ -255,7 +255,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             boolean exists = false;
             if ( vsq != null ) {
-                exists = vsq.Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() ).findElement( m_editing_id ).index >= 0;
+                exists = vsq.Track[AppManager.getSelected()].getCurve( m_curve.getName() ).findElement( m_editing_id ).index >= 0;
             }
 #if DEBUG
             sout.println( "FormCurvePointEdit#handleUndoRedo_Click; exists=" + exists );

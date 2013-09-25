@@ -63,7 +63,7 @@ namespace cadencii
         }
 
         public BezierCurves get( int index ) {
-            return mCurves.get( index );
+            return mCurves[ index ];
         }
 
         public void set( int index, BezierCurves value ) {
@@ -87,7 +87,7 @@ namespace cadencii
             ret.mCurves.Clear();
             int c = mCurves.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret.mCurves.Add( (BezierCurves)mCurves.get( i ).clone() );
+                ret.mCurves.Add( (BezierCurves)mCurves[ i ].clone() );
             }
             return ret;
         }

@@ -58,7 +58,7 @@ namespace cadencii.vsq
 
         public UstEvent getEvent( int index )
         {
-            return m_events.get( index );
+            return m_events[ index ];
         }
 
         public void setEvent( int index, UstEvent item )

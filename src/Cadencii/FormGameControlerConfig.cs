@@ -106,72 +106,72 @@ namespace cadencii
 
         public int getRectangle()
         {
-            return m_list.get( 0 );
+            return m_list[ 0 ];
         }
 
         public int getTriangle()
         {
-            return m_list.get( 1 );
+            return m_list[ 1 ];
         }
 
         public int getCircle()
         {
-            return m_list.get( 2 );
+            return m_list[ 2 ];
         }
 
         public int getCross()
         {
-            return m_list.get( 3 );
+            return m_list[ 3 ];
         }
 
         public int getL1()
         {
-            return m_list.get( 4 );
+            return m_list[ 4 ];
         }
 
         public int getL2()
         {
-            return m_list.get( 5 );
+            return m_list[ 5 ];
         }
 
         public int getR1()
         {
-            return m_list.get( 6 );
+            return m_list[ 6 ];
         }
 
         public int getR2()
         {
-            return m_list.get( 7 );
+            return m_list[ 7 ];
         }
 
         public int getSelect()
         {
-            return m_list.get( 8 );
+            return m_list[ 8 ];
         }
 
         public int getStart()
         {
-            return m_list.get( 9 );
+            return m_list[ 9 ];
         }
 
         public int getPovDown()
         {
-            return m_povs.get( 0 );
+            return m_povs[ 0 ];
         }
 
         public int getPovLeft()
         {
-            return m_povs.get( 1 );
+            return m_povs[ 1 ];
         }
 
         public int getPovUp()
         {
-            return m_povs.get( 2 );
+            return m_povs[ 2 ];
         }
 
         public int getPovRight()
         {
-            return m_povs.get( 3 );
+            return m_povs[ 3 ];
         }
         #endregion
 

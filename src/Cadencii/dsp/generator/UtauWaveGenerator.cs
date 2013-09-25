@@ -179,7 +179,7 @@ namespace cadencii
             setQuiet( true );
 #endif
             mTrack = track;
-            int resampler_index = VsqFileEx.getTrackResamplerUsed( vsq.Track.get( track ) );
+            int resampler_index = VsqFileEx.getTrackResamplerUsed( vsq.Track[ track ] );
             int resampler_count = mConfig.getResamplerCount();
             if ( resampler_count <= resampler_index ) {
                 resampler_index = resampler_count - 1;
@@ -230,7 +230,7 @@ namespace cadencii
 
                 // まず，start_clockに音符があるかどうかを調べる
                 // 音符があれば，trim_endに適切な値を代入
-                VsqTrack vsq_track = mVsq.Track.get( track );
+                VsqTrack vsq_track = mVsq.Track[ track ];
                 int c = vsq_track.getEventCount();
                 int trim_end = start_clock;
                 for ( int i = 0; i < c; i++ ) {
@@ -350,7 +350,7 @@ namespace cadencii
                 log = new StreamWriter( Path.Combine( m_temp_dir, "UtauWaveGenerator.log" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
 #endif
                 // 原音設定を読み込み
-                VsqTrack target = mVsq.Track.get( mTrack );
+                VsqTrack target = mVsq.Track[ mTrack ];
 
                 String file = Path.Combine( mTempDir, FILEBASE );
                 if (System.IO.File.Exists(file)) {
@@ -397,7 +397,7 @@ namespace cadencii
 #endif
                 int events_count = events.Count;
                 for ( int k = 0; k < events_count; k++ ) {
-                    VsqEvent item = events.get( k );
+                    VsqEvent item = events[ k ];
 #if MAKEBAT_SP
                     log.Write( "    #" + k + "; clock=" + item.Clock );
 #endif
@@ -410,7 +410,7 @@ namespace cadencii
                     String singer_raw = "";
                     String singer = "";
                     if ( 0 <= program_change && program_change < mConfig.UtauSingers.Count ) {
-                        singer_raw = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
+                        singer_raw = mConfig.UtauSingers[ program_change ].VOICEIDSTR;
                         singer = singer_raw;
 #if !JAVA
                         if ( mUseWideCharacterWorkaround ) {
@@ -441,7 +441,7 @@ namespace cadencii
                     double sec_end_act = sec_end;
                     VsqEvent item_next = null;
                     if ( k + 1 < events_count ) {
-                        item_next = events.get( k + 1 );
+                        item_next = events[ k + 1 ];
                     }
                     if ( item_next != null ) {
                         double sec_start_act_next =
@@ -736,12 +736,12 @@ namespace cadencii
                 // 引き続き、wavtoolを呼ぶ作業に移行
                 boolean first = true;
                 //int trim_remain = (int)( trimMillisec / 1000.0 * VSTiProxy.SAMPLE_RATE); //先頭から省かなければならないサンプル数の残り
-                VsqBPList dyn_curve = mVsq.Track.get( mTrack ).getCurve( "dyn" );
+                VsqBPList dyn_curve = mVsq.Track[ mTrack ].getCurve( "dyn" );
 #if MAKEBAT_SP
                 bat = new StreamWriter( Path.Combine( m_temp_dir, "utau.bat" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
 #endif
                 for ( int i = 0; i < num_queues; i++ ) {
-                    RenderQueue rq = mResamplerQueue.get( i );
+                    RenderQueue rq = mResamplerQueue[ i ];
                     if ( !rq.ResamplerFinished ) {
 #if MAKEBAT_SP
                         bat.WriteLine( "\"" + mResampler + "\" " + rq.getResamplerArgString() );
@@ -817,10 +817,10 @@ namespace cadencii
 
                     // wavtoolを起動
                     double sec_fin; // 今回のwavtool起動によってレンダリングが完了したサンプル長さ
-                    RenderQueue p = mResamplerQueue.get( i );
+                    RenderQueue p = mResamplerQueue[ i ];
                     OtoArgs oa_next;
                     if ( i + 1 < num_queues ) {
-                        oa_next = mResamplerQueue.get( i + 1 ).Oto;
+                        oa_next = mResamplerQueue[ i + 1 ].Oto;
                     } else {
                         oa_next = new OtoArgs();
                     }

@@ -345,16 +345,16 @@ namespace cadencii {
             }
 
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
-                String dll_path = vocaloidDriver.get( i ).path;
+                String dll_path = vocaloidDriver[ i ].path;
                 boolean loaded = false;
                 try {
                     if ( dll_path != "" ) {
                         // 読込み。
-                        loaded = vocaloidDriver.get( i ).open( 44100, 44100 );
+                        loaded = vocaloidDriver[ i ].open( 44100, 44100 );
                     } else {
                         loaded = false;
                     }
-                    vocaloidDriver.get( i ).loaded = loaded;
+                    vocaloidDriver[ i ].loaded = loaded;
                 } catch ( Exception ex ) {
                     serr.println( "VSTiProxy#initCor; ex=" + ex );
                 }
@@ -421,7 +421,7 @@ namespace cadencii {
         public static boolean isRendererAvailable( RendererKind renderer, String wine_prefix, String wine_top ) {
 #if ENABLE_VOCALOID
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
-                if ( renderer == vocaloidDriver.get( i ).getRendererKind() && vocaloidDriver.get( i ).loaded ) {
+                if ( renderer == vocaloidDriver[ i ].getRendererKind() && vocaloidDriver[ i ].loaded ) {
                     return true;
                 }
             }
@@ -469,8 +469,8 @@ namespace cadencii {
         public static void terminate() {
 #if ENABLE_VOCALOID
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
-                if ( vocaloidDriver.get( i ) != null ) {
-                    vocaloidDriver.get( i ).close();
+                if ( vocaloidDriver[ i ] != null ) {
+                    vocaloidDriver[ i ].close();
                 }
             }
             vocaloidDriver.Clear();

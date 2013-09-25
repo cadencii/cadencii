@@ -29,8 +29,8 @@ public class GenerateVLF{
             using ( StreamWriter sw = new StreamWriter( sfd.FileName, false, Encoding.GetEncoding( 932 ) ) ) {
                 sw.WriteLine( "vlf\t2.0" );
                 sw.WriteLine( "vlfpart\tPhrase1\t0\t0" );
-                for ( int i = 0; i < vsq.Track.get( track ).getEventCount(); i++ ) {
-                    VsqEvent ve = vsq.Track.get( track ).getEvent( i );
+                for ( int i = 0; i < vsq.Track[ track ].getEventCount(); i++ ) {
+                    VsqEvent ve = vsq.Track[ track ].getEvent( i );
                     if ( ve.ID.type == VsqIDType.Anote ) {
                         string symbol = "";
                         for ( int j = 0; j < ve.ID.LyricHandle.L0.getPhoneticSymbolList().Count; j++ ) {

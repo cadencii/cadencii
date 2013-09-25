@@ -123,7 +123,7 @@ namespace cadencii
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq != null ) {
-                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                     if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
@@ -148,7 +148,7 @@ namespace cadencii
             SynthesizerType type = SynthesizerType.VOCALOID2;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
-                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                 if ( kind == RendererKind.VOCALOID1 ){
                     type = SynthesizerType.VOCALOID1;
                 }

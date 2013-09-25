@@ -44,29 +44,29 @@ namespace cadencii.vsq
 #if DEBUG
             sout.println( "TimesigVector#updateTimesigInfo; before:" );
             for ( int i = 0; i < Count; i++ ) {
-                sout.println( "    " + get( i ).Clock + " " + get( i ).Numerator + "/" + get( i ).Denominator );
+                sout.println( "    " + this[i].Clock + " " + this[i].Numerator + "/" + this[i].Denominator );
             }
 #endif
-            if ( get( 0 ).Clock != 0 ) {
+            if ( this[0].Clock != 0 ) {
                 return;
             }
-            get( 0 ).Clock = 0;
+            this[0].Clock = 0;
             this.Sort();
             int count = Count;
             for ( int j = 1; j < count; j++ ) {
-                TimeSigTableEntry item = get( j - 1 );
+                TimeSigTableEntry item = this[j - 1];
                 int numerator = item.Numerator;
                 int denominator = item.Denominator;
                 int clock = item.Clock;
                 int bar_count = item.BarCount;
                 int dif = 480 * 4 / denominator * numerator;//1小節が何クロックか？
-                clock += (get( j ).BarCount - bar_count) * dif;
-                get( j ).Clock = clock;
+                clock += (this[j].BarCount - bar_count) * dif;
+                this[j].Clock = clock;
             }
 #if DEBUG
             sout.println( "TimesigVector#updateTimesigInfo; after:" );
             for ( int i = 0; i < Count; i++ ) {
-                sout.println( "    " + get( i ).Clock + " " + get( i ).Numerator + "/" + get( i ).Denominator );
+                sout.println( "    " + this[i].Clock + " " + this[i].Numerator + "/" + this[i].Denominator );
             }
 #endif
         }
@@ -80,12 +80,12 @@ namespace cadencii.vsq
             int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
-                if ( get( i ).Clock <= clock ) {
+                if ( this[i].Clock <= clock ) {
                     break;
                 }
             }
-            ret.numerator = get( index ).Numerator;
-            ret.denominator = get( index ).Denominator;
+            ret.numerator = this[index].Numerator;
+            ret.denominator = this[index].Denominator;
             return ret;
         }
 
@@ -95,11 +95,11 @@ namespace cadencii.vsq
             int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
-                if ( get( i ).Clock <= clock ) {
+                if ( this[i].Clock <= clock ) {
                     break;
                 }
             }
-            TimeSigTableEntry item = get( index );
+            TimeSigTableEntry item = this[index];
             Timesig ret = new Timesig();
             ret.numerator = item.Numerator;
             ret.denominator = item.Denominator;
@@ -120,11 +120,11 @@ namespace cadencii.vsq
             int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
-                if ( get( i ).BarCount <= bar_count ) {
+                if ( this[i].BarCount <= bar_count ) {
                     break;
                 }
             }
-            TimeSigTableEntry item = get( index );
+            TimeSigTableEntry item = this[index];
             int numerator = item.Numerator;
             int denominator = item.Denominator;
             int init_clock = item.Clock;
@@ -144,13 +144,13 @@ namespace cadencii.vsq
             int c = Count;
             for ( int i = c - 1; i >= 0; i-- ) {
                 index = i;
-                if ( get( i ).Clock <= clock ) {
+                if ( this[i].Clock <= clock ) {
                     break;
                 }
             }
             int bar_count = 0;
             if ( index >= 0 ) {
-                TimeSigTableEntry item = get( index );
+                TimeSigTableEntry item = this[index];
                 int last_clock = item.Clock;
                 int t_bar_count = item.BarCount;
                 int numerator = item.Numerator;

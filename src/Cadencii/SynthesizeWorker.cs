@@ -63,12 +63,12 @@ namespace cadencii
             int finished = queue.Count;
             String temppath = AppManager.getTempWaveDir();
             for ( int k = 0; k < tracks.Count; k++ ) {
-                int track = tracks.get( k );
+                int track = tracks[ k ];
                 String wavePath = Path.Combine( temppath, track + ".wav" );
                 Vector<Integer> queueIndex = new Vector<Integer>();
 
                 for ( int i = 0; i < queue.Count; i++ ) {
-                    if ( queue.get( i ).track == track ) {
+                    if ( queue[ i ].track == track ) {
                         queueIndex.Add( i );
                     }
                 }
@@ -79,14 +79,14 @@ namespace cadencii
                 }
 
 #if DEBUG
-                sout.println( "AppManager#pathWorkToFreeze; wavePath=" + wavePath + "; queue.get( queueIndex.get( 0 ) ).file=" + queue.get( queueIndex.get( 0 ) ).file );
+                sout.println( "AppManager#pathWorkToFreeze; wavePath=" + wavePath + "; queue.get( queueIndex.get( 0 ) ).file=" + queue[queueIndex[ 0 ]].file );
                 sout.println( "AppManager#pathWorkToFreeze; queueIndex.size()=" + queueIndex.Count );
 #endif
-                if ( queueIndex.Count == 1 && wavePath.Equals( queue.get( queueIndex.get( 0 ) ).file ) ) {
+                if ( queueIndex.Count == 1 && wavePath.Equals( queue[queueIndex[ 0 ]].file ) ) {
                     // 第trackトラック全体の合成を指示するキューだった場合．
                     // このとき，パッチワークを行う必要なし．
                     AppManager.mLastRenderedStatus[track - 1] =
-                        new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable, (SequenceConfig)vsq.config.clone() );
+                        new RenderedStatus( (VsqTrack)vsq.Track[ track ].clone(), vsq.TempoTable, (SequenceConfig)vsq.config.clone() );
                     AppManager.serializeRenderingStatus( temppath, track );
                     AppManager.invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
                     continue;
@@ -102,17 +102,17 @@ namespace cadencii
                     double[] bufr = new double[BUFLEN];
                     double total = 0.0;
                     for ( int m = 0; m < queueIndex.Count; m++ ) {
-                        int i = queueIndex.get( m );
+                        int i = queueIndex[ m ];
                         if ( finished <= i ) {
                             break;
                         }
 
                         // パッチワークの開始秒時
-                        double secStart = vsq.getSecFromClock( queue.get( i ).clockStart );
+                        double secStart = vsq.getSecFromClock( queue[ i ].clockStart );
                         long sampleStart = (long)(secStart * sampleRate);
 
                         // パッチワークの終了秒時
-                        int clockEnd = queue.get( i ).clockEnd;
+                        int clockEnd = queue[ i ].clockEnd;
                         if ( clockEnd == int.MaxValue ) {
                             clockEnd = vsq.TotalClocks + 240;
                         }
@@ -121,7 +121,7 @@ namespace cadencii
 
                         WaveReader wr = null;
                         try {
-                            wr = new WaveReader( queue.get( i ).file );
+                            wr = new WaveReader( queue[ i ].file );
                             long remain2 = sampleEnd - sampleStart;
                             long proc = 0;
                             while ( remain2 > 0 ) {
@@ -154,7 +154,7 @@ namespace cadencii
                         }
 
                         try {
-                            PortUtil.deleteFile( queue.get( i ).file );
+                            PortUtil.deleteFile( queue[ i ].file );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                             serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
@@ -164,8 +164,8 @@ namespace cadencii
                         }
                     }
 
-                    VsqTrack vsq_track = vsq.Track.get( track );
-                    if ( queueIndex.get( queueIndex.Count - 1 ) <= finished ) {
+                    VsqTrack vsq_track = vsq.Track[ track ];
+                    if ( queueIndex[ queueIndex.Count - 1 ] <= finished ) {
                         // 途中で終了せず，このトラックの全てのパッチワークが完了した．
                         AppManager.mLastRenderedStatus[track - 1] =
                             new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable, (SequenceConfig)vsq.config.clone() );
@@ -180,12 +180,12 @@ namespace cadencii
                         dumy.ID.IconHandle = new IconHandle();
                         dumy.ID.IconHandle.Program = 17;
                         for ( int m = 0; m < queueIndex.Count; m++ ) {
-                            int i = queueIndex.get( m );
+                            int i = queueIndex[ m ];
                             if ( i < finished ) {
                                 continue;
                             }
-                            int start = queue.get( i ).clockStart;
-                            int end = queue.get( i ).clockEnd;
+                            int start = queue[ i ].clockStart;
+                            int end = queue[ i ].clockEnd;
                             VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
 
                             // startの位置に歌手変更が既に指定されていないかどうかを検査
@@ -289,14 +289,14 @@ namespace cadencii
             String tmppath = AppManager.getTempWaveDir();
             int track = q.track;
 
-            VsqTrack vsq_track = vsq.Track.get( track );
+            VsqTrack vsq_track = vsq.Track[ track ];
             int count = vsq_track.getEventCount();
             if ( count <= 0 ) {
                 return;// false;
             }
-            double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.Slave.get( track - 1 ).Feder );
-            double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.Slave.get( track - 1 ).Panpot );
-            double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.Slave.get( track - 1 ).Panpot );
+            double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.Slave[ track - 1 ].Feder );
+            double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.Slave[ track - 1 ].Panpot );
+            double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.Slave[ track - 1 ].Panpot );
             double amp_left = amp_track * pan_left_track;
             double amp_right = amp_track * pan_right_track;
             int total_clocks = vsq.TotalClocks;
@@ -342,9 +342,9 @@ namespace cadencii
                         r.setOffsetSeconds( end_sec );
                         Amplifier amp_i_unit = new Amplifier();
                         amp_i_unit.setRoot( mGenerator );
-                        double amp_i = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.Slave.get( i - 1 ).Feder );
-                        double pan_left_i = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.Slave.get( i - 1 ).Panpot );
-                        double pan_right_i = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.Slave.get( i - 1 ).Panpot );
+                        double amp_i = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.Slave[ i - 1 ].Feder );
+                        double pan_left_i = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.Slave[ i - 1 ].Panpot );
+                        double pan_right_i = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.Slave[ i - 1 ].Panpot );
                         double amp_left_i = amp_i * pan_left_i;
                         double amp_right_i = amp_i * pan_right_i;
 #if DEBUG

@@ -96,10 +96,6 @@ namespace cadencii.java.util {
             : base() {
         }
 
-        public T get( int index ) {
-            return base[index];
-        }
-
         public void set( int index, T value ) {
             base[index] = value;
         }

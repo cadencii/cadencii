@@ -78,7 +78,7 @@ using cadencii.java.util;
                     int max = 1;
                     int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        SymbolTable table = mTable.get( i );
+                        SymbolTable table = mTable[ i ];
                         max = Math.Max( max, table.mMaxDivisions );
                     }
                     return max;
@@ -95,7 +95,7 @@ using cadencii.java.util;
                         loadSystemDictionaries();
                     }
                     if ( 0 <= index && index < mTable.Count ) {
-                        return mTable.get( index );
+                        return mTable[ index ];
                     } else {
                         return null;
                     }
@@ -164,7 +164,7 @@ using cadencii.java.util;
                 {
                     int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        SymbolTable table = mTable.get( i );
+                        SymbolTable table = mTable[ i ];
                         if ( table.isEnabled() ) {
                             SymbolTableEntry ret = table.attatchImp( phrase );
                             if ( ret != null ) {
@@ -223,7 +223,7 @@ using cadencii.java.util;
                     Vector<SymbolTable> buff = new Vector<SymbolTable>();
                     int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        buff.Add( mTable.get( i ) );
+                        buff.Add( mTable[ i ] );
                     }
 
                     // 現在の辞書をいったんクリア
@@ -231,9 +231,9 @@ using cadencii.java.util;
 
                     int count = list.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        ValuePair<String, Boolean> itemi = list.get( i );
+                        ValuePair<String, Boolean> itemi = list[ i ];
                         for ( int j = 0; j < size; j++ ) {
-                            SymbolTable table = buff.get( j );
+                            SymbolTable table = buff[ j ];
                             if ( table.getName().Equals( itemi.getKey() ) ) {
                                 table.setEnabled( itemi.getValue() );
                                 mTable.Add( table );

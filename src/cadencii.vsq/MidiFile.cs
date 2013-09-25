@@ -94,7 +94,7 @@ namespace cadencii.vsq
                     if ( m_time_format != 480 ) {
                         int count = track_events.Count;
                         for ( int i = 0; i < count; i++ ) {
-                            MidiEvent mi = track_events.get( i );
+                            MidiEvent mi = track_events[ i ];
                             mi.clock = mi.clock * 480 / m_time_format;
                             track_events.set( i, mi );
                         }
@@ -114,39 +114,39 @@ namespace cadencii.vsq
                         sw.newLine();
                         byte msb, lsb, data_msb, data_lsb;
                         msb = lsb = data_msb = data_lsb = 0x0;
-                        for ( int i = 0; i < m_events.get( track ).Count; i++ ) {
-                            if ( m_events.get( track ).get( i ).firstByte == 0xb0 ) {
-                                switch ( m_events.get( track ).get( i ).data[0] ) {
+                        for ( int i = 0; i < m_events[ track ].Count; i++ ) {
+                            if ( m_events[ track ][ i ].firstByte == 0xb0 ) {
+                                switch ( m_events[ track ][ i ].data[0] ) {
                                     case 0x63:
-                                        msb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
+                                        msb = (byte)(0xff & m_events[ track ][ i ].data[1]);
                                         lsb = 0x0;
                                         break;
                                     case 0x62:
-                                        lsb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
+                                        lsb = (byte)(0xff & m_events[ track ][ i ].data[1]);
                                         break;
                                     case 0x06:
-                                        data_msb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
+                                        data_msb = (byte)(0xff & m_events[ track ][ i ].data[1]);
                                         ushort nrpn = (ushort)(msb << 8 | lsb);
                                         String name = NRPN.getName( nrpn );
                                         if ( name.Equals( "" ) ) {
                                             name = "* * UNKNOWN * *";
-                                            sw.write( String.Format( format0, m_events.get( track ).get( i ).clock, nrpn, name, data_msb ) );
+                                            sw.write( String.Format( format0, m_events[ track ][ i ].clock, nrpn, name, data_msb ) );
                                             sw.newLine();
                                         } else {
                                             //if ( !NRPN.is_require_data_lsb( nrpn ) ) {
-                                            sw.write( String.Format( format0, m_events.get( track ).get( i ).clock, nrpn, name, data_msb ) );
+                                            sw.write( String.Format( format0, m_events[ track ][ i ].clock, nrpn, name, data_msb ) );
                                             sw.newLine();
                                             //}
                                         }
                                         break;
                                     case 0x26:
-                                        data_lsb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
+                                        data_lsb = (byte)(0xff & m_events[ track ][ i ].data[1]);
                                         ushort nrpn2 = (ushort)(msb << 8 | lsb);
                                         String name2 = NRPN.getName( nrpn2 );
                                         if ( name2.Equals( "" ) ) {
                                             name2 = "* * UNKNOWN * *";
                                         }
-                                        sw.write( String.Format( format, m_events.get( track ).get( i ).clock, nrpn2, name2, data_msb, data_lsb ) );
+                                        sw.write( String.Format( format, m_events[ track ][ i ].clock, nrpn2, name2, data_msb, data_lsb ) );
                                         sw.newLine();
                                         break;
                                 }
@@ -181,7 +181,7 @@ namespace cadencii.vsq
             if ( m_events == null ) {
                 return new Vector<MidiEvent>();
             } else if ( 0 <= track && track < m_events.Count ) {
-                return m_events.get( track );
+                return m_events[ track ];
             } else {
                 return new Vector<MidiEvent>();
             }
@@ -201,7 +201,7 @@ namespace cadencii.vsq
             if ( m_events != null ) {
                 int c = m_events.Count;
                 for ( int i = 0; i < c; i++ ) {
-                    m_events.get( i ).Clear();
+                    m_events[ i ].Clear();
                 }
                 m_events.Clear();
             }

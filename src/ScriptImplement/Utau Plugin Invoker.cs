@@ -77,7 +77,7 @@ public class Utau_Plugin_Invoker : Form {
 
         // 現在のトラック
         int selected = AppManager.getSelected();
-        VsqTrack vsq_track = vsq.Track.get( selected );
+        VsqTrack vsq_track = vsq.Track[ selected ];
         vsq_track.sortEvent();
 
         // プラグイン情報の定義ファイル(plugin.txt)があるかどうかチェック
@@ -205,7 +205,7 @@ public class Utau_Plugin_Invoker : Form {
             v.Track.RemoveAt( selected + 1 );
         }
         // 選択トラックの音符を全消去する
-        VsqTrack v_track = v.Track.get( 1 );
+        VsqTrack v_track = v.Track[ 1 ];
         v_track.MetaText.getEventList().clear();
         for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
             VsqEvent item = itr.next();

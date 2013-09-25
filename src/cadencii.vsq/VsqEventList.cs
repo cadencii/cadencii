@@ -69,7 +69,7 @@ namespace cadencii.vsq
         {
             int c = Events.Count;
             for ( int i = 0; i < c; i++ ) {
-                VsqEvent item = Events.get( i );
+                VsqEvent item = Events[ i ];
                 if ( item.InternalID == internal_id ) {
                     return i;
                 }
@@ -81,7 +81,7 @@ namespace cadencii.vsq
         {
             int index = findIndexFromID( internal_id );
             if ( 0 <= index && index < Events.Count ) {
-                return Events.get( index );
+                return Events[ index ];
             } else {
                 return null;
             }
@@ -91,7 +91,7 @@ namespace cadencii.vsq
         {
             int c = Events.Count;
             for ( int i = 0; i < c; i++ ) {
-                if ( Events.get( i ).InternalID == internal_id ) {
+                if ( Events[ i ].InternalID == internal_id ) {
                     Events.set( i, value );
                     break;
                 }
@@ -125,7 +125,7 @@ namespace cadencii.vsq
             Events.Sort();
             int count = Events.Count;
             for ( int i = 0; i < count; i++ ) {
-                m_ids.set( i, Events.get( i ).InternalID );
+                m_ids.set( i, Events[ i ].InternalID );
             }
             return id;
         }
@@ -171,12 +171,12 @@ namespace cadencii.vsq
 
         public VsqEvent getElement( int index )
         {
-            return Events.get( index );
+            return Events[ index ];
         }
 
         public void setElement( int index, VsqEvent value )
         {
-            value.InternalID = Events.get( index ).InternalID;
+            value.InternalID = Events[ index ].InternalID;
             Events.set( index, value );
         }
 
@@ -186,12 +186,12 @@ namespace cadencii.vsq
                 m_ids.Clear();
                 int count = Events.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    m_ids.Add( Events.get( i ).InternalID );
+                    m_ids.Add( Events[ i ].InternalID );
                 }
             } else {
                 int count = Events.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    m_ids.set( i, Events.get( i ).InternalID );
+                    m_ids.set( i, Events[ i ].InternalID );
                 }
             }
         }

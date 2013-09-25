@@ -405,7 +405,7 @@ namespace cadencii.vsq
                 result += "\n" + "L0=" + L0.toString( addQuotationMark );
                 int c = Trailing.Count;
                 for ( int i = 0; i < c; i++ ) {
-                    result += "\n" + "L" + (i + 1) + "=" + Trailing.get( i ).toString( addQuotationMark );
+                    result += "\n" + "L" + (i + 1) + "=" + Trailing[ i ].toString( addQuotationMark );
                 }
             } else if ( m_type == VsqHandleType.Vibrato ) {
                 result += "\n" + "IconID=" + IconID + "\n";

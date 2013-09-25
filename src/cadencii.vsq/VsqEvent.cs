@@ -70,7 +70,7 @@ namespace cadencii.vsq
                     int count = this.ID.LyricHandle.Trailing.Count;
                     if ( count != item.ID.LyricHandle.Trailing.Count ) return false;
                     for ( int k = 0; k < count; k++ ) {
-                        if ( !this.ID.LyricHandle.Trailing.get( k ).equalsForSynth( item.ID.LyricHandle.Trailing.get( k ) ) ) return false;
+                        if ( !this.ID.LyricHandle.Trailing[ k ].equalsForSynth( item.ID.LyricHandle.Trailing[ k ] ) ) return false;
                     }
                 }
                 if ( this.ID.NoteHeadHandle == null && item.ID.NoteHeadHandle != null ) return false;

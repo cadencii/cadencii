@@ -117,8 +117,8 @@ public class Hamori : System.Windows.Forms.Form {
         int track = AppManager.getSelected();
         int tmp;
         if ( opt == 0 ) {
-            for ( int j = 0; j < vsq.Track.get( track ).getEventCount(); j++ ) {
-                cadencii.vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
+            for ( int j = 0; j < vsq.Track[ track ].getEventCount(); j++ ) {
+                cadencii.vsq.VsqEvent item = vsq.Track[ track ].getEvent( j );
                 if ( item.ID.type == cadencii.vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
                     tmp = (item.ID.Note + 12 - basecode) % 12;
                     step = ((1 < tmp && tmp < 5) || 8 < tmp) ? 3 : 4;
@@ -131,8 +131,8 @@ public class Hamori : System.Windows.Forms.Form {
                 }
             }
         } else {
-            for ( int j = 0; j < vsq.Track.get( track ).getEventCount(); j++ ) {
-                cadencii.vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
+            for ( int j = 0; j < vsq.Track[ track ].getEventCount(); j++ ) {
+                cadencii.vsq.VsqEvent item = vsq.Track[ track ].getEvent( j );
                 if ( item.ID.type == cadencii.vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
                     tmp = (item.ID.Note + 12 - basecode) % 12;
                     tmp = tmp == 11 ? step - 1 : step;

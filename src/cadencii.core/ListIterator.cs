@@ -25,7 +25,7 @@ namespace cadencii.java.util {
             m_list = new List<T>();
             int c = list.Count;
             for( int i = 0; i < c; i++ ){
-                m_list.Add( list.get( i ) );
+                m_list.Add( list[ i ] );
             }
             m_pos = -1;
         }

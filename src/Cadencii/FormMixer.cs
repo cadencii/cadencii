@@ -121,7 +121,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( 1 <= track && track < vsq.Track.Count &&
                  0 <= track - 1 && track - 1 < m_tracker.Count ) {
-                return m_tracker.get( track - 1 );
+                return m_tracker[ track - 1 ];
             } else if ( track == 0 ) {
                 return volumeMaster;
             } else {
@@ -139,7 +139,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             int offset = vsq.Track.Count - 1;
             if ( 0 <= index + offset && index + offset < m_tracker.Count ) {
-                return m_tracker.get( index + offset );
+                return m_tracker[ index + offset ];
             } else {
                 return null;
             }
@@ -169,22 +169,22 @@ namespace cadencii
             for ( int track = 1; track < vsq.Track.Count; track++ ) {
                 if ( soloSpecificationExists ) {
                     if ( vsq.getSolo( track ) ) {
-                        m_tracker.get( track - 1 ).setSolo( true );
-                        m_tracker.get( track - 1 ).setMuted( masterMuted ? true : vsq.getMute( track ) );
+                        m_tracker[ track - 1 ].setSolo( true );
+                        m_tracker[ track - 1 ].setMuted( masterMuted ? true : vsq.getMute( track ) );
                     } else {
-                        m_tracker.get( track - 1 ).setSolo( false );
-                        m_tracker.get( track - 1 ).setMuted( true );
+                        m_tracker[ track - 1 ].setSolo( false );
+                        m_tracker[ track - 1 ].setMuted( true );
                     }
                 } else {
-                    m_tracker.get( track - 1 ).setSolo( vsq.getSolo( track ) );
-                    m_tracker.get( track - 1 ).setMuted( masterMuted ? true : vsq.getMute( track ) );
+                    m_tracker[ track - 1 ].setSolo( vsq.getSolo( track ) );
+                    m_tracker[ track - 1 ].setMuted( masterMuted ? true : vsq.getMute( track ) );
                 }
             }
 
             // BGM
             int offset = vsq.Track.Count - 1;
             for ( int i = 0; i < vsq.BgmFiles.Count; i++ ) {
-                m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
+                m_tracker[ offset + i ].setMuted( masterMuted ? true : vsq.BgmFiles[ i ].mute == 1 );
             }
 
             this.Refresh();
@@ -239,7 +239,7 @@ namespace cadencii
                 int delete = m_tracker.Count - num;
                 for ( int i = 0; i < delete; i++ ) {
                     int indx = m_tracker.Count - 1;
-                    VolumeTracker tr = m_tracker.get( indx );
+                    VolumeTracker tr = m_tracker[ indx ];
                     m_tracker.RemoveAt( indx );
 #if !JAVA
                     tr.Dispose();
@@ -287,10 +287,10 @@ namespace cadencii
 #if DEBUG
                 sout.println( "FormMixer#updateStatus; #" + j + "; feder=" + vme.Feder + "; panpot=" + vme.Panpot );
 #endif
-                VolumeTracker tracker = m_tracker.get( j );
+                VolumeTracker tracker = m_tracker[ j ];
                 tracker.setFeder( vme.Feder );
                 tracker.setPanpot( vme.Panpot );
-                tracker.setTitle( vsq.Track.get( j + 1 ).getName() );
+                tracker.setTitle( vsq.Track[ j + 1 ].getName() );
                 tracker.setNumber( (j + 1) + "" );
                 tracker.setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
                 tracker.setSoloButtonVisible( true );
@@ -307,7 +307,7 @@ namespace cadencii
             for ( int i = 0; i < count; i++ ) {
                 j++;
                 BgmFile item = AppManager.getBgm( i );
-                VolumeTracker tracker = m_tracker.get( j );
+                VolumeTracker tracker = m_tracker[ j ];
                 tracker.setFeder( item.feder );
                 tracker.setPanpot( item.panpot );
                 tracker.setTitle( PortUtil.getFileName( item.file ) );
@@ -394,7 +394,7 @@ namespace cadencii
                 size = m_tracker.Count;
             }
             for ( int i = 0; i < size; i++ ) {
-                VolumeTracker item = m_tracker.get( i );
+                VolumeTracker item = m_tracker[ i ];
                 item.PanpotChanged -= new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged -= new FederChangedEventHandler( FormMixer_FederChanged );
                 item.MuteButtonClick -= new EventHandler( FormMixer_MuteButtonClick );
@@ -415,7 +415,7 @@ namespace cadencii
                 size = m_tracker.Count;
             }
             for ( int i = 0; i < size; i++ ) {
-                VolumeTracker item = m_tracker.get( i );
+                VolumeTracker item = m_tracker[ i ];
                 item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
                 item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
@@ -578,7 +578,7 @@ namespace cadencii
         {
             int stdx = hScroll.Value;
             for ( int i = 0; i < m_tracker.Count; i++ ) {
-                m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
+                m_tracker[ i ].setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
             }
             this.Invalidate();
         }

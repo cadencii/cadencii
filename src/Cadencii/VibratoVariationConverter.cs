@@ -77,7 +77,7 @@ namespace cadencii
                 sout.println( "VibratoVariationConverter#GetStandardValues; size=" + size );
 #endif
                 for ( int i = 0; i < size; i++ ) {
-                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
 #if DEBUG
                     sout.println( "VibratoVariationConverter#GetStandardValues; handle.getDisplayString()=" + handle.getDisplayString() );
 #endif
@@ -88,7 +88,7 @@ namespace cadencii
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq != null ) {
-                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                     if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
@@ -158,7 +158,7 @@ namespace cadencii
                 if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                     int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        String display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
+                        String display_string = AppManager.editorConfig.AutoVibratoCustom[ i ].getDisplayString();
                         if ( value.Equals( display_string ) ) {
                             return new VibratoVariation( display_string );
                         }
@@ -167,7 +167,7 @@ namespace cadencii
                     SynthesizerType type = SynthesizerType.VOCALOID2;
                     VsqFileEx vsq = AppManager.getVsqFile();
                     if ( vsq != null ) {
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                         if ( kind == RendererKind.VOCALOID1 ) {
                             type = SynthesizerType.VOCALOID1;
                         }

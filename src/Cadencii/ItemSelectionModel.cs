@@ -108,8 +108,8 @@ import cadencii.vsq.*;
                     int index = -1;
                     for ( int i = 0; i < mBezier.Count; i++ )
                     {
-                        if ( mBezier.get( i ).chainID == selected.chainID &&
-                            mBezier.get( i ).pointID == selected.pointID )
+                        if ( mBezier[ i ].chainID == selected.chainID &&
+                            mBezier[ i ].pointID == selected.pointID )
                         {
                             index = i;
                             break;
@@ -336,7 +336,7 @@ import cadencii.vsq.*;
                     int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
-                        if ( mEvents.get( i ).original.InternalID == id )
+                        if ( mEvents[ i ].original.InternalID == id )
                         {
                             mEvents.RemoveAt( i );
                             break;
@@ -357,7 +357,7 @@ import cadencii.vsq.*;
                     int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
-                        if ( v_ids.Contains( mEvents.get( i ).original.InternalID ) )
+                        if ( v_ids.Contains( mEvents[ i ].original.InternalID ) )
                         {
                             index.Add( i );
                             if ( index.Count == ids.Length )
@@ -385,13 +385,13 @@ import cadencii.vsq.*;
                     int count = 0;
                     int c = list.Count;
                     int selected = AppManager.getSelected();
-                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); )
+                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[ selected ].getEventIterator(); itr.hasNext(); )
                     {
                         VsqEvent ev = itr.next();
                         int find = -1;
                         for ( int i = 0; i < c; i++ )
                         {
-                            if ( list.get( i ) == ev.InternalID )
+                            if ( list[ i ] == ev.InternalID )
                             {
                                 find = i;
                                 break;
@@ -437,7 +437,7 @@ import cadencii.vsq.*;
                     clearTempo();
                     clearTimesig();
                     int selected = AppManager.getSelected();
-                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); )
+                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[ selected ].getEventIterator(); itr.hasNext(); )
                     {
                         VsqEvent ev = itr.next();
                         if ( ev.InternalID == id )
@@ -448,7 +448,7 @@ import cadencii.vsq.*;
                                 int count = mEvents.Count;
                                 for ( int i = 0; i < count; i++ )
                                 {
-                                    SelectedEventEntry item = mEvents.get( i );
+                                    SelectedEventEntry item = mEvents[ i ];
                                     if ( item.original.InternalID == id )
                                     {
                                         mEvents.RemoveAt( i );
@@ -487,7 +487,7 @@ import cadencii.vsq.*;
                     int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
-                        SelectedEventEntry item = mEvents.get( i );
+                        SelectedEventEntry item = mEvents[ i ];
                         if ( item.original.InternalID == id && item.track == track )
                         {
                             return true;
@@ -509,7 +509,7 @@ import cadencii.vsq.*;
                     }
                     else
                     {
-                        return mEvents.get( mEvents.Count - 1 );
+                        return mEvents[ mEvents.Count - 1 ];
                     }
                 }
 
@@ -588,11 +588,11 @@ import cadencii.vsq.*;
                         return;
                     }
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    VsqTrack vsq_track = vsq.Track[ selected ];
 
                     for ( int i = 0; i < mEvents.Count; i++ )
                     {
-                        SelectedEventEntry item = mEvents.get( i );
+                        SelectedEventEntry item = mEvents[ i ];
                         VsqEvent ev = null;
                         if ( item.track == selected )
                         {

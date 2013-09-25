@@ -95,7 +95,7 @@ using cadencii.java.util;
                 /// <returns></returns>
                 public ICommand getUndo()
                 {
-                    return mCommands.get( mCommandIndex );
+                    return mCommands[ mCommandIndex ];
                 }
 
                 /// <summary>
@@ -104,7 +104,7 @@ using cadencii.java.util;
                 /// <returns></returns>
                 public ICommand getRedo()
                 {
-                    return mCommands.get( mCommandIndex + 1 );
+                    return mCommands[ mCommandIndex + 1 ];
                 }
 
                 /// <summary>

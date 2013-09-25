@@ -101,7 +101,7 @@ namespace cadencii
             int size = AppManager.SHORTCUT_ACCEPTABLE.Count;
             Keys[] keys = new Keys[size];
             for ( int i = 0; i < size; i++ ){
-                keys[i] = AppManager.SHORTCUT_ACCEPTABLE.get( i );
+                keys[i] = AppManager.SHORTCUT_ACCEPTABLE[ i ];
             }
             boolean changed = true;
             while( changed ){
@@ -273,7 +273,7 @@ namespace cadencii
             int size = list.Items.Count;
             for ( int i = 0; i < size; i++ ) {
                 //BListViewItem list_item = list.getItemAt( i );
-                String field_name = mFieldName.get( i );
+                String field_name = mFieldName[ i ];
                 String key_display = list.Items[i].SubItems[1].Text;
                 if ( key_display == "" ){
                     // ショートカットキーが割り当てられていないのでスルー
@@ -455,8 +455,8 @@ namespace cadencii
         {
             Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
             for ( int i = 0; i < defaults.Count; i++ ) {
-                String name = defaults.get( i ).Key;
-                Keys[] keys = defaults.get( i ).Value;
+                String name = defaults[ i ].Key;
+                Keys[] keys = defaults[ i ].Value;
                 for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                     String display = itr.next();
                     if ( name.Equals( mDict.get( display ).getKey() ) ) {

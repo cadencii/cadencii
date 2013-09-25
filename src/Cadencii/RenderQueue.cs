@@ -73,7 +73,7 @@ namespace cadencii {
             String ret = "";
             int c = _resampler_arg.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret += _resampler_arg.get( i ) + ((i < c - 1) ? " " : "");
+                ret += _resampler_arg[ i ] + ((i < c - 1) ? " " : "");
             }
             return ret;
         }
