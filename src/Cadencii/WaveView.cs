@@ -24,7 +24,6 @@ using System;
 using System.Windows.Forms;
 using cadencii;
 using cadencii.java.awt;
-using cadencii.java.awt.image;
 using cadencii.media;
 using cadencii.windows.forms;
 

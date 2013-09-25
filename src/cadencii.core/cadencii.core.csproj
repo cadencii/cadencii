@@ -71,8 +71,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="awt.event.cs" />
-    <Compile Include="awt.geom.cs" />
-    <Compile Include="awt.image.cs" />
     <Compile Include="Base64.cs" />
     <Compile Include="BufferedReader.cs" />
     <Compile Include="BufferedWriter.cs" />

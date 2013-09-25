@@ -31,7 +31,6 @@ using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.awt;
-using cadencii.java.awt.image;
 using cadencii.windows.forms;
 
 namespace cadencii
@@ -65,8 +64,8 @@ namespace cadencii
         private float m_shift = 0f;
         private int m_button_width_about = 75;
         private int m_button_width_credit = 75;
-        private BufferedImage m_scroll = null;
-        private BufferedImage m_scroll_with_id = null;
+        private java.awt.Image m_scroll = null;
+        private java.awt.Image m_scroll_with_id = null;
         private String m_app_name = "";
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
@@ -171,7 +170,7 @@ namespace cadencii
         }
 
 #if !JAVA
-        public void setCredit( BufferedImage value )
+        public void setCredit( java.awt.Image value )
         {
             m_scroll = value;
         }
@@ -194,7 +193,7 @@ namespace cadencii
             m_scroll_with_id = generateAuthorListB( true );
         }
 
-        private BufferedImage generateAuthorListB( boolean show_twitter_id )
+        private Image generateAuthorListB( boolean show_twitter_id )
         {
             int shadow_shift = 2;
             String font_name = "Arial";
@@ -203,8 +202,9 @@ namespace cadencii
             int width = this.Width;
             int height = size.height;
             //StringFormat sf = new StringFormat();
-            BufferedImage ret = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
-            Graphics2D g = ret.createGraphics();
+            Image ret = new Image();
+            ret.image = new System.Drawing.Bitmap((int)width, (int)(40f + m_credit.Length * height * 1.1f), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Graphics2D g = new Graphics2D(System.Drawing.Graphics.FromImage(ret.image));
             g.setColor( Color.white );
             g.fillRect( 0, 0, ret.getWidth( null ), ret.getHeight( null ) );
             int align = 0;
@@ -358,7 +358,7 @@ namespace cadencii
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;
                 m_last_speed = speed;
-                BufferedImage image = m_show_twitter_id ? m_scroll_with_id : m_scroll;
+                Image image = m_show_twitter_id ? m_scroll_with_id : m_scroll;
                 if ( image != null ) {
                     float dx = (this.Width - image.getWidth( null )) * 0.5f;
                     g.drawImage( image, (int)dx, (int)(90f - m_shift), null );

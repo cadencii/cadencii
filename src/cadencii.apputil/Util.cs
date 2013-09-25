@@ -312,7 +312,7 @@ namespace cadencii.apputil
             {
                 return 0;
             }
-            java.awt.image.BufferedImage b = null;
+            java.awt.Image b = null;
             java.awt.Graphics2D g = null;
 #if JAVA
             java.awt.image.BufferedImage b2 = null;
@@ -324,8 +324,9 @@ namespace cadencii.apputil
                 int string_desty = size.height * 2; // 文字列が書き込まれるy座標
                 int w = size.width * 4;
                 int h = size.height * 4;
-                b = new java.awt.image.BufferedImage( w, h, java.awt.image.BufferedImage.TYPE_INT_BGR );
-                g = b.createGraphics();
+                b = new java.awt.Image();
+                b.image = new System.Drawing.Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                g = new java.awt.Graphics2D(System.Drawing.Graphics.FromImage(b.image));
                 g.setColor( java.awt.Color.white );
                 g.fillRect( 0, 0, w, h );
                 g.setFont( font );

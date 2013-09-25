@@ -23,7 +23,6 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using cadencii.java.awt;
-using cadencii.java.awt.image;
 using cadencii.windows.forms;
 
 namespace cadencii
@@ -101,8 +100,9 @@ namespace cadencii
                 // 画像ファイルが無かったか，読み込みに失敗した場合
 
                 // 歌手名が描かれた画像をセットする
-                BufferedImage bmp = new BufferedImage( ICON_WIDTH, ICON_HEIGHT, BufferedImage.TYPE_INT_RGB );
-                Graphics2D g = bmp.createGraphics();
+                Image bmp = new Image();
+                bmp.image = new System.Drawing.Bitmap(ICON_WIDTH, ICON_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Graphics2D g = new Graphics2D(System.Drawing.Graphics.FromImage(bmp.image));
                 g.clearRect( 0, 0, ICON_WIDTH, ICON_HEIGHT );
 #if JAVA
                 Font font = new Font( "Arial", 0, 10 );
@@ -120,10 +120,11 @@ namespace cadencii
 
         public void setImage( Image img )
         {
-            BufferedImage bmp = new BufferedImage( ICON_WIDTH, ICON_HEIGHT, BufferedImage.TYPE_INT_RGB );
+            Image bmp = new Image();
+            bmp.image = new System.Drawing.Bitmap(ICON_WIDTH, ICON_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             Graphics g = null;
             try {
-                g = bmp.createGraphics();
+                g = new Graphics2D(System.Drawing.Graphics.FromImage(bmp.image));
 #if !JAVA
                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 #endif

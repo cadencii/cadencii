@@ -21,7 +21,6 @@ import cadencii.*;
 using System;
 using cadencii;
 using cadencii.java.awt;
-using cadencii.java.awt.image;
 
 namespace cadencii {
 #endif
@@ -45,7 +44,7 @@ namespace cadencii {
         /// <summary>
         /// コンポーネント画像のキャッシュ
         /// </summary>
-        private BufferedImage[] mCache;
+        private System.Drawing.Image[] mCache;
 
         /// <summary>
         /// コンストラクタ
@@ -62,9 +61,9 @@ namespace cadencii {
                 num--;
             }
 
-            mCache = new BufferedImage[num];
+            mCache = new System.Drawing.Image[num];
             for ( int i = 0; i < num; i++ ) {
-                mCache[i] = new BufferedImage( WIDTH, mHeight, BufferedImage.TYPE_INT_RGB );
+                mCache[i] = new System.Drawing.Bitmap(WIDTH, mHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             }
         }
 
@@ -91,20 +90,15 @@ namespace cadencii {
                 // 現在のバッファの個数と違うか、バッファがない場合バッファの長さを変更
                 if ( mCache == null ) {
                     // バッファがない場合
-                    mCache = new BufferedImage[num];
+                    mCache = new System.Drawing.Image[num];
                 } else {
                     // バッファがある場合
                     if ( mCache.Length > num ) {
                         // 短くする場合、削除する分の画像を削除
                         for ( int i = num; i < mCache.Length; i++ ) {
-                            BufferedImage img = mCache[i];
-                            if ( img != null ) {
-#if JAVA
-#else
-                                if ( img.image != null ) {
-                                    img.image.Dispose();
-                                }
-#endif
+                            System.Drawing.Image img = mCache[i];
+                            if (img != null) {
+                                img.Dispose();
                             }
                         }
                     }
@@ -122,7 +116,7 @@ namespace cadencii {
                 // 画像がnullの場合新しく作成
                 for ( int i = 0; i < num; i++ ) {
                     if ( mCache[i] == null ) {
-                        mCache[i] = new BufferedImage( WIDTH, mHeight, BufferedImage.TYPE_INT_RGB );
+                        mCache[i] = new System.Drawing.Bitmap(WIDTH, mHeight, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                     }
                 }
             }
@@ -141,8 +135,8 @@ namespace cadencii {
             }
 
             for ( int i = 0; i < mCache.Length; i++ ) {
-                BufferedImage img = mCache[i];
-                g.drawImage( img, WIDTH * i - x_offset, 0, null );
+                System.Drawing.Image img = mCache[i];
+                g.nativeGraphics.DrawImage( img, WIDTH * i - x_offset, 0 );
             }
         }
 
@@ -156,7 +150,7 @@ namespace cadencii {
             }
 
             for ( int i = 0; i < mCache.Length; i++ ) {
-                Graphics2D g = mCache[i].createGraphics();
+                Graphics2D g = new Graphics2D(System.Drawing.Graphics.FromImage(mCache[i]));
                 g.translate( -i * WIDTH, 0 );
                 component.draw( g, mWidth, mHeight );
             }

@@ -18,7 +18,6 @@ using System;
 //using System.Windows.Forms;
 using cadencii;
 using cadencii.java.awt;
-using cadencii.java.awt.image;
 
 namespace cadencii.apputil {
     using java = cadencii.java;
@@ -36,7 +35,7 @@ namespace cadencii.apputil {
         float m_shift = 0f;
         int m_button_width_about = 75;
         int m_button_width_credit = 75;
-        BufferedImage m_scroll;
+        Image m_scroll;
         const int m_height = 380;
         readonly Color m_background = Color.white;
         private string m_app_name = "";
@@ -97,7 +96,7 @@ namespace cadencii.apputil {
             }
         }
 
-        public BufferedImage Credit {
+        public java.awt.Image Credit {
             set {
                 m_scroll = value;
             }
@@ -130,8 +129,9 @@ namespace cadencii.apputil {
             float width = this.Width;
             float height = size.height;
             //StringFormat sf = new StringFormat();
-            m_scroll = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
-            Graphics2D g = m_scroll.createGraphics();
+            m_scroll = new Image();
+            m_scroll.image = new System.Drawing.Bitmap((int)width, (int)(40f + m_credit.Length * height * 1.1f), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Graphics2D g = new Graphics2D(System.Drawing.Graphics.FromImage(m_scroll.image));
             //sf.Alignment = StringAlignment.Center;
             g.setFont( new Font( font_name, java.awt.Font.BOLD, (int)(font_size * 1.1f) ) );
             if ( m_shadow_enablde ) {
