@@ -1146,7 +1146,7 @@ namespace cadencii.vsq
                                     int[] cpy = new int[index_0x0a];
                                     for ( int j = 0; j < index_0x0a; j++ ) {
                                         cpy[j] = 0xff & (int)buffer.get( 0 );
-                                        buffer.removeElementAt( 0 );
+                                        buffer.RemoveAt( 0 );
                                     }
 
                                     String line = PortUtil.getDecodedString( encoding, cpy );
@@ -1156,7 +1156,7 @@ namespace cadencii.vsq
 #endif
 #endif
                                     sw.writeLine( line );
-                                    buffer.removeElementAt( 0 );
+                                    buffer.RemoveAt( 0 );
                                     index_0x0a = buffer.IndexOf( 0x0a );
                                 }
                             } else {

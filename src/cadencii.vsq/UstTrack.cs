@@ -73,7 +73,7 @@ namespace cadencii.vsq
 
         public void removeEventAt( int index )
         {
-            m_events.removeElementAt( index );
+            m_events.RemoveAt( index );
         }
 
         public int getEventCount()

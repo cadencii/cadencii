@@ -443,7 +443,7 @@ namespace cadencii
         public void removeElementAt( int id_ ) {
             for ( int i = 0; i < points.size(); i++ ) {
                 if ( points.get( i ).getID() == id_ ) {
-                    points.removeElementAt( i );
+                    points.RemoveAt( i );
                     break;
                 }
             }

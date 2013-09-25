@@ -240,7 +240,7 @@ namespace cadencii
                 for ( int i = 0; i < delete; i++ ) {
                     int indx = m_tracker.size() - 1;
                     VolumeTracker tr = m_tracker.get( indx );
-                    m_tracker.removeElementAt( indx );
+                    m_tracker.RemoveAt( indx );
 #if !JAVA
                     tr.Dispose();
 #endif

@@ -586,7 +586,7 @@ namespace cadencii {
             Vector<BezierChain> list = this.get( curve_type );
             for ( int i = 0; i < list.size(); i++ ) {
                 if ( list.get( i ).id == chain_id ) {
-                    list.removeElementAt( i );
+                    list.RemoveAt( i );
                     break;
                 }
             }

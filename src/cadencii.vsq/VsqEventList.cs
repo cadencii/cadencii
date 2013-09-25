@@ -141,8 +141,8 @@ namespace cadencii.vsq
         public void removeAt( int index )
         {
             updateIDList();
-            Events.removeElementAt( index );
-            m_ids.removeElementAt( index );
+            Events.RemoveAt( index );
+            m_ids.RemoveAt( index );
         }
 
         private int getNextId( int next )

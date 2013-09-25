@@ -888,8 +888,8 @@ namespace cadencii
                         PathResamplers.set( i, PathResamplers.get( i + 1 ) );
                         ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
                     }
-                    PathResamplers.removeElementAt( size - 1 );
-                    ResamplersWithWine.removeElementAt( size - 1 );
+                    PathResamplers.RemoveAt( size - 1 );
+                    ResamplersWithWine.RemoveAt( size - 1 );
                 } else {
                     PathResampler = "";
                 }
@@ -900,8 +900,8 @@ namespace cadencii
                         PathResamplers.set( i, PathResamplers.get( i + 1 ) );
                         ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
                     }
-                    PathResamplers.removeElementAt( size - 1 );
-                    ResamplersWithWine.removeElementAt( size - 1 );
+                    PathResamplers.RemoveAt( size - 1 );
+                    ResamplersWithWine.RemoveAt( size - 1 );
                 }
             }
         }
@@ -1279,7 +1279,7 @@ namespace cadencii
             // 現在登録されているRecentFilesのサイズが規定より大きければ，下の方から消す
             if ( RecentFiles.size() > NumRecentFiles ) {
                 for ( int i = RecentFiles.size() - 1; i > NumRecentFiles; i-- ) {
-                    RecentFiles.removeElementAt( i );
+                    RecentFiles.RemoveAt( i );
                 }
             }
 
@@ -1293,7 +1293,7 @@ namespace cadencii
             }
 
             if ( index >= 0 ) {  // 登録されてる場合
-                RecentFiles.removeElementAt( index );
+                RecentFiles.RemoveAt( index );
             }
             RecentFiles.Insert( 0, new_file );
         }
@@ -1342,7 +1342,7 @@ namespace cadencii
                 int delta = ResamplersWithWine.Count - PathResamplers.Count;
                 if ( delta > 0 ) {
                     for ( int i = 0; i < delta; i++ ) {
-                        ResamplersWithWine.removeElementAt( ResamplersWithWine.Count - 1 );
+                        ResamplersWithWine.RemoveAt( ResamplersWithWine.Count - 1 );
                     }
                 } else if ( delta < 0 ) {
                     for ( int i = 0; i < -delta; i++ ) {

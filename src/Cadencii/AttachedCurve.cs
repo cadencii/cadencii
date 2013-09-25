@@ -75,7 +75,7 @@ namespace cadencii
         }
 
         public void removeElementAt( int index ) {
-            mCurves.removeElementAt( index );
+            mCurves.RemoveAt( index );
         }
 
         public void insertElementAt( int position, BezierCurves attached_curve ) {

@@ -48,7 +48,7 @@ using cadencii.java.util;
                         // 既にあるコマンドバッファを上書きする場合
                         mCommands.set( mCommandIndex + 1, command );
                         for( int i = mCommands.size() - 1; i >= mCommandIndex + 2; i-- ) {
-                            mCommands.removeElementAt( i );
+                            mCommands.RemoveAt( i );
                         }
                         mCommandIndex++;
                     }

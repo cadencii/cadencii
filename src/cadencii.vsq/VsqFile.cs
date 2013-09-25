@@ -566,8 +566,8 @@ namespace cadencii.vsq
                 #region TRACK_DELETE
                 int track = (Integer)command.Args[0];
                 VsqCommand ret = VsqCommand.generateCommandAddTrack( Track.get( track ), Mixer.Slave.get( track - 1 ), track );
-                Track.removeElementAt( track );
-                Mixer.Slave.removeElementAt( track - 1 );
+                Track.RemoveAt( track );
+                Mixer.Slave.RemoveAt( track - 1 );
                 updateTotalClocks();
                 return ret;
                 #endregion
@@ -589,7 +589,7 @@ namespace cadencii.vsq
                 if ( index >= 0 ) {
                     if ( tempo <= 0 ) {
                         ret = VsqCommand.generateCommandUpdateTempo( clock, clock, TempoTable.get( index ).Tempo );
-                        TempoTable.removeElementAt( index );
+                        TempoTable.RemoveAt( index );
                     } else {
                         ret = VsqCommand.generateCommandUpdateTempo( new_clock, clock, TempoTable.get( index ).Tempo );
                         TempoTable.get( index ).Tempo = tempo;
@@ -624,7 +624,7 @@ namespace cadencii.vsq
                     if ( index >= 0 ) {
                         new_tempos[i] = TempoTable.get( index ).Tempo;
                         if ( tempos[i] <= 0 ) {
-                            TempoTable.removeElementAt( index );
+                            TempoTable.RemoveAt( index );
                         } else {
                             TempoTable.get( index ).Tempo = tempos[i];
                             TempoTable.get( index ).Clock = new_clocks[i];
@@ -656,7 +656,7 @@ namespace cadencii.vsq
                 if ( index >= 0 ) {
                     if ( numerator <= 0 ) {
                         ret = VsqCommand.generateCommandUpdateTimesig( barcount, barcount, TimesigTable.get( index ).Numerator, TimesigTable.get( index ).Denominator );
-                        TimesigTable.removeElementAt( index );
+                        TimesigTable.RemoveAt( index );
                     } else {
                         ret = VsqCommand.generateCommandUpdateTimesig( new_barcount, barcount, TimesigTable.get( index ).Numerator, TimesigTable.get( index ).Denominator );
                         TimesigTable.get( index ).BarCount = new_barcount;
@@ -694,7 +694,7 @@ namespace cadencii.vsq
                         new_numerators[i] = TimesigTable.get( index ).Numerator;
                         new_denominators[i] = TimesigTable.get( index ).Denominator;
                         if ( numerators[i] <= 0 ) {
-                            TimesigTable.removeElementAt( index );
+                            TimesigTable.RemoveAt( index );
                         } else {
                             TimesigTable.get( index ).BarCount = new_barcounts[i];
                             TimesigTable.get( index ).Numerator = numerators[i];
@@ -1507,7 +1507,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < TempoTable.size(); ) {
                 TempoTableEntry itemi = TempoTable.get( i );
                 if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
-                    TempoTable.removeElementAt( i );
+                    TempoTable.RemoveAt( i );
                 } else {
                     if ( clock_end < itemi.Clock ) {
                         itemi.Clock -= dclock;
@@ -2193,7 +2193,7 @@ namespace cadencii.vsq
                             for ( int i = prefix.Length; i < remain; i++ ) {
                                 byte d = buffer.get( 0 );
                                 add.data[i + 1] = d;
-                                buffer.removeElementAt( 0 );
+                                buffer.RemoveAt( 0 );
                             }
                             ret.add( add );
                         }
@@ -2213,7 +2213,7 @@ namespace cadencii.vsq
                             }
                             for ( int i = prefix.Length; i < remain; i++ ) {
                                 add.data[i + 1] = buffer.get( 0 );
-                                buffer.removeElementAt( 0 );
+                                buffer.RemoveAt( 0 );
                             }
                             ret.add( add );
                         }
@@ -2231,7 +2231,7 @@ namespace cadencii.vsq
                             }
                             for ( int i = prefix.Length; i < remain; i++ ) {
                                 add.data[i + 1] = buffer.get( 0 );
-                                buffer.removeElementAt( 0 );
+                                buffer.RemoveAt( 0 );
                             }
                             ret.add( add );
                         }

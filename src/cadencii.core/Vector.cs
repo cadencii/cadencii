@@ -96,18 +96,6 @@ namespace cadencii.java.util {
             : base( array.toArray( new T[]{} ) ){
         }
 
-        public bool remove( T o ) {
-            return base.Remove( o );
-        }
-
-        public bool removeElement( T obj ) {
-            return base.Remove( obj );
-        }
-
-        public void removeElementAt( int index ){
-            base.RemoveAt( index );
-        }
-
         public Vector()
             : base() {
         }

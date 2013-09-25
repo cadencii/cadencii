@@ -711,7 +711,7 @@ namespace cadencii
                         list_count = list.size();
                         for ( int m = 0; m < list_count; m++ ) {
                             if ( id == list.get( m ).id ) {
-                                list.removeElementAt( m );
+                                list.RemoveAt( m );
                                 break;
                             }
                         }
@@ -1256,9 +1256,9 @@ namespace cadencii
                     #region DeleteTrack
                     int track = (Integer)command.args[0];
                     ret = VsqFileEx.generateCommandAddTrack( Track.get( track ), Mixer.Slave.get( track - 1 ), track, AttachedCurves.get( track - 1 ) );
-                    Track.removeElementAt( track );
+                    Track.RemoveAt( track );
                     AttachedCurves.removeElementAt( track - 1 );
-                    Mixer.Slave.removeElementAt( track - 1 );
+                    Mixer.Slave.RemoveAt( track - 1 );
                     updateTotalClocks();
 
                     for ( int i = track - 1; i < 15; i++ ) {

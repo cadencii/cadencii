@@ -3985,7 +3985,7 @@ namespace cadencii
                                                     for ( int i = 0; i < count; i++ ) {
                                                         BezierPoint bp = work.points.get( i );
                                                         if ( bp.getID() == point.value.getID() ) {
-                                                            work.points.removeElementAt( i );
+                                                            work.points.RemoveAt( i );
                                                             break;
                                                         }
                                                     }

@@ -338,7 +338,7 @@ import cadencii.vsq.*;
                     {
                         if ( mEvents.get( i ).original.InternalID == id )
                         {
-                            mEvents.removeElementAt( i );
+                            mEvents.RemoveAt( i );
                             break;
                         }
                     }
@@ -369,7 +369,7 @@ import cadencii.vsq.*;
                     count = index.size();
                     for ( int i = count - 1; i >= 0; i-- )
                     {
-                        mEvents.removeElementAt( i );
+                        mEvents.RemoveAt( i );
                     }
 #if ENABLE_PROPERTY
                     AppManager.propertyPanel.updateValue( AppManager.getSelected() );
@@ -451,7 +451,7 @@ import cadencii.vsq.*;
                                     SelectedEventEntry item = mEvents.get( i );
                                     if ( item.original.InternalID == id )
                                     {
-                                        mEvents.removeElementAt( i );
+                                        mEvents.RemoveAt( i );
                                         break;
                                     }
                                 }
@@ -572,7 +572,7 @@ import cadencii.vsq.*;
 
                 public void removePoint( long id )
                 {
-                    mPointIDs.removeElement( id );
+                    mPointIDs.Remove( id );
                     checkSelectedItemExistence();
                 }
                 #endregion
@@ -605,7 +605,7 @@ import cadencii.vsq.*;
                         }
                         else
                         {
-                            mEvents.removeElementAt( i );
+                            mEvents.RemoveAt( i );
                             i--;
                         }
                     }

@@ -199,10 +199,10 @@ public class Utau_Plugin_Invoker : Form {
         VsqFileEx v = (VsqFileEx)vsq.clone();// new VsqFile( "Miku", 1, 4, 4, 500000 );
         // 選択トラックだけ残して他を削る
         for ( int i = 1; i < selected; i++ ) {
-            v.Track.removeElementAt( 1 );
+            v.Track.RemoveAt( 1 );
         }
         for ( int i = selected + 1; i < v.Track.size(); i++ ) {
-            v.Track.removeElementAt( selected + 1 );
+            v.Track.RemoveAt( selected + 1 );
         }
         // 選択トラックの音符を全消去する
         VsqTrack v_track = v.Track.get( 1 );

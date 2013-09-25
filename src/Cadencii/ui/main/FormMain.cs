@@ -11037,7 +11037,7 @@ namespace cadencii
                                         VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(vocaloid_nrpn_midievent.get( 0 ).clock - last_clock) );
                                         last_clock = vocaloid_nrpn_midievent.get( 0 ).clock;
                                         vocaloid_nrpn_midievent.get( 0 ).writeData( fs );
-                                        vocaloid_nrpn_midievent.removeElementAt( 0 );
+                                        vocaloid_nrpn_midievent.RemoveAt( 0 );
                                     }
                                     VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(events.get( j ).clock - last_clock) );
                                     events.get( j ).writeData( fs );
@@ -15792,7 +15792,7 @@ namespace cadencii
                     }
                 }
                 if ( index >= 0 ) {
-                    chain.points.removeElementAt( index );
+                    chain.points.RemoveAt( index );
                     if ( chain.points.size() == 0 ) {
                         CadenciiCommand run = VsqFileEx.generateCommandDeleteBezierChain( selected,
                                                                                           trackSelector.getSelectedCurve(),

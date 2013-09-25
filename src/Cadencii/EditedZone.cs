@@ -68,7 +68,7 @@ namespace cadencii {
                 for ( int i = 0; i < count; i++ ) {
                     EditedZoneUnit item2 = mSeries.get( i );
                     if ( item.mStart == item2.mStart && item.mEnd == item2.mEnd ) {
-                        mSeries.removeElementAt( i );
+                        mSeries.RemoveAt( i );
                         break;
                     }
                 }
@@ -170,25 +170,25 @@ namespace cadencii {
                             itemj.mEnd = d;
                         }
                         if ( itemj.mStart == itemi.mStart && itemj.mEnd == itemi.mEnd ) {
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt( j );
                             changed = true;
                             break;
                         } else if ( itemj.mStart <= itemi.mStart && itemi.mEnd <= itemj.mEnd ) {
-                            mSeries.removeElementAt( i );
+                            mSeries.RemoveAt( i );
                             changed = true;
                             break;
                         } else if ( itemi.mStart <= itemj.mStart && itemj.mEnd <= itemi.mEnd ) {
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt( j );
                             changed = true;
                             break;
                         } else if ( itemi.mStart <= itemj.mEnd && itemj.mEnd < itemi.mEnd ) {
                             itemj.mEnd = itemi.mEnd;
-                            mSeries.removeElementAt( i );
+                            mSeries.RemoveAt( i );
                             changed = true;
                             break;
                         } else if ( itemi.mStart <= itemj.mStart && itemj.mStart <= itemi.mEnd ) {
                             itemi.mEnd = itemj.mEnd;
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt( j );
                             changed = true;
                             break;
                         }

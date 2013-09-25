@@ -1413,7 +1413,7 @@ namespace cadencii
         {
             int index = getUtausingersSelectedIndex();
             if ( 0 <= index && index < m_utau_singers.size() ) {
-                m_utau_singers.removeElementAt( index );
+                m_utau_singers.RemoveAt( index );
             }
             UpdateUtausingerList();
         }

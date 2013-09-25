@@ -936,7 +936,7 @@ namespace cadencii
                 String search = item.ID.LyricHandle.L0.Phrase;
                 OtoArgs oa = voicedb.attachFileNameFromLyric( search );
                 if ( oa.fileName == null || (oa.fileName != null && oa.fileName.Equals( "" )) ) {
-                    events.removeElementAt( i );
+                    events.RemoveAt( i );
                 }
             }
 

@@ -280,7 +280,7 @@ namespace cadencii
                 return;
             }
 
-            mHandles.removeElementAt( index );
+            mHandles.RemoveAt( index );
             updateStatus();
         }
 
