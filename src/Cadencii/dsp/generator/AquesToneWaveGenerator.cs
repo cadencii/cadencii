@@ -83,7 +83,7 @@ namespace cadencii
 
                             Vector<MidiEvent> add = new Vector<MidiEvent>( noteOnEvents );
                             queue.noteon.AddRange( add );
-                            pit_send.add( new Point( item.Clock, item.Clock ) );
+                            pit_send.Add( new Point( item.Clock, item.Clock ) );
                         }
 
                         /* 音符頭で設定するパラメータ */
@@ -101,35 +101,35 @@ namespace cadencii
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = mDriver.releaseParameterIndex;
                         pe.value = release / 127.0f;
-                        q.param.add( pe );
+                        q.param.Add( pe );
 
                         // dyn
                         int dynAtStart = dyn.getValue( item.Clock );
                         ParameterEvent peDyn = new ParameterEvent();
                         peDyn.index = mDriver.volumeParameterIndex;
                         peDyn.value = (float)(dynAtStart - dyn.getMinimum()) / (float)(dyn.getMaximum() - dyn.getMinimum());
-                        q.param.add( peDyn );
+                        q.param.Add( peDyn );
 
                         // bre
                         int breAtStart = bre.getValue( item.Clock );
                         ParameterEvent peBre = new ParameterEvent();
                         peBre.index = mDriver.haskyParameterIndex;
                         peBre.value = (float)(breAtStart - bre.getMinimum()) / (float)(bre.getMaximum() - bre.getMinimum());
-                        q.param.add( peBre );
+                        q.param.Add( peBre );
 
                         // cle
                         int cleAtStart = cle.getValue( item.Clock );
                         ParameterEvent peCle = new ParameterEvent();
                         peCle.index = mDriver.resonancParameterIndex;
                         peCle.value = (float)(cleAtStart - cle.getMinimum()) / (float)(cle.getMaximum() - cle.getMinimum());
-                        q.param.add( peCle );
+                        q.param.Add( peCle );
 
                         // por
                         int porAtStart = por.getValue( item.Clock );
                         ParameterEvent pePor = new ParameterEvent();
                         pePor.index = mDriver.portaTimeParameterIndex;
                         pePor.value = (float)(porAtStart - por.getMinimum()) / (float)(por.getMaximum() - por.getMinimum());
-                        q.param.add( pePor );
+                        q.param.Add( pePor );
                         #endregion
                     }
 
@@ -142,12 +142,12 @@ namespace cadencii
                             MidiEvent pit0 = getPitMidiEvent( notehead_pit );
                             MidiEventQueue queue = list.get( item.Clock );
                             queue.pit.Clear();
-                            queue.pit.add( pit0 );
+                            queue.pit.Add( pit0 );
                             int notehead_pbs = pbs.getValue( item.Clock );
                             ParameterEvent pe = new ParameterEvent();
                             pe.index = mDriver.bendLblParameterIndex;
                             pe.value = notehead_pbs / 13.0f;
-                            queue.param.add( pe );
+                            queue.param.Add( pe );
                         }
                     } else {
                         int delta_clock = 5;  //ピッチを取得するクロック間隔
@@ -164,7 +164,7 @@ namespace cadencii
                         if ( clock_end < end ) {
                             end = clock_end;
                         }
-                        pit_send.add( new Point( st, end ) );
+                        pit_send.Add( new Point( st, end ) );
                         // ビブラートが始まるまでのピッチを取得
                         double sec_vibstart = vsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
                         int pit_count = (int)((sec_vibstart - sec_start_act) / delta_sec);
@@ -208,7 +208,7 @@ namespace cadencii
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = mDriver.bendLblParameterIndex;
                         pe.value = required_pbs / 13.0f;
-                        queue.param.add( pe );
+                        queue.param.Add( pe );
 
                         // PITを順次追加
                         for ( Iterator<Integer> itr3 = pit_change.keySet().iterator(); itr3.hasNext(); ) {
@@ -219,7 +219,7 @@ namespace cadencii
                                 MidiEventQueue q = list.get( clock );
                                 MidiEvent me = getPitMidiEvent( pit_value );
                                 q.pit.Clear();
-                                q.pit.add( me );
+                                q.pit.Add( me );
                             } else if ( clock_end < clock ) {
                                 break;
                             }
@@ -236,7 +236,7 @@ namespace cadencii
                         Vector<MidiEvent> a_noteoff = new Vector<MidiEvent>( new MidiEvent[] { noteoff } );
                         MidiEventQueue q = list.get( endclock );
                         q.noteoff.AddRange( a_noteoff );
-                        pit_send.add( new Point( endclock, endclock ) ); // PITの送信を抑制するために必要
+                        pit_send.Add( new Point( endclock, endclock ) ); // PITの送信を抑制するために必要
                     }
                 }
 
@@ -257,7 +257,7 @@ namespace cadencii
                         pbse.index = mDriver.bendLblParameterIndex;
                         pbse.value = value / 13.0f;
                         MidiEventQueue queue = list.get( clock );
-                        queue.param.add( pbse );
+                        queue.param.Add( pbse );
                     } else if ( clock_end < clock ) {
                         break;
                     }
@@ -285,7 +285,7 @@ namespace cadencii
                         MidiEvent pbs0 = getPitMidiEvent( value );
                         MidiEventQueue queue = list.get( clock );
                         queue.pit.Clear();
-                        queue.pit.add( pbs0 );
+                        queue.pit.Add( pbs0 );
                     } else if ( clock_end < clock ) {
                         break;
                     }
@@ -351,7 +351,7 @@ namespace cadencii
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = parameter_index;
                         pe.value = (value - min) * order;
-                        queue.param.add( pe );
+                        queue.param.Add( pe );
                     } else if ( clock_end < clock ) {
                         break;
                     }

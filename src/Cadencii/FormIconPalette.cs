@@ -231,17 +231,17 @@ namespace cadencii
                 int ih = 0;
                 if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                     // dynaff
-                    dynaffButtons.add( btn );
+                    dynaffButtons.Add( btn );
                     ih = 0;
                     iw = dynaffButtons.size() - 1;
                 } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_CRESCEND ) ) {
                     // crescend
-                    crescendButtons.add( btn );
+                    crescendButtons.Add( btn );
                     ih = 1;
                     iw = crescendButtons.size() - 1;
                 } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DECRESCEND ) ) {
                     // decrescend
-                    decrescendButtons.add( btn );
+                    decrescendButtons.Add( btn );
                     ih = 2;
                     iw = decrescendButtons.size() - 1;
                 } else {

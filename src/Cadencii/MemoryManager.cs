@@ -34,7 +34,7 @@ namespace cadencii {
         /// <returns></returns>
         public IntPtr malloc( int bytes ) {
             IntPtr ret = Marshal.AllocHGlobal( bytes );
-            mList.add( ret );
+            mList.Add( ret );
             return ret;
         }
 

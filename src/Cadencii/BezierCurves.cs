@@ -242,7 +242,7 @@ namespace cadencii {
                 int bc_start = (int)bc.getStart();
                 int bc_end = (int)bc.getEnd();
                 if ( chain_start <= bc_start && bc_end <= chain_end ) {
-                    delete_list.add( bc.id );
+                    delete_list.Add( bc.id );
                 }
             }
 
@@ -527,7 +527,7 @@ namespace cadencii {
                         try {
                             BezierChain chain = bc.extractPartialBezier( clock_end, chain_end );
                             chain.id = bc.id;
-                            tmp.add( chain );
+                            tmp.Add( chain );
                             edited = true;
                         } catch ( Exception ex ) {
                             Logger.write( typeof( BezierCurves ) + ".deleteBeziers; ex=" + ex + "\n" );
@@ -539,8 +539,8 @@ namespace cadencii {
                             chain1.id = bc.id;
                             BezierChain chain2 = bc.extractPartialBezier( clock_end, chain_end );
                             chain2.id = -1;  // 後で番号をつける
-                            tmp.add( chain1 );
-                            tmp.add( chain2 );
+                            tmp.Add( chain1 );
+                            tmp.Add( chain2 );
                             edited = true;
                         } catch ( Exception ex ) {
                             Logger.write( typeof( BezierCurves ) + ".deleteBeziers; ex=" + ex + "\n" );
@@ -550,7 +550,7 @@ namespace cadencii {
                         try {
                             BezierChain chain = bc.extractPartialBezier( chain_start, clock_start );
                             chain.id = bc.id;
-                            tmp.add( chain );
+                            tmp.Add( chain );
                             edited = true;
                         } catch ( Exception ex ) {
                             Logger.write( typeof( BezierCurves ) + ".deleteBeiers; ex=" + ex + "\n" );
@@ -560,7 +560,7 @@ namespace cadencii {
                         edited = true;
                     } else {
                         // 全体を残す
-                        tmp.add( (BezierChain)bc.clone() );
+                        tmp.Add( (BezierChain)bc.clone() );
                     }
                 }
                 this.get( curve ).Clear();
@@ -601,7 +601,7 @@ namespace cadencii {
         {
             BezierChain add = (BezierChain)chain.clone();
             add.id = chain_id;
-            this.get( curve_type ).add( add );
+            this.get( curve_type ).Add( add );
         }
 
         public Object clone()
@@ -613,7 +613,7 @@ namespace cadencii {
                 ret.set( ct, new Vector<BezierChain>() );
                 int count = src.size();
                 for ( int i = 0; i < count; i++ ) {
-                    ret.get( ct ).add( (BezierChain)src.get( i ).clone() );
+                    ret.get( ct ).Add( (BezierChain)src.get( i ).clone() );
                 }
             }
             return ret;

@@ -42,7 +42,7 @@ using cadencii.java.util;
                 {
                     if( mCommandIndex == mCommands.size() - 1 ) {
                         // 新しいコマンドバッファを追加する場合
-                        mCommands.add( command );
+                        mCommands.Add( command );
                         mCommandIndex = mCommands.size() - 1;
                     } else {
                         // 既にあるコマンドバッファを上書きする場合

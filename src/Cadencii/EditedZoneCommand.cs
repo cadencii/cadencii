@@ -43,11 +43,11 @@ namespace cadencii {
         public EditedZoneCommand( EditedZoneUnit[] add, EditedZoneUnit[] remove ) {
             this.mAdd = new Vector<EditedZoneUnit>();
             for ( int i = 0; i < add.Length; i++ ) {
-                this.mAdd.add( (EditedZoneUnit)add[i].clone() );
+                this.mAdd.Add( (EditedZoneUnit)add[i].clone() );
             }
             this.mRemove = new Vector<EditedZoneUnit>();
             for ( int i = 0; i < remove.Length; i++ ) {
-                this.mRemove.add( (EditedZoneUnit)remove[i].clone() );
+                this.mRemove.Add( (EditedZoneUnit)remove[i].clone() );
             }
         }
 

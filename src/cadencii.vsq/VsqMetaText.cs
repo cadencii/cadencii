@@ -450,7 +450,7 @@ namespace cadencii.vsq
                         current_handle++;
                         VsqHandle handle_item = VsqHandle.castFromIconHandle( ish );
                         handle_item.Index = current_handle;
-                        handle.add( handle_item );
+                        handle.Add( handle_item );
                         item.ID.IconHandle_index = current_handle;
                         if ( is_vocalo1 ) {
                             VsqVoiceLanguage lang = VocaloSysUtil.getLanguageFromName( ish.IDS );
@@ -467,7 +467,7 @@ namespace cadencii.vsq
                     VsqHandle handle_item = VsqHandle.castFromLyricHandle( item.ID.LyricHandle );
                     handle_item.Index = current_handle;
                     handle_item.addQuotationMark = add_quotation_mark;
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.LyricHandle_index = current_handle;
                 }
                 // VibratoHandle
@@ -475,7 +475,7 @@ namespace cadencii.vsq
                     current_handle++;
                     VsqHandle handle_item = item.ID.VibratoHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.VibratoHandle_index = current_handle;
                 }
                 // NoteHeadHandle
@@ -483,7 +483,7 @@ namespace cadencii.vsq
                     current_handle++;
                     VsqHandle handle_item = item.ID.NoteHeadHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.NoteHeadHandle_index = current_handle;
                 }
                 // IconDynamicsHandle
@@ -492,7 +492,7 @@ namespace cadencii.vsq
                     VsqHandle handle_item = item.ID.IconDynamicsHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
                     handle_item.setLength( item.ID.getLength() );
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.IconHandle_index = current_handle;
                 }
             }
@@ -615,7 +615,7 @@ namespace cadencii.vsq
             writer.writeLine( "[EventList]" );
             Vector<VsqEvent> temp = new Vector<VsqEvent>();
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                temp.add( itr.next() );
+                temp.Add( itr.next() );
             }
             temp.Sort();
             int i = 0;

@@ -249,7 +249,7 @@ namespace cadencii.vsq
                         track.addEvent( ue );
                     }
                 }
-                m_tracks.add( track );
+                m_tracks.Add( track );
                 updateTempoInfo();
             } catch ( Exception ex ) {
 #if DEBUG
@@ -469,7 +469,7 @@ namespace cadencii.vsq
                     if ( pit != 0.0 ) {
                         allzero = false;
                     }
-                    pitch.add( pit );
+                    pitch.Add( pit );
                 }
                 if ( !allzero ) {
                     item.setPitches( PortUtil.convertFloatArray( pitch.toArray( new Float[] { } ) ) );
@@ -480,7 +480,7 @@ namespace cadencii.vsq
                 clock += item.getLength();
             }
 
-            m_tracks.add( track_add );
+            m_tracks.Add( track_add );
         }
 
         private UstFile()
@@ -579,9 +579,9 @@ namespace cadencii.vsq
                 if ( ust_track.getEvent( i ).isTempoSpecified() ) {
                     time += (clock - last_tempo_clock) / (8.0 * last_tempo);
                     if ( m_tempo_table.size() == 0 && clock != 0 ) {
-                        m_tempo_table.add( new TempoTableEntry( 0, (int)(6e7 / m_tempo), 0.0 ) );
+                        m_tempo_table.Add( new TempoTableEntry( 0, (int)(6e7 / m_tempo), 0.0 ) );
                     }
-                    m_tempo_table.add( new TempoTableEntry( clock, (int)(6e7 / itemi.getTempo()), time ) );
+                    m_tempo_table.Add( new TempoTableEntry( clock, (int)(6e7 / itemi.getTempo()), time ) );
                     last_tempo = itemi.getTempo();
                     last_tempo_clock = clock;
                 }
@@ -709,7 +709,7 @@ namespace cadencii.vsq
             }
             ret.m_tempo_table = new Vector<TempoTableEntry>();
             for ( int i = 0; i < m_tempo_table.size(); i++ ) {
-                ret.m_tempo_table.add( (TempoTableEntry)m_tempo_table.get( i ).clone() );
+                ret.m_tempo_table.Add( (TempoTableEntry)m_tempo_table.get( i ).clone() );
             }
             return ret;
         }

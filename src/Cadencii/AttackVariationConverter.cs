@@ -154,10 +154,10 @@ namespace cadencii
                 }
             }
             Vector<Object> list = new Vector<Object>();
-            list.add( new AttackVariation() );
+            list.Add( new AttackVariation() );
             for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
                 NoteHeadHandle aconfig = itr.next();
-                list.add( new AttackVariation( aconfig.getDisplayString() ) );
+                list.Add( new AttackVariation( aconfig.getDisplayString() ) );
             }
             return list;//new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );
         }

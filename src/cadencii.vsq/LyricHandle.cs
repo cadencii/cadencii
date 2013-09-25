@@ -117,7 +117,7 @@ namespace cadencii.vsq
             int c = Trailing.size();
             for ( int i = 0; i < c; i++ ) {
                 Lyric buf = (Lyric)Trailing.get( i ).clone();
-                ret.Trailing.add( buf );
+                ret.Trailing.Add( buf );
             }
             return ret;
         }

@@ -68,7 +68,7 @@ namespace cadencii
         {
             // ビブラート種類の候補値を列挙
             Vector<VibratoVariation> list = new Vector<VibratoVariation>();
-            list.add( new VibratoVariation( VibratoVariation.empty.description ) );
+            list.Add( new VibratoVariation( VibratoVariation.empty.description ) );
 
             if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                 // ユーザー定義の中から選ぶ場合
@@ -81,7 +81,7 @@ namespace cadencii
 #if DEBUG
                     sout.println( "VibratoVariationConverter#GetStandardValues; handle.getDisplayString()=" + handle.getDisplayString() );
 #endif
-                    list.add( new VibratoVariation( handle.getDisplayString() ) );
+                    list.Add( new VibratoVariation( handle.getDisplayString() ) );
                 }
             } else {
                 // VOCALOID1, VOCALOID2のシステム定義の中から選ぶ場合
@@ -95,7 +95,7 @@ namespace cadencii
                 }
                 for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                     VibratoHandle vconfig = itr.next();
-                    list.add( new VibratoVariation( vconfig.getDisplayString() ) );
+                    list.Add( new VibratoVariation( vconfig.getDisplayString() ) );
                 }
             }
             return list;

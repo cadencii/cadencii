@@ -705,7 +705,7 @@ namespace cadencii
                     return;
                 }
             }
-            list.add( entry );
+            list.Add( entry );
         }
         #endregion
 
@@ -917,8 +917,8 @@ namespace cadencii
                 PathResampler = path;
                 ResamplerWithWine = with_wine;
             } else {
-                PathResamplers.add( path );
-                ResamplersWithWine.add( with_wine );
+                PathResamplers.Add( path );
+                ResamplersWithWine.Add( with_wine );
             }
         }
 
@@ -1267,13 +1267,13 @@ namespace cadencii
                     }
                 }
                 if ( !found ) {
-                    dict.add( s );
+                    dict.Add( s );
                 }
             }
             RecentFiles.Clear();
             for ( Iterator<String> itr = dict.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
-                RecentFiles.add( s );
+                RecentFiles.Add( s );
             }
 
             // 現在登録されているRecentFilesのサイズが規定より大きければ，下の方から消す
@@ -1319,7 +1319,7 @@ namespace cadencii
                     }
                 }
                 if ( !found ) {
-                    UserDictionaries.add( st.getName() + "\tT" );
+                    UserDictionaries.Add( st.getName() + "\tT" );
                 }
             }
 

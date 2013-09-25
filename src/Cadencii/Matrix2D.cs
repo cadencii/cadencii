@@ -49,7 +49,7 @@ namespace cadencii {
             Vector<Vector<T>> buffer = new Vector<Vector<T>>();
 
             for ( int i = 0; i < this.Rows; i++ ) {
-                buffer.add( newArray( this.Columns ) );
+                buffer.Add( newArray( this.Columns ) );
                 for ( int j = 0; j < this.Columns; j++ ) {
                     buffer.get( i ).set( j, this.get( i, j ) );
                 }
@@ -67,7 +67,7 @@ namespace cadencii {
         public void addColumn() {
             Vector<Vector<T>> buffer = new Vector<Vector<T>>();
             for ( int i = 0; i < this.Rows; i++ ) {
-                buffer.add( newArray( this.Columns ) );
+                buffer.Add( newArray( this.Columns ) );
                 for ( int j = 0; j < this.Columns; j++ ) {
                     buffer.get( i ).set( j, this.get( i, j ) );
                 }

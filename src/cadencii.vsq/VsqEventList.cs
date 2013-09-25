@@ -134,8 +134,8 @@ namespace cadencii.vsq
         {
             updateIDList();
             item.InternalID = internal_id;
-            Events.add( item );
-            m_ids.add( internal_id );
+            Events.Add( item );
+            m_ids.Add( internal_id );
         }
 
         public void removeAt( int index )
@@ -158,7 +158,7 @@ namespace cadencii.vsq
                     if ( nfound == next + 1 ) {
                         return index;
                     } else {
-                        current.add( index );
+                        current.Add( index );
                     }
                 }
             }
@@ -186,7 +186,7 @@ namespace cadencii.vsq
                 m_ids.Clear();
                 int count = Events.size();
                 for ( int i = 0; i < count; i++ ) {
-                    m_ids.add( Events.get( i ).InternalID );
+                    m_ids.Add( Events.get( i ).InternalID );
                 }
             } else {
                 int count = Events.size();

@@ -68,7 +68,7 @@ namespace cadencii.vsq
                 int len = Math.Min( x.Length, y.Length );
                 m_list = new Vector<VibratoBPPair>( len );
                 for ( int i = 0; i < len; i++ ) {
-                    m_list.add( new VibratoBPPair( x[i], y[i] ) );
+                    m_list.Add( new VibratoBPPair( x[i], y[i] ) );
                 }
                 m_list.Sort();
             } else {
@@ -98,7 +98,7 @@ namespace cadencii.vsq
             int len = Math.Min( x.Length, y.Length );
             m_list = new Vector<VibratoBPPair>( len );
             for ( int i = 0; i < len; i++ ) {
-                m_list.add( new VibratoBPPair( x[i], y[i] ) );
+                m_list.Add( new VibratoBPPair( x[i], y[i] ) );
             }
             m_list.Sort();
         }
@@ -154,7 +154,7 @@ namespace cadencii.vsq
         {
             VibratoBPList ret = new VibratoBPList();
             for ( int i = 0; i < m_list.size(); i++ ) {
-                ret.m_list.add( new VibratoBPPair( m_list.get( i ).X, m_list.get( i ).Y ) );
+                ret.m_list.Add( new VibratoBPPair( m_list.get( i ).X, m_list.get( i ).Y ) );
             }
             return ret;
         }
@@ -216,7 +216,7 @@ namespace cadencii.vsq
                 if ( spl2.Length < 2 ) {
                     continue;
                 }
-                m_list.add( new VibratoBPPair( (float)double.Parse( spl2[0] ), int.Parse( spl2[1] ) ) );
+                m_list.Add( new VibratoBPPair( (float)double.Parse( spl2[0] ), int.Parse( spl2[1] ) ) );
             }
         }
 

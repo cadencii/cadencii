@@ -320,7 +320,7 @@ namespace cadencii.vsq
                         } else {
                             if ( Trailing.size() < index ) {
                                 for ( int i = Trailing.size(); i < index; i++ ) {
-                                    Trailing.add( new Lyric( "a", "a" ) );
+                                    Trailing.Add( new Lyric( "a", "a" ) );
                                 }
                             }
                             Trailing.set( index - 1, lyric );

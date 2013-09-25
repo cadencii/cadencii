@@ -58,7 +58,7 @@ namespace cadencii.vsq
             Type t = typeof( NRPN );
             foreach ( FieldInfo fi in t.GetFields() ) {
                 if ( fi.FieldType.Equals( typeof( int ) ) ) {
-                    nrpns.add( new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
+                    nrpns.Add( new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
                 }
             }
 #endif

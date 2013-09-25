@@ -71,7 +71,7 @@ namespace cadencii
         }
 
         public void add( BezierCurves item ) {
-            mCurves.add( item );
+            mCurves.Add( item );
         }
 
         public void removeElementAt( int index ) {
@@ -87,7 +87,7 @@ namespace cadencii
             ret.mCurves.Clear();
             int c = mCurves.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.mCurves.add( (BezierCurves)mCurves.get( i ).clone() );
+                ret.mCurves.Add( (BezierCurves)mCurves.get( i ).clone() );
             }
             return ret;
         }

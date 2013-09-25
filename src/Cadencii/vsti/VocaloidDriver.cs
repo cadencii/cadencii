@@ -141,8 +141,8 @@ namespace cadencii
             //g_cancelRequired = false;
             g_progress = 0.0;
             s_track_events = new Vector<Vector<MidiEvent>>();
-            s_track_events.add( new Vector<MidiEvent>() );
-            s_track_events.add( new Vector<MidiEvent>() );
+            s_track_events.Add( new Vector<MidiEvent>() );
+            s_track_events.Add( new Vector<MidiEvent>() );
             return ret;
         }
 
@@ -163,7 +163,7 @@ namespace cadencii
                         ti.Clock = 0;
                         ti.Tempo = DEF_TEMPO;
                         ti.TotalSec = 0.0;
-                        g_tempoList.add( ti );
+                        g_tempoList.Add( ti );
                     } else {
                         if ( deltaFrames[0] == 0 ) {
                             g_numTempoList = numEvents;
@@ -173,7 +173,7 @@ namespace cadencii
                             ti.Clock = 0;
                             ti.Tempo = DEF_TEMPO;
                             ti.TotalSec = 0.0;
-                            g_tempoList.add( ti );
+                            g_tempoList.Add( ti );
                         }
                         int prev_tempo = DEF_TEMPO;
                         int prev_clock = 0;
@@ -187,7 +187,7 @@ namespace cadencii
                             ti.Clock = deltaFrames[i];
                             ti.Tempo = tempo;
                             ti.TotalSec = total;
-                            g_tempoList.add( ti );
+                            g_tempoList.Add( ti );
                             prev_tempo = tempo;
                             prev_clock = deltaFrames[i];
                         }
@@ -238,7 +238,7 @@ namespace cadencii
                         pEvent.data[1] = src[count + 2];
                         pEvent.data[2] = 0x00;
                     }
-                    s_track_events.get( targetTrack ).add( pEvent );
+                    s_track_events.get( targetTrack ).Add( pEvent );
                 }
             }
 
@@ -574,10 +574,10 @@ namespace cadencii
         {
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
             for ( int i = 0; i < x0.size(); i++ ) {
-                ret.add( x0.get( i ) );
+                ret.Add( x0.get( i ) );
             }
             for ( int i = 0; i < y0.size(); i++ ) {
-                ret.add( y0.get( i ) );
+                ret.Add( y0.get( i ) );
             }
             boolean changed = true;
             while ( changed ) {

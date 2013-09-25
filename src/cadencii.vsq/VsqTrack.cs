@@ -1133,7 +1133,7 @@ namespace cadencii.vsq
                                     if ( colon_count < 2 ) {
                                         continue;
                                     }
-                                    buffer.add( d );
+                                    buffer.Add( d );
                                 }
 
                                 int index_0x0a = buffer.IndexOf( 0x0a );
@@ -1161,7 +1161,7 @@ namespace cadencii.vsq
                                 }
                             } else {
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
-                                    buffer.add( item.data[j + 1] );
+                                    buffer.Add( item.data[j + 1] );
                                 }
                                 int c = buffer.size();
                                 int[] d = new int[c];

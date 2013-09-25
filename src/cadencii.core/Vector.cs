@@ -100,10 +100,6 @@ namespace cadencii.java.util {
             : base() {
         }
 
-        public void add( T obj ) {
-            base.Add( obj );
-        }
-
         public int size() {
             return base.Count;
         }

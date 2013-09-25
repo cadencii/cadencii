@@ -124,24 +124,24 @@ namespace cadencii
                         t += list[i] + "";
                     } else {
                         if ( PortUtil.getStringLength( t ) > 0 ) {
-                            ret.add( t );
+                            ret.Add( t );
                             t = "";
                         }
                         if ( i + 1 < list.Length ) {
                             if ( _SMALL.Contains( list[i + 1] ) ) {
                                 // 次の文字が拗音の場合
-                                ret.add( list[i] + "" + list[i + 1] + "" );
+                                ret.Add( list[i] + "" + list[i + 1] + "" );
                                 i++;
                             } else {
-                                ret.add( list[i] + "" );
+                                ret.Add( list[i] + "" );
                             }
                         } else {
-                            ret.add( list[i] + "" );
+                            ret.Add( list[i] + "" );
                         }
                     }
                 }
                 if ( PortUtil.getStringLength( t ) > 0 ) {
-                    ret.add( t );
+                    ret.Add( t );
                 }
             }
             return ret.toArray( new String[] { } );

@@ -62,7 +62,7 @@ namespace cadencii.vsq
                     String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                     if ( vvds.Length > 0 ) {
                         SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
-                        m_installed_singers.add( installed );
+                        m_installed_singers.Add( installed );
                         break;
                     }
                 }
@@ -81,7 +81,7 @@ namespace cadencii.vsq
                         if ( value >= 1 ) {
                             String vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
                             SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
-                            m_singer_configs.add( item );
+                            m_singer_configs.Add( item );
                         }
                     }
                 }

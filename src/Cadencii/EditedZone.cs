@@ -46,7 +46,7 @@ namespace cadencii {
             int count = mSeries.size();
             for ( int i = 0; i < count; i++ ) {
                 EditedZoneUnit p = mSeries.get( i );
-                ret.mSeries.add( (EditedZoneUnit)p.clone() );
+                ret.mSeries.Add( (EditedZoneUnit)p.clone() );
             }
             return ret;
         }
@@ -76,7 +76,7 @@ namespace cadencii {
 
             for ( Iterator<EditedZoneUnit> itr = run.mAdd.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = itr.next();
-                mSeries.add( (EditedZoneUnit)item.clone() );
+                mSeries.Add( (EditedZoneUnit)item.clone() );
             }
 
             mSeries.Sort();
@@ -88,7 +88,7 @@ namespace cadencii {
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
             for ( Iterator<EditedZoneUnit> itr = mSeries.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = itr.next();
-                remove.add( (EditedZoneUnit)item.clone() );
+                remove.Add( (EditedZoneUnit)item.clone() );
             }
 
             return new EditedZoneCommand( new Vector<EditedZoneUnit>(), remove );
@@ -101,7 +101,7 @@ namespace cadencii {
                 if ( item == null ) {
                     continue;
                 }
-                work.mSeries.add( new EditedZoneUnit( item.mStart, item.mEnd ) );
+                work.mSeries.Add( new EditedZoneUnit( item.mStart, item.mEnd ) );
             }
             work.normalize();
 
@@ -118,7 +118,7 @@ namespace cadencii {
                     }
                 }
                 if ( !found ) {
-                    remove.add( new EditedZoneUnit( itemThis.mStart, itemThis.mEnd ) );
+                    remove.Add( new EditedZoneUnit( itemThis.mStart, itemThis.mEnd ) );
                 }
             }
 
@@ -135,7 +135,7 @@ namespace cadencii {
                     }
                 }
                 if ( !found ) {
-                    add.add( new EditedZoneUnit( itemWork.mStart, itemWork.mEnd ) );
+                    add.Add( new EditedZoneUnit( itemWork.mStart, itemWork.mEnd ) );
                 }
             }
 

@@ -44,7 +44,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="value"></param>
         public void appendArg( String value ) {
-            _resampler_arg.add( value );
+            _resampler_arg.Add( value );
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace cadencii {
         /// <param name="args"></param>
         public void appendArgRange( String[] args ) {
             foreach ( String s in args ) {
-                _resampler_arg.add( s );
+                _resampler_arg.Add( s );
             }
         }
 

@@ -102,7 +102,7 @@ namespace cadencii
             mHandles = new Vector<VibratoHandle>();
             int size = handles.size();
             for ( int i = 0; i < size; i++ ) {
-                mHandles.add( (VibratoHandle)handles.get( i ).clone() );
+                mHandles.Add( (VibratoHandle)handles.get( i ).clone() );
             }
 
             // 表示状態を更新
@@ -265,7 +265,7 @@ namespace cadencii
             // 追加し，
             VibratoHandle handle = new VibratoHandle();
             handle.setCaption( "No-Name" );
-            mHandles.add( handle );
+            mHandles.Add( handle );
             listPresets.SelectedIndices.Clear();
             // 表示反映させて
             updateStatus();

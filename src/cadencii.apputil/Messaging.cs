@@ -41,7 +41,7 @@ namespace cadencii.apputil
                     Vector<String> list = new Vector<String>();
                     for ( Iterator<String> itr2 = dict.list.keySet().iterator(); itr2.hasNext(); ) {
                         String key = itr2.next();
-                        list.add( key );
+                        list.Add( key );
                     }
                     return list.toArray( new String[] { } );
                 }
@@ -53,7 +53,7 @@ namespace cadencii.apputil
             Vector<String> res = new Vector<String>();
             for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ) {
                 MessageBody dict = itr.next();
-                res.add( dict.lang );
+                res.Add( dict.lang );
             }
             return res.toArray( new String[] { } );
         }
@@ -97,7 +97,7 @@ namespace cadencii.apputil
         }
 
         public static void appendFromFile( String file ) {
-            s_messages.add( new MessageBody( PortUtil.getFileNameWithoutExtension( file ), file ) );
+            s_messages.Add( new MessageBody( PortUtil.getFileNameWithoutExtension( file ), file ) );
         }
 
         public static MessageBodyEntry getMessageDetail( String id ) {

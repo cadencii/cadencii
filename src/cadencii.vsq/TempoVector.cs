@@ -32,9 +32,9 @@ namespace cadencii.vsq
         public void run()
         {
             TempoVector tv = new TempoVector();
-            tv.add( new TempoTableEntry( 0, 500000, 0.0 ) );
-            tv.add( new TempoTableEntry( 1920, 500000, 0.0 ) );
-            tv.add( new TempoTableEntry( 3820, 500000, 0.0 ) );
+            tv.Add( new TempoTableEntry( 0, 500000, 0.0 ) );
+            tv.Add( new TempoTableEntry( 1920, 500000, 0.0 ) );
+            tv.Add( new TempoTableEntry( 3820, 500000, 0.0 ) );
             tv.updateTempoInfo();
             for ( int i = 0; i < tv.Count; i++ ) {
                 TempoTableEntry itemi = tv[i];
@@ -162,7 +162,7 @@ namespace cadencii.vsq
         {
             int c = size();
             if ( c == 0 ) {
-                add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
+                Add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
             }
             this.Sort();
             TempoTableEntry item0 = get( 0 );

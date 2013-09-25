@@ -144,7 +144,7 @@ namespace cadencii
                     }
                 }
                 if ( !found ) {
-                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.add( new ValuePairOfStringBoolean( s, item.Expanded ) );
+                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.Add( new ValuePairOfStringBoolean( s, item.Expanded ) );
                 }
             }
             foreach ( GridItem child in item.GridItems ) {

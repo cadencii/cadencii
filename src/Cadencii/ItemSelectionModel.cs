@@ -121,7 +121,7 @@ import cadencii.vsq.*;
                     }
                     else
                     {
-                        mBezier.add( selected );
+                        mBezier.Add( selected );
                     }
                     checkSelectedItemExistence();
                 }
@@ -198,7 +198,7 @@ import cadencii.vsq.*;
                     for ( Iterator<Integer> itr = mTimesig.keySet().iterator(); itr.hasNext(); )
                     {
                         int clock = itr.next();
-                        list.add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
+                        list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
                     }
                     return list.iterator();
                 }
@@ -286,7 +286,7 @@ import cadencii.vsq.*;
                     for ( Iterator<Integer> itr = mTempo.keySet().iterator(); itr.hasNext(); )
                     {
                         int clock = itr.next();
-                        list.add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
+                        list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
                     }
                     return list.iterator();
                 }
@@ -359,7 +359,7 @@ import cadencii.vsq.*;
                     {
                         if ( v_ids.Contains( mEvents.get( i ).original.InternalID ) )
                         {
-                            index.add( i );
+                            index.Add( i );
                             if ( index.size() == ids.Length )
                             {
                                 break;
@@ -411,7 +411,7 @@ import cadencii.vsq.*;
                     {
                         if ( !isEventContains( selected, index[i].InternalID ) )
                         {
-                            mEvents.add( new SelectedEventEntry( selected, index[i], (VsqEvent)index[i].clone() ) );
+                            mEvents.Add( new SelectedEventEntry( selected, index[i], (VsqEvent)index[i].clone() ) );
                         }
                     }
 #if ENABLE_PROPERTY
@@ -457,7 +457,7 @@ import cadencii.vsq.*;
                                 }
                             }
 
-                            mEvents.add( new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
+                            mEvents.Add( new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
                             if ( !silent )
                             {
                                 invokeSelectedEventChangedEvent( false );
@@ -544,7 +544,7 @@ import cadencii.vsq.*;
                     {
                         if ( !mPointIDs.Contains( ids[i] ) )
                         {
-                            mPointIDs.add( ids[i] );
+                            mPointIDs.Add( ids[i] );
                         }
                     }
                     checkSelectedItemExistence();

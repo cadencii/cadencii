@@ -72,7 +72,7 @@ namespace cadencii.vsq
             res.Slave = new Vector<VsqMixerEntry>();
             for ( Iterator<VsqMixerEntry> itr = Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry item = itr.next();
-                res.Slave.add( (VsqMixerEntry)item.clone() );
+                res.Slave.Add( (VsqMixerEntry)item.clone() );
             }
             return res;
         }
@@ -154,7 +154,7 @@ namespace cadencii.vsq
 
             Slave = new Vector<VsqMixerEntry>();
             for ( int i = 0; i < tracks; i++ ) {
-                Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
+                Slave.Add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             }
             spl = PortUtil.splitString( buffer, new String[] { "\n" }, true );
             String[] spl2;

@@ -204,16 +204,16 @@ namespace cadencii
                         right.setControlRight( this.points.get( i + 1 ).getControlRight() );
                         right.setControlRightType( this.points.get( i + 1 ).getControlRightType() );
                         right.setControlLeftType( this.points.get( i + 1 ).getControlLeftType() );
-                        edited.points.add( left );
+                        edited.points.Add( left );
                         count++;
-                        edited.points.add( right );
+                        edited.points.Add( right );
                         count++;
                         t_start_added = true;
                     }
                 }
                 if ( t_start <= this.points.get( i ).getBase().getX() && this.points.get( i ).getBase().getX() <= t_end ) {
                     if ( !t_start_added ) {
-                        edited.points.add( (BezierPoint)this.points.get( i ).clone() );
+                        edited.points.Add( (BezierPoint)this.points.get( i ).clone() );
                         count++;
                     } else {
                         t_start_added = false;
@@ -389,7 +389,7 @@ namespace cadencii
             BezierChain result = new BezierChain( this.mColor );
             for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
                 BezierPoint bp = itr.next();
-                result.points.add( (BezierPoint)bp.clone() );
+                result.points.Add( (BezierPoint)bp.clone() );
             }
             result.Default = this.Default;
             result.id = id;
@@ -436,7 +436,7 @@ namespace cadencii
                 points = new Vector<BezierPoint>();
                 mColor = Color.black;
             }
-            points.add( bp );
+            points.Add( bp );
             points.Sort();
         }
 

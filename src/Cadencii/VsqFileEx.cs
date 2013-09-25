@@ -515,7 +515,7 @@ namespace cadencii
             tempo.TempoTable.Clear();
             for ( Iterator<TempoTableEntry> itr = vsq.TempoTable.iterator(); itr.hasNext(); ) {
                 TempoTableEntry item = itr.next();
-                tempo.TempoTable.add( item );
+                tempo.TempoTable.Add( item );
             }
             tempo.updateTempoInfo();
             int tempo_count = tempo.TempoTable.size();
@@ -534,13 +534,13 @@ namespace cadencii
                 }
             }
             vsq.TempoTable.Clear();
-            vsq.TempoTable.add( new TempoTableEntry( 0, first_tempo, 0.0 ) );
+            vsq.TempoTable.Add( new TempoTableEntry( 0, first_tempo, 0.0 ) );
             for ( int i = 0; i < tempo_count; i++ ) {
                 TempoTableEntry item = tempo.TempoTable.get( i );
                 double t = item.Time + sec;
                 int new_clock = (int)vsq.getClockFromSec( t );
                 double new_time = vsq.getSecFromClock( new_clock );
-                vsq.TempoTable.add( new TempoTableEntry( new_clock, item.Tempo, new_time ) );
+                vsq.TempoTable.Add( new TempoTableEntry( new_clock, item.Tempo, new_time ) );
             }
             vsq.updateTempoInfo();
 
@@ -582,7 +582,7 @@ namespace cadencii
                                 item.ID.setLength( length );
                             } else {
                                 // 範囲外なので削除
-                                remove_required_event.add( k );
+                                remove_required_event.Add( k );
                             }
                         } else {
                             // ビブラート
@@ -606,7 +606,7 @@ namespace cadencii
                                     first = false;
                                     item.Clock = clock;
                                 } else {
-                                    remove_required_event.add( k );
+                                    remove_required_event.Add( k );
                                 }
                             }
                         } else {
@@ -615,7 +615,7 @@ namespace cadencii
                                     clock = 0;
                                     first = false;
                                 } else {
-                                    remove_required_event.add( k );
+                                    remove_required_event.Add( k );
                                 }
                             }
                             item.Clock = clock;
@@ -699,7 +699,7 @@ namespace cadencii
                                     Logger.write( typeof( VsqFileEx ) + ".shift; ex=" + ex + "\n" );
                                 }
                             } else {
-                                remove_required_event.add( chain.id );
+                                remove_required_event.Add( chain.id );
                             }
                         }
                     }
@@ -737,17 +737,17 @@ namespace cadencii
             ret.Track = new Vector<VsqTrack>();
             int c = Track.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.Track.add( (VsqTrack)Track.get( i ).clone() );
+                ret.Track.Add( (VsqTrack)Track.get( i ).clone() );
             }
             ret.TempoTable = new TempoVector();
             c = TempoTable.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
+                ret.TempoTable.Add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
             ret.TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
             c = TimesigTable.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
+                ret.TimesigTable.Add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
             ret.TotalClocks = TotalClocks;
             ret.Master = (VsqMaster)Master.clone();
@@ -755,7 +755,7 @@ namespace cadencii
             ret.AttachedCurves = (AttachedCurve)AttachedCurves.clone();
             c = BgmFiles.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.BgmFiles.add( (BgmFile)BgmFiles.get( i ).clone() );
+                ret.BgmFiles.Add( (BgmFile)BgmFiles.get( i ).clone() );
             }
             ret.cacheDir = cacheDir;
             ret.config = (SequenceConfig)this.config.clone();
@@ -775,7 +775,7 @@ namespace cadencii
             Vector<BgmFile> copy = new Vector<BgmFile>();
             int count = list.size();
             for ( int i = 0; i < count; i++ ) {
-                copy.add( (BgmFile)list.get( i ).clone() );
+                copy.Add( (BgmFile)list.get( i ).clone() );
             }
             command.args[0] = copy;
             return command;
@@ -890,7 +890,7 @@ namespace cadencii
                 Vector<BezierChain> list = attached_curves.get( ct );
                 Vector<BezierChain> copy_list = new Vector<BezierChain>();
                 for ( Iterator<BezierChain> itr2 = list.iterator(); itr2.hasNext(); ) {
-                    copy_list.add( (BezierChain)(itr2.next()).clone() );
+                    copy_list.Add( (BezierChain)(itr2.next()).clone() );
                 }
                 copy.put( ct, copy_list );
             }
@@ -1000,7 +1000,7 @@ namespace cadencii
                                 int clock = list.getKeyClock( i );
                                 if ( min <= clock && clock <= max ) {
                                     VsqBPPair item = list.getElementB( i );
-                                    delete.add( item.id );
+                                    delete.Add( item.id );
                                 }
                             }
 
@@ -1058,7 +1058,7 @@ namespace cadencii
                     for ( int i = 0; i < list_size; i++ ) {
                         int clock = list.getKeyClock( i );
                         if ( min <= clock && clock <= max ) {
-                            delete.add( list.getElementB( i ).id );
+                            delete.Add( list.getElementB( i ).id );
                         } else if ( max < clock ) {
                             break;
                         }
@@ -1096,7 +1096,7 @@ namespace cadencii
                                 for ( int i = 0; i < list_size; i++ ) {
                                     int clock = list.getKeyClock( i );
                                     if ( ex_min <= clock && clock <= ex_max ) {
-                                        delete.add( list.getElementB( i ).id );
+                                        delete.Add( list.getElementB( i ).id );
                                     }
                                     if ( ex_max < clock ) {
                                         break;
@@ -1142,7 +1142,7 @@ namespace cadencii
                         for ( int i = 0; i < list_size; i++ ) {
                             int clock = list.getKeyClock( i );
                             if ( ex_min <= clock && clock <= ex_max ) {
-                                delete.add( list.getElementB( i ).id );
+                                delete.Add( list.getElementB( i ).id );
                             }
                             if ( ex_max < clock ) {
                                 break;
@@ -1181,17 +1181,17 @@ namespace cadencii
                     Track.Clear();
                     int c = vsq.Track.size();
                     for ( int i = 0; i < c; i++ ) {
-                        Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
+                        Track.Add( (VsqTrack)vsq.Track.get( i ).clone() );
                     }
                     TempoTable.Clear();
                     c = vsq.TempoTable.size();
                     for ( int i = 0; i < c; i++ ) {
-                        TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
+                        TempoTable.Add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                     }
                     TimesigTable.Clear();
                     c = vsq.TimesigTable.size();
                     for ( int i = 0; i < c; i++ ) {
-                        TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
+                        TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                     }
                     //m_tpq = vsq.m_tpq;
                     TotalClocks = vsq.TotalClocks;
@@ -1220,14 +1220,14 @@ namespace cadencii
                         Vector<BezierChain> chains = new Vector<BezierChain>();
                         Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.size(); i++ ) {
-                            chains.add( (BezierChain)src.get( i ).clone() );
+                            chains.Add( (BezierChain)src.get( i ).clone() );
                         }
                         inv.put( ct, chains );
 
                         this.AttachedCurves.get( track - 1 ).get( ct ).Clear();
                         for ( Iterator<BezierChain> itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ) {
                             BezierChain bc = itr2.next();
-                            this.AttachedCurves.get( track - 1 ).get( ct ).add( bc );
+                            this.AttachedCurves.get( track - 1 ).get( ct ).Add( bc );
                         }
                     }
                     ret = generateCommandReplaceAttachedCurveRange( track, inv );
@@ -1285,7 +1285,7 @@ namespace cadencii
                     BgmFiles.Clear();
                     int count = list.size();
                     for ( int i = 0; i < count; i++ ) {
-                        BgmFiles.add( list.get( i ) );
+                        BgmFiles.Add( list.get( i ) );
                     }
                     #endregion
                 } else if ( command.type == CadenciiCommandType.CHANGE_SEQUENCE_CONFIG ) {

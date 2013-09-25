@@ -111,7 +111,7 @@ namespace cadencii
             m_program_change = new Vector<String>();
             comboDefualtSinger.Items.Clear();
             foreach ( SingerConfig kvp in dict ) {
-                m_program_change.add( kvp.VOICENAME );
+                m_program_change.Add( kvp.VOICENAME );
                 comboDefualtSinger.Items.Add( kvp.VOICENAME );
             }
             comboDefualtSinger.Enabled = (comboDefualtSinger.Items.Count > 0);
@@ -1141,8 +1141,8 @@ namespace cadencii
         public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
         {
             for ( int i = 0; i < listResampler.Items.Count; i++ ) {
-                ret.add( (String)listResampler.Items[i].SubItems[0].Text );
-                with_wine.add( listResampler.Items[i].Checked );
+                ret.Add( (String)listResampler.Items[i].SubItems[0].Text );
+                with_wine.Add( listResampler.Items[i].Checked );
             }
         }
 
@@ -1204,7 +1204,7 @@ namespace cadencii
         {
             m_utau_singers.Clear();
             for ( int i = 0; i < value.size(); i++ ) {
-                m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
+                m_utau_singers.Add( (SingerConfig)value.get( i ).clone() );
             }
             UpdateUtausingerList();
         }
@@ -1390,7 +1390,7 @@ namespace cadencii
                 }
                 SingerConfig sc = new SingerConfig();
                 Utility.readUtauSingerConfig( dir, sc );
-                m_utau_singers.add( sc );
+                m_utau_singers.Add( sc );
                 UpdateUtausingerList();
             }
         }
@@ -1611,7 +1611,7 @@ namespace cadencii
                 // MIDI-OUTの最大接続数．-1は制限なしを表す
                 int max = device.getMaxTransmitters();
                 if ( max > 0 || max == -1 ) {
-                    midiins.add( info );
+                    midiins.Add( info );
                 }
             }
 

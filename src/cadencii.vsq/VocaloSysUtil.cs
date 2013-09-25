@@ -159,10 +159,10 @@ namespace cadencii.vsq
             foreach( String s in reg_list ){
                 if( s.StartsWith( header1 + "\\" ) ||
                     s.StartsWith( header1 + "\t" ) ){
-                    dir1.add( s );
+                    dir1.Add( s );
                 }else if( s.StartsWith( header2 + "\\" ) ||
                           s.StartsWith( header2 + "\t" ) ){
-                    dir2.add( s );
+                    dir2.Add( s );
                 }
             }
 
@@ -381,11 +381,11 @@ namespace cadencii.vsq
             for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
-                    application.add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
+                    application.Add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
-                    expression.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
+                    expression.Add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\VOICE" ) ) {
-                    voice.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
+                    voice.Add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
                 }
             }
 
@@ -436,7 +436,7 @@ namespace cadencii.vsq
                 if ( install.Equals( "" ) ) {
                     install = Path.Combine( path_voicedb.value, id );
                 }
-                installed_singers.add( install );
+                installed_singers.Add( install );
             }
 
             // path_expdbを取得
@@ -452,7 +452,7 @@ namespace cadencii.vsq
                         String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
                             if ( !exp_ids.Contains( spl2[0] ) ) {
-                                exp_ids.add( spl2[0] );
+                                exp_ids.Add( spl2[0] );
                             }
                         }
                     }
@@ -494,7 +494,7 @@ namespace cadencii.vsq
                     RegistryValueKind kind = key.GetValueKind( s );
                     if ( kind == RegistryValueKind.String ) {
                         String str = parent_name + "\t" + s + "\t" + (String)key.GetValue( s, "" );
-                        list.add( str );
+                        list.Add( str );
                     }
                 }
                 key.Close();

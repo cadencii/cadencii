@@ -164,7 +164,7 @@ namespace cadencii.vsq
                     }
                 }
                 if ( ue.getTempo() > 0.0f ) {
-                    TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.getTempo()), 0.0 ) );
+                    TempoTable.Add( new TempoTableEntry( clock_count, (int)(60e6 / ue.getTempo()), 0.0 ) );
                     TempoTable.updateTempoInfo();
                 }
                 clock_count += ue.getLength();
@@ -340,7 +340,7 @@ namespace cadencii.vsq
 
             // テンポテーブルを刷新
             TempoTable.Clear();
-            TempoTable.add( new TempoTableEntry( 0, (int)(60e6 / tempo), 0.0 ) );
+            TempoTable.Add( new TempoTableEntry( 0, (int)(60e6 / tempo), 0.0 ) );
             updateTempoInfo();
             updateTimesigInfo();
             updateTotalClocks();
@@ -422,14 +422,14 @@ namespace cadencii.vsq
             int vpit = 0;
 
             Vector<Integer> parts = new Vector<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
-            parts.add( 0 );
+            parts.Add( 0 );
             int lastclock = 0;// premeasure_clock;
             for ( Iterator<VsqEvent> itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = itr.next();
                 if ( ve.Clock <= lastclock ) {
                     lastclock = Math.Max( lastclock, ve.Clock + ve.ID.getLength() );
                 } else {
-                    parts.add( ve.Clock );
+                    parts.Add( ve.Clock );
                     lastclock = ve.Clock + ve.ID.getLength();
                 }
             }
@@ -556,7 +556,7 @@ namespace cadencii.vsq
                 VsqCommand ret = VsqCommand.generateCommandDeleteTrack( position );
                 if ( Track.size() <= 17 ) {
                     Track.Insert( position, (VsqTrack)track.clone() );
-                    Mixer.Slave.add( (VsqMixerEntry)mixer.clone() );
+                    Mixer.Slave.Add( (VsqMixerEntry)mixer.clone() );
                     return ret;
                 } else {
                     return null;
@@ -597,7 +597,7 @@ namespace cadencii.vsq
                     }
                 } else {
                     ret = VsqCommand.generateCommandUpdateTempo( clock, clock, -1 );
-                    TempoTable.add( new TempoTableEntry( new_clock, tempo, 0.0 ) );
+                    TempoTable.Add( new TempoTableEntry( new_clock, tempo, 0.0 ) );
                 }
                 updateTempoInfo();
                 updateTotalClocks();
@@ -631,7 +631,7 @@ namespace cadencii.vsq
                         }
                     } else {
                         new_tempos[i] = -1;
-                        TempoTable.add( new TempoTableEntry( new_clocks[i], tempos[i], 0.0 ) );
+                        TempoTable.Add( new TempoTableEntry( new_clocks[i], tempos[i], 0.0 ) );
                     }
                 }
                 updateTempoInfo();
@@ -665,7 +665,7 @@ namespace cadencii.vsq
                     }
                 } else {
                     ret = VsqCommand.generateCommandUpdateTimesig( new_barcount, new_barcount, -1, -1 );
-                    TimesigTable.add( new TimeSigTableEntry( 0, numerator, denominator, new_barcount ) );
+                    TimesigTable.Add( new TimeSigTableEntry( 0, numerator, denominator, new_barcount ) );
                 }
                 updateTimesigInfo();
                 updateTotalClocks();
@@ -704,7 +704,7 @@ namespace cadencii.vsq
                         // 登録されていない場合
                         new_numerators[i] = -1;
                         new_denominators[i] = -1;
-                        TimesigTable.add( new TimeSigTableEntry( 0, numerators[i], denominators[i], new_barcounts[i] ) );
+                        TimesigTable.Add( new TimeSigTableEntry( 0, numerators[i], denominators[i], new_barcounts[i] ) );
                     }
                 }
                 updateTimesigInfo();
@@ -718,19 +718,19 @@ namespace cadencii.vsq
                 Track.Clear();
                 int track_count = vsq.Track.size();
                 for ( int i = 0; i < track_count; i++ ) {
-                    Track.add( (VsqTrack)vsq.Track.get( i ).clone() );
+                    Track.Add( (VsqTrack)vsq.Track.get( i ).clone() );
                 }
 
                 TempoTable.Clear();
                 int tempo_table_count = vsq.TempoTable.size();
                 for ( int i = 0; i < tempo_table_count; i++ ) {
-                    TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
+                    TempoTable.Add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                 }
 
                 TimesigTable.Clear();
                 int timesig_table_count = vsq.TimesigTable.size();
                 for ( int i = 0; i < timesig_table_count; i++ ) {
-                    TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
+                    TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                 }
                 //m_tpq = vsq.m_tpq;
                 TotalClocks = vsq.TotalClocks;
@@ -769,7 +769,7 @@ namespace cadencii.vsq
                     sout.println( "        i=" + i + "; item.InternalID=" + item.InternalID );
 #endif
                     target.addEvent( item );
-                    inv_ids.add( item.InternalID );
+                    inv_ids.Add( item.InternalID );
 #if DEBUG
                     sout.println( " => " + item.InternalID );
 #endif
@@ -815,7 +815,7 @@ namespace cadencii.vsq
                     for ( int i = 0; i < target.getEventCount(); i++ ) {
                         VsqEvent item = target.getEvent( i );
                         if ( internal_ids.get( j ) == item.InternalID ) {
-                            inv.add( (VsqEvent)item.clone() );
+                            inv.Add( (VsqEvent)item.clone() );
                             min_clock = Math.Min( min_clock, item.Clock );
                             max_clock = Math.Max( max_clock, item.Clock + item.ID.getLength() );
                             target.removeEvent( i );
@@ -930,7 +930,7 @@ namespace cadencii.vsq
                         for ( Iterator<Integer> i = target_list.keyClockIterator(); i.hasNext(); ) {
                             int clock = i.next();
                             if ( start_clock <= clock && clock <= end_clock ) {
-                                edit.add( new BPPair( clock, target_list.getValue( clock ) ) );
+                                edit.Add( new BPPair( clock, target_list.getValue( clock ) ) );
                             }
                         }
                         boolean start_found = false;
@@ -953,10 +953,10 @@ namespace cadencii.vsq
                             }
                         }
                         if ( !start_found ) {
-                            edit.add( new BPPair( start_clock, start_value ) );
+                            edit.Add( new BPPair( start_clock, start_value ) );
                         }
                         if ( !end_found ) {
-                            edit.add( new BPPair( end_clock, end_value ) );
+                            edit.Add( new BPPair( end_clock, end_value ) );
                         }
 
                         // 並べ替え
@@ -1033,8 +1033,8 @@ namespace cadencii.vsq
                     Vector<Long> part_inv_delete = new Vector<Long>();
                     TreeMap<Integer, VsqBPPair> part_inv_add = new TreeMap<Integer, VsqBPPair>();
                     processTrackCurveEdit( track, curve.get( i ), delete.get( i ), add.get( i ), part_inv_delete, part_inv_add );
-                    inv_delete.add( part_inv_delete );
-                    inv_add.add( part_inv_add );
+                    inv_delete.Add( part_inv_delete );
+                    inv_add.Add( part_inv_add );
                 }
                 updateTotalClocks();
 
@@ -1093,7 +1093,7 @@ namespace cadencii.vsq
                             for ( Iterator<Integer> itr = Track.get( track ).getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
                                 int clock = itr.next();
                                 if ( start_clock <= clock && clock <= end_clock ) {
-                                    edit.add( new BPPair( clock, Track.get( track ).getCurve( curve ).getValue( clock ) ) );
+                                    edit.Add( new BPPair( clock, Track.get( track ).getCurve( curve ).getValue( clock ) ) );
                                 }
                             }
                             boolean start_found = false;
@@ -1115,19 +1115,19 @@ namespace cadencii.vsq
                                 }
                             }
                             if ( !start_found ) {
-                                edit.add( new BPPair( start_clock, start_value ) );
+                                edit.Add( new BPPair( start_clock, start_value ) );
                             }
                             if ( !end_found ) {
-                                edit.add( new BPPair( end_clock, end_value ) );
+                                edit.Add( new BPPair( end_clock, end_value ) );
                             }
 
                             // 並べ替え
                             edit.Sort();
-                            inv_coms.add( edit );
+                            inv_coms.Add( edit );
                             //inv = generateCommandTrackEditCurve( track, curve, edit );
                         } else if ( com.size() == 0 ) {
                             //inv = generateCommandTrackEditCurve( track, curve, new Vector<BPPair>() );
-                            inv_coms.add( new Vector<BPPair>() );
+                            inv_coms.Add( new Vector<BPPair>() );
                         }
                     }
 
@@ -1180,7 +1180,7 @@ namespace cadencii.vsq
                     for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
                         ValuePair<Integer, Integer> add = itr2.next();
                         if ( ev.InternalID == add.getKey() ) {
-                            inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
+                            inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
                             ev.ID.Dynamics = add.getValue();
                             break;
                         }
@@ -1198,7 +1198,7 @@ namespace cadencii.vsq
                     for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
                         ValuePair<Integer, Integer> add = itr2.next();
                         if ( ev.InternalID == add.getKey() ) {
-                            inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
+                            inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
                             ev.ID.DEMaccent = add.getValue();
                             break;
                         }
@@ -1216,7 +1216,7 @@ namespace cadencii.vsq
                     for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
                         ValuePair<Integer, Integer> add = itr2.next();
                         if ( ev.InternalID == add.getKey() ) {
-                            inv.add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
+                            inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
                             ev.ID.DEMdecGainRate = add.getValue();
                             break;
                         }
@@ -1334,8 +1334,8 @@ namespace cadencii.vsq
                     for ( Iterator<VsqEvent> itr = Track.get( track ).getEventIterator(); itr.hasNext(); ) {
                         VsqEvent item = itr.next();
                         if ( item.InternalID == internal_ids[i] ) {
-                            inv_id.add( (VsqID)item.ID.clone() );
-                            inv_clock.add( item.Clock );
+                            inv_id.Add( (VsqID)item.ID.clone() );
+                            inv_clock.Add( item.Clock );
                             int max_length = Math.Max( item.ID.getLength(), values[i].getLength() );
                             int min = Math.Min( item.Clock, clocks[i] );
                             int max = Math.Max( item.Clock + max_length, clocks[i] + max_length );
@@ -1454,7 +1454,7 @@ namespace cadencii.vsq
                 int clock = itr.next();
                 VsqBPPair item = add.get( clock );
                 list.addWithID( clock, item.value, item.id );
-                inv_delete.add( item.id );
+                inv_delete.Add( item.id );
             }
         }
 
@@ -1527,7 +1527,7 @@ namespace cadencii.vsq
                 }
             }
             if ( !contains_clock_start_tempo ) {
-                TempoTable.add( new TempoTableEntry( clock_start, tempoAtClockEnd, 0.0 ) );
+                TempoTable.Add( new TempoTableEntry( clock_start, tempoAtClockEnd, 0.0 ) );
             }
             updateTempoInfo();
 
@@ -1599,17 +1599,17 @@ namespace cadencii.vsq
             VsqFile ret = new VsqFile();
             ret.Track = new Vector<VsqTrack>();
             for ( int i = 0; i < Track.size(); i++ ) {
-                ret.Track.add( (VsqTrack)Track.get( i ).clone() );
+                ret.Track.Add( (VsqTrack)Track.get( i ).clone() );
             }
 
             ret.TempoTable = new TempoVector();
             for ( int i = 0; i < TempoTable.size(); i++ ) {
-                ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
+                ret.TempoTable.Add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
 
             ret.TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
+                ret.TimesigTable.Add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
             //ret.m_tpq = m_tpq;
             ret.TotalClocks = TotalClocks;
@@ -1896,15 +1896,15 @@ namespace cadencii.vsq
             //m_tpq = 480;
 
             Track = new Vector<VsqTrack>();
-            Track.add( new VsqTrack( tempo, numerator, denominator ) );
-            Track.add( new VsqTrack( "Voice1", singer ) );
+            Track.Add( new VsqTrack( tempo, numerator, denominator ) );
+            Track.Add( new VsqTrack( "Voice1", singer ) );
             Master = new VsqMaster( pre_measure );
             Mixer = new VsqMixer( 0, 0, 0, 0 );
-            Mixer.Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
+            Mixer.Slave.Add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
-            TimesigTable.add( new TimeSigTableEntry( 0, numerator, denominator, 0 ) );
+            TimesigTable.Add( new TimeSigTableEntry( 0, numerator, denominator, 0 ) );
             TempoTable = new TempoVector();
-            TempoTable.add( new TempoTableEntry( 0, tempo, 0.0 ) );
+            TempoTable.Add( new TempoTableEntry( 0, tempo, 0.0 ) );
             //m_base_tempo = tempo;
             //m_premeasure_clocks = calculatePreMeasureInClock();
         }
@@ -1929,7 +1929,7 @@ namespace cadencii.vsq
             sout.println( "VsqFile#.ctor; num_track=" + num_track );
 #endif
             for ( int i = 0; i < num_track; i++ ) {
-                Track.add( new VsqTrack( mf.getMidiEventList( i ), encoding ) );
+                Track.Add( new VsqTrack( mf.getMidiEventList( i ), encoding ) );
             }
 
             VsqMaster master = Track.get( 1 ).getMaster();
@@ -1943,7 +1943,7 @@ namespace cadencii.vsq
                 Mixer = new VsqMixer( 0, 0, 0, 0 );
                 Mixer.Slave = new Vector<VsqMixerEntry>();
                 for ( int i = 1; i < Track.size(); i++ ) {
-                    Mixer.Slave.add( new VsqMixerEntry() );
+                    Mixer.Slave.Add( new VsqMixerEntry() );
                 }
             } else {
                 Mixer = (VsqMixer)mixer.clone();
@@ -1984,13 +1984,13 @@ namespace cadencii.vsq
                     if ( itemj.firstByte == 0xff && itemj.data.Length >= 4 && itemj.data[0] == 0x51 ) {
                         count++;
                         if ( count == 0 && itemj.clock != 0 ) {
-                            TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
+                            TempoTable.Add( new TempoTableEntry( 0, 500000, 0.0 ) );
                             prev_tempo = 500000;
                         }
                         int current_tempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];
                         int current_index = (int)midi_event.get( j ).clock;
                         thistime = prev_time + (double)(prev_tempo) * (double)(current_index - prev_index) / (m_tpq * 1000000.0);
-                        TempoTable.add( new TempoTableEntry( current_index, current_tempo, thistime ) );
+                        TempoTable.Add( new TempoTableEntry( current_index, current_tempo, thistime ) );
                         prev_tempo = current_tempo;
                         prev_index = current_index;
                         prev_time = thistime;
@@ -2017,10 +2017,10 @@ namespace cadencii.vsq
                             int clock = 0;
                             int bar_count = 0;
                             if ( midi_event.get( j ).clock == 0 ) {
-                                TimesigTable.add( new TimeSigTableEntry( 0, numer, dnomi, 0 ) );
+                                TimesigTable.Add( new TimeSigTableEntry( 0, numer, dnomi, 0 ) );
                             } else {
-                                TimesigTable.add( new TimeSigTableEntry( 0, 4, 4, 0 ) );
-                                TimesigTable.add( new TimeSigTableEntry( 0, numer, dnomi, (int)midi_event.get( j ).clock / (480 * 4) ) );
+                                TimesigTable.Add( new TimeSigTableEntry( 0, 4, 4, 0 ) );
+                                TimesigTable.Add( new TimeSigTableEntry( 0, numer, dnomi, (int)midi_event.get( j ).clock / (480 * 4) ) );
                                 count++;
                             }
                         } else {
@@ -2030,7 +2030,7 @@ namespace cadencii.vsq
                             int bar_count = TimesigTable.get( count - 1 ).BarCount;
                             int dif = 480 * 4 / denominator * numerator;//1小節が何クロックか？
                             bar_count += ((int)midi_event.get( j ).clock - clock) / dif;
-                            TimesigTable.add( new TimeSigTableEntry( (int)midi_event.get( j ).clock, numer, dnomi, bar_count ) );
+                            TimesigTable.Add( new TimeSigTableEntry( (int)midi_event.get( j ).clock, numer, dnomi, bar_count ) );
                         }
                     }
                 }
@@ -2195,7 +2195,7 @@ namespace cadencii.vsq
                                 add.data[i + 1] = d;
                                 buffer.RemoveAt( 0 );
                             }
-                            ret.add( add );
+                            ret.Add( add );
                         }
                     }
                     if ( buffer.size() > 0 ) {
@@ -2215,7 +2215,7 @@ namespace cadencii.vsq
                                 add.data[i + 1] = buffer.get( 0 );
                                 buffer.RemoveAt( 0 );
                             }
-                            ret.add( add );
+                            ret.Add( add );
                         }
                         if ( buffer.size() > 0 ) {
                             line_count++;
@@ -2233,7 +2233,7 @@ namespace cadencii.vsq
                                 add.data[i + 1] = buffer.get( 0 );
                                 buffer.RemoveAt( 0 );
                             }
-                            ret.add( add );
+                            ret.Add( add );
                         }
                     }
 #else
@@ -2477,7 +2477,7 @@ namespace cadencii.vsq
                     VsqNrpn add = new VsqNrpn( c,
                                                NRPN.CC_E_EXPRESSION,
                                                (byte)dyn.getElement( i ) );
-                    ret.add( add );
+                    ret.Add( add );
                 }
             }
             return ret.toArray( new VsqNrpn[] { } );
@@ -2495,7 +2495,7 @@ namespace cadencii.vsq
                     VsqNrpn add = new VsqNrpn( c,
                                                NRPN.CC_FX2_EFFECT2_DEPTH,
                                                (byte)fx2depth.getElement( i ) );
-                    ret.add( add );
+                    ret.Add( add );
                 }
             }
             return ret.toArray( new VsqNrpn[] { } );
@@ -2816,8 +2816,8 @@ namespace cadencii.vsq
                 list.AddRange( new Vector<VsqNrpn>( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) ) );
             } else {                   //多分ありえないと思うが、歌手が不明の場合。
                 //throw new Exception( "first singer was not specified" );
-                list.add( new VsqNrpn( 0, NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x0 ) );
-                list.add( new VsqNrpn( 0, NRPN.PC_VOICE_TYPE, (byte)0x0 ) );
+                list.Add( new VsqNrpn( 0, NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x0 ) );
+                list.Add( new VsqNrpn( 0, NRPN.PC_VOICE_TYPE, (byte)0x0 ) );
             }
 
             list.AddRange( new Vector<VsqNrpn>( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) ) );
@@ -2881,7 +2881,7 @@ namespace cadencii.vsq
                         note_loc -= (byte)0x01;
                     }
 
-                    list.add( generateNoteNRPN( vsq,
+                    list.Add( generateNoteNRPN( vsq,
                                                 track,
                                                 item,
                                                 msPreSend,
@@ -2930,7 +2930,7 @@ namespace cadencii.vsq
                                                NRPN.PB_PITCH_BEND,
                                                val.getKey(),
                                                val.getValue() );
-                    ret.add( add );
+                    ret.Add( add );
                 }
             }
             return ret.toArray( new VsqNrpn[] { } );
@@ -2956,7 +2956,7 @@ namespace cadencii.vsq
                                                NRPN.CC_PBS_PITCH_BEND_SENSITIVITY,
                                                (byte)pbs.getElement( i ),
                                                (byte)0x00 );
-                    ret.add( add );
+                    ret.Add( add );
                 }
             }
             return ret.toArray( new VsqNrpn[] { } );
@@ -2985,7 +2985,7 @@ namespace cadencii.vsq
                     add2.append( NRPN.CC_VD_DELAY, del.getKey(), del.getValue(), true );
                     add2.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.getStartDepth(), true );
                     add2.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.getStartRate() );
-                    ret.add( add2 );
+                    ret.Add( add2 );
                 }
 
                 int vlength = ve.ID.getLength() - ve.ID.VibratoDelay;
@@ -2996,7 +2996,7 @@ namespace cadencii.vsq
                         VibratoBPPair itemi = rateBP.getElement( i );
                         float percent = itemi.X;
                         int cl = vclock + (int)(percent * vlength);
-                        ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
+                        ret.Add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
                                               NRPN.CC_VR_VIBRATO_RATE,
                                               (byte)itemi.Y ) );
                     }
@@ -3008,7 +3008,7 @@ namespace cadencii.vsq
                         VibratoBPPair itemi = depthBP.getElement( i );
                         float percent = itemi.X;
                         int cl = vclock + (int)(percent * vlength);
-                        ret.add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
+                        ret.Add( new VsqNrpn( cl - vsq.getPresendClockAt( cl, msPreSend ),
                                               NRPN.CC_VD_VIBRATO_DEPTH,
                                               (byte)itemi.Y ) );
                     }
@@ -3057,7 +3057,7 @@ namespace cadencii.vsq
                                                        NRPN.VCP_VOICE_CHANGE_PARAMETER_ID,
                                                        lsb );
                             add.append( NRPN.VCP_VOICE_CHANGE_PARAMETER, (byte)vbpl.getElement( j ), true );
-                            res.add( add );
+                            res.Add( add );
                         }
                     }
                 }
@@ -3094,7 +3094,7 @@ namespace cadencii.vsq
             Vector<MidiEvent> events = new Vector<MidiEvent>();
             for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
                 TimeSigTableEntry entry = itr.next();
-                events.add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
+                events.Add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
             }
             return events;
         }
@@ -3108,7 +3108,7 @@ namespace cadencii.vsq
             Vector<MidiEvent> events = new Vector<MidiEvent>();
             for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
                 TempoTableEntry entry = itr.next();
-                events.add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
+                events.Add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                 //last_clock = Math.Max( last_clock, entry.Clock );
             }
             return events;
@@ -3189,12 +3189,12 @@ namespace cadencii.vsq
                 Vector<MidiEvent> events = new Vector<MidiEvent>();
                 for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
                     TimeSigTableEntry entry = itr.next();
-                    events.add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
+                    events.Add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
                 for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
                     TempoTableEntry entry = itr.next();
-                    events.add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
+                    events.Add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
 #if DEBUG

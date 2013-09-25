@@ -227,7 +227,7 @@ namespace cadencii.apputil {
                 while ( (line = sr.readLine()) != null ) {
                     if ( line.StartsWith( "#:" ) ) {
                         line = line.Substring( 2 ).Trim();
-                        location.add( line );
+                        location.Add( line );
                     } else if ( line.StartsWith( entry ) ) {
                         ByRef<String> dum = new ByRef<String>( "" );
                         ByRef<String> dum2 = new ByRef<String>( "" );

@@ -202,7 +202,7 @@ namespace cadencii
                 String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
                 if (!Directory.Exists(junction_path)) {
                     cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
-                    mJunctions.add( junction_path );
+                    mJunctions.Add( junction_path );
                 }
                 mTempDir = junction_path;
             }
@@ -383,7 +383,7 @@ namespace cadencii
                 Vector<VsqEvent> events = new Vector<VsqEvent>();
                 for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent itemi = itr.next();
-                    events.add( itemi );
+                    events.Add( itemi );
 #if DEBUG
 #if !JAVA
                     sw2.WriteLine( itemi.Clock + "\t" + itemi.ID.Note * 100 );
@@ -417,7 +417,7 @@ namespace cadencii
                             String junction = Path.Combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
                             if (!Directory.Exists(junction)) {
                                 cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
-                                mJunctions.add( junction );
+                                mJunctions.Add( junction );
                             }
                             singer = junction;
                         }
@@ -467,19 +467,19 @@ namespace cadencii
                         RenderQueue rq = new RenderQueue();
                         //rq.WavtoolArgPrefix = "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@" + BASE_TEMPO;
                         rq.WavtoolArgPrefix.Clear();
-                        rq.WavtoolArgPrefix.add( "\"" + file + "\"" );
-                        rq.WavtoolArgPrefix.add( "\"" + Path.Combine( singer, "R.wav" ) + "\"" );
-                        rq.WavtoolArgPrefix.add( "0" );
-                        rq.WavtoolArgPrefix.add( draft_length + "@" + BASE_TEMPO );
+                        rq.WavtoolArgPrefix.Add( "\"" + file + "\"" );
+                        rq.WavtoolArgPrefix.Add( "\"" + Path.Combine( singer, "R.wav" ) + "\"" );
+                        rq.WavtoolArgPrefix.Add( "0" );
+                        rq.WavtoolArgPrefix.Add( draft_length + "@" + BASE_TEMPO );
                         //rq.WavtoolArgSuffix = " 0 0";
                         rq.WavtoolArgSuffix.Clear();
-                        rq.WavtoolArgSuffix.add( "0" );
-                        rq.WavtoolArgSuffix.add( "0" );
+                        rq.WavtoolArgSuffix.Add( "0" );
+                        rq.WavtoolArgSuffix.Add( "0" );
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
                         rq.secStart = sec_start2;
                         rq.ResamplerFinished = true;
-                        mResamplerQueue.add( rq );
+                        mResamplerQueue.Add( rq );
                         count++;
                     }
                     String lyric = item.ID.LyricHandle.L0.Phrase;
@@ -694,10 +694,10 @@ namespace cadencii
 #endif
                     //rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" " + item.UstEvent.getStartPoint() + " " + item.ID.getLength() + "@" + str_t_temp;
                     rq2.WavtoolArgPrefix.Clear();
-                    rq2.WavtoolArgPrefix.add( "\"" + file + "\"" );
-                    rq2.WavtoolArgPrefix.add( "\"" + filename + "\"" );
-                    rq2.WavtoolArgPrefix.add( "" + item.UstEvent.getStartPoint() );
-                    rq2.WavtoolArgPrefix.add( "" + item.ID.getLength() + "@" + str_t_temp );
+                    rq2.WavtoolArgPrefix.Add( "\"" + file + "\"" );
+                    rq2.WavtoolArgPrefix.Add( "\"" + filename + "\"" );
+                    rq2.WavtoolArgPrefix.Add( "" + item.UstEvent.getStartPoint() );
+                    rq2.WavtoolArgPrefix.Add( "" + item.ID.getLength() + "@" + str_t_temp );
                     UstEnvelope env = item.UstEvent.getEnvelope();
                     if ( env == null ) {
                         env = new UstEnvelope();
@@ -705,22 +705,22 @@ namespace cadencii
                     //rq2.WavtoolArgSuffix = " " + env.p1 + " " + env.p2 + " " + env.p3 + " " + env.v1 + " " + env.v2 + " " + env.v3 + " " + env.v4;
                     //rq2.WavtoolArgSuffix += " " + oa.msOverlap + " " + env.p4 + " " + env.p5 + " " + env.v5;
                     rq2.WavtoolArgSuffix.Clear();
-                    rq2.WavtoolArgSuffix.add( "" + env.p1 );
-                    rq2.WavtoolArgSuffix.add( "" + env.p2 );
-                    rq2.WavtoolArgSuffix.add( "" + env.p3 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v1 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v2 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v3 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v4 );
-                    rq2.WavtoolArgSuffix.add( "" + oa.msOverlap );
-                    rq2.WavtoolArgSuffix.add( "" + env.p4 );
-                    rq2.WavtoolArgSuffix.add( "" + env.p5 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v5 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p1 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p2 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p3 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v1 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v2 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v3 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v4 );
+                    rq2.WavtoolArgSuffix.Add( "" + oa.msOverlap );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p4 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p5 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v5 );
                     rq2.Oto = oa;
                     rq2.FileName = filename;
                     rq2.secStart = sec_start_act;
                     rq2.ResamplerFinished = exist_in_cache;
-                    mResamplerQueue.add( rq2 );
+                    mResamplerQueue.Add( rq2 );
 #if MAKEBAT_SP
                     log.WriteLine();
 #endif

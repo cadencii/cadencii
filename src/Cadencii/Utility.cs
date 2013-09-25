@@ -1127,7 +1127,7 @@ namespace cadencii
 
             Vector<EditedZoneUnit> list3 = new Vector<EditedZoneUnit>();
             for ( Iterator<EditedZoneUnit> itr = ret.iterator(); itr.hasNext(); ) {
-                list3.add( itr.next() );
+                list3.Add( itr.next() );
             }
             return list3.toArray( new EditedZoneUnit[] { } );
         }
@@ -1181,7 +1181,7 @@ namespace cadencii
             compareList( zone, context );
             Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
             for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                ret.add( itr.next() );
+                ret.Add( itr.next() );
             }
             return ret.toArray( new EditedZoneUnit[] { } );
         }
@@ -1318,7 +1318,7 @@ namespace cadencii
             Vector<Keys> list2 = new Vector<Keys>();
             foreach ( Keys key in keys ) {
                 if ( key != Keys.Control && key != Keys.Shift && key != Keys.Alt && key != Keys.Menu ) {
-                    list2.add( key );
+                    list2.Add( key );
                 }
             }
             list2.Sort();

@@ -60,7 +60,7 @@ namespace cadencii {
             foreach ( String file in files ) {
                 String id = PortUtil.getFileName( file );
                 double time = PortUtil.getFileLastModified( file );
-                added.add( id );
+                added.Add( id );
 
                 boolean loadthis = true;
                 if ( scripts.containsKey( id ) ) {

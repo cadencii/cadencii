@@ -123,7 +123,7 @@ namespace cadencii
                     e.firstByte = 0xB0;
                     e.data = new int[] { 0x65, 0x00 };
                     e.clock = clock;
-                    sequence.get( clock ).pit.add( e );
+                    sequence.get( clock ).pit.Add( e );
                 }
                 {
                     // RPN LSB = 0x00
@@ -131,7 +131,7 @@ namespace cadencii
                     e.firstByte = 0xB0;
                     e.data = new int[] { 0x64, 0x00 };
                     e.clock = clock;
-                    sequence.get( clock ).pit.add( e );
+                    sequence.get( clock ).pit.Add( e );
                 }
                 {
                     // RPN data MSB
@@ -140,7 +140,7 @@ namespace cadencii
                     int value = Math.Max( 0, Math.Min( maxPitchBendSensitivity, pbs.getElementA( i ) ) );
                     e.data = new int[] { 0x06, map[value] };
                     e.clock = clock;
-                    sequence.get( clock ).pit.add( e );
+                    sequence.get( clock ).pit.Add( e );
                 }
             }
 
@@ -153,7 +153,7 @@ namespace cadencii
                 var msb = 0x7F & value;
                 var lsb = 0x7F & (value >> 7);
                 e.data = new int[] { msb, lsb };
-                sequence.get( clock ).pit.add( e );
+                sequence.get( clock ).pit.Add( e );
             }
         }
 
@@ -296,7 +296,7 @@ namespace cadencii
                     var clock = item.Clock + item.ID.Length;
                     var queue = result.get( clock );
                     var noteOff = createNoteOffEvent( clock, item.ID.Note );
-                    queue.noteoff.add( noteOff );
+                    queue.noteoff.Add( noteOff );
                 }
             }
         }

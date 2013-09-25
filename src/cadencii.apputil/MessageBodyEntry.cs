@@ -30,7 +30,7 @@ namespace cadencii.apputil {
         public MessageBodyEntry( String message_, String[] location_ ) {
             message = message_;
             for ( int i = 0; i < location_.Length; i++ ) {
-                location.add( location_[i] );
+                location.Add( location_[i] );
             }
         }
     }

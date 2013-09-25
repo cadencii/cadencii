@@ -334,7 +334,7 @@ namespace cadencii.vsq
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
             for ( Iterator<ValuePair<Integer, Integer>> itr = velocity.iterator(); itr.hasNext(); ) {
                 ValuePair<Integer, Integer> item = itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
+                list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
             return command;
@@ -380,7 +380,7 @@ namespace cadencii.vsq
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
             for ( Iterator<ValuePair<Integer, Integer>> itr = accent_list.iterator(); itr.hasNext(); ) {
                 ValuePair<Integer, Integer> item = itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
+                list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
             return command;
@@ -402,7 +402,7 @@ namespace cadencii.vsq
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
             for ( Iterator<ValuePair<Integer, Integer>> itr = decay_list.iterator(); itr.hasNext(); ) {
                 ValuePair<Integer, Integer> item = itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
+                list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
             return command;
@@ -472,7 +472,7 @@ namespace cadencii.vsq
             Vector<BPPair> copied = new Vector<BPPair>();
             for ( Iterator<BPPair> itr = edit.iterator(); itr.hasNext(); ) {
                 BPPair item = itr.next();
-                copied.add( item );
+                copied.Add( item );
             }
             command.Args[2] = copied;
             return command;
@@ -496,7 +496,7 @@ namespace cadencii.vsq
             Vector<Long> cp_delete = new Vector<Long>();
             for ( Iterator<Long> itr = delete.iterator(); itr.hasNext(); ) {
                 long id = itr.next();
-                cp_delete.add( id );
+                cp_delete.Add( id );
             }
             command.Args[2] = cp_delete;
 
@@ -519,7 +519,7 @@ namespace cadencii.vsq
             Vector<String> cp_targets = new Vector<String>();
             int count = targets.size();
             for ( int i = 0; i < count; i++ ) {
-                cp_targets.add( targets.get( i ) );
+                cp_targets.Add( targets.get( i ) );
             }
             command.Args[1] = cp_targets;
             Vector<Vector<BPPair>> cp_edits = new Vector<Vector<BPPair>>();
@@ -528,9 +528,9 @@ namespace cadencii.vsq
                 Vector<BPPair> copied = new Vector<BPPair>();
                 for ( Iterator<BPPair> itr = edits.get( i ).iterator(); itr.hasNext(); ) {
                     BPPair item = itr.next();
-                    copied.add( new BPPair( item.Clock, item.Value ) );
+                    copied.Add( new BPPair( item.Clock, item.Value ) );
                 }
-                cp_edits.add( copied );
+                cp_edits.Add( copied );
             }
             command.Args[2] = cp_edits;
             return command;
@@ -553,7 +553,7 @@ namespace cadencii.vsq
             Vector<String> cp_target = new Vector<String>();
             int c = target.size();
             for ( int i = 0; i < c; i++ ) {
-                cp_target.add( target.get( i ) );
+                cp_target.Add( target.get( i ) );
             }
             command.Args[1] = cp_target;
 
@@ -563,9 +563,9 @@ namespace cadencii.vsq
                 Vector<Long> cp_delete = new Vector<Long>();
                 for ( Iterator<Long> itr = delete.get( i ).iterator(); itr.hasNext(); ) {
                     long id = itr.next();
-                    cp_delete.add( id );
+                    cp_delete.Add( id );
                 }
-                cp_vec_delete.add( cp_delete );
+                cp_vec_delete.Add( cp_delete );
             }
             command.Args[2] = cp_vec_delete;
 
@@ -579,7 +579,7 @@ namespace cadencii.vsq
                     VsqBPPair item = tmp.get( clock );
                     cp_add.put( clock, item );
                 }
-                cp_vec_add.add( cp_add );
+                cp_vec_add.Add( cp_add );
             }
             command.Args[3] = cp_vec_add;
             return command;
@@ -730,7 +730,7 @@ namespace cadencii.vsq
             Vector<Integer> ret = new Vector<Integer>();
             int count = value.size();
             for ( int i = 0; i < count; i++ ) {
-                ret.add( value.get( i ) );
+                ret.Add( value.get( i ) );
             }
             return ret;
         }

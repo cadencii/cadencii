@@ -499,75 +499,75 @@ namespace cadencii
         {
             mViewingCurves.Clear();
             if ( AppManager.editorConfig.CurveVisibleVelocity ) {
-                mViewingCurves.add( CurveType.VEL );
+                mViewingCurves.Add( CurveType.VEL );
             }
             if ( AppManager.editorConfig.CurveVisibleAccent ) {
-                mViewingCurves.add( CurveType.Accent );
+                mViewingCurves.Add( CurveType.Accent );
             }
             if ( AppManager.editorConfig.CurveVisibleDecay ) {
-                mViewingCurves.add( CurveType.Decay );
+                mViewingCurves.Add( CurveType.Decay );
             }
             if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
-                mViewingCurves.add( CurveType.Env );
+                mViewingCurves.Add( CurveType.Env );
             }
             if ( AppManager.editorConfig.CurveVisibleDynamics ) {
-                mViewingCurves.add( CurveType.DYN );
+                mViewingCurves.Add( CurveType.DYN );
             }
             if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
-                mViewingCurves.add( CurveType.BRE );
+                mViewingCurves.Add( CurveType.BRE );
             }
             if ( AppManager.editorConfig.CurveVisibleBrightness ) {
-                mViewingCurves.add( CurveType.BRI );
+                mViewingCurves.Add( CurveType.BRI );
             }
             if ( AppManager.editorConfig.CurveVisibleClearness ) {
-                mViewingCurves.add( CurveType.CLE );
+                mViewingCurves.Add( CurveType.CLE );
             }
             if ( AppManager.editorConfig.CurveVisibleOpening ) {
-                mViewingCurves.add( CurveType.OPE );
+                mViewingCurves.Add( CurveType.OPE );
             }
             if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
-                mViewingCurves.add( CurveType.GEN );
+                mViewingCurves.Add( CurveType.GEN );
             }
             if ( AppManager.editorConfig.CurveVisiblePortamento ) {
-                mViewingCurves.add( CurveType.POR );
+                mViewingCurves.Add( CurveType.POR );
             }
             if ( AppManager.editorConfig.CurveVisiblePit ) {
-                mViewingCurves.add( CurveType.PIT );
+                mViewingCurves.Add( CurveType.PIT );
             }
             if ( AppManager.editorConfig.CurveVisiblePbs ) {
-                mViewingCurves.add( CurveType.PBS );
+                mViewingCurves.Add( CurveType.PBS );
             }
             if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
-                mViewingCurves.add( CurveType.VibratoRate );
+                mViewingCurves.Add( CurveType.VibratoRate );
             }
             if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
-                mViewingCurves.add( CurveType.VibratoDepth );
+                mViewingCurves.Add( CurveType.VibratoDepth );
             }
             if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
-                mViewingCurves.add( CurveType.harmonics );
+                mViewingCurves.Add( CurveType.harmonics );
             }
             if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
-                mViewingCurves.add( CurveType.fx2depth );
+                mViewingCurves.Add( CurveType.fx2depth );
             }
             if ( AppManager.editorConfig.CurveVisibleReso1 ) {
-                mViewingCurves.add( CurveType.reso1freq );
-                mViewingCurves.add( CurveType.reso1bw );
-                mViewingCurves.add( CurveType.reso1amp );
+                mViewingCurves.Add( CurveType.reso1freq );
+                mViewingCurves.Add( CurveType.reso1bw );
+                mViewingCurves.Add( CurveType.reso1amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso2 ) {
-                mViewingCurves.add( CurveType.reso2freq );
-                mViewingCurves.add( CurveType.reso2bw );
-                mViewingCurves.add( CurveType.reso2amp );
+                mViewingCurves.Add( CurveType.reso2freq );
+                mViewingCurves.Add( CurveType.reso2bw );
+                mViewingCurves.Add( CurveType.reso2amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso3 ) {
-                mViewingCurves.add( CurveType.reso3freq );
-                mViewingCurves.add( CurveType.reso3bw );
-                mViewingCurves.add( CurveType.reso3amp );
+                mViewingCurves.Add( CurveType.reso3freq );
+                mViewingCurves.Add( CurveType.reso3bw );
+                mViewingCurves.Add( CurveType.reso3amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso4 ) {
-                mViewingCurves.add( CurveType.reso4freq );
-                mViewingCurves.add( CurveType.reso4bw );
-                mViewingCurves.add( CurveType.reso4amp );
+                mViewingCurves.Add( CurveType.reso4freq );
+                mViewingCurves.Add( CurveType.reso4bw );
+                mViewingCurves.Add( CurveType.reso4amp );
             }
         }
 
@@ -3596,7 +3596,7 @@ namespace cadencii
                                     SelectedEventEntry item = itr.next();
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
-                                        old.add( id );
+                                        old.Add( id );
                                     }
                                 }
                                 AppManager.itemSelection.clearEvent();
@@ -3612,11 +3612,11 @@ namespace cadencii
                             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
                                 VsqEvent item = itr.next();
                                 if ( item.ID.type == VsqIDType.Singer && tmin <= item.Clock && item.Clock <= tmax ) {
-                                    add_required.add( item.InternalID );
+                                    add_required.Add( item.InternalID );
                                     //AppManager.AddSelectedEvent( item.InternalID );
                                 }
                             }
-                            add_required.add( ve.InternalID );
+                            add_required.Add( ve.InternalID );
                             AppManager.itemSelection.addEventAll( add_required );
                         } else {
                             if ( !AppManager.itemSelection.isEventContains( AppManager.getSelected(), ve.InternalID ) ) {
@@ -3838,7 +3838,7 @@ namespace cadencii
                                             if ( ve.InternalID == ve2.InternalID ) {
                                                 found2 = true;
                                             } else {
-                                                list.add( ve2.InternalID );
+                                                list.Add( ve2.InternalID );
                                             }
                                         }
                                         AppManager.itemSelection.clearEvent();
@@ -3854,7 +3854,7 @@ namespace cadencii
                                             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
                                                 VsqEvent item = itr.next();
                                                 if ( tmin <= item.Clock && item.Clock <= tmax ) {
-                                                    add_required.add( item.InternalID );
+                                                    add_required.Add( item.InternalID );
                                                 }
                                             }
                                             AppManager.itemSelection.addEventAll( add_required );
@@ -3933,7 +3933,7 @@ namespace cadencii
                                         for ( int i = 0; i < count; i++ ) {
                                             VsqBPPair item = list.getElementB( i );
                                             if ( AppManager.itemSelection.isPointContains( item.id ) ) {
-                                                mMovingPoints.add( new BPPair( list.getKeyClock( i ), item.value ) );
+                                                mMovingPoints.Add( new BPPair( list.getKeyClock( i ), item.value ) );
                                             }
                                         }
                                         Invalidate();
@@ -4624,17 +4624,17 @@ namespace cadencii
                                                 BezierPoint point_copy = (BezierPoint)point.clone();
                                                 point_copy.setControlLeftType( BezierControlType.None );
                                                 point_copy.setControlRightType( BezierControlType.None );
-                                                chain_copy.points.add( point_copy );
+                                                chain_copy.points.Add( point_copy );
                                                 changed = true;
                                                 continue;
                                             } else {
                                                 // 選択範囲に入っていないので、普通に追加
-                                                chain_copy.points.add( (BezierPoint)point.clone() );
+                                                chain_copy.points.Add( (BezierPoint)point.clone() );
                                             }
                                         }
                                     }
                                     if ( chain_copy.points.size() > 0 ) {
-                                        work.add( chain_copy );
+                                        work.Add( chain_copy );
                                     }
                                 }
                                 if ( changed ) {
@@ -4658,7 +4658,7 @@ namespace cadencii
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ev = itr.next();
                                     if ( start <= ev.Clock && ev.Clock <= end ) {
-                                        deleting.add( ev.InternalID );
+                                        deleting.Add( ev.InternalID );
                                     }
                                 }
                                 if ( deleting.size() > 0 ) {
@@ -4717,33 +4717,33 @@ namespace cadencii
                                         for ( int i = 0; i < target.getCount(); i++ ) {
                                             VibratoBPPair vbpp = target.getElement( i );
                                             if ( vbpp.X < f_clear_start ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                             } else if ( f_clear_start == vbpp.X ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( 64 );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( 64 );
                                                 start_added = true;
                                             } else if ( f_clear_start < vbpp.X && !start_added ) {
-                                                bpx.add( f_clear_start );
-                                                bpy.add( 64 );
+                                                bpx.Add( f_clear_start );
+                                                bpy.Add( 64 );
                                                 start_added = true;
                                             } else if ( f_clear_end == vbpp.X ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                                 end_added = true;
                                             } else if ( f_clear_end < vbpp.X && !end_added ) {
                                                 int y = vbpp.Y;
                                                 if ( i > 0 ) {
                                                     y = target.getElement( i - 1 ).Y;
                                                 }
-                                                bpx.add( f_clear_end );
-                                                bpy.add( y );
+                                                bpx.Add( f_clear_end );
+                                                bpy.Add( y );
                                                 end_added = true;
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                             } else if ( f_clear_end < vbpp.X ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                             }
                                         }
                                         if ( mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
@@ -4757,8 +4757,8 @@ namespace cadencii
                                                     PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
                                                     PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
                                         }
-                                        internal_ids.add( ve.InternalID );
-                                        items.add( item );
+                                        internal_ids.Add( ve.InternalID );
+                                        items.Add( item );
                                     }
                                 }
                                 CadenciiCommand run = new CadenciiCommand(
@@ -4783,7 +4783,7 @@ namespace cadencii
                                     int clock = work.getKeyClock( i );
                                     VsqBPPair item = work.getElementB( i );
                                     if ( isInRect( clock, item.value, rc ) ) {
-                                        delete.add( item.id );
+                                        delete.Add( item.id );
                                     }
                                 }
 
@@ -4857,7 +4857,7 @@ namespace cadencii
                                     for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ) {
                                         int internal_id = itr.next();
                                         int value = (Integer)velocity.get( internal_id );
-                                        cpy.add( new ValuePair<Integer, Integer>( internal_id, value ) );
+                                        cpy.Add( new ValuePair<Integer, Integer>( internal_id, value ) );
                                     }
                                     CadenciiCommand run = null;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
@@ -4955,7 +4955,7 @@ namespace cadencii
                                         float x = (clock - cl_vib_start) / cl_vib_length;
                                         ValuePair<Float, Integer> tmp = new ValuePair<Float, Integer>( x, val );
                                         if ( 0.0f < x && x < 1.0f ) {
-                                            edit.add( tmp );
+                                            edit.Add( tmp );
                                         } else if ( x <= 0.0f ) {
                                             first = tmp;
                                         } else if ( 1.0f <= x && last != null ) {
@@ -4965,11 +4965,11 @@ namespace cadencii
                                     }
                                     if ( first != null ) {
                                         first.setKey( 0.0f );
-                                        edit.add( first );
+                                        edit.Add( first );
                                     }
                                     if ( last != null ) {
                                         last.setKey( 1.0f );
-                                        edit.add( last );
+                                        edit.Add( last );
                                     }
 
                                     VibratoBPList target = null;
@@ -4981,7 +4981,7 @@ namespace cadencii
                                     if ( target.getCount() > 0 ) {
                                         for ( int i = 0; i < target.getCount(); i++ ) {
                                             if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
-                                                edit.add( new ValuePair<Float, Integer>( target.getElement( i ).X,
+                                                edit.Add( new ValuePair<Float, Integer>( target.getElement( i ).X,
                                                                                          target.getElement( i ).Y ) );
                                             }
                                         }
@@ -4999,8 +4999,8 @@ namespace cadencii
                                     } else {
                                         id.VibratoHandle.setRateBP( new VibratoBPList( bpx, bpy ) );
                                     }
-                                    internal_ids.add( ve.InternalID );
-                                    items.add( id );
+                                    internal_ids.Add( ve.InternalID );
+                                    items.Add( id );
                                 }
                                 if ( internal_ids.size() > 0 ) {
                                     CadenciiCommand run = new CadenciiCommand(
@@ -5040,7 +5040,7 @@ namespace cadencii
                                 for ( int i = 0; i < c; i++ ) {
                                     int clock = list.getKeyClock( i );
                                     if ( clock_start <= clock && clock <= clock_end ) {
-                                        delete.add( list.getElementB( i ).id );
+                                        delete.Add( list.getElementB( i ).id );
                                     } else if ( clock_end < clock ) {
                                         break;
                                     }
@@ -5372,25 +5372,25 @@ namespace cadencii
                                     for ( int i = 0; i < c; i++ ) {
                                         VibratoBPPair itemi = ratebp.getElement( i );
                                         if ( itemi.X < x ) {
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         } else if ( itemi.X == x ) {
-                                            xs.add( x );
-                                            vals.add( value );
+                                            xs.Add( x );
+                                            vals.Add( value );
                                             first = false;
                                         } else {
                                             if ( first ) {
-                                                xs.add( x );
-                                                vals.add( value );
+                                                xs.Add( x );
+                                                vals.Add( value );
                                                 first = false;
                                             }
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         }
                                     }
                                     if ( first ) {
-                                        xs.add( x );
-                                        vals.add( value );
+                                        xs.Add( x );
+                                        vals.Add( value );
                                     }
                                     edited.VibratoHandle.setRateBP(
                                         new VibratoBPList(
@@ -5414,25 +5414,25 @@ namespace cadencii
                                     for ( int i = 0; i < c; i++ ) {
                                         VibratoBPPair itemi = depthbp.getElement( i );
                                         if ( itemi.X < x ) {
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         } else if ( itemi.X == x ) {
-                                            xs.add( x );
-                                            vals.add( value );
+                                            xs.Add( x );
+                                            vals.Add( value );
                                             first = false;
                                         } else {
                                             if ( first ) {
-                                                xs.add( x );
-                                                vals.add( value );
+                                                xs.Add( x );
+                                                vals.Add( value );
                                                 first = false;
                                             }
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         }
                                     }
                                     if ( first ) {
-                                        xs.add( x );
-                                        vals.add( value );
+                                        xs.Add( x );
+                                        vals.Add( value );
                                     }
                                     edited.VibratoHandle.setDepthBP(
                                         new VibratoBPList(
@@ -5459,7 +5459,7 @@ namespace cadencii
                             for ( int i = 0; i < c; i++ ) {
                                 int cl = list.getKeyClock( i );
                                 if ( cl == clock ) {
-                                    delete.add( list.getElementB( i ).id );
+                                    delete.Add( list.getElementB( i ).id );
                                     break;
                                 }
                             }

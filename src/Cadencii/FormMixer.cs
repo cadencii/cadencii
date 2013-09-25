@@ -233,7 +233,7 @@ namespace cadencii
                     item.BorderStyle = BorderStyle.FixedSingle;
                     item.Size = volumeMaster.Size;
 #endif
-                    m_tracker.add( item );
+                    m_tracker.Add( item );
                 }
             } else if ( m_tracker.size() > num ) {
                 int delete = m_tracker.size() - num;

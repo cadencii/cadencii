@@ -207,7 +207,7 @@ namespace cadencii
                 Keys[] values = src.get( name ).getValue();
                 Vector<Keys> cp = new Vector<Keys>();
                 foreach ( Keys k in values ) {
-                    cp.add( k );
+                    cp.Add( k );
                 }
                 dest.put( name, new ValuePair<String, Keys[]>( key, cp.toArray( new Keys[] { } ) ) );
             }
@@ -256,7 +256,7 @@ namespace cadencii
                 }
                 if ( add_this_one ) {
                      list.AddRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
-                     mFieldName.add( field_name );
+                     mFieldName.Add( field_name );
                 }
             }
 
@@ -382,18 +382,18 @@ namespace cadencii
             }
             Vector<Keys> capturelist = new Vector<Keys>();
             if( key != Keys.None ){
-                capturelist.add( key );
+                capturelist.Add( key );
                 if (checkCommand.Checked) {
-                    capturelist.add( Keys.Menu );
+                    capturelist.Add( Keys.Menu );
                 }
                 if (checkShift.Checked) {
-                    capturelist.add( Keys.Shift );
+                    capturelist.Add( Keys.Shift );
                 }
                 if( checkControl.Checked ){
-                    capturelist.add( Keys.Control );
+                    capturelist.Add( Keys.Control );
                 }
                 if( checkOption.Checked ){
-                    capturelist.add( Keys.Alt );
+                    capturelist.Add( Keys.Alt );
                 }
             }
             Keys[] keys = capturelist.toArray( new Keys[] { } );

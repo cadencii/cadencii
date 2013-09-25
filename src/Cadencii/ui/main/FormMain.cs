@@ -1699,7 +1699,7 @@ namespace cadencii
                 // ビブラートの長さを変更
                 VsqEvent add = (VsqEvent)item.editing.clone();
                 Utility.editLengthOfVsqEvent( add, draft, AppManager.vibratoLengthEditingRule );
-                items.add( add );
+                items.Add( add );
             }
 
             if ( items.size() <= 0 ) {
@@ -1772,7 +1772,7 @@ namespace cadencii
                 }
 
                 if ( add != null ) {
-                    items.add( add );
+                    items.Add( add );
                 }
             }
             if ( items.size() <= 0 ) {
@@ -2866,7 +2866,7 @@ namespace cadencii
                     toolBarTool.Buttons.Add( sep );
                     first = false;
                 }
-                mPaletteTools.add( tsb );
+                mPaletteTools.Add( tsb );
                 toolBarTool.Buttons.Add( tsb );
 
                 // cMenuTrackSelector
@@ -3251,7 +3251,7 @@ namespace cadencii
                     for ( int i = 0; i < spl.Length; i++ ) {
                         String s = spl[i];
                         if ( VsqPhoneticSymbol.isValidSymbol( s ) ) {
-                            list.add( s );
+                            list.Add( s );
                         }
                     }
 
@@ -3324,7 +3324,7 @@ namespace cadencii
                         Vector<Integer> adjustment = new Vector<Integer>();
                         for ( int i = 0; i < spl.Count; i++ ) {
                             String s = spl[i];
-                            adjustment.add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
+                            adjustment.Add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
                         }
                         items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
                     }
@@ -3468,7 +3468,7 @@ namespace cadencii
                 if( device == null ) continue;
                 int max = device.getMaxTransmitters();
                 if( max > 0 || max == -1 ){
-                    devices.add( info );
+                    devices.Add( info );
                 }
             }
             if ( midiport < 0 || devices.Count <= 0 ) {
@@ -3946,29 +3946,29 @@ namespace cadencii
             #endregion
 
             Vector<ValuePair<String, ToolStripMenuItem[]>> work = new Vector<ValuePair<String, ToolStripMenuItem[]>>();
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditUndo", new ToolStripMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditRedo", new ToolStripMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCut", new ToolStripMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCopy", new ToolStripMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditPaste", new ToolStripMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAll", new ToolStripMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAllEvents", new ToolStripMenuItem[] { cMenuPianoSelectAllEvents } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditDelete", new ToolStripMenuItem[] { menuEditDelete } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuVisualGridline", new ToolStripMenuItem[] { cMenuPianoGrid } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuJobLyric", new ToolStripMenuItem[] { cMenuPianoImportLyric } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricExpressionProperty", new ToolStripMenuItem[] { cMenuPianoExpressionProperty } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricVibratoProperty", new ToolStripMenuItem[] { cMenuPianoVibratoProperty } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOn", new ToolStripMenuItem[] { cMenuTrackTabTrackOn } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackAdd", new ToolStripMenuItem[] { cMenuTrackTabAdd } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackCopy", new ToolStripMenuItem[] { cMenuTrackTabCopy } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackDelete", new ToolStripMenuItem[] { cMenuTrackTabDelete } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderCurrent", new ToolStripMenuItem[] { cMenuTrackTabRenderCurrent } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderAll", new ToolStripMenuItem[] { cMenuTrackTabRenderAll } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOverlay", new ToolStripMenuItem[] { cMenuTrackTabOverlay } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID1", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID2", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererAquesTone", new ToolStripMenuItem[] { menuTrackRendererAquesTone } ) );
-            work.add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditUndo", new ToolStripMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditRedo", new ToolStripMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCut", new ToolStripMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCopy", new ToolStripMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditPaste", new ToolStripMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAll", new ToolStripMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAllEvents", new ToolStripMenuItem[] { cMenuPianoSelectAllEvents } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditDelete", new ToolStripMenuItem[] { menuEditDelete } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuVisualGridline", new ToolStripMenuItem[] { cMenuPianoGrid } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuJobLyric", new ToolStripMenuItem[] { cMenuPianoImportLyric } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricExpressionProperty", new ToolStripMenuItem[] { cMenuPianoExpressionProperty } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricVibratoProperty", new ToolStripMenuItem[] { cMenuPianoVibratoProperty } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOn", new ToolStripMenuItem[] { cMenuTrackTabTrackOn } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackAdd", new ToolStripMenuItem[] { cMenuTrackTabAdd } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackCopy", new ToolStripMenuItem[] { cMenuTrackTabCopy } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackDelete", new ToolStripMenuItem[] { cMenuTrackTabDelete } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderCurrent", new ToolStripMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderAll", new ToolStripMenuItem[] { cMenuTrackTabRenderAll } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOverlay", new ToolStripMenuItem[] { cMenuTrackTabOverlay } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID1", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID2", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererAquesTone", new ToolStripMenuItem[] { menuTrackRendererAquesTone } ) );
+            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
             int c = work.size();
             for ( int j = 0; j < c; j++ ) {
                 ValuePair<String, ToolStripMenuItem[]> item = work.get( j );
@@ -4107,7 +4107,7 @@ namespace cadencii
                         if ( shortcut == System.Windows.Forms.Keys.Delete ) {
                             menu.ShortcutKeyDisplayString = "Delete";
                             menu.ShortcutKeys = Keys.None;
-                            mSpecialShortcutHolders.add(new SpecialShortcutHolder( shortcut, menu ) );
+                            mSpecialShortcutHolders.Add(new SpecialShortcutHolder( shortcut, menu ) );
                         } else {
                             try {
                                 menu.ShortcutKeyDisplayString = "";
@@ -4116,7 +4116,7 @@ namespace cadencii
                                 // ショートカットの適用に失敗する→特殊な取り扱いが必要
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
                                 menu.ShortcutKeys = Keys.None;
-                                mSpecialShortcutHolders.add(new SpecialShortcutHolder( shortcut, menu ) );
+                                mSpecialShortcutHolders.Add(new SpecialShortcutHolder( shortcut, menu ) );
                             }
                         }
                     }
@@ -4878,8 +4878,8 @@ namespace cadencii
                             break;
                         }
                         if ( entry == null ) {
-                            new_phrases.add( phrases[i] );
-                            new_symbols.add( "a" );
+                            new_phrases.Add( phrases[i] );
+                            new_symbols.Add( "a" );
                         } else {
                             if ( entry.Word.IndexOf( '-' ) >= 0 ) {
                                 // 分節に分割する必要がある
@@ -4887,19 +4887,19 @@ namespace cadencii
                                 if ( new_phrases.size() + spl.Length > count ) {
                                     // 分節の全部を分割すると制限個数を超えてしまう
                                     // 分割せずにハイフンを付けたまま登録
-                                    new_phrases.add( entry.Word.Replace( "\t", "" ) );
-                                    new_symbols.add( entry.getSymbol() );
+                                    new_phrases.Add( entry.Word.Replace( "\t", "" ) );
+                                    new_symbols.Add( entry.getSymbol() );
                                 } else {
                                     String[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
                                     for ( int j = 0; j < spl.Length; j++ ) {
-                                        new_phrases.add( spl[j] );
-                                        new_symbols.add( spl_symbol[j] );
+                                        new_phrases.Add( spl[j] );
+                                        new_symbols.Add( spl_symbol[j] );
                                     }
                                 }
                             } else {
                                 // 分節に分割しない
-                                new_phrases.add( phrases[i] );
-                                new_symbols.add( entry.getSymbol() );
+                                new_phrases.Add( phrases[i] );
+                                new_symbols.Add( entry.getSymbol() );
                             }
                         }
                     }
@@ -5082,7 +5082,7 @@ namespace cadencii
             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = itr.next();
                 if ( premeasure <= ve.Clock ) {
-                    add_required.add( ve.InternalID );
+                    add_required.Add( ve.InternalID );
                     min = Math.Min( min, ve.Clock );
                     max = Math.Max( max, ve.Clock + ve.ID.getLength() );
                 }
@@ -5139,7 +5139,7 @@ namespace cadencii
             for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ev = itr.next();
                 if ( ev.ID.type == VsqIDType.Anote && ev.Clock >= premeasureclock ) {
-                    add_required.add( ev.InternalID );
+                    add_required.Add( ev.InternalID );
                 }
             }
             if ( add_required.size() > 0 ) {
@@ -5174,7 +5174,7 @@ namespace cadencii
                 boolean contains_aicon = false;
                 for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry ev = itr.next();
-                    ids.add( ev.original.InternalID );
+                    ids.Add( ev.original.InternalID );
                     if ( ev.original.ID.type == VsqIDType.Aicon ) {
                         contains_aicon = true;
                     }
@@ -5195,14 +5195,14 @@ namespace cadencii
                         }
                         VsqBPList work_curve = work_vsq_track.getCurve( vct.getName() );
                         Vector<BPPair> t = new Vector<BPPair>();
-                        t.add( new BPPair( start_clock, work_curve.getValue( start_clock ) ) );
-                        t.add( new BPPair( end_clock, work_curve.getValue( end_clock ) ) );
-                        curves.add( t );
-                        types.add( vct );
+                        t.Add( new BPPair( start_clock, work_curve.getValue( start_clock ) ) );
+                        t.Add( new BPPair( end_clock, work_curve.getValue( end_clock ) ) );
+                        curves.Add( t );
+                        types.Add( vct );
                     }
                     Vector<String> strs = new Vector<String>();
                     for ( int i = 0; i < types.size(); i++ ) {
-                        strs.add( types.get( i ).getName() );
+                        strs.Add( types.get( i ).getName() );
                     }
                     CadenciiCommand delete_curve = new CadenciiCommand(
                         VsqCommand.generateCommandTrackCurveEditRange( selected, strs, curves ) );
@@ -5247,7 +5247,7 @@ namespace cadencii
 #endif
                         return;
                     }
-                    clocks.add( item.getKey() );
+                    clocks.Add( item.getKey() );
                 }
                 int[] dum = new int[clocks.size()];
                 for ( int i = 0; i < dum.Length; i++ ) {
@@ -5311,7 +5311,7 @@ namespace cadencii
                     for ( int i = 0; i < count; i++ ) {
                         VsqBPPair item = list.getElementB( i );
                         if ( AppManager.itemSelection.isPointContains( item.id ) ) {
-                            remove_clock_queue.add( list.getKeyClock( i ) );
+                            remove_clock_queue.Add( list.getKeyClock( i ) );
                         }
                     }
                     count = remove_clock_queue.size();
@@ -5356,7 +5356,7 @@ namespace cadencii
                     for ( int i = 0; i < count; i++ ) {
                         VsqEvent item = (VsqEvent)copied_events.get( i ).clone();
                         item.Clock = copied_events.get( i ).Clock + dclock;
-                        paste.add( item );
+                        paste.Add( item );
                     }
                     add_event = VsqCommand.generateCommandEventAddRange(
                         AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
@@ -5512,7 +5512,7 @@ namespace cadencii
                     Vector<BezierChain> arg = new Vector<BezierChain>();
                     for ( Iterator<BezierChain> itr2 = attached_curve.get( curve ).iterator(); itr2.hasNext(); ) {
                         BezierChain bc = itr2.next();
-                        arg.add( bc );
+                        arg.Add( bc );
                     }
                     command_arg.put( curve, arg );
                 }
@@ -5616,7 +5616,7 @@ namespace cadencii
                         SelectedEventEntry item = itr.next();
                         if ( item.original.ID.type == VsqIDType.Anote ) {
                             min = Math.Min( item.original.Clock, min );
-                            list.add( (VsqEvent)item.original.clone() );
+                            list.Add( (VsqEvent)item.original.clone() );
                         }
                     }
                     ce.events = list;
@@ -5627,7 +5627,7 @@ namespace cadencii
                 for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
                     min = Math.Min( item.original.Clock, min );
-                    list.add( (VsqEvent)item.original.clone() );
+                    list.Add( (VsqEvent)item.original.clone() );
                 }
                 AppManager.clipboard.setCopiedEvent( list, min );
             } else if ( AppManager.itemSelection.getTempoCount() > 0 ) {
@@ -5637,7 +5637,7 @@ namespace cadencii
                     int key = item.getKey();
                     SelectedTempoEntry value = item.getValue();
                     min = Math.Min( value.original.Clock, min );
-                    list.add( (TempoTableEntry)value.original.clone() );
+                    list.Add( (TempoTableEntry)value.original.clone() );
                 }
                 AppManager.clipboard.setCopiedTempo( list, min );
             } else if ( AppManager.itemSelection.getTimesigCount() > 0 ) {
@@ -5647,7 +5647,7 @@ namespace cadencii
                     int key = item.getKey();
                     SelectedTimesigEntry value = item.getValue();
                     min = Math.Min( value.original.Clock, min );
-                    list.add( (TimeSigTableEntry)value.original.clone() );
+                    list.Add( (TimeSigTableEntry)value.original.clone() );
                 }
                 AppManager.clipboard.setCopiedTimesig( list, min );
             } else if ( AppManager.itemSelection.getPointIDCount() > 0 ) {
@@ -5722,7 +5722,7 @@ namespace cadencii
                 Vector<Integer> ids = new Vector<Integer>();
                 for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                     SelectedEventEntry item = itr.next();
-                    ids.add( item.original.InternalID );
+                    ids.Add( item.original.InternalID );
                 }
                 delete_event = VsqCommand.generateCommandEventDeleteRange( AppManager.getSelected(), ids );
             }
@@ -5760,7 +5760,7 @@ namespace cadencii
                         for ( int j = 0; j < c; j++ ) {
                             int clock = list.getKeyClock( j );
                             if ( start_clock <= clock && clock <= end_clock ) {
-                                delete.add( list.getElementB( j ).id );
+                                delete.Add( list.getElementB( j ).id );
                             } else if ( end_clock < clock ) {
                                 break;
                             }
@@ -5769,7 +5769,7 @@ namespace cadencii
                         // 普通の範囲選択
                         for ( Iterator<Long> itr = AppManager.itemSelection.getPointIDIterator(); itr.hasNext(); ) {
                             long id = (Long)itr.next();
-                            delete.add( id );
+                            delete.Add( id );
                         }
                     }
                     VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
@@ -5785,11 +5785,11 @@ namespace cadencii
                         if ( ct.isScalar() || ct.isAttachNote() ) {
                             continue;
                         }
-                        target_curve.add( ct );
+                        target_curve.Add( ct );
                     }
                 } else {
                     // 普通の選択モード
-                    target_curve.add( trackSelector.getSelectedCurve() );
+                    target_curve.Add( trackSelector.getSelectedCurve() );
                 }
                 work.AttachedCurves.get( AppManager.getSelected() - 1 ).deleteBeziers( target_curve, start_clock, end_clock );
 
@@ -5894,7 +5894,7 @@ namespace cadencii
                     add = (BezierChain)bc.clone();
                 }
                 if ( add != null ) {
-                    copied_chain.add( add );
+                    copied_chain.Add( add );
                 }
             }
         }
@@ -6322,7 +6322,7 @@ namespace cadencii
                             int intensity = item.UstEvent == null ? 100 : item.UstEvent.getIntensity();
 
                             //追加
-                            tmp.add(new DrawObject(DrawObjectType.Note,
+                            tmp.Add(new DrawObject(DrawObjectType.Note,
                                                      vsq,
                                                      new Rectangle(x, y, lyric_width, track_height),
                                                      title,
@@ -6404,7 +6404,7 @@ namespace cadencii
                             int note = item_itr.ID.Note;
                             int x = (int)(clock * scalex + xoffset);
                             int y = -note * (int)(100 * controller.getScaleY()) + yoffset;
-                            tmp.add(new DrawObject(type,
+                            tmp.Add(new DrawObject(type,
                                                      vsq,
                                                      new Rectangle(x, y, width, track_height),
                                                      str,
@@ -7810,7 +7810,7 @@ namespace cadencii
                         Vector<Integer> internal_ids = new Vector<Integer>();
                         for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry see = itr.next();
-                            internal_ids.add( see.original.InternalID );
+                            internal_ids.Add( see.original.InternalID );
                         }
                         BMouseButtons btn = e.Button;
                         if ( isMouseMiddleButtonDowned( btn ) ) {
@@ -7949,7 +7949,7 @@ namespace cadencii
                         Vector<Integer> internal_ids = new Vector<Integer>();
                         for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry see = itr.next();
-                            internal_ids.add( see.original.InternalID );
+                            internal_ids.Add( see.original.InternalID );
                         }
                         boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                            AppManager.getSelected(),
@@ -8484,7 +8484,7 @@ namespace cadencii
                             if ( (modefier & Keys.Shift) == Keys.Shift ) {
                                 // シフトキー同時押しによる範囲選択
                                 Vector<Integer> add_required = new Vector<Integer>();
-                                add_required.add( item.InternalID );
+                                add_required.Add( item.InternalID );
 
                                 // 現在の選択アイテムがある場合，
                                 // 直前に選択したアイテムと，現在選択しようとしているアイテムとの間にあるアイテムを
@@ -8514,7 +8514,7 @@ namespace cadencii
                                         VsqEvent ev = itr.next();
                                         if ( start <= ev.Clock && ev.Clock <= end ) {
                                             if ( !add_required.Contains( ev.InternalID ) ) {
-                                                add_required.add( ev.InternalID );
+                                                add_required.Add( ev.InternalID );
                                             }
                                         }
                                     }
@@ -8766,23 +8766,23 @@ namespace cadencii
                                             Utility.isInRect(new Point(x1, y0), rect) |
                                             Utility.isInRect(new Point(x1, y1), rect);
                             if (found) {
-                                add_required.add(internal_id);
+                                add_required.Add(internal_id);
                             } else {
                                 if (x0 <= tx && tx + twidth <= x1) {
                                     if (ty < y0) {
                                         if (y0 <= ty + theight) {
-                                            add_required.add(internal_id);
+                                            add_required.Add(internal_id);
                                         }
                                     } else if (y0 <= ty && ty < y1) {
-                                        add_required.add(internal_id);
+                                        add_required.Add(internal_id);
                                     }
                                 } else if (y0 <= ty && ty + theight <= y1) {
                                     if (tx < x0) {
                                         if (x0 <= tx + twidth) {
-                                            add_required.add(internal_id);
+                                            add_required.Add(internal_id);
                                         }
                                     } else if (x0 <= tx && tx < x1) {
-                                        add_required.add(internal_id);
+                                        add_required.Add(internal_id);
                                     }
                                 }
                             }
@@ -8791,7 +8791,7 @@ namespace cadencii
                         for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
                             SelectedEventEntry selectedEvent = itr.next();
                             if (!add_required.Contains(selectedEvent.original.InternalID)) {
-                                remove_required.add(selectedEvent.original.InternalID);
+                                remove_required.Add(selectedEvent.original.InternalID);
                             }
                         }
                         if (remove_required.size() > 0) {
@@ -9128,7 +9128,7 @@ namespace cadencii
                         for ( Iterator<Integer> itr2 = pit.keyClockIterator(); itr2.hasNext(); ) {
                             int clock = itr2.next();
                             if ( cl_remove_start <= clock && clock <= cl_remove_end ) {
-                                remove.add( clock );
+                                remove.Add( clock );
                             }
                         }
                         for ( Iterator<Integer> itr2 = remove.iterator(); itr2.hasNext(); ) {
@@ -9477,7 +9477,7 @@ namespace cadencii
                 AppManager.itemSelection.clearEvent();
                 Vector<Integer> list_selected_ids = new Vector<Integer>();
                 for ( int i = 0; i < num; i++ ) {
-                    list_selected_ids.add( selected_ids[i] );
+                    list_selected_ids.Add( selected_ids[i] );
                 }
                 AppManager.itemSelection.addEventAll( list_selected_ids );
                 AppManager.itemSelection.addEvent( last_selected_id );
@@ -9497,7 +9497,7 @@ namespace cadencii
                 for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = itr.next();
                     if ( start <= ve.Clock && ve.Clock + ve.ID.getLength() <= end ) {
-                        add_required_event.add( ve.InternalID );
+                        add_required_event.Add( ve.InternalID );
                     }
                 }
                 AppManager.itemSelection.addEventAll( add_required_event );
@@ -9515,7 +9515,7 @@ namespace cadencii
                             break;
                         } else {
                             VsqBPPair v = list.getElementB( i );
-                            add_required_point.add( v.id );
+                            add_required_point.Add( v.id );
                         }
                     }
                 }
@@ -10922,7 +10922,7 @@ namespace cadencii
                             if ( print_tempo && count == 0 ) {
                                 Vector<MidiEvent> tempo_events = vsq.generateTempoChange();
                                 for ( int j = 0; j < tempo_events.size(); j++ ) {
-                                    events.add( tempo_events.get( j ) );
+                                    events.Add( tempo_events.get( j ) );
                                 }
                             }
 
@@ -10930,7 +10930,7 @@ namespace cadencii
                             if ( mDialogMidiImportAndExport.isTimesig() && count == 0 ) {
                                 Vector<MidiEvent> timesig_events = vsq.generateTimeSig();
                                 for ( int j = 0; j < timesig_events.size(); j++ ) {
-                                    events.add( timesig_events.get( j ) );
+                                    events.Add( timesig_events.get( j ) );
                                 }
                             }
 
@@ -10953,14 +10953,14 @@ namespace cadencii
                                     noteon.data = new int[2];
                                     noteon.data[0] = ve.ID.Note;
                                     noteon.data[1] = ve.ID.Dynamics;
-                                    events.add( noteon );
+                                    events.Add( noteon );
                                     MidiEvent noteoff = new MidiEvent();
                                     noteoff.clock = clock_off;
                                     noteoff.firstByte = 0x80;
                                     noteoff.data = new int[2];
                                     noteoff.data[0] = ve.ID.Note;
                                     noteoff.data[1] = 0x7f;
-                                    events.add( noteoff );
+                                    events.Add( noteoff );
                                 }
                             }
 
@@ -10982,7 +10982,7 @@ namespace cadencii
                                     for ( int j = 0; j < lyric.Length; j++ ) {
                                         add.data[j + 1] = lyric[j];
                                     }
-                                    events.add( add );
+                                    events.Add( add );
                                 }
                             }
 
@@ -11008,7 +11008,7 @@ namespace cadencii
                                     me.data = new int[2];
                                     me.data[0] = nrpn[j].getParameter();
                                     me.data[1] = nrpn[j].Value;
-                                    vocaloid_nrpn_midievent.add( me );
+                                    vocaloid_nrpn_midievent.Add( me );
                                 }
                             } else {
                                 vocaloid_nrpn_midievent = new Vector<MidiEvent>();
@@ -11157,7 +11157,7 @@ namespace cadencii
             Vector<Integer> tracks = new Vector<Integer>();
             int size = vsq.Track.size();
             for ( int i = 1; i < size; i++ ) {
-                tracks.add( i );
+                tracks.Add( i );
             }
             Vector<PatchWorkQueue> queue = AppManager.patchWorkCreateQueue( tracks );
 
@@ -11180,7 +11180,7 @@ namespace cadencii
                 q.file = Path.Combine( dir, i + ".wav" );
                 q.renderAll = true;
                 q.vsq = vsq;
-                queue.add( q );
+                queue.Add( q );
             }
 
             // 合成ダイアログを出す
@@ -11468,7 +11468,7 @@ namespace cadencii
             int selected = AppManager.getSelected();
             for ( int i = 1; i < vsq.Track.size(); i++ ) {
                 if ( i != selected ) {
-                    other_tracks.add( i );
+                    other_tracks.Add( i );
                 }
             }
             Vector<PatchWorkQueue> queue =
@@ -11481,7 +11481,7 @@ namespace cadencii
             q.renderAll = true;
             q.vsq = vsq;
             // 末尾に追加
-            queue.add( q );
+            queue.Add( q );
             double started = PortUtil.getCurrentTime();
 
             FormWorker fs = null;
@@ -11623,7 +11623,7 @@ namespace cadencii
                         }
                         if ( !contains_same_clock ) {
                             int vtempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];
-                            tempo.TempoTable.add( new TempoTableEntry( (int)itemj.clock, vtempo, 0.0 ) );
+                            tempo.TempoTable.Add( new TempoTableEntry( (int)itemj.clock, vtempo, 0.0 ) );
                             t_tempo_added = true;
                         }
                     }
@@ -11645,7 +11645,7 @@ namespace cadencii
                             }
                         }
                         if ( !contains_same_clock ) {
-                            tempo.TimesigTable.add( new TimeSigTableEntry( (int)itemj.clock, num, den, barcount_at_itemj ) );
+                            tempo.TimesigTable.Add( new TimeSigTableEntry( (int)itemj.clock, num, den, barcount_at_itemj ) );
                             last_timesig_clock = (int)itemj.clock;
                             last_den = den;
                             last_num = num;
@@ -11674,7 +11674,7 @@ namespace cadencii
                 }
             }
             if ( !contains_zero ) {
-                tempo.TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
+                tempo.TempoTable.Add( new TempoTableEntry( 0, 500000, 0.0 ) );
             }
             contains_zero = false;
             // =>
@@ -11691,7 +11691,7 @@ namespace cadencii
                 }
             }
             if ( !contains_zero ) {
-                tempo.TimesigTable.add( new TimeSigTableEntry( 0, 4, 4, 0 ) );
+                tempo.TimesigTable.Add( new TimeSigTableEntry( 0, 4, 4, 0 ) );
             }
             VsqFileEx work = (VsqFileEx)AppManager.getVsqFile().clone(); //後でReplaceコマンドを発行するための作業用
             int preMeasureClocks = work.getPreMeasureClocks();
@@ -11725,7 +11725,7 @@ namespace cadencii
                 int list_count = list.size();
                 for ( int i = 0; i < list_count; i++ ) {
                     TempoTableEntry item = list.get( i );
-                    work.TempoTable.add( new TempoTableEntry( item.Clock, item.Tempo, item.Time ) );
+                    work.TempoTable.Add( new TempoTableEntry( item.Clock, item.Tempo, item.Time ) );
                 }
                 work.updateTempoInfo();
             }
@@ -11737,7 +11737,7 @@ namespace cadencii
                 int list_count = list.Count;
                 for ( int i = 0; i < list_count; i++ ) {
                     TimeSigTableEntry item = list.get( i );
-                    work.TimesigTable.add(
+                    work.TimesigTable.Add(
                         new TimeSigTableEntry(
                             item.Clock,
                             item.Numerator,
@@ -11991,9 +11991,9 @@ namespace cadencii
                         // トラック数の上限
                         break;
                     }
-                    dst.Track.add( vsq.Track.get( i ) );
+                    dst.Track.Add( vsq.Track.get( i ) );
                     dst.AttachedCurves.add( new BezierCurves() );
-                    dst.Mixer.Slave.add( new VsqMixerEntry() );
+                    dst.Mixer.Slave.Add( new VsqMixerEntry() );
                 }
 
                 // コマンドを発行して実行
@@ -12057,7 +12057,7 @@ namespace cadencii
             Vector<Integer> add_track = new Vector<Integer>();
             for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
                 if ( mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
-                    add_track.add( i + 1 );
+                    add_track.Add( i + 1 );
                 }
             }
             if ( add_track.size() <= 0 ) {
@@ -12073,7 +12073,7 @@ namespace cadencii
                 // テンポテーブルを置き換え
                 replace.TempoTable.Clear();
                 for ( int i = 0; i < vsq.TempoTable.size(); i++ ) {
-                    replace.TempoTable.add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
+                    replace.TempoTable.Add( (TempoTableEntry)vsq.TempoTable.get( i ).clone() );
                 }
                 replace.updateTempoInfo();
                 replace.updateTotalClocks();
@@ -12083,7 +12083,7 @@ namespace cadencii
                 // 拍子をリプレースする場合
                 replace.TimesigTable.Clear();
                 for ( int i = 0; i < vsq.TimesigTable.size(); i++ ) {
-                    replace.TimesigTable.add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
+                    replace.TimesigTable.Add( (TimeSigTableEntry)vsq.TimesigTable.get( i ).clone() );
                 }
                 replace.updateTimesigInfo();
             }
@@ -12157,8 +12157,8 @@ namespace cadencii
                         }
                     }
                 }
-                replace.Mixer.Slave.add( new VsqMixerEntry() );
-                replace.Track.add( vsq.Track.get( track ) );
+                replace.Mixer.Slave.Add( new VsqMixerEntry() );
+                replace.Track.Add( vsq.Track.get( track ) );
                 replace.AttachedCurves.add( vsq.AttachedCurves.get( track - 1 ) );
             }
 
@@ -12503,8 +12503,8 @@ namespace cadencii
                 Vector<Boolean> with_wine = new Vector<Boolean>();
                 int size = AppManager.editorConfig.getResamplerCount();
                 for ( int i = 0; i < size; i++ ) {
-                    resamplers.add( AppManager.editorConfig.getResamplerAt( i ) );
-                    with_wine.add( AppManager.editorConfig.isResamplerWithWineAt( i ) );
+                    resamplers.Add( AppManager.editorConfig.getResamplerAt( i ) );
+                    with_wine.Add( AppManager.editorConfig.isResamplerWithWineAt( i ) );
                 }
                 mDialogPreference.setResamplersConfig( resamplers, with_wine );
                 mDialogPreference.setPathWavtool( AppManager.editorConfig.PathWavtool );
@@ -12637,7 +12637,7 @@ namespace cadencii
                     AppManager.editorConfig.UtauSingers.Clear();
                     for ( Iterator<SingerConfig> itr = mDialogPreference.getUtausingers().iterator(); itr.hasNext(); ) {
                         SingerConfig sc = itr.next();
-                        AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
+                        AppManager.editorConfig.UtauSingers.Add( (SingerConfig)sc.clone() );
                     }
                     AppManager.reloadUtauVoiceDB();
 
@@ -12798,7 +12798,7 @@ namespace cadencii
                 if (tsi is System.Windows.Forms.ToolStripMenuItem) {
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
                     String name = tsmi.Name;
-                    script_shortcut.add( name );
+                    script_shortcut.Add( name );
                     if ( !configured.containsKey( name ) ) {
                         configured.put( name, new Keys[] { } );
                     }
@@ -12890,7 +12890,7 @@ namespace cadencii
                                 }
                             }
                             if ( !found ) {
-                                AppManager.editorConfig.ShortcutKeys.add( new ValuePairOfStringArrayOfKeys( name, keys ) );
+                                AppManager.editorConfig.ShortcutKeys.Add( new ValuePairOfStringArrayOfKeys( name, keys ) );
                             }
                         }
                     }
@@ -12928,7 +12928,7 @@ namespace cadencii
                 // ここではcloneする必要はない．
                 AppManager.editorConfig.AutoVibratoCustom.Clear();
                 for ( int i = 0; i < result.size(); i++ ) {
-                    AppManager.editorConfig.AutoVibratoCustom.add( result.get( i ) );
+                    AppManager.editorConfig.AutoVibratoCustom.Add( result.get( i ) );
                 }
 
                 // メニューの表示状態を更新
@@ -13051,8 +13051,8 @@ namespace cadencii
                 }
                 VsqID idNew = (VsqID)id.clone();
                 idNew.LyricHandle.L0.setPhoneticSymbol( symbolResult );
-                ids.add( idNew );
-                internal_ids.add( item.InternalID );
+                ids.Add( idNew );
+                internal_ids.Add( item.InternalID );
             }
             if ( ids.size() <= 0 ) {
                 return;
@@ -13096,7 +13096,7 @@ namespace cadencii
                     continue;
                 }
                 // 意味のある変更があったので，リストに登録
-                replace.add( edit );
+                replace.Add( edit );
             }
 
             // コマンドを発行
@@ -13286,7 +13286,7 @@ namespace cadencii
                                         PointD t = bc.points.get( i ).getBase();
                                         bc.points.get( i ).setBase( new PointD( t.getX() + dclock, t.getY() ) );
                                     }
-                                    list.add( bc );
+                                    list.Add( bc );
                                 } else if ( chain_start < clock_start && clock_start < chain_end ) {
                                     BezierChain adding1 = bc.extractPartialBezier( chain_start, clock_start );
                                     BezierChain adding2 = bc.extractPartialBezier( clock_start, chain_end );
@@ -13297,12 +13297,12 @@ namespace cadencii
                                     adding1.points.get( adding1.points.size() - 1 ).setControlRightType( BezierControlType.None );
                                     adding2.points.get( 0 ).setControlLeftType( BezierControlType.None );
                                     for ( int i = 0; i < adding2.points.size(); i++ ) {
-                                        adding1.points.add( adding2.points.get( i ) );
+                                        adding1.points.Add( adding2.points.get( i ) );
                                     }
                                     adding1.id = bc.id;
-                                    list.add( adding1 );
+                                    list.Add( adding1 );
                                 } else {
-                                    list.add( (BezierChain)bc.clone() );
+                                    list.Add( (BezierChain)bc.clone() );
                                 }
                             }
 
@@ -13497,7 +13497,7 @@ namespace cadencii
                                         PointD t = adding.points.get( i ).getBase();
                                         adding.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
                                     }
-                                    list.add( adding );
+                                    list.Add( adding );
                                 } else if ( chain_start < clock_start && clock_end < chain_end ) {
                                     BezierChain adding1 = bc.extractPartialBezier( chain_start, clock_start );
                                     adding1.id = bc.id;
@@ -13506,17 +13506,17 @@ namespace cadencii
                                     adding2.points.get( 0 ).setControlLeftType( BezierControlType.None );
                                     PointD t = adding2.points.get( 0 ).getBase();
                                     adding2.points.get( 0 ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
-                                    adding1.points.add( adding2.points.get( 0 ) );
+                                    adding1.points.Add( adding2.points.get( 0 ) );
                                     for ( int i = 1; i < adding2.points.size(); i++ ) {
                                         t = adding2.points.get( i ).getBase();
                                         adding2.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
-                                        adding1.points.add( adding2.points.get( i ) );
+                                        adding1.points.Add( adding2.points.get( i ) );
                                     }
-                                    list.add( adding1 );
+                                    list.Add( adding1 );
                                 } else if ( chain_start < clock_start && clock_start < chain_end && chain_end < clock_end ) {
                                     BezierChain adding = bc.extractPartialBezier( chain_start, clock_start );
                                     adding.id = bc.id;
-                                    list.add( adding );
+                                    list.Add( adding );
                                 } else if ( clock_end <= chain_start || chain_end <= clock_start ) {
                                     if ( clock_end <= chain_start ) {
                                         for ( int i = 0; i < bc.points.size(); i++ ) {
@@ -13524,7 +13524,7 @@ namespace cadencii
                                             bc.points.get( i ).setBase( new PointD( t.getX() - dclock, t.getY() ) );
                                         }
                                     }
-                                    list.add( (BezierChain)bc.clone() );
+                                    list.Add( (BezierChain)bc.clone() );
                                 }
                             }
 
@@ -15058,7 +15058,7 @@ namespace cadencii
         public void trackSelector_RenderRequired( Object sender, int track )
         {
             Vector<Integer> list = new Vector<Integer>();
-            list.add( track );
+            list.Add( track );
             AppManager.patchWorkToFreeze( this, list );
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
@@ -15337,7 +15337,7 @@ namespace cadencii
         public void menuTrackRenderCurrent_Click( Object sender, EventArgs e )
         {
             Vector<Integer> tracks = new Vector<Integer>();
-            tracks.add( AppManager.getSelected() );
+            tracks.Add( AppManager.getSelected() );
             AppManager.patchWorkToFreeze( this, tracks );
         }
 
@@ -15469,7 +15469,7 @@ namespace cadencii
             foreach ( String lang in langs ) {
                 foreach ( String key in Messaging.getKeys( lang ) ) {
                     if ( !keys.Contains( key ) ) {
-                        keys.add( key );
+                        keys.Add( key );
                     }
                 }
             }
@@ -15664,7 +15664,7 @@ namespace cadencii
         public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e )
         {
             Vector<Integer> tracks = new Vector<Integer>();
-            tracks.add( AppManager.getSelected() );
+            tracks.Add( AppManager.getSelected() );
             AppManager.patchWorkToFreeze( this, tracks );
         }
 
@@ -16517,7 +16517,7 @@ namespace cadencii
             int c = AppManager.getVsqFile().Track.size();
             for ( int i = 1; i < c; i++ ) {
                 if ( AppManager.getRenderRequired( i ) ) {
-                    list.add( i );
+                    list.Add( i );
                 }
             }
             if ( list.size() <= 0 ) {
@@ -17031,9 +17031,9 @@ namespace cadencii
                 for ( int i = 0; i < count; i++ ) {
                     if ( i == index ) {
                         item = (BgmFile)AppManager.getBgm( i ).clone();
-                        list.add( item );
+                        list.Add( item );
                     } else {
-                        list.add( AppManager.getBgm( i ) );
+                        list.Add( AppManager.getBgm( i ) );
                     }
                 }
                 double draft;
@@ -17075,9 +17075,9 @@ namespace cadencii
                 if ( i == index ) {
                     BgmFile item = (BgmFile)AppManager.getBgm( i ).clone();
                     item.startAfterPremeasure = menu.Checked;
-                    list.add( item );
+                    list.Add( item );
                 } else {
-                    list.add( AppManager.getBgm( i ) );
+                    list.Add( AppManager.getBgm( i ) );
                 }
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );

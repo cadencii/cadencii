@@ -69,7 +69,7 @@ namespace cadencii
 
                 for ( int i = 0; i < queue.size(); i++ ) {
                     if ( queue.get( i ).track == track ) {
-                        queueIndex.add( i );
+                        queueIndex.Add( i );
                     }
                 }
 

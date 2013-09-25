@@ -126,7 +126,7 @@ namespace cadencii {
                             }
                         }
                         if ( !found ) {
-                            _configs.add( oa );
+                            _configs.Add( oa );
                         }
                     }
                 } catch ( Exception ex ) {

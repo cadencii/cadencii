@@ -89,7 +89,7 @@ namespace cadencii.vsq
                     ByRef<Integer> last_status_byte = new ByRef<Integer>( 0x00 );
                     while ( stream.getFilePointer() < startpos + size ) {
                         MidiEvent mi = MidiEvent.read( stream, clock, last_status_byte );
-                        track_events.add( mi );
+                        track_events.Add( mi );
                     }
                     if ( m_time_format != 480 ) {
                         int count = track_events.size();
@@ -99,7 +99,7 @@ namespace cadencii.vsq
                             track_events.set( i, mi );
                         }
                     }
-                    m_events.add( track_events );
+                    m_events.Add( track_events );
                 }
                 m_time_format = 480;
 #if DEBUG && MIDI_PRINT_TO_FILE && !JAVA

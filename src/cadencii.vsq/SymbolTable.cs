@@ -110,7 +110,7 @@ using cadencii.java.util;
                 {
                     SymbolTable table = new SymbolTable( dictionary_file, false, true, "UTF-8" );
                     table.mName = name;
-                    mTable.add( table );
+                    mTable.Add( table );
                 }
 
                 /// <summary>
@@ -132,7 +132,7 @@ using cadencii.java.util;
                         for ( int i = 0; i < files.Length; i++ ) {
                             files[i] = PortUtil.getFileName( files[i] );
                             String dict = Path.Combine( path, files[i] );
-                            mTable.add( new SymbolTable( dict, true, false, "Shift_JIS" ) );
+                            mTable.Add( new SymbolTable( dict, true, false, "Shift_JIS" ) );
                         }
                     }
                     mInitialized = true;
@@ -150,7 +150,7 @@ using cadencii.java.util;
                         for ( int i = 0; i < files2.Length; i++ ) {
                             files2[i] = PortUtil.getFileName( files2[i] );
                             String dict = Path.Combine( directory, files2[i] );
-                            mTable.add( new SymbolTable( dict, true, false, "UTF-8" ) );
+                            mTable.Add( new SymbolTable( dict, true, false, "UTF-8" ) );
                         }
                     }
                 }
@@ -223,7 +223,7 @@ using cadencii.java.util;
                     Vector<SymbolTable> buff = new Vector<SymbolTable>();
                     int size = mTable.size();
                     for ( int i = 0; i < size; i++ ) {
-                        buff.add( mTable.get( i ) );
+                        buff.Add( mTable.get( i ) );
                     }
 
                     // 現在の辞書をいったんクリア
@@ -236,7 +236,7 @@ using cadencii.java.util;
                             SymbolTable table = buff.get( j );
                             if ( table.getName().Equals( itemi.getKey() ) ) {
                                 table.setEnabled( itemi.getValue() );
-                                mTable.add( table );
+                                mTable.Add( table );
                                 break;
                             }
                         }

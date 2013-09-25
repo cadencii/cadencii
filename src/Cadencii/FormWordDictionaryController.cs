@@ -197,7 +197,7 @@ import cadencii.vsq.*;
                     {
                         String name = ui.listDictionariesGetItemAt( i );
 
-                        ret.add( new ValuePair<String, Boolean>(
+                        ret.Add( new ValuePair<String, Boolean>(
                             ui.listDictionariesGetItemAt( i ), ui.listDictionariesIsRowChecked( i ) ) );
                     }
                     return ret;

@@ -105,7 +105,7 @@ namespace cadencii.vsq
             UstPortamento ret = new UstPortamento();
             int count = Points.size();
             for ( int i = 0; i < count; i++ ) {
-                ret.Points.add( Points.get( i ) );
+                ret.Points.Add( Points.get( i ) );
             }
             ret.Start = Start;
             ret.mIsUnknownIntSpecified = mIsUnknownIntSpecified;
@@ -149,7 +149,7 @@ namespace cadencii.vsq
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {
-                        Points.add( new UstPortamentoPoint() );
+                        Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
                     up.Step = int.Parse( values[i] );
@@ -161,7 +161,7 @@ namespace cadencii.vsq
                         continue;
                     }
                     if ( i >= Points.size() ) {
-                        Points.add( new UstPortamentoPoint() );
+                        Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
                     up.Value = (float)double.Parse( values[i] );
@@ -170,7 +170,7 @@ namespace cadencii.vsq
             } else if ( line.StartsWith( "pbm=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {
-                        Points.add( new UstPortamentoPoint() );
+                        Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
                     String search = values[i].ToLower();

@@ -333,7 +333,7 @@ namespace cadencii {
                 VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID2 );
                 vr.path = vocalo2_dll_path;
                 vr.loaded = false;
-                vocaloidDriver.add( vr );
+                vocaloidDriver.Add( vr );
             }
             if ( vocalo1_dll_path != "" &&
                     System.IO.File.Exists(vocalo1_dll_path) &&
@@ -341,7 +341,7 @@ namespace cadencii {
                 VocaloidDriver vr = new VocaloidDriver( RendererKind.VOCALOID1 );
                 vr.path = vocalo1_dll_path;
                 vr.loaded = false;
-                vocaloidDriver.add( vr );
+                vocaloidDriver.Add( vr );
             }
 
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {

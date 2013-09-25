@@ -54,7 +54,7 @@ namespace cadencii
                 return;
             }
             if ( !mReceivers.Contains( receiver ) ) {
-                mReceivers.add( receiver );
+                mReceivers.Add( receiver );
             }
         }
 
@@ -71,7 +71,7 @@ namespace cadencii
                 return;
             }
             if ( !mReceivers.Contains( receiver ) ) {
-                mReceivers.add( receiver );
+                mReceivers.Add( receiver );
             }
         }
 

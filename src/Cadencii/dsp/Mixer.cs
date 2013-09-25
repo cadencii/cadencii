@@ -131,7 +131,7 @@ namespace cadencii {
                 return;
             }
             if ( !mSenders.Contains( s ) ) {
-                mSenders.add( s );
+                mSenders.Add( s );
 #if DEBUG
                 sout.println( "Mixer#addSender; sender added" );
 #endif

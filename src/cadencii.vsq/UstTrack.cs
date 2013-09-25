@@ -68,7 +68,7 @@ namespace cadencii.vsq
 
         public void addEvent( UstEvent item )
         {
-            m_events.add( item );
+            m_events.Add( item );
         }
 
         public void removeEventAt( int index )

@@ -57,10 +57,10 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             for ( int i = 0; i < 10; i++ ) {
-                m_list.add( -1 );
+                m_list.Add( -1 );
             }
             for ( int i = 0; i < 4; i++ ) {
-                m_povs.add( int.MinValue );
+                m_povs.Add( int.MinValue );
             }
             applyLanguage();
 #if JAVA
