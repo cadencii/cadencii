@@ -555,7 +555,7 @@ namespace cadencii.vsq
                 int position = (Integer)command.Args[2];
                 VsqCommand ret = VsqCommand.generateCommandDeleteTrack( position );
                 if ( Track.size() <= 17 ) {
-                    Track.insertElementAt( (VsqTrack)track.clone(), position );
+                    Track.Insert( position, (VsqTrack)track.clone() );
                     Mixer.Slave.add( (VsqMixerEntry)mixer.clone() );
                     return ret;
                 } else {

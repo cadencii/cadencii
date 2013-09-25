@@ -1295,7 +1295,7 @@ namespace cadencii
             if ( index >= 0 ) {  // 登録されてる場合
                 RecentFiles.removeElementAt( index );
             }
-            RecentFiles.insertElementAt( new_file, 0 );
+            RecentFiles.Insert( 0, new_file );
         }
         #endregion
 

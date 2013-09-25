@@ -1242,9 +1242,9 @@ namespace cadencii
                     BezierCurves attached_curve = (BezierCurves)command.args[3];
                     ret = VsqFileEx.generateCommandDeleteTrack( position );
                     if ( Track.size() <= 17 ) {
-                        Track.insertElementAt( (VsqTrack)track.clone(), position );
+                        Track.Insert( position, (VsqTrack)track.clone() );
                         AttachedCurves.insertElementAt( position - 1, attached_curve );
-                        Mixer.Slave.insertElementAt( (VsqMixerEntry)mixer.clone(), position - 1 );
+                        Mixer.Slave.Insert( position - 1, (VsqMixerEntry)mixer.clone() );
                     }
 
                     for ( int i = 15; i >= position; i-- ) {

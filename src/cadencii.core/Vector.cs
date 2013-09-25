@@ -96,10 +96,6 @@ namespace cadencii.java.util {
             : base( array.toArray( new T[]{} ) ){
         }
 
-        public void insertElementAt( T obj, int index ){
-            base.Insert( index, obj );
-        }
-
         public bool remove( T o ) {
             return base.Remove( o );
         }

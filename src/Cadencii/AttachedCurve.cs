@@ -79,7 +79,7 @@ namespace cadencii
         }
 
         public void insertElementAt( int position, BezierCurves attached_curve ) {
-            mCurves.insertElementAt( attached_curve, position );
+            mCurves.Insert( position, attached_curve );
         }
 
         public Object clone() {
