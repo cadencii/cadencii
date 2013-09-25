@@ -78,20 +78,21 @@ namespace cadencii.windows.forms {
             }
         }
 
-        public static System.Windows.Forms.Control Mnemonic(this System.Windows.Forms.Control control, int value)
+        public static System.Windows.Forms.Control Mnemonic(this System.Windows.Forms.Control control, System.Windows.Forms.Keys value)
         {
             control.Text = GetMnemonicString(control.Text, value);
             return control;
         }
 
-        public static System.Windows.Forms.ToolStripItem Mnemonic(this System.Windows.Forms.ToolStripItem item, int value)
+        public static System.Windows.Forms.ToolStripItem Mnemonic(this System.Windows.Forms.ToolStripItem item, System.Windows.Forms.Keys value)
         {
             item.Text = GetMnemonicString(item.Text, value);
             return item;
         }
 
-        private static string GetMnemonicString(string text, int value)
+        private static string GetMnemonicString(string text, System.Windows.Forms.Keys keys)
         {
+            int value = (int)keys;
             if (value == 0) {
                 return text;
             }

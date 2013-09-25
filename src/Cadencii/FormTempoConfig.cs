@@ -22,7 +22,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
-using cadencii.java.awt.event_;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.windows.forms;
 
@@ -68,11 +68,11 @@ namespace cadencii
             this.Text = _( "Global Tempo" );
             groupPosition.Text = _( "Position" );
             lblBar.Text = _( "Measure" );
-            lblBar.Mnemonic( KeyEvent.VK_M );
+            lblBar.Mnemonic( Keys.M );
             lblBeat.Text = _( "Beat" );
-            lblBeat.Mnemonic( KeyEvent.VK_B );
+            lblBeat.Mnemonic( Keys.B );
             lblClock.Text = _( "Clock" );
-            lblClock.Mnemonic( KeyEvent.VK_L );
+            lblClock.Mnemonic( Keys.L );
             groupTempo.Text = _( "Tempo" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );

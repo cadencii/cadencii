@@ -61,7 +61,6 @@ using System;
 using System.IO;
 using System.Text;
 using cadencii.java.awt;
-using cadencii.java.awt.event_;
 using cadencii.java.util;
 
 namespace cadencii {

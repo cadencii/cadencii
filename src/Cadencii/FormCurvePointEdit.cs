@@ -179,11 +179,7 @@ namespace cadencii
         #region event handlers
         public void commonTextBox_KeyUp( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Enter) != System.Windows.Forms.Keys.Enter ) {
-#endif
                 return;
             }
             applyValue( (sender == txtDataPointClock) );

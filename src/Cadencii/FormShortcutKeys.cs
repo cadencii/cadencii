@@ -27,7 +27,6 @@ using System;
 using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii;
-using cadencii.java.awt.event_;
 using cadencii.java.util;
 using cadencii.windows.forms;
 

@@ -47,7 +47,6 @@ using System.IO;
 using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
-using cadencii.java.awt.event_;
 using cadencii.java.io;
 using cadencii.java.util;
 using cadencii.javax.sound.midi;
@@ -3648,11 +3647,7 @@ namespace cadencii
                             Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
                             serr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
                         }
-#if JAVA
-                        if ( e.KeyValue == KeyEvent.VK_TAB ) {
-#else
                         if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
-#endif
                             focusPianoRoll();
                         }
                         return;
@@ -3669,11 +3664,7 @@ namespace cadencii
 
             EditMode edit_mode = AppManager.getEditMode();
 
-#if JAVA
-            if ( e.KeyValue == KeyEvent.VK_ENTER ) {
-#else
             if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
-#endif
                 // MIDIステップ入力のときの処理
                 if ( controller.isStepSequencerEnabled() ) {
                     if ( AppManager.mAddingEvent != null ) {
@@ -3682,19 +3673,11 @@ namespace cadencii
                         refreshScreen( true );
                     }
                 }
-#if JAVA
-            } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
-#else
             } else if ( e.KeyCode == System.Windows.Forms.Keys.Space ) {
-#endif
                 if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
                     flipPlaying = true;
                 }
-#if JAVA
-            } else if ( e.KeyValue == KeyEvent.VK_PERIOD ) {
-#else
             } else if ( e.KeyCode == System.Windows.Forms.Keys.OemPeriod ) {
-#endif
                 if ( !onPreviewKeyDown ) {
 
                     if ( AppManager.isPlaying() ) {
@@ -3709,27 +3692,15 @@ namespace cadencii
                         refreshScreen();
                     }
                 }
-#if JAVA
-            } else if( e.KeyValue == KeyEvent.VK_ADD || e.KeyValue == KeyEvent.VK_PLUS || e.KeyValue == KeyEvent.VK_RIGHT ) {
-#else
             } else if ( e.KeyCode == System.Windows.Forms.Keys.Add || e.KeyCode == System.Windows.Forms.Keys.Oemplus || e.KeyCode == System.Windows.Forms.Keys.Right ) {
-#endif
                 if ( onPreviewKeyDown ) {
                     forward();
                 }
-#if JAVA
-            } else if ( e.KeyValue == KeyEvent.VK_MINUS || e.KeyValue == KeyEvent.VK_LEFT ) {
-#else
             } else if ( e.KeyCode == System.Windows.Forms.Keys.Subtract || e.KeyCode == System.Windows.Forms.Keys.OemMinus || e.KeyCode == System.Windows.Forms.Keys.Left ) {
-#endif
                 if ( onPreviewKeyDown ) {
                     rewind();
                 }
-#if JAVA
-            } else if ( e.KeyValue == KeyEvent.VK_ESCAPE ) {
-#else
             } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
-#endif
                 // ステップ入力中の場合，入力中の音符をクリアする
                 VsqEvent item = AppManager.mAddingEvent;
                 if ( controller.isStepSequencerEnabled() && item != null ) {
@@ -3774,11 +3745,7 @@ namespace cadencii
                     AppManager.setPlaying( true, this );
                 }
             }
-#if JAVA
-            if ( e.KeyValue == KeyEvent.VK_TAB ) {
-#else
             if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
-#endif
                 focusPianoRoll();
             }
         }
@@ -4472,24 +4439,24 @@ namespace cadencii
 
             #region main menu
             menuFile.Text = _( "File" );
-            menuFile.Mnemonic( KeyEvent.VK_F );
+            menuFile.Mnemonic( Keys.F );
             menuFileNew.Text = _( "New" );
-            menuFileNew.Mnemonic( KeyEvent.VK_N );
+            menuFileNew.Mnemonic( Keys.N );
             menuFileOpen.Text = _( "Open" );
-            menuFileOpen.Mnemonic( KeyEvent.VK_O );
+            menuFileOpen.Mnemonic( Keys.O );
             menuFileOpenVsq.Text = _( "Open VSQX/VSQ/Vocaloid MIDI" );
-            menuFileOpenVsq.Mnemonic( KeyEvent.VK_V );
+            menuFileOpenVsq.Mnemonic( Keys.V );
             menuFileOpenUst.Text = _( "Open UTAU project file" );
-            menuFileOpenUst.Mnemonic( KeyEvent.VK_U );
+            menuFileOpenUst.Mnemonic( Keys.U );
             menuFileSave.Text = _( "Save" );
-            menuFileSave.Mnemonic( KeyEvent.VK_S );
+            menuFileSave.Mnemonic( Keys.S );
             menuFileSaveNamed.Text = _( "Save as" );
-            menuFileSaveNamed.Mnemonic( KeyEvent.VK_A );
+            menuFileSaveNamed.Mnemonic( Keys.A );
             menuFileImport.Text = _( "Import" );
-            menuFileImport.Mnemonic( KeyEvent.VK_I );
+            menuFileImport.Mnemonic( Keys.I );
             menuFileImportVsq.Text = _( "VSQ / Vocaloid Midi" );
             menuFileExport.Text = _( "Export" );
-            menuFileExport.Mnemonic( KeyEvent.VK_E );
+            menuFileExport.Mnemonic( Keys.E );
             menuFileExportWave.Text = _( "WAVE" );
             menuFileExportParaWave.Text = _( "Serial numbered WAVEs" );
             menuFileExportUst.Text = _( "UTAU project file" );
@@ -4497,148 +4464,148 @@ namespace cadencii
             menuFileExportVsq.Text = _("VSQ File");
             menuFileExportVsqx.Text = _("VSQX File");
             menuFileRecent.Text = _( "Open Recent" );
-            menuFileRecent.Mnemonic( KeyEvent.VK_R );
+            menuFileRecent.Mnemonic( Keys.R );
             menuFileRecentClear.Text = _( "Clear Menu" );
             menuFileQuit.Text = _( "Quit" );
-            menuFileQuit.Mnemonic( KeyEvent.VK_Q );
+            menuFileQuit.Mnemonic( Keys.Q );
 
             menuEdit.Text = _( "Edit" );
-            menuEdit.Mnemonic( KeyEvent.VK_E );
+            menuEdit.Mnemonic( Keys.E );
             menuEditUndo.Text = _( "Undo" );
-            menuEditUndo.Mnemonic( KeyEvent.VK_U );
+            menuEditUndo.Mnemonic( Keys.U );
             menuEditRedo.Text = _( "Redo" );
-            menuEditRedo.Mnemonic( KeyEvent.VK_R );
+            menuEditRedo.Mnemonic( Keys.R );
             menuEditCut.Text = _( "Cut" );
-            menuEditCut.Mnemonic( KeyEvent.VK_T );
+            menuEditCut.Mnemonic( Keys.T );
             menuEditCopy.Text = _( "Copy" );
-            menuEditCopy.Mnemonic( KeyEvent.VK_C );
+            menuEditCopy.Mnemonic( Keys.C );
             menuEditPaste.Text = _( "Paste" );
-            menuEditPaste.Mnemonic( KeyEvent.VK_P );
+            menuEditPaste.Mnemonic( Keys.P );
             menuEditDelete.Text = _( "Delete" );
-            menuEditDelete.Mnemonic( KeyEvent.VK_D );
+            menuEditDelete.Mnemonic( Keys.D );
             menuEditAutoNormalizeMode.Text = _( "Auto normalize mode" );
-            menuEditAutoNormalizeMode.Mnemonic( KeyEvent.VK_N );
+            menuEditAutoNormalizeMode.Mnemonic( Keys.N );
             menuEditSelectAll.Text = _( "Select All" );
-            menuEditSelectAll.Mnemonic( KeyEvent.VK_A );
+            menuEditSelectAll.Mnemonic( Keys.A );
             menuEditSelectAllEvents.Text = _( "Select all events" );
-            menuEditSelectAllEvents.Mnemonic( KeyEvent.VK_E );
+            menuEditSelectAllEvents.Mnemonic( Keys.E );
 
             menuVisual.Text = _( "View" );
-            menuVisual.Mnemonic( KeyEvent.VK_V );
+            menuVisual.Mnemonic( Keys.V );
             menuVisualControlTrack.Text = _( "Control track" );
-            menuVisualControlTrack.Mnemonic( KeyEvent.VK_C );
+            menuVisualControlTrack.Mnemonic( Keys.C );
             menuVisualMixer.Text = _( "Mixer" );
-            menuVisualMixer.Mnemonic( KeyEvent.VK_X );
+            menuVisualMixer.Mnemonic( Keys.X );
             menuVisualWaveform.Text = _( "Waveform" );
-            menuVisualWaveform.Mnemonic( KeyEvent.VK_W );
+            menuVisualWaveform.Mnemonic( Keys.W );
             menuVisualProperty.Text = _( "Property window" );
             menuVisualOverview.Text = _( "Navigation" );
-            menuVisualOverview.Mnemonic( KeyEvent.VK_V );
+            menuVisualOverview.Mnemonic( Keys.V );
             menuVisualGridline.Text = _( "Grid line" );
-            menuVisualGridline.Mnemonic( KeyEvent.VK_G );
+            menuVisualGridline.Mnemonic( Keys.G );
             menuVisualStartMarker.Text = _( "Start marker" );
-            menuVisualStartMarker.Mnemonic( KeyEvent.VK_S );
+            menuVisualStartMarker.Mnemonic( Keys.S );
             menuVisualEndMarker.Text = _( "End marker" );
-            menuVisualEndMarker.Mnemonic( KeyEvent.VK_E );
+            menuVisualEndMarker.Mnemonic( Keys.E );
             menuVisualLyrics.Text = _( "Lyrics/Phoneme" );
-            menuVisualLyrics.Mnemonic( KeyEvent.VK_L );
+            menuVisualLyrics.Mnemonic( Keys.L );
             menuVisualNoteProperty.Text = _( "Note expression/vibrato" );
-            menuVisualNoteProperty.Mnemonic( KeyEvent.VK_N );
+            menuVisualNoteProperty.Mnemonic( Keys.N );
             menuVisualPitchLine.Text = _( "Pitch line" );
-            menuVisualPitchLine.Mnemonic( KeyEvent.VK_P );
+            menuVisualPitchLine.Mnemonic( Keys.P );
             menuVisualPluginUi.Text = _( "VSTi plugin UI" );
-            menuVisualPluginUi.Mnemonic( KeyEvent.VK_U );
+            menuVisualPluginUi.Mnemonic( Keys.U );
             menuVisualIconPalette.Text = _( "Icon palette" );
-            menuVisualIconPalette.Mnemonic( KeyEvent.VK_I );
+            menuVisualIconPalette.Mnemonic( Keys.I );
 
             menuJob.Text = _( "Job" );
-            menuJob.Mnemonic( KeyEvent.VK_J );
+            menuJob.Mnemonic( Keys.J );
             menuJobNormalize.Text = _( "Normalize notes" );
-            menuJobNormalize.Mnemonic( KeyEvent.VK_N );
+            menuJobNormalize.Mnemonic( Keys.N );
             menuJobInsertBar.Text = _( "Insert bars" );
-            menuJobInsertBar.Mnemonic( KeyEvent.VK_I );
+            menuJobInsertBar.Mnemonic( Keys.I );
             menuJobDeleteBar.Text = _( "Delete bars" );
-            menuJobDeleteBar.Mnemonic( KeyEvent.VK_D );
+            menuJobDeleteBar.Mnemonic( Keys.D );
             menuJobRandomize.Text = _( "Randomize" );
-            menuJobRandomize.Mnemonic( KeyEvent.VK_R );
+            menuJobRandomize.Mnemonic( Keys.R );
             menuJobConnect.Text = _( "Connect notes" );
-            menuJobConnect.Mnemonic( KeyEvent.VK_C );
+            menuJobConnect.Mnemonic( Keys.C );
             menuJobLyric.Text = _( "Insert lyrics" );
-            menuJobLyric.Mnemonic( KeyEvent.VK_L );
+            menuJobLyric.Mnemonic( Keys.L );
 
             menuTrack.Text = _( "Track" );
-            menuTrack.Mnemonic( KeyEvent.VK_T );
+            menuTrack.Mnemonic( Keys.T );
             menuTrackOn.Text = _( "Track on" );
-            menuTrackOn.Mnemonic( KeyEvent.VK_K );
+            menuTrackOn.Mnemonic( Keys.K );
             menuTrackAdd.Text = _( "Add track" );
-            menuTrackAdd.Mnemonic( KeyEvent.VK_A );
+            menuTrackAdd.Mnemonic( Keys.A );
             menuTrackCopy.Text = _( "Copy track" );
-            menuTrackCopy.Mnemonic( KeyEvent.VK_C );
+            menuTrackCopy.Mnemonic( Keys.C );
             menuTrackChangeName.Text = _( "Rename track" );
             menuTrackDelete.Text = _( "Delete track" );
-            menuTrackDelete.Mnemonic( KeyEvent.VK_D );
+            menuTrackDelete.Mnemonic( Keys.D );
             menuTrackRenderCurrent.Text = _( "Render current track" );
-            menuTrackRenderCurrent.Mnemonic( KeyEvent.VK_T );
+            menuTrackRenderCurrent.Mnemonic( Keys.T );
             menuTrackRenderAll.Text = _( "Render all tracks" );
-            menuTrackRenderAll.Mnemonic( KeyEvent.VK_S );
+            menuTrackRenderAll.Mnemonic( Keys.S );
             menuTrackOverlay.Text = _( "Overlay" );
-            menuTrackOverlay.Mnemonic( KeyEvent.VK_O );
+            menuTrackOverlay.Mnemonic( Keys.O );
             menuTrackRenderer.Text = _( "Renderer" );
-            menuTrackRenderer.Mnemonic( KeyEvent.VK_R );
-            menuTrackRendererVOCALOID1.Mnemonic( KeyEvent.VK_1 );
-            menuTrackRendererVOCALOID2.Mnemonic( KeyEvent.VK_3 );
-            menuTrackRendererUtau.Mnemonic( KeyEvent.VK_4 );
-            menuTrackRendererVCNT.Mnemonic( KeyEvent.VK_5 );
-            menuTrackRendererAquesTone.Mnemonic( KeyEvent.VK_6 );
+            menuTrackRenderer.Mnemonic( Keys.R );
+            menuTrackRendererVOCALOID1.Mnemonic( Keys.D1 );
+            menuTrackRendererVOCALOID2.Mnemonic( Keys.D3 );
+            menuTrackRendererUtau.Mnemonic( Keys.D4 );
+            menuTrackRendererVCNT.Mnemonic( Keys.D5 );
+            menuTrackRendererAquesTone.Mnemonic( Keys.D6 );
 
             menuLyric.Text = _( "Lyrics" );
-            menuLyric.Mnemonic( KeyEvent.VK_L );
+            menuLyric.Mnemonic( Keys.L );
             menuLyricExpressionProperty.Text = _( "Note expression property" );
-            menuLyricExpressionProperty.Mnemonic( KeyEvent.VK_E );
+            menuLyricExpressionProperty.Mnemonic( Keys.E );
             menuLyricVibratoProperty.Text = _( "Note vibrato property" );
-            menuLyricVibratoProperty.Mnemonic( KeyEvent.VK_V );
+            menuLyricVibratoProperty.Mnemonic( Keys.V );
             menuLyricApplyUtauParameters.Text = _( "Apply UTAU Parameters" );
-            menuLyricApplyUtauParameters.Mnemonic( KeyEvent.VK_A );
+            menuLyricApplyUtauParameters.Mnemonic( Keys.A );
             menuLyricPhonemeTransformation.Text = _( "Phoneme transformation" );
-            menuLyricPhonemeTransformation.Mnemonic( KeyEvent.VK_T );
+            menuLyricPhonemeTransformation.Mnemonic( Keys.T );
             menuLyricDictionary.Text = _( "User word dictionary" );
-            menuLyricDictionary.Mnemonic( KeyEvent.VK_C );
+            menuLyricDictionary.Mnemonic( Keys.C );
             menuLyricCopyVibratoToPreset.Text = _( "Copy vibrato config to preset" );
-            menuLyricCopyVibratoToPreset.Mnemonic( KeyEvent.VK_P );
+            menuLyricCopyVibratoToPreset.Mnemonic( Keys.P );
 
             menuScript.Text = _( "Script" );
-            menuScript.Mnemonic( KeyEvent.VK_C );
+            menuScript.Mnemonic( Keys.C );
             menuScriptUpdate.Text = _( "Update script list" );
-            menuScriptUpdate.Mnemonic( KeyEvent.VK_U );
+            menuScriptUpdate.Mnemonic( Keys.U );
 
             menuSetting.Text = _( "Setting" );
-            menuSetting.Mnemonic( KeyEvent.VK_S );
+            menuSetting.Mnemonic( Keys.S );
             menuSettingPreference.Text = _( "Preference" );
-            menuSettingPreference.Mnemonic( KeyEvent.VK_P );
+            menuSettingPreference.Mnemonic( Keys.P );
             menuSettingGameControler.Text = _( "Game controler" );
-            menuSettingGameControler.Mnemonic( KeyEvent.VK_G );
+            menuSettingGameControler.Mnemonic( Keys.G );
             menuSettingGameControlerLoad.Text = _( "Load" );
-            menuSettingGameControlerLoad.Mnemonic( KeyEvent.VK_L );
+            menuSettingGameControlerLoad.Mnemonic( Keys.L );
             menuSettingGameControlerRemove.Text = _( "Remove" );
-            menuSettingGameControlerRemove.Mnemonic( KeyEvent.VK_R );
+            menuSettingGameControlerRemove.Mnemonic( Keys.R );
             menuSettingGameControlerSetting.Text = _( "Setting" );
-            menuSettingGameControlerSetting.Mnemonic( KeyEvent.VK_S );
+            menuSettingGameControlerSetting.Mnemonic( Keys.S );
             menuSettingSequence.Text = _( "Sequence config" );
-            menuSettingSequence.Mnemonic( KeyEvent.VK_S );
+            menuSettingSequence.Mnemonic( Keys.S );
             menuSettingShortcut.Text = _( "Shortcut key" );
-            menuSettingShortcut.Mnemonic( KeyEvent.VK_K );
+            menuSettingShortcut.Mnemonic( Keys.K );
             menuSettingDefaultSingerStyle.Text = _( "Singing style defaults" );
-            menuSettingDefaultSingerStyle.Mnemonic( KeyEvent.VK_D );
+            menuSettingDefaultSingerStyle.Mnemonic( Keys.D );
             menuSettingPositionQuantize.Text = _( "Quantize" );
-            menuSettingPositionQuantize.Mnemonic( KeyEvent.VK_Q );
+            menuSettingPositionQuantize.Mnemonic( Keys.Q );
             menuSettingPositionQuantizeOff.Text = _( "Off" );
             menuSettingPositionQuantizeTriplet.Text = _( "Triplet" );
             //menuSettingSingerProperty.setText( _( "Singer Properties" ) );
-            //menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
+            //menuSettingSingerProperty.setMnemonic( Keys.S );
             menuSettingPaletteTool.Text = _( "Palette Tool" );
-            menuSettingPaletteTool.Mnemonic( KeyEvent.VK_T );
+            menuSettingPaletteTool.Mnemonic( Keys.T );
             menuSettingVibratoPreset.Text = _( "Vibrato preset" );
-            menuSettingVibratoPreset.Mnemonic( KeyEvent.VK_V );
+            menuSettingVibratoPreset.Mnemonic( Keys.V );
 
 #if JAVA
             menuWindow.setText( _( "Window" ) );
@@ -4646,19 +4613,19 @@ namespace cadencii
 #endif
 
             menuTools.Text = _("Tools");
-            menuTools.Mnemonic(KeyEvent.VK_O);
+            menuTools.Mnemonic(Keys.O);
             menuToolsCreateVConnectSTANDDb.Text = _("Create vConnect-STAND DB");
 
             menuHelp.Text = _( "Help" );
-            menuHelp.Mnemonic( KeyEvent.VK_H );
+            menuHelp.Mnemonic( Keys.H );
             menuHelpLog.Text = _( "Log" );
-            menuHelpLog.Mnemonic( KeyEvent.VK_L );
+            menuHelpLog.Mnemonic( Keys.L );
             menuHelpLogSwitch.Text = Logger.isEnabled() ? _( "Disable" ) : _( "Enable" );
-            menuHelpLogSwitch.Mnemonic( KeyEvent.VK_L );
+            menuHelpLogSwitch.Mnemonic( Keys.L );
             menuHelpLogOpen.Text = _( "Open" );
-            menuHelpLogOpen.Mnemonic( KeyEvent.VK_O );
+            menuHelpLogOpen.Mnemonic( Keys.O );
             menuHelpAbout.Text = _( "About Cadencii" );
-            menuHelpAbout.Mnemonic( KeyEvent.VK_A );
+            menuHelpAbout.Mnemonic( Keys.A );
             menuHelpManual.Text = _( "Manual" ) + " (PDF)";
 
             menuHiddenCopy.Text = _( "Copy" );
@@ -4687,107 +4654,107 @@ namespace cadencii
 
             #region cMenuPiano
             cMenuPianoPointer.Text = _( "Arrow" );
-            cMenuPianoPointer.Mnemonic( KeyEvent.VK_A );
+            cMenuPianoPointer.Mnemonic( Keys.A );
             cMenuPianoPencil.Text = _( "Pencil" );
-            cMenuPianoPencil.Mnemonic( KeyEvent.VK_W );
+            cMenuPianoPencil.Mnemonic( Keys.W );
             cMenuPianoEraser.Text = _( "Eraser" );
-            cMenuPianoEraser.Mnemonic( KeyEvent.VK_E );
+            cMenuPianoEraser.Mnemonic( Keys.E );
             cMenuPianoPaletteTool.Text = _( "Palette Tool" );
 
             cMenuPianoCurve.Text = _( "Curve" );
-            cMenuPianoCurve.Mnemonic( KeyEvent.VK_V );
+            cMenuPianoCurve.Mnemonic( Keys.V );
 
             cMenuPianoFixed.Text = _( "Note Fixed Length" );
-            cMenuPianoFixed.Mnemonic( KeyEvent.VK_N );
+            cMenuPianoFixed.Mnemonic( Keys.N );
             cMenuPianoFixedTriplet.Text = _( "Triplet" );
             cMenuPianoFixedOff.Text = _( "Off" );
             cMenuPianoFixedDotted.Text = _( "Dot" );
             cMenuPianoQuantize.Text = _( "Quantize" );
-            cMenuPianoQuantize.Mnemonic( KeyEvent.VK_Q );
+            cMenuPianoQuantize.Mnemonic( Keys.Q );
             cMenuPianoQuantizeTriplet.Text = _( "Triplet" );
             cMenuPianoQuantizeOff.Text = _( "Off" );
             cMenuPianoGrid.Text = _( "Show/Hide Grid Line" );
-            cMenuPianoGrid.Mnemonic( KeyEvent.VK_S );
+            cMenuPianoGrid.Mnemonic( Keys.S );
 
             cMenuPianoUndo.Text = _( "Undo" );
-            cMenuPianoUndo.Mnemonic( KeyEvent.VK_U );
+            cMenuPianoUndo.Mnemonic( Keys.U );
             cMenuPianoRedo.Text = _( "Redo" );
-            cMenuPianoRedo.Mnemonic( KeyEvent.VK_R );
+            cMenuPianoRedo.Mnemonic( Keys.R );
 
             cMenuPianoCut.Text = _( "Cut" );
-            cMenuPianoCut.Mnemonic( KeyEvent.VK_T );
+            cMenuPianoCut.Mnemonic( Keys.T );
             cMenuPianoPaste.Text = _( "Paste" );
-            cMenuPianoPaste.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoPaste.Mnemonic( Keys.P );
             cMenuPianoCopy.Text = _( "Copy" );
-            cMenuPianoCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuPianoCopy.Mnemonic( Keys.C );
             cMenuPianoDelete.Text = _( "Delete" );
-            cMenuPianoDelete.Mnemonic( KeyEvent.VK_D );
+            cMenuPianoDelete.Mnemonic( Keys.D );
 
             cMenuPianoSelectAll.Text = _( "Select All" );
-            cMenuPianoSelectAll.Mnemonic( KeyEvent.VK_A );
+            cMenuPianoSelectAll.Mnemonic( Keys.A );
             cMenuPianoSelectAllEvents.Text = _( "Select All Events" );
-            cMenuPianoSelectAllEvents.Mnemonic( KeyEvent.VK_E );
+            cMenuPianoSelectAllEvents.Mnemonic( Keys.E );
 
             cMenuPianoExpressionProperty.Text = _( "Note Expression Property" );
-            cMenuPianoExpressionProperty.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoExpressionProperty.Mnemonic( Keys.P );
             cMenuPianoVibratoProperty.Text = _( "Note Vibrato Property" );
             cMenuPianoImportLyric.Text = _( "Insert Lyrics" );
-            cMenuPianoImportLyric.Mnemonic( KeyEvent.VK_P );
+            cMenuPianoImportLyric.Mnemonic( Keys.P );
             #endregion
 
             #region cMenuTrackTab
             cMenuTrackTabTrackOn.Text = _( "Track On" );
-            cMenuTrackTabTrackOn.Mnemonic( KeyEvent.VK_K );
+            cMenuTrackTabTrackOn.Mnemonic( Keys.K );
             cMenuTrackTabAdd.Text = _( "Add Track" );
-            cMenuTrackTabAdd.Mnemonic( KeyEvent.VK_A );
+            cMenuTrackTabAdd.Mnemonic( Keys.A );
             cMenuTrackTabCopy.Text = _( "Copy Track" );
-            cMenuTrackTabCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuTrackTabCopy.Mnemonic( Keys.C );
             cMenuTrackTabChangeName.Text = _( "Rename Track" );
             cMenuTrackTabDelete.Text = _( "Delete Track" );
-            cMenuTrackTabDelete.Mnemonic( KeyEvent.VK_D );
+            cMenuTrackTabDelete.Mnemonic( Keys.D );
 
             cMenuTrackTabRenderCurrent.Text = _( "Render Current Track" );
-            cMenuTrackTabRenderCurrent.Mnemonic( KeyEvent.VK_T );
+            cMenuTrackTabRenderCurrent.Mnemonic( Keys.T );
             cMenuTrackTabRenderAll.Text = _( "Render All Tracks" );
-            cMenuTrackTabRenderAll.Mnemonic( KeyEvent.VK_S );
+            cMenuTrackTabRenderAll.Mnemonic( Keys.S );
             cMenuTrackTabOverlay.Text = _( "Overlay" );
-            cMenuTrackTabOverlay.Mnemonic( KeyEvent.VK_O );
+            cMenuTrackTabOverlay.Mnemonic( Keys.O );
             cMenuTrackTabRenderer.Text = _( "Renderer" );
-            cMenuTrackTabRenderer.Mnemonic( KeyEvent.VK_R );
+            cMenuTrackTabRenderer.Mnemonic( Keys.R );
             #endregion
 
             #region cMenuTrackSelector
             cMenuTrackSelectorPointer.Text = _( "Arrow" );
-            cMenuTrackSelectorPointer.Mnemonic( KeyEvent.VK_A );
+            cMenuTrackSelectorPointer.Mnemonic( Keys.A );
             cMenuTrackSelectorPencil.Text = _( "Pencil" );
-            cMenuTrackSelectorPencil.Mnemonic( KeyEvent.VK_W );
+            cMenuTrackSelectorPencil.Mnemonic( Keys.W );
             cMenuTrackSelectorLine.Text = _( "Line" );
-            cMenuTrackSelectorLine.Mnemonic( KeyEvent.VK_L );
+            cMenuTrackSelectorLine.Mnemonic( Keys.L );
             cMenuTrackSelectorEraser.Text = _( "Eraser" );
-            cMenuTrackSelectorEraser.Mnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorEraser.Mnemonic( Keys.E );
             cMenuTrackSelectorPaletteTool.Text = _( "Palette Tool" );
 
             cMenuTrackSelectorCurve.Text = _( "Curve" );
-            cMenuTrackSelectorCurve.Mnemonic( KeyEvent.VK_V );
+            cMenuTrackSelectorCurve.Mnemonic( Keys.V );
 
             cMenuTrackSelectorUndo.Text = _( "Undo" );
-            cMenuTrackSelectorUndo.Mnemonic( KeyEvent.VK_U );
+            cMenuTrackSelectorUndo.Mnemonic( Keys.U );
             cMenuTrackSelectorRedo.Text = _( "Redo" );
-            cMenuTrackSelectorRedo.Mnemonic( KeyEvent.VK_R );
+            cMenuTrackSelectorRedo.Mnemonic( Keys.R );
 
             cMenuTrackSelectorCut.Text = _( "Cut" );
-            cMenuTrackSelectorCut.Mnemonic( KeyEvent.VK_T );
+            cMenuTrackSelectorCut.Mnemonic( Keys.T );
             cMenuTrackSelectorCopy.Text = _( "Copy" );
-            cMenuTrackSelectorCopy.Mnemonic( KeyEvent.VK_C );
+            cMenuTrackSelectorCopy.Mnemonic( Keys.C );
             cMenuTrackSelectorPaste.Text = _( "Paste" );
-            cMenuTrackSelectorPaste.Mnemonic( KeyEvent.VK_P );
+            cMenuTrackSelectorPaste.Mnemonic( Keys.P );
             cMenuTrackSelectorDelete.Text = _( "Delete" );
-            cMenuTrackSelectorDelete.Mnemonic( KeyEvent.VK_D );
+            cMenuTrackSelectorDelete.Mnemonic( Keys.D );
             cMenuTrackSelectorDeleteBezier.Text = _( "Delete Bezier Point" );
-            cMenuTrackSelectorDeleteBezier.Mnemonic( KeyEvent.VK_B );
+            cMenuTrackSelectorDeleteBezier.Mnemonic( Keys.B );
 
             cMenuTrackSelectorSelectAll.Text = _( "Select All Events" );
-            cMenuTrackSelectorSelectAll.Mnemonic( KeyEvent.VK_E );
+            cMenuTrackSelectorSelectAll.Mnemonic( Keys.E );
             #endregion
 
             #region cMenuPositionIndicator
@@ -7514,17 +7481,9 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyDown" );
 #endif
-#if JAVA
-            int keycode = e.getKeyCode();
-            int modifiers = e.getModifiers();
-            boolean shift = (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
-            boolean tab = keycode == KeyEvent.VK_TAB;
-            boolean enter = keycode == KeyEvent.VK_ENTER;
-#else
             boolean shift = (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift;
             boolean tab = e.KeyCode == System.Windows.Forms.Keys.Tab;
             boolean enter = e.KeyCode == System.Windows.Forms.Keys.Return;
-#endif
             if ( tab || enter ) {
                 executeLyricChangeCommand();
                 int selected = AppManager.getSelected();
@@ -7656,13 +7615,8 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyUp" );
 #endif
-#if JAVA
-            boolean flip = (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
-            boolean hide = (e.getKeyCode() == KeyEvent.VK_ESCAPE);
-#else
             bool flip = (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && (e.Modifiers == Keys.Alt);
             bool hide = e.KeyCode == Keys.Escape;
-#endif
 
             if ( flip ) {
                 if ( AppManager.mInputTextBox.Visible ) {

@@ -30,7 +30,6 @@ using cadencii.apputil;
 using cadencii.vsq;
 using cadencii.windows.forms;
 using cadencii.java.util;
-using cadencii.java.awt.event_;
 
 namespace cadencii
 {
@@ -143,23 +142,23 @@ namespace cadencii
         public void applyLanguage()
         {
             lblTemplate.Text = _( "Template" );
-            lblTemplate.Mnemonic( KeyEvent.VK_T );
+            lblTemplate.Mnemonic( Keys.T );
             groupPitchControl.Text = _( "Pitch Control" );
             lblBendDepth.Text = _( "Bend Depth" );
-            lblBendDepth.Mnemonic( KeyEvent.VK_B );
+            lblBendDepth.Mnemonic( Keys.B );
             lblBendLength.Text = _( "Bend Length" );
-            lblBendLength.Mnemonic( KeyEvent.VK_L );
+            lblBendLength.Mnemonic( Keys.L );
             chkUpPortamento.Text = _("Add portamento in rising movement");
-            chkUpPortamento.Mnemonic(KeyEvent.VK_R);
+            chkUpPortamento.Mnemonic(Keys.R);
             chkDownPortamento.Text = _("Add portamento in falling movement");
-            chkDownPortamento.Mnemonic(KeyEvent.VK_F);
+            chkDownPortamento.Mnemonic(Keys.F);
 
             groupAttack.Text = _( "Attack Control (VOCALOID1)" );
             groupDynamicsControl.Text = _( "Dynamics Control (VOCALOID2)" );
             lblDecay.Text = _( "Decay" );
-            lblDecay.Mnemonic( KeyEvent.VK_D );
+            lblDecay.Mnemonic( Keys.D );
             lblAccent.Text = _( "Accent" );
-            lblAccent.Mnemonic( KeyEvent.VK_A );
+            lblAccent.Mnemonic( Keys.A );
 
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );

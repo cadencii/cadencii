@@ -27,9 +27,9 @@ import cadencii.vsq.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.java.awt;
-using cadencii.java.awt.event_;
 using cadencii.java.io;
 using cadencii.java.util;
 using cadencii.media;
@@ -89,9 +89,9 @@ namespace cadencii
 
             groupWaveFileOutput.Text = _( "Wave File Output" );
             lblChannel.Text = _( "Channel" );
-            lblChannel.Mnemonic( KeyEvent.VK_C );
+            lblChannel.Mnemonic( Keys.C );
             labelSampleRate.Text = _( "Sample rate" );
-            labelSampleRate.Mnemonic( KeyEvent.VK_S );
+            labelSampleRate.Mnemonic( Keys.S );
             radioMasterTrack.Text = _( "Master Track" );
             radioCurrentTrack.Text = _( "Current Track" );
             labelSampleRate.Text = _( "Sample rate" );

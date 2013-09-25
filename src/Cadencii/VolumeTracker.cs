@@ -448,15 +448,9 @@ namespace cadencii
 
         public void txtFeder_KeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
-                return;
-            }
-#else
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
-#endif
             try {
                 int feder = (int)((float)double.Parse( txtFeder.Text ) * 10.0f);
                 if ( 55 < feder ) {
@@ -476,15 +470,9 @@ namespace cadencii
 
         public void txtPanpot_KeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if( (e.getKeyCode() & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ){
-                return;
-            }
-#else
             if ( (e.KeyCode & Keys.Enter) != Keys.Enter ) {
                 return;
             }
-#endif
             try {
                 int panpot = int.Parse( txtPanpot.Text );
                 if ( panpot < -64 ) {

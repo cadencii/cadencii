@@ -20,7 +20,6 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
-using cadencii.java.awt.event_;
 using cadencii.apputil;
 using cadencii;
 using cadencii.windows.forms;

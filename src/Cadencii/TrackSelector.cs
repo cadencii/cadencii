@@ -35,7 +35,6 @@ using System.Windows.Forms;
 using cadencii;
 using cadencii.apputil;
 using cadencii.java.awt;
-using cadencii.java.awt.event_;
 using cadencii.java.util;
 using cadencii.vsq;
 using cadencii.windows.forms;
@@ -5930,24 +5929,16 @@ namespace cadencii
 
         public void TrackSelector_KeyDown( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space )
-#endif
- {
+            {
                 mSpaceKeyDowned = true;
             }
         }
 
         public void TrackSelector_KeyUp( Object sender, KeyEventArgs e )
         {
-#if JAVA
-            if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
-#else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space )
-#endif
- {
+            {
                 mSpaceKeyDowned = false;
             }
         }
