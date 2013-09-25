@@ -1982,8 +1982,7 @@ namespace cadencii
 #else
             Keys ctrl = Keys.Control;
 #endif
-            Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
-                new ValuePairOfStringArrayOfKeys[]{
+            Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( new ValuePairOfStringArrayOfKeys[]{
                 new ValuePairOfStringArrayOfKeys( menuFileNew.Name, new Keys[]{ ctrl, Keys.N } ),
                 new ValuePairOfStringArrayOfKeys( menuFileOpen.Name, new Keys[]{ ctrl, Keys.O } ),
                 new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.Name, new Keys[]{} ),
@@ -2063,7 +2062,7 @@ namespace cadencii
                 new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.Name, new Keys[]{ ctrl, Keys.Home } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.Name, new Keys[]{ ctrl, Keys.Enter } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.Name, new Keys[]{ Keys.Tab } ),
-            } ) );
+            } );
             return ret;
         }
 

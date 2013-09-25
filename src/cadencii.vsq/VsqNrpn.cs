@@ -78,7 +78,7 @@ namespace cadencii.vsq
                 ret.add( v );
             }
             for ( int i = 0; i < m_list.size(); i++ ) {
-                ret.addAll( Arrays.asList( m_list.get( i ).expand() ) );
+                ret.addAll( new Vector<VsqNrpn>( m_list.get( i ).expand() ) );
             }
             return ret.toArray( new VsqNrpn[] { } );
         }

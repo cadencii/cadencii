@@ -352,7 +352,7 @@ import cadencii.vsq.*;
 
                 public void removeEventRange( int[] ids )
                 {
-                    Vector<Integer> v_ids = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
+                    Vector<Integer> v_ids = new Vector<Integer>( PortUtil.convertIntArray( ids ) );
                     Vector<Integer> index = new Vector<Integer>();
                     int count = mEvents.size();
                     for ( int i = 0; i < count; i++ )

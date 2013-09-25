@@ -2177,7 +2177,7 @@ namespace cadencii.vsq
                     while ( sr.ready() ) {
                         tmp = sr.readLine() + _NL;
                         Byte[] linebytes = PortUtil.convertByteArray( PortUtil.getEncodedByte( encoding, tmp ) );
-                        buffer.addAll( Arrays.asList( linebytes ) );
+                        buffer.addAll( new Vector<byte>( linebytes ) );
                         while ( getLinePrefixBytes( line_count + 1 ).Length + buffer.size() >= 127 ) {
                             line_count++;
                             byte[] prefix = getLinePrefixBytes( line_count );
@@ -2813,16 +2813,16 @@ namespace cadencii.vsq
                 }
             }
             if ( singer_event >= 0 ) { //見つかった場合
-                list.addAll( Arrays.asList( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) ) );
+                list.addAll( new Vector<VsqNrpn>( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) ) );
             } else {                   //多分ありえないと思うが、歌手が不明の場合。
                 //throw new Exception( "first singer was not specified" );
                 list.add( new VsqNrpn( 0, NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x0 ) );
                 list.add( new VsqNrpn( 0, NRPN.PC_VOICE_TYPE, (byte)0x0 ) );
             }
 
-            list.addAll( Arrays.asList( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) ) );
+            list.addAll( new Vector<VsqNrpn>( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) ) );
             if ( version.StartsWith( "DSB2" ) ) {
-                list.addAll( Arrays.asList( generateFx2DepthNRPN( vsq, track, msPreSend ) ) );
+                list.addAll( new Vector<VsqNrpn>( generateFx2DepthNRPN( vsq, track, msPreSend ) ) );
             }
 
             int ms_presend = msPreSend;
@@ -2837,21 +2837,21 @@ namespace cadencii.vsq
             }
             VsqBPList dyn = target.getCurve( "dyn" );
             if ( dyn.size() > 0 ) {
-                Vector<VsqNrpn> listdyn = new Vector<VsqNrpn>( Arrays.asList( generateExpressionNRPN( vsq, track, ms_presend ) ) );
+                Vector<VsqNrpn> listdyn = new Vector<VsqNrpn>( generateExpressionNRPN( vsq, track, ms_presend ) );
                 if ( listdyn.size() > 0 ) {
                     list.addAll( listdyn );
                 }
             }
             VsqBPList pbs = target.getCurve( "pbs" );
             if ( pbs.size() > 0 ) {
-                Vector<VsqNrpn> listpbs = new Vector<VsqNrpn>( Arrays.asList( generatePitchBendSensitivityNRPN( vsq, track, ms_presend ) ) );
+                Vector<VsqNrpn> listpbs = new Vector<VsqNrpn>( generatePitchBendSensitivityNRPN( vsq, track, ms_presend ) );
                 if ( listpbs.size() > 0 ) {
                     list.addAll( listpbs );
                 }
             }
             VsqBPList pit = target.getCurve( "pit" );
             if ( pit.size() > 0 ) {
-                Vector<VsqNrpn> listpit = new Vector<VsqNrpn>( Arrays.asList( generatePitchBendNRPN( vsq, track, ms_presend ) ) );
+                Vector<VsqNrpn> listpit = new Vector<VsqNrpn>( generatePitchBendNRPN( vsq, track, ms_presend ) );
                 if ( listpit.size() > 0 ) {
                     list.addAll( listpit );
                 }
@@ -2888,13 +2888,13 @@ namespace cadencii.vsq
                                                 note_loc,
                                                 first ) );
                     first = false;
-                    list.addAll( Arrays.asList( generateVibratoNRPN( vsq,
-                                                                     item,
-                                                                     msPreSend ) ) );
+                    list.addAll( new Vector<VsqNrpn>( generateVibratoNRPN( vsq,
+                                                                           item,
+                                                                           msPreSend ) ) );
                     last_note_end = item.Clock + item.ID.getLength();
                 } else if ( item.ID.type == VsqIDType.Singer ) {
                     if ( i > note_start && i != singer_event ) {
-                        list.addAll( Arrays.asList( generateSingerNRPN( vsq, item, msPreSend ) ) );
+                        list.addAll( new Vector<VsqNrpn>( generateSingerNRPN( vsq, item, msPreSend ) ) );
                     }
                 }
             }
@@ -2902,7 +2902,7 @@ namespace cadencii.vsq
             list = VsqNrpn.sort( list );
             Vector<VsqNrpn> merged = new Vector<VsqNrpn>();
             for ( int i = 0; i < list.size(); i++ ) {
-                merged.addAll( Arrays.asList( list.get( i ).expand() ) );
+                merged.addAll( new Vector<VsqNrpn>( list.get( i ).expand() ) );
             }
             return merged.toArray( new VsqNrpn[] { } );
         }

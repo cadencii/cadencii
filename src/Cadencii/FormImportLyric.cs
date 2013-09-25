@@ -94,10 +94,10 @@ namespace cadencii
 
         public String[] getLetters()
         {
-            Vector<Character> _SMALL = new Vector<Character>( Arrays.asList( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
-                                                                                               'ゃ', 'ゅ', 'ょ',
-                                                                                               'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
-                                                                                               'ャ', 'ュ', 'ョ' } ) );
+            Vector<Character> _SMALL = new Vector<Character>( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+                                                                                'ゃ', 'ゅ', 'ょ',
+                                                                                'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
+                                                                                'ャ', 'ュ', 'ョ' } );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
                 if ( i >= txtLyrics.Lines.Length ) {

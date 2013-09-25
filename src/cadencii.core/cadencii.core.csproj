@@ -67,7 +67,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arrays.cs" />
     <Compile Include="awt.cs">
       <SubType>Form</SubType>
     </Compile>

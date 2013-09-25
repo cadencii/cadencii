@@ -81,7 +81,7 @@ namespace cadencii
                         if ( noteOnEvents.Length > 0 ) {
                             MidiEventQueue queue = list.get( item.Clock );
 
-                            Vector<MidiEvent> add = Arrays.asList( noteOnEvents );
+                            Vector<MidiEvent> add = new Vector<MidiEvent>( noteOnEvents );
                             queue.noteon.addAll( add );
                             pit_send.add( new Point( item.Clock, item.Clock ) );
                         }
@@ -233,7 +233,7 @@ namespace cadencii
                         MidiEvent noteoff = new MidiEvent();
                         noteoff.firstByte = 0x80;
                         noteoff.data = new int[] { item.ID.Note, 0x40 }; // ここのvel
-                        Vector<MidiEvent> a_noteoff = Arrays.asList( new MidiEvent[] { noteoff } );
+                        Vector<MidiEvent> a_noteoff = new Vector<MidiEvent>( new MidiEvent[] { noteoff } );
                         MidiEventQueue q = list.get( endclock );
                         q.noteoff.addAll( a_noteoff );
                         pit_send.add( new Point( endclock, endclock ) ); // PITの送信を抑制するために必要
@@ -320,7 +320,7 @@ namespace cadencii
                 var singer = mDriver.createSingerEvent( program );
                 if ( 0 < singer.Length ) {
                     var queue = queueSequence.get( item.Clock );
-                    queue.param.addAll( Arrays.asList( singer ) );
+                    queue.param.addAll( new Vector<ParameterEvent>( singer ) );
                 }
             }
         }

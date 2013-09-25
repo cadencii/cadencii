@@ -78,7 +78,7 @@ namespace cadencii {
                                                             ClockResolution.L240, 
                                                             ClockResolution.L480, 
                                                             ClockResolution.Free };
-            return Arrays.asList( arr ).iterator();
+            return (new Vector<ClockResolution>( arr )).iterator();
         }
     }
 

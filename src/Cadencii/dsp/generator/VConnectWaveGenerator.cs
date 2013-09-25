@@ -1129,8 +1129,7 @@ namespace cadencii
                     }
                 }
                 Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-                Vector<String> print_targets = new Vector<String>( Arrays.asList(
-                                                                   new String[]{ "Length",
+                Vector<String> print_targets = new Vector<String>( new String[]{ "Length",
                                                                              "Note#",
                                                                              "Dynamics",
                                                                              "DEMdecGainRate",
@@ -1139,7 +1138,7 @@ namespace cadencii
                                                                              "VoiceOverlap",
                                                                              "PMBendDepth",
                                                                              "PMBendLength",
-                                                                             "PMbPortamentoUse", } ) );
+                                                                             "PMbPortamentoUse", } );
                 for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
                     item.write( writer, print_targets );

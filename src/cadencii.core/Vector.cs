@@ -84,7 +84,7 @@ namespace cadencii.java.util {
     }
 #else
     public class Vector<T> : List<T> {
-        internal Vector( ICollection<T> list ) :
+        public Vector( ICollection<T> list ) :
             base( list ) {
         }
 

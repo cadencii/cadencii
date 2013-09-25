@@ -5751,9 +5751,9 @@ namespace cadencii
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
             } else if ( renderer == RendererKind.VOCALOID1 ) {
-                items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
+                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {
-                items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
+                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) );
 #if ENABLE_AQUESTONE
             } else if ( renderer == RendererKind.AQUES_TONE ) {
                 items = new Vector<SingerConfig>();

@@ -416,7 +416,7 @@ namespace cadencii
             unRegisterHandlers();
             ValuePair<String, Keys[]> item = mDict.get( display );
             Keys[] keys = item.getValue();
-            Vector<Keys> vkeys = new Vector<Keys>( Arrays.asList( keys ) );
+            Vector<Keys> vkeys = new Vector<Keys>( keys );
             checkCommand.Checked = vkeys.contains( Keys.Menu );
             checkShift.Checked = vkeys.contains( Keys.Shift );
             checkControl.Checked = vkeys.contains( Keys.Control );

@@ -1302,7 +1302,7 @@ namespace cadencii
             String option = "Alt";
             String command = "Meta";
 #endif
-            Vector<Keys> list = new Vector<Keys>( Arrays.asList( keys ) );
+            Vector<Keys> list = new Vector<Keys>( keys );
             if ( list.contains( Keys.Control ) ) {
                 ret += ((ret == "") ? "" : plus) + ctrl;
             }

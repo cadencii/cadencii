@@ -152,14 +152,14 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            Vector<String> def = new Vector<String>( Arrays.asList( new String[]{ "Length",
+            Vector<String> def = new Vector<String>( new String[]{ "Length",
                                                                    "Note#",
                                                                    "Dynamics",
                                                                    "PMBendDepth",
                                                                    "PMBendLength",
                                                                    "PMbPortamentoUse",
                                                                    "DEMdecGainRate",
-                                                                   "DEMaccent" } ) );
+                                                                   "DEMaccent" } );
             write( sw, def );
         }
 

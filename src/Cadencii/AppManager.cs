@@ -282,7 +282,7 @@ namespace cadencii
         /// <summary>
         /// ショートカットキーとして受付可能なキーのリスト
         /// </summary>
-        public static readonly Vector<Keys> SHORTCUT_ACCEPTABLE = new Vector<Keys>( Arrays.asList( new Keys[]{
+        public static readonly Vector<Keys> SHORTCUT_ACCEPTABLE = new Vector<Keys>( new Keys[] {
             Keys.A,
             Keys.B,
             Keys.Back,
@@ -364,7 +364,7 @@ namespace cadencii
             Keys.Delete,
             Keys.Home,
             Keys.End,
-        } ) );
+        } );
         /// <summary>
         /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
         /// </summary>
