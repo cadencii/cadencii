@@ -1136,7 +1136,7 @@ namespace cadencii.vsq
                                     buffer.add( d );
                                 }
 
-                                int index_0x0a = buffer.indexOf( 0x0a );
+                                int index_0x0a = buffer.IndexOf( 0x0a );
 #if DEBUG
 #if JAVA
                                 sout.println( "VsqTrack#.ctor; index_0x0a=" + index_0x0a );
@@ -1157,7 +1157,7 @@ namespace cadencii.vsq
 #endif
                                     sw.writeLine( line );
                                     buffer.removeElementAt( 0 );
-                                    index_0x0a = buffer.indexOf( 0x0a );
+                                    index_0x0a = buffer.IndexOf( 0x0a );
                                 }
                             } else {
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {

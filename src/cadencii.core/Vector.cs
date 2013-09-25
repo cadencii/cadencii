@@ -96,10 +96,6 @@ namespace cadencii.java.util {
             : base( array.toArray( new T[]{} ) ){
         }
 
-        public int indexOf( T obj ) {
-            return base.IndexOf( obj );
-        }
-
         public void insertElementAt( T obj, int index ){
             base.Insert( index, obj );
         }
