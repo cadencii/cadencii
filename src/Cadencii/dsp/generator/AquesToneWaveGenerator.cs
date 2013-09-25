@@ -82,7 +82,7 @@ namespace cadencii
                             MidiEventQueue queue = list.get( item.Clock );
 
                             Vector<MidiEvent> add = new Vector<MidiEvent>( noteOnEvents );
-                            queue.noteon.addAll( add );
+                            queue.noteon.AddRange( add );
                             pit_send.add( new Point( item.Clock, item.Clock ) );
                         }
 
@@ -235,7 +235,7 @@ namespace cadencii
                         noteoff.data = new int[] { item.ID.Note, 0x40 }; // ここのvel
                         Vector<MidiEvent> a_noteoff = new Vector<MidiEvent>( new MidiEvent[] { noteoff } );
                         MidiEventQueue q = list.get( endclock );
-                        q.noteoff.addAll( a_noteoff );
+                        q.noteoff.AddRange( a_noteoff );
                         pit_send.add( new Point( endclock, endclock ) ); // PITの送信を抑制するために必要
                     }
                 }
@@ -320,7 +320,7 @@ namespace cadencii
                 var singer = mDriver.createSingerEvent( program );
                 if ( 0 < singer.Length ) {
                     var queue = queueSequence.get( item.Clock );
-                    queue.param.addAll( new Vector<ParameterEvent>( singer ) );
+                    queue.param.AddRange( new Vector<ParameterEvent>( singer ) );
                 }
             }
         }

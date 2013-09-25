@@ -52,8 +52,8 @@ namespace cadencii {
             // 拡張子がcs, txtのファイルを列挙
             String dir = Utility.getScriptPath();
             Vector<String> files = new Vector<String>();
-            files.addAll( new Vector<string>( PortUtil.listFiles( dir, ".txt" ) ) );
-            files.addAll( new Vector<string>( PortUtil.listFiles( dir, ".cs" ) ) );
+            files.AddRange( new Vector<string>( PortUtil.listFiles( dir, ".txt" ) ) );
+            files.AddRange( new Vector<string>( PortUtil.listFiles( dir, ".cs" ) ) );
 
             // 既存のスクリプトに無いまたは新しいやつはロード。
             Vector<String> added = new Vector<String>(); //追加または更新が行われたスクリプトのID

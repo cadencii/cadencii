@@ -302,7 +302,7 @@ namespace cadencii
                     if ( queue.noteon.size() > 0 ) {
                         // 同ゲートタイムにピッチベンドも指定されている場合、同時に送信しないと反映されないようだ！
                         if ( queue.pit.size() > 0 ) {
-                            queue.noteon.addAll( queue.pit );
+                            queue.noteon.AddRange( queue.pit );
                             queue.pit.clear();
                         }
 #if DEBUG
