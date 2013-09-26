@@ -201,8 +201,7 @@ namespace cadencii
         private static void copyDict( TreeMap<String, ValuePair<String, Keys[]>> src, TreeMap<String, ValuePair<String, Keys[]>> dest )
         {
             dest.clear();
-            for ( Iterator<String> itr = src.keySet().iterator(); itr.hasNext(); ) {
-                String name = itr.next();
+            foreach (var name in src.Keys) {
                 String key = src.get( name ).getKey();
                 Keys[] values = src.get( name ).getValue();
                 Vector<Keys> cp = new Vector<Keys>();
@@ -231,8 +230,7 @@ namespace cadencii
             String category = mCategories[selected];
 
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
-            for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                String display = itr.next();
+            foreach (var display in mDict.Keys) {
                 ValuePair<String, Keys[]> item = mDict.get( display );
                 String field_name = item.getKey();
                 Keys[] keys = item.getValue();
@@ -282,8 +280,7 @@ namespace cadencii
                 }
 
                 boolean found = false;
-                for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                    String display1 = itr.next();
+                foreach (var display1 in mDict.Keys) {
                     ValuePair<String, Keys[]> item1 = mDict.get( display1 );
                     String field_name1 = item1.getKey();
                     if ( field_name == field_name1 ) {
@@ -457,8 +454,7 @@ namespace cadencii
             for ( int i = 0; i < defaults.Count; i++ ) {
                 String name = defaults[ i ].Key;
                 Keys[] keys = defaults[ i ].Value;
-                for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                    String display = itr.next();
+                foreach (var display in mDict.Keys) {
                     if ( name.Equals( mDict.get( display ).getKey() ) ) {
                         mDict.get( display ).setValue( keys );
                         break;

@@ -98,11 +98,9 @@ namespace cadencii.vsq
             }
 
             // m_singer_configsの情報から、m_installed_singersの歌唱言語情報を類推する
-            for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = itr.next();
+            foreach (var sc in m_installed_singers) {
                 String searchid = sc.VOICEIDSTR;
-                for ( Iterator<SingerConfig> itr2 = m_singer_configs.iterator(); itr2.hasNext(); ) {
-                    SingerConfig sc2 = itr2.next();
+                foreach (var sc2 in m_singer_configs) {
                     if ( sc2.VOICEIDSTR.Equals( searchid ) ) {
                         sc.Language = sc2.Language;
                         break;
@@ -155,8 +153,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public SingerConfig getSingerInfo( int language, int program )
         {
-            for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig item = itr.next();
+            foreach (var item in m_installed_singers) {
                 if ( item.Language == language && item.Program == program ) {
                     return item;
                 }

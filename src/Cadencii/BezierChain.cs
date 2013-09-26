@@ -368,8 +368,7 @@ namespace cadencii
             //todo: ベジエが有効なときに、曲線の描く最大値、最小値も考慮
             min.value = Default;
             max.value = Default;
-            for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
-                BezierPoint bp = itr.next();
+            foreach (var bp in points) {
                 min.value = Math.Min( min.value, bp.getBase().getY() );
                 max.value = Math.Max( max.value, bp.getBase().getY() );
             }
@@ -378,8 +377,7 @@ namespace cadencii
         public void getKeyMinMax( ByRef<Double> min, ByRef<Double> max ) {
             min.value = Default;
             max.value = Default;
-            for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
-                BezierPoint bp = itr.next();
+            foreach (var bp in points) {
                 min.value = Math.Min( min.value, bp.getBase().getX() );
                 max.value = Math.Max( max.value, bp.getBase().getX() );
             }
@@ -387,8 +385,7 @@ namespace cadencii
         
         public Object clone() {
             BezierChain result = new BezierChain( this.mColor );
-            for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
-                BezierPoint bp = itr.next();
+            foreach (var bp in points) {
                 result.points.Add( (BezierPoint)bp.clone() );
             }
             result.Default = this.Default;

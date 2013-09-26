@@ -1051,8 +1051,7 @@ namespace cadencii
             for ( int i = 0; i < ShortcutKeys.Count; i++ ) {
                 ret.put( ShortcutKeys[ i ].Key, ShortcutKeys[ i ].Value );
             }
-            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = defs.iterator(); itr.hasNext(); ) {
-                ValuePairOfStringArrayOfKeys item = itr.next();
+            foreach (var item in defs) {
                 if ( !ret.containsKey( item.Key ) ) {
                     ret.put( item.Key, item.Value );
                 }
@@ -1258,8 +1257,7 @@ namespace cadencii
 
             // 重複があれば消す
             Vector<String> dict = new Vector<String>();
-            for ( Iterator<String> itr = RecentFiles.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            foreach (var s in RecentFiles) {
                 boolean found = false;
                 for ( int i = 0; i < dict.Count; i++ ) {
                     if ( s.Equals( dict[ i ] ) ) {
@@ -1271,8 +1269,7 @@ namespace cadencii
                 }
             }
             RecentFiles.Clear();
-            for ( Iterator<String> itr = dict.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            foreach (var s in dict) {
                 RecentFiles.Add( s );
             }
 
@@ -1310,8 +1307,7 @@ namespace cadencii
             for ( int i = 0; i < count; i++ ) {
                 SymbolTable st = SymbolTable.getSymbolTable( i );
                 boolean found = false;
-                for ( Iterator<String> itr = UserDictionaries.iterator(); itr.hasNext(); ) {
-                    String s = itr.next();
+                foreach (var s in UserDictionaries) {
                     String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {
                         found = true;

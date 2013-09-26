@@ -106,8 +106,7 @@ namespace cadencii.vsq
             VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
             VsqTrack vsq_track = this.Track[1];
             int last_clock = -1;
-            for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent ue = itr.next();
+            foreach (var ue in ust.getTrack( 0 ).getNoteEventIterator()) {
                 if ( ue.getLyric() != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
@@ -920,8 +919,7 @@ namespace cadencii.vsq
                     if ( com.Count > 0 ) {
                         int start_clock = com[ 0 ].Clock;
                         int end_clock = com[ 0 ].Clock;
-                        for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
-                            BPPair item = itr.next();
+                        foreach (var item in com) {
                             start_clock = Math.Min( start_clock, item.Clock );
                             end_clock = Math.Max( end_clock, item.Clock );
                         }
@@ -998,8 +996,7 @@ namespace cadencii.vsq
                             }
                         }
                     }
-                    for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
-                        BPPair item = itr.next();
+                    foreach (var item in com) {
                         target_list.add( item.Clock, item.Value );
                     }
                 }
@@ -1083,8 +1080,7 @@ namespace cadencii.vsq
                         if ( com.Count > 0 ) {
                             int start_clock = com[ 0 ].Clock;
                             int end_clock = com[ 0 ].Clock;
-                            for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
-                                BPPair item = itr.next();
+                            foreach (var item in com) {
                                 start_clock = Math.Min( start_clock, item.Clock );
                                 end_clock = Math.Max( end_clock, item.Clock );
                             }
@@ -1162,8 +1158,7 @@ namespace cadencii.vsq
                                 }
                             }
                         }
-                        for ( Iterator<BPPair> itr = com.iterator(); itr.hasNext(); ) {
-                            BPPair item = itr.next();
+                        foreach (var item in com) {
                             Track[ track ].getCurve( curve ).add( item.Clock, item.Value );
                         }
                     }
@@ -1177,8 +1172,7 @@ namespace cadencii.vsq
                 Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
-                    for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
-                        ValuePair<Integer, Integer> add = itr2.next();
+                    foreach (var add in veloc) {
                         if ( ev.InternalID == add.getKey() ) {
                             inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
                             ev.ID.Dynamics = add.getValue();
@@ -1195,8 +1189,7 @@ namespace cadencii.vsq
                 Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
-                    for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
-                        ValuePair<Integer, Integer> add = itr2.next();
+                    foreach (var add in veloc) {
                         if ( ev.InternalID == add.getKey() ) {
                             inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
                             ev.ID.DEMaccent = add.getValue();
@@ -1213,8 +1206,7 @@ namespace cadencii.vsq
                 Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
-                    for ( Iterator<ValuePair<Integer, Integer>> itr2 = veloc.iterator(); itr2.hasNext(); ) {
-                        ValuePair<Integer, Integer> add = itr2.next();
+                    foreach (var add in veloc) {
                         if ( ev.InternalID == add.getKey() ) {
                             inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
                             ev.ID.DEMdecGainRate = add.getValue();
@@ -1439,8 +1431,7 @@ namespace cadencii.vsq
             inv_add.clear();
 
             // 最初に削除コマンドを実行
-            for ( Iterator<Long> itr = delete.iterator(); itr.hasNext(); ) {
-                long id = itr.next();
+            foreach (var id in delete) {
                 VsqBPPairSearchContext item = list.findElement( id );
                 if ( item.index >= 0 ) {
                     int clock = item.clock;
@@ -1450,8 +1441,7 @@ namespace cadencii.vsq
             }
 
             // 追加コマンドを実行
-            for ( Iterator<Integer> itr = add.keySet().iterator(); itr.hasNext(); ) {
-                int clock = itr.next();
+            foreach (var clock in add.Keys) {
                 VsqBPPair item = add.get( clock );
                 list.addWithID( clock, item.value, item.id );
                 inv_delete.Add( item.id );
@@ -3092,8 +3082,7 @@ namespace cadencii.vsq
         public Vector<MidiEvent> generateTimeSig()
         {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
-            for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
-                TimeSigTableEntry entry = itr.next();
+            foreach (var entry in TimesigTable) {
                 events.Add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
             }
             return events;
@@ -3106,8 +3095,7 @@ namespace cadencii.vsq
         public Vector<MidiEvent> generateTempoChange()
         {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
-            for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
-                TempoTableEntry entry = itr.next();
+            foreach (var entry in TempoTable) {
                 events.Add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                 //last_clock = Math.Max( last_clock, entry.Clock );
             }
@@ -3187,13 +3175,11 @@ namespace cadencii.vsq
                 fs.write( _MASTER_TRACK, 0, _MASTER_TRACK.Length );
 
                 Vector<MidiEvent> events = new Vector<MidiEvent>();
-                for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
-                    TimeSigTableEntry entry = itr.next();
+                foreach (var entry in TimesigTable) {
                     events.Add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
-                for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
-                    TempoTableEntry entry = itr.next();
+                foreach (var entry in TempoTable) {
                     events.Add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
@@ -3202,8 +3188,7 @@ namespace cadencii.vsq
 #endif
                 events.Sort();
                 long last = 0;
-                for ( Iterator<MidiEvent> itr = events.iterator(); itr.hasNext(); ) {
-                    MidiEvent me = itr.next();
+                foreach (var me in events) {
 #if DEBUG
                     sout.println( "me.Clock=" + me.clock );
 #endif

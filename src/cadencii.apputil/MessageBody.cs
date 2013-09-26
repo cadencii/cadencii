@@ -164,8 +164,7 @@ namespace cadencii.apputil {
                     sw.newLine();
                     sw.newLine();
                 }
-                for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ){
-                    String key = itr.next();
+                foreach (var key in list.Keys) {
                     String skey = key.Replace( "\n", "\\n\"\n\"" );
                     MessageBodyEntry mbe = list.get( key );
                     String s = mbe.message;

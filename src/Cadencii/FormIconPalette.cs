@@ -163,8 +163,7 @@ namespace cadencii
 
         private void init()
         {
-            for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                IconDynamicsHandle handle = itr.next();
+            foreach (var handle in VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 )) {
                 String icon_id = handle.IconID;
 #if JAVA
                 DraggableBButton btn = new DraggableBButton();

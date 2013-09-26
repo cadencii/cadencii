@@ -744,8 +744,7 @@ namespace cadencii
                 // 平均ノートナンバーを調べる
                 double sum = 0.0;
                 int count = 0;
-                for (Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
-                    DrawObject dobj = itr.next();
+                foreach (var dobj in objs) {
                     if (dobj.mType == DrawObjectType.Note) {
                         sum += dobj.mNote;
                         count++;
@@ -753,8 +752,7 @@ namespace cadencii
                 }
                 float average_note = (float)(sum / (double)count);
 
-                for (Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
-                    DrawObject dobj = itr.next();
+                foreach (var dobj in objs) {
                     int x = (int)(dobj.mClock * mOverviewPixelPerClock);
                     if (x < 0) {
                         continue;

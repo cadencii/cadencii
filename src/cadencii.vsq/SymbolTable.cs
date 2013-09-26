@@ -263,8 +263,7 @@ using cadencii.java.util;
                 {
                     SymbolTable ret = new SymbolTable();
                     ret.mDict = new TreeMap<String, SymbolTableEntry>();
-                    for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                        String key = itr.next();
+                    foreach (var key in mDict.Keys) {
                         ret.mDict.put( key, (SymbolTableEntry)mDict.get( key ).clone() );
                     }
                     ret.mName = mName;

@@ -211,8 +211,7 @@ namespace cadencii
                         queue.param.Add( pe );
 
                         // PITを順次追加
-                        for ( Iterator<Integer> itr3 = pit_change.keySet().iterator(); itr3.hasNext(); ) {
-                            Integer clock = itr3.next();
+                        foreach (var clock in pit_change.Keys) {
                             if ( clock_start <= clock && clock <= clock_end ) {
                                 float pvalue = pit_change.get( clock );
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
@@ -271,8 +270,7 @@ namespace cadencii
                     int clock = pit.getKeyClock( i );
                     if ( clock_start <= clock && clock <= clock_end ) {
                         boolean contains = false;
-                        for ( Iterator<Point> itr = pit_send.iterator(); itr.hasNext(); ) {
-                            Point p = itr.next();
+                        foreach (var p in pit_send) {
                             if ( p.x <= clock && clock <= p.y ) {
                                 contains = true;
                                 break;

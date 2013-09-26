@@ -127,8 +127,8 @@ namespace cadencii
             EditedZone zone = new EditedZone();
             Utility.compareList( zone, new VsqBPListComparisonContext( list, src ) );
             Vector<EditedZoneUnit> zoneUnits = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                zoneUnits.Add( itr.next() );
+            foreach (var item in zone.iterator()) {
+                zoneUnits.Add( item );
             }
             AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( run ) );
 

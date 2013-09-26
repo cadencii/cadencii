@@ -20,6 +20,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -112,10 +113,10 @@ namespace cadencii.vsq
             m_ids.Clear();
         }
 
-        public Iterator<VsqEvent> iterator()
+        public IEnumerable<VsqEvent> iterator()
         {
             updateIDList();
-            return Events.iterator();
+            return Events;
         }
 
         public int add( VsqEvent item )

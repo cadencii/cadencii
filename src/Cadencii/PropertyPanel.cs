@@ -92,8 +92,7 @@ namespace cadencii
         {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
-                for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePairOfStringBoolean v = itr.next();
+                foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     String key = v.getKey();
                     if ( key == null ) {
                         key = "";
@@ -132,8 +131,7 @@ namespace cadencii
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 boolean found = false;
-                for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePairOfStringBoolean v = itr.next();
+                foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     String key = v.getKey();
                     if ( key == null ) {
                         continue;
@@ -163,8 +161,7 @@ namespace cadencii
 
             Object[] objs = new Object[AppManager.itemSelection.getEventCount()];
             int i = -1;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 i++;
                 objs[i] = item;
             }

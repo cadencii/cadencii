@@ -303,8 +303,7 @@ namespace cadencii {
                 }
             }
 
-            for ( Iterator<SingerConfig> itr = AppManager.editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = itr.next();
+            foreach (var sc in AppManager.editorConfig.UtauSingers) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = sc.VOICENAME;
                     first_found_renderer = VsqFileEx.RENDERER_UTU0;

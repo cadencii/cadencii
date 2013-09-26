@@ -243,9 +243,8 @@ namespace cadencii
 
                 EventQueueSequence list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
-                for ( Iterator<Integer> itr2 = list.keyIterator(); itr2.hasNext(); ) {
+                foreach (var clock in list.keyIterator()) {
                     // まず直前までの分を合成
-                    Integer clock = itr2.next();
 #if DEBUG
                     log.WriteLine( "-------------------------------------------------------" );
                     sout.println( "AquesToneWaveGenerator#begin;     clock=" + clock );
@@ -290,8 +289,7 @@ namespace cadencii
                     }
                     // parameterの変更
                     if ( queue.param.Count > 0 ) {
-                        for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
-                            ParameterEvent pe = itr3.next();
+                        foreach (var pe in queue.param) {
 #if DEBUG
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value );
 #endif

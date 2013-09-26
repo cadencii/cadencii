@@ -14,6 +14,7 @@
  */
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -84,8 +85,7 @@ namespace cadencii {
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                for ( Iterator<String> itr = scripts.keySet().iterator(); itr.hasNext(); ) {
-                    String id = itr.next();
+                foreach (var id in scripts.Keys) {
                     if ( !added.Contains( id ) ) {
                         scripts.remove( id );
                         changed = true;
@@ -190,8 +190,8 @@ namespace cadencii {
         /// 読み込まれたスクリプトのIDを順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static Iterator<String> getScriptIdIterator() {
-            return scripts.keySet().iterator();
+        public static IEnumerable<String> getScriptIdIterator() {
+            return scripts.Keys;
         }
 
         /// <summary>

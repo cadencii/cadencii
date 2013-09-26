@@ -477,10 +477,8 @@ namespace cadencii
                     if ( list == null ) {
                         continue;
                     }
-                    for ( Iterator<BezierChain> itr = list.iterator(); itr.hasNext(); ) {
-                        BezierChain chain = itr.next();
-                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
-                            BezierPoint point = itr2.next();
+                    foreach (var chain in list) {
+                        foreach (var point in chain.points) {
                             PointD bse = new PointD( tempo.getClockFromSec( this.getSecFromClock( point.getBase().getX() ) - premeasure_sec_target + premeasure_sec_tempo ),
                                                      point.getBase().getY() );
                             double rx = point.getBase().getX() + point.controlRight.getX();
@@ -513,8 +511,7 @@ namespace cadencii
             // 古いのから情報をコピー
             VsqFile tempo = new VsqFile( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
             tempo.TempoTable.Clear();
-            for ( Iterator<TempoTableEntry> itr = vsq.TempoTable.iterator(); itr.hasNext(); ) {
-                TempoTableEntry item = itr.next();
+            foreach (var item in vsq.TempoTable) {
                 tempo.TempoTable.Add( item );
             }
             tempo.updateTempoInfo();
@@ -669,8 +666,7 @@ namespace cadencii
                     int list_count = list.Count;
                     for ( int j = 0; j < list_count; j++ ) {
                         BezierChain chain = list[ j ];
-                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
-                            BezierPoint point = itr2.next();
+                        foreach (var point in chain.points) {
                             PointD bse = new PointD( vsq.getClockFromSec( vsq.getSecFromClock( point.getBase().getX() ) + sec ),
                                                      point.getBase().getY() );
                             double rx = point.getBase().getX() + point.controlRight.getX();
@@ -885,12 +881,11 @@ namespace cadencii
             ret.args = new Object[2];
             ret.args[0] = track;
             TreeMap<CurveType, Vector<BezierChain>> copy = new TreeMap<CurveType, Vector<BezierChain>>();
-            for ( Iterator<CurveType> itr = attached_curves.keySet().iterator(); itr.hasNext(); ) {
-                CurveType ct = itr.next();
+            foreach (var ct in attached_curves.Keys) {
                 Vector<BezierChain> list = attached_curves.get( ct );
                 Vector<BezierChain> copy_list = new Vector<BezierChain>();
-                for ( Iterator<BezierChain> itr2 = list.iterator(); itr2.hasNext(); ) {
-                    copy_list.Add( (BezierChain)(itr2.next()).clone() );
+                foreach (var chain in list) {
+                    copy_list.Add( (BezierChain)chain.clone() );
                 }
                 copy.put( ct, copy_list );
             }
@@ -1215,8 +1210,7 @@ namespace cadencii
                     int track = (Integer)command.args[0];
                     TreeMap<CurveType, Vector<BezierChain>> curves = (TreeMap<CurveType, Vector<BezierChain>>)command.args[1];
                     TreeMap<CurveType, Vector<BezierChain>> inv = new TreeMap<CurveType, Vector<BezierChain>>();
-                    for ( Iterator<CurveType> itr = curves.keySet().iterator(); itr.hasNext(); ) {
-                        CurveType ct = itr.next();
+                    foreach (var ct in curves.Keys) {
                         Vector<BezierChain> chains = new Vector<BezierChain>();
                         Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.Count; i++ ) {
@@ -1225,8 +1219,7 @@ namespace cadencii
                         inv.put( ct, chains );
 
                         this.AttachedCurves.get( track - 1 ).get( ct ).Clear();
-                        for ( Iterator<BezierChain> itr2 = curves.get( ct ).iterator(); itr2.hasNext(); ) {
-                            BezierChain bc = itr2.next();
+                        foreach (var bc in curves.get( ct )) {
                             this.AttachedCurves.get( track - 1 ).get( ct ).Add( bc );
                         }
                     }
@@ -1467,8 +1460,7 @@ namespace cadencii
                         ret.AttachedCurves.add( new BezierCurves() );
                     }
                 } else {
-                    for ( Iterator<BezierCurves> itr = ret.AttachedCurves.getCurves().iterator(); itr.hasNext(); ) {
-                        BezierCurves bc = itr.next();
+                    foreach (var bc in ret.AttachedCurves.getCurves()) {
                         for ( int k = 0; k < Utility.CURVE_USAGE.Length; k++ ) {
                             CurveType ct = Utility.CURVE_USAGE[k];
                             Vector<BezierChain> list = bc.get( ct );

@@ -956,8 +956,7 @@ namespace cadencii
 #if ENABLE_SCRIPT
             updateScriptShortcut();
             // RunOnceという名前のスクリプトがあれば，そいつを実行
-            for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
-                String id = itr.next();
+            foreach (var id in ScriptServer.getScriptIdIterator()) {
                 if ( PortUtil.getFileNameWithoutExtension( id ).ToLower() == "runonce" ) {
                     ScriptServer.invokeScript( id, AppManager.getVsqFile() );
                     break;
@@ -1668,8 +1667,7 @@ namespace cadencii
             int selected = AppManager.getSelected();
 
             Vector<VsqEvent> items = new Vector<VsqEvent>();
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 if ( item.editing.ID.type != VsqIDType.Anote &&
                      item.editing.ID.type != VsqIDType.Aicon ) {
                     continue;
@@ -1713,8 +1711,7 @@ namespace cadencii
             AppManager.editHistory.register( vsq.executeCommand( run ) );
 
             // 編集されたものを再選択する
-            for ( Iterator<VsqEvent> itr = items.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in items) {
                 AppManager.itemSelection.addEvent( item.InternalID );
             }
 
@@ -1743,8 +1740,7 @@ namespace cadencii
             int note_min = 129;
             int clock_max = int.MinValue;
             int clock_min = int.MaxValue;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 if ( item.editing.ID.type != VsqIDType.Anote ) {
                     continue;
                 }
@@ -1786,8 +1782,7 @@ namespace cadencii
             AppManager.editHistory.register( vsq.executeCommand( run ) );
 
             // 編集されたものを再選択する
-            for ( Iterator<VsqEvent> itr = items.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in items) {
                 AppManager.itemSelection.addEvent( item.InternalID );
             }
 
@@ -2216,8 +2211,7 @@ namespace cadencii
             int min_clock = int.MaxValue;
             int internal_id = -1;
             VsqIDType type = VsqIDType.Unknown;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 if ( item.editing.Clock <= min_clock ) {
                     min_clock = item.editing.Clock;
                     internal_id = item.original.InternalID;
@@ -2272,8 +2266,7 @@ namespace cadencii
             int max_clock = int.MinValue;
             int internal_id = -1;
             VsqIDType type = VsqIDType.Unknown;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 if ( max_clock <= item.editing.Clock ) {
                     max_clock = item.editing.Clock;
                     internal_id = item.original.InternalID;
@@ -2832,14 +2825,12 @@ namespace cadencii
         {
             int count = 0;
             int num_has_dialog = 0;
-            for ( Iterator<System.Windows.Forms.ToolBarButton> itr = mPaletteTools.iterator(); itr.hasNext(); ) {
-                System.Windows.Forms.ToolBarButton item = itr.next();
+            foreach (var item in mPaletteTools) {
                 toolBarTool.Buttons.Add( item );
             }
             String lang = Messaging.getLanguage();
             boolean first = true;
-            for ( Iterator<String> itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
-                String id = itr.next();
+            foreach (var id in PaletteToolServer.loadedTools.Keys) {
                 count++;
                 IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
 #if !JAVA
@@ -2946,8 +2937,7 @@ namespace cadencii
             if ( copied_curve.size() == 1 ) {
                 // 1種類のカーブがコピーされている場合→コピーされているカーブの種類と、現在選択されているカーブの種類とで、最大値と最小値が一致している場合のみ、ペースト可能
                 CurveType ct = CurveType.Empty;
-                for ( Iterator<CurveType> itr = copied_curve.keySet().iterator(); itr.hasNext(); ) {
-                    CurveType c = itr.next();
+                foreach (var c in copied_curve.Keys) {
                     ct = c;
                 }
                 CurveType selected = trackSelector.getSelectedCurve();
@@ -3258,8 +3248,7 @@ namespace cadencii
                     // ピックアップした発音記号をスペース区切りで結合
                     phonetic_symbol[0] = "";
                     boolean first = true;
-                    for ( Iterator<String> itr = list.iterator(); itr.hasNext(); ) {
-                        String s = itr.next();
+                    foreach (var s in list) {
                         if ( first ) {
                             phonetic_symbol[0] += s;
                             first = false;
@@ -3506,8 +3495,7 @@ namespace cadencii
 
             // スクリプトごとのメニューを追加
             int count = 0;
-            for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
-                String id = itr.next();
+            foreach (var id in ScriptServer.getScriptIdIterator()) {
                 if ( PortUtil.getFileNameWithoutExtension( id ).ToLower() == "runonce" ) {
                     continue;
                 }
@@ -3910,8 +3898,7 @@ namespace cadencii
             TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
             #region menuStripMain
             ByRef<Object> parent = new ByRef<Object>( null );
-            for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
-                String key = itr.next();
+            foreach (var key in dict.Keys) {
                 if ( key == "menuEditCopy" || key == "menuEditCut" || key == "menuEditPaste" || key == "SpecialShortcutGoToFirst" ) {
                     continue;
                 }
@@ -4828,8 +4815,7 @@ namespace cadencii
                 }
             }
 
-            for ( Iterator<String> itr = PaletteToolServer.loadedTools.keySet().iterator(); itr.hasNext(); ) {
-                String id = (String)itr.next();
+            foreach (var id in PaletteToolServer.loadedTools.Keys) {
                 IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                 ipt.applyLanguage( Messaging.getLanguage() );
             }
@@ -5172,8 +5158,7 @@ namespace cadencii
             if ( AppManager.itemSelection.getEventCount() > 0 ) {
                 Vector<Integer> ids = new Vector<Integer>();
                 boolean contains_aicon = false;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry ev = itr.next();
+                foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                     ids.Add( ev.original.InternalID );
                     if ( ev.original.ID.type == VsqIDType.Aicon ) {
                         contains_aicon = true;
@@ -5233,8 +5218,7 @@ namespace cadencii
                 Refresh();
             } else if ( AppManager.itemSelection.getTempoCount() > 0 ) {
                 Vector<Integer> clocks = new Vector<Integer>();
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                     if ( item.getKey() <= 0 ) {
                         String msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
@@ -5269,8 +5253,7 @@ namespace cadencii
                 int[] numerators = new int[AppManager.itemSelection.getTimesigCount()];
                 int[] denominators = new int[AppManager.itemSelection.getTimesigCount()];
                 int count = -1;
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.itemSelection.getTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTimesigIterator()) {
                     int key = item.getKey();
                     SelectedTimesigEntry value = item.getValue();
                     count++;
@@ -5386,8 +5369,7 @@ namespace cadencii
                 // 拍子変更の貼付けを実行
                 int bar_count = AppManager.getVsqFile().getBarCountFromClock( clock );
                 int min_barcount = copied_timesig[ 0 ].BarCount;
-                for ( Iterator<TimeSigTableEntry> itr = copied_timesig.iterator(); itr.hasNext(); ) {
-                    TimeSigTableEntry tste = itr.next();
+                foreach (var tste in copied_timesig) {
                     min_barcount = Math.Min( min_barcount, tste.BarCount );
                 }
                 int dbarcount = bar_count - min_barcount;
@@ -5420,8 +5402,7 @@ namespace cadencii
                 int dclock = clock - copy_started_clock;
 
                 TreeMap<String, VsqBPList> work = new TreeMap<String, VsqBPList>();
-                for ( Iterator<CurveType> itr = copied_curve.keySet().iterator(); itr.hasNext(); ) {
-                    CurveType curve = itr.next();
+                foreach (var curve in copied_curve.Keys) {
                     VsqBPList list = copied_curve.get( curve );
 #if DEBUG
                     AppManager.debugWriteLine( "FormMain#pasteEvent; curve=" + curve );
@@ -5474,8 +5455,7 @@ namespace cadencii
                     String[] curves = new String[work.size()];
                     VsqBPList[] bplists = new VsqBPList[work.size()];
                     int count = -1;
-                    for ( Iterator<String> itr = work.keySet().iterator(); itr.hasNext(); ) {
-                        String s = itr.next();
+                    foreach (var s in work.Keys) {
                         count++;
                         curves[count] = s;
                         bplists[count] = work.get( s );
@@ -5495,23 +5475,19 @@ namespace cadencii
                 int dclock = clock - copy_started_clock;
                 BezierCurves attached_curve = (BezierCurves)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).clone();
                 TreeMap<CurveType, Vector<BezierChain>> command_arg = new TreeMap<CurveType, Vector<BezierChain>>();
-                for ( Iterator<CurveType> itr = copied_bezier.keySet().iterator(); itr.hasNext(); ) {
-                    CurveType curve = itr.next();
+                foreach (var curve in copied_bezier.Keys) {
                     if ( curve.isScalar() ) {
                         continue;
                     }
-                    for ( Iterator<BezierChain> itr2 = copied_bezier.get( curve ).iterator(); itr2.hasNext(); ) {
-                        BezierChain bc = itr2.next();
+                    foreach (var bc in copied_bezier.get( curve )) {
                         BezierChain bc_copy = (BezierChain)bc.clone();
-                        for ( Iterator<BezierPoint> itr3 = bc_copy.points.iterator(); itr3.hasNext(); ) {
-                            BezierPoint bp = itr3.next();
+                        foreach (var bp in bc_copy.points) {
                             bp.setBase( new PointD( bp.getBase().getX() + dclock, bp.getBase().getY() ) );
                         }
                         attached_curve.mergeBezierChain( curve, bc_copy );
                     }
                     Vector<BezierChain> arg = new Vector<BezierChain>();
-                    for ( Iterator<BezierChain> itr2 = attached_curve.get( curve ).iterator(); itr2.hasNext(); ) {
-                        BezierChain bc = itr2.next();
+                    foreach (var bc in attached_curve.get( curve )) {
                         arg.Add( bc );
                     }
                     command_arg.put( curve, arg );
@@ -5612,8 +5588,7 @@ namespace cadencii
 
                 if ( AppManager.itemSelection.getEventCount() > 0 ) {
                     Vector<VsqEvent> list = new Vector<VsqEvent>();
-                    for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry item = itr.next();
+                    foreach (var item in AppManager.itemSelection.getEventIterator()) {
                         if ( item.original.ID.type == VsqIDType.Anote ) {
                             min = Math.Min( item.original.Clock, min );
                             list.Add( (VsqEvent)item.original.clone() );
@@ -5624,16 +5599,14 @@ namespace cadencii
                 AppManager.clipboard.setClipboard( ce );
             } else if ( AppManager.itemSelection.getEventCount() > 0 ) {
                 Vector<VsqEvent> list = new Vector<VsqEvent>();
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                     min = Math.Min( item.original.Clock, min );
                     list.Add( (VsqEvent)item.original.clone() );
                 }
                 AppManager.clipboard.setCopiedEvent( list, min );
             } else if ( AppManager.itemSelection.getTempoCount() > 0 ) {
                 Vector<TempoTableEntry> list = new Vector<TempoTableEntry>();
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                     int key = item.getKey();
                     SelectedTempoEntry value = item.getValue();
                     min = Math.Min( value.original.Clock, min );
@@ -5642,8 +5615,7 @@ namespace cadencii
                 AppManager.clipboard.setCopiedTempo( list, min );
             } else if ( AppManager.itemSelection.getTimesigCount() > 0 ) {
                 Vector<TimeSigTableEntry> list = new Vector<TimeSigTableEntry>();
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.itemSelection.getTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTimesigIterator()) {
                     int key = item.getKey();
                     SelectedTimesigEntry value = item.getValue();
                     min = Math.Min( value.original.Clock, min );
@@ -5691,8 +5663,7 @@ namespace cadencii
                     VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( curve.getName() );
                     if ( list != null ) {
                         VsqBPList tmp_bplist = new VsqBPList( curve.getName(), curve.getDefault(), curve.getMinimum(), curve.getMaximum() );
-                        for ( Iterator<Long> itr = AppManager.itemSelection.getPointIDIterator(); itr.hasNext(); ) {
-                            long id = itr.next();
+                        foreach (var id in AppManager.itemSelection.getPointIDIterator()) {
                             VsqBPPairSearchContext cxt = list.findElement( id );
                             if ( cxt.index >= 0 ) {
                                 tmp_bplist.add( cxt.clock, cxt.point.value );
@@ -5720,8 +5691,7 @@ namespace cadencii
             boolean other_command_executed = false;
             if ( AppManager.itemSelection.getEventCount() > 0 ) {
                 Vector<Integer> ids = new Vector<Integer>();
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                     ids.Add( item.original.InternalID );
                 }
                 delete_event = VsqCommand.generateCommandEventDeleteRange( AppManager.getSelected(), ids );
@@ -5767,8 +5737,7 @@ namespace cadencii
                         }
                     } else {
                         // 普通の範囲選択
-                        for ( Iterator<Long> itr = AppManager.itemSelection.getPointIDIterator(); itr.hasNext(); ) {
-                            long id = (Long)itr.next();
+                        foreach (var id in AppManager.itemSelection.getPointIDIterator()) {
                             delete.Add( id );
                         }
                     }
@@ -5804,8 +5773,7 @@ namespace cadencii
                 int count = -1;
                 int[] dum = new int[AppManager.itemSelection.getTempoCount()];
                 int[] clocks = new int[AppManager.itemSelection.getTempoCount()];
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                     int key = item.getKey();
                     SelectedTempoEntry value = item.getValue();
                     count++;
@@ -5822,8 +5790,7 @@ namespace cadencii
                 int[] numerators = new int[AppManager.itemSelection.getTimesigCount()];
                 int[] denominators = new int[AppManager.itemSelection.getTimesigCount()];
                 int count = -1;
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.itemSelection.getTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTimesigIterator()) {
                     int key = item.getKey();
                     SelectedTimesigEntry value = item.getValue();
                     count++;
@@ -5856,8 +5823,7 @@ namespace cadencii
             Vector<BezierChain> copied_chain
         )
         {
-            for ( Iterator<BezierChain> itr = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( curve_type ).iterator(); itr.hasNext(); ) {
-                BezierChain bc = itr.next();
+            foreach (var bc in AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( curve_type )) {
                 int len = bc.points.Count;
                 if ( len < 2 ) {
                     continue;
@@ -7808,8 +7774,7 @@ namespace cadencii
 #if ENABLE_SCRIPT
                     } else if ( AppManager.getSelectedTool() == EditTool.PALETTE_TOOL ) {
                         Vector<Integer> internal_ids = new Vector<Integer>();
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry see = itr.next();
+                        foreach (var see in AppManager.itemSelection.getEventIterator()) {
                             internal_ids.Add( see.original.InternalID );
                         }
                         BMouseButtons btn = e.Button;
@@ -7947,8 +7912,7 @@ namespace cadencii
                         AppManager.itemSelection.clearEvent();
                         AppManager.itemSelection.addEvent( item.InternalID );
                         Vector<Integer> internal_ids = new Vector<Integer>();
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry see = itr.next();
+                        foreach (var see in AppManager.itemSelection.getEventIterator()) {
                             internal_ids.Add( see.original.InternalID );
                         }
                         boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
@@ -8004,8 +7968,7 @@ namespace cadencii
                 if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
                     int stdx = controller.getStartToDrawX();
                     int stdy = controller.getStartToDrawY();
-                    for ( Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
-                        DrawObject dobj = itr.next();
+                    foreach (var dobj in AppManager.mDrawObjects[selected - 1]) {
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
                             dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
@@ -8412,9 +8375,7 @@ namespace cadencii
                     if ( selected_tool != EditTool.ERASER && e.Button == BMouseButtons.Left ) {
 #endif
                         int min_width = 4 * _EDIT_HANDLE_WIDTH;
-                        for ( Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
-                            DrawObject dobj = itr.next();
-
+                        foreach (var dobj in AppManager.mDrawObjects[selected - 1]) {
                             int edit_handle_width = _EDIT_HANDLE_WIDTH;
                             if ( dobj.mRectangleInPixel.width < min_width ) {
                                 edit_handle_width = dobj.mRectangleInPixel.width / 4;
@@ -8748,8 +8709,7 @@ namespace cadencii
                         Rectangle rect = new Rectangle(tx, ty, twidth, theight);
                         Vector<Integer> add_required = new Vector<Integer>();
                         int internal_id = -1;
-                        for (Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
-                            DrawObject dobj = itr.next();
+                        foreach (var dobj in AppManager.mDrawObjects[selected - 1]) {
                             int x0 = dobj.mRectangleInPixel.x + AppManager.keyWidth;
                             int x1 = dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width;
                             int y0 = dobj.mRectangleInPixel.y;
@@ -8788,8 +8748,7 @@ namespace cadencii
                             }
                         }
                         Vector<Integer> remove_required = new Vector<Integer>();
-                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry selectedEvent = itr.next();
+                        foreach (var selectedEvent in AppManager.itemSelection.getEventIterator()) {
                             if (!add_required.Contains(selectedEvent.original.InternalID)) {
                                 remove_required.Add(selectedEvent.original.InternalID);
                             }
@@ -8797,12 +8756,7 @@ namespace cadencii
                         if (remove_required.Count > 0) {
                             AppManager.itemSelection.removeEventRange(PortUtil.convertIntArray(remove_required.ToArray()));
                         }
-                        for (Iterator<Integer> itr = add_required.iterator(); itr.hasNext(); ) {
-                            int id = itr.next();
-                            if (AppManager.itemSelection.isEventContains(selected, id)) {
-                                itr.remove();
-                            }
-                        }
+                        add_required.RemoveAll((id) => AppManager.itemSelection.isEventContains(selected, id));
                         AppManager.itemSelection.addEventAll(add_required);
                     }
                 }
@@ -8875,8 +8829,7 @@ namespace cadencii
 
                         AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart() + dclock;
 
-                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry item = itr.next();
+                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                             int new_clock = item.original.Clock + dclock;
                             int new_note = item.original.ID.Note + dnote;
                             item.editing.Clock = new_clock;
@@ -8890,8 +8843,7 @@ namespace cadencii
                     VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                     int clock_init = original.Clock;
                     int dclock = clock - clock_init;
-                    for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry item = itr.next();
+                    foreach (var item in AppManager.itemSelection.getEventIterator()) {
                         int end_clock = item.original.Clock + item.original.ID.getLength();
                         int new_clock = item.original.Clock + dclock;
                         int new_length = doQuantize(end_clock - new_clock, unit);
@@ -8913,8 +8865,7 @@ namespace cadencii
 
                     VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                     int dlength = clock - (original.Clock + original.ID.getLength());
-                    for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry item = itr.next();
+                    foreach (var item in AppManager.itemSelection.getEventIterator()) {
                         int new_length = doQuantize(item.original.ID.getLength() + dlength, unit);
                         if (new_length <= 0) {
                             new_length = unit;
@@ -8980,8 +8931,7 @@ namespace cadencii
                     boolean split_cursor = false;
                     boolean hand_cursor = false;
                     int min_width = 4 * _EDIT_HANDLE_WIDTH;
-                    for (Iterator<DrawObject> itr = AppManager.mDrawObjects[selected - 1].iterator(); itr.hasNext(); ) {
-                        DrawObject dobj = itr.next();
+                    foreach (var dobj in AppManager.mDrawObjects[selected - 1]) {
                         Rectangle rc;
                         if (dobj.mType != DrawObjectType.Dynaff) {
                             int edit_handle_width = _EDIT_HANDLE_WIDTH;
@@ -9131,8 +9081,7 @@ namespace cadencii
                                 remove.Add( clock );
                             }
                         }
-                        for ( Iterator<Integer> itr2 = remove.iterator(); itr2.hasNext(); ) {
-                            int clock = itr2.next();
+                        foreach (var clock in remove) {
                             pit.remove( clock );
                         }
                         remove = null;
@@ -9254,8 +9203,7 @@ namespace cadencii
                         boolean contains_dynamics = false; // Dynaff, Crescend, Desrecendが含まれているかどうか
                         VsqTrack copied = (VsqTrack)vsq_track.clone();
                         int clockAtPremeasure = vsq.getPreMeasureClocks();
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry ev = itr.next();
+                        foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                             int internal_id = ev.original.InternalID;
                             if ( ev.editing.Clock < clockAtPremeasure ) {
                                 out_of_range = true;
@@ -9316,8 +9264,7 @@ namespace cadencii
                     VsqID[] values = new VsqID[count];
                     int i = -1;
                     boolean contains_aicon = false; // dynaff, crescend, decrescendが含まれていればtrue
-                    for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry ev = itr.next();
+                    foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                         if ( ev.original.ID.type == VsqIDType.Aicon ) {
                             contains_aicon = true;
                         }
@@ -9404,8 +9351,7 @@ namespace cadencii
                 // 音符イベントを移動
                 VsqTrack work = (VsqTrack)vsq_track.clone();
                 int k = 0;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                     int internal_id = item.original.InternalID;
                     selected_ids[k] = internal_id;
                     k++;
@@ -12088,8 +12034,7 @@ namespace cadencii
                 replace.updateTimesigInfo();
             }
 
-            for ( Iterator<Integer> itr = add_track.iterator(); itr.hasNext(); ) {
-                int track = itr.next();
+            foreach (var track in add_track) {
                 if ( replace.Track.Count + 1 >= AppManager.MAX_NUM_TRACK ) {
                     break;
                 }
@@ -12140,10 +12085,8 @@ namespace cadencii
                         if ( list == null ) {
                             continue;
                         }
-                        for ( Iterator<BezierChain> itr2 = list.iterator(); itr2.hasNext(); ) {
-                            BezierChain chain = itr2.next();
-                            for ( Iterator<BezierPoint> itr3 = chain.points.iterator(); itr3.hasNext(); ) {
-                                BezierPoint point = itr3.next();
+                        foreach (var chain in list) {
+                            foreach (var point in chain.points) {
                                 PointD bse = new PointD( replace.getClockFromSec( vsq.getSecFromClock( point.getBase().getX() ) - premeasure_sec_vsq + premeasure_sec_replace ),
                                                          point.getBase().getY() );
                                 PointD ctrl_r = new PointD( replace.getClockFromSec( vsq.getSecFromClock( point.controlLeft.getX() ) - premeasure_sec_vsq + premeasure_sec_replace ),
@@ -12635,8 +12578,7 @@ namespace cadencii
                     AppManager.editorConfig.WavtoolWithWine = mDialogPreference.isWavtoolWithWine();
 
                     AppManager.editorConfig.UtauSingers.Clear();
-                    for ( Iterator<SingerConfig> itr = mDialogPreference.getUtausingers().iterator(); itr.hasNext(); ) {
-                        SingerConfig sc = itr.next();
+                    foreach (var sc in mDialogPreference.getUtausingers()) {
                         AppManager.editorConfig.UtauSingers.Add( (SingerConfig)sc.clone() );
                     }
                     AppManager.reloadUtauVoiceDB();
@@ -12784,8 +12726,7 @@ namespace cadencii
             TreeMap<String, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
 #if DEBUG
             sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
-            for( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ){
-                String name = itr.next();
+            foreach (var name in configured.Keys){
                 Keys[] keys = configured.get( name );
                 String disp = Utility.getShortcutDisplayString( keys );
                 sout.println( "    " + name + " -> " + disp );
@@ -12805,8 +12746,7 @@ namespace cadencii
                 }
             }
 
-            for ( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ) {
-                String name = itr.next();
+            foreach (var name in configured.Keys) {
                 ByRef<Object> owner = new ByRef<Object>( null );
                 Object menu = searchMenuItemFromName( name, owner );
 #if DEBUG
@@ -12874,8 +12814,7 @@ namespace cadencii
                 DialogResult dr = AppManager.showModalDialog( form, this );
                 if ( dr == DialogResult.OK ) {
                     TreeMap<String, ValuePair<String, Keys[]>> res = form.getResult();
-                    for ( Iterator<String> itr = res.keySet().iterator(); itr.hasNext(); ) {
-                        String display = itr.next();
+                    foreach (var display in res.Keys) {
                         String name = res.get( display ).getKey();
                         Keys[] keys = res.get( display ).getValue();
                         boolean found = false;
@@ -13006,7 +12945,7 @@ namespace cadencii
             if ( num <= 0 ) {
                 return;
             }
-            SelectedEventEntry item = AppManager.itemSelection.getEventIterator().next();
+            SelectedEventEntry item = AppManager.itemSelection.getEventIterator().First();
             if ( item.original.ID.type != VsqIDType.Anote ) {
                 return;
             }
@@ -13082,8 +13021,7 @@ namespace cadencii
 
             // 選択状態にあるイベントを取り出す
             Vector<VsqEvent> replace = new Vector<VsqEvent>();
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry sel_item = itr.next();
+            foreach (var sel_item in AppManager.itemSelection.getEventIterator()) {
                 VsqEvent item = sel_item.original;
                 if ( item.ID.type != VsqIDType.Anote ) {
                     continue;
@@ -13155,8 +13093,7 @@ namespace cadencii
                 int[] list = new int[AppManager.itemSelection.getEventCount()];
                 for ( int i = 0; i < AppManager.getVsqFile().Track[AppManager.getSelected()].getEventCount(); i++ ) {
                     int count = -1;
-                    for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                        SelectedEventEntry item = itr.next();
+                    foreach (var item in AppManager.itemSelection.getEventIterator()) {
                         int key = item.original.InternalID;
                         count++;
                         if ( key == AppManager.getVsqFile().Track[AppManager.getSelected()].getEvent( i ).InternalID ) {
@@ -13202,8 +13139,7 @@ namespace cadencii
             VsqID[] ids = new VsqID[count];
             int[] internalids = new int[count];
             int i = -1;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 i++;
                 clocks[i] = item.original.Clock;
                 ids[i] = (VsqID)item.original.ID.clone();
@@ -13273,8 +13209,7 @@ namespace cadencii
                             }
 
                             Vector<BezierChain> list = new Vector<BezierChain>();
-                            for ( Iterator<BezierChain> itr = temp.AttachedCurves.get( track - 1 ).get( ct ).iterator(); itr.hasNext(); ) {
-                                BezierChain bc = itr.next();
+                            foreach (var bc in temp.AttachedCurves.get( track - 1 ).get( ct )) {
                                 if ( bc.size() < 2 ) {
                                     continue;
                                 }
@@ -13482,8 +13417,7 @@ namespace cadencii
                             }
 
                             Vector<BezierChain> list = new Vector<BezierChain>();
-                            for ( Iterator<BezierChain> itr = temp.AttachedCurves.get( track - 1 ).get( ct ).iterator(); itr.hasNext(); ) {
-                                BezierChain bc = itr.next();
+                            foreach (var bc in temp.AttachedCurves.get( track - 1 ).get( ct )) {
                                 if ( bc.size() < 2 ) {
                                     continue;
                                 }
@@ -14599,8 +14533,7 @@ namespace cadencii
                     int[] tempos = new int[count];
                     int i = -1;
                     boolean contains_first_tempo = false;
-                    for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
-                        ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                    foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                         int clock = item.getKey();
                         i++;
                         clocks[i] = clock;
@@ -14629,8 +14562,7 @@ namespace cadencii
                     int[] denominators = new int[count];
                     int i = -1;
                     boolean contains_first_bar = false;
-                    for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.itemSelection.getTimesigIterator(); itr.hasNext(); ) {
-                        ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                    foreach (var item in AppManager.itemSelection.getTimesigIterator()) {
                         int bar = item.getKey();
                         i++;
                         barcounts[i] = bar;
@@ -14669,8 +14601,7 @@ namespace cadencii
                 clock = doQuantize( clock, step );
                 int last_clock = AppManager.itemSelection.getLastTempoClock();
                 int dclock = clock - last_clock;
-                for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.itemSelection.getTempoIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTempoEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                     int key = item.getKey();
                     AppManager.itemSelection.getTempo( key ).editing.Clock = AppManager.itemSelection.getTempo( key ).original.Clock + dclock;
                 }
@@ -14680,8 +14611,7 @@ namespace cadencii
                 int barcount = vsq.getBarCountFromClock( clock );
                 int last_barcount = AppManager.itemSelection.getLastTimesigBarcount();
                 int dbarcount = barcount - last_barcount;
-                for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.itemSelection.getTimesigIterator(); itr.hasNext(); ) {
-                    ValuePair<Integer, SelectedTimesigEntry> item = itr.next();
+                foreach (var item in AppManager.itemSelection.getTimesigIterator()) {
                     int bar = item.getKey();
                     AppManager.itemSelection.getTimesig( bar ).editing.BarCount = AppManager.itemSelection.getTimesig( bar ).original.BarCount + dbarcount;
                 }
@@ -15777,8 +15707,7 @@ namespace cadencii
 
         public void cMenuTrackSelectorDeleteBezier_Click( Object sender, EventArgs e )
         {
-            for ( Iterator<SelectedBezierPoint> itr = AppManager.itemSelection.getBezierIterator(); itr.hasNext(); ) {
-                SelectedBezierPoint sbp = itr.next();
+            foreach (var sbp in AppManager.itemSelection.getBezierIterator()) {
                 int chain_id = sbp.chainID;
                 int point_id = sbp.pointID;
                 VsqFileEx vsq = AppManager.getVsqFile();
@@ -16256,12 +16185,12 @@ namespace cadencii
             }
 
             // 選択状態のアイテムを取得
-            Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator();
-            if ( !itr.hasNext() ) {
+            IEnumerable<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator();
+            if ( itr.Count() == 0 ) {
                 // アイテムがないのでbailout
                 return;
             }
-            VsqEvent ev = itr.next().original;
+            VsqEvent ev = itr.First().original;
             if ( ev.ID.VibratoHandle == null ) {
                 return;
             }
@@ -17491,10 +17420,8 @@ namespace cadencii
                     if ( list == null ) {
                         continue;
                     }
-                    for ( Iterator<BezierChain> itr = list.iterator(); itr.hasNext(); ) {
-                        BezierChain chain = itr.next();
-                        for ( Iterator<BezierPoint> itr2 = chain.points.iterator(); itr2.hasNext(); ) {
-                            BezierPoint point = itr2.next();
+                    foreach (var chain in list) {
+                        foreach (var point in chain.points) {
                             PointD bse = new PointD( tempo.getClockFromSec( target.getSecFromClock( point.getBase().getX() ) + shift_seconds ),
                                                      point.getBase().getY() );
                             double rx = point.getBase().getX() + point.controlRight.getX();

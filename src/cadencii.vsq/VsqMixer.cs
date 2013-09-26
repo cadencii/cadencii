@@ -70,8 +70,7 @@ namespace cadencii.vsq
         {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
             res.Slave = new Vector<VsqMixerEntry>();
-            for ( Iterator<VsqMixerEntry> itr = Slave.iterator(); itr.hasNext(); ) {
-                VsqMixerEntry item = itr.next();
+            foreach (var item in Slave) {
                 res.Slave.Add( (VsqMixerEntry)item.clone() );
             }
             return res;

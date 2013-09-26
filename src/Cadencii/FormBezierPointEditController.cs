@@ -91,8 +91,7 @@ namespace cadencii
                 return;
             }
             boolean smooth = false;
-            for ( Iterator<BezierPoint> itr = attached.getBezierChain( m_curve_type, m_chain_id ).points.iterator(); itr.hasNext(); ) {
-                BezierPoint bp = itr.next();
+            foreach (var bp in attached.getBezierChain( m_curve_type, m_chain_id ).points) {
                 if ( bp.getID() == m_point_id ) {
                     m_point = bp;
                     smooth =

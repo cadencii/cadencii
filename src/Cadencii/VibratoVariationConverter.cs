@@ -93,8 +93,7 @@ namespace cadencii
                         type = SynthesizerType.VOCALOID1;
                     }
                 }
-                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                    VibratoHandle vconfig = itr.next();
+                foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                     list.Add( new VibratoVariation( vconfig.getDisplayString() ) );
                 }
             }
@@ -171,8 +170,7 @@ namespace cadencii
                         if ( kind == RendererKind.VOCALOID1 ) {
                             type = SynthesizerType.VOCALOID1;
                         }
-                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoHandle vconfig = itr.next();
+                        foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                             String display_string = vconfig.getDisplayString();
                             if ( value.Equals( display_string ) ) {
                                 return new VibratoVariation( display_string );

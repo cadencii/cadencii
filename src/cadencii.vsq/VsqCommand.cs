@@ -332,8 +332,7 @@ namespace cadencii.vsq
             command.Args = new Object[2];
             command.Args[0] = track;
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = velocity.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = itr.next();
+            foreach (var item in velocity) {
                 list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
@@ -378,8 +377,7 @@ namespace cadencii.vsq
             command.Args = new Object[2];
             command.Args[0] = track;
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = accent_list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = itr.next();
+            foreach (var item in accent_list) {
                 list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
@@ -400,8 +398,7 @@ namespace cadencii.vsq
             command.Args = new Object[2];
             command.Args[0] = track;
             Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = decay_list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = itr.next();
+            foreach (var item in decay_list) {
                 list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
@@ -470,8 +467,7 @@ namespace cadencii.vsq
             command.Args[0] = track;
             command.Args[1] = target;
             Vector<BPPair> copied = new Vector<BPPair>();
-            for ( Iterator<BPPair> itr = edit.iterator(); itr.hasNext(); ) {
-                BPPair item = itr.next();
+            foreach (var item in edit) {
                 copied.Add( item );
             }
             command.Args[2] = copied;
@@ -494,15 +490,13 @@ namespace cadencii.vsq
             command.Args[0] = track;
             command.Args[1] = target;
             Vector<Long> cp_delete = new Vector<Long>();
-            for ( Iterator<Long> itr = delete.iterator(); itr.hasNext(); ) {
-                long id = itr.next();
+            foreach (var id in delete) {
                 cp_delete.Add( id );
             }
             command.Args[2] = cp_delete;
 
             TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
-            for ( Iterator<Integer> itr = add.keySet().iterator(); itr.hasNext(); ) {
-                int clock = itr.next();
+            foreach (var clock in add.Keys) {
                 VsqBPPair item = add.get( clock );
                 cp_add.put( clock, item );
             }
@@ -526,8 +520,7 @@ namespace cadencii.vsq
             count = edits.Count;
             for ( int i = 0; i < count; i++ ) {
                 Vector<BPPair> copied = new Vector<BPPair>();
-                for ( Iterator<BPPair> itr = edits[ i ].iterator(); itr.hasNext(); ) {
-                    BPPair item = itr.next();
+                foreach (var item in edits[ i ]) {
                     copied.Add( new BPPair( item.Clock, item.Value ) );
                 }
                 cp_edits.Add( copied );
@@ -561,8 +554,7 @@ namespace cadencii.vsq
             c = delete.Count;
             for ( int i = 0; i < c; i++ ) {
                 Vector<Long> cp_delete = new Vector<Long>();
-                for ( Iterator<Long> itr = delete[ i ].iterator(); itr.hasNext(); ) {
-                    long id = itr.next();
+                foreach (var id in delete[i]) {
                     cp_delete.Add( id );
                 }
                 cp_vec_delete.Add( cp_delete );
@@ -574,8 +566,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < c; i++ ) {
                 TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
                 TreeMap<Integer, VsqBPPair> tmp = add[ i ];
-                for ( Iterator<Integer> itr = tmp.keySet().iterator(); itr.hasNext(); ) {
-                    int clock = itr.next();
+                foreach (var clock in tmp.Keys) {
                     VsqBPPair item = tmp.get( clock );
                     cp_add.put( clock, item );
                 }

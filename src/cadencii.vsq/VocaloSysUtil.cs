@@ -349,8 +349,7 @@ namespace cadencii.vsq
                 return null;
             }
             if ( s_exp_config_sys.containsKey( type ) ) {
-                for ( Iterator<VibratoHandle> itr = s_exp_config_sys.get( type ).vibratoConfigIterator(); itr.hasNext(); ) {
-                    VibratoHandle vconfig = itr.next();
+                foreach (var vconfig in s_exp_config_sys.get( type ).vibratoConfigIterator()) {
                     if ( vconfig.IconID.Equals( icon_id ) ) {
                         VibratoHandle ret = (VibratoHandle)vconfig.clone();
                         ret.setLength( vibrato_length );
@@ -378,8 +377,7 @@ namespace cadencii.vsq
             path_expdb.value = "";
             path_voicedb.value = "";
             path_editor.value = "";
-            for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            foreach (var s in dir) {
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
                     application.Add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
@@ -390,8 +388,7 @@ namespace cadencii.vsq
             }
 
             // path_vstiを取得
-            for ( Iterator<String> itr = application.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            foreach (var s in application) {
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length >= 3 && spl[1].Equals( "PATH" ) ) {
                     if ( spl[2].ToLower().EndsWith( ".dll" ) ) {
@@ -404,8 +401,7 @@ namespace cadencii.vsq
 
             // path_vicedbを取得
             TreeMap<String, String> install_dirs = new TreeMap<String, String>();
-            for ( Iterator<String> itr = voice.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            foreach (var s in voice) {
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length < 2 ) {
                     continue;
@@ -430,8 +426,7 @@ namespace cadencii.vsq
             }
 
             // installed_singersに追加
-            for ( Iterator<String> itr = install_dirs.keySet().iterator(); itr.hasNext(); ) {
-                String id = itr.next();
+            foreach (var id in install_dirs.Keys) {
                 String install = install_dirs.get( id );
                 if ( install.Equals( "" ) ) {
                     install = Path.Combine( path_voicedb.value, id );
@@ -442,8 +437,7 @@ namespace cadencii.vsq
             // path_expdbを取得
             Vector<String> exp_ids = new Vector<String>();
             // 最初はpath_expdbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
-            for ( Iterator<String> itr = expression.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            foreach (var s in expression) {
                 String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
                 if ( spl.Length >= 3 ) {
                     if ( spl[1].Equals( "EXPRESSIONDIR" ) ) {
@@ -509,7 +503,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator<NoteHeadHandle> attackConfigIterator( SynthesizerType type )
+        public static IEnumerable<NoteHeadHandle> attackConfigIterator( SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#attackConfigIterator; not initialized yet" );
@@ -518,7 +512,7 @@ namespace cadencii.vsq
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).attackConfigIterator();
             } else {
-                return (new Vector<NoteHeadHandle>()).iterator();
+                return new Vector<NoteHeadHandle>();
             }
         }
 
@@ -527,7 +521,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator<VibratoHandle> vibratoConfigIterator( SynthesizerType type )
+        public static IEnumerable<VibratoHandle> vibratoConfigIterator( SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#vibratoConfigIterator; not initialized yet" );
@@ -536,7 +530,7 @@ namespace cadencii.vsq
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).vibratoConfigIterator();
             } else {
-                return (new Vector<VibratoHandle>()).iterator();
+                return new Vector<VibratoHandle>();
             }
         }
 
@@ -545,7 +539,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator<IconDynamicsHandle> dynamicsConfigIterator( SynthesizerType type )
+        public static IEnumerable<IconDynamicsHandle> dynamicsConfigIterator( SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#dynamicsConfigIterator; not initialized yet" );
@@ -554,7 +548,7 @@ namespace cadencii.vsq
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).dynamicsConfigIterator();
             } else {
-                return (new Vector<IconDynamicsHandle>()).iterator();
+                return new Vector<IconDynamicsHandle>();
             }
         }
 

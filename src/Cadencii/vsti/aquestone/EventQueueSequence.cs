@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
@@ -49,9 +50,9 @@ namespace cadencii
         /// MidiEventQueue が登録されている時刻を小さい順に返す反復子を取得する
         /// </summary>
         /// <returns></returns>
-        public Iterator<Integer> keyIterator()
+        public IEnumerable<Integer> keyIterator()
         {
-            return sequence.keySet().iterator();
+            return sequence.Keys;
         }
 
         public TreeMap<Integer, MidiEventQueue> getSequence() { return sequence; }

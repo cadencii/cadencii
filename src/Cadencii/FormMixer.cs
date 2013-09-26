@@ -281,8 +281,7 @@ namespace cadencii
 #endif
 
             int j = -1;
-            for ( Iterator<VsqMixerEntry> itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
-                VsqMixerEntry vme = itr.next();
+            foreach (var vme in vsq.Mixer.Slave) {
                 j++;
 #if DEBUG
                 sout.println( "FormMixer#updateStatus; #" + j + "; feder=" + vme.Feder + "; panpot=" + vme.Panpot );

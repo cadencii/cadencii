@@ -110,8 +110,7 @@ public class Hamori : System.Windows.Forms.Form {
 
         int note;
         Dictionary<int, int> target_ids = new Dictionary<int, int>();
-        for ( cadencii.java.util.Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ){
-            SelectedEventEntry see = itr.next();
+        foreach (var see in AppManager.itemSelection.getEventIterator()){
             target_ids.Add( see.original.InternalID, 0 );
         }
         int track = AppManager.getSelected();

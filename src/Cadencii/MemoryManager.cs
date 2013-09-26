@@ -14,6 +14,8 @@
  */
 using System;
 using System.Runtime.InteropServices;
+using System.Linq;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -42,14 +44,11 @@ namespace cadencii {
         /// メモリを開放します
         /// </summary>
         /// <param name="p"></param>
-        public void free( IntPtr p ) {
-            for ( Iterator<IntPtr> itr = mList.iterator(); itr.hasNext(); ) {
-                IntPtr v = itr.next();
-                if ( v.Equals( p ) ) {
-                    Marshal.FreeHGlobal( p );
-                    itr.remove();
-                    break;
-                }
+        public void free(IntPtr p) {
+            var v = mList.FirstOrDefault((f) => f.Equals(p));
+            if (v != IntPtr.Zero) {
+                Marshal.FreeHGlobal(v);
+                mList.Remove(v);
             }
         }
 
@@ -57,8 +56,7 @@ namespace cadencii {
         /// このマネージャを使って確保されたメモリーのうち、未解放のものを全て解放します
         /// </summary>
         public void dispose() {
-            for ( Iterator<IntPtr> itr = mList.iterator(); itr.hasNext(); ) {
-                IntPtr v = itr.next();
+            foreach (var v in mList) {
                 try {
                     Marshal.FreeHGlobal( v );
                 } catch ( Exception ex ) {

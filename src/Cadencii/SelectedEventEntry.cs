@@ -1414,8 +1414,7 @@ namespace cadencii
                         last_depth = editing.ID.NoteHeadHandle.getDepth();
                         last_duration = editing.ID.NoteHeadHandle.getDuration();
                     }
-                    for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                        NoteHeadHandle aconfig = itr.next();
+                    foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
                         if ( description.Equals( aconfig.getDisplayString() ) ) {
                             editing.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
                             editing.ID.NoteHeadHandle.setDepth( last_depth );
@@ -1571,8 +1570,7 @@ namespace cadencii
                             if ( kind == RendererKind.VOCALOID1 ) {
                                 type = SynthesizerType.VOCALOID1;
                             }
-                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                VibratoHandle vconfig = itr.next();
+                            foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                                 if ( description.Equals( vconfig.getDisplayString() ) ) {
                                     editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
                                     break;

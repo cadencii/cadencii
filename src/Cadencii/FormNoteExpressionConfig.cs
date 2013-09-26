@@ -98,8 +98,7 @@ namespace cadencii
                 trackDuration.Enabled = false;
                 trackDepth.Enabled = false;
             }
-            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                NoteHeadHandle item = itr.next();
+            foreach (var item in VocaloSysUtil.attackConfigIterator( SynthesizerType.VOCALOID1 )) {
                 comboAttackTemplate.Items.Add( item );
                 if ( item.IconID.Equals( icon_id ) ) {
                     comboAttackTemplate.SelectedItem = comboAttackTemplate.Items[comboAttackTemplate.Items.Count - 1];

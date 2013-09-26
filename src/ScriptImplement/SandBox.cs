@@ -88,8 +88,7 @@ public static class AutoBRI {
     public static bool Edit( cadencii.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ
         System.Collections.Generic.List<int> ids = new System.Collections.Generic.List<int>();
-        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ){
-            SelectedEventEntry entry = itr.next();
+        foreach (var entry in AppManager.itemSelection.getEventIterator()){
             ids.Add( entry.original.InternalID );
         }
 

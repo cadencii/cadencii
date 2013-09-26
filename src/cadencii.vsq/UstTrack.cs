@@ -20,6 +20,7 @@ import cadencii.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -81,9 +82,9 @@ namespace cadencii.vsq
             return m_events.Count;
         }
 
-        public Iterator<UstEvent> getNoteEventIterator()
+        public IEnumerable<UstEvent> getNoteEventIterator()
         {
-            return m_events.iterator();
+            return m_events;
         }
 
         public Object clone()

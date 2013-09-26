@@ -247,8 +247,7 @@ namespace cadencii {
             }
 
             // 削除を実行
-            for ( Iterator<Integer> itr = delete_list.iterator(); itr.hasNext(); ) {
-                int id = itr.next();
+            foreach (var id in delete_list) {
                 remove( curve, id );
                 //this[curve].Remove( id );
             }
@@ -435,8 +434,7 @@ namespace cadencii {
             Vector<CurveType> target_curve = new Vector<CurveType>();
             foreach ( CurveType ct in CURVES ) {
                 Vector<BezierChain> vbc = get( ct );
-                for ( Iterator<BezierChain> itr = vbc.iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                foreach (var bc in vbc) {
                     int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
                         BezierPoint bp = bc.points[i];
@@ -469,11 +467,9 @@ namespace cadencii {
 
             // データ点のclockがclock_end以降になってるものについて，シフトを行う
             int delta = clock_end - clock_start;
-            for ( Iterator<CurveType> itr = target_curve.iterator(); itr.hasNext(); ) {
-                CurveType ct = itr.next();
+            foreach (var ct in target_curve) {
                 Vector<BezierChain> vbc = get( ct );
-                for ( Iterator<BezierChain> itr_bc = vbc.iterator(); itr_bc.hasNext(); ) {
-                    BezierChain bc = itr_bc.next();
+                foreach (var bc in vbc) {
                     int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
                         BezierPoint bp = bc.points[i];
@@ -503,14 +499,12 @@ namespace cadencii {
         )
         {
             boolean edited = false;
-            for ( Iterator<CurveType> itr1 = target_curve.iterator(); itr1.hasNext(); ) {
-                CurveType curve = itr1.next();
+            foreach (var curve in target_curve) {
                 if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
                 }
                 Vector<BezierChain> tmp = new Vector<BezierChain>();
-                for ( Iterator<BezierChain> itr = this.get( curve ).iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                foreach (var bc in this.get( curve )) {
                     int len = bc.points.Count;
                     if ( len < 1 ) {
                         continue;
@@ -564,14 +558,12 @@ namespace cadencii {
                     }
                 }
                 this.get( curve ).Clear();
-                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                foreach (var bc in tmp) {
                     if ( bc.id >= 0 ) {
                         addBezierChain( curve, bc, bc.id );
                     }
                 }
-                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                foreach (var bc in tmp) {
                     if ( bc.id < 0 ) {
                         bc.id = this.getNextId( curve );
                         addBezierChain( curve, bc, bc.id );

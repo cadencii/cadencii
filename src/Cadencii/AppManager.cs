@@ -924,13 +924,11 @@ namespace cadencii
 
                         // まずzoneから編集範囲を抽出
                         Vector<EditedZoneUnit> areasList = new Vector<EditedZoneUnit>();
-                        for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                            EditedZoneUnit e = itr.next();
+                        foreach (var e in zone.iterator()) {
                             areasList.Add( (EditedZoneUnit)e.clone() );
                         }
 
-                        for ( Iterator<EditedZoneUnit> itr = areasList.iterator(); itr.hasNext(); ) {
-                            EditedZoneUnit e = itr.next();
+                        foreach (var e in areasList) {
                             int exStart = e.mStart;
                             int exEnd = e.mEnd;
 
@@ -1044,8 +1042,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "AppManager#patchWorkCreateQueue; track#" + track );
 #endif
-                for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                    EditedZoneUnit unit = itr.next();
+                foreach (var unit in zone.iterator()) {
                     j++;
                     PatchWorkQueue q = new PatchWorkQueue();
                     q.track = track;
@@ -1163,8 +1160,7 @@ namespace cadencii
             int numEvents = vsq_track.getEventCount();
             while ( changed ) {
                 changed = false;
-                for ( Iterator<Integer> itr = ids.keySet().iterator(); itr.hasNext(); ) {
-                    int id = itr.next();
+                foreach (var id in ids.Keys) {
                     int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
                     //VsqEvent item = vsq_track.getEvent( indx );
 
@@ -1447,8 +1443,7 @@ namespace cadencii
             } else if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
                 Vector<SingerConfig> list = editorConfig.UtauSingers;
                 singers = new Vector<VsqID>();
-                for ( Iterator<SingerConfig> itr = list.iterator(); itr.hasNext(); ) {
-                    SingerConfig sc = itr.next();
+                foreach (var sc in list) {
                     singers.Add( getSingerIDUtau( sc.Language, sc.Program ) );
                 }
             } else if ( kind == RendererKind.VOCALOID1 ) {
@@ -2052,8 +2047,7 @@ namespace cadencii
         {
             if ( editHistory.hasUndoHistory() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in itemSelection.getEventIterator()) {
                     before_ids.Add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
@@ -2092,8 +2086,7 @@ namespace cadencii
         {
             if ( editHistory.hasRedoHistory() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in itemSelection.getEventIterator()) {
                     before_ids.Add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
@@ -2137,8 +2130,7 @@ namespace cadencii
         public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids )
         {
             int size = mVsq.Track.Count;
-            for ( Iterator<ValuePair<Integer, Integer>> itr = before_ids.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> specif = itr.next();
+            foreach (var specif in before_ids) {
                 boolean found = false;
                 int track = specif.getKey();
                 int internal_id = specif.getValue();
@@ -2869,9 +2861,7 @@ namespace cadencii
         public static void reloadUtauVoiceDB()
         {
             mUtauVoiceDB.clear();
-            for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig config = itr.next();
-
+            foreach (var config in editorConfig.UtauSingers) {
                 // 通常のUTAU音源
                 UtauVoiceDB db = null;
                 try {

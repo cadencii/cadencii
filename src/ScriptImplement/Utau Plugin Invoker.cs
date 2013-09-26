@@ -123,8 +123,7 @@ public class Utau_Plugin_Invoker : Form {
         int clock_end = int.MinValue;
         int sel_start = 0;
         int sel_end = 0;
-        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-            SelectedEventEntry item = itr.next();
+        foreach (var item in AppManager.itemSelection.getEventIterator()) {
             if ( item.original.ID.type != VsqIDType.Anote ) {
                 continue;
             }

@@ -114,8 +114,7 @@ namespace cadencii.vsq
             }
             if ( Events != null ) {
                 res.Events = new VsqEventList();
-                for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                    VsqEvent item = itr.next();
+                foreach (var item in Events.iterator()) {
                     res.Events.add( (VsqEvent)item.clone(), item.InternalID );
                 }
             }
@@ -386,8 +385,7 @@ namespace cadencii.vsq
         public String getSinger()
         {
             if( Events != null ){
-                for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                    VsqEvent item = itr.next();
+                foreach (var item in Events.iterator()) {
                     if ( item.ID.type == VsqIDType.Singer ) {
                         return item.ID.IconHandle.IDS;
                     }
@@ -399,8 +397,7 @@ namespace cadencii.vsq
         public void setSinger( String value )
         {
             if( Events == null ) return;
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in Events.iterator()) {
                 if ( item.ID.type == VsqIDType.Singer ) {
                     ((IconHandle)item.ID.IconHandle).IDS = value;
                     break;
@@ -439,8 +436,7 @@ namespace cadencii.vsq
             boolean add_quotation_mark = true;
             boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
             boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in Events.iterator()) {
                 current_id++;
                 item.ID.value = current_id;
                 // IconHandle
@@ -519,8 +515,7 @@ namespace cadencii.vsq
                 mixer.write( sw );
             }
             Vector<VsqHandle> handle = writeEventList( sw, eos );
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in Events.iterator()) {
                 item.write( sw );
             }
             for ( int i = 0; i < handle.Count; i++ ) {
@@ -614,8 +609,8 @@ namespace cadencii.vsq
             Vector<VsqHandle> handles = buildHandleList();
             writer.writeLine( "[EventList]" );
             Vector<VsqEvent> temp = new Vector<VsqEvent>();
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                temp.Add( itr.next() );
+            foreach (var @event in Events.iterator()) {
+                temp.Add( @event );
             }
             temp.Sort();
             int i = 0;

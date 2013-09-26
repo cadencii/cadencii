@@ -396,8 +396,7 @@ namespace cadencii
                         boolean first = true;
                         double old_date = PortUtil.getCurrentTime();
                         String old_key = "";
-                        for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                            String key = itr.next();
+                        foreach (var key in mCache.Keys) {
                             double time = mCache.get( key );
                             if ( first ) {
                                 old_date = time;
@@ -1116,8 +1115,7 @@ namespace cadencii
                 writer.newLine();
                 writer.write( "[oto.ini]" );
                 writer.newLine();
-                for ( Iterator<String> itr = dict_singername_otoini.keySet().iterator(); itr.hasNext(); ) {
-                    String singername = itr.next();
+                foreach (var singername in dict_singername_otoini.Keys) {
                     String oto_ini = dict_singername_otoini.get( singername );
                     if ( world_mode ) {
                         writer.write( singername + "\t" + oto_ini );
@@ -1182,8 +1180,7 @@ namespace cadencii
         public static void clearCache()
         {
             String tmp_dir = AppManager.getTempWaveDir();
-            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                String key = itr.next();
+            foreach (var key in mCache.Keys) {
                 try {
                     PortUtil.deleteFile( Path.Combine( tmp_dir, key + ".wav" ) );
                 } catch ( Exception ex ) {

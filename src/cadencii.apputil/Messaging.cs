@@ -35,12 +35,10 @@ namespace cadencii.apputil
         private static Vector<MessageBody> s_messages = new Vector<MessageBody>();
 
         public static String[] getKeys( String lang ) {
-            for( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody dict = itr.next();
+            foreach (var dict in s_messages) {
                 if ( lang.Equals( dict.lang ) ) {
                     Vector<String> list = new Vector<String>();
-                    for ( Iterator<String> itr2 = dict.list.keySet().iterator(); itr2.hasNext(); ) {
-                        String key = itr2.next();
+                    foreach (var key in dict.list.Keys) {
                         list.Add( key );
                     }
                     return list.ToArray();
@@ -51,8 +49,7 @@ namespace cadencii.apputil
 
         public static String[] getRegisteredLanguage() {
             Vector<String> res = new Vector<String>();
-            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ) {
-                MessageBody dict = itr.next();
+            foreach (var dict in s_messages) {
                 res.Add( dict.lang );
             }
             return res.ToArray();
@@ -104,8 +101,7 @@ namespace cadencii.apputil
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody mb = itr.next();
+            foreach (var mb in s_messages){
                 if ( mb.lang.Equals( s_lang ) ) {
                     return mb.getMessageDetail( id );
                 }
@@ -117,8 +113,7 @@ namespace cadencii.apputil
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody mb = itr.next();
+            foreach (var mb in s_messages) {
                 if ( mb.lang.Equals( s_lang ) ) {
                     return mb.getMessage( id );
                 }

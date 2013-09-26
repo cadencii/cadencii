@@ -1044,9 +1044,9 @@ namespace cadencii
             zone.add( areaTrack );
             EditedZoneUnit[] ret = new EditedZoneUnit[zone.size()];
             int i = -1;
-            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+            foreach (var unit in zone.iterator()) {
                 i++;
-                ret[i] = itr.next();
+                ret[i] = unit;
             }
             return ret;
         }
@@ -1126,8 +1126,8 @@ namespace cadencii
             }
 
             Vector<EditedZoneUnit> list3 = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = ret.iterator(); itr.hasNext(); ) {
-                list3.Add( itr.next() );
+            foreach (var unit in ret.iterator()) {
+                list3.Add( unit );
             }
             return list3.ToArray();
         }
@@ -1180,8 +1180,8 @@ namespace cadencii
             EditedZone zone = new EditedZone();
             compareList( zone, context );
             Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                ret.Add( itr.next() );
+            foreach (var unit in zone.iterator()) {
+                ret.Add( unit );
             }
             return ret.ToArray();
         }
@@ -1515,8 +1515,7 @@ namespace cadencii
             String suffix = "";
             TreeMap<String, Boolean> directives = Config.getDirectives();
             suffix += "\n\n";
-            for( Iterator<String> itr = directives.keySet().iterator(); itr.hasNext(); ){
-                String k = itr.next();
+            foreach (var k in directives.Keys){
                 Boolean v = directives.get( k );
                 suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
             }

@@ -418,8 +418,7 @@ namespace cadencii.vsq
             int clock = 0;
             int search_indx = 0;
             int pit_size = cpit.size();
-            for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent item = itr.next();
+            foreach (var item in track_add.getNoteEventIterator()) {
                 int c = clock;
                 int len = item.getLength();
                 clock += len;
@@ -443,8 +442,7 @@ namespace cadencii.vsq
 
             // ピッチをピッチベンドに変換しながら反映
             clock = 0;
-            for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent item = itr.next();
+            foreach (var item in track_add.getNoteEventIterator()) {
                 double sec_at_clock = tempo.getSecFromClock( clock );
                 double sec_pre = item.getPreUtterance() / 1000.0;
                 double sec_stp = item.getStartPoint() / 1000.0;

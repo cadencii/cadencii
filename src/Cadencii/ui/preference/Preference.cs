@@ -67,8 +67,7 @@ namespace cadencii
             txtAutoVibratoThresholdLength.Text = "480";
 
             comboAutoVibratoType1.Items.Clear();
-            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                VibratoHandle vconfig = itr.next();
+            foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 )) {
                 comboAutoVibratoType1.Items.Add( vconfig );
             }
             if ( comboAutoVibratoType1.Items.Count > 0 ) {
@@ -76,8 +75,7 @@ namespace cadencii
             }
 
             comboAutoVibratoType2.Items.Clear();
-            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 ); itr.hasNext(); ) {
-                VibratoHandle vconfig = itr.next();
+            foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 )) {
                 comboAutoVibratoType2.Items.Add( vconfig );
             }
             if ( comboAutoVibratoType2.Items.Count > 0 ) {
@@ -87,8 +85,7 @@ namespace cadencii
             updateCustomVibrato();
 
             comboResolControlCurve.Items.Clear();
-            for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
-                ClockResolution cr = itr.next();
+            foreach (var cr in ClockResolutionUtility.iterator()) {
                 comboResolControlCurve.Items.Add( ClockResolutionUtility.toString( cr ) );
             }
             comboResolControlCurve.SelectedIndex = 0;
@@ -896,8 +893,7 @@ namespace cadencii
         {
             int count = -1;
             int index = comboResolControlCurve.SelectedIndex;
-            for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
-                ClockResolution vt = itr.next();
+            foreach (var vt in ClockResolutionUtility.iterator()) {
                 count++;
                 if ( count == index ) {
                     return vt;
@@ -914,8 +910,7 @@ namespace cadencii
         public void setControlCurveResolution( ClockResolution value )
         {
             int count = -1;
-            for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
-                ClockResolution vt = itr.next();
+            foreach (var vt in ClockResolutionUtility.iterator()) {
                 count++;
                 if ( vt.Equals( value ) ) {
                     comboResolControlCurve.SelectedIndex = count;

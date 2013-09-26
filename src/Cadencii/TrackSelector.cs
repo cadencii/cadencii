@@ -576,8 +576,7 @@ namespace cadencii
         /// </summary>
         private CurveType getCurveTypeFromMenu(ToolStripMenuItem menu)
         {
-            for( Iterator<CurveType> itr = mMenuMap.keySet().iterator(); itr.hasNext(); ){
-                CurveType curve = itr.next();
+            foreach (var curve in mMenuMap.Keys){
                 ToolStripMenuItem search = mMenuMap.get(curve);
                 if( menu == search ){
                     return curve;
@@ -1561,8 +1560,7 @@ namespace cadencii
                             }
                         }
                         if ( mMouseDownMode == MouseDownMode.SINGER_LIST && AppManager.getSelectedTool() != EditTool.ERASER ) {
-                            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                SelectedEventEntry item = itr.next();
+                            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                 int x = AppManager.xCoordFromClocks( item.editing.Clock );
                                 g.setColor( COLOR_SINGERBOX_BORDER_HILIGHT );
                                 g.drawRect( x, size.height - 2 * OFFSET_TRACK_TAB + 1,
@@ -2747,8 +2745,7 @@ namespace cadencii
             // 選択されているデータ点をハイライト表示する
             int w = DOT_WID * 2 + 1;
             g.setColor( COLOR_DOT_HILIGHT );
-            for ( Iterator<Long> itr = AppManager.itemSelection.getPointIDIterator(); itr.hasNext(); ) {
-                long id = itr.next();
+            foreach (var id in AppManager.itemSelection.getPointIDIterator()) {
                 VsqBPPairSearchContext ret = list.findElement( id );
                 if ( ret.index < 0 ) {
                     continue;
@@ -2770,8 +2767,7 @@ namespace cadencii
             if ( mMouseDownMode == MouseDownMode.POINT_MOVE ) {
                 int dx = pmouse.x + AppManager.mMainWindowController.getStartToDrawX() - mMouseDownLocation.x;
                 int dy = pmouse.y - mMouseDownLocation.y;
-                for ( Iterator<BPPair> itr = mMovingPoints.iterator(); itr.hasNext(); ) {
-                    BPPair item = itr.next();
+                foreach (var item in mMovingPoints) {
                     int x = AppManager.xCoordFromClocks( item.Clock ) + dx;
                     int y = yCoordFromValue( item.Value ) + dy;
                     g.setColor( COLOR_DOT_HILIGHT );
@@ -3255,8 +3251,7 @@ namespace cadencii
                 }
             } else if ( mMouseDownMode == MouseDownMode.SINGER_LIST ) {
                 int dclock = clock - mSingerMoveStartedClock;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                     item.editing.Clock = item.original.Clock + dclock;
                 }
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
@@ -3274,8 +3269,7 @@ namespace cadencii
                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
                     d_vel = t_value - mVelEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMdecGainRate;
                 }
-                for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                    int id = itr.next();
+                foreach (var id in mVelEditSelected.Keys) {
                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                         VsqEvent item = mVelEditSelected.get( id ).original;
                         int new_vel = item.ID.Dynamics + d_vel;
@@ -3422,8 +3416,7 @@ namespace cadencii
             Point location = new Point( locx, locy );
             for ( int i = 0; i < c; i++ ) {
                 BezierChain bc = list[ i ];
-                for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                    BezierPoint bp = itr.next();
+                foreach (var bp in bc.points) {
                     Point p = getScreenCoord( bp.getBase() );
                     Rectangle r = new Rectangle( p.x - shift, p.y - shift, width, width );
                     if ( isInRect( locx, locy, r ) ) {
@@ -3592,8 +3585,7 @@ namespace cadencii
                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                             if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), ve.InternalID ) ) {
                                 Vector<Integer> old = new Vector<Integer>();
-                                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                    SelectedEventEntry item = itr.next();
+                                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
                                         old.Add( id );
@@ -3780,8 +3772,7 @@ namespace cadencii
                                 AppManager.itemSelection.clearBezier();
                                 for ( int i = 0; i < dict.Count; i++ ) {
                                     BezierChain bc = dict[ i ];
-                                    for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                        BezierPoint bp = itr.next();
+                                    foreach (var bp in bc.points) {
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
@@ -3832,8 +3823,7 @@ namespace cadencii
                                     if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                         // clicked with CTRL key
                                         Vector<Integer> list = new Vector<Integer>();
-                                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                            SelectedEventEntry item = itr.next();
+                                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                             VsqEvent ve2 = item.original;
                                             if ( ve.InternalID == ve2.InternalID ) {
                                                 found2 = true;
@@ -3884,8 +3874,7 @@ namespace cadencii
                                     }
                                     mVelEditSelected.clear();
                                     if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), mVelEditLastSelectedID ) ) {
-                                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                            SelectedEventEntry item = itr.next();
+                                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                             mVelEditSelected.put( item.original.InternalID,
                                                                     new SelectedEventEntry( AppManager.getSelected(),
                                                                                             item.original,
@@ -4074,8 +4063,7 @@ namespace cadencii
                                 boolean found = false;
                                 for ( int i = 0; i < dict.Count; i++ ) {
                                     BezierChain bc = dict[ i ];
-                                    for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                        BezierPoint bp = itr.next();
+                                    foreach (var bp in bc.points) {
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
@@ -4154,8 +4142,7 @@ namespace cadencii
                             is_middle = true;
                         }
                         if ( !too_near ) {
-                            for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                BezierPoint bp = itr.next();
+                            foreach (var bp in bc.points) {
                                 Point pt = getScreenCoord( bp.getBase() );
                                 Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                 if ( isInRect( e.X, e.Y, rc ) ) {
@@ -4854,8 +4841,7 @@ namespace cadencii
                                 }
                                 if ( velocity.size() > 0 ) {
                                     Vector<ValuePair<Integer, Integer>> cpy = new Vector<ValuePair<Integer, Integer>>();
-                                    for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ) {
-                                        int internal_id = itr.next();
+                                    foreach (var internal_id in velocity.Keys) {
                                         int value = (Integer)velocity.get( internal_id );
                                         cpy.Add( new ValuePair<Integer, Integer>( internal_id, value ) );
                                     }
@@ -4865,8 +4851,7 @@ namespace cadencii
                                             int size = velocity.size();
                                             VsqEvent[] events = new VsqEvent[size];
                                             int i = 0;
-                                            for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ){
-                                                int internal_id = itr.next();
+                                            foreach (var internal_id in velocity.Keys){
                                                 VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
                                                 if ( item.UstEvent == null ) {
                                                     item.UstEvent = new UstEvent();
@@ -5108,8 +5093,7 @@ namespace cadencii
                         boolean is_valid = true;
                         boolean contains_first_singer = false;
                         int premeasure = vsq.getPreMeasureClocks();
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry item = itr.next();
+                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                             i++;
                             ids[i] = item.original.InternalID;
                             clocks[i] = item.editing.Clock;
@@ -5143,8 +5127,7 @@ namespace cadencii
                             }
                             boolean changed = false;
                             for ( int j = 0; j < ids.Length; j++ ) {
-                                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                    SelectedEventEntry item = itr.next();
+                                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     if ( item.original.InternalID == ids[j] && item.original.Clock != clocks[j] ) {
                                         changed = true;
                                         break;
@@ -5167,8 +5150,7 @@ namespace cadencii
                     int count = mVelEditSelected.size();
                     VsqEvent[] values = new VsqEvent[count];
                     int i = 0;
-                    for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                        int internal_id = itr.next();
+                    foreach (var internal_id in mVelEditSelected.Keys) {
                         VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
                         if ( item.UstEvent == null ) {
                             item.UstEvent = new UstEvent();
@@ -5185,8 +5167,7 @@ namespace cadencii
                     int[] ids = new int[count];
                     VsqID[] values = new VsqID[count];
                     int i = -1;
-                    for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                        int id = itr.next();
+                    foreach (var id in mVelEditSelected.Keys) {
                         i++;
                         ids[i] = id;
                         values[i] = (VsqID)mVelEditSelected.get( id ).editing.ID.clone();
@@ -5528,8 +5509,7 @@ namespace cadencii
                             int dict_size = dict.Count;
                             for ( int i = 0; i < dict_size; i++ ) {
                                 BezierChain bc = dict[ i ];
-                                for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                    BezierPoint bp = itr.next();
+                                foreach (var bp in bc.points) {
                                     Point pt = getScreenCoord( bp.getBase() );
                                     Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                     if ( isInRect( e.X, e.Y, rc ) ) {
@@ -5760,8 +5740,7 @@ namespace cadencii
                 return;
             }
             int count = 0;
-            for ( Iterator<SingerConfig> itr = items.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = itr.next();
+            foreach (var sc in items) {
                 String tip = "";
                 if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                     if ( sc != null ) {

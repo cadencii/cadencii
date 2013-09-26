@@ -54,5 +54,3 @@ import cadencii.apputil.*;
 #else
     }
 #endif
-#if !!JAVA
-#endif

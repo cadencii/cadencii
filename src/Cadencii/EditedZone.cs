@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -37,8 +38,8 @@ namespace cadencii {
             return mSeries.Count;
         }
 
-        public Iterator<EditedZoneUnit> iterator() {
-            return mSeries.iterator();
+        public IEnumerable<EditedZoneUnit> iterator() {
+            return mSeries;
         }
 
         public Object clone() {
@@ -62,8 +63,7 @@ namespace cadencii {
         }
 
         public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
-            for ( Iterator<EditedZoneUnit> itr = run.mRemove.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
+            foreach (var item in run.mRemove) {
                 int count = mSeries.Count;
                 for ( int i = 0; i < count; i++ ) {
                     EditedZoneUnit item2 = mSeries[ i ];
@@ -74,8 +74,7 @@ namespace cadencii {
                 }
             }
 
-            for ( Iterator<EditedZoneUnit> itr = run.mAdd.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
+            foreach (var item in run.mAdd) {
                 mSeries.Add( (EditedZoneUnit)item.clone() );
             }
 
@@ -86,8 +85,7 @@ namespace cadencii {
 
         private EditedZoneCommand generateCommandClear() {
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = mSeries.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
+            foreach (var item in mSeries) {
                 remove.Add( (EditedZoneUnit)item.clone() );
             }
 
@@ -107,11 +105,9 @@ namespace cadencii {
 
             // thisに存在していて、workに存在しないものをremoveに登録
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
+            foreach (var itemThis in this.iterator()) {
                 boolean found = false;
-                EditedZoneUnit itemThis = itrThis.next();
-                for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
-                    EditedZoneUnit itemWork = itrWork.next();
+                foreach (var itemWork in work.iterator()) {
                     if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
                         break;
@@ -124,11 +120,9 @@ namespace cadencii {
 
             // workに存在していて、thisに存在しないものをaddに登録
             Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
+            foreach (var itemWork in work.iterator()) {
                 boolean found = false;
-                EditedZoneUnit itemWork = itrWork.next();
-                for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
-                    EditedZoneUnit itemThis = itrThis.next();
+                foreach (var itemThis in this.iterator()) {
                     if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
                         break;

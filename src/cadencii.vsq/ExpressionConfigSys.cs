@@ -22,6 +22,7 @@ namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.java.io;
 using cadencii.java.util;
 
@@ -956,10 +957,10 @@ namespace cadencii.vsq
 #if __cplusplus
         public: vector<VibratoHandle>::iterator vibratoConfigIterator()
 #else
-        public Iterator<VibratoHandle> vibratoConfigIterator()
+        public IEnumerable<VibratoHandle> vibratoConfigIterator()
 #endif
         {
-            return m_vibrato_configs.iterator();
+            return m_vibrato_configs;
         }
 
         /// <summary>
@@ -969,10 +970,10 @@ namespace cadencii.vsq
 #if __cplusplus
         public: vector<NoteHeadHandle>::iterator attackConfigIterator()
 #else
-        public Iterator<NoteHeadHandle> attackConfigIterator()
+        public IEnumerable<NoteHeadHandle> attackConfigIterator()
 #endif
         {
-            return m_attack_configs.iterator();
+            return m_attack_configs;
         }
 
         /// <summary>
@@ -982,10 +983,10 @@ namespace cadencii.vsq
 #if __cplusplus
         public: vector<IconDynamicsHandle>::iterator dynamicsConfigIterator()
 #else
-        public Iterator<IconDynamicsHandle> dynamicsConfigIterator()
+        public IEnumerable<IconDynamicsHandle> dynamicsConfigIterator()
 #endif
         {
-            return m_dynamics_configs.iterator();
+            return m_dynamics_configs;
         }
 
         private ExpressionConfigSys()
@@ -1061,13 +1062,11 @@ namespace cadencii.vsq
                 if ( !folder_name.Equals( "" ) ) {
                     String aiconDB_path = Path.Combine( base_path, folder_name );
                     if (Directory.Exists(aiconDB_path)) {
-                        for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ) {
-                            String key = itr.next();
+                        foreach (var key in list.Keys) {
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
                             String section_path = Path.Combine( aiconDB_path, section_name );
                             if (Directory.Exists(section_path)) {
-                                for ( Iterator<String> itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
-                                    String line = itr2.next();
+                                foreach (var line in list.get( key )) {
                                     String[] spl = PortUtil.splitString( line, '=' );
                                     if ( spl.Length != 2 ) {
                                         continue;

@@ -95,10 +95,6 @@ namespace cadencii.java.util {
         public Vector()
             : base() {
         }
-
-        public Iterator<T> iterator() {
-            return new ListIterator<T>( this );
-        }
     }
 #endif
 

@@ -310,8 +310,7 @@ namespace cadencii
 
         public static void clearCache()
         {
-            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                String key = itr.next();
+            foreach (var key in mCache.Keys) {
                 ValuePair<String, Double> value = mCache.get( key );
                 String file = value.getKey();
                 try {
@@ -663,8 +662,7 @@ namespace cadencii
                             double old = PortUtil.getCurrentTime();
                             String delfile = "";
                             String delkey = "";
-                            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                                String key = itr.next();
+                            foreach (var key in mCache.Keys) {
                                 ValuePair<String, Double> value = mCache.get( key );
                                 if ( old < value.getValue() ) {
                                     old = value.getValue();

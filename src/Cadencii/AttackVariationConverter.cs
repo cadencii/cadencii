@@ -128,8 +128,7 @@ namespace cadencii
                         type = SynthesizerType.VOCALOID1;
                     }
                     String svalue = (String)value;
-                    for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                        NoteHeadHandle aconfig = itr.next();
+                    foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
                         String display_string = aconfig.getDisplayString();
                         if ( svalue.Equals( display_string ) ) {
                             return new AttackVariation( display_string );
@@ -155,8 +154,7 @@ namespace cadencii
             }
             Vector<Object> list = new Vector<Object>();
             list.Add( new AttackVariation() );
-            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                NoteHeadHandle aconfig = itr.next();
+            foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
                 list.Add( new AttackVariation( aconfig.getDisplayString() ) );
             }
             return list;//new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );

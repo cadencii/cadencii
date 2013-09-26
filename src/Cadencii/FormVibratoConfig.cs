@@ -186,8 +186,7 @@ namespace cadencii
             } else {
                 // VOCALOID1/VOCALOID2のシステム定義のを使う場合
                 SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
-                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                    VibratoHandle vconfig = itr.next();
+                foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                     comboVibratoType.Items.Add( vconfig );
                 }
             }
@@ -261,8 +260,7 @@ namespace cadencii
                         }
                     } else {
                         SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
-                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoHandle vconfig = itr.next();
+                        foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                             if ( s == vconfig.IconID ) {
                                 src = vconfig;
                                 break;

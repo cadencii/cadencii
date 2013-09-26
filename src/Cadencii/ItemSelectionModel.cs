@@ -21,6 +21,8 @@ import cadencii.vsq.*;
 
 #else
 
+using System.Collections.Generic;
+
     namespace cadencii{
 
 #if __cplusplus
@@ -77,9 +79,9 @@ import cadencii.vsq.*;
                 /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
                 /// </summary>
                 /// <returns></returns>
-                public Iterator<SelectedBezierPoint> getBezierIterator()
+                public IEnumerable<SelectedBezierPoint> getBezierIterator()
                 {
-                    return mBezier.iterator();
+                    return mBezier;
                 }
 
                 /// <summary>
@@ -167,9 +169,8 @@ import cadencii.vsq.*;
                     mSelectedTimesig = barcount;
                     if ( !mTimesig.containsKey( barcount ) )
                     {
-                        for ( Iterator<TimeSigTableEntry> itr = AppManager.getVsqFile().TimesigTable.iterator(); itr.hasNext(); )
+                        foreach (var tte in AppManager.getVsqFile().TimesigTable)
                         {
-                            TimeSigTableEntry tte = itr.next();
                             if ( tte.BarCount == barcount )
                             {
                                 mTimesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() ) );
@@ -192,15 +193,14 @@ import cadencii.vsq.*;
                     return mTimesig.size();
                 }
 
-                public Iterator<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
+                public IEnumerable<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
                 {
                     Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
-                    for ( Iterator<Integer> itr = mTimesig.keySet().iterator(); itr.hasNext(); )
+                    foreach (var clock in mTimesig.Keys)
                     {
-                        int clock = itr.next();
                         list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
                     }
-                    return list.iterator();
+                    return list;
                 }
 
                 public bool isTimesigContains( int barcount )
@@ -255,9 +255,8 @@ import cadencii.vsq.*;
                     mLastTempo = clock;
                     if ( !mTempo.containsKey( clock ) )
                     {
-                        for ( Iterator<TempoTableEntry> itr = AppManager.getVsqFile().TempoTable.iterator(); itr.hasNext(); )
+                        foreach (var tte in AppManager.getVsqFile().TempoTable)
                         {
-                            TempoTableEntry tte = itr.next();
                             if ( tte.Clock == clock )
                             {
                                 mTempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() ) );
@@ -280,15 +279,14 @@ import cadencii.vsq.*;
                     return mTempo.size();
                 }
 
-                public Iterator<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
+                public IEnumerable<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
                 {
                     Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
-                    for ( Iterator<Integer> itr = mTempo.keySet().iterator(); itr.hasNext(); )
+                    foreach (var clock in mTempo.Keys)
                     {
-                        int clock = itr.next();
                         list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
                     }
-                    return list.iterator();
+                    return list;
                 }
 
                 public bool isTempoContains( int clock )
@@ -496,9 +494,9 @@ import cadencii.vsq.*;
                     return false;
                 }
 
-                public Iterator<SelectedEventEntry> getEventIterator()
+                public IEnumerable<SelectedEventEntry> getEventIterator()
                 {
-                    return mEvents.iterator();
+                    return mEvents;
                 }
 
                 public SelectedEventEntry getLastEvent()
@@ -560,9 +558,9 @@ import cadencii.vsq.*;
                     return mPointCurveType;
                 }
 
-                public Iterator<Long> getPointIDIterator()
+                public IEnumerable<Long> getPointIDIterator()
                 {
-                    return mPointIDs.iterator();
+                    return mPointIDs;
                 }
 
                 public int getPointIDCount()

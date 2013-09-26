@@ -917,8 +917,7 @@ namespace cadencii {
                                     edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
                                     edit_mode == EditMode.EDIT_LEFT_EDGE ||
                                     edit_mode == EditMode.EDIT_RIGHT_EDGE) && AppManager.itemSelection.getEventCount() > 0) {
-                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry ev = itr.next();
+                        foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                             int x = (int)(ev.editing.Clock * scalex + xoffset);
                             y = -ev.editing.ID.Note * track_height + yoffset + 1;
                             if (ev.editing.ID.type == VsqIDType.Aicon) {
