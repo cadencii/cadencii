@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
@@ -33,7 +34,7 @@ namespace cadencii
 #endif
     {
         const int _BUFLEN = 1024;
-        private Vector<WaveReceiver> mReceivers = new Vector<WaveReceiver>();
+        private List<WaveReceiver> mReceivers = new List<WaveReceiver>();
         private double[] mBufferL = new double[_BUFLEN];
         private double[] mBufferR = new double[_BUFLEN];
         private int mVersion = 0;
@@ -53,8 +54,8 @@ namespace cadencii
             if ( receiver == null ) {
                 return;
             }
-            if ( !mReceivers.contains( receiver ) ) {
-                mReceivers.add( receiver );
+            if ( !mReceivers.Contains( receiver ) ) {
+                mReceivers.Add( receiver );
             }
         }
 
@@ -70,14 +71,14 @@ namespace cadencii
             if ( receiver == null ) {
                 return;
             }
-            if ( !mReceivers.contains( receiver ) ) {
-                mReceivers.add( receiver );
+            if ( !mReceivers.Contains( receiver ) ) {
+                mReceivers.Add( receiver );
             }
         }
 
         public void push( double[] l, double[] r, int length )
         {
-            if ( mReceivers.size() <= 0 ) {
+            if ( mReceivers.Count <= 0 ) {
                 return;
             }
 

@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -44,7 +45,7 @@ namespace cadencii.vsq
         public String IconID = "";
         public String IDS = "";
         public Lyric L0;
-        public Vector<Lyric> Trailing = new Vector<Lyric>();
+        public List<Lyric> Trailing = new List<Lyric>();
         public int Original;
         public String Caption = "";
         public int Length;
@@ -318,12 +319,12 @@ namespace cadencii.vsq
                         if ( index == 0 ) {
                             L0 = lyric;
                         } else {
-                            if ( Trailing.size() < index ) {
-                                for ( int i = Trailing.size(); i < index; i++ ) {
-                                    Trailing.add( new Lyric( "a", "a" ) );
+                            if ( Trailing.Count < index ) {
+                                for ( int i = Trailing.Count; i < index; i++ ) {
+                                    Trailing.Add( new Lyric( "a", "a" ) );
                                 }
                             }
-                            Trailing.set( index - 1, lyric );
+                            Trailing[ index - 1] =  lyric ;
                         }
                     }
                 }
@@ -403,9 +404,9 @@ namespace cadencii.vsq
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
                 result += "\n" + "L0=" + L0.toString( addQuotationMark );
-                int c = Trailing.size();
+                int c = Trailing.Count;
                 for ( int i = 0; i < c; i++ ) {
-                    result += "\n" + "L" + (i + 1) + "=" + Trailing.get( i ).toString( addQuotationMark );
+                    result += "\n" + "L" + (i + 1) + "=" + Trailing[ i ].toString( addQuotationMark );
                 }
             } else if ( m_type == VsqHandleType.Vibrato ) {
                 result += "\n" + "IconID=" + IconID + "\n";

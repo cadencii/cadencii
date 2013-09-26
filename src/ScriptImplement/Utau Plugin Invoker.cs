@@ -77,7 +77,7 @@ public class Utau_Plugin_Invoker : Form {
 
         // 現在のトラック
         int selected = AppManager.getSelected();
-        VsqTrack vsq_track = vsq.Track.get( selected );
+        VsqTrack vsq_track = vsq.Track[ selected ];
         vsq_track.sortEvent();
 
         // プラグイン情報の定義ファイル(plugin.txt)があるかどうかチェック
@@ -123,8 +123,7 @@ public class Utau_Plugin_Invoker : Form {
         int clock_end = int.MinValue;
         int sel_start = 0;
         int sel_end = 0;
-        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-            SelectedEventEntry item = itr.next();
+        foreach (var item in AppManager.itemSelection.getEventIterator()) {
             if ( item.original.ID.type != VsqIDType.Anote ) {
                 continue;
             }
@@ -199,13 +198,13 @@ public class Utau_Plugin_Invoker : Form {
         VsqFileEx v = (VsqFileEx)vsq.clone();// new VsqFile( "Miku", 1, 4, 4, 500000 );
         // 選択トラックだけ残して他を削る
         for ( int i = 1; i < selected; i++ ) {
-            v.Track.removeElementAt( 1 );
+            v.Track.RemoveAt( 1 );
         }
-        for ( int i = selected + 1; i < v.Track.size(); i++ ) {
-            v.Track.removeElementAt( selected + 1 );
+        for ( int i = selected + 1; i < v.Track.Count; i++ ) {
+            v.Track.RemoveAt( selected + 1 );
         }
         // 選択トラックの音符を全消去する
-        VsqTrack v_track = v.Track.get( 1 );
+        VsqTrack v_track = v.Track[ 1 ];
         v_track.MetaText.getEventList().clear();
         for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
             VsqEvent item = itr.next();
@@ -546,7 +545,7 @@ public class Utau_Plugin_Invoker : Form {
     private static void insertTempoInto( VsqFileEx vsq, int clock, float t )
     {
         // clockの位置にテンポ変更があるかどうか？
-        int num_tempo = vsq.TempoTable.size();
+        int num_tempo = vsq.TempoTable.Count;
         int index = -1;
         for ( int j = 0; j < num_tempo; j++ ) {
             TempoTableEntry itemj = vsq.TempoTable[j];

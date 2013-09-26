@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -32,8 +33,8 @@ namespace cadencii.vsq
     {
         public const int MAX_SINGERS = 0x4000;
 
-        private Vector<SingerConfig> m_installed_singers = new Vector<SingerConfig>();
-        private Vector<SingerConfig> m_singer_configs = new Vector<SingerConfig>();
+        private List<SingerConfig> m_installed_singers = new List<SingerConfig>();
+        private List<SingerConfig> m_singer_configs = new List<SingerConfig>();
 
         /// <summary>
         /// 
@@ -42,8 +43,8 @@ namespace cadencii.vsq
         /// <param name="path_installed_singers">音源のインストールディレクトリ(ex:new String[]{ "C:\Program Files\VOCALOID2\voicedbdir\BXXXXXXXXXXXXXXX", "D:\singers\BNXXXXXXXXXX" })</param>
         public SingerConfigSys( String path_voicedb, String[] path_installed_singers )
         {
-            m_installed_singers = new Vector<SingerConfig>();
-            m_singer_configs = new Vector<SingerConfig>();
+            m_installed_singers = new List<SingerConfig>();
+            m_singer_configs = new List<SingerConfig>();
             String map = Path.Combine( path_voicedb, "voice.map" );
             if (!System.IO.File.Exists(map)) {
                 return;
@@ -62,7 +63,7 @@ namespace cadencii.vsq
                     String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                     if ( vvds.Length > 0 ) {
                         SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
-                        m_installed_singers.add( installed );
+                        m_installed_singers.Add( installed );
                         break;
                     }
                 }
@@ -81,7 +82,7 @@ namespace cadencii.vsq
                         if ( value >= 1 ) {
                             String vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
                             SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
-                            m_singer_configs.add( item );
+                            m_singer_configs.Add( item );
                         }
                     }
                 }
@@ -98,11 +99,9 @@ namespace cadencii.vsq
             }
 
             // m_singer_configsの情報から、m_installed_singersの歌唱言語情報を類推する
-            for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = itr.next();
+            foreach (var sc in m_installed_singers) {
                 String searchid = sc.VOICEIDSTR;
-                for ( Iterator<SingerConfig> itr2 = m_singer_configs.iterator(); itr2.hasNext(); ) {
-                    SingerConfig sc2 = itr2.next();
+                foreach (var sc2 in m_singer_configs) {
                     if ( sc2.VOICEIDSTR.Equals( searchid ) ) {
                         sc.Language = sc2.Language;
                         break;
@@ -113,7 +112,7 @@ namespace cadencii.vsq
 
         public SingerConfig[] getInstalledSingers()
         {
-            return m_installed_singers.toArray( new SingerConfig[] { } );
+            return m_installed_singers.ToArray();
         }
 
         /// <summary>
@@ -126,8 +125,8 @@ namespace cadencii.vsq
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             SingerConfig sc = null;
-            for ( int i = 0; i < m_singer_configs.size(); i++ ) {
-                SingerConfig itemi = m_singer_configs.get( i );
+            for ( int i = 0; i < m_singer_configs.Count; i++ ) {
+                SingerConfig itemi = m_singer_configs[ i ];
                 if ( itemi.Language == language && itemi.Program == program ) {
                     sc = itemi;
                     break;
@@ -155,8 +154,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public SingerConfig getSingerInfo( int language, int program )
         {
-            for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
-                SingerConfig item = itr.next();
+            foreach (var item in m_installed_singers) {
                 if ( item.Language == language && item.Program == program ) {
                     return item;
                 }
@@ -170,7 +168,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public SingerConfig[] getSingerConfigs()
         {
-            return m_singer_configs.toArray( new SingerConfig[] { } );
+            return m_singer_configs.ToArray();
         }
     }
 

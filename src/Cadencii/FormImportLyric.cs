@@ -22,6 +22,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.util;
@@ -94,7 +95,7 @@ namespace cadencii
 
         public String[] getLetters()
         {
-            Vector<Character> _SMALL = new Vector<Character>( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+            List<Character> _SMALL = new List<Character>( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
                                                                                 'ゃ', 'ゅ', 'ょ',
                                                                                 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
                                                                                 'ャ', 'ュ', 'ョ' } );
@@ -112,7 +113,7 @@ namespace cadencii
                 }
             }
             String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
-            Vector<String> ret = new Vector<String>();
+            List<String> ret = new List<String>();
             for ( int j = 0; j < spl.Length; j++ ) {
                 String s = spl[j];
                 char[] list = s.ToCharArray();
@@ -124,27 +125,27 @@ namespace cadencii
                         t += list[i] + "";
                     } else {
                         if ( PortUtil.getStringLength( t ) > 0 ) {
-                            ret.add( t );
+                            ret.Add( t );
                             t = "";
                         }
                         if ( i + 1 < list.Length ) {
-                            if ( _SMALL.contains( list[i + 1] ) ) {
+                            if ( _SMALL.Contains( list[i + 1] ) ) {
                                 // 次の文字が拗音の場合
-                                ret.add( list[i] + "" + list[i + 1] + "" );
+                                ret.Add( list[i] + "" + list[i + 1] + "" );
                                 i++;
                             } else {
-                                ret.add( list[i] + "" );
+                                ret.Add( list[i] + "" );
                             }
                         } else {
-                            ret.add( list[i] + "" );
+                            ret.Add( list[i] + "" );
                         }
                     }
                 }
                 if ( PortUtil.getStringLength( t ) > 0 ) {
-                    ret.add( t );
+                    ret.Add( t );
                 }
             }
-            return ret.toArray( new String[] { } );
+            return ret.ToArray();
         }
         #endregion
 

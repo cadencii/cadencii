@@ -1044,30 +1044,30 @@ namespace cadencii
             zone.add( areaTrack );
             EditedZoneUnit[] ret = new EditedZoneUnit[zone.size()];
             int i = -1;
-            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+            foreach (var unit in zone.iterator()) {
                 i++;
-                ret[i] = itr.next();
+                ret[i] = unit;
             }
             return ret;
         }
 
         public static EditedZoneUnit[] detectTempotableDifference( TempoVector tempo1, TempoVector tempo2 ) {
-            int len = Math.Min( tempo1.size(), tempo2.size() );
+            int len = Math.Min( tempo1.Count, tempo2.Count );
             int clockDifferenceStarted = int.MaxValue;
             for ( int i = 0; i < len; i++ ) {
-                TempoTableEntry item1 = tempo1.get( i );
-                TempoTableEntry item2 = tempo2.get( i );
+                TempoTableEntry item1 = tempo1[ i ];
+                TempoTableEntry item2 = tempo2[ i ];
                 if ( item1.Clock != item2.Clock || item1.Tempo != item2.Tempo ) {
                     clockDifferenceStarted = Math.Min( item1.Clock, item2.Clock );
                     break;
                 }
             }
             if ( clockDifferenceStarted == int.MaxValue ) {
-                if ( len < tempo1.size() ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1.get( len ).Clock );
+                if ( len < tempo1.Count ) {
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1[ len ].Clock );
                 }
-                if ( len < tempo2.size() ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2.get( len ).Clock );
+                if ( len < tempo2.Count ) {
+                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2[ len ].Clock );
                 }
             }
             if ( clockDifferenceStarted != int.MaxValue ) {
@@ -1125,11 +1125,11 @@ namespace cadencii
                 compareList( ret, new VsqBPListComparisonContext( list1, list2 ) );
             }
 
-            Vector<EditedZoneUnit> list3 = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = ret.iterator(); itr.hasNext(); ) {
-                list3.add( itr.next() );
+            List<EditedZoneUnit> list3 = new List<EditedZoneUnit>();
+            foreach (var unit in ret.iterator()) {
+                list3.Add( unit );
             }
-            return list3.toArray( new EditedZoneUnit[] { } );
+            return list3.ToArray();
         }
 
         /// <summary>
@@ -1179,11 +1179,11 @@ namespace cadencii
         public static EditedZoneUnit[] compareList( IComparisonContext context ) {
             EditedZone zone = new EditedZone();
             compareList( zone, context );
-            Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                ret.add( itr.next() );
+            List<EditedZoneUnit> ret = new List<EditedZoneUnit>();
+            foreach (var unit in zone.iterator()) {
+                ret.Add( unit );
             }
-            return ret.toArray( new EditedZoneUnit[] { } );
+            return ret.ToArray();
         }
 
         /// <summary>
@@ -1302,28 +1302,28 @@ namespace cadencii
             String option = "Alt";
             String command = "Meta";
 #endif
-            Vector<Keys> list = new Vector<Keys>( keys );
-            if ( list.contains( Keys.Control ) ) {
+            List<Keys> list = new List<Keys>( keys );
+            if ( list.Contains( Keys.Control ) ) {
                 ret += ((ret == "") ? "" : plus) + ctrl;
             }
-            if ( list.contains( Keys.Alt ) ) {
+            if ( list.Contains( Keys.Alt ) ) {
                 ret += ((ret == "") ? "" : plus) + option;
             }
-            if ( list.contains( Keys.Shift ) ) {
+            if ( list.Contains( Keys.Shift ) ) {
                 ret += ((ret == "") ? "" : plus) + shift;
             }
-            if ( list.contains( Keys.Menu ) ) {
+            if ( list.Contains( Keys.Menu ) ) {
                 ret += ((ret == "") ? "" : plus) + command;
             }
-            Vector<Keys> list2 = new Vector<Keys>();
+            List<Keys> list2 = new List<Keys>();
             foreach ( Keys key in keys ) {
                 if ( key != Keys.Control && key != Keys.Shift && key != Keys.Alt && key != Keys.Menu ) {
-                    list2.add( key );
+                    list2.Add( key );
                 }
             }
             list2.Sort();
-            for ( int i = 0; i < list2.size(); i++ ) {
-                ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2.get( i ) );
+            for ( int i = 0; i < list2.Count; i++ ) {
+                ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2[ i ] );
             }
             return ret;
         }
@@ -1515,8 +1515,7 @@ namespace cadencii
             String suffix = "";
             TreeMap<String, Boolean> directives = Config.getDirectives();
             suffix += "\n\n";
-            for( Iterator<String> itr = directives.keySet().iterator(); itr.hasNext(); ){
-                String k = itr.next();
+            foreach (var k in directives.Keys){
                 Boolean v = directives.get( k );
                 suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
             }

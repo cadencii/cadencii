@@ -17,14 +17,15 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
 #endif
 
     public class EditedZoneCommand {
-        public Vector<EditedZoneUnit> mAdd;
-        public Vector<EditedZoneUnit> mRemove;
+        public List<EditedZoneUnit> mAdd;
+        public List<EditedZoneUnit> mRemove;
 
         public EditedZoneCommand( int addStart, int addEnd )
 #if JAVA
@@ -41,23 +42,23 @@ namespace cadencii {
         }
 
         public EditedZoneCommand( EditedZoneUnit[] add, EditedZoneUnit[] remove ) {
-            this.mAdd = new Vector<EditedZoneUnit>();
+            this.mAdd = new List<EditedZoneUnit>();
             for ( int i = 0; i < add.Length; i++ ) {
-                this.mAdd.add( (EditedZoneUnit)add[i].clone() );
+                this.mAdd.Add( (EditedZoneUnit)add[i].clone() );
             }
-            this.mRemove = new Vector<EditedZoneUnit>();
+            this.mRemove = new List<EditedZoneUnit>();
             for ( int i = 0; i < remove.Length; i++ ) {
-                this.mRemove.add( (EditedZoneUnit)remove[i].clone() );
+                this.mRemove.Add( (EditedZoneUnit)remove[i].clone() );
             }
         }
 
-        public EditedZoneCommand( Vector<EditedZoneUnit> add, Vector<EditedZoneUnit> remove )
+        public EditedZoneCommand( List<EditedZoneUnit> add, List<EditedZoneUnit> remove )
 #if JAVA
             {
 #else
             :
 #endif
-            this( add.toArray( new EditedZoneUnit[] { } ), remove.toArray( new EditedZoneUnit[] { } ) )
+            this( add.ToArray(), remove.ToArray() )
 #if JAVA
             ;
 #else

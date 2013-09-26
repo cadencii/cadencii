@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -28,25 +29,25 @@ namespace cadencii {
 #else
     public class EditedZone : ICloneable {
 #endif
-        private Vector<EditedZoneUnit> mSeries = new Vector<EditedZoneUnit>();
+        private List<EditedZoneUnit> mSeries = new List<EditedZoneUnit>();
 
         public EditedZone(){
         }
 
         public int size() {
-            return mSeries.size();
+            return mSeries.Count;
         }
 
-        public Iterator<EditedZoneUnit> iterator() {
-            return mSeries.iterator();
+        public IEnumerable<EditedZoneUnit> iterator() {
+            return mSeries;
         }
 
         public Object clone() {
             EditedZone ret = new EditedZone();
-            int count = mSeries.size();
+            int count = mSeries.Count;
             for ( int i = 0; i < count; i++ ) {
-                EditedZoneUnit p = mSeries.get( i );
-                ret.mSeries.add( (EditedZoneUnit)p.clone() );
+                EditedZoneUnit p = mSeries[ i ];
+                ret.mSeries.Add( (EditedZoneUnit)p.clone() );
             }
             return ret;
         }
@@ -62,21 +63,19 @@ namespace cadencii {
         }
 
         public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
-            for ( Iterator<EditedZoneUnit> itr = run.mRemove.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
-                int count = mSeries.size();
+            foreach (var item in run.mRemove) {
+                int count = mSeries.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    EditedZoneUnit item2 = mSeries.get( i );
+                    EditedZoneUnit item2 = mSeries[ i ];
                     if ( item.mStart == item2.mStart && item.mEnd == item2.mEnd ) {
-                        mSeries.removeElementAt( i );
+                        mSeries.RemoveAt( i );
                         break;
                     }
                 }
             }
 
-            for ( Iterator<EditedZoneUnit> itr = run.mAdd.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
-                mSeries.add( (EditedZoneUnit)item.clone() );
+            foreach (var item in run.mAdd) {
+                mSeries.Add( (EditedZoneUnit)item.clone() );
             }
 
             mSeries.Sort();
@@ -85,13 +84,12 @@ namespace cadencii {
         }
 
         private EditedZoneCommand generateCommandClear() {
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = mSeries.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
-                remove.add( (EditedZoneUnit)item.clone() );
+            List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
+            foreach (var item in mSeries) {
+                remove.Add( (EditedZoneUnit)item.clone() );
             }
 
-            return new EditedZoneCommand( new Vector<EditedZoneUnit>(), remove );
+            return new EditedZoneCommand( new List<EditedZoneUnit>(), remove );
         }
 
         private EditedZoneCommand generateCommandAdd( EditedZoneUnit[] areas ) {
@@ -101,41 +99,37 @@ namespace cadencii {
                 if ( item == null ) {
                     continue;
                 }
-                work.mSeries.add( new EditedZoneUnit( item.mStart, item.mEnd ) );
+                work.mSeries.Add( new EditedZoneUnit( item.mStart, item.mEnd ) );
             }
             work.normalize();
 
             // thisに存在していて、workに存在しないものをremoveに登録
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
+            List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
+            foreach (var itemThis in this.iterator()) {
                 boolean found = false;
-                EditedZoneUnit itemThis = itrThis.next();
-                for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
-                    EditedZoneUnit itemWork = itrWork.next();
+                foreach (var itemWork in work.iterator()) {
                     if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
                         break;
                     }
                 }
                 if ( !found ) {
-                    remove.add( new EditedZoneUnit( itemThis.mStart, itemThis.mEnd ) );
+                    remove.Add( new EditedZoneUnit( itemThis.mStart, itemThis.mEnd ) );
                 }
             }
 
             // workに存在していて、thisに存在しないものをaddに登録
-            Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
+            List<EditedZoneUnit> add = new List<EditedZoneUnit>();
+            foreach (var itemWork in work.iterator()) {
                 boolean found = false;
-                EditedZoneUnit itemWork = itrWork.next();
-                for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
-                    EditedZoneUnit itemThis = itrThis.next();
+                foreach (var itemThis in this.iterator()) {
                     if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
                         break;
                     }
                 }
                 if ( !found ) {
-                    add.add( new EditedZoneUnit( itemWork.mStart, itemWork.mEnd ) );
+                    add.Add( new EditedZoneUnit( itemWork.mStart, itemWork.mEnd ) );
                 }
             }
 
@@ -154,41 +148,41 @@ namespace cadencii {
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                int count = mSeries.size();
+                int count = mSeries.Count;
                 for ( int i = 0; i < count - 1; i++ ) {
-                    EditedZoneUnit itemi = mSeries.get( i );
+                    EditedZoneUnit itemi = mSeries[ i ];
                     if ( itemi.mEnd < itemi.mStart ) {
                         int d = itemi.mStart;
                         itemi.mStart = itemi.mEnd;
                         itemi.mEnd = d;
                     }
                     for ( int j = i + 1; j < count; j++ ) {
-                        EditedZoneUnit itemj = mSeries.get( j );
+                        EditedZoneUnit itemj = mSeries[ j ];
                         if ( itemj.mEnd < itemj.mStart ) {
                             int d = itemj.mStart;
                             itemj.mStart = itemj.mEnd;
                             itemj.mEnd = d;
                         }
                         if ( itemj.mStart == itemi.mStart && itemj.mEnd == itemi.mEnd ) {
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt( j );
                             changed = true;
                             break;
                         } else if ( itemj.mStart <= itemi.mStart && itemi.mEnd <= itemj.mEnd ) {
-                            mSeries.removeElementAt( i );
+                            mSeries.RemoveAt( i );
                             changed = true;
                             break;
                         } else if ( itemi.mStart <= itemj.mStart && itemj.mEnd <= itemi.mEnd ) {
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt( j );
                             changed = true;
                             break;
                         } else if ( itemi.mStart <= itemj.mEnd && itemj.mEnd < itemi.mEnd ) {
                             itemj.mEnd = itemi.mEnd;
-                            mSeries.removeElementAt( i );
+                            mSeries.RemoveAt( i );
                             changed = true;
                             break;
                         } else if ( itemi.mStart <= itemj.mStart && itemj.mStart <= itemi.mEnd ) {
                             itemi.mEnd = itemj.mEnd;
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt( j );
                             changed = true;
                             break;
                         }

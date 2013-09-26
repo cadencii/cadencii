@@ -21,6 +21,8 @@ import cadencii.vsq.*;
 
 #else
 
+using System.Collections.Generic;
+
     namespace cadencii{
 
 #if __cplusplus
@@ -42,7 +44,7 @@ import cadencii.vsq.*;
                 /// <summary>
                 /// 選択されているベジエ点のリスト
                 /// </summary>
-                private Vector<SelectedBezierPoint> mBezier = new Vector<SelectedBezierPoint>();
+                private List<SelectedBezierPoint> mBezier = new List<SelectedBezierPoint>();
                 /// <summary>
                 /// 最後に選択されたベジエ点
                 /// </summary>
@@ -60,8 +62,8 @@ import cadencii.vsq.*;
                 /// <summary>
                 /// 選択されているイベントのリスト
                 /// </summary>
-                private Vector<SelectedEventEntry> mEvents = new Vector<SelectedEventEntry>();
-                private Vector<Long> mPointIDs = new Vector<Long>();
+                private List<SelectedEventEntry> mEvents = new List<SelectedEventEntry>();
+                private List<Long> mPointIDs = new List<Long>();
                 /// <summary>
                 /// selectedPointIDsに格納されているデータ点の，CurveType
                 /// </summary>
@@ -77,9 +79,9 @@ import cadencii.vsq.*;
                 /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
                 /// </summary>
                 /// <returns></returns>
-                public Iterator<SelectedBezierPoint> getBezierIterator()
+                public IEnumerable<SelectedBezierPoint> getBezierIterator()
                 {
-                    return mBezier.iterator();
+                    return mBezier;
                 }
 
                 /// <summary>
@@ -106,10 +108,10 @@ import cadencii.vsq.*;
                 {
                     mSelectedBezier = selected;
                     int index = -1;
-                    for ( int i = 0; i < mBezier.size(); i++ )
+                    for ( int i = 0; i < mBezier.Count; i++ )
                     {
-                        if ( mBezier.get( i ).chainID == selected.chainID &&
-                            mBezier.get( i ).pointID == selected.pointID )
+                        if ( mBezier[ i ].chainID == selected.chainID &&
+                            mBezier[ i ].pointID == selected.pointID )
                         {
                             index = i;
                             break;
@@ -117,11 +119,11 @@ import cadencii.vsq.*;
                     }
                     if ( index >= 0 )
                     {
-                        mBezier.set( index, selected );
+                        mBezier[ index] =  selected ;
                     }
                     else
                     {
-                        mBezier.add( selected );
+                        mBezier.Add( selected );
                     }
                     checkSelectedItemExistence();
                 }
@@ -131,7 +133,7 @@ import cadencii.vsq.*;
                 /// </summary>
                 public void clearBezier()
                 {
-                    mBezier.clear();
+                    mBezier.Clear();
                     mSelectedBezier.chainID = -1;
                     mSelectedBezier.pointID = -1;
                     checkSelectedItemExistence();
@@ -167,9 +169,8 @@ import cadencii.vsq.*;
                     mSelectedTimesig = barcount;
                     if ( !mTimesig.containsKey( barcount ) )
                     {
-                        for ( Iterator<TimeSigTableEntry> itr = AppManager.getVsqFile().TimesigTable.iterator(); itr.hasNext(); )
+                        foreach (var tte in AppManager.getVsqFile().TimesigTable)
                         {
-                            TimeSigTableEntry tte = itr.next();
                             if ( tte.BarCount == barcount )
                             {
                                 mTimesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() ) );
@@ -192,15 +193,14 @@ import cadencii.vsq.*;
                     return mTimesig.size();
                 }
 
-                public Iterator<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
+                public IEnumerable<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
                 {
-                    Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
-                    for ( Iterator<Integer> itr = mTimesig.keySet().iterator(); itr.hasNext(); )
+                    List<ValuePair<Integer, SelectedTimesigEntry>> list = new List<ValuePair<Integer, SelectedTimesigEntry>>();
+                    foreach (var clock in mTimesig.Keys)
                     {
-                        int clock = itr.next();
-                        list.add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
+                        list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
                     }
-                    return list.iterator();
+                    return list;
                 }
 
                 public bool isTimesigContains( int barcount )
@@ -255,9 +255,8 @@ import cadencii.vsq.*;
                     mLastTempo = clock;
                     if ( !mTempo.containsKey( clock ) )
                     {
-                        for ( Iterator<TempoTableEntry> itr = AppManager.getVsqFile().TempoTable.iterator(); itr.hasNext(); )
+                        foreach (var tte in AppManager.getVsqFile().TempoTable)
                         {
-                            TempoTableEntry tte = itr.next();
                             if ( tte.Clock == clock )
                             {
                                 mTempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() ) );
@@ -280,15 +279,14 @@ import cadencii.vsq.*;
                     return mTempo.size();
                 }
 
-                public Iterator<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
+                public IEnumerable<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
                 {
-                    Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
-                    for ( Iterator<Integer> itr = mTempo.keySet().iterator(); itr.hasNext(); )
+                    List<ValuePair<Integer, SelectedTempoEntry>> list = new List<ValuePair<Integer, SelectedTempoEntry>>();
+                    foreach (var clock in mTempo.Keys)
                     {
-                        int clock = itr.next();
-                        list.add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
+                        list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
                     }
-                    return list.iterator();
+                    return list;
                 }
 
                 public bool isTempoContains( int clock )
@@ -333,12 +331,12 @@ import cadencii.vsq.*;
 
                 private void removeEventCor( int id, bool silent )
                 {
-                    int count = mEvents.size();
+                    int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
-                        if ( mEvents.get( i ).original.InternalID == id )
+                        if ( mEvents[ i ].original.InternalID == id )
                         {
-                            mEvents.removeElementAt( i );
+                            mEvents.RemoveAt( i );
                             break;
                         }
                     }
@@ -352,24 +350,24 @@ import cadencii.vsq.*;
 
                 public void removeEventRange( int[] ids )
                 {
-                    Vector<Integer> v_ids = new Vector<Integer>( PortUtil.convertIntArray( ids ) );
-                    Vector<Integer> index = new Vector<Integer>();
-                    int count = mEvents.size();
+                    List<Integer> v_ids = new List<Integer>( PortUtil.convertIntArray( ids ) );
+                    List<Integer> index = new List<Integer>();
+                    int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
-                        if ( v_ids.contains( mEvents.get( i ).original.InternalID ) )
+                        if ( v_ids.Contains( mEvents[ i ].original.InternalID ) )
                         {
-                            index.add( i );
-                            if ( index.size() == ids.Length )
+                            index.Add( i );
+                            if ( index.Count == ids.Length )
                             {
                                 break;
                             }
                         }
                     }
-                    count = index.size();
+                    count = index.Count;
                     for ( int i = count - 1; i >= 0; i-- )
                     {
-                        mEvents.removeElementAt( i );
+                        mEvents.RemoveAt( i );
                     }
 #if ENABLE_PROPERTY
                     AppManager.propertyPanel.updateValue( AppManager.getSelected() );
@@ -377,21 +375,21 @@ import cadencii.vsq.*;
                     checkSelectedItemExistence();
                 }
 
-                public void addEventAll( Vector<Integer> list )
+                public void addEventAll( List<Integer> list )
                 {
                     clearTempo();
                     clearTimesig();
-                    VsqEvent[] index = new VsqEvent[list.size()];
+                    VsqEvent[] index = new VsqEvent[list.Count];
                     int count = 0;
-                    int c = list.size();
+                    int c = list.Count;
                     int selected = AppManager.getSelected();
-                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); )
+                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[ selected ].getEventIterator(); itr.hasNext(); )
                     {
                         VsqEvent ev = itr.next();
                         int find = -1;
                         for ( int i = 0; i < c; i++ )
                         {
-                            if ( list.get( i ) == ev.InternalID )
+                            if ( list[ i ] == ev.InternalID )
                             {
                                 find = i;
                                 break;
@@ -402,7 +400,7 @@ import cadencii.vsq.*;
                             index[find] = ev;
                             count++;
                         }
-                        if ( count == list.size() )
+                        if ( count == list.Count )
                         {
                             break;
                         }
@@ -411,7 +409,7 @@ import cadencii.vsq.*;
                     {
                         if ( !isEventContains( selected, index[i].InternalID ) )
                         {
-                            mEvents.add( new SelectedEventEntry( selected, index[i], (VsqEvent)index[i].clone() ) );
+                            mEvents.Add( new SelectedEventEntry( selected, index[i], (VsqEvent)index[i].clone() ) );
                         }
                     }
 #if ENABLE_PROPERTY
@@ -437,7 +435,7 @@ import cadencii.vsq.*;
                     clearTempo();
                     clearTimesig();
                     int selected = AppManager.getSelected();
-                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); )
+                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[ selected ].getEventIterator(); itr.hasNext(); )
                     {
                         VsqEvent ev = itr.next();
                         if ( ev.InternalID == id )
@@ -445,19 +443,19 @@ import cadencii.vsq.*;
                             if ( isEventContains( selected, id ) )
                             {
                                 // すでに選択されていた場合
-                                int count = mEvents.size();
+                                int count = mEvents.Count;
                                 for ( int i = 0; i < count; i++ )
                                 {
-                                    SelectedEventEntry item = mEvents.get( i );
+                                    SelectedEventEntry item = mEvents[ i ];
                                     if ( item.original.InternalID == id )
                                     {
-                                        mEvents.removeElementAt( i );
+                                        mEvents.RemoveAt( i );
                                         break;
                                     }
                                 }
                             }
 
-                            mEvents.add( new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
+                            mEvents.Add( new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
                             if ( !silent )
                             {
                                 invokeSelectedEventChangedEvent( false );
@@ -475,7 +473,7 @@ import cadencii.vsq.*;
 
                 public void clearEvent()
                 {
-                    mEvents.clear();
+                    mEvents.Clear();
 #if ENABLE_PROPERTY
                     AppManager.propertyPanel.updateValue( AppManager.getSelected() );
 #endif
@@ -484,10 +482,10 @@ import cadencii.vsq.*;
 
                 public bool isEventContains( int track, int id )
                 {
-                    int count = mEvents.size();
+                    int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
-                        SelectedEventEntry item = mEvents.get( i );
+                        SelectedEventEntry item = mEvents[ i ];
                         if ( item.original.InternalID == id && item.track == track )
                         {
                             return true;
@@ -496,33 +494,33 @@ import cadencii.vsq.*;
                     return false;
                 }
 
-                public Iterator<SelectedEventEntry> getEventIterator()
+                public IEnumerable<SelectedEventEntry> getEventIterator()
                 {
-                    return mEvents.iterator();
+                    return mEvents;
                 }
 
                 public SelectedEventEntry getLastEvent()
                 {
-                    if ( mEvents.size() <= 0 )
+                    if ( mEvents.Count <= 0 )
                     {
                         return null;
                     }
                     else
                     {
-                        return mEvents.get( mEvents.size() - 1 );
+                        return mEvents[ mEvents.Count - 1 ];
                     }
                 }
 
                 public int getEventCount()
                 {
-                    return mEvents.size();
+                    return mEvents.Count;
                 }
                 #endregion
 
                 #region Point
                 public void clearPoint()
                 {
-                    mPointIDs.clear();
+                    mPointIDs.Clear();
                     mPointCurveType = CurveType.Empty;
                     checkSelectedItemExistence();
                 }
@@ -537,14 +535,14 @@ import cadencii.vsq.*;
                 {
                     if ( !curve.equals( mPointCurveType ) )
                     {
-                        mPointIDs.clear();
+                        mPointIDs.Clear();
                         mPointCurveType = curve;
                     }
                     for ( int i = 0; i < ids.Length; i++ )
                     {
-                        if ( !mPointIDs.contains( ids[i] ) )
+                        if ( !mPointIDs.Contains( ids[i] ) )
                         {
-                            mPointIDs.add( ids[i] );
+                            mPointIDs.Add( ids[i] );
                         }
                     }
                     checkSelectedItemExistence();
@@ -552,7 +550,7 @@ import cadencii.vsq.*;
 
                 public bool isPointContains( long id )
                 {
-                    return mPointIDs.contains( id );
+                    return mPointIDs.Contains( id );
                 }
 
                 public CurveType getPointCurveType()
@@ -560,19 +558,19 @@ import cadencii.vsq.*;
                     return mPointCurveType;
                 }
 
-                public Iterator<Long> getPointIDIterator()
+                public IEnumerable<Long> getPointIDIterator()
                 {
-                    return mPointIDs.iterator();
+                    return mPointIDs;
                 }
 
                 public int getPointIDCount()
                 {
-                    return mPointIDs.size();
+                    return mPointIDs.Count;
                 }
 
                 public void removePoint( long id )
                 {
-                    mPointIDs.removeElement( id );
+                    mPointIDs.Remove( id );
                     checkSelectedItemExistence();
                 }
                 #endregion
@@ -588,11 +586,11 @@ import cadencii.vsq.*;
                         return;
                     }
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    VsqTrack vsq_track = vsq.Track[ selected ];
 
-                    for ( int i = 0; i < mEvents.size(); i++ )
+                    for ( int i = 0; i < mEvents.Count; i++ )
                     {
-                        SelectedEventEntry item = mEvents.get( i );
+                        SelectedEventEntry item = mEvents[ i ];
                         VsqEvent ev = null;
                         if ( item.track == selected )
                         {
@@ -601,11 +599,11 @@ import cadencii.vsq.*;
                         }
                         if ( ev != null )
                         {
-                            mEvents.set( i, new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
+                            mEvents[i] = new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() );
                         }
                         else
                         {
-                            mEvents.removeElementAt( i );
+                            mEvents.RemoveAt( i );
                             i--;
                         }
                     }
@@ -616,11 +614,11 @@ import cadencii.vsq.*;
                 /// </summary>
                 private void checkSelectedItemExistence()
                 {
-                    bool ret = mBezier.size() == 0 &&
-                               mEvents.size() == 0 &&
+                    bool ret = mBezier.Count == 0 &&
+                               mEvents.Count == 0 &&
                                mTempo.size() == 0 &&
                                mTimesig.size() == 0 &&
-                               mPointIDs.size() == 0;
+                               mPointIDs.Count == 0;
                     invokeSelectedEventChangedEvent( ret );
                 }
 

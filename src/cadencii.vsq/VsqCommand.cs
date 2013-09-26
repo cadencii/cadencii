@@ -48,7 +48,7 @@ namespace cadencii.vsq
         /// <summary>
         /// 後続するコマンド
         /// </summary>
-        public Vector<VsqCommand> Children = new Vector<VsqCommand>();
+        public List<VsqCommand> Children = new List<VsqCommand>();
         /// <summary>
         /// このコマンドの親
         /// </summary>
@@ -325,16 +325,15 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="velocity"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeVelocity( int track, Vector<ValuePair<Integer, Integer>> velocity )
+        public static VsqCommand generateCommandEventChangeVelocity( int track, List<ValuePair<Integer, Integer>> velocity )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_VELOCITY;
             command.Args = new Object[2];
             command.Args[0] = track;
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = velocity.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
+            List<ValuePair<Integer, Integer>> list = new List<ValuePair<Integer, Integer>>();
+            foreach (var item in velocity) {
+                list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
             return command;
@@ -371,16 +370,15 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="accent_list"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeAccent( int track, Vector<ValuePair<Integer, Integer>> accent_list )
+        public static VsqCommand generateCommandEventChangeAccent( int track, List<ValuePair<Integer, Integer>> accent_list )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_ACCENT;
             command.Args = new Object[2];
             command.Args[0] = track;
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = accent_list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
+            List<ValuePair<Integer, Integer>> list = new List<ValuePair<Integer, Integer>>();
+            foreach (var item in accent_list) {
+                list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
             return command;
@@ -393,16 +391,15 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="decay_list"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeDecay( int track, Vector<ValuePair<Integer, Integer>> decay_list )
+        public static VsqCommand generateCommandEventChangeDecay( int track, List<ValuePair<Integer, Integer>> decay_list )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_DECAY;
             command.Args = new Object[2];
             command.Args[0] = track;
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = decay_list.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> item = itr.next();
-                list.add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
+            List<ValuePair<Integer, Integer>> list = new List<ValuePair<Integer, Integer>>();
+            foreach (var item in decay_list) {
+                list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
             command.Args[1] = list;
             return command;
@@ -462,17 +459,16 @@ namespace cadencii.vsq
         /// <param name="target"></param>
         /// <param name="edit"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, Vector<BPPair> edit )
+        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, List<BPPair> edit )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT;
             command.Args = new Object[3];
             command.Args[0] = track;
             command.Args[1] = target;
-            Vector<BPPair> copied = new Vector<BPPair>();
-            for ( Iterator<BPPair> itr = edit.iterator(); itr.hasNext(); ) {
-                BPPair item = itr.next();
-                copied.add( item );
+            List<BPPair> copied = new List<BPPair>();
+            foreach (var item in edit) {
+                copied.Add( item );
             }
             command.Args[2] = copied;
             return command;
@@ -486,23 +482,21 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, Vector<Long> delete, TreeMap<Integer, VsqBPPair> add )
+        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, List<Long> delete, TreeMap<Integer, VsqBPPair> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2;
             command.Args = new Object[4];
             command.Args[0] = track;
             command.Args[1] = target;
-            Vector<Long> cp_delete = new Vector<Long>();
-            for ( Iterator<Long> itr = delete.iterator(); itr.hasNext(); ) {
-                long id = itr.next();
-                cp_delete.add( id );
+            List<Long> cp_delete = new List<Long>();
+            foreach (var id in delete) {
+                cp_delete.Add( id );
             }
             command.Args[2] = cp_delete;
 
             TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
-            for ( Iterator<Integer> itr = add.keySet().iterator(); itr.hasNext(); ) {
-                int clock = itr.next();
+            foreach (var clock in add.Keys) {
                 VsqBPPair item = add.get( clock );
                 cp_add.put( clock, item );
             }
@@ -510,27 +504,26 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveEditRange( int track, Vector<String> targets, Vector<Vector<BPPair>> edits )
+        public static VsqCommand generateCommandTrackCurveEditRange( int track, List<String> targets, List<List<BPPair>> edits )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT_RANGE;
             command.Args = new Object[3];
             command.Args[0] = track;
-            Vector<String> cp_targets = new Vector<String>();
-            int count = targets.size();
+            List<String> cp_targets = new List<String>();
+            int count = targets.Count;
             for ( int i = 0; i < count; i++ ) {
-                cp_targets.add( targets.get( i ) );
+                cp_targets.Add( targets[ i ] );
             }
             command.Args[1] = cp_targets;
-            Vector<Vector<BPPair>> cp_edits = new Vector<Vector<BPPair>>();
-            count = edits.size();
+            List<List<BPPair>> cp_edits = new List<List<BPPair>>();
+            count = edits.Count;
             for ( int i = 0; i < count; i++ ) {
-                Vector<BPPair> copied = new Vector<BPPair>();
-                for ( Iterator<BPPair> itr = edits.get( i ).iterator(); itr.hasNext(); ) {
-                    BPPair item = itr.next();
-                    copied.add( new BPPair( item.Clock, item.Value ) );
+                List<BPPair> copied = new List<BPPair>();
+                foreach (var item in edits[ i ]) {
+                    copied.Add( new BPPair( item.Clock, item.Value ) );
                 }
-                cp_edits.add( copied );
+                cp_edits.Add( copied );
             }
             command.Args[2] = cp_edits;
             return command;
@@ -544,42 +537,40 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2All( int track, Vector<String> target, Vector<Vector<Long>> delete, Vector<TreeMap<Integer, VsqBPPair>> add )
+        public static VsqCommand generateCommandTrackCurveEdit2All( int track, List<String> target, List<List<Long>> delete, List<TreeMap<Integer, VsqBPPair>> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2_ALL;
             command.Args = new Object[4];
             command.Args[0] = track;
-            Vector<String> cp_target = new Vector<String>();
-            int c = target.size();
+            List<String> cp_target = new List<String>();
+            int c = target.Count;
             for ( int i = 0; i < c; i++ ) {
-                cp_target.add( target.get( i ) );
+                cp_target.Add( target[ i ] );
             }
             command.Args[1] = cp_target;
 
-            Vector<Vector<Long>> cp_vec_delete = new Vector<Vector<Long>>();
-            c = delete.size();
+            List<List<Long>> cp_vec_delete = new List<List<Long>>();
+            c = delete.Count;
             for ( int i = 0; i < c; i++ ) {
-                Vector<Long> cp_delete = new Vector<Long>();
-                for ( Iterator<Long> itr = delete.get( i ).iterator(); itr.hasNext(); ) {
-                    long id = itr.next();
-                    cp_delete.add( id );
+                List<Long> cp_delete = new List<Long>();
+                foreach (var id in delete[i]) {
+                    cp_delete.Add( id );
                 }
-                cp_vec_delete.add( cp_delete );
+                cp_vec_delete.Add( cp_delete );
             }
             command.Args[2] = cp_vec_delete;
 
-            Vector<TreeMap<Integer, VsqBPPair>> cp_vec_add = new Vector<TreeMap<Integer, VsqBPPair>>();
-            c = add.size();
+            List<TreeMap<Integer, VsqBPPair>> cp_vec_add = new List<TreeMap<Integer, VsqBPPair>>();
+            c = add.Count;
             for ( int i = 0; i < c; i++ ) {
                 TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
-                TreeMap<Integer, VsqBPPair> tmp = add.get( i );
-                for ( Iterator<Integer> itr = tmp.keySet().iterator(); itr.hasNext(); ) {
-                    int clock = itr.next();
+                TreeMap<Integer, VsqBPPair> tmp = add[ i ];
+                foreach (var clock in tmp.Keys) {
                     VsqBPPair item = tmp.get( clock );
                     cp_add.put( clock, item );
                 }
-                cp_vec_add.add( cp_add );
+                cp_vec_add.Add( cp_add );
             }
             command.Args[3] = cp_vec_add;
             return command;
@@ -624,7 +615,7 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandEventDeleteRange( int track, Vector<Integer> internal_ids )
+        public static VsqCommand generateCommandEventDeleteRange( int track, List<Integer> internal_ids )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_DELETE_RANGE;
@@ -725,12 +716,12 @@ namespace cadencii.vsq
             return ret;
         }
 
-        private static Vector<Integer> copyIntVector( Vector<Integer> value )
+        private static List<Integer> copyIntVector( List<Integer> value )
         {
-            Vector<Integer> ret = new Vector<Integer>();
-            int count = value.size();
+            List<Integer> ret = new List<Integer>();
+            int count = value.Count;
             for ( int i = 0; i < count; i++ ) {
-                ret.add( value.get( i ) );
+                ret.Add( value[ i ] );
             }
             return ret;
         }

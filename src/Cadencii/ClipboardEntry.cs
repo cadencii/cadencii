@@ -20,6 +20,7 @@ import cadencii.*;
 import cadencii.vsq.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii.java.util;
 
@@ -33,15 +34,15 @@ namespace cadencii {
     [Serializable]
     public class ClipboardEntry {
 #endif
-        public Vector<VsqEvent> events;
+        public List<VsqEvent> events;
         /// <summary>
         /// コピーorカットで複製されたテンポ
         /// </summary>
-        public Vector<TempoTableEntry> tempo;
+        public List<TempoTableEntry> tempo;
         /// <summary>
         /// コピーorカットで複製された拍子
         /// </summary>
-        public Vector<TimeSigTableEntry> timesig;
+        public List<TimeSigTableEntry> timesig;
         /// <summary>
         /// コピーorカットで複製されたカーブ
         /// </summary>
@@ -49,7 +50,7 @@ namespace cadencii {
         /// <summary>
         /// コピーorカットで複製されたベジエ曲線
         /// </summary>
-        public TreeMap<CurveType, Vector<BezierChain>> beziers;
+        public TreeMap<CurveType, List<BezierChain>> beziers;
         /// <summary>
         /// コピーの開始位置。貼付け時に、この値をもとにクロックのシフトを行う
         /// </summary>

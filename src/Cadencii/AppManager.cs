@@ -37,6 +37,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 using Microsoft.CSharp;
 using cadencii.apputil;
 using cadencii.java.awt;
@@ -282,7 +283,7 @@ namespace cadencii
         /// <summary>
         /// ショートカットキーとして受付可能なキーのリスト
         /// </summary>
-        public static readonly Vector<Keys> SHORTCUT_ACCEPTABLE = new Vector<Keys>( new Keys[] {
+        public static readonly List<Keys> SHORTCUT_ACCEPTABLE = new List<Keys>( new Keys[] {
             Keys.A,
             Keys.B,
             Keys.Back,
@@ -484,7 +485,7 @@ namespace cadencii
         /// <summary>
         /// 画面に描かれるエントリのリスト．trackBar.Valueの変更やエントリの編集などのたびに更新される
         /// </summary>
-        public static Vector<DrawObject>[] mDrawObjects = new Vector<DrawObject>[MAX_NUM_TRACK];
+        public static List<DrawObject>[] mDrawObjects = new List<DrawObject>[MAX_NUM_TRACK];
         /// <summary>
         /// 歌詞入力に使用するテキストボックス
         /// </summary>
@@ -625,7 +626,7 @@ namespace cadencii
         static AppManager()
         {
             for (int i = 0; i < MAX_NUM_TRACK; i++) {
-                mDrawObjects[i] = new Vector<DrawObject>();
+                mDrawObjects[i] = new List<DrawObject>();
             }
         }
 
@@ -633,21 +634,21 @@ namespace cadencii
         /// voacloidrv.shからwineを呼ぶために，ProcessBuilderに渡す
         /// 引数リストの最初の部分を取得します
         /// </summary>
-        public static Vector<String> getWineProxyArgument()
+        public static List<String> getWineProxyArgument()
         {
-            Vector<String> ret = new Vector<String>();
-            ret.add( "/bin/sh" );
+            List<String> ret = new List<String>();
+            ret.Add( "/bin/sh" );
             String vocaloidrv_sh =
                 Utility.normalizePath( Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
-            ret.add( vocaloidrv_sh );
+            ret.Add( vocaloidrv_sh );
 
             String wine_prefix =
                 Utility.normalizePath( editorConfig.WinePrefix );
-            ret.add( wine_prefix );
+            ret.Add( wine_prefix );
 
             String wine_top =
                 Utility.normalizePath( editorConfig.WineTop );
-            ret.add( wine_top );
+            ret.Add( wine_top );
             return ret;
         }
 
@@ -658,17 +659,17 @@ namespace cadencii
         private static boolean previewStart( FormMain form )
         {
             int selected = mSelected;
-            RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
+            RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track[ selected ] );
             int clock = mCurrentClock;
             mDirectPlayShift = (float)mVsq.getSecFromClock( clock );
             // リアルタイム再生で無い場合
             String tmppath = getTempWaveDir();
 
-            int track_count = mVsq.Track.size();
+            int track_count = mVsq.Track.Count;
 
-            Vector<Integer> tracks = new Vector<Integer>();
+            List<Integer> tracks = new List<Integer>();
             for ( int track = 1; track < track_count; track++ ) {
-                tracks.add( track );
+                tracks.Add( track );
             }
 
             if ( patchWorkToFreeze( form, tracks ) ) {
@@ -680,9 +681,9 @@ namespace cadencii
             }
 
             WaveSenderDriver driver = new WaveSenderDriver();
-            Vector<Amplifier> waves = new Vector<Amplifier>();
-            for ( int i = 0; i < tracks.size(); i++ ) {
-                int track = tracks.get( i );
+            List<Amplifier> waves = new List<Amplifier>();
+            for ( int i = 0; i < tracks.Count; i++ ) {
+                int track = tracks[ i ];
                 String file = Path.Combine( tmppath, track + ".wav" );
                 WaveReader wr = null;
                 try {
@@ -692,7 +693,7 @@ namespace cadencii
                     FileWaveSender f = new FileWaveSender( wr );
                     a.setSender( f );
                     a.setAmplifierView( mMixerWindow.getVolumeTracker( track ) );
-                    waves.add( a );
+                    waves.Add( a );
                     a.setRoot( driver );
                     f.setRoot( driver );
                 } catch ( Exception ex ) {
@@ -706,7 +707,7 @@ namespace cadencii
 
             // clock以降に音符があるかどうかを調べる
             int count = 0;
-            for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
+            for ( Iterator<VsqEvent> itr = mVsq.Track[ selected ].getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = itr.next();
                 if ( ve.Clock >= clock ) {
                     count++;
@@ -734,7 +735,7 @@ namespace cadencii
                     FileWaveSender f = new FileWaveSender( wr );
                     a.setSender( f );
                     a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
-                    waves.add( a );
+                    waves.Add( a );
                     a.setRoot( driver );
                     f.setRoot( driver );
                 } catch ( Exception ex ) {
@@ -744,7 +745,7 @@ namespace cadencii
             }
 
             // 最初のsenderをドライバにする
-            driver.setSender( waves.get( 0 ) );
+            driver.setSender( waves[ 0 ] );
             Mixer m = new Mixer();
             m.setRoot( driver );
             driver.setReceiver( m );
@@ -757,8 +758,8 @@ namespace cadencii
             MonitorWaveReceiver monitor = MonitorWaveReceiver.prepareInstance();
             monitor.setRoot( driver );
             amp.setReceiver( monitor );
-            for ( int i = 1; i < waves.size(); i++ ) {
-                m.addSender( waves.get( i ) );
+            for ( int i = 1; i < waves.Count; i++ ) {
+                m.addSender( waves[ i ] );
             }
 
             int end_clock = mVsq.TotalClocks;
@@ -798,12 +799,12 @@ namespace cadencii
         /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
         /// </summary>
         /// <param name="tracks"></param>
-        public static boolean patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
+        public static boolean patchWorkToFreeze( FormMain main_window, List<Integer> tracks )
         {
             mVsq.updateTotalClocks();
-            Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
+            List<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
 #if DEBUG
-            sout.println( "AppManager#patchWorkToFreeze; queue.size()=" + queue.size() );
+            sout.println( "AppManager#patchWorkToFreeze; queue.size()=" + queue.Count );
 #endif
 
             FormWorker fw = new FormWorker();
@@ -869,20 +870,20 @@ namespace cadencii
         /// </summary>
         /// <param name="tracks">リストを作成するトラック番号の一覧</param>
         /// <returns></returns>
-        public static Vector<PatchWorkQueue> patchWorkCreateQueue( Vector<Integer> tracks )
+        public static List<PatchWorkQueue> patchWorkCreateQueue( List<Integer> tracks )
         {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
             int presend = editorConfig.PreSendTime;
             int totalClocks = mVsq.TotalClocks;
 
-            Vector<PatchWorkQueue> queue = new Vector<PatchWorkQueue>();
-            int[] startIndex = new int[tracks.size() + 1]; // startList, endList, trackList, filesの内，第startIndex[j]からが，第tracks[j]トラックについてのレンダリング要求かを表す.
+            List<PatchWorkQueue> queue = new List<PatchWorkQueue>();
+            int[] startIndex = new int[tracks.Count + 1]; // startList, endList, trackList, filesの内，第startIndex[j]からが，第tracks[j]トラックについてのレンダリング要求かを表す.
 
-            for ( int k = 0; k < tracks.size(); k++ ) {
-                startIndex[k] = queue.size();
-                int track = tracks.get( k );
-                VsqTrack vsq_track = mVsq.Track.get( track );
+            for ( int k = 0; k < tracks.Count; k++ ) {
+                startIndex[k] = queue.Count;
+                int track = tracks[ k ];
+                VsqTrack vsq_track = mVsq.Track[ track ];
                 String wavePath = Path.Combine( temppath, track + ".wav" );
 
                 if ( mLastRenderedStatus[track - 1] == null ) {
@@ -893,7 +894,7 @@ namespace cadencii
                     q.clockEnd = totalClocks + 240;
                     q.file = wavePath;
                     q.vsq = mVsq;
-                    queue.add( q );
+                    queue.Add( q );
                     continue;
                 }
 
@@ -923,14 +924,12 @@ namespace cadencii
                         double[] right = new double[buflen];
 
                         // まずzoneから編集範囲を抽出
-                        Vector<EditedZoneUnit> areasList = new Vector<EditedZoneUnit>();
-                        for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                            EditedZoneUnit e = itr.next();
-                            areasList.add( (EditedZoneUnit)e.clone() );
+                        List<EditedZoneUnit> areasList = new List<EditedZoneUnit>();
+                        foreach (var e in zone.iterator()) {
+                            areasList.Add( (EditedZoneUnit)e.clone() );
                         }
 
-                        for ( Iterator<EditedZoneUnit> itr = areasList.iterator(); itr.hasNext(); ) {
-                            EditedZoneUnit e = itr.next();
+                        foreach (var e in areasList) {
                             int exStart = e.mStart;
                             int exEnd = e.mEnd;
 
@@ -1044,8 +1043,7 @@ namespace cadencii
 #if DEBUG
                 sout.println( "AppManager#patchWorkCreateQueue; track#" + track );
 #endif
-                for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                    EditedZoneUnit unit = itr.next();
+                foreach (var unit in zone.iterator()) {
                     j++;
                     PatchWorkQueue q = new PatchWorkQueue();
                     q.track = track;
@@ -1056,15 +1054,15 @@ namespace cadencii
 #endif
                     q.file = Path.Combine( temppath, track + "_" + j + ".wav" );
                     q.vsq = mVsq;
-                    queue.add( q );
+                    queue.Add( q );
                 }
             }
-            startIndex[tracks.size()] = queue.size();
+            startIndex[tracks.Count] = queue.Count;
 
-            if ( queue.size() <= 0 ) {
+            if ( queue.Count <= 0 ) {
                 // パッチワークする必要なし
-                for ( int i = 0; i < tracks.size(); i++ ) {
-                    setRenderRequired( tracks.get( i ), false );
+                for ( int i = 0; i < tracks.Count; i++ ) {
+                    setRenderRequired( tracks[ i ], false );
                 }
             }
 
@@ -1089,9 +1087,9 @@ namespace cadencii
             }
 
             // まず，先行発音も考慮した音符の範囲を列挙する
-            Vector<Integer> clockStartList = new Vector<Integer>();
-            Vector<Integer> clockEndList = new Vector<Integer>();
-            Vector<Integer> internalIdList = new Vector<Integer>();
+            List<Integer> clockStartList = new List<Integer>();
+            List<Integer> clockEndList = new List<Integer>();
+            List<Integer> internalIdList = new List<Integer>();
             int size = vsq_track.getEventCount();
             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
             for ( int i = 0; i < size; i++ ) {
@@ -1118,20 +1116,20 @@ namespace cadencii
                 }
 
                 // リストに追加
-                clockStartList.add( clock_start );
-                clockEndList.add( clock_end );
-                internalIdList.add( internal_id );
+                clockStartList.Add( clock_start );
+                clockEndList.Add( clock_end );
+                internalIdList.Add( internal_id );
             }
 
             TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
             //for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
             for( int indx = 0; indx < size; indx++ ){
-                int internal_id = internalIdList.get( indx );
+                int internal_id = internalIdList[ indx ];
                 if ( internal_id == -1 ) {
                     continue;
                 }
-                int clockStart = clockStartList.get( indx );// item.Clock;
-                int clockEnd = clockEndList.get( indx );// clockStart + item.ID.getLength();
+                int clockStart = clockStartList[ indx ];// item.Clock;
+                int clockEnd = clockEndList[ indx ];// clockStart + item.ID.getLength();
                 for ( int i = 0; i < areas.Length; i++ ) {
                     EditedZoneUnit area = areas[i];
                     if ( clockStart < area.mEnd && area.mEnd <= clockEnd ) {
@@ -1163,22 +1161,21 @@ namespace cadencii
             int numEvents = vsq_track.getEventCount();
             while ( changed ) {
                 changed = false;
-                for ( Iterator<Integer> itr = ids.keySet().iterator(); itr.hasNext(); ) {
-                    int id = itr.next();
+                foreach (var id in ids.Keys) {
                     int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
                     //VsqEvent item = vsq_track.getEvent( indx );
 
                     // アイテムを遡り、連続していれば追加する
-                    int clock = clockStartList.get( indx );// item.Clock;
+                    int clock = clockStartList[ indx ];// item.Clock;
                     for ( int i = indx - 1; i >= 0; i-- ) {
                         //VsqEvent search = vsq_track.getEvent( i );
-                        int internal_id = internalIdList.get( i );
+                        int internal_id = internalIdList[ i ];
                         if ( internal_id == -1 ) {
                             continue;
                         }
-                        int searchClock = clockStartList.get( i );// search.Clock;
+                        int searchClock = clockStartList[ i ];// search.Clock;
                         //int searchLength = search.ID.getLength();
-                        int searchClockEnd = clockEndList.get( i );//
+                        int searchClockEnd = clockEndList[ i ];//
                         // 一個前の音符の終了位置が，この音符の開始位置と同じが後ろにある場合 -> 重なり有りと判定
                         if ( clock <= searchClockEnd ) {
                             if ( !ids.containsKey( internal_id ) ) {
@@ -1193,15 +1190,15 @@ namespace cadencii
                     }
 
                     // アイテムを辿り、連続していれば追加する
-                    clock = clockEndList.get( indx );// item.Clock + item.ID.getLength();
+                    clock = clockEndList[ indx ];// item.Clock + item.ID.getLength();
                     for ( int i = indx + 1; i < numEvents; i++ ) {
                         //VsqEvent search = vsq_track.getEvent( i );
-                        int internal_id = internalIdList.get( i );
+                        int internal_id = internalIdList[ i ];
                         if ( internal_id == -1 ) {
                             continue;
                         }
-                        int searchClock = clockStartList.get( i );// search.Clock;
-                        int searchClockEnd = clockEndList.get( i );// search.ID.getLength();
+                        int searchClock = clockStartList[ i ];// search.Clock;
+                        int searchClockEnd = clockEndList[ i ];// search.ID.getLength();
                         // 一行後ろの音符の開始位置が，この音符の終了位置と同じが後ろにある場合 -> 重なり有りと判定
                         if ( searchClock <= clock ) {
                             if ( !ids.containsKey( internal_id ) ) {
@@ -1431,39 +1428,38 @@ namespace cadencii
         /// </summary>
         /// <param name="kind">音声合成システムの種類</param>
         /// <returns>歌手のリスト</returns>
-        public static Vector<VsqID> getSingerListFromRendererKind( RendererKind kind )
+        public static List<VsqID> getSingerListFromRendererKind( RendererKind kind )
         {
-            Vector<VsqID> singers = null;
+            List<VsqID> singers = null;
             if ( kind == RendererKind.AQUES_TONE ) {
-                singers = new Vector<VsqID>();
+                singers = new List<VsqID>();
 #if ENABLE_AQUESTONE
                 singers.AddRange( AquesToneDriver.Singers.Select( ( config ) => getSingerIDAquesTone( config.Program ) ) );
 #endif
             } else if ( kind == RendererKind.AQUES_TONE2 ) {
-                singers = new Vector<VsqID>();
+                singers = new List<VsqID>();
 #if ENABLE_AQUESTONE
                 singers.AddRange( AquesTone2Driver.Singers.Select( ( config ) => getSingerIDAquesTone2( config.Program ) ) );
 #endif
             } else if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
-                Vector<SingerConfig> list = editorConfig.UtauSingers;
-                singers = new Vector<VsqID>();
-                for ( Iterator<SingerConfig> itr = list.iterator(); itr.hasNext(); ) {
-                    SingerConfig sc = itr.next();
-                    singers.add( getSingerIDUtau( sc.Language, sc.Program ) );
+                List<SingerConfig> list = editorConfig.UtauSingers;
+                singers = new List<VsqID>();
+                foreach (var sc in list) {
+                    singers.Add( getSingerIDUtau( sc.Language, sc.Program ) );
                 }
             } else if ( kind == RendererKind.VOCALOID1 ) {
                 SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
-                singers = new Vector<VsqID>();
+                singers = new List<VsqID>();
                 for ( int i = 0; i < configs.Length; i++ ) {
                     SingerConfig sc = configs[i];
-                    singers.add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) );
+                    singers.Add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) );
                 }
             } else if ( kind == RendererKind.VOCALOID2 ) {
-                singers = new Vector<VsqID>();
+                singers = new List<VsqID>();
                 SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
                 for ( int i = 0; i < configs.Length; i++ ) {
                     SingerConfig sc = configs[i];
-                    singers.add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID2 ) );
+                    singers.Add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID2 ) );
                 }
             }
             return singers;
@@ -1794,7 +1790,7 @@ namespace cadencii
             if ( mVsq == null ) {
                 return 0;
             } else {
-                return mVsq.BgmFiles.size();
+                return mVsq.BgmFiles.Count;
             }
         }
 
@@ -1803,7 +1799,7 @@ namespace cadencii
             if ( mVsq == null ) {
                 return null;
             }
-            return mVsq.BgmFiles.get( index );
+            return mVsq.BgmFiles[ index ];
         }
 
         public static void removeBgm( int index )
@@ -1811,11 +1807,11 @@ namespace cadencii
             if ( mVsq == null ) {
                 return;
             }
-            Vector<BgmFile> list = new Vector<BgmFile>();
-            int count = mVsq.BgmFiles.size();
+            List<BgmFile> list = new List<BgmFile>();
+            int count = mVsq.BgmFiles.Count;
             for ( int i = 0; i < count; i++ ) {
                 if ( i != index ) {
-                    list.add( (BgmFile)mVsq.BgmFiles.get( i ).clone() );
+                    list.Add( (BgmFile)mVsq.BgmFiles[ i ].clone() );
                 }
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
@@ -1842,7 +1838,7 @@ namespace cadencii
             if ( mVsq == null ) {
                 return;
             }
-            Vector<BgmFile> list = new Vector<BgmFile>();
+            List<BgmFile> list = new List<BgmFile>();
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             editHistory.register( mVsq.executeCommand( run ) );
             try {
@@ -1867,16 +1863,16 @@ namespace cadencii
             if ( mVsq == null ) {
                 return;
             }
-            Vector<BgmFile> list = new Vector<BgmFile>();
-            int count = mVsq.BgmFiles.size();
+            List<BgmFile> list = new List<BgmFile>();
+            int count = mVsq.BgmFiles.Count;
             for ( int i = 0; i < count; i++ ) {
-                list.add( (BgmFile)mVsq.BgmFiles.get( i ).clone() );
+                list.Add( (BgmFile)mVsq.BgmFiles[ i ].clone() );
             }
             BgmFile item = new BgmFile();
             item.file = file;
             item.feder = 0;
             item.panpot = 0;
-            list.add( item );
+            list.Add( item );
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             editHistory.register( mVsq.executeCommand( run ) );
             try {
@@ -2051,10 +2047,9 @@ namespace cadencii
         public static void undo()
         {
             if ( editHistory.hasUndoHistory() ) {
-                Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
-                    before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
+                List<ValuePair<Integer, Integer>> before_ids = new List<ValuePair<Integer, Integer>>();
+                foreach (var item in itemSelection.getEventIterator()) {
+                    before_ids.Add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
                 ICommand run_src = editHistory.getUndo();
@@ -2091,10 +2086,9 @@ namespace cadencii
         public static void redo()
         {
             if ( editHistory.hasRedoHistory() ) {
-                Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
-                for ( Iterator<SelectedEventEntry> itr = itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
-                    before_ids.add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
+                List<ValuePair<Integer, Integer>> before_ids = new List<ValuePair<Integer, Integer>>();
+                foreach (var item in itemSelection.getEventIterator()) {
+                    before_ids.Add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
                 }
 
                 ICommand run_src = editHistory.getRedo();
@@ -2134,16 +2128,15 @@ namespace cadencii
         /// <summary>
         /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
         /// </summary>
-        public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids )
+        public static void cleanupDeadSelection( List<ValuePair<Integer, Integer>> before_ids )
         {
-            int size = mVsq.Track.size();
-            for ( Iterator<ValuePair<Integer, Integer>> itr = before_ids.iterator(); itr.hasNext(); ) {
-                ValuePair<Integer, Integer> specif = itr.next();
+            int size = mVsq.Track.Count;
+            foreach (var specif in before_ids) {
                 boolean found = false;
                 int track = specif.getKey();
                 int internal_id = specif.getValue();
                 if ( 1 <= track && track < size ) {
-                    for ( Iterator<VsqEvent> itr2 = mVsq.Track.get( track ).getNoteEventIterator(); itr2.hasNext(); ) {
+                    for ( Iterator<VsqEvent> itr2 = mVsq.Track[ track ].getNoteEventIterator(); itr2.hasNext(); ) {
                         VsqEvent item = itr2.next();
                         if ( item.InternalID == internal_id ) {
                             found = true;
@@ -2398,7 +2391,7 @@ namespace cadencii
 
                     String currentCacheDir = getTempWaveDir();
                     if ( !currentCacheDir.Equals( cacheDir ) ) {
-                        for ( int i = 1; i < mVsq.Track.size(); i++ ) {
+                        for ( int i = 1; i < mVsq.Track.Count; i++ ) {
                             String wavFrom = Path.Combine( currentCacheDir, i + ".wav" );
                             String wavTo = Path.Combine( cacheDir, i + ".wav" );
                             if (System.IO.File.Exists(wavFrom)) {
@@ -2492,7 +2485,7 @@ namespace cadencii
         /// </summary>
         public static int getSelected()
         {
-            int tracks = mVsq.Track.size();
+            int tracks = mVsq.Track.Count;
             if ( tracks <= mSelected ) {
                 mSelected = tracks - 1;
             }
@@ -2540,7 +2533,7 @@ namespace cadencii
             }
             mVsq = newvsq;
             for ( int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++ ) {
-                if ( i < mVsq.Track.size() - 1 ) {
+                if ( i < mVsq.Track.Count - 1 ) {
                     mVsq.editorStatus.renderRequired[i] = true;
                 } else {
                     mVsq.editorStatus.renderRequired[i] = false;
@@ -2549,7 +2542,7 @@ namespace cadencii
             //mStartMarker = mVsq.getPreMeasureClocks();
             //int bar = mVsq.getPreMeasure() + 1;
             //mEndMarker = mVsq.getClockFromBarCount( bar );
-            if ( mVsq.Track.size() >= 1 ) {
+            if ( mVsq.Track.Count >= 1 ) {
                 mSelected = 1;
             } else {
                 mSelected = -1;
@@ -2596,7 +2589,7 @@ namespace cadencii
         {
             mVsq = vsq;
             for ( int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++ ) {
-                if ( i < mVsq.Track.size() - 1 ) {
+                if ( i < mVsq.Track.Count - 1 ) {
                     mVsq.editorStatus.renderRequired[i] = true;
                 } else {
                     mVsq.editorStatus.renderRequired[i] = false;
@@ -2632,9 +2625,9 @@ namespace cadencii
             editHistory = new EditHistoryModel();
 #if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
-            int c = editorConfig.UtauSingers.size();
+            int c = editorConfig.UtauSingers.Count;
             for ( int i = 0; i < c; i++ ) {
-                SingerConfig sc = editorConfig.UtauSingers.get( i );
+                SingerConfig sc = editorConfig.UtauSingers[ i ];
                 if ( sc == null ) {
                     continue;
                 }
@@ -2808,38 +2801,38 @@ namespace cadencii
             // 辞書の設定を適用
             try {
                 // 現在辞書リストに読込済みの辞書を列挙
-                Vector<ValuePair<String, Boolean>> current = new Vector<ValuePair<String, Boolean>>();
+                List<ValuePair<String, Boolean>> current = new List<ValuePair<String, Boolean>>();
                 for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                    current.add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
+                    current.Add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
                 }
                 // editorConfig.UserDictionariesの設定値をコピー
-                Vector<ValuePair<String, Boolean>> config_data = new Vector<ValuePair<String, Boolean>>();
-                int count = editorConfig.UserDictionaries.size();
+                List<ValuePair<String, Boolean>> config_data = new List<ValuePair<String, Boolean>>();
+                int count = editorConfig.UserDictionaries.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    String[] spl = PortUtil.splitString( editorConfig.UserDictionaries.get( i ), new char[] { '\t' }, 2 );
-                    config_data.add( new ValuePair<String, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
+                    String[] spl = PortUtil.splitString( editorConfig.UserDictionaries[ i ], new char[] { '\t' }, 2 );
+                    config_data.Add( new ValuePair<String, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
 #if DEBUG
                     AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
 #endif
                 }
                 // 辞書リストとeditorConfigの設定を比較する
                 // currentの方には、editorConfigと共通するものについてのみsetValue(true)とする
-                Vector<ValuePair<String, Boolean>> common = new Vector<ValuePair<String, Boolean>>();
-                for ( int i = 0; i < config_data.size(); i++ ) {
-                    for ( int j = 0; j < current.size(); j++ ) {
-                        if ( config_data.get( i ).getKey().Equals( current.get( j ).getKey() ) ) {
+                List<ValuePair<String, Boolean>> common = new List<ValuePair<String, Boolean>>();
+                for ( int i = 0; i < config_data.Count; i++ ) {
+                    for ( int j = 0; j < current.Count; j++ ) {
+                        if ( config_data[ i ].getKey().Equals( current[ j ].getKey() ) ) {
                             // editorConfig.UserDictionariesにもKeyが含まれていたらtrue
-                            current.get( j ).setValue( true );
-                            common.add( new ValuePair<String, Boolean>( config_data.get( i ).getKey(), config_data.get( i ).getValue() ) );
+                            current[ j ].setValue( true );
+                            common.Add( new ValuePair<String, Boolean>( config_data[ i ].getKey(), config_data[ i ].getValue() ) );
                             break;
                         }
                     }
                 }
                 // editorConfig.UserDictionariesに登録されていないが、辞書リストには読み込まれている場合。
                 // この場合は、デフォルトでENABLEとし、優先順位を最後尾とする。
-                for ( int i = 0; i < current.size(); i++ ) {
-                    if ( !current.get( i ).getValue() ) {
-                        common.add( new ValuePair<String, Boolean>( current.get( i ).getKey(), true ) );
+                for ( int i = 0; i < current.Count; i++ ) {
+                    if ( !current[ i ].getValue() ) {
+                        common.Add( new ValuePair<String, Boolean>( current[ i ].getKey(), true ) );
                     }
                 }
                 SymbolTable.changeOrder( common );
@@ -2869,9 +2862,7 @@ namespace cadencii
         public static void reloadUtauVoiceDB()
         {
             mUtauVoiceDB.clear();
-            for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig config = itr.next();
-
+            foreach (var config in editorConfig.UtauSingers) {
                 // 通常のUTAU音源
                 UtauVoiceDB db = null;
                 try {
@@ -2952,17 +2943,17 @@ namespace cadencii
             }
 
             if ( mMainWindow != null ) {
-                Vector<ValuePairOfStringArrayOfKeys> defs = mMainWindow.getDefaultShortcutKeys();
-                for ( int j = 0; j < defs.size(); j++ ) {
+                List<ValuePairOfStringArrayOfKeys> defs = mMainWindow.getDefaultShortcutKeys();
+                for ( int j = 0; j < defs.Count; j++ ) {
                     boolean found = false;
-                    for ( int i = 0; i < ret.ShortcutKeys.size(); i++ ) {
-                        if ( defs.get( j ).Key.Equals( ret.ShortcutKeys.get( i ).Key ) ) {
+                    for ( int i = 0; i < ret.ShortcutKeys.Count; i++ ) {
+                        if ( defs[ j ].Key.Equals( ret.ShortcutKeys[ i ].Key ) ) {
                             found = true;
                             break;
                         }
                     }
                     if ( !found ) {
-                        ret.ShortcutKeys.add( defs.get( j ) );
+                        ret.ShortcutKeys.Add( defs[ j ] );
                     }
                 }
             }
@@ -2982,11 +2973,11 @@ namespace cadencii
         public static void saveConfig()
         {
             // ユーザー辞書の情報を取り込む
-            editorConfig.UserDictionaries.clear();
+            editorConfig.UserDictionaries.Clear();
             int count = SymbolTable.getCount();
             for ( int i = 0; i < count; i++ ) {
                 SymbolTable table = SymbolTable.getSymbolTable( i );
-                editorConfig.UserDictionaries.add( table.getName() + "\t" + (table.isEnabled() ? "T" : "F") );
+                editorConfig.UserDictionaries.Add( table.getName() + "\t" + (table.isEnabled() ? "T" : "F") );
             }
             editorConfig.KeyWidth = keyWidth;
 
@@ -3048,7 +3039,7 @@ namespace cadencii
                 // まず，古いバージョン用の設定ファイルがないかどうか順に調べる
                 String[] dirs0 = PortUtil.listDirectories( appdata );
                 // 数字と，2個以下のピリオドからなるディレクトリ名のみを抽出
-                Vector<VersionString> dirs = new Vector<VersionString>();
+                List<VersionString> dirs = new List<VersionString>();
                 foreach ( String s0 in dirs0 ) {
                     String s = PortUtil.getFileName( s0 );
                     int length = PortUtil.getStringLength( s );
@@ -3072,7 +3063,7 @@ namespace cadencii
                     if ( register && num_period <= 2 ) {
                         try {
                             VersionString vs = new VersionString( s );
-                            dirs.add( vs );
+                            dirs.Add( vs );
                         } catch ( Exception ex ) {
                         }
                     }
@@ -3080,15 +3071,15 @@ namespace cadencii
 
                 // 並べ替える
                 boolean changed = true;
-                int size = dirs.size();
+                int size = dirs.Count;
                 while ( changed ) {
                     changed = false;
                     for ( int i = 0; i < size - 1; i++ ) {
-                        VersionString item1 = dirs.get( i );
-                        VersionString item2 = dirs.get( i + 1 );
+                        VersionString item1 = dirs[ i ];
+                        VersionString item2 = dirs[ i + 1 ];
                         if ( item1.compareTo( item2 ) > 0 ) {
-                            dirs.set( i, item2 );
-                            dirs.set( i + 1, item1 );
+                            dirs[ i] =  item2 ;
+                            dirs[ i + 1] =  item1 ;
                             changed = true;
                         }
                     }
@@ -3097,7 +3088,7 @@ namespace cadencii
                 // バージョン番号付きの設定ファイルを新しい順に読み込みを試みる
                 VersionString vs_this = new VersionString( BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
                 for ( int i = size - 1; i >= 0; i-- ) {
-                    VersionString vs = dirs.get( i );
+                    VersionString vs = dirs[ i ];
                     if ( vs_this.compareTo( vs ) < 0 ) {
                         // 自分自身のバージョンより新しいものは
                         // 読み込んではいけない
@@ -3148,8 +3139,8 @@ namespace cadencii
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = language << 7 | program;
-            if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
-                SingerConfig sc = editorConfig.UtauSingers.get( index );
+            if ( 0 <= index && index < editorConfig.UtauSingers.Count ) {
+                SingerConfig sc = editorConfig.UtauSingers[ index ];
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( language, 2 ) + PortUtil.toHexString( program, 2 );
                 ret.IconHandle.IDS = sc.VOICENAME;
@@ -3174,8 +3165,8 @@ namespace cadencii
         public static SingerConfig getSingerInfoUtau( int language, int program )
         {
             int index = language << 7 | program;
-            if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
-                return editorConfig.UtauSingers.get( index );
+            if ( 0 <= index && index < editorConfig.UtauSingers.Count ) {
+                return editorConfig.UtauSingers[ index ];
             } else {
                 return null;
             }

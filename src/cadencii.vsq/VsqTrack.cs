@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -932,10 +933,10 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="new_renderer"></param>
         /// <param name="singers"></param>
-        public void changeRenderer( String new_renderer, Vector<VsqID> singers )
+        public void changeRenderer( String new_renderer, List<VsqID> singers )
         {
             VsqID default_id = null;
-            int singers_size = singers.size();
+            int singers_size = singers.Count;
             if ( singers_size <= 0 ) {
                 default_id = new VsqID();
                 default_id.type = VsqIDType.Singer;
@@ -950,7 +951,7 @@ namespace cadencii.vsq
                 singer_handle.Caption = "";
                 default_id.IconHandle = singer_handle;
             } else {
-                default_id = singers.get( 0 );
+                default_id = singers[ 0 ];
             }
 
             for ( Iterator<VsqEvent> itr = getSingerEventIterator(); itr.hasNext(); ) {
@@ -959,7 +960,7 @@ namespace cadencii.vsq
                 int program = singer_handle.Program;
                 boolean found = false;
                 for ( int i = 0; i < singers_size; i++ ) {
-                    VsqID id = singers.get( i );
+                    VsqID id = singers[ i ];
                     if ( program == singer_handle.Program ) {
                         ve.ID = (VsqID)id.clone();
                         found = true;
@@ -1105,17 +1106,17 @@ namespace cadencii.vsq
             return counter;
         }
 
-        public VsqTrack( Vector<MidiEvent> midi_event, String encoding )
+        public VsqTrack( List<MidiEvent> midi_event, String encoding )
         {
             String track_name = "";
 
             TextStream sw = null;
             try {
                 sw = new TextStream();
-                int count = midi_event.size();
-                Vector<Integer> buffer = new Vector<Integer>();
+                int count = midi_event.Count;
+                List<Integer> buffer = new List<Integer>();
                 for ( int i = 0; i < count; i++ ) {
-                    MidiEvent item = midi_event.get( i );
+                    MidiEvent item = midi_event[ i ];
                     if ( item.firstByte == 0xff && item.data.Length > 0 ) {
                         // meta textを抽出
                         int type = item.data[0];
@@ -1133,10 +1134,10 @@ namespace cadencii.vsq
                                     if ( colon_count < 2 ) {
                                         continue;
                                     }
-                                    buffer.add( d );
+                                    buffer.Add( d );
                                 }
 
-                                int index_0x0a = buffer.indexOf( 0x0a );
+                                int index_0x0a = buffer.IndexOf( 0x0a );
 #if DEBUG
 #if JAVA
                                 sout.println( "VsqTrack#.ctor; index_0x0a=" + index_0x0a );
@@ -1145,8 +1146,8 @@ namespace cadencii.vsq
                                 while ( index_0x0a >= 0 ) {
                                     int[] cpy = new int[index_0x0a];
                                     for ( int j = 0; j < index_0x0a; j++ ) {
-                                        cpy[j] = 0xff & (int)buffer.get( 0 );
-                                        buffer.removeElementAt( 0 );
+                                        cpy[j] = 0xff & (int)buffer[ 0 ];
+                                        buffer.RemoveAt( 0 );
                                     }
 
                                     String line = PortUtil.getDecodedString( encoding, cpy );
@@ -1156,20 +1157,20 @@ namespace cadencii.vsq
 #endif
 #endif
                                     sw.writeLine( line );
-                                    buffer.removeElementAt( 0 );
-                                    index_0x0a = buffer.indexOf( 0x0a );
+                                    buffer.RemoveAt( 0 );
+                                    index_0x0a = buffer.IndexOf( 0x0a );
                                 }
                             } else {
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
-                                    buffer.add( item.data[j + 1] );
+                                    buffer.Add( item.data[j + 1] );
                                 }
-                                int c = buffer.size();
+                                int c = buffer.Count;
                                 int[] d = new int[c];
                                 for ( int j = 0; j < c; j++ ) {
-                                    d[j] = 0xff & buffer.get( j );
+                                    d[j] = 0xff & buffer[ j ];
                                 }
                                 track_name = PortUtil.getDecodedString( encoding, d );
-                                buffer.clear();
+                                buffer.Clear();
                             }
                         }
                     } else {
@@ -1177,11 +1178,11 @@ namespace cadencii.vsq
                     }
                 }
                 // oketa ketaoさんありがとう =>
-                int remain = buffer.size();
+                int remain = buffer.Count;
                 if ( remain > 0 ) {
                     int[] cpy = new int[remain];
                     for ( int j = 0; j < remain; j++ ) {
-                        cpy[j] = 0xff & buffer.get( j );
+                        cpy[j] = 0xff & buffer[ j ];
                     }
                     String line = PortUtil.getDecodedString( encoding, cpy );
 #if DEBUG

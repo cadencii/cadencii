@@ -192,7 +192,7 @@ namespace cadencii
             log.WriteLine( "mTrimRemain=" + mTrimRemain );
 #endif
 
-            VsqTrack track = mVsq.Track.get( mTrack );
+            VsqTrack track = mVsq.Track[ mTrack ];
             int BUFLEN = mSampleRate / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
@@ -220,7 +220,7 @@ namespace cadencii
 #if DEBUG
             log.WriteLine( "pre-process done" );
             log.WriteLine( "-----------------------------------------------------" );
-            VsqTrack vsq_track = mVsq.Track.get( mTrack );
+            VsqTrack vsq_track = mVsq.Track[ mTrack ];
             for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 log.WriteLine( "c" + item.Clock + "; " + item.ID.LyricHandle.L0.Phrase );
@@ -243,9 +243,8 @@ namespace cadencii
 
                 EventQueueSequence list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
-                for ( Iterator<Integer> itr2 = list.keyIterator(); itr2.hasNext(); ) {
+                foreach (var clock in list.keyIterator()) {
                     // まず直前までの分を合成
-                    Integer clock = itr2.next();
 #if DEBUG
                     log.WriteLine( "-------------------------------------------------------" );
                     sout.println( "AquesToneWaveGenerator#begin;     clock=" + clock );
@@ -273,11 +272,11 @@ namespace cadencii
                     MidiEventQueue queue = list.get( clock );
                     // まずnoteoff
                     boolean noteoff_send = false;
-                    if ( queue.noteoff.size() > 0 ) {
+                    if ( queue.noteoff.Count > 0 ) {
 #if DEBUG
-                        for ( int i = 0; i < queue.noteoff.size(); i++ ) {
+                        for ( int i = 0; i < queue.noteoff.Count; i++ ) {
                             String str = "";
-                            MidiEvent itemi = queue.noteoff.get( i );
+                            MidiEvent itemi = queue.noteoff[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
@@ -285,13 +284,12 @@ namespace cadencii
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteoff; " + str );
                         }
 #endif
-                        mDriver.send( queue.noteoff.toArray( new MidiEvent[] { } ) );
+                        mDriver.send( queue.noteoff.ToArray() );
                         noteoff_send = true;
                     }
                     // parameterの変更
-                    if ( queue.param.size() > 0 ) {
-                        for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
-                            ParameterEvent pe = itr3.next();
+                    if ( queue.param.Count > 0 ) {
+                        foreach (var pe in queue.param) {
 #if DEBUG
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value );
 #endif
@@ -299,16 +297,16 @@ namespace cadencii
                         }
                     }
                     // ついでnoteon
-                    if ( queue.noteon.size() > 0 ) {
+                    if ( queue.noteon.Count > 0 ) {
                         // 同ゲートタイムにピッチベンドも指定されている場合、同時に送信しないと反映されないようだ！
-                        if ( queue.pit.size() > 0 ) {
-                            queue.noteon.addAll( queue.pit );
-                            queue.pit.clear();
+                        if ( queue.pit.Count > 0 ) {
+                            queue.noteon.AddRange( queue.pit );
+                            queue.pit.Clear();
                         }
 #if DEBUG
-                        for ( int i = 0; i < queue.noteon.size(); i++ ) {
+                        for ( int i = 0; i < queue.noteon.Count; i++ ) {
                             String str = "";
-                            MidiEvent itemi = queue.noteon.get( i );
+                            MidiEvent itemi = queue.noteon[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
@@ -316,14 +314,14 @@ namespace cadencii
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteon;  " + str );
                         }
 #endif
-                        mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
+                        mDriver.send( queue.noteon.ToArray() );
                     }
                     // PIT
-                    if ( queue.pit.size() > 0 && !noteoff_send ) {
+                    if ( queue.pit.Count > 0 && !noteoff_send ) {
 #if DEBUG
-                        for ( int i = 0; i < queue.pit.size(); i++ ) {
+                        for ( int i = 0; i < queue.pit.Count; i++ ) {
                             String str = "";
-                            MidiEvent itemi = queue.pit.get( i );
+                            MidiEvent itemi = queue.pit[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
@@ -331,7 +329,7 @@ namespace cadencii
                             sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         pit;     " + str );
                         }
 #endif
-                        mDriver.send( queue.pit.toArray( new MidiEvent[] { } ) );
+                        mDriver.send( queue.pit.ToArray() );
                     }
                     if ( mDriver.getUi( mMainWindow ) != null ) {
                         mDriver.getUi( mMainWindow ).invalidateUi();

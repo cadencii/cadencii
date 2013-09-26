@@ -532,7 +532,7 @@ namespace cadencii
             int sStart0 = (int)(secStart * mSampleRate) - 1;
             int sEnd0 = (int)(secEnd * mSampleRate) + 1;
 
-            int count = tempo_table.size();
+            int count = tempo_table.Count;
             int sStart = 0;
             double cStart = 0.0;
             float order_y = 1.0f;
@@ -558,13 +558,13 @@ namespace cadencii
                 int tempo = 500000;
                 int cEnd = 0;
                 if ( i < count ) {
-                    TempoTableEntry entry = tempo_table.get( i );
+                    TempoTableEntry entry = tempo_table[ i ];
                     time = entry.Time;
                     tempo = entry.Tempo;
                     cEnd = entry.Clock;
                 } else {
                     time = tempo_table.getSecFromClock( clock_end );
-                    tempo = tempo_table.get( i - 1 ).Tempo;
+                    tempo = tempo_table[ i - 1 ].Tempo;
                     cEnd = clock_end;
                 }
                 int sEnd = (int)(time * mSampleRate);

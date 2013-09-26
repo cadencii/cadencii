@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -24,9 +25,9 @@ namespace cadencii {
 #endif
 
     public class RenderQueue {
-        private Vector<String> _resampler_arg = new Vector<String>();
-        public Vector<String> WavtoolArgPrefix = new Vector<String>();
-        public Vector<String> WavtoolArgSuffix = new Vector<String>();
+        private List<String> _resampler_arg = new List<String>();
+        public List<String> WavtoolArgPrefix = new List<String>();
+        public List<String> WavtoolArgSuffix = new List<String>();
         //public String WavtoolArgPrefix;
         //public String WavtoolArgSuffix;
         public OtoArgs Oto;
@@ -44,7 +45,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="value"></param>
         public void appendArg( String value ) {
-            _resampler_arg.add( value );
+            _resampler_arg.Add( value );
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace cadencii {
         /// <param name="args"></param>
         public void appendArgRange( String[] args ) {
             foreach ( String s in args ) {
-                _resampler_arg.add( s );
+                _resampler_arg.Add( s );
             }
         }
 
@@ -62,7 +63,7 @@ namespace cadencii {
         /// </summary>
         /// <returns></returns>
         public String[] getResamplerArg() {
-            return _resampler_arg.toArray( new String[0] );
+            return _resampler_arg.ToArray();
         }
 
         /// <summary>
@@ -71,9 +72,9 @@ namespace cadencii {
         /// <returns></returns>
         public String getResamplerArgString() {
             String ret = "";
-            int c = _resampler_arg.size();
+            int c = _resampler_arg.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret += _resampler_arg.get( i ) + ((i < c - 1) ? " " : "");
+                ret += _resampler_arg[ i ] + ((i < c - 1) ? " " : "");
             }
             return ret;
         }

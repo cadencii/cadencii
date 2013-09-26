@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.util;
@@ -54,7 +55,7 @@ namespace cadencii
 
         private TreeMap<String, ValuePair<String, Keys[]>> mDict;
         private TreeMap<String, ValuePair<String, Keys[]>> mFirstDict;
-        private Vector<String> mFieldName = new Vector<String>();
+        private List<String> mFieldName = new List<String>();
         private FormMain mMainForm = null;
 
         /// <summary>
@@ -98,10 +99,10 @@ namespace cadencii
             comboEditKey.Items.Clear();
             comboEditKey.Items.Add( Keys.None );
             // アルファベット順になるように一度配列に入れて並べ替える
-            int size = AppManager.SHORTCUT_ACCEPTABLE.size();
+            int size = AppManager.SHORTCUT_ACCEPTABLE.Count;
             Keys[] keys = new Keys[size];
             for ( int i = 0; i < size; i++ ){
-                keys[i] = AppManager.SHORTCUT_ACCEPTABLE.get( i );
+                keys[i] = AppManager.SHORTCUT_ACCEPTABLE[ i ];
             }
             boolean changed = true;
             while( changed ){
@@ -201,15 +202,14 @@ namespace cadencii
         private static void copyDict( TreeMap<String, ValuePair<String, Keys[]>> src, TreeMap<String, ValuePair<String, Keys[]>> dest )
         {
             dest.clear();
-            for ( Iterator<String> itr = src.keySet().iterator(); itr.hasNext(); ) {
-                String name = itr.next();
+            foreach (var name in src.Keys) {
                 String key = src.get( name ).getKey();
                 Keys[] values = src.get( name ).getValue();
-                Vector<Keys> cp = new Vector<Keys>();
+                List<Keys> cp = new List<Keys>();
                 foreach ( Keys k in values ) {
-                    cp.add( k );
+                    cp.Add( k );
                 }
-                dest.put( name, new ValuePair<String, Keys[]>( key, cp.toArray( new Keys[] { } ) ) );
+                dest.put( name, new ValuePair<String, Keys[]>( key, cp.ToArray() ) );
             }
         }
 
@@ -221,7 +221,7 @@ namespace cadencii
             list.SelectedIndexChanged -= new EventHandler( list_SelectedIndexChanged );
             list.Items.Clear();
             list.SelectedIndexChanged += new EventHandler( list_SelectedIndexChanged );
-            mFieldName.clear();
+            mFieldName.Clear();
 
             // 現在のカテゴリーを取得
             int selected = comboCategory.SelectedIndex;
@@ -231,8 +231,7 @@ namespace cadencii
             String category = mCategories[selected];
 
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
-            for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                String display = itr.next();
+            foreach (var display in mDict.Keys) {
                 ValuePair<String, Keys[]> item = mDict.get( display );
                 String field_name = item.getKey();
                 Keys[] keys = item.getValue();
@@ -256,7 +255,7 @@ namespace cadencii
                 }
                 if ( add_this_one ) {
                      list.AddRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
-                     mFieldName.add( field_name );
+                     mFieldName.Add( field_name );
                 }
             }
 
@@ -273,7 +272,7 @@ namespace cadencii
             int size = list.Items.Count;
             for ( int i = 0; i < size; i++ ) {
                 //BListViewItem list_item = list.getItemAt( i );
-                String field_name = mFieldName.get( i );
+                String field_name = mFieldName[ i ];
                 String key_display = list.Items[i].SubItems[1].Text;
                 if ( key_display == "" ){
                     // ショートカットキーが割り当てられていないのでスルー
@@ -282,8 +281,7 @@ namespace cadencii
                 }
 
                 boolean found = false;
-                for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                    String display1 = itr.next();
+                foreach (var display1 in mDict.Keys) {
                     ValuePair<String, Keys[]> item1 = mDict.get( display1 );
                     String field_name1 = item1.getKey();
                     if ( field_name == field_name1 ) {
@@ -380,23 +378,23 @@ namespace cadencii
             if ( !mDict.containsKey( display ) ) {
                 return;
             }
-            Vector<Keys> capturelist = new Vector<Keys>();
+            List<Keys> capturelist = new List<Keys>();
             if( key != Keys.None ){
-                capturelist.add( key );
+                capturelist.Add( key );
                 if (checkCommand.Checked) {
-                    capturelist.add( Keys.Menu );
+                    capturelist.Add( Keys.Menu );
                 }
                 if (checkShift.Checked) {
-                    capturelist.add( Keys.Shift );
+                    capturelist.Add( Keys.Shift );
                 }
                 if( checkControl.Checked ){
-                    capturelist.add( Keys.Control );
+                    capturelist.Add( Keys.Control );
                 }
                 if( checkOption.Checked ){
-                    capturelist.add( Keys.Alt );
+                    capturelist.Add( Keys.Alt );
                 }
             }
-            Keys[] keys = capturelist.toArray( new Keys[] { } );
+            Keys[] keys = capturelist.ToArray();
             mDict.get( display ).setValue( keys );
             list.Items[indx_row].SubItems[1].Text = Utility.getShortcutDisplayString( keys ); 
         } 
@@ -414,16 +412,16 @@ namespace cadencii
             unRegisterHandlers();
             ValuePair<String, Keys[]> item = mDict.get( display );
             Keys[] keys = item.getValue();
-            Vector<Keys> vkeys = new Vector<Keys>( keys );
-            checkCommand.Checked = vkeys.contains( Keys.Menu );
-            checkShift.Checked = vkeys.contains( Keys.Shift );
-            checkControl.Checked = vkeys.contains( Keys.Control );
-            checkOption.Checked = vkeys.contains( Keys.Alt );
+            List<Keys> vkeys = new List<Keys>( keys );
+            checkCommand.Checked = vkeys.Contains( Keys.Menu );
+            checkShift.Checked = vkeys.Contains( Keys.Shift );
+            checkControl.Checked = vkeys.Contains( Keys.Control );
+            checkOption.Checked = vkeys.Contains( Keys.Alt );
             int size = comboEditKey.Items.Count;
             comboEditKey.SelectedIndex = -1;
             for( int i = 0; i < size; i++ ){
                 Keys k = (Keys)comboEditKey.Items[i];
-                if( vkeys.contains( k ) ){
+                if( vkeys.Contains( k ) ){
                     comboEditKey.SelectedIndex = i;
                     break;
                 }
@@ -453,12 +451,11 @@ namespace cadencii
 
         public void btnLoadDefault_Click( Object sender, EventArgs e )
         {
-            Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
-            for ( int i = 0; i < defaults.size(); i++ ) {
-                String name = defaults.get( i ).Key;
-                Keys[] keys = defaults.get( i ).Value;
-                for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                    String display = itr.next();
+            List<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
+            for ( int i = 0; i < defaults.Count; i++ ) {
+                String name = defaults[ i ].Key;
+                Keys[] keys = defaults[ i ].Value;
+                foreach (var display in mDict.Keys) {
                     if ( name.Equals( mDict.get( display ).getKey() ) ) {
                         mDict.get( display ).setValue( keys );
                         break;

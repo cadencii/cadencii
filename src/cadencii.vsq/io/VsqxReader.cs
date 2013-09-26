@@ -67,23 +67,23 @@ namespace cadencii.vsq.io
             VsqFile result = new VsqFile( "", preMeasure, 4, 4, 500000 );
 
             // テンポ変更を読み取る
-            result.TempoTable.clear();
+            result.TempoTable.Clear();
             foreach ( XmlNode node in masterTrack.GetElementsByTagName( "tempo" ) ) {
                 int posTick = int.Parse( node["posTick"].InnerText );
                 int bpm = int.Parse( node["bpm"].InnerText );
                 int tempo = (int)(6000000000L / bpm);
                 TempoTableEntry tempoEntry = new TempoTableEntry( posTick, tempo, 0.0 );
-                result.TempoTable.add( tempoEntry );
+                result.TempoTable.Add( tempoEntry );
             }
             result.TempoTable.updateTempoInfo();
             // 拍子変更を読み取る
-            result.TimesigTable.clear();
+            result.TimesigTable.Clear();
             foreach ( XmlNode node in masterTrack.GetElementsByTagName( "timeSig" ) ) {
                 int posMes = int.Parse( node["posMes"].InnerText );
                 int numerator = int.Parse( node["nume"].InnerText );
                 int denominator = int.Parse( node["denomi"].InnerText );
                 TimeSigTableEntry timesigEntry = new TimeSigTableEntry( 0, numerator, denominator, posMes );
-                result.TimesigTable.add( timesigEntry );
+                result.TimesigTable.Add( timesigEntry );
             }
             result.TimesigTable.updateTimesigInfo();
 
@@ -91,13 +91,13 @@ namespace cadencii.vsq.io
             foreach ( XmlNode node in xml.DocumentElement.GetElementsByTagName( "vsTrack" ) ) {
                 int trackIndex = int.Parse( node["vsTrackNo"].InnerText ) + 1;
                 VsqTrack track = null;
-                if ( result.Track.size() <= trackIndex ) {
-                    int amount = trackIndex + 1 - result.Track.size();
+                if ( result.Track.Count <= trackIndex ) {
+                    int amount = trackIndex + 1 - result.Track.Count;
                     for ( int i = 0; i < amount; i++ ) {
-                        result.Track.add( new VsqTrack( "", "" ) );
+                        result.Track.Add( new VsqTrack( "", "" ) );
                     }
                 }
-                track = result.Track.get( trackIndex );
+                track = result.Track[ trackIndex ];
                 track.setName( node["trackName"].InnerText );
 
                 foreach ( XmlNode child in node.ChildNodes ) {
@@ -115,9 +115,9 @@ namespace cadencii.vsq.io
             result.Mixer.MasterPanpot = 64;
 
             // SlaveMixerをパース
-            result.Mixer.Slave.clear();
-            for ( int i = 1; i < result.Track.size(); i++ ) {
-                result.Mixer.Slave.add( null );
+            result.Mixer.Slave.Clear();
+            for ( int i = 1; i < result.Track.Count; i++ ) {
+                result.Mixer.Slave.Add( null );
             }
             foreach ( XmlNode vsUnit in mixer.GetElementsByTagName( "vsUnit" ) ) {
                 int vsTrackNo = int.Parse( vsUnit["vsTrackNo"].InnerText );
@@ -126,7 +126,7 @@ namespace cadencii.vsq.io
                 int pan = int.Parse( vsUnit["pan"].InnerText );
                 int vol = int.Parse( vsUnit["vol"].InnerText );
                 var slave = new VsqMixerEntry( vol, pan, mute, solo );
-                result.Mixer.Slave.set( vsTrackNo, slave );
+                result.Mixer.Slave[ vsTrackNo] =  slave ;
             }
 
             return result;

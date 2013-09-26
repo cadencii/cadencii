@@ -25,6 +25,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -74,8 +75,8 @@ namespace cadencii
         protected int mTrimMillisec;
         protected int mSampleRate;
 
-        private Vector<VConnectRenderingQueue> mQueue;
-        private Vector<SingerConfig> mSingerConfigSys;
+        private List<VConnectRenderingQueue> mQueue;
+        private List<SingerConfig> mSingerConfigSys;
         private double mProgressPercent = 0.0;
 
         private TreeMap<String, UtauVoiceDB> mVoiceDBConfigs = new TreeMap<String, UtauVoiceDB>();
@@ -184,46 +185,46 @@ namespace cadencii
 
             // StraightRenderingRunner.ctorの実装より
             mLocker = new Object();
-            mQueue = new Vector<VConnectRenderingQueue>();
+            mQueue = new List<VConnectRenderingQueue>();
             if ( mConfig != null && mConfig.UtauSingers != null ) {
                 mSingerConfigSys = mConfig.UtauSingers;
             } else {
-                mSingerConfigSys = new Vector<SingerConfig>();
+                mSingerConfigSys = new List<SingerConfig>();
             }
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)mVsq.clone();
             TempoVector tempo = new TempoVector();
-            tempo.clear();
-            tempo.add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
+            tempo.Clear();
+            tempo.Add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
             tempo.updateTempoInfo();
             work.adjustClockToMatchWith( tempo );
             // テンポテーブルをクリア
-            work.TempoTable.clear();
-            work.TempoTable.add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
+            work.TempoTable.Clear();
+            work.TempoTable.Add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
             work.updateTempoInfo();
-            VsqTrack vsq_track = work.Track.get( track );
-            Vector<VsqEvent> events = new Vector<VsqEvent>(); // 順次取得はめんどくさいので，一度eventsに格納してから処理しよう
+            VsqTrack vsq_track = work.Track[ track ];
+            List<VsqEvent> events = new List<VsqEvent>(); // 順次取得はめんどくさいので，一度eventsに格納してから処理しよう
             int count = vsq_track.getEventCount();
             VsqEvent current_singer_event = null;
 
             for ( int i = 0; i < count; i++ ) {
                 VsqEvent item = vsq_track.getEvent( i );
                 if ( item.ID.type == VsqIDType.Singer ) {
-                    if ( events.size() > 0 && current_singer_event != null ) {
+                    if ( events.Count > 0 && current_singer_event != null ) {
                         // eventsに格納されたノートイベントについて，StraightRenderingQueueを順次作成し，登録
                         appendQueue( work, track, events, current_singer_event );
-                        events.clear();
+                        events.Clear();
                     }
                     current_singer_event = item;
                 } else if ( item.ID.type == VsqIDType.Anote ) {
-                    events.add( item );
+                    events.Add( item );
                 }
             }
-            if ( events.size() > 0 && current_singer_event != null ) {
+            if ( events.Count > 0 && current_singer_event != null ) {
                 appendQueue( work, track, events, current_singer_event );
             }
-            if ( mQueue.size() > 0 ) {
-                VConnectRenderingQueue q = mQueue.get( mQueue.size() - 1 );
+            if ( mQueue.Count > 0 ) {
+                VConnectRenderingQueue q = mQueue[ mQueue.Count - 1 ];
                 mVsqLengthSamples = q.startSample + q.abstractSamples;
             }
         }
@@ -245,12 +246,12 @@ namespace cadencii
                 exitBegin();
                 return;
             }
-            int count = mQueue.size();
+            int count = mQueue.Count;
 
             // 合計でレンダリングしなければならないサンプル数を計算しておく
             double total_samples = 0;
             for ( int i = 0; i < count; i++ ) {
-                total_samples += mQueue.get( i ).abstractSamples;
+                total_samples += mQueue[ i ].abstractSamples;
             }
 #if DEBUG
             sout.println( "VConnectWaveGenerator#begin; total_samples=" + total_samples );
@@ -262,9 +263,9 @@ namespace cadencii
 #endif
             long max_next_wave_start = mVsqLengthSamples;
 
-            if ( mQueue.size() > 0 ) {
+            if ( mQueue.Count > 0 ) {
                 // 最初のキューが始まるまでの無音部分
-                VConnectRenderingQueue queue = mQueue.get( 0 );
+                VConnectRenderingQueue queue = mQueue[ 0 ];
                 if ( queue.startSample > 0 ) {
                     for ( int i = 0; i < BUFLEN; i++ ) {
                         bufL[i] = 0.0;
@@ -293,7 +294,7 @@ namespace cadencii
                     exitBegin();
                     return;
                 }
-                VConnectRenderingQueue queue = mQueue.get( i );
+                VConnectRenderingQueue queue = mQueue[ i ];
                 String tmp_dir = AppManager.getTempWaveDir();
 
                 String tmp_file = Path.Combine( tmp_dir, "tmp.usq" );
@@ -396,8 +397,7 @@ namespace cadencii
                         boolean first = true;
                         double old_date = PortUtil.getCurrentTime();
                         String old_key = "";
-                        for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                            String key = itr.next();
+                        foreach (var key in mCache.Keys) {
                             double time = mCache.get( key );
                             if ( first ) {
                                 old_date = time;
@@ -420,7 +420,7 @@ namespace cadencii
 
                 long next_wave_start = max_next_wave_start;
                 if ( i + 1 < count ) {
-                    VConnectRenderingQueue next_queue = mQueue.get( i + 1 );
+                    VConnectRenderingQueue next_queue = mQueue[ i + 1 ];
                     next_wave_start = next_queue.startSample;
                 }
 
@@ -889,20 +889,20 @@ namespace cadencii
             }
         }
 
-        private void appendQueue( VsqFileEx vsq, int track, Vector<VsqEvent> events, VsqEvent singer_event )
+        private void appendQueue( VsqFileEx vsq, int track, List<VsqEvent> events, VsqEvent singer_event )
         {
-            int count = events.size();
+            int count = events.Count;
             if ( count <= 0 ) {
                 return;
             }
-            VsqEvent current = events.get( 0 );
+            VsqEvent current = events[ 0 ];
             VsqEvent next = null;
 
             String singer = singer_event.ID.IconHandle.IDS;
-            int num_singers = mSingerConfigSys.size();
+            int num_singers = mSingerConfigSys.Count;
             String singer_path = "";
             for ( int i = 0; i < num_singers; i++ ) {
-                SingerConfig sc = mSingerConfigSys.get( i );
+                SingerConfig sc = mSingerConfigSys[ i ];
                 if ( sc.VOICENAME.Equals( singer ) ) {
                     singer_path = sc.VOICEIDSTR;
                     break;
@@ -932,22 +932,22 @@ namespace cadencii
 
             // eventsのなかから、音源が存在しないものを削除
             for ( int i = count - 1; i >= 0; i-- ) {
-                VsqEvent item = events.get( i );
+                VsqEvent item = events[ i ];
                 String search = item.ID.LyricHandle.L0.Phrase;
                 OtoArgs oa = voicedb.attachFileNameFromLyric( search );
                 if ( oa.fileName == null || (oa.fileName != null && oa.fileName.Equals( "" )) ) {
-                    events.removeElementAt( i );
+                    events.RemoveAt( i );
                 }
             }
 
-            Vector<VsqEvent> list = new Vector<VsqEvent>();
+            List<VsqEvent> list = new List<VsqEvent>();
 
-            count = events.size();
+            count = events.Count;
             for ( int i = 1; i < count + 1; i++ ) {
                 if ( i == count ) {
                     next = null;
                 } else {
-                    next = events.get( i );
+                    next = events[ i ];
                 }
 
                 double current_sec_start = vsq.getSecFromClock( current.Clock ) - current.UstEvent.getPreUtterance() / 1000.0;
@@ -962,18 +962,18 @@ namespace cadencii
                     }
                 }
 
-                list.add( current );
+                list.Add( current );
                 // 前の音符との間隔が100ms以下なら，連続していると判断
-                if ( next_sec_start - current_sec_end > 0.1 && list.size() > 0 ) {
+                if ( next_sec_start - current_sec_end > 0.1 && list.Count > 0 ) {
                     appendQueueCor( vsq, track, list, oto_ini );
-                    list.clear();
+                    list.Clear();
                 }
 
                 // 処理後
                 current = next;
             }
 
-            if ( list.size() > 0 ) {
+            if ( list.Count > 0 ) {
                 appendQueueCor( vsq, track, list, oto_ini );
             }
         }
@@ -982,9 +982,9 @@ namespace cadencii
         /// 連続した音符を元に，StraightRenderingQueueを作成
         /// </summary>
         /// <param name="list"></param>
-        private void appendQueueCor( VsqFileEx vsq, int track, Vector<VsqEvent> list, String oto_ini )
+        private void appendQueueCor( VsqFileEx vsq, int track, List<VsqEvent> list, String oto_ini )
         {
-            if ( list.size() <= 0 ) {
+            if ( list.Count <= 0 ) {
                 return;
             }
 
@@ -999,12 +999,12 @@ namespace cadencii
                     CurveType.BRI,
             };
 
-            VsqTrack vsq_track = (VsqTrack)vsq.Track.get( track ).clone();
-            VsqEvent ve0 = list.get( 0 );
+            VsqTrack vsq_track = (VsqTrack)vsq.Track[ track ].clone();
+            VsqEvent ve0 = list[ 0 ];
             int first_clock = ve0.Clock;
             int last_clock = ve0.Clock + ve0.ID.getLength();
-            if ( list.size() > 1 ) {
-                VsqEvent ve9 = list.get( list.size() - 1 );
+            if ( list.Count > 1 ) {
+                VsqEvent ve9 = list[ list.Count - 1 ];
                 last_clock = ve9.Clock + ve9.ID.getLength();
             }
             double start_sec = vsq.getSecFromClock( first_clock ); // 最初の音符の，曲頭からの時間
@@ -1012,9 +1012,9 @@ namespace cadencii
 
             // listの内容を転写
             vsq_track.MetaText.Events.clear();
-            int count = list.size();
+            int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
-                VsqEvent ev = (VsqEvent)list.get( i ).clone();
+                VsqEvent ev = (VsqEvent)list[ i ].clone();
                 ev.Clock = ev.Clock + clock_shift;
                 vsq_track.MetaText.Events.add( ev );
             }
@@ -1056,7 +1056,7 @@ namespace cadencii
             queue.abstractSamples = (long)(abstract_sec * mSampleRate);
             queue.endClock = last_clock + clock_shift + 1920;
             queue.track = vsq_track;
-            mQueue.add( queue );
+            mQueue.Add( queue );
         }
 
         /// <summary>
@@ -1116,8 +1116,7 @@ namespace cadencii
                 writer.newLine();
                 writer.write( "[oto.ini]" );
                 writer.newLine();
-                for ( Iterator<String> itr = dict_singername_otoini.keySet().iterator(); itr.hasNext(); ) {
-                    String singername = itr.next();
+                foreach (var singername in dict_singername_otoini.Keys) {
                     String oto_ini = dict_singername_otoini.get( singername );
                     if ( world_mode ) {
                         writer.write( singername + "\t" + oto_ini );
@@ -1128,8 +1127,8 @@ namespace cadencii
                         break;
                     }
                 }
-                Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-                Vector<String> print_targets = new Vector<String>( new String[]{ "Length",
+                List<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
+                List<String> print_targets = new List<String>( new String[]{ "Length",
                                                                              "Note#",
                                                                              "Dynamics",
                                                                              "DEMdecGainRate",
@@ -1143,9 +1142,9 @@ namespace cadencii
                     VsqEvent item = itr.next();
                     item.write( writer, print_targets );
                 }
-                int count = handles.size();
+                int count = handles.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    handles.get( i ).write( writer );
+                    handles[ i ].write( writer );
                 }
                 count = CURVE.Length;
                 for ( int i = 0; i < count; i++ ) {
@@ -1182,8 +1181,7 @@ namespace cadencii
         public static void clearCache()
         {
             String tmp_dir = AppManager.getTempWaveDir();
-            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                String key = itr.next();
+            foreach (var key in mCache.Keys) {
                 try {
                     PortUtil.deleteFile( Path.Combine( tmp_dir, key + ".wav" ) );
                 } catch ( Exception ex ) {

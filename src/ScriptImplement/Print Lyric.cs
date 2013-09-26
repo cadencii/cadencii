@@ -3,8 +3,8 @@ public static class Print_Lyric {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
-            for ( int i = 0; i < Vsq.Track.get( 1 ).getEventCount(); i++ ) {
-                cadencii.vsq.VsqEvent item = Vsq.Track.get( 1 ).getEvent( i );
+            for ( int i = 0; i < Vsq.Track[ 1 ].getEventCount(); i++ ) {
+                cadencii.vsq.VsqEvent item = Vsq.Track[ 1 ].getEvent( i );
                 if ( item.ID.type == cadencii.vsq.VsqIDType.Anote ) {
                     int clStart = item.Clock;
                     int clEnd = clStart + item.ID.Length;

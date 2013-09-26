@@ -87,7 +87,7 @@ namespace cadencii {
             m_close_when_finished = close_when_finished;
             m_singer_config1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
             m_singer_config2 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-            m_singer_config_utau = AppManager.editorConfig.UtauSingers.toArray( new SingerConfig[] { } );
+            m_singer_config_utau = AppManager.editorConfig.UtauSingers.ToArray();
             if ( m_singer_config1.Length > 0 ) {
                 comboSingingSynthSystem.Items.Add( "VOCALOID1" );
             }
@@ -303,8 +303,7 @@ namespace cadencii {
                 }
             }
 
-            for ( Iterator<SingerConfig> itr = AppManager.editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = itr.next();
+            foreach (var sc in AppManager.editorConfig.UtauSingers) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = sc.VOICENAME;
                     first_found_renderer = VsqFileEx.RENDERER_UTU0;
@@ -320,14 +319,14 @@ namespace cadencii {
                 singer = first_found_singer;
                 renderer = first_found_renderer;
             }
-            vsq.Track.get( 1 ).getCommon().Version = renderer;
+            vsq.Track[ 1 ].getCommon().Version = renderer;
             VsqEvent item = new VsqEvent( 1920, new VsqID( 0 ) );
             item.ID.LyricHandle = new LyricHandle( "あ", "a" );
             item.ID.setLength( 480 );
             item.ID.Note = note;
             item.ID.VibratoHandle = null;
             item.ID.type = VsqIDType.Anote;
-            vsq.Track.get( 1 ).addEvent( item );
+            vsq.Track[ 1 ].addEvent( item );
             vsq.updateTotalClocks();
             int ms_presend = 500;
             String tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
@@ -343,7 +342,7 @@ namespace cadencii {
             WaveWriter ww = null;
             try {
                 ww = new WaveWriter( file );
-                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( 1 ) );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ 1 ] );
                 WaveGenerator generator = VSTiDllManager.getWaveGenerator( kind );
                 int sample_rate = vsq.config.SamplingRate;
                 FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16, sample_rate );

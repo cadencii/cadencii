@@ -33,6 +33,7 @@ import cadencii.str;
 #else
 
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -164,15 +165,14 @@ namespace cadencii.apputil {
                     sw.newLine();
                     sw.newLine();
                 }
-                for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ){
-                    String key = itr.next();
+                foreach (var key in list.Keys) {
                     String skey = key.Replace( "\n", "\\n\"\n\"" );
                     MessageBodyEntry mbe = list.get( key );
                     String s = mbe.message;
-                    Vector<String> location = mbe.location;
-                    int count = location.size();
+                    List<String> location = mbe.location;
+                    int count = location.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        sw.write( "#: " + location.get( i ) );
+                        sw.write( "#: " + location[ i ] );
                         sw.newLine();
                     }
                     sw.write( "msgid \"" + skey + "\"" );
@@ -215,7 +215,7 @@ namespace cadencii.apputil {
         {
             msg.value = "";
             String line = first_line;
-            Vector<String> location = new Vector<String>();
+            List<String> location = new List<String>();
             boolean entry_found = false;
             if ( line.StartsWith( entry ) ) {
                 // 1行目がすでに"entry"の行だった場合
@@ -227,7 +227,7 @@ namespace cadencii.apputil {
                 while ( (line = sr.readLine()) != null ) {
                     if ( line.StartsWith( "#:" ) ) {
                         line = line.Substring( 2 ).Trim();
-                        location.add( line );
+                        location.Add( line );
                     } else if ( line.StartsWith( entry ) ) {
                         ByRef<String> dum = new ByRef<String>( "" );
                         ByRef<String> dum2 = new ByRef<String>( "" );
@@ -237,7 +237,7 @@ namespace cadencii.apputil {
                     }
                 }
             }
-            locations.value = location.toArray( new String[] { } );
+            locations.value = location.ToArray();
             String ret = "";
             while ( (line = sr.readLine()) != null ) {
                 if ( !line.StartsWith( "\"" ) ) {

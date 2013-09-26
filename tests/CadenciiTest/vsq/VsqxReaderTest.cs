@@ -16,10 +16,10 @@ namespace cadencii
         {
             VsqFile vsq = VsqxReader.readFromVsqx( "./fixture/track2.vsqx" );
 
-            Assert.AreEqual( 3, vsq.Track.size() );
+            Assert.AreEqual( 3, vsq.Track.Count );
 
             // 1トラック目
-            var track = vsq.Track.get( 1 );
+            var track = vsq.Track[ 1 ];
             Assert.AreEqual( 3, track.getEventCount() );
             Assert.AreEqual( VsqIDType.Singer, track.getEvent( 1 ).ID.type );
             Assert.AreEqual( "VY1V3", track.getEvent( 1 ).ID.IconHandle.IDS );
@@ -27,7 +27,7 @@ namespace cadencii
             Assert.AreEqual( "ど", track.getEvent( 2 ).ID.LyricHandle.L0.Phrase );
 
             // 2トラック目
-            track = vsq.Track.get( 2 );
+            track = vsq.Track[ 2 ];
             Assert.AreEqual( 3, track.getEventCount() );
             Assert.AreEqual( VsqIDType.Singer, track.getEvent( 1 ).ID.type );
             Assert.AreEqual( "VY1V3", track.getEvent( 1 ).ID.IconHandle.IDS );
@@ -41,7 +41,7 @@ namespace cadencii
             VsqFile vsq = VsqxReader.readFromVsqx( "./fixture/track1.vsqx" );
 
             // トラック数
-            Assert.AreEqual( 2, vsq.Track.size() );
+            Assert.AreEqual( 2, vsq.Track.Count );
 
             // プリメジャー
             Assert.AreEqual( 4, vsq.getPreMeasure() );
@@ -49,7 +49,7 @@ namespace cadencii
             // イベント数
             // 最初のmusicalPartには歌手変更1個と音符2個
             // 2つ目のmusicalPartには歌手変更1個と音符1個が入っているはず
-            VsqTrack track = vsq.Track.get( 1 );
+            VsqTrack track = vsq.Track[ 1 ];
             Assert.AreEqual( 6, track.getEventCount() );
 
             // 歌手変更が正しく読み込まれているか
@@ -182,20 +182,20 @@ namespace cadencii
             Assert.AreEqual( "Track", track.getName() );
 
             // テンポ変更
-            Assert.AreEqual( 2, vsq.TempoTable.size() );
-            Assert.AreEqual( 0, vsq.TempoTable.get( 0 ).Clock );
-            Assert.AreEqual( 500000, vsq.TempoTable.get( 0 ).Tempo );
-            Assert.AreEqual( 8640, vsq.TempoTable.get( 1 ).Clock );
-            Assert.AreEqual( 1199760, vsq.TempoTable.get( 1 ).Tempo );
+            Assert.AreEqual( 2, vsq.TempoTable.Count );
+            Assert.AreEqual( 0, vsq.TempoTable[ 0 ].Clock );
+            Assert.AreEqual( 500000, vsq.TempoTable[ 0 ].Tempo );
+            Assert.AreEqual( 8640, vsq.TempoTable[ 1 ].Clock );
+            Assert.AreEqual( 1199760, vsq.TempoTable[ 1 ].Tempo );
 
             // 拍子変更
-            Assert.AreEqual( 2, vsq.TimesigTable.size() );
-            Assert.AreEqual( 0, vsq.TimesigTable.get( 0 ).Clock );
-            Assert.AreEqual( 4, vsq.TimesigTable.get( 0 ).Numerator );
-            Assert.AreEqual( 4, vsq.TimesigTable.get( 0 ).Denominator );
-            Assert.AreEqual( 9600, vsq.TimesigTable.get( 1 ).Clock );
-            Assert.AreEqual( 3, vsq.TimesigTable.get( 1 ).Numerator );
-            Assert.AreEqual( 4, vsq.TimesigTable.get( 1 ).Denominator );
+            Assert.AreEqual( 2, vsq.TimesigTable.Count );
+            Assert.AreEqual( 0, vsq.TimesigTable[ 0 ].Clock );
+            Assert.AreEqual( 4, vsq.TimesigTable[ 0 ].Numerator );
+            Assert.AreEqual( 4, vsq.TimesigTable[ 0 ].Denominator );
+            Assert.AreEqual( 9600, vsq.TimesigTable[ 1 ].Clock );
+            Assert.AreEqual( 3, vsq.TimesigTable[ 1 ].Numerator );
+            Assert.AreEqual( 4, vsq.TimesigTable[ 1 ].Denominator );
 
             // コントロールカーブ
             // DYN
@@ -235,11 +235,11 @@ namespace cadencii
             // Mixerが正しく読み込まれているか
             Assert.AreEqual( 2, vsq.Mixer.MasterFeder );
 
-            Assert.AreEqual( 1, vsq.Mixer.Slave.size() );
-            Assert.AreEqual( 1, vsq.Mixer.Slave.get( 0 ).Solo );
-            Assert.AreEqual( 0, vsq.Mixer.Slave.get( 0 ).Mute );
-            Assert.AreEqual( 64, vsq.Mixer.Slave.get( 0 ).Panpot );
-            Assert.AreEqual( 1, vsq.Mixer.Slave.get( 0 ).Feder );
+            Assert.AreEqual( 1, vsq.Mixer.Slave.Count );
+            Assert.AreEqual( 1, vsq.Mixer.Slave[ 0 ].Solo );
+            Assert.AreEqual( 0, vsq.Mixer.Slave[ 0 ].Mute );
+            Assert.AreEqual( 64, vsq.Mixer.Slave[ 0 ].Panpot );
+            Assert.AreEqual( 1, vsq.Mixer.Slave[ 0 ].Feder );
         }
     }
 }

@@ -221,7 +221,7 @@ namespace cadencii
         {
             // 渡されたVSQの、合成に不要な部分を削除する
             VsqFileEx split = (VsqFileEx)mVsq.clone();
-            VsqTrack vsq_track = split.Track.get( mTrack );
+            VsqTrack vsq_track = split.Track[ mTrack ];
             split.updateTotalClocks();
             if ( mEndClock < mVsq.TotalClocks ) {
                 split.removePart( mEndClock, split.TotalClocks + 480 );
@@ -260,9 +260,9 @@ namespace cadencii
 #if !JAVA
             // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
-            for ( int i = 0; i < VSTiDllManager.vocaloidDriver.size(); i++ ) {
-                if ( VSTiDllManager.vocaloidDriver.get( i ).getRendererKind() == s_working_renderer ) {
-                    mDriver = VSTiDllManager.vocaloidDriver.get( i );
+            for ( int i = 0; i < VSTiDllManager.vocaloidDriver.Count; i++ ) {
+                if ( VSTiDllManager.vocaloidDriver[ i ].getRendererKind() == s_working_renderer ) {
+                    mDriver = VSTiDllManager.vocaloidDriver[ i ];
                     break;
                 }
             }
@@ -323,8 +323,8 @@ namespace cadencii
             // 最初のテンポ指定を検索
             // VOCALOID VSTiが返してくる波形にはなぜかずれがある。このズレは最初のテンポで決まるので。
             float first_tempo = 125.0f;
-            if ( split.TempoTable.size() > 0 ) {
-                first_tempo = (float)(60e6 / (double)split.TempoTable.get( 0 ).Tempo);
+            if ( split.TempoTable.Count > 0 ) {
+                first_tempo = (float)(60e6 / (double)split.TempoTable[ 0 ].Tempo);
             }
             // ずれるサンプル数
             int errorSamples = VSTiDllManager.getErrorSamples( first_tempo );
@@ -382,13 +382,13 @@ namespace cadencii
 #endif
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
-            int tempo_count = split.TempoTable.size();
+            int tempo_count = split.TempoTable.Count;
             byte[] masterEventsSrc = new byte[tempo_count * 3];
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
             for ( int i = 0; i < tempo_count; i++ ) {
                 count += 3;
-                TempoTableEntry itemi = split.TempoTable.get( i );
+                TempoTableEntry itemi = split.TempoTable[ i ];
                 masterClocksSrc[i] = itemi.Clock;
                 byte b0 = (byte)(0xff & (itemi.Tempo >> 16));
                 long u0 = (long)(itemi.Tempo - (b0 << 16));

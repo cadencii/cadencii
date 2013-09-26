@@ -93,7 +93,6 @@
     <Compile Include="sout.cs" />
     <Compile Include="util.cs" />
     <Compile Include="ValuePair.cs" />
-    <Compile Include="Vector.cs" />
     <Compile Include="winmm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="windows.cs" />

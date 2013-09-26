@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -32,30 +33,27 @@ namespace cadencii.apputil
 
     public class Messaging {
         private static String s_lang = "";
-        private static Vector<MessageBody> s_messages = new Vector<MessageBody>();
+        private static List<MessageBody> s_messages = new List<MessageBody>();
 
         public static String[] getKeys( String lang ) {
-            for( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody dict = itr.next();
+            foreach (var dict in s_messages) {
                 if ( lang.Equals( dict.lang ) ) {
-                    Vector<String> list = new Vector<String>();
-                    for ( Iterator<String> itr2 = dict.list.keySet().iterator(); itr2.hasNext(); ) {
-                        String key = itr2.next();
-                        list.add( key );
+                    List<String> list = new List<String>();
+                    foreach (var key in dict.list.Keys) {
+                        list.Add( key );
                     }
-                    return list.toArray( new String[] { } );
+                    return list.ToArray();
                 }
             }
             return null;
         }
 
         public static String[] getRegisteredLanguage() {
-            Vector<String> res = new Vector<String>();
-            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ) {
-                MessageBody dict = itr.next();
-                res.add( dict.lang );
+            List<String> res = new List<String>();
+            foreach (var dict in s_messages) {
+                res.Add( dict.lang );
             }
-            return res.toArray( new String[] { } );
+            return res.ToArray();
         }
 
         public static String getLanguage() {
@@ -87,7 +85,7 @@ namespace cadencii.apputil
         /// </summary>
         /// <param name="directory"></param>
         public static void loadMessages( String directory ) {
-            s_messages.clear();
+            s_messages.Clear();
             String[] files = PortUtil.listFiles( directory, ".po" );
             for ( int i = 0; i < files.Length; i++ ){
                 String name = PortUtil.getFileName( files[i] );
@@ -97,15 +95,14 @@ namespace cadencii.apputil
         }
 
         public static void appendFromFile( String file ) {
-            s_messages.add( new MessageBody( PortUtil.getFileNameWithoutExtension( file ), file ) );
+            s_messages.Add( new MessageBody( PortUtil.getFileNameWithoutExtension( file ), file ) );
         }
 
         public static MessageBodyEntry getMessageDetail( String id ) {
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody mb = itr.next();
+            foreach (var mb in s_messages){
                 if ( mb.lang.Equals( s_lang ) ) {
                     return mb.getMessageDetail( id );
                 }
@@ -117,8 +114,7 @@ namespace cadencii.apputil
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
-            for ( Iterator<MessageBody> itr = s_messages.iterator(); itr.hasNext(); ){
-                MessageBody mb = itr.next();
+            foreach (var mb in s_messages) {
                 if ( mb.lang.Equals( s_lang ) ) {
                     return mb.getMessage( id );
                 }

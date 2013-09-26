@@ -17,6 +17,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.util;
 using cadencii.vsq;
@@ -63,7 +64,7 @@ namespace cadencii {
                 }
 
                 Assembly asm = null;
-                Vector<String> errors = new Vector<String>();
+                List<String> errors = new List<String>();
                 try {
                     asm = (new PluginLoader()).compileScript( code, errors );
                 } catch ( Exception ex ) {
@@ -144,7 +145,7 @@ namespace cadencii {
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.containsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VsqTrack item = (VsqTrack)vsq.Track.get( track ).clone();
+                VsqTrack item = (VsqTrack)vsq.Track[ track ].clone();
                 Object objPal = loadedTools.get( id );
                 if ( objPal == null ) {
                     return false;

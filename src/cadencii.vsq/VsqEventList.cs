@@ -20,6 +20,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -42,16 +43,16 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( VsqEvent.class )
 #endif
-        public Vector<VsqEvent> Events;
-        private Vector<Integer> m_ids;
+        public List<VsqEvent> Events;
+        private List<Integer> m_ids;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         public VsqEventList()
         {
-            Events = new Vector<VsqEvent>();
-            m_ids = new Vector<Integer>();
+            Events = new List<VsqEvent>();
+            m_ids = new List<Integer>();
         }
 
         /// <summary>
@@ -67,9 +68,9 @@ namespace cadencii.vsq
 
         public int findIndexFromID( int internal_id )
         {
-            int c = Events.size();
+            int c = Events.Count;
             for ( int i = 0; i < c; i++ ) {
-                VsqEvent item = Events.get( i );
+                VsqEvent item = Events[ i ];
                 if ( item.InternalID == internal_id ) {
                     return i;
                 }
@@ -80,8 +81,8 @@ namespace cadencii.vsq
         public VsqEvent findFromID( int internal_id )
         {
             int index = findIndexFromID( internal_id );
-            if ( 0 <= index && index < Events.size() ) {
-                return Events.get( index );
+            if ( 0 <= index && index < Events.Count ) {
+                return Events[ index ];
             } else {
                 return null;
             }
@@ -89,10 +90,10 @@ namespace cadencii.vsq
 
         public void setForID( int internal_id, VsqEvent value )
         {
-            int c = Events.size();
+            int c = Events.Count;
             for ( int i = 0; i < c; i++ ) {
-                if ( Events.get( i ).InternalID == internal_id ) {
-                    Events.set( i, value );
+                if ( Events[ i ].InternalID == internal_id ) {
+                    Events[ i] =  value ;
                     break;
                 }
             }
@@ -108,14 +109,14 @@ namespace cadencii.vsq
 
         public void clear()
         {
-            Events.clear();
-            m_ids.clear();
+            Events.Clear();
+            m_ids.Clear();
         }
 
-        public Iterator<VsqEvent> iterator()
+        public IEnumerable<VsqEvent> iterator()
         {
             updateIDList();
-            return Events.iterator();
+            return Events;
         }
 
         public int add( VsqEvent item )
@@ -123,9 +124,9 @@ namespace cadencii.vsq
             int id = getNextId( 0 );
             add( item, id );
             Events.Sort();
-            int count = Events.size();
+            int count = Events.Count;
             for ( int i = 0; i < count; i++ ) {
-                m_ids.set( i, Events.get( i ).InternalID );
+                m_ids[ i] =  Events[ i ].InternalID ;
             }
             return id;
         }
@@ -134,31 +135,31 @@ namespace cadencii.vsq
         {
             updateIDList();
             item.InternalID = internal_id;
-            Events.add( item );
-            m_ids.add( internal_id );
+            Events.Add( item );
+            m_ids.Add( internal_id );
         }
 
         public void removeAt( int index )
         {
             updateIDList();
-            Events.removeElementAt( index );
-            m_ids.removeElementAt( index );
+            Events.RemoveAt( index );
+            m_ids.RemoveAt( index );
         }
 
         private int getNextId( int next )
         {
             updateIDList();
             int index = -1;
-            Vector<Integer> current = new Vector<Integer>( m_ids );
+            List<Integer> current = new List<Integer>( m_ids );
             int nfound = 0;
             while ( true ) {
                 index++;
-                if ( !current.contains( index ) ) {
+                if ( !current.Contains( index ) ) {
                     nfound++;
                     if ( nfound == next + 1 ) {
                         return index;
                     } else {
-                        current.add( index );
+                        current.Add( index );
                     }
                 }
             }
@@ -166,32 +167,32 @@ namespace cadencii.vsq
 
         public int getCount()
         {
-            return Events.size();
+            return Events.Count;
         }
 
         public VsqEvent getElement( int index )
         {
-            return Events.get( index );
+            return Events[ index ];
         }
 
         public void setElement( int index, VsqEvent value )
         {
-            value.InternalID = Events.get( index ).InternalID;
-            Events.set( index, value );
+            value.InternalID = Events[ index ].InternalID;
+            Events[ index] =  value ;
         }
 
         public void updateIDList()
         {
-            if ( m_ids.size() != Events.size() ) {
-                m_ids.clear();
-                int count = Events.size();
+            if ( m_ids.Count != Events.Count ) {
+                m_ids.Clear();
+                int count = Events.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    m_ids.add( Events.get( i ).InternalID );
+                    m_ids.Add( Events[ i ].InternalID );
                 }
             } else {
-                int count = Events.size();
+                int count = Events.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    m_ids.set( i, Events.get( i ).InternalID );
+                    m_ids[ i] =  Events[ i ].InternalID ;
                 }
             }
         }

@@ -27,6 +27,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -49,7 +50,7 @@ namespace cadencii
         final int SCROLL_HEIGHT = 15;
 #endif
         private FormMain m_parent;
-        private Vector<VolumeTracker> m_tracker = null;
+        private List<VolumeTracker> m_tracker = null;
         private boolean mPreviousAlwaysOnTop;
 
         public event FederChangedEventHandler FederChanged;
@@ -119,9 +120,9 @@ namespace cadencii
         public VolumeTracker getVolumeTracker( int track )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
-            if ( 1 <= track && track < vsq.Track.size() &&
-                 0 <= track - 1 && track - 1 < m_tracker.size() ) {
-                return m_tracker.get( track - 1 );
+            if ( 1 <= track && track < vsq.Track.Count &&
+                 0 <= track - 1 && track - 1 < m_tracker.Count ) {
+                return m_tracker[ track - 1 ];
             } else if ( track == 0 ) {
                 return volumeMaster;
             } else {
@@ -137,9 +138,9 @@ namespace cadencii
         public VolumeTracker getVolumeTrackerBgm( int index )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
-            int offset = vsq.Track.size() - 1;
-            if ( 0 <= index + offset && index + offset < m_tracker.size() ) {
-                return m_tracker.get( index + offset );
+            int offset = vsq.Track.Count - 1;
+            if ( 0 <= index + offset && index + offset < m_tracker.Count ) {
+                return m_tracker[ index + offset ];
             } else {
                 return null;
             }
@@ -160,31 +161,31 @@ namespace cadencii
 
             // VSQのトラック
             boolean soloSpecificationExists = false; // 1トラックでもソロ指定があればtrue
-            for ( int i = 1; i < vsq.Track.size(); i++ ) {
+            for ( int i = 1; i < vsq.Track.Count; i++ ) {
                 if ( vsq.getSolo( i ) ) {
                     soloSpecificationExists = true;
                     break;
                 }
             }
-            for ( int track = 1; track < vsq.Track.size(); track++ ) {
+            for ( int track = 1; track < vsq.Track.Count; track++ ) {
                 if ( soloSpecificationExists ) {
                     if ( vsq.getSolo( track ) ) {
-                        m_tracker.get( track - 1 ).setSolo( true );
-                        m_tracker.get( track - 1 ).setMuted( masterMuted ? true : vsq.getMute( track ) );
+                        m_tracker[ track - 1 ].setSolo( true );
+                        m_tracker[ track - 1 ].setMuted( masterMuted ? true : vsq.getMute( track ) );
                     } else {
-                        m_tracker.get( track - 1 ).setSolo( false );
-                        m_tracker.get( track - 1 ).setMuted( true );
+                        m_tracker[ track - 1 ].setSolo( false );
+                        m_tracker[ track - 1 ].setMuted( true );
                     }
                 } else {
-                    m_tracker.get( track - 1 ).setSolo( vsq.getSolo( track ) );
-                    m_tracker.get( track - 1 ).setMuted( masterMuted ? true : vsq.getMute( track ) );
+                    m_tracker[ track - 1 ].setSolo( vsq.getSolo( track ) );
+                    m_tracker[ track - 1 ].setMuted( masterMuted ? true : vsq.getMute( track ) );
                 }
             }
 
             // BGM
-            int offset = vsq.Track.size() - 1;
-            for ( int i = 0; i < vsq.BgmFiles.size(); i++ ) {
-                m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
+            int offset = vsq.Track.Count - 1;
+            for ( int i = 0; i < vsq.BgmFiles.Count; i++ ) {
+                m_tracker[ offset + i ].setMuted( masterMuted ? true : vsq.BgmFiles[ i ].mute == 1 );
             }
 
             this.Refresh();
@@ -206,9 +207,9 @@ namespace cadencii
         public void updateStatus()
         {
             VsqFileEx vsq = AppManager.getVsqFile();
-            int num = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
+            int num = vsq.Mixer.Slave.Count + AppManager.getBgmCount();
             if ( m_tracker == null ) {
-                m_tracker = new Vector<VolumeTracker>();
+                m_tracker = new List<VolumeTracker>();
             }
 
             // イベントハンドラをいったん解除する
@@ -222,25 +223,25 @@ namespace cadencii
 #endif
 
             // trackerの総数が変化したかどうか
-            boolean num_changed = (m_tracker.size() != num);
+            boolean num_changed = (m_tracker.Count != num);
             
             // trackerに過不足があれば数を調節
-            if ( m_tracker.size() < num ) {
-                int remain = num - m_tracker.size();
+            if ( m_tracker.Count < num ) {
+                int remain = num - m_tracker.Count;
                 for ( int i = 0; i < remain; i++ ) {
                     VolumeTracker item = new VolumeTracker();
 #if !JAVA
                     item.BorderStyle = BorderStyle.FixedSingle;
                     item.Size = volumeMaster.Size;
 #endif
-                    m_tracker.add( item );
+                    m_tracker.Add( item );
                 }
-            } else if ( m_tracker.size() > num ) {
-                int delete = m_tracker.size() - num;
+            } else if ( m_tracker.Count > num ) {
+                int delete = m_tracker.Count - num;
                 for ( int i = 0; i < delete; i++ ) {
-                    int indx = m_tracker.size() - 1;
-                    VolumeTracker tr = m_tracker.get( indx );
-                    m_tracker.removeElementAt( indx );
+                    int indx = m_tracker.Count - 1;
+                    VolumeTracker tr = m_tracker[ indx ];
+                    m_tracker.RemoveAt( indx );
 #if !JAVA
                     tr.Dispose();
 #endif
@@ -257,7 +258,7 @@ namespace cadencii
             int screen_num = num <= max_num ? num : max_num; //スクリーン上に表示するVolumeTrackerの個数
 
             // panelSlaves上に配置するVolumeTrackerの個数
-            int num_vtracker_on_panel = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
+            int num_vtracker_on_panel = vsq.Mixer.Slave.Count + AppManager.getBgmCount();
             // panelSlaves上に一度に表示可能なVolumeTrackerの個数
             int panel_capacity = max_num - 1;
 
@@ -281,16 +282,15 @@ namespace cadencii
 #endif
 
             int j = -1;
-            for ( Iterator<VsqMixerEntry> itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
-                VsqMixerEntry vme = itr.next();
+            foreach (var vme in vsq.Mixer.Slave) {
                 j++;
 #if DEBUG
                 sout.println( "FormMixer#updateStatus; #" + j + "; feder=" + vme.Feder + "; panpot=" + vme.Panpot );
 #endif
-                VolumeTracker tracker = m_tracker.get( j );
+                VolumeTracker tracker = m_tracker[ j ];
                 tracker.setFeder( vme.Feder );
                 tracker.setPanpot( vme.Panpot );
-                tracker.setTitle( vsq.Track.get( j + 1 ).getName() );
+                tracker.setTitle( vsq.Track[ j + 1 ].getName() );
                 tracker.setNumber( (j + 1) + "" );
                 tracker.setLocation( j * (VolumeTracker.WIDTH + 1), 0 );
                 tracker.setSoloButtonVisible( true );
@@ -307,7 +307,7 @@ namespace cadencii
             for ( int i = 0; i < count; i++ ) {
                 j++;
                 BgmFile item = AppManager.getBgm( i );
-                VolumeTracker tracker = m_tracker.get( j );
+                VolumeTracker tracker = m_tracker[ j ];
                 tracker.setFeder( item.feder );
                 tracker.setPanpot( item.panpot );
                 tracker.setTitle( PortUtil.getFileName( item.file ) );
@@ -391,10 +391,10 @@ namespace cadencii
         {
             int size = 0;
             if ( m_tracker != null ) {
-                size = m_tracker.size();
+                size = m_tracker.Count;
             }
             for ( int i = 0; i < size; i++ ) {
-                VolumeTracker item = m_tracker.get( i );
+                VolumeTracker item = m_tracker[ i ];
                 item.PanpotChanged -= new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged -= new FederChangedEventHandler( FormMixer_FederChanged );
                 item.MuteButtonClick -= new EventHandler( FormMixer_MuteButtonClick );
@@ -412,10 +412,10 @@ namespace cadencii
         {
             int size = 0;
             if ( m_tracker != null ) {
-                size = m_tracker.size();
+                size = m_tracker.Count;
             }
             for ( int i = 0; i < size; i++ ) {
-                VolumeTracker item = m_tracker.get( i );
+                VolumeTracker item = m_tracker[ i ];
                 item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
                 item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
                 item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
@@ -577,8 +577,8 @@ namespace cadencii
         public void veScrollBar_ValueChanged( Object sender, EventArgs e )
         {
             int stdx = hScroll.Value;
-            for ( int i = 0; i < m_tracker.size(); i++ ) {
-                m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
+            for ( int i = 0; i < m_tracker.Count; i++ ) {
+                m_tracker[ i ].setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
             }
             this.Invalidate();
         }

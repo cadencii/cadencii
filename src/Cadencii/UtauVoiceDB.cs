@@ -21,6 +21,7 @@ import cadencii.vsq.*;
 #else
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -34,7 +35,7 @@ namespace cadencii {
     /// UTAUの原音設定を表すクラス
     /// </summary>
     public class UtauVoiceDB {
-        private Vector<OtoArgs> _configs = new Vector<OtoArgs>();
+        private List<OtoArgs> _configs = new List<OtoArgs>();
         private String _name = "Unknown";
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace cadencii {
                             }
                         }
                         if ( !found ) {
-                            _configs.add( oa );
+                            _configs.Add( oa );
                         }
                     }
                 } catch ( Exception ex ) {
@@ -149,9 +150,8 @@ namespace cadencii {
         /// <param name="lyric"></param>
         /// <returns></returns>
         public OtoArgs attachFileNameFromLyric( String lyric ) {
-            int count = _configs.size();
-            for ( Iterator<OtoArgs> itr = _configs.iterator(); itr.hasNext(); ) {
-                OtoArgs item = itr.next();
+            int count = _configs.Count;
+            foreach (var item in _configs) {
                 if ( PortUtil.getFileNameWithoutExtension( item.fileName ) == lyric ) {
                     return item;
                 }

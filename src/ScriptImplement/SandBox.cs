@@ -88,12 +88,11 @@ public static class AutoBRI {
     public static bool Edit( cadencii.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ
         System.Collections.Generic.List<int> ids = new System.Collections.Generic.List<int>();
-        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ){
-            SelectedEventEntry entry = itr.next();
+        foreach (var entry in AppManager.itemSelection.getEventIterator()){
             ids.Add( entry.original.InternalID );
         }
 
-        cadencii.vsq.VsqTrack track = vsq.Track.get( AppManager.getSelected() );
+        cadencii.vsq.VsqTrack track = vsq.Track[AppManager.getSelected()];
 
         // コントロールカーブの時間方向の解像度を，Cadenciiの設定値から取得
         int resol = AppManager.editorConfig.getControlCurveResolutionValue();
@@ -282,7 +281,7 @@ public class AutoBRITool : IPaletteTool {
 
 public static class SaveMetaText {
     public static bool Edit( cadencii.vsq.VsqFile vsq ) {
-        vsq.Track.get( 1 ).printMetaText( @"c:\meta_text.txt", "Shift_JIS" );
+        vsq.Track[ 1 ].printMetaText( @"c:\meta_text.txt", "Shift_JIS" );
         return true;
     }
 }
@@ -292,7 +291,7 @@ public static class PrintLyric {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
-            for ( Iterator<VsqEvent> itr = Vsq.Track.get( 1 ).getNoteEventIterator(); itr.hasNext(); ) {
+            for ( Iterator<VsqEvent> itr = Vsq.Track[ 1 ].getNoteEventIterator(); itr.hasNext(); ) {
                 cadencii.vsq.VsqEvent item = itr.next();
                 int clStart = item.Clock;
                 int clEnd = clStart + item.ID.Length;
@@ -313,8 +312,8 @@ public static class PrintLyric {
 
 public static class UpHalfStep {
     public static bool Edit( cadencii.vsq.VsqFile Vsq ) {
-        for ( int i = 1; i < Vsq.Track.size(); i++ ) {
-            for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
+        for ( int i = 1; i < Vsq.Track.Count; i++ ) {
+            for ( Iterator<VsqEvent> itr = Vsq.Track[ i ].getNoteEventIterator(); itr.hasNext(); ) {
                 cadencii.vsq.VsqEvent item = itr.next();
                 if ( item.ID.Note < 127 ) {
                     item.ID.Note++;
@@ -327,8 +326,8 @@ public static class UpHalfStep {
 
 public static class Trim32 {
     public static bool Edit( cadencii.vsq.VsqFile Vsq ) {
-        for ( int i = 1; i < Vsq.Track.size(); i++ ) {
-            for ( Iterator<VsqEvent> itr = Vsq.Track.get( i ).getNoteEventIterator(); itr.hasNext(); ) {
+        for ( int i = 1; i < Vsq.Track.Count; i++ ) {
+            for ( Iterator<VsqEvent> itr = Vsq.Track[ i ].getNoteEventIterator(); itr.hasNext(); ) {
                 cadencii.vsq.VsqEvent item = itr.next();
                 // 32分音符の長さは，クロック数に直すと60クロック
                 if ( item.ID.Length > 60 ) {

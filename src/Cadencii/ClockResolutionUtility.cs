@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -65,7 +66,7 @@ namespace cadencii {
             }
         }
 
-        public static Iterator<ClockResolution> iterator() {
+        public static IEnumerable<ClockResolution> iterator() {
             ClockResolution[] arr = new ClockResolution[] { ClockResolution.L1, 
                                                             ClockResolution.L2, 
                                                             ClockResolution.L4, 
@@ -78,7 +79,7 @@ namespace cadencii {
                                                             ClockResolution.L240, 
                                                             ClockResolution.L480, 
                                                             ClockResolution.Free };
-            return (new Vector<ClockResolution>( arr )).iterator();
+            return new List<ClockResolution>( arr );
         }
     }
 

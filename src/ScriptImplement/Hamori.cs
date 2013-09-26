@@ -110,15 +110,14 @@ public class Hamori : System.Windows.Forms.Form {
 
         int note;
         Dictionary<int, int> target_ids = new Dictionary<int, int>();
-        for ( cadencii.java.util.Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ){
-            SelectedEventEntry see = itr.next();
+        foreach (var see in AppManager.itemSelection.getEventIterator()){
             target_ids.Add( see.original.InternalID, 0 );
         }
         int track = AppManager.getSelected();
         int tmp;
         if ( opt == 0 ) {
-            for ( int j = 0; j < vsq.Track.get( track ).getEventCount(); j++ ) {
-                cadencii.vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
+            for ( int j = 0; j < vsq.Track[ track ].getEventCount(); j++ ) {
+                cadencii.vsq.VsqEvent item = vsq.Track[ track ].getEvent( j );
                 if ( item.ID.type == cadencii.vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
                     tmp = (item.ID.Note + 12 - basecode) % 12;
                     step = ((1 < tmp && tmp < 5) || 8 < tmp) ? 3 : 4;
@@ -131,8 +130,8 @@ public class Hamori : System.Windows.Forms.Form {
                 }
             }
         } else {
-            for ( int j = 0; j < vsq.Track.get( track ).getEventCount(); j++ ) {
-                cadencii.vsq.VsqEvent item = vsq.Track.get( track ).getEvent( j );
+            for ( int j = 0; j < vsq.Track[ track ].getEventCount(); j++ ) {
+                cadencii.vsq.VsqEvent item = vsq.Track[ track ].getEvent( j );
                 if ( item.ID.type == cadencii.vsq.VsqIDType.Anote && target_ids.ContainsKey( item.InternalID ) ) {
                     tmp = (item.ID.Note + 12 - basecode) % 12;
                     tmp = tmp == 11 ? step - 1 : step;

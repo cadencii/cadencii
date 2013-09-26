@@ -21,6 +21,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -40,7 +41,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( UstPortamentoPoint.class )
 #endif
-        public Vector<UstPortamentoPoint> Points = new Vector<UstPortamentoPoint>();
+        public List<UstPortamentoPoint> Points = new List<UstPortamentoPoint>();
         public int Start;
         /// <summary>
         /// PBSの末尾のセミコロンの後ろについている整数
@@ -70,13 +71,13 @@ namespace cadencii.vsq
             String pbw = "";
             String pby = "";
             String pbm = "";
-            int count = Points.size();
+            int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
                 String comma = (i == 0 ? "" : ",");
-                pbw += comma + Points.get( i ).Step;
-                pby += Points.get( i ).Value + ",";
+                pbw += comma + Points[ i ].Step;
+                pby += Points[ i ].Value + ",";
                 String type = "";
-                UstPortamentoType ut = Points.get( i ).Type;
+                UstPortamentoType ut = Points[ i ].Type;
                 if ( ut == UstPortamentoType.S ) {
                     type = "";
                 } else if ( ut == UstPortamentoType.Linear ) {
@@ -103,9 +104,9 @@ namespace cadencii.vsq
         public Object clone()
         {
             UstPortamento ret = new UstPortamento();
-            int count = Points.size();
+            int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
-                ret.Points.add( Points.get( i ) );
+                ret.Points.Add( Points[ i ] );
             }
             ret.Start = Start;
             ret.mIsUnknownIntSpecified = mIsUnknownIntSpecified;
@@ -148,31 +149,31 @@ namespace cadencii.vsq
                 Start = int.Parse( v );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
-                    if ( i >= Points.size() ) {
-                        Points.add( new UstPortamentoPoint() );
+                    if ( i >= Points.Count ) {
+                        Points.Add( new UstPortamentoPoint() );
                     }
-                    UstPortamentoPoint up = Points.get( i );
+                    UstPortamentoPoint up = Points[ i ];
                     up.Step = int.Parse( values[i] );
-                    Points.set( i, up );
+                    Points[ i] =  up ;
                 }
             } else if ( line.StartsWith( "pby=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( values[i].Length <= 0 ) {
                         continue;
                     }
-                    if ( i >= Points.size() ) {
-                        Points.add( new UstPortamentoPoint() );
+                    if ( i >= Points.Count ) {
+                        Points.Add( new UstPortamentoPoint() );
                     }
-                    UstPortamentoPoint up = Points.get( i );
+                    UstPortamentoPoint up = Points[ i ];
                     up.Value = (float)double.Parse( values[i] );
-                    Points.set( i, up );
+                    Points[ i] =  up ;
                 }
             } else if ( line.StartsWith( "pbm=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
-                    if ( i >= Points.size() ) {
-                        Points.add( new UstPortamentoPoint() );
+                    if ( i >= Points.Count ) {
+                        Points.Add( new UstPortamentoPoint() );
                     }
-                    UstPortamentoPoint up = Points.get( i );
+                    UstPortamentoPoint up = Points[ i ];
                     String search = values[i].ToLower();
                     if ( search == "s" ) {
                         up.Type = UstPortamentoType.Linear;
@@ -183,7 +184,7 @@ namespace cadencii.vsq
                     } else {
                         up.Type = UstPortamentoType.S;
                     }
-                    Points.set( i, up );
+                    Points[ i] =  up ;
                 }
             } else if ( line.StartsWith( "pbs=" ) ) {
 

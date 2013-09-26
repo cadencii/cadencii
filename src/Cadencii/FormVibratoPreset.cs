@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -63,7 +64,7 @@ namespace cadencii
         /// AppManager.editorConfig.AutoVibratoCustomからコピーしてきた，
         /// ビブラートハンドルのリスト
         /// </summary>
-        private Vector<VibratoHandle> mHandles;
+        private List<VibratoHandle> mHandles;
         /// <summary>
         /// 選択状態のビブラートハンドル
         /// </summary>
@@ -85,7 +86,7 @@ namespace cadencii
         /// コンストラクタ．
         /// </summary>
         /// <param name="handles"></param>
-        public FormVibratoPreset( Vector<VibratoHandle> handles )
+        public FormVibratoPreset( List<VibratoHandle> handles )
         {
 #if JAVA
             super();
@@ -99,10 +100,10 @@ namespace cadencii
             registerEventHandlers();
 
             // ハンドルのリストをクローン
-            mHandles = new Vector<VibratoHandle>();
-            int size = handles.size();
+            mHandles = new List<VibratoHandle>();
+            int size = handles.Count;
             for ( int i = 0; i < size; i++ ) {
-                mHandles.add( (VibratoHandle)handles.get( i ).clone() );
+                mHandles.Add( (VibratoHandle)handles[ i ].clone() );
             }
 
             // 表示状態を更新
@@ -117,15 +118,15 @@ namespace cadencii
         /// ダイアログによる設定結果を取得します
         /// </summary>
         /// <returns></returns>
-        public Vector<VibratoHandle> getResult()
+        public List<VibratoHandle> getResult()
         {
             // iconIDを整える
             if ( mHandles == null ) {
-                mHandles = new Vector<VibratoHandle>();
+                mHandles = new List<VibratoHandle>();
             }
-            int size = mHandles.size();
+            int size = mHandles.Count;
             for ( int i = 0; i < size; i++ ) {
-                mHandles.get( i ).IconID = "$0404" + PortUtil.toHexString( i + 1, 4 );
+                mHandles[ i ].IconID = "$0404" + PortUtil.toHexString( i + 1, 4 );
             }
             return mHandles;
         }
@@ -151,7 +152,7 @@ namespace cadencii
 #endif
 
             // 範囲外ならbailout
-            if ( (index < 0) || (mHandles.size() <= index) ) {
+            if ( (index < 0) || (mHandles.Count <= index) ) {
 #if DEBUG
                 sout.println( "FormVibratoPreset#listPresets_SelectedIndexChanged; bail-out, mSelected -> null; index=" + index );
 #endif
@@ -165,7 +166,7 @@ namespace cadencii
             textName.TextChanged -= new EventHandler( textName_TextChanged );
 
             // テクストボックスに値を反映
-            mSelected = mHandles.get( index );
+            mSelected = mHandles[ index ];
             textDepth.Text = mSelected.getStartDepth() + "";
             textRate.Text = mSelected.getStartRate() + "";
             textName.Text = mSelected.getCaption();
@@ -265,12 +266,12 @@ namespace cadencii
             // 追加し，
             VibratoHandle handle = new VibratoHandle();
             handle.setCaption( "No-Name" );
-            mHandles.add( handle );
+            mHandles.Add( handle );
             listPresets.SelectedIndices.Clear();
             // 表示反映させて
             updateStatus();
             // 追加したのを選択状態にする
-            listPresets.SelectedIndex = mHandles.size() - 1;
+            listPresets.SelectedIndex = mHandles.Count - 1;
         }
 
         public void buttonRemove_Click( Object sender, EventArgs e )
@@ -280,7 +281,7 @@ namespace cadencii
                 return;
             }
 
-            mHandles.removeElementAt( index );
+            mHandles.RemoveAt( index );
             updateStatus();
         }
 
@@ -300,15 +301,15 @@ namespace cadencii
             if ( index < 0 ) {
                 return;
             }
-            if ( move_to < 0 || mHandles.size() <= move_to ) {
+            if ( move_to < 0 || mHandles.Count <= move_to ) {
                 // 範囲外なら何もしない
                 return;
             }
 
             // 入れ替える
-            VibratoHandle buff = mHandles.get( index );
-            mHandles.set( index, mHandles.get( move_to ) );
-            mHandles.set( move_to, buff );
+            VibratoHandle buff = mHandles[ index ];
+            mHandles[ index] =  mHandles[ move_to ] ;
+            mHandles[ move_to] =  buff ;
 
             // 選択状態を変える
             listPresets.SelectedIndices.Clear();
@@ -613,7 +614,7 @@ namespace cadencii
             listPresets.SelectedIndices.Clear();
 
             // アイテムの個数に過不足があれば数を整える
-            int size = mHandles.size();
+            int size = mHandles.Count;
             int delta = size - listPresets.Items.Count;
 #if DEBUG
             sout.println( "FormVibratoPreset#updateStatus; delta=" + delta );
@@ -630,7 +631,7 @@ namespace cadencii
 
             // アイテムを更新
             for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = mHandles.get( i );
+                VibratoHandle handle = mHandles[ i ];
                 listPresets.Items[i] = handle.getCaption();
             }
 

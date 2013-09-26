@@ -27,7 +27,7 @@ namespace cadencii {
         /// <summary>
         /// 子コマンドのリスト
         /// </summary>
-        Vector<ICommand> getChild();
+        List<ICommand> getChild();
 
         /// <summary>
         /// 親コマンドへの参照

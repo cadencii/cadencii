@@ -14,6 +14,7 @@
  */
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -51,16 +52,16 @@ namespace cadencii {
         public static void reload() {
             // 拡張子がcs, txtのファイルを列挙
             String dir = Utility.getScriptPath();
-            Vector<String> files = new Vector<String>();
-            files.addAll( new Vector<string>( PortUtil.listFiles( dir, ".txt" ) ) );
-            files.addAll( new Vector<string>( PortUtil.listFiles( dir, ".cs" ) ) );
+            List<String> files = new List<String>();
+            files.AddRange( new List<string>( PortUtil.listFiles( dir, ".txt" ) ) );
+            files.AddRange( new List<string>( PortUtil.listFiles( dir, ".cs" ) ) );
 
             // 既存のスクリプトに無いまたは新しいやつはロード。
-            Vector<String> added = new Vector<String>(); //追加または更新が行われたスクリプトのID
+            List<String> added = new List<String>(); //追加または更新が行われたスクリプトのID
             foreach ( String file in files ) {
                 String id = PortUtil.getFileName( file );
                 double time = PortUtil.getFileLastModified( file );
-                added.add( id );
+                added.Add( id );
 
                 boolean loadthis = true;
                 if ( scripts.containsKey( id ) ) {
@@ -84,9 +85,8 @@ namespace cadencii {
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                for ( Iterator<String> itr = scripts.keySet().iterator(); itr.hasNext(); ) {
-                    String id = itr.next();
-                    if ( !added.contains( id ) ) {
+                foreach (var id in scripts.Keys) {
+                    if ( !added.Contains( id ) ) {
                         scripts.remove( id );
                         changed = true;
                         break;
@@ -190,8 +190,8 @@ namespace cadencii {
         /// 読み込まれたスクリプトのIDを順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static Iterator<String> getScriptIdIterator() {
-            return scripts.keySet().iterator();
+        public static IEnumerable<String> getScriptIdIterator() {
+            return scripts.Keys;
         }
 
         /// <summary>

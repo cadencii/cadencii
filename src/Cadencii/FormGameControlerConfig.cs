@@ -22,6 +22,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.util;
@@ -39,8 +40,8 @@ namespace cadencii
     public class FormGameControlerConfig : System.Windows.Forms.Form
 #endif
     {
-        private Vector<Integer> m_list = new Vector<Integer>();
-        private Vector<Integer> m_povs = new Vector<Integer>();
+        private List<Integer> m_list = new List<Integer>();
+        private List<Integer> m_povs = new List<Integer>();
         private int index;
         private System.Windows.Forms.Timer timer;
 
@@ -57,10 +58,10 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             for ( int i = 0; i < 10; i++ ) {
-                m_list.add( -1 );
+                m_list.Add( -1 );
             }
             for ( int i = 0; i < 4; i++ ) {
-                m_povs.add( int.MinValue );
+                m_povs.Add( int.MinValue );
             }
             applyLanguage();
 #if JAVA
@@ -106,72 +107,72 @@ namespace cadencii
 
         public int getRectangle()
         {
-            return m_list.get( 0 );
+            return m_list[ 0 ];
         }
 
         public int getTriangle()
         {
-            return m_list.get( 1 );
+            return m_list[ 1 ];
         }
 
         public int getCircle()
         {
-            return m_list.get( 2 );
+            return m_list[ 2 ];
         }
 
         public int getCross()
         {
-            return m_list.get( 3 );
+            return m_list[ 3 ];
         }
 
         public int getL1()
         {
-            return m_list.get( 4 );
+            return m_list[ 4 ];
         }
 
         public int getL2()
         {
-            return m_list.get( 5 );
+            return m_list[ 5 ];
         }
 
         public int getR1()
         {
-            return m_list.get( 6 );
+            return m_list[ 6 ];
         }
 
         public int getR2()
         {
-            return m_list.get( 7 );
+            return m_list[ 7 ];
         }
 
         public int getSelect()
         {
-            return m_list.get( 8 );
+            return m_list[ 8 ];
         }
 
         public int getStart()
         {
-            return m_list.get( 9 );
+            return m_list[ 9 ];
         }
 
         public int getPovDown()
         {
-            return m_povs.get( 0 );
+            return m_povs[ 0 ];
         }
 
         public int getPovLeft()
         {
-            return m_povs.get( 1 );
+            return m_povs[ 1 ];
         }
 
         public int getPovUp()
         {
-            return m_povs.get( 2 );
+            return m_povs[ 2 ];
         }
 
         public int getPovRight()
         {
-            return m_povs.get( 3 );
+            return m_povs[ 3 ];
         }
         #endregion
 
@@ -214,14 +215,14 @@ namespace cadencii
 #endif
             boolean added = false;
             if ( index <= 4 ) {
-                if ( pov >= 0 && !m_povs.contains( pov ) ) {
-                    m_povs.set( index - 1, pov );
+                if ( pov >= 0 && !m_povs.Contains( pov ) ) {
+                    m_povs[ index - 1] =  pov ;
                     added = true;
                 }
             } else {
                 for ( int i = 0; i < btn.Length; i++ ) {
-                    if ( btn[i] > 0x0 && !m_list.contains( i ) ) {
-                        m_list.set( index - 5, i );
+                    if ( btn[i] > 0x0 && !m_list.Contains( i ) ) {
+                        m_list[ index - 5] =  i ;
                         added = true;
                         break;
                     }
@@ -257,9 +258,9 @@ namespace cadencii
         public void btnSkip_Click( Object sender, EventArgs e )
         {
             if ( index <= 4 ) {
-                m_povs.set( index - 1, int.MinValue );
+                m_povs[ index - 1] =  int.MinValue ;
             } else {
-                m_list.set( index - 5, -1 );
+                m_list[ index - 5] =  -1 ;
             }
             if ( index <= 8 ) {
                 progressCount.Value = index;
@@ -288,20 +289,20 @@ namespace cadencii
 
         public void btnReset_Click( Object sender, EventArgs e )
         {
-            m_list.set( 0, 3 ); // □
-            m_list.set( 1, 0 ); // △
-            m_list.set( 2, 1 ); // ○
-            m_list.set( 3, 2 ); // ×
-            m_list.set( 4, 4 ); // L1
-            m_list.set( 5, 6 ); // L2
-            m_list.set( 6, 5 ); // R1
-            m_list.set( 7, 7 ); // R2
-            m_list.set( 8, 8 ); // SELECT
-            m_list.set( 9, 9 ); // START
-            m_povs.set( 0, 18000 ); // down
-            m_povs.set( 1, 27000 ); // left
-            m_povs.set( 2, 0 ); // up
-            m_povs.set( 3, 9000 ); // right
+            m_list[ 0] =  3 ; // □
+            m_list[ 1] =  0 ; // △
+            m_list[ 2] =  1 ; // ○
+            m_list[ 3] =  2 ; // ×
+            m_list[ 4] =  4 ; // L1
+            m_list[ 5] =  6 ; // L2
+            m_list[ 6] =  5 ; // R1
+            m_list[ 7] =  7 ; // R2
+            m_list[ 8] =  8 ; // SELECT
+            m_list[ 9] =  9 ; // START
+            m_povs[ 0] =  18000 ; // down
+            m_povs[ 1] =  27000 ; // left
+            m_povs[ 2] =  0 ; // up
+            m_povs[ 3] =  9000 ; // right
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 

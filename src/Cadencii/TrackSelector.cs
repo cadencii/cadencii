@@ -32,6 +32,7 @@ using System;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.apputil;
 using cadencii.java.awt;
@@ -357,7 +358,7 @@ namespace cadencii
         /// <summary>
         /// 移動しているデータ点のリスト
         /// </summary>
-        private Vector<BPPair> mMovingPoints = new Vector<BPPair>();
+        private List<BPPair> mMovingPoints = new List<BPPair>();
         /// <summary>
         /// このコントロールの推奨最少表示高さの前回の値．
         /// 推奨表示高さが変わったかどうかを検出するのに使う
@@ -403,7 +404,7 @@ namespace cadencii
         /// <summary>
         /// TrackSelectorで表示させているカーブの一覧
         /// </summary>
-        private Vector<CurveType> mViewingCurves = new Vector<CurveType>();
+        private List<CurveType> mViewingCurves = new List<CurveType>();
 
         /// <summary>
         /// 最前面に表示するカーブの種類が変更されたとき発生するイベント．
@@ -497,77 +498,77 @@ namespace cadencii
         /// </summary>
         public void updateVisibleCurves()
         {
-            mViewingCurves.clear();
+            mViewingCurves.Clear();
             if ( AppManager.editorConfig.CurveVisibleVelocity ) {
-                mViewingCurves.add( CurveType.VEL );
+                mViewingCurves.Add( CurveType.VEL );
             }
             if ( AppManager.editorConfig.CurveVisibleAccent ) {
-                mViewingCurves.add( CurveType.Accent );
+                mViewingCurves.Add( CurveType.Accent );
             }
             if ( AppManager.editorConfig.CurveVisibleDecay ) {
-                mViewingCurves.add( CurveType.Decay );
+                mViewingCurves.Add( CurveType.Decay );
             }
             if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
-                mViewingCurves.add( CurveType.Env );
+                mViewingCurves.Add( CurveType.Env );
             }
             if ( AppManager.editorConfig.CurveVisibleDynamics ) {
-                mViewingCurves.add( CurveType.DYN );
+                mViewingCurves.Add( CurveType.DYN );
             }
             if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
-                mViewingCurves.add( CurveType.BRE );
+                mViewingCurves.Add( CurveType.BRE );
             }
             if ( AppManager.editorConfig.CurveVisibleBrightness ) {
-                mViewingCurves.add( CurveType.BRI );
+                mViewingCurves.Add( CurveType.BRI );
             }
             if ( AppManager.editorConfig.CurveVisibleClearness ) {
-                mViewingCurves.add( CurveType.CLE );
+                mViewingCurves.Add( CurveType.CLE );
             }
             if ( AppManager.editorConfig.CurveVisibleOpening ) {
-                mViewingCurves.add( CurveType.OPE );
+                mViewingCurves.Add( CurveType.OPE );
             }
             if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
-                mViewingCurves.add( CurveType.GEN );
+                mViewingCurves.Add( CurveType.GEN );
             }
             if ( AppManager.editorConfig.CurveVisiblePortamento ) {
-                mViewingCurves.add( CurveType.POR );
+                mViewingCurves.Add( CurveType.POR );
             }
             if ( AppManager.editorConfig.CurveVisiblePit ) {
-                mViewingCurves.add( CurveType.PIT );
+                mViewingCurves.Add( CurveType.PIT );
             }
             if ( AppManager.editorConfig.CurveVisiblePbs ) {
-                mViewingCurves.add( CurveType.PBS );
+                mViewingCurves.Add( CurveType.PBS );
             }
             if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
-                mViewingCurves.add( CurveType.VibratoRate );
+                mViewingCurves.Add( CurveType.VibratoRate );
             }
             if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
-                mViewingCurves.add( CurveType.VibratoDepth );
+                mViewingCurves.Add( CurveType.VibratoDepth );
             }
             if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
-                mViewingCurves.add( CurveType.harmonics );
+                mViewingCurves.Add( CurveType.harmonics );
             }
             if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
-                mViewingCurves.add( CurveType.fx2depth );
+                mViewingCurves.Add( CurveType.fx2depth );
             }
             if ( AppManager.editorConfig.CurveVisibleReso1 ) {
-                mViewingCurves.add( CurveType.reso1freq );
-                mViewingCurves.add( CurveType.reso1bw );
-                mViewingCurves.add( CurveType.reso1amp );
+                mViewingCurves.Add( CurveType.reso1freq );
+                mViewingCurves.Add( CurveType.reso1bw );
+                mViewingCurves.Add( CurveType.reso1amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso2 ) {
-                mViewingCurves.add( CurveType.reso2freq );
-                mViewingCurves.add( CurveType.reso2bw );
-                mViewingCurves.add( CurveType.reso2amp );
+                mViewingCurves.Add( CurveType.reso2freq );
+                mViewingCurves.Add( CurveType.reso2bw );
+                mViewingCurves.Add( CurveType.reso2amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso3 ) {
-                mViewingCurves.add( CurveType.reso3freq );
-                mViewingCurves.add( CurveType.reso3bw );
-                mViewingCurves.add( CurveType.reso3amp );
+                mViewingCurves.Add( CurveType.reso3freq );
+                mViewingCurves.Add( CurveType.reso3bw );
+                mViewingCurves.Add( CurveType.reso3amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso4 ) {
-                mViewingCurves.add( CurveType.reso4freq );
-                mViewingCurves.add( CurveType.reso4bw );
-                mViewingCurves.add( CurveType.reso4amp );
+                mViewingCurves.Add( CurveType.reso4freq );
+                mViewingCurves.Add( CurveType.reso4bw );
+                mViewingCurves.Add( CurveType.reso4amp );
             }
         }
 
@@ -576,8 +577,7 @@ namespace cadencii
         /// </summary>
         private CurveType getCurveTypeFromMenu(ToolStripMenuItem menu)
         {
-            for( Iterator<CurveType> itr = mMenuMap.keySet().iterator(); itr.hasNext(); ){
-                CurveType curve = itr.next();
+            foreach (var curve in mMenuMap.Keys){
                 ToolStripMenuItem search = mMenuMap.get(curve);
                 if( menu == search ){
                     return curve;
@@ -896,8 +896,8 @@ namespace cadencii
         public int getRowsPerColumn()
         {
             int max_columns = getMaxColumns();
-            int row_per_column = mViewingCurves.size() / max_columns;
-            if ( row_per_column * max_columns < mViewingCurves.size() ) {
+            int row_per_column = mViewingCurves.Count / max_columns;
+            if ( row_per_column * max_columns < mViewingCurves.Count ) {
                 row_per_column++;
             }
             return row_per_column;
@@ -1099,8 +1099,8 @@ namespace cadencii
 
             int centre = (getGraphHeight() + UNIT_HEIGHT_PER_CURVE) / 2 + 3;
             int index = 100;
-            for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                if ( mViewingCurves.get( i ).equals( curve ) ) {
+            for ( int i = 0; i < mViewingCurves.Count; i++ ) {
+                if ( mViewingCurves[ i ].equals( curve ) ) {
                     index = i;
                     break;
                 }
@@ -1168,7 +1168,7 @@ namespace cadencii
                             size.width - key_width, OFFSET_TRACK_TAB );
                 VsqTrack vsq_track = null;
                 if ( vsq != null ) {
-                    vsq_track = vsq.Track.get( selected );
+                    vsq_track = vsq.Track[ selected ];
                 }
                 if ( vsq_track != null ) {
                     int ycoord = size.height - 2 * OFFSET_TRACK_TAB + 1;
@@ -1239,7 +1239,7 @@ namespace cadencii
 #endif
                             drawTrackTab( g,
                                           new Rectangle( x, size.height - OFFSET_TRACK_TAB + 1, selecter_width, OFFSET_TRACK_TAB - 1 ),
-                                          (i + 1 < vsq.Track.size()) ? (i + 1) + " " + vsq.Track.get( i + 1 ).getName() : "",
+                                          (i + 1 < vsq.Track.Count) ? (i + 1) + " " + vsq.Track[ i + 1 ].getName() : "",
                                           (i == selected - 1),
                                           vsq_track.getCommon().PlayMode >= 0,
                                           AppManager.getRenderRequired( i + 1 ),
@@ -1561,8 +1561,7 @@ namespace cadencii
                             }
                         }
                         if ( mMouseDownMode == MouseDownMode.SINGER_LIST && AppManager.getSelectedTool() != EditTool.ERASER ) {
-                            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                SelectedEventEntry item = itr.next();
+                            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                 int x = AppManager.xCoordFromClocks( item.editing.Clock );
                                 g.setColor( COLOR_SINGERBOX_BORDER_HILIGHT );
                                 g.drawRect( x, size.height - 2 * OFFSET_TRACK_TAB + 1,
@@ -1596,8 +1595,8 @@ namespace cadencii
                     String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
                     g.drawString( name, 7, text_font_height / 2 - text_font_offset + 1 );
 
-                    for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                        CurveType curve = mViewingCurves.get( i );
+                    for ( int i = 0; i < mViewingCurves.Count; i++ ) {
+                        CurveType curve = mViewingCurves[ i ];
                         Rectangle rc = getRectFromCurveType( curve );
                         if ( curve.equals( mSelectedCurve ) || curve.equals( mLastSelectedCurve ) ) {
                             g.setColor( new Color( 108, 108, 108 ) );
@@ -1921,7 +1920,7 @@ namespace cadencii
                  mSelectedCurve.equals( CurveType.VibratoRate ) ) {
                 //TODO: この辺
             } else {
-                VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( mSelectedCurve.getName() );
+                VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( mSelectedCurve.getName() );
                 int count = list.size();
                 int w = DOT_WID * 2 + 1;
                 for ( int i = 0; i < count; i++ ) {
@@ -1993,7 +1992,7 @@ namespace cadencii
             int clock_end = AppManager.clockFromXCoord( getWidth() );
             int dotwid = DOT_WID * 2 + 1;
             VsqFileEx vsq = AppManager.getVsqFile();
-            Iterator<VsqEvent> itr = vsq.Track.get( AppManager.getSelected() ).getNoteEventIterator();
+            Iterator<VsqEvent> itr = vsq.Track[AppManager.getSelected()].getNoteEventIterator();
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
@@ -2247,7 +2246,7 @@ namespace cadencii
             int numTrack = 1;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
-                numTrack = vsq.Track.size();
+                numTrack = vsq.Track.Count;
             }
             if ( draft * (numTrack - 1) <= maxTotalWidth ) {
                 return draft;
@@ -2301,11 +2300,11 @@ namespace cadencii
             g.setFont( AppManager.baseFont10Bold );
             boolean cursor_should_be_hand = false;
             lock ( AppManager.mDrawObjects ) {
-                Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
-                int count = target_list.size();
+                List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
+                int count = target_list.Count;
                 int i_start = AppManager.mDrawStartIndex[selected - 1];
                 for ( int i = i_start; i < count; i++ ) {
-                    DrawObject dobj = target_list.get( i );
+                    DrawObject dobj = target_list[ i ];
                     if ( dobj.mType != DrawObjectType.Note ) {
                         continue;
                     }
@@ -2394,7 +2393,7 @@ namespace cadencii
         /// </summary>
         /// <param name="g"></param>
         /// <param name="chains"></param>
-        private void drawAttachedCurve( Graphics2D g, Vector<BezierChain> chains )
+        private void drawAttachedCurve( Graphics2D g, List<BezierChain> chains )
         {
 #if DEBUG
             try {
@@ -2402,21 +2401,21 @@ namespace cadencii
                 int visibleMinX = AppManager.keyWidth;
                 int visibleMaxX = mMainWindow.pictPianoRoll.getWidth() + AppManager.keyWidth + AppManager.keyOffset;
                 Color hilight = Color.blue;// AppManager.getHilightColor();
-                int chains_count = chains.size();
+                int chains_count = chains.Count;
                 for ( int i = 0; i < chains_count; i++ ) {
-                    BezierChain target_chain = chains.get( i );
+                    BezierChain target_chain = chains[ i ];
                     int chain_id = target_chain.id;
-                    if ( target_chain.points.size() <= 0 ) {
+                    if ( target_chain.points.Count <= 0 ) {
                         continue;
                     }
                     BezierPoint next;
-                    BezierPoint current = target_chain.points.get( 0 );
+                    BezierPoint current = target_chain.points[ 0 ];
                     Point pxNext;
                     Point pxCurrent = getScreenCoord( current.getBase() );
-                    int target_chain_points_count = target_chain.points.size();
+                    int target_chain_points_count = target_chain.points.Count;
                     boolean breaked = false;
                     for ( int j = 0; j < target_chain_points_count; j++ ) {
-                        next = target_chain.points.get( j );
+                        next = target_chain.points[ j ];
                         int next_x = AppManager.xCoordFromClocks( (int)next.getBase().getX() );
                         pxNext = new Point( next_x, yCoordFromValue( (int)next.getBase().getY() ) );
                         Point pxControlCurrent = getScreenCoord( current.getControlRight() );
@@ -2515,7 +2514,7 @@ namespace cadencii
                         current = next;
                     }
                     if ( !breaked ) {
-                        next = target_chain.points.get( target_chain.points.size() - 1 );
+                        next = target_chain.points[ target_chain.points.Count - 1 ];
                         pxNext = getScreenCoord( next.getBase() );
                         Rectangle rc_last = new Rectangle( pxNext.x - DOT_WID,
                                                            pxNext.y - DOT_WID,
@@ -2747,8 +2746,7 @@ namespace cadencii
             // 選択されているデータ点をハイライト表示する
             int w = DOT_WID * 2 + 1;
             g.setColor( COLOR_DOT_HILIGHT );
-            for ( Iterator<Long> itr = AppManager.itemSelection.getPointIDIterator(); itr.hasNext(); ) {
-                long id = itr.next();
+            foreach (var id in AppManager.itemSelection.getPointIDIterator()) {
                 VsqBPPairSearchContext ret = list.findElement( id );
                 if ( ret.index < 0 ) {
                     continue;
@@ -2770,8 +2768,7 @@ namespace cadencii
             if ( mMouseDownMode == MouseDownMode.POINT_MOVE ) {
                 int dx = pmouse.x + AppManager.mMainWindowController.getStartToDrawX() - mMouseDownLocation.x;
                 int dy = pmouse.y - mMouseDownLocation.y;
-                for ( Iterator<BPPair> itr = mMovingPoints.iterator(); itr.hasNext(); ) {
-                    BPPair item = itr.next();
+                foreach (var item in mMovingPoints) {
                     int x = AppManager.xCoordFromClocks( item.Clock ) + dx;
                     int y = yCoordFromValue( item.Value ) + dy;
                     g.setColor( COLOR_DOT_HILIGHT );
@@ -2808,8 +2805,8 @@ namespace cadencii
             if ( mCurveVisible ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
-                    for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                        CurveType curve = mViewingCurves.get( i );
+                    for ( int i = 0; i < mViewingCurves.Count; i++ ) {
+                        CurveType curve = mViewingCurves[ i ];
                         Rectangle r = getRectFromCurveType( curve );
                         if ( isInRect( e.X, e.Y, r ) ) {
                             changeCurve( curve );
@@ -2831,7 +2828,7 @@ namespace cadencii
                                 }
                             }
                         }
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) );
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track[AppManager.getSelected()] );
                         if ( kind == RendererKind.VOCALOID1 ) {
                             cmenuCurveVelocity.Visible = true;
                             cmenuCurveAccent.Visible = true;
@@ -2975,36 +2972,36 @@ namespace cadencii
         public void SelectNextCurve()
         {
             int index = 0;
-            if ( mViewingCurves.size() >= 2 ) {
-                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                    if ( mViewingCurves.get( i ).equals( mSelectedCurve ) ) {
+            if ( mViewingCurves.Count >= 2 ) {
+                for ( int i = 0; i < mViewingCurves.Count; i++ ) {
+                    if ( mViewingCurves[ i ].equals( mSelectedCurve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index++;
-                if ( mViewingCurves.size() <= index ) {
+                if ( mViewingCurves.Count <= index ) {
                     index = 0;
                 }
-                changeCurve( mViewingCurves.get( index ) );
+                changeCurve( mViewingCurves[ index ] );
             }
         }
 
         public void SelectPreviousCurve()
         {
             int index = 0;
-            if ( mViewingCurves.size() >= 2 ) {
-                for ( int i = 0; i < mViewingCurves.size(); i++ ) {
-                    if ( mViewingCurves.get( i ).equals( mSelectedCurve ) ) {
+            if ( mViewingCurves.Count >= 2 ) {
+                for ( int i = 0; i < mViewingCurves.Count; i++ ) {
+                    if ( mViewingCurves[ i ].equals( mSelectedCurve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index--;
                 if ( index < 0 ) {
-                    index = mViewingCurves.size() - 1;
+                    index = mViewingCurves.Count - 1;
                 }
-                changeCurve( mViewingCurves.get( index ) );
+                changeCurve( mViewingCurves[ index ] );
             }
         }
 
@@ -3013,8 +3010,8 @@ namespace cadencii
             BezierChain target = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, AppManager.itemSelection.getLastBezier().chainID );
             int point_id = AppManager.itemSelection.getLastBezier().pointID;
             int index = -1;
-            for ( int i = 0; i < target.points.size(); i++ ) {
-                if ( target.points.get( i ).getID() == point_id ) {
+            for ( int i = 0; i < target.points.Count; i++ ) {
+                if ( target.points[ i ].getID() == point_id ) {
                     index = i;
                     break;
                 }
@@ -3023,10 +3020,10 @@ namespace cadencii
             float scale_y = getScaleY();
             BezierPoint ret = new BezierPoint( 0, 0 );
             if ( index >= 0 ) {
-                BezierPoint item = target.points.get( index );
+                BezierPoint item = target.points[ index ];
                 if ( picked == BezierPickedSide.BASE ) {
                     // データ点を動かす
-                    Point old = target.points.get( index ).getBase().toPoint();
+                    Point old = target.points[ index ].getBase().toPoint();
                     item.setBase( new PointD( clock, value ) );
                     if ( !BezierChain.isBezierImplicit( target ) ) {
                         // X軸について陰でなくなった場合
@@ -3037,7 +3034,7 @@ namespace cadencii
                             item.setBase( new PointD( old.x, old.y ) );
                         }
                     }
-                    ret = (BezierPoint)target.points.get( index ).clone();
+                    ret = (BezierPoint)target.points[ index ].clone();
                 } else if ( picked == BezierPickedSide.LEFT ) {
                     // 左制御点を動かす
                     if ( item.getControlLeftType() == BezierControlType.Master ) {
@@ -3255,8 +3252,7 @@ namespace cadencii
                 }
             } else if ( mMouseDownMode == MouseDownMode.SINGER_LIST ) {
                 int dclock = clock - mSingerMoveStartedClock;
-                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                    SelectedEventEntry item = itr.next();
+                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                     item.editing.Clock = item.original.Clock + dclock;
                 }
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
@@ -3274,8 +3270,7 @@ namespace cadencii
                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
                     d_vel = t_value - mVelEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMdecGainRate;
                 }
-                for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                    int id = itr.next();
+                foreach (var id in mVelEditSelected.Keys) {
                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                         VsqEvent item = mVelEditSelected.get( id ).original;
                         int new_vel = item.ID.Dynamics + d_vel;
@@ -3320,14 +3315,14 @@ namespace cadencii
                 BezierChain target = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, AppManager.itemSelection.getLastBezier().chainID );
                 int point_id = AppManager.itemSelection.getLastBezier().pointID;
                 int index = -1;
-                for ( int i = 0; i < target.points.size(); i++ ) {
-                    if ( target.points.get( i ).getID() == point_id ) {
+                for ( int i = 0; i < target.points.Count; i++ ) {
+                    if ( target.points[ i ].getID() == point_id ) {
                         index = i;
                         break;
                     }
                 }
                 if ( index >= 0 ) {
-                    BezierPoint item = target.points.get( index );
+                    BezierPoint item = target.points[ index ];
                     Point old_right = item.getControlRight().toPoint();
                     Point old_left = item.getControlLeft().toPoint();
                     BezierControlType old_right_type = item.getControlRightType();
@@ -3406,7 +3401,7 @@ namespace cadencii
         /// <param name="px_tolerance"></param>
         private void findBezierPointAt( int locx,
                                         int locy,
-                                        Vector<BezierChain> list,
+                                        List<BezierChain> list,
                                         ByRef<BezierChain> found_chain,
                                         ByRef<BezierPoint> found_point,
                                         ByRef<BezierPickedSide> found_side,
@@ -3418,12 +3413,11 @@ namespace cadencii
             found_side.value = BezierPickedSide.BASE;
             int shift = dot_width + px_tolerance;
             int width = (dot_width + px_tolerance) * 2;
-            int c = list.size();
+            int c = list.Count;
             Point location = new Point( locx, locy );
             for ( int i = 0; i < c; i++ ) {
-                BezierChain bc = list.get( i );
-                for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                    BezierPoint bp = itr.next();
+                BezierChain bc = list[ i ];
+                foreach (var bp in bc.points) {
                     Point p = getScreenCoord( bp.getBase() );
                     Rectangle r = new Rectangle( p.x - shift, p.y - shift, width, width );
                     if ( isInRect( locx, locy, r ) ) {
@@ -3591,12 +3585,11 @@ namespace cadencii
                     if ( ve != null ) {
                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                             if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), ve.InternalID ) ) {
-                                Vector<Integer> old = new Vector<Integer>();
-                                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                    SelectedEventEntry item = itr.next();
+                                List<Integer> old = new List<Integer>();
+                                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
-                                        old.add( id );
+                                        old.Add( id );
                                     }
                                 }
                                 AppManager.itemSelection.clearEvent();
@@ -3608,15 +3601,15 @@ namespace cadencii
                             int last_clock = AppManager.itemSelection.getLastEvent().original.Clock;
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
-                            Vector<Integer> add_required = new Vector<Integer>();
-                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+                            List<Integer> add_required = new List<Integer>();
+                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getEventIterator(); itr.hasNext(); ) {
                                 VsqEvent item = itr.next();
                                 if ( item.ID.type == VsqIDType.Singer && tmin <= item.Clock && item.Clock <= tmax ) {
-                                    add_required.add( item.InternalID );
+                                    add_required.Add( item.InternalID );
                                     //AppManager.AddSelectedEvent( item.InternalID );
                                 }
                             }
-                            add_required.add( ve.InternalID );
+                            add_required.Add( ve.InternalID );
                             AppManager.itemSelection.addEventAll( add_required );
                         } else {
                             if ( !AppManager.itemSelection.isEventContains( AppManager.getSelected(), ve.InternalID ) ) {
@@ -3776,12 +3769,11 @@ namespace cadencii
                                 mMouseDownMode = MouseDownMode.NONE;
                             } else {
                                 // まずベジエ曲線の点にヒットしてないかどうかを検査
-                                Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
+                                List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
-                                for ( int i = 0; i < dict.size(); i++ ) {
-                                    BezierChain bc = dict.get( i );
-                                    for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                        BezierPoint bp = itr.next();
+                                for ( int i = 0; i < dict.Count; i++ ) {
+                                    BezierChain bc = dict[ i ];
+                                    foreach (var bp in bc.points) {
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
@@ -3831,14 +3823,13 @@ namespace cadencii
                                     boolean found2 = false;
                                     if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                         // clicked with CTRL key
-                                        Vector<Integer> list = new Vector<Integer>();
-                                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                            SelectedEventEntry item = itr.next();
+                                        List<Integer> list = new List<Integer>();
+                                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                             VsqEvent ve2 = item.original;
                                             if ( ve.InternalID == ve2.InternalID ) {
                                                 found2 = true;
                                             } else {
-                                                list.add( ve2.InternalID );
+                                                list.Add( ve2.InternalID );
                                             }
                                         }
                                         AppManager.itemSelection.clearEvent();
@@ -3850,11 +3841,11 @@ namespace cadencii
                                             int last_clock = last_selected.original.Clock;
                                             int tmin = Math.Min( ve.Clock, last_clock );
                                             int tmax = Math.Max( ve.Clock, last_clock );
-                                            Vector<Integer> add_required = new Vector<Integer>();
-                                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                                            List<Integer> add_required = new List<Integer>();
+                                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getNoteEventIterator(); itr.hasNext(); ) {
                                                 VsqEvent item = itr.next();
                                                 if ( tmin <= item.Clock && item.Clock <= tmax ) {
-                                                    add_required.add( item.InternalID );
+                                                    add_required.Add( item.InternalID );
                                                 }
                                             }
                                             AppManager.itemSelection.addEventAll( add_required );
@@ -3884,8 +3875,7 @@ namespace cadencii
                                     }
                                     mVelEditSelected.clear();
                                     if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), mVelEditLastSelectedID ) ) {
-                                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                            SelectedEventEntry item = itr.next();
+                                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                             mVelEditSelected.put( item.original.InternalID,
                                                                     new SelectedEventEntry( AppManager.getSelected(),
                                                                                             item.original,
@@ -3926,14 +3916,14 @@ namespace cadencii
                                     }
 
                                     mMouseDownMode = MouseDownMode.POINT_MOVE;
-                                    mMovingPoints.clear();
-                                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( mSelectedCurve.getName() );
+                                    mMovingPoints.Clear();
+                                    VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( mSelectedCurve.getName() );
                                     if ( list != null ) {
                                         int count = list.size();
                                         for ( int i = 0; i < count; i++ ) {
                                             VsqBPPair item = list.getElementB( i );
                                             if ( AppManager.itemSelection.isPointContains( item.id ) ) {
-                                                mMovingPoints.add( new BPPair( list.getKeyClock( i ), item.value ) );
+                                                mMovingPoints.Add( new BPPair( list.getKeyClock( i ), item.value ) );
                                             }
                                         }
                                         Invalidate();
@@ -3969,7 +3959,7 @@ namespace cadencii
                                 executeCommand( run, true );
                             } else {
                                 if ( AppManager.isCurveMode() ) {
-                                    Vector<BezierChain> list = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
+                                    List<BezierChain> list = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                     if ( list != null ) {
                                         ByRef<BezierChain> chain = new ByRef<BezierChain>();
                                         ByRef<BezierPoint> point = new ByRef<BezierPoint>();
@@ -3979,13 +3969,13 @@ namespace cadencii
                                             if ( side.value == BezierPickedSide.BASE ) {
                                                 // データ点自体を削除
                                                 BezierChain work = (BezierChain)chain.value.clone();
-                                                int count = work.points.size();
+                                                int count = work.points.Count;
                                                 if ( count > 1 ) {
                                                     // 2個以上のデータ点があるので、BezierChainを置換
                                                     for ( int i = 0; i < count; i++ ) {
-                                                        BezierPoint bp = work.points.get( i );
+                                                        BezierPoint bp = work.points[ i ];
                                                         if ( bp.getID() == point.value.getID() ) {
-                                                            work.points.removeElementAt( i );
+                                                            work.points.RemoveAt( i );
                                                             break;
                                                         }
                                                     }
@@ -4012,9 +4002,9 @@ namespace cadencii
                                             } else {
                                                 // 滑らかにするオプションを解除する
                                                 BezierChain work = (BezierChain)chain.value.clone();
-                                                int count = work.points.size();
+                                                int count = work.points.Count;
                                                 for ( int i = 0; i < count; i++ ) {
-                                                    BezierPoint bp = work.points.get( i );
+                                                    BezierPoint bp = work.points[ i ];
                                                     if ( bp.getID() == point.value.getID() ) {
                                                         bp.setControlLeftType( BezierControlType.None );
                                                         bp.setControlRightType( BezierControlType.None );
@@ -4036,7 +4026,7 @@ namespace cadencii
                                 } else {
                                     long id = findDataPointAt( e.X, e.Y );
                                     if ( id > 0 ) {
-                                        VsqBPList item = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( mSelectedCurve.getName() );
+                                        VsqBPList item = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( mSelectedCurve.getName() );
                                         if ( item != null ) {
                                             VsqBPList work = (VsqBPList)item.clone();
                                             VsqBPPairSearchContext context = work.findElement( id );
@@ -4069,13 +4059,12 @@ namespace cadencii
                     } else if ( e.Button == BMouseButtons.Right ) {
                         if ( AppManager.isCurveMode() ) {
                             if ( !mSelectedCurve.equals( CurveType.VEL ) && !mSelectedCurve.equals( CurveType.Env ) ) {
-                                Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
+                                List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
                                 boolean found = false;
-                                for ( int i = 0; i < dict.size(); i++ ) {
-                                    BezierChain bc = dict.get( i );
-                                    for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                        BezierPoint bp = itr.next();
+                                for ( int i = 0; i < dict.Count; i++ ) {
+                                    BezierChain bc = dict[ i ];
+                                    foreach (var bp in bc.points) {
                                         Point pt = getScreenCoord( bp.getBase() );
                                         Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                         if ( isInRect( e.X, e.Y, rc ) ) {
@@ -4122,7 +4111,7 @@ namespace cadencii
             boolean is_middle = false;
 
             // check whether bezier point exists on clicked position
-            Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( mSelectedCurve );
+            List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( mSelectedCurve );
             ByRef<BezierChain> found_chain = new ByRef<BezierChain>();
             ByRef<BezierPoint> found_point = new ByRef<BezierPoint>();
             ByRef<BezierPickedSide> found_side = new ByRef<BezierPickedSide>();
@@ -4146,16 +4135,15 @@ namespace cadencii
                     return false;
                 }
                 BezierChain target_chain = null;
-                for ( int j = 0; j < dict.size(); j++ ) {
-                    BezierChain bc = dict.get( j );
+                for ( int j = 0; j < dict.Count; j++ ) {
+                    BezierChain bc = dict[ j ];
                     for ( int i = 1; i < bc.size(); i++ ) {
-                        if ( !is_middle && bc.points.get( i - 1 ).getBase().getX() <= clock && clock <= bc.points.get( i ).getBase().getX() ) {
+                        if ( !is_middle && bc.points[ i - 1 ].getBase().getX() <= clock && clock <= bc.points[ i ].getBase().getX() ) {
                             target_chain = (BezierChain)bc.clone();
                             is_middle = true;
                         }
                         if ( !too_near ) {
-                            for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                BezierPoint bp = itr.next();
+                            foreach (var bp in bc.points) {
                                 Point pt = getScreenCoord( bp.getBase() );
                                 Rectangle rc = new Rectangle( pt.x - px_shift, pt.y - px_shift, px_width, px_width );
                                 if ( isInRect( e.X, e.Y, rc ) ) {
@@ -4171,11 +4159,11 @@ namespace cadencii
                     if ( (modifier & mModifierKey) != mModifierKey && target_chain == null ) {
                         // search BezierChain just before the clicked position
                         int tmax = -1;
-                        for ( int i = 0; i < dict.size(); i++ ) {
-                            BezierChain bc = dict.get( i );
+                        for ( int i = 0; i < dict.Count; i++ ) {
+                            BezierChain bc = dict[ i ];
                             bc.points.Sort();
                             // check most nearest data point from clicked position
-                            int last = (int)bc.points.get( bc.points.size() - 1 ).getBase().getX();
+                            int last = (int)bc.points[ bc.points.Count - 1 ].getBase().getX();
                             if ( tmax < last && last < clock ) {
                                 tmax = last;
                                 target_chain = (BezierChain)bc.clone();
@@ -4244,7 +4232,7 @@ namespace cadencii
             if ( findPreUtteranceOrOverlapAt( e.X, e.Y, internal_id, found_flag_was_overlap ) ) {
                 if ( found_flag_was_overlap.value ) {
                     mOverlapEditingID = internal_id.value;
-                    mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mOverlapEditingID );
+                    mPreOverlapEditing = AppManager.getVsqFile().Track[AppManager.getSelected()].findEventFromID( mOverlapEditingID );
                     if ( mPreOverlapEditing == null ) {
                         mMouseDownMode = MouseDownMode.NONE;
                         return false;
@@ -4254,7 +4242,7 @@ namespace cadencii
                     return true;
                 } else {
                     mPreUtteranceEditingID = internal_id.value;
-                    mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mPreUtteranceEditingID );
+                    mPreOverlapEditing = AppManager.getVsqFile().Track[AppManager.getSelected()].findEventFromID( mPreUtteranceEditingID );
                     if ( mPreOverlapEditing == null ) {
                         mMouseDownMode = MouseDownMode.NONE;
                         return false;
@@ -4279,7 +4267,7 @@ namespace cadencii
 #endif
             mEnvelopeOriginal = null;
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( AppManager.getSelected() );
+            VsqTrack vsq_track = vsq.Track[AppManager.getSelected()];
             VsqEvent found = vsq_track.findEventFromID( internal_id.value );
             if ( found == null ) {
                 return false;
@@ -4361,7 +4349,7 @@ namespace cadencii
         private void changeCurve( CurveType curve )
         {
 #if DEBUG
-            sout.println( "TrackSelector#changCurve; getViewingCurveCount()=" + mViewingCurves.size() );
+            sout.println( "TrackSelector#changCurve; getViewingCurveCount()=" + mViewingCurves.Count );
 #endif
             if ( !mSelectedCurve.equals( curve ) ) {
                 mLastSelectedCurve = mSelectedCurve;
@@ -4406,7 +4394,7 @@ namespace cadencii
             if ( AppManager.getVsqFile() == null ) {
                 return null;
             }
-            VsqTrack target = AppManager.getVsqFile().Track.get( AppManager.getSelected() );
+            VsqTrack target = AppManager.getVsqFile().Track[AppManager.getSelected()];
             int count = target.getEventCount();
             for ( int i = 0; i < count; i++ ) {
                 VsqEvent ve = target.getEvent( i );
@@ -4473,7 +4461,7 @@ namespace cadencii
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
             VsqFileEx vsq = AppManager.getVsqFile();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
 #if DEBUG
             AppManager.debugWriteLine( "    max,min=" + max + "," + min );
 #endif
@@ -4591,7 +4579,7 @@ namespace cadencii
                     } else if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         #region Eraser
                         if ( AppManager.isCurveMode() ) {
-                            Vector<BezierChain> list = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
+                            List<BezierChain> list = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
                             if ( list != null ) {
                                 int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
@@ -4599,17 +4587,17 @@ namespace cadencii
 
                                 boolean changed = false; //1箇所でも削除が実行されたらtrue
 
-                                int count = list.size();
-                                Vector<BezierChain> work = new Vector<BezierChain>();
+                                int count = list.Count;
+                                List<BezierChain> work = new List<BezierChain>();
                                 for ( int i = 0; i < count; i++ ) {
-                                    BezierChain chain = list.get( i );
+                                    BezierChain chain = list[ i ];
                                     BezierChain chain_copy = new BezierChain();
                                     chain_copy.setColor( chain.getColor() );
                                     chain_copy.Default = chain.Default;
                                     chain_copy.id = chain.id;
-                                    int point_count = chain.points.size();
+                                    int point_count = chain.points.Count;
                                     for ( int j = 0; j < point_count; j++ ) {
-                                        BezierPoint point = chain.points.get( j );
+                                        BezierPoint point = chain.points[ j ];
                                         Point basepoint = point.getBase().toPoint();
                                         Point ctrl_l = point.getControlLeft().toPoint();
                                         Point ctrl_r = point.getControlRight().toPoint();
@@ -4624,21 +4612,21 @@ namespace cadencii
                                                 BezierPoint point_copy = (BezierPoint)point.clone();
                                                 point_copy.setControlLeftType( BezierControlType.None );
                                                 point_copy.setControlRightType( BezierControlType.None );
-                                                chain_copy.points.add( point_copy );
+                                                chain_copy.points.Add( point_copy );
                                                 changed = true;
                                                 continue;
                                             } else {
                                                 // 選択範囲に入っていないので、普通に追加
-                                                chain_copy.points.add( (BezierPoint)point.clone() );
+                                                chain_copy.points.Add( (BezierPoint)point.clone() );
                                             }
                                         }
                                     }
-                                    if ( chain_copy.points.size() > 0 ) {
-                                        work.add( chain_copy );
+                                    if ( chain_copy.points.Count > 0 ) {
+                                        work.Add( chain_copy );
                                     }
                                 }
                                 if ( changed ) {
-                                    TreeMap<CurveType, Vector<BezierChain>> comm = new TreeMap<CurveType, Vector<BezierChain>>();
+                                    TreeMap<CurveType, List<BezierChain>> comm = new TreeMap<CurveType, List<BezierChain>>();
                                     comm.put( mSelectedCurve, work );
                                     CadenciiCommand run = VsqFileEx.generateCommandReplaceAttachedCurveRange( selected, comm );
                                     executeCommand( run, true );
@@ -4654,14 +4642,14 @@ namespace cadencii
                                 AppManager.mCurveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
                                 AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 AppManager.itemSelection.clearEvent();
-                                Vector<Integer> deleting = new Vector<Integer>();
+                                List<Integer> deleting = new List<Integer>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ev = itr.next();
                                     if ( start <= ev.Clock && ev.Clock <= end ) {
-                                        deleting.add( ev.InternalID );
+                                        deleting.Add( ev.InternalID );
                                     }
                                 }
-                                if ( deleting.size() > 0 ) {
+                                if ( deleting.Count > 0 ) {
                                     CadenciiCommand er_run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventDeleteRange( selected, deleting ) );
                                     executeCommand( er_run, true );
@@ -4671,8 +4659,8 @@ namespace cadencii
                                 #region VibratoRate ViratoDepth
                                 int er_start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int er_end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
-                                Vector<Integer> internal_ids = new Vector<Integer>();
-                                Vector<VsqID> items = new Vector<VsqID>();
+                                List<Integer> internal_ids = new List<Integer>();
+                                List<VsqID> items = new List<VsqID>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = itr.next();
                                     if ( ve.ID.VibratoHandle == null ) {
@@ -4710,61 +4698,61 @@ namespace cadencii
                                         } else {
                                             target = item.VibratoHandle.getRateBP();
                                         }
-                                        Vector<Float> bpx = new Vector<Float>();
-                                        Vector<Integer> bpy = new Vector<Integer>();
+                                        List<Float> bpx = new List<Float>();
+                                        List<Integer> bpy = new List<Integer>();
                                         boolean start_added = false;
                                         boolean end_added = false;
                                         for ( int i = 0; i < target.getCount(); i++ ) {
                                             VibratoBPPair vbpp = target.getElement( i );
                                             if ( vbpp.X < f_clear_start ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                             } else if ( f_clear_start == vbpp.X ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( 64 );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( 64 );
                                                 start_added = true;
                                             } else if ( f_clear_start < vbpp.X && !start_added ) {
-                                                bpx.add( f_clear_start );
-                                                bpy.add( 64 );
+                                                bpx.Add( f_clear_start );
+                                                bpy.Add( 64 );
                                                 start_added = true;
                                             } else if ( f_clear_end == vbpp.X ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                                 end_added = true;
                                             } else if ( f_clear_end < vbpp.X && !end_added ) {
                                                 int y = vbpp.Y;
                                                 if ( i > 0 ) {
                                                     y = target.getElement( i - 1 ).Y;
                                                 }
-                                                bpx.add( f_clear_end );
-                                                bpy.add( y );
+                                                bpx.Add( f_clear_end );
+                                                bpy.Add( y );
                                                 end_added = true;
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                             } else if ( f_clear_end < vbpp.X ) {
-                                                bpx.add( vbpp.X );
-                                                bpy.add( vbpp.Y );
+                                                bpx.Add( vbpp.X );
+                                                bpy.Add( vbpp.Y );
                                             }
                                         }
                                         if ( mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
                                             item.VibratoHandle.setDepthBP(
                                                 new VibratoBPList(
-                                                    PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
-                                                    PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
+                                                    PortUtil.convertFloatArray( bpx.ToArray() ),
+                                                    PortUtil.convertIntArray( bpy.ToArray() ) ) );
                                         } else {
                                             item.VibratoHandle.setRateBP(
                                                 new VibratoBPList(
-                                                    PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
-                                                    PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
+                                                    PortUtil.convertFloatArray( bpx.ToArray() ),
+                                                    PortUtil.convertIntArray( bpy.ToArray() ) ) );
                                         }
-                                        internal_ids.add( ve.InternalID );
-                                        items.add( item );
+                                        internal_ids.Add( ve.InternalID );
+                                        items.Add( item );
                                     }
                                 }
                                 CadenciiCommand run = new CadenciiCommand(
                                     VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
-                                                                                           PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
-                                                                                           items.toArray( new VsqID[] { } ) ) );
+                                                                                           PortUtil.convertIntArray( internal_ids.ToArray() ),
+                                                                                           items.ToArray() ) );
                                 executeCommand( run, true );
                                 #endregion
                             } else if ( mSelectedCurve.equals( CurveType.Env ) ) {
@@ -4777,17 +4765,17 @@ namespace cadencii
                                 int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
                                 Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.mCurveSelectingRectangle.width ), Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
-                                Vector<Long> delete = new Vector<Long>();
+                                List<Long> delete = new List<Long>();
                                 int count = work.size();
                                 for ( int i = 0; i < count; i++ ) {
                                     int clock = work.getKeyClock( i );
                                     VsqBPPair item = work.getElementB( i );
                                     if ( isInRect( clock, item.value, rc ) ) {
-                                        delete.add( item.id );
+                                        delete.Add( item.id );
                                     }
                                 }
 
-                                if ( delete.size() > 0 ) {
+                                if ( delete.Count > 0 ) {
                                     CadenciiCommand run_eraser = new CadenciiCommand(
                                         VsqCommand.generateCommandTrackCurveEdit2( selected, mSelectedCurve.getName(), delete, new TreeMap<Integer, VsqBPPair>() ) );
                                     executeCommand( run_eraser, true );
@@ -4853,11 +4841,10 @@ namespace cadencii
                                     }
                                 }
                                 if ( velocity.size() > 0 ) {
-                                    Vector<ValuePair<Integer, Integer>> cpy = new Vector<ValuePair<Integer, Integer>>();
-                                    for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ) {
-                                        int internal_id = itr.next();
+                                    List<ValuePair<Integer, Integer>> cpy = new List<ValuePair<Integer, Integer>>();
+                                    foreach (var internal_id in velocity.Keys) {
                                         int value = (Integer)velocity.get( internal_id );
-                                        cpy.add( new ValuePair<Integer, Integer>( internal_id, value ) );
+                                        cpy.Add( new ValuePair<Integer, Integer>( internal_id, value ) );
                                     }
                                     CadenciiCommand run = null;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
@@ -4865,8 +4852,7 @@ namespace cadencii
                                             int size = velocity.size();
                                             VsqEvent[] events = new VsqEvent[size];
                                             int i = 0;
-                                            for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ){
-                                                int internal_id = itr.next();
+                                            foreach (var internal_id in velocity.Keys){
                                                 VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
                                                 if ( item.UstEvent == null ) {
                                                     item.UstEvent = new UstEvent();
@@ -4904,8 +4890,8 @@ namespace cadencii
 #if DEBUG
                                 AppManager.debugWriteLine( "    start,end=" + start + " " + end );
 #endif
-                                Vector<Integer> internal_ids = new Vector<Integer>();
-                                Vector<VsqID> items = new Vector<VsqID>();
+                                List<Integer> internal_ids = new List<Integer>();
+                                List<VsqID> items = new List<VsqID>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = itr.next();
                                     if ( ve.ID.VibratoHandle == null ) {
@@ -4931,7 +4917,7 @@ namespace cadencii
                                     float add_min = (AppManager.clockFromXCoord( chk_start - stdx ) - cl_vib_start) / cl_vib_length;
                                     float add_max = (AppManager.clockFromXCoord( chk_end - stdx ) - cl_vib_start) / cl_vib_length;
 
-                                    Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
+                                    List<ValuePair<Float, Integer>> edit = new List<ValuePair<Float, Integer>>();
                                     int lclock = -2 * step_clock;
                                     ValuePair<Float, Integer> first = null; // xの値が0以下の最大のデータ点
                                     ValuePair<Float, Integer> last = null;//xの値が1以上の最小のデータ点
@@ -4955,7 +4941,7 @@ namespace cadencii
                                         float x = (clock - cl_vib_start) / cl_vib_length;
                                         ValuePair<Float, Integer> tmp = new ValuePair<Float, Integer>( x, val );
                                         if ( 0.0f < x && x < 1.0f ) {
-                                            edit.add( tmp );
+                                            edit.Add( tmp );
                                         } else if ( x <= 0.0f ) {
                                             first = tmp;
                                         } else if ( 1.0f <= x && last != null ) {
@@ -4965,11 +4951,11 @@ namespace cadencii
                                     }
                                     if ( first != null ) {
                                         first.setKey( 0.0f );
-                                        edit.add( first );
+                                        edit.Add( first );
                                     }
                                     if ( last != null ) {
                                         last.setKey( 1.0f );
-                                        edit.add( last );
+                                        edit.Add( last );
                                     }
 
                                     VibratoBPList target = null;
@@ -4981,32 +4967,32 @@ namespace cadencii
                                     if ( target.getCount() > 0 ) {
                                         for ( int i = 0; i < target.getCount(); i++ ) {
                                             if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
-                                                edit.add( new ValuePair<Float, Integer>( target.getElement( i ).X,
+                                                edit.Add( new ValuePair<Float, Integer>( target.getElement( i ).X,
                                                                                          target.getElement( i ).Y ) );
                                             }
                                         }
                                     }
                                     edit.Sort();
                                     VsqID id = (VsqID)ve.ID.clone();
-                                    float[] bpx = new float[edit.size()];
-                                    int[] bpy = new int[edit.size()];
-                                    for ( int i = 0; i < edit.size(); i++ ) {
-                                        bpx[i] = edit.get( i ).getKey();
-                                        bpy[i] = edit.get( i ).getValue();
+                                    float[] bpx = new float[edit.Count];
+                                    int[] bpy = new int[edit.Count];
+                                    for ( int i = 0; i < edit.Count; i++ ) {
+                                        bpx[i] = edit[ i ].getKey();
+                                        bpy[i] = edit[ i ].getValue();
                                     }
                                     if ( mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
                                         id.VibratoHandle.setDepthBP( new VibratoBPList( bpx, bpy ) );
                                     } else {
                                         id.VibratoHandle.setRateBP( new VibratoBPList( bpx, bpy ) );
                                     }
-                                    internal_ids.add( ve.InternalID );
-                                    items.add( id );
+                                    internal_ids.Add( ve.InternalID );
+                                    items.Add( id );
                                 }
-                                if ( internal_ids.size() > 0 ) {
+                                if ( internal_ids.Count > 0 ) {
                                     CadenciiCommand run = new CadenciiCommand(
                                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected,
-                                                                                               PortUtil.convertIntArray( internal_ids.toArray( new Integer[] { } ) ),
-                                                                                               items.toArray( new VsqID[] { } ) ) );
+                                                                                               PortUtil.convertIntArray( internal_ids.ToArray() ),
+                                                                                               items.ToArray() ) );
                                     executeCommand( run, true );
                                 }
                                 #endregion
@@ -5031,16 +5017,16 @@ namespace cadencii
 #if DEBUG
                                 sout.println( "TrackSelector#TrackSelector_MouseUp; start, end=" + start + ", " + end );
 #endif
-                                VsqBPList list = vsq.Track.get( track ).getCurve( mSelectedCurve.getName() );
+                                VsqBPList list = vsq.Track[ track ].getCurve( mSelectedCurve.getName() );
                                 long maxid = list.getMaxID();
 
                                 // 削除するものを列挙
-                                Vector<Long> delete = new Vector<Long>();
+                                List<Long> delete = new List<Long>();
                                 int c = list.size();
                                 for ( int i = 0; i < c; i++ ) {
                                     int clock = list.getKeyClock( i );
                                     if ( clock_start <= clock && clock <= clock_end ) {
-                                        delete.add( list.getElementB( i ).id );
+                                        delete.Add( list.getElementB( i ).id );
                                     } else if ( clock_end < clock ) {
                                         break;
                                     }
@@ -5108,8 +5094,7 @@ namespace cadencii
                         boolean is_valid = true;
                         boolean contains_first_singer = false;
                         int premeasure = vsq.getPreMeasureClocks();
-                        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry item = itr.next();
+                        foreach (var item in AppManager.itemSelection.getEventIterator()) {
                             i++;
                             ids[i] = item.original.InternalID;
                             clocks[i] = item.editing.Clock;
@@ -5143,8 +5128,7 @@ namespace cadencii
                             }
                             boolean changed = false;
                             for ( int j = 0; j < ids.Length; j++ ) {
-                                for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                                    SelectedEventEntry item = itr.next();
+                                foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     if ( item.original.InternalID == ids[j] && item.original.Clock != clocks[j] ) {
                                         changed = true;
                                         break;
@@ -5167,8 +5151,7 @@ namespace cadencii
                     int count = mVelEditSelected.size();
                     VsqEvent[] values = new VsqEvent[count];
                     int i = 0;
-                    for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                        int internal_id = itr.next();
+                    foreach (var internal_id in mVelEditSelected.Keys) {
                         VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
                         if ( item.UstEvent == null ) {
                             item.UstEvent = new UstEvent();
@@ -5185,8 +5168,7 @@ namespace cadencii
                     int[] ids = new int[count];
                     VsqID[] values = new VsqID[count];
                     int i = -1;
-                    for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                        int id = itr.next();
+                    foreach (var id in mVelEditSelected.Keys) {
                         i++;
                         ids[i] = id;
                         values[i] = (VsqID)mVelEditSelected.get( id ).editing.ID.clone();
@@ -5299,7 +5281,7 @@ namespace cadencii
                     CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, beziers );
                     executeCommand( run, true );
                 }
-                mMovingPoints.clear();
+                mMovingPoints.Clear();
             }
             mMouseDownMode = MouseDownMode.NONE;
             Invalidate();
@@ -5364,38 +5346,38 @@ namespace cadencii
                                     edited.VibratoHandle.setRateBP( new VibratoBPList( new float[] { x },
                                                                                        new int[] { value } ) );
                                 } else {
-                                    Vector<Float> xs = new Vector<Float>();
-                                    Vector<Integer> vals = new Vector<Integer>();
+                                    List<Float> xs = new List<Float>();
+                                    List<Integer> vals = new List<Integer>();
                                     boolean first = true;
                                     VibratoBPList ratebp = edited.VibratoHandle.getRateBP();
                                     int c = ratebp.getCount();
                                     for ( int i = 0; i < c; i++ ) {
                                         VibratoBPPair itemi = ratebp.getElement( i );
                                         if ( itemi.X < x ) {
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         } else if ( itemi.X == x ) {
-                                            xs.add( x );
-                                            vals.add( value );
+                                            xs.Add( x );
+                                            vals.Add( value );
                                             first = false;
                                         } else {
                                             if ( first ) {
-                                                xs.add( x );
-                                                vals.add( value );
+                                                xs.Add( x );
+                                                vals.Add( value );
                                                 first = false;
                                             }
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         }
                                     }
                                     if ( first ) {
-                                        xs.add( x );
-                                        vals.add( value );
+                                        xs.Add( x );
+                                        vals.Add( value );
                                     }
                                     edited.VibratoHandle.setRateBP(
                                         new VibratoBPList(
-                                            PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
-                                            PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
+                                            PortUtil.convertFloatArray( xs.ToArray() ),
+                                            PortUtil.convertIntArray( vals.ToArray() ) ) );
                                 }
                             }
                         } else {
@@ -5406,38 +5388,38 @@ namespace cadencii
                                     edited.VibratoHandle.setDepthBP(
                                         new VibratoBPList( new float[] { x }, new int[] { value } ) );
                                 } else {
-                                    Vector<Float> xs = new Vector<Float>();
-                                    Vector<Integer> vals = new Vector<Integer>();
+                                    List<Float> xs = new List<Float>();
+                                    List<Integer> vals = new List<Integer>();
                                     boolean first = true;
                                     VibratoBPList depthbp = edited.VibratoHandle.getDepthBP();
                                     int c = depthbp.getCount();
                                     for ( int i = 0; i < c; i++ ) {
                                         VibratoBPPair itemi = depthbp.getElement( i );
                                         if ( itemi.X < x ) {
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         } else if ( itemi.X == x ) {
-                                            xs.add( x );
-                                            vals.add( value );
+                                            xs.Add( x );
+                                            vals.Add( value );
                                             first = false;
                                         } else {
                                             if ( first ) {
-                                                xs.add( x );
-                                                vals.add( value );
+                                                xs.Add( x );
+                                                vals.Add( value );
                                                 first = false;
                                             }
-                                            xs.add( itemi.X );
-                                            vals.add( itemi.Y );
+                                            xs.Add( itemi.X );
+                                            vals.Add( itemi.Y );
                                         }
                                     }
                                     if ( first ) {
-                                        xs.add( x );
-                                        vals.add( value );
+                                        xs.Add( x );
+                                        vals.Add( value );
                                     }
                                     edited.VibratoHandle.setDepthBP(
                                         new VibratoBPList(
-                                            PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
-                                            PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
+                                            PortUtil.convertFloatArray( xs.ToArray() ),
+                                            PortUtil.convertIntArray( vals.ToArray() ) ) );
                                 }
                             }
                         }
@@ -5451,7 +5433,7 @@ namespace cadencii
                 } else {
                     VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
                     if ( list != null ) {
-                        Vector<Long> delete = new Vector<Long>();
+                        List<Long> delete = new List<Long>();
                         TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
                         long maxid = list.getMaxID();
                         if ( list.isContainsKey( clock ) ) {
@@ -5459,7 +5441,7 @@ namespace cadencii
                             for ( int i = 0; i < c; i++ ) {
                                 int cl = list.getKeyClock( i );
                                 if ( cl == clock ) {
-                                    delete.add( list.getElementB( i ).id );
+                                    delete.Add( list.getElementB( i ).id );
                                     break;
                                 }
                             }
@@ -5505,7 +5487,7 @@ namespace cadencii
 
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack vsq_track = vsq.Track[ selected ];
             int height = getHeight();
             int width = getWidth();
             int key_width = AppManager.keyWidth;
@@ -5521,15 +5503,14 @@ namespace cadencii
                             // ベジエデータ点にヒットしているかどうかを検査
                             //int track = AppManager.getSelected();
                             int clock = AppManager.clockFromXCoord( e.X );
-                            Vector<BezierChain> dict = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
+                            List<BezierChain> dict = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
                             BezierChain target_chain = null;
                             BezierPoint target_point = null;
                             boolean found = false;
-                            int dict_size = dict.size();
+                            int dict_size = dict.Count;
                             for ( int i = 0; i < dict_size; i++ ) {
-                                BezierChain bc = dict.get( i );
-                                for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                    BezierPoint bp = itr.next();
+                                BezierChain bc = dict[ i ];
+                                foreach (var bp in bc.points) {
                                     Point pt = getScreenCoord( bp.getBase() );
                                     Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
                                     if ( isInRect( e.X, e.Y, rc ) ) {
@@ -5741,27 +5722,26 @@ namespace cadencii
         public void prepareSingerMenu( RendererKind renderer )
         {
             cmenuSinger.Items.Clear();
-            Vector<SingerConfig> items = null;
+            List<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
             } else if ( renderer == RendererKind.VOCALOID1 ) {
-                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) );
+                items = new List<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {
-                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) );
+                items = new List<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) );
 #if ENABLE_AQUESTONE
             } else if ( renderer == RendererKind.AQUES_TONE ) {
-                items = new Vector<SingerConfig>();
+                items = new List<SingerConfig>();
                 items.AddRange( AquesToneDriver.Singers );
             } else if ( renderer == RendererKind.AQUES_TONE2 ) {
-                items = new Vector<SingerConfig>();
+                items = new List<SingerConfig>();
                 items.AddRange( AquesTone2Driver.Singers );
 #endif
             } else {
                 return;
             }
             int count = 0;
-            for ( Iterator<SingerConfig> itr = items.iterator(); itr.hasNext(); ) {
-                SingerConfig sc = itr.next();
+            foreach (var sc in items) {
                 String tip = "";
                 if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                     if ( sc != null ) {

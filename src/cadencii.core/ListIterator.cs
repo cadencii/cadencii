@@ -21,17 +21,12 @@ namespace cadencii.java.util {
         private List<T> m_list;
         private int m_pos;
 
-        public ListIterator( Vector<T> list ) {
-            m_list = new List<T>();
-            int c = list.size();
-            for( int i = 0; i < c; i++ ){
-                m_list.Add( list.get( i ) );
-            }
-            m_pos = -1;
-        }
-
         public ListIterator( List<T> list ) {
-            m_list = list;
+            m_list = new List<T>();
+            int c = list.Count;
+            for( int i = 0; i < c; i++ ){
+                m_list.Add( list[ i ] );
+            }
             m_pos = -1;
         }
 

@@ -22,6 +22,7 @@ import cadencii.xml.*;
 #else
 
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -35,13 +36,13 @@ namespace cadencii
 #else
     public class AttachedCurve : ICloneable {
 #endif
-        private Vector<BezierCurves> mCurves = new Vector<BezierCurves>();
+        private List<BezierCurves> mCurves = new List<BezierCurves>();
 
 #if !JAVA
         /// <summary>
         /// XML保存用
         /// </summary>
-        public Vector<BezierCurves> Curves {
+        public List<BezierCurves> Curves {
             get {
                 return getCurves();
             }
@@ -54,40 +55,40 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( BezierCurves.class )
 #endif
-        public Vector<BezierCurves> getCurves() {
+        public List<BezierCurves> getCurves() {
             return mCurves;
         }
 
-        public void setCurves( Vector<BezierCurves> value ) {
+        public void setCurves( List<BezierCurves> value ) {
             mCurves = value;
         }
 
         public BezierCurves get( int index ) {
-            return mCurves.get( index );
+            return mCurves[ index ];
         }
 
         public void set( int index, BezierCurves value ) {
-            mCurves.set( index, value );
+            mCurves[ index] =  value ;
         }
 
         public void add( BezierCurves item ) {
-            mCurves.add( item );
+            mCurves.Add( item );
         }
 
         public void removeElementAt( int index ) {
-            mCurves.removeElementAt( index );
+            mCurves.RemoveAt( index );
         }
 
         public void insertElementAt( int position, BezierCurves attached_curve ) {
-            mCurves.insertElementAt( attached_curve, position );
+            mCurves.Insert( position, attached_curve );
         }
 
         public Object clone() {
             AttachedCurve ret = new AttachedCurve();
-            ret.mCurves.clear();
-            int c = mCurves.size();
+            ret.mCurves.Clear();
+            int c = mCurves.Count;
             for ( int i = 0; i < c; i++ ) {
-                ret.mCurves.add( (BezierCurves)mCurves.get( i ).clone() );
+                ret.mCurves.Add( (BezierCurves)mCurves[ i ].clone() );
             }
             return ret;
         }

@@ -66,7 +66,7 @@ namespace cadencii
         }
 
         [Obsolete]
-        public static cadencii.java.util.Iterator<SelectedEventEntry> getSelectedEventIterator()
+        public static IEnumerable<SelectedEventEntry> getSelectedEventIterator()
         {
             return itemSelection.getEventIterator();
         }
@@ -74,9 +74,7 @@ namespace cadencii
         [Obsolete]
         public static bool isSelectedEventContains( int track, int id )
         {
-            var i = itemSelection.getEventIterator();
-            while ( i.hasNext() ) {
-                var item = i.next();
+			foreach (var item in itemSelection.getEventIterator()) {
                 if ( item.original.InternalID == id && item.track == track ) {
                     return true;
                 }

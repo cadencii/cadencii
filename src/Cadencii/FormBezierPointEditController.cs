@@ -24,6 +24,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.awt;
@@ -80,9 +81,9 @@ namespace cadencii
             boolean found = false;
             VsqFileEx vsq = AppManager.getVsqFile();
             BezierCurves attached = vsq.AttachedCurves.get( m_track - 1 );
-            Vector<BezierChain> chains = attached.get( m_curve_type );
-            for ( int i = 0; i < chains.size(); i++ ) {
-                if ( chains.get( i ).id == m_chain_id ) {
+            List<BezierChain> chains = attached.get( m_curve_type );
+            for ( int i = 0; i < chains.Count; i++ ) {
+                if ( chains[ i ].id == m_chain_id ) {
                     found = true;
                     break;
                 }
@@ -91,8 +92,7 @@ namespace cadencii
                 return;
             }
             boolean smooth = false;
-            for ( Iterator<BezierPoint> itr = attached.getBezierChain( m_curve_type, m_chain_id ).points.iterator(); itr.hasNext(); ) {
-                BezierPoint bp = itr.next();
+            foreach (var bp in attached.getBezierChain( m_curve_type, m_chain_id ).points) {
                 if ( bp.getID() == m_point_id ) {
                     m_point = bp;
                     smooth =
@@ -339,7 +339,7 @@ namespace cadencii
             int index = -2;
             int size = target.size();
             for( int i = 0; i < size; i++ ) {
-                if( target.points.get( i ).getID() == m_point_id ) {
+                if( target.points[ i ].getID() == m_point_id ) {
                     index = i + delta;
                     break;
                 }
@@ -348,8 +348,8 @@ namespace cadencii
             // 次に選択するデータ点のインデックスが有効範囲なら，選択を実行
             if( 0 <= index && index < size ) {
                 // 選択を実行
-                m_point_id = target.points.get( index ).getID();
-                m_point = target.points.get( index );
+                m_point_id = target.points[ index ].getID();
+                m_point = target.points[ index ];
                 updateStatus();
                 m_parent.mEditingPointID = m_point_id;
                 m_parent.doInvalidate();

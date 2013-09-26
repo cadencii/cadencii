@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -252,17 +253,17 @@ namespace cadencii.vsq
 
         public String[] ToStringArray()
         {
-            Vector<String> ret = new Vector<String>();
-            ret.add( "\"ID\":=:\"" + ID + "\"" );
-            ret.add( "\"FORMAT\":=:\"" + FORMAT + "\"" );
-            ret.add( "\"VOICEIDSTR\":=:\"" + VOICEIDSTR + "\"" );
-            ret.add( "\"VOICENAME\":=:\"" + VOICENAME.Replace( "\"", "\\\"" ) + "\"" );
-            ret.add( "\"Breathiness\":=:\"" + Breathiness + "\"" );
-            ret.add( "\"Brightness\":=:\"" + Brightness + "\"" );
-            ret.add( "\"Clearness\":=:\"" + Clearness + "\"" );
-            ret.add( "\"Opening\":=:\"" + Opening + "\"" );
-            ret.add( "\"Gender:Factor\":=:\"" + GenderFactor + "\"" );
-            return ret.toArray( new String[] { } );
+            List<String> ret = new List<String>();
+            ret.Add( "\"ID\":=:\"" + ID + "\"" );
+            ret.Add( "\"FORMAT\":=:\"" + FORMAT + "\"" );
+            ret.Add( "\"VOICEIDSTR\":=:\"" + VOICEIDSTR + "\"" );
+            ret.Add( "\"VOICENAME\":=:\"" + VOICENAME.Replace( "\"", "\\\"" ) + "\"" );
+            ret.Add( "\"Breathiness\":=:\"" + Breathiness + "\"" );
+            ret.Add( "\"Brightness\":=:\"" + Brightness + "\"" );
+            ret.Add( "\"Clearness\":=:\"" + Clearness + "\"" );
+            ret.Add( "\"Opening\":=:\"" + Opening + "\"" );
+            ret.Add( "\"Gender:Factor\":=:\"" + GenderFactor + "\"" );
+            return ret.ToArray();
         }
 
 #if !JAVA

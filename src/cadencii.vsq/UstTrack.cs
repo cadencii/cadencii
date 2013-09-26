@@ -20,6 +20,7 @@ import cadencii.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -34,11 +35,11 @@ namespace cadencii.vsq
     {
 #endif
         public Object Tag;
-        private Vector<UstEvent> m_events;
+        private List<UstEvent> m_events;
 
         public UstTrack()
         {
-            m_events = new Vector<UstEvent>();
+            m_events = new List<UstEvent>();
         }
 
         /// <summary>
@@ -58,32 +59,32 @@ namespace cadencii.vsq
 
         public UstEvent getEvent( int index )
         {
-            return m_events.get( index );
+            return m_events[ index ];
         }
 
         public void setEvent( int index, UstEvent item )
         {
-            m_events.set( index, item );
+            m_events[ index] =  item ;
         }
 
         public void addEvent( UstEvent item )
         {
-            m_events.add( item );
+            m_events.Add( item );
         }
 
         public void removeEventAt( int index )
         {
-            m_events.removeElementAt( index );
+            m_events.RemoveAt( index );
         }
 
         public int getEventCount()
         {
-            return m_events.size();
+            return m_events.Count;
         }
 
-        public Iterator<UstEvent> getNoteEventIterator()
+        public IEnumerable<UstEvent> getNoteEventIterator()
         {
-            return m_events.iterator();
+            return m_events;
         }
 
         public Object clone()

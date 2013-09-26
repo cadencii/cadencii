@@ -26,6 +26,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.geom;
@@ -311,7 +312,7 @@ namespace cadencii {
                     PolylineDrawer commonDrawer = getCommonPolylineDrawer(g);
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get(selected);
+                    VsqTrack vsq_track = vsq.Track[selected];
 
                     var p = PortUtil.getMousePosition();
                     var mouse_position = this.PointToClient(new System.Drawing.Point(p.x, p.y));
@@ -572,13 +573,13 @@ namespace cadencii {
                             if (i == selected - 1) {
                                 continue;
                             }
-                            Vector<DrawObject> target_list = AppManager.mDrawObjects[i];
+                            List<DrawObject> target_list = AppManager.mDrawObjects[i];
                             int j_start = AppManager.mDrawStartIndex[i];
                             boolean first = true;
                             int shift_center = half_track_height;
-                            int target_list_count = target_list.size();
+                            int target_list_count = target_list.Count;
                             for (int j = j_start; j < target_list_count; j++) {
-                                DrawObject dobj = target_list.get(j);
+                                DrawObject dobj = target_list[j];
                                 if (dobj.mType != DrawObjectType.Note) {
                                     continue;
                                 }
@@ -618,15 +619,15 @@ namespace cadencii {
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
 
                         boolean first = true;
-                        Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
+                        List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                         VsqBPList pit = vsq_track.MetaText.PIT;
                         VsqBPList pbs = vsq_track.MetaText.PBS;
                         ByRef<Integer> indx_pit = new ByRef<Integer>(0);
                         ByRef<Integer> indx_pbs = new ByRef<Integer>(0);
 
-                        int c = target_list.size();
+                        int c = target_list.Count;
                         for (int j = j_start; j < c; j++) {
-                            DrawObject dobj = target_list.get(j);
+                            DrawObject dobj = target_list[j];
                             int x = dobj.mRectangleInPixel.x + key_width - stdx;
                             y = dobj.mRectangleInPixel.y - stdy;
                             int lyric_width = dobj.mRectangleInPixel.width;
@@ -917,8 +918,7 @@ namespace cadencii {
                                     edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
                                     edit_mode == EditMode.EDIT_LEFT_EDGE ||
                                     edit_mode == EditMode.EDIT_RIGHT_EDGE) && AppManager.itemSelection.getEventCount() > 0) {
-                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry ev = itr.next();
+                        foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                             int x = (int)(ev.editing.Clock * scalex + xoffset);
                             y = -ev.editing.ID.Note * track_height + yoffset + 1;
                             if (ev.editing.ID.type == VsqIDType.Aicon) {
@@ -1233,9 +1233,9 @@ namespace cadencii {
 
                         Color pitline = PortUtil.MidnightBlue;
                         g.setStroke(getStroke2px());
-                        Vector<DrawObject> list = AppManager.mDrawObjects[selected - 1];
+                        List<DrawObject> list = AppManager.mDrawObjects[selected - 1];
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
-                        int c = list.size();
+                        int c = list.Count;
                         int last_x = key_width;
 
                         int pbs_count = pbs.size();
@@ -1245,7 +1245,7 @@ namespace cadencii {
                         //ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
 
                         for (int j = j_start; j < c; j++) {
-                            DrawObject dobj = list.get(j);
+                            DrawObject dobj = list[j];
                             int clock = dobj.mClock;
                             int x_at_clock = (int)(clock * scalex + xoffset);
                             last_x = x_at_clock;

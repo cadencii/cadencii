@@ -26,6 +26,7 @@ import cadencii.componentmodel.*;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii;
 using cadencii.java.util;
@@ -123,13 +124,12 @@ namespace cadencii
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq != null ) {
-                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                     if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
                     String svalue = (String)value;
-                    for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                        NoteHeadHandle aconfig = itr.next();
+                    foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
                         String display_string = aconfig.getDisplayString();
                         if ( svalue.Equals( display_string ) ) {
                             return new AttackVariation( display_string );
@@ -143,21 +143,20 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public Vector<Object> getStandardValues()
+        public List<Object> getStandardValues()
         {
             SynthesizerType type = SynthesizerType.VOCALOID2;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
-                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                 if ( kind == RendererKind.VOCALOID1 ){
                     type = SynthesizerType.VOCALOID1;
                 }
             }
-            Vector<Object> list = new Vector<Object>();
-            list.add( new AttackVariation() );
-            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                NoteHeadHandle aconfig = itr.next();
-                list.add( new AttackVariation( aconfig.getDisplayString() ) );
+            List<Object> list = new List<Object>();
+            list.Add( new AttackVariation() );
+            foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
+                list.Add( new AttackVariation( aconfig.getDisplayString() ) );
             }
             return list;//new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );
         }

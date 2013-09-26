@@ -19,6 +19,7 @@ import java.util.*;
 
 #else
 
+using System.Collections.Generic;
 using cadencii.java.util;
 
     namespace cadencii
@@ -31,7 +32,7 @@ using cadencii.java.util;
             /// </summary>
             public class EditHistoryModel
             {
-                private static Vector<ICommand> mCommands = new Vector<ICommand>();
+                private static List<ICommand> mCommands = new List<ICommand>();
                 private static int mCommandIndex = -1;
 
                 /// <summary>
@@ -40,15 +41,15 @@ using cadencii.java.util;
                 /// <param name="command">登録する履歴</param>
                 public void register( ICommand command )
                 {
-                    if( mCommandIndex == mCommands.size() - 1 ) {
+                    if( mCommandIndex == mCommands.Count - 1 ) {
                         // 新しいコマンドバッファを追加する場合
-                        mCommands.add( command );
-                        mCommandIndex = mCommands.size() - 1;
+                        mCommands.Add( command );
+                        mCommandIndex = mCommands.Count - 1;
                     } else {
                         // 既にあるコマンドバッファを上書きする場合
-                        mCommands.set( mCommandIndex + 1, command );
-                        for( int i = mCommands.size() - 1; i >= mCommandIndex + 2; i-- ) {
-                            mCommands.removeElementAt( i );
+                        mCommands[ mCommandIndex + 1] =  command ;
+                        for( int i = mCommands.Count - 1; i >= mCommandIndex + 2; i-- ) {
+                            mCommands.RemoveAt( i );
                         }
                         mCommandIndex++;
                     }
@@ -59,7 +60,7 @@ using cadencii.java.util;
                 /// </summary>
                 public void clear()
                 {
-                    mCommands.clear();
+                    mCommands.Clear();
                     mCommandIndex = -1;
                 }
 
@@ -69,7 +70,7 @@ using cadencii.java.util;
                 /// <returns>UNDO用のヒストリーを取得できる場合trueを，そうでなければfalseを返す</returns>
                 public bool hasUndoHistory()
                 {
-                    if( mCommands.size() > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.size() ) {
+                    if( mCommands.Count > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.Count ) {
                         return true;
                     } else {
                         return false;
@@ -82,7 +83,7 @@ using cadencii.java.util;
                 /// <returns>REDO用のヒストリーを取得できる場合trueを，そうでなければfalseを返す</returns>
                 public bool hasRedoHistory()
                 {
-                    if( mCommands.size() > 0 && 0 <= mCommandIndex + 1 && mCommandIndex + 1 < mCommands.size() ) {
+                    if( mCommands.Count > 0 && 0 <= mCommandIndex + 1 && mCommandIndex + 1 < mCommands.Count ) {
                         return true;
                     } else {
                         return false;
@@ -95,7 +96,7 @@ using cadencii.java.util;
                 /// <returns></returns>
                 public ICommand getUndo()
                 {
-                    return mCommands.get( mCommandIndex );
+                    return mCommands[ mCommandIndex ];
                 }
 
                 /// <summary>
@@ -104,7 +105,7 @@ using cadencii.java.util;
                 /// <returns></returns>
                 public ICommand getRedo()
                 {
-                    return mCommands.get( mCommandIndex + 1 );
+                    return mCommands[ mCommandIndex + 1 ];
                 }
 
                 /// <summary>
@@ -113,7 +114,7 @@ using cadencii.java.util;
                 /// <param name="command"></param>
                 public void registerAfterUndo( ICommand command )
                 {
-                    mCommands.set( mCommandIndex, command );
+                    mCommands[ mCommandIndex] =  command ;
                     mCommandIndex--;
                 }
 
@@ -123,7 +124,7 @@ using cadencii.java.util;
                 /// <param name="command"></param>
                 public void registerAfterRedo( ICommand command )
                 {
-                    mCommands.set( mCommandIndex + 1, command );
+                    mCommands[ mCommandIndex + 1] =  command ;
                     mCommandIndex++;
                 }
             }

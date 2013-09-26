@@ -25,6 +25,7 @@ import cadencii.vsq.*;
 
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.vsq;
 
@@ -57,45 +58,44 @@ namespace cadencii
 #if !JAVA
         public override StandardValuesCollection GetStandardValues( ITypeDescriptorContext context )
         {
-            return new StandardValuesCollection( getStandardValues().toArray( new VibratoVariation[] { } ) );
+            return new StandardValuesCollection( getStandardValues().ToArray() );
         }
 #endif
 
 #if JAVA
         @Override
 #endif
-        public Vector<VibratoVariation> getStandardValues()
+        public List<VibratoVariation> getStandardValues()
         {
             // ビブラート種類の候補値を列挙
-            Vector<VibratoVariation> list = new Vector<VibratoVariation>();
-            list.add( new VibratoVariation( VibratoVariation.empty.description ) );
+            List<VibratoVariation> list = new List<VibratoVariation>();
+            list.Add( new VibratoVariation( VibratoVariation.empty.description ) );
 
             if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                 // ユーザー定義の中から選ぶ場合
-                int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                int size = AppManager.editorConfig.AutoVibratoCustom.Count;
 #if DEBUG
                 sout.println( "VibratoVariationConverter#GetStandardValues; size=" + size );
 #endif
                 for ( int i = 0; i < size; i++ ) {
-                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
 #if DEBUG
                     sout.println( "VibratoVariationConverter#GetStandardValues; handle.getDisplayString()=" + handle.getDisplayString() );
 #endif
-                    list.add( new VibratoVariation( handle.getDisplayString() ) );
+                    list.Add( new VibratoVariation( handle.getDisplayString() ) );
                 }
             } else {
                 // VOCALOID1, VOCALOID2のシステム定義の中から選ぶ場合
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq != null ) {
-                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                     if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
                 }
-                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                    VibratoHandle vconfig = itr.next();
-                    list.add( new VibratoVariation( vconfig.getDisplayString() ) );
+                foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
+                    list.Add( new VibratoVariation( vconfig.getDisplayString() ) );
                 }
             }
             return list;
@@ -156,9 +156,9 @@ namespace cadencii
                 return new VibratoVariation( VibratoVariation.empty.description );
             } else {
                 if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
-                    int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                    int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        String display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
+                        String display_string = AppManager.editorConfig.AutoVibratoCustom[ i ].getDisplayString();
                         if ( value.Equals( display_string ) ) {
                             return new VibratoVariation( display_string );
                         }
@@ -167,12 +167,11 @@ namespace cadencii
                     SynthesizerType type = SynthesizerType.VOCALOID2;
                     VsqFileEx vsq = AppManager.getVsqFile();
                     if ( vsq != null ) {
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                         if ( kind == RendererKind.VOCALOID1 ) {
                             type = SynthesizerType.VOCALOID1;
                         }
-                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoHandle vconfig = itr.next();
+                        foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                             String display_string = vconfig.getDisplayString();
                             if ( value.Equals( display_string ) ) {
                                 return new VibratoVariation( display_string );

@@ -28,6 +28,7 @@ using System;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -69,7 +70,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public Vector<String> RecentFiles = new Vector<String>();
+        public List<String> RecentFiles = new List<String>();
         public int DefaultPMBendDepth = 8;
         public int DefaultPMBendLength = 0;
         public int DefaultPMbPortamentoUse = 3;
@@ -125,7 +126,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( VibratoHandle.class )
 #endif
-        public Vector<VibratoHandle> AutoVibratoCustom = new Vector<VibratoHandle>();
+        public List<VibratoHandle> AutoVibratoCustom = new List<VibratoHandle>();
         /// <summary>
         /// ビブラートの自動追加を行うかどうか
         /// </summary>
@@ -169,7 +170,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public Vector<String> UserDictionaries = new Vector<String>();
+        public List<String> UserDictionaries = new List<String>();
         /// <summary>
         /// 実行環境
         /// </summary>
@@ -301,7 +302,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( SingerConfig.class )
 #endif
-        public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
+        public List<SingerConfig> UtauSingers = new List<SingerConfig>();
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
         /// </summary>
@@ -317,7 +318,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public Vector<String> PathResamplers = new Vector<String>();
+        public List<String> PathResamplers = new List<String>();
         /// <summary>
         /// UTAU互換の合成器を，wine経由で呼ぶかどうか
         /// version 3.3+
@@ -325,7 +326,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( Boolean.class )
 #endif
-        public Vector<Boolean> ResamplersWithWine = new Vector<Boolean>();
+        public List<Boolean> ResamplersWithWine = new List<Boolean>();
         /// <summary>
         /// UTAU用のwave切り貼りツール
         /// </summary>
@@ -355,7 +356,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( ValuePairOfStringArrayOfKeys.class )
 #endif
-        public Vector<ValuePairOfStringArrayOfKeys> ShortcutKeys = new Vector<ValuePairOfStringArrayOfKeys>();
+        public List<ValuePairOfStringArrayOfKeys> ShortcutKeys = new List<ValuePairOfStringArrayOfKeys>();
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
         /// <summary>
         /// 概観ペインが表示されているかどうか
@@ -555,7 +556,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public Vector<String> LastUsedPathIn = new Vector<String>();
+        public List<String> LastUsedPathIn = new List<String>();
         /// <summary>
         /// 最後に出力したファイルパスのリスト
         /// リストに入る文字列は，拡張子+タブ文字+パスの形式にする
@@ -565,7 +566,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public Vector<String> LastUsedPathOut = new Vector<String>();
+        public List<String> LastUsedPathOut = new List<String>();
         /// <summary>
         /// 使用するWINEPREFIX
         /// version 3.3+
@@ -663,7 +664,7 @@ namespace cadencii
         #endregion
 
         #region private static method
-        private static String getLastUsedPathCore( Vector<String> list, String extension )
+        private static String getLastUsedPathCore( List<String> list, String extension )
         {
             if ( extension == null ) return "";
             if ( PortUtil.getStringLength( extension ) <= 0 ) return "";
@@ -673,9 +674,9 @@ namespace cadencii
                 extension = extension.Substring( 1 );
             }
 
-            int c = list.size();
+            int c = list.Count;
             for ( int i = 0; i < c; i++ ) {
-                String s = list.get( i );
+                String s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
                     String[] spl = PortUtil.splitString( s, '\t' );
                     if ( spl.Length >= 2 ) {
@@ -687,7 +688,7 @@ namespace cadencii
             return "";
         }
 
-        private static void setLastUsedPathCore( Vector<String> list, String path, String ext_with_dot )
+        private static void setLastUsedPathCore( List<String> list, String path, String ext_with_dot )
         {
             String extension = ext_with_dot;
             if ( extension == null ) return;
@@ -696,16 +697,16 @@ namespace cadencii
                 extension = extension.Substring( 1 );
             }
 
-            int c = list.size();
+            int c = list.Count;
             String entry = extension + "\t" + path;
             for ( int i = 0; i < c; i++ ) {
-                String s = list.get( i );
+                String s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
-                    list.set( i, entry );
+                    list[ i] =  entry ;
                     return;
                 }
             }
-            list.add( entry );
+            list.Add( entry );
         }
         #endregion
 
@@ -780,7 +781,7 @@ namespace cadencii
         /// <returns></returns>
         public int getResamplerCount()
         {
-            int ret = PathResamplers.size();
+            int ret = PathResamplers.Count;
             if ( !PathResampler.Equals( "" ) ) {
                 ret++;
             }
@@ -792,9 +793,9 @@ namespace cadencii
         /// </summary>
         public void clearResampler()
         {
-            PathResamplers.clear();
+            PathResamplers.Clear();
             PathResampler = "";
-            ResamplersWithWine.clear();
+            ResamplersWithWine.Clear();
         }
 
         /// <summary>
@@ -843,8 +844,8 @@ namespace cadencii
                 return PathResampler;
             } else {
                 index--;
-                if ( 0 <= index && index < PathResamplers.size() ) {
-                    return PathResamplers.get( index );
+                if ( 0 <= index && index < PathResamplers.Count ) {
+                    return PathResamplers[ index ];
                 }
             }
             return "";
@@ -867,8 +868,8 @@ namespace cadencii
                 PathResampler = path;
             } else {
                 index--;
-                if ( 0 <= index && index < PathResamplers.size() ) {
-                    PathResamplers.set( index, path );
+                if ( 0 <= index && index < PathResamplers.Count ) {
+                    PathResamplers[ index] =  path ;
                 }
             }
         }
@@ -879,17 +880,17 @@ namespace cadencii
         /// <param name="index"></param>
         public void removeResamplerAt( int index )
         {
-            int size = PathResamplers.size();
+            int size = PathResamplers.Count;
             if ( index == 0 ) {
                 if ( size > 0 ) {
-                    PathResampler = PathResamplers.get( 0 );
-                    ResamplerWithWine = ResamplersWithWine.get( 0 );
+                    PathResampler = PathResamplers[ 0 ];
+                    ResamplerWithWine = ResamplersWithWine[ 0 ];
                     for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
-                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
+                        PathResamplers[ i] =  PathResamplers[ i + 1 ] ;
+                        ResamplersWithWine[ i] =  ResamplersWithWine[ i + 1 ] ;
                     }
-                    PathResamplers.removeElementAt( size - 1 );
-                    ResamplersWithWine.removeElementAt( size - 1 );
+                    PathResamplers.RemoveAt( size - 1 );
+                    ResamplersWithWine.RemoveAt( size - 1 );
                 } else {
                     PathResampler = "";
                 }
@@ -897,11 +898,11 @@ namespace cadencii
                 index--;
                 if ( 0 <= index && index < size ) {
                     for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
-                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
+                        PathResamplers[ i] =  PathResamplers[ i + 1 ] ;
+                        ResamplersWithWine[ i] =  ResamplersWithWine[ i + 1 ] ;
                     }
-                    PathResamplers.removeElementAt( size - 1 );
-                    ResamplersWithWine.removeElementAt( size - 1 );
+                    PathResamplers.RemoveAt( size - 1 );
+                    ResamplersWithWine.RemoveAt( size - 1 );
                 }
             }
         }
@@ -917,8 +918,8 @@ namespace cadencii
                 PathResampler = path;
                 ResamplerWithWine = with_wine;
             } else {
-                PathResamplers.add( path );
-                ResamplersWithWine.add( with_wine );
+                PathResamplers.Add( path );
+                ResamplersWithWine.Add( with_wine );
             }
         }
 
@@ -985,7 +986,7 @@ namespace cadencii
         {
             if ( UseUserDefinedAutoVibratoType ) {
                 if ( AutoVibratoCustom == null ) {
-                    AutoVibratoCustom = new Vector<VibratoHandle>();
+                    AutoVibratoCustom = new List<VibratoHandle>();
                 }
 
                 // 下4桁からインデックスを取得
@@ -1014,8 +1015,8 @@ namespace cadencii
                 sout.println( "EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index );
 #endif
                 VibratoHandle ret = null;
-                if ( 0 <= index && index < this.AutoVibratoCustom.size() ) {
-                    ret = this.AutoVibratoCustom.get( index );
+                if ( 0 <= index && index < this.AutoVibratoCustom.Count ) {
+                    ret = this.AutoVibratoCustom[ index ];
                     if ( ret != null ) {
                         ret = (VibratoHandle)ret.clone();
                     }
@@ -1045,14 +1046,13 @@ namespace cadencii
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public TreeMap<String, Keys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
+        public TreeMap<String, Keys[]> getShortcutKeysDictionary( List<ValuePairOfStringArrayOfKeys> defs )
         {
             TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
-            for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
-                ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
+            for ( int i = 0; i < ShortcutKeys.Count; i++ ) {
+                ret.put( ShortcutKeys[ i ].Key, ShortcutKeys[ i ].Value );
             }
-            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = defs.iterator(); itr.hasNext(); ) {
-                ValuePairOfStringArrayOfKeys item = itr.next();
+            foreach (var item in defs) {
                 if ( !ret.containsKey( item.Key ) ) {
                     ret.put( item.Key, item.Value );
                 }
@@ -1253,49 +1253,47 @@ namespace cadencii
 
             // RecentFilesはnullかもしれない．
             if ( RecentFiles == null ) {
-                RecentFiles = new Vector<String>();
+                RecentFiles = new List<String>();
             }
 
             // 重複があれば消す
-            Vector<String> dict = new Vector<String>();
-            for ( Iterator<String> itr = RecentFiles.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            List<String> dict = new List<String>();
+            foreach (var s in RecentFiles) {
                 boolean found = false;
-                for ( int i = 0; i < dict.size(); i++ ) {
-                    if ( s.Equals( dict.get( i ) ) ) {
+                for ( int i = 0; i < dict.Count; i++ ) {
+                    if ( s.Equals( dict[ i ] ) ) {
                         found = true;
                     }
                 }
                 if ( !found ) {
-                    dict.add( s );
+                    dict.Add( s );
                 }
             }
-            RecentFiles.clear();
-            for ( Iterator<String> itr = dict.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
-                RecentFiles.add( s );
+            RecentFiles.Clear();
+            foreach (var s in dict) {
+                RecentFiles.Add( s );
             }
 
             // 現在登録されているRecentFilesのサイズが規定より大きければ，下の方から消す
-            if ( RecentFiles.size() > NumRecentFiles ) {
-                for ( int i = RecentFiles.size() - 1; i > NumRecentFiles; i-- ) {
-                    RecentFiles.removeElementAt( i );
+            if ( RecentFiles.Count > NumRecentFiles ) {
+                for ( int i = RecentFiles.Count - 1; i > NumRecentFiles; i-- ) {
+                    RecentFiles.RemoveAt( i );
                 }
             }
 
             // 登録しようとしているファイルは，RecentFilesの中に既に登録されているかs？
             int index = -1;
-            for ( int i = 0; i < RecentFiles.size(); i++ ) {
-                if ( RecentFiles.get( i ).Equals( new_file ) ) {
+            for ( int i = 0; i < RecentFiles.Count; i++ ) {
+                if ( RecentFiles[ i ].Equals( new_file ) ) {
                     index = i;
                     break;
                 }
             }
 
             if ( index >= 0 ) {  // 登録されてる場合
-                RecentFiles.removeElementAt( index );
+                RecentFiles.RemoveAt( index );
             }
-            RecentFiles.insertElementAt( new_file, 0 );
+            RecentFiles.Insert( 0, new_file );
         }
         #endregion
 
@@ -1310,8 +1308,7 @@ namespace cadencii
             for ( int i = 0; i < count; i++ ) {
                 SymbolTable st = SymbolTable.getSymbolTable( i );
                 boolean found = false;
-                for ( Iterator<String> itr = UserDictionaries.iterator(); itr.hasNext(); ) {
-                    String s = itr.next();
+                foreach (var s in UserDictionaries) {
                     String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {
                         found = true;
@@ -1319,7 +1316,7 @@ namespace cadencii
                     }
                 }
                 if ( !found ) {
-                    UserDictionaries.add( st.getName() + "\tT" );
+                    UserDictionaries.Add( st.getName() + "\tT" );
                 }
             }
 
@@ -1333,16 +1330,16 @@ namespace cadencii
 
             // PathResamplersWithWineの個数があってるかどうかチェック
             if ( PathResamplers == null ) {
-                PathResamplers = new Vector<String>();
+                PathResamplers = new List<String>();
             }
             if ( ResamplersWithWine == null ) {
-                ResamplersWithWine = new Vector<Boolean>();
+                ResamplersWithWine = new List<Boolean>();
             }
             if ( PathResamplers.Count != ResamplersWithWine.Count ) {
                 int delta = ResamplersWithWine.Count - PathResamplers.Count;
                 if ( delta > 0 ) {
                     for ( int i = 0; i < delta; i++ ) {
-                        ResamplersWithWine.removeElementAt( ResamplersWithWine.Count - 1 );
+                        ResamplersWithWine.RemoveAt( ResamplersWithWine.Count - 1 );
                     }
                 } else if ( delta < 0 ) {
                     for ( int i = 0; i < -delta; i++ ) {

@@ -21,6 +21,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -53,7 +54,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( VsqMixerEntry.class )
 #endif
-        public Vector<VsqMixerEntry> Slave = new Vector<VsqMixerEntry>();
+        public List<VsqMixerEntry> Slave = new List<VsqMixerEntry>();
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
@@ -69,10 +70,9 @@ namespace cadencii.vsq
         public Object clone()
         {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
-            res.Slave = new Vector<VsqMixerEntry>();
-            for ( Iterator<VsqMixerEntry> itr = Slave.iterator(); itr.hasNext(); ) {
-                VsqMixerEntry item = itr.next();
-                res.Slave.add( (VsqMixerEntry)item.clone() );
+            res.Slave = new List<VsqMixerEntry>();
+            foreach (var item in Slave) {
+                res.Slave.Add( (VsqMixerEntry)item.clone() );
             }
             return res;
         }
@@ -97,7 +97,7 @@ namespace cadencii.vsq
             this.MasterMute = master_mute;
             this.MasterPanpot = master_panpot;
             this.OutputMode = output_mode;
-            Slave = new Vector<VsqMixerEntry>();
+            Slave = new List<VsqMixerEntry>();
         }
 
 #if JAVA
@@ -152,9 +152,9 @@ namespace cadencii.vsq
                 last_line.value = sr.readLine().ToString();
             }
 
-            Slave = new Vector<VsqMixerEntry>();
+            Slave = new List<VsqMixerEntry>();
             for ( int i = 0; i < tracks; i++ ) {
-                Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
+                Slave.Add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             }
             spl = PortUtil.splitString( buffer, new String[] { "\n" }, true );
             String[] spl2;
@@ -165,19 +165,19 @@ namespace cadencii.vsq
                 if ( spl2[0].StartsWith( "Feder" ) ) {
                     ind = spl2[0].Replace( "Feder", "" );
                     index = int.Parse( ind );
-                    Slave.get( index ).Feder = int.Parse( spl2[1] );
+                    Slave[ index ].Feder = int.Parse( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Panpot" ) ) {
                     ind = spl2[0].Replace( "Panpot", "" );
                     index = int.Parse( ind );
-                    Slave.get( index ).Panpot = int.Parse( spl2[1] );
+                    Slave[ index ].Panpot = int.Parse( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Mute" ) ) {
                     ind = spl2[0].Replace( "Mute", "" );
                     index = int.Parse( ind );
-                    Slave.get( index ).Mute = int.Parse( spl2[1] );
+                    Slave[ index ].Mute = int.Parse( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Solo" ) ) {
                     ind = spl2[0].Replace( "Solo", "" );
                     index = int.Parse( ind );
-                    Slave.get( index ).Solo = int.Parse( spl2[1] );
+                    Slave[ index ].Solo = int.Parse( spl2[1] );
                 }
 
             }
@@ -197,10 +197,10 @@ namespace cadencii.vsq
             sw.writeLine( "MasterPanpot=" + MasterPanpot );
             sw.writeLine( "MasterMute=" + MasterMute );
             sw.writeLine( "OutputMode=" + OutputMode );
-            int count = Slave.size();
+            int count = Slave.Count;
             sw.writeLine( "Tracks=" + count );
             for ( int i = 0; i < count; i++ ) {
-                VsqMixerEntry item = Slave.get( i );
+                VsqMixerEntry item = Slave[ i ];
                 sw.writeLine( "Feder" + i + "=" + item.Feder );
                 sw.writeLine( "Panpot" + i + "=" + item.Panpot );
                 sw.writeLine( "Mute" + i + "=" + item.Mute );

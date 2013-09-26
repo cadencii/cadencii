@@ -18,6 +18,7 @@ import java.util.*;
 import cadencii.vsq.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii.java.util;
 
@@ -39,16 +40,16 @@ namespace cadencii {
         public VsqCommand vsqCommand;
         private ICommand mParent;
         public Object[] args;
-        private Vector<ICommand> mChild = new Vector<ICommand>();
+        private List<ICommand> mChild = new List<ICommand>();
 
         public CadenciiCommand( VsqCommand command ) {
             type = CadenciiCommandType.VSQ_COMMAND;
             vsqCommand = command;
-            mChild = new Vector<ICommand>();
+            mChild = new List<ICommand>();
         }
 
         public CadenciiCommand() {
-            mChild = new Vector<ICommand>();
+            mChild = new List<ICommand>();
         }
 
         public ICommand getParent() {
@@ -59,7 +60,7 @@ namespace cadencii {
             mParent = value;
         }
 
-        public Vector<ICommand> getChild() {
+        public List<ICommand> getChild() {
             return mChild;
         }
     }

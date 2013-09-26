@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -35,7 +36,7 @@ namespace cadencii.vsq
     public class NrpnIterator : Iterator<ValuePair<String, Integer>>
     {
 #endif
-        private Vector<ValuePair<String, Integer>> nrpns = new Vector<ValuePair<String, Integer>>();
+        private List<ValuePair<String, Integer>> nrpns = new List<ValuePair<String, Integer>>();
         private int m_pos = -1;
 
         public NrpnIterator()
@@ -58,7 +59,7 @@ namespace cadencii.vsq
             Type t = typeof( NRPN );
             foreach ( FieldInfo fi in t.GetFields() ) {
                 if ( fi.FieldType.Equals( typeof( int ) ) ) {
-                    nrpns.add( new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
+                    nrpns.Add( new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
                 }
             }
 #endif
@@ -66,7 +67,7 @@ namespace cadencii.vsq
 
         public boolean hasNext()
         {
-            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.size() ) {
+            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.Count ) {
                 return true;
             } else {
                 return false;
@@ -76,7 +77,7 @@ namespace cadencii.vsq
         public ValuePair<String, Integer> next()
         {
             m_pos++;
-            return nrpns.get( m_pos );
+            return nrpns[ m_pos ];
         }
 
         public void remove()

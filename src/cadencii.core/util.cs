@@ -312,8 +312,8 @@ namespace cadencii.java.util {
             }
         }
 
-        public Vector<K> keySet() {
-            return new Vector<K>( base.Keys );
+        public List<K> keySet() {
+            return new List<K>( base.Keys );
         }
 
         public V get( Object key ) {

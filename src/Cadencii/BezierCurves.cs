@@ -20,6 +20,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -63,140 +64,140 @@ namespace cadencii {
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Dynamics;
+        public List<BezierChain> Dynamics;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Brethiness;
+        public List<BezierChain> Brethiness;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Brightness;
+        public List<BezierChain> Brightness;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Clearness;
+        public List<BezierChain> Clearness;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Opening;
+        public List<BezierChain> Opening;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> GenderFactor;
+        public List<BezierChain> GenderFactor;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> PortamentoTiming;
+        public List<BezierChain> PortamentoTiming;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> VibratoRate;
+        public List<BezierChain> VibratoRate;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> VibratoDepth;
+        public List<BezierChain> VibratoDepth;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Harmonics;
+        public List<BezierChain> Harmonics;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> FX2Depth;
+        public List<BezierChain> FX2Depth;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso1Freq;
+        public List<BezierChain> Reso1Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso1BW;
+        public List<BezierChain> Reso1BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso1Amp;
+        public List<BezierChain> Reso1Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso2Freq;
+        public List<BezierChain> Reso2Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso2BW;
+        public List<BezierChain> Reso2BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso2Amp;
+        public List<BezierChain> Reso2Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso3Freq;
+        public List<BezierChain> Reso3Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso3BW;
+        public List<BezierChain> Reso3BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso3Amp;
+        public List<BezierChain> Reso3Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso4Freq;
+        public List<BezierChain> Reso4Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso4BW;
+        public List<BezierChain> Reso4BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso4Amp;
+        public List<BezierChain> Reso4Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> PitchBend;
+        public List<BezierChain> PitchBend;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> PitchBendSensitivity;
+        public List<BezierChain> PitchBendSensitivity;
 
         public BezierCurves()
         {
-            Dynamics = new Vector<BezierChain>();
-            Brethiness = new Vector<BezierChain>();
-            Brightness = new Vector<BezierChain>();
-            Clearness = new Vector<BezierChain>();
-            Opening = new Vector<BezierChain>();
-            GenderFactor = new Vector<BezierChain>();
-            PortamentoTiming = new Vector<BezierChain>();
-            VibratoRate = new Vector<BezierChain>();
-            VibratoDepth = new Vector<BezierChain>();
-            Harmonics = new Vector<BezierChain>();
-            FX2Depth = new Vector<BezierChain>();
-            Reso1Freq = new Vector<BezierChain>();
-            Reso1BW = new Vector<BezierChain>();
-            Reso1Amp = new Vector<BezierChain>();
-            Reso2Freq = new Vector<BezierChain>();
-            Reso2BW = new Vector<BezierChain>();
-            Reso2Amp = new Vector<BezierChain>();
-            Reso3Freq = new Vector<BezierChain>();
-            Reso3BW = new Vector<BezierChain>();
-            Reso3Amp = new Vector<BezierChain>();
-            Reso4Freq = new Vector<BezierChain>();
-            Reso4BW = new Vector<BezierChain>();
-            Reso4Amp = new Vector<BezierChain>();
-            PitchBend = new Vector<BezierChain>();
-            PitchBendSensitivity = new Vector<BezierChain>();
+            Dynamics = new List<BezierChain>();
+            Brethiness = new List<BezierChain>();
+            Brightness = new List<BezierChain>();
+            Clearness = new List<BezierChain>();
+            Opening = new List<BezierChain>();
+            GenderFactor = new List<BezierChain>();
+            PortamentoTiming = new List<BezierChain>();
+            VibratoRate = new List<BezierChain>();
+            VibratoDepth = new List<BezierChain>();
+            Harmonics = new List<BezierChain>();
+            FX2Depth = new List<BezierChain>();
+            Reso1Freq = new List<BezierChain>();
+            Reso1BW = new List<BezierChain>();
+            Reso1Amp = new List<BezierChain>();
+            Reso2Freq = new List<BezierChain>();
+            Reso2BW = new List<BezierChain>();
+            Reso2Amp = new List<BezierChain>();
+            Reso3Freq = new List<BezierChain>();
+            Reso3BW = new List<BezierChain>();
+            Reso3Amp = new List<BezierChain>();
+            Reso4Freq = new List<BezierChain>();
+            Reso4BW = new List<BezierChain>();
+            Reso4Amp = new List<BezierChain>();
+            PitchBend = new List<BezierChain>();
+            PitchBendSensitivity = new List<BezierChain>();
         }
 
         public BezierChain getBezierChain( CurveType curve_type, int chain_id )
         {
-            Vector<BezierChain> list = this.get( curve_type );
-            int count = list.size();
+            List<BezierChain> list = this.get( curve_type );
+            int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
-                if ( list.get( i ).id == chain_id ) {
-                    return list.get( i );
+                if ( list[ i ].id == chain_id ) {
+                    return list[ i ];
                 }
             }
             return null;
@@ -204,11 +205,11 @@ namespace cadencii {
 
         public void setBezierChain( CurveType curve_type, int chain_id, BezierChain item )
         {
-            Vector<BezierChain> list = this.get( curve_type );
-            int count = list.size();
+            List<BezierChain> list = this.get( curve_type );
+            int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
-                if ( list.get( i ).id == chain_id ) {
-                    list.set( i, item );
+                if ( list[ i ].id == chain_id ) {
+                    list[ i] =  item ;
                     break;
                 }
             }
@@ -223,32 +224,31 @@ namespace cadencii {
         /// <param name="chain"></param>
         public void mergeBezierChain( CurveType curve, BezierChain chain )
         {
-            if ( chain.points.size() <= 1 ) {
+            if ( chain.points.Count <= 1 ) {
                 return;
             }
             int chain_start = (int)chain.getStart();
             int chain_end = (int)chain.getEnd();
 
             // まず、全削除する必要のあるBezierChainを検索
-            Vector<Integer> delete_list = new Vector<Integer>();
-            Vector<BezierChain> src = this.get( curve );
+            List<Integer> delete_list = new List<Integer>();
+            List<BezierChain> src = this.get( curve );
             //foreach ( int id in this[curve].Keys ) {
-            for ( int j = 0; j < src.size(); j++ ) {
+            for ( int j = 0; j < src.Count; j++ ) {
                 //BezierChain bc = this[curve][id];
-                BezierChain bc = src.get( j );
-                if ( bc.points.size() <= 0 ) {
+                BezierChain bc = src[ j ];
+                if ( bc.points.Count <= 0 ) {
                     continue;
                 }
                 int bc_start = (int)bc.getStart();
                 int bc_end = (int)bc.getEnd();
                 if ( chain_start <= bc_start && bc_end <= chain_end ) {
-                    delete_list.add( bc.id );
+                    delete_list.Add( bc.id );
                 }
             }
 
             // 削除を実行
-            for ( Iterator<Integer> itr = delete_list.iterator(); itr.hasNext(); ) {
-                int id = itr.next();
+            foreach (var id in delete_list) {
                 remove( curve, id );
                 //this[curve].Remove( id );
             }
@@ -257,11 +257,11 @@ namespace cadencii {
             boolean processed = true;
             while ( processed ) {
                 processed = false;
-                Vector<BezierChain> list = this.get( curve );
+                List<BezierChain> list = this.get( curve );
                 //foreach ( int id in this[curve].Keys ) {
-                for ( int j = 0; j < list.size(); j++ ) {
+                for ( int j = 0; j < list.Count; j++ ) {
                     //BezierChain bc = this[curve][id];
-                    BezierChain bc = list.get( j );
+                    BezierChain bc = list[ j ];
                     int id = bc.id;
                     int start = (int)bc.getStart();
                     int end = (int)bc.getEnd();
@@ -280,24 +280,24 @@ namespace cadencii {
                         int last = bc_edit.size() - 1;
 
                         // 接合部分では、制御点無しでステップ変化する
-                        bc_edit.points.get( last ).setControlRightType( BezierControlType.None );
-                        chain.points.get( 0 ).setControlLeftType( BezierControlType.None );
+                        bc_edit.points[ last ].setControlRightType( BezierControlType.None );
+                        chain.points[ 0 ].setControlLeftType( BezierControlType.None );
 
                         int copy_start = 0;
-                        if ( bc_edit.points.get( last ).getBase().getY() == chain.points.get( 0 ).getBase().getY() ) {
+                        if ( bc_edit.points[ last ].getBase().getY() == chain.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( bc_edit.points.get( last ).getControlLeftType() != BezierControlType.None ) {
-                                bc_edit.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            if ( bc_edit.points[ last ].getControlLeftType() != BezierControlType.None ) {
+                                bc_edit.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
-                            bc_edit.points.get( last ).setControlRight( chain.points.get( 0 ).controlLeft );
-                            if ( chain.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                bc_edit.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            bc_edit.points[ last ].setControlRight( chain.points[ 0 ].controlLeft );
+                            if ( chain.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                bc_edit.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
                             copy_start = 1;
                         }
-                        for ( int i = copy_start; i < chain.points.size(); i++ ) {
-                            chain.points.get( i ).setID( bc_edit.getNextId() );
-                            bc_edit.add( chain.points.get( i ) );
+                        for ( int i = copy_start; i < chain.points.Count; i++ ) {
+                            chain.points[ i ].setID( bc_edit.getNextId() );
+                            bc_edit.add( chain.points[ i ] );
                         }
                         //this[curve].Remove( id );
                         remove( curve, id );
@@ -319,24 +319,24 @@ namespace cadencii {
                         int last = chain.size() - 1;
 
                         // 接合部分では、制御点無しでステップ変化する
-                        bc_edit.points.get( 0 ).setControlLeftType( BezierControlType.None );
-                        chain.points.get( last ).setControlRightType( BezierControlType.None );
+                        bc_edit.points[ 0 ].setControlLeftType( BezierControlType.None );
+                        chain.points[ last ].setControlRightType( BezierControlType.None );
 
                         int copy_end = last;
-                        if ( chain.points.get( last ).getBase().getY() == bc_edit.points.get( 0 ).getBase().getY() ) {
+                        if ( chain.points[ last ].getBase().getY() == bc_edit.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( chain.points.get( last ).getControlLeftType() != BezierControlType.None ) {
-                                chain.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            if ( chain.points[ last ].getControlLeftType() != BezierControlType.None ) {
+                                chain.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
-                            chain.points.get( last ).setControlRight( bc_edit.points.get( 0 ).controlLeft );
-                            if ( bc_edit.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                chain.points.get( last ).setControlLeftType( BezierControlType.Master );
+                            chain.points[ last ].setControlRight( bc_edit.points[ 0 ].controlLeft );
+                            if ( bc_edit.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                chain.points[ last ].setControlLeftType( BezierControlType.Master );
                             }
                             copy_end = last - 1;
                         }
                         for ( int i = 0; i <= copy_end; i++ ) {
-                            chain.points.get( i ).setID( bc_edit.getNextId() );
-                            bc_edit.add( chain.points.get( i ) );
+                            chain.points[ i ].setID( bc_edit.getNextId() );
+                            bc_edit.add( chain.points[ i ] );
                         }
                         //this[curve].Remove( id );
                         remove( curve, id );
@@ -365,46 +365,46 @@ namespace cadencii {
                         left.id = bc.id;
 
                         // 接合部ではステップ変化
-                        left.points.get( left.size() - 1 ).setControlRightType( BezierControlType.None );
-                        chain.points.get( 0 ).setControlLeftType( BezierControlType.None );
-                        chain.points.get( chain.size() - 1 ).setControlRightType( BezierControlType.None );
-                        right.points.get( 0 ).setControlLeftType( BezierControlType.None );
+                        left.points[left.size() - 1].setControlRightType( BezierControlType.None );
+                        chain.points[ 0 ].setControlLeftType( BezierControlType.None );
+                        chain.points[chain.size() - 1].setControlRightType( BezierControlType.None );
+                        right.points[ 0 ].setControlLeftType( BezierControlType.None );
 
                         int copy_start = 0;
                         int copy_end = chain.size() - 1;
 
-                        if ( left.points.get( left.size() - 1 ).getBase().getY() == chain.points.get( 0 ).getBase().getY() ) {
+                        if ( left.points[left.size() - 1].getBase().getY() == chain.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( left.points.get( left.size() - 1 ).getControlLeftType() != BezierControlType.None ) {
-                                left.points.get( left.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            if ( left.points[left.size() - 1].getControlLeftType() != BezierControlType.None ) {
+                                left.points[left.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
-                            left.points.get( left.size() - 1 ).setControlRight( chain.points.get( 0 ).controlLeft );
-                            if ( chain.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                left.points.get( left.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            left.points[left.size() - 1].setControlRight( chain.points[ 0 ].controlLeft );
+                            if ( chain.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                left.points[left.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
                             copy_start = 1;
                         }
 
-                        if ( chain.points.get( chain.size() - 1 ).getBase().getY() == right.points.get( 0 ).getBase().getY() ) {
+                        if ( chain.points[chain.size() - 1].getBase().getY() == right.points[ 0 ].getBase().getY() ) {
                             // bcの終点とchainの始点の座標が一致している場合
-                            if ( chain.points.get( chain.size() - 1 ).getControlLeftType() != BezierControlType.None ) {
-                                chain.points.get( chain.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            if ( chain.points[chain.size() - 1].getControlLeftType() != BezierControlType.None ) {
+                                chain.points[chain.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
-                            chain.points.get( chain.size() - 1 ).setControlRight( right.points.get( 0 ).controlLeft );
-                            if ( right.points.get( 0 ).getControlRightType() != BezierControlType.None ) {
-                                chain.points.get( chain.size() - 1 ).setControlLeftType( BezierControlType.Master );
+                            chain.points[chain.size() - 1].setControlRight( right.points[ 0 ].controlLeft );
+                            if ( right.points[ 0 ].getControlRightType() != BezierControlType.None ) {
+                                chain.points[chain.size() - 1].setControlLeftType( BezierControlType.Master );
                             }
                             copy_end = chain.size() - 2;
                         }
 
                         // 追加
                         for ( int i = copy_start; i <= copy_end; i++ ) {
-                            chain.points.get( i ).setID( left.getNextId() );
-                            left.add( chain.points.get( i ) );
+                            chain.points[ i ].setID( left.getNextId() );
+                            left.add( chain.points[ i ] );
                         }
-                        for ( int i = 0; i < right.points.size(); i++ ) {
-                            right.points.get( i ).setID( left.getNextId() );
-                            left.add( right.points.get( i ) );
+                        for ( int i = 0; i < right.points.Count; i++ ) {
+                            right.points[ i ].setID( left.getNextId() );
+                            left.add( right.points[ i ] );
                         }
                         //this[curve].Remove( id );
                         remove( curve, id );
@@ -432,11 +432,10 @@ namespace cadencii {
         public void insertBlank( int clock_start, int clock_amount )
         {
             // 全種類のカーブ
-            Vector<CurveType> target_curve = new Vector<CurveType>();
+            List<CurveType> target_curve = new List<CurveType>();
             foreach ( CurveType ct in CURVES ) {
-                Vector<BezierChain> vbc = get( ct );
-                for ( Iterator<BezierChain> itr = vbc.iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                List<BezierChain> vbc = get( ct );
+                foreach (var bc in vbc) {
                     int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
                         BezierPoint bp = bc.points[i];
@@ -459,7 +458,7 @@ namespace cadencii {
         public void removePart( int clock_start, int clock_end )
         {
             // 全種類のカーブが対象
-            Vector<CurveType> target_curve = new Vector<CurveType>();
+            List<CurveType> target_curve = new List<CurveType>();
             foreach ( CurveType ct in CURVES ) {
                 target_curve.Add( ct );
             }
@@ -469,11 +468,9 @@ namespace cadencii {
 
             // データ点のclockがclock_end以降になってるものについて，シフトを行う
             int delta = clock_end - clock_start;
-            for ( Iterator<CurveType> itr = target_curve.iterator(); itr.hasNext(); ) {
-                CurveType ct = itr.next();
-                Vector<BezierChain> vbc = get( ct );
-                for ( Iterator<BezierChain> itr_bc = vbc.iterator(); itr_bc.hasNext(); ) {
-                    BezierChain bc = itr_bc.next();
+            foreach (var ct in target_curve) {
+                List<BezierChain> vbc = get( ct );
+                foreach (var bc in vbc) {
                     int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
                         BezierPoint bp = bc.points[i];
@@ -497,37 +494,35 @@ namespace cadencii {
         /// <param name="clock_end"></param>
         /// <returns></returns>
         public boolean deleteBeziers(
-            Vector<CurveType> target_curve,
+            List<CurveType> target_curve,
             int clock_start,
             int clock_end
         )
         {
             boolean edited = false;
-            for ( Iterator<CurveType> itr1 = target_curve.iterator(); itr1.hasNext(); ) {
-                CurveType curve = itr1.next();
+            foreach (var curve in target_curve) {
                 if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
                 }
-                Vector<BezierChain> tmp = new Vector<BezierChain>();
-                for ( Iterator<BezierChain> itr = this.get( curve ).iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
-                    int len = bc.points.size();
+                List<BezierChain> tmp = new List<BezierChain>();
+                foreach (var bc in this.get( curve )) {
+                    int len = bc.points.Count;
                     if ( len < 1 ) {
                         continue;
                     }
-                    int chain_start = (int)bc.points.get( 0 ).getBase().getX();
+                    int chain_start = (int)bc.points[ 0 ].getBase().getX();
                     int chain_end;
                     if ( len < 2 ) {
                         chain_end = chain_start;
                     } else {
-                        chain_end = (int)bc.points.get( len - 1 ).getBase().getX();
+                        chain_end = (int)bc.points[ len - 1 ].getBase().getX();
                     }
                     if ( clock_start < chain_start && chain_start < clock_end && clock_end < chain_end ) {
                         // end ~ chain_endを残す
                         try {
                             BezierChain chain = bc.extractPartialBezier( clock_end, chain_end );
                             chain.id = bc.id;
-                            tmp.add( chain );
+                            tmp.Add( chain );
                             edited = true;
                         } catch ( Exception ex ) {
                             Logger.write( typeof( BezierCurves ) + ".deleteBeziers; ex=" + ex + "\n" );
@@ -539,8 +534,8 @@ namespace cadencii {
                             chain1.id = bc.id;
                             BezierChain chain2 = bc.extractPartialBezier( clock_end, chain_end );
                             chain2.id = -1;  // 後で番号をつける
-                            tmp.add( chain1 );
-                            tmp.add( chain2 );
+                            tmp.Add( chain1 );
+                            tmp.Add( chain2 );
                             edited = true;
                         } catch ( Exception ex ) {
                             Logger.write( typeof( BezierCurves ) + ".deleteBeziers; ex=" + ex + "\n" );
@@ -550,7 +545,7 @@ namespace cadencii {
                         try {
                             BezierChain chain = bc.extractPartialBezier( chain_start, clock_start );
                             chain.id = bc.id;
-                            tmp.add( chain );
+                            tmp.Add( chain );
                             edited = true;
                         } catch ( Exception ex ) {
                             Logger.write( typeof( BezierCurves ) + ".deleteBeiers; ex=" + ex + "\n" );
@@ -560,18 +555,16 @@ namespace cadencii {
                         edited = true;
                     } else {
                         // 全体を残す
-                        tmp.add( (BezierChain)bc.clone() );
+                        tmp.Add( (BezierChain)bc.clone() );
                     }
                 }
-                this.get( curve ).clear();
-                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                this.get( curve ).Clear();
+                foreach (var bc in tmp) {
                     if ( bc.id >= 0 ) {
                         addBezierChain( curve, bc, bc.id );
                     }
                 }
-                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
-                    BezierChain bc = itr.next();
+                foreach (var bc in tmp) {
                     if ( bc.id < 0 ) {
                         bc.id = this.getNextId( curve );
                         addBezierChain( curve, bc, bc.id );
@@ -583,10 +576,10 @@ namespace cadencii {
 
         public void remove( CurveType curve_type, int chain_id )
         {
-            Vector<BezierChain> list = this.get( curve_type );
-            for ( int i = 0; i < list.size(); i++ ) {
-                if ( list.get( i ).id == chain_id ) {
-                    list.removeElementAt( i );
+            List<BezierChain> list = this.get( curve_type );
+            for ( int i = 0; i < list.Count; i++ ) {
+                if ( list[ i ].id == chain_id ) {
+                    list.RemoveAt( i );
                     break;
                 }
             }
@@ -601,7 +594,7 @@ namespace cadencii {
         {
             BezierChain add = (BezierChain)chain.clone();
             add.id = chain_id;
-            this.get( curve_type ).add( add );
+            this.get( curve_type ).Add( add );
         }
 
         public Object clone()
@@ -609,11 +602,11 @@ namespace cadencii {
             BezierCurves ret = new BezierCurves();
             for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
                 CurveType ct = Utility.CURVE_USAGE[j];
-                Vector<BezierChain> src = this.get( ct );
-                ret.set( ct, new Vector<BezierChain>() );
-                int count = src.size();
+                List<BezierChain> src = this.get( ct );
+                ret.set( ct, new List<BezierChain>() );
+                int count = src.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    ret.get( ct ).add( (BezierChain)src.get( i ).clone() );
+                    ret.get( ct ).Add( (BezierChain)src[ i ].clone() );
                 }
             }
             return ret;
@@ -628,13 +621,13 @@ namespace cadencii {
 
         public int getNextId( CurveType curve_type )
         {
-            Vector<BezierChain> bc = this.get( curve_type );
-            int ret = bc.size();
+            List<BezierChain> bc = this.get( curve_type );
+            int ret = bc.Count;
             boolean found = true;
             while ( found ) {
                 found = false;
-                for ( int i = 0; i < bc.size(); i++ ) {
-                    if ( bc.get( i ).id == ret ) {
+                for ( int i = 0; i < bc.Count; i++ ) {
+                    if ( bc[ i ].id == ret ) {
                         found = true;
                         ret++;
                         break;
@@ -644,7 +637,7 @@ namespace cadencii {
             return ret;
         }
 
-        public Vector<BezierChain> get( CurveType curve )
+        public List<BezierChain> get( CurveType curve )
         {
             if ( curve.equals( CurveType.BRE ) ) {
                 return Brethiness;
@@ -701,7 +694,7 @@ namespace cadencii {
             }
         }
 
-        public void set( CurveType curve, Vector<BezierChain> value )
+        public void set( CurveType curve, List<BezierChain> value )
         {
             if ( curve.equals( CurveType.BRE ) ) {
                 Brethiness = value;

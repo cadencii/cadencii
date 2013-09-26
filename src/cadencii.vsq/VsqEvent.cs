@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -67,10 +68,10 @@ namespace cadencii.vsq
                 if ( this.ID.LyricHandle != null && item.ID.LyricHandle == null ) return false;
                 if ( this.ID.LyricHandle != null && item.ID.LyricHandle != null ) {
                     if ( !this.ID.LyricHandle.L0.equalsForSynth( item.ID.LyricHandle.L0 ) ) return false;
-                    int count = this.ID.LyricHandle.Trailing.size();
-                    if ( count != item.ID.LyricHandle.Trailing.size() ) return false;
+                    int count = this.ID.LyricHandle.Trailing.Count;
+                    if ( count != item.ID.LyricHandle.Trailing.Count ) return false;
                     for ( int k = 0; k < count; k++ ) {
-                        if ( !this.ID.LyricHandle.Trailing.get( k ).equalsForSynth( item.ID.LyricHandle.Trailing.get( k ) ) ) return false;
+                        if ( !this.ID.LyricHandle.Trailing[ k ].equalsForSynth( item.ID.LyricHandle.Trailing[ k ] ) ) return false;
                     }
                 }
                 if ( this.ID.NoteHeadHandle == null && item.ID.NoteHeadHandle != null ) return false;
@@ -152,7 +153,7 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            Vector<String> def = new Vector<String>( new String[]{ "Length",
+            List<String> def = new List<String>( new String[]{ "Length",
                                                                    "Note#",
                                                                    "Dynamics",
                                                                    "PMBendDepth",
@@ -163,7 +164,7 @@ namespace cadencii.vsq
             write( sw, def );
         }
 
-        public void write( ITextWriter writer, Vector<String> print_targets )
+        public void write( ITextWriter writer, List<String> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -171,7 +172,7 @@ namespace cadencii.vsq
             writeCor( writer, print_targets );
         }
 
-        public void write( BufferedWriter writer, Vector<String> print_targets )
+        public void write( BufferedWriter writer, List<String> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -179,7 +180,7 @@ namespace cadencii.vsq
             writeCor( new WrappedStreamWriter( writer ), print_targets );
         }
 
-        private void writeCor( ITextWriter writer, Vector<String> print_targets )
+        private void writeCor( ITextWriter writer, List<String> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -187,16 +188,16 @@ namespace cadencii.vsq
             writer.writeLine( "[ID#" + PortUtil.formatDecimal( "0000", ID.value ) + "]" );
             writer.writeLine( "Type=" + ID.type );
             if ( ID.type == VsqIDType.Anote ) {
-                if ( print_targets.contains( "Length" ) ) writer.writeLine( "Length=" + ID.getLength() );
-                if ( print_targets.contains( "Note#" ) ) writer.writeLine( "Note#=" + ID.Note );
-                if ( print_targets.contains( "Dynamics" ) ) writer.writeLine( "Dynamics=" + ID.Dynamics );
-                if ( print_targets.contains( "PMBendDepth" ) ) writer.writeLine( "PMBendDepth=" + ID.PMBendDepth );
-                if ( print_targets.contains( "PMBendLength" ) ) writer.writeLine( "PMBendLength=" + ID.PMBendLength );
-                if ( print_targets.contains( "PMbPortamentoUse" ) ) writer.writeLine( "PMbPortamentoUse=" + ID.PMbPortamentoUse );
-                if ( print_targets.contains( "DEMdecGainRate" ) ) writer.writeLine( "DEMdecGainRate=" + ID.DEMdecGainRate );
-                if ( print_targets.contains( "DEMaccent" ) ) writer.writeLine( "DEMaccent=" + ID.DEMaccent );
-                if ( print_targets.contains( "PreUtterance" ) ) writer.writeLine( "PreUtterance=" + UstEvent.getPreUtterance() );
-                if ( print_targets.contains( "VoiceOverlap" ) ) writer.writeLine( "VoiceOverlap=" + UstEvent.getVoiceOverlap() );
+                if ( print_targets.Contains( "Length" ) ) writer.writeLine( "Length=" + ID.getLength() );
+                if ( print_targets.Contains( "Note#" ) ) writer.writeLine( "Note#=" + ID.Note );
+                if ( print_targets.Contains( "Dynamics" ) ) writer.writeLine( "Dynamics=" + ID.Dynamics );
+                if ( print_targets.Contains( "PMBendDepth" ) ) writer.writeLine( "PMBendDepth=" + ID.PMBendDepth );
+                if ( print_targets.Contains( "PMBendLength" ) ) writer.writeLine( "PMBendLength=" + ID.PMBendLength );
+                if ( print_targets.Contains( "PMbPortamentoUse" ) ) writer.writeLine( "PMbPortamentoUse=" + ID.PMbPortamentoUse );
+                if ( print_targets.Contains( "DEMdecGainRate" ) ) writer.writeLine( "DEMdecGainRate=" + ID.DEMdecGainRate );
+                if ( print_targets.Contains( "DEMaccent" ) ) writer.writeLine( "DEMaccent=" + ID.DEMaccent );
+                if ( print_targets.Contains( "PreUtterance" ) ) writer.writeLine( "PreUtterance=" + UstEvent.getPreUtterance() );
+                if ( print_targets.Contains( "VoiceOverlap" ) ) writer.writeLine( "VoiceOverlap=" + UstEvent.getVoiceOverlap() );
                 if ( ID.LyricHandle != null ) {
                     writer.writeLine( "LyricHandle=h#" + PortUtil.formatDecimal( "0000", ID.LyricHandle_index ) );
                 }

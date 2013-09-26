@@ -19,6 +19,7 @@ import java.io.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -53,8 +54,8 @@ namespace cadencii.vsq
         private String m_cache_dir = "";
         private String m_tool1 = "";
         private String m_tool2 = "";
-        private Vector<UstTrack> m_tracks = new Vector<UstTrack>();
-        private Vector<TempoTableEntry> m_tempo_table;
+        private List<UstTrack> m_tracks = new List<UstTrack>();
+        private List<TempoTableEntry> m_tempo_table;
 
         public UstFile( String path )
         {
@@ -231,7 +232,7 @@ namespace cadencii.vsq
                                     String name = spl[0];
                                     String value = spl[1];
                                     if ( ue.Properties == null ) {
-                                        ue.Properties = new Vector<UstEventProperty>();
+                                        ue.Properties = new List<UstEventProperty>();
                                     }
                                     ue.Properties.Add( new UstEventProperty( name, value ) );
                                 }
@@ -249,7 +250,7 @@ namespace cadencii.vsq
                         track.addEvent( ue );
                     }
                 }
-                m_tracks.add( track );
+                m_tracks.Add( track );
                 updateTempoInfo();
             } catch ( Exception ex ) {
 #if DEBUG
@@ -290,16 +291,16 @@ namespace cadencii.vsq
             VsqFile work = (VsqFile)vsq.clone();
             //work.removePart( 0, work.getPreMeasureClocks() );
 
-            VsqTrack vsq_track = work.Track.get( track_index );
+            VsqTrack vsq_track = work.Track[ track_index ];
 
             // デフォルトのテンポ
-            if ( work.TempoTable.size() <= 0 ) {
+            if ( work.TempoTable.Count <= 0 ) {
                 m_tempo = 120.0f;
             } else {
-                m_tempo = (float)(60e6 / (double)work.TempoTable.get( 0 ).Tempo);
+                m_tempo = (float)(60e6 / (double)work.TempoTable[ 0 ].Tempo);
             }
-            m_tempo_table = new Vector<TempoTableEntry>();
-            m_tempo_table.clear();
+            m_tempo_table = new List<TempoTableEntry>();
+            m_tempo_table.Clear();
             // ustには、テンポチェンジを音符の先頭にしか入れられない
             // あとで音符に反映させるためのテンプレートを作っておく
             TempoVector tempo = new TempoVector();
@@ -347,8 +348,8 @@ namespace cadencii.vsq
                 sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
             }
             sout.println( "UstFile#.ctor; vsq.TempoTable=" );
-            for ( int i = 0; i < work.TempoTable.size(); i++ ) {
-                TempoTableEntry item = work.TempoTable.get( i );
+            for ( int i = 0; i < work.TempoTable.Count; i++ ) {
+                TempoTableEntry item = work.TempoTable[ i ];
                 sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
             }
 #endif
@@ -418,8 +419,7 @@ namespace cadencii.vsq
             int clock = 0;
             int search_indx = 0;
             int pit_size = cpit.size();
-            for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent item = itr.next();
+            foreach (var item in track_add.getNoteEventIterator()) {
                 int c = clock;
                 int len = item.getLength();
                 clock += len;
@@ -443,8 +443,7 @@ namespace cadencii.vsq
 
             // ピッチをピッチベンドに変換しながら反映
             clock = 0;
-            for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
-                UstEvent item = itr.next();
+            foreach (var item in track_add.getNoteEventIterator()) {
                 double sec_at_clock = tempo.getSecFromClock( clock );
                 double sec_pre = item.getPreUtterance() / 1000.0;
                 double sec_stp = item.getStartPoint() / 1000.0;
@@ -460,7 +459,7 @@ namespace cadencii.vsq
                     sec_at_clock_begin = tempo.getSecFromClock( clock_begin );
                 }
                 int clock_end = clock + item.getLength();
-                Vector<Float> pitch = new Vector<Float>();
+                List<Float> pitch = new List<Float>();
                 boolean allzero = true;
                 ByRef<Integer> ref_indx = new ByRef<Integer>( 0 );
                 for ( int cl = clock_begin; cl < clock_end; cl += PBTYPE ) {
@@ -469,10 +468,10 @@ namespace cadencii.vsq
                     if ( pit != 0.0 ) {
                         allzero = false;
                     }
-                    pitch.add( pit );
+                    pitch.Add( pit );
                 }
                 if ( !allzero ) {
-                    item.setPitches( PortUtil.convertFloatArray( pitch.toArray( new Float[] { } ) ) );
+                    item.setPitches( PortUtil.convertFloatArray( pitch.ToArray() ) );
                     item.setPBType( PBTYPE );
                 } else {
                     item.setPBType( -1 );
@@ -480,7 +479,7 @@ namespace cadencii.vsq
                 clock += item.getLength();
             }
 
-            m_tracks.add( track_add );
+            m_tracks.Add( track_add );
         }
 
         private UstFile()
@@ -530,29 +529,29 @@ namespace cadencii.vsq
         public double getTotalSec()
         {
             int max = 0;
-            for ( int track = 0; track < m_tracks.size(); track++ ) {
+            for ( int track = 0; track < m_tracks.Count; track++ ) {
                 int count = 0;
-                for ( int i = 0; i < m_tracks.get( track ).getEventCount(); i++ ) {
-                    count += (int)m_tracks.get( track ).getEvent( i ).getLength();
+                for ( int i = 0; i < m_tracks[ track ].getEventCount(); i++ ) {
+                    count += (int)m_tracks[ track ].getEvent( i ).getLength();
                 }
                 max = Math.Max( max, count );
             }
             return getSecFromClock( max );
         }
 
-        public Vector<TempoTableEntry> getTempoList()
+        public List<TempoTableEntry> getTempoList()
         {
             return m_tempo_table;
         }
 
         public UstTrack getTrack( int track )
         {
-            return m_tracks.get( track );
+            return m_tracks[ track ];
         }
 
         public int getTrackCount()
         {
-            return m_tracks.size();
+            return m_tracks.Count;
         }
 
         /// <summary>
@@ -562,26 +561,26 @@ namespace cadencii.vsq
         public void updateTempoInfo()
         {
             if ( m_tempo_table == null ) {
-                m_tempo_table = new Vector<TempoTableEntry>();
+                m_tempo_table = new List<TempoTableEntry>();
             } else {
-                m_tempo_table.clear();
+                m_tempo_table.Clear();
             }
-            if ( m_tracks.size() <= 0 ) {
+            if ( m_tracks.Count <= 0 ) {
                 return;
             }
             int clock = 0;
             double time = 0.0;
             int last_tempo_clock = 0;  //最後にTempo値が代入されていたイベントのクロック
             float last_tempo = m_tempo;   //最後に代入されていたテンポの値
-            UstTrack ust_track = m_tracks.get( 0 );
+            UstTrack ust_track = m_tracks[ 0 ];
             for ( int i = 0; i < ust_track.getEventCount(); i++ ) {
                 UstEvent itemi = ust_track.getEvent( i );
                 if ( ust_track.getEvent( i ).isTempoSpecified() ) {
                     time += (clock - last_tempo_clock) / (8.0 * last_tempo);
-                    if ( m_tempo_table.size() == 0 && clock != 0 ) {
-                        m_tempo_table.add( new TempoTableEntry( 0, (int)(6e7 / m_tempo), 0.0 ) );
+                    if ( m_tempo_table.Count == 0 && clock != 0 ) {
+                        m_tempo_table.Add( new TempoTableEntry( 0, (int)(6e7 / m_tempo), 0.0 ) );
                     }
-                    m_tempo_table.add( new TempoTableEntry( clock, (int)(6e7 / itemi.getTempo()), time ) );
+                    m_tempo_table.Add( new TempoTableEntry( clock, (int)(6e7 / itemi.getTempo()), time ) );
                     last_tempo = itemi.getTempo();
                     last_tempo_clock = clock;
                 }
@@ -596,9 +595,9 @@ namespace cadencii.vsq
         /// <returns></returns>
         public double getSecFromClock( int clock )
         {
-            int c = m_tempo_table.size();
+            int c = m_tempo_table.Count;
             for ( int i = c - 1; i >= 0; i-- ) {
-                TempoTableEntry item = m_tempo_table.get( i );
+                TempoTableEntry item = m_tempo_table[ i ];
                 if ( item.Clock < clock ) {
                     double init = item.Time;
                     int dclock = clock - item.Clock;
@@ -670,7 +669,7 @@ namespace cadencii.vsq
                 if ( options.settingTool2 ) {
                     sw.write( "Tool2=" + m_tool2 ); sw.newLine();
                 }
-                UstTrack target = m_tracks.get( 0 );
+                UstTrack target = m_tracks[ 0 ];
                 int count = target.getEventCount();
                 for ( int i = 0; i < count; i++ ) {
                     target.getEvent( i ).print( sw );
@@ -703,13 +702,13 @@ namespace cadencii.vsq
             ret.m_tool1 = m_tool1;
             ret.m_tool2 = m_tool2;
             int size = m_tracks.Count;
-            ret.m_tracks = new Vector<UstTrack>();
+            ret.m_tracks = new List<UstTrack>();
             for ( int i = 0; i < size; i++ ) {
                 ret.m_tracks.Add( (UstTrack)m_tracks[i].clone() );
             }
-            ret.m_tempo_table = new Vector<TempoTableEntry>();
-            for ( int i = 0; i < m_tempo_table.size(); i++ ) {
-                ret.m_tempo_table.add( (TempoTableEntry)m_tempo_table.get( i ).clone() );
+            ret.m_tempo_table = new List<TempoTableEntry>();
+            for ( int i = 0; i < m_tempo_table.Count; i++ ) {
+                ret.m_tempo_table.Add( (TempoTableEntry)m_tempo_table[ i ].clone() );
             }
             return ret;
         }

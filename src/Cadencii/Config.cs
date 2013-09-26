@@ -53,8 +53,7 @@ namespace cadencii
         public static TreeMap<String, Boolean> getDirectives()
         {
             TreeMap<String, Boolean> ret = new TreeMap<String, Boolean>();
-            for( Iterator<String> itr = mDirectives.keySet().iterator(); itr.hasNext(); ){
-                String key = itr.next();
+            foreach (var key in mDirectives.Keys){
                 ret.put( key, mDirectives.get( key ) );
             }
             return ret;

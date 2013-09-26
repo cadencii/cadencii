@@ -31,6 +31,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -91,9 +92,9 @@ namespace cadencii
     public class FormIconPalette : Form
 #endif
     {
-        private Vector<Button> dynaffButtons = new Vector<Button>();
-        private Vector<Button> crescendButtons = new Vector<Button>();
-        private Vector<Button> decrescendButtons = new Vector<Button>();
+        private List<Button> dynaffButtons = new List<Button>();
+        private List<Button> crescendButtons = new List<Button>();
+        private List<Button> decrescendButtons = new List<Button>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
         private boolean mPreviousAlwaysOnTop;
@@ -163,8 +164,7 @@ namespace cadencii
 
         private void init()
         {
-            for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                IconDynamicsHandle handle = itr.next();
+            foreach (var handle in VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 )) {
                 String icon_id = handle.IconID;
 #if JAVA
                 DraggableBButton btn = new DraggableBButton();
@@ -231,19 +231,19 @@ namespace cadencii
                 int ih = 0;
                 if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                     // dynaff
-                    dynaffButtons.add( btn );
+                    dynaffButtons.Add( btn );
                     ih = 0;
-                    iw = dynaffButtons.size() - 1;
+                    iw = dynaffButtons.Count - 1;
                 } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_CRESCEND ) ) {
                     // crescend
-                    crescendButtons.add( btn );
+                    crescendButtons.Add( btn );
                     ih = 1;
-                    iw = crescendButtons.size() - 1;
+                    iw = crescendButtons.Count - 1;
                 } else if ( icon_id.StartsWith( IconDynamicsHandle.ICONID_HEAD_DECRESCEND ) ) {
                     // decrescend
-                    decrescendButtons.add( btn );
+                    decrescendButtons.Add( btn );
                     ih = 2;
-                    iw = decrescendButtons.size() - 1;
+                    iw = decrescendButtons.Count - 1;
                 } else {
                     continue;
                 }
@@ -271,18 +271,18 @@ namespace cadencii
             // ウィンドウのサイズを固定化する
             int height = 0;
             int width = 0;
-            if ( dynaffButtons.size() > 0 ) {
+            if ( dynaffButtons.Count > 0 ) {
                 height += buttonWidth;
             }
-            width = Math.Max( width, buttonWidth * dynaffButtons.size() );
-            if ( crescendButtons.size() > 0 ) {
+            width = Math.Max( width, buttonWidth * dynaffButtons.Count );
+            if ( crescendButtons.Count > 0 ) {
                 height += buttonWidth;
             }
-            width = Math.Max( width, buttonWidth * crescendButtons.size() );
-            if ( decrescendButtons.size() > 0 ) {
+            width = Math.Max( width, buttonWidth * crescendButtons.Count );
+            if ( decrescendButtons.Count > 0 ) {
                 height += buttonWidth;
             }
-            width = Math.Max( width, buttonWidth * decrescendButtons.size() );
+            width = Math.Max( width, buttonWidth * decrescendButtons.Count );
 #if JAVA
             pack();
             Insets i = getInsets();

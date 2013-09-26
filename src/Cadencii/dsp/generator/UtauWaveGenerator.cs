@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.media;
 using cadencii.vsq;
 using cadencii;
@@ -56,7 +57,7 @@ namespace cadencii
         private static TreeMap<String, ValuePair<String, Double>> mCache = new TreeMap<String, ValuePair<String, Double>>();
         private const int BASE_TEMPO = 120;
 
-        private Vector<RenderQueue> mResamplerQueue = new Vector<RenderQueue>();
+        private List<RenderQueue> mResamplerQueue = new List<RenderQueue>();
         private double[] mLeft;
         private double[] mRight;
 
@@ -87,7 +88,7 @@ namespace cadencii
         private WorkerState mState;
         private boolean mUseWideCharacterWorkaround = false;
         // 作成したジャンクションのリスト
-        private Vector<String> mJunctions = new Vector<String>();
+        private List<String> mJunctions = new List<String>();
 #if DEBUG
         /// <summary>
         /// ログを出さない設定の時true
@@ -179,7 +180,7 @@ namespace cadencii
             setQuiet( true );
 #endif
             mTrack = track;
-            int resampler_index = VsqFileEx.getTrackResamplerUsed( vsq.Track.get( track ) );
+            int resampler_index = VsqFileEx.getTrackResamplerUsed( vsq.Track[ track ] );
             int resampler_count = mConfig.getResamplerCount();
             if ( resampler_count <= resampler_index ) {
                 resampler_index = resampler_count - 1;
@@ -202,7 +203,7 @@ namespace cadencii
                 String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
                 if (!Directory.Exists(junction_path)) {
                     cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
-                    mJunctions.add( junction_path );
+                    mJunctions.Add( junction_path );
                 }
                 mTempDir = junction_path;
             }
@@ -230,7 +231,7 @@ namespace cadencii
 
                 // まず，start_clockに音符があるかどうかを調べる
                 // 音符があれば，trim_endに適切な値を代入
-                VsqTrack vsq_track = mVsq.Track.get( track );
+                VsqTrack vsq_track = mVsq.Track[ track ];
                 int c = vsq_track.getEventCount();
                 int trim_end = start_clock;
                 for ( int i = 0; i < c; i++ ) {
@@ -310,8 +311,7 @@ namespace cadencii
 
         public static void clearCache()
         {
-            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                String key = itr.next();
+            foreach (var key in mCache.Keys) {
                 ValuePair<String, Double> value = mCache.get( key );
                 String file = value.getKey();
                 try {
@@ -350,7 +350,7 @@ namespace cadencii
                 log = new StreamWriter( Path.Combine( m_temp_dir, "UtauWaveGenerator.log" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
 #endif
                 // 原音設定を読み込み
-                VsqTrack target = mVsq.Track.get( mTrack );
+                VsqTrack target = mVsq.Track[ mTrack ];
 
                 String file = Path.Combine( mTempDir, FILEBASE );
                 if (System.IO.File.Exists(file)) {
@@ -374,16 +374,16 @@ namespace cadencii
                 double sec_end = 0;
                 double sec_end_old = 0;
                 int program_change = 0;
-                mResamplerQueue.clear();
+                mResamplerQueue.Clear();
 #if DEBUG
                 double error_sum = 0.0;
 #endif
 
                 // 前後の音符の先行発音やオーバーラップやらを取得したいので、一度リストに格納する
-                Vector<VsqEvent> events = new Vector<VsqEvent>();
+                List<VsqEvent> events = new List<VsqEvent>();
                 for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent itemi = itr.next();
-                    events.add( itemi );
+                    events.Add( itemi );
 #if DEBUG
 #if !JAVA
                     sw2.WriteLine( itemi.Clock + "\t" + itemi.ID.Note * 100 );
@@ -395,9 +395,9 @@ namespace cadencii
 #if MAKEBAT_SP
                 log.WriteLine( "making resampler queue..." );
 #endif
-                int events_count = events.size();
+                int events_count = events.Count;
                 for ( int k = 0; k < events_count; k++ ) {
-                    VsqEvent item = events.get( k );
+                    VsqEvent item = events[ k ];
 #if MAKEBAT_SP
                     log.Write( "    #" + k + "; clock=" + item.Clock );
 #endif
@@ -409,15 +409,15 @@ namespace cadencii
                     }
                     String singer_raw = "";
                     String singer = "";
-                    if ( 0 <= program_change && program_change < mConfig.UtauSingers.size() ) {
-                        singer_raw = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
+                    if ( 0 <= program_change && program_change < mConfig.UtauSingers.Count ) {
+                        singer_raw = mConfig.UtauSingers[ program_change ].VOICEIDSTR;
                         singer = singer_raw;
 #if !JAVA
                         if ( mUseWideCharacterWorkaround ) {
                             String junction = Path.Combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
                             if (!Directory.Exists(junction)) {
                                 cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
-                                mJunctions.add( junction );
+                                mJunctions.Add( junction );
                             }
                             singer = junction;
                         }
@@ -441,7 +441,7 @@ namespace cadencii
                     double sec_end_act = sec_end;
                     VsqEvent item_next = null;
                     if ( k + 1 < events_count ) {
-                        item_next = events.get( k + 1 );
+                        item_next = events[ k + 1 ];
                     }
                     if ( item_next != null ) {
                         double sec_start_act_next =
@@ -466,20 +466,20 @@ namespace cadencii
 #endif
                         RenderQueue rq = new RenderQueue();
                         //rq.WavtoolArgPrefix = "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@" + BASE_TEMPO;
-                        rq.WavtoolArgPrefix.clear();
-                        rq.WavtoolArgPrefix.add( "\"" + file + "\"" );
-                        rq.WavtoolArgPrefix.add( "\"" + Path.Combine( singer, "R.wav" ) + "\"" );
-                        rq.WavtoolArgPrefix.add( "0" );
-                        rq.WavtoolArgPrefix.add( draft_length + "@" + BASE_TEMPO );
+                        rq.WavtoolArgPrefix.Clear();
+                        rq.WavtoolArgPrefix.Add( "\"" + file + "\"" );
+                        rq.WavtoolArgPrefix.Add( "\"" + Path.Combine( singer, "R.wav" ) + "\"" );
+                        rq.WavtoolArgPrefix.Add( "0" );
+                        rq.WavtoolArgPrefix.Add( draft_length + "@" + BASE_TEMPO );
                         //rq.WavtoolArgSuffix = " 0 0";
-                        rq.WavtoolArgSuffix.clear();
-                        rq.WavtoolArgSuffix.add( "0" );
-                        rq.WavtoolArgSuffix.add( "0" );
+                        rq.WavtoolArgSuffix.Clear();
+                        rq.WavtoolArgSuffix.Add( "0" );
+                        rq.WavtoolArgSuffix.Add( "0" );
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
                         rq.secStart = sec_start2;
                         rq.ResamplerFinished = true;
-                        mResamplerQueue.add( rq );
+                        mResamplerQueue.Add( rq );
                         count++;
                     }
                     String lyric = item.ID.LyricHandle.L0.Phrase;
@@ -523,7 +523,7 @@ namespace cadencii
                         item.UstEvent.getModuration() + "" };
 
                     // ピッチを取得
-                    Vector<String> pitch = new Vector<String>();
+                    List<String> pitch = new List<String>();
                     boolean allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
                     int tempo = BASE_TEMPO;
@@ -654,7 +654,7 @@ namespace cadencii
                     rq2.appendArg( "\"" + filename + "\"" );
                     rq2.appendArgRange( resampler_arg_suffix );
                     if ( !allzero ) {
-                        rq2.appendArgRange( pitch.toArray( new String[0] ) );
+                        rq2.appendArgRange( pitch.ToArray() );
                     }
 
                     boolean exist_in_cache = mCache.containsKey( rq2.hashSource );
@@ -663,8 +663,7 @@ namespace cadencii
                             double old = PortUtil.getCurrentTime();
                             String delfile = "";
                             String delkey = "";
-                            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
-                                String key = itr.next();
+                            foreach (var key in mCache.Keys) {
                                 ValuePair<String, Double> value = mCache.get( key );
                                 if ( old < value.getValue() ) {
                                     old = value.getValue();
@@ -693,34 +692,34 @@ namespace cadencii
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif
                     //rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" " + item.UstEvent.getStartPoint() + " " + item.ID.getLength() + "@" + str_t_temp;
-                    rq2.WavtoolArgPrefix.clear();
-                    rq2.WavtoolArgPrefix.add( "\"" + file + "\"" );
-                    rq2.WavtoolArgPrefix.add( "\"" + filename + "\"" );
-                    rq2.WavtoolArgPrefix.add( "" + item.UstEvent.getStartPoint() );
-                    rq2.WavtoolArgPrefix.add( "" + item.ID.getLength() + "@" + str_t_temp );
+                    rq2.WavtoolArgPrefix.Clear();
+                    rq2.WavtoolArgPrefix.Add( "\"" + file + "\"" );
+                    rq2.WavtoolArgPrefix.Add( "\"" + filename + "\"" );
+                    rq2.WavtoolArgPrefix.Add( "" + item.UstEvent.getStartPoint() );
+                    rq2.WavtoolArgPrefix.Add( "" + item.ID.getLength() + "@" + str_t_temp );
                     UstEnvelope env = item.UstEvent.getEnvelope();
                     if ( env == null ) {
                         env = new UstEnvelope();
                     }
                     //rq2.WavtoolArgSuffix = " " + env.p1 + " " + env.p2 + " " + env.p3 + " " + env.v1 + " " + env.v2 + " " + env.v3 + " " + env.v4;
                     //rq2.WavtoolArgSuffix += " " + oa.msOverlap + " " + env.p4 + " " + env.p5 + " " + env.v5;
-                    rq2.WavtoolArgSuffix.clear();
-                    rq2.WavtoolArgSuffix.add( "" + env.p1 );
-                    rq2.WavtoolArgSuffix.add( "" + env.p2 );
-                    rq2.WavtoolArgSuffix.add( "" + env.p3 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v1 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v2 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v3 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v4 );
-                    rq2.WavtoolArgSuffix.add( "" + oa.msOverlap );
-                    rq2.WavtoolArgSuffix.add( "" + env.p4 );
-                    rq2.WavtoolArgSuffix.add( "" + env.p5 );
-                    rq2.WavtoolArgSuffix.add( "" + env.v5 );
+                    rq2.WavtoolArgSuffix.Clear();
+                    rq2.WavtoolArgSuffix.Add( "" + env.p1 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p2 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p3 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v1 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v2 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v3 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v4 );
+                    rq2.WavtoolArgSuffix.Add( "" + oa.msOverlap );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p4 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.p5 );
+                    rq2.WavtoolArgSuffix.Add( "" + env.v5 );
                     rq2.Oto = oa;
                     rq2.FileName = filename;
                     rq2.secStart = sec_start_act;
                     rq2.ResamplerFinished = exist_in_cache;
-                    mResamplerQueue.add( rq2 );
+                    mResamplerQueue.Add( rq2 );
 #if MAKEBAT_SP
                     log.WriteLine();
 #endif
@@ -729,19 +728,19 @@ namespace cadencii
                 log.WriteLine( "...done" );
 #endif
 
-                int num_queues = mResamplerQueue.size();
+                int num_queues = mResamplerQueue.Count;
                 int processed_sample = 0; //WaveIncomingで受け渡した波形の合計サンプル数
                 int channel = 0; // .whdに記録されたチャンネル数
                 int byte_per_sample = 0;
                 // 引き続き、wavtoolを呼ぶ作業に移行
                 boolean first = true;
                 //int trim_remain = (int)( trimMillisec / 1000.0 * VSTiProxy.SAMPLE_RATE); //先頭から省かなければならないサンプル数の残り
-                VsqBPList dyn_curve = mVsq.Track.get( mTrack ).getCurve( "dyn" );
+                VsqBPList dyn_curve = mVsq.Track[ mTrack ].getCurve( "dyn" );
 #if MAKEBAT_SP
                 bat = new StreamWriter( Path.Combine( m_temp_dir, "utau.bat" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
 #endif
                 for ( int i = 0; i < num_queues; i++ ) {
-                    RenderQueue rq = mResamplerQueue.get( i );
+                    RenderQueue rq = mResamplerQueue[ i ];
                     if ( !rq.ResamplerFinished ) {
 #if MAKEBAT_SP
                         bat.WriteLine( "\"" + mResampler + "\" " + rq.getResamplerArgString() );
@@ -817,10 +816,10 @@ namespace cadencii
 
                     // wavtoolを起動
                     double sec_fin; // 今回のwavtool起動によってレンダリングが完了したサンプル長さ
-                    RenderQueue p = mResamplerQueue.get( i );
+                    RenderQueue p = mResamplerQueue[ i ];
                     OtoArgs oa_next;
                     if ( i + 1 < num_queues ) {
-                        oa_next = mResamplerQueue.get( i + 1 ).Oto;
+                        oa_next = mResamplerQueue[ i + 1 ].Oto;
                     } else {
                         oa_next = new OtoArgs();
                     }
@@ -837,7 +836,7 @@ namespace cadencii
 #endif
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     //String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
-                    Vector<String> arg_wavtool = new Vector<String>();
+                    List<String> arg_wavtool = new List<String>();
                     int size = p.WavtoolArgPrefix.Count;
                     for ( int j = 0; j < size; j++ ) {
                         String s = p.WavtoolArgPrefix[j];
@@ -1219,7 +1218,7 @@ namespace cadencii
             }
         }
 
-        private void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
+        private void processWavtool( List<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
         {
 #if JAVA
             Vector<String> args = new Vector<String>();

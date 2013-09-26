@@ -61,7 +61,7 @@ using cadencii.java.util;
                 /// <summary>
                 /// 辞書のリスト，辞書の優先順位の順番で格納
                 /// </summary>
-                private static Vector<SymbolTable> mTable = new Vector<SymbolTable>();
+                private static List<SymbolTable> mTable = new List<SymbolTable>();
                 /// <summary>
                 /// VOCALOID2のシステム辞書を読み込んだかどうか
                 /// </summary>
@@ -76,9 +76,9 @@ using cadencii.java.util;
                 public static int getMaxDivisions()
                 {
                     int max = 1;
-                    int size = mTable.size();
+                    int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        SymbolTable table = mTable.get( i );
+                        SymbolTable table = mTable[ i ];
                         max = Math.Max( max, table.mMaxDivisions );
                     }
                     return max;
@@ -94,8 +94,8 @@ using cadencii.java.util;
                     if ( !mInitialized ) {
                         loadSystemDictionaries();
                     }
-                    if ( 0 <= index && index < mTable.size() ) {
-                        return mTable.get( index );
+                    if ( 0 <= index && index < mTable.Count ) {
+                        return mTable[ index ];
                     } else {
                         return null;
                     }
@@ -110,7 +110,7 @@ using cadencii.java.util;
                 {
                     SymbolTable table = new SymbolTable( dictionary_file, false, true, "UTF-8" );
                     table.mName = name;
-                    mTable.add( table );
+                    mTable.Add( table );
                 }
 
                 /// <summary>
@@ -132,7 +132,7 @@ using cadencii.java.util;
                         for ( int i = 0; i < files.Length; i++ ) {
                             files[i] = PortUtil.getFileName( files[i] );
                             String dict = Path.Combine( path, files[i] );
-                            mTable.add( new SymbolTable( dict, true, false, "Shift_JIS" ) );
+                            mTable.Add( new SymbolTable( dict, true, false, "Shift_JIS" ) );
                         }
                     }
                     mInitialized = true;
@@ -150,7 +150,7 @@ using cadencii.java.util;
                         for ( int i = 0; i < files2.Length; i++ ) {
                             files2[i] = PortUtil.getFileName( files2[i] );
                             String dict = Path.Combine( directory, files2[i] );
-                            mTable.add( new SymbolTable( dict, true, false, "UTF-8" ) );
+                            mTable.Add( new SymbolTable( dict, true, false, "UTF-8" ) );
                         }
                     }
                 }
@@ -162,9 +162,9 @@ using cadencii.java.util;
                 /// <returns></returns>
                 public static SymbolTableEntry attatch( String phrase )
                 {
-                    int size = mTable.size();
+                    int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        SymbolTable table = mTable.get( i );
+                        SymbolTable table = mTable[ i ];
                         if ( table.isEnabled() ) {
                             SymbolTableEntry ret = table.attatchImp( phrase );
                             if ( ret != null ) {
@@ -210,33 +210,33 @@ using cadencii.java.util;
                     if ( !mInitialized ) {
                         loadSystemDictionaries();
                     }
-                    return mTable.size();
+                    return mTable.Count;
                 }
 
                 /// <summary>
                 /// 辞書の優先順位と有効・無効を一括設定します
                 /// </summary>
                 /// <param name="list">辞書の名前・有効かどうかを表したValuePairを、辞書の優先順位の順番に格納したリスト</param>
-                public static void changeOrder( Vector<ValuePair<String, Boolean>> list )
+                public static void changeOrder( List<ValuePair<String, Boolean>> list )
                 {
                     // 現在の辞書をバッファに退避
-                    Vector<SymbolTable> buff = new Vector<SymbolTable>();
-                    int size = mTable.size();
+                    List<SymbolTable> buff = new List<SymbolTable>();
+                    int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        buff.add( mTable.get( i ) );
+                        buff.Add( mTable[ i ] );
                     }
 
                     // 現在の辞書をいったんクリア
-                    mTable.clear();
+                    mTable.Clear();
 
-                    int count = list.size();
+                    int count = list.Count;
                     for ( int i = 0; i < count; i++ ) {
-                        ValuePair<String, Boolean> itemi = list.get( i );
+                        ValuePair<String, Boolean> itemi = list[ i ];
                         for ( int j = 0; j < size; j++ ) {
-                            SymbolTable table = buff.get( j );
+                            SymbolTable table = buff[ j ];
                             if ( table.getName().Equals( itemi.getKey() ) ) {
                                 table.setEnabled( itemi.getValue() );
-                                mTable.add( table );
+                                mTable.Add( table );
                                 break;
                             }
                         }
@@ -263,8 +263,7 @@ using cadencii.java.util;
                 {
                     SymbolTable ret = new SymbolTable();
                     ret.mDict = new TreeMap<String, SymbolTableEntry>();
-                    for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
-                        String key = itr.next();
+                    foreach (var key in mDict.Keys) {
                         ret.mDict.put( key, (SymbolTableEntry)mDict.get( key ).clone() );
                     }
                     ret.mName = mName;

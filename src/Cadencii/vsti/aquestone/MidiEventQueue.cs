@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+using System.Collections.Generic;
 using cadencii;
 using cadencii.vsq;
 using cadencii.java.util;
@@ -22,17 +23,17 @@ namespace cadencii
     /// </summary>
     public class MidiEventQueue
     {
-        public Vector<MidiEvent> noteoff;
-        public Vector<MidiEvent> noteon;
-        public Vector<MidiEvent> pit;
-        public Vector<ParameterEvent> param;
+        public List<MidiEvent> noteoff;
+        public List<MidiEvent> noteon;
+        public List<MidiEvent> pit;
+        public List<ParameterEvent> param;
 
         public MidiEventQueue()
         {
-            noteoff = new Vector<MidiEvent>();
-            noteon = new Vector<MidiEvent>();
-            pit = new Vector<MidiEvent>();
-            param = new Vector<ParameterEvent>();
+            noteoff = new List<MidiEvent>();
+            noteon = new List<MidiEvent>();
+            pit = new List<MidiEvent>();
+            param = new List<ParameterEvent>();
         }
     }
 }

@@ -19,6 +19,7 @@ import java.io.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -114,8 +115,7 @@ namespace cadencii.vsq
             }
             if ( Events != null ) {
                 res.Events = new VsqEventList();
-                for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                    VsqEvent item = itr.next();
+                foreach (var item in Events.iterator()) {
                     res.Events.add( (VsqEvent)item.clone(), item.InternalID );
                 }
             }
@@ -386,8 +386,7 @@ namespace cadencii.vsq
         public String getSinger()
         {
             if( Events != null ){
-                for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                    VsqEvent item = itr.next();
+                foreach (var item in Events.iterator()) {
                     if ( item.ID.type == VsqIDType.Singer ) {
                         return item.ID.IconHandle.IDS;
                     }
@@ -399,8 +398,7 @@ namespace cadencii.vsq
         public void setSinger( String value )
         {
             if( Events == null ) return;
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in Events.iterator()) {
                 if ( item.ID.type == VsqIDType.Singer ) {
                     ((IconHandle)item.ID.IconHandle).IDS = value;
                     break;
@@ -431,16 +429,15 @@ namespace cadencii.vsq
         /// このインスタンスから、Handleのリストを作成すると同時に、Eventsに登録されているVsqEventのvalue値および各ハンドルのvalue値を更新します
         /// </summary>
         /// <returns></returns>
-        private Vector<VsqHandle> buildHandleList()
+        private List<VsqHandle> buildHandleList()
         {
-            Vector<VsqHandle> handle = new Vector<VsqHandle>();
+            List<VsqHandle> handle = new List<VsqHandle>();
             int current_id = -1;
             int current_handle = -1;
             boolean add_quotation_mark = true;
             boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
             boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in Events.iterator()) {
                 current_id++;
                 item.ID.value = current_id;
                 // IconHandle
@@ -450,7 +447,7 @@ namespace cadencii.vsq
                         current_handle++;
                         VsqHandle handle_item = VsqHandle.castFromIconHandle( ish );
                         handle_item.Index = current_handle;
-                        handle.add( handle_item );
+                        handle.Add( handle_item );
                         item.ID.IconHandle_index = current_handle;
                         if ( is_vocalo1 ) {
                             VsqVoiceLanguage lang = VocaloSysUtil.getLanguageFromName( ish.IDS );
@@ -467,7 +464,7 @@ namespace cadencii.vsq
                     VsqHandle handle_item = VsqHandle.castFromLyricHandle( item.ID.LyricHandle );
                     handle_item.Index = current_handle;
                     handle_item.addQuotationMark = add_quotation_mark;
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.LyricHandle_index = current_handle;
                 }
                 // VibratoHandle
@@ -475,7 +472,7 @@ namespace cadencii.vsq
                     current_handle++;
                     VsqHandle handle_item = item.ID.VibratoHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.VibratoHandle_index = current_handle;
                 }
                 // NoteHeadHandle
@@ -483,7 +480,7 @@ namespace cadencii.vsq
                     current_handle++;
                     VsqHandle handle_item = item.ID.NoteHeadHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.NoteHeadHandle_index = current_handle;
                 }
                 // IconDynamicsHandle
@@ -492,7 +489,7 @@ namespace cadencii.vsq
                     VsqHandle handle_item = item.ID.IconDynamicsHandle.castToVsqHandle();
                     handle_item.Index = current_handle;
                     handle_item.setLength( item.ID.getLength() );
-                    handle.add( handle_item );
+                    handle.Add( handle_item );
                     item.ID.IconHandle_index = current_handle;
                 }
             }
@@ -518,13 +515,12 @@ namespace cadencii.vsq
             if ( mixer != null ) {
                 mixer.write( sw );
             }
-            Vector<VsqHandle> handle = writeEventList( sw, eos );
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            List<VsqHandle> handle = writeEventList( sw, eos );
+            foreach (var item in Events.iterator()) {
                 item.write( sw );
             }
-            for ( int i = 0; i < handle.size(); i++ ) {
-                handle.get( i ).write( sw );
+            for ( int i = 0; i < handle.Count; i++ ) {
+                handle[ i ].write( sw );
             }
             String version = Common.Version;
             if ( PIT.size() > 0 ) {
@@ -606,16 +602,16 @@ namespace cadencii.vsq
             }
         }
 
-        private Vector<VsqHandle> writeEventListCor( ITextWriter writer, int eos )
+        private List<VsqHandle> writeEventListCor( ITextWriter writer, int eos )
 #if JAVA
             throws IOException
 #endif
         {
-            Vector<VsqHandle> handles = buildHandleList();
+            List<VsqHandle> handles = buildHandleList();
             writer.writeLine( "[EventList]" );
-            Vector<VsqEvent> temp = new Vector<VsqEvent>();
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                temp.add( itr.next() );
+            List<VsqEvent> temp = new List<VsqEvent>();
+            foreach (var @event in Events.iterator()) {
+                temp.Add( @event );
             }
             temp.Sort();
             int i = 0;
@@ -636,7 +632,7 @@ namespace cadencii.vsq
             return handles;
         }
 
-        public Vector<VsqHandle> writeEventList( ITextWriter sw, int eos )
+        public List<VsqHandle> writeEventList( ITextWriter sw, int eos )
 #if JAVA
             throws IOException
 #endif
@@ -644,7 +640,7 @@ namespace cadencii.vsq
             return writeEventListCor( sw, eos );
         }
 
-        public Vector<VsqHandle> writeEventList( BufferedWriter stream_writer, int eos )
+        public List<VsqHandle> writeEventList( BufferedWriter stream_writer, int eos )
 #if JAVA
             throws IOException
 #endif
@@ -742,7 +738,7 @@ namespace cadencii.vsq
 
         public VsqMetaText( TextStream sr )
         {
-            Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
+            List<ValuePair<Integer, Integer>> t_event_list = new List<ValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
             TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );

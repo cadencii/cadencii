@@ -172,7 +172,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( track ) );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[ track ] );
                 if ( kind == RendererKind.VOCALOID1 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
@@ -359,7 +359,7 @@ namespace cadencii
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq != null ) {
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    VsqTrack vsq_track = vsq.Track[ selected ];
                     VsqEvent singer = vsq_track.getSingerEventAt( editing.Clock );
                     SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
                     if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
@@ -1399,7 +1399,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                 if ( kind == RendererKind.VOCALOID1 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
@@ -1414,8 +1414,7 @@ namespace cadencii
                         last_depth = editing.ID.NoteHeadHandle.getDepth();
                         last_duration = editing.ID.NoteHeadHandle.getDuration();
                     }
-                    for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                        NoteHeadHandle aconfig = itr.next();
+                    foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
                         if ( description.Equals( aconfig.getDisplayString() ) ) {
                             editing.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
                             editing.ID.NoteHeadHandle.setDepth( last_depth );
@@ -1554,9 +1553,9 @@ namespace cadencii
                 if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
                     String description = value.description;
                     if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
-                        int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                        int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                         for ( int i = 0; i < size; i++ ) {
-                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                             String display_string = handle.getDisplayString();
                             if ( description == display_string ) {
                                 editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
@@ -1567,12 +1566,11 @@ namespace cadencii
                         VsqFileEx vsq = AppManager.getVsqFile();
                         if ( vsq != null ) {
                             SynthesizerType type = SynthesizerType.VOCALOID2;
-                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                             if ( kind == RendererKind.VOCALOID1 ) {
                                 type = SynthesizerType.VOCALOID1;
                             }
-                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                VibratoHandle vconfig = itr.next();
+                            foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                                 if ( description.Equals( vconfig.getDisplayString() ) ) {
                                     editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
                                     break;
@@ -1639,7 +1637,7 @@ namespace cadencii
                     if ( vsq != null ) {
                         String iconid = AppManager.editorConfig.AutoVibratoType2;
                         SynthesizerType type = SynthesizerType.VOCALOID2;
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                         if ( kind == RendererKind.VOCALOID1 ) {
                             type = SynthesizerType.VOCALOID1;
                         }

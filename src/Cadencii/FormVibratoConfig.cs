@@ -178,16 +178,15 @@ namespace cadencii
             // 選択元を元に，選択肢を追加する
             if ( radioUserDefined.Checked ) {
                 // ユーザー定義のを使う場合
-                int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                 for ( int i = 0; i < size; i++ ) {
-                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                     comboVibratoType.Items.Add( handle );
                 }
             } else {
                 // VOCALOID1/VOCALOID2のシステム定義のを使う場合
                 SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
-                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                    VibratoHandle vconfig = itr.next();
+                foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                     comboVibratoType.Items.Add( vconfig );
                 }
             }
@@ -261,8 +260,7 @@ namespace cadencii
                         }
                     } else {
                         SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
-                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoHandle vconfig = itr.next();
+                        foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
                             if ( s == vconfig.IconID ) {
                                 src = vconfig;
                                 break;

@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.util;
 using cadencii.vsq;
@@ -43,7 +44,7 @@ namespace cadencii
 #endif
     {
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
-        private Vector<SelectedEventEntry> m_items;
+        private List<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
 
@@ -57,7 +58,7 @@ namespace cadencii
 #endif
             registerEventHandlers();
             setResources();
-            m_items = new Vector<SelectedEventEntry>();
+            m_items = new List<SelectedEventEntry>();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -92,8 +93,7 @@ namespace cadencii
         {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
-                for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePairOfStringBoolean v = itr.next();
+                foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     String key = v.getKey();
                     if ( key == null ) {
                         key = "";
@@ -132,8 +132,7 @@ namespace cadencii
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 boolean found = false;
-                for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePairOfStringBoolean v = itr.next();
+                foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     String key = v.getKey();
                     if ( key == null ) {
                         continue;
@@ -144,7 +143,7 @@ namespace cadencii
                     }
                 }
                 if ( !found ) {
-                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.add( new ValuePairOfStringBoolean( s, item.Expanded ) );
+                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.Add( new ValuePairOfStringBoolean( s, item.Expanded ) );
                 }
             }
             foreach ( GridItem child in item.GridItems ) {
@@ -156,15 +155,14 @@ namespace cadencii
         public void updateValue( int track )
         {
             m_track = track;
-            m_items.clear();
+            m_items.Clear();
 
             // 現在のGridItemの展開状態を取得
             pushGridItemExpandStatus();
 
             Object[] objs = new Object[AppManager.itemSelection.getEventCount()];
             int i = -1;
-            for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
+            foreach (var item in AppManager.itemSelection.getEventIterator()) {
                 i++;
                 objs[i] = item;
             }

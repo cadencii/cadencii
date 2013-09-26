@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 
@@ -33,7 +34,7 @@ namespace cadencii {
         private const int BUFLEN = 1024;
 
         private WaveReceiver mReceiver = null;
-        private Vector<WaveSender> mSenders = new Vector<WaveSender>();
+        private List<WaveSender> mSenders = new List<WaveSender>();
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private double[] mBuffer2L = new double[BUFLEN];
@@ -130,8 +131,8 @@ namespace cadencii {
             if ( s == null ) {
                 return;
             }
-            if ( !mSenders.contains( s ) ) {
-                mSenders.add( s );
+            if ( !mSenders.Contains( s ) ) {
+                mSenders.Add( s );
 #if DEBUG
                 sout.println( "Mixer#addSender; sender added" );
 #endif

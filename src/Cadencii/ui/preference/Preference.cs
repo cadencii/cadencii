@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -36,9 +37,9 @@ namespace cadencii
 
         Font m_base_font;
         Font m_screen_font;
-        Vector<String> m_program_change = null;
+        List<String> m_program_change = null;
         private PlatformEnum m_platform = PlatformEnum.Windows;
-        private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
+        private List<SingerConfig> m_utau_singers = new List<SingerConfig>();
 
         private OpenFileDialog openUtauCore;
         private FontDialog fontDialog;
@@ -67,8 +68,7 @@ namespace cadencii
             txtAutoVibratoThresholdLength.Text = "480";
 
             comboAutoVibratoType1.Items.Clear();
-            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                VibratoHandle vconfig = itr.next();
+            foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID1 )) {
                 comboAutoVibratoType1.Items.Add( vconfig );
             }
             if ( comboAutoVibratoType1.Items.Count > 0 ) {
@@ -76,8 +76,7 @@ namespace cadencii
             }
 
             comboAutoVibratoType2.Items.Clear();
-            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 ); itr.hasNext(); ) {
-                VibratoHandle vconfig = itr.next();
+            foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( SynthesizerType.VOCALOID2 )) {
                 comboAutoVibratoType2.Items.Add( vconfig );
             }
             if ( comboAutoVibratoType2.Items.Count > 0 ) {
@@ -87,8 +86,7 @@ namespace cadencii
             updateCustomVibrato();
 
             comboResolControlCurve.Items.Clear();
-            for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
-                ClockResolution cr = itr.next();
+            foreach (var cr in ClockResolutionUtility.iterator()) {
                 comboResolControlCurve.Items.Add( ClockResolutionUtility.toString( cr ) );
             }
             comboResolControlCurve.SelectedIndex = 0;
@@ -108,10 +106,10 @@ namespace cadencii
             comboLanguage.SelectedIndex = index;
 
             SingerConfig[] dict = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-            m_program_change = new Vector<String>();
+            m_program_change = new List<String>();
             comboDefualtSinger.Items.Clear();
             foreach ( SingerConfig kvp in dict ) {
-                m_program_change.add( kvp.VOICENAME );
+                m_program_change.Add( kvp.VOICENAME );
                 comboDefualtSinger.Items.Add( kvp.VOICENAME );
             }
             comboDefualtSinger.Enabled = (comboDefualtSinger.Items.Count > 0);
@@ -896,8 +894,7 @@ namespace cadencii
         {
             int count = -1;
             int index = comboResolControlCurve.SelectedIndex;
-            for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
-                ClockResolution vt = itr.next();
+            foreach (var vt in ClockResolutionUtility.iterator()) {
                 count++;
                 if ( count == index ) {
                     return vt;
@@ -914,8 +911,7 @@ namespace cadencii
         public void setControlCurveResolution( ClockResolution value )
         {
             int count = -1;
-            for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
-                ClockResolution vt = itr.next();
+            foreach (var vt in ClockResolutionUtility.iterator()) {
                 count++;
                 if ( vt.Equals( value ) ) {
                     comboResolControlCurve.SelectedIndex = count;
@@ -1118,7 +1114,7 @@ namespace cadencii
         public String getDefaultSingerName()
         {
             if ( comboDefualtSinger.SelectedIndex >= 0 ) {
-                return m_program_change.get( comboDefualtSinger.SelectedIndex );
+                return m_program_change[ comboDefualtSinger.SelectedIndex ];
             } else {
                 return "Miku";
             }
@@ -1127,8 +1123,8 @@ namespace cadencii
         public void setDefaultSingerName( String value )
         {
             int index = -1;
-            for ( int i = 0; i < m_program_change.size(); i++ ) {
-                if ( m_program_change.get( i ).Equals( value ) ) {
+            for ( int i = 0; i < m_program_change.Count; i++ ) {
+                if ( m_program_change[ i ].Equals( value ) ) {
                     index = i;
                     break;
                 }
@@ -1138,15 +1134,15 @@ namespace cadencii
             }
         }
 
-        public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
+        public void copyResamplersConfig( List<String> ret, List<Boolean> with_wine )
         {
             for ( int i = 0; i < listResampler.Items.Count; i++ ) {
-                ret.add( (String)listResampler.Items[i].SubItems[0].Text );
-                with_wine.add( listResampler.Items[i].Checked );
+                ret.Add( (String)listResampler.Items[i].SubItems[0].Text );
+                with_wine.Add( listResampler.Items[i].Checked );
             }
         }
 
-        public void setResamplersConfig( Vector<String> path, Vector<Boolean> with_wine )
+        public void setResamplersConfig( List<String> path, List<Boolean> with_wine )
         {
             int size = listResampler.Items.Count;
             for ( int i = 0; i < size; i++ ) {
@@ -1195,16 +1191,16 @@ namespace cadencii
 
         public void setPathAquesTone2( string value ) { txtAquesTone2.Text = value; }
 
-        public Vector<SingerConfig> getUtausingers()
+        public List<SingerConfig> getUtausingers()
         {
             return m_utau_singers;
         }
 
-        public void setUtausingers( Vector<SingerConfig> value )
+        public void setUtausingers( List<SingerConfig> value )
         {
-            m_utau_singers.clear();
-            for ( int i = 0; i < value.size(); i++ ) {
-                m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
+            m_utau_singers.Clear();
+            for ( int i = 0; i < value.Count; i++ ) {
+                m_utau_singers.Add( (SingerConfig)value[ i ].clone() );
             }
             UpdateUtausingerList();
         }
@@ -1390,7 +1386,7 @@ namespace cadencii
                 }
                 SingerConfig sc = new SingerConfig();
                 Utility.readUtauSingerConfig( dir, sc );
-                m_utau_singers.add( sc );
+                m_utau_singers.Add( sc );
                 UpdateUtausingerList();
             }
         }
@@ -1404,16 +1400,16 @@ namespace cadencii
                 btnDown.Enabled = false;
             } else {
                 btnRemove.Enabled = true;
-                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.size();
-                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.size();
+                btnUp.Enabled = 0 <= index - 1 && index - 1 < m_utau_singers.Count;
+                btnDown.Enabled = 0 <= index + 1 && index + 1 < m_utau_singers.Count;
             }
         }
 
         public void btnRemove_Click( Object sender, EventArgs e )
         {
             int index = getUtausingersSelectedIndex();
-            if ( 0 <= index && index < m_utau_singers.size() ) {
-                m_utau_singers.removeElementAt( index );
+            if ( 0 <= index && index < m_utau_singers.Count ) {
+                m_utau_singers.RemoveAt( index );
             }
             UpdateUtausingerList();
         }
@@ -1424,10 +1420,10 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
 #endif
-            if ( 0 <= index && index + 1 < m_utau_singers.size() ) {
-                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
-                m_utau_singers.set( index + 1, buf );
+            if ( 0 <= index && index + 1 < m_utau_singers.Count ) {
+                SingerConfig buf = (SingerConfig)m_utau_singers[ index ].clone();
+                m_utau_singers[index] = (SingerConfig)m_utau_singers[ index + 1 ].clone();
+                m_utau_singers[ index + 1] =  buf ;
                 UpdateUtausingerList();
                 if (!listSingers.Items[index + 1].Selected) {
                     listSingers.SelectedIndices.Clear();
@@ -1442,10 +1438,10 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
 #endif
-            if ( 0 <= index - 1 && index < m_utau_singers.size() ) {
-                SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
-                m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
-                m_utau_singers.set( index - 1, buf );
+            if ( 0 <= index - 1 && index < m_utau_singers.Count ) {
+                SingerConfig buf = (SingerConfig)m_utau_singers[ index ].clone();
+                m_utau_singers[index] = (SingerConfig)m_utau_singers[ index - 1 ].clone();
+                m_utau_singers[ index - 1] =  buf ;
                 UpdateUtausingerList();
                 if (!listSingers.Items[index - 1].Selected) {
                     listSingers.SelectedIndices.Clear();
@@ -1572,10 +1568,10 @@ namespace cadencii
         /// </summary>
         private void updateCustomVibrato()
         {
-            int size = AppManager.editorConfig.AutoVibratoCustom.size();
+            int size = AppManager.editorConfig.AutoVibratoCustom.Count;
             comboAutoVibratoTypeCustom.Items.Clear();
             for ( int i = 0; i < size; i++ ) {
-                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
                 comboAutoVibratoTypeCustom.Items.Add( handle );
             }
         }
@@ -1591,7 +1587,7 @@ namespace cadencii
             comboMidiInPortNumber.Items.Clear();
             comboMtcMidiInPortNumber.Items.Clear();
 #if ENABLE_MIDI
-            Vector<MidiDevice.Info> midiins = new Vector<MidiDevice.Info>();
+            List<MidiDevice.Info> midiins = new List<MidiDevice.Info>();
             foreach ( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ) {
 #if DEBUG
                 if ( info != null ) {
@@ -1611,7 +1607,7 @@ namespace cadencii
                 // MIDI-OUTの最大接続数．-1は制限なしを表す
                 int max = device.getMaxTransmitters();
                 if ( max > 0 || max == -1 ) {
-                    midiins.add( info );
+                    midiins.Add( info );
                 }
             }
 
@@ -1675,13 +1671,13 @@ namespace cadencii
         private void UpdateUtausingerList()
         {
             listSingers.Items.Clear();
-            for ( int i = 0; i < m_utau_singers.size(); i++ ) {
-                m_utau_singers.get( i ).Program = i;
+            for ( int i = 0; i < m_utau_singers.Count; i++ ) {
+                m_utau_singers[ i ].Program = i;
                 listSingers.AddRow(
                     new String[] { 
-                        m_utau_singers.get( i ).Program + "",
-                        m_utau_singers.get( i ).VOICENAME, 
-                        m_utau_singers.get( i ).VOICEIDSTR } );
+                        m_utau_singers[ i ].Program + "",
+                        m_utau_singers[ i ].VOICENAME, 
+                        m_utau_singers[ i ].VOICEIDSTR } );
             }
         }
 
