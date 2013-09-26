@@ -91,7 +91,6 @@
     <Compile Include="serr.cs" />
     <Compile Include="sound.midi.cs" />
     <Compile Include="sout.cs" />
-    <Compile Include="util.cs" />
     <Compile Include="ValuePair.cs" />
     <Compile Include="winmm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
