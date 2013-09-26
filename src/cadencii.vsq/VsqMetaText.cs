@@ -739,8 +739,8 @@ namespace cadencii.vsq
         public VsqMetaText( TextStream sr )
         {
             List<ValuePair<Integer, Integer>> t_event_list = new List<ValuePair<Integer, Integer>>();
-            TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
-            TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
+            SortedDictionary<Integer, VsqID> __id = new SortedDictionary<Integer, VsqID>();
+            SortedDictionary<Integer, VsqHandle> __handle = new SortedDictionary<Integer, VsqHandle>();
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );
             PBS = new VsqBPList( "pbs", 2, 0, 24 );
             DYN = new VsqBPList( "dyn", 64, 0, 127 );
@@ -855,9 +855,9 @@ namespace cadencii.vsq
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
                     int index = int.Parse( spl[1] );
                     if ( last_line.value.StartsWith( "[ID#" ) ) {
-                        __id.put( index, new VsqID( sr, index, last_line ) );
+                        __id[index] = new VsqID( sr, index, last_line );
                     } else if ( last_line.value.StartsWith( "[h#" ) ) {
-                        __handle.put( index, new VsqHandle( sr, index, last_line ) );
+                        __handle[index] = new VsqHandle( sr, index, last_line );
                     }
                 }
                 #endregion
@@ -868,24 +868,24 @@ namespace cadencii.vsq
             }
 
             // まずhandleをidに埋め込み
-            int c = __id.size();
+            int c = __id.Count;
             for ( int i = 0; i < c; i++ ) {
-                VsqID id = __id.get( i );
-                if ( __handle.containsKey( id.IconHandle_index ) ) {
+                VsqID id = __id[ i ];
+                if ( __handle.ContainsKey( id.IconHandle_index ) ) {
                     if ( id.type == VsqIDType.Singer ) {
-                        id.IconHandle = __handle.get( id.IconHandle_index ).castToIconHandle();
+                        id.IconHandle = __handle[ id.IconHandle_index ].castToIconHandle();
                     } else if ( id.type == VsqIDType.Aicon ) {
-                        id.IconDynamicsHandle = __handle.get( id.IconHandle_index ).castToIconDynamicsHandle();
+                        id.IconDynamicsHandle = __handle[ id.IconHandle_index ].castToIconDynamicsHandle();
                     }
                 }
-                if ( __handle.containsKey( id.LyricHandle_index ) ) {
-                    id.LyricHandle = __handle.get( id.LyricHandle_index ).castToLyricHandle();
+                if ( __handle.ContainsKey( id.LyricHandle_index ) ) {
+                    id.LyricHandle = __handle[ id.LyricHandle_index ].castToLyricHandle();
                 }
-                if ( __handle.containsKey( id.VibratoHandle_index ) ) {
-                    id.VibratoHandle = __handle.get( id.VibratoHandle_index ).castToVibratoHandle();
+                if ( __handle.ContainsKey( id.VibratoHandle_index ) ) {
+                    id.VibratoHandle = __handle[ id.VibratoHandle_index ].castToVibratoHandle();
                 }
-                if ( __handle.containsKey( id.NoteHeadHandle_index ) ) {
-                    id.NoteHeadHandle = __handle.get( id.NoteHeadHandle_index ).castToNoteHeadHandle();
+                if ( __handle.ContainsKey( id.NoteHeadHandle_index ) ) {
+                    id.NoteHeadHandle = __handle[ id.NoteHeadHandle_index ].castToNoteHeadHandle();
                 }
             }
 
@@ -896,9 +896,9 @@ namespace cadencii.vsq
                 ValuePair<Integer, Integer> item = t_event_list[i];
                 int clock = item.getKey();
                 int id_number = item.getValue();
-                if ( __id.containsKey( id_number ) ) {
+                if ( __id.ContainsKey( id_number ) ) {
                     count++;
-                    Events.add( new VsqEvent( clock, (VsqID)__id.get( id_number ).clone() ), count );
+                    Events.add( new VsqEvent( clock, (VsqID)__id[ id_number ].clone() ), count );
                 }
             }
             Events.sort();

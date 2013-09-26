@@ -1046,15 +1046,15 @@ namespace cadencii
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public TreeMap<String, Keys[]> getShortcutKeysDictionary( List<ValuePairOfStringArrayOfKeys> defs )
+        public SortedDictionary<String, Keys[]> getShortcutKeysDictionary( List<ValuePairOfStringArrayOfKeys> defs )
         {
-            TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
+            SortedDictionary<String, Keys[]> ret = new SortedDictionary<String, Keys[]>();
             for ( int i = 0; i < ShortcutKeys.Count; i++ ) {
-                ret.put( ShortcutKeys[ i ].Key, ShortcutKeys[ i ].Value );
+                ret[ ShortcutKeys[ i ].Key] =  ShortcutKeys[ i ].Value ;
             }
             foreach (var item in defs) {
-                if ( !ret.containsKey( item.Key ) ) {
-                    ret.put( item.Key, item.Value );
+                if ( !ret.ContainsKey( item.Key ) ) {
+                    ret[ item.Key] =  item.Value ;
                 }
             }
             return ret;

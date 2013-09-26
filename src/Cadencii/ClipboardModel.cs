@@ -147,8 +147,8 @@ using System.Collections.Generic;
                     List<VsqEvent> events,
                     List<TempoTableEntry> tempo,
                     List<TimeSigTableEntry> timesig,
-                    TreeMap<CurveType, VsqBPList> curve,
-                    TreeMap<CurveType, List<BezierChain>> bezier,
+                    SortedDictionary<CurveType, VsqBPList> curve,
+                    SortedDictionary<CurveType, List<BezierChain>> bezier,
                     int copy_started_clock )
                 {
                     ClipboardEntry ce = new ClipboardEntry();
@@ -237,7 +237,7 @@ using System.Collections.Generic;
                     }
                     if ( ce.beziers == null )
                     {
-                        ce.beziers = new TreeMap<CurveType, List<BezierChain>>();
+                        ce.beziers = new SortedDictionary<CurveType, List<BezierChain>>();
                     }
                     if ( ce.events == null )
                     {
@@ -245,7 +245,7 @@ using System.Collections.Generic;
                     }
                     if ( ce.points == null )
                     {
-                        ce.points = new TreeMap<CurveType, VsqBPList>();
+                        ce.points = new SortedDictionary<CurveType, VsqBPList>();
                     }
                     if ( ce.tempo == null )
                     {
@@ -293,7 +293,7 @@ using System.Collections.Generic;
                 /// </summary>
                 /// <param name="item">セットするコントロールカーブ</param>
                 /// <param name="copy_started_clock"></param>
-                public void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock )
+                public void setCopiedCurve( SortedDictionary<CurveType, VsqBPList> item, int copy_started_clock )
                 {
                     setClipboard( null, null, null, item, null, copy_started_clock );
                 }
@@ -303,7 +303,7 @@ using System.Collections.Generic;
                 /// </summary>
                 /// <param name="item">セットするベジエ曲線</param>
                 /// <param name="copy_started_clock"></param>
-                public void setCopiedBezier( TreeMap<CurveType, List<BezierChain>> item, int copy_started_clock )
+                public void setCopiedBezier( SortedDictionary<CurveType, List<BezierChain>> item, int copy_started_clock )
                 {
                     setClipboard( null, null, null, null, item, copy_started_clock );
                 }

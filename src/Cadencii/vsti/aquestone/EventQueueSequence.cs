@@ -25,11 +25,11 @@ namespace cadencii
     /// </summary>
     public class EventQueueSequence
     {
-        private TreeMap<Integer, MidiEventQueue> sequence;
+        private SortedDictionary<Integer, MidiEventQueue> sequence;
 
         public EventQueueSequence()
         {
-            sequence = new TreeMap<Integer, MidiEventQueue>();
+            sequence = new SortedDictionary<Integer, MidiEventQueue>();
         }
 
         /// <summary>
@@ -40,10 +40,10 @@ namespace cadencii
         /// <returns>指定した時刻での MidiEventQueue</returns>
         public MidiEventQueue get( int clock )
         {
-            if ( !sequence.containsKey( clock ) ) {
-                sequence.put( clock, new MidiEventQueue() );
+            if ( !sequence.ContainsKey( clock ) ) {
+                sequence[clock] = new MidiEventQueue();
             }
-            return sequence.get( clock );
+            return sequence[ clock ];
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace cadencii
             return sequence.Keys;
         }
 
-        public TreeMap<Integer, MidiEventQueue> getSequence() { return sequence; }
+        public SortedDictionary<Integer, MidiEventQueue> getSequence() { return sequence; }
     }
 
 }

@@ -26,7 +26,7 @@ namespace cadencii {
     /// スクリプトを管理するクラス
     /// </summary>
     public static class ScriptServer {
-        private static TreeMap<String, ScriptInvoker> scripts = new TreeMap<String, ScriptInvoker>();
+        private static SortedDictionary<String, ScriptInvoker> scripts = new SortedDictionary<String, ScriptInvoker>();
 
         /// <summary>
         /// 指定したIDのスクリプトを再読込みするか、または新規の場合読み込んで追加します。
@@ -43,7 +43,7 @@ namespace cadencii {
             }
 
             ScriptInvoker si = (new PluginLoader()).loadScript( file );
-            scripts.put( id, si );
+            scripts[ id] =  si ;
         }
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace cadencii {
                 added.Add( id );
 
                 boolean loadthis = true;
-                if ( scripts.containsKey( id ) ) {
-                    double otime = scripts.get( id ).fileTimestamp;
+                if ( scripts.ContainsKey( id ) ) {
+                    double otime = scripts[ id ].fileTimestamp;
                     if ( time <= otime ) {
                         // 前回コンパイルした時点でのスクリプトファイルよりも更新日が同じか古い。
                         loadthis = false;
@@ -78,7 +78,7 @@ namespace cadencii {
                 }
 
                 ScriptInvoker si = (new PluginLoader()).loadScript( file );
-                scripts.put( id, si );
+                scripts[ id] =  si ;
             }
 
             // 削除されたスクリプトがあれば登録を解除する
@@ -87,7 +87,7 @@ namespace cadencii {
                 changed = false;
                 foreach (var id in scripts.Keys) {
                     if ( !added.Contains( id ) ) {
-                        scripts.remove( id );
+                        scripts.Remove( id );
                         changed = true;
                         break;
                     }
@@ -101,8 +101,8 @@ namespace cadencii {
         /// <param name="evsd"></param>
         public static boolean invokeScript( String id, VsqFileEx vsq ) {
             ScriptInvoker script_invoker = null;
-            if ( scripts.containsKey( id ) ) {
-                script_invoker = scripts.get( id );
+            if ( scripts.ContainsKey( id ) ) {
+                script_invoker = scripts[ id ];
             } else {
                 return false;
             }
@@ -200,8 +200,8 @@ namespace cadencii {
         /// <param name="id"></param>
         /// <returns></returns>
         public static String getDisplayName( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                ScriptInvoker invoker = scripts.get( id );
+            if ( scripts.ContainsKey( id ) ) {
+                ScriptInvoker invoker = scripts[ id ];
                 if ( invoker.getDisplayNameDelegate != null ) {
                     String ret = "";
                     try {
@@ -222,8 +222,8 @@ namespace cadencii {
         /// <param name="id"></param>
         /// <returns></returns>
         public static double getTimestamp( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                return scripts.get( id ).fileTimestamp;
+            if ( scripts.ContainsKey( id ) ) {
+                return scripts[ id ].fileTimestamp;
             } else {
                 return 0;
             }
@@ -235,8 +235,8 @@ namespace cadencii {
         /// <param name="id"></param>
         /// <returns></returns>
         public static boolean isAvailable( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                return scripts.get( id ).scriptDelegate != null;
+            if ( scripts.ContainsKey( id ) ) {
+                return scripts[ id ].scriptDelegate != null;
             } else {
                 return false;
             }
@@ -248,8 +248,8 @@ namespace cadencii {
         /// <param name="id"></param>
         /// <returns></returns>
         public static String getCompileMessage( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                return scripts.get( id ).ErrorMessage;
+            if ( scripts.ContainsKey( id ) ) {
+                return scripts[ id ].ErrorMessage;
             } else {
                 return "";
             }

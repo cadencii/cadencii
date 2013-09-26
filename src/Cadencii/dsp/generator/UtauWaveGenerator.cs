@@ -54,7 +54,7 @@ namespace cadencii
         private const int MAX_CACHE = 512;
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
-        private static TreeMap<String, ValuePair<String, Double>> mCache = new TreeMap<String, ValuePair<String, Double>>();
+        private static SortedDictionary<String, ValuePair<String, Double>> mCache = new SortedDictionary<String, ValuePair<String, Double>>();
         private const int BASE_TEMPO = 120;
 
         private List<RenderQueue> mResamplerQueue = new List<RenderQueue>();
@@ -312,7 +312,7 @@ namespace cadencii
         public static void clearCache()
         {
             foreach (var key in mCache.Keys) {
-                ValuePair<String, Double> value = mCache.get( key );
+                ValuePair<String, Double> value = mCache[ key ];
                 String file = value.getKey();
                 try {
                     PortUtil.deleteFile( file );
@@ -321,7 +321,7 @@ namespace cadencii
                     Logger.write( "UtauWaveGenerator::clearCache; ex=" + ex + "\n" );
                 }
             }
-            mCache.clear();
+            mCache.Clear();
         }
 
         public void begin( long total_samples, WorkerState state )
@@ -487,8 +487,8 @@ namespace cadencii
                     int millisec = (int)((sec_end_act - sec_start_act) * 1000) + 50;
 
                     OtoArgs oa = new OtoArgs();
-                    if ( AppManager.mUtauVoiceDB.containsKey( singer_raw ) ) {
-                        UtauVoiceDB db = AppManager.mUtauVoiceDB.get( singer_raw );
+                    if ( AppManager.mUtauVoiceDB.ContainsKey( singer_raw ) ) {
+                        UtauVoiceDB db = AppManager.mUtauVoiceDB[ singer_raw ];
                         oa = db.attachFileNameFromLyric( lyric );
                     }
 #if MAKEBAT_SP
@@ -647,7 +647,7 @@ namespace cadencii
 //                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
 //#else
                     String filename =
-                        Path.Combine( mTempDir, PortUtil.getMD5FromString( mCache.size() + rq2.hashSource ) + ".wav" );
+                        Path.Combine( mTempDir, PortUtil.getMD5FromString( mCache.Count + rq2.hashSource ) + ".wav" );
 //#endif
 
                     rq2.appendArgRange( resampler_arg_prefix );
@@ -657,14 +657,14 @@ namespace cadencii
                         rq2.appendArgRange( pitch.ToArray() );
                     }
 
-                    boolean exist_in_cache = mCache.containsKey( rq2.hashSource );
+                    boolean exist_in_cache = mCache.ContainsKey( rq2.hashSource );
                     if ( !exist_in_cache ) {
-                        if ( mCache.size() + 1 >= MAX_CACHE ) {
+                        if ( mCache.Count + 1 >= MAX_CACHE ) {
                             double old = PortUtil.getCurrentTime();
                             String delfile = "";
                             String delkey = "";
                             foreach (var key in mCache.Keys) {
-                                ValuePair<String, Double> value = mCache.get( key );
+                                ValuePair<String, Double> value = mCache[ key ];
                                 if ( old < value.getValue() ) {
                                     old = value.getValue();
                                     delfile = value.getKey();
@@ -677,12 +677,12 @@ namespace cadencii
                                 serr.println( "UtauWaveGenerator#begin; ex=" + ex );
                                 Logger.write( "UtauWaveGenerator#begin(long): ex=" + ex + "\n" );
                             }
-                            mCache.remove( delkey );
+                            mCache.Remove( delkey );
                         }
                         //mCache.put( search_key, new ValuePair<String, Double>( filename, PortUtil.getCurrentTime() ) );
                         //->ここ，実際の合成が終わったタイミングで追加するようにする
                     } else {
-                        filename = mCache.get( rq2.hashSource ).getKey();
+                        filename = mCache[ rq2.hashSource ].getKey();
                     }
 
                     String str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
@@ -797,7 +797,7 @@ namespace cadencii
                             process.WaitForExit();
 
                             // 合成が済んだのでキャッシュに登録する
-                            mCache.put( rq.hashSource, new ValuePair<String, Double>( rq.FileName, PortUtil.getCurrentTime() ) );
+                            mCache[rq.hashSource] = new ValuePair<String, Double>( rq.FileName, PortUtil.getCurrentTime() );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
 #if DEBUG

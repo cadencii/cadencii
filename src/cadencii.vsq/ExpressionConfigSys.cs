@@ -1008,7 +1008,7 @@ namespace cadencii.vsq
             String aiconDB_def = Path.Combine( base_path, "AiconDB.def" );
             if (System.IO.File.Exists(aiconDB_def)) {
                 String folder_name = "";
-                TreeMap<String, List<String>> list = new TreeMap<String, List<String>>();
+                SortedDictionary<String, List<String>> list = new SortedDictionary<String, List<String>>();
                 BufferedReader sr = null;
                 try {
                     sr = new BufferedReader( new InputStreamReader( new FileInputStream( aiconDB_def ), "Shift_JIS" ) );
@@ -1035,14 +1035,14 @@ namespace cadencii.vsq
                                     }
                                 } else {
                                     List<String> add = null;
-                                    if ( list.containsKey( current ) ) {
-                                        add = list.get( current );
-                                        list.remove( current );
+                                    if ( list.ContainsKey( current ) ) {
+                                        add = list[ current ];
+                                        list.Remove( current );
                                     } else {
                                         add = new List<String>();
                                     }
                                     add.Add( line );
-                                    list.put( current, add );
+                                    list[ current] =  add ;
                                 }
                             }
                         }
@@ -1066,7 +1066,7 @@ namespace cadencii.vsq
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
                             String section_path = Path.Combine( aiconDB_path, section_name );
                             if (Directory.Exists(section_path)) {
-                                foreach (var line in list.get( key )) {
+                                foreach (var line in list[ key ]) {
                                     String[] spl = PortUtil.splitString( line, '=' );
                                     if ( spl.Length != 2 ) {
                                         continue;

@@ -52,12 +52,12 @@ using System.Collections.Generic;
                 /// <summary>
                 /// 選択されている拍子変更イベントのリスト
                 /// </summary>
-                private TreeMap<Integer, SelectedTimesigEntry> mTimesig = new TreeMap<Integer, SelectedTimesigEntry>();
+                private SortedDictionary<Integer, SelectedTimesigEntry> mTimesig = new SortedDictionary<Integer, SelectedTimesigEntry>();
                 private int mSelectedTimesig = -1;
                 /// <summary>
                 /// 選択されているテンポ変更イベントのリスト
                 /// </summary>
-                private TreeMap<Integer, SelectedTempoEntry> mTempo = new TreeMap<Integer, SelectedTempoEntry>();
+                private SortedDictionary<Integer, SelectedTempoEntry> mTempo = new SortedDictionary<Integer, SelectedTempoEntry>();
                 private int mLastTempo = -1;
                 /// <summary>
                 /// 選択されているイベントのリスト
@@ -147,9 +147,9 @@ using System.Collections.Generic;
                 /// <returns>最後に選択状態となった拍子変更設定を返します。選択状態となっている拍子変更設定が無ければnullを返します。</returns>
                 public SelectedTimesigEntry getLastTimesig()
                 {
-                    if ( mTimesig.containsKey( mSelectedTimesig ) )
+                    if ( mTimesig.ContainsKey( mSelectedTimesig ) )
                     {
-                        return mTimesig.get( mSelectedTimesig );
+                        return mTimesig[ mSelectedTimesig ];
                     }
                     else
                     {
@@ -167,13 +167,13 @@ using System.Collections.Generic;
                     clearEvent(); //ここ注意！
                     clearTempo();
                     mSelectedTimesig = barcount;
-                    if ( !mTimesig.containsKey( barcount ) )
+                    if ( !mTimesig.ContainsKey( barcount ) )
                     {
                         foreach (var tte in AppManager.getVsqFile().TimesigTable)
                         {
                             if ( tte.BarCount == barcount )
                             {
-                                mTimesig.put( barcount, new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() ) );
+                                mTimesig[barcount] = new SelectedTimesigEntry( tte, (TimeSigTableEntry)tte.clone() );
                                 break;
                             }
                         }
@@ -183,14 +183,14 @@ using System.Collections.Generic;
 
                 public void clearTimesig()
                 {
-                    mTimesig.clear();
+                    mTimesig.Clear();
                     mSelectedTimesig = -1;
                     checkSelectedItemExistence();
                 }
 
                 public int getTimesigCount()
                 {
-                    return mTimesig.size();
+                    return mTimesig.Count;
                 }
 
                 public IEnumerable<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
@@ -198,21 +198,21 @@ using System.Collections.Generic;
                     List<ValuePair<Integer, SelectedTimesigEntry>> list = new List<ValuePair<Integer, SelectedTimesigEntry>>();
                     foreach (var clock in mTimesig.Keys)
                     {
-                        list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
+                        list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig[ clock ] ) );
                     }
                     return list;
                 }
 
                 public bool isTimesigContains( int barcount )
                 {
-                    return mTimesig.containsKey( barcount );
+                    return mTimesig.ContainsKey( barcount );
                 }
 
                 public SelectedTimesigEntry getTimesig( int barcount )
                 {
-                    if ( mTimesig.containsKey( barcount ) )
+                    if ( mTimesig.ContainsKey( barcount ) )
                     {
-                        return mTimesig.get( barcount );
+                        return mTimesig[ barcount ];
                     }
                     else
                     {
@@ -222,9 +222,9 @@ using System.Collections.Generic;
 
                 public void removeTimesig( int barcount )
                 {
-                    if ( mTimesig.containsKey( barcount ) )
+                    if ( mTimesig.ContainsKey( barcount ) )
                     {
-                        mTimesig.remove( barcount );
+                        mTimesig.Remove( barcount );
                         checkSelectedItemExistence();
                     }
                 }
@@ -233,9 +233,9 @@ using System.Collections.Generic;
                 #region Tempo
                 public SelectedTempoEntry getLastTempo()
                 {
-                    if ( mTempo.containsKey( mLastTempo ) )
+                    if ( mTempo.ContainsKey( mLastTempo ) )
                     {
-                        return mTempo.get( mLastTempo );
+                        return mTempo[ mLastTempo ];
                     }
                     else
                     {
@@ -253,13 +253,13 @@ using System.Collections.Generic;
                     clearEvent(); //ここ注意！
                     clearTimesig();
                     mLastTempo = clock;
-                    if ( !mTempo.containsKey( clock ) )
+                    if ( !mTempo.ContainsKey( clock ) )
                     {
                         foreach (var tte in AppManager.getVsqFile().TempoTable)
                         {
                             if ( tte.Clock == clock )
                             {
-                                mTempo.put( clock, new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() ) );
+                                mTempo[clock] = new SelectedTempoEntry( tte, (TempoTableEntry)tte.clone() );
                                 break;
                             }
                         }
@@ -269,14 +269,14 @@ using System.Collections.Generic;
 
                 public void clearTempo()
                 {
-                    mTempo.clear();
+                    mTempo.Clear();
                     mLastTempo = -1;
                     checkSelectedItemExistence();
                 }
 
                 public int getTempoCount()
                 {
-                    return mTempo.size();
+                    return mTempo.Count;
                 }
 
                 public IEnumerable<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
@@ -284,21 +284,21 @@ using System.Collections.Generic;
                     List<ValuePair<Integer, SelectedTempoEntry>> list = new List<ValuePair<Integer, SelectedTempoEntry>>();
                     foreach (var clock in mTempo.Keys)
                     {
-                        list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
+                        list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo[ clock ] ) );
                     }
                     return list;
                 }
 
                 public bool isTempoContains( int clock )
                 {
-                    return mTempo.containsKey( clock );
+                    return mTempo.ContainsKey( clock );
                 }
 
                 public SelectedTempoEntry getTempo( int clock )
                 {
-                    if ( mTempo.containsKey( clock ) )
+                    if ( mTempo.ContainsKey( clock ) )
                     {
-                        return mTempo.get( clock );
+                        return mTempo[ clock ];
                     }
                     else
                     {
@@ -308,9 +308,9 @@ using System.Collections.Generic;
 
                 public void removeTempo( int clock )
                 {
-                    if ( mTempo.containsKey( clock ) )
+                    if ( mTempo.ContainsKey( clock ) )
                     {
-                        mTempo.remove( clock );
+                        mTempo.Remove( clock );
                         checkSelectedItemExistence();
                     }
                 }
@@ -616,8 +616,8 @@ using System.Collections.Generic;
                 {
                     bool ret = mBezier.Count == 0 &&
                                mEvents.Count == 0 &&
-                               mTempo.size() == 0 &&
-                               mTimesig.size() == 0 &&
+                               mTempo.Count == 0 &&
+                               mTimesig.Count == 0 &&
                                mPointIDs.Count == 0;
                     invokeSelectedEventChangedEvent( ret );
                 }

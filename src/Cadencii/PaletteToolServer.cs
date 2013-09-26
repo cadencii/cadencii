@@ -33,7 +33,7 @@ namespace cadencii {
         /// <summary>
         /// 読み込まれたパレットツールのコレクション
         /// </summary>
-        public static TreeMap<String, Object> loadedTools = new TreeMap<String, Object>();
+        public static SortedDictionary<String, Object> loadedTools = new SortedDictionary<String, Object>();
 
         /// <summary>
         /// パレットツールを読み込みます
@@ -121,7 +121,7 @@ namespace cadencii {
                                 }
                             }
                             String id = Path.GetFileNameWithoutExtension( file.FullName );
-                            loadedTools.put( id, instance );
+                            loadedTools[ id] =  instance ;
                         } catch ( Exception ex ) {
                             serr.println( "PlaetteToolServer#init; ex=" + ex );
                         }
@@ -143,10 +143,10 @@ namespace cadencii {
         /// <param name="button">パレットツールが押し下げられた時のマウスボタンの種類</param>
         /// <returns>パレットツールによって編集が加えられた場合true。そうでなければfalse(パレットツールがエラーを起こした場合も含む)。</returns>
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
-            if ( loadedTools.containsKey( id ) ) {
+            if ( loadedTools.ContainsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 VsqTrack item = (VsqTrack)vsq.Track[ track ].clone();
-                Object objPal = loadedTools.get( id );
+                Object objPal = loadedTools[ id ];
                 if ( objPal == null ) {
                     return false;
                 }

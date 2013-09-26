@@ -875,20 +875,20 @@ namespace cadencii
             return ret;
         }
 
-        public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, TreeMap<CurveType, List<BezierChain>> attached_curves )
+        public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, SortedDictionary<CurveType, List<BezierChain>> attached_curves )
         {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE;
             ret.args = new Object[2];
             ret.args[0] = track;
-            TreeMap<CurveType, List<BezierChain>> copy = new TreeMap<CurveType, List<BezierChain>>();
+            SortedDictionary<CurveType, List<BezierChain>> copy = new SortedDictionary<CurveType, List<BezierChain>>();
             foreach (var ct in attached_curves.Keys) {
-                List<BezierChain> list = attached_curves.get( ct );
+                List<BezierChain> list = attached_curves[ ct ];
                 List<BezierChain> copy_list = new List<BezierChain>();
                 foreach (var chain in list) {
                     copy_list.Add( (BezierChain)chain.clone() );
                 }
-                copy.put( ct, copy_list );
+                copy[ ct] =  copy_list ;
             }
             ret.args[1] = copy;
             return ret;
@@ -1001,10 +1001,10 @@ namespace cadencii
                             }
 
                             // 追加するデータ点を列挙
-                            TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                            SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
                             if ( chain.points.Count == 1 ) {
                                 BezierPoint p = chain.points[ 0 ];
-                                add.put( (int)p.getBase().getX(), new VsqBPPair( (int)p.getBase().getY(), list.getMaxID() + 1 ) );
+                                add[(int)p.getBase().getX()] = new VsqBPPair( (int)p.getBase().getY(), list.getMaxID() + 1 );
                             } else {
                                 int last_value = int.MaxValue;
                                 int index = 0;
@@ -1020,7 +1020,7 @@ namespace cadencii
                                         sout.println( "VsqFileEx#executeCommand; clock,value=" + clock + "," + value );
 #endif
                                         index++;
-                                        add.put( clock, new VsqBPPair( value, list.getMaxID() + index ) );
+                                        add[clock] = new VsqBPPair( value, list.getMaxID() + index );
                                         last_value = value;
                                     }
                                 }
@@ -1059,7 +1059,7 @@ namespace cadencii
                             break;
                         }
                     }
-                    command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
+                    command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, new SortedDictionary<Integer, VsqBPPair>() );
                     editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_REPLACE ) {
@@ -1100,9 +1100,9 @@ namespace cadencii
                                 }
 
                                 // リプレース後のデータ点は1個だけ
-                                TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                                SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
                                 PointD p = chain.points[ 0 ].getBase();
-                                add.put( (int)p.getX(), new VsqBPPair( (int)p.getY(), list.getMaxID() + 1 ) );
+                                add[(int)p.getX()] = new VsqBPPair( (int)p.getY(), list.getMaxID() + 1 );
 
                                 command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, add );
                             }
@@ -1148,7 +1148,7 @@ namespace cadencii
                         // 追加するのを列挙
                         int max_value = curve_type.getMaximum();
                         int min_value = curve_type.getMinimum();
-                        TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                        SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
                         if ( min < max ) {
                             int last_value = int.MaxValue;
                             int index = 0;
@@ -1161,7 +1161,7 @@ namespace cadencii
                                 }
                                 if ( last_value != value ) {
                                     index++;
-                                    add.put( clock, new VsqBPPair( value, list.getMaxID() + index ) );
+                                    add[clock] = new VsqBPPair( value, list.getMaxID() + index );
                                 }
                             }
                         }
@@ -1209,18 +1209,18 @@ namespace cadencii
                 } else if ( command.type == CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE ) {
                     #region ReplaceAttachedCurveRange
                     int track = (Integer)command.args[0];
-                    TreeMap<CurveType, List<BezierChain>> curves = (TreeMap<CurveType, List<BezierChain>>)command.args[1];
-                    TreeMap<CurveType, List<BezierChain>> inv = new TreeMap<CurveType, List<BezierChain>>();
+                    SortedDictionary<CurveType, List<BezierChain>> curves = (SortedDictionary<CurveType, List<BezierChain>>)command.args[1];
+                    SortedDictionary<CurveType, List<BezierChain>> inv = new SortedDictionary<CurveType, List<BezierChain>>();
                     foreach (var ct in curves.Keys) {
                         List<BezierChain> chains = new List<BezierChain>();
                         List<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.Count; i++ ) {
                             chains.Add( (BezierChain)src[ i ].clone() );
                         }
-                        inv.put( ct, chains );
+                        inv[ ct] =  chains ;
 
                         this.AttachedCurves.get( track - 1 ).get( ct ).Clear();
-                        foreach (var bc in curves.get( ct )) {
+                        foreach (var bc in curves[ ct ]) {
                             this.AttachedCurves.get( track - 1 ).get( ct ).Add( bc );
                         }
                     }

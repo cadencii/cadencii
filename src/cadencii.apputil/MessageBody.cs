@@ -46,7 +46,7 @@ namespace cadencii.apputil {
     {
         public String lang;
         public String poHeader = "";
-        public TreeMap<String, MessageBodyEntry> list = new TreeMap<String, MessageBodyEntry>();
+        public SortedDictionary<String, MessageBodyEntry> list = new SortedDictionary<String, MessageBodyEntry>();
 
         public MessageBody( String lang_ ) {
             lang = lang_;
@@ -54,9 +54,9 @@ namespace cadencii.apputil {
 
         public MessageBody( String lang, String[] ids, String[] messages ) {
             this.lang = lang;
-            list = new TreeMap<String, MessageBodyEntry>();
+            list = new SortedDictionary<String, MessageBodyEntry>();
             for( int i = 0; i < ids.Length; i++ ) {
-                list.put( ids[i], new MessageBodyEntry( messages[i], new String[] { } ) );
+                list[ids[i]] = new MessageBodyEntry( messages[i], new String[] { } );
             }
         }
 
@@ -76,7 +76,7 @@ namespace cadencii.apputil {
                     ByRef<String[]> location_dumy = new ByRef<String[]>();
                     last_line = readTillMessageEnd( sr, last_line, "msgstr", msgstr, location_dumy );
                     if ( PortUtil.getStringLength( msgid.value ) > 0 ) {
-                        list.put( msgid.value, new MessageBodyEntry( msgstr.value, location.value ) );
+                        list[msgid.value] = new MessageBodyEntry( msgstr.value, location.value );
                     } else {
                         poHeader = msgstr.value;
                         String[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
@@ -115,24 +115,24 @@ namespace cadencii.apputil {
         }
 
         public String getMessage( String id ) {
-            if ( list.containsKey( id ) ) {
-                String ret = list.get( id ).message;
+            if ( list.ContainsKey( id ) ) {
+                String ret = list[ id ].message;
                 if ( ret.Equals( "" ) ) {
                     return id;
                 } else {
-                    return list.get( id ).message;
+                    return list[ id ].message;
                 }
             }
             return id;
         }
 
         public MessageBodyEntry getMessageDetail( String id ) {
-            if ( list.containsKey( id ) ) {
-                String ret = list.get( id ).message;
+            if ( list.ContainsKey( id ) ) {
+                String ret = list[ id ].message;
                 if ( ret.Equals( "" ) ) {
                     return new MessageBodyEntry( id, new String[] { } );
                 } else {
-                    return list.get( id );
+                    return list[ id ];
                 }
             }
             return new MessageBodyEntry( id, new String[] { } );
@@ -167,7 +167,7 @@ namespace cadencii.apputil {
                 }
                 foreach (var key in list.Keys) {
                     String skey = key.Replace( "\n", "\\n\"\n\"" );
-                    MessageBodyEntry mbe = list.get( key );
+                    MessageBodyEntry mbe = list[ key ];
                     String s = mbe.message;
                     List<String> location = mbe.location;
                     int count = location.Count;

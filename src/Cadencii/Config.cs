@@ -20,6 +20,7 @@ import java.util.*;
 #else
 
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
@@ -29,7 +30,7 @@ namespace cadencii
 
     public class Config
     {
-        private static TreeMap<String, Boolean> mDirectives = new TreeMap<String, Boolean>();
+        private static SortedDictionary<String, Boolean> mDirectives = new SortedDictionary<String, Boolean>();
 
 #if JAVA
         static
@@ -37,12 +38,12 @@ namespace cadencii
         static Config()
 #endif
         {
-            mDirectives.put( "script", true );
-            mDirectives.put( "vocaloid", true );
-            mDirectives.put( "aquestone", true );
-            mDirectives.put( "midi", true );
-            mDirectives.put( "debug", false );
-            mDirectives.put( "property", true );
+            mDirectives[ "script"] =  true ;
+            mDirectives[ "vocaloid"] =  true ;
+            mDirectives[ "aquestone"] =  true ;
+            mDirectives[ "midi"] =  true ;
+            mDirectives[ "debug"] =  false ;
+            mDirectives[ "property"] =  true ;
         }
 
         public static String getWineVersion()
@@ -50,11 +51,11 @@ namespace cadencii
             return "1.1.2";
         }
 
-        public static TreeMap<String, Boolean> getDirectives()
+        public static SortedDictionary<String, Boolean> getDirectives()
         {
-            TreeMap<String, Boolean> ret = new TreeMap<String, Boolean>();
+            SortedDictionary<String, Boolean> ret = new SortedDictionary<String, Boolean>();
             foreach (var key in mDirectives.Keys){
-                ret.put( key, mDirectives.get( key ) );
+                ret[ key] =  mDirectives[ key ] ;
             }
             return ret;
         }

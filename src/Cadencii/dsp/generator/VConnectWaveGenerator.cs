@@ -57,7 +57,7 @@ namespace cadencii
         private const int TEMPO = 120;
         private const int MAX_CACHE = 512;
 
-        private static TreeMap<String, Double> mCache = new TreeMap<String, Double>();
+        private static SortedDictionary<String, Double> mCache = new SortedDictionary<String, Double>();
 
         private double[] mBuffer2L = new double[BUFLEN];
         private double[] mBuffer2R = new double[BUFLEN];
@@ -79,7 +79,7 @@ namespace cadencii
         private List<SingerConfig> mSingerConfigSys;
         private double mProgressPercent = 0.0;
 
-        private TreeMap<String, UtauVoiceDB> mVoiceDBConfigs = new TreeMap<String, UtauVoiceDB>();
+        private SortedDictionary<String, UtauVoiceDB> mVoiceDBConfigs = new SortedDictionary<String, UtauVoiceDB>();
         private long mVsqLengthSamples;
         private double mStartedDate;
         /// <summary>
@@ -337,7 +337,7 @@ namespace cadencii
                 } catch ( Exception ex ) {
                 }
                 tmp_file = Path.Combine( tmp_dir, hash );
-                if (!mCache.containsKey(hash) || !System.IO.File.Exists(tmp_file + ".wav")) {
+                if (!mCache.ContainsKey(hash) || !System.IO.File.Exists(tmp_file + ".wav")) {
 #if JAVA
                     String[] args = new String[]{ 
                         straight_synth.replace( "\\", "\\" + "\\" ), 
@@ -392,13 +392,13 @@ namespace cadencii
                     }
 #endif
 
-                    if ( mCache.size() > MAX_CACHE ) {
+                    if ( mCache.Count > MAX_CACHE ) {
                         // キャッシュの許容個数を超えたので、古いものを削除
                         boolean first = true;
                         double old_date = PortUtil.getCurrentTime();
                         String old_key = "";
                         foreach (var key in mCache.Keys) {
-                            double time = mCache.get( key );
+                            double time = mCache[ key ];
                             if ( first ) {
                                 old_date = time;
                                 old_key = key;
@@ -409,13 +409,13 @@ namespace cadencii
                                 }
                             }
                         }
-                        mCache.remove( old_key );
+                        mCache.Remove( old_key );
                         try {
                             PortUtil.deleteFile( Path.Combine( tmp_dir, old_key + ".wav" ) );
                         } catch ( Exception ex ) {
                         }
                     }
-                    mCache.put( hash, PortUtil.getCurrentTime() );
+                    mCache[hash] = PortUtil.getCurrentTime();
                 }
 
                 long next_wave_start = max_next_wave_start;
@@ -920,14 +920,14 @@ namespace cadencii
 
             // 原音設定を取得
             UtauVoiceDB voicedb = null;
-            if ( mVoiceDBConfigs.containsKey( oto_ini ) ) {
-                voicedb = mVoiceDBConfigs.get( oto_ini );
+            if ( mVoiceDBConfigs.ContainsKey( oto_ini ) ) {
+                voicedb = mVoiceDBConfigs[ oto_ini ];
             } else {
                 SingerConfig sc = new SingerConfig();
                 sc.VOICEIDSTR = PortUtil.getDirectoryName( oto_ini );
                 sc.VOICENAME = singer;
                 voicedb = new UtauVoiceDB( sc );
-                mVoiceDBConfigs.put( oto_ini, voicedb );
+                mVoiceDBConfigs[ oto_ini] =  voicedb ;
             }
 
             // eventsのなかから、音源が存在しないものを削除
@@ -1081,8 +1081,8 @@ namespace cadencii
         /// <param name="world_mode"></param>
         public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, boolean world_mode )
         {
-            TreeMap<String, String> dict_singername_otoini = new TreeMap<String, String>();
-            dict_singername_otoini.put( "", oto_ini );
+            SortedDictionary<String, String> dict_singername_otoini = new SortedDictionary<String, String>();
+            dict_singername_otoini[ ""] =  oto_ini ;
             prepareMetaText( writer, vsq_track, dict_singername_otoini, end_clock, world_mode );
         }
 
@@ -1096,7 +1096,7 @@ namespace cadencii
         private static void prepareMetaText(
             BufferedWriter writer,
             VsqTrack vsq_track,
-            TreeMap<String, String> dict_singername_otoini,
+            SortedDictionary<String, String> dict_singername_otoini,
             int end_clock,
             boolean world_mode )
         {
@@ -1117,7 +1117,7 @@ namespace cadencii
                 writer.write( "[oto.ini]" );
                 writer.newLine();
                 foreach (var singername in dict_singername_otoini.Keys) {
-                    String oto_ini = dict_singername_otoini.get( singername );
+                    String oto_ini = dict_singername_otoini[ singername ];
                     if ( world_mode ) {
                         writer.write( singername + "\t" + oto_ini );
                         writer.newLine();
@@ -1187,7 +1187,7 @@ namespace cadencii
                 } catch ( Exception ex ) {
                 }
             }
-            mCache.clear();
+            mCache.Clear();
         }
     }
 

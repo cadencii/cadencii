@@ -169,13 +169,13 @@ namespace cadencii
                         // ビブラートが始まるまでのピッチを取得
                         double sec_vibstart = vsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
                         int pit_count = (int)((sec_vibstart - sec_start_act) / delta_sec);
-                        TreeMap<Integer, Float> pit_change = new TreeMap<Integer, Float>();
+                        SortedDictionary<Integer, Float> pit_change = new SortedDictionary<Integer, Float>();
                         for ( int i = 0; i < pit_count; i++ ) {
                             double gtime = sec_start_act + delta_sec * i;
                             int clock = (int)vsq.getClockFromSec( gtime );
                             float pvalue = (float)t.getPitchAt( clock );
                             pitmax = Math.Max( pitmax, Math.Abs( pvalue ) );
-                            pit_change.put( clock, pvalue );
+                            pit_change[ clock] =  pvalue ;
                         }
                         // ビブラート部分のピッチを取得
                         List<PointD> ret = new List<PointD>();
@@ -194,7 +194,7 @@ namespace cadencii
                             int clock = (int)vsq.getClockFromSec( gtime );
                             float pvalue = (float)(t.getPitchAt( clock ) + p.getY() * 100.0);
                             pitmax = Math.Max( pitmax, Math.Abs( pvalue ) );
-                            pit_change.put( clock, pvalue );
+                            pit_change[ clock] =  pvalue ;
                         }
 
                         // ピッチベンドの最大値を実現するのに必要なPBS
@@ -214,7 +214,7 @@ namespace cadencii
                         // PITを順次追加
                         foreach (var clock in pit_change.Keys) {
                             if ( clock_start <= clock && clock <= clock_end ) {
-                                float pvalue = pit_change.get( clock );
+                                float pvalue = pit_change[ clock ];
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
                                 MidiEventQueue q = list.get( clock );
                                 MidiEvent me = getPitMidiEvent( pit_value );

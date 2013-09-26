@@ -26,11 +26,11 @@ namespace cadencii
         /// <summary>
         /// カタカナの音素と、AquesTone2 の音素を紐付けるマップ
         /// </summary>
-        private static TreeMap<String, String> map;
+        private static SortedDictionary<String, String> map;
 
         static SyllableMatcher()
         {
-            map = new TreeMap<String, String>() {
+            map = new SortedDictionary<String, String>() {
                 { "ニャン", "nyan" }, { "ビャ", "bya" },  { "ビェ", "bye" },  { "ビョ", "byo" },  { "ビュ", "byu" },
                 { "チ", "chi" }, { "チャ", "cya" }, { "チェ", "cye" }, { "チョ", "cyo" }, { "チュ", "cyu" },
                 { "ディ", "dhi" }, { "デュ", "dhu" }, { "ドゥ", "dwu" }, { "ギャ", "gya" }, { "ギェ", "gye" },
@@ -67,8 +67,8 @@ namespace cadencii
         {
             String hiragana = KanaDeRomanization.Attach( phrase );
             String kana = KanaDeRomanization.hiragana2katakana( hiragana );
-            if ( map.containsKey( kana ) ) {
-                return map.get( kana );
+            if ( map.ContainsKey( kana ) ) {
+                return map[ kana ];
             } else {
                 return "";
             }

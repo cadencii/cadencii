@@ -1513,10 +1513,10 @@ namespace cadencii
 
         public static String getVersion() {
             String suffix = "";
-            TreeMap<String, Boolean> directives = Config.getDirectives();
+            SortedDictionary<String, Boolean> directives = Config.getDirectives();
             suffix += "\n\n";
             foreach (var k in directives.Keys){
-                Boolean v = directives.get( k );
+                Boolean v = directives[ k ];
                 suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
             }
 #if JAVA

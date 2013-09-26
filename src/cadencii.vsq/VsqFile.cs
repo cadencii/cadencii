@@ -1007,10 +1007,10 @@ namespace cadencii.vsq
                 int track = (Integer)command.Args[0];
                 String curve = (String)command.Args[1];
                 List<Long> delete = (List<Long>)command.Args[2];
-                TreeMap<Integer, VsqBPPair> add = (TreeMap<Integer, VsqBPPair>)command.Args[3];
+                SortedDictionary<Integer, VsqBPPair> add = (SortedDictionary<Integer, VsqBPPair>)command.Args[3];
 
                 List<Long> inv_delete = new List<Long>();
-                TreeMap<Integer, VsqBPPair> inv_add = new TreeMap<Integer, VsqBPPair>();
+                SortedDictionary<Integer, VsqBPPair> inv_add = new SortedDictionary<Integer, VsqBPPair>();
                 processTrackCurveEdit( track, curve, delete, add, inv_delete, inv_add );
                 updateTotalClocks();
 
@@ -1021,14 +1021,14 @@ namespace cadencii.vsq
                 int track = (Integer)command.Args[0];
                 List<String> curve = (List<String>)command.Args[1];
                 List<List<Long>> delete = (List<List<Long>>)command.Args[2];
-                List<TreeMap<Integer, VsqBPPair>> add = (List<TreeMap<Integer, VsqBPPair>>)command.Args[3];
+                List<SortedDictionary<Integer, VsqBPPair>> add = (List<SortedDictionary<Integer, VsqBPPair>>)command.Args[3];
 
                 int c = curve.Count;
                 List<List<Long>> inv_delete = new List<List<Long>>();
-                List<TreeMap<Integer, VsqBPPair>> inv_add = new List<TreeMap<Integer, VsqBPPair>>();
+                List<SortedDictionary<Integer, VsqBPPair>> inv_add = new List<SortedDictionary<Integer, VsqBPPair>>();
                 for ( int i = 0; i < c; i++ ) {
                     List<Long> part_inv_delete = new List<Long>();
-                    TreeMap<Integer, VsqBPPair> part_inv_add = new TreeMap<Integer, VsqBPPair>();
+                    SortedDictionary<Integer, VsqBPPair> part_inv_add = new SortedDictionary<Integer, VsqBPPair>();
                     processTrackCurveEdit( track, curve[ i ], delete[ i ], add[ i ], part_inv_delete, part_inv_add );
                     inv_delete.Add( part_inv_delete );
                     inv_add.Add( part_inv_add );
@@ -1420,15 +1420,15 @@ namespace cadencii.vsq
         private void processTrackCurveEdit( int track,
                                             String curve,
                                             List<Long> delete,
-                                            TreeMap<Integer, VsqBPPair> add,
+                                            SortedDictionary<Integer, VsqBPPair> add,
                                             List<Long> inv_delete,
-                                            TreeMap<Integer, VsqBPPair> inv_add )
+                                            SortedDictionary<Integer, VsqBPPair> inv_add )
         {
             VsqBPList list = Track[ track ].getCurve( curve );
 
             // 逆コマンド発行用
             inv_delete.Clear();
-            inv_add.clear();
+            inv_add.Clear();
 
             // 最初に削除コマンドを実行
             foreach (var id in delete) {
@@ -1436,13 +1436,13 @@ namespace cadencii.vsq
                 if ( item.index >= 0 ) {
                     int clock = item.clock;
                     list.removeElementAt( item.index );
-                    inv_add.put( clock, new VsqBPPair( item.point.value, item.point.id ) );
+                    inv_add[clock] = new VsqBPPair( item.point.value, item.point.id );
                 }
             }
 
             // 追加コマンドを実行
             foreach (var clock in add.Keys) {
-                VsqBPPair item = add.get( clock );
+                VsqBPPair item = add[ clock ];
                 list.addWithID( clock, item.value, item.id );
                 inv_delete.Add( item.id );
             }

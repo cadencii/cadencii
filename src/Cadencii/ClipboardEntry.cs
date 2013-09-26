@@ -46,11 +46,11 @@ namespace cadencii {
         /// <summary>
         /// コピーorカットで複製されたカーブ
         /// </summary>
-        public TreeMap<CurveType, VsqBPList> points;
+        public SortedDictionary<CurveType, VsqBPList> points;
         /// <summary>
         /// コピーorカットで複製されたベジエ曲線
         /// </summary>
-        public TreeMap<CurveType, List<BezierChain>> beziers;
+        public SortedDictionary<CurveType, List<BezierChain>> beziers;
         /// <summary>
         /// コピーの開始位置。貼付け時に、この値をもとにクロックのシフトを行う
         /// </summary>

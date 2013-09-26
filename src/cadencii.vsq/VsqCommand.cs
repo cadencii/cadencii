@@ -482,7 +482,7 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, List<Long> delete, TreeMap<Integer, VsqBPPair> add )
+        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, List<Long> delete, SortedDictionary<Integer, VsqBPPair> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2;
@@ -495,10 +495,10 @@ namespace cadencii.vsq
             }
             command.Args[2] = cp_delete;
 
-            TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
+            SortedDictionary<Integer, VsqBPPair> cp_add = new SortedDictionary<Integer, VsqBPPair>();
             foreach (var clock in add.Keys) {
-                VsqBPPair item = add.get( clock );
-                cp_add.put( clock, item );
+                VsqBPPair item = add[ clock ];
+                cp_add[ clock] =  item ;
             }
             command.Args[3] = cp_add;
             return command;
@@ -537,7 +537,7 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2All( int track, List<String> target, List<List<Long>> delete, List<TreeMap<Integer, VsqBPPair>> add )
+        public static VsqCommand generateCommandTrackCurveEdit2All( int track, List<String> target, List<List<Long>> delete, List<SortedDictionary<Integer, VsqBPPair>> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2_ALL;
@@ -561,14 +561,14 @@ namespace cadencii.vsq
             }
             command.Args[2] = cp_vec_delete;
 
-            List<TreeMap<Integer, VsqBPPair>> cp_vec_add = new List<TreeMap<Integer, VsqBPPair>>();
+            List<SortedDictionary<Integer, VsqBPPair>> cp_vec_add = new List<SortedDictionary<Integer, VsqBPPair>>();
             c = add.Count;
             for ( int i = 0; i < c; i++ ) {
-                TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
-                TreeMap<Integer, VsqBPPair> tmp = add[ i ];
+                SortedDictionary<Integer, VsqBPPair> cp_add = new SortedDictionary<Integer, VsqBPPair>();
+                SortedDictionary<Integer, VsqBPPair> tmp = add[ i ];
                 foreach (var clock in tmp.Keys) {
-                    VsqBPPair item = tmp.get( clock );
-                    cp_add.put( clock, item );
+                    VsqBPPair item = tmp[ clock ];
+                    cp_add[ clock] =  item ;
                 }
                 cp_vec_add.Add( cp_add );
             }

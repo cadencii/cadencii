@@ -53,8 +53,8 @@ namespace cadencii
         private static int mWindowWidth = 541;
         private static int mWindowHeight = 572;
 
-        private TreeMap<String, ValuePair<String, Keys[]>> mDict;
-        private TreeMap<String, ValuePair<String, Keys[]>> mFirstDict;
+        private SortedDictionary<String, ValuePair<String, Keys[]>> mDict;
+        private SortedDictionary<String, ValuePair<String, Keys[]>> mFirstDict;
         private List<String> mFieldName = new List<String>();
         private FormMain mMainForm = null;
 
@@ -62,7 +62,7 @@ namespace cadencii
         /// コンストラクタ
         /// </summary>
         /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
-        public FormShortcutKeys( TreeMap<String, ValuePair<String, Keys[]>> dict, FormMain main_form )
+        public FormShortcutKeys( SortedDictionary<String, ValuePair<String, Keys[]>> dict, FormMain main_form )
         {
 #if JAVA
             super();
@@ -80,7 +80,7 @@ namespace cadencii
             }
 
 #if DEBUG
-            sout.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
+            sout.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.Count );
             sout.println( "FormShortcutKeys#.ctor; mColumnWidthCommand=" + mColumnWidthCommand + "; mColumnWidthShortcutKey=" + mColumnWidthShortcutKey );
 #endif
             mMainForm = main_form;
@@ -93,7 +93,7 @@ namespace cadencii
 
             mDict = dict;
             comboCategory.SelectedIndex = 0;
-            mFirstDict = new TreeMap<String, ValuePair<String, Keys[]>>();
+            mFirstDict = new SortedDictionary<String, ValuePair<String, Keys[]>>();
             copyDict( mDict, mFirstDict );
 
             comboEditKey.Items.Clear();
@@ -185,9 +185,9 @@ namespace cadencii
             labelEditModifier.Text = _( "Modifier:" );
         }
 
-        public TreeMap<String, ValuePair<String, Keys[]>> getResult()
+        public SortedDictionary<String, ValuePair<String, Keys[]>> getResult()
         {
-            TreeMap<String, ValuePair<String, Keys[]>> ret = new TreeMap<String, ValuePair<String, Keys[]>>();
+            SortedDictionary<String, ValuePair<String, Keys[]>> ret = new SortedDictionary<String, ValuePair<String, Keys[]>>();
             copyDict( mDict, ret );
             return ret;
         }
@@ -199,17 +199,17 @@ namespace cadencii
             return Messaging.getMessage( id );
         }
 
-        private static void copyDict( TreeMap<String, ValuePair<String, Keys[]>> src, TreeMap<String, ValuePair<String, Keys[]>> dest )
+        private static void copyDict( SortedDictionary<String, ValuePair<String, Keys[]>> src, SortedDictionary<String, ValuePair<String, Keys[]>> dest )
         {
-            dest.clear();
+            dest.Clear();
             foreach (var name in src.Keys) {
-                String key = src.get( name ).getKey();
-                Keys[] values = src.get( name ).getValue();
+                String key = src[ name ].getKey();
+                Keys[] values = src[ name ].getValue();
                 List<Keys> cp = new List<Keys>();
                 foreach ( Keys k in values ) {
                     cp.Add( k );
                 }
-                dest.put( name, new ValuePair<String, Keys[]>( key, cp.ToArray() ) );
+                dest[name] = new ValuePair<String, Keys[]>( key, cp.ToArray() );
             }
         }
 
@@ -232,7 +232,7 @@ namespace cadencii
 
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
             foreach (var display in mDict.Keys) {
-                ValuePair<String, Keys[]> item = mDict.get( display );
+                ValuePair<String, Keys[]> item = mDict[ display ];
                 String field_name = item.getKey();
                 Keys[] keys = item.getValue();
                 boolean add_this_one = false;
@@ -282,7 +282,7 @@ namespace cadencii
 
                 boolean found = false;
                 foreach (var display1 in mDict.Keys) {
-                    ValuePair<String, Keys[]> item1 = mDict.get( display1 );
+                    ValuePair<String, Keys[]> item1 = mDict[ display1 ];
                     String field_name1 = item1.getKey();
                     if ( field_name == field_name1 ) {
                         // 自分自身なのでスルー
@@ -375,7 +375,7 @@ namespace cadencii
             int indx_row = list.SelectedIndices[0];
             Keys key = (Keys)comboEditKey.Items[indx];
             String display = list.Items[indx_row].SubItems[0].Text;
-            if ( !mDict.containsKey( display ) ) {
+            if ( !mDict.ContainsKey( display ) ) {
                 return;
             }
             List<Keys> capturelist = new List<Keys>();
@@ -395,7 +395,7 @@ namespace cadencii
                 }
             }
             Keys[] keys = capturelist.ToArray();
-            mDict.get( display ).setValue( keys );
+            mDict[ display ].setValue( keys );
             list.Items[indx_row].SubItems[1].Text = Utility.getShortcutDisplayString( keys ); 
         } 
 
@@ -406,11 +406,11 @@ namespace cadencii
             }
             int indx = list.SelectedIndices[0];
             String display = list.Items[indx].SubItems[0].Text;
-            if( !mDict.containsKey( display ) ){
+            if( !mDict.ContainsKey( display ) ){
                 return;
             }
             unRegisterHandlers();
-            ValuePair<String, Keys[]> item = mDict.get( display );
+            ValuePair<String, Keys[]> item = mDict[ display ];
             Keys[] keys = item.getValue();
             List<Keys> vkeys = new List<Keys>( keys );
             checkCommand.Checked = vkeys.Contains( Keys.Menu );
@@ -456,8 +456,8 @@ namespace cadencii
                 String name = defaults[ i ].Key;
                 Keys[] keys = defaults[ i ].Value;
                 foreach (var display in mDict.Keys) {
-                    if ( name.Equals( mDict.get( display ).getKey() ) ) {
-                        mDict.get( display ).setValue( keys );
+                    if ( name.Equals( mDict[ display ].getKey() ) ) {
+                        mDict[ display ].setValue( keys );
                         break;
                     }
                 }

@@ -36,10 +36,10 @@ namespace cadencii.vsq
     /// </summary>
     public class VocaloSysUtil
     {
-        private static TreeMap<SynthesizerType, SingerConfigSys> s_singer_config_sys = new TreeMap<SynthesizerType, SingerConfigSys>();
-        private static TreeMap<SynthesizerType, ExpressionConfigSys> s_exp_config_sys = new TreeMap<SynthesizerType, ExpressionConfigSys>();
-        private static TreeMap<SynthesizerType, String> s_path_vsti = new TreeMap<SynthesizerType, String>();
-        private static TreeMap<SynthesizerType, String> s_path_editor = new TreeMap<SynthesizerType, String>();
+        private static SortedDictionary<SynthesizerType, SingerConfigSys> s_singer_config_sys = new SortedDictionary<SynthesizerType, SingerConfigSys>();
+        private static SortedDictionary<SynthesizerType, ExpressionConfigSys> s_exp_config_sys = new SortedDictionary<SynthesizerType, ExpressionConfigSys>();
+        private static SortedDictionary<SynthesizerType, String> s_path_vsti = new SortedDictionary<SynthesizerType, String>();
+        private static SortedDictionary<SynthesizerType, String> s_path_editor = new SortedDictionary<SynthesizerType, String>();
         private static Boolean isInitialized = false;
         /// <summary>
         /// VOCALOID1の、デフォルトのSynthesize Engineバージョン。1.0の場合100, 1.1の場合101。規定では100(1.0)。
@@ -60,8 +60,8 @@ namespace cadencii.vsq
 
         public static SingerConfigSys getSingerConfigSys( SynthesizerType type )
         {
-            if ( s_singer_config_sys.containsKey( type ) ) {
-                return s_singer_config_sys.get( type );
+            if ( s_singer_config_sys.ContainsKey( type ) ) {
+                return s_singer_config_sys[ type ];
             } else {
                 return null;
             }
@@ -183,8 +183,8 @@ namespace cadencii.vsq
                          path_expdb1,
                          path_editor,
                          installed_singers1 );
-                s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
-                s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
+                s_path_vsti[ SynthesizerType.VOCALOID1] =  path_vsti.value ;
+                s_path_editor[ SynthesizerType.VOCALOID1] =  path_editor.value ;
                 String[] act_installed_singers1 = installed_singers1.ToArray();
                 String act_path_voicedb1 = path_voicedb1.value;
                 String act_path_editor1 = path_editor.value;
@@ -205,7 +205,7 @@ namespace cadencii.vsq
                 if (System.IO.File.Exists(expression_map1)) {
                     exp_config_sys1 = new ExpressionConfigSys( act_path_editor1, act_path_expdb1 );
                 }
-                s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
+                s_singer_config_sys[ SynthesizerType.VOCALOID1] =  singer_config_sys ;
 
                 // DSE1_1.dllがあるかどうか？
                 if ( !act_vsti1.Equals( "" ) ) {
@@ -269,12 +269,12 @@ namespace cadencii.vsq
 #endif
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
-                s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
+                s_singer_config_sys[ SynthesizerType.VOCALOID1] =  singer_config_sys ;
             }
             if ( exp_config_sys1 == null ) {
                 exp_config_sys1 = ExpressionConfigSys.getVocaloid1Default();
             }
-            s_exp_config_sys.put( SynthesizerType.VOCALOID1, exp_config_sys1 );
+            s_exp_config_sys[ SynthesizerType.VOCALOID1] =  exp_config_sys1 ;
 
             ExpressionConfigSys exp_config_sys2 = null;
             try {
@@ -293,8 +293,8 @@ namespace cadencii.vsq
                          path_expdb2,
                          path_editor,
                          installed_singers2 );
-                s_path_vsti.put( SynthesizerType.VOCALOID2, path_vsti.value );
-                s_path_editor.put( SynthesizerType.VOCALOID2, path_editor.value );
+                s_path_vsti[ SynthesizerType.VOCALOID2] =  path_vsti.value ;
+                s_path_editor[ SynthesizerType.VOCALOID2] =  path_editor.value ;
                 String[] act_installed_singers2 = installed_singers2.ToArray();
                 String act_path_expdb2 = path_expdb2.value;
                 String act_path_voicedb2 = path_voicedb2.value;
@@ -314,7 +314,7 @@ namespace cadencii.vsq
                 if (System.IO.File.Exists(expression_map2)) {
                     exp_config_sys2 = new ExpressionConfigSys( act_path_editor2, act_path_expdb2 );
                 }
-                s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
+                s_singer_config_sys[ SynthesizerType.VOCALOID2] =  singer_config_sys ;
             } catch ( Exception ex ) {
                 serr.println( "VocaloSysUtil..cctor; ex=" + ex );
 #if JAVA
@@ -322,7 +322,7 @@ namespace cadencii.vsq
 #endif
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys2 = null;
-                s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
+                s_singer_config_sys[ SynthesizerType.VOCALOID2] =  singer_config_sys ;
             }
             if ( exp_config_sys2 == null ) {
 #if DEBUG
@@ -330,7 +330,7 @@ namespace cadencii.vsq
 #endif
                 exp_config_sys2 = ExpressionConfigSys.getVocaloid2Default();
             }
-            s_exp_config_sys.put( SynthesizerType.VOCALOID2, exp_config_sys2 );
+            s_exp_config_sys[ SynthesizerType.VOCALOID2] =  exp_config_sys2 ;
 
             isInitialized = true;
         }
@@ -348,8 +348,8 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#getDefaultVibratoHandle; not initialized yet" );
                 return null;
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                foreach (var vconfig in s_exp_config_sys.get( type ).vibratoConfigIterator()) {
+            if ( s_exp_config_sys.ContainsKey( type ) ) {
+                foreach (var vconfig in s_exp_config_sys[ type ].vibratoConfigIterator()) {
                     if ( vconfig.IconID.Equals( icon_id ) ) {
                         VibratoHandle ret = (VibratoHandle)vconfig.clone();
                         ret.setLength( vibrato_length );
@@ -400,7 +400,7 @@ namespace cadencii.vsq
             }
 
             // path_vicedbを取得
-            TreeMap<String, String> install_dirs = new TreeMap<String, String>();
+            SortedDictionary<String, String> install_dirs = new SortedDictionary<String, String>();
             foreach (var s in voice) {
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length < 2 ) {
@@ -413,13 +413,13 @@ namespace cadencii.vsq
                     String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                     if ( spl2.Length == 1 ) {
                         String id = spl2[0]; // BHXXXXXXXXXXXXみたいなシリアル
-                        if ( !install_dirs.containsKey( id ) ) {
-                            install_dirs.put( id, "" );
+                        if ( !install_dirs.ContainsKey( id ) ) {
+                            install_dirs[ id] =  "" ;
                         }
                         if ( spl[1].Equals( "INSTALLDIR" ) ) {
                             // VOCALOID1の場合は、ここには到達しないはず
                             String installdir = spl[2];
-                            install_dirs.put( id, Path.Combine( installdir, id ) );
+                            install_dirs[id] = Path.Combine( installdir, id );
                         }
                     }
                 }
@@ -427,7 +427,7 @@ namespace cadencii.vsq
 
             // installed_singersに追加
             foreach (var id in install_dirs.Keys) {
-                String install = install_dirs.get( id );
+                String install = install_dirs[ id ];
                 if ( install.Equals( "" ) ) {
                     install = Path.Combine( path_voicedb.value, id );
                 }
@@ -509,8 +509,8 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#attackConfigIterator; not initialized yet" );
                 return null;
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                return s_exp_config_sys.get( type ).attackConfigIterator();
+            if ( s_exp_config_sys.ContainsKey( type ) ) {
+                return s_exp_config_sys[ type ].attackConfigIterator();
             } else {
                 return new List<NoteHeadHandle>();
             }
@@ -527,8 +527,8 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#vibratoConfigIterator; not initialized yet" );
                 return null;
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                return s_exp_config_sys.get( type ).vibratoConfigIterator();
+            if ( s_exp_config_sys.ContainsKey( type ) ) {
+                return s_exp_config_sys[ type ].vibratoConfigIterator();
             } else {
                 return new List<VibratoHandle>();
             }
@@ -545,8 +545,8 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#dynamicsConfigIterator; not initialized yet" );
                 return null;
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                return s_exp_config_sys.get( type ).dynamicsConfigIterator();
+            if ( s_exp_config_sys.ContainsKey( type ) ) {
+                return s_exp_config_sys[ type ].dynamicsConfigIterator();
             } else {
                 return new List<IconDynamicsHandle>();
             }
@@ -566,10 +566,10 @@ namespace cadencii.vsq
                 return null;
             }
             String voiceidstr = "";
-            if ( !s_singer_config_sys.containsKey( type ) ) {
+            if ( !s_singer_config_sys.ContainsKey( type ) ) {
                 return "";
             }
-            SingerConfigSys scs = s_singer_config_sys.get( type );
+            SingerConfigSys scs = s_singer_config_sys[ type ];
             SingerConfig[] singer_configs = scs.getSingerConfigs();
             for ( int i = 0; i < singer_configs.Length; i++ ) {
                 if ( language == singer_configs[i].Language && program == singer_configs[i].Program ) {
@@ -602,10 +602,10 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#getSingerID; not initialized yet" );
                 return null;
             }
-            if ( !s_singer_config_sys.containsKey( type ) ) {
+            if ( !s_singer_config_sys.ContainsKey( type ) ) {
                 return null;
             } else {
-                return s_singer_config_sys.get( type ).getSingerID( language, program );
+                return s_singer_config_sys[ type ].getSingerID( language, program );
             }
         }
 
@@ -620,10 +620,10 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#getEditorPath; not initialized yet" );
                 return "";
             }
-            if ( !s_path_editor.containsKey( type ) ) {
+            if ( !s_path_editor.ContainsKey( type ) ) {
                 return "";
             } else {
-                return s_path_editor.get( type );
+                return s_path_editor[ type ];
             }
         }
 
@@ -638,10 +638,10 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#getDllPathVsti; not initialized yet" );
                 return "";
             }
-            if ( !s_path_vsti.containsKey( type ) ) {
+            if ( !s_path_vsti.ContainsKey( type ) ) {
                 return "";
             } else {
-                return s_path_vsti.get( type );
+                return s_path_vsti[ type ];
             }
         }
 
@@ -656,10 +656,10 @@ namespace cadencii.vsq
                 serr.println( "VocaloSysUtil#getSingerConfigs; not initialized yet" );
                 return new SingerConfig[]{};
             }
-            if ( !s_singer_config_sys.containsKey( type ) ) {
+            if ( !s_singer_config_sys.ContainsKey( type ) ) {
                 return new SingerConfig[] { };
             } else {
-                return s_singer_config_sys.get( type ).getSingerConfigs();
+                return s_singer_config_sys[ type ].getSingerConfigs();
             }
         }
 

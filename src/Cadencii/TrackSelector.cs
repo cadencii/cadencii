@@ -282,7 +282,7 @@ namespace cadencii
         /// <summary>
         /// マウス長押しによるVELの編集。編集対象の音符のリスト。
         /// </summary>
-        private TreeMap<Integer, SelectedEventEntry> mVelEditSelected = new TreeMap<Integer, SelectedEventEntry>();
+        private SortedDictionary<Integer, SelectedEventEntry> mVelEditSelected = new SortedDictionary<Integer, SelectedEventEntry>();
         /// <summary>
         /// 現在編集操作が行われているBezierChainの、編集直前のオリジナル
         /// </summary>
@@ -392,7 +392,7 @@ namespace cadencii
         /// <summary>
         /// カーブ種類とメニューアイテムを紐付けるマップ
         /// </summary>
-        private TreeMap<CurveType, ToolStripMenuItem> mMenuMap = new TreeMap<CurveType, ToolStripMenuItem>();
+        private SortedDictionary<CurveType, ToolStripMenuItem> mMenuMap = new SortedDictionary<CurveType, ToolStripMenuItem>();
         /// <summary>
         /// ツールチップに表示されるプログラム
         /// </summary>
@@ -457,40 +457,40 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             mModifierKey = Keys.Control;
-            mMenuMap.put( CurveType.VEL, cmenuCurveVelocity );
-            mMenuMap.put( CurveType.Accent, cmenuCurveAccent );
-            mMenuMap.put( CurveType.Decay, cmenuCurveDecay );
+            mMenuMap[ CurveType.VEL] =  cmenuCurveVelocity ;
+            mMenuMap[ CurveType.Accent] =  cmenuCurveAccent ;
+            mMenuMap[ CurveType.Decay] =  cmenuCurveDecay ;
 
-            mMenuMap.put( CurveType.DYN, cmenuCurveDynamics );
-            mMenuMap.put( CurveType.VibratoRate, cmenuCurveVibratoRate );
-            mMenuMap.put( CurveType.VibratoDepth, cmenuCurveVibratoDepth );
+            mMenuMap[ CurveType.DYN] =  cmenuCurveDynamics ;
+            mMenuMap[ CurveType.VibratoRate] =  cmenuCurveVibratoRate ;
+            mMenuMap[ CurveType.VibratoDepth] =  cmenuCurveVibratoDepth ;
 
-            mMenuMap.put( CurveType.reso1amp, cmenuCurveReso1Amp );
-            mMenuMap.put( CurveType.reso1bw, cmenuCurveReso1BW );
-            mMenuMap.put( CurveType.reso1freq, cmenuCurveReso1Freq );
-            mMenuMap.put( CurveType.reso2amp, cmenuCurveReso2Amp );
-            mMenuMap.put( CurveType.reso2bw, cmenuCurveReso2BW );
-            mMenuMap.put( CurveType.reso2freq, cmenuCurveReso2Freq );
-            mMenuMap.put( CurveType.reso3amp, cmenuCurveReso3Amp );
-            mMenuMap.put( CurveType.reso3bw, cmenuCurveReso3BW );
-            mMenuMap.put( CurveType.reso3freq, cmenuCurveReso3Freq );
-            mMenuMap.put( CurveType.reso4amp, cmenuCurveReso4Amp );
-            mMenuMap.put( CurveType.reso4bw, cmenuCurveReso4BW );
-            mMenuMap.put( CurveType.reso4freq, cmenuCurveReso4Freq );
+            mMenuMap[ CurveType.reso1amp] =  cmenuCurveReso1Amp ;
+            mMenuMap[ CurveType.reso1bw] =  cmenuCurveReso1BW ;
+            mMenuMap[ CurveType.reso1freq] =  cmenuCurveReso1Freq ;
+            mMenuMap[ CurveType.reso2amp] =  cmenuCurveReso2Amp ;
+            mMenuMap[ CurveType.reso2bw] =  cmenuCurveReso2BW ;
+            mMenuMap[ CurveType.reso2freq] =  cmenuCurveReso2Freq ;
+            mMenuMap[ CurveType.reso3amp] =  cmenuCurveReso3Amp ;
+            mMenuMap[ CurveType.reso3bw] =  cmenuCurveReso3BW ;
+            mMenuMap[ CurveType.reso3freq] =  cmenuCurveReso3Freq ;
+            mMenuMap[ CurveType.reso4amp] =  cmenuCurveReso4Amp ;
+            mMenuMap[ CurveType.reso4bw] =  cmenuCurveReso4BW ;
+            mMenuMap[ CurveType.reso4freq] =  cmenuCurveReso4Freq ;
 
-            mMenuMap.put( CurveType.harmonics, cmenuCurveHarmonics );
-            mMenuMap.put( CurveType.BRE, cmenuCurveBreathiness );
-            mMenuMap.put( CurveType.BRI, cmenuCurveBrightness );
-            mMenuMap.put( CurveType.CLE, cmenuCurveClearness );
-            mMenuMap.put( CurveType.OPE, cmenuCurveOpening );
-            mMenuMap.put( CurveType.GEN, cmenuCurveGenderFactor );
+            mMenuMap[ CurveType.harmonics] =  cmenuCurveHarmonics ;
+            mMenuMap[ CurveType.BRE] =  cmenuCurveBreathiness ;
+            mMenuMap[ CurveType.BRI] =  cmenuCurveBrightness ;
+            mMenuMap[ CurveType.CLE] =  cmenuCurveClearness ;
+            mMenuMap[ CurveType.OPE] =  cmenuCurveOpening ;
+            mMenuMap[ CurveType.GEN] =  cmenuCurveGenderFactor ;
 
-            mMenuMap.put( CurveType.POR, cmenuCurvePortamentoTiming );
-            mMenuMap.put( CurveType.PIT, cmenuCurvePitchBend );
-            mMenuMap.put( CurveType.PBS, cmenuCurvePitchBendSensitivity );
+            mMenuMap[ CurveType.POR] =  cmenuCurvePortamentoTiming ;
+            mMenuMap[ CurveType.PIT] =  cmenuCurvePitchBend ;
+            mMenuMap[ CurveType.PBS] =  cmenuCurvePitchBendSensitivity ;
 
-            mMenuMap.put( CurveType.fx2depth, cmenuCurveEffect2Depth );
-            mMenuMap.put( CurveType.Env, cmenuCurveEnvelope );
+            mMenuMap[ CurveType.fx2depth] =  cmenuCurveEffect2Depth ;
+            mMenuMap[ CurveType.Env] =  cmenuCurveEnvelope ;
         }
 
         /// <summary>
@@ -578,7 +578,7 @@ namespace cadencii
         private CurveType getCurveTypeFromMenu(ToolStripMenuItem menu)
         {
             foreach (var curve in mMenuMap.Keys){
-                ToolStripMenuItem search = mMenuMap.get(curve);
+                ToolStripMenuItem search = mMenuMap[curve];
                 if( menu == search ){
                     return curve;
                 }
@@ -1550,13 +1550,13 @@ namespace cadencii
                                     g.setColor( COLOR_A144R255G255B255 );
                                     g.fillRect( x_start, y_start, x_end - x_start, y_end - y_start );
                                 }
-                            } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT && mVelEditSelected.containsKey( mVelEditLastSelectedID ) ) {
+                            } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT && mVelEditSelected.ContainsKey( mVelEditLastSelectedID ) ) {
                                 if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                                    numeric_view = mVelEditSelected.get( mVelEditLastSelectedID ).editing.ID.Dynamics;
+                                    numeric_view = mVelEditSelected[ mVelEditLastSelectedID ].editing.ID.Dynamics;
                                 } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                                    numeric_view = mVelEditSelected.get( mVelEditLastSelectedID ).editing.ID.DEMaccent;
+                                    numeric_view = mVelEditSelected[ mVelEditLastSelectedID ].editing.ID.DEMaccent;
                                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                                    numeric_view = mVelEditSelected.get( mVelEditLastSelectedID ).editing.ID.DEMdecGainRate;
+                                    numeric_view = mVelEditSelected[ mVelEditLastSelectedID ].editing.ID.DEMdecGainRate;
                                 }
                             }
                         }
@@ -2342,8 +2342,8 @@ namespace cadencii
                             g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
                             if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                                 int editing = 0;
-                                if ( mVelEditSelected.containsKey( dobj.mInternalID ) ) {
-                                    VsqEvent ve_editing = mVelEditSelected.get( dobj.mInternalID ).editing;
+                                if ( mVelEditSelected.ContainsKey( dobj.mInternalID ) ) {
+                                    VsqEvent ve_editing = mVelEditSelected[ dobj.mInternalID ].editing;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                                         if ( AppManager.mDrawIsUtau[selected - 1] ) {
                                             editing = ve_editing.UstEvent == null ? 100 : ve_editing.UstEvent.getIntensity();
@@ -3258,7 +3258,7 @@ namespace cadencii
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                 int t_value = valueFromYCoord( e.Y - mVelEditShiftY );
                 int d_vel = 0;
-                VsqEvent ve_original = mVelEditSelected.get( mVelEditLastSelectedID ).original;
+                VsqEvent ve_original = mVelEditSelected[ mVelEditLastSelectedID ].original;
                 if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                     if ( is_utau_mode ) {
                         d_vel = t_value - ((ve_original.UstEvent == null) ? 100 : ve_original.UstEvent.getIntensity());
@@ -3266,13 +3266,13 @@ namespace cadencii
                         d_vel = t_value - ve_original.ID.Dynamics;
                     }
                 } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                    d_vel = t_value - mVelEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMaccent;
+                    d_vel = t_value - mVelEditSelected[ mVelEditLastSelectedID ].original.ID.DEMaccent;
                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                    d_vel = t_value - mVelEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMdecGainRate;
+                    d_vel = t_value - mVelEditSelected[ mVelEditLastSelectedID ].original.ID.DEMdecGainRate;
                 }
                 foreach (var id in mVelEditSelected.Keys) {
                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                        VsqEvent item = mVelEditSelected.get( id ).original;
+                        VsqEvent item = mVelEditSelected[ id ].original;
                         int new_vel = item.ID.Dynamics + d_vel;
                         if ( is_utau_mode ) {
                             new_vel = item.UstEvent == null ? 100 + d_vel : item.UstEvent.getIntensity() + d_vel;
@@ -3283,30 +3283,30 @@ namespace cadencii
                             new_vel = max;
                         }
                         if ( is_utau_mode ) {
-                            VsqEvent item_o = mVelEditSelected.get( id ).editing;
+                            VsqEvent item_o = mVelEditSelected[ id ].editing;
                             if ( item_o.UstEvent == null ) {
                                 item_o.UstEvent = new UstEvent();
                             }
                             item_o.UstEvent.setIntensity( new_vel );
                         } else {
-                            mVelEditSelected.get( id ).editing.ID.Dynamics = new_vel;
+                            mVelEditSelected[ id ].editing.ID.Dynamics = new_vel;
                         }
                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                        int new_vel = mVelEditSelected.get( id ).original.ID.DEMaccent + d_vel;
+                        int new_vel = mVelEditSelected[ id ].original.ID.DEMaccent + d_vel;
                         if ( new_vel < min ) {
                             new_vel = min;
                         } else if ( max < new_vel ) {
                             new_vel = max;
                         }
-                        mVelEditSelected.get( id ).editing.ID.DEMaccent = new_vel;
+                        mVelEditSelected[ id ].editing.ID.DEMaccent = new_vel;
                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                        int new_vel = mVelEditSelected.get( id ).original.ID.DEMdecGainRate + d_vel;
+                        int new_vel = mVelEditSelected[ id ].original.ID.DEMdecGainRate + d_vel;
                         if ( new_vel < min ) {
                             new_vel = min;
                         } else if ( max < new_vel ) {
                             new_vel = max;
                         }
-                        mVelEditSelected.get( id ).editing.ID.DEMdecGainRate = new_vel;
+                        mVelEditSelected[ id ].editing.ID.DEMdecGainRate = new_vel;
                     }
                 }
             } else if ( mMouseDownMode == MouseDownMode.BEZIER_MODE ) {
@@ -3873,19 +3873,19 @@ namespace cadencii
                                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
                                         mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.DEMdecGainRate );
                                     }
-                                    mVelEditSelected.clear();
+                                    mVelEditSelected.Clear();
                                     if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), mVelEditLastSelectedID ) ) {
                                         foreach (var item in AppManager.itemSelection.getEventIterator()) {
-                                            mVelEditSelected.put( item.original.InternalID,
+                                            mVelEditSelected[item.original.InternalID] =
                                                                     new SelectedEventEntry( AppManager.getSelected(),
                                                                                             item.original,
-                                                                                            item.editing ) );
+                                                                                            item.editing );
                                         }
                                     } else {
-                                        mVelEditSelected.put( mVelEditLastSelectedID,
+                                        mVelEditSelected[mVelEditLastSelectedID] =
                                                                 new SelectedEventEntry( AppManager.getSelected(),
                                                                                         (VsqEvent)ve.clone(),
-                                                                                        (VsqEvent)ve.clone() ) );
+                                                                                        (VsqEvent)ve.clone() );
                                     }
 #if JAVA
                                     mMouseHoverThread = new MouseHoverEventGeneratorProc();
@@ -4626,8 +4626,8 @@ namespace cadencii
                                     }
                                 }
                                 if ( changed ) {
-                                    TreeMap<CurveType, List<BezierChain>> comm = new TreeMap<CurveType, List<BezierChain>>();
-                                    comm.put( mSelectedCurve, work );
+                                    SortedDictionary<CurveType, List<BezierChain>> comm = new SortedDictionary<CurveType, List<BezierChain>>();
+                                    comm[ mSelectedCurve] =  work ;
                                     CadenciiCommand run = VsqFileEx.generateCommandReplaceAttachedCurveRange( selected, comm );
                                     executeCommand( run, true );
                                 }
@@ -4777,7 +4777,7 @@ namespace cadencii
 
                                 if ( delete.Count > 0 ) {
                                     CadenciiCommand run_eraser = new CadenciiCommand(
-                                        VsqCommand.generateCommandTrackCurveEdit2( selected, mSelectedCurve.getName(), delete, new TreeMap<Integer, VsqBPPair>() ) );
+                                        VsqCommand.generateCommandTrackCurveEdit2( selected, mSelectedCurve.getName(), delete, new SortedDictionary<Integer, VsqBPPair>() ) );
                                     executeCommand( run_eraser, true );
                                 }
                                 #endregion
@@ -4798,7 +4798,7 @@ namespace cadencii
                                 AppManager.debugWriteLine( "        start=" + start );
                                 AppManager.debugWriteLine( "        end=" + end );
 #endif
-                                TreeMap<Integer, Integer> velocity = new TreeMap<Integer, Integer>();
+                                SortedDictionary<Integer, Integer> velocity = new SortedDictionary<Integer, Integer>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = itr.next();
                                     if ( start <= ve.Clock && ve.Clock < end ) {
@@ -4829,27 +4829,27 @@ namespace cadencii
                                                 float a = (key1_value - key0_value) / (float)(key1_clock - key0_clock);
                                                 float b = key0_value - a * key0_clock;
                                                 int new_value = (int)(a * ve.Clock + b);
-                                                velocity.put( ve.InternalID, new_value );
+                                                velocity[ ve.InternalID] =  new_value ;
                                             } else if ( key0_clock == ve.Clock ) {
-                                                velocity.put( ve.InternalID, valueFromYCoord( lvalue ) );
+                                                velocity[ve.InternalID] = valueFromYCoord( lvalue );
                                             } else if ( key1_clock == ve.Clock ) {
-                                                velocity.put( ve.InternalID, valueFromYCoord( value ) );
+                                                velocity[ve.InternalID] = valueFromYCoord( value );
                                             }
                                             lkey = key;
                                             lvalue = value;
                                         }
                                     }
                                 }
-                                if ( velocity.size() > 0 ) {
+                                if ( velocity.Count > 0 ) {
                                     List<ValuePair<Integer, Integer>> cpy = new List<ValuePair<Integer, Integer>>();
                                     foreach (var internal_id in velocity.Keys) {
-                                        int value = (Integer)velocity.get( internal_id );
+                                        int value = (Integer)velocity[ internal_id ];
                                         cpy.Add( new ValuePair<Integer, Integer>( internal_id, value ) );
                                     }
                                     CadenciiCommand run = null;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                                         if ( is_utau_mode ) {
-                                            int size = velocity.size();
+                                            int size = velocity.Count;
                                             VsqEvent[] events = new VsqEvent[size];
                                             int i = 0;
                                             foreach (var internal_id in velocity.Keys){
@@ -4857,7 +4857,7 @@ namespace cadencii
                                                 if ( item.UstEvent == null ) {
                                                     item.UstEvent = new UstEvent();
                                                 }
-                                                item.UstEvent.setIntensity( velocity.get( internal_id ) );
+                                                item.UstEvent.setIntensity( velocity[ internal_id ] );
                                                 events[i] = item;
                                                 i++;
                                             }
@@ -5032,7 +5032,7 @@ namespace cadencii
                                     }
                                 }
 
-                                TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                                SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
                                 int lvalue = int.MinValue;
                                 int lclock = -2 * step_clock;
                                 int index = 0;
@@ -5055,7 +5055,7 @@ namespace cadencii
                                     }
                                     if ( value != lvalue ) {
                                         index++;
-                                        add.put( clock, new VsqBPPair( value, maxid + index ) );
+                                        add[clock] = new VsqBPPair( value, maxid + index );
                                         lvalue = value;
                                         lclock = clock;
                                     }
@@ -5063,13 +5063,13 @@ namespace cadencii
 
                                 // clock_endでの値
                                 int valueAtEnd = list.getValue( clock_end );
-                                if ( add.containsKey( clock_end ) ) {
-                                    VsqBPPair v = add.get( clock_end );
+                                if ( add.ContainsKey( clock_end ) ) {
+                                    VsqBPPair v = add[ clock_end ];
                                     v.value = valueAtEnd;
-                                    add.put( clock_end, v );
+                                    add[ clock_end] =  v ;
                                 } else {
                                     index++;
-                                    add.put( clock_end, new VsqBPPair( valueAtEnd, maxid + index ) );
+                                    add[clock_end] = new VsqBPPair( valueAtEnd, maxid + index );
                                 }
 
                                 CadenciiCommand pen_run = new CadenciiCommand(
@@ -5148,7 +5148,7 @@ namespace cadencii
                 }
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                 if ( mSelectedCurve.equals( CurveType.VEL ) && is_utau_mode ) {
-                    int count = mVelEditSelected.size();
+                    int count = mVelEditSelected.Count;
                     VsqEvent[] values = new VsqEvent[count];
                     int i = 0;
                     foreach (var internal_id in mVelEditSelected.Keys) {
@@ -5156,7 +5156,7 @@ namespace cadencii
                         if ( item.UstEvent == null ) {
                             item.UstEvent = new UstEvent();
                         }
-                        item.UstEvent.setIntensity( mVelEditSelected.get( internal_id ).editing.UstEvent.getIntensity() );
+                        item.UstEvent.setIntensity( mVelEditSelected[ internal_id ].editing.UstEvent.getIntensity() );
                         values[i] = item;
                         i++;
                     }
@@ -5164,19 +5164,19 @@ namespace cadencii
                         VsqCommand.generateCommandEventReplaceRange( selected, values ) );
                     executeCommand( run, true );
                 } else {
-                    int count = mVelEditSelected.size();
+                    int count = mVelEditSelected.Count;
                     int[] ids = new int[count];
                     VsqID[] values = new VsqID[count];
                     int i = -1;
                     foreach (var id in mVelEditSelected.Keys) {
                         i++;
                         ids[i] = id;
-                        values[i] = (VsqID)mVelEditSelected.get( id ).editing.ID.clone();
+                        values[i] = (VsqID)mVelEditSelected[ id ].editing.ID.clone();
                     }
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, values ) );
                     executeCommand( run, true );
                 }
-                if ( mVelEditSelected.size() == 1 ) {
+                if ( mVelEditSelected.Count == 1 ) {
                     AppManager.itemSelection.clearEvent();
                     AppManager.itemSelection.addEvent( mVelEditLastSelectedID );
                 }
@@ -5434,7 +5434,7 @@ namespace cadencii
                     VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
                     if ( list != null ) {
                         List<Long> delete = new List<Long>();
-                        TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
+                        SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
                         long maxid = list.getMaxID();
                         if ( list.isContainsKey( clock ) ) {
                             int c = list.size();
@@ -5446,7 +5446,7 @@ namespace cadencii
                                 }
                             }
                         }
-                        add.put( clock, new VsqBPPair( value, maxid + 1 ) );
+                        add[clock] = new VsqBPPair( value, maxid + 1 );
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandTrackCurveEdit2( selected,
                                                                        mSelectedCurve.getName(),
@@ -5458,9 +5458,9 @@ namespace cadencii
             } else if ( mMouseDownMode == MouseDownMode.VEL_WAIT_HOVER ) {
 #if DEBUG
                 AppManager.debugWriteLine( "    entered VelEdit" );
-                AppManager.debugWriteLine( "    m_veledit_selected.Count=" + mVelEditSelected.size() );
+                AppManager.debugWriteLine( "    m_veledit_selected.Count=" + mVelEditSelected.Count );
                 AppManager.debugWriteLine( "    m_veledit_last_selectedid=" + mVelEditLastSelectedID );
-                AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + mVelEditSelected.containsKey( mVelEditLastSelectedID ) );
+                AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + mVelEditSelected.ContainsKey( mVelEditLastSelectedID ) );
 #endif
                 mMouseDownMode = MouseDownMode.VEL_EDIT;
                 Invalidate();

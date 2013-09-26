@@ -112,9 +112,9 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             init();
             registerEventHandlers();
-            TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
-            if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                Keys[] keys = dict.get( "menuVisualIconPalette" );
+            SortedDictionary<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
+            if ( dict.ContainsKey( "menuVisualIconPalette" ) ) {
+                Keys[] keys = dict[ "menuVisualIconPalette" ];
                 Keys shortcut = Keys.None;
                 keys.Aggregate(shortcut, (seed, key) => seed | key);
                 menuWindowHide.ShortcutKeys = shortcut;

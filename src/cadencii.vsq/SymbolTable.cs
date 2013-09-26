@@ -43,7 +43,7 @@ using cadencii.java.util;
                 /// <summary>
                 /// 辞書本体
                 /// </summary>
-                private TreeMap<String, SymbolTableEntry> mDict;
+                private SortedDictionary<String, SymbolTableEntry> mDict;
                 /// <summary>
                 /// 辞書の名前
                 /// </summary>
@@ -262,9 +262,9 @@ using cadencii.java.util;
                 public Object clone()
                 {
                     SymbolTable ret = new SymbolTable();
-                    ret.mDict = new TreeMap<String, SymbolTableEntry>();
+                    ret.mDict = new SortedDictionary<String, SymbolTableEntry>();
                     foreach (var key in mDict.Keys) {
-                        ret.mDict.put( key, (SymbolTableEntry)mDict.get( key ).clone() );
+                        ret.mDict[key] = (SymbolTableEntry)mDict[ key ].clone();
                     }
                     ret.mName = mName;
                     ret.mEnabled = mEnabled;
@@ -315,7 +315,7 @@ using cadencii.java.util;
                 /// <param name="encoding">辞書ファイルのテキストエンコーディング</param>
                 public SymbolTable( String path, boolean is_udc_mode, boolean enabled, String encoding )
                 {
-                    mDict = new TreeMap<String, SymbolTableEntry>();
+                    mDict = new SortedDictionary<String, SymbolTableEntry>();
                     mEnabled = enabled;
                     if (!System.IO.File.Exists(path)) {
                         return;
@@ -354,8 +354,8 @@ using cadencii.java.util;
                                 }
                             }
                             if ( !key.Equals( "" ) ) {
-                                if ( !mDict.containsKey( key ) ) {
-                                    mDict.put( key, new SymbolTableEntry( word, symbol ) );
+                                if ( !mDict.ContainsKey( key ) ) {
+                                    mDict[key] = new SymbolTableEntry( word, symbol );
                                 }
                             }
                         }
@@ -380,8 +380,8 @@ using cadencii.java.util;
                 private SymbolTableEntry attatchImp( String phrase )
                 {
                     String s = phrase.ToLower();
-                    if ( mDict.containsKey( s ) ) {
-                        return mDict.get( s );
+                    if ( mDict.ContainsKey( s ) ) {
+                        return mDict[ s ];
                     } else {
                         return null;
                     }

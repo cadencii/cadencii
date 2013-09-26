@@ -272,7 +272,7 @@ namespace cadencii.vsq
 #else
             :
 #endif
- this( vsq, track_index, new TreeMap<Integer, Integer>() )
+ this( vsq, track_index, new SortedDictionary<Integer, Integer>() )
 #if JAVA
             ;
 #else
@@ -286,7 +286,7 @@ namespace cadencii.vsq
         /// <param name="vsq"></param>
         /// <param name="track_index"></param>
         /// <param name="id_map">UstEventのIndexフィールドと、元になったVsqEventのInternalIDを対応付けるマップ。キーがIndex、値がInternalIDを表す</param>
-        public UstFile( VsqFile vsq, int track_index, TreeMap<Integer, Integer> id_map )
+        public UstFile( VsqFile vsq, int track_index, SortedDictionary<Integer, Integer> id_map )
         {
             VsqFile work = (VsqFile)vsq.clone();
             //work.removePart( 0, work.getPreMeasureClocks() );
@@ -376,7 +376,7 @@ namespace cadencii.vsq
                     itemust.setLength( item.Clock - last_clock );
                     itemust.Index = index;
                     index++;
-                    id_map.put( itemust.Index, -1 );
+                    id_map[ itemust.Index] = -1 ;
                     track_add.addEvent( itemust );
                 }
                 UstEvent item_add = (UstEvent)item.UstEvent.clone();
@@ -384,7 +384,7 @@ namespace cadencii.vsq
                 item_add.setLyric( item.ID.LyricHandle.L0.Phrase );
                 item_add.setNote( item.ID.Note );
                 item_add.Index = index;
-                id_map.put( item_add.Index, item.InternalID );
+                id_map[ item_add.Index] = item.InternalID ;
                 if ( item.UstEvent.getEnvelope() != null ) {
                     item_add.setEnvelope( (UstEnvelope)item.UstEvent.getEnvelope().clone() );
                 }

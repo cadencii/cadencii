@@ -437,7 +437,7 @@ namespace cadencii
         public MidiInDevice m_midi_in_mtc = null;
 #endif
         public FormMidiImExport mDialogMidiImportAndExport = null;
-        public TreeMap<EditTool, java.awt.Cursor> mCursor = new TreeMap<EditTool, java.awt.Cursor>();
+        public SortedDictionary<EditTool, java.awt.Cursor> mCursor = new SortedDictionary<EditTool, java.awt.Cursor>();
         private Preference mDialogPreference;
 #if ENABLE_PROPERTY
         public PropertyPanelContainer mPropertyPanelContainer;
@@ -1470,8 +1470,8 @@ namespace cadencii
                 singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
             }
 
-            if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
-                UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
+            if ( singerConfig != null && AppManager.mUtauVoiceDB.ContainsKey( singerConfig.VOICEIDSTR ) ) {
+                UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB[ singerConfig.VOICEIDSTR ];
                 OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
                 AppManager.mAddingEvent.UstEvent.setPreUtterance( otoArgs.msPreUtterance );
                 AppManager.mAddingEvent.UstEvent.setVoiceOverlap( otoArgs.msOverlap );
@@ -2832,7 +2832,7 @@ namespace cadencii
             boolean first = true;
             foreach (var id in PaletteToolServer.loadedTools.Keys) {
                 count++;
-                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
 #if !JAVA
                 System.Drawing.Bitmap icon = ipt.getIcon();
 #endif
@@ -2926,15 +2926,15 @@ namespace cadencii
 
             ClipboardEntry ce = AppManager.clipboard.getCopiedItems();
             int copy_started_clock = ce.copyStartedClock;
-            TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
-            TreeMap<CurveType, List<BezierChain>> copied_bezier = ce.beziers;
+            SortedDictionary<CurveType, VsqBPList> copied_curve = ce.points;
+            SortedDictionary<CurveType, List<BezierChain>> copied_bezier = ce.beziers;
             boolean copied_is_null = (ce.events.Count == 0) &&
                                   (ce.tempo.Count == 0) &&
                                   (ce.timesig.Count == 0) &&
-                                  (copied_curve.size() == 0) &&
-                                  (copied_bezier.size() == 0);
+                                  (copied_curve.Count == 0) &&
+                                  (copied_bezier.Count == 0);
             boolean enabled = !copied_is_null;
-            if ( copied_curve.size() == 1 ) {
+            if ( copied_curve.Count == 1 ) {
                 // 1種類のカーブがコピーされている場合→コピーされているカーブの種類と、現在選択されているカーブの種類とで、最大値と最小値が一致している場合のみ、ペースト可能
                 CurveType ct = CurveType.Empty;
                 foreach (var c in copied_curve.Keys) {
@@ -2948,7 +2948,7 @@ namespace cadencii
                 } else {
                     enabled = false;
                 }
-            } else if ( copied_curve.size() >= 2 ) {
+            } else if ( copied_curve.Count >= 2 ) {
                 // 複数種類のカーブがコピーされている場合→そのままペーストすればOK
                 enabled = true;
             }
@@ -3895,7 +3895,7 @@ namespace cadencii
         {
             mSpecialShortcutHolders.Clear();
 
-            TreeMap<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            SortedDictionary<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
             #region menuStripMain
             ByRef<Object> parent = new ByRef<Object>( null );
             foreach (var key in dict.Keys) {
@@ -3921,13 +3921,13 @@ namespace cadencii
                     applyMenuItemShortcut( dict, menu, menu_name );
                 }
             }
-            if ( dict.containsKey( "menuEditCopy" ) ) {
+            if ( dict.ContainsKey( "menuEditCopy" ) ) {
                 applyMenuItemShortcut( dict, menuHiddenCopy, "menuEditCopy" );
             }
-            if ( dict.containsKey( "menuEditCut" ) ) {
+            if ( dict.ContainsKey( "menuEditCut" ) ) {
                 applyMenuItemShortcut( dict, menuHiddenCut, "menuEditCut" );
             }
-            if ( dict.containsKey( "menuEditCopy" ) ) {
+            if ( dict.ContainsKey( "menuEditCopy" ) ) {
                 applyMenuItemShortcut( dict, menuHiddenPaste, "menuEditPaste" );
             }
             #endregion
@@ -3959,8 +3959,8 @@ namespace cadencii
             int c = work.Count;
             for ( int j = 0; j < c; j++ ) {
                 ValuePair<String, ToolStripMenuItem[]> item = work[ j ];
-                if ( dict.containsKey( item.getKey() ) ) {
-                    Keys[] k = dict.get( item.getKey() );
+                if ( dict.ContainsKey( item.getKey() ) ) {
+                    Keys[] k = dict[item.getKey()];
                     String s = Utility.getShortcutDisplayString( k );
 #if !JAVA
                     if ( s != "" ) {
@@ -3974,16 +3974,16 @@ namespace cadencii
 
             // ミキサーウィンドウ
             if ( AppManager.mMixerWindow != null ) {
-                if ( dict.containsKey( "menuVisualMixer" ) ) {
-                    Keys shortcut = dict.get( "menuVisualMixer" ).Aggregate(Keys.None, (seed, key) => seed | key);
+                if ( dict.ContainsKey( "menuVisualMixer" ) ) {
+                    Keys shortcut = dict[ "menuVisualMixer" ].Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.mMixerWindow.applyShortcut( shortcut );
                 }
             }
 
             // アイコンパレット
             if ( AppManager.iconPalette != null ) {
-                if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                    Keys shortcut = dict.get( "menuVisualIconPalette" ).Aggregate(Keys.None, (seed, key) => seed | key);
+                if ( dict.ContainsKey( "menuVisualIconPalette" ) ) {
+                    Keys shortcut = dict[ "menuVisualIconPalette" ].Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.iconPalette.applyShortcut( shortcut );
                 }
             }
@@ -3991,8 +3991,8 @@ namespace cadencii
 #if ENABLE_PROPERTY
             // プロパティ
             if( AppManager.propertyWindow != null ){
-                if( dict.containsKey( menuVisualProperty.Name ) ){
-                    Keys shortcut = dict.get( menuVisualProperty.Name ).Aggregate(Keys.None, (seed, key) => seed | key);
+                if( dict.ContainsKey( menuVisualProperty.Name ) ){
+                    Keys shortcut = dict[ menuVisualProperty.Name ].Aggregate(Keys.None, (seed, key) => seed | key);
                     AppManager.propertyWindow.applyShortcut( shortcut );
                 }
             }
@@ -4024,7 +4024,7 @@ namespace cadencii
                         System.Windows.Forms.ToolStripItem subtsi_tsmi = tsmi.DropDownItems[0];
                         if ( subtsi_tsmi is System.Windows.Forms.ToolStripMenuItem ) {
                             System.Windows.Forms.ToolStripMenuItem dd_run = (System.Windows.Forms.ToolStripMenuItem)subtsi_tsmi;
-                            if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
+                            if ( dict.ContainsKey( PortUtil.getComponentName( dd_run ) ) ) {
                                 applyMenuItemShortcut( dict, tsmi, PortUtil.getComponentName( tsi ) );
                             }
                         }
@@ -4041,7 +4041,7 @@ namespace cadencii
         /// <param name="item"></param>
         /// <param name="item_name"></param>
         /// <param name="default_shortcut"></param>
-        public void applyMenuItemShortcut( TreeMap<String, Keys[]> dict, Object item, String item_name )
+        public void applyMenuItemShortcut( SortedDictionary<String, Keys[]> dict, Object item, String item_name )
         {
 #if JAVA
             if( item == null ){
@@ -4080,7 +4080,7 @@ namespace cadencii
             }
 #else // JAVA
             try {
-                if ( dict.containsKey( item_name ) ) {
+                if ( dict.ContainsKey( item_name ) ) {
 #if DEBUG
                     if ( !(item is ToolStripMenuItem) ) {
                         throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
@@ -4088,7 +4088,7 @@ namespace cadencii
 #endif // DEBUG
                     if ( item is ToolStripMenuItem ) {
                         ToolStripMenuItem menu = (ToolStripMenuItem)item;
-                        Keys[] keys = dict.get( item_name );
+                        Keys[] keys = dict[ item_name ];
                         Keys shortcut = keys.Aggregate(Keys.None, (seed, key) => seed | key);
 
                         if ( shortcut == System.Windows.Forms.Keys.Delete ) {
@@ -4765,8 +4765,8 @@ namespace cadencii
                     System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)tsi;
                     if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tsb.Tag != null && tsb.Tag is String ) {
                         String id = (String)tsb.Tag;
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsb.Text = ipt.getName( Messaging.getLanguage() );
                             tsb.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
@@ -4779,8 +4779,8 @@ namespace cadencii
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
                     if ( tsmi.Tag != null && tsmi.Tag is String ) {
                         String id = (String)tsmi.Tag;
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsmi.Text = ipt.getName( Messaging.getLanguage() );
                             tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
@@ -4793,8 +4793,8 @@ namespace cadencii
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
                     if ( tsmi.Tag != null && tsmi.Tag is String ) {
                         String id = (String)tsmi.Tag;
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsmi.Text = ipt.getName( Messaging.getLanguage() );
                             tsmi.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
@@ -4807,8 +4807,8 @@ namespace cadencii
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
                     if ( tsmi.Tag != null && tsmi.Tag is String ) {
                         String id = (String)tsmi.Tag;
-                        if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                        if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
+                            IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsmi.Text = ipt.getName( Messaging.getLanguage() );
                         }
                     }
@@ -4816,7 +4816,7 @@ namespace cadencii
             }
 
             foreach (var id in PaletteToolServer.loadedTools.Keys) {
-                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
+                IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                 ipt.applyLanguage( Messaging.getLanguage() );
             }
 #endif
@@ -5394,16 +5394,16 @@ namespace cadencii
 
             // BPPairの貼付け
             VsqCommand edit_bpcurve = null; // BPListを変更するコマンド
-            TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
+            SortedDictionary<CurveType, VsqBPList> copied_curve = ce.points;
 #if DEBUG
-            sout.println( "FormMain#pasteEvent; copied_curve.size()=" + copied_curve.size() );
+            sout.println( "FormMain#pasteEvent; copied_curve.size()=" + copied_curve.Count );
 #endif
-            if ( copied_curve.size() > 0 ) {
+            if ( copied_curve.Count > 0 ) {
                 int dclock = clock - copy_started_clock;
 
-                TreeMap<String, VsqBPList> work = new TreeMap<String, VsqBPList>();
+                SortedDictionary<String, VsqBPList> work = new SortedDictionary<String, VsqBPList>();
                 foreach (var curve in copied_curve.Keys) {
-                    VsqBPList list = copied_curve.get( curve );
+                    VsqBPList list = copied_curve[ curve ];
 #if DEBUG
                     AppManager.debugWriteLine( "FormMain#pasteEvent; curve=" + curve );
 #endif
@@ -5441,24 +5441,24 @@ namespace cadencii
                             target.add( max - 1, list.getElementA( count - 1 ) );
                         }
                         target.add( max, valueAtEnd );
-                        if ( copied_curve.size() == 1 ) {
-                            work.put( trackSelector.getSelectedCurve().getName(), target );
+                        if ( copied_curve.Count == 1 ) {
+                            work[trackSelector.getSelectedCurve().getName()] = target;
                         } else {
-                            work.put( curve.getName(), target );
+                            work[curve.getName()] = target;
                         }
                     }
                 }
 #if DEBUG
-                sout.println( "FormMain#pasteEvent; work.size()=" + work.size() );
+                sout.println( "FormMain#pasteEvent; work.size()=" + work.Count );
 #endif
-                if ( work.size() > 0 ) {
-                    String[] curves = new String[work.size()];
-                    VsqBPList[] bplists = new VsqBPList[work.size()];
+                if ( work.Count > 0 ) {
+                    String[] curves = new String[work.Count];
+                    VsqBPList[] bplists = new VsqBPList[work.Count];
                     int count = -1;
                     foreach (var s in work.Keys) {
                         count++;
                         curves[count] = s;
-                        bplists[count] = work.get( s );
+                        bplists[count] = work[ s ];
                     }
                     edit_bpcurve = VsqCommand.generateCommandTrackCurveReplaceRange( AppManager.getSelected(), curves, bplists );
                 }
@@ -5467,19 +5467,19 @@ namespace cadencii
 
             // ベジエ曲線の貼付け
             CadenciiCommand edit_bezier = null;
-            TreeMap<CurveType, List<BezierChain>> copied_bezier = ce.beziers;
+            SortedDictionary<CurveType, List<BezierChain>> copied_bezier = ce.beziers;
 #if DEBUG
-            sout.println( "FormMain#pasteEvent; copied_bezier.size()=" + copied_bezier.size() );
+            sout.println( "FormMain#pasteEvent; copied_bezier.size()=" + copied_bezier.Count );
 #endif
-            if ( copied_bezier.size() > 0 ) {
+            if ( copied_bezier.Count > 0 ) {
                 int dclock = clock - copy_started_clock;
                 BezierCurves attached_curve = (BezierCurves)AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).clone();
-                TreeMap<CurveType, List<BezierChain>> command_arg = new TreeMap<CurveType, List<BezierChain>>();
+                SortedDictionary<CurveType, List<BezierChain>> command_arg = new SortedDictionary<CurveType, List<BezierChain>>();
                 foreach (var curve in copied_bezier.Keys) {
                     if ( curve.isScalar() ) {
                         continue;
                     }
-                    foreach (var bc in copied_bezier.get( curve )) {
+                    foreach (var bc in copied_bezier[ curve ]) {
                         BezierChain bc_copy = (BezierChain)bc.clone();
                         foreach (var bp in bc_copy.points) {
                             bp.setBase( new PointD( bp.getBase().getX() + dclock, bp.getBase().getY() ) );
@@ -5490,7 +5490,7 @@ namespace cadencii
                     foreach (var bc in attached_curve.get( curve )) {
                         arg.Add( bc );
                     }
-                    command_arg.put( curve, arg );
+                    command_arg[ curve] =  arg ;
                 }
                 edit_bezier = VsqFileEx.generateCommandReplaceAttachedCurveRange( AppManager.getSelected(), command_arg );
             }
@@ -5558,8 +5558,8 @@ namespace cadencii
                 int end_clock = AppManager.mWholeSelectedInterval.getEnd();
                 ClipboardEntry ce = new ClipboardEntry();
                 ce.copyStartedClock = start_clock;
-                ce.points = new TreeMap<CurveType, VsqBPList>();
-                ce.beziers = new TreeMap<CurveType, List<BezierChain>>();
+                ce.points = new SortedDictionary<CurveType, VsqBPList>();
+                ce.beziers = new SortedDictionary<CurveType, List<BezierChain>>();
                 for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
                     CurveType vct = Utility.CURVE_USAGE[i];
                     VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( vct.getName() );
@@ -5582,8 +5582,8 @@ namespace cadencii
                             break;
                         }
                     }
-                    ce.beziers.put( vct, tmp_bezier );
-                    ce.points.put( vct, tmp_bplist );
+                    ce.beziers[ vct] =  tmp_bezier ;
+                    ce.points[ vct] =  tmp_bplist ;
                 }
 
                 if ( AppManager.itemSelection.getEventCount() > 0 ) {
@@ -5624,8 +5624,8 @@ namespace cadencii
                 AppManager.clipboard.setCopiedTimesig( list, min );
             } else if ( AppManager.itemSelection.getPointIDCount() > 0 ) {
                 ClipboardEntry ce = new ClipboardEntry();
-                ce.points = new TreeMap<CurveType, VsqBPList>();
-                ce.beziers = new TreeMap<CurveType, List<BezierChain>>();
+                ce.points = new SortedDictionary<CurveType, VsqBPList>();
+                ce.beziers = new SortedDictionary<CurveType, List<BezierChain>>();
 
                 ValuePair<Integer, Integer> t = trackSelector.getSelectedRegion();
                 int start = t.getKey();
@@ -5640,7 +5640,7 @@ namespace cadencii
                 if ( tmp_bezier.Count > 0 ) {
                     // ベジエ曲線が1個以上コピーされた場合
                     // 範囲内のデータ点を追加する
-                    ce.beziers.put( trackSelector.getSelectedCurve(), tmp_bezier );
+                    ce.beziers[trackSelector.getSelectedCurve()] = tmp_bezier;
                     CurveType curve = trackSelector.getSelectedCurve();
                     VsqBPList list = AppManager.getVsqFile().Track[AppManager.getSelected()].getCurve( curve.getName() );
                     if ( list != null ) {
@@ -5654,7 +5654,7 @@ namespace cadencii
                                 break;
                             }
                         }
-                        ce.points.put( curve, tmp_bplist );
+                        ce.points[ curve] =  tmp_bplist ;
                     }
                 } else {
                     // ベジエ曲線がコピーされなかった場合
@@ -5671,7 +5671,7 @@ namespace cadencii
                         }
                         if ( tmp_bplist.size() > 0 ) {
                             ce.copyStartedClock = tmp_bplist.getKeyClock( 0 );
-                            ce.points.put( curve, tmp_bplist );
+                            ce.points[ curve] =  tmp_bplist ;
                         }
                     }
                 }
@@ -5741,7 +5741,7 @@ namespace cadencii
                             delete.Add( id );
                         }
                     }
-                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new TreeMap<Integer, VsqBPPair>() );
+                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new SortedDictionary<Integer, VsqBPPair>() );
                     work.executeCommand( tmp );
                 }
 
@@ -6274,8 +6274,8 @@ namespace cadencii
                             if (0 <= program && program < AppManager.editorConfig.UtauSingers.Count) {
                                 SingerConfig sc = AppManager.editorConfig.UtauSingers[program];
                                 // 通常のUTAU音源
-                                if (AppManager.mUtauVoiceDB.containsKey(sc.VOICEIDSTR)) {
-                                    UtauVoiceDB db = AppManager.mUtauVoiceDB.get(sc.VOICEIDSTR);
+                                if (AppManager.mUtauVoiceDB.ContainsKey(sc.VOICEIDSTR)) {
+                                    UtauVoiceDB db = AppManager.mUtauVoiceDB[sc.VOICEIDSTR];
                                     OtoArgs oa = db.attachFileNameFromLyric(lyric_jp);
                                     if (oa.fileName == null ||
                                         (oa.fileName != null && oa.fileName == "")) {
@@ -12722,12 +12722,12 @@ namespace cadencii
 
         public void menuSettingShortcut_Click( Object sender, EventArgs e )
         {
-            TreeMap<String, ValuePair<String, Keys[]>> dict = new TreeMap<String, ValuePair<String, Keys[]>>();
-            TreeMap<String, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            SortedDictionary<String, ValuePair<String, Keys[]>> dict = new SortedDictionary<String, ValuePair<String, Keys[]>>();
+            SortedDictionary<String, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
 #if DEBUG
             sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
             foreach (var name in configured.Keys){
-                Keys[] keys = configured.get( name );
+                Keys[] keys = configured[ name ];
                 String disp = Utility.getShortcutDisplayString( keys );
                 sout.println( "    " + name + " -> " + disp );
             }
@@ -12740,8 +12740,8 @@ namespace cadencii
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
                     String name = tsmi.Name;
                     script_shortcut.Add( name );
-                    if ( !configured.containsKey( name ) ) {
-                        configured.put( name, new Keys[] { } );
+                    if ( !configured.ContainsKey( name ) ) {
+                        configured[ name] =  new Keys[] { } ;
                     }
                 }
             }
@@ -12797,7 +12797,7 @@ namespace cadencii
                 if ( i1 > 0 ) {
                     s1 = s1.Substring( 0, i1 );
                 }
-                dict.put( parent + s1, new ValuePair<String, Keys[]>( name, configured.get( name ) ) );
+                dict[parent + s1] = new ValuePair<String, Keys[]>( name, configured[ name ] );
             }
 
             // 最初に戻る、のショートカットキー
@@ -12805,7 +12805,7 @@ namespace cadencii
             if ( keysGoToFirst == null ) {
                 keysGoToFirst = new Keys[] { };
             }
-            dict.put( _( "Go to the first" ), new ValuePair<String, Keys[]>( "SpecialShortcutGoToFirst", keysGoToFirst ) );
+            dict[_( "Go to the first" )] = new ValuePair<String, Keys[]>( "SpecialShortcutGoToFirst", keysGoToFirst );
 
             FormShortcutKeys form = null;
             try {
@@ -12813,10 +12813,10 @@ namespace cadencii
                 form.Location = getFormPreferedLocation( form );
                 DialogResult dr = AppManager.showModalDialog( form, this );
                 if ( dr == DialogResult.OK ) {
-                    TreeMap<String, ValuePair<String, Keys[]>> res = form.getResult();
+                    SortedDictionary<String, ValuePair<String, Keys[]>> res = form.getResult();
                     foreach (var display in res.Keys) {
-                        String name = res.get( display ).getKey();
-                        Keys[] keys = res.get( display ).getValue();
+                        String name = res[ display ].getKey();
+                        Keys[] keys = res[ display ].getValue();
                         boolean found = false;
                         if ( name.Equals( "SpecialShortcutGoToFirst" ) ) {
                             AppManager.editorConfig.SpecialShortcutGoToFirst = keys;
@@ -17078,10 +17078,10 @@ namespace cadencii
             }
             PaletteToolMenuItem tsmi = (PaletteToolMenuItem)sender;
             String id = tsmi.getPaletteToolID();
-            if ( !PaletteToolServer.loadedTools.containsKey( id ) ) {
+            if ( !PaletteToolServer.loadedTools.ContainsKey( id ) ) {
                 return;
             }
-            Object instance = PaletteToolServer.loadedTools.get( id );
+            Object instance = PaletteToolServer.loadedTools[ id ];
             IPaletteTool ipt = (IPaletteTool)instance;
             if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                 XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );

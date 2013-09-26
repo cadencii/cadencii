@@ -225,7 +225,7 @@ public class Utau_Plugin_Invoker : Form {
 
         // vsq -> ustに変換
         // キーがustのIndex, 値がInternalID
-        TreeMap<int, int> map = new TreeMap<int, int>();
+        SortedDictionary<int, int> map = new SortedDictionary<int, int>();
         UstFile u = new UstFile( v, 1, map );
 
         u.write( Path.Combine( PortUtil.getApplicationStartupPath(), "u.ust" ) );
@@ -381,7 +381,7 @@ public class Utau_Plugin_Invoker : Form {
                 continue;
             }
             int ue_length = ue.getLength();
-            if ( map.containsKey( ue.Index ) ) {
+            if ( map.ContainsKey( ue.Index ) ) {
                 // 既存の音符の編集
                 VsqEvent target = vsq_track.findEventFromID( map[ue.Index] );
                 if ( target == null ) {

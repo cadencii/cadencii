@@ -515,7 +515,7 @@ namespace cadencii
         /// <summary>
         /// UTAUの原音設定のリスト。TreeMapのキーは、oto.iniのあるディレクトリ名になっている。
         /// </summary>
-        public static TreeMap<String, UtauVoiceDB> mUtauVoiceDB = new TreeMap<String, UtauVoiceDB>();
+        public static SortedDictionary<String, UtauVoiceDB> mUtauVoiceDB = new SortedDictionary<String, UtauVoiceDB>();
         /// <summary>
         /// 最後にレンダリングが行われた時の、トラックの情報が格納されている。
         /// </summary>
@@ -1121,7 +1121,7 @@ namespace cadencii
                 internalIdList.Add( internal_id );
             }
 
-            TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
+            SortedDictionary<Integer, Integer> ids = new SortedDictionary<Integer, Integer>();
             //for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
             for( int indx = 0; indx < size; indx++ ){
                 int internal_id = internalIdList[ indx ];
@@ -1133,23 +1133,23 @@ namespace cadencii
                 for ( int i = 0; i < areas.Length; i++ ) {
                     EditedZoneUnit area = areas[i];
                     if ( clockStart < area.mEnd && area.mEnd <= clockEnd ) {
-                        if ( !ids.containsKey( internal_id ) ) {
-                            ids.put( internal_id, indx );
+                        if ( !ids.ContainsKey( internal_id ) ) {
+                            ids[ internal_id] =  indx ;
                             zone.add( clockStart, clockEnd );
                         }
                     } else if ( clockStart <= area.mStart && area.mStart < clockEnd ) {
-                        if ( !ids.containsKey( internal_id ) ) {
-                            ids.put( internal_id, indx );
+                        if ( !ids.ContainsKey( internal_id ) ) {
+                            ids[ internal_id] =  indx ;
                             zone.add( clockStart, clockEnd );
                         }
                     } else if ( area.mStart <= clockStart && clockEnd < area.mEnd ) {
-                        if ( !ids.containsKey( internal_id ) ) {
-                            ids.put( internal_id, indx );
+                        if ( !ids.ContainsKey( internal_id ) ) {
+                            ids[ internal_id] =  indx ;
                             zone.add( clockStart, clockEnd );
                         }
                     } else if ( clockStart <= area.mStart && area.mEnd < clockEnd ) {
-                        if ( !ids.containsKey( internal_id ) ) {
-                            ids.put( internal_id, indx );
+                        if ( !ids.ContainsKey( internal_id ) ) {
+                            ids[ internal_id] =  indx ;
                             zone.add( clockStart, clockEnd );
                         }
                     }
@@ -1162,7 +1162,7 @@ namespace cadencii
             while ( changed ) {
                 changed = false;
                 foreach (var id in ids.Keys) {
-                    int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
+                    int indx = ids[ id ]; // InternalIDがidのアイテムの禁書目録
                     //VsqEvent item = vsq_track.getEvent( indx );
 
                     // アイテムを遡り、連続していれば追加する
@@ -1178,8 +1178,8 @@ namespace cadencii
                         int searchClockEnd = clockEndList[ i ];//
                         // 一個前の音符の終了位置が，この音符の開始位置と同じが後ろにある場合 -> 重なり有りと判定
                         if ( clock <= searchClockEnd ) {
-                            if ( !ids.containsKey( internal_id ) ) {
-                                ids.put( internal_id, i );
+                            if ( !ids.ContainsKey( internal_id ) ) {
+                                ids[ internal_id] =  i ;
                                 zone.add( searchClock, searchClockEnd );
                                 changed = true;
                             }
@@ -1201,8 +1201,8 @@ namespace cadencii
                         int searchClockEnd = clockEndList[ i ];// search.ID.getLength();
                         // 一行後ろの音符の開始位置が，この音符の終了位置と同じが後ろにある場合 -> 重なり有りと判定
                         if ( searchClock <= clock ) {
-                            if ( !ids.containsKey( internal_id ) ) {
-                                ids.put( internal_id, i );
+                            if ( !ids.ContainsKey( internal_id ) ) {
+                                ids[ internal_id] =  i ;
                                 zone.add( searchClock, searchClockEnd );
                                 changed = true;
                             }
@@ -1477,8 +1477,8 @@ namespace cadencii
                 return;
             }
             SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-            if ( sc != null && mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                UtauVoiceDB db = mUtauVoiceDB.get( sc.VOICEIDSTR );
+            if ( sc != null && mUtauVoiceDB.ContainsKey( sc.VOICEIDSTR ) ) {
+                UtauVoiceDB db = mUtauVoiceDB[ sc.VOICEIDSTR ];
                 OtoArgs oa = db.attachFileNameFromLyric( item.ID.LyricHandle.L0.Phrase );
                 if ( item.UstEvent == null ) {
                     item.UstEvent = new UstEvent();
@@ -2861,7 +2861,7 @@ namespace cadencii
         /// </summary>
         public static void reloadUtauVoiceDB()
         {
-            mUtauVoiceDB.clear();
+            mUtauVoiceDB.Clear();
             foreach (var config in editorConfig.UtauSingers) {
                 // 通常のUTAU音源
                 UtauVoiceDB db = null;
@@ -2873,7 +2873,7 @@ namespace cadencii
                     Logger.write( typeof( AppManager ) + ".reloadUtauVoiceDB; ex=" + ex + "\n" );
                 }
                 if ( db != null ) {
-                    mUtauVoiceDB.put( config.VOICEIDSTR, db );
+                    mUtauVoiceDB[ config.VOICEIDSTR] =  db ;
                 }
             }
         }
