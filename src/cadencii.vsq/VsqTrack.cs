@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -932,7 +933,7 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="new_renderer"></param>
         /// <param name="singers"></param>
-        public void changeRenderer( String new_renderer, Vector<VsqID> singers )
+        public void changeRenderer( String new_renderer, List<VsqID> singers )
         {
             VsqID default_id = null;
             int singers_size = singers.Count;
@@ -1105,7 +1106,7 @@ namespace cadencii.vsq
             return counter;
         }
 
-        public VsqTrack( Vector<MidiEvent> midi_event, String encoding )
+        public VsqTrack( List<MidiEvent> midi_event, String encoding )
         {
             String track_name = "";
 
@@ -1113,7 +1114,7 @@ namespace cadencii.vsq
             try {
                 sw = new TextStream();
                 int count = midi_event.Count;
-                Vector<Integer> buffer = new Vector<Integer>();
+                List<Integer> buffer = new List<Integer>();
                 for ( int i = 0; i < count; i++ ) {
                     MidiEvent item = midi_event[ i ];
                     if ( item.firstByte == 0xff && item.data.Length > 0 ) {

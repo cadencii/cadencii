@@ -35,11 +35,11 @@ namespace cadencii.vsq
     {
 #endif
         public Object Tag;
-        private Vector<UstEvent> m_events;
+        private List<UstEvent> m_events;
 
         public UstTrack()
         {
-            m_events = new Vector<UstEvent>();
+            m_events = new List<UstEvent>();
         }
 
         /// <summary>

@@ -54,7 +54,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( VsqTrack.class )
 #endif
-        public Vector<VsqTrack> Track;
+        public List<VsqTrack> Track;
         /// <summary>
         /// テンポ情報を保持したテーブル
         /// </summary>
@@ -420,7 +420,7 @@ namespace cadencii.vsq
             int vpbs = 24;
             int vpit = 0;
 
-            Vector<Integer> parts = new Vector<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
+            List<Integer> parts = new List<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
             parts.Add( 0 );
             int lastclock = 0;// premeasure_clock;
             for ( Iterator<VsqEvent> itr = vsq.Track[ track ].getNoteEventIterator(); itr.hasNext(); ) {
@@ -756,7 +756,7 @@ namespace cadencii.vsq
 #endif
                 int track = (Integer)command.Args[0];
                 VsqEvent[] items = (VsqEvent[])command.Args[1];
-                Vector<Integer> inv_ids = new Vector<Integer>();
+                List<Integer> inv_ids = new List<Integer>();
                 int min_clock = (int)TotalClocks;
                 int max_clock = 0;
                 VsqTrack target = Track[ track ];
@@ -803,9 +803,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_DELETE_RANGE ) {
                 #region EVENT_DELETE_RANGE
-                Vector<Integer> internal_ids = (Vector<Integer>)command.Args[1];
+                List<Integer> internal_ids = (List<Integer>)command.Args[1];
                 int track = (Integer)command.Args[0];
-                Vector<VsqEvent> inv = new Vector<VsqEvent>();
+                List<VsqEvent> inv = new List<VsqEvent>();
                 int min_clock = int.MaxValue;
                 int max_clock = int.MinValue;
                 VsqTrack target = this.Track[ track ];
@@ -911,9 +911,9 @@ namespace cadencii.vsq
                 #region TRACK_CURVE_EDIT
                 int track = (Integer)command.Args[0];
                 String curve = (String)command.Args[1];
-                Vector<BPPair> com = (Vector<BPPair>)command.Args[2];
+                List<BPPair> com = (List<BPPair>)command.Args[2];
                 VsqCommand inv = null;
-                Vector<BPPair> edit = new Vector<BPPair>();
+                List<BPPair> edit = new List<BPPair>();
                 VsqBPList target_list = Track[ track ].getCurve( curve );
                 if ( com != null ) {
                     if ( com.Count > 0 ) {
@@ -961,7 +961,7 @@ namespace cadencii.vsq
                         edit.Sort();
                         inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, edit );
                     } else if ( com.Count == 0 ) {
-                        inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, new Vector<BPPair>() );
+                        inv = VsqCommand.generateCommandTrackCurveEdit( track, curve, new List<BPPair>() );
                     }
                 }
 
@@ -1006,10 +1006,10 @@ namespace cadencii.vsq
                 #region TRACK_CURVE_EDIT2
                 int track = (Integer)command.Args[0];
                 String curve = (String)command.Args[1];
-                Vector<Long> delete = (Vector<Long>)command.Args[2];
+                List<Long> delete = (List<Long>)command.Args[2];
                 TreeMap<Integer, VsqBPPair> add = (TreeMap<Integer, VsqBPPair>)command.Args[3];
 
-                Vector<Long> inv_delete = new Vector<Long>();
+                List<Long> inv_delete = new List<Long>();
                 TreeMap<Integer, VsqBPPair> inv_add = new TreeMap<Integer, VsqBPPair>();
                 processTrackCurveEdit( track, curve, delete, add, inv_delete, inv_add );
                 updateTotalClocks();
@@ -1019,15 +1019,15 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2_ALL ) {
                 #region TRACK_CURVE_EDIT2_ALL
                 int track = (Integer)command.Args[0];
-                Vector<String> curve = (Vector<String>)command.Args[1];
-                Vector<Vector<Long>> delete = (Vector<Vector<Long>>)command.Args[2];
-                Vector<TreeMap<Integer, VsqBPPair>> add = (Vector<TreeMap<Integer, VsqBPPair>>)command.Args[3];
+                List<String> curve = (List<String>)command.Args[1];
+                List<List<Long>> delete = (List<List<Long>>)command.Args[2];
+                List<TreeMap<Integer, VsqBPPair>> add = (List<TreeMap<Integer, VsqBPPair>>)command.Args[3];
 
                 int c = curve.Count;
-                Vector<Vector<Long>> inv_delete = new Vector<Vector<Long>>();
-                Vector<TreeMap<Integer, VsqBPPair>> inv_add = new Vector<TreeMap<Integer, VsqBPPair>>();
+                List<List<Long>> inv_delete = new List<List<Long>>();
+                List<TreeMap<Integer, VsqBPPair>> inv_add = new List<TreeMap<Integer, VsqBPPair>>();
                 for ( int i = 0; i < c; i++ ) {
-                    Vector<Long> part_inv_delete = new Vector<Long>();
+                    List<Long> part_inv_delete = new List<Long>();
                     TreeMap<Integer, VsqBPPair> part_inv_add = new TreeMap<Integer, VsqBPPair>();
                     processTrackCurveEdit( track, curve[ i ], delete[ i ], add[ i ], part_inv_delete, part_inv_add );
                     inv_delete.Add( part_inv_delete );
@@ -1065,17 +1065,17 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
                 #region TRACK_CURVE_EDIT_RANGE
                 int track = (Integer)command.Args[0];
-                Vector<String> curves = (Vector<String>)command.Args[1];
-                Vector<Vector<BPPair>> coms = (Vector<Vector<BPPair>>)command.Args[2];
-                Vector<Vector<BPPair>> inv_coms = new Vector<Vector<BPPair>>();
+                List<String> curves = (List<String>)command.Args[1];
+                List<List<BPPair>> coms = (List<List<BPPair>>)command.Args[2];
+                List<List<BPPair>> inv_coms = new List<List<BPPair>>();
                 VsqCommand inv = null;
 
                 int count = curves.Count;
                 for ( int k = 0; k < count; k++ ) {
                     String curve = curves[ k ];
-                    Vector<BPPair> com = coms[ k ];
+                    List<BPPair> com = coms[ k ];
                     //SortedList<int, int> list = Tracks[track][curve].List;
-                    Vector<BPPair> edit = new Vector<BPPair>();
+                    List<BPPair> edit = new List<BPPair>();
                     if ( com != null ) {
                         if ( com.Count > 0 ) {
                             int start_clock = com[ 0 ].Clock;
@@ -1123,7 +1123,7 @@ namespace cadencii.vsq
                             //inv = generateCommandTrackEditCurve( track, curve, edit );
                         } else if ( com.Count == 0 ) {
                             //inv = generateCommandTrackEditCurve( track, curve, new Vector<BPPair>() );
-                            inv_coms.Add( new Vector<BPPair>() );
+                            inv_coms.Add( new List<BPPair>() );
                         }
                     }
 
@@ -1168,8 +1168,8 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.EVENT_CHANGE_VELOCITY ) {
                 #region EVENT_CHANGE_VELOCITY
                 int track = (Integer)command.Args[0];
-                Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
-                Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
+                List<ValuePair<Integer, Integer>> veloc = (List<ValuePair<Integer, Integer>>)command.Args[1];
+                List<ValuePair<Integer, Integer>> inv = new List<ValuePair<Integer, Integer>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
                     foreach (var add in veloc) {
@@ -1185,8 +1185,8 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.EVENT_CHANGE_ACCENT ) {
                 #region EVENT_CHANGE_ACCENT
                 int track = (Integer)command.Args[0];
-                Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
-                Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
+                List<ValuePair<Integer, Integer>> veloc = (List<ValuePair<Integer, Integer>>)command.Args[1];
+                List<ValuePair<Integer, Integer>> inv = new List<ValuePair<Integer, Integer>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
                     foreach (var add in veloc) {
@@ -1202,8 +1202,8 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.EVENT_CHANGE_DECAY ) {
                 #region EVENT_CHANGE_DECAY
                 int track = (Integer)command.Args[0];
-                Vector<ValuePair<Integer, Integer>> veloc = (Vector<ValuePair<Integer, Integer>>)command.Args[1];
-                Vector<ValuePair<Integer, Integer>> inv = new Vector<ValuePair<Integer, Integer>>();
+                List<ValuePair<Integer, Integer>> veloc = (List<ValuePair<Integer, Integer>>)command.Args[1];
+                List<ValuePair<Integer, Integer>> inv = new List<ValuePair<Integer, Integer>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
                     foreach (var add in veloc) {
@@ -1320,8 +1320,8 @@ namespace cadencii.vsq
                 int[] internal_ids = (int[])command.Args[1];
                 int[] clocks = (int[])command.Args[2];
                 VsqID[] values = (VsqID[])command.Args[3];
-                Vector<VsqID> inv_id = new Vector<VsqID>();
-                Vector<Integer> inv_clock = new Vector<Integer>();
+                List<VsqID> inv_id = new List<VsqID>();
+                List<Integer> inv_clock = new List<Integer>();
                 for ( int i = 0; i < internal_ids.Length; i++ ) {
                     for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                         VsqEvent item = itr.next();
@@ -1419,9 +1419,9 @@ namespace cadencii.vsq
 
         private void processTrackCurveEdit( int track,
                                             String curve,
-                                            Vector<Long> delete,
+                                            List<Long> delete,
                                             TreeMap<Integer, VsqBPPair> add,
-                                            Vector<Long> inv_delete,
+                                            List<Long> inv_delete,
                                             TreeMap<Integer, VsqBPPair> inv_add )
         {
             VsqBPList list = Track[ track ].getCurve( curve );
@@ -1587,7 +1587,7 @@ namespace cadencii.vsq
         public Object clone()
         {
             VsqFile ret = new VsqFile();
-            ret.Track = new Vector<VsqTrack>();
+            ret.Track = new List<VsqTrack>();
             for ( int i = 0; i < Track.Count; i++ ) {
                 ret.Track.Add( (VsqTrack)Track[ i ].clone() );
             }
@@ -1627,7 +1627,7 @@ namespace cadencii.vsq
         private class BarLineIterator : Iterator<VsqBarLineType>
         {
 #endif
-            private Vector<TimeSigTableEntry> m_list;
+            private List<TimeSigTableEntry> m_list;
             private int m_end_clock;
             private int i;
             private int clock;
@@ -1638,7 +1638,7 @@ namespace cadencii.vsq
             int local_clock;
             int bar_counter;
 
-            public BarLineIterator( Vector<TimeSigTableEntry> list, int end_clock )
+            public BarLineIterator( List<TimeSigTableEntry> list, int end_clock )
             {
                 m_list = list;
                 m_end_clock = end_clock;
@@ -1885,7 +1885,7 @@ namespace cadencii.vsq
             TotalClocks = pre_measure * 480 * 4 / denominator * numerator;
             //m_tpq = 480;
 
-            Track = new Vector<VsqTrack>();
+            Track = new List<VsqTrack>();
             Track.Add( new VsqTrack( tempo, numerator, denominator ) );
             Track.Add( new VsqTrack( "Voice1", singer ) );
             Master = new VsqMaster( pre_measure );
@@ -1913,7 +1913,7 @@ namespace cadencii.vsq
 
             // SMFをコンバートしたテキストファイルを作成
             MidiFile mf = new MidiFile( _fpath );
-            Track = new Vector<VsqTrack>();
+            Track = new List<VsqTrack>();
             int num_track = mf.getTrackCount();
 #if DEBUG
             sout.println( "VsqFile#.ctor; num_track=" + num_track );
@@ -1931,7 +1931,7 @@ namespace cadencii.vsq
             VsqMixer mixer = Track[ 1 ].getMixer();
             if ( mixer == null ) {
                 Mixer = new VsqMixer( 0, 0, 0, 0 );
-                Mixer.Slave = new Vector<VsqMixerEntry>();
+                Mixer.Slave = new List<VsqMixerEntry>();
                 for ( int i = 1; i < Track.Count; i++ ) {
                     Mixer.Slave.Add( new VsqMixerEntry() );
                 }
@@ -1961,7 +1961,7 @@ namespace cadencii.vsq
             if ( master_track >= 0 ) {
                 #region TempoListの作成
                 // MIDI event リストの取得
-                Vector<MidiEvent> midi_event = mf.getMidiEventList( master_track );
+                List<MidiEvent> midi_event = mf.getMidiEventList( master_track );
                 // とりあえずtempo_tableに格納
                 prev_tempo = 500000;
                 prev_index = 0;
@@ -2145,15 +2145,15 @@ namespace cadencii.vsq
             }
         }
 
-        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding )
+        public List<MidiEvent> generateMetaTextEvent( int track, String encoding )
         {
             return generateMetaTextEvent( track, encoding, calculatePreMeasureInClock() );
         }
 
-        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding, int start_clock )
+        public List<MidiEvent> generateMetaTextEvent( int track, String encoding, int start_clock )
         {
             String _NL = "" + (char)(byte)0x0a;
-            Vector<MidiEvent> ret = new Vector<MidiEvent>();
+            List<MidiEvent> ret = new List<MidiEvent>();
             TextStream sr = null;
             try {
                 sr = new TextStream();
@@ -2163,11 +2163,11 @@ namespace cadencii.vsq
                 String tmp = "";
                 if ( sr.ready() ) {
 #if NEW_IMPL
-                    Vector<Byte> buffer = new Vector<Byte>();
+                    List<Byte> buffer = new List<Byte>();
                     while ( sr.ready() ) {
                         tmp = sr.readLine() + _NL;
                         Byte[] linebytes = PortUtil.convertByteArray( PortUtil.getEncodedByte( encoding, tmp ) );
-                        buffer.AddRange( new Vector<byte>( linebytes ) );
+                        buffer.AddRange( new List<byte>( linebytes ) );
                         while ( getLinePrefixBytes( line_count + 1 ).Length + buffer.Count >= 127 ) {
                             line_count++;
                             byte[] prefix = getLinePrefixBytes( line_count );
@@ -2342,7 +2342,7 @@ namespace cadencii.vsq
             fs.write( seq_name, 0, seq_name.Length );
 
             //Meta Textを準備
-            Vector<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding );
+            List<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding );
             long lastclock = 0;
             for ( int i = 0; i < meta.Count; i++ ) {
                 writeFlexibleLengthUnsignedLong( fs, (long)(meta[ i ].clock - lastclock) );
@@ -2457,7 +2457,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public static VsqNrpn[] generateExpressionNRPN( VsqFile vsq, int track, int msPreSend )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             VsqBPList dyn = vsq.Track[ track ].getCurve( "DYN" );
             int count = dyn.size();
             for ( int i = 0; i < count; i++ ) {
@@ -2475,7 +2475,7 @@ namespace cadencii.vsq
 
         public static VsqNrpn[] generateFx2DepthNRPN( VsqFile vsq, int track, int msPreSend )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             VsqBPList fx2depth = vsq.Track[ track ].getCurve( "fx2depth" );
             int count = fx2depth.size();
             for ( int i = 0; i < count; i++ ) {
@@ -2538,7 +2538,7 @@ namespace cadencii.vsq
             ValuePair<Byte, Byte> d2 = getMsbAndLsb( msPreSend );
             byte delay0 = d2.getKey();
             byte delay1 = d2.getValue();
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
 
             int i = clock - vsq.getPresendClockAt( clock, msPreSend );
             VsqNrpn add = new VsqNrpn( i, NRPN.CC_BS_VERSION_AND_DEVICE, (byte)0x00, (byte)0x00 );
@@ -2772,7 +2772,7 @@ namespace cadencii.vsq
 #if DEBUG
             sout.println( "GenerateNRPN(VsqTrack,int,int,int,int)" );
 #endif
-            Vector<VsqNrpn> list = new Vector<VsqNrpn>();
+            List<VsqNrpn> list = new List<VsqNrpn>();
 
             VsqTrack target = vsq.Track[ track ];
             String version = target.getCommon().Version;
@@ -2803,16 +2803,16 @@ namespace cadencii.vsq
                 }
             }
             if ( singer_event >= 0 ) { //見つかった場合
-                list.AddRange( new Vector<VsqNrpn>( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) ) );
+                list.AddRange( new List<VsqNrpn>( generateSingerNRPN( vsq, target.getEvent( singer_event ), 0 ) ) );
             } else {                   //多分ありえないと思うが、歌手が不明の場合。
                 //throw new Exception( "first singer was not specified" );
                 list.Add( new VsqNrpn( 0, NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x0 ) );
                 list.Add( new VsqNrpn( 0, NRPN.PC_VOICE_TYPE, (byte)0x0 ) );
             }
 
-            list.AddRange( new Vector<VsqNrpn>( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) ) );
+            list.AddRange( new List<VsqNrpn>( generateVoiceChangeParameterNRPN( vsq, track, msPreSend ) ) );
             if ( version.StartsWith( "DSB2" ) ) {
-                list.AddRange( new Vector<VsqNrpn>( generateFx2DepthNRPN( vsq, track, msPreSend ) ) );
+                list.AddRange( new List<VsqNrpn>( generateFx2DepthNRPN( vsq, track, msPreSend ) ) );
             }
 
             int ms_presend = msPreSend;
@@ -2827,21 +2827,21 @@ namespace cadencii.vsq
             }
             VsqBPList dyn = target.getCurve( "dyn" );
             if ( dyn.size() > 0 ) {
-                Vector<VsqNrpn> listdyn = new Vector<VsqNrpn>( generateExpressionNRPN( vsq, track, ms_presend ) );
+                List<VsqNrpn> listdyn = new List<VsqNrpn>( generateExpressionNRPN( vsq, track, ms_presend ) );
                 if ( listdyn.Count > 0 ) {
                     list.AddRange( listdyn );
                 }
             }
             VsqBPList pbs = target.getCurve( "pbs" );
             if ( pbs.size() > 0 ) {
-                Vector<VsqNrpn> listpbs = new Vector<VsqNrpn>( generatePitchBendSensitivityNRPN( vsq, track, ms_presend ) );
+                List<VsqNrpn> listpbs = new List<VsqNrpn>( generatePitchBendSensitivityNRPN( vsq, track, ms_presend ) );
                 if ( listpbs.Count > 0 ) {
                     list.AddRange( listpbs );
                 }
             }
             VsqBPList pit = target.getCurve( "pit" );
             if ( pit.size() > 0 ) {
-                Vector<VsqNrpn> listpit = new Vector<VsqNrpn>( generatePitchBendNRPN( vsq, track, ms_presend ) );
+                List<VsqNrpn> listpit = new List<VsqNrpn>( generatePitchBendNRPN( vsq, track, ms_presend ) );
                 if ( listpit.Count > 0 ) {
                     list.AddRange( listpit );
                 }
@@ -2878,21 +2878,21 @@ namespace cadencii.vsq
                                                 note_loc,
                                                 first ) );
                     first = false;
-                    list.AddRange( new Vector<VsqNrpn>( generateVibratoNRPN( vsq,
+                    list.AddRange( new List<VsqNrpn>( generateVibratoNRPN( vsq,
                                                                            item,
                                                                            msPreSend ) ) );
                     last_note_end = item.Clock + item.ID.getLength();
                 } else if ( item.ID.type == VsqIDType.Singer ) {
                     if ( i > note_start && i != singer_event ) {
-                        list.AddRange( new Vector<VsqNrpn>( generateSingerNRPN( vsq, item, msPreSend ) ) );
+                        list.AddRange( new List<VsqNrpn>( generateSingerNRPN( vsq, item, msPreSend ) ) );
                     }
                 }
             }
 
             list = VsqNrpn.sort( list );
-            Vector<VsqNrpn> merged = new Vector<VsqNrpn>();
+            List<VsqNrpn> merged = new List<VsqNrpn>();
             for ( int i = 0; i < list.Count; i++ ) {
-                merged.AddRange( new Vector<VsqNrpn>( list[ i ].expand() ) );
+                merged.AddRange( new List<VsqNrpn>( list[ i ].expand() ) );
             }
             return merged.ToArray();
         }
@@ -2906,7 +2906,7 @@ namespace cadencii.vsq
         /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generatePitchBendNRPN( VsqFile vsq, int track, int msPreSend )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             VsqBPList pit = vsq.Track[ track ].getCurve( "PIT" );
             int count = pit.size();
             for ( int i = 0; i < count; i++ ) {
@@ -2935,7 +2935,7 @@ namespace cadencii.vsq
         /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generatePitchBendSensitivityNRPN( VsqFile vsq, int track, int msPreSend )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             VsqBPList pbs = vsq.Track[ track ].getCurve( "PBS" );
             int count = pbs.size();
             for ( int i = 0; i < count; i++ ) {
@@ -2961,7 +2961,7 @@ namespace cadencii.vsq
         /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generateVibratoNRPN( VsqFile vsq, VsqEvent ve, int msPreSend )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             if ( ve.ID.VibratoHandle != null ) {
                 int vclock = ve.Clock + ve.ID.VibratoDelay;
                 if ( ve.ID.VibratoDelay > 0 ) {
@@ -3019,7 +3019,7 @@ namespace cadencii.vsq
         {
             int premeasure_clock = vsq.getPreMeasureClocks();
             String renderer = vsq.Track[ track ].getCommon().Version;
-            Vector<VsqNrpn> res = new Vector<VsqNrpn>();
+            List<VsqNrpn> res = new List<VsqNrpn>();
 
             String[] curves;
             if ( renderer.StartsWith( "DSB3" ) ) {
@@ -3079,9 +3079,9 @@ namespace cadencii.vsq
         /// このシーケンスが保持している拍子変更を元に、MIDIイベントリストを作成します
         /// </summary>
         /// <returns>MIDIイベントのリスト</returns>
-        public Vector<MidiEvent> generateTimeSig()
+        public List<MidiEvent> generateTimeSig()
         {
-            Vector<MidiEvent> events = new Vector<MidiEvent>();
+            List<MidiEvent> events = new List<MidiEvent>();
             foreach (var entry in TimesigTable) {
                 events.Add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
             }
@@ -3092,9 +3092,9 @@ namespace cadencii.vsq
         /// このシーケンスが保持しているテンポ変更を元に、MIDIイベントリストを作成します
         /// </summary>
         /// <returns>MIDIイベントのリスト</returns>
-        public Vector<MidiEvent> generateTempoChange()
+        public List<MidiEvent> generateTempoChange()
         {
-            Vector<MidiEvent> events = new Vector<MidiEvent>();
+            List<MidiEvent> events = new List<MidiEvent>();
             foreach (var entry in TempoTable) {
                 events.Add( MidiEvent.generateTempoChangeEvent( entry.Clock, entry.Tempo ) );
                 //last_clock = Math.Max( last_clock, entry.Clock );
@@ -3174,7 +3174,7 @@ namespace cadencii.vsq
                 fs.write( (byte)_MASTER_TRACK.Length );//トラック名の文字数。これは固定
                 fs.write( _MASTER_TRACK, 0, _MASTER_TRACK.Length );
 
-                Vector<MidiEvent> events = new Vector<MidiEvent>();
+                List<MidiEvent> events = new List<MidiEvent>();
                 foreach (var entry in TimesigTable) {
                     events.Add( MidiEvent.generateTimeSigEvent( entry.Clock, entry.Numerator, entry.Denominator ) );
                     last_clock = Math.Max( last_clock, entry.Clock );

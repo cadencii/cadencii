@@ -20,6 +20,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -63,136 +64,136 @@ namespace cadencii {
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Dynamics;
+        public List<BezierChain> Dynamics;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Brethiness;
+        public List<BezierChain> Brethiness;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Brightness;
+        public List<BezierChain> Brightness;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Clearness;
+        public List<BezierChain> Clearness;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Opening;
+        public List<BezierChain> Opening;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> GenderFactor;
+        public List<BezierChain> GenderFactor;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> PortamentoTiming;
+        public List<BezierChain> PortamentoTiming;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> VibratoRate;
+        public List<BezierChain> VibratoRate;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> VibratoDepth;
+        public List<BezierChain> VibratoDepth;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Harmonics;
+        public List<BezierChain> Harmonics;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> FX2Depth;
+        public List<BezierChain> FX2Depth;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso1Freq;
+        public List<BezierChain> Reso1Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso1BW;
+        public List<BezierChain> Reso1BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso1Amp;
+        public List<BezierChain> Reso1Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso2Freq;
+        public List<BezierChain> Reso2Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso2BW;
+        public List<BezierChain> Reso2BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso2Amp;
+        public List<BezierChain> Reso2Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso3Freq;
+        public List<BezierChain> Reso3Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso3BW;
+        public List<BezierChain> Reso3BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso3Amp;
+        public List<BezierChain> Reso3Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso4Freq;
+        public List<BezierChain> Reso4Freq;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso4BW;
+        public List<BezierChain> Reso4BW;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> Reso4Amp;
+        public List<BezierChain> Reso4Amp;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> PitchBend;
+        public List<BezierChain> PitchBend;
 #if JAVA
         @XmlGenericType( BezierChain.class )
 #endif
-        public Vector<BezierChain> PitchBendSensitivity;
+        public List<BezierChain> PitchBendSensitivity;
 
         public BezierCurves()
         {
-            Dynamics = new Vector<BezierChain>();
-            Brethiness = new Vector<BezierChain>();
-            Brightness = new Vector<BezierChain>();
-            Clearness = new Vector<BezierChain>();
-            Opening = new Vector<BezierChain>();
-            GenderFactor = new Vector<BezierChain>();
-            PortamentoTiming = new Vector<BezierChain>();
-            VibratoRate = new Vector<BezierChain>();
-            VibratoDepth = new Vector<BezierChain>();
-            Harmonics = new Vector<BezierChain>();
-            FX2Depth = new Vector<BezierChain>();
-            Reso1Freq = new Vector<BezierChain>();
-            Reso1BW = new Vector<BezierChain>();
-            Reso1Amp = new Vector<BezierChain>();
-            Reso2Freq = new Vector<BezierChain>();
-            Reso2BW = new Vector<BezierChain>();
-            Reso2Amp = new Vector<BezierChain>();
-            Reso3Freq = new Vector<BezierChain>();
-            Reso3BW = new Vector<BezierChain>();
-            Reso3Amp = new Vector<BezierChain>();
-            Reso4Freq = new Vector<BezierChain>();
-            Reso4BW = new Vector<BezierChain>();
-            Reso4Amp = new Vector<BezierChain>();
-            PitchBend = new Vector<BezierChain>();
-            PitchBendSensitivity = new Vector<BezierChain>();
+            Dynamics = new List<BezierChain>();
+            Brethiness = new List<BezierChain>();
+            Brightness = new List<BezierChain>();
+            Clearness = new List<BezierChain>();
+            Opening = new List<BezierChain>();
+            GenderFactor = new List<BezierChain>();
+            PortamentoTiming = new List<BezierChain>();
+            VibratoRate = new List<BezierChain>();
+            VibratoDepth = new List<BezierChain>();
+            Harmonics = new List<BezierChain>();
+            FX2Depth = new List<BezierChain>();
+            Reso1Freq = new List<BezierChain>();
+            Reso1BW = new List<BezierChain>();
+            Reso1Amp = new List<BezierChain>();
+            Reso2Freq = new List<BezierChain>();
+            Reso2BW = new List<BezierChain>();
+            Reso2Amp = new List<BezierChain>();
+            Reso3Freq = new List<BezierChain>();
+            Reso3BW = new List<BezierChain>();
+            Reso3Amp = new List<BezierChain>();
+            Reso4Freq = new List<BezierChain>();
+            Reso4BW = new List<BezierChain>();
+            Reso4Amp = new List<BezierChain>();
+            PitchBend = new List<BezierChain>();
+            PitchBendSensitivity = new List<BezierChain>();
         }
 
         public BezierChain getBezierChain( CurveType curve_type, int chain_id )
         {
-            Vector<BezierChain> list = this.get( curve_type );
+            List<BezierChain> list = this.get( curve_type );
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
                 if ( list[ i ].id == chain_id ) {
@@ -204,7 +205,7 @@ namespace cadencii {
 
         public void setBezierChain( CurveType curve_type, int chain_id, BezierChain item )
         {
-            Vector<BezierChain> list = this.get( curve_type );
+            List<BezierChain> list = this.get( curve_type );
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
                 if ( list[ i ].id == chain_id ) {
@@ -230,8 +231,8 @@ namespace cadencii {
             int chain_end = (int)chain.getEnd();
 
             // まず、全削除する必要のあるBezierChainを検索
-            Vector<Integer> delete_list = new Vector<Integer>();
-            Vector<BezierChain> src = this.get( curve );
+            List<Integer> delete_list = new List<Integer>();
+            List<BezierChain> src = this.get( curve );
             //foreach ( int id in this[curve].Keys ) {
             for ( int j = 0; j < src.Count; j++ ) {
                 //BezierChain bc = this[curve][id];
@@ -256,7 +257,7 @@ namespace cadencii {
             boolean processed = true;
             while ( processed ) {
                 processed = false;
-                Vector<BezierChain> list = this.get( curve );
+                List<BezierChain> list = this.get( curve );
                 //foreach ( int id in this[curve].Keys ) {
                 for ( int j = 0; j < list.Count; j++ ) {
                     //BezierChain bc = this[curve][id];
@@ -431,9 +432,9 @@ namespace cadencii {
         public void insertBlank( int clock_start, int clock_amount )
         {
             // 全種類のカーブ
-            Vector<CurveType> target_curve = new Vector<CurveType>();
+            List<CurveType> target_curve = new List<CurveType>();
             foreach ( CurveType ct in CURVES ) {
-                Vector<BezierChain> vbc = get( ct );
+                List<BezierChain> vbc = get( ct );
                 foreach (var bc in vbc) {
                     int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
@@ -457,7 +458,7 @@ namespace cadencii {
         public void removePart( int clock_start, int clock_end )
         {
             // 全種類のカーブが対象
-            Vector<CurveType> target_curve = new Vector<CurveType>();
+            List<CurveType> target_curve = new List<CurveType>();
             foreach ( CurveType ct in CURVES ) {
                 target_curve.Add( ct );
             }
@@ -468,7 +469,7 @@ namespace cadencii {
             // データ点のclockがclock_end以降になってるものについて，シフトを行う
             int delta = clock_end - clock_start;
             foreach (var ct in target_curve) {
-                Vector<BezierChain> vbc = get( ct );
+                List<BezierChain> vbc = get( ct );
                 foreach (var bc in vbc) {
                     int size = bc.points.Count;
                     for ( int i = 0; i < size; i++ ) {
@@ -493,7 +494,7 @@ namespace cadencii {
         /// <param name="clock_end"></param>
         /// <returns></returns>
         public boolean deleteBeziers(
-            Vector<CurveType> target_curve,
+            List<CurveType> target_curve,
             int clock_start,
             int clock_end
         )
@@ -503,7 +504,7 @@ namespace cadencii {
                 if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
                 }
-                Vector<BezierChain> tmp = new Vector<BezierChain>();
+                List<BezierChain> tmp = new List<BezierChain>();
                 foreach (var bc in this.get( curve )) {
                     int len = bc.points.Count;
                     if ( len < 1 ) {
@@ -575,7 +576,7 @@ namespace cadencii {
 
         public void remove( CurveType curve_type, int chain_id )
         {
-            Vector<BezierChain> list = this.get( curve_type );
+            List<BezierChain> list = this.get( curve_type );
             for ( int i = 0; i < list.Count; i++ ) {
                 if ( list[ i ].id == chain_id ) {
                     list.RemoveAt( i );
@@ -601,8 +602,8 @@ namespace cadencii {
             BezierCurves ret = new BezierCurves();
             for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
                 CurveType ct = Utility.CURVE_USAGE[j];
-                Vector<BezierChain> src = this.get( ct );
-                ret.set( ct, new Vector<BezierChain>() );
+                List<BezierChain> src = this.get( ct );
+                ret.set( ct, new List<BezierChain>() );
                 int count = src.Count;
                 for ( int i = 0; i < count; i++ ) {
                     ret.get( ct ).Add( (BezierChain)src[ i ].clone() );
@@ -620,7 +621,7 @@ namespace cadencii {
 
         public int getNextId( CurveType curve_type )
         {
-            Vector<BezierChain> bc = this.get( curve_type );
+            List<BezierChain> bc = this.get( curve_type );
             int ret = bc.Count;
             boolean found = true;
             while ( found ) {
@@ -636,7 +637,7 @@ namespace cadencii {
             return ret;
         }
 
-        public Vector<BezierChain> get( CurveType curve )
+        public List<BezierChain> get( CurveType curve )
         {
             if ( curve.equals( CurveType.BRE ) ) {
                 return Brethiness;
@@ -693,7 +694,7 @@ namespace cadencii {
             }
         }
 
-        public void set( CurveType curve, Vector<BezierChain> value )
+        public void set( CurveType curve, List<BezierChain> value )
         {
             if ( curve.equals( CurveType.BRE ) ) {
                 Brethiness = value;

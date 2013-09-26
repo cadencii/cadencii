@@ -33,6 +33,7 @@ import cadencii.str;
 #else
 
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -168,7 +169,7 @@ namespace cadencii.apputil {
                     String skey = key.Replace( "\n", "\\n\"\n\"" );
                     MessageBodyEntry mbe = list.get( key );
                     String s = mbe.message;
-                    Vector<String> location = mbe.location;
+                    List<String> location = mbe.location;
                     int count = location.Count;
                     for ( int i = 0; i < count; i++ ) {
                         sw.write( "#: " + location[ i ] );
@@ -214,7 +215,7 @@ namespace cadencii.apputil {
         {
             msg.value = "";
             String line = first_line;
-            Vector<String> location = new Vector<String>();
+            List<String> location = new List<String>();
             boolean entry_found = false;
             if ( line.StartsWith( entry ) ) {
                 // 1行目がすでに"entry"の行だった場合

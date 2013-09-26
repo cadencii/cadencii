@@ -18,6 +18,7 @@ import java.util.Vector;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.apputil {
@@ -25,7 +26,7 @@ namespace cadencii.apputil {
 
     public class MessageBodyEntry {
         public String message;
-        public Vector<String> location = new Vector<String>();
+        public List<String> location = new List<String>();
 
         public MessageBodyEntry( String message_, String[] location_ ) {
             message = message_;

@@ -1125,7 +1125,7 @@ namespace cadencii
                 compareList( ret, new VsqBPListComparisonContext( list1, list2 ) );
             }
 
-            Vector<EditedZoneUnit> list3 = new Vector<EditedZoneUnit>();
+            List<EditedZoneUnit> list3 = new List<EditedZoneUnit>();
             foreach (var unit in ret.iterator()) {
                 list3.Add( unit );
             }
@@ -1179,7 +1179,7 @@ namespace cadencii
         public static EditedZoneUnit[] compareList( IComparisonContext context ) {
             EditedZone zone = new EditedZone();
             compareList( zone, context );
-            Vector<EditedZoneUnit> ret = new Vector<EditedZoneUnit>();
+            List<EditedZoneUnit> ret = new List<EditedZoneUnit>();
             foreach (var unit in zone.iterator()) {
                 ret.Add( unit );
             }
@@ -1302,7 +1302,7 @@ namespace cadencii
             String option = "Alt";
             String command = "Meta";
 #endif
-            Vector<Keys> list = new Vector<Keys>( keys );
+            List<Keys> list = new List<Keys>( keys );
             if ( list.Contains( Keys.Control ) ) {
                 ret += ((ret == "") ? "" : plus) + ctrl;
             }
@@ -1315,7 +1315,7 @@ namespace cadencii
             if ( list.Contains( Keys.Menu ) ) {
                 ret += ((ret == "") ? "" : plus) + command;
             }
-            Vector<Keys> list2 = new Vector<Keys>();
+            List<Keys> list2 = new List<Keys>();
             foreach ( Keys key in keys ) {
                 if ( key != Keys.Control && key != Keys.Shift && key != Keys.Alt && key != Keys.Menu ) {
                     list2.Add( key );

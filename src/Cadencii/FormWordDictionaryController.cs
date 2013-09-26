@@ -22,6 +22,8 @@ import cadencii.vsq.*;
 
 #else
 
+using System.Collections.Generic;
+
     namespace cadencii
     {
 #if __cplusplus
@@ -186,9 +188,9 @@ import cadencii.vsq.*;
                     ui.buttonDownSetText( _( "Down" ) );
                 }
 
-                public Vector<ValuePair<String, Boolean>> getResult()
+                public List<ValuePair<String, Boolean>> getResult()
                 {
-                    Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
+                    List<ValuePair<String, Boolean>> ret = new List<ValuePair<String, Boolean>>();
                     int count = ui.listDictionariesGetItemCountRow();
 #if DEBUG
                     sout.println( "FormWordDictionary#getResult; count=" + count );

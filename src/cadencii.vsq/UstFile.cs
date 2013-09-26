@@ -19,6 +19,7 @@ import java.io.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -53,8 +54,8 @@ namespace cadencii.vsq
         private String m_cache_dir = "";
         private String m_tool1 = "";
         private String m_tool2 = "";
-        private Vector<UstTrack> m_tracks = new Vector<UstTrack>();
-        private Vector<TempoTableEntry> m_tempo_table;
+        private List<UstTrack> m_tracks = new List<UstTrack>();
+        private List<TempoTableEntry> m_tempo_table;
 
         public UstFile( String path )
         {
@@ -231,7 +232,7 @@ namespace cadencii.vsq
                                     String name = spl[0];
                                     String value = spl[1];
                                     if ( ue.Properties == null ) {
-                                        ue.Properties = new Vector<UstEventProperty>();
+                                        ue.Properties = new List<UstEventProperty>();
                                     }
                                     ue.Properties.Add( new UstEventProperty( name, value ) );
                                 }
@@ -298,7 +299,7 @@ namespace cadencii.vsq
             } else {
                 m_tempo = (float)(60e6 / (double)work.TempoTable[ 0 ].Tempo);
             }
-            m_tempo_table = new Vector<TempoTableEntry>();
+            m_tempo_table = new List<TempoTableEntry>();
             m_tempo_table.Clear();
             // ustには、テンポチェンジを音符の先頭にしか入れられない
             // あとで音符に反映させるためのテンプレートを作っておく
@@ -458,7 +459,7 @@ namespace cadencii.vsq
                     sec_at_clock_begin = tempo.getSecFromClock( clock_begin );
                 }
                 int clock_end = clock + item.getLength();
-                Vector<Float> pitch = new Vector<Float>();
+                List<Float> pitch = new List<Float>();
                 boolean allzero = true;
                 ByRef<Integer> ref_indx = new ByRef<Integer>( 0 );
                 for ( int cl = clock_begin; cl < clock_end; cl += PBTYPE ) {
@@ -538,7 +539,7 @@ namespace cadencii.vsq
             return getSecFromClock( max );
         }
 
-        public Vector<TempoTableEntry> getTempoList()
+        public List<TempoTableEntry> getTempoList()
         {
             return m_tempo_table;
         }
@@ -560,7 +561,7 @@ namespace cadencii.vsq
         public void updateTempoInfo()
         {
             if ( m_tempo_table == null ) {
-                m_tempo_table = new Vector<TempoTableEntry>();
+                m_tempo_table = new List<TempoTableEntry>();
             } else {
                 m_tempo_table.Clear();
             }
@@ -701,11 +702,11 @@ namespace cadencii.vsq
             ret.m_tool1 = m_tool1;
             ret.m_tool2 = m_tool2;
             int size = m_tracks.Count;
-            ret.m_tracks = new Vector<UstTrack>();
+            ret.m_tracks = new List<UstTrack>();
             for ( int i = 0; i < size; i++ ) {
                 ret.m_tracks.Add( (UstTrack)m_tracks[i].clone() );
             }
-            ret.m_tempo_table = new Vector<TempoTableEntry>();
+            ret.m_tempo_table = new List<TempoTableEntry>();
             for ( int i = 0; i < m_tempo_table.Count; i++ ) {
                 ret.m_tempo_table.Add( (TempoTableEntry)m_tempo_table[ i ].clone() );
             }

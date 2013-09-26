@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -152,7 +153,7 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            Vector<String> def = new Vector<String>( new String[]{ "Length",
+            List<String> def = new List<String>( new String[]{ "Length",
                                                                    "Note#",
                                                                    "Dynamics",
                                                                    "PMBendDepth",
@@ -163,7 +164,7 @@ namespace cadencii.vsq
             write( sw, def );
         }
 
-        public void write( ITextWriter writer, Vector<String> print_targets )
+        public void write( ITextWriter writer, List<String> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -171,7 +172,7 @@ namespace cadencii.vsq
             writeCor( writer, print_targets );
         }
 
-        public void write( BufferedWriter writer, Vector<String> print_targets )
+        public void write( BufferedWriter writer, List<String> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -179,7 +180,7 @@ namespace cadencii.vsq
             writeCor( new WrappedStreamWriter( writer ), print_targets );
         }
 
-        private void writeCor( ITextWriter writer, Vector<String> print_targets )
+        private void writeCor( ITextWriter writer, List<String> print_targets )
 #if JAVA
             throws IOException
 #endif

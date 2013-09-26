@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -36,9 +37,9 @@ namespace cadencii
 
         Font m_base_font;
         Font m_screen_font;
-        Vector<String> m_program_change = null;
+        List<String> m_program_change = null;
         private PlatformEnum m_platform = PlatformEnum.Windows;
-        private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
+        private List<SingerConfig> m_utau_singers = new List<SingerConfig>();
 
         private OpenFileDialog openUtauCore;
         private FontDialog fontDialog;
@@ -105,7 +106,7 @@ namespace cadencii
             comboLanguage.SelectedIndex = index;
 
             SingerConfig[] dict = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-            m_program_change = new Vector<String>();
+            m_program_change = new List<String>();
             comboDefualtSinger.Items.Clear();
             foreach ( SingerConfig kvp in dict ) {
                 m_program_change.Add( kvp.VOICENAME );
@@ -1133,7 +1134,7 @@ namespace cadencii
             }
         }
 
-        public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
+        public void copyResamplersConfig( List<String> ret, List<Boolean> with_wine )
         {
             for ( int i = 0; i < listResampler.Items.Count; i++ ) {
                 ret.Add( (String)listResampler.Items[i].SubItems[0].Text );
@@ -1141,7 +1142,7 @@ namespace cadencii
             }
         }
 
-        public void setResamplersConfig( Vector<String> path, Vector<Boolean> with_wine )
+        public void setResamplersConfig( List<String> path, List<Boolean> with_wine )
         {
             int size = listResampler.Items.Count;
             for ( int i = 0; i < size; i++ ) {
@@ -1190,12 +1191,12 @@ namespace cadencii
 
         public void setPathAquesTone2( string value ) { txtAquesTone2.Text = value; }
 
-        public Vector<SingerConfig> getUtausingers()
+        public List<SingerConfig> getUtausingers()
         {
             return m_utau_singers;
         }
 
-        public void setUtausingers( Vector<SingerConfig> value )
+        public void setUtausingers( List<SingerConfig> value )
         {
             m_utau_singers.Clear();
             for ( int i = 0; i < value.Count; i++ ) {
@@ -1586,7 +1587,7 @@ namespace cadencii
             comboMidiInPortNumber.Items.Clear();
             comboMtcMidiInPortNumber.Items.Clear();
 #if ENABLE_MIDI
-            Vector<MidiDevice.Info> midiins = new Vector<MidiDevice.Info>();
+            List<MidiDevice.Info> midiins = new List<MidiDevice.Info>();
             foreach ( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ) {
 #if DEBUG
                 if ( info != null ) {

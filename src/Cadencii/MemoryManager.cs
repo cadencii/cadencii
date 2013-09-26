@@ -27,7 +27,7 @@ namespace cadencii {
         /// <summary>
         /// 確保したメモリーへのポインターの一覧
         /// </summary>
-        private Vector<IntPtr> mList = new Vector<IntPtr>();
+        private List<IntPtr> mList = new List<IntPtr>();
 
         /// <summary>
         /// メモリを確保します

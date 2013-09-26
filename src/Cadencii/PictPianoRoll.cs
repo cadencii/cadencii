@@ -26,6 +26,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.geom;
@@ -572,7 +573,7 @@ namespace cadencii {
                             if (i == selected - 1) {
                                 continue;
                             }
-                            Vector<DrawObject> target_list = AppManager.mDrawObjects[i];
+                            List<DrawObject> target_list = AppManager.mDrawObjects[i];
                             int j_start = AppManager.mDrawStartIndex[i];
                             boolean first = true;
                             int shift_center = half_track_height;
@@ -618,7 +619,7 @@ namespace cadencii {
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
 
                         boolean first = true;
-                        Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
+                        List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                         VsqBPList pit = vsq_track.MetaText.PIT;
                         VsqBPList pbs = vsq_track.MetaText.PBS;
                         ByRef<Integer> indx_pit = new ByRef<Integer>(0);
@@ -1232,7 +1233,7 @@ namespace cadencii {
 
                         Color pitline = PortUtil.MidnightBlue;
                         g.setStroke(getStroke2px());
-                        Vector<DrawObject> list = AppManager.mDrawObjects[selected - 1];
+                        List<DrawObject> list = AppManager.mDrawObjects[selected - 1];
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
                         int c = list.Count;
                         int last_x = key_width;

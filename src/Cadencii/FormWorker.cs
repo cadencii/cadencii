@@ -31,6 +31,7 @@ using System;
 using System.Threading;
 using System.ComponentModel;
 using System.Reflection;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
@@ -176,14 +177,14 @@ namespace cadencii
 #endif
     {
         private FormWorkerUi ptrUi = null;
-        private Vector<ProgressBarWithLabel> mLabels;
+        private List<ProgressBarWithLabel> mLabels;
         private mman mMemManager;
-        private Vector<FormWorkerJobArgument> mArguments;
+        private List<FormWorkerJobArgument> mArguments;
 #if JAVA
         private Vector<FormWorkerThread> mThreads;
 #elif __cplusplus
 #else
-        private Vector<BackgroundWorker> mThreads;
+        private List<BackgroundWorker> mThreads;
 #endif
 
         /// <summary>
@@ -193,16 +194,16 @@ namespace cadencii
         {
 #if __cplusplus
 #else
-            mLabels = new Vector<ProgressBarWithLabel>();
+            mLabels = new List<ProgressBarWithLabel>();
             mMemManager = new mman();
-            mArguments = new Vector<FormWorkerJobArgument>();
+            mArguments = new List<FormWorkerJobArgument>();
 #endif
 
 #if JAVA
             mThreads = new Vector<FormWorkerThread>();
 #elif __cplusplus
 #else
-            mThreads = new Vector<BackgroundWorker>();
+            mThreads = new List<BackgroundWorker>();
 #endif
         }
 

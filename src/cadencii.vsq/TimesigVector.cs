@@ -22,6 +22,7 @@ import cadencii.*;
 #else
 
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.vsq
@@ -33,7 +34,7 @@ namespace cadencii.vsq
     public class TimesigVector extends Vector<TimeSigTableEntry> implements Serializable
 #else
     [Serializable]
-    public class TimesigVector : Vector<TimeSigTableEntry>
+    public class TimesigVector : List<TimeSigTableEntry>
 #endif
     {
         /// <summary>

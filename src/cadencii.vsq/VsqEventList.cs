@@ -43,16 +43,16 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( VsqEvent.class )
 #endif
-        public Vector<VsqEvent> Events;
-        private Vector<Integer> m_ids;
+        public List<VsqEvent> Events;
+        private List<Integer> m_ids;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         public VsqEventList()
         {
-            Events = new Vector<VsqEvent>();
-            m_ids = new Vector<Integer>();
+            Events = new List<VsqEvent>();
+            m_ids = new List<Integer>();
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace cadencii.vsq
         {
             updateIDList();
             int index = -1;
-            Vector<Integer> current = new Vector<Integer>( m_ids );
+            List<Integer> current = new List<Integer>( m_ids );
             int nfound = 0;
             while ( true ) {
                 index++;

@@ -22,6 +22,8 @@ import cadencii.vsq.*;
 
 #else
 
+using System.Collections.Generic;
+
     namespace cadencii
     {
 
@@ -142,11 +144,11 @@ import cadencii.vsq.*;
                 /// <param name="bezier"></param>
                 /// <param name="copy_started_clock"></param>
                 private void setClipboard(
-                    Vector<VsqEvent> events,
-                    Vector<TempoTableEntry> tempo,
-                    Vector<TimeSigTableEntry> timesig,
+                    List<VsqEvent> events,
+                    List<TempoTableEntry> tempo,
+                    List<TimeSigTableEntry> timesig,
                     TreeMap<CurveType, VsqBPList> curve,
-                    TreeMap<CurveType, Vector<BezierChain>> bezier,
+                    TreeMap<CurveType, List<BezierChain>> bezier,
                     int copy_started_clock )
                 {
                     ClipboardEntry ce = new ClipboardEntry();
@@ -235,11 +237,11 @@ import cadencii.vsq.*;
                     }
                     if ( ce.beziers == null )
                     {
-                        ce.beziers = new TreeMap<CurveType, Vector<BezierChain>>();
+                        ce.beziers = new TreeMap<CurveType, List<BezierChain>>();
                     }
                     if ( ce.events == null )
                     {
-                        ce.events = new Vector<VsqEvent>();
+                        ce.events = new List<VsqEvent>();
                     }
                     if ( ce.points == null )
                     {
@@ -247,11 +249,11 @@ import cadencii.vsq.*;
                     }
                     if ( ce.tempo == null )
                     {
-                        ce.tempo = new Vector<TempoTableEntry>();
+                        ce.tempo = new List<TempoTableEntry>();
                     }
                     if ( ce.timesig == null )
                     {
-                        ce.timesig = new Vector<TimeSigTableEntry>();
+                        ce.timesig = new List<TimeSigTableEntry>();
                     }
                     return ce;
                 }
@@ -261,7 +263,7 @@ import cadencii.vsq.*;
                 /// </summary>
                 /// <param name="item">セットするVsqEventのリスト</param>
                 /// <param name="copy_started_clock"></param>
-                public void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock )
+                public void setCopiedEvent( List<VsqEvent> item, int copy_started_clock )
                 {
                     setClipboard( item, null, null, null, null, copy_started_clock );
                 }
@@ -271,7 +273,7 @@ import cadencii.vsq.*;
                 /// </summary>
                 /// <param name="item">セットするTempoTableEntryのリスト</param>
                 /// <param name="copy_started_clock"></param>
-                public void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock )
+                public void setCopiedTempo( List<TempoTableEntry> item, int copy_started_clock )
                 {
                     setClipboard( null, item, null, null, null, copy_started_clock );
                 }
@@ -281,7 +283,7 @@ import cadencii.vsq.*;
                 /// </summary>
                 /// <param name="item">セットする拍子変更イベントのリスト</param>
                 /// <param name="copy_started_clock"></param>
-                public void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock )
+                public void setCopiedTimesig( List<TimeSigTableEntry> item, int copy_started_clock )
                 {
                     setClipboard( null, null, item, null, null, copy_started_clock );
                 }
@@ -301,7 +303,7 @@ import cadencii.vsq.*;
                 /// </summary>
                 /// <param name="item">セットするベジエ曲線</param>
                 /// <param name="copy_started_clock"></param>
-                public void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock )
+                public void setCopiedBezier( TreeMap<CurveType, List<BezierChain>> item, int copy_started_clock )
                 {
                     setClipboard( null, null, null, null, item, copy_started_clock );
                 }

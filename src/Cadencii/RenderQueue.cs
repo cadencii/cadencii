@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
@@ -24,9 +25,9 @@ namespace cadencii {
 #endif
 
     public class RenderQueue {
-        private Vector<String> _resampler_arg = new Vector<String>();
-        public Vector<String> WavtoolArgPrefix = new Vector<String>();
-        public Vector<String> WavtoolArgSuffix = new Vector<String>();
+        private List<String> _resampler_arg = new List<String>();
+        public List<String> WavtoolArgPrefix = new List<String>();
+        public List<String> WavtoolArgSuffix = new List<String>();
         //public String WavtoolArgPrefix;
         //public String WavtoolArgSuffix;
         public OtoArgs Oto;

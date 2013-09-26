@@ -24,6 +24,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.awt;
@@ -80,7 +81,7 @@ namespace cadencii
             boolean found = false;
             VsqFileEx vsq = AppManager.getVsqFile();
             BezierCurves attached = vsq.AttachedCurves.get( m_track - 1 );
-            Vector<BezierChain> chains = attached.get( m_curve_type );
+            List<BezierChain> chains = attached.get( m_curve_type );
             for ( int i = 0; i < chains.Count; i++ ) {
                 if ( chains[ i ].id == m_chain_id ) {
                     found = true;

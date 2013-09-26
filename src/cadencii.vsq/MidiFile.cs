@@ -21,6 +21,7 @@ import cadencii.*;
 #else
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -34,7 +35,7 @@ namespace cadencii.vsq
 
     public class MidiFile
     {
-        private Vector<Vector<MidiEvent>> m_events;
+        private List<List<MidiEvent>> m_events;
         private int m_format;
         private int m_time_format;
 
@@ -70,9 +71,9 @@ namespace cadencii.vsq
                 m_time_format = PortUtil.make_uint16_be( byte4 );
 
                 // 各トラックを読込み
-                m_events = new Vector<Vector<MidiEvent>>();
+                m_events = new List<List<MidiEvent>>();
                 for ( int track = 0; track < tracks; track++ ) {
-                    Vector<MidiEvent> track_events = new Vector<MidiEvent>();
+                    List<MidiEvent> track_events = new List<MidiEvent>();
                     // ヘッダー
                     stream.read( byte4, 0, 4 );
                     if ( PortUtil.make_uint32_be( byte4 ) != 0x4d54726b ) {
@@ -176,14 +177,14 @@ namespace cadencii.vsq
             }
         }
 
-        public Vector<MidiEvent> getMidiEventList( int track )
+        public List<MidiEvent> getMidiEventList( int track )
         {
             if ( m_events == null ) {
-                return new Vector<MidiEvent>();
+                return new List<MidiEvent>();
             } else if ( 0 <= track && track < m_events.Count ) {
                 return m_events[ track ];
             } else {
-                return new Vector<MidiEvent>();
+                return new List<MidiEvent>();
             }
         }
 

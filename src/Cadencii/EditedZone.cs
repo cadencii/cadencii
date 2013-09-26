@@ -29,7 +29,7 @@ namespace cadencii {
 #else
     public class EditedZone : ICloneable {
 #endif
-        private Vector<EditedZoneUnit> mSeries = new Vector<EditedZoneUnit>();
+        private List<EditedZoneUnit> mSeries = new List<EditedZoneUnit>();
 
         public EditedZone(){
         }
@@ -84,12 +84,12 @@ namespace cadencii {
         }
 
         private EditedZoneCommand generateCommandClear() {
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
+            List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
             foreach (var item in mSeries) {
                 remove.Add( (EditedZoneUnit)item.clone() );
             }
 
-            return new EditedZoneCommand( new Vector<EditedZoneUnit>(), remove );
+            return new EditedZoneCommand( new List<EditedZoneUnit>(), remove );
         }
 
         private EditedZoneCommand generateCommandAdd( EditedZoneUnit[] areas ) {
@@ -104,7 +104,7 @@ namespace cadencii {
             work.normalize();
 
             // thisに存在していて、workに存在しないものをremoveに登録
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
+            List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
             foreach (var itemThis in this.iterator()) {
                 boolean found = false;
                 foreach (var itemWork in work.iterator()) {
@@ -119,7 +119,7 @@ namespace cadencii {
             }
 
             // workに存在していて、thisに存在しないものをaddに登録
-            Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
+            List<EditedZoneUnit> add = new List<EditedZoneUnit>();
             foreach (var itemWork in work.iterator()) {
                 boolean found = false;
                 foreach (var itemThis in this.iterator()) {

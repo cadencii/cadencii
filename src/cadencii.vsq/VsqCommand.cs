@@ -48,7 +48,7 @@ namespace cadencii.vsq
         /// <summary>
         /// 後続するコマンド
         /// </summary>
-        public Vector<VsqCommand> Children = new Vector<VsqCommand>();
+        public List<VsqCommand> Children = new List<VsqCommand>();
         /// <summary>
         /// このコマンドの親
         /// </summary>
@@ -325,13 +325,13 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="velocity"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeVelocity( int track, Vector<ValuePair<Integer, Integer>> velocity )
+        public static VsqCommand generateCommandEventChangeVelocity( int track, List<ValuePair<Integer, Integer>> velocity )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_VELOCITY;
             command.Args = new Object[2];
             command.Args[0] = track;
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
+            List<ValuePair<Integer, Integer>> list = new List<ValuePair<Integer, Integer>>();
             foreach (var item in velocity) {
                 list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
@@ -370,13 +370,13 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="accent_list"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeAccent( int track, Vector<ValuePair<Integer, Integer>> accent_list )
+        public static VsqCommand generateCommandEventChangeAccent( int track, List<ValuePair<Integer, Integer>> accent_list )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_ACCENT;
             command.Args = new Object[2];
             command.Args[0] = track;
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
+            List<ValuePair<Integer, Integer>> list = new List<ValuePair<Integer, Integer>>();
             foreach (var item in accent_list) {
                 list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
@@ -391,13 +391,13 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="decay_list"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeDecay( int track, Vector<ValuePair<Integer, Integer>> decay_list )
+        public static VsqCommand generateCommandEventChangeDecay( int track, List<ValuePair<Integer, Integer>> decay_list )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_DECAY;
             command.Args = new Object[2];
             command.Args[0] = track;
-            Vector<ValuePair<Integer, Integer>> list = new Vector<ValuePair<Integer, Integer>>();
+            List<ValuePair<Integer, Integer>> list = new List<ValuePair<Integer, Integer>>();
             foreach (var item in decay_list) {
                 list.Add( new ValuePair<Integer, Integer>( item.getKey(), item.getValue() ) );
             }
@@ -459,14 +459,14 @@ namespace cadencii.vsq
         /// <param name="target"></param>
         /// <param name="edit"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, Vector<BPPair> edit )
+        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, List<BPPair> edit )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT;
             command.Args = new Object[3];
             command.Args[0] = track;
             command.Args[1] = target;
-            Vector<BPPair> copied = new Vector<BPPair>();
+            List<BPPair> copied = new List<BPPair>();
             foreach (var item in edit) {
                 copied.Add( item );
             }
@@ -482,14 +482,14 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, Vector<Long> delete, TreeMap<Integer, VsqBPPair> add )
+        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, List<Long> delete, TreeMap<Integer, VsqBPPair> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2;
             command.Args = new Object[4];
             command.Args[0] = track;
             command.Args[1] = target;
-            Vector<Long> cp_delete = new Vector<Long>();
+            List<Long> cp_delete = new List<Long>();
             foreach (var id in delete) {
                 cp_delete.Add( id );
             }
@@ -504,22 +504,22 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveEditRange( int track, Vector<String> targets, Vector<Vector<BPPair>> edits )
+        public static VsqCommand generateCommandTrackCurveEditRange( int track, List<String> targets, List<List<BPPair>> edits )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT_RANGE;
             command.Args = new Object[3];
             command.Args[0] = track;
-            Vector<String> cp_targets = new Vector<String>();
+            List<String> cp_targets = new List<String>();
             int count = targets.Count;
             for ( int i = 0; i < count; i++ ) {
                 cp_targets.Add( targets[ i ] );
             }
             command.Args[1] = cp_targets;
-            Vector<Vector<BPPair>> cp_edits = new Vector<Vector<BPPair>>();
+            List<List<BPPair>> cp_edits = new List<List<BPPair>>();
             count = edits.Count;
             for ( int i = 0; i < count; i++ ) {
-                Vector<BPPair> copied = new Vector<BPPair>();
+                List<BPPair> copied = new List<BPPair>();
                 foreach (var item in edits[ i ]) {
                     copied.Add( new BPPair( item.Clock, item.Value ) );
                 }
@@ -537,23 +537,23 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2All( int track, Vector<String> target, Vector<Vector<Long>> delete, Vector<TreeMap<Integer, VsqBPPair>> add )
+        public static VsqCommand generateCommandTrackCurveEdit2All( int track, List<String> target, List<List<Long>> delete, List<TreeMap<Integer, VsqBPPair>> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2_ALL;
             command.Args = new Object[4];
             command.Args[0] = track;
-            Vector<String> cp_target = new Vector<String>();
+            List<String> cp_target = new List<String>();
             int c = target.Count;
             for ( int i = 0; i < c; i++ ) {
                 cp_target.Add( target[ i ] );
             }
             command.Args[1] = cp_target;
 
-            Vector<Vector<Long>> cp_vec_delete = new Vector<Vector<Long>>();
+            List<List<Long>> cp_vec_delete = new List<List<Long>>();
             c = delete.Count;
             for ( int i = 0; i < c; i++ ) {
-                Vector<Long> cp_delete = new Vector<Long>();
+                List<Long> cp_delete = new List<Long>();
                 foreach (var id in delete[i]) {
                     cp_delete.Add( id );
                 }
@@ -561,7 +561,7 @@ namespace cadencii.vsq
             }
             command.Args[2] = cp_vec_delete;
 
-            Vector<TreeMap<Integer, VsqBPPair>> cp_vec_add = new Vector<TreeMap<Integer, VsqBPPair>>();
+            List<TreeMap<Integer, VsqBPPair>> cp_vec_add = new List<TreeMap<Integer, VsqBPPair>>();
             c = add.Count;
             for ( int i = 0; i < c; i++ ) {
                 TreeMap<Integer, VsqBPPair> cp_add = new TreeMap<Integer, VsqBPPair>();
@@ -615,7 +615,7 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandEventDeleteRange( int track, Vector<Integer> internal_ids )
+        public static VsqCommand generateCommandEventDeleteRange( int track, List<Integer> internal_ids )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_DELETE_RANGE;
@@ -716,9 +716,9 @@ namespace cadencii.vsq
             return ret;
         }
 
-        private static Vector<Integer> copyIntVector( Vector<Integer> value )
+        private static List<Integer> copyIntVector( List<Integer> value )
         {
-            Vector<Integer> ret = new Vector<Integer>();
+            List<Integer> ret = new List<Integer>();
             int count = value.Count;
             for ( int i = 0; i < count; i++ ) {
                 ret.Add( value[ i ] );

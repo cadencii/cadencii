@@ -99,7 +99,7 @@ namespace cadencii.vsq
             if ( isInitialized ) {
                 return;
             }
-            Vector<String> reg_list = new Vector<String>();
+            List<String> reg_list = new List<String>();
             initPrint( "SOFTWARE\\VOCALOID", header1, reg_list );
             initPrint( "SOFTWARE\\VOCALOID2", header2, reg_list );
             init( reg_list, "" );
@@ -141,7 +141,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="reg_list">レジストリ・エントリのリスト</param>
         /// <param name="wine_prefix">wineを使う場合，WINEPREFIXを指定する．そうでなければ空文字を指定</param>
-        public static void init( Vector<String> reg_list, String wine_prefix )
+        public static void init( List<String> reg_list, String wine_prefix )
         {
 #if DEBUG
             sout.println( "VocaloSysUtil#init; wine_prefix=" + wine_prefix );
@@ -154,8 +154,8 @@ namespace cadencii.vsq
             }
 
             // reg_listを，VOCALOIDとVOCALOID2の部分に分離する
-            Vector<String> dir1 = new Vector<String>();
-            Vector<String> dir2 = new Vector<String>();
+            List<String> dir1 = new List<String>();
+            List<String> dir2 = new List<String>();
             foreach( String s in reg_list ){
                 if( s.StartsWith( header1 + "\\" ) ||
                     s.StartsWith( header1 + "\t" ) ){
@@ -170,7 +170,7 @@ namespace cadencii.vsq
             try {
                 ByRef<String> path_voicedb1 = new ByRef<String>( "" );
                 ByRef<String> path_expdb1 = new ByRef<String>( "" );
-                Vector<String> installed_singers1 = new Vector<String>();
+                List<String> installed_singers1 = new List<String>();
 
                 // テキストファイルにレジストリの内容をプリントアウト
                 boolean close = false;
@@ -280,7 +280,7 @@ namespace cadencii.vsq
             try {
                 ByRef<String> path_voicedb2 = new ByRef<String>( "" );
                 ByRef<String> path_expdb2 = new ByRef<String>( "" );
-                Vector<String> installed_singers2 = new Vector<String>();
+                List<String> installed_singers2 = new List<String>();
 
                 // レジストリの中身をファイルに出力
                 boolean close = false;
@@ -362,17 +362,17 @@ namespace cadencii.vsq
             return empty;
         }
 
-        private static void initExtract( Vector<String> dir,
+        private static void initExtract( List<String> dir,
                                      String header,
                                      ByRef<String> path_vsti,
                                      ByRef<String> path_voicedb,
                                      ByRef<String> path_expdb,
                                      ByRef<String> path_editor,
-                                     Vector<String> installed_singers )
+                                     List<String> installed_singers )
         {
-            Vector<String> application = new Vector<String>();
-            Vector<String> expression = new Vector<String>();
-            Vector<String> voice = new Vector<String>();
+            List<String> application = new List<String>();
+            List<String> expression = new List<String>();
+            List<String> voice = new List<String>();
             path_vsti.value = "";
             path_expdb.value = "";
             path_voicedb.value = "";
@@ -435,7 +435,7 @@ namespace cadencii.vsq
             }
 
             // path_expdbを取得
-            Vector<String> exp_ids = new Vector<String>();
+            List<String> exp_ids = new List<String>();
             // 最初はpath_expdbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
             foreach (var s in expression) {
                 String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
@@ -466,7 +466,7 @@ namespace cadencii.vsq
         /// <param name="reg_key_name"></param>
         /// <param name="parent_name"></param>
         /// <param name="list"></param>
-        private static void initPrint( String reg_key_name, String parent_name, Vector<String> list )
+        private static void initPrint( String reg_key_name, String parent_name, List<String> list )
         {
 #if JAVA
 #else
@@ -512,7 +512,7 @@ namespace cadencii.vsq
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).attackConfigIterator();
             } else {
-                return new Vector<NoteHeadHandle>();
+                return new List<NoteHeadHandle>();
             }
         }
 
@@ -530,7 +530,7 @@ namespace cadencii.vsq
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).vibratoConfigIterator();
             } else {
-                return new Vector<VibratoHandle>();
+                return new List<VibratoHandle>();
             }
         }
 
@@ -548,7 +548,7 @@ namespace cadencii.vsq
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).dynamicsConfigIterator();
             } else {
-                return new Vector<IconDynamicsHandle>();
+                return new List<IconDynamicsHandle>();
             }
         }
 

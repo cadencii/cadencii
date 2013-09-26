@@ -21,6 +21,7 @@ import cadencii.windows.forms.*;
 import cadencii.xml.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -49,7 +50,7 @@ namespace cadencii {
 #if JAVA
         @XmlGenericType( ValuePairOfStringBoolean.class )
 #endif
-        public Vector<ValuePairOfStringBoolean> ExpandStatus = new Vector<ValuePairOfStringBoolean>();
+        public List<ValuePairOfStringBoolean> ExpandStatus = new List<ValuePairOfStringBoolean>();
         /// <summary>
         /// 音階の表現形式
         /// </summary>

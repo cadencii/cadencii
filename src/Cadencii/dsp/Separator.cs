@@ -17,6 +17,7 @@ package cadencii;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
@@ -33,7 +34,7 @@ namespace cadencii
 #endif
     {
         const int _BUFLEN = 1024;
-        private Vector<WaveReceiver> mReceivers = new Vector<WaveReceiver>();
+        private List<WaveReceiver> mReceivers = new List<WaveReceiver>();
         private double[] mBufferL = new double[_BUFLEN];
         private double[] mBufferR = new double[_BUFLEN];
         private int mVersion = 0;

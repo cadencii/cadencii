@@ -25,6 +25,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -74,8 +75,8 @@ namespace cadencii
         protected int mTrimMillisec;
         protected int mSampleRate;
 
-        private Vector<VConnectRenderingQueue> mQueue;
-        private Vector<SingerConfig> mSingerConfigSys;
+        private List<VConnectRenderingQueue> mQueue;
+        private List<SingerConfig> mSingerConfigSys;
         private double mProgressPercent = 0.0;
 
         private TreeMap<String, UtauVoiceDB> mVoiceDBConfigs = new TreeMap<String, UtauVoiceDB>();
@@ -184,11 +185,11 @@ namespace cadencii
 
             // StraightRenderingRunner.ctorの実装より
             mLocker = new Object();
-            mQueue = new Vector<VConnectRenderingQueue>();
+            mQueue = new List<VConnectRenderingQueue>();
             if ( mConfig != null && mConfig.UtauSingers != null ) {
                 mSingerConfigSys = mConfig.UtauSingers;
             } else {
-                mSingerConfigSys = new Vector<SingerConfig>();
+                mSingerConfigSys = new List<SingerConfig>();
             }
             int midi_tempo = 60000000 / TEMPO;
             VsqFileEx work = (VsqFileEx)mVsq.clone();
@@ -202,7 +203,7 @@ namespace cadencii
             work.TempoTable.Add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
             work.updateTempoInfo();
             VsqTrack vsq_track = work.Track[ track ];
-            Vector<VsqEvent> events = new Vector<VsqEvent>(); // 順次取得はめんどくさいので，一度eventsに格納してから処理しよう
+            List<VsqEvent> events = new List<VsqEvent>(); // 順次取得はめんどくさいので，一度eventsに格納してから処理しよう
             int count = vsq_track.getEventCount();
             VsqEvent current_singer_event = null;
 
@@ -888,7 +889,7 @@ namespace cadencii
             }
         }
 
-        private void appendQueue( VsqFileEx vsq, int track, Vector<VsqEvent> events, VsqEvent singer_event )
+        private void appendQueue( VsqFileEx vsq, int track, List<VsqEvent> events, VsqEvent singer_event )
         {
             int count = events.Count;
             if ( count <= 0 ) {
@@ -939,7 +940,7 @@ namespace cadencii
                 }
             }
 
-            Vector<VsqEvent> list = new Vector<VsqEvent>();
+            List<VsqEvent> list = new List<VsqEvent>();
 
             count = events.Count;
             for ( int i = 1; i < count + 1; i++ ) {
@@ -981,7 +982,7 @@ namespace cadencii
         /// 連続した音符を元に，StraightRenderingQueueを作成
         /// </summary>
         /// <param name="list"></param>
-        private void appendQueueCor( VsqFileEx vsq, int track, Vector<VsqEvent> list, String oto_ini )
+        private void appendQueueCor( VsqFileEx vsq, int track, List<VsqEvent> list, String oto_ini )
         {
             if ( list.Count <= 0 ) {
                 return;
@@ -1126,8 +1127,8 @@ namespace cadencii
                         break;
                     }
                 }
-                Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-                Vector<String> print_targets = new Vector<String>( new String[]{ "Length",
+                List<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
+                List<String> print_targets = new List<String>( new String[]{ "Length",
                                                                              "Note#",
                                                                              "Dynamics",
                                                                              "DEMdecGainRate",

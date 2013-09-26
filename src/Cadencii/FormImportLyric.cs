@@ -22,6 +22,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.util;
@@ -94,7 +95,7 @@ namespace cadencii
 
         public String[] getLetters()
         {
-            Vector<Character> _SMALL = new Vector<Character>( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+            List<Character> _SMALL = new List<Character>( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
                                                                                 'ゃ', 'ゅ', 'ょ',
                                                                                 'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
                                                                                 'ャ', 'ュ', 'ョ' } );
@@ -112,7 +113,7 @@ namespace cadencii
                 }
             }
             String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
-            Vector<String> ret = new Vector<String>();
+            List<String> ret = new List<String>();
             for ( int j = 0; j < spl.Length; j++ ) {
                 String s = spl[j];
                 char[] list = s.ToCharArray();

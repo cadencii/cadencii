@@ -14,6 +14,7 @@
  */
 using System;
 using System.Threading;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 using cadencii.media;
@@ -59,7 +60,7 @@ namespace cadencii
             addSingerEvents( list, t, clock_start, clock_end );
 
             // ノートon, off
-            Vector<Point> pit_send = new Vector<Point>(); // PITが追加されたゲートタイム。音符先頭の分を重複して送信するのを回避するために必要。
+            List<Point> pit_send = new List<Point>(); // PITが追加されたゲートタイム。音符先頭の分を重複して送信するのを回避するために必要。
             VsqBPList pit = t.getCurve( "pit" );
             VsqBPList pbs = t.getCurve( "pbs" );
             VsqBPList dyn = t.getCurve( "dyn" );
@@ -81,7 +82,7 @@ namespace cadencii
                         if ( noteOnEvents.Length > 0 ) {
                             MidiEventQueue queue = list.get( item.Clock );
 
-                            Vector<MidiEvent> add = new Vector<MidiEvent>( noteOnEvents );
+                            List<MidiEvent> add = new List<MidiEvent>( noteOnEvents );
                             queue.noteon.AddRange( add );
                             pit_send.Add( new Point( item.Clock, item.Clock ) );
                         }
@@ -177,7 +178,7 @@ namespace cadencii
                             pit_change.put( clock, pvalue );
                         }
                         // ビブラート部分のピッチを取得
-                        Vector<PointD> ret = new Vector<PointD>();
+                        List<PointD> ret = new List<PointD>();
                         Iterator<PointD> itr2 = new VibratoPointIteratorBySec(
                             vsq,
                             item.ID.VibratoHandle.getRateBP(),
@@ -232,7 +233,7 @@ namespace cadencii
                         MidiEvent noteoff = new MidiEvent();
                         noteoff.firstByte = 0x80;
                         noteoff.data = new int[] { item.ID.Note, 0x40 }; // ここのvel
-                        Vector<MidiEvent> a_noteoff = new Vector<MidiEvent>( new MidiEvent[] { noteoff } );
+                        List<MidiEvent> a_noteoff = new List<MidiEvent>( new MidiEvent[] { noteoff } );
                         MidiEventQueue q = list.get( endclock );
                         q.noteoff.AddRange( a_noteoff );
                         pit_send.Add( new Point( endclock, endclock ) ); // PITの送信を抑制するために必要
@@ -318,7 +319,7 @@ namespace cadencii
                 var singer = mDriver.createSingerEvent( program );
                 if ( 0 < singer.Length ) {
                     var queue = queueSequence.get( item.Clock );
-                    queue.param.AddRange( new Vector<ParameterEvent>( singer ) );
+                    queue.param.AddRange( new List<ParameterEvent>( singer ) );
                 }
             }
         }

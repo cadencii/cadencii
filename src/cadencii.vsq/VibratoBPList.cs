@@ -19,6 +19,7 @@ import java.io.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -34,11 +35,11 @@ namespace cadencii.vsq
     public class VibratoBPList : ICloneable
 #endif
     {
-        private Vector<VibratoBPPair> m_list;
+        private List<VibratoBPPair> m_list;
 
         public VibratoBPList()
         {
-            m_list = new Vector<VibratoBPPair>();
+            m_list = new List<VibratoBPPair>();
         }
 
         public VibratoBPList( String strNum, String strBPX, String strBPY )
@@ -66,13 +67,13 @@ namespace cadencii.vsq
                 }
 
                 int len = Math.Min( x.Length, y.Length );
-                m_list = new Vector<VibratoBPPair>( len );
+                m_list = new List<VibratoBPPair>( len );
                 for ( int i = 0; i < len; i++ ) {
                     m_list.Add( new VibratoBPPair( x[i], y[i] ) );
                 }
                 m_list.Sort();
             } else {
-                m_list = new Vector<VibratoBPPair>();
+                m_list = new List<VibratoBPPair>();
             }
         }
 
@@ -96,7 +97,7 @@ namespace cadencii.vsq
 #endif
             }
             int len = Math.Min( x.Length, y.Length );
-            m_list = new Vector<VibratoBPPair>( len );
+            m_list = new List<VibratoBPPair>( len );
             for ( int i = 0; i < len; i++ ) {
                 m_list.Add( new VibratoBPPair( x[i], y[i] ) );
             }

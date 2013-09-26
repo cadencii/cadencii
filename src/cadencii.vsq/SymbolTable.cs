@@ -61,7 +61,7 @@ using cadencii.java.util;
                 /// <summary>
                 /// 辞書のリスト，辞書の優先順位の順番で格納
                 /// </summary>
-                private static Vector<SymbolTable> mTable = new Vector<SymbolTable>();
+                private static List<SymbolTable> mTable = new List<SymbolTable>();
                 /// <summary>
                 /// VOCALOID2のシステム辞書を読み込んだかどうか
                 /// </summary>
@@ -217,10 +217,10 @@ using cadencii.java.util;
                 /// 辞書の優先順位と有効・無効を一括設定します
                 /// </summary>
                 /// <param name="list">辞書の名前・有効かどうかを表したValuePairを、辞書の優先順位の順番に格納したリスト</param>
-                public static void changeOrder( Vector<ValuePair<String, Boolean>> list )
+                public static void changeOrder( List<ValuePair<String, Boolean>> list )
                 {
                     // 現在の辞書をバッファに退避
-                    Vector<SymbolTable> buff = new Vector<SymbolTable>();
+                    List<SymbolTable> buff = new List<SymbolTable>();
                     int size = mTable.Count;
                     for ( int i = 0; i < size; i++ ) {
                         buff.Add( mTable[ i ] );

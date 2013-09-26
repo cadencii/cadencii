@@ -27,6 +27,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -49,7 +50,7 @@ namespace cadencii
         final int SCROLL_HEIGHT = 15;
 #endif
         private FormMain m_parent;
-        private Vector<VolumeTracker> m_tracker = null;
+        private List<VolumeTracker> m_tracker = null;
         private boolean mPreviousAlwaysOnTop;
 
         public event FederChangedEventHandler FederChanged;
@@ -208,7 +209,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             int num = vsq.Mixer.Slave.Count + AppManager.getBgmCount();
             if ( m_tracker == null ) {
-                m_tracker = new Vector<VolumeTracker>();
+                m_tracker = new List<VolumeTracker>();
             }
 
             // イベントハンドラをいったん解除する

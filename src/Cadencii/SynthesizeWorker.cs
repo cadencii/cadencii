@@ -31,6 +31,7 @@ namespace cadencii{
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.media;
 using cadencii.vsq;
 using cadencii.java.util;
@@ -58,14 +59,14 @@ namespace cadencii
 #endif
             VsqFileEx vsq = AppManager.getVsqFile();
             Object[] args = (Object[])arg;
-            Vector<PatchWorkQueue> queue = (Vector<PatchWorkQueue>)args[0];
-            Vector<Integer> tracks = (Vector<Integer>)args[1];
+            List<PatchWorkQueue> queue = (List<PatchWorkQueue>)args[0];
+            List<Integer> tracks = (List<Integer>)args[1];
             int finished = queue.Count;
             String temppath = AppManager.getTempWaveDir();
             for ( int k = 0; k < tracks.Count; k++ ) {
                 int track = tracks[ k ];
                 String wavePath = Path.Combine( temppath, track + ".wav" );
-                Vector<Integer> queueIndex = new Vector<Integer>();
+                List<Integer> queueIndex = new List<Integer>();
 
                 for ( int i = 0; i < queue.Count; i++ ) {
                     if ( queue[ i ].track == track ) {

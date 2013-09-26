@@ -31,6 +31,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -91,9 +92,9 @@ namespace cadencii
     public class FormIconPalette : Form
 #endif
     {
-        private Vector<Button> dynaffButtons = new Vector<Button>();
-        private Vector<Button> crescendButtons = new Vector<Button>();
-        private Vector<Button> decrescendButtons = new Vector<Button>();
+        private List<Button> dynaffButtons = new List<Button>();
+        private List<Button> crescendButtons = new List<Button>();
+        private List<Button> decrescendButtons = new List<Button>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
         private boolean mPreviousAlwaysOnTop;

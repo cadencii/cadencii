@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -35,7 +36,7 @@ namespace cadencii.vsq
     public class NrpnIterator : Iterator<ValuePair<String, Integer>>
     {
 #endif
-        private Vector<ValuePair<String, Integer>> nrpns = new Vector<ValuePair<String, Integer>>();
+        private List<ValuePair<String, Integer>> nrpns = new List<ValuePair<String, Integer>>();
         private int m_pos = -1;
 
         public NrpnIterator()

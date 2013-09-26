@@ -21,6 +21,7 @@ import cadencii.*;
 #else
 
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -41,7 +42,7 @@ namespace cadencii.vsq
         public byte DataLsb;
         public boolean DataLsbSpecified;
         public boolean msbOmitRequired;
-        private Vector<VsqNrpn> m_list;
+        private List<VsqNrpn> m_list;
 
         public VsqNrpn( int clock, int nrpn, byte data_msb )
         {
@@ -51,7 +52,7 @@ namespace cadencii.vsq
             DataLsb = 0x0;
             DataLsbSpecified = false;
             msbOmitRequired = false;
-            m_list = new Vector<VsqNrpn>();
+            m_list = new List<VsqNrpn>();
         }
 
         public VsqNrpn( int clock, int nrpn, byte data_msb, byte data_lsb )
@@ -62,12 +63,12 @@ namespace cadencii.vsq
             DataLsb = data_lsb;
             DataLsbSpecified = true;
             msbOmitRequired = false;
-            m_list = new Vector<VsqNrpn>();
+            m_list = new List<VsqNrpn>();
         }
 
         public VsqNrpn[] expand()
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             if ( DataLsbSpecified ) {
                 VsqNrpn v = new VsqNrpn( Clock, Nrpn, DataMsb, DataLsb );
                 v.msbOmitRequired = msbOmitRequired;
@@ -78,18 +79,18 @@ namespace cadencii.vsq
                 ret.Add( v );
             }
             for ( int i = 0; i < m_list.Count; i++ ) {
-                ret.AddRange( new Vector<VsqNrpn>( m_list[ i ].expand() ) );
+                ret.AddRange( new List<VsqNrpn>( m_list[ i ].expand() ) );
             }
             return ret.ToArray();
         }
 
-        public static Vector<VsqNrpn> sort( Vector<VsqNrpn> list )
+        public static List<VsqNrpn> sort( List<VsqNrpn> list )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             list.Sort();
             int list_size = list.Count;
             if ( list_size >= 2 ) {
-                Vector<VsqNrpn> work = new Vector<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
+                List<VsqNrpn> work = new List<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
                 int last_clock = list[0].Clock;
                 work.Add( list[0] );
                 for ( int i = 1; i < list_size; i++ ) {
@@ -141,7 +142,7 @@ namespace cadencii.vsq
 
         public static VsqNrpn[] merge( VsqNrpn[] src1, VsqNrpn[] src2 )
         {
-            Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
+            List<VsqNrpn> ret = new List<VsqNrpn>();
             for ( int i = 0; i < src1.Length; i++ ) {
                 ret.Add( src1[i] );
             }
@@ -157,7 +158,7 @@ namespace cadencii.vsq
             int nrpn = source[0].Nrpn;
             byte msb = (byte)(nrpn >> 8);
             byte lsb = (byte)(nrpn - (nrpn << 8));
-            Vector<NrpnData> ret = new Vector<NrpnData>();
+            List<NrpnData> ret = new List<NrpnData>();
             ret.Add( new NrpnData( source[0].Clock, (byte)0x63, msb ) );
             ret.Add( new NrpnData( source[0].Clock, (byte)0x62, lsb ) );
             ret.Add( new NrpnData( source[0].Clock, (byte)0x06, source[0].DataMsb ) );

@@ -25,6 +25,7 @@ import cadencii.vsq.*;
 
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.vsq;
 
@@ -64,10 +65,10 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public Vector<VibratoVariation> getStandardValues()
+        public List<VibratoVariation> getStandardValues()
         {
             // ビブラート種類の候補値を列挙
-            Vector<VibratoVariation> list = new Vector<VibratoVariation>();
+            List<VibratoVariation> list = new List<VibratoVariation>();
             list.Add( new VibratoVariation( VibratoVariation.empty.description ) );
 
             if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {

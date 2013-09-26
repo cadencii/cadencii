@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -32,12 +33,12 @@ namespace cadencii.apputil
 
     public class Messaging {
         private static String s_lang = "";
-        private static Vector<MessageBody> s_messages = new Vector<MessageBody>();
+        private static List<MessageBody> s_messages = new List<MessageBody>();
 
         public static String[] getKeys( String lang ) {
             foreach (var dict in s_messages) {
                 if ( lang.Equals( dict.lang ) ) {
-                    Vector<String> list = new Vector<String>();
+                    List<String> list = new List<String>();
                     foreach (var key in dict.list.Keys) {
                         list.Add( key );
                     }
@@ -48,7 +49,7 @@ namespace cadencii.apputil
         }
 
         public static String[] getRegisteredLanguage() {
-            Vector<String> res = new Vector<String>();
+            List<String> res = new List<String>();
             foreach (var dict in s_messages) {
                 res.Add( dict.lang );
             }

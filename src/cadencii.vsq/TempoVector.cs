@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.vsq
@@ -63,7 +64,7 @@ namespace cadencii.vsq
     public class TempoVector extends Vector<TempoTableEntry> implements Serializable
 #else
     [Serializable]
-    public class TempoVector : Vector<TempoTableEntry>
+    public class TempoVector : List<TempoTableEntry>
 #endif
     {
         /// <summary>

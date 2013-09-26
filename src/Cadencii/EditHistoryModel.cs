@@ -19,6 +19,7 @@ import java.util.*;
 
 #else
 
+using System.Collections.Generic;
 using cadencii.java.util;
 
     namespace cadencii
@@ -31,7 +32,7 @@ using cadencii.java.util;
             /// </summary>
             public class EditHistoryModel
             {
-                private static Vector<ICommand> mCommands = new Vector<ICommand>();
+                private static List<ICommand> mCommands = new List<ICommand>();
                 private static int mCommandIndex = -1;
 
                 /// <summary>

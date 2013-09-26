@@ -19,7 +19,7 @@ using cadencii.java.util;
 
 namespace cadencii {
 
-    public delegate Vector<MidiQueue> MidiQueueDoneEventHandler( MidiQueue sender );
+    public delegate List<MidiQueue> MidiQueueDoneEventHandler( MidiQueue sender );
 
     public class MidiQueue : IComparable<MidiQueue> {
         public MidiQueueDoneEventHandler Done;

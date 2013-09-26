@@ -25,6 +25,7 @@ import cadencii.xml.*;
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii;
 using cadencii.java.io;
@@ -69,7 +70,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( BgmFile.class )
 #endif
-        public Vector<BgmFile> BgmFiles = new Vector<BgmFile>();
+        public List<BgmFile> BgmFiles = new List<BgmFile>();
         /// <summary>
         /// キャッシュ用ディレクトリのパス
         /// </summary>
@@ -266,7 +267,7 @@ namespace cadencii
         public void insertBlank( int clock_start, int clock_amount )
         {
             base.insertBlank( clock_start, clock_amount );
-            Vector<BezierCurves> curves = AttachedCurves.getCurves();
+            List<BezierCurves> curves = AttachedCurves.getCurves();
             int size = curves.Count;
             for ( int i = 0; i < size; i++ ) {
                 BezierCurves bcs = curves[i];
@@ -300,7 +301,7 @@ namespace cadencii
 #endif
         {
             base.removePart( clock_start, clock_end );
-            Vector<BezierCurves> curves = AttachedCurves.getCurves();
+            List<BezierCurves> curves = AttachedCurves.getCurves();
             int size = curves.Count;
             for ( int i = 0; i < size; i++ ) {
                 BezierCurves bcs = curves[i];
@@ -473,7 +474,7 @@ namespace cadencii
                 // ベジエカーブをシフト
                 for ( int i = 0; i < Utility.CURVE_USAGE.Length; i++ ) {
                     CurveType ct = Utility.CURVE_USAGE[i];
-                    Vector<BezierChain> list = this.AttachedCurves.get( track - 1 ).get( ct );
+                    List<BezierChain> list = this.AttachedCurves.get( track - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
                     }
@@ -545,7 +546,7 @@ namespace cadencii
             int pre_measure_clocks = vsq.getPreMeasureClocks();
             for ( int i = 1; i < tracks; i++ ) {
                 VsqTrack track = vsq.Track[ i ];
-                Vector<Integer> remove_required_event = new Vector<Integer>(); // 削除が要求されたイベントのインデクス
+                List<Integer> remove_required_event = new List<Integer>(); // 削除が要求されたイベントのインデクス
 
                 // 歌手変更・音符イベントをシフト
                 // 時刻が負になる場合は，後で考える
@@ -658,7 +659,7 @@ namespace cadencii
                 // ベジエカーブをシフト
                 for ( int k = 0; k < Utility.CURVE_USAGE.Length; k++ ) {
                     CurveType ct = Utility.CURVE_USAGE[k];
-                    Vector<BezierChain> list = vsq.AttachedCurves.get( i - 1 ).get( ct );
+                    List<BezierChain> list = vsq.AttachedCurves.get( i - 1 ).get( ct );
                     if ( list == null ) {
                         continue;
                     }
@@ -730,7 +731,7 @@ namespace cadencii
         {
 #endif
             VsqFileEx ret = new VsqFileEx( "Miku", 1, 4, 4, 500000 );
-            ret.Track = new Vector<VsqTrack>();
+            ret.Track = new List<VsqTrack>();
             int c = Track.Count;
             for ( int i = 0; i < c; i++ ) {
                 ret.Track.Add( (VsqTrack)Track[ i ].clone() );
@@ -763,12 +764,12 @@ namespace cadencii
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static CadenciiCommand generateCommandBgmUpdate( Vector<BgmFile> list )
+        public static CadenciiCommand generateCommandBgmUpdate( List<BgmFile> list )
         {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.BGM_UPDATE;
             command.args = new Object[1];
-            Vector<BgmFile> copy = new Vector<BgmFile>();
+            List<BgmFile> copy = new List<BgmFile>();
             int count = list.Count;
             for ( int i = 0; i < count; i++ ) {
                 copy.Add( (BgmFile)list[ i ].clone() );
@@ -874,16 +875,16 @@ namespace cadencii
             return ret;
         }
 
-        public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, TreeMap<CurveType, Vector<BezierChain>> attached_curves )
+        public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, TreeMap<CurveType, List<BezierChain>> attached_curves )
         {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE;
             ret.args = new Object[2];
             ret.args[0] = track;
-            TreeMap<CurveType, Vector<BezierChain>> copy = new TreeMap<CurveType, Vector<BezierChain>>();
+            TreeMap<CurveType, List<BezierChain>> copy = new TreeMap<CurveType, List<BezierChain>>();
             foreach (var ct in attached_curves.Keys) {
-                Vector<BezierChain> list = attached_curves.get( ct );
-                Vector<BezierChain> copy_list = new Vector<BezierChain>();
+                List<BezierChain> list = attached_curves.get( ct );
+                List<BezierChain> copy_list = new List<BezierChain>();
                 foreach (var chain in list) {
                     copy_list.Add( (BezierChain)chain.clone() );
                 }
@@ -989,7 +990,7 @@ namespace cadencii
                             // minクロック以上maxクロック以下のコントロールカーブに対して，編集を実行
 
                             // 最初に，min <= clock <= maxとなる範囲のデータ点を抽出（削除コマンドに指定）
-                            Vector<Long> delete = new Vector<Long>();
+                            List<Long> delete = new List<Long>();
                             int list_size = list.size();
                             for ( int i = 0; i < list_size; i++ ) {
                                 int clock = list.getKeyClock( i );
@@ -1049,7 +1050,7 @@ namespace cadencii
                     }
                     VsqBPList list = Track[ track ].getCurve( curve_type.getName() );
                     int list_size = list.size();
-                    Vector<Long> delete = new Vector<Long>();
+                    List<Long> delete = new List<Long>();
                     for ( int i = 0; i < list_size; i++ ) {
                         int clock = list.getKeyClock( i );
                         if ( min <= clock && clock <= max ) {
@@ -1086,7 +1087,7 @@ namespace cadencii
                             }
                             if ( ex_min < ex_max ) {
                                 // ex_min以上ex_max以下の範囲にあるデータ点を消す
-                                Vector<Long> delete = new Vector<Long>();
+                                List<Long> delete = new List<Long>();
                                 int list_size = list.size();
                                 for ( int i = 0; i < list_size; i++ ) {
                                     int clock = list.getKeyClock( i );
@@ -1132,7 +1133,7 @@ namespace cadencii
                         }
 
                         // 削除するのを列挙
-                        Vector<Long> delete = new Vector<Long>();
+                        List<Long> delete = new List<Long>();
                         int list_size = list.size();
                         for ( int i = 0; i < list_size; i++ ) {
                             int clock = list.getKeyClock( i );
@@ -1208,11 +1209,11 @@ namespace cadencii
                 } else if ( command.type == CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE ) {
                     #region ReplaceAttachedCurveRange
                     int track = (Integer)command.args[0];
-                    TreeMap<CurveType, Vector<BezierChain>> curves = (TreeMap<CurveType, Vector<BezierChain>>)command.args[1];
-                    TreeMap<CurveType, Vector<BezierChain>> inv = new TreeMap<CurveType, Vector<BezierChain>>();
+                    TreeMap<CurveType, List<BezierChain>> curves = (TreeMap<CurveType, List<BezierChain>>)command.args[1];
+                    TreeMap<CurveType, List<BezierChain>> inv = new TreeMap<CurveType, List<BezierChain>>();
                     foreach (var ct in curves.Keys) {
-                        Vector<BezierChain> chains = new Vector<BezierChain>();
-                        Vector<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
+                        List<BezierChain> chains = new List<BezierChain>();
+                        List<BezierChain> src = this.AttachedCurves.get( track - 1 ).get( ct );
                         for ( int i = 0; i < src.Count; i++ ) {
                             chains.Add( (BezierChain)src[ i ].clone() );
                         }
@@ -1273,7 +1274,7 @@ namespace cadencii
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BGM_UPDATE ) {
                     #region BGM_UPDATE
-                    Vector<BgmFile> list = (Vector<BgmFile>)command.args[0];
+                    List<BgmFile> list = (List<BgmFile>)command.args[0];
                     ret = VsqFileEx.generateCommandBgmUpdate( BgmFiles );
                     BgmFiles.Clear();
                     int count = list.Count;
@@ -1463,7 +1464,7 @@ namespace cadencii
                     foreach (var bc in ret.AttachedCurves.getCurves()) {
                         for ( int k = 0; k < Utility.CURVE_USAGE.Length; k++ ) {
                             CurveType ct = Utility.CURVE_USAGE[k];
-                            Vector<BezierChain> list = bc.get( ct );
+                            List<BezierChain> list = bc.get( ct );
                             int list_size = list.Count;
                             for ( int i = 0; i < list_size; i++ ) {
                                 BezierChain chain = list[ i ];

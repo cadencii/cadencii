@@ -21,6 +21,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -53,7 +54,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( VsqMixerEntry.class )
 #endif
-        public Vector<VsqMixerEntry> Slave = new Vector<VsqMixerEntry>();
+        public List<VsqMixerEntry> Slave = new List<VsqMixerEntry>();
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
@@ -69,7 +70,7 @@ namespace cadencii.vsq
         public Object clone()
         {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
-            res.Slave = new Vector<VsqMixerEntry>();
+            res.Slave = new List<VsqMixerEntry>();
             foreach (var item in Slave) {
                 res.Slave.Add( (VsqMixerEntry)item.clone() );
             }
@@ -96,7 +97,7 @@ namespace cadencii.vsq
             this.MasterMute = master_mute;
             this.MasterPanpot = master_panpot;
             this.OutputMode = output_mode;
-            Slave = new Vector<VsqMixerEntry>();
+            Slave = new List<VsqMixerEntry>();
         }
 
 #if JAVA
@@ -151,7 +152,7 @@ namespace cadencii.vsq
                 last_line.value = sr.readLine().ToString();
             }
 
-            Slave = new Vector<VsqMixerEntry>();
+            Slave = new List<VsqMixerEntry>();
             for ( int i = 0; i < tracks; i++ ) {
                 Slave.Add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             }

@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.media;
 using cadencii.vsq;
 using cadencii;
@@ -56,7 +57,7 @@ namespace cadencii
         private static TreeMap<String, ValuePair<String, Double>> mCache = new TreeMap<String, ValuePair<String, Double>>();
         private const int BASE_TEMPO = 120;
 
-        private Vector<RenderQueue> mResamplerQueue = new Vector<RenderQueue>();
+        private List<RenderQueue> mResamplerQueue = new List<RenderQueue>();
         private double[] mLeft;
         private double[] mRight;
 
@@ -87,7 +88,7 @@ namespace cadencii
         private WorkerState mState;
         private boolean mUseWideCharacterWorkaround = false;
         // 作成したジャンクションのリスト
-        private Vector<String> mJunctions = new Vector<String>();
+        private List<String> mJunctions = new List<String>();
 #if DEBUG
         /// <summary>
         /// ログを出さない設定の時true
@@ -379,7 +380,7 @@ namespace cadencii
 #endif
 
                 // 前後の音符の先行発音やオーバーラップやらを取得したいので、一度リストに格納する
-                Vector<VsqEvent> events = new Vector<VsqEvent>();
+                List<VsqEvent> events = new List<VsqEvent>();
                 for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent itemi = itr.next();
                     events.Add( itemi );
@@ -522,7 +523,7 @@ namespace cadencii
                         item.UstEvent.getModuration() + "" };
 
                     // ピッチを取得
-                    Vector<String> pitch = new Vector<String>();
+                    List<String> pitch = new List<String>();
                     boolean allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
                     int tempo = BASE_TEMPO;
@@ -835,7 +836,7 @@ namespace cadencii
 #endif
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     //String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
-                    Vector<String> arg_wavtool = new Vector<String>();
+                    List<String> arg_wavtool = new List<String>();
                     int size = p.WavtoolArgPrefix.Count;
                     for ( int j = 0; j < size; j++ ) {
                         String s = p.WavtoolArgPrefix[j];
@@ -1217,7 +1218,7 @@ namespace cadencii
             }
         }
 
-        private void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
+        private void processWavtool( List<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
         {
 #if JAVA
             Vector<String> args = new Vector<String>();

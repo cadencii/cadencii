@@ -23,6 +23,7 @@ import cadencii.windows.forms.*;
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 using cadencii.vsq;
@@ -739,7 +740,7 @@ namespace cadencii
                 int overview_dot_diam = 2;
 
                 int selected = AppManager.getSelected();
-                Vector<DrawObject> objs = AppManager.mDrawObjects[selected - 1];
+                List<DrawObject> objs = AppManager.mDrawObjects[selected - 1];
 
                 // 平均ノートナンバーを調べる
                 double sum = 0.0;

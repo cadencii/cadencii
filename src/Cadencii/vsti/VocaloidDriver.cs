@@ -17,6 +17,7 @@
 //#define TEST
 #endif
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.vsq;
 using VstSdk;
@@ -34,8 +35,8 @@ namespace cadencii
         const int TIME_FORMAT = 480;
         const int DEF_TEMPO = 500000;           // デフォルトのテンポ．
 
-        Vector<Vector<MidiEvent>> s_track_events;
-        Vector<MidiEvent> g_pEvents;
+        List<List<MidiEvent>> s_track_events;
+        List<MidiEvent> g_pEvents;
         int g_pCurrentEvent;
         /// <summary>
         /// s_track_events[0]のmidiイベントを受信済みかどうかを表すフラグ
@@ -49,7 +50,7 @@ namespace cadencii
         int g_tcPrevious;
         int g_saProcessed;
         int g_saTotalSamples;
-        Vector<TempoInfo> g_tempoList;
+        List<TempoInfo> g_tempoList;
         int g_numTempoList;
         //boolean g_cancelRequired;
         double g_progress;
@@ -129,20 +130,20 @@ namespace cadencii
 #if DEBUG
             sout.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
 #endif
-            g_pEvents = new Vector<MidiEvent>();
+            g_pEvents = new List<MidiEvent>();
             g_midiPrepared0 = false;
             g_midiPrepared1 = false;
             g_tcCurrent = 0;
             g_tcPrevious = 0;
             g_saProcessed = 0;
             g_saTotalSamples = 0;
-            g_tempoList = new Vector<TempoInfo>();
+            g_tempoList = new List<TempoInfo>();
             g_numTempoList = 0;
             //g_cancelRequired = false;
             g_progress = 0.0;
-            s_track_events = new Vector<Vector<MidiEvent>>();
-            s_track_events.Add( new Vector<MidiEvent>() );
-            s_track_events.Add( new Vector<MidiEvent>() );
+            s_track_events = new List<List<MidiEvent>>();
+            s_track_events.Add( new List<MidiEvent>() );
+            s_track_events.Add( new List<MidiEvent>() );
             return ret;
         }
 
@@ -153,7 +154,7 @@ namespace cadencii
                 int numEvents = deltaFrames.Length;
                 if ( targetTrack == 0 ) {
                     if ( g_tempoList == null ) {
-                        g_tempoList = new Vector<TempoInfo>();
+                        g_tempoList = new List<TempoInfo>();
                     } else {
                         g_tempoList.Clear();
                     }
@@ -264,7 +265,7 @@ namespace cadencii
                 g_progress = 0.0;
                 sampleRate = sample_rate;
 
-                Vector<MidiEvent> lpEvents = merge_events( s_track_events[ 0 ], s_track_events[ 1 ] );
+                List<MidiEvent> lpEvents = merge_events( s_track_events[ 0 ], s_track_events[ 1 ] );
                 int current_count = -1;
                 MidiEvent current = new MidiEvent();// = lpEvents;
 
@@ -320,7 +321,7 @@ namespace cadencii
                     org.kbinani.debug.push_log( "    getting dwDelay..." );
 #endif
                     dwDelay = 0;
-                    Vector<MidiEvent> list = s_track_events[ 1 ];
+                    List<MidiEvent> list = s_track_events[ 1 ];
                     int list_size = list.Count;
                     for ( int i = 0; i < list_size; i++ ) {
                         MidiEvent work = list[ i ];
@@ -570,9 +571,9 @@ namespace cadencii
             return g_progress;
         }
 
-        private Vector<MidiEvent> merge_events( Vector<MidiEvent> x0, Vector<MidiEvent> y0 )
+        private List<MidiEvent> merge_events( List<MidiEvent> x0, List<MidiEvent> y0 )
         {
-            Vector<MidiEvent> ret = new Vector<MidiEvent>();
+            List<MidiEvent> ret = new List<MidiEvent>();
             for ( int i = 0; i < x0.Count; i++ ) {
                 ret.Add( x0[ i ] );
             }

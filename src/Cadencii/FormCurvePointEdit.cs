@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -126,7 +127,7 @@ namespace cadencii
                                                                                                     list ) );
             EditedZone zone = new EditedZone();
             Utility.compareList( zone, new VsqBPListComparisonContext( list, src ) );
-            Vector<EditedZoneUnit> zoneUnits = new Vector<EditedZoneUnit>();
+            List<EditedZoneUnit> zoneUnits = new List<EditedZoneUnit>();
             foreach (var item in zone.iterator()) {
                 zoneUnits.Add( item );
             }

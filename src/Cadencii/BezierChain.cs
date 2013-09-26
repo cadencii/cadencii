@@ -23,6 +23,7 @@ import cadencii.xml.*;
 #else
 using System;
 using System.Runtime.Serialization;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 
@@ -41,7 +42,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( BezierPoint.class )
 #endif
-        public Vector<BezierPoint> points;
+        public List<BezierPoint> points;
         public double Default;
         public int id;
         private Color mColor;
@@ -400,12 +401,12 @@ namespace cadencii
 #endif
 
         public BezierChain( Color curve ) {
-            points = new Vector<BezierPoint>();
+            points = new List<BezierPoint>();
             mColor = curve;
         }
 
         public BezierChain() {
-            points = new Vector<BezierPoint>();
+            points = new List<BezierPoint>();
             mColor = Color.black;
         }
 
@@ -430,7 +431,7 @@ namespace cadencii
 
         public void add( BezierPoint bp ) {
             if ( points == null ) {
-                points = new Vector<BezierPoint>();
+                points = new List<BezierPoint>();
                 mColor = Color.black;
             }
             points.Add( bp );

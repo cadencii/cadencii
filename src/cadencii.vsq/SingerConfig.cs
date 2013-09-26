@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -252,7 +253,7 @@ namespace cadencii.vsq
 
         public String[] ToStringArray()
         {
-            Vector<String> ret = new Vector<String>();
+            List<String> ret = new List<String>();
             ret.Add( "\"ID\":=:\"" + ID + "\"" );
             ret.Add( "\"FORMAT\":=:\"" + FORMAT + "\"" );
             ret.Add( "\"VOICEIDSTR\":=:\"" + VOICEIDSTR + "\"" );

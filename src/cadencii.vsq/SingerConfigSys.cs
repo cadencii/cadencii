@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -32,8 +33,8 @@ namespace cadencii.vsq
     {
         public const int MAX_SINGERS = 0x4000;
 
-        private Vector<SingerConfig> m_installed_singers = new Vector<SingerConfig>();
-        private Vector<SingerConfig> m_singer_configs = new Vector<SingerConfig>();
+        private List<SingerConfig> m_installed_singers = new List<SingerConfig>();
+        private List<SingerConfig> m_singer_configs = new List<SingerConfig>();
 
         /// <summary>
         /// 
@@ -42,8 +43,8 @@ namespace cadencii.vsq
         /// <param name="path_installed_singers">音源のインストールディレクトリ(ex:new String[]{ "C:\Program Files\VOCALOID2\voicedbdir\BXXXXXXXXXXXXXXX", "D:\singers\BNXXXXXXXXXX" })</param>
         public SingerConfigSys( String path_voicedb, String[] path_installed_singers )
         {
-            m_installed_singers = new Vector<SingerConfig>();
-            m_singer_configs = new Vector<SingerConfig>();
+            m_installed_singers = new List<SingerConfig>();
+            m_singer_configs = new List<SingerConfig>();
             String map = Path.Combine( path_voicedb, "voice.map" );
             if (!System.IO.File.Exists(map)) {
                 return;

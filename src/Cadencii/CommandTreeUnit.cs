@@ -24,7 +24,7 @@ namespace cadencii {
     public class CommandTreeUnit {
         public CadenciiCommand Command = null;
         public CadenciiCommand Parent = null;
-        public Vector<CadenciiCommand> Children = null;
+        public List<CadenciiCommand> Children = null;
     }
 
 }

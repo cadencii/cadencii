@@ -32,6 +32,7 @@ using System;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.apputil;
 using cadencii.java.awt;
@@ -357,7 +358,7 @@ namespace cadencii
         /// <summary>
         /// 移動しているデータ点のリスト
         /// </summary>
-        private Vector<BPPair> mMovingPoints = new Vector<BPPair>();
+        private List<BPPair> mMovingPoints = new List<BPPair>();
         /// <summary>
         /// このコントロールの推奨最少表示高さの前回の値．
         /// 推奨表示高さが変わったかどうかを検出するのに使う
@@ -403,7 +404,7 @@ namespace cadencii
         /// <summary>
         /// TrackSelectorで表示させているカーブの一覧
         /// </summary>
-        private Vector<CurveType> mViewingCurves = new Vector<CurveType>();
+        private List<CurveType> mViewingCurves = new List<CurveType>();
 
         /// <summary>
         /// 最前面に表示するカーブの種類が変更されたとき発生するイベント．
@@ -2299,7 +2300,7 @@ namespace cadencii
             g.setFont( AppManager.baseFont10Bold );
             boolean cursor_should_be_hand = false;
             lock ( AppManager.mDrawObjects ) {
-                Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
+                List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                 int count = target_list.Count;
                 int i_start = AppManager.mDrawStartIndex[selected - 1];
                 for ( int i = i_start; i < count; i++ ) {
@@ -2392,7 +2393,7 @@ namespace cadencii
         /// </summary>
         /// <param name="g"></param>
         /// <param name="chains"></param>
-        private void drawAttachedCurve( Graphics2D g, Vector<BezierChain> chains )
+        private void drawAttachedCurve( Graphics2D g, List<BezierChain> chains )
         {
 #if DEBUG
             try {
@@ -3400,7 +3401,7 @@ namespace cadencii
         /// <param name="px_tolerance"></param>
         private void findBezierPointAt( int locx,
                                         int locy,
-                                        Vector<BezierChain> list,
+                                        List<BezierChain> list,
                                         ByRef<BezierChain> found_chain,
                                         ByRef<BezierPoint> found_point,
                                         ByRef<BezierPickedSide> found_side,
@@ -3584,7 +3585,7 @@ namespace cadencii
                     if ( ve != null ) {
                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                             if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), ve.InternalID ) ) {
-                                Vector<Integer> old = new Vector<Integer>();
+                                List<Integer> old = new List<Integer>();
                                 foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
@@ -3600,7 +3601,7 @@ namespace cadencii
                             int last_clock = AppManager.itemSelection.getLastEvent().original.Clock;
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
-                            Vector<Integer> add_required = new Vector<Integer>();
+                            List<Integer> add_required = new List<Integer>();
                             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getEventIterator(); itr.hasNext(); ) {
                                 VsqEvent item = itr.next();
                                 if ( item.ID.type == VsqIDType.Singer && tmin <= item.Clock && item.Clock <= tmax ) {
@@ -3768,7 +3769,7 @@ namespace cadencii
                                 mMouseDownMode = MouseDownMode.NONE;
                             } else {
                                 // まずベジエ曲線の点にヒットしてないかどうかを検査
-                                Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
+                                List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
                                 for ( int i = 0; i < dict.Count; i++ ) {
                                     BezierChain bc = dict[ i ];
@@ -3822,7 +3823,7 @@ namespace cadencii
                                     boolean found2 = false;
                                     if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                         // clicked with CTRL key
-                                        Vector<Integer> list = new Vector<Integer>();
+                                        List<Integer> list = new List<Integer>();
                                         foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                             VsqEvent ve2 = item.original;
                                             if ( ve.InternalID == ve2.InternalID ) {
@@ -3840,7 +3841,7 @@ namespace cadencii
                                             int last_clock = last_selected.original.Clock;
                                             int tmin = Math.Min( ve.Clock, last_clock );
                                             int tmax = Math.Max( ve.Clock, last_clock );
-                                            Vector<Integer> add_required = new Vector<Integer>();
+                                            List<Integer> add_required = new List<Integer>();
                                             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getNoteEventIterator(); itr.hasNext(); ) {
                                                 VsqEvent item = itr.next();
                                                 if ( tmin <= item.Clock && item.Clock <= tmax ) {
@@ -3958,7 +3959,7 @@ namespace cadencii
                                 executeCommand( run, true );
                             } else {
                                 if ( AppManager.isCurveMode() ) {
-                                    Vector<BezierChain> list = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
+                                    List<BezierChain> list = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                     if ( list != null ) {
                                         ByRef<BezierChain> chain = new ByRef<BezierChain>();
                                         ByRef<BezierPoint> point = new ByRef<BezierPoint>();
@@ -4058,7 +4059,7 @@ namespace cadencii
                     } else if ( e.Button == BMouseButtons.Right ) {
                         if ( AppManager.isCurveMode() ) {
                             if ( !mSelectedCurve.equals( CurveType.VEL ) && !mSelectedCurve.equals( CurveType.Env ) ) {
-                                Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
+                                List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
                                 boolean found = false;
                                 for ( int i = 0; i < dict.Count; i++ ) {
@@ -4110,7 +4111,7 @@ namespace cadencii
             boolean is_middle = false;
 
             // check whether bezier point exists on clicked position
-            Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( mSelectedCurve );
+            List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( mSelectedCurve );
             ByRef<BezierChain> found_chain = new ByRef<BezierChain>();
             ByRef<BezierPoint> found_point = new ByRef<BezierPoint>();
             ByRef<BezierPickedSide> found_side = new ByRef<BezierPickedSide>();
@@ -4578,7 +4579,7 @@ namespace cadencii
                     } else if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         #region Eraser
                         if ( AppManager.isCurveMode() ) {
-                            Vector<BezierChain> list = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
+                            List<BezierChain> list = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
                             if ( list != null ) {
                                 int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
@@ -4587,7 +4588,7 @@ namespace cadencii
                                 boolean changed = false; //1箇所でも削除が実行されたらtrue
 
                                 int count = list.Count;
-                                Vector<BezierChain> work = new Vector<BezierChain>();
+                                List<BezierChain> work = new List<BezierChain>();
                                 for ( int i = 0; i < count; i++ ) {
                                     BezierChain chain = list[ i ];
                                     BezierChain chain_copy = new BezierChain();
@@ -4625,7 +4626,7 @@ namespace cadencii
                                     }
                                 }
                                 if ( changed ) {
-                                    TreeMap<CurveType, Vector<BezierChain>> comm = new TreeMap<CurveType, Vector<BezierChain>>();
+                                    TreeMap<CurveType, List<BezierChain>> comm = new TreeMap<CurveType, List<BezierChain>>();
                                     comm.put( mSelectedCurve, work );
                                     CadenciiCommand run = VsqFileEx.generateCommandReplaceAttachedCurveRange( selected, comm );
                                     executeCommand( run, true );
@@ -4641,7 +4642,7 @@ namespace cadencii
                                 AppManager.mCurveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
                                 AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 AppManager.itemSelection.clearEvent();
-                                Vector<Integer> deleting = new Vector<Integer>();
+                                List<Integer> deleting = new List<Integer>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ev = itr.next();
                                     if ( start <= ev.Clock && ev.Clock <= end ) {
@@ -4658,8 +4659,8 @@ namespace cadencii
                                 #region VibratoRate ViratoDepth
                                 int er_start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int er_end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
-                                Vector<Integer> internal_ids = new Vector<Integer>();
-                                Vector<VsqID> items = new Vector<VsqID>();
+                                List<Integer> internal_ids = new List<Integer>();
+                                List<VsqID> items = new List<VsqID>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = itr.next();
                                     if ( ve.ID.VibratoHandle == null ) {
@@ -4697,8 +4698,8 @@ namespace cadencii
                                         } else {
                                             target = item.VibratoHandle.getRateBP();
                                         }
-                                        Vector<Float> bpx = new Vector<Float>();
-                                        Vector<Integer> bpy = new Vector<Integer>();
+                                        List<Float> bpx = new List<Float>();
+                                        List<Integer> bpy = new List<Integer>();
                                         boolean start_added = false;
                                         boolean end_added = false;
                                         for ( int i = 0; i < target.getCount(); i++ ) {
@@ -4764,7 +4765,7 @@ namespace cadencii
                                 int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
                                 Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.mCurveSelectingRectangle.width ), Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
-                                Vector<Long> delete = new Vector<Long>();
+                                List<Long> delete = new List<Long>();
                                 int count = work.size();
                                 for ( int i = 0; i < count; i++ ) {
                                     int clock = work.getKeyClock( i );
@@ -4840,7 +4841,7 @@ namespace cadencii
                                     }
                                 }
                                 if ( velocity.size() > 0 ) {
-                                    Vector<ValuePair<Integer, Integer>> cpy = new Vector<ValuePair<Integer, Integer>>();
+                                    List<ValuePair<Integer, Integer>> cpy = new List<ValuePair<Integer, Integer>>();
                                     foreach (var internal_id in velocity.Keys) {
                                         int value = (Integer)velocity.get( internal_id );
                                         cpy.Add( new ValuePair<Integer, Integer>( internal_id, value ) );
@@ -4889,8 +4890,8 @@ namespace cadencii
 #if DEBUG
                                 AppManager.debugWriteLine( "    start,end=" + start + " " + end );
 #endif
-                                Vector<Integer> internal_ids = new Vector<Integer>();
-                                Vector<VsqID> items = new Vector<VsqID>();
+                                List<Integer> internal_ids = new List<Integer>();
+                                List<VsqID> items = new List<VsqID>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                                     VsqEvent ve = itr.next();
                                     if ( ve.ID.VibratoHandle == null ) {
@@ -4916,7 +4917,7 @@ namespace cadencii
                                     float add_min = (AppManager.clockFromXCoord( chk_start - stdx ) - cl_vib_start) / cl_vib_length;
                                     float add_max = (AppManager.clockFromXCoord( chk_end - stdx ) - cl_vib_start) / cl_vib_length;
 
-                                    Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
+                                    List<ValuePair<Float, Integer>> edit = new List<ValuePair<Float, Integer>>();
                                     int lclock = -2 * step_clock;
                                     ValuePair<Float, Integer> first = null; // xの値が0以下の最大のデータ点
                                     ValuePair<Float, Integer> last = null;//xの値が1以上の最小のデータ点
@@ -5020,7 +5021,7 @@ namespace cadencii
                                 long maxid = list.getMaxID();
 
                                 // 削除するものを列挙
-                                Vector<Long> delete = new Vector<Long>();
+                                List<Long> delete = new List<Long>();
                                 int c = list.size();
                                 for ( int i = 0; i < c; i++ ) {
                                     int clock = list.getKeyClock( i );
@@ -5345,8 +5346,8 @@ namespace cadencii
                                     edited.VibratoHandle.setRateBP( new VibratoBPList( new float[] { x },
                                                                                        new int[] { value } ) );
                                 } else {
-                                    Vector<Float> xs = new Vector<Float>();
-                                    Vector<Integer> vals = new Vector<Integer>();
+                                    List<Float> xs = new List<Float>();
+                                    List<Integer> vals = new List<Integer>();
                                     boolean first = true;
                                     VibratoBPList ratebp = edited.VibratoHandle.getRateBP();
                                     int c = ratebp.getCount();
@@ -5387,8 +5388,8 @@ namespace cadencii
                                     edited.VibratoHandle.setDepthBP(
                                         new VibratoBPList( new float[] { x }, new int[] { value } ) );
                                 } else {
-                                    Vector<Float> xs = new Vector<Float>();
-                                    Vector<Integer> vals = new Vector<Integer>();
+                                    List<Float> xs = new List<Float>();
+                                    List<Integer> vals = new List<Integer>();
                                     boolean first = true;
                                     VibratoBPList depthbp = edited.VibratoHandle.getDepthBP();
                                     int c = depthbp.getCount();
@@ -5432,7 +5433,7 @@ namespace cadencii
                 } else {
                     VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
                     if ( list != null ) {
-                        Vector<Long> delete = new Vector<Long>();
+                        List<Long> delete = new List<Long>();
                         TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
                         long maxid = list.getMaxID();
                         if ( list.isContainsKey( clock ) ) {
@@ -5502,7 +5503,7 @@ namespace cadencii
                             // ベジエデータ点にヒットしているかどうかを検査
                             //int track = AppManager.getSelected();
                             int clock = AppManager.clockFromXCoord( e.X );
-                            Vector<BezierChain> dict = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
+                            List<BezierChain> dict = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
                             BezierChain target_chain = null;
                             BezierPoint target_point = null;
                             boolean found = false;
@@ -5721,19 +5722,19 @@ namespace cadencii
         public void prepareSingerMenu( RendererKind renderer )
         {
             cmenuSinger.Items.Clear();
-            Vector<SingerConfig> items = null;
+            List<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
             } else if ( renderer == RendererKind.VOCALOID1 ) {
-                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) );
+                items = new List<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {
-                items = new Vector<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) );
+                items = new List<SingerConfig>( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) );
 #if ENABLE_AQUESTONE
             } else if ( renderer == RendererKind.AQUES_TONE ) {
-                items = new Vector<SingerConfig>();
+                items = new List<SingerConfig>();
                 items.AddRange( AquesToneDriver.Singers );
             } else if ( renderer == RendererKind.AQUES_TONE2 ) {
-                items = new Vector<SingerConfig>();
+                items = new List<SingerConfig>();
                 items.AddRange( AquesTone2Driver.Singers );
 #endif
             } else {

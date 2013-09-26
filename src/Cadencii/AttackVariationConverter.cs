@@ -26,6 +26,7 @@ import cadencii.componentmodel.*;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii;
 using cadencii.java.util;
@@ -142,7 +143,7 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public Vector<Object> getStandardValues()
+        public List<Object> getStandardValues()
         {
             SynthesizerType type = SynthesizerType.VOCALOID2;
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -152,7 +153,7 @@ namespace cadencii
                     type = SynthesizerType.VOCALOID1;
                 }
             }
-            Vector<Object> list = new Vector<Object>();
+            List<Object> list = new List<Object>();
             list.Add( new AttackVariation() );
             foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
                 list.Add( new AttackVariation( aconfig.getDisplayString() ) );

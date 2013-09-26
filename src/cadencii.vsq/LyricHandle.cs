@@ -22,6 +22,7 @@ import cadencii.xml.*;
 namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.vsq
@@ -46,7 +47,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( Lyric.class )
 #endif
-        public Vector<Lyric> Trailing = new Vector<Lyric>();
+        public List<Lyric> Trailing = new List<Lyric>();
 #endif
 
         public LyricHandle()

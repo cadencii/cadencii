@@ -21,6 +21,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -97,7 +98,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( UstEventProperty.class )
 #endif
-        public Vector<UstEventProperty> Properties = new Vector<UstEventProperty>();
+        public List<UstEventProperty> Properties = new List<UstEventProperty>();
 
         public UstEvent()
         {

@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.util;
@@ -54,7 +55,7 @@ namespace cadencii
 
         private TreeMap<String, ValuePair<String, Keys[]>> mDict;
         private TreeMap<String, ValuePair<String, Keys[]>> mFirstDict;
-        private Vector<String> mFieldName = new Vector<String>();
+        private List<String> mFieldName = new List<String>();
         private FormMain mMainForm = null;
 
         /// <summary>
@@ -204,7 +205,7 @@ namespace cadencii
             foreach (var name in src.Keys) {
                 String key = src.get( name ).getKey();
                 Keys[] values = src.get( name ).getValue();
-                Vector<Keys> cp = new Vector<Keys>();
+                List<Keys> cp = new List<Keys>();
                 foreach ( Keys k in values ) {
                     cp.Add( k );
                 }
@@ -377,7 +378,7 @@ namespace cadencii
             if ( !mDict.containsKey( display ) ) {
                 return;
             }
-            Vector<Keys> capturelist = new Vector<Keys>();
+            List<Keys> capturelist = new List<Keys>();
             if( key != Keys.None ){
                 capturelist.Add( key );
                 if (checkCommand.Checked) {
@@ -411,7 +412,7 @@ namespace cadencii
             unRegisterHandlers();
             ValuePair<String, Keys[]> item = mDict.get( display );
             Keys[] keys = item.getValue();
-            Vector<Keys> vkeys = new Vector<Keys>( keys );
+            List<Keys> vkeys = new List<Keys>( keys );
             checkCommand.Checked = vkeys.Contains( Keys.Menu );
             checkShift.Checked = vkeys.Contains( Keys.Shift );
             checkControl.Checked = vkeys.Contains( Keys.Control );
@@ -450,7 +451,7 @@ namespace cadencii
 
         public void btnLoadDefault_Click( Object sender, EventArgs e )
         {
-            Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
+            List<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
             for ( int i = 0; i < defaults.Count; i++ ) {
                 String name = defaults[ i ].Key;
                 Keys[] keys = defaults[ i ].Value;

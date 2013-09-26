@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.util;
 using cadencii.vsq;
@@ -43,7 +44,7 @@ namespace cadencii
 #endif
     {
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
-        private Vector<SelectedEventEntry> m_items;
+        private List<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
 
@@ -57,7 +58,7 @@ namespace cadencii
 #endif
             registerEventHandlers();
             setResources();
-            m_items = new Vector<SelectedEventEntry>();
+            m_items = new List<SelectedEventEntry>();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 

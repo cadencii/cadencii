@@ -44,7 +44,7 @@ using System.Collections.Generic;
                 /// <summary>
                 /// 選択されているベジエ点のリスト
                 /// </summary>
-                private Vector<SelectedBezierPoint> mBezier = new Vector<SelectedBezierPoint>();
+                private List<SelectedBezierPoint> mBezier = new List<SelectedBezierPoint>();
                 /// <summary>
                 /// 最後に選択されたベジエ点
                 /// </summary>
@@ -62,8 +62,8 @@ using System.Collections.Generic;
                 /// <summary>
                 /// 選択されているイベントのリスト
                 /// </summary>
-                private Vector<SelectedEventEntry> mEvents = new Vector<SelectedEventEntry>();
-                private Vector<Long> mPointIDs = new Vector<Long>();
+                private List<SelectedEventEntry> mEvents = new List<SelectedEventEntry>();
+                private List<Long> mPointIDs = new List<Long>();
                 /// <summary>
                 /// selectedPointIDsに格納されているデータ点の，CurveType
                 /// </summary>
@@ -195,7 +195,7 @@ using System.Collections.Generic;
 
                 public IEnumerable<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
                 {
-                    Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
+                    List<ValuePair<Integer, SelectedTimesigEntry>> list = new List<ValuePair<Integer, SelectedTimesigEntry>>();
                     foreach (var clock in mTimesig.Keys)
                     {
                         list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig.get( clock ) ) );
@@ -281,7 +281,7 @@ using System.Collections.Generic;
 
                 public IEnumerable<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
                 {
-                    Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
+                    List<ValuePair<Integer, SelectedTempoEntry>> list = new List<ValuePair<Integer, SelectedTempoEntry>>();
                     foreach (var clock in mTempo.Keys)
                     {
                         list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo.get( clock ) ) );
@@ -350,8 +350,8 @@ using System.Collections.Generic;
 
                 public void removeEventRange( int[] ids )
                 {
-                    Vector<Integer> v_ids = new Vector<Integer>( PortUtil.convertIntArray( ids ) );
-                    Vector<Integer> index = new Vector<Integer>();
+                    List<Integer> v_ids = new List<Integer>( PortUtil.convertIntArray( ids ) );
+                    List<Integer> index = new List<Integer>();
                     int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
@@ -375,7 +375,7 @@ using System.Collections.Generic;
                     checkSelectedItemExistence();
                 }
 
-                public void addEventAll( Vector<Integer> list )
+                public void addEventAll( List<Integer> list )
                 {
                     clearTempo();
                     clearTimesig();

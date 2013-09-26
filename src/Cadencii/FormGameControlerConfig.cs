@@ -22,6 +22,7 @@ import cadencii.apputil.*;
 import cadencii.windows.forms.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii;
 using cadencii.java.util;
@@ -39,8 +40,8 @@ namespace cadencii
     public class FormGameControlerConfig : System.Windows.Forms.Form
 #endif
     {
-        private Vector<Integer> m_list = new Vector<Integer>();
-        private Vector<Integer> m_povs = new Vector<Integer>();
+        private List<Integer> m_list = new List<Integer>();
+        private List<Integer> m_povs = new List<Integer>();
         private int index;
         private System.Windows.Forms.Timer timer;
 

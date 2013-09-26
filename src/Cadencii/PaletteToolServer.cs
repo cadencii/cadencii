@@ -17,6 +17,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.util;
 using cadencii.vsq;
@@ -63,7 +64,7 @@ namespace cadencii {
                 }
 
                 Assembly asm = null;
-                Vector<String> errors = new Vector<String>();
+                List<String> errors = new List<String>();
                 try {
                     asm = (new PluginLoader()).compileScript( code, errors );
                 } catch ( Exception ex ) {

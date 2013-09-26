@@ -19,6 +19,7 @@ import java.util.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -44,7 +45,7 @@ namespace cadencii.vsq
         public String IconID = "";
         public String IDS = "";
         public Lyric L0;
-        public Vector<Lyric> Trailing = new Vector<Lyric>();
+        public List<Lyric> Trailing = new List<Lyric>();
         public int Original;
         public String Caption = "";
         public int Length;

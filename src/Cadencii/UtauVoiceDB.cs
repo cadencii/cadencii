@@ -21,6 +21,7 @@ import cadencii.vsq.*;
 #else
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -34,7 +35,7 @@ namespace cadencii {
     /// UTAUの原音設定を表すクラス
     /// </summary>
     public class UtauVoiceDB {
-        private Vector<OtoArgs> _configs = new Vector<OtoArgs>();
+        private List<OtoArgs> _configs = new List<OtoArgs>();
         private String _name = "Unknown";
 
         /// <summary>

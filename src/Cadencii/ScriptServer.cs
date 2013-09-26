@@ -52,12 +52,12 @@ namespace cadencii {
         public static void reload() {
             // 拡張子がcs, txtのファイルを列挙
             String dir = Utility.getScriptPath();
-            Vector<String> files = new Vector<String>();
-            files.AddRange( new Vector<string>( PortUtil.listFiles( dir, ".txt" ) ) );
-            files.AddRange( new Vector<string>( PortUtil.listFiles( dir, ".cs" ) ) );
+            List<String> files = new List<String>();
+            files.AddRange( new List<string>( PortUtil.listFiles( dir, ".txt" ) ) );
+            files.AddRange( new List<string>( PortUtil.listFiles( dir, ".cs" ) ) );
 
             // 既存のスクリプトに無いまたは新しいやつはロード。
-            Vector<String> added = new Vector<String>(); //追加または更新が行われたスクリプトのID
+            List<String> added = new List<String>(); //追加または更新が行われたスクリプトのID
             foreach ( String file in files ) {
                 String id = PortUtil.getFileName( file );
                 double time = PortUtil.getFileLastModified( file );

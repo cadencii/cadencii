@@ -26,6 +26,7 @@ import cadencii.vsq.*;
 using System;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.media;
@@ -114,7 +115,7 @@ namespace cadencii {
         /// </summary>
         public static VocaloidDaemon[] vocaloidrvDaemon = null;
 #else
-        public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
+        public static List<VocaloidDriver> vocaloidDriver = new List<VocaloidDriver>();
 #endif
 #endif
 

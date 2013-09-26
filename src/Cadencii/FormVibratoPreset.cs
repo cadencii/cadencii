@@ -25,6 +25,7 @@ import cadencii.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.vsq;
 using cadencii;
@@ -63,7 +64,7 @@ namespace cadencii
         /// AppManager.editorConfig.AutoVibratoCustomからコピーしてきた，
         /// ビブラートハンドルのリスト
         /// </summary>
-        private Vector<VibratoHandle> mHandles;
+        private List<VibratoHandle> mHandles;
         /// <summary>
         /// 選択状態のビブラートハンドル
         /// </summary>
@@ -85,7 +86,7 @@ namespace cadencii
         /// コンストラクタ．
         /// </summary>
         /// <param name="handles"></param>
-        public FormVibratoPreset( Vector<VibratoHandle> handles )
+        public FormVibratoPreset( List<VibratoHandle> handles )
         {
 #if JAVA
             super();
@@ -99,7 +100,7 @@ namespace cadencii
             registerEventHandlers();
 
             // ハンドルのリストをクローン
-            mHandles = new Vector<VibratoHandle>();
+            mHandles = new List<VibratoHandle>();
             int size = handles.Count;
             for ( int i = 0; i < size; i++ ) {
                 mHandles.Add( (VibratoHandle)handles[ i ].clone() );
@@ -117,11 +118,11 @@ namespace cadencii
         /// ダイアログによる設定結果を取得します
         /// </summary>
         /// <returns></returns>
-        public Vector<VibratoHandle> getResult()
+        public List<VibratoHandle> getResult()
         {
             // iconIDを整える
             if ( mHandles == null ) {
-                mHandles = new Vector<VibratoHandle>();
+                mHandles = new List<VibratoHandle>();
             }
             int size = mHandles.Count;
             for ( int i = 0; i < size; i++ ) {

@@ -21,6 +21,7 @@ import cadencii.xml.*;
 
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -40,7 +41,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlGenericType( UstPortamentoPoint.class )
 #endif
-        public Vector<UstPortamentoPoint> Points = new Vector<UstPortamentoPoint>();
+        public List<UstPortamentoPoint> Points = new List<UstPortamentoPoint>();
         public int Start;
         /// <summary>
         /// PBSの末尾のセミコロンの後ろについている整数

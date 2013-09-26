@@ -36,9 +36,9 @@ namespace cadencii.vsq
     public class ExpressionConfigSys
     {
         private const int MAX_VIBRATO = 0x400;
-        private Vector<VibratoHandle> m_vibrato_configs;
-        private Vector<NoteHeadHandle> m_attack_configs;
-        private Vector<IconDynamicsHandle> m_dynamics_configs;
+        private List<VibratoHandle> m_vibrato_configs;
+        private List<NoteHeadHandle> m_attack_configs;
+        private List<IconDynamicsHandle> m_dynamics_configs;
 
         /*private void printTo( String file ) {
             BufferedWriter sw = null;
@@ -148,9 +148,9 @@ namespace cadencii.vsq
         public static ExpressionConfigSys getVocaloid1Default()
         {
             ExpressionConfigSys ret = new ExpressionConfigSys();
-            ret.m_vibrato_configs = new Vector<VibratoHandle>();
-            ret.m_attack_configs = new Vector<NoteHeadHandle>();
-            ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
+            ret.m_vibrato_configs = new List<VibratoHandle>();
+            ret.m_attack_configs = new List<NoteHeadHandle>();
+            ret.m_dynamics_configs = new List<IconDynamicsHandle>();
             VibratoHandle v1 = new VibratoHandle();
             /*v1.author = "Taro";
             v1.file = "normal.aic";
@@ -600,9 +600,9 @@ namespace cadencii.vsq
             ExpressionConfigSys ret;
 #else
             ExpressionConfigSys ret = new ExpressionConfigSys();
-            ret.m_vibrato_configs = new Vector<VibratoHandle>();
-            ret.m_attack_configs = new Vector<NoteHeadHandle>();
-            ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
+            ret.m_vibrato_configs = new List<VibratoHandle>();
+            ret.m_attack_configs = new List<NoteHeadHandle>();
+            ret.m_dynamics_configs = new List<IconDynamicsHandle>();
 #endif
 #if __cplusplus
             VibratoHandle v1;
@@ -1000,15 +1000,15 @@ namespace cadencii.vsq
         /// <param name="path_expdb"></param>
         public ExpressionConfigSys( String path_editor, String path_expdb )
         {
-            m_vibrato_configs = new Vector<VibratoHandle>();
-            m_attack_configs = new Vector<NoteHeadHandle>();
-            m_dynamics_configs = new Vector<IconDynamicsHandle>();
+            m_vibrato_configs = new List<VibratoHandle>();
+            m_attack_configs = new List<NoteHeadHandle>();
+            m_dynamics_configs = new List<IconDynamicsHandle>();
 
             String base_path = PortUtil.getDirectoryName( path_editor );
             String aiconDB_def = Path.Combine( base_path, "AiconDB.def" );
             if (System.IO.File.Exists(aiconDB_def)) {
                 String folder_name = "";
-                TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
+                TreeMap<String, List<String>> list = new TreeMap<String, List<String>>();
                 BufferedReader sr = null;
                 try {
                     sr = new BufferedReader( new InputStreamReader( new FileInputStream( aiconDB_def ), "Shift_JIS" ) );
@@ -1034,12 +1034,12 @@ namespace cadencii.vsq
                                         folder_name = spl[1];
                                     }
                                 } else {
-                                    Vector<String> add = null;
+                                    List<String> add = null;
                                     if ( list.containsKey( current ) ) {
                                         add = list.get( current );
                                         list.remove( current );
                                     } else {
-                                        add = new Vector<String>();
+                                        add = new List<String>();
                                     }
                                     add.Add( line );
                                     list.put( current, add );

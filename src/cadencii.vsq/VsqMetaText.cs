@@ -19,6 +19,7 @@ import java.io.*;
 import cadencii.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -428,9 +429,9 @@ namespace cadencii.vsq
         /// このインスタンスから、Handleのリストを作成すると同時に、Eventsに登録されているVsqEventのvalue値および各ハンドルのvalue値を更新します
         /// </summary>
         /// <returns></returns>
-        private Vector<VsqHandle> buildHandleList()
+        private List<VsqHandle> buildHandleList()
         {
-            Vector<VsqHandle> handle = new Vector<VsqHandle>();
+            List<VsqHandle> handle = new List<VsqHandle>();
             int current_id = -1;
             int current_handle = -1;
             boolean add_quotation_mark = true;
@@ -514,7 +515,7 @@ namespace cadencii.vsq
             if ( mixer != null ) {
                 mixer.write( sw );
             }
-            Vector<VsqHandle> handle = writeEventList( sw, eos );
+            List<VsqHandle> handle = writeEventList( sw, eos );
             foreach (var item in Events.iterator()) {
                 item.write( sw );
             }
@@ -601,14 +602,14 @@ namespace cadencii.vsq
             }
         }
 
-        private Vector<VsqHandle> writeEventListCor( ITextWriter writer, int eos )
+        private List<VsqHandle> writeEventListCor( ITextWriter writer, int eos )
 #if JAVA
             throws IOException
 #endif
         {
-            Vector<VsqHandle> handles = buildHandleList();
+            List<VsqHandle> handles = buildHandleList();
             writer.writeLine( "[EventList]" );
-            Vector<VsqEvent> temp = new Vector<VsqEvent>();
+            List<VsqEvent> temp = new List<VsqEvent>();
             foreach (var @event in Events.iterator()) {
                 temp.Add( @event );
             }
@@ -631,7 +632,7 @@ namespace cadencii.vsq
             return handles;
         }
 
-        public Vector<VsqHandle> writeEventList( ITextWriter sw, int eos )
+        public List<VsqHandle> writeEventList( ITextWriter sw, int eos )
 #if JAVA
             throws IOException
 #endif
@@ -639,7 +640,7 @@ namespace cadencii.vsq
             return writeEventListCor( sw, eos );
         }
 
-        public Vector<VsqHandle> writeEventList( BufferedWriter stream_writer, int eos )
+        public List<VsqHandle> writeEventList( BufferedWriter stream_writer, int eos )
 #if JAVA
             throws IOException
 #endif
@@ -737,7 +738,7 @@ namespace cadencii.vsq
 
         public VsqMetaText( TextStream sr )
         {
-            Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
+            List<ValuePair<Integer, Integer>> t_event_list = new List<ValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
             TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );
