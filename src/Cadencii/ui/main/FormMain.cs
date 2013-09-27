@@ -11610,25 +11610,37 @@ namespace cadencii
                 return;
             }
             int count = mf.getTrackCount();
-            //Encoding def_enc = Encoding.GetEncoding( 0 );
+
+            Func<int[], string> get_string_from_metatext = (buffer) => {
+                var encoding_candidates = new List<Encoding>();
+                encoding_candidates.Add(Encoding.GetEncoding("Shift_JIS"));
+                encoding_candidates.Add(Encoding.Default);
+                encoding_candidates.Add(Encoding.UTF8);
+                encoding_candidates.AddRange(Encoding.GetEncodings().Select((encoding) => encoding.GetEncoding()));
+                foreach (var encoding in encoding_candidates) {
+                    try {
+                        return encoding.GetString(buffer.Select((b) => (byte)(0xFF & b)).ToArray(), 0, buffer.Length);
+                    } catch {
+                        continue;
+                    }
+                }
+                return string.Empty;
+            };
+            
             for ( int i = 0; i < count; i++ ) {
-                String track_name = "";
                 int notes = 0;
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 int events_count = events.size();
 
                 // トラック名を取得
-                for ( int j = 0; j < events_count; j++ ) {
-                    MidiEvent item = events.get( j );
-                    if ( item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03 ) {
-                        int[] d = new int[item.data.Length];
-                        for ( int k = 0; k < item.data.Length; k++ ) {
-                            d[k] = 0xff & item.data[k];
-                        }
-                        track_name = PortUtil.getDecodedString( "Shift_JIS", d, 1, item.data.Length - 1 );
-                        break;
-                    }
-                }
+                string track_name =
+                    events
+                        .Where((item) => item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03)
+                        .Select((item) => {
+                            int[] d = item.data.Skip(1).ToArray();
+                            return get_string_from_metatext(d);
+                        })
+                        .FirstOrDefault();
 
                 // イベント数を数える
                 for ( int j = 0; j < events_count; j++ ) {
@@ -11891,7 +11903,7 @@ namespace cadencii
                                                 for ( int m = 1; m < itemk.data.Length; m++ ) {
                                                     d[m - 1] = 0xff & itemk.data[m];
                                                 }
-                                                phrase = PortUtil.getDecodedString( "Shift_JIS", d, 0, itemk.data.Length );
+                                                phrase = get_string_from_metatext(d);
                                                 break;
                                             }
                                         }
