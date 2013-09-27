@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.Text;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -51,7 +52,7 @@ namespace cadencii.vsq
 
         const int INIT_BUFLEN = 512;
 
-        class KeyClockIterator : Iterator<Integer>
+        class KeyClockIterator : IEnumerator<int>, IEnumerable<int>
         {
             private VsqBPList m_list;
             private int m_pos;
@@ -59,35 +60,47 @@ namespace cadencii.vsq
             public KeyClockIterator( VsqBPList list )
             {
                 m_list = list;
-                m_pos = -1;
+				Reset();
             }
 
-            public boolean hasNext()
-            {
-                if ( m_pos + 1 < m_list.length ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+			public void Dispose() {}
 
-            public Integer next()
-            {
-                m_pos++;
-                return m_list.clocks[m_pos];
-            }
+			public int Current
+			{
+				get
+				{
+					return m_list.clocks[m_pos];
+				}
+			}
 
-            public void remove()
-            {
-                if ( 0 <= m_pos && m_pos < m_list.length ) {
-                    int key = m_list.clocks[m_pos];
-                    for ( int i = m_pos; i < m_list.length - 1; i++ ) {
-                        m_list.clocks[i] = m_list.clocks[i + 1];
-                        m_list.items[i] = m_list.items[i + 1];
-                    }
-                    m_list.length = m_list.length - 1;
-                }
-            }
+			object System.Collections.IEnumerator.Current
+			{
+				get
+				{
+					return this.Current;
+				}
+			}
+
+			public bool MoveNext()
+			{
+				m_pos++;
+				return m_pos + 1 < m_list.length;
+			}
+
+			public void Reset()
+			{
+				m_pos = -1;
+			}
+
+			public IEnumerator<int> GetEnumerator()
+			{
+				return this;
+			}
+
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+			{
+				return this;
+			}
         }
 
         public VsqBPList()
@@ -678,7 +691,7 @@ namespace cadencii.vsq
             return length;
         }
 
-        public Iterator<Integer> keyClockIterator()
+        public IEnumerable<Integer> keyClockIterator()
         {
             return new KeyClockIterator( this );
         }

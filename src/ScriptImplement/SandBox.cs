@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 using cadencii;
 using cadencii.media;
 using cadencii.vsq;
@@ -110,13 +111,10 @@ public static class AutoBRI {
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
 
                     // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
-                    for ( Iterator<int> itr2 = bri.keyClockIterator(); itr.hasNext(); ){
-                        int clock = itr2.next();
-                        System.Console.WriteLine( "clock=" + clock );
-                        if ( item.Clock <= clock && clock <= item.Clock + item.ID.Length ) {
-                            itr2.remove();
-                        }
-                    }
+					bri.keyClockIterator()
+						.Where((clock) => item.Clock <= clock && clock <= item.Clock + item.ID.Length)
+						.ToList()
+						.ForEach((clock) => bri.remove(clock));
 
                     // 直前に指定したBRI値．最初はありえない値にしておく
                     int last_v = -1;
@@ -182,13 +180,10 @@ public class AutoBRITool : IPaletteTool {
                     int value_at_end = bri.getValue( item.Clock + item.ID.Length );
 
                     // これから編集しようとしている範囲にすでに値がある場合，邪魔なので削除する
-                    for ( Iterator<int> itr2 = bri.keyClockIterator(); itr2.hasNext(); ){
-                        int clock = itr2.next();
-                        System.Console.WriteLine( "clock=" + clock );
-                        if ( item.Clock <= clock && clock <= item.Clock + item.ID.Length ) {
-                            itr2.remove();
-                        }
-                    }
+					bri.keyClockIterator()
+						.Where((clock) => item.Clock <= clock && clock <= item.Clock + item.ID.Length)
+						.ToList()
+						.ForEach((clock) => bri.remove(clock));
                     
                     // 直前に指定したBRI値．最初はありえない値にしておく
                     int last_v = -1;

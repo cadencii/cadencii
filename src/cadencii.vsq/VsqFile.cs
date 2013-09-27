@@ -925,8 +925,7 @@ namespace cadencii.vsq
                         }
                         int start_value = target_list.getValue( start_clock );
                         int end_value = target_list.getValue( end_clock );
-                        for ( Iterator<Integer> i = target_list.keyClockIterator(); i.hasNext(); ) {
-                            int clock = i.next();
+                        foreach (var clock in target_list.keyClockIterator()) {
                             if ( start_clock <= clock && clock <= end_clock ) {
                                 edit.Add( new BPPair( clock, target_list.getValue( clock ) ) );
                             }
@@ -970,8 +969,7 @@ namespace cadencii.vsq
                     return inv;
                 } else if ( com.Count == 1 ) {
                     boolean found = false;
-                    for ( Iterator<Integer> itr = target_list.keyClockIterator(); itr.hasNext(); ) {
-                        int clock = itr.next();
+                    foreach (var clock in target_list.keyClockIterator()) {
                         if ( clock == com[ 0 ].Clock ) {
                             found = true;
                             target_list.add( clock, com[ 0 ].Value );
@@ -987,8 +985,7 @@ namespace cadencii.vsq
                     boolean removed = true;
                     while ( removed ) {
                         removed = false;
-                        for ( Iterator<Integer> itr = target_list.keyClockIterator(); itr.hasNext(); ) {
-                            int clock = itr.next();
+                        foreach (var clock in target_list.keyClockIterator()) {
                             if ( start_clock <= clock && clock <= end_clock ) {
                                 target_list.remove( clock );
                                 removed = true;
@@ -1086,8 +1083,7 @@ namespace cadencii.vsq
                             }
                             int start_value = Track[ track ].getCurve( curve ).getValue( start_clock );
                             int end_value = Track[ track ].getCurve( curve ).getValue( end_clock );
-                            for ( Iterator<Integer> itr = Track[ track ].getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                                int clock = itr.next();
+                            foreach (var clock in Track[ track ].getCurve( curve ).keyClockIterator()) {
                                 if ( start_clock <= clock && clock <= end_clock ) {
                                     edit.Add( new BPPair( clock, Track[ track ].getCurve( curve ).getValue( clock ) ) );
                                 }
@@ -1132,8 +1128,7 @@ namespace cadencii.vsq
                         return inv;
                     } else if ( com.Count == 1 ) {
                         boolean found = false;
-                        for ( Iterator<Integer> itr = Track[ track ].getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                            int clock = itr.next();
+                        foreach (var clock in Track[ track ].getCurve( curve ).keyClockIterator()) {
                             if ( clock == com[ 0 ].Clock ) {
                                 found = true;
                                 Track[ track ].getCurve( curve ).add( clock, com[ 0 ].Value );
@@ -1149,8 +1144,7 @@ namespace cadencii.vsq
                         boolean removed = true;
                         while ( removed ) {
                             removed = false;
-                            for ( Iterator<Integer> itr = Track[ track ].getCurve( curve ).keyClockIterator(); itr.hasNext(); ) {
-                                int clock = itr.next();
+                            foreach (var clock in Track[ track ].getCurve( curve ).keyClockIterator()) {
                                 if ( start_clock <= clock && clock <= end_clock ) {
                                     Track[ track ].getCurve( curve ).remove( clock );
                                     removed = true;
@@ -1570,8 +1564,7 @@ namespace cadencii.vsq
                     }
                     // 順番に+=dclockしていくとVsqBPList内部のSortedListの値がかぶる可能性がある．
                     VsqBPList new_one = new VsqBPList( edit.getName(), edit.getDefault(), edit.getMinimum(), edit.getMaximum() );
-                    for ( Iterator<Integer> itr2 = edit.keyClockIterator(); itr2.hasNext(); ) {
-                        int key = itr2.next();
+                    foreach (var key in edit.keyClockIterator()) {
                         new_one.add( key + dclock, edit.getValue( key ) );
                     }
                     vsqTrack.setCurve( curve, new_one );

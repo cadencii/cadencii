@@ -478,8 +478,7 @@ namespace cadencii.vsq
                 bplist.clear();
                 int value_at_end = buf_bplist.getValue( clock_end );
                 boolean at_end_added = false;
-                for ( Iterator<Integer> itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
-                    int key = itr.next();
+                foreach (var key in buf_bplist.keyClockIterator()) {
                     if ( key < clock_start ) {
                         bplist.add( key, buf_bplist.getValue( key ) );
                     } else if ( clock_end <= key ) {

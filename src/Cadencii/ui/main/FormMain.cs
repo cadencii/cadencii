@@ -9075,8 +9075,7 @@ namespace cadencii
                         int value_at_remove_end = pit.getValue( cl_remove_end );
                         int value_at_remove_start = pit.getValue( cl_remove_start );
                         List<Integer> remove = new List<Integer>();
-                        for ( Iterator<Integer> itr2 = pit.keyClockIterator(); itr2.hasNext(); ) {
-                            int clock = itr2.next();
+                        foreach (var clock in pit.keyClockIterator()) {
                             if ( cl_remove_start <= clock && clock <= cl_remove_end ) {
                                 remove.Add( clock );
                             }
@@ -13259,8 +13258,7 @@ namespace cadencii
                             VsqBPList target = temp.Track[ track ].getCurve( curve.getName() );
                             VsqBPList src = AppManager.getVsqFile().Track[ track ].getCurve( curve.getName() );
                             target.clear();
-                            for ( Iterator<Integer> itr = src.keyClockIterator(); itr.hasNext(); ) {
-                                int key = itr.next();
+                            foreach (var key in src.keyClockIterator()) {
                                 if ( key >= clock_start ) {
                                     target.add( key + dclock, src.getValue( key ) );
                                 } else {
