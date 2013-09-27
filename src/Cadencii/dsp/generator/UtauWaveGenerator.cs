@@ -210,8 +210,14 @@ namespace cadencii
 #if DEBUG
             sout.println("UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + Directory.Exists(mTempDir));
 #endif
-            mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
-            mWavtoolWithWine = mConfig.WavtoolWithWine;
+            var platform = System.Environment.OSVersion.Platform;
+            bool non_windows_platform = (platform == PlatformID.MacOSX || platform == PlatformID.Unix);
+            mResamplerWithWine = non_windows_platform
+                ? mConfig.isResamplerWithWineAt(resampler_index)
+                : false;
+            mWavtoolWithWine = non_windows_platform
+                ? mConfig.WavtoolWithWine
+                : false;
             mWine = mConfig.getBuiltinWineMinimumExecutable();
 
             mVsq = (VsqFileEx)vsq.clone();
