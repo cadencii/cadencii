@@ -125,6 +125,16 @@ namespace cadencii.apputil
             }
             return id;
         }
+
+        public static string getRuntimeLanguageName()
+        {
+            var name = System.Windows.Forms.Application.CurrentCulture.Name;
+            if (name == "ja" || name.StartsWith("ja-")) {
+                return "ja";
+            } else {
+                return name;
+            }
+        }
     }
 
 #if !JAVA
