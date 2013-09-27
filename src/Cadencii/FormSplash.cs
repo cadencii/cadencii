@@ -111,7 +111,7 @@ namespace cadencii
         private void setResources()
         {
 #if !JAVA
-            this.BackgroundImage = Resources.get_splash().image;
+            this.BackgroundImage = Properties.Resources.splash;
 #endif
         }
 

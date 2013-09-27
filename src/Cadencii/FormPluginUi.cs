@@ -39,7 +39,7 @@ namespace cadencii {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler( FormPluginUi_FormClosing );
 #if !JAVA
-            this.Icon = Resources.get_switch();
+            this.Icon = Properties.Resources._switch;
 #endif
         }
 

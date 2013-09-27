@@ -2186,13 +2186,13 @@ namespace cadencii
 #if !JAVA
             if ( mGameMode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.Text = _( "Disabled" );
-                stripLblGameCtrlMode.Image = Resources.get_slash().image;
+                stripLblGameCtrlMode.Image = Properties.Resources.slash;
             } else if ( mGameMode == GameControlMode.CURSOR ) {
                 stripLblGameCtrlMode.Text = _( "Cursor" );
                 stripLblGameCtrlMode.Image = null;
             } else if ( mGameMode == GameControlMode.KEYBOARD ) {
                 stripLblGameCtrlMode.Text = _( "Keyboard" );
-                stripLblGameCtrlMode.Image = Resources.get_piano().image;
+                stripLblGameCtrlMode.Image = Properties.Resources.piano;
             } else if ( mGameMode == GameControlMode.NORMAL ) {
                 stripLblGameCtrlMode.Text = _( "Normal" );
                 stripLblGameCtrlMode.Image = null;
@@ -3485,7 +3485,7 @@ namespace cadencii
                 stripBtnStepSequencer.setEnabled( false );
 #else
                 stripLblMidiIn.Text = _( "Disabled" );
-                stripLblMidiIn.Image = Resources.get_slash().image;
+                stripLblMidiIn.Image = Properties.Resources.slash;
 #endif
             } else {
                 if ( midiport >= devices.Count ) {
@@ -3496,7 +3496,7 @@ namespace cadencii
                 stripBtnStepSequencer.setEnabled( true );
 #else
                 stripLblMidiIn.Text = devices[midiport].getName();
-                stripLblMidiIn.Image = Resources.get_piano().image;
+                stripLblMidiIn.Image = Properties.Resources.piano;
 #endif
             }
         }
@@ -7057,7 +7057,7 @@ namespace cadencii
                         right = true;
                     } else {
                         g.drawImage(
-                            Resources.get_start_marker(), x, 3, this );
+                            Properties.Resources.start_marker, x, 3, this );
                     }
                 }
                 if ( vsq.config.EndMarkerEnabled ) {
@@ -7068,7 +7068,7 @@ namespace cadencii
                         right = true;
                     } else {
                         g.drawImage(
-                            Resources.get_end_marker(), x, 3, this );
+                            Properties.Resources.end_marker, x, 3, this );
                     }
                 }
 
@@ -7458,14 +7458,14 @@ namespace cadencii
         {
             try {
 #if !JAVA
-                this.stripLblGameCtrlMode.Image = Resources.get_slash().image;
-                this.stripLblMidiIn.Image = Resources.get_slash().image;
+                this.stripLblGameCtrlMode.Image = Properties.Resources.slash;
+                this.stripLblMidiIn.Image = Properties.Resources.slash;
 #endif
 
 #if JAVA
                 stripBtnStepSequencer.setIcon( new ImageIcon( Resources.get_piano() ) );
 #else
-                this.stripBtnStepSequencer.Image = Resources.get_piano().image;
+                this.stripBtnStepSequencer.Image = Properties.Resources.piano;
 #endif
 #if JAVA
                 stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
@@ -7495,7 +7495,7 @@ namespace cadencii
                 buttonVZoom.setIcon( new ImageIcon( Resources.get_plus8x8() ) );
                 buttonVMooz.setIcon( new ImageIcon( Resources.get_minus8x8() ) );
 #endif
-                this.Icon = Resources.get_icon();
+                this.Icon = Properties.Resources.Icon1;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
                 serr.println( "FormMain#setResources; ex=" + ex );
@@ -10752,7 +10752,7 @@ namespace cadencii
                         mGameMode = GameControlMode.KEYBOARD;
 #if !JAVA
                         stripLblGameCtrlMode.Text = mGameMode.ToString();
-                        stripLblGameCtrlMode.Image = Resources.get_piano().image;
+                        stripLblGameCtrlMode.Image = Properties.Resources.piano;
 #endif
                     }
                     mLastBtnSelect = SELECT;
@@ -14398,8 +14398,8 @@ namespace cadencii
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
                     int tolerance = AppManager.editorConfig.PxTolerance;
-                    int start_marker_width = Resources.get_start_marker().getWidth( this );
-                    int end_marker_width = Resources.get_end_marker().getWidth( this );
+                    int start_marker_width = Properties.Resources.start_marker.Width;
+                    int end_marker_width = Properties.Resources.end_marker.Width;
                     int startx = AppManager.xCoordFromClocks( vsq.config.StartMarker );
                     int endx = AppManager.xCoordFromClocks( vsq.config.EndMarker );
 
