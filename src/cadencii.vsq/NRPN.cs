@@ -20,6 +20,7 @@ import cadencii.*;
 #else
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
@@ -572,15 +573,14 @@ namespace cadencii.vsq
         {
         }
 
-        public static Iterator<ValuePair<String, Integer>> iterator()
+        public static IEnumerable<ValuePair<String, Integer>> iterator()
         {
             return new NrpnIterator();
         }
 
         public static String getName( int nrpn )
         {
-            for ( Iterator<ValuePair<String, Integer>> itr = iterator(); itr.hasNext(); ) {
-                ValuePair<String, Integer> v = itr.next();
+            foreach (var v in iterator()) {
                 if ( v.getValue() == nrpn ) {
                     return v.getKey();
                 }
