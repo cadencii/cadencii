@@ -93,7 +93,7 @@ namespace cadencii
         {
             IconParader p = new IconParader();
             var img = IconParader.createIconImage( path_image, singer_name );
-            p.Image = img.image;
+            p.setImage(img);
             p.MouseDown += new MouseEventHandler( handleMouseDown );
             p.MouseUp += new MouseEventHandler( handleMouseUp );
             p.MouseMove += new MouseEventHandler( handleMouseMove );
