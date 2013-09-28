@@ -58,6 +58,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="KanaDeRomanizationTest.cs" />
+    <Compile Include="UtauVoiceDBTest.cs" />
     <Compile Include="vsq\io\VsqxReaderTest.cs" />
     <Compile Include="vsq\io\VsqxWriterTest.cs" />
     <Content Include="fixture\script\Hamori.cs">
@@ -80,6 +81,9 @@
     </Compile>
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
+    <Content Include="fixture\utau_voice_db\あ.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cadencii\Cadencii.csproj">
@@ -182,6 +186,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="fixture\track2.vsqx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\A\oto.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\oto.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\prefix.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
