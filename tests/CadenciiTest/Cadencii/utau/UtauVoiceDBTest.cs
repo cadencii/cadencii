@@ -3,7 +3,7 @@ using cadencii;
 using cadencii.vsq;
 using cadencii.utau;
 
-namespace cadencii.test
+namespace cadencii.test.utau
 {
     [TestFixture]
     class UtauVoiceDBTest
