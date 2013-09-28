@@ -50,6 +50,11 @@ namespace cadencii.utau {
                 return false;
             }
         }
+
+        public bool isEmpty()
+        {
+            return fileName == null || Alias == null;
+        }
     }
 
 #if !JAVA

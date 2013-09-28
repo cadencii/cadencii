@@ -97,7 +97,9 @@ namespace cadencii.utau
         public OtoArgs attachFileNameFromLyric(string lyric)
         {
             foreach (var item in configs_) {
-                if (Path.GetFileNameWithoutExtension(item.fileName) == lyric) {
+                var ext = Path.GetExtension(item.fileName);
+                var file_name_without_ext = item.fileName.EndsWith(ext) ? item.fileName.Substring(0, item.fileName.Length - ext.Length) : item.fileName;
+                if (file_name_without_ext == lyric) {
                     return item;
                 }
                 if (item.Alias == lyric) {
