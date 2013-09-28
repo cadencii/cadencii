@@ -32,7 +32,7 @@ namespace cadencii.utau
         {
             name_ = singer_config.VOICENAME;
             string oto_ini = Path.Combine(singer_config.VOICEIDSTR, "oto.ini");
-            root_ = new Oto(oto_ini);
+            root_ = new Oto(oto_ini, singer_config.VOICEIDSTR);
         }
 
         /// <summary>

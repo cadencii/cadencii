@@ -22,7 +22,7 @@ namespace cadencii.utau
     /// <summary>
     /// Represents oto.ini information.
     /// </summary>
-    class Oto
+    public class Oto
     {
         private List<OtoArgs> configs_ = new List<OtoArgs>();
 
@@ -30,11 +30,11 @@ namespace cadencii.utau
         /// コンストラクタ．
         /// </summary>
         /// <param name="oto_ini_file_path"></param>
-        public Oto(string oto_ini_file_path)
+        public Oto(string oto_ini_file_path, string db_root_directory)
         {
             if (File.Exists(oto_ini_file_path)) {
                 foreach (var encoding_name in AppManager.TEXT_ENCODINGS_IN_UTAU) {
-                    readOtoIni(oto_ini_file_path, encoding_name);
+                    readOtoIni(oto_ini_file_path, encoding_name, db_root_directory);
                 }
             }
         }
@@ -43,7 +43,7 @@ namespace cadencii.utau
         /// 原音設定ファイルを読み込みます．
         /// </summary>
         /// <param name="oto_ini">原音設定のパス</param>
-        private void readOtoIni(string oto_ini, string encoding_name)
+        private void readOtoIni(string oto_ini, string encoding_name, string db_root_directory)
         {
             // oto.ini読込み
             string dir = Path.GetDirectoryName(oto_ini);
@@ -70,7 +70,9 @@ namespace cadencii.utau
                     }
 
                     OtoArgs oa = new OtoArgs();
-                    oa.fileName = file_name;
+                    var full_file_name = Path.GetFullPath(Path.Combine(dir, file_name));
+                    var full_root_directory = Path.GetFullPath(db_root_directory) + @"\";
+                    oa.fileName = full_file_name.StartsWith(full_root_directory) ? full_file_name.Substring(full_root_directory.Length) : file_name;
                     oa.Alias = spl[0];
 
                     oa.msOffset = parseOrDefault(spl[1]);
