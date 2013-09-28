@@ -11,136 +11,28 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.vsq.*;
-#else
-using System;
 using System.IO;
-using cadencii;
-using cadencii.java.util;
-using cadencii.java.io;
 using cadencii.vsq;
 
-namespace cadencii.utau {
-    using boolean = System.Boolean;
-#endif
-
+namespace cadencii.utau
+{
     /// <summary>
     /// UTAUの原音設定を表すクラス
     /// </summary>
-    public class UtauVoiceDB {
-        private Vector<OtoArgs> _configs = new Vector<OtoArgs>();
-        private String _name = "Unknown";
+    public class UtauVoiceDB
+    {
+        private string name_ = "Unknown";
+        private Oto root_;
 
         /// <summary>
         /// コンストラクタ．
         /// </summary>
         /// <param name="singer_config"></param>
-        public UtauVoiceDB( SingerConfig singer_config ) {
-            _name = singer_config.VOICENAME;
-            String oto_ini = Path.Combine( singer_config.VOICEIDSTR, "oto.ini" );
-            readOtoIni( oto_ini );
-        }
-
-        /// <summary>
-        /// 原音設定ファイルを読み込みます．
-        /// </summary>
-        /// <param name="oto_ini">原音設定のパス</param>
-        private void readOtoIni( String oto_ini ) {
-            if (!System.IO.File.Exists(oto_ini)) {
-                return;
-            }
-
-            // oto.ini読込み
-            String dir = PortUtil.getDirectoryName( oto_ini );
-            foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
-                BufferedReader sr = null;
-                try {
-                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( oto_ini ), encoding ) );
-                    String line;
-                    while ( sr.ready() ) {
-                        line = sr.readLine();
-                        String[] spl = PortUtil.splitString( line, '=' );
-                        if ( spl.Length < 2 ) {
-                            continue;
-                        }
-                        String file_name = spl[0]; // あ.wav
-                        String a2 = spl[1]; // ,0,36,64,0,0
-                        String a1 = PortUtil.getFileNameWithoutExtension( file_name );
-                        spl = PortUtil.splitString( a2, ',' );
-                        if ( spl.Length < 6 ) {
-                            continue;
-                        }
-
-                        // ファイルがちゃんとあるかどうか？
-                        String fullpath = Path.Combine( dir, file_name );
-                        if (!System.IO.File.Exists(fullpath)) {
-                            continue;
-                        }
-
-                        OtoArgs oa = new OtoArgs();
-                        oa.fileName = file_name;
-                        oa.Alias = spl[0];
-                        try {
-                            oa.msOffset = (float)double.Parse( spl[1] );
-                        } catch ( Exception ex ) {
-                            oa.msOffset = 0;
-                        }
-                        try {
-                            oa.msConsonant = (float)double.Parse( spl[2] );
-                        } catch ( Exception ex ) {
-                            oa.msConsonant = 0;
-                        }
-                        try {
-                            oa.msBlank = (float)double.Parse( spl[3] );
-                        } catch ( Exception ex ) {
-                            oa.msBlank = 0;
-                        }
-                        try {
-                            oa.msPreUtterance = (float)double.Parse( spl[4] );
-                        } catch ( Exception ex ) {
-                            oa.msPreUtterance = 0;
-                        }
-                        try {
-                            oa.msOverlap = (float)double.Parse( spl[5] );
-                        } catch ( Exception ex ) {
-                            oa.msOverlap = 0;
-                        }
-
-                        // 重複登録が無いかチェック
-                        boolean found = false;
-                        foreach ( OtoArgs o in _configs ) {
-#if JAVA
-                            if ( o == null ) {
-                                continue;
-                            }
-#endif
-                            if ( o.equals( oa ) ) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if ( !found ) {
-                            _configs.add( oa );
-                        }
-                    }
-                } catch ( Exception ex ) {
-                    //serr.println( "UtauVoiceDB#.ctor; ex=" + ex );
-                } finally {
-                    if ( sr != null ) {
-                        try {
-                            sr.close();
-                        } catch ( Exception ex2 ) {
-                            serr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
-                        }
-                    }
-                }
-            }
+        public UtauVoiceDB(SingerConfig singer_config)
+        {
+            name_ = singer_config.VOICENAME;
+            string oto_ini = Path.Combine(singer_config.VOICEIDSTR, "oto.ini");
+            root_ = new Oto(oto_ini);
         }
 
         /// <summary>
@@ -148,29 +40,18 @@ namespace cadencii.utau {
         /// </summary>
         /// <param name="lyric"></param>
         /// <returns></returns>
-        public OtoArgs attachFileNameFromLyric( String lyric ) {
-            int count = _configs.size();
-            for ( Iterator<OtoArgs> itr = _configs.iterator(); itr.hasNext(); ) {
-                OtoArgs item = itr.next();
-                if ( PortUtil.getFileNameWithoutExtension( item.fileName ) == lyric ) {
-                    return item;
-                }
-                if ( item.Alias == lyric ) {
-                    return item;
-                }
-            }
-            return new OtoArgs();
+        public OtoArgs attachFileNameFromLyric(string lyric)
+        {
+            return root_.attachFileNameFromLyric(lyric);
         }
 
         /// <summary>
         /// この原音の名称を取得します．
         /// </summary>
         /// <returns>この原音の名称</returns>
-        public String getName() {
-            return _name;
+        public string getName()
+        {
+            return name_;
         }
     }
-
-#if !JAVA
 }
-#endif
