@@ -14,7 +14,7 @@ namespace cadencii.test.utau
             var config = new SingerConfig();
             config.VOICEIDSTR = "./fixture/utau_voice_db";
             var db = new UtauVoiceDB(config);
-            var actual = db.attachFileNameFromLyric("‚ ");
+            var actual = db.attachFileNameFromLyric("‚ ", 60);
             Assert.AreEqual("‚ ", actual.Alias);
             Assert.AreEqual("‚ .wav", actual.fileName);
             Assert.AreEqual(6f, actual.msOffset);

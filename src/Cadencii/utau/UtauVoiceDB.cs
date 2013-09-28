@@ -40,7 +40,7 @@ namespace cadencii.utau
         /// </summary>
         /// <param name="lyric"></param>
         /// <returns></returns>
-        public OtoArgs attachFileNameFromLyric(string lyric)
+        public OtoArgs attachFileNameFromLyric(string lyric, int note_number)
         {
             return root_.attachFileNameFromLyric(lyric);
         }

@@ -365,7 +365,7 @@ namespace cadencii
                     SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
                     if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                         UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
-                        OtoArgs oa = db.attachFileNameFromLyric( phrase );
+                        OtoArgs oa = db.attachFileNameFromLyric( phrase, editing.ID.Note );
                         if ( editing.UstEvent == null ) {
                             editing.UstEvent = new UstEvent();
                         }
