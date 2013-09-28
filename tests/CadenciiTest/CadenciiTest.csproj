@@ -74,7 +74,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="script\PluginLoaderTest.cs" />
-    <Compile Include="VsqIDTest.cs" />
+    <Compile Include="vsq\VsqIDTest.cs" />
     <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
     <Compile Include="vsti\aquestone\EventQueueSequenceTest.cs" />
     <Compile Include="vsti\aquestone\SyllableMatcherTest.cs">
