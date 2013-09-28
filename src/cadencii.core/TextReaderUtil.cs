@@ -50,7 +50,7 @@ namespace cadencii
         {
             try {
                 current_ = reader_.ReadLine();
-                return true;
+                return current_ != null;
             } catch {
                 return false;
             }

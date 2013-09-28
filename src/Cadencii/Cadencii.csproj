@@ -277,6 +277,7 @@
     </Compile>
     <Compile Include="utau\Oto.cs" />
     <Compile Include="utau\OtoArgs.cs" />
+    <Compile Include="utau\PrefixMap.cs" />
     <Compile Include="utau\UtauVoiceDB.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />

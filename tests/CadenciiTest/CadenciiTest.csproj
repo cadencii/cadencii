@@ -50,6 +50,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cadencii\utau\PrefixMapTest.cs" />
     <Compile Include="dsp\generator\AquesTone2WaveGeneratorTest.cs" />
     <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
