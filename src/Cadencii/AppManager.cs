@@ -369,7 +369,7 @@ namespace cadencii
         /// <summary>
         /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
         /// </summary>
-        public static readonly String[] TEXT_ENCODINGS_IN_UTAU = new String[] { "Shift_JIS", "UTF-16", "US-ANSI" };
+        public static readonly String[] TEXT_ENCODINGS_IN_UTAU = new String[] { "Shift_JIS", "UTF-16", "us-ascii" };
         /// <summary>
         /// よく使うボーダー線の色
         /// </summary>
