@@ -2,6 +2,7 @@ using cadencii;
 using cadencii.vsq;
 using cadencii.java.util;
 using cadencii.apputil;
+using cadencii.utau;
 
 public class ImportOtoIniConfig
 {

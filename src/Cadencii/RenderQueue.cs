@@ -18,6 +18,7 @@ import java.util.*;
 #else
 using System;
 using cadencii.java.util;
+using cadencii.utau;
 
 namespace cadencii {
     using boolean = System.Boolean;

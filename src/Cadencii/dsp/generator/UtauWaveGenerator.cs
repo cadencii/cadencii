@@ -33,6 +33,7 @@ using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
+using cadencii.utau;
 
 namespace cadencii
 {

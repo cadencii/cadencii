@@ -25,6 +25,7 @@ using System;
 using System.ComponentModel;
 using cadencii.java.util;
 using cadencii.vsq;
+using cadencii.utau;
 
 namespace cadencii
 {

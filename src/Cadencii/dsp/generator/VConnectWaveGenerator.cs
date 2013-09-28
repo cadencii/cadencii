@@ -30,6 +30,7 @@ using cadencii.java.io;
 using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
+using cadencii.utau;
 
 namespace cadencii
 {

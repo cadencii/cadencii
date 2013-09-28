@@ -58,6 +58,7 @@ using cadencii.vsq;
 using cadencii.vsq.io;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.utau;
 
 namespace cadencii
 {

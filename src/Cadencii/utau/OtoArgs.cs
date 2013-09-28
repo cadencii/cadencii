@@ -16,7 +16,7 @@ package cadencii;
 #else
 using System;
 
-namespace cadencii {
+namespace cadencii.utau {
     using boolean = System.Boolean;
 #endif
 

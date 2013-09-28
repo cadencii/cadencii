@@ -26,7 +26,7 @@ using cadencii.java.util;
 using cadencii.java.io;
 using cadencii.vsq;
 
-namespace cadencii {
+namespace cadencii.utau {
     using boolean = System.Boolean;
 #endif
 

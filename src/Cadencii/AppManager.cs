@@ -46,6 +46,7 @@ using cadencii.media;
 using cadencii.vsq;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.utau;
 
 namespace cadencii
 {
