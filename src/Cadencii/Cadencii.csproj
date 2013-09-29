@@ -275,6 +275,10 @@
     <Compile Include="ui\preference\Preference.Designer.cs">
       <DependentUpon>Preference.cs</DependentUpon>
     </Compile>
+    <Compile Include="utau\Oto.cs" />
+    <Compile Include="utau\OtoArgs.cs" />
+    <Compile Include="utau\PrefixMap.cs" />
+    <Compile Include="utau\UtauVoiceDB.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
@@ -338,7 +342,6 @@
     <Compile Include="NumberTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
     <Compile Include="PanpotChangedEventHandler.cs" />
     <Compile Include="PictPianoRoll.cs">
@@ -369,7 +372,6 @@
     <Compile Include="StateChangeRequiredEventHandler.cs" />
     <Compile Include="TopMostChangedEventHandler.cs" />
     <Compile Include="UpdateProgressEventHandler.cs" />
-    <Compile Include="UtauVoiceDB.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="ValuePairOfStringArrayOfKeys.cs" />
     <Compile Include="CommandTree.cs" />
@@ -538,7 +540,6 @@
     <Content Include="ja.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\cursor.cur" />

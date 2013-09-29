@@ -2,6 +2,7 @@ using cadencii;
 using cadencii.vsq;
 using cadencii.java.util;
 using cadencii.apputil;
+using cadencii.utau;
 
 public class ImportOtoIniConfig
 {
@@ -31,7 +32,7 @@ public class ImportOtoIniConfig
             if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                 string phrase = original.ID.LyricHandle.L0.Phrase;
                 UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
-                OtoArgs oa = db.attachFileNameFromLyric( phrase );
+                OtoArgs oa = db.attachFileNameFromLyric( phrase, original.ID.Note );
                 VsqEvent editing = vsq_track.findEventFromID( original.InternalID );
                 if ( editing.UstEvent == null ) {
                     editing.UstEvent = new UstEvent();

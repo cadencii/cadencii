@@ -50,6 +50,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cadencii\utau\OtoTest.cs" />
+    <Compile Include="Cadencii\utau\PrefixMapTest.cs" />
+    <Compile Include="Cadencii\utau\UtauVoiceDBTest.cs" />
     <Compile Include="dsp\generator\AquesTone2WaveGeneratorTest.cs" />
     <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
@@ -72,7 +75,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="script\PluginLoaderTest.cs" />
-    <Compile Include="VsqIDTest.cs" />
+    <Compile Include="vsq\VsqIDTest.cs" />
     <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
     <Compile Include="vsti\aquestone\EventQueueSequenceTest.cs" />
     <Compile Include="vsti\aquestone\SyllableMatcherTest.cs">
@@ -80,6 +83,12 @@
     </Compile>
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
+    <Content Include="fixture\utau_voice_db\A\わ↑.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\utau_voice_db\あ.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cadencii\Cadencii.csproj">
@@ -182,6 +191,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="fixture\track2.vsqx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\A\oto.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\oto.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\prefix.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

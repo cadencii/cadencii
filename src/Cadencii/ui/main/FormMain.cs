@@ -58,6 +58,7 @@ using cadencii.vsq;
 using cadencii.vsq.io;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.utau;
 
 namespace cadencii
 {
@@ -1481,7 +1482,7 @@ namespace cadencii
 
             if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
                 UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
-                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
+                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase, AppManager.mAddingEvent.ID.Note );
                 AppManager.mAddingEvent.UstEvent.setPreUtterance( otoArgs.msPreUtterance );
                 AppManager.mAddingEvent.UstEvent.setVoiceOverlap( otoArgs.msOverlap );
             }
@@ -6356,7 +6357,7 @@ namespace cadencii
                                 // 通常のUTAU音源
                                 if (AppManager.mUtauVoiceDB.containsKey(sc.VOICEIDSTR)) {
                                     UtauVoiceDB db = AppManager.mUtauVoiceDB.get(sc.VOICEIDSTR);
-                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp);
+                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp, note);
                                     if (oa.fileName == null ||
                                         (oa.fileName != null && oa.fileName == "")) {
                                         is_valid_for_utau = false;

@@ -33,6 +33,7 @@ using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
+using cadencii.utau;
 
 namespace cadencii
 {
@@ -495,7 +496,7 @@ namespace cadencii
                     OtoArgs oa = new OtoArgs();
                     if ( AppManager.mUtauVoiceDB.containsKey( singer_raw ) ) {
                         UtauVoiceDB db = AppManager.mUtauVoiceDB.get( singer_raw );
-                        oa = db.attachFileNameFromLyric( lyric );
+                        oa = db.attachFileNameFromLyric(lyric, item.ID.Note);
                     }
 #if MAKEBAT_SP
                     log.Write( "; lyric=" + lyric + "; fileName=" + oa.fileName );
