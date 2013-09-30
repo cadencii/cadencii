@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-22 19:15+0900\n"
+"POT-Creation-Date: 2013-09-30 23:03+0900\n"
 "PO-Revision-Date: \n"
-"Last-Translator: kbinani <kbinani@msn.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -18,47 +18,47 @@ msgstr ""
 "X-Poedit-SearchPath-1: cadencii.apputil\n"
 "X-Poedit-SearchPath-2: vConnectStandDBConvert\n"
 
-#: Cadencii/AppManager.cs:860 Cadencii/ui/main/FormMain.cs:11416
-#: Cadencii/ui/main/FormMain.cs:11720
+#: Cadencii/AppManager.cs:811 Cadencii/ui/main/FormMain.cs:11251
+#: Cadencii/ui/main/FormMain.cs:11551
 msgid "Synthesize"
 msgstr "合成"
 
-#: Cadencii/AppManager.cs:861 Cadencii/ui/main/FormMain.cs:11417
-#: Cadencii/ui/main/FormMain.cs:11721
+#: Cadencii/AppManager.cs:812 Cadencii/ui/main/FormMain.cs:11252
+#: Cadencii/ui/main/FormMain.cs:11552
 msgid "now synthesizing..."
 msgstr "合成中..."
 
-#: Cadencii/AppManager.cs:873
+#: Cadencii/AppManager.cs:824
 msgid "patchwork"
 msgstr ""
 
-#: Cadencii/AppManager.cs:2509
+#: Cadencii/AppManager.cs:2390
 #, csharp-format
 msgid "failed creating cache directory, '{0}'."
 msgstr ""
 
-#: Cadencii/AppManager.cs:2510 Cadencii/ui/main/FormMain.cs:6899
-#: Cadencii/ui/main/FormMain.cs:6941
+#: Cadencii/AppManager.cs:2391 Cadencii/ui/main/FormMain.cs:6798
+#: Cadencii/ui/main/FormMain.cs:6840
 msgid "Info."
 msgstr ""
 
-#: Cadencii/AppManager.cs:2536
+#: Cadencii/AppManager.cs:2417
 #, csharp-format
 msgid "failed copying WAVE cache file, '{0}'."
 msgstr ""
 
-#: Cadencii/AppManager.cs:2537 Cadencii/AppManager.cs:2561
-#: Cadencii/Cadencii.cs:219 Cadencii/FormBezierPointEditController.cs:122
-#: Cadencii/FormBezierPointEditController.cs:138 Cadencii/ScriptServer.cs:162
-#: Cadencii/ScriptServer.cs:166 Cadencii/ui/main/FormMain.cs:11395
-#: Cadencii/ui/main/FormMain.cs:11691 Cadencii/ui/main/FormMain.cs:11769
-#: Cadencii/ui/main/FormMain.cs:11777 Cadencii/ui/main/FormMain.cs:12264
-#: Cadencii/ui/main/FormMain.cs:12556 Cadencii/ui/main/FormMain.cs:16825
-#: Cadencii/ui/main/FormMain.cs:17358
+#: Cadencii/AppManager.cs:2418 Cadencii/AppManager.cs:2442
+#: Cadencii/Cadencii.cs:219 Cadencii/FormBezierPointEditController.cs:119
+#: Cadencii/FormBezierPointEditController.cs:135 Cadencii/ScriptServer.cs:163
+#: Cadencii/ScriptServer.cs:167 Cadencii/ui/main/FormMain.cs:11230
+#: Cadencii/ui/main/FormMain.cs:11522 Cadencii/ui/main/FormMain.cs:11600
+#: Cadencii/ui/main/FormMain.cs:11608 Cadencii/ui/main/FormMain.cs:12095
+#: Cadencii/ui/main/FormMain.cs:12389 Cadencii/ui/main/FormMain.cs:16648
+#: Cadencii/ui/main/FormMain.cs:17173 Cadencii/ui/main/FormMain.cs:17659
 msgid "Error"
 msgstr "錯誤"
 
-#: Cadencii/AppManager.cs:2560
+#: Cadencii/AppManager.cs:2441
 #, csharp-format
 msgid "failed copying XML cache file, '{0}'."
 msgstr ""
@@ -82,17 +82,17 @@ msgid "Problem Details"
 msgstr ""
 
 #: Cadencii/ExceptionNotifyFormController.cs:168
-#: Cadencii/FormBeatConfigController.cs:204 Cadencii/FormDeleteBar.cs:63
-#: Cadencii/FormGameControlerConfig.cs:108 Cadencii/FormImportLyric.cs:82
-#: Cadencii/FormInsertBar.cs:70 Cadencii/FormMidiImExport.cs:98
-#: Cadencii/FormNoteExpressionConfig.cs:171 Cadencii/FormRandomize.cs:335
-#: Cadencii/FormSequenceConfig.cs:90 Cadencii/FormShortcutKeys.cs:151
-#: Cadencii/FormSingerStyleConfig.cs:99 Cadencii/FormTempoConfig.cs:80
-#: Cadencii/FormTrackProperty.cs:66 Cadencii/FormVibratoConfig.cs:144
-#: Cadencii/FormVibratoPreset.cs:523
-#: Cadencii/FormWordDictionaryController.cs:188
+#: Cadencii/FormBeatConfigController.cs:202 Cadencii/FormDeleteBar.cs:61
+#: Cadencii/FormGameControlerConfig.cs:102 Cadencii/FormImportLyric.cs:80
+#: Cadencii/FormInsertBar.cs:69 Cadencii/FormMidiImExport.cs:95
+#: Cadencii/FormNoteExpressionConfig.cs:165 Cadencii/FormRandomize.cs:334
+#: Cadencii/FormSequenceConfig.cs:87 Cadencii/FormShortcutKeys.cs:144
+#: Cadencii/FormSingerStyleConfig.cs:97 Cadencii/FormTempoConfig.cs:78
+#: Cadencii/FormTrackProperty.cs:64 Cadencii/FormVibratoConfig.cs:142
+#: Cadencii/FormVibratoPreset.cs:520
+#: Cadencii/FormWordDictionaryController.cs:184
 #: Cadencii/ui/dotnet/FormWorkerUi.cs:60
-#: Cadencii/ui/preference/Preference.cs:764
+#: Cadencii/ui/preference/Preference.cs:754
 msgid "Cancel"
 msgstr "取消"
 
@@ -100,591 +100,591 @@ msgstr "取消"
 msgid "Send to Developper"
 msgstr ""
 
-#: Cadencii/FormAskKeySoundGenerationController.cs:60
+#: Cadencii/FormAskKeySoundGenerationController.cs:58
 msgid ""
 "It seems some key-board sounds are missing. Do you want to re-generate them "
 "now?"
 msgstr ""
 
-#: Cadencii/FormAskKeySoundGenerationController.cs:61
+#: Cadencii/FormAskKeySoundGenerationController.cs:59
 msgid "Always perform this check when starting Cadencii."
 msgstr ""
 
-#: Cadencii/FormAskKeySoundGenerationController.cs:62
+#: Cadencii/FormAskKeySoundGenerationController.cs:60
 msgid "Yes"
 msgstr ""
 
-#: Cadencii/FormAskKeySoundGenerationController.cs:63
+#: Cadencii/FormAskKeySoundGenerationController.cs:61
 msgid "No"
 msgstr ""
 
-#: Cadencii/FormBeatConfigController.cs:200
+#: Cadencii/FormBeatConfigController.cs:198
 msgid "Beat Change"
 msgstr "變更拍子"
 
-#: Cadencii/FormBeatConfigController.cs:201 Cadencii/FormInsertBar.cs:65
-#: Cadencii/FormTempoConfig.cs:71
+#: Cadencii/FormBeatConfigController.cs:199 Cadencii/FormInsertBar.cs:64
+#: Cadencii/FormTempoConfig.cs:69
 msgid "Position"
 msgstr "位置"
 
-#: Cadencii/FormBeatConfigController.cs:202 Cadencii/FormMidiImExport.cs:100
-#: Cadencii/FormTempoConfig.cs:74
+#: Cadencii/FormBeatConfigController.cs:200 Cadencii/FormMidiImExport.cs:97
+#: Cadencii/FormTempoConfig.cs:72
 msgid "Beat"
 msgstr "拍子"
 
-#: Cadencii/FormBeatConfigController.cs:203 Cadencii/FormDeleteBar.cs:62
-#: Cadencii/FormGameControlerConfig.cs:107 Cadencii/FormImportLyric.cs:83
-#: Cadencii/FormInsertBar.cs:69 Cadencii/FormMidiImExport.cs:97
-#: Cadencii/FormNoteExpressionConfig.cs:170 Cadencii/FormRandomize.cs:334
-#: Cadencii/FormSequenceConfig.cs:91 Cadencii/FormShortcutKeys.cs:150
-#: Cadencii/FormSingerStyleConfig.cs:98 Cadencii/FormTempoConfig.cs:79
-#: Cadencii/FormTrackProperty.cs:65 Cadencii/FormVibratoConfig.cs:143
-#: Cadencii/FormVibratoPreset.cs:522
-#: Cadencii/FormWordDictionaryController.cs:187
-#: Cadencii/ui/preference/Preference.cs:765
+#: Cadencii/FormBeatConfigController.cs:201 Cadencii/FormDeleteBar.cs:60
+#: Cadencii/FormGameControlerConfig.cs:101 Cadencii/FormImportLyric.cs:81
+#: Cadencii/FormInsertBar.cs:68 Cadencii/FormMidiImExport.cs:94
+#: Cadencii/FormNoteExpressionConfig.cs:164 Cadencii/FormRandomize.cs:333
+#: Cadencii/FormSequenceConfig.cs:88 Cadencii/FormShortcutKeys.cs:143
+#: Cadencii/FormSingerStyleConfig.cs:96 Cadencii/FormTempoConfig.cs:77
+#: Cadencii/FormTrackProperty.cs:63 Cadencii/FormVibratoConfig.cs:141
+#: Cadencii/FormVibratoPreset.cs:519
+#: Cadencii/FormWordDictionaryController.cs:183
+#: Cadencii/ui/main/FormMain.cs:17647 Cadencii/ui/preference/Preference.cs:755
 msgid "OK"
 msgstr "OK"
 
-#: Cadencii/FormBeatConfigController.cs:205
+#: Cadencii/FormBeatConfigController.cs:203
 msgid "From"
 msgstr "起點"
 
-#: Cadencii/FormBeatConfigController.cs:207
+#: Cadencii/FormBeatConfigController.cs:205
 msgid "To"
 msgstr "終點"
 
-#: Cadencii/FormBeatConfigController.cs:209
-#: Cadencii/FormBeatConfigController.cs:210 Cadencii/FormTempoConfig.cs:72
+#: Cadencii/FormBeatConfigController.cs:207
+#: Cadencii/FormBeatConfigController.cs:208 Cadencii/FormTempoConfig.cs:70
 msgid "Measure"
 msgstr "小節"
 
-#: Cadencii/FormBezierPointEditController.cs:121
+#: Cadencii/FormBezierPointEditController.cs:118
 msgid "Invalid value"
 msgstr "無效的數值"
 
-#: Cadencii/FormBezierPointEditController.cs:137
+#: Cadencii/FormBezierPointEditController.cs:134
 msgid "Integer format error"
 msgstr "整數格式錯誤"
 
-#: Cadencii/FormBezierPointEditController.cs:257
+#: Cadencii/FormBezierPointEditController.cs:254
 msgid "Edit Bezier Data Point"
 msgstr "編輯貝茲曲線資料點"
 
-#: Cadencii/FormBezierPointEditController.cs:259
+#: Cadencii/FormBezierPointEditController.cs:256
 msgid "Data Poin"
 msgstr "資料點"
 
-#: Cadencii/FormBezierPointEditController.cs:260
-#: Cadencii/FormBezierPointEditController.cs:264
-#: Cadencii/FormBezierPointEditController.cs:268
-#: Cadencii/FormCurvePointEdit.cs:81 Cadencii/FormTempoConfig.cs:76
+#: Cadencii/FormBezierPointEditController.cs:257
+#: Cadencii/FormBezierPointEditController.cs:261
+#: Cadencii/FormBezierPointEditController.cs:265
+#: Cadencii/FormCurvePointEdit.cs:78 Cadencii/FormTempoConfig.cs:74
 #: Cadencii/SelectedEventEntryPropertyDescriptor.cs:103
 msgid "Clock"
 msgstr "Clock"
 
-#: Cadencii/FormBezierPointEditController.cs:261
-#: Cadencii/FormBezierPointEditController.cs:265
-#: Cadencii/FormBezierPointEditController.cs:269
-#: Cadencii/FormCurvePointEdit.cs:82 Cadencii/FormRandomize.cs:327
-#: Cadencii/FormRandomize.cs:332
+#: Cadencii/FormBezierPointEditController.cs:258
+#: Cadencii/FormBezierPointEditController.cs:262
+#: Cadencii/FormBezierPointEditController.cs:266
+#: Cadencii/FormCurvePointEdit.cs:79 Cadencii/FormRandomize.cs:326
+#: Cadencii/FormRandomize.cs:331
 msgid "Value"
 msgstr "數值"
 
-#: Cadencii/FormBezierPointEditController.cs:263
+#: Cadencii/FormBezierPointEditController.cs:260
 msgid "Left Control Point"
 msgstr "左控制點"
 
-#: Cadencii/FormBezierPointEditController.cs:267
+#: Cadencii/FormBezierPointEditController.cs:264
 msgid "Right Control Point"
 msgstr "右控制點"
 
-#: Cadencii/FormBezierPointEditController.cs:271
+#: Cadencii/FormBezierPointEditController.cs:268
 msgid "Smooth"
 msgstr "平滑化"
 
-#: Cadencii/FormCheckUnknownSingerAndResampler.cs:149
+#: Cadencii/FormCheckUnknownSingerAndResampler.cs:145
 msgid "Unknown singers and resamplers"
 msgstr ""
 
-#: Cadencii/FormCheckUnknownSingerAndResampler.cs:150
+#: Cadencii/FormCheckUnknownSingerAndResampler.cs:146
 msgid ""
 "These singers and resamplers are not registered to Cadencii.\n"
 "Check the box if you want to register them."
 msgstr ""
 
-#: Cadencii/FormCheckUnknownSingerAndResampler.cs:151
+#: Cadencii/FormCheckUnknownSingerAndResampler.cs:147
 msgid "Import singer"
 msgstr ""
 
-#: Cadencii/FormCheckUnknownSingerAndResampler.cs:152
+#: Cadencii/FormCheckUnknownSingerAndResampler.cs:148
 msgid "Import resampler"
 msgstr ""
 
-#: Cadencii/FormCompileResult.cs:59
+#: Cadencii/FormCompileResult.cs:57
 msgid "Script Compilation Result"
 msgstr "腳本編譯結果"
 
-#: Cadencii/FormCurvePointEdit.cs:80
+#: Cadencii/FormCurvePointEdit.cs:77
 msgid "Edit Value"
 msgstr ""
 
-#: Cadencii/FormCurvePointEdit.cs:83
+#: Cadencii/FormCurvePointEdit.cs:80
 msgid "Apply"
 msgstr ""
 
-#: Cadencii/FormCurvePointEdit.cs:84
+#: Cadencii/FormCurvePointEdit.cs:81
 msgid "Exit"
 msgstr ""
 
-#: Cadencii/FormDeleteBar.cs:59
+#: Cadencii/FormDeleteBar.cs:57
 msgid "Delete Bars"
 msgstr "刪除小節"
 
-#: Cadencii/FormDeleteBar.cs:60 Cadencii/FormRandomize.cs:319
+#: Cadencii/FormDeleteBar.cs:58 Cadencii/FormRandomize.cs:318
 #: vConnectStandDBConvert/MainForm.cs:122
 #: vConnectStandDBConvert/MainForm.cs:165
 #: vConnectStandDBConvert/MainForm.cs:190
 msgid "Start"
 msgstr "起點"
 
-#: Cadencii/FormDeleteBar.cs:61 Cadencii/FormRandomize.cs:322
+#: Cadencii/FormDeleteBar.cs:59 Cadencii/FormRandomize.cs:321
 msgid "End"
 msgstr "終點"
 
-#: Cadencii/FormGameControlerConfig.cs:102
+#: Cadencii/FormGameControlerConfig.cs:96
 msgid "Push buttons in turn as shown below"
 msgstr "Push buttons in turn as shown below"
 
-#: Cadencii/FormGameControlerConfig.cs:104
+#: Cadencii/FormGameControlerConfig.cs:98
 msgid "Game controler is not available"
 msgstr "不可使用遊戲控制器"
 
-#: Cadencii/FormGameControlerConfig.cs:106
+#: Cadencii/FormGameControlerConfig.cs:100
 msgid "Game Controler Configuration"
 msgstr "遊戲控制器設定"
 
-#: Cadencii/FormGameControlerConfig.cs:109
+#: Cadencii/FormGameControlerConfig.cs:103
 msgid "Reset And Exit"
 msgstr "Reset And Exit"
 
-#: Cadencii/FormGameControlerConfig.cs:110
+#: Cadencii/FormGameControlerConfig.cs:104
 msgid "Skip"
 msgstr "跳過"
 
-#: Cadencii/FormIconPalette.cs:150
+#: Cadencii/FormIconPalette.cs:143
 msgid "Icon Palette"
 msgstr ""
 
-#: Cadencii/FormImportLyric.cs:81
+#: Cadencii/FormImportLyric.cs:79
 msgid "Import lyrics"
 msgstr "輸入歌詞"
 
-#: Cadencii/FormInsertBar.cs:58
+#: Cadencii/FormInsertBar.cs:57
 msgid "Insert Bars"
 msgstr "插入小節"
 
-#: Cadencii/FormInsertBar.cs:59
+#: Cadencii/FormInsertBar.cs:58
 msgid "_PREFIX_TH_"
 msgstr "第"
 
-#: Cadencii/FormInsertBar.cs:66
+#: Cadencii/FormInsertBar.cs:65
 #: Cadencii/SelectedEventEntryPropertyDescriptor.cs:105
 msgid "Length"
 msgstr "長度"
 
-#: Cadencii/FormInsertBar.cs:67
+#: Cadencii/FormInsertBar.cs:66
 msgid "th bar"
 msgstr "小節"
 
-#: Cadencii/FormInsertBar.cs:68 Cadencii/FormRandomize.cs:320
-#: Cadencii/FormRandomize.cs:323
+#: Cadencii/FormInsertBar.cs:67 Cadencii/FormRandomize.cs:319
+#: Cadencii/FormRandomize.cs:322
 msgid "bar"
 msgstr "小節"
 
-#: Cadencii/FormMidiImExport.cs:68 Cadencii/FormMidiImExport.cs:93
-#: Cadencii/FormShortcutKeys.cs:173 Cadencii/ui/main/FormMain.cs:4643
+#: Cadencii/FormMidiImExport.cs:65 Cadencii/FormMidiImExport.cs:90
+#: Cadencii/FormShortcutKeys.cs:166 Cadencii/ui/main/FormMain.cs:4583
 msgid "Track"
 msgstr "Track"
 
-#: Cadencii/FormMidiImExport.cs:68 Cadencii/FormMidiImExport.cs:93
-#: Cadencii/FormVibratoPreset.cs:510 Cadencii/ui/preference/Preference.cs:872
+#: Cadencii/FormMidiImExport.cs:65 Cadencii/FormMidiImExport.cs:90
+#: Cadencii/FormVibratoPreset.cs:507 Cadencii/ui/preference/Preference.cs:856
 msgid "Name"
 msgstr "Name"
 
-#: Cadencii/FormMidiImExport.cs:68 Cadencii/FormMidiImExport.cs:93
+#: Cadencii/FormMidiImExport.cs:65 Cadencii/FormMidiImExport.cs:90
 msgid "Notes"
 msgstr "Notes"
 
-#: Cadencii/FormMidiImExport.cs:84 Cadencii/FormMidiImExport.cs:154
+#: Cadencii/FormMidiImExport.cs:81 Cadencii/FormMidiImExport.cs:151
 msgid "Midi Export"
 msgstr "輸出Midi"
 
-#: Cadencii/FormMidiImExport.cs:86 Cadencii/FormMidiImExport.cs:172
+#: Cadencii/FormMidiImExport.cs:83 Cadencii/FormMidiImExport.cs:169
 msgid "Midi Import"
 msgstr "輸入Midi"
 
-#: Cadencii/FormMidiImExport.cs:88 Cadencii/FormMidiImExport.cs:179
+#: Cadencii/FormMidiImExport.cs:85 Cadencii/FormMidiImExport.cs:176
 msgid "VSQ/Vocaloid Midi Import"
 msgstr "VSQ/Vocaloid Midi Import"
 
-#: Cadencii/FormMidiImExport.cs:90
+#: Cadencii/FormMidiImExport.cs:87
 msgid "Import Basis"
 msgstr ""
 
-#: Cadencii/FormMidiImExport.cs:91
+#: Cadencii/FormMidiImExport.cs:88
 msgid "gate-time"
 msgstr ""
 
-#: Cadencii/FormMidiImExport.cs:92
+#: Cadencii/FormMidiImExport.cs:89
 msgid "play-time"
 msgstr ""
 
-#: Cadencii/FormMidiImExport.cs:94
+#: Cadencii/FormMidiImExport.cs:91
 msgid "Check All"
 msgstr "全選"
 
-#: Cadencii/FormMidiImExport.cs:95
+#: Cadencii/FormMidiImExport.cs:92
 msgid "Uncheck All"
 msgstr "全部取消選取"
 
-#: Cadencii/FormMidiImExport.cs:96
+#: Cadencii/FormMidiImExport.cs:93
 msgid "Option"
 msgstr "選項"
 
-#: Cadencii/FormMidiImExport.cs:99 Cadencii/FormTempoConfig.cs:78
+#: Cadencii/FormMidiImExport.cs:96 Cadencii/FormTempoConfig.cs:76
 msgid "Tempo"
 msgstr "節奏"
 
-#: Cadencii/FormMidiImExport.cs:101
+#: Cadencii/FormMidiImExport.cs:98
 msgid "Note"
 msgstr "Note"
 
-#: Cadencii/FormMidiImExport.cs:102 Cadencii/ui/main/FormMain.cs:4668
+#: Cadencii/FormMidiImExport.cs:99 Cadencii/ui/main/FormMain.cs:4608
 msgid "Lyrics"
 msgstr "歌詞"
 
-#: Cadencii/FormMidiImExport.cs:103
+#: Cadencii/FormMidiImExport.cs:100
 msgid "vocaloid NRPN"
 msgstr "vocaloid NRPN"
 
-#: Cadencii/FormMidiImExport.cs:104
+#: Cadencii/FormMidiImExport.cs:101
 msgid "offset"
 msgstr ""
 
-#: Cadencii/FormMidiImExport.cs:106 Cadencii/FormMidiImExport.cs:334
+#: Cadencii/FormMidiImExport.cs:103 Cadencii/FormMidiImExport.cs:331
 msgid "clocks"
 msgstr ""
 
-#: Cadencii/FormMidiImExport.cs:108 Cadencii/FormMidiImExport.cs:342
-#: Cadencii/ui/main/FormMain.cs:2402 Cadencii/ui/main/FormMain.cs:17288
+#: Cadencii/FormMidiImExport.cs:105 Cadencii/FormMidiImExport.cs:339
+#: Cadencii/ui/main/FormMain.cs:2360 Cadencii/ui/main/FormMain.cs:17103
 msgid "seconds"
 msgstr "seconds"
 
-#: Cadencii/FormMidiImExport.cs:155
+#: Cadencii/FormMidiImExport.cs:152
 msgid "Export pre-measure part"
 msgstr "Export pre-measure part"
 
-#: Cadencii/FormMidiImExport.cs:173 Cadencii/FormMidiImExport.cs:180
+#: Cadencii/FormMidiImExport.cs:170 Cadencii/FormMidiImExport.cs:177
 msgid "Inserting start at pre-measure"
 msgstr "Inserting start at pre-measure"
 
-#: Cadencii/FormMixer.cs:229 Cadencii/ui/main/FormMain.cs:4604
+#: Cadencii/FormMixer.cs:201 Cadencii/ui/main/FormMain.cs:4544
 msgid "Mixer"
 msgstr "混音器"
 
-#: Cadencii/FormNoteExpressionConfig.cs:151
-#: Cadencii/FormSingerStyleConfig.cs:80
+#: Cadencii/FormNoteExpressionConfig.cs:145
+#: Cadencii/FormSingerStyleConfig.cs:78
 msgid "Template"
 msgstr "範本"
 
-#: Cadencii/FormNoteExpressionConfig.cs:153
-#: Cadencii/FormSingerStyleConfig.cs:82
+#: Cadencii/FormNoteExpressionConfig.cs:147
+#: Cadencii/FormSingerStyleConfig.cs:80
 msgid "Pitch Control"
 msgstr "音高控制"
 
-#: Cadencii/FormNoteExpressionConfig.cs:154
-#: Cadencii/FormSingerStyleConfig.cs:83
+#: Cadencii/FormNoteExpressionConfig.cs:148
+#: Cadencii/FormSingerStyleConfig.cs:81
 #: Cadencii/SelectedEventEntryPropertyDescriptor.cs:111
 msgid "Bend Depth"
 msgstr "Bend深度"
 
-#: Cadencii/FormNoteExpressionConfig.cs:156
-#: Cadencii/FormSingerStyleConfig.cs:85
+#: Cadencii/FormNoteExpressionConfig.cs:150
+#: Cadencii/FormSingerStyleConfig.cs:83
 #: Cadencii/SelectedEventEntryPropertyDescriptor.cs:113
 msgid "Bend Length"
 msgstr "Bend長度"
 
-#: Cadencii/FormNoteExpressionConfig.cs:158
-#: Cadencii/FormSingerStyleConfig.cs:87
+#: Cadencii/FormNoteExpressionConfig.cs:152
+#: Cadencii/FormSingerStyleConfig.cs:85
 msgid "Add portamento in rising movement"
 msgstr "在上行形付加滑音"
 
-#: Cadencii/FormNoteExpressionConfig.cs:160
-#: Cadencii/FormSingerStyleConfig.cs:89
+#: Cadencii/FormNoteExpressionConfig.cs:154
+#: Cadencii/FormSingerStyleConfig.cs:87
 msgid "Add portamento in falling movement"
 msgstr "在下行形付加滑音"
 
-#: Cadencii/FormNoteExpressionConfig.cs:163
+#: Cadencii/FormNoteExpressionConfig.cs:157
 msgid "Attack Control (VOCALOID1)"
 msgstr "Attack Control (VOCALOID1)"
 
-#: Cadencii/FormNoteExpressionConfig.cs:164
+#: Cadencii/FormNoteExpressionConfig.cs:158
 msgid "Dynamics Control (VOCALOID2)"
 msgstr "Dynamics Control (VOCALOID2)"
 
-#: Cadencii/FormNoteExpressionConfig.cs:165
-#: Cadencii/FormSingerStyleConfig.cs:93
+#: Cadencii/FormNoteExpressionConfig.cs:159
+#: Cadencii/FormSingerStyleConfig.cs:91
 #: Cadencii/SelectedEventEntryPropertyDescriptor.cs:115
 msgid "Decay"
 msgstr "延遲"
 
-#: Cadencii/FormNoteExpressionConfig.cs:167
-#: Cadencii/FormSingerStyleConfig.cs:95
+#: Cadencii/FormNoteExpressionConfig.cs:161
+#: Cadencii/FormSingerStyleConfig.cs:93
 #: Cadencii/SelectedEventEntryPropertyDescriptor.cs:117
 msgid "Accent"
 msgstr "重音"
 
-#: Cadencii/FormNoteExpressionConfig.cs:176
+#: Cadencii/FormNoteExpressionConfig.cs:170
 msgid "Expression control property"
 msgstr "表情控制資訊內容"
 
-#: Cadencii/FormNoteExpressionConfig.cs:447
-#: Cadencii/FormSingerStyleConfig.cs:346
+#: Cadencii/FormNoteExpressionConfig.cs:441
+#: Cadencii/FormSingerStyleConfig.cs:344
 msgid "Would you like to change singer style for all events?"
 msgstr "要改變所有音符的表現資料嗎？"
 
-#: Cadencii/FormNotePropertyController.cs:74
+#: Cadencii/FormNotePropertyController.cs:75
 msgid "Note Property"
 msgstr "Note Property"
 
-#: Cadencii/FormRandomize.cs:321 Cadencii/FormRandomize.cs:324
+#: Cadencii/FormRandomize.cs:320 Cadencii/FormRandomize.cs:323
 msgid "beat"
 msgstr "拍子"
 
-#: Cadencii/FormRandomize.cs:326
+#: Cadencii/FormRandomize.cs:325
 msgid "Note Shift"
 msgstr ""
 
-#: Cadencii/FormRandomize.cs:329
+#: Cadencii/FormRandomize.cs:328
 msgid "Pitch Fluctuation"
 msgstr ""
 
-#: Cadencii/FormRandomize.cs:330
+#: Cadencii/FormRandomize.cs:329
 msgid "Resolution"
 msgstr "解析度"
 
-#: Cadencii/FormRandomize.cs:331
+#: Cadencii/FormRandomize.cs:330
 msgid "Pattern"
 msgstr ""
 
-#: Cadencii/FormRandomize.cs:337 Cadencii/ui/main/FormMain.cs:4636
+#: Cadencii/FormRandomize.cs:336 Cadencii/ui/main/FormMain.cs:4576
 msgid "Randomize"
 msgstr "Randomize"
 
-#: Cadencii/FormSequenceConfig.cs:65 Cadencii/FormSequenceConfig.cs:104
+#: Cadencii/FormSequenceConfig.cs:62 Cadencii/FormSequenceConfig.cs:101
 msgid "Monoral"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:66 Cadencii/FormSequenceConfig.cs:105
+#: Cadencii/FormSequenceConfig.cs:63 Cadencii/FormSequenceConfig.cs:102
 msgid "Stereo"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:89 Cadencii/ui/main/FormMain.cs:4700
+#: Cadencii/FormSequenceConfig.cs:86 Cadencii/ui/main/FormMain.cs:4640
 msgid "Sequence config"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:93
+#: Cadencii/FormSequenceConfig.cs:90
 msgid "Wave File Output"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:94
+#: Cadencii/FormSequenceConfig.cs:91
 msgid "Channel"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:96 Cadencii/FormSequenceConfig.cs:100
+#: Cadencii/FormSequenceConfig.cs:93 Cadencii/FormSequenceConfig.cs:97
 msgid "Sample rate"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:98
+#: Cadencii/FormSequenceConfig.cs:95
 msgid "Master Track"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:99
+#: Cadencii/FormSequenceConfig.cs:96
 msgid "Current Track"
 msgstr "合成目前這個音軌"
 
-#: Cadencii/FormSequenceConfig.cs:108 Cadencii/ui/preference/Preference.cs:782
+#: Cadencii/FormSequenceConfig.cs:105 Cadencii/ui/preference/Preference.cs:766
 msgid "Sequence"
 msgstr "Sequence"
 
-#: Cadencii/FormSequenceConfig.cs:109
+#: Cadencii/FormSequenceConfig.cs:106
 msgid "Pre-measure"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:95 Cadencii/FormShortcutKeys.cs:155
-#: Cadencii/FormShortcutKeys.cs:190
+#: Cadencii/FormShortcutKeys.cs:88 Cadencii/FormShortcutKeys.cs:148
+#: Cadencii/FormShortcutKeys.cs:183
 msgid "Command"
 msgstr "Command"
 
-#: Cadencii/FormShortcutKeys.cs:95 Cadencii/FormShortcutKeys.cs:155
+#: Cadencii/FormShortcutKeys.cs:88 Cadencii/FormShortcutKeys.cs:148
 msgid "Shortcut Key"
 msgstr "快捷鍵"
 
-#: Cadencii/FormShortcutKeys.cs:148
+#: Cadencii/FormShortcutKeys.cs:141
 msgid "Shortcut Config"
 msgstr "快捷設定"
 
-#: Cadencii/FormShortcutKeys.cs:152
+#: Cadencii/FormShortcutKeys.cs:145
 msgid "Revert"
 msgstr "Revert"
 
-#: Cadencii/FormShortcutKeys.cs:153
+#: Cadencii/FormShortcutKeys.cs:146
 msgid "Load Default"
 msgstr "Load Default"
 
-#: Cadencii/FormShortcutKeys.cs:157
+#: Cadencii/FormShortcutKeys.cs:150
 msgid "Category"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:163 Cadencii/ui/main/FormMain.cs:4548
-#: Cadencii/ui/preference/Preference.cs:788
+#: Cadencii/FormShortcutKeys.cs:156 Cadencii/ui/main/FormMain.cs:4488
+#: Cadencii/ui/preference/Preference.cs:772
 msgid "File"
 msgstr "檔案"
 
-#: Cadencii/FormShortcutKeys.cs:165 Cadencii/FormShortcutKeys.cs:191
-#: Cadencii/FormVibratoPreset.cs:509 Cadencii/ui/main/FormMain.cs:4579
+#: Cadencii/FormShortcutKeys.cs:158 Cadencii/FormShortcutKeys.cs:184
+#: Cadencii/FormVibratoPreset.cs:506 Cadencii/ui/main/FormMain.cs:4519
 msgid "Edit"
 msgstr "編輯"
 
-#: Cadencii/FormShortcutKeys.cs:167
+#: Cadencii/FormShortcutKeys.cs:160
 msgid "Visual"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:169 Cadencii/ui/main/FormMain.cs:4628
+#: Cadencii/FormShortcutKeys.cs:162 Cadencii/ui/main/FormMain.cs:4568
 msgid "Job"
 msgstr "工作"
 
-#: Cadencii/FormShortcutKeys.cs:171
+#: Cadencii/FormShortcutKeys.cs:164
 msgid "Lyric"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:175 Cadencii/ui/main/FormMain.cs:4683
+#: Cadencii/FormShortcutKeys.cs:168 Cadencii/ui/main/FormMain.cs:4623
 msgid "Script"
 msgstr "腳本"
 
-#: Cadencii/FormShortcutKeys.cs:177 Cadencii/ui/main/FormMain.cs:4688
-#: Cadencii/ui/main/FormMain.cs:4698
+#: Cadencii/FormShortcutKeys.cs:170 Cadencii/ui/main/FormMain.cs:4628
+#: Cadencii/ui/main/FormMain.cs:4638
 msgid "Setting"
 msgstr "設定"
 
-#: Cadencii/FormShortcutKeys.cs:179 Cadencii/ui/main/FormMain.cs:4725
+#: Cadencii/FormShortcutKeys.cs:172 Cadencii/ui/main/FormMain.cs:4666
 msgid "Help"
 msgstr "幫助"
 
-#: Cadencii/FormShortcutKeys.cs:181 Cadencii/ui/preference/Preference.cs:783
+#: Cadencii/FormShortcutKeys.cs:174 Cadencii/ui/preference/Preference.cs:767
 msgid "Other"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:192
+#: Cadencii/FormShortcutKeys.cs:185
 msgid "Key:"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:193
+#: Cadencii/FormShortcutKeys.cs:186
 msgid "Modifier:"
 msgstr ""
 
-#: Cadencii/FormSingerStyleConfig.cs:92
+#: Cadencii/FormSingerStyleConfig.cs:90
 msgid "Dynamics Control"
 msgstr "力道控制"
 
-#: Cadencii/FormSingerStyleConfig.cs:100
+#: Cadencii/FormSingerStyleConfig.cs:98
 msgid "Apply to current track"
 msgstr "套入現在的Track"
 
-#: Cadencii/FormSingerStyleConfig.cs:106
+#: Cadencii/FormSingerStyleConfig.cs:104
 msgid "Default Singer Style"
 msgstr "預設歌唱設定"
 
-#: Cadencii/FormTempoConfig.cs:70
+#: Cadencii/FormTempoConfig.cs:68
 msgid "Global Tempo"
 msgstr "Global Tempo"
 
-#: Cadencii/FormTrackProperty.cs:63
+#: Cadencii/FormTrackProperty.cs:61
 msgid "Master Tuning in Cent"
 msgstr "Master Tuning in Cent"
 
-#: Cadencii/FormTrackProperty.cs:64
+#: Cadencii/FormTrackProperty.cs:62
 msgid "Track Property"
 msgstr "Track Property"
 
-#: Cadencii/FormVibratoConfig.cs:138
+#: Cadencii/FormVibratoConfig.cs:136
 msgid "Vibrato property"
 msgstr "Vibrato屬性"
 
-#: Cadencii/FormVibratoConfig.cs:139
+#: Cadencii/FormVibratoConfig.cs:137
 msgid "Vibrato length"
 msgstr "Vibrato長度"
 
-#: Cadencii/FormVibratoConfig.cs:141 Cadencii/ui/preference/Preference.cs:811
-#: Cadencii/ui/preference/Preference.cs:813
+#: Cadencii/FormVibratoConfig.cs:139 Cadencii/ui/preference/Preference.cs:795
+#: Cadencii/ui/preference/Preference.cs:797
 msgid "Vibrato Type"
 msgstr "Vibrato的種類"
 
-#: Cadencii/FormVibratoConfig.cs:145
+#: Cadencii/FormVibratoConfig.cs:143
 msgid "Select from"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:505 Cadencii/ui/main/FormMain.cs:4714
+#: Cadencii/FormVibratoPreset.cs:502 Cadencii/ui/main/FormMain.cs:4654
 msgid "Vibrato preset"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:507
+#: Cadencii/FormVibratoPreset.cs:504
 msgid "List of vibrato preset"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:512
+#: Cadencii/FormVibratoPreset.cs:509
 msgid "Preview"
 msgstr "Preview"
 
-#: Cadencii/FormVibratoPreset.cs:513
+#: Cadencii/FormVibratoPreset.cs:510
 msgid "Depth curve"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:514
+#: Cadencii/FormVibratoPreset.cs:511
 msgid "Rate curve"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:515
+#: Cadencii/FormVibratoPreset.cs:512
 msgid "Resulting pitch bend"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:517 Cadencii/ui/main/FormMain.cs:2411
-#: Cadencii/ui/preference/Preference.cs:873
+#: Cadencii/FormVibratoPreset.cs:514 Cadencii/ui/main/FormMain.cs:2369
+#: Cadencii/ui/preference/Preference.cs:857
 msgid "Add"
 msgstr "Add"
 
-#: Cadencii/FormVibratoPreset.cs:518 Cadencii/ui/main/FormMain.cs:2387
-#: Cadencii/ui/main/FormMain.cs:4696 Cadencii/ui/preference/Preference.cs:874
+#: Cadencii/FormVibratoPreset.cs:515 Cadencii/ui/main/FormMain.cs:2345
+#: Cadencii/ui/main/FormMain.cs:4636 Cadencii/ui/preference/Preference.cs:858
 msgid "Remove"
 msgstr "Remove"
 
-#: Cadencii/FormVibratoPreset.cs:519
-#: Cadencii/FormWordDictionaryController.cs:189
-#: Cadencii/ui/preference/Preference.cs:875
+#: Cadencii/FormVibratoPreset.cs:516
+#: Cadencii/FormWordDictionaryController.cs:185
+#: Cadencii/ui/preference/Preference.cs:859
 msgid "Up"
 msgstr "上"
 
-#: Cadencii/FormVibratoPreset.cs:520
-#: Cadencii/FormWordDictionaryController.cs:190
-#: Cadencii/ui/preference/Preference.cs:876
+#: Cadencii/FormVibratoPreset.cs:517
+#: Cadencii/FormWordDictionaryController.cs:186
+#: Cadencii/ui/preference/Preference.cs:860
 msgid "Down"
 msgstr "下"
 
-#: Cadencii/FormWordDictionaryController.cs:185
+#: Cadencii/FormWordDictionaryController.cs:181
 msgid "User Dictionary Configuration"
 msgstr "使用者辭典設定"
 
-#: Cadencii/FormWordDictionaryController.cs:186
+#: Cadencii/FormWordDictionaryController.cs:182
 msgid "Available Dictionaries"
 msgstr "可以使用的辭典"
 
@@ -703,15 +703,15 @@ msgstr "track"
 msgid "sec"
 msgstr ""
 
-#: Cadencii/ScriptServer.cs:134
+#: Cadencii/ScriptServer.cs:135
 msgid "Script aborted"
 msgstr "略過腳本"
 
-#: Cadencii/ScriptServer.cs:162
+#: Cadencii/ScriptServer.cs:163
 msgid "Script runtime error:"
 msgstr "Script runtime error:"
 
-#: Cadencii/ScriptServer.cs:166
+#: Cadencii/ScriptServer.cs:167
 msgid "Script compilation failed."
 msgstr "腳本編譯失敗"
 
@@ -779,15 +779,15 @@ msgstr ""
 msgid "Intensity"
 msgstr ""
 
-#: Cadencii/VersionInfo.cs:129 Cadencii/VersionInfo.cs:319
-#: cadencii.apputil/VersionInfo.cs:173
+#: Cadencii/VersionInfo.cs:125 Cadencii/VersionInfo.cs:303
+#: cadencii.apputil/VersionInfo.cs:175
 #: cadencii.apputil/VersionInfo.Designer.cs:117
 #, csharp-format
 msgid "About {0}"
 msgstr "關於{0}"
 
-#: Cadencii/VersionInfo.cs:130 Cadencii/VersionInfo.cs:333
-#: cadencii.apputil/VersionInfo.cs:183
+#: Cadencii/VersionInfo.cs:126 Cadencii/VersionInfo.cs:317
+#: cadencii.apputil/VersionInfo.cs:185
 #: cadencii.apputil/VersionInfo.Designer.cs:118
 msgid "Credit"
 msgstr "工作人員列表"
@@ -804,645 +804,645 @@ msgstr ""
 msgid "detail"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:2231 Cadencii/ui/main/FormMain.cs:3533
-#: Cadencii/ui/main/FormMain.cs:15078
+#: Cadencii/ui/main/FormMain.cs:2189 Cadencii/ui/main/FormMain.cs:3488
+#: Cadencii/ui/main/FormMain.cs:14905
 msgid "Disabled"
 msgstr "無效"
 
-#: Cadencii/ui/main/FormMain.cs:2234
+#: Cadencii/ui/main/FormMain.cs:2192
 msgid "Cursor"
 msgstr "游標"
 
-#: Cadencii/ui/main/FormMain.cs:2237
+#: Cadencii/ui/main/FormMain.cs:2195
 msgid "Keyboard"
 msgstr "鍵盤"
 
-#: Cadencii/ui/main/FormMain.cs:2240
+#: Cadencii/ui/main/FormMain.cs:2198
 msgid "Normal"
 msgstr "Normal"
 
-#: Cadencii/ui/main/FormMain.cs:2393
+#: Cadencii/ui/main/FormMain.cs:2351
 msgid "Start After Premeasure"
 msgstr "Start After Premeasure"
 
-#: Cadencii/ui/main/FormMain.cs:2401
+#: Cadencii/ui/main/FormMain.cs:2359
 msgid "Set Offset Seconds"
 msgstr "Set Offset Seconds"
 
-#: Cadencii/ui/main/FormMain.cs:3074 Cadencii/ui/main/FormMain.cs:10451
+#: Cadencii/ui/main/FormMain.cs:3029 Cadencii/ui/main/FormMain.cs:10286
 msgid "Save this sequence?"
 msgstr "請問要將這個序列存檔嗎？"
 
-#: Cadencii/ui/main/FormMain.cs:3075 Cadencii/ui/main/FormMain.cs:10452
+#: Cadencii/ui/main/FormMain.cs:3030 Cadencii/ui/main/FormMain.cs:10287
 msgid "Affirmation"
 msgstr "確認"
 
-#: Cadencii/ui/main/FormMain.cs:4426 Cadencii/ui/main/FormMain.cs:4436
+#: Cadencii/ui/main/FormMain.cs:4370 Cadencii/ui/main/FormMain.cs:4378
 msgid "XML-VSQ Format(*.xvsq)|*.xvsq"
 msgstr "XML-VSQ 格式(*.xvsq)|*.xvsq"
 
-#: Cadencii/ui/main/FormMain.cs:4427 Cadencii/ui/main/FormMain.cs:4437
-#: Cadencii/ui/main/FormMain.cs:4447 Cadencii/ui/main/FormMain.cs:4459
-#: Cadencii/ui/main/FormMain.cs:4472 Cadencii/ui/main/FormMain.cs:4483
-#: Cadencii/ui/main/FormMain.cs:11326 Cadencii/ui/main/FormMain.cs:11457
-#: Cadencii/ui/main/FormMain.cs:11517 Cadencii/ui/main/FormMain.cs:11548
-#: Cadencii/ui/main/FormMain.cs:11583 Cadencii/ui/main/FormMain.cs:11664
-#: Cadencii/ui/preference/Preference.cs:769
+#: Cadencii/ui/main/FormMain.cs:4370 Cadencii/ui/main/FormMain.cs:4378
+#: Cadencii/ui/main/FormMain.cs:4386 Cadencii/ui/main/FormMain.cs:4398
+#: Cadencii/ui/main/FormMain.cs:4413 Cadencii/ui/main/FormMain.cs:4426
+#: Cadencii/ui/main/FormMain.cs:11161 Cadencii/ui/main/FormMain.cs:11291
+#: Cadencii/ui/main/FormMain.cs:11350 Cadencii/ui/main/FormMain.cs:11381
+#: Cadencii/ui/main/FormMain.cs:11415 Cadencii/ui/main/FormMain.cs:11495
+#: Cadencii/ui/preference/Preference.cs:758
 msgid "All Files(*.*)|*.*"
 msgstr "所有檔案(*.*)|*.*"
 
-#: Cadencii/ui/main/FormMain.cs:4446 Cadencii/ui/main/FormMain.cs:11456
+#: Cadencii/ui/main/FormMain.cs:4386 Cadencii/ui/main/FormMain.cs:11291
 msgid "UTAU Script Format(*.ust)|*.ust"
 msgstr "UTAU 腳本格式(*.ust)|*.ust"
 
-#: Cadencii/ui/main/FormMain.cs:4456 Cadencii/ui/main/FormMain.cs:4470
+#: Cadencii/ui/main/FormMain.cs:4395 Cadencii/ui/main/FormMain.cs:4411
 msgid "MIDI Format(*.mid)|*.mid"
 msgstr "MIDI Format(*.mid)|*.mid"
 
-#: Cadencii/ui/main/FormMain.cs:4457 Cadencii/ui/main/FormMain.cs:4471
-#: Cadencii/ui/main/FormMain.cs:11516
+#: Cadencii/ui/main/FormMain.cs:4396 Cadencii/ui/main/FormMain.cs:4412
+#: Cadencii/ui/main/FormMain.cs:11350
 msgid "VSQ Format(*.vsq)|*.vsq"
 msgstr "VSQ 格式(*.vsq)|*.vsq"
 
-#: Cadencii/ui/main/FormMain.cs:4458 Cadencii/ui/main/FormMain.cs:11548
+#: Cadencii/ui/main/FormMain.cs:4397 Cadencii/ui/main/FormMain.cs:11381
 msgid "VSQX Format(*.vsqx)|*.vsqx"
 msgstr "VSQX 格式(*.vsq)|*.vsq"
 
-#: Cadencii/ui/main/FormMain.cs:4482 Cadencii/ui/main/FormMain.cs:11663
+#: Cadencii/ui/main/FormMain.cs:4425 Cadencii/ui/main/FormMain.cs:11495
 msgid "Wave File(*.wav)|*.wav"
 msgstr "Wave檔案(*.wav)|*.wav"
 
-#: Cadencii/ui/main/FormMain.cs:4491 Cadencii/ui/main/FormMain.cs:4692
+#: Cadencii/ui/main/FormMain.cs:4435 Cadencii/ui/main/FormMain.cs:4632
 msgid "Game controler"
 msgstr "遊戲控制器"
 
-#: Cadencii/ui/main/FormMain.cs:4501 Cadencii/ui/main/FormMain.cs:4502
-#: Cadencii/ui/main/FormMain.cs:4519 Cadencii/ui/main/FormMain.cs:4520
+#: Cadencii/ui/main/FormMain.cs:4441 Cadencii/ui/main/FormMain.cs:4442
+#: Cadencii/ui/main/FormMain.cs:4459 Cadencii/ui/main/FormMain.cs:4460
 msgid "Pointer"
 msgstr "Pointer"
 
-#: Cadencii/ui/main/FormMain.cs:4503 Cadencii/ui/main/FormMain.cs:4504
-#: Cadencii/ui/main/FormMain.cs:4521 Cadencii/ui/main/FormMain.cs:4522
-#: Cadencii/ui/main/FormMain.cs:4764 Cadencii/ui/main/FormMain.cs:4835
+#: Cadencii/ui/main/FormMain.cs:4443 Cadencii/ui/main/FormMain.cs:4444
+#: Cadencii/ui/main/FormMain.cs:4461 Cadencii/ui/main/FormMain.cs:4462
+#: Cadencii/ui/main/FormMain.cs:4705 Cadencii/ui/main/FormMain.cs:4776
 msgid "Pencil"
 msgstr "鉛筆"
 
-#: Cadencii/ui/main/FormMain.cs:4505 Cadencii/ui/main/FormMain.cs:4506
-#: Cadencii/ui/main/FormMain.cs:4523 Cadencii/ui/main/FormMain.cs:4524
-#: Cadencii/ui/main/FormMain.cs:4837
+#: Cadencii/ui/main/FormMain.cs:4445 Cadencii/ui/main/FormMain.cs:4446
+#: Cadencii/ui/main/FormMain.cs:4463 Cadencii/ui/main/FormMain.cs:4464
+#: Cadencii/ui/main/FormMain.cs:4778
 msgid "Line"
 msgstr "直線"
 
-#: Cadencii/ui/main/FormMain.cs:4507 Cadencii/ui/main/FormMain.cs:4508
-#: Cadencii/ui/main/FormMain.cs:4525 Cadencii/ui/main/FormMain.cs:4526
-#: Cadencii/ui/main/FormMain.cs:4766 Cadencii/ui/main/FormMain.cs:4839
+#: Cadencii/ui/main/FormMain.cs:4447 Cadencii/ui/main/FormMain.cs:4448
+#: Cadencii/ui/main/FormMain.cs:4465 Cadencii/ui/main/FormMain.cs:4466
+#: Cadencii/ui/main/FormMain.cs:4707 Cadencii/ui/main/FormMain.cs:4780
 msgid "Eraser"
 msgstr "橡皮擦"
 
-#: Cadencii/ui/main/FormMain.cs:4510 Cadencii/ui/main/FormMain.cs:4527
-#: Cadencii/ui/main/FormMain.cs:4528 Cadencii/ui/main/FormMain.cs:4770
-#: Cadencii/ui/main/FormMain.cs:4843
+#: Cadencii/ui/main/FormMain.cs:4450 Cadencii/ui/main/FormMain.cs:4467
+#: Cadencii/ui/main/FormMain.cs:4468 Cadencii/ui/main/FormMain.cs:4711
+#: Cadencii/ui/main/FormMain.cs:4784
 msgid "Curve"
 msgstr "曲線"
 
-#: Cadencii/ui/main/FormMain.cs:4512 Cadencii/ui/main/FormMain.cs:4529
-#: Cadencii/ui/main/FormMain.cs:4530
+#: Cadencii/ui/main/FormMain.cs:4452 Cadencii/ui/main/FormMain.cs:4469
+#: Cadencii/ui/main/FormMain.cs:4470
 msgid "Grid"
 msgstr "格"
 
-#: Cadencii/ui/main/FormMain.cs:4514 Cadencii/ui/main/FormMain.cs:4532
-#: Cadencii/ui/main/FormMain.cs:7926 Cadencii/ui/main/FormMain.cs:7929
+#: Cadencii/ui/main/FormMain.cs:4454 Cadencii/ui/main/FormMain.cs:4472
+#: Cadencii/ui/main/FormMain.cs:7764 Cadencii/ui/main/FormMain.cs:7767
 #: vConnectStandDBConvert/MainForm.cs:174
 msgid "Stop"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4516 Cadencii/ui/main/FormMain.cs:4534
-#: Cadencii/ui/main/FormMain.cs:7895 Cadencii/ui/main/FormMain.cs:7898
+#: Cadencii/ui/main/FormMain.cs:4456 Cadencii/ui/main/FormMain.cs:4474
+#: Cadencii/ui/main/FormMain.cs:7733 Cadencii/ui/main/FormMain.cs:7736
 msgid "Play"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4539
+#: Cadencii/ui/main/FormMain.cs:4479
 msgid "Move to beginning measure"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4540
+#: Cadencii/ui/main/FormMain.cs:4480
 msgid "Move to end measure"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4541
+#: Cadencii/ui/main/FormMain.cs:4481
 msgid "Move forward"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4542
+#: Cadencii/ui/main/FormMain.cs:4482
 msgid "Move backwared"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4543
+#: Cadencii/ui/main/FormMain.cs:4483
 msgid "Repeat"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4544
+#: Cadencii/ui/main/FormMain.cs:4484
 msgid "Auto scroll"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4550
+#: Cadencii/ui/main/FormMain.cs:4490
 msgid "New"
 msgstr "開新檔案"
 
-#: Cadencii/ui/main/FormMain.cs:4552 Cadencii/ui/main/FormMain.cs:4731
+#: Cadencii/ui/main/FormMain.cs:4492 Cadencii/ui/main/FormMain.cs:4672
 msgid "Open"
 msgstr "開啟舊檔"
 
-#: Cadencii/ui/main/FormMain.cs:4554
+#: Cadencii/ui/main/FormMain.cs:4494
 msgid "Open VSQX/VSQ/Vocaloid MIDI"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4556
+#: Cadencii/ui/main/FormMain.cs:4496
 msgid "Open UTAU project file"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4558
+#: Cadencii/ui/main/FormMain.cs:4498
 msgid "Save"
 msgstr "儲存檔案"
 
-#: Cadencii/ui/main/FormMain.cs:4560
+#: Cadencii/ui/main/FormMain.cs:4500
 msgid "Save as"
 msgstr "另存新檔"
 
-#: Cadencii/ui/main/FormMain.cs:4562
+#: Cadencii/ui/main/FormMain.cs:4502
 msgid "Import"
 msgstr "匯入"
 
-#: Cadencii/ui/main/FormMain.cs:4564
+#: Cadencii/ui/main/FormMain.cs:4504
 msgid "VSQ / Vocaloid Midi"
 msgstr "VSQ / Vocaloid Midi"
 
-#: Cadencii/ui/main/FormMain.cs:4565
+#: Cadencii/ui/main/FormMain.cs:4505
 msgid "Export"
 msgstr "匯出"
 
-#: Cadencii/ui/main/FormMain.cs:4567
+#: Cadencii/ui/main/FormMain.cs:4507
 msgid "WAVE"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4568
+#: Cadencii/ui/main/FormMain.cs:4508
 msgid "Serial numbered WAVEs"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4569
+#: Cadencii/ui/main/FormMain.cs:4509
 msgid "UTAU project file"
 msgstr "UTAU 專案"
 
-#: Cadencii/ui/main/FormMain.cs:4570 Cadencii/ui/main/FormMain.cs:11581
+#: Cadencii/ui/main/FormMain.cs:4510 Cadencii/ui/main/FormMain.cs:11414
 msgid "Metatext for vConnect"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4571
+#: Cadencii/ui/main/FormMain.cs:4511
 msgid "VSQ File"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4572
+#: Cadencii/ui/main/FormMain.cs:4512
 msgid "VSQX File"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4573
+#: Cadencii/ui/main/FormMain.cs:4513
 msgid "Open Recent"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4575
+#: Cadencii/ui/main/FormMain.cs:4515
 msgid "Clear Menu"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4576
+#: Cadencii/ui/main/FormMain.cs:4516
 msgid "Quit"
 msgstr "結束"
 
-#: Cadencii/ui/main/FormMain.cs:4581 Cadencii/ui/main/FormMain.cs:4785
-#: Cadencii/ui/main/FormMain.cs:4846
+#: Cadencii/ui/main/FormMain.cs:4521 Cadencii/ui/main/FormMain.cs:4726
+#: Cadencii/ui/main/FormMain.cs:4787
 msgid "Undo"
 msgstr "復原"
 
-#: Cadencii/ui/main/FormMain.cs:4583 Cadencii/ui/main/FormMain.cs:4787
-#: Cadencii/ui/main/FormMain.cs:4848
+#: Cadencii/ui/main/FormMain.cs:4523 Cadencii/ui/main/FormMain.cs:4728
+#: Cadencii/ui/main/FormMain.cs:4789
 msgid "Redo"
 msgstr "重複"
 
-#: Cadencii/ui/main/FormMain.cs:4585 Cadencii/ui/main/FormMain.cs:4738
-#: Cadencii/ui/main/FormMain.cs:4790 Cadencii/ui/main/FormMain.cs:4851
+#: Cadencii/ui/main/FormMain.cs:4525 Cadencii/ui/main/FormMain.cs:4679
+#: Cadencii/ui/main/FormMain.cs:4731 Cadencii/ui/main/FormMain.cs:4792
 msgid "Cut"
 msgstr "剪下"
 
-#: Cadencii/ui/main/FormMain.cs:4587 Cadencii/ui/main/FormMain.cs:4737
-#: Cadencii/ui/main/FormMain.cs:4794 Cadencii/ui/main/FormMain.cs:4853
+#: Cadencii/ui/main/FormMain.cs:4527 Cadencii/ui/main/FormMain.cs:4678
+#: Cadencii/ui/main/FormMain.cs:4735 Cadencii/ui/main/FormMain.cs:4794
 msgid "Copy"
 msgstr "複製"
 
-#: Cadencii/ui/main/FormMain.cs:4589 Cadencii/ui/main/FormMain.cs:4749
-#: Cadencii/ui/main/FormMain.cs:4792 Cadencii/ui/main/FormMain.cs:4855
+#: Cadencii/ui/main/FormMain.cs:4529 Cadencii/ui/main/FormMain.cs:4690
+#: Cadencii/ui/main/FormMain.cs:4733 Cadencii/ui/main/FormMain.cs:4796
 msgid "Paste"
 msgstr "貼上"
 
-#: Cadencii/ui/main/FormMain.cs:4591 Cadencii/ui/main/FormMain.cs:4796
-#: Cadencii/ui/main/FormMain.cs:4857
+#: Cadencii/ui/main/FormMain.cs:4531 Cadencii/ui/main/FormMain.cs:4737
+#: Cadencii/ui/main/FormMain.cs:4798
 msgid "Delete"
 msgstr "刪除"
 
-#: Cadencii/ui/main/FormMain.cs:4593
+#: Cadencii/ui/main/FormMain.cs:4533
 msgid "Auto normalize mode"
 msgstr "自動音符正規化(重疊自動更正)"
 
-#: Cadencii/ui/main/FormMain.cs:4595 Cadencii/ui/main/FormMain.cs:4799
+#: Cadencii/ui/main/FormMain.cs:4535 Cadencii/ui/main/FormMain.cs:4740
 msgid "Select All"
 msgstr "全選"
 
-#: Cadencii/ui/main/FormMain.cs:4597
+#: Cadencii/ui/main/FormMain.cs:4537
 msgid "Select all events"
 msgstr "選取所有事件"
 
-#: Cadencii/ui/main/FormMain.cs:4600
+#: Cadencii/ui/main/FormMain.cs:4540
 msgid "View"
 msgstr "檢視"
 
-#: Cadencii/ui/main/FormMain.cs:4602
+#: Cadencii/ui/main/FormMain.cs:4542
 msgid "Control track"
 msgstr "控制軌"
 
-#: Cadencii/ui/main/FormMain.cs:4606
+#: Cadencii/ui/main/FormMain.cs:4546
 msgid "Waveform"
 msgstr "表示波形"
 
-#: Cadencii/ui/main/FormMain.cs:4608
+#: Cadencii/ui/main/FormMain.cs:4548
 msgid "Property window"
 msgstr "Property Window"
 
-#: Cadencii/ui/main/FormMain.cs:4609
+#: Cadencii/ui/main/FormMain.cs:4549
 msgid "Navigation"
 msgstr "Navigation"
 
-#: Cadencii/ui/main/FormMain.cs:4611
+#: Cadencii/ui/main/FormMain.cs:4551
 msgid "Grid line"
 msgstr "格線"
 
-#: Cadencii/ui/main/FormMain.cs:4613
+#: Cadencii/ui/main/FormMain.cs:4553
 msgid "Start marker"
 msgstr "開始記號"
 
-#: Cadencii/ui/main/FormMain.cs:4615
+#: Cadencii/ui/main/FormMain.cs:4555
 msgid "End marker"
 msgstr "結束記號"
 
-#: Cadencii/ui/main/FormMain.cs:4617
+#: Cadencii/ui/main/FormMain.cs:4557
 msgid "Lyrics/Phoneme"
 msgstr "歌詞/發音記號"
 
-#: Cadencii/ui/main/FormMain.cs:4619
+#: Cadencii/ui/main/FormMain.cs:4559
 msgid "Note expression/vibrato"
 msgstr "音符表現/Vibrato"
 
-#: Cadencii/ui/main/FormMain.cs:4621
+#: Cadencii/ui/main/FormMain.cs:4561
 msgid "Pitch line"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4623
+#: Cadencii/ui/main/FormMain.cs:4563
 msgid "VSTi plugin UI"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4625
+#: Cadencii/ui/main/FormMain.cs:4565
 msgid "Icon palette"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4630
+#: Cadencii/ui/main/FormMain.cs:4570
 msgid "Normalize notes"
 msgstr "音符正規化(去除音符重疊)"
 
-#: Cadencii/ui/main/FormMain.cs:4632
+#: Cadencii/ui/main/FormMain.cs:4572
 msgid "Insert bars"
 msgstr "插入小節"
 
-#: Cadencii/ui/main/FormMain.cs:4634
+#: Cadencii/ui/main/FormMain.cs:4574
 msgid "Delete bars"
 msgstr "刪除小節"
 
-#: Cadencii/ui/main/FormMain.cs:4638
+#: Cadencii/ui/main/FormMain.cs:4578
 msgid "Connect notes"
 msgstr "結合音符"
 
-#: Cadencii/ui/main/FormMain.cs:4640
+#: Cadencii/ui/main/FormMain.cs:4580
 msgid "Insert lyrics"
 msgstr "插入歌詞"
 
-#: Cadencii/ui/main/FormMain.cs:4645
+#: Cadencii/ui/main/FormMain.cs:4585
 msgid "Track on"
 msgstr "Track On"
 
-#: Cadencii/ui/main/FormMain.cs:4647
+#: Cadencii/ui/main/FormMain.cs:4587
 msgid "Add track"
 msgstr "追加Track"
 
-#: Cadencii/ui/main/FormMain.cs:4649
+#: Cadencii/ui/main/FormMain.cs:4589
 msgid "Copy track"
 msgstr "複製 Track"
 
-#: Cadencii/ui/main/FormMain.cs:4651
+#: Cadencii/ui/main/FormMain.cs:4591
 msgid "Rename track"
 msgstr "重新命名Track"
 
-#: Cadencii/ui/main/FormMain.cs:4652
+#: Cadencii/ui/main/FormMain.cs:4592
 msgid "Delete track"
 msgstr "刪除Track"
 
-#: Cadencii/ui/main/FormMain.cs:4654
+#: Cadencii/ui/main/FormMain.cs:4594
 msgid "Render current track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4656
+#: Cadencii/ui/main/FormMain.cs:4596
 msgid "Render all tracks"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4658 Cadencii/ui/main/FormMain.cs:4826
+#: Cadencii/ui/main/FormMain.cs:4598 Cadencii/ui/main/FormMain.cs:4767
 msgid "Overlay"
 msgstr "覆蓋"
 
-#: Cadencii/ui/main/FormMain.cs:4660 Cadencii/ui/main/FormMain.cs:4828
+#: Cadencii/ui/main/FormMain.cs:4600 Cadencii/ui/main/FormMain.cs:4769
 msgid "Renderer"
 msgstr "Renderer"
 
-#: Cadencii/ui/main/FormMain.cs:4670
+#: Cadencii/ui/main/FormMain.cs:4610
 msgid "Note expression property"
 msgstr "音符表情參數"
 
-#: Cadencii/ui/main/FormMain.cs:4672
+#: Cadencii/ui/main/FormMain.cs:4612
 msgid "Note vibrato property"
 msgstr "音符Vibrato參數"
 
-#: Cadencii/ui/main/FormMain.cs:4674
+#: Cadencii/ui/main/FormMain.cs:4614
 msgid "Apply UTAU Parameters"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4676
+#: Cadencii/ui/main/FormMain.cs:4616
 msgid "Phoneme transformation"
 msgstr "發音記號轉換"
 
-#: Cadencii/ui/main/FormMain.cs:4678
+#: Cadencii/ui/main/FormMain.cs:4618
 msgid "User word dictionary"
 msgstr "使用者辭典"
 
-#: Cadencii/ui/main/FormMain.cs:4680
+#: Cadencii/ui/main/FormMain.cs:4620
 msgid "Copy vibrato config to preset"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4685
+#: Cadencii/ui/main/FormMain.cs:4625
 msgid "Update script list"
 msgstr "更新腳本清單"
 
-#: Cadencii/ui/main/FormMain.cs:4690 Cadencii/ui/preference/Preference.cs:763
+#: Cadencii/ui/main/FormMain.cs:4630 Cadencii/ui/preference/Preference.cs:753
 msgid "Preference"
 msgstr "選項"
 
-#: Cadencii/ui/main/FormMain.cs:4694
+#: Cadencii/ui/main/FormMain.cs:4634
 msgid "Load"
 msgstr "Load"
 
-#: Cadencii/ui/main/FormMain.cs:4702
+#: Cadencii/ui/main/FormMain.cs:4642
 msgid "Shortcut key"
 msgstr "快捷鍵"
 
-#: Cadencii/ui/main/FormMain.cs:4704
+#: Cadencii/ui/main/FormMain.cs:4644
 msgid "Singing style defaults"
 msgstr "預設唱法"
 
-#: Cadencii/ui/main/FormMain.cs:4706 Cadencii/ui/main/FormMain.cs:4778
+#: Cadencii/ui/main/FormMain.cs:4646 Cadencii/ui/main/FormMain.cs:4719
 msgid "Quantize"
 msgstr "Quantize"
 
-#: Cadencii/ui/main/FormMain.cs:4708 Cadencii/ui/main/FormMain.cs:4776
-#: Cadencii/ui/main/FormMain.cs:4781
+#: Cadencii/ui/main/FormMain.cs:4648 Cadencii/ui/main/FormMain.cs:4717
+#: Cadencii/ui/main/FormMain.cs:4722
 msgid "Off"
 msgstr "關閉"
 
-#: Cadencii/ui/main/FormMain.cs:4709 Cadencii/ui/main/FormMain.cs:4775
-#: Cadencii/ui/main/FormMain.cs:4780
+#: Cadencii/ui/main/FormMain.cs:4649 Cadencii/ui/main/FormMain.cs:4716
+#: Cadencii/ui/main/FormMain.cs:4721
 msgid "Triplet"
 msgstr "三連音符"
 
-#: Cadencii/ui/main/FormMain.cs:4712 Cadencii/ui/main/FormMain.cs:4768
-#: Cadencii/ui/main/FormMain.cs:4841
+#: Cadencii/ui/main/FormMain.cs:4652 Cadencii/ui/main/FormMain.cs:4709
+#: Cadencii/ui/main/FormMain.cs:4782
 msgid "Palette Tool"
 msgstr "Palette Tool"
 
-#: Cadencii/ui/main/FormMain.cs:4718
+#: Cadencii/ui/main/FormMain.cs:4658
 msgid "Window"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4719
+#: Cadencii/ui/main/FormMain.cs:4659
 msgid "Minimize"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4722
+#: Cadencii/ui/main/FormMain.cs:4662
 msgid "Tools"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4723
+#: Cadencii/ui/main/FormMain.cs:4664
 msgid "Create vConnect-STAND DB"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4727
+#: Cadencii/ui/main/FormMain.cs:4668
 msgid "Log"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4729
+#: Cadencii/ui/main/FormMain.cs:4670
 msgid "Disable"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4729
+#: Cadencii/ui/main/FormMain.cs:4670
 msgid "Enable"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4733
+#: Cadencii/ui/main/FormMain.cs:4674
 msgid "About Cadencii"
 msgstr "關於Cadencii"
 
-#: Cadencii/ui/main/FormMain.cs:4735
+#: Cadencii/ui/main/FormMain.cs:4676
 msgid "Manual"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4739
+#: Cadencii/ui/main/FormMain.cs:4680
 msgid "Chagne tool pointer / eraser"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4740
+#: Cadencii/ui/main/FormMain.cs:4681
 msgid "Change tool pointer / pencil"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4741
+#: Cadencii/ui/main/FormMain.cs:4682
 msgid "Start lyric input"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4742
+#: Cadencii/ui/main/FormMain.cs:4683
 msgid "GoTo end marker"
 msgstr "結束記號"
 
-#: Cadencii/ui/main/FormMain.cs:4743
+#: Cadencii/ui/main/FormMain.cs:4684
 msgid "Goto start marker"
 msgstr "開始記號"
 
-#: Cadencii/ui/main/FormMain.cs:4744
+#: Cadencii/ui/main/FormMain.cs:4685
 msgid "Lengthen"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4745
+#: Cadencii/ui/main/FormMain.cs:4686
 msgid "Move down"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4746
+#: Cadencii/ui/main/FormMain.cs:4687
 msgid "Move left"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4747
+#: Cadencii/ui/main/FormMain.cs:4688
 msgid "Move right"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4748
+#: Cadencii/ui/main/FormMain.cs:4689
 msgid "Move up"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4750
+#: Cadencii/ui/main/FormMain.cs:4691
 msgid "Play from start marker"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4751
+#: Cadencii/ui/main/FormMain.cs:4692
 msgid "Select backward"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4752
+#: Cadencii/ui/main/FormMain.cs:4693
 msgid "Select forward"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4753
+#: Cadencii/ui/main/FormMain.cs:4694
 msgid "Shorten"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4754
+#: Cadencii/ui/main/FormMain.cs:4695
 msgid "Previous track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4755
+#: Cadencii/ui/main/FormMain.cs:4696
 msgid "Next track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4756
+#: Cadencii/ui/main/FormMain.cs:4697
 msgid "Previous control curve"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4757
+#: Cadencii/ui/main/FormMain.cs:4698
 msgid "Next control curve"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4758
+#: Cadencii/ui/main/FormMain.cs:4699
 msgid "Change pitch drawing mode"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4762 Cadencii/ui/main/FormMain.cs:4833
+#: Cadencii/ui/main/FormMain.cs:4703 Cadencii/ui/main/FormMain.cs:4774
 msgid "Arrow"
 msgstr "游標"
 
-#: Cadencii/ui/main/FormMain.cs:4773
+#: Cadencii/ui/main/FormMain.cs:4714
 msgid "Note Fixed Length"
 msgstr "輸入固定長度的音符"
 
-#: Cadencii/ui/main/FormMain.cs:4777
+#: Cadencii/ui/main/FormMain.cs:4718
 msgid "Dot"
 msgstr "付點"
 
-#: Cadencii/ui/main/FormMain.cs:4782
+#: Cadencii/ui/main/FormMain.cs:4723
 msgid "Show/Hide Grid Line"
 msgstr "顯示/隱藏 Grid Line"
 
-#: Cadencii/ui/main/FormMain.cs:4801 Cadencii/ui/main/FormMain.cs:4862
+#: Cadencii/ui/main/FormMain.cs:4742 Cadencii/ui/main/FormMain.cs:4803
 msgid "Select All Events"
 msgstr "選取所有事件"
 
-#: Cadencii/ui/main/FormMain.cs:4804
+#: Cadencii/ui/main/FormMain.cs:4745
 msgid "Note Expression Property"
 msgstr "音符表情參數"
 
-#: Cadencii/ui/main/FormMain.cs:4806
+#: Cadencii/ui/main/FormMain.cs:4747
 msgid "Note Vibrato Property"
 msgstr "音符Vibrato參數"
 
-#: Cadencii/ui/main/FormMain.cs:4807
+#: Cadencii/ui/main/FormMain.cs:4748
 msgid "Insert Lyrics"
 msgstr "插入歌詞"
 
-#: Cadencii/ui/main/FormMain.cs:4812
+#: Cadencii/ui/main/FormMain.cs:4753
 msgid "Track On"
 msgstr "Track On"
 
-#: Cadencii/ui/main/FormMain.cs:4814
+#: Cadencii/ui/main/FormMain.cs:4755
 msgid "Add Track"
 msgstr "追加Track"
 
-#: Cadencii/ui/main/FormMain.cs:4816
+#: Cadencii/ui/main/FormMain.cs:4757
 msgid "Copy Track"
 msgstr "複製 Track"
 
-#: Cadencii/ui/main/FormMain.cs:4818
+#: Cadencii/ui/main/FormMain.cs:4759
 msgid "Rename Track"
 msgstr "重新命名Track"
 
-#: Cadencii/ui/main/FormMain.cs:4819
+#: Cadencii/ui/main/FormMain.cs:4760
 msgid "Delete Track"
 msgstr "刪除Track"
 
-#: Cadencii/ui/main/FormMain.cs:4822
+#: Cadencii/ui/main/FormMain.cs:4763
 msgid "Render Current Track"
 msgstr "合成目前這個音軌"
 
-#: Cadencii/ui/main/FormMain.cs:4824
+#: Cadencii/ui/main/FormMain.cs:4765
 msgid "Render All Tracks"
 msgstr "合成所有的音軌"
 
-#: Cadencii/ui/main/FormMain.cs:4859
+#: Cadencii/ui/main/FormMain.cs:4800
 msgid "Delete Bezier Point"
 msgstr "刪除貝茲點"
 
-#: Cadencii/ui/main/FormMain.cs:4867
+#: Cadencii/ui/main/FormMain.cs:4808
 msgid "Set start marker"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4868
+#: Cadencii/ui/main/FormMain.cs:4809
 msgid "Set end marker"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4872
+#: Cadencii/ui/main/FormMain.cs:4813
 msgid "Game Controler"
 msgstr "遊戲控制器"
 
-#: Cadencii/ui/main/FormMain.cs:5345 Cadencii/ui/main/FormMain.cs:14234
-#: Cadencii/ui/main/FormMain.cs:14390 Cadencii/ui/main/FormMain.cs:14763
-#: Cadencii/ui/main/FormMain.cs:14803
+#: Cadencii/ui/main/FormMain.cs:5286 Cadencii/ui/main/FormMain.cs:14065
+#: Cadencii/ui/main/FormMain.cs:14221 Cadencii/ui/main/FormMain.cs:14594
+#: Cadencii/ui/main/FormMain.cs:14634
 msgid "Cannot remove first symbol of track!"
 msgstr "無法刪除曲頭的符號！"
 
-#: Cadencii/ui/main/FormMain.cs:6038
+#: Cadencii/ui/main/FormMain.cs:5979
 msgid "Input new name of track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:6096
+#: Cadencii/ui/main/FormMain.cs:6007
 #, csharp-format
 msgid "Do you wish to remove track? {0} : '{1}'"
 msgstr "Do you wish to remove track? {0} : '{1}'"
 
-#: Cadencii/ui/main/FormMain.cs:6652
+#: Cadencii/ui/main/FormMain.cs:6557
 msgid "[file not found]"
 msgstr "[找不到檔案]"
 
-#: Cadencii/ui/main/FormMain.cs:6898 Cadencii/ui/main/FormMain.cs:6940
+#: Cadencii/ui/main/FormMain.cs:6797 Cadencii/ui/main/FormMain.cs:6839
 #, csharp-format
 msgid "cannot create cache directory: '{0}'"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11033 Cadencii/ui/main/FormMain.cs:16777
+#: Cadencii/ui/main/FormMain.cs:10869 Cadencii/ui/main/FormMain.cs:16600
 #, csharp-format
 msgid ""
 "Invalid note data.\n"
@@ -1451,656 +1451,668 @@ msgid ""
 "-> Piano roll : Blank sequence."
 msgstr "錯誤的音符資訊. Track {0} : {1}  -> Piano roll : 空的 sequence."
 
-#: Cadencii/ui/main/FormMain.cs:11325
+#: Cadencii/ui/main/FormMain.cs:11161
 msgid "MusicXML(*.xml)|*.xml"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11360
+#: Cadencii/ui/main/FormMain.cs:11195
 msgid "Choose destination directory"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11394 Cadencii/ui/main/FormMain.cs:11690
+#: Cadencii/ui/main/FormMain.cs:11229 Cadencii/ui/main/FormMain.cs:11521
 msgid "invalid rendering region; start>=end"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11455
+#: Cadencii/ui/main/FormMain.cs:11290
 msgid "Export UTAU (*.ust)"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11515
+#: Cadencii/ui/main/FormMain.cs:11349
 msgid "Export VSQ (*.vsq)"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11547
+#: Cadencii/ui/main/FormMain.cs:11380
 msgid "Export VSQX (*.vsqx)"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11562
+#: Cadencii/ui/main/FormMain.cs:11395
 msgid ""
 "UTAU singer not registered yet.\n"
 "Continue ?"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11563 Cadencii/ui/main/FormMain.cs:15089
+#: Cadencii/ui/main/FormMain.cs:11396 Cadencii/ui/main/FormMain.cs:14916
 msgid "Info"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11582
+#: Cadencii/ui/main/FormMain.cs:11415
 msgid "Text File(*.txt)|*.txt"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11662
+#: Cadencii/ui/main/FormMain.cs:11494
 msgid "Wave Export"
 msgstr "輸出Wave檔"
 
-#: Cadencii/ui/main/FormMain.cs:11768 Cadencii/ui/main/FormMain.cs:11776
+#: Cadencii/ui/main/FormMain.cs:11599 Cadencii/ui/main/FormMain.cs:11607
 msgid "Invalid MIDI file."
 msgstr "Invalid MIDI file."
 
-#: Cadencii/ui/main/FormMain.cs:12264 Cadencii/ui/main/FormMain.cs:12555
+#: Cadencii/ui/main/FormMain.cs:12095 Cadencii/ui/main/FormMain.cs:12388
 msgid "Invalid VSQ/VOCALOID MIDI file"
 msgstr "Invalid VSQ/VOCALOID MIDI file"
 
-#: Cadencii/ui/main/FormMain.cs:13097
+#: Cadencii/ui/main/FormMain.cs:12928
 msgid "Go to the first"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:13601
+#: Cadencii/ui/main/FormMain.cs:13432
 msgid "input pre-measure"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:15054
+#: Cadencii/ui/main/FormMain.cs:14881
 msgid "file not found"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:15076
+#: Cadencii/ui/main/FormMain.cs:14903
 msgid "Enabled"
 msgstr "有效"
 
-#: Cadencii/ui/main/FormMain.cs:15088
+#: Cadencii/ui/main/FormMain.cs:14915
 msgid "Log file has not generated yet."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16824
+#: Cadencii/ui/main/FormMain.cs:16647
 msgid "Invalid XVSQ file"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16987
+#: Cadencii/ui/main/FormMain.cs:16810
 msgid "Undo."
 msgstr "Undo."
 
-#: Cadencii/ui/main/FormMain.cs:16989
+#: Cadencii/ui/main/FormMain.cs:16812
 msgid "Redo."
 msgstr "Redo."
 
-#: Cadencii/ui/main/FormMain.cs:16991
+#: Cadencii/ui/main/FormMain.cs:16814
 msgid "Cut selected items."
 msgstr "Cut selected items."
 
-#: Cadencii/ui/main/FormMain.cs:16993
+#: Cadencii/ui/main/FormMain.cs:16816
 msgid "Copy selected items."
 msgstr "Copy selected items."
 
-#: Cadencii/ui/main/FormMain.cs:16995
+#: Cadencii/ui/main/FormMain.cs:16818
 msgid "Paste copied items to current song position."
 msgstr "Paste copied items to current song position."
 
-#: Cadencii/ui/main/FormMain.cs:16997
+#: Cadencii/ui/main/FormMain.cs:16820
 msgid "Delete selected items."
 msgstr "Delete selected items."
 
-#: Cadencii/ui/main/FormMain.cs:16999
+#: Cadencii/ui/main/FormMain.cs:16822
 msgid "Avoid automaticaly polyphonic editing."
 msgstr "Avoid automaticaly polyphonic editing."
 
-#: Cadencii/ui/main/FormMain.cs:17001
+#: Cadencii/ui/main/FormMain.cs:16824
 msgid "Select all items and control curves of current track."
 msgstr "Select all items and control curves of current track."
 
-#: Cadencii/ui/main/FormMain.cs:17003
+#: Cadencii/ui/main/FormMain.cs:16826
 msgid "Select all items of current track."
 msgstr "Select all items of current track."
 
-#: Cadencii/ui/main/FormMain.cs:17005
+#: Cadencii/ui/main/FormMain.cs:16828
 msgid "Show/Hide control curves."
 msgstr "Show/Hide control curves."
 
-#: Cadencii/ui/main/FormMain.cs:17007
+#: Cadencii/ui/main/FormMain.cs:16830
 msgid "Enable/Disable end marker."
 msgstr "Enable/Disable end marker."
 
-#: Cadencii/ui/main/FormMain.cs:17009
+#: Cadencii/ui/main/FormMain.cs:16832
 msgid "Show/Hide grid line."
 msgstr "Show/Hide grid line."
 
-#: Cadencii/ui/main/FormMain.cs:17011
+#: Cadencii/ui/main/FormMain.cs:16834
 msgid "Show/Hide icon palette"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17013
+#: Cadencii/ui/main/FormMain.cs:16836
 msgid "Show/Hide lyrics."
 msgstr "Show/Hide lyrics."
 
-#: Cadencii/ui/main/FormMain.cs:17015
+#: Cadencii/ui/main/FormMain.cs:16838
 msgid "Show/Hide mixer window."
 msgstr "Show/Hide mixer window."
 
-#: Cadencii/ui/main/FormMain.cs:17017
+#: Cadencii/ui/main/FormMain.cs:16840
 msgid "Show/Hide expression lines."
 msgstr "Show/Hide expression lines."
 
-#: Cadencii/ui/main/FormMain.cs:17019
+#: Cadencii/ui/main/FormMain.cs:16842
 msgid "Show/Hide navigation view"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17021
+#: Cadencii/ui/main/FormMain.cs:16844
 msgid "Show/Hide pitch bend lines."
 msgstr "Show/Hide pitch bend lines."
 
-#: Cadencii/ui/main/FormMain.cs:17023
+#: Cadencii/ui/main/FormMain.cs:16846
 msgid "Open VSTi plugin window"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17025
+#: Cadencii/ui/main/FormMain.cs:16848
 msgid "Show/Hide property window."
 msgstr "Show/Hide property window."
 
-#: Cadencii/ui/main/FormMain.cs:17027
+#: Cadencii/ui/main/FormMain.cs:16850
 msgid "Enable/Disable start marker."
 msgstr "Enable/Disable start marker."
 
-#: Cadencii/ui/main/FormMain.cs:17029
+#: Cadencii/ui/main/FormMain.cs:16852
 msgid "Show/Hide waveform."
 msgstr "Show/Hide waveform."
 
-#: Cadencii/ui/main/FormMain.cs:17031
+#: Cadencii/ui/main/FormMain.cs:16854
 msgid "Create new project."
 msgstr "Create new project."
 
-#: Cadencii/ui/main/FormMain.cs:17033
+#: Cadencii/ui/main/FormMain.cs:16856
 msgid "Open Cadencii project."
 msgstr "Open Cadencii project."
 
-#: Cadencii/ui/main/FormMain.cs:17035
+#: Cadencii/ui/main/FormMain.cs:16858
 msgid "Save current project."
 msgstr "Save current project."
 
-#: Cadencii/ui/main/FormMain.cs:17037
+#: Cadencii/ui/main/FormMain.cs:16860
 msgid "Save current project with new name."
 msgstr "Save current project with new name."
 
-#: Cadencii/ui/main/FormMain.cs:17039
+#: Cadencii/ui/main/FormMain.cs:16862
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "Open VSQ / VOCALOID MIDI and create new project."
 
-#: Cadencii/ui/main/FormMain.cs:17041
+#: Cadencii/ui/main/FormMain.cs:16864
 msgid "Open UTAU project and create new project."
 msgstr "Open UTAU project and create new project."
 
-#: Cadencii/ui/main/FormMain.cs:17043
+#: Cadencii/ui/main/FormMain.cs:16866
 msgid "Import."
 msgstr "Import."
 
-#: Cadencii/ui/main/FormMain.cs:17045
+#: Cadencii/ui/main/FormMain.cs:16868
 msgid "Import Standard MIDI."
 msgstr "Import Standard MIDI."
 
-#: Cadencii/ui/main/FormMain.cs:17047
+#: Cadencii/ui/main/FormMain.cs:16870
 msgid "Import UTAU project"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17049
+#: Cadencii/ui/main/FormMain.cs:16872
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr "Import VSQ / VOCALOID MIDI."
 
-#: Cadencii/ui/main/FormMain.cs:17051
+#: Cadencii/ui/main/FormMain.cs:16874
 msgid "Export."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17053
+#: Cadencii/ui/main/FormMain.cs:16876
 msgid "Export all tracks to serial numbered WAVEs"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17055
+#: Cadencii/ui/main/FormMain.cs:16878
 msgid "Export to WAVE file."
 msgstr "Export to WAVE file."
 
-#: Cadencii/ui/main/FormMain.cs:17057
+#: Cadencii/ui/main/FormMain.cs:16880
 msgid "Export current track as Music XML"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17059
+#: Cadencii/ui/main/FormMain.cs:16882
 msgid "Export to Standard MIDI."
 msgstr "Export to Standard MIDI."
 
-#: Cadencii/ui/main/FormMain.cs:17061
+#: Cadencii/ui/main/FormMain.cs:16884
 msgid "Export current track as UTAU project file"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17063
+#: Cadencii/ui/main/FormMain.cs:16886
 msgid "Export to VSQ"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17065
+#: Cadencii/ui/main/FormMain.cs:16888
 msgid "Export to VSQX"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17067
+#: Cadencii/ui/main/FormMain.cs:16890
 msgid "Export current track as Meta-text for vConnect"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17069
+#: Cadencii/ui/main/FormMain.cs:16892
 msgid "Recent projects."
 msgstr "Recent projects."
 
-#: Cadencii/ui/main/FormMain.cs:17071
+#: Cadencii/ui/main/FormMain.cs:16894
 msgid "Close this window."
 msgstr "Close this window."
 
-#: Cadencii/ui/main/FormMain.cs:17073
+#: Cadencii/ui/main/FormMain.cs:16896
 msgid "Lengthen note end to neighboring note."
 msgstr "Lengthen note end to neighboring note."
 
-#: Cadencii/ui/main/FormMain.cs:17075
+#: Cadencii/ui/main/FormMain.cs:16898
 msgid "Import lyric."
 msgstr "Import lyric."
 
-#: Cadencii/ui/main/FormMain.cs:17078
+#: Cadencii/ui/main/FormMain.cs:16901
 msgid "Import tempo from ReWire host."
 msgstr "Import tempo from ReWire host."
 
-#: Cadencii/ui/main/FormMain.cs:17078 Cadencii/ui/main/FormMain.cs:17080
+#: Cadencii/ui/main/FormMain.cs:16901 Cadencii/ui/main/FormMain.cs:16903
 msgid "(not implemented)"
 msgstr "(not implemented)"
 
-#: Cadencii/ui/main/FormMain.cs:17080
+#: Cadencii/ui/main/FormMain.cs:16903
 msgid "Reload VSTi dll."
 msgstr "Reload VSTi dll."
 
-#: Cadencii/ui/main/FormMain.cs:17083
+#: Cadencii/ui/main/FormMain.cs:16906
 msgid "Correct overlapped item."
 msgstr "Correct overlapped item."
 
-#: Cadencii/ui/main/FormMain.cs:17085
+#: Cadencii/ui/main/FormMain.cs:16908
 msgid "Insert bar."
 msgstr "Insert bar."
 
-#: Cadencii/ui/main/FormMain.cs:17087
+#: Cadencii/ui/main/FormMain.cs:16910
 msgid "Delete bar."
 msgstr "Delete bar."
 
-#: Cadencii/ui/main/FormMain.cs:17089
+#: Cadencii/ui/main/FormMain.cs:16912
 msgid "Randomize items."
 msgstr "Randomize items."
 
-#: Cadencii/ui/main/FormMain.cs:17091
+#: Cadencii/ui/main/FormMain.cs:16914
 msgid "Edit portamento/accent/decay of selected item"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17093
+#: Cadencii/ui/main/FormMain.cs:16916
 msgid "Edit vibrato length and type of selected item"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17095
+#: Cadencii/ui/main/FormMain.cs:16918
 msgid "Translate all phrase into phonetic symbol"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17097
+#: Cadencii/ui/main/FormMain.cs:16920
 msgid "Open configuration dialog for phonetic symnol dictionaries"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17099
+#: Cadencii/ui/main/FormMain.cs:16922
 msgid "Copy vibrato config of selected item into vibrato preset"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17101
+#: Cadencii/ui/main/FormMain.cs:16924
 msgid "Read and compile all scripts and update the list of them"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17103
+#: Cadencii/ui/main/FormMain.cs:16926
 msgid "Open configuration dialog for editor configs"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17105
+#: Cadencii/ui/main/FormMain.cs:16928
 msgid "Change quantize resolution"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17107
+#: Cadencii/ui/main/FormMain.cs:16930
 msgid "Connect/Remove/Configure game controler"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17109
+#: Cadencii/ui/main/FormMain.cs:16932
 msgid "Configuration of palette tool"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17111
+#: Cadencii/ui/main/FormMain.cs:16934
 msgid "Open configuration dialog for shortcut key"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17113
+#: Cadencii/ui/main/FormMain.cs:16936
 msgid "Open configuration dialog for vibrato preset"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17115
+#: Cadencii/ui/main/FormMain.cs:16938
 msgid "Edit default singer style"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17117
+#: Cadencii/ui/main/FormMain.cs:16940
 msgid "Configuration of this sequence."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17119
+#: Cadencii/ui/main/FormMain.cs:16942
 msgid "Add new track."
 msgstr "Add new track."
 
-#: Cadencii/ui/main/FormMain.cs:17121
+#: Cadencii/ui/main/FormMain.cs:16944
 msgid "Add/Remove/Edit background music"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17123
+#: Cadencii/ui/main/FormMain.cs:16946
 msgid "Enable current track."
 msgstr "Enable current track."
 
-#: Cadencii/ui/main/FormMain.cs:17125
+#: Cadencii/ui/main/FormMain.cs:16948
 msgid "Copy current track."
 msgstr "Copy current track."
 
-#: Cadencii/ui/main/FormMain.cs:17127
+#: Cadencii/ui/main/FormMain.cs:16950
 msgid "Change track name."
 msgstr "Change track name."
 
-#: Cadencii/ui/main/FormMain.cs:17129
+#: Cadencii/ui/main/FormMain.cs:16952
 msgid "Delete current track."
 msgstr "Delete current track."
 
-#: Cadencii/ui/main/FormMain.cs:17131
+#: Cadencii/ui/main/FormMain.cs:16954
 msgid "Render current track."
 msgstr "Render current track."
 
-#: Cadencii/ui/main/FormMain.cs:17133
+#: Cadencii/ui/main/FormMain.cs:16956
 msgid "Render all tracks."
 msgstr "Render all tracks."
 
-#: Cadencii/ui/main/FormMain.cs:17135
+#: Cadencii/ui/main/FormMain.cs:16958
 msgid "Show background items."
 msgstr "Show background items."
 
-#: Cadencii/ui/main/FormMain.cs:17137
+#: Cadencii/ui/main/FormMain.cs:16960
 msgid "Select voice synthesis engine."
 msgstr "Select voice synthesis engine."
 
-#: Cadencii/ui/main/FormMain.cs:17139
+#: Cadencii/ui/main/FormMain.cs:16962
 msgid "AquesTone"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17141
+#: Cadencii/ui/main/FormMain.cs:16964
 msgid "UTAU"
 msgstr "UTAU"
 
-#: Cadencii/ui/main/FormMain.cs:17143
+#: Cadencii/ui/main/FormMain.cs:16966
 msgid "vConnect-STAND"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17145
+#: Cadencii/ui/main/FormMain.cs:16968
 msgid "VOCALOID1"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17147
+#: Cadencii/ui/main/FormMain.cs:16970
 msgid "VOCALOID2"
 msgstr "VOCALOID2"
 
-#: Cadencii/ui/main/FormMain.cs:17149
+#: Cadencii/ui/main/FormMain.cs:16972
 msgid "Clear menu items"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17266
+#: Cadencii/ui/main/FormMain.cs:17081
 msgid "Input Offset Seconds"
 msgstr "Input Offset Seconds"
 
-#: Cadencii/ui/main/FormMain.cs:17357
+#: Cadencii/ui/main/FormMain.cs:17172
 #, csharp-format
 msgid "file '{0}' is already registered as BGM."
 msgstr "file '{0}' is already registered as BGM."
 
-#: Cadencii/ui/main/FormMain.cs:17378
+#: Cadencii/ui/main/FormMain.cs:17193
 #, csharp-format
 msgid "remove '{0}'?"
 msgstr "remove '{0}'?"
 
-#: Cadencii/ui/main/FormMain.cs:17463
+#: Cadencii/ui/main/FormMain.cs:17278
 msgid "Failed loading script."
 msgstr "無法讀取腳本"
 
-#: Cadencii/ui/preference/Preference.cs:768
+#: Cadencii/ui/main/FormMain.cs:17648
+msgid "Check For Updates"
+msgstr ""
+
+#: Cadencii/ui/main/FormMain.cs:17649
+#, csharp-format
+msgid "New version {0} is available."
+msgstr ""
+
+#: Cadencii/ui/main/FormMain.cs:17658
+msgid "Can't get update information. Please retry after few minutes."
+msgstr ""
+
+#: Cadencii/ui/preference/Preference.cs:758
 msgid "Executable(*.exe)|*.exe"
 msgstr "Executable(*.exe)|*.exe"
 
-#: Cadencii/ui/preference/Preference.cs:776
-#: Cadencii/ui/preference/Preference.cs:778
+#: Cadencii/ui/preference/Preference.cs:763
 msgid "Select Singer Directory"
 msgstr "選擇歌手資料夾"
 
-#: Cadencii/ui/preference/Preference.cs:784
+#: Cadencii/ui/preference/Preference.cs:768
 msgid "Appearance"
 msgstr "外観"
 
-#: Cadencii/ui/preference/Preference.cs:785
+#: Cadencii/ui/preference/Preference.cs:769
 msgid "Operation"
 msgstr "操作"
 
-#: Cadencii/ui/preference/Preference.cs:786
+#: Cadencii/ui/preference/Preference.cs:770
 msgid "Platform"
 msgstr "使用平台"
 
-#: Cadencii/ui/preference/Preference.cs:787
+#: Cadencii/ui/preference/Preference.cs:771
 msgid "UTAU Singers"
 msgstr "UTAU 歌手"
 
-#: Cadencii/ui/preference/Preference.cs:789
+#: Cadencii/ui/preference/Preference.cs:773
 msgid "Synthesizer"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:793
+#: Cadencii/ui/preference/Preference.cs:777
 msgid "Resolution(VSTi)"
 msgstr "解析度(VSTi)"
 
-#: Cadencii/ui/preference/Preference.cs:794
+#: Cadencii/ui/preference/Preference.cs:778
 msgid "Control Curve"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:797
-#: Cadencii/ui/preference/Preference.cs:809
+#: Cadencii/ui/preference/Preference.cs:781
+#: Cadencii/ui/preference/Preference.cs:793
 msgid "Enable Automatic Vibrato"
 msgstr "啟用自動Vibrato"
 
-#: Cadencii/ui/preference/Preference.cs:799
+#: Cadencii/ui/preference/Preference.cs:783
 msgid "Default Vibrato Length"
 msgstr "預設Vibrato長度"
 
-#: Cadencii/ui/preference/Preference.cs:801
+#: Cadencii/ui/preference/Preference.cs:785
 msgid "Minimum note length for Automatic Vibrato"
 msgstr "可使用自動Vibrato的最短音符長度"
 
-#: Cadencii/ui/preference/Preference.cs:804
+#: Cadencii/ui/preference/Preference.cs:788
 msgid "Auto Vibrato Type"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:805
-#: Cadencii/ui/preference/Preference.cs:807
+#: Cadencii/ui/preference/Preference.cs:789
+#: Cadencii/ui/preference/Preference.cs:791
 msgid "VOCALOID Editor Compatible"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:806
-#: Cadencii/ui/preference/Preference.cs:808
+#: Cadencii/ui/preference/Preference.cs:790
+#: Cadencii/ui/preference/Preference.cs:792
 msgid "User Defined"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:818
+#: Cadencii/ui/preference/Preference.cs:802
 msgid "Default Singer"
 msgstr "預設歌手"
 
-#: Cadencii/ui/preference/Preference.cs:820
+#: Cadencii/ui/preference/Preference.cs:804
 msgid "Pre-Send time"
 msgstr "Pre-Send time"
 
-#: Cadencii/ui/preference/Preference.cs:822
+#: Cadencii/ui/preference/Preference.cs:806
 msgid "Waiting Time"
 msgstr "待機時間"
 
-#: Cadencii/ui/preference/Preference.cs:824
+#: Cadencii/ui/preference/Preference.cs:808
 msgid "Chase Event"
 msgstr "追蹤Event"
 
-#: Cadencii/ui/preference/Preference.cs:826
+#: Cadencii/ui/preference/Preference.cs:810
 msgid "Buffer Size"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:832
+#: Cadencii/ui/preference/Preference.cs:816
 msgid "Font"
 msgstr "字體"
 
-#: Cadencii/ui/preference/Preference.cs:833
+#: Cadencii/ui/preference/Preference.cs:817
 msgid "Menu / Lyrics"
 msgstr "選單 / 歌詞"
 
-#: Cadencii/ui/preference/Preference.cs:834
+#: Cadencii/ui/preference/Preference.cs:818
 msgid "Screen"
 msgstr "畫面"
 
-#: Cadencii/ui/preference/Preference.cs:835
+#: Cadencii/ui/preference/Preference.cs:819
 msgid "UI Language"
 msgstr "UI語言"
 
-#: Cadencii/ui/preference/Preference.cs:836
-#: Cadencii/ui/preference/Preference.cs:837
+#: Cadencii/ui/preference/Preference.cs:820
+#: Cadencii/ui/preference/Preference.cs:821
 msgid "Change"
 msgstr "變更"
 
-#: Cadencii/ui/preference/Preference.cs:838
+#: Cadencii/ui/preference/Preference.cs:822
 msgid "Track Height (pixel)"
 msgstr "Track的高度 (pixel)"
 
-#: Cadencii/ui/preference/Preference.cs:839
+#: Cadencii/ui/preference/Preference.cs:823
 msgid "Visible Control Curve"
 msgstr "要表示的控制曲線"
 
-#: Cadencii/ui/preference/Preference.cs:843
+#: Cadencii/ui/preference/Preference.cs:827
 msgid "Piano Roll"
 msgstr "Piano Roll"
 
-#: Cadencii/ui/preference/Preference.cs:844
+#: Cadencii/ui/preference/Preference.cs:828
 msgid "Mouse wheel Rate"
 msgstr "滑鼠滾動比率"
 
-#: Cadencii/ui/preference/Preference.cs:846
+#: Cadencii/ui/preference/Preference.cs:830
 msgid "Fix Song position to Center"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:847
+#: Cadencii/ui/preference/Preference.cs:831
 msgid "Horizontal Scroll when Mouse wheel"
 msgstr "讓滑鼠滾輪向水平方向捲動"
 
-#: Cadencii/ui/preference/Preference.cs:848
+#: Cadencii/ui/preference/Preference.cs:832
 msgid "Keep Lyric Input Mode"
 msgstr "維持輸入歌詞時的模式"
 
-#: Cadencii/ui/preference/Preference.cs:849
+#: Cadencii/ui/preference/Preference.cs:833
 msgid "Play Preview On Right Click"
 msgstr "按右鍵演奏預覽音"
 
-#: Cadencii/ui/preference/Preference.cs:850
+#: Cadencii/ui/preference/Preference.cs:834
 msgid "Enable Quantize for Curve Selecting"
 msgstr "Enable Quantize for Curve Selecting"
 
-#: Cadencii/ui/preference/Preference.cs:851
+#: Cadencii/ui/preference/Preference.cs:835
 msgid "Use space key as Middle button modifier"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:853
+#: Cadencii/ui/preference/Preference.cs:837
 msgid "Misc"
 msgstr "Misc"
 
-#: Cadencii/ui/preference/Preference.cs:854
+#: Cadencii/ui/preference/Preference.cs:838
 msgid "Maximum Frame Rate"
 msgstr "最大影格數"
 
-#: Cadencii/ui/preference/Preference.cs:855
+#: Cadencii/ui/preference/Preference.cs:839
 msgid "frame per second"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:856
+#: Cadencii/ui/preference/Preference.cs:840
 msgid "Waiting Time for Preview"
 msgstr "預覽前的待機時間長"
 
-#: Cadencii/ui/preference/Preference.cs:857
+#: Cadencii/ui/preference/Preference.cs:841
 msgid "MIDI In Port Number"
 msgstr "MIDI In Port Number"
 
-#: Cadencii/ui/preference/Preference.cs:858
+#: Cadencii/ui/preference/Preference.cs:842
 msgid "MTC MIDI In Port Number"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:859
+#: Cadencii/ui/preference/Preference.cs:843
 msgid "Translate Roman letters into Kana"
 msgstr "把羅馬字母改成假名"
 
-#: Cadencii/ui/preference/Preference.cs:863
+#: Cadencii/ui/preference/Preference.cs:847
 msgid "UTAU Cores"
 msgstr "UTAU 核心"
 
-#: Cadencii/ui/preference/Preference.cs:864
+#: Cadencii/ui/preference/Preference.cs:848
 msgid "Path:"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:865
+#: Cadencii/ui/preference/Preference.cs:849
 msgid "Invoke wavtool with Wine"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:866
+#: Cadencii/ui/preference/Preference.cs:850
 msgid "path"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:867
+#: Cadencii/ui/preference/Preference.cs:851
 msgid "Check the box to use Wine"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:868
+#: Cadencii/ui/preference/Preference.cs:852
 msgid "Enable Workaround for Wide-Character Path"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:872
+#: Cadencii/ui/preference/Preference.cs:856
 msgid "Program Change"
 msgstr "Program Change"
 
-#: Cadencii/ui/preference/Preference.cs:872
+#: Cadencii/ui/preference/Preference.cs:856
 msgid "Path"
 msgstr "Path"
 
-#: Cadencii/ui/preference/Preference.cs:880
+#: Cadencii/ui/preference/Preference.cs:864
 msgid "Automatical Backup"
 msgstr "Automatical Backup"
 
-#: Cadencii/ui/preference/Preference.cs:881
+#: Cadencii/ui/preference/Preference.cs:865
 msgid "interval"
 msgstr "interval"
 
-#: Cadencii/ui/preference/Preference.cs:882
+#: Cadencii/ui/preference/Preference.cs:866
 msgid "minute(s)"
 msgstr "minute(s)"
 
-#: Cadencii/ui/preference/Preference.cs:883
+#: Cadencii/ui/preference/Preference.cs:867
 msgid "Keep Project Cache"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:887
+#: Cadencii/ui/preference/Preference.cs:871
 msgid "Synthesizer DLL Usage"
 msgstr ""
 
-#: Cadencii/ui/preference/Preference.cs:889
+#: Cadencii/ui/preference/Preference.cs:873
 msgid "Default Synthesizer"
 msgstr "預設歌手"
 
-#: Cadencii/ui/preference/Preference.cs:1254
+#: Cadencii/ui/preference/Preference.cs:1237
 msgid ""
 "Restart Cadencii to complete your changes\n"
 "(restart will NOT be automatically done)"

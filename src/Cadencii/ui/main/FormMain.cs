@@ -45,7 +45,7 @@ using System.Threading;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
-using System.IO;
+using System.Net;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.event_;
@@ -58,6 +58,7 @@ using cadencii.vsq;
 using cadencii.vsq.io;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.ui;
 
 namespace cadencii
 {
@@ -293,7 +294,7 @@ namespace cadencii
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
         public const int _PX_ACCENT_HEADER = 21;
-        public const String _VERSION_HISTORY_URL = "http://www.ne.jp/asahi/kbinani/home/cadencii/version_history.xml";
+        public const String RECENT_UPDATE_INFO_URL = "https://raw.github.com/cadencii/cadencii/master/update_info/recent.xml";
         /// <summary>
         /// splitContainer2.Panel2の最小サイズ
         /// </summary>
@@ -4664,6 +4665,7 @@ namespace cadencii
 
             menuHelp.Text = _( "Help" );
             menuHelp.Mnemonic( KeyEvent.VK_H );
+            menuHelpCheckForUpdates.Text = _("Check For Updates");
             menuHelpLog.Text = _( "Log" );
             menuHelpLog.Mnemonic( KeyEvent.VK_L );
             menuHelpLogSwitch.Text = Logger.isEnabled() ? _( "Disable" ) : _( "Enable" );
@@ -17617,6 +17619,57 @@ namespace cadencii
             if (System.IO.File.Exists(creator)) {
                 Process.Start(creator);
             }
+        }
+
+        private void menuHelpCheckForUpdates_Click(object sender, EventArgs e)
+        {
+            menuHelpCheckForUpdates.Enabled = false;
+            var client = new WebClient();
+            client.DownloadStringCompleted += (s, args) => {
+                updater.UpdateInfo update_info = null;
+                var xml = new System.Xml.XmlDocument();
+                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(updater.UpdateInfo));
+                try {
+                    xml.LoadXml(args.Result);
+                    using (var stream = new MemoryStream()) {
+                        xml.Save(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+                        update_info = serializer.Deserialize(stream) as updater.UpdateInfo;
+                    }
+                } catch { }
+                if (update_info != null && update_info.DownloadUrl != "") {
+                    var current_version = new Version(BAssemblyInfo.fileVersion);
+                    var recent_version_string = string.Format("{0}.{1}.{2}", update_info.Major, update_info.Minor, update_info.Build);
+                    var recent_version = new Version(recent_version_string);
+                    if (current_version < recent_version) {
+                        var form = Factory.createUpdateCheckForm();
+                        form.setDownloadUrl(update_info.DownloadUrl);
+                        form.setFont(AppManager.editorConfig.getBaseFont().font);
+                        form.setOkButtonText(_("OK"));
+                        form.setTitle(_("Check For Updates"));
+                        form.setMessage(string.Format(_("New version {0} is available."), recent_version_string));
+                        form.okButtonClicked += (_1, _2) => form.close();
+                        form.downloadLinkClicked += (_1, _2) => {
+                            form.close();
+                            System.Diagnostics.Process.Start(update_info.DownloadUrl);
+                        };
+                        form.showDialog(this);
+                    }
+                } else {
+                    MessageBox.Show(_("Can't get update information. Please retry after few minutes."),
+                                    _("Error"),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                }
+                var t = new System.Windows.Forms.Timer();
+                t.Tick += (timer_sender, timer_args) => {
+                    menuHelpCheckForUpdates.Enabled = true;
+                    t.Stop();
+                };
+                t.Interval = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+                t.Start();
+            };
+            client.DownloadStringAsync(new Uri(RECENT_UPDATE_INFO_URL));
         }
     }
 

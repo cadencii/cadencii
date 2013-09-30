@@ -11,6 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+using System;
+
 namespace cadencii.ui
 {
     interface UpdateCheckForm
@@ -21,5 +23,8 @@ namespace cadencii.ui
         void setFont(System.Drawing.Font font);
         void setOkButtonText(string text);
         void setTitle(string title);
+        void close();
+        event EventHandler downloadLinkClicked;
+        event EventHandler okButtonClicked;
     }
 }
