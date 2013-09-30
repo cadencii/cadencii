@@ -136,8 +136,8 @@ namespace cadencii
         private void setResources()
         {
 #if !JAVA
-            this.btnClose.Image = Resources.get_cross_small().image;
-            this.btnWindow.Image = Resources.get_chevron_small_collapse().image;
+            this.btnClose.Image = Properties.Resources.cross_small;
+            this.btnWindow.Image = Properties.Resources.chevron_small_collapse;
 #endif
         }
 

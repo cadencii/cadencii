@@ -281,6 +281,10 @@
     </Compile>
     <Compile Include="ui\UpdateCheckForm.cs" />
     <Compile Include="updater\UpdateInfo.cs" />
+    <Compile Include="utau\Oto.cs" />
+    <Compile Include="utau\OtoArgs.cs" />
+    <Compile Include="utau\PrefixMap.cs" />
+    <Compile Include="utau\UtauVoiceDB.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
     <Compile Include="VSTiDllManager.cs" />
@@ -344,7 +348,6 @@
     <Compile Include="NumberTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
     <Compile Include="PanpotChangedEventHandler.cs" />
     <Compile Include="PictPianoRoll.cs">
@@ -363,7 +366,6 @@
     <Compile Include="PropertyPanelState.cs" />
     <Compile Include="RenderQueue.cs" />
     <Compile Include="RenderRequiredEventHandler.cs" />
-    <Compile Include="Resources.cs" />
     <Compile Include="ScriptReturnStatus.cs" />
     <Compile Include="ScriptServer.cs" />
     <Compile Include="SelectedCurveChangedEventHandler.cs" />
@@ -376,7 +378,6 @@
     <Compile Include="StateChangeRequiredEventHandler.cs" />
     <Compile Include="TopMostChangedEventHandler.cs" />
     <Compile Include="UpdateProgressEventHandler.cs" />
-    <Compile Include="UtauVoiceDB.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="ValuePairOfStringArrayOfKeys.cs" />
     <Compile Include="CommandTree.cs" />
@@ -548,7 +549,6 @@
     <Content Include="ja.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\cursor.cur" />
@@ -557,7 +557,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\app.manifest" />
-    <None Include="Resources.list" />
     <None Include="zh-CN.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -567,6 +566,17 @@
     <Content Include="resources\dict_ja.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="resources\minus8x8.png" />
+    <None Include="resources\note001.png" />
+    <None Include="resources\note002.png" />
+    <None Include="resources\note004.png" />
+    <None Include="resources\note008.png" />
+    <None Include="resources\note016.png" />
+    <None Include="resources\note032.png" />
+    <None Include="resources\note064.png" />
+    <None Include="resources\note128.png" />
+    <None Include="resources\notenull.png" />
+    <None Include="resources\plus8x8.png" />
     <Content Include="zh-TW.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -824,8 +834,7 @@ del "$(TargetDir)*.pdb"
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>javac "$(SolutionDir)makeRes.java" -encoding UTF8
-java -classpath "../../../../" makeRes -i "$(ProjectDir)Resources.list" -o "$(ProjectDir)Resources.cs" -p "cadencii" -n "cadencii"
-</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

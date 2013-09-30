@@ -199,11 +199,16 @@ namespace cadencii.java.awt {
             nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( x, y, width, height ) );
         }
 
+        public void drawImage(System.Drawing.Image img, int x, int y, object obs)
+        {
+            nativeGraphics.DrawImage(img, new System.Drawing.Point(x, y));
+        }
+
         public void drawImage( cadencii.java.awt.Image img, int x, int y, object obs ) {
             if ( img == null ) {
                 return;
             }
-            nativeGraphics.DrawImage( img.image, new System.Drawing.Point( x, y ) );
+            drawImage(img.image, x, y, obs);
         }
     }
 

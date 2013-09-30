@@ -33,6 +33,7 @@ using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
+using cadencii.utau;
 
 namespace cadencii
 {
@@ -210,8 +211,14 @@ namespace cadencii
 #if DEBUG
             sout.println("UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + Directory.Exists(mTempDir));
 #endif
-            mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
-            mWavtoolWithWine = mConfig.WavtoolWithWine;
+            var platform = System.Environment.OSVersion.Platform;
+            bool non_windows_platform = (platform == PlatformID.MacOSX || platform == PlatformID.Unix);
+            mResamplerWithWine = non_windows_platform
+                ? mConfig.isResamplerWithWineAt(resampler_index)
+                : false;
+            mWavtoolWithWine = non_windows_platform
+                ? mConfig.WavtoolWithWine
+                : false;
             mWine = mConfig.getBuiltinWineMinimumExecutable();
 
             mVsq = (VsqFileEx)vsq.clone();
@@ -489,7 +496,7 @@ namespace cadencii
                     OtoArgs oa = new OtoArgs();
                     if ( AppManager.mUtauVoiceDB.containsKey( singer_raw ) ) {
                         UtauVoiceDB db = AppManager.mUtauVoiceDB.get( singer_raw );
-                        oa = db.attachFileNameFromLyric( lyric );
+                        oa = db.attachFileNameFromLyric(lyric, item.ID.Note);
                     }
 #if MAKEBAT_SP
                     log.Write( "; lyric=" + lyric + "; fileName=" + oa.fileName );

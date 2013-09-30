@@ -97,6 +97,7 @@
     <Compile Include="sout.cs" />
     <Compile Include="swing.cs">
     </Compile>
+    <Compile Include="TextReaderUtil.cs" />
     <Compile Include="util.cs" />
     <Compile Include="ValuePair.cs" />
     <Compile Include="Vector.cs" />

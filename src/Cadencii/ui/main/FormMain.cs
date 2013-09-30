@@ -58,6 +58,7 @@ using cadencii.vsq;
 using cadencii.vsq.io;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.utau;
 using cadencii.ui;
 
 namespace cadencii
@@ -1482,7 +1483,7 @@ namespace cadencii
 
             if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
                 UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
-                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
+                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase, AppManager.mAddingEvent.ID.Note );
                 AppManager.mAddingEvent.UstEvent.setPreUtterance( otoArgs.msPreUtterance );
                 AppManager.mAddingEvent.UstEvent.setVoiceOverlap( otoArgs.msOverlap );
             }
@@ -2266,13 +2267,13 @@ namespace cadencii
 #if !JAVA
             if ( mGameMode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.Text = _( "Disabled" );
-                stripLblGameCtrlMode.Image = Resources.get_slash().image;
+                stripLblGameCtrlMode.Image = Properties.Resources.slash;
             } else if ( mGameMode == GameControlMode.CURSOR ) {
                 stripLblGameCtrlMode.Text = _( "Cursor" );
                 stripLblGameCtrlMode.Image = null;
             } else if ( mGameMode == GameControlMode.KEYBOARD ) {
                 stripLblGameCtrlMode.Text = _( "Keyboard" );
-                stripLblGameCtrlMode.Image = Resources.get_piano().image;
+                stripLblGameCtrlMode.Image = Properties.Resources.piano;
             } else if ( mGameMode == GameControlMode.NORMAL ) {
                 stripLblGameCtrlMode.Text = _( "Normal" );
                 stripLblGameCtrlMode.Image = null;
@@ -3565,7 +3566,7 @@ namespace cadencii
                 stripBtnStepSequencer.setEnabled( false );
 #else
                 stripLblMidiIn.Text = _( "Disabled" );
-                stripLblMidiIn.Image = Resources.get_slash().image;
+                stripLblMidiIn.Image = Properties.Resources.slash;
 #endif
             } else {
                 if ( midiport >= devices.Count ) {
@@ -3576,7 +3577,7 @@ namespace cadencii
                 stripBtnStepSequencer.setEnabled( true );
 #else
                 stripLblMidiIn.Text = devices[midiport].getName();
-                stripLblMidiIn.Image = Resources.get_piano().image;
+                stripLblMidiIn.Image = Properties.Resources.piano;
 #endif
             }
         }
@@ -6437,7 +6438,7 @@ namespace cadencii
                                 // 通常のUTAU音源
                                 if (AppManager.mUtauVoiceDB.containsKey(sc.VOICEIDSTR)) {
                                     UtauVoiceDB db = AppManager.mUtauVoiceDB.get(sc.VOICEIDSTR);
-                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp);
+                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp, note);
                                     if (oa.fileName == null ||
                                         (oa.fileName != null && oa.fileName == "")) {
                                         is_valid_for_utau = false;
@@ -7138,7 +7139,7 @@ namespace cadencii
                         right = true;
                     } else {
                         g.drawImage(
-                            Resources.get_start_marker(), x, 3, this );
+                            Properties.Resources.start_marker, x, 3, this );
                     }
                 }
                 if ( vsq.config.EndMarkerEnabled ) {
@@ -7149,7 +7150,7 @@ namespace cadencii
                         right = true;
                     } else {
                         g.drawImage(
-                            Resources.get_end_marker(), x, 3, this );
+                            Properties.Resources.end_marker, x, 3, this );
                     }
                 }
 
@@ -7539,14 +7540,14 @@ namespace cadencii
         {
             try {
 #if !JAVA
-                this.stripLblGameCtrlMode.Image = Resources.get_slash().image;
-                this.stripLblMidiIn.Image = Resources.get_slash().image;
+                this.stripLblGameCtrlMode.Image = Properties.Resources.slash;
+                this.stripLblMidiIn.Image = Properties.Resources.slash;
 #endif
 
 #if JAVA
                 stripBtnStepSequencer.setIcon( new ImageIcon( Resources.get_piano() ) );
 #else
-                this.stripBtnStepSequencer.Image = Resources.get_piano().image;
+                this.stripBtnStepSequencer.Image = Properties.Resources.piano;
 #endif
 #if JAVA
                 stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
@@ -7576,7 +7577,7 @@ namespace cadencii
                 buttonVZoom.setIcon( new ImageIcon( Resources.get_plus8x8() ) );
                 buttonVMooz.setIcon( new ImageIcon( Resources.get_minus8x8() ) );
 #endif
-                this.Icon = Resources.get_icon();
+                this.Icon = Properties.Resources.Icon1;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
                 serr.println( "FormMain#setResources; ex=" + ex );
@@ -10833,7 +10834,7 @@ namespace cadencii
                         mGameMode = GameControlMode.KEYBOARD;
 #if !JAVA
                         stripLblGameCtrlMode.Text = mGameMode.ToString();
-                        stripLblGameCtrlMode.Image = Resources.get_piano().image;
+                        stripLblGameCtrlMode.Image = Properties.Resources.piano;
 #endif
                     }
                     mLastBtnSelect = SELECT;
@@ -11691,25 +11692,37 @@ namespace cadencii
                 return;
             }
             int count = mf.getTrackCount();
-            //Encoding def_enc = Encoding.GetEncoding( 0 );
+
+            Func<int[], string> get_string_from_metatext = (buffer) => {
+                var encoding_candidates = new List<Encoding>();
+                encoding_candidates.Add(Encoding.GetEncoding("Shift_JIS"));
+                encoding_candidates.Add(Encoding.Default);
+                encoding_candidates.Add(Encoding.UTF8);
+                encoding_candidates.AddRange(Encoding.GetEncodings().Select((encoding) => encoding.GetEncoding()));
+                foreach (var encoding in encoding_candidates) {
+                    try {
+                        return encoding.GetString(buffer.Select((b) => (byte)(0xFF & b)).ToArray(), 0, buffer.Length);
+                    } catch {
+                        continue;
+                    }
+                }
+                return string.Empty;
+            };
+            
             for ( int i = 0; i < count; i++ ) {
-                String track_name = "";
                 int notes = 0;
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 int events_count = events.size();
 
                 // トラック名を取得
-                for ( int j = 0; j < events_count; j++ ) {
-                    MidiEvent item = events.get( j );
-                    if ( item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03 ) {
-                        int[] d = new int[item.data.Length];
-                        for ( int k = 0; k < item.data.Length; k++ ) {
-                            d[k] = 0xff & item.data[k];
-                        }
-                        track_name = PortUtil.getDecodedString( "Shift_JIS", d, 1, item.data.Length - 1 );
-                        break;
-                    }
-                }
+                string track_name =
+                    events
+                        .Where((item) => item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03)
+                        .Select((item) => {
+                            int[] d = item.data.Skip(1).ToArray();
+                            return get_string_from_metatext(d);
+                        })
+                        .FirstOrDefault();
 
                 // イベント数を数える
                 for ( int j = 0; j < events_count; j++ ) {
@@ -11972,7 +11985,7 @@ namespace cadencii
                                                 for ( int m = 1; m < itemk.data.Length; m++ ) {
                                                     d[m - 1] = 0xff & itemk.data[m];
                                                 }
-                                                phrase = PortUtil.getDecodedString( "Shift_JIS", d, 0, itemk.data.Length );
+                                                phrase = get_string_from_metatext(d);
                                                 break;
                                             }
                                         }
@@ -14467,8 +14480,8 @@ namespace cadencii
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
                     int tolerance = AppManager.editorConfig.PxTolerance;
-                    int start_marker_width = Resources.get_start_marker().getWidth( this );
-                    int end_marker_width = Resources.get_end_marker().getWidth( this );
+                    int start_marker_width = Properties.Resources.start_marker.Width;
+                    int end_marker_width = Properties.Resources.end_marker.Width;
                     int startx = AppManager.xCoordFromClocks( vsq.config.StartMarker );
                     int endx = AppManager.xCoordFromClocks( vsq.config.EndMarker );
 

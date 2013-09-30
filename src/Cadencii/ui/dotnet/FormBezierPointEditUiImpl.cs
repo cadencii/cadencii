@@ -261,9 +261,9 @@ namespace cadencii
 
         private void setResources()
         {
-            this.btnLeft.Image = Resources.get_target__pencil().image;
-            this.btnDataPoint.Image = Resources.get_target__pencil().image;
-            this.btnRight.Image = Resources.get_target__pencil().image;
+            this.btnLeft.Image = Properties.Resources.target__pencil;
+            this.btnDataPoint.Image = Properties.Resources.target__pencil;
+            this.btnRight.Image = Properties.Resources.target__pencil;
         }
         #endregion
 

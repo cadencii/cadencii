@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>cadencii.test</RootNamespace>
     <AssemblyName>CadenciiTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
@@ -40,14 +40,19 @@
   </Target>
   -->
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cadencii\utau\OtoTest.cs" />
+    <Compile Include="Cadencii\utau\PrefixMapTest.cs" />
+    <Compile Include="Cadencii\utau\UtauVoiceDBTest.cs" />
     <Compile Include="dsp\generator\AquesTone2WaveGeneratorTest.cs" />
     <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
@@ -56,7 +61,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="KanaDeRomanizationTest.cs" />
-    <Compile Include="vsq\VsqxReaderTest.cs" />
+    <Compile Include="vsq\io\VsqxReaderTest.cs" />
+    <Compile Include="vsq\io\VsqxWriterTest.cs" />
     <Content Include="fixture\script\Hamori.cs">
       <SubType>Form</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -69,7 +75,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="script\PluginLoaderTest.cs" />
-    <Compile Include="VsqIDTest.cs" />
+    <Compile Include="vsq\VsqIDTest.cs" />
     <Compile Include="vsq\VsqTrack\SingerEventIteratorTest.cs" />
     <Compile Include="vsti\aquestone\EventQueueSequenceTest.cs" />
     <Compile Include="vsti\aquestone\SyllableMatcherTest.cs">
@@ -77,6 +83,12 @@
     </Compile>
     <Compile Include="WaveUnitConfigElementTest.cs" />
     <Compile Include="WaveUnitConfigTest.cs" />
+    <Content Include="fixture\utau_voice_db\A\わ↑.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="fixture\utau_voice_db\あ.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cadencii\Cadencii.csproj">
@@ -179,6 +191,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="fixture\track2.vsqx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\A\oto.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\oto.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixture\utau_voice_db\prefix.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
