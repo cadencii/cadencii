@@ -41,6 +41,7 @@ namespace cadencii {
         public const String fileVersionMeasure = "3";
         public const String fileVersionMinor = "5";
         public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".3";
+        public const string downloadUrl = "http://sourceforge.jp/projects/cadencii/downloads";
     }
 
 #if !JAVA

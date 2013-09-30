@@ -24,5 +24,6 @@ namespace cadencii.updater
         public int Minor { get; set; }
         public int Build { get; set; }
         public DateTime ReleaseDate { get; set; }
+        public string DownloadUrl { get; set; }
     }
 }

@@ -37,6 +37,7 @@ namespace cadencii.utils.PostBuildCreateVersionInfo
             info.Minor = version.Minor;
             info.Build = version.Build;
             info.ReleaseDate = DateTime.UtcNow;
+            info.DownloadUrl = BAssemblyInfo.downloadUrl;
             
             var serializer = new XmlSerializer(typeof(cadencii.updater.UpdateInfo));
             using (var stream = new FileStream(output_file, FileMode.Create, FileAccess.Write)) {
