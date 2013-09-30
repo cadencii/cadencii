@@ -259,9 +259,13 @@
     <Compile Include="ui\dotnet\ProgressBarWithLabelUi.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ui\dotnet\UpdateCheckForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ui\dotnet\WaveformZoomUiImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ui\Factory.cs" />
     <Compile Include="ui\main\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -275,6 +279,7 @@
     <Compile Include="ui\preference\Preference.Designer.cs">
       <DependentUpon>Preference.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\UpdateCheckForm.cs" />
     <Compile Include="updater\UpdateInfo.cs" />
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VersionString.cs" />
@@ -529,6 +534,9 @@
     <Compile Include="WorkerState.cs" />
     <Compile Include="WorkerStateImp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
+    <EmbeddedResource Include="ui\dotnet\UpdateCheckForm.resx">
+      <DependentUpon>UpdateCheckForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ui\main\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
