@@ -40,8 +40,8 @@ namespace cadencii {
         public const String id = "$Id$";
         public const String fileVersionMeasure = "3";
         public const String fileVersionMinor = "5";
-        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".3";
-        public const string downloadUrl = "http://sourceforge.jp/projects/cadencii/downloads";
+        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".4";
+        public const string downloadUrl = "http://sourceforge.jp/projects/cadencii/releases/59580/" + "Cadencii_v" + fileVersion;
     }
 
 #if !JAVA
