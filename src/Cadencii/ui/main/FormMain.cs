@@ -1971,6 +1971,85 @@ namespace cadencii
             }
             return (int)(value * controller.getScaleY());
         }
+
+        /// <summary>
+        /// Downloads update information xml, and deserialize it.
+        /// </summary>
+        /// <returns></returns>
+        private updater.UpdateInfo downloadUpdateInfo()
+        {
+            var xml_contents = "";
+            try {
+                var url = RECENT_UPDATE_INFO_URL;
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                var response = (HttpWebResponse)request.GetResponse();
+                using (var reader = new StreamReader(response.GetResponseStream())) {
+                    xml_contents = reader.ReadToEnd();
+                }
+            } catch {
+                return null;
+            }
+
+            updater.UpdateInfo update_info = null;
+            var xml = new System.Xml.XmlDocument();
+            var serializer = new System.Xml.Serialization.XmlSerializer(typeof(updater.UpdateInfo));
+            try {
+                xml.LoadXml(xml_contents);
+                using (var stream = new MemoryStream()) {
+                    xml.Save(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    update_info = serializer.Deserialize(stream) as updater.UpdateInfo;
+                }
+            } catch { }
+            return update_info;
+        }
+
+        /// <summary>
+        /// Show update information async.
+        /// </summary>
+        private void showUpdateInformationAsync()
+        {
+            menuHelpCheckForUpdates.Enabled = false;
+            updater.UpdateInfo update_info = null;
+            var worker = new System.ComponentModel.BackgroundWorker();
+            worker.DoWork += (s, e) => {
+                update_info = downloadUpdateInfo();
+            };
+            worker.RunWorkerCompleted += (s, e) => {
+                if (update_info != null && update_info.DownloadUrl != "") {
+                    var current_version = new Version(BAssemblyInfo.fileVersion);
+                    var recent_version_string = string.Format("{0}.{1}.{2}", update_info.Major, update_info.Minor, update_info.Build);
+                    var recent_version = new Version(recent_version_string);
+                    if (current_version < recent_version) {
+                        var form = Factory.createUpdateCheckForm();
+                        form.setDownloadUrl(update_info.DownloadUrl);
+                        form.setFont(AppManager.editorConfig.getBaseFont().font);
+                        form.setOkButtonText(_("OK"));
+                        form.setTitle(_("Check For Updates"));
+                        form.setMessage(string.Format(_("New version {0} is available."), recent_version_string));
+                        form.okButtonClicked += (_1, _2) => form.close();
+                        form.downloadLinkClicked += (_1, _2) => {
+                            form.close();
+                            System.Diagnostics.Process.Start(update_info.DownloadUrl);
+                        };
+                        form.showDialog(this);
+                    }
+                } else {
+                    MessageBox.Show(_("Can't get update information. Please retry after few minutes."),
+                                    _("Error"),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                }
+                var t = new System.Windows.Forms.Timer();
+                t.Tick += (timer_sender, timer_args) => {
+                    menuHelpCheckForUpdates.Enabled = true;
+                    t.Stop();
+                };
+                t.Interval = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+                t.Start();
+            };
+            worker.RunWorkerAsync();
+        }
         #endregion
 
         #region public methods
@@ -17621,55 +17700,9 @@ namespace cadencii
             }
         }
 
-        private void menuHelpCheckForUpdates_Click(object sender, EventArgs e)
+        private void menuHelpCheckForUpdates_Click(object sender, EventArgs args)
         {
-            menuHelpCheckForUpdates.Enabled = false;
-            var client = new WebClient();
-            client.DownloadStringCompleted += (s, args) => {
-                updater.UpdateInfo update_info = null;
-                var xml = new System.Xml.XmlDocument();
-                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(updater.UpdateInfo));
-                try {
-                    xml.LoadXml(args.Result);
-                    using (var stream = new MemoryStream()) {
-                        xml.Save(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
-                        update_info = serializer.Deserialize(stream) as updater.UpdateInfo;
-                    }
-                } catch { }
-                if (update_info != null && update_info.DownloadUrl != "") {
-                    var current_version = new Version(BAssemblyInfo.fileVersion);
-                    var recent_version_string = string.Format("{0}.{1}.{2}", update_info.Major, update_info.Minor, update_info.Build);
-                    var recent_version = new Version(recent_version_string);
-                    if (current_version < recent_version) {
-                        var form = Factory.createUpdateCheckForm();
-                        form.setDownloadUrl(update_info.DownloadUrl);
-                        form.setFont(AppManager.editorConfig.getBaseFont().font);
-                        form.setOkButtonText(_("OK"));
-                        form.setTitle(_("Check For Updates"));
-                        form.setMessage(string.Format(_("New version {0} is available."), recent_version_string));
-                        form.okButtonClicked += (_1, _2) => form.close();
-                        form.downloadLinkClicked += (_1, _2) => {
-                            form.close();
-                            System.Diagnostics.Process.Start(update_info.DownloadUrl);
-                        };
-                        form.showDialog(this);
-                    }
-                } else {
-                    MessageBox.Show(_("Can't get update information. Please retry after few minutes."),
-                                    _("Error"),
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                }
-                var t = new System.Windows.Forms.Timer();
-                t.Tick += (timer_sender, timer_args) => {
-                    menuHelpCheckForUpdates.Enabled = true;
-                    t.Stop();
-                };
-                t.Interval = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
-                t.Start();
-            };
-            client.DownloadStringAsync(new Uri(RECENT_UPDATE_INFO_URL));
+            showUpdateInformationAsync();
         }
     }
 
