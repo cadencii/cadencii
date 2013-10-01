@@ -587,6 +587,7 @@ namespace cadencii
         /// version 3.3+
         /// </summary>
         public boolean UseWideCharacterWorkaround = false;
+        public bool DoNotAutomaticallyCheckForUpdates = false;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値

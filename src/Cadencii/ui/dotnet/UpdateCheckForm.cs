@@ -23,6 +23,7 @@ namespace cadencii.ui.dotnet
     {
         private Label label1;
         private LinkLabel linkLabel1;
+        private CheckBox checkBox1;
         private Button button1;
 
         public event EventHandler okButtonClicked;
@@ -72,11 +73,27 @@ namespace cadencii.ui.dotnet
             DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
+        public bool isAutomaticallyCheckForUpdates()
+        {
+            return checkBox1.Checked;
+        }
+
+        public void setAutomaticallyCheckForUpdates(bool value)
+        {
+            checkBox1.Checked = value;
+        }
+
+        public void setAutomaticallyCheckForUpdatesMessage(string message)
+        {
+            checkBox1.Text = message;
+        }
+
         private void InitializeComponent()
         {
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button1
@@ -113,9 +130,20 @@ namespace cadencii.ui.dotnet
             this.linkLabel1.Text = "linkLabel1";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(25, 101);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 16);
+            this.checkBox1.TabIndex = 3;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // UpdateCheckForm
             // 
             this.ClientSize = new System.Drawing.Size(382, 142);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);

@@ -2008,7 +2008,7 @@ namespace cadencii
         /// <summary>
         /// Show update information async.
         /// </summary>
-        private void showUpdateInformationAsync()
+        private void showUpdateInformationAsync(bool show_message_even_if_up_to_date)
         {
             menuHelpCheckForUpdates.Enabled = false;
             updater.UpdateInfo update_info = null;
@@ -2028,12 +2028,20 @@ namespace cadencii
                         form.setOkButtonText(_("OK"));
                         form.setTitle(_("Check For Updates"));
                         form.setMessage(string.Format(_("New version {0} is available."), recent_version_string));
+                        form.setAutomaticallyCheckForUpdates(!AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates);
+                        form.setAutomaticallyCheckForUpdatesMessage(_("Automatically check for updates"));
                         form.okButtonClicked += (_1, _2) => form.close();
                         form.downloadLinkClicked += (_1, _2) => {
                             form.close();
                             System.Diagnostics.Process.Start(update_info.DownloadUrl);
                         };
                         form.showDialog(this);
+                        AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates = !form.isAutomaticallyCheckForUpdates();
+                    } else if (show_message_even_if_up_to_date) {
+                        MessageBox.Show(_("Cadencii is up to date"),
+                                        _("Info"),
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
                     }
                 } else {
                     MessageBox.Show(_("Can't get update information. Please retry after few minutes."),
@@ -10630,6 +10638,10 @@ namespace cadencii
                     serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 }
             }
+
+            if (!AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates) {
+                showUpdateInformationAsync(false);
+            }
         }
 
         public void FormGenerateKeySound_FormClosed( Object sender, FormClosedEventArgs e )
@@ -17715,7 +17727,7 @@ namespace cadencii
 
         private void menuHelpCheckForUpdates_Click(object sender, EventArgs args)
         {
-            showUpdateInformationAsync();
+            showUpdateInformationAsync(true);
         }
     }
 

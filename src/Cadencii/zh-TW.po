@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-30 23:03+0900\n"
+"POT-Creation-Date: 2013-10-02 00:51+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,57 +18,112 @@ msgstr ""
 "X-Poedit-SearchPath-1: cadencii.apputil\n"
 "X-Poedit-SearchPath-2: vConnectStandDBConvert\n"
 
-#: Cadencii/AppManager.cs:811 Cadencii/ui/main/FormMain.cs:11251
-#: Cadencii/ui/main/FormMain.cs:11551
+#: Cadencii/AppManager.cs:812 Cadencii/ui/main/FormMain.CONFLICT.cs:11252
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11552
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28971
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29271
+#: Cadencii/ui/main/FormMain.cs:11344 Cadencii/ui/main/FormMain.cs:11644
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11332
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11632
+#: Cadencii/ui/main/FormMain.HEAD.cs:11251
+#: Cadencii/ui/main/FormMain.HEAD.cs:11551
 msgid "Synthesize"
 msgstr "合成"
 
-#: Cadencii/AppManager.cs:812 Cadencii/ui/main/FormMain.cs:11252
-#: Cadencii/ui/main/FormMain.cs:11552
+#: Cadencii/AppManager.cs:813 Cadencii/ui/main/FormMain.CONFLICT.cs:11253
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11553
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28972
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29272
+#: Cadencii/ui/main/FormMain.cs:11345 Cadencii/ui/main/FormMain.cs:11645
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11333
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11633
+#: Cadencii/ui/main/FormMain.HEAD.cs:11252
+#: Cadencii/ui/main/FormMain.HEAD.cs:11552
 msgid "now synthesizing..."
 msgstr "合成中..."
 
-#: Cadencii/AppManager.cs:824
+#: Cadencii/AppManager.cs:825
 msgid "patchwork"
 msgstr ""
 
-#: Cadencii/AppManager.cs:2390
+#: Cadencii/AppManager.cs:2391
 #, csharp-format
 msgid "failed creating cache directory, '{0}'."
 msgstr ""
 
-#: Cadencii/AppManager.cs:2391 Cadencii/ui/main/FormMain.cs:6798
-#: Cadencii/ui/main/FormMain.cs:6840
+#: Cadencii/AppManager.cs:2392 Cadencii/ui/main/FormMain.CONFLICT.cs:6799
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:6841
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:24518
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:24560
+#: Cadencii/ui/main/FormMain.cs:6887 Cadencii/ui/main/FormMain.cs:6929
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6879
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6921
+#: Cadencii/ui/main/FormMain.HEAD.cs:6798
+#: Cadencii/ui/main/FormMain.HEAD.cs:6840
 msgid "Info."
 msgstr ""
 
-#: Cadencii/AppManager.cs:2417
+#: Cadencii/AppManager.cs:2418
 #, csharp-format
 msgid "failed copying WAVE cache file, '{0}'."
 msgstr ""
 
-#: Cadencii/AppManager.cs:2418 Cadencii/AppManager.cs:2442
-#: Cadencii/Cadencii.cs:219 Cadencii/FormBezierPointEditController.cs:119
+#: Cadencii/AppManager.cs:2419 Cadencii/AppManager.cs:2443
+#: Cadencii/Cadencii.cs:213 Cadencii/FormBezierPointEditController.cs:119
 #: Cadencii/FormBezierPointEditController.cs:135 Cadencii/ScriptServer.cs:163
-#: Cadencii/ScriptServer.cs:167 Cadencii/ui/main/FormMain.cs:11230
-#: Cadencii/ui/main/FormMain.cs:11522 Cadencii/ui/main/FormMain.cs:11600
-#: Cadencii/ui/main/FormMain.cs:11608 Cadencii/ui/main/FormMain.cs:12095
-#: Cadencii/ui/main/FormMain.cs:12389 Cadencii/ui/main/FormMain.cs:16648
-#: Cadencii/ui/main/FormMain.cs:17173 Cadencii/ui/main/FormMain.cs:17659
+#: Cadencii/ScriptServer.cs:167 Cadencii/ui/main/FormMain.CONFLICT.cs:11231
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11523
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11601
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11609
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:12108
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:12402
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16661
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:17186
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19679
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28950
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29242
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29320
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29328
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29815
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:30109
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34368
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34893
+#: Cadencii/ui/main/FormMain.cs:2048 Cadencii/ui/main/FormMain.cs:11323
+#: Cadencii/ui/main/FormMain.cs:11615 Cadencii/ui/main/FormMain.cs:11693
+#: Cadencii/ui/main/FormMain.cs:11701 Cadencii/ui/main/FormMain.cs:12200
+#: Cadencii/ui/main/FormMain.cs:12494 Cadencii/ui/main/FormMain.cs:16753
+#: Cadencii/ui/main/FormMain.cs:17278
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2040
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11311
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11603
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11681
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11689
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:12188
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:12482
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16741
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17266
+#: Cadencii/ui/main/FormMain.HEAD.cs:11230
+#: Cadencii/ui/main/FormMain.HEAD.cs:11522
+#: Cadencii/ui/main/FormMain.HEAD.cs:11600
+#: Cadencii/ui/main/FormMain.HEAD.cs:11608
+#: Cadencii/ui/main/FormMain.HEAD.cs:12107
+#: Cadencii/ui/main/FormMain.HEAD.cs:12401
+#: Cadencii/ui/main/FormMain.HEAD.cs:16660
+#: Cadencii/ui/main/FormMain.HEAD.cs:17185
 msgid "Error"
 msgstr "錯誤"
 
-#: Cadencii/AppManager.cs:2441
+#: Cadencii/AppManager.cs:2442
 #, csharp-format
 msgid "failed copying XML cache file, '{0}'."
 msgstr ""
 
-#: Cadencii/Cadencii.cs:181
+#: Cadencii/Cadencii.cs:175
 #, csharp-format
 msgid "Info: This is test version of Cadencii version {0}"
 msgstr ""
 
-#: Cadencii/Cadencii.cs:217
+#: Cadencii/Cadencii.cs:211
 msgid ""
 "Failed to launch Cadencii. Please send the exception report to developer"
 msgstr ""
@@ -93,6 +148,7 @@ msgstr ""
 #: Cadencii/FormWordDictionaryController.cs:184
 #: Cadencii/ui/dotnet/FormWorkerUi.cs:60
 #: Cadencii/ui/preference/Preference.cs:754
+#: vConnectStandDBConvert/MainForm.cs:197
 msgid "Cancel"
 msgstr "取消"
 
@@ -141,7 +197,10 @@ msgstr "拍子"
 #: Cadencii/FormTrackProperty.cs:63 Cadencii/FormVibratoConfig.cs:141
 #: Cadencii/FormVibratoPreset.cs:519
 #: Cadencii/FormWordDictionaryController.cs:183
-#: Cadencii/ui/main/FormMain.cs:17647 Cadencii/ui/preference/Preference.cs:755
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19667
+#: Cadencii/ui/main/FormMain.cs:2028
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2028
+#: Cadencii/ui/preference/Preference.cs:755
 msgid "OK"
 msgstr "OK"
 
@@ -241,9 +300,6 @@ msgid "Delete Bars"
 msgstr "刪除小節"
 
 #: Cadencii/FormDeleteBar.cs:58 Cadencii/FormRandomize.cs:318
-#: vConnectStandDBConvert/MainForm.cs:122
-#: vConnectStandDBConvert/MainForm.cs:165
-#: vConnectStandDBConvert/MainForm.cs:190
 msgid "Start"
 msgstr "起點"
 
@@ -302,7 +358,11 @@ msgid "bar"
 msgstr "小節"
 
 #: Cadencii/FormMidiImExport.cs:65 Cadencii/FormMidiImExport.cs:90
-#: Cadencii/FormShortcutKeys.cs:166 Cadencii/ui/main/FormMain.cs:4583
+#: Cadencii/FormShortcutKeys.cs:166 Cadencii/ui/main/FormMain.CONFLICT.cs:4584
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22302
+#: Cadencii/ui/main/FormMain.cs:4671
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4663
+#: Cadencii/ui/main/FormMain.HEAD.cs:4583
 msgid "Track"
 msgstr "Track"
 
@@ -359,7 +419,11 @@ msgstr "節奏"
 msgid "Note"
 msgstr "Note"
 
-#: Cadencii/FormMidiImExport.cs:99 Cadencii/ui/main/FormMain.cs:4608
+#: Cadencii/FormMidiImExport.cs:99 Cadencii/ui/main/FormMain.CONFLICT.cs:4609
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22327
+#: Cadencii/ui/main/FormMain.cs:4696
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4688
+#: Cadencii/ui/main/FormMain.HEAD.cs:4608
 msgid "Lyrics"
 msgstr "歌詞"
 
@@ -376,7 +440,15 @@ msgid "clocks"
 msgstr ""
 
 #: Cadencii/FormMidiImExport.cs:105 Cadencii/FormMidiImExport.cs:339
-#: Cadencii/ui/main/FormMain.cs:2360 Cadencii/ui/main/FormMain.cs:17103
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2361
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:17116
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20079
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34823
+#: Cadencii/ui/main/FormMain.cs:2448 Cadencii/ui/main/FormMain.cs:17208
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2440
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17196
+#: Cadencii/ui/main/FormMain.HEAD.cs:2360
+#: Cadencii/ui/main/FormMain.HEAD.cs:17115
 msgid "seconds"
 msgstr "seconds"
 
@@ -388,7 +460,11 @@ msgstr "Export pre-measure part"
 msgid "Inserting start at pre-measure"
 msgstr "Inserting start at pre-measure"
 
-#: Cadencii/FormMixer.cs:201 Cadencii/ui/main/FormMain.cs:4544
+#: Cadencii/FormMixer.cs:201 Cadencii/ui/main/FormMain.CONFLICT.cs:4545
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22263
+#: Cadencii/ui/main/FormMain.cs:4632
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4624
+#: Cadencii/ui/main/FormMain.HEAD.cs:4544
 msgid "Mixer"
 msgstr "混音器"
 
@@ -477,7 +553,11 @@ msgstr "解析度"
 msgid "Pattern"
 msgstr ""
 
-#: Cadencii/FormRandomize.cs:336 Cadencii/ui/main/FormMain.cs:4576
+#: Cadencii/FormRandomize.cs:336 Cadencii/ui/main/FormMain.CONFLICT.cs:4577
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22295
+#: Cadencii/ui/main/FormMain.cs:4664
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4656
+#: Cadencii/ui/main/FormMain.HEAD.cs:4576
 msgid "Randomize"
 msgstr "Randomize"
 
@@ -489,7 +569,12 @@ msgstr ""
 msgid "Stereo"
 msgstr ""
 
-#: Cadencii/FormSequenceConfig.cs:86 Cadencii/ui/main/FormMain.cs:4640
+#: Cadencii/FormSequenceConfig.cs:86
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4641
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22359
+#: Cadencii/ui/main/FormMain.cs:4728
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4720
+#: Cadencii/ui/main/FormMain.HEAD.cs:4640
 msgid "Sequence config"
 msgstr ""
 
@@ -546,13 +631,22 @@ msgstr "Load Default"
 msgid "Category"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:156 Cadencii/ui/main/FormMain.cs:4488
+#: Cadencii/FormShortcutKeys.cs:156 Cadencii/ui/main/FormMain.CONFLICT.cs:4489
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22207
+#: Cadencii/ui/main/FormMain.cs:4576
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4568
+#: Cadencii/ui/main/FormMain.HEAD.cs:4488
 #: Cadencii/ui/preference/Preference.cs:772
 msgid "File"
 msgstr "檔案"
 
 #: Cadencii/FormShortcutKeys.cs:158 Cadencii/FormShortcutKeys.cs:184
-#: Cadencii/FormVibratoPreset.cs:506 Cadencii/ui/main/FormMain.cs:4519
+#: Cadencii/FormVibratoPreset.cs:506
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4520
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22238
+#: Cadencii/ui/main/FormMain.cs:4607
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4599
+#: Cadencii/ui/main/FormMain.HEAD.cs:4519
 msgid "Edit"
 msgstr "編輯"
 
@@ -560,7 +654,11 @@ msgstr "編輯"
 msgid "Visual"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:162 Cadencii/ui/main/FormMain.cs:4568
+#: Cadencii/FormShortcutKeys.cs:162 Cadencii/ui/main/FormMain.CONFLICT.cs:4569
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22287
+#: Cadencii/ui/main/FormMain.cs:4656
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4648
+#: Cadencii/ui/main/FormMain.HEAD.cs:4568
 msgid "Job"
 msgstr "工作"
 
@@ -568,16 +666,31 @@ msgstr "工作"
 msgid "Lyric"
 msgstr ""
 
-#: Cadencii/FormShortcutKeys.cs:168 Cadencii/ui/main/FormMain.cs:4623
+#: Cadencii/FormShortcutKeys.cs:168 Cadencii/ui/main/FormMain.CONFLICT.cs:4624
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22342
+#: Cadencii/ui/main/FormMain.cs:4711
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4703
+#: Cadencii/ui/main/FormMain.HEAD.cs:4623
 msgid "Script"
 msgstr "腳本"
 
-#: Cadencii/FormShortcutKeys.cs:170 Cadencii/ui/main/FormMain.cs:4628
-#: Cadencii/ui/main/FormMain.cs:4638
+#: Cadencii/FormShortcutKeys.cs:170 Cadencii/ui/main/FormMain.CONFLICT.cs:4629
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4639
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22347
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22357
+#: Cadencii/ui/main/FormMain.cs:4716 Cadencii/ui/main/FormMain.cs:4726
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4708
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4718
+#: Cadencii/ui/main/FormMain.HEAD.cs:4628
+#: Cadencii/ui/main/FormMain.HEAD.cs:4638
 msgid "Setting"
 msgstr "設定"
 
-#: Cadencii/FormShortcutKeys.cs:172 Cadencii/ui/main/FormMain.cs:4666
+#: Cadencii/FormShortcutKeys.cs:172 Cadencii/ui/main/FormMain.CONFLICT.cs:4667
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22385
+#: Cadencii/ui/main/FormMain.cs:4754
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4746
+#: Cadencii/ui/main/FormMain.HEAD.cs:4666
 msgid "Help"
 msgstr "幫助"
 
@@ -634,7 +747,12 @@ msgstr "Vibrato的種類"
 msgid "Select from"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:502 Cadencii/ui/main/FormMain.cs:4654
+#: Cadencii/FormVibratoPreset.cs:502
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4655
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22373
+#: Cadencii/ui/main/FormMain.cs:4742
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4734
+#: Cadencii/ui/main/FormMain.HEAD.cs:4654
 msgid "Vibrato preset"
 msgstr ""
 
@@ -658,13 +776,27 @@ msgstr ""
 msgid "Resulting pitch bend"
 msgstr ""
 
-#: Cadencii/FormVibratoPreset.cs:514 Cadencii/ui/main/FormMain.cs:2369
+#: Cadencii/FormVibratoPreset.cs:514
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2370
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20088
+#: Cadencii/ui/main/FormMain.cs:2457
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2449
+#: Cadencii/ui/main/FormMain.HEAD.cs:2369
 #: Cadencii/ui/preference/Preference.cs:857
 msgid "Add"
 msgstr "Add"
 
-#: Cadencii/FormVibratoPreset.cs:515 Cadencii/ui/main/FormMain.cs:2345
-#: Cadencii/ui/main/FormMain.cs:4636 Cadencii/ui/preference/Preference.cs:858
+#: Cadencii/FormVibratoPreset.cs:515
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2346
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4637
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20064
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22355
+#: Cadencii/ui/main/FormMain.cs:2433 Cadencii/ui/main/FormMain.cs:4724
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2425
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4716
+#: Cadencii/ui/main/FormMain.HEAD.cs:2345
+#: Cadencii/ui/main/FormMain.HEAD.cs:4636
+#: Cadencii/ui/preference/Preference.cs:858
 msgid "Remove"
 msgstr "Remove"
 
@@ -804,645 +936,1601 @@ msgstr ""
 msgid "detail"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:2189 Cadencii/ui/main/FormMain.cs:3488
-#: Cadencii/ui/main/FormMain.cs:14905
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2190
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:3489
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14918
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19908
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:21207
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32625
+#: Cadencii/ui/main/FormMain.cs:2277 Cadencii/ui/main/FormMain.cs:3576
+#: Cadencii/ui/main/FormMain.cs:15010
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2269
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:3568
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14998
+#: Cadencii/ui/main/FormMain.HEAD.cs:2189
+#: Cadencii/ui/main/FormMain.HEAD.cs:3488
+#: Cadencii/ui/main/FormMain.HEAD.cs:14917
 msgid "Disabled"
 msgstr "無效"
 
-#: Cadencii/ui/main/FormMain.cs:2192
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2193
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19911
+#: Cadencii/ui/main/FormMain.cs:2280
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2272
+#: Cadencii/ui/main/FormMain.HEAD.cs:2192
 msgid "Cursor"
 msgstr "游標"
 
-#: Cadencii/ui/main/FormMain.cs:2195
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2196
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19914
+#: Cadencii/ui/main/FormMain.cs:2283
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2275
+#: Cadencii/ui/main/FormMain.HEAD.cs:2195
 msgid "Keyboard"
 msgstr "鍵盤"
 
-#: Cadencii/ui/main/FormMain.cs:2198
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2199
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19917
+#: Cadencii/ui/main/FormMain.cs:2286
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2278
+#: Cadencii/ui/main/FormMain.HEAD.cs:2198
 msgid "Normal"
 msgstr "Normal"
 
-#: Cadencii/ui/main/FormMain.cs:2351
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2352
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20070
+#: Cadencii/ui/main/FormMain.cs:2439
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2431
+#: Cadencii/ui/main/FormMain.HEAD.cs:2351
 msgid "Start After Premeasure"
 msgstr "Start After Premeasure"
 
-#: Cadencii/ui/main/FormMain.cs:2359
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:2360
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20078
+#: Cadencii/ui/main/FormMain.cs:2447
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2439
+#: Cadencii/ui/main/FormMain.HEAD.cs:2359
 msgid "Set Offset Seconds"
 msgstr "Set Offset Seconds"
 
-#: Cadencii/ui/main/FormMain.cs:3029 Cadencii/ui/main/FormMain.cs:10286
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:3030
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:10287
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20748
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28006
+#: Cadencii/ui/main/FormMain.cs:3117 Cadencii/ui/main/FormMain.cs:10375
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:3109
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:10367
+#: Cadencii/ui/main/FormMain.HEAD.cs:3029
+#: Cadencii/ui/main/FormMain.HEAD.cs:10286
 msgid "Save this sequence?"
 msgstr "請問要將這個序列存檔嗎？"
 
-#: Cadencii/ui/main/FormMain.cs:3030 Cadencii/ui/main/FormMain.cs:10287
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:3031
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:10288
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:20749
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28007
+#: Cadencii/ui/main/FormMain.cs:3118 Cadencii/ui/main/FormMain.cs:10376
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:3110
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:10368
+#: Cadencii/ui/main/FormMain.HEAD.cs:3030
+#: Cadencii/ui/main/FormMain.HEAD.cs:10287
 msgid "Affirmation"
 msgstr "確認"
 
-#: Cadencii/ui/main/FormMain.cs:4370 Cadencii/ui/main/FormMain.cs:4378
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4371
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4379
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22089
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22097
+#: Cadencii/ui/main/FormMain.cs:4458 Cadencii/ui/main/FormMain.cs:4466
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4450
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4458
+#: Cadencii/ui/main/FormMain.HEAD.cs:4370
+#: Cadencii/ui/main/FormMain.HEAD.cs:4378
 msgid "XML-VSQ Format(*.xvsq)|*.xvsq"
 msgstr "XML-VSQ 格式(*.xvsq)|*.xvsq"
 
-#: Cadencii/ui/main/FormMain.cs:4370 Cadencii/ui/main/FormMain.cs:4378
-#: Cadencii/ui/main/FormMain.cs:4386 Cadencii/ui/main/FormMain.cs:4398
-#: Cadencii/ui/main/FormMain.cs:4413 Cadencii/ui/main/FormMain.cs:4426
-#: Cadencii/ui/main/FormMain.cs:11161 Cadencii/ui/main/FormMain.cs:11291
-#: Cadencii/ui/main/FormMain.cs:11350 Cadencii/ui/main/FormMain.cs:11381
-#: Cadencii/ui/main/FormMain.cs:11415 Cadencii/ui/main/FormMain.cs:11495
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4371
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4379
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4387
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4399
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4414
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4427
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11162
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11292
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11351
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11382
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11416
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11496
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22089
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22097
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22105
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22117
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22132
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22145
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28881
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29011
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29070
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29101
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29135
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29215
+#: Cadencii/ui/main/FormMain.cs:4458 Cadencii/ui/main/FormMain.cs:4466
+#: Cadencii/ui/main/FormMain.cs:4474 Cadencii/ui/main/FormMain.cs:4486
+#: Cadencii/ui/main/FormMain.cs:4501 Cadencii/ui/main/FormMain.cs:4514
+#: Cadencii/ui/main/FormMain.cs:11254 Cadencii/ui/main/FormMain.cs:11384
+#: Cadencii/ui/main/FormMain.cs:11443 Cadencii/ui/main/FormMain.cs:11474
+#: Cadencii/ui/main/FormMain.cs:11508 Cadencii/ui/main/FormMain.cs:11588
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4450
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4458
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4466
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4478
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4493
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4506
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11242
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11372
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11431
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11462
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11496
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11576
+#: Cadencii/ui/main/FormMain.HEAD.cs:4370
+#: Cadencii/ui/main/FormMain.HEAD.cs:4378
+#: Cadencii/ui/main/FormMain.HEAD.cs:4386
+#: Cadencii/ui/main/FormMain.HEAD.cs:4398
+#: Cadencii/ui/main/FormMain.HEAD.cs:4413
+#: Cadencii/ui/main/FormMain.HEAD.cs:4426
+#: Cadencii/ui/main/FormMain.HEAD.cs:11161
+#: Cadencii/ui/main/FormMain.HEAD.cs:11291
+#: Cadencii/ui/main/FormMain.HEAD.cs:11350
+#: Cadencii/ui/main/FormMain.HEAD.cs:11381
+#: Cadencii/ui/main/FormMain.HEAD.cs:11415
+#: Cadencii/ui/main/FormMain.HEAD.cs:11495
 #: Cadencii/ui/preference/Preference.cs:758
 msgid "All Files(*.*)|*.*"
 msgstr "所有檔案(*.*)|*.*"
 
-#: Cadencii/ui/main/FormMain.cs:4386 Cadencii/ui/main/FormMain.cs:11291
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4387
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11292
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22105
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29011
+#: Cadencii/ui/main/FormMain.cs:4474 Cadencii/ui/main/FormMain.cs:11384
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4466
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11372
+#: Cadencii/ui/main/FormMain.HEAD.cs:4386
+#: Cadencii/ui/main/FormMain.HEAD.cs:11291
 msgid "UTAU Script Format(*.ust)|*.ust"
 msgstr "UTAU 腳本格式(*.ust)|*.ust"
 
-#: Cadencii/ui/main/FormMain.cs:4395 Cadencii/ui/main/FormMain.cs:4411
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4396
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4412
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22114
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22130
+#: Cadencii/ui/main/FormMain.cs:4483 Cadencii/ui/main/FormMain.cs:4499
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4475
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4491
+#: Cadencii/ui/main/FormMain.HEAD.cs:4395
+#: Cadencii/ui/main/FormMain.HEAD.cs:4411
 msgid "MIDI Format(*.mid)|*.mid"
 msgstr "MIDI Format(*.mid)|*.mid"
 
-#: Cadencii/ui/main/FormMain.cs:4396 Cadencii/ui/main/FormMain.cs:4412
-#: Cadencii/ui/main/FormMain.cs:11350
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4397
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4413
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11351
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22115
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22131
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29070
+#: Cadencii/ui/main/FormMain.cs:4484 Cadencii/ui/main/FormMain.cs:4500
+#: Cadencii/ui/main/FormMain.cs:11443
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4476
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4492
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11431
+#: Cadencii/ui/main/FormMain.HEAD.cs:4396
+#: Cadencii/ui/main/FormMain.HEAD.cs:4412
+#: Cadencii/ui/main/FormMain.HEAD.cs:11350
 msgid "VSQ Format(*.vsq)|*.vsq"
 msgstr "VSQ 格式(*.vsq)|*.vsq"
 
-#: Cadencii/ui/main/FormMain.cs:4397 Cadencii/ui/main/FormMain.cs:11381
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4398
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11382
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22116
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29101
+#: Cadencii/ui/main/FormMain.cs:4485 Cadencii/ui/main/FormMain.cs:11474
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4477
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11462
+#: Cadencii/ui/main/FormMain.HEAD.cs:4397
+#: Cadencii/ui/main/FormMain.HEAD.cs:11381
 msgid "VSQX Format(*.vsqx)|*.vsqx"
 msgstr "VSQX 格式(*.vsq)|*.vsq"
 
-#: Cadencii/ui/main/FormMain.cs:4425 Cadencii/ui/main/FormMain.cs:11495
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4426
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11496
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22144
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29215
+#: Cadencii/ui/main/FormMain.cs:4513 Cadencii/ui/main/FormMain.cs:11588
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4505
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11576
+#: Cadencii/ui/main/FormMain.HEAD.cs:4425
+#: Cadencii/ui/main/FormMain.HEAD.cs:11495
 msgid "Wave File(*.wav)|*.wav"
 msgstr "Wave檔案(*.wav)|*.wav"
 
-#: Cadencii/ui/main/FormMain.cs:4435 Cadencii/ui/main/FormMain.cs:4632
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4436
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4633
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22154
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22351
+#: Cadencii/ui/main/FormMain.cs:4523 Cadencii/ui/main/FormMain.cs:4720
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4515
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4712
+#: Cadencii/ui/main/FormMain.HEAD.cs:4435
+#: Cadencii/ui/main/FormMain.HEAD.cs:4632
 msgid "Game controler"
 msgstr "遊戲控制器"
 
-#: Cadencii/ui/main/FormMain.cs:4441 Cadencii/ui/main/FormMain.cs:4442
-#: Cadencii/ui/main/FormMain.cs:4459 Cadencii/ui/main/FormMain.cs:4460
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4442
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4443
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4460
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4461
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22160
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22161
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22178
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22179
+#: Cadencii/ui/main/FormMain.cs:4529 Cadencii/ui/main/FormMain.cs:4530
+#: Cadencii/ui/main/FormMain.cs:4547 Cadencii/ui/main/FormMain.cs:4548
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4521
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4522
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4539
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4540
+#: Cadencii/ui/main/FormMain.HEAD.cs:4441
+#: Cadencii/ui/main/FormMain.HEAD.cs:4442
+#: Cadencii/ui/main/FormMain.HEAD.cs:4459
+#: Cadencii/ui/main/FormMain.HEAD.cs:4460
 msgid "Pointer"
 msgstr "Pointer"
 
-#: Cadencii/ui/main/FormMain.cs:4443 Cadencii/ui/main/FormMain.cs:4444
-#: Cadencii/ui/main/FormMain.cs:4461 Cadencii/ui/main/FormMain.cs:4462
-#: Cadencii/ui/main/FormMain.cs:4705 Cadencii/ui/main/FormMain.cs:4776
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4444
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4445
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4462
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4463
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4706
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4777
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22162
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22163
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22180
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22181
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22425
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22496
+#: Cadencii/ui/main/FormMain.cs:4531 Cadencii/ui/main/FormMain.cs:4532
+#: Cadencii/ui/main/FormMain.cs:4549 Cadencii/ui/main/FormMain.cs:4550
+#: Cadencii/ui/main/FormMain.cs:4794 Cadencii/ui/main/FormMain.cs:4865
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4523
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4524
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4541
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4542
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4786
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4857
+#: Cadencii/ui/main/FormMain.HEAD.cs:4443
+#: Cadencii/ui/main/FormMain.HEAD.cs:4444
+#: Cadencii/ui/main/FormMain.HEAD.cs:4461
+#: Cadencii/ui/main/FormMain.HEAD.cs:4462
+#: Cadencii/ui/main/FormMain.HEAD.cs:4705
+#: Cadencii/ui/main/FormMain.HEAD.cs:4776
 msgid "Pencil"
 msgstr "鉛筆"
 
-#: Cadencii/ui/main/FormMain.cs:4445 Cadencii/ui/main/FormMain.cs:4446
-#: Cadencii/ui/main/FormMain.cs:4463 Cadencii/ui/main/FormMain.cs:4464
-#: Cadencii/ui/main/FormMain.cs:4778
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4446
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4447
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4464
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4465
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4779
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22164
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22165
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22182
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22183
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22498
+#: Cadencii/ui/main/FormMain.cs:4533 Cadencii/ui/main/FormMain.cs:4534
+#: Cadencii/ui/main/FormMain.cs:4551 Cadencii/ui/main/FormMain.cs:4552
+#: Cadencii/ui/main/FormMain.cs:4867
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4525
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4526
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4543
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4544
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4859
+#: Cadencii/ui/main/FormMain.HEAD.cs:4445
+#: Cadencii/ui/main/FormMain.HEAD.cs:4446
+#: Cadencii/ui/main/FormMain.HEAD.cs:4463
+#: Cadencii/ui/main/FormMain.HEAD.cs:4464
+#: Cadencii/ui/main/FormMain.HEAD.cs:4778
 msgid "Line"
 msgstr "直線"
 
-#: Cadencii/ui/main/FormMain.cs:4447 Cadencii/ui/main/FormMain.cs:4448
-#: Cadencii/ui/main/FormMain.cs:4465 Cadencii/ui/main/FormMain.cs:4466
-#: Cadencii/ui/main/FormMain.cs:4707 Cadencii/ui/main/FormMain.cs:4780
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4448
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4449
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4466
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4467
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4708
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4781
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22166
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22167
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22184
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22185
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22427
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22500
+#: Cadencii/ui/main/FormMain.cs:4535 Cadencii/ui/main/FormMain.cs:4536
+#: Cadencii/ui/main/FormMain.cs:4553 Cadencii/ui/main/FormMain.cs:4554
+#: Cadencii/ui/main/FormMain.cs:4796 Cadencii/ui/main/FormMain.cs:4869
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4527
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4528
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4545
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4546
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4788
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4861
+#: Cadencii/ui/main/FormMain.HEAD.cs:4447
+#: Cadencii/ui/main/FormMain.HEAD.cs:4448
+#: Cadencii/ui/main/FormMain.HEAD.cs:4465
+#: Cadencii/ui/main/FormMain.HEAD.cs:4466
+#: Cadencii/ui/main/FormMain.HEAD.cs:4707
+#: Cadencii/ui/main/FormMain.HEAD.cs:4780
 msgid "Eraser"
 msgstr "橡皮擦"
 
-#: Cadencii/ui/main/FormMain.cs:4450 Cadencii/ui/main/FormMain.cs:4467
-#: Cadencii/ui/main/FormMain.cs:4468 Cadencii/ui/main/FormMain.cs:4711
-#: Cadencii/ui/main/FormMain.cs:4784
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4451
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4468
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4469
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4712
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4785
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22169
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22186
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22187
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22431
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22504
+#: Cadencii/ui/main/FormMain.cs:4538 Cadencii/ui/main/FormMain.cs:4555
+#: Cadencii/ui/main/FormMain.cs:4556 Cadencii/ui/main/FormMain.cs:4800
+#: Cadencii/ui/main/FormMain.cs:4873
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4530
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4547
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4548
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4792
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4865
+#: Cadencii/ui/main/FormMain.HEAD.cs:4450
+#: Cadencii/ui/main/FormMain.HEAD.cs:4467
+#: Cadencii/ui/main/FormMain.HEAD.cs:4468
+#: Cadencii/ui/main/FormMain.HEAD.cs:4711
+#: Cadencii/ui/main/FormMain.HEAD.cs:4784
 msgid "Curve"
 msgstr "曲線"
 
-#: Cadencii/ui/main/FormMain.cs:4452 Cadencii/ui/main/FormMain.cs:4469
-#: Cadencii/ui/main/FormMain.cs:4470
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4453
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4470
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4471
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22171
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22188
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22189
+#: Cadencii/ui/main/FormMain.cs:4540 Cadencii/ui/main/FormMain.cs:4557
+#: Cadencii/ui/main/FormMain.cs:4558
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4532
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4549
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4550
+#: Cadencii/ui/main/FormMain.HEAD.cs:4452
+#: Cadencii/ui/main/FormMain.HEAD.cs:4469
+#: Cadencii/ui/main/FormMain.HEAD.cs:4470
 msgid "Grid"
 msgstr "格"
 
-#: Cadencii/ui/main/FormMain.cs:4454 Cadencii/ui/main/FormMain.cs:4472
-#: Cadencii/ui/main/FormMain.cs:7764 Cadencii/ui/main/FormMain.cs:7767
-#: vConnectStandDBConvert/MainForm.cs:174
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4455
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4473
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:7765
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:7768
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22173
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22191
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:25484
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:25487
+#: Cadencii/ui/main/FormMain.cs:4542 Cadencii/ui/main/FormMain.cs:4560
+#: Cadencii/ui/main/FormMain.cs:7853 Cadencii/ui/main/FormMain.cs:7856
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4534
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4552
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:7845
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:7848
+#: Cadencii/ui/main/FormMain.HEAD.cs:4454
+#: Cadencii/ui/main/FormMain.HEAD.cs:4472
+#: Cadencii/ui/main/FormMain.HEAD.cs:7764
+#: Cadencii/ui/main/FormMain.HEAD.cs:7767
 msgid "Stop"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4456 Cadencii/ui/main/FormMain.cs:4474
-#: Cadencii/ui/main/FormMain.cs:7733 Cadencii/ui/main/FormMain.cs:7736
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4457
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4475
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:7734
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:7737
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22175
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22193
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:25453
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:25456
+#: Cadencii/ui/main/FormMain.cs:4544 Cadencii/ui/main/FormMain.cs:4562
+#: Cadencii/ui/main/FormMain.cs:7822 Cadencii/ui/main/FormMain.cs:7825
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4536
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4554
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:7814
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:7817
+#: Cadencii/ui/main/FormMain.HEAD.cs:4456
+#: Cadencii/ui/main/FormMain.HEAD.cs:4474
+#: Cadencii/ui/main/FormMain.HEAD.cs:7733
+#: Cadencii/ui/main/FormMain.HEAD.cs:7736
 msgid "Play"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4479
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4480
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22198
+#: Cadencii/ui/main/FormMain.cs:4567
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4559
+#: Cadencii/ui/main/FormMain.HEAD.cs:4479
 msgid "Move to beginning measure"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4480
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4481
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22199
+#: Cadencii/ui/main/FormMain.cs:4568
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4560
+#: Cadencii/ui/main/FormMain.HEAD.cs:4480
 msgid "Move to end measure"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4481
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4482
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22200
+#: Cadencii/ui/main/FormMain.cs:4569
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4561
+#: Cadencii/ui/main/FormMain.HEAD.cs:4481
 msgid "Move forward"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4482
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4483
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22201
+#: Cadencii/ui/main/FormMain.cs:4570
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4562
+#: Cadencii/ui/main/FormMain.HEAD.cs:4482
 msgid "Move backwared"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4483
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4484
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22202
+#: Cadencii/ui/main/FormMain.cs:4571
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4563
+#: Cadencii/ui/main/FormMain.HEAD.cs:4483
 msgid "Repeat"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4484
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4485
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22203
+#: Cadencii/ui/main/FormMain.cs:4572
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4564
+#: Cadencii/ui/main/FormMain.HEAD.cs:4484
 msgid "Auto scroll"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4490
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4491
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22209
+#: Cadencii/ui/main/FormMain.cs:4578
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4570
+#: Cadencii/ui/main/FormMain.HEAD.cs:4490
 msgid "New"
 msgstr "開新檔案"
 
-#: Cadencii/ui/main/FormMain.cs:4492 Cadencii/ui/main/FormMain.cs:4672
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4493
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4673
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22211
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22392
+#: Cadencii/ui/main/FormMain.cs:4580 Cadencii/ui/main/FormMain.cs:4761
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4572
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4753
+#: Cadencii/ui/main/FormMain.HEAD.cs:4492
+#: Cadencii/ui/main/FormMain.HEAD.cs:4672
 msgid "Open"
 msgstr "開啟舊檔"
 
-#: Cadencii/ui/main/FormMain.cs:4494
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4495
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22213
+#: Cadencii/ui/main/FormMain.cs:4582
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4574
+#: Cadencii/ui/main/FormMain.HEAD.cs:4494
 msgid "Open VSQX/VSQ/Vocaloid MIDI"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4496
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4497
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22215
+#: Cadencii/ui/main/FormMain.cs:4584
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4576
+#: Cadencii/ui/main/FormMain.HEAD.cs:4496
 msgid "Open UTAU project file"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4498
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4499
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22217
+#: Cadencii/ui/main/FormMain.cs:4586
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4578
+#: Cadencii/ui/main/FormMain.HEAD.cs:4498
 msgid "Save"
 msgstr "儲存檔案"
 
-#: Cadencii/ui/main/FormMain.cs:4500
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4501
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22219
+#: Cadencii/ui/main/FormMain.cs:4588
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4580
+#: Cadencii/ui/main/FormMain.HEAD.cs:4500
 msgid "Save as"
 msgstr "另存新檔"
 
-#: Cadencii/ui/main/FormMain.cs:4502
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4503
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22221
+#: Cadencii/ui/main/FormMain.cs:4590
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4582
+#: Cadencii/ui/main/FormMain.HEAD.cs:4502
 msgid "Import"
 msgstr "匯入"
 
-#: Cadencii/ui/main/FormMain.cs:4504
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4505
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22223
+#: Cadencii/ui/main/FormMain.cs:4592
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4584
+#: Cadencii/ui/main/FormMain.HEAD.cs:4504
 msgid "VSQ / Vocaloid Midi"
 msgstr "VSQ / Vocaloid Midi"
 
-#: Cadencii/ui/main/FormMain.cs:4505
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4506
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22224
+#: Cadencii/ui/main/FormMain.cs:4593
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4585
+#: Cadencii/ui/main/FormMain.HEAD.cs:4505
 msgid "Export"
 msgstr "匯出"
 
-#: Cadencii/ui/main/FormMain.cs:4507
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4508
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22226
+#: Cadencii/ui/main/FormMain.cs:4595
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4587
+#: Cadencii/ui/main/FormMain.HEAD.cs:4507
 msgid "WAVE"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4508
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4509
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22227
+#: Cadencii/ui/main/FormMain.cs:4596
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4588
+#: Cadencii/ui/main/FormMain.HEAD.cs:4508
 msgid "Serial numbered WAVEs"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4509
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4510
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22228
+#: Cadencii/ui/main/FormMain.cs:4597
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4589
+#: Cadencii/ui/main/FormMain.HEAD.cs:4509
 msgid "UTAU project file"
 msgstr "UTAU 專案"
 
-#: Cadencii/ui/main/FormMain.cs:4510 Cadencii/ui/main/FormMain.cs:11414
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4511
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11415
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22229
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29134
+#: Cadencii/ui/main/FormMain.cs:4598 Cadencii/ui/main/FormMain.cs:11507
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4590
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11495
+#: Cadencii/ui/main/FormMain.HEAD.cs:4510
+#: Cadencii/ui/main/FormMain.HEAD.cs:11414
 msgid "Metatext for vConnect"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4511
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4512
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22230
+#: Cadencii/ui/main/FormMain.cs:4599
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4591
+#: Cadencii/ui/main/FormMain.HEAD.cs:4511
 msgid "VSQ File"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4512
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4513
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22231
+#: Cadencii/ui/main/FormMain.cs:4600
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4592
+#: Cadencii/ui/main/FormMain.HEAD.cs:4512
 msgid "VSQX File"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4513
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4514
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22232
+#: Cadencii/ui/main/FormMain.cs:4601
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4593
+#: Cadencii/ui/main/FormMain.HEAD.cs:4513
 msgid "Open Recent"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4515
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4516
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22234
+#: Cadencii/ui/main/FormMain.cs:4603
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4595
+#: Cadencii/ui/main/FormMain.HEAD.cs:4515
 msgid "Clear Menu"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4516
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4517
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22235
+#: Cadencii/ui/main/FormMain.cs:4604
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4596
+#: Cadencii/ui/main/FormMain.HEAD.cs:4516
 msgid "Quit"
 msgstr "結束"
 
-#: Cadencii/ui/main/FormMain.cs:4521 Cadencii/ui/main/FormMain.cs:4726
-#: Cadencii/ui/main/FormMain.cs:4787
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4522
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4727
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4788
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22240
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22446
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22507
+#: Cadencii/ui/main/FormMain.cs:4609 Cadencii/ui/main/FormMain.cs:4815
+#: Cadencii/ui/main/FormMain.cs:4876
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4601
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4807
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4868
+#: Cadencii/ui/main/FormMain.HEAD.cs:4521
+#: Cadencii/ui/main/FormMain.HEAD.cs:4726
+#: Cadencii/ui/main/FormMain.HEAD.cs:4787
 msgid "Undo"
 msgstr "復原"
 
-#: Cadencii/ui/main/FormMain.cs:4523 Cadencii/ui/main/FormMain.cs:4728
-#: Cadencii/ui/main/FormMain.cs:4789
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4524
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4729
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4790
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22242
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22448
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22509
+#: Cadencii/ui/main/FormMain.cs:4611 Cadencii/ui/main/FormMain.cs:4817
+#: Cadencii/ui/main/FormMain.cs:4878
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4603
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4809
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4870
+#: Cadencii/ui/main/FormMain.HEAD.cs:4523
+#: Cadencii/ui/main/FormMain.HEAD.cs:4728
+#: Cadencii/ui/main/FormMain.HEAD.cs:4789
 msgid "Redo"
 msgstr "重複"
 
-#: Cadencii/ui/main/FormMain.cs:4525 Cadencii/ui/main/FormMain.cs:4679
-#: Cadencii/ui/main/FormMain.cs:4731 Cadencii/ui/main/FormMain.cs:4792
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4526
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4680
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4732
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4793
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22244
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22399
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22451
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22512
+#: Cadencii/ui/main/FormMain.cs:4613 Cadencii/ui/main/FormMain.cs:4768
+#: Cadencii/ui/main/FormMain.cs:4820 Cadencii/ui/main/FormMain.cs:4881
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4605
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4760
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4812
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4873
+#: Cadencii/ui/main/FormMain.HEAD.cs:4525
+#: Cadencii/ui/main/FormMain.HEAD.cs:4679
+#: Cadencii/ui/main/FormMain.HEAD.cs:4731
+#: Cadencii/ui/main/FormMain.HEAD.cs:4792
 msgid "Cut"
 msgstr "剪下"
 
-#: Cadencii/ui/main/FormMain.cs:4527 Cadencii/ui/main/FormMain.cs:4678
-#: Cadencii/ui/main/FormMain.cs:4735 Cadencii/ui/main/FormMain.cs:4794
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4528
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4679
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4736
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4795
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22246
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22398
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22455
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22514
+#: Cadencii/ui/main/FormMain.cs:4615 Cadencii/ui/main/FormMain.cs:4767
+#: Cadencii/ui/main/FormMain.cs:4824 Cadencii/ui/main/FormMain.cs:4883
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4607
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4759
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4816
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4875
+#: Cadencii/ui/main/FormMain.HEAD.cs:4527
+#: Cadencii/ui/main/FormMain.HEAD.cs:4678
+#: Cadencii/ui/main/FormMain.HEAD.cs:4735
+#: Cadencii/ui/main/FormMain.HEAD.cs:4794
 msgid "Copy"
 msgstr "複製"
 
-#: Cadencii/ui/main/FormMain.cs:4529 Cadencii/ui/main/FormMain.cs:4690
-#: Cadencii/ui/main/FormMain.cs:4733 Cadencii/ui/main/FormMain.cs:4796
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4530
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4691
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4734
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4797
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22248
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22410
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22453
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22516
+#: Cadencii/ui/main/FormMain.cs:4617 Cadencii/ui/main/FormMain.cs:4779
+#: Cadencii/ui/main/FormMain.cs:4822 Cadencii/ui/main/FormMain.cs:4885
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4609
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4771
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4814
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4877
+#: Cadencii/ui/main/FormMain.HEAD.cs:4529
+#: Cadencii/ui/main/FormMain.HEAD.cs:4690
+#: Cadencii/ui/main/FormMain.HEAD.cs:4733
+#: Cadencii/ui/main/FormMain.HEAD.cs:4796
 msgid "Paste"
 msgstr "貼上"
 
-#: Cadencii/ui/main/FormMain.cs:4531 Cadencii/ui/main/FormMain.cs:4737
-#: Cadencii/ui/main/FormMain.cs:4798
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4532
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4738
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4799
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22250
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22457
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22518
+#: Cadencii/ui/main/FormMain.cs:4619 Cadencii/ui/main/FormMain.cs:4826
+#: Cadencii/ui/main/FormMain.cs:4887
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4611
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4818
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4879
+#: Cadencii/ui/main/FormMain.HEAD.cs:4531
+#: Cadencii/ui/main/FormMain.HEAD.cs:4737
+#: Cadencii/ui/main/FormMain.HEAD.cs:4798
 msgid "Delete"
 msgstr "刪除"
 
-#: Cadencii/ui/main/FormMain.cs:4533
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4534
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22252
+#: Cadencii/ui/main/FormMain.cs:4621
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4613
+#: Cadencii/ui/main/FormMain.HEAD.cs:4533
 msgid "Auto normalize mode"
 msgstr "自動音符正規化(重疊自動更正)"
 
-#: Cadencii/ui/main/FormMain.cs:4535 Cadencii/ui/main/FormMain.cs:4740
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4536
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4741
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22254
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22460
+#: Cadencii/ui/main/FormMain.cs:4623 Cadencii/ui/main/FormMain.cs:4829
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4615
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4821
+#: Cadencii/ui/main/FormMain.HEAD.cs:4535
+#: Cadencii/ui/main/FormMain.HEAD.cs:4740
 msgid "Select All"
 msgstr "全選"
 
-#: Cadencii/ui/main/FormMain.cs:4537
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4538
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22256
+#: Cadencii/ui/main/FormMain.cs:4625
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4617
+#: Cadencii/ui/main/FormMain.HEAD.cs:4537
 msgid "Select all events"
 msgstr "選取所有事件"
 
-#: Cadencii/ui/main/FormMain.cs:4540
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4541
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22259
+#: Cadencii/ui/main/FormMain.cs:4628
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4620
+#: Cadencii/ui/main/FormMain.HEAD.cs:4540
 msgid "View"
 msgstr "檢視"
 
-#: Cadencii/ui/main/FormMain.cs:4542
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4543
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22261
+#: Cadencii/ui/main/FormMain.cs:4630
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4622
+#: Cadencii/ui/main/FormMain.HEAD.cs:4542
 msgid "Control track"
 msgstr "控制軌"
 
-#: Cadencii/ui/main/FormMain.cs:4546
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4547
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22265
+#: Cadencii/ui/main/FormMain.cs:4634
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4626
+#: Cadencii/ui/main/FormMain.HEAD.cs:4546
 msgid "Waveform"
 msgstr "表示波形"
 
-#: Cadencii/ui/main/FormMain.cs:4548
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4549
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22267
+#: Cadencii/ui/main/FormMain.cs:4636
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4628
+#: Cadencii/ui/main/FormMain.HEAD.cs:4548
 msgid "Property window"
 msgstr "Property Window"
 
-#: Cadencii/ui/main/FormMain.cs:4549
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4550
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22268
+#: Cadencii/ui/main/FormMain.cs:4637
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4629
+#: Cadencii/ui/main/FormMain.HEAD.cs:4549
 msgid "Navigation"
 msgstr "Navigation"
 
-#: Cadencii/ui/main/FormMain.cs:4551
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4552
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22270
+#: Cadencii/ui/main/FormMain.cs:4639
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4631
+#: Cadencii/ui/main/FormMain.HEAD.cs:4551
 msgid "Grid line"
 msgstr "格線"
 
-#: Cadencii/ui/main/FormMain.cs:4553
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4554
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22272
+#: Cadencii/ui/main/FormMain.cs:4641
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4633
+#: Cadencii/ui/main/FormMain.HEAD.cs:4553
 msgid "Start marker"
 msgstr "開始記號"
 
-#: Cadencii/ui/main/FormMain.cs:4555
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4556
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22274
+#: Cadencii/ui/main/FormMain.cs:4643
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4635
+#: Cadencii/ui/main/FormMain.HEAD.cs:4555
 msgid "End marker"
 msgstr "結束記號"
 
-#: Cadencii/ui/main/FormMain.cs:4557
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4558
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22276
+#: Cadencii/ui/main/FormMain.cs:4645
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4637
+#: Cadencii/ui/main/FormMain.HEAD.cs:4557
 msgid "Lyrics/Phoneme"
 msgstr "歌詞/發音記號"
 
-#: Cadencii/ui/main/FormMain.cs:4559
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4560
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22278
+#: Cadencii/ui/main/FormMain.cs:4647
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4639
+#: Cadencii/ui/main/FormMain.HEAD.cs:4559
 msgid "Note expression/vibrato"
 msgstr "音符表現/Vibrato"
 
-#: Cadencii/ui/main/FormMain.cs:4561
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4562
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22280
+#: Cadencii/ui/main/FormMain.cs:4649
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4641
+#: Cadencii/ui/main/FormMain.HEAD.cs:4561
 msgid "Pitch line"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4563
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4564
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22282
+#: Cadencii/ui/main/FormMain.cs:4651
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4643
+#: Cadencii/ui/main/FormMain.HEAD.cs:4563
 msgid "VSTi plugin UI"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4565
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4566
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22284
+#: Cadencii/ui/main/FormMain.cs:4653
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4645
+#: Cadencii/ui/main/FormMain.HEAD.cs:4565
 msgid "Icon palette"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4570
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4571
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22289
+#: Cadencii/ui/main/FormMain.cs:4658
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4650
+#: Cadencii/ui/main/FormMain.HEAD.cs:4570
 msgid "Normalize notes"
 msgstr "音符正規化(去除音符重疊)"
 
-#: Cadencii/ui/main/FormMain.cs:4572
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4573
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22291
+#: Cadencii/ui/main/FormMain.cs:4660
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4652
+#: Cadencii/ui/main/FormMain.HEAD.cs:4572
 msgid "Insert bars"
 msgstr "插入小節"
 
-#: Cadencii/ui/main/FormMain.cs:4574
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4575
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22293
+#: Cadencii/ui/main/FormMain.cs:4662
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4654
+#: Cadencii/ui/main/FormMain.HEAD.cs:4574
 msgid "Delete bars"
 msgstr "刪除小節"
 
-#: Cadencii/ui/main/FormMain.cs:4578
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4579
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22297
+#: Cadencii/ui/main/FormMain.cs:4666
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4658
+#: Cadencii/ui/main/FormMain.HEAD.cs:4578
 msgid "Connect notes"
 msgstr "結合音符"
 
-#: Cadencii/ui/main/FormMain.cs:4580
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4581
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22299
+#: Cadencii/ui/main/FormMain.cs:4668
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4660
+#: Cadencii/ui/main/FormMain.HEAD.cs:4580
 msgid "Insert lyrics"
 msgstr "插入歌詞"
 
-#: Cadencii/ui/main/FormMain.cs:4585
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4586
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22304
+#: Cadencii/ui/main/FormMain.cs:4673
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4665
+#: Cadencii/ui/main/FormMain.HEAD.cs:4585
 msgid "Track on"
 msgstr "Track On"
 
-#: Cadencii/ui/main/FormMain.cs:4587
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4588
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22306
+#: Cadencii/ui/main/FormMain.cs:4675
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4667
+#: Cadencii/ui/main/FormMain.HEAD.cs:4587
 msgid "Add track"
 msgstr "追加Track"
 
-#: Cadencii/ui/main/FormMain.cs:4589
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4590
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22308
+#: Cadencii/ui/main/FormMain.cs:4677
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4669
+#: Cadencii/ui/main/FormMain.HEAD.cs:4589
 msgid "Copy track"
 msgstr "複製 Track"
 
-#: Cadencii/ui/main/FormMain.cs:4591
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4592
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22310
+#: Cadencii/ui/main/FormMain.cs:4679
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4671
+#: Cadencii/ui/main/FormMain.HEAD.cs:4591
 msgid "Rename track"
 msgstr "重新命名Track"
 
-#: Cadencii/ui/main/FormMain.cs:4592
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4593
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22311
+#: Cadencii/ui/main/FormMain.cs:4680
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4672
+#: Cadencii/ui/main/FormMain.HEAD.cs:4592
 msgid "Delete track"
 msgstr "刪除Track"
 
-#: Cadencii/ui/main/FormMain.cs:4594
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4595
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22313
+#: Cadencii/ui/main/FormMain.cs:4682
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4674
+#: Cadencii/ui/main/FormMain.HEAD.cs:4594
 msgid "Render current track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4596
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4597
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22315
+#: Cadencii/ui/main/FormMain.cs:4684
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4676
+#: Cadencii/ui/main/FormMain.HEAD.cs:4596
 msgid "Render all tracks"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4598 Cadencii/ui/main/FormMain.cs:4767
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4599
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4768
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22317
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22487
+#: Cadencii/ui/main/FormMain.cs:4686 Cadencii/ui/main/FormMain.cs:4856
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4678
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4848
+#: Cadencii/ui/main/FormMain.HEAD.cs:4598
+#: Cadencii/ui/main/FormMain.HEAD.cs:4767
 msgid "Overlay"
 msgstr "覆蓋"
 
-#: Cadencii/ui/main/FormMain.cs:4600 Cadencii/ui/main/FormMain.cs:4769
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4601
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4770
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22319
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22489
+#: Cadencii/ui/main/FormMain.cs:4688 Cadencii/ui/main/FormMain.cs:4858
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4680
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4850
+#: Cadencii/ui/main/FormMain.HEAD.cs:4600
+#: Cadencii/ui/main/FormMain.HEAD.cs:4769
 msgid "Renderer"
 msgstr "Renderer"
 
-#: Cadencii/ui/main/FormMain.cs:4610
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4611
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22329
+#: Cadencii/ui/main/FormMain.cs:4698
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4690
+#: Cadencii/ui/main/FormMain.HEAD.cs:4610
 msgid "Note expression property"
 msgstr "音符表情參數"
 
-#: Cadencii/ui/main/FormMain.cs:4612
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4613
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22331
+#: Cadencii/ui/main/FormMain.cs:4700
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4692
+#: Cadencii/ui/main/FormMain.HEAD.cs:4612
 msgid "Note vibrato property"
 msgstr "音符Vibrato參數"
 
-#: Cadencii/ui/main/FormMain.cs:4614
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4615
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22333
+#: Cadencii/ui/main/FormMain.cs:4702
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4694
+#: Cadencii/ui/main/FormMain.HEAD.cs:4614
 msgid "Apply UTAU Parameters"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4616
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4617
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22335
+#: Cadencii/ui/main/FormMain.cs:4704
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4696
+#: Cadencii/ui/main/FormMain.HEAD.cs:4616
 msgid "Phoneme transformation"
 msgstr "發音記號轉換"
 
-#: Cadencii/ui/main/FormMain.cs:4618
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4619
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22337
+#: Cadencii/ui/main/FormMain.cs:4706
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4698
+#: Cadencii/ui/main/FormMain.HEAD.cs:4618
 msgid "User word dictionary"
 msgstr "使用者辭典"
 
-#: Cadencii/ui/main/FormMain.cs:4620
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4621
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22339
+#: Cadencii/ui/main/FormMain.cs:4708
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4700
+#: Cadencii/ui/main/FormMain.HEAD.cs:4620
 msgid "Copy vibrato config to preset"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4625
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4626
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22344
+#: Cadencii/ui/main/FormMain.cs:4713
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4705
+#: Cadencii/ui/main/FormMain.HEAD.cs:4625
 msgid "Update script list"
 msgstr "更新腳本清單"
 
-#: Cadencii/ui/main/FormMain.cs:4630 Cadencii/ui/preference/Preference.cs:753
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4631
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22349
+#: Cadencii/ui/main/FormMain.cs:4718
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4710
+#: Cadencii/ui/main/FormMain.HEAD.cs:4630
+#: Cadencii/ui/preference/Preference.cs:753
 msgid "Preference"
 msgstr "選項"
 
-#: Cadencii/ui/main/FormMain.cs:4634
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4635
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22353
+#: Cadencii/ui/main/FormMain.cs:4722
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4714
+#: Cadencii/ui/main/FormMain.HEAD.cs:4634
 msgid "Load"
 msgstr "Load"
 
-#: Cadencii/ui/main/FormMain.cs:4642
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4643
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22361
+#: Cadencii/ui/main/FormMain.cs:4730
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4722
+#: Cadencii/ui/main/FormMain.HEAD.cs:4642
 msgid "Shortcut key"
 msgstr "快捷鍵"
 
-#: Cadencii/ui/main/FormMain.cs:4644
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4645
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22363
+#: Cadencii/ui/main/FormMain.cs:4732
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4724
+#: Cadencii/ui/main/FormMain.HEAD.cs:4644
 msgid "Singing style defaults"
 msgstr "預設唱法"
 
-#: Cadencii/ui/main/FormMain.cs:4646 Cadencii/ui/main/FormMain.cs:4719
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4647
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4720
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22365
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22439
+#: Cadencii/ui/main/FormMain.cs:4734 Cadencii/ui/main/FormMain.cs:4808
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4726
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4800
+#: Cadencii/ui/main/FormMain.HEAD.cs:4646
+#: Cadencii/ui/main/FormMain.HEAD.cs:4719
 msgid "Quantize"
 msgstr "Quantize"
 
-#: Cadencii/ui/main/FormMain.cs:4648 Cadencii/ui/main/FormMain.cs:4717
-#: Cadencii/ui/main/FormMain.cs:4722
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4649
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4718
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4723
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22367
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22437
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22442
+#: Cadencii/ui/main/FormMain.cs:4736 Cadencii/ui/main/FormMain.cs:4806
+#: Cadencii/ui/main/FormMain.cs:4811
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4728
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4798
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4803
+#: Cadencii/ui/main/FormMain.HEAD.cs:4648
+#: Cadencii/ui/main/FormMain.HEAD.cs:4717
+#: Cadencii/ui/main/FormMain.HEAD.cs:4722
 msgid "Off"
 msgstr "關閉"
 
-#: Cadencii/ui/main/FormMain.cs:4649 Cadencii/ui/main/FormMain.cs:4716
-#: Cadencii/ui/main/FormMain.cs:4721
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4650
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4717
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4722
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22368
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22436
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22441
+#: Cadencii/ui/main/FormMain.cs:4737 Cadencii/ui/main/FormMain.cs:4805
+#: Cadencii/ui/main/FormMain.cs:4810
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4729
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4797
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4802
+#: Cadencii/ui/main/FormMain.HEAD.cs:4649
+#: Cadencii/ui/main/FormMain.HEAD.cs:4716
+#: Cadencii/ui/main/FormMain.HEAD.cs:4721
 msgid "Triplet"
 msgstr "三連音符"
 
-#: Cadencii/ui/main/FormMain.cs:4652 Cadencii/ui/main/FormMain.cs:4709
-#: Cadencii/ui/main/FormMain.cs:4782
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4653
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4710
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4783
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22371
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22429
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22502
+#: Cadencii/ui/main/FormMain.cs:4740 Cadencii/ui/main/FormMain.cs:4798
+#: Cadencii/ui/main/FormMain.cs:4871
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4732
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4790
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4863
+#: Cadencii/ui/main/FormMain.HEAD.cs:4652
+#: Cadencii/ui/main/FormMain.HEAD.cs:4709
+#: Cadencii/ui/main/FormMain.HEAD.cs:4782
 msgid "Palette Tool"
 msgstr "Palette Tool"
 
-#: Cadencii/ui/main/FormMain.cs:4658
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4659
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22377
+#: Cadencii/ui/main/FormMain.cs:4746
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4738
+#: Cadencii/ui/main/FormMain.HEAD.cs:4658
 msgid "Window"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4659
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4660
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22378
+#: Cadencii/ui/main/FormMain.cs:4747
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4739
+#: Cadencii/ui/main/FormMain.HEAD.cs:4659
 msgid "Minimize"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4662
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4663
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22381
+#: Cadencii/ui/main/FormMain.cs:4750
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4742
+#: Cadencii/ui/main/FormMain.HEAD.cs:4662
 msgid "Tools"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4664
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4665
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22383
+#: Cadencii/ui/main/FormMain.cs:4752
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4744
+#: Cadencii/ui/main/FormMain.HEAD.cs:4664
 msgid "Create vConnect-STAND DB"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4668
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4669
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22388
+#: Cadencii/ui/main/FormMain.cs:4757
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4749
+#: Cadencii/ui/main/FormMain.HEAD.cs:4668
 msgid "Log"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4670
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4671
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22390
+#: Cadencii/ui/main/FormMain.cs:4759
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4751
+#: Cadencii/ui/main/FormMain.HEAD.cs:4670
 msgid "Disable"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4670
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4671
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22390
+#: Cadencii/ui/main/FormMain.cs:4759
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4751
+#: Cadencii/ui/main/FormMain.HEAD.cs:4670
 msgid "Enable"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4674
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4675
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22394
+#: Cadencii/ui/main/FormMain.cs:4763
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4755
+#: Cadencii/ui/main/FormMain.HEAD.cs:4674
 msgid "About Cadencii"
 msgstr "關於Cadencii"
 
-#: Cadencii/ui/main/FormMain.cs:4676
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4677
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22396
+#: Cadencii/ui/main/FormMain.cs:4765
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4757
+#: Cadencii/ui/main/FormMain.HEAD.cs:4676
 msgid "Manual"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4680
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4681
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22400
+#: Cadencii/ui/main/FormMain.cs:4769
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4761
+#: Cadencii/ui/main/FormMain.HEAD.cs:4680
 msgid "Chagne tool pointer / eraser"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4681
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4682
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22401
+#: Cadencii/ui/main/FormMain.cs:4770
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4762
+#: Cadencii/ui/main/FormMain.HEAD.cs:4681
 msgid "Change tool pointer / pencil"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4682
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4683
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22402
+#: Cadencii/ui/main/FormMain.cs:4771
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4763
+#: Cadencii/ui/main/FormMain.HEAD.cs:4682
 msgid "Start lyric input"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4683
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4684
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22403
+#: Cadencii/ui/main/FormMain.cs:4772
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4764
+#: Cadencii/ui/main/FormMain.HEAD.cs:4683
 msgid "GoTo end marker"
 msgstr "結束記號"
 
-#: Cadencii/ui/main/FormMain.cs:4684
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4685
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22404
+#: Cadencii/ui/main/FormMain.cs:4773
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4765
+#: Cadencii/ui/main/FormMain.HEAD.cs:4684
 msgid "Goto start marker"
 msgstr "開始記號"
 
-#: Cadencii/ui/main/FormMain.cs:4685
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4686
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22405
+#: Cadencii/ui/main/FormMain.cs:4774
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4766
+#: Cadencii/ui/main/FormMain.HEAD.cs:4685
 msgid "Lengthen"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4686
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4687
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22406
+#: Cadencii/ui/main/FormMain.cs:4775
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4767
+#: Cadencii/ui/main/FormMain.HEAD.cs:4686
 msgid "Move down"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4687
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4688
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22407
+#: Cadencii/ui/main/FormMain.cs:4776
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4768
+#: Cadencii/ui/main/FormMain.HEAD.cs:4687
 msgid "Move left"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4688
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4689
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22408
+#: Cadencii/ui/main/FormMain.cs:4777
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4769
+#: Cadencii/ui/main/FormMain.HEAD.cs:4688
 msgid "Move right"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4689
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4690
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22409
+#: Cadencii/ui/main/FormMain.cs:4778
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4770
+#: Cadencii/ui/main/FormMain.HEAD.cs:4689
 msgid "Move up"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4691
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4692
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22411
+#: Cadencii/ui/main/FormMain.cs:4780
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4772
+#: Cadencii/ui/main/FormMain.HEAD.cs:4691
 msgid "Play from start marker"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4692
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4693
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22412
+#: Cadencii/ui/main/FormMain.cs:4781
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4773
+#: Cadencii/ui/main/FormMain.HEAD.cs:4692
 msgid "Select backward"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4693
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4694
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22413
+#: Cadencii/ui/main/FormMain.cs:4782
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4774
+#: Cadencii/ui/main/FormMain.HEAD.cs:4693
 msgid "Select forward"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4694
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4695
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22414
+#: Cadencii/ui/main/FormMain.cs:4783
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4775
+#: Cadencii/ui/main/FormMain.HEAD.cs:4694
 msgid "Shorten"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4695
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4696
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22415
+#: Cadencii/ui/main/FormMain.cs:4784
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4776
+#: Cadencii/ui/main/FormMain.HEAD.cs:4695
 msgid "Previous track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4696
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4697
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22416
+#: Cadencii/ui/main/FormMain.cs:4785
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4777
+#: Cadencii/ui/main/FormMain.HEAD.cs:4696
 msgid "Next track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4697
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4698
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22417
+#: Cadencii/ui/main/FormMain.cs:4786
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4778
+#: Cadencii/ui/main/FormMain.HEAD.cs:4697
 msgid "Previous control curve"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4698
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4699
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22418
+#: Cadencii/ui/main/FormMain.cs:4787
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4779
+#: Cadencii/ui/main/FormMain.HEAD.cs:4698
 msgid "Next control curve"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4699
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4700
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22419
+#: Cadencii/ui/main/FormMain.cs:4788
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4780
+#: Cadencii/ui/main/FormMain.HEAD.cs:4699
 msgid "Change pitch drawing mode"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4703 Cadencii/ui/main/FormMain.cs:4774
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4704
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4775
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22423
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22494
+#: Cadencii/ui/main/FormMain.cs:4792 Cadencii/ui/main/FormMain.cs:4863
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4784
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4855
+#: Cadencii/ui/main/FormMain.HEAD.cs:4703
+#: Cadencii/ui/main/FormMain.HEAD.cs:4774
 msgid "Arrow"
 msgstr "游標"
 
-#: Cadencii/ui/main/FormMain.cs:4714
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4715
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22434
+#: Cadencii/ui/main/FormMain.cs:4803
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4795
+#: Cadencii/ui/main/FormMain.HEAD.cs:4714
 msgid "Note Fixed Length"
 msgstr "輸入固定長度的音符"
 
-#: Cadencii/ui/main/FormMain.cs:4718
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4719
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22438
+#: Cadencii/ui/main/FormMain.cs:4807
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4799
+#: Cadencii/ui/main/FormMain.HEAD.cs:4718
 msgid "Dot"
 msgstr "付點"
 
-#: Cadencii/ui/main/FormMain.cs:4723
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4724
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22443
+#: Cadencii/ui/main/FormMain.cs:4812
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4804
+#: Cadencii/ui/main/FormMain.HEAD.cs:4723
 msgid "Show/Hide Grid Line"
 msgstr "顯示/隱藏 Grid Line"
 
-#: Cadencii/ui/main/FormMain.cs:4742 Cadencii/ui/main/FormMain.cs:4803
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4743
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4804
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22462
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22523
+#: Cadencii/ui/main/FormMain.cs:4831 Cadencii/ui/main/FormMain.cs:4892
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4823
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4884
+#: Cadencii/ui/main/FormMain.HEAD.cs:4742
+#: Cadencii/ui/main/FormMain.HEAD.cs:4803
 msgid "Select All Events"
 msgstr "選取所有事件"
 
-#: Cadencii/ui/main/FormMain.cs:4745
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4746
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22465
+#: Cadencii/ui/main/FormMain.cs:4834
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4826
+#: Cadencii/ui/main/FormMain.HEAD.cs:4745
 msgid "Note Expression Property"
 msgstr "音符表情參數"
 
-#: Cadencii/ui/main/FormMain.cs:4747
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4748
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22467
+#: Cadencii/ui/main/FormMain.cs:4836
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4828
+#: Cadencii/ui/main/FormMain.HEAD.cs:4747
 msgid "Note Vibrato Property"
 msgstr "音符Vibrato參數"
 
-#: Cadencii/ui/main/FormMain.cs:4748
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4749
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22468
+#: Cadencii/ui/main/FormMain.cs:4837
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4829
+#: Cadencii/ui/main/FormMain.HEAD.cs:4748
 msgid "Insert Lyrics"
 msgstr "插入歌詞"
 
-#: Cadencii/ui/main/FormMain.cs:4753
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4754
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22473
+#: Cadencii/ui/main/FormMain.cs:4842
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4834
+#: Cadencii/ui/main/FormMain.HEAD.cs:4753
 msgid "Track On"
 msgstr "Track On"
 
-#: Cadencii/ui/main/FormMain.cs:4755
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4756
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22475
+#: Cadencii/ui/main/FormMain.cs:4844
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4836
+#: Cadencii/ui/main/FormMain.HEAD.cs:4755
 msgid "Add Track"
 msgstr "追加Track"
 
-#: Cadencii/ui/main/FormMain.cs:4757
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4758
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22477
+#: Cadencii/ui/main/FormMain.cs:4846
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4838
+#: Cadencii/ui/main/FormMain.HEAD.cs:4757
 msgid "Copy Track"
 msgstr "複製 Track"
 
-#: Cadencii/ui/main/FormMain.cs:4759
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4760
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22479
+#: Cadencii/ui/main/FormMain.cs:4848
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4840
+#: Cadencii/ui/main/FormMain.HEAD.cs:4759
 msgid "Rename Track"
 msgstr "重新命名Track"
 
-#: Cadencii/ui/main/FormMain.cs:4760
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4761
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22480
+#: Cadencii/ui/main/FormMain.cs:4849
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4841
+#: Cadencii/ui/main/FormMain.HEAD.cs:4760
 msgid "Delete Track"
 msgstr "刪除Track"
 
-#: Cadencii/ui/main/FormMain.cs:4763
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4764
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22483
+#: Cadencii/ui/main/FormMain.cs:4852
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4844
+#: Cadencii/ui/main/FormMain.HEAD.cs:4763
 msgid "Render Current Track"
 msgstr "合成目前這個音軌"
 
-#: Cadencii/ui/main/FormMain.cs:4765
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4766
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22485
+#: Cadencii/ui/main/FormMain.cs:4854
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4846
+#: Cadencii/ui/main/FormMain.HEAD.cs:4765
 msgid "Render All Tracks"
 msgstr "合成所有的音軌"
 
-#: Cadencii/ui/main/FormMain.cs:4800
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4801
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22520
+#: Cadencii/ui/main/FormMain.cs:4889
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4881
+#: Cadencii/ui/main/FormMain.HEAD.cs:4800
 msgid "Delete Bezier Point"
 msgstr "刪除貝茲點"
 
-#: Cadencii/ui/main/FormMain.cs:4808
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4809
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22528
+#: Cadencii/ui/main/FormMain.cs:4897
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4889
+#: Cadencii/ui/main/FormMain.HEAD.cs:4808
 msgid "Set start marker"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4809
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4810
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22529
+#: Cadencii/ui/main/FormMain.cs:4898
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4890
+#: Cadencii/ui/main/FormMain.HEAD.cs:4809
 msgid "Set end marker"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:4813
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:4814
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22533
+#: Cadencii/ui/main/FormMain.cs:4902
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4894
+#: Cadencii/ui/main/FormMain.HEAD.cs:4813
 msgid "Game Controler"
 msgstr "遊戲控制器"
 
-#: Cadencii/ui/main/FormMain.cs:5286 Cadencii/ui/main/FormMain.cs:14065
-#: Cadencii/ui/main/FormMain.cs:14221 Cadencii/ui/main/FormMain.cs:14594
-#: Cadencii/ui/main/FormMain.cs:14634
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:5287
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14078
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14234
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14607
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14647
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:23006
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:31785
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:31941
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32314
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32354
+#: Cadencii/ui/main/FormMain.cs:5375 Cadencii/ui/main/FormMain.cs:14170
+#: Cadencii/ui/main/FormMain.cs:14326 Cadencii/ui/main/FormMain.cs:14699
+#: Cadencii/ui/main/FormMain.cs:14739
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:5367
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14158
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14314
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14687
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14727
+#: Cadencii/ui/main/FormMain.HEAD.cs:5286
+#: Cadencii/ui/main/FormMain.HEAD.cs:14077
+#: Cadencii/ui/main/FormMain.HEAD.cs:14233
+#: Cadencii/ui/main/FormMain.HEAD.cs:14606
+#: Cadencii/ui/main/FormMain.HEAD.cs:14646
 msgid "Cannot remove first symbol of track!"
 msgstr "無法刪除曲頭的符號！"
 
-#: Cadencii/ui/main/FormMain.cs:5979
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:5980
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:23699
+#: Cadencii/ui/main/FormMain.cs:6068
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6060
+#: Cadencii/ui/main/FormMain.HEAD.cs:5979
 msgid "Input new name of track"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:6007
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:6008
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:23727
+#: Cadencii/ui/main/FormMain.cs:6096
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6088
+#: Cadencii/ui/main/FormMain.HEAD.cs:6007
 #, csharp-format
 msgid "Do you wish to remove track? {0} : '{1}'"
 msgstr "Do you wish to remove track? {0} : '{1}'"
 
-#: Cadencii/ui/main/FormMain.cs:6557
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:6558
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:24277
+#: Cadencii/ui/main/FormMain.cs:6646
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6638
+#: Cadencii/ui/main/FormMain.HEAD.cs:6557
 msgid "[file not found]"
 msgstr "[找不到檔案]"
 
-#: Cadencii/ui/main/FormMain.cs:6797 Cadencii/ui/main/FormMain.cs:6839
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:6798
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:6840
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:24517
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:24559
+#: Cadencii/ui/main/FormMain.cs:6886 Cadencii/ui/main/FormMain.cs:6928
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6878
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:6920
+#: Cadencii/ui/main/FormMain.HEAD.cs:6797
+#: Cadencii/ui/main/FormMain.HEAD.cs:6839
 #, csharp-format
 msgid "cannot create cache directory: '{0}'"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:10869 Cadencii/ui/main/FormMain.cs:16600
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:10870
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16613
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28589
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34320
+#: Cadencii/ui/main/FormMain.cs:10962 Cadencii/ui/main/FormMain.cs:16705
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:10950
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16693
+#: Cadencii/ui/main/FormMain.HEAD.cs:10869
+#: Cadencii/ui/main/FormMain.HEAD.cs:16612
 #, csharp-format
 msgid ""
 "Invalid note data.\n"
@@ -1451,437 +2539,890 @@ msgid ""
 "-> Piano roll : Blank sequence."
 msgstr "錯誤的音符資訊. Track {0} : {1}  -> Piano roll : 空的 sequence."
 
-#: Cadencii/ui/main/FormMain.cs:11161
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11162
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28881
+#: Cadencii/ui/main/FormMain.cs:11254
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11242
+#: Cadencii/ui/main/FormMain.HEAD.cs:11161
 msgid "MusicXML(*.xml)|*.xml"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11195
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11196
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28915
+#: Cadencii/ui/main/FormMain.cs:11288
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11276
+#: Cadencii/ui/main/FormMain.HEAD.cs:11195
 msgid "Choose destination directory"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11229 Cadencii/ui/main/FormMain.cs:11521
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11230
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11522
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:28949
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29241
+#: Cadencii/ui/main/FormMain.cs:11322 Cadencii/ui/main/FormMain.cs:11614
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11310
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11602
+#: Cadencii/ui/main/FormMain.HEAD.cs:11229
+#: Cadencii/ui/main/FormMain.HEAD.cs:11521
 msgid "invalid rendering region; start>=end"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11290
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11291
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29010
+#: Cadencii/ui/main/FormMain.cs:11383
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11371
+#: Cadencii/ui/main/FormMain.HEAD.cs:11290
 msgid "Export UTAU (*.ust)"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11349
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11350
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29069
+#: Cadencii/ui/main/FormMain.cs:11442
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11430
+#: Cadencii/ui/main/FormMain.HEAD.cs:11349
 msgid "Export VSQ (*.vsq)"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11380
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11381
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29100
+#: Cadencii/ui/main/FormMain.cs:11473
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11461
+#: Cadencii/ui/main/FormMain.HEAD.cs:11380
 msgid "Export VSQX (*.vsqx)"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11395
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11396
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29115
+#: Cadencii/ui/main/FormMain.cs:11488
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11476
+#: Cadencii/ui/main/FormMain.HEAD.cs:11395
 msgid ""
 "UTAU singer not registered yet.\n"
 "Continue ?"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11396 Cadencii/ui/main/FormMain.cs:14916
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11397
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14929
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29116
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32636
+#: Cadencii/ui/main/FormMain.cs:2042 Cadencii/ui/main/FormMain.cs:11489
+#: Cadencii/ui/main/FormMain.cs:15021
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11477
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:15009
+#: Cadencii/ui/main/FormMain.HEAD.cs:11396
+#: Cadencii/ui/main/FormMain.HEAD.cs:14928
 msgid "Info"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11415
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11416
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29135
+#: Cadencii/ui/main/FormMain.cs:11508
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11496
+#: Cadencii/ui/main/FormMain.HEAD.cs:11415
 msgid "Text File(*.txt)|*.txt"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:11494
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11495
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29214
+#: Cadencii/ui/main/FormMain.cs:11587
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11575
+#: Cadencii/ui/main/FormMain.HEAD.cs:11494
 msgid "Wave Export"
 msgstr "輸出Wave檔"
 
-#: Cadencii/ui/main/FormMain.cs:11599 Cadencii/ui/main/FormMain.cs:11607
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11600
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:11608
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29319
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29327
+#: Cadencii/ui/main/FormMain.cs:11692 Cadencii/ui/main/FormMain.cs:11700
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11680
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:11688
+#: Cadencii/ui/main/FormMain.HEAD.cs:11599
+#: Cadencii/ui/main/FormMain.HEAD.cs:11607
 msgid "Invalid MIDI file."
 msgstr "Invalid MIDI file."
 
-#: Cadencii/ui/main/FormMain.cs:12095 Cadencii/ui/main/FormMain.cs:12388
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:12108
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:12401
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:29815
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:30108
+#: Cadencii/ui/main/FormMain.cs:12200 Cadencii/ui/main/FormMain.cs:12493
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:12188
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:12481
+#: Cadencii/ui/main/FormMain.HEAD.cs:12107
+#: Cadencii/ui/main/FormMain.HEAD.cs:12400
 msgid "Invalid VSQ/VOCALOID MIDI file"
 msgstr "Invalid VSQ/VOCALOID MIDI file"
 
-#: Cadencii/ui/main/FormMain.cs:12928
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:12941
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:30648
+#: Cadencii/ui/main/FormMain.cs:13033
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:13021
+#: Cadencii/ui/main/FormMain.HEAD.cs:12940
 msgid "Go to the first"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:13432
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:13445
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:31152
+#: Cadencii/ui/main/FormMain.cs:13537
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:13525
+#: Cadencii/ui/main/FormMain.HEAD.cs:13444
 msgid "input pre-measure"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:14881
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14894
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32601
+#: Cadencii/ui/main/FormMain.cs:14986
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14974
+#: Cadencii/ui/main/FormMain.HEAD.cs:14893
 msgid "file not found"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:14903
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14916
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32623
+#: Cadencii/ui/main/FormMain.cs:15008
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:14996
+#: Cadencii/ui/main/FormMain.HEAD.cs:14915
 msgid "Enabled"
 msgstr "有效"
 
-#: Cadencii/ui/main/FormMain.cs:14915
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:14928
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:32635
+#: Cadencii/ui/main/FormMain.cs:15020
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:15008
+#: Cadencii/ui/main/FormMain.HEAD.cs:14927
 msgid "Log file has not generated yet."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16647
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16660
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34367
+#: Cadencii/ui/main/FormMain.cs:16752
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16740
+#: Cadencii/ui/main/FormMain.HEAD.cs:16659
 msgid "Invalid XVSQ file"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16810
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16823
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34530
+#: Cadencii/ui/main/FormMain.cs:16915
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16903
+#: Cadencii/ui/main/FormMain.HEAD.cs:16822
 msgid "Undo."
 msgstr "Undo."
 
-#: Cadencii/ui/main/FormMain.cs:16812
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16825
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34532
+#: Cadencii/ui/main/FormMain.cs:16917
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16905
+#: Cadencii/ui/main/FormMain.HEAD.cs:16824
 msgid "Redo."
 msgstr "Redo."
 
-#: Cadencii/ui/main/FormMain.cs:16814
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16827
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34534
+#: Cadencii/ui/main/FormMain.cs:16919
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16907
+#: Cadencii/ui/main/FormMain.HEAD.cs:16826
 msgid "Cut selected items."
 msgstr "Cut selected items."
 
-#: Cadencii/ui/main/FormMain.cs:16816
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16829
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34536
+#: Cadencii/ui/main/FormMain.cs:16921
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16909
+#: Cadencii/ui/main/FormMain.HEAD.cs:16828
 msgid "Copy selected items."
 msgstr "Copy selected items."
 
-#: Cadencii/ui/main/FormMain.cs:16818
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16831
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34538
+#: Cadencii/ui/main/FormMain.cs:16923
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16911
+#: Cadencii/ui/main/FormMain.HEAD.cs:16830
 msgid "Paste copied items to current song position."
 msgstr "Paste copied items to current song position."
 
-#: Cadencii/ui/main/FormMain.cs:16820
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16833
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34540
+#: Cadencii/ui/main/FormMain.cs:16925
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16913
+#: Cadencii/ui/main/FormMain.HEAD.cs:16832
 msgid "Delete selected items."
 msgstr "Delete selected items."
 
-#: Cadencii/ui/main/FormMain.cs:16822
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16835
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34542
+#: Cadencii/ui/main/FormMain.cs:16927
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16915
+#: Cadencii/ui/main/FormMain.HEAD.cs:16834
 msgid "Avoid automaticaly polyphonic editing."
 msgstr "Avoid automaticaly polyphonic editing."
 
-#: Cadencii/ui/main/FormMain.cs:16824
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16837
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34544
+#: Cadencii/ui/main/FormMain.cs:16929
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16917
+#: Cadencii/ui/main/FormMain.HEAD.cs:16836
 msgid "Select all items and control curves of current track."
 msgstr "Select all items and control curves of current track."
 
-#: Cadencii/ui/main/FormMain.cs:16826
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16839
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34546
+#: Cadencii/ui/main/FormMain.cs:16931
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16919
+#: Cadencii/ui/main/FormMain.HEAD.cs:16838
 msgid "Select all items of current track."
 msgstr "Select all items of current track."
 
-#: Cadencii/ui/main/FormMain.cs:16828
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16841
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34548
+#: Cadencii/ui/main/FormMain.cs:16933
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16921
+#: Cadencii/ui/main/FormMain.HEAD.cs:16840
 msgid "Show/Hide control curves."
 msgstr "Show/Hide control curves."
 
-#: Cadencii/ui/main/FormMain.cs:16830
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16843
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34550
+#: Cadencii/ui/main/FormMain.cs:16935
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16923
+#: Cadencii/ui/main/FormMain.HEAD.cs:16842
 msgid "Enable/Disable end marker."
 msgstr "Enable/Disable end marker."
 
-#: Cadencii/ui/main/FormMain.cs:16832
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16845
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34552
+#: Cadencii/ui/main/FormMain.cs:16937
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16925
+#: Cadencii/ui/main/FormMain.HEAD.cs:16844
 msgid "Show/Hide grid line."
 msgstr "Show/Hide grid line."
 
-#: Cadencii/ui/main/FormMain.cs:16834
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16847
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34554
+#: Cadencii/ui/main/FormMain.cs:16939
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16927
+#: Cadencii/ui/main/FormMain.HEAD.cs:16846
 msgid "Show/Hide icon palette"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16836
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16849
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34556
+#: Cadencii/ui/main/FormMain.cs:16941
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16929
+#: Cadencii/ui/main/FormMain.HEAD.cs:16848
 msgid "Show/Hide lyrics."
 msgstr "Show/Hide lyrics."
 
-#: Cadencii/ui/main/FormMain.cs:16838
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16851
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34558
+#: Cadencii/ui/main/FormMain.cs:16943
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16931
+#: Cadencii/ui/main/FormMain.HEAD.cs:16850
 msgid "Show/Hide mixer window."
 msgstr "Show/Hide mixer window."
 
-#: Cadencii/ui/main/FormMain.cs:16840
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16853
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34560
+#: Cadencii/ui/main/FormMain.cs:16945
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16933
+#: Cadencii/ui/main/FormMain.HEAD.cs:16852
 msgid "Show/Hide expression lines."
 msgstr "Show/Hide expression lines."
 
-#: Cadencii/ui/main/FormMain.cs:16842
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16855
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34562
+#: Cadencii/ui/main/FormMain.cs:16947
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16935
+#: Cadencii/ui/main/FormMain.HEAD.cs:16854
 msgid "Show/Hide navigation view"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16844
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16857
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34564
+#: Cadencii/ui/main/FormMain.cs:16949
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16937
+#: Cadencii/ui/main/FormMain.HEAD.cs:16856
 msgid "Show/Hide pitch bend lines."
 msgstr "Show/Hide pitch bend lines."
 
-#: Cadencii/ui/main/FormMain.cs:16846
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16859
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34566
+#: Cadencii/ui/main/FormMain.cs:16951
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16939
+#: Cadencii/ui/main/FormMain.HEAD.cs:16858
 msgid "Open VSTi plugin window"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16848
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16861
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34568
+#: Cadencii/ui/main/FormMain.cs:16953
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16941
+#: Cadencii/ui/main/FormMain.HEAD.cs:16860
 msgid "Show/Hide property window."
 msgstr "Show/Hide property window."
 
-#: Cadencii/ui/main/FormMain.cs:16850
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16863
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34570
+#: Cadencii/ui/main/FormMain.cs:16955
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16943
+#: Cadencii/ui/main/FormMain.HEAD.cs:16862
 msgid "Enable/Disable start marker."
 msgstr "Enable/Disable start marker."
 
-#: Cadencii/ui/main/FormMain.cs:16852
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16865
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34572
+#: Cadencii/ui/main/FormMain.cs:16957
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16945
+#: Cadencii/ui/main/FormMain.HEAD.cs:16864
 msgid "Show/Hide waveform."
 msgstr "Show/Hide waveform."
 
-#: Cadencii/ui/main/FormMain.cs:16854
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16867
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34574
+#: Cadencii/ui/main/FormMain.cs:16959
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16947
+#: Cadencii/ui/main/FormMain.HEAD.cs:16866
 msgid "Create new project."
 msgstr "Create new project."
 
-#: Cadencii/ui/main/FormMain.cs:16856
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16869
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34576
+#: Cadencii/ui/main/FormMain.cs:16961
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16949
+#: Cadencii/ui/main/FormMain.HEAD.cs:16868
 msgid "Open Cadencii project."
 msgstr "Open Cadencii project."
 
-#: Cadencii/ui/main/FormMain.cs:16858
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16871
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34578
+#: Cadencii/ui/main/FormMain.cs:16963
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16951
+#: Cadencii/ui/main/FormMain.HEAD.cs:16870
 msgid "Save current project."
 msgstr "Save current project."
 
-#: Cadencii/ui/main/FormMain.cs:16860
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16873
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34580
+#: Cadencii/ui/main/FormMain.cs:16965
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16953
+#: Cadencii/ui/main/FormMain.HEAD.cs:16872
 msgid "Save current project with new name."
 msgstr "Save current project with new name."
 
-#: Cadencii/ui/main/FormMain.cs:16862
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16875
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34582
+#: Cadencii/ui/main/FormMain.cs:16967
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16955
+#: Cadencii/ui/main/FormMain.HEAD.cs:16874
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "Open VSQ / VOCALOID MIDI and create new project."
 
-#: Cadencii/ui/main/FormMain.cs:16864
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16877
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34584
+#: Cadencii/ui/main/FormMain.cs:16969
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16957
+#: Cadencii/ui/main/FormMain.HEAD.cs:16876
 msgid "Open UTAU project and create new project."
 msgstr "Open UTAU project and create new project."
 
-#: Cadencii/ui/main/FormMain.cs:16866
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16879
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34586
+#: Cadencii/ui/main/FormMain.cs:16971
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16959
+#: Cadencii/ui/main/FormMain.HEAD.cs:16878
 msgid "Import."
 msgstr "Import."
 
-#: Cadencii/ui/main/FormMain.cs:16868
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16881
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34588
+#: Cadencii/ui/main/FormMain.cs:16973
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16961
+#: Cadencii/ui/main/FormMain.HEAD.cs:16880
 msgid "Import Standard MIDI."
 msgstr "Import Standard MIDI."
 
-#: Cadencii/ui/main/FormMain.cs:16870
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16883
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34590
+#: Cadencii/ui/main/FormMain.cs:16975
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16963
+#: Cadencii/ui/main/FormMain.HEAD.cs:16882
 msgid "Import UTAU project"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16872
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16885
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34592
+#: Cadencii/ui/main/FormMain.cs:16977
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16965
+#: Cadencii/ui/main/FormMain.HEAD.cs:16884
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr "Import VSQ / VOCALOID MIDI."
 
-#: Cadencii/ui/main/FormMain.cs:16874
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16887
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34594
+#: Cadencii/ui/main/FormMain.cs:16979
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16967
+#: Cadencii/ui/main/FormMain.HEAD.cs:16886
 msgid "Export."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16876
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16889
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34596
+#: Cadencii/ui/main/FormMain.cs:16981
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16969
+#: Cadencii/ui/main/FormMain.HEAD.cs:16888
 msgid "Export all tracks to serial numbered WAVEs"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16878
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16891
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34598
+#: Cadencii/ui/main/FormMain.cs:16983
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16971
+#: Cadencii/ui/main/FormMain.HEAD.cs:16890
 msgid "Export to WAVE file."
 msgstr "Export to WAVE file."
 
-#: Cadencii/ui/main/FormMain.cs:16880
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16893
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34600
+#: Cadencii/ui/main/FormMain.cs:16985
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16973
+#: Cadencii/ui/main/FormMain.HEAD.cs:16892
 msgid "Export current track as Music XML"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16882
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16895
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34602
+#: Cadencii/ui/main/FormMain.cs:16987
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16975
+#: Cadencii/ui/main/FormMain.HEAD.cs:16894
 msgid "Export to Standard MIDI."
 msgstr "Export to Standard MIDI."
 
-#: Cadencii/ui/main/FormMain.cs:16884
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16897
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34604
+#: Cadencii/ui/main/FormMain.cs:16989
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16977
+#: Cadencii/ui/main/FormMain.HEAD.cs:16896
 msgid "Export current track as UTAU project file"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16886
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16899
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34606
+#: Cadencii/ui/main/FormMain.cs:16991
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16979
+#: Cadencii/ui/main/FormMain.HEAD.cs:16898
 msgid "Export to VSQ"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16888
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16901
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34608
+#: Cadencii/ui/main/FormMain.cs:16993
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16981
+#: Cadencii/ui/main/FormMain.HEAD.cs:16900
 msgid "Export to VSQX"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16890
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16903
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34610
+#: Cadencii/ui/main/FormMain.cs:16995
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16983
+#: Cadencii/ui/main/FormMain.HEAD.cs:16902
 msgid "Export current track as Meta-text for vConnect"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16892
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16905
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34612
+#: Cadencii/ui/main/FormMain.cs:16997
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16985
+#: Cadencii/ui/main/FormMain.HEAD.cs:16904
 msgid "Recent projects."
 msgstr "Recent projects."
 
-#: Cadencii/ui/main/FormMain.cs:16894
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16907
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34614
+#: Cadencii/ui/main/FormMain.cs:16999
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16987
+#: Cadencii/ui/main/FormMain.HEAD.cs:16906
 msgid "Close this window."
 msgstr "Close this window."
 
-#: Cadencii/ui/main/FormMain.cs:16896
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16909
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34616
+#: Cadencii/ui/main/FormMain.cs:17001
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16989
+#: Cadencii/ui/main/FormMain.HEAD.cs:16908
 msgid "Lengthen note end to neighboring note."
 msgstr "Lengthen note end to neighboring note."
 
-#: Cadencii/ui/main/FormMain.cs:16898
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16911
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34618
+#: Cadencii/ui/main/FormMain.cs:17003
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16991
+#: Cadencii/ui/main/FormMain.HEAD.cs:16910
 msgid "Import lyric."
 msgstr "Import lyric."
 
-#: Cadencii/ui/main/FormMain.cs:16901
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16914
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34621
+#: Cadencii/ui/main/FormMain.cs:17006
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16994
+#: Cadencii/ui/main/FormMain.HEAD.cs:16913
 msgid "Import tempo from ReWire host."
 msgstr "Import tempo from ReWire host."
 
-#: Cadencii/ui/main/FormMain.cs:16901 Cadencii/ui/main/FormMain.cs:16903
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16914
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16916
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34621
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34623
+#: Cadencii/ui/main/FormMain.cs:17006 Cadencii/ui/main/FormMain.cs:17008
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16994
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16996
+#: Cadencii/ui/main/FormMain.HEAD.cs:16913
+#: Cadencii/ui/main/FormMain.HEAD.cs:16915
 msgid "(not implemented)"
 msgstr "(not implemented)"
 
-#: Cadencii/ui/main/FormMain.cs:16903
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16916
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34623
+#: Cadencii/ui/main/FormMain.cs:17008
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16996
+#: Cadencii/ui/main/FormMain.HEAD.cs:16915
 msgid "Reload VSTi dll."
 msgstr "Reload VSTi dll."
 
-#: Cadencii/ui/main/FormMain.cs:16906
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16919
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34626
+#: Cadencii/ui/main/FormMain.cs:17011
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:16999
+#: Cadencii/ui/main/FormMain.HEAD.cs:16918
 msgid "Correct overlapped item."
 msgstr "Correct overlapped item."
 
-#: Cadencii/ui/main/FormMain.cs:16908
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16921
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34628
+#: Cadencii/ui/main/FormMain.cs:17013
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17001
+#: Cadencii/ui/main/FormMain.HEAD.cs:16920
 msgid "Insert bar."
 msgstr "Insert bar."
 
-#: Cadencii/ui/main/FormMain.cs:16910
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16923
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34630
+#: Cadencii/ui/main/FormMain.cs:17015
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17003
+#: Cadencii/ui/main/FormMain.HEAD.cs:16922
 msgid "Delete bar."
 msgstr "Delete bar."
 
-#: Cadencii/ui/main/FormMain.cs:16912
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16925
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34632
+#: Cadencii/ui/main/FormMain.cs:17017
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17005
+#: Cadencii/ui/main/FormMain.HEAD.cs:16924
 msgid "Randomize items."
 msgstr "Randomize items."
 
-#: Cadencii/ui/main/FormMain.cs:16914
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16927
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34634
+#: Cadencii/ui/main/FormMain.cs:17019
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17007
+#: Cadencii/ui/main/FormMain.HEAD.cs:16926
 msgid "Edit portamento/accent/decay of selected item"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16916
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16929
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34636
+#: Cadencii/ui/main/FormMain.cs:17021
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17009
+#: Cadencii/ui/main/FormMain.HEAD.cs:16928
 msgid "Edit vibrato length and type of selected item"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16918
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16931
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34638
+#: Cadencii/ui/main/FormMain.cs:17023
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17011
+#: Cadencii/ui/main/FormMain.HEAD.cs:16930
 msgid "Translate all phrase into phonetic symbol"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16920
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16933
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34640
+#: Cadencii/ui/main/FormMain.cs:17025
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17013
+#: Cadencii/ui/main/FormMain.HEAD.cs:16932
 msgid "Open configuration dialog for phonetic symnol dictionaries"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16922
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16935
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34642
+#: Cadencii/ui/main/FormMain.cs:17027
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17015
+#: Cadencii/ui/main/FormMain.HEAD.cs:16934
 msgid "Copy vibrato config of selected item into vibrato preset"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16924
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16937
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34644
+#: Cadencii/ui/main/FormMain.cs:17029
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17017
+#: Cadencii/ui/main/FormMain.HEAD.cs:16936
 msgid "Read and compile all scripts and update the list of them"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16926
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16939
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34646
+#: Cadencii/ui/main/FormMain.cs:17031
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17019
+#: Cadencii/ui/main/FormMain.HEAD.cs:16938
 msgid "Open configuration dialog for editor configs"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16928
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16941
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34648
+#: Cadencii/ui/main/FormMain.cs:17033
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17021
+#: Cadencii/ui/main/FormMain.HEAD.cs:16940
 msgid "Change quantize resolution"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16930
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16943
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34650
+#: Cadencii/ui/main/FormMain.cs:17035
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17023
+#: Cadencii/ui/main/FormMain.HEAD.cs:16942
 msgid "Connect/Remove/Configure game controler"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16932
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16945
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34652
+#: Cadencii/ui/main/FormMain.cs:17037
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17025
+#: Cadencii/ui/main/FormMain.HEAD.cs:16944
 msgid "Configuration of palette tool"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16934
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16947
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34654
+#: Cadencii/ui/main/FormMain.cs:17039
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17027
+#: Cadencii/ui/main/FormMain.HEAD.cs:16946
 msgid "Open configuration dialog for shortcut key"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16936
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16949
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34656
+#: Cadencii/ui/main/FormMain.cs:17041
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17029
+#: Cadencii/ui/main/FormMain.HEAD.cs:16948
 msgid "Open configuration dialog for vibrato preset"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16938
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16951
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34658
+#: Cadencii/ui/main/FormMain.cs:17043
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17031
+#: Cadencii/ui/main/FormMain.HEAD.cs:16950
 msgid "Edit default singer style"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16940
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16953
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34660
+#: Cadencii/ui/main/FormMain.cs:17045
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17033
+#: Cadencii/ui/main/FormMain.HEAD.cs:16952
 msgid "Configuration of this sequence."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16942
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16955
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34662
+#: Cadencii/ui/main/FormMain.cs:17047
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17035
+#: Cadencii/ui/main/FormMain.HEAD.cs:16954
 msgid "Add new track."
 msgstr "Add new track."
 
-#: Cadencii/ui/main/FormMain.cs:16944
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16957
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34664
+#: Cadencii/ui/main/FormMain.cs:17049
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17037
+#: Cadencii/ui/main/FormMain.HEAD.cs:16956
 msgid "Add/Remove/Edit background music"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16946
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16959
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34666
+#: Cadencii/ui/main/FormMain.cs:17051
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17039
+#: Cadencii/ui/main/FormMain.HEAD.cs:16958
 msgid "Enable current track."
 msgstr "Enable current track."
 
-#: Cadencii/ui/main/FormMain.cs:16948
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16961
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34668
+#: Cadencii/ui/main/FormMain.cs:17053
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17041
+#: Cadencii/ui/main/FormMain.HEAD.cs:16960
 msgid "Copy current track."
 msgstr "Copy current track."
 
-#: Cadencii/ui/main/FormMain.cs:16950
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16963
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34670
+#: Cadencii/ui/main/FormMain.cs:17055
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17043
+#: Cadencii/ui/main/FormMain.HEAD.cs:16962
 msgid "Change track name."
 msgstr "Change track name."
 
-#: Cadencii/ui/main/FormMain.cs:16952
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16965
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34672
+#: Cadencii/ui/main/FormMain.cs:17057
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17045
+#: Cadencii/ui/main/FormMain.HEAD.cs:16964
 msgid "Delete current track."
 msgstr "Delete current track."
 
-#: Cadencii/ui/main/FormMain.cs:16954
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16967
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34674
+#: Cadencii/ui/main/FormMain.cs:17059
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17047
+#: Cadencii/ui/main/FormMain.HEAD.cs:16966
 msgid "Render current track."
 msgstr "Render current track."
 
-#: Cadencii/ui/main/FormMain.cs:16956
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16969
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34676
+#: Cadencii/ui/main/FormMain.cs:17061
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17049
+#: Cadencii/ui/main/FormMain.HEAD.cs:16968
 msgid "Render all tracks."
 msgstr "Render all tracks."
 
-#: Cadencii/ui/main/FormMain.cs:16958
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16971
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34678
+#: Cadencii/ui/main/FormMain.cs:17063
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17051
+#: Cadencii/ui/main/FormMain.HEAD.cs:16970
 msgid "Show background items."
 msgstr "Show background items."
 
-#: Cadencii/ui/main/FormMain.cs:16960
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16973
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34680
+#: Cadencii/ui/main/FormMain.cs:17065
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17053
+#: Cadencii/ui/main/FormMain.HEAD.cs:16972
 msgid "Select voice synthesis engine."
 msgstr "Select voice synthesis engine."
 
-#: Cadencii/ui/main/FormMain.cs:16962
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16975
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34682
+#: Cadencii/ui/main/FormMain.cs:17067
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17055
+#: Cadencii/ui/main/FormMain.HEAD.cs:16974
 msgid "AquesTone"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16964
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16977
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34684
+#: Cadencii/ui/main/FormMain.cs:17069
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17057
+#: Cadencii/ui/main/FormMain.HEAD.cs:16976
 msgid "UTAU"
 msgstr "UTAU"
 
-#: Cadencii/ui/main/FormMain.cs:16966
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16979
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34686
+#: Cadencii/ui/main/FormMain.cs:17071
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17059
+#: Cadencii/ui/main/FormMain.HEAD.cs:16978
 msgid "vConnect-STAND"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16968
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16981
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34688
+#: Cadencii/ui/main/FormMain.cs:17073
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17061
+#: Cadencii/ui/main/FormMain.HEAD.cs:16980
 msgid "VOCALOID1"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:16970
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16983
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34690
+#: Cadencii/ui/main/FormMain.cs:17075
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17063
+#: Cadencii/ui/main/FormMain.HEAD.cs:16982
 msgid "VOCALOID2"
 msgstr "VOCALOID2"
 
-#: Cadencii/ui/main/FormMain.cs:16972
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:16985
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34692
+#: Cadencii/ui/main/FormMain.cs:17077
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17065
+#: Cadencii/ui/main/FormMain.HEAD.cs:16984
 msgid "Clear menu items"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17081
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:17094
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34801
+#: Cadencii/ui/main/FormMain.cs:17186
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17174
+#: Cadencii/ui/main/FormMain.HEAD.cs:17093
 msgid "Input Offset Seconds"
 msgstr "Input Offset Seconds"
 
-#: Cadencii/ui/main/FormMain.cs:17172
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:17185
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34892
+#: Cadencii/ui/main/FormMain.cs:17277
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17265
+#: Cadencii/ui/main/FormMain.HEAD.cs:17184
 #, csharp-format
 msgid "file '{0}' is already registered as BGM."
 msgstr "file '{0}' is already registered as BGM."
 
-#: Cadencii/ui/main/FormMain.cs:17193
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:17206
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34913
+#: Cadencii/ui/main/FormMain.cs:17298
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17286
+#: Cadencii/ui/main/FormMain.HEAD.cs:17205
 #, csharp-format
 msgid "remove '{0}'?"
 msgstr "remove '{0}'?"
 
-#: Cadencii/ui/main/FormMain.cs:17278
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:17291
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:34998
+#: Cadencii/ui/main/FormMain.cs:17383
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:17371
+#: Cadencii/ui/main/FormMain.HEAD.cs:17290
 msgid "Failed loading script."
 msgstr "無法讀取腳本"
 
-#: Cadencii/ui/main/FormMain.cs:17648
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19668
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:22387
+#: Cadencii/ui/main/FormMain.cs:2029 Cadencii/ui/main/FormMain.cs:4756
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2029
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:4748
 msgid "Check For Updates"
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17649
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19669
+#: Cadencii/ui/main/FormMain.cs:2030
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2030
 #, csharp-format
 msgid "New version {0} is available."
 msgstr ""
 
-#: Cadencii/ui/main/FormMain.cs:17658
+#: Cadencii/ui/main/FormMain.CONFLICT.cs:19678
+#: Cadencii/ui/main/FormMain.cs:2047
+#: Cadencii/ui/main/FormMain.feature_check_update.cs:2039
 msgid "Can't get update information. Please retry after few minutes."
+msgstr ""
+
+#: Cadencii/ui/main/FormMain.cs:2032
+msgid "Automatically check for updates"
+msgstr ""
+
+#: Cadencii/ui/main/FormMain.cs:2041
+msgid "Cadencii is up to date"
 msgstr ""
 
 #: Cadencii/ui/preference/Preference.cs:758
@@ -2118,25 +3659,29 @@ msgid ""
 "(restart will NOT be automatically done)"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:126
+#: vConnectStandDBConvert/MainForm.cs:129
 msgid "Completed"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:183
+#: vConnectStandDBConvert/MainForm.cs:189
 msgid "UTAU DB Converter for vConnect-STAND"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:184
+#: vConnectStandDBConvert/MainForm.cs:190
 msgid "Select source UTAU database"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:185
-#: vConnectStandDBConvert/MainForm.cs:188
+#: vConnectStandDBConvert/MainForm.cs:191
+#: vConnectStandDBConvert/MainForm.cs:194
 msgid "Select"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:187
+#: vConnectStandDBConvert/MainForm.cs:193
 msgid "Select destination directory"
+msgstr ""
+
+#: vConnectStandDBConvert/MainForm.cs:196
+msgid "Convert"
 msgstr ""
 
 #~ msgid "Save As"
