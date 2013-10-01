@@ -187,7 +187,7 @@ namespace cadencii.vconnect
             Messaging.setLanguage(Messaging.getRuntimeLanguageName());
 
             Text = _("UTAU DB Converter for vConnect-STAND");
-            groupSourceDb.Text = _("Select source UTAU database");
+            groupSourceDb.Text = _("Select oto.ini file of source UTAU database");
             buttonSelectSourceDb.Text = _("Select");
 
             groupDestinationDb.Text = _("Select destination directory");

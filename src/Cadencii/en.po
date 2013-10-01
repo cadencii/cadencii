@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-02 00:49+0900\n"
+"POT-Creation-Date: 2013-10-02 01:04+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -3668,7 +3668,7 @@ msgid "UTAU DB Converter for vConnect-STAND"
 msgstr ""
 
 #: vConnectStandDBConvert/MainForm.cs:190
-msgid "Select source UTAU database"
+msgid "Select oto.ini file of source UTAU database"
 msgstr ""
 
 #: vConnectStandDBConvert/MainForm.cs:191
