@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-02 01:05+0900\n"
+"POT-Creation-Date: 2013-10-02 23:35+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -149,7 +149,7 @@ msgstr "エラーの詳細"
 #: Cadencii/FormWordDictionaryController.cs:184
 #: Cadencii/ui/dotnet/FormWorkerUi.cs:60
 #: Cadencii/ui/preference/Preference.cs:754
-#: vConnectStandDBConvert/MainForm.cs:197
+#: vConnectStandDBConvert/MainForm.cs:201
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -3675,24 +3675,39 @@ msgstr ""
 msgid "Completed"
 msgstr "完了しました"
 
-#: vConnectStandDBConvert/MainForm.cs:189
+#: vConnectStandDBConvert/MainForm.cs:173
+msgid ""
+"This process will create a copy of source UTAU DB.\n"
+"\n"
+"Please make sure that you are not in violation of the license terms of the "
+"DB."
+msgstr ""
+"この処理によって変換元UTAU音源のコピーが作成されます。\n"
+"\n"
+"音源のライセンス・使用規約に違反しないよう気をつけてください。"
+
+#: vConnectStandDBConvert/MainForm.cs:174
+msgid "Notice"
+msgstr "注意事項"
+
+#: vConnectStandDBConvert/MainForm.cs:193
 msgid "UTAU DB Converter for vConnect-STAND"
 msgstr "UTAU DBをvConnect-STAND用DBに変換"
 
-#: vConnectStandDBConvert/MainForm.cs:190
+#: vConnectStandDBConvert/MainForm.cs:194
 msgid "Select oto.ini file of source UTAU database"
 msgstr "変換元の UTAU DB の oto.ini ファイルを指定してください"
 
-#: vConnectStandDBConvert/MainForm.cs:191
-#: vConnectStandDBConvert/MainForm.cs:194
+#: vConnectStandDBConvert/MainForm.cs:195
+#: vConnectStandDBConvert/MainForm.cs:198
 msgid "Select"
 msgstr "選択"
 
-#: vConnectStandDBConvert/MainForm.cs:193
+#: vConnectStandDBConvert/MainForm.cs:197
 msgid "Select destination directory"
 msgstr "出力先のディレクトリを選択して下さい"
 
-#: vConnectStandDBConvert/MainForm.cs:196
+#: vConnectStandDBConvert/MainForm.cs:200
 msgid "Convert"
 msgstr "変換"
 

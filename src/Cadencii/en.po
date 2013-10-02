@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-02 01:04+0900\n"
+"POT-Creation-Date: 2013-10-02 23:34+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -148,7 +148,7 @@ msgstr ""
 #: Cadencii/FormWordDictionaryController.cs:184
 #: Cadencii/ui/dotnet/FormWorkerUi.cs:60
 #: Cadencii/ui/preference/Preference.cs:754
-#: vConnectStandDBConvert/MainForm.cs:197
+#: vConnectStandDBConvert/MainForm.cs:201
 msgid "Cancel"
 msgstr ""
 
@@ -3663,24 +3663,36 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:189
-msgid "UTAU DB Converter for vConnect-STAND"
+#: vConnectStandDBConvert/MainForm.cs:173
+msgid ""
+"This process will create a copy of source UTAU DB.\n"
+"\n"
+"Please make sure that you are not in violation of the license terms of the "
+"DB."
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:190
-msgid "Select oto.ini file of source UTAU database"
-msgstr ""
-
-#: vConnectStandDBConvert/MainForm.cs:191
-#: vConnectStandDBConvert/MainForm.cs:194
-msgid "Select"
+#: vConnectStandDBConvert/MainForm.cs:174
+msgid "Notice"
 msgstr ""
 
 #: vConnectStandDBConvert/MainForm.cs:193
+msgid "UTAU DB Converter for vConnect-STAND"
+msgstr ""
+
+#: vConnectStandDBConvert/MainForm.cs:194
+msgid "Select oto.ini file of source UTAU database"
+msgstr ""
+
+#: vConnectStandDBConvert/MainForm.cs:195
+#: vConnectStandDBConvert/MainForm.cs:198
+msgid "Select"
+msgstr ""
+
+#: vConnectStandDBConvert/MainForm.cs:197
 msgid "Select destination directory"
 msgstr ""
 
-#: vConnectStandDBConvert/MainForm.cs:196
+#: vConnectStandDBConvert/MainForm.cs:200
 msgid "Convert"
 msgstr ""
 

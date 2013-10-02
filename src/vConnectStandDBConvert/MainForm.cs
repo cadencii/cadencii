@@ -170,6 +170,10 @@ namespace cadencii.vconnect
 
         private void Start()
         {
+            MessageBox.Show(_("This process will create a copy of source UTAU DB.\n\nPlease make sure that you are not in violation of the license terms of the DB."),
+                            _("Notice"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);
             lock (mutex_) {
                 stop_requested_ = false;
             }
