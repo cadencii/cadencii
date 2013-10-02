@@ -2008,7 +2008,7 @@ namespace cadencii
         /// <summary>
         /// Show update information async.
         /// </summary>
-        private void showUpdateInformationAsync(bool show_message_even_if_up_to_date)
+        private void showUpdateInformationAsync(bool is_explicit_update_check)
         {
             menuHelpCheckForUpdates.Enabled = false;
             updater.UpdateInfo update_info = null;
@@ -2037,13 +2037,13 @@ namespace cadencii
                         };
                         form.showDialog(this);
                         AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates = !form.isAutomaticallyCheckForUpdates();
-                    } else if (show_message_even_if_up_to_date) {
+                    } else if (is_explicit_update_check) {
                         MessageBox.Show(_("Cadencii is up to date"),
                                         _("Info"),
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Information);
                     }
-                } else {
+                } else if (is_explicit_update_check) {
                     MessageBox.Show(_("Can't get update information. Please retry after few minutes."),
                                     _("Error"),
                                     MessageBoxButtons.OK,
