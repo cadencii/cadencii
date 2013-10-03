@@ -31,6 +31,7 @@ using cadencii.java.io;
 using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
+using cadencii.utau;
 
 namespace cadencii
 {
@@ -934,7 +935,7 @@ namespace cadencii
             for ( int i = count - 1; i >= 0; i-- ) {
                 VsqEvent item = events[ i ];
                 String search = item.ID.LyricHandle.L0.Phrase;
-                OtoArgs oa = voicedb.attachFileNameFromLyric( search );
+                OtoArgs oa = voicedb.attachFileNameFromLyric(search, item.ID.Note);
                 if ( oa.fileName == null || (oa.fileName != null && oa.fileName.Equals( "" )) ) {
                     events.RemoveAt( i );
                 }

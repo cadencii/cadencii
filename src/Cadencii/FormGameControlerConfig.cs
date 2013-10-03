@@ -70,7 +70,7 @@ namespace cadencii
             int num_dev = winmmhelp.JoyGetNumJoyDev();
 #endif
             if ( num_dev > 0 ) {
-                pictButton.Image = Resources.get_btn1().image;
+                pictButton.Image = Properties.Resources.btn1;
                 progressCount.Maximum = 8;
                 progressCount.Minimum = 0;
                 progressCount.Value = 0;
@@ -238,11 +238,11 @@ namespace cadencii
                 }
 
                 if ( index == 8 ) {
-                    pictButton.Image = Resources.get_btn2().image;
+                    pictButton.Image = Properties.Resources.btn2;
                     progressCount.Value = 0;
                     progressCount.Maximum = 4;
                 } else if ( index == 12 ) {
-                    pictButton.Image = Resources.get_btn3().image;
+                    pictButton.Image = Properties.Resources.btn3;
                     progressCount.Value = 0;
                     progressCount.Maximum = 2;
                 }
@@ -271,11 +271,11 @@ namespace cadencii
             }
 
             if ( index == 8 ) {
-                pictButton.Image = Resources.get_btn2().image;
+                pictButton.Image = Properties.Resources.btn2;
                 progressCount.Value = 0;
                 progressCount.Maximum = 4;
             } else if ( index == 12 ) {
-                pictButton.Image = Resources.get_btn3().image;
+                pictButton.Image = Properties.Resources.btn3;
                 progressCount.Value = 0;
                 progressCount.Maximum = 2;
             }

@@ -25,6 +25,7 @@ using System;
 using System.ComponentModel;
 using cadencii.java.util;
 using cadencii.vsq;
+using cadencii.utau;
 
 namespace cadencii
 {
@@ -363,8 +364,8 @@ namespace cadencii
                     VsqEvent singer = vsq_track.getSingerEventAt( editing.Clock );
                     SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
                     if ( sc != null && AppManager.mUtauVoiceDB.ContainsKey( sc.VOICEIDSTR ) ) {
-                        UtauVoiceDB db = AppManager.mUtauVoiceDB[ sc.VOICEIDSTR ];
-                        OtoArgs oa = db.attachFileNameFromLyric( phrase );
+                        UtauVoiceDB db = AppManager.mUtauVoiceDB[sc.VOICEIDSTR];
+                        OtoArgs oa = db.attachFileNameFromLyric( phrase, editing.ID.Note );
                         if ( editing.UstEvent == null ) {
                             editing.UstEvent = new UstEvent();
                         }

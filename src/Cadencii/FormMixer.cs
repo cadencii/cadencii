@@ -437,7 +437,7 @@ namespace cadencii
 
         private void setResources()
         {
-            this.Icon = Resources.get_icon();
+            this.Icon = Properties.Resources.Icon1;
         }
 
         private void invokePanpotChangedEvent( int track, int panpot )

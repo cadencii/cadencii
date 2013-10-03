@@ -45,6 +45,7 @@ using System.Threading;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
+using System.Net;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -55,6 +56,8 @@ using cadencii.vsq;
 using cadencii.vsq.io;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.utau;
+using cadencii.ui;
 
 namespace cadencii
 {
@@ -290,7 +293,7 @@ namespace cadencii
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
         public const int _PX_ACCENT_HEADER = 21;
-        public const String _VERSION_HISTORY_URL = "http://www.ne.jp/asahi/kbinani/home/cadencii/version_history.xml";
+        public const String RECENT_UPDATE_INFO_URL = "https://raw.github.com/cadencii/cadencii/master/update_info/recent.xml";
         /// <summary>
         /// splitContainer2.Panel2の最小サイズ
         /// </summary>
@@ -1471,8 +1474,8 @@ namespace cadencii
             }
 
             if ( singerConfig != null && AppManager.mUtauVoiceDB.ContainsKey( singerConfig.VOICEIDSTR ) ) {
-                UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB[ singerConfig.VOICEIDSTR ];
-                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
+                UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB[singerConfig.VOICEIDSTR];
+                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase, AppManager.mAddingEvent.ID.Note );
                 AppManager.mAddingEvent.UstEvent.setPreUtterance( otoArgs.msPreUtterance );
                 AppManager.mAddingEvent.UstEvent.setVoiceOverlap( otoArgs.msOverlap );
             }
@@ -1957,6 +1960,93 @@ namespace cadencii
             }
             return (int)(value * controller.getScaleY());
         }
+
+        /// <summary>
+        /// Downloads update information xml, and deserialize it.
+        /// </summary>
+        /// <returns></returns>
+        private updater.UpdateInfo downloadUpdateInfo()
+        {
+            var xml_contents = "";
+            try {
+                var url = RECENT_UPDATE_INFO_URL;
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                var response = (HttpWebResponse)request.GetResponse();
+                using (var reader = new StreamReader(response.GetResponseStream())) {
+                    xml_contents = reader.ReadToEnd();
+                }
+            } catch {
+                return null;
+            }
+
+            updater.UpdateInfo update_info = null;
+            var xml = new System.Xml.XmlDocument();
+            var serializer = new System.Xml.Serialization.XmlSerializer(typeof(updater.UpdateInfo));
+            try {
+                xml.LoadXml(xml_contents);
+                using (var stream = new MemoryStream()) {
+                    xml.Save(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    update_info = serializer.Deserialize(stream) as updater.UpdateInfo;
+                }
+            } catch { }
+            return update_info;
+        }
+
+        /// <summary>
+        /// Show update information async.
+        /// </summary>
+        private void showUpdateInformationAsync(bool is_explicit_update_check)
+        {
+            menuHelpCheckForUpdates.Enabled = false;
+            updater.UpdateInfo update_info = null;
+            var worker = new System.ComponentModel.BackgroundWorker();
+            worker.DoWork += (s, e) => {
+                update_info = downloadUpdateInfo();
+            };
+            worker.RunWorkerCompleted += (s, e) => {
+                if (update_info != null && update_info.DownloadUrl != "") {
+                    var current_version = new Version(BAssemblyInfo.fileVersion);
+                    var recent_version_string = string.Format("{0}.{1}.{2}", update_info.Major, update_info.Minor, update_info.Build);
+                    var recent_version = new Version(recent_version_string);
+                    if (current_version < recent_version) {
+                        var form = Factory.createUpdateCheckForm();
+                        form.setDownloadUrl(update_info.DownloadUrl);
+                        form.setFont(AppManager.editorConfig.getBaseFont().font);
+                        form.setOkButtonText(_("OK"));
+                        form.setTitle(_("Check For Updates"));
+                        form.setMessage(string.Format(_("New version {0} is available."), recent_version_string));
+                        form.setAutomaticallyCheckForUpdates(!AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates);
+                        form.setAutomaticallyCheckForUpdatesMessage(_("Automatically check for updates"));
+                        form.okButtonClicked += (_1, _2) => form.close();
+                        form.downloadLinkClicked += (_1, _2) => {
+                            form.close();
+                            System.Diagnostics.Process.Start(update_info.DownloadUrl);
+                        };
+                        form.showDialog(this);
+                        AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates = !form.isAutomaticallyCheckForUpdates();
+                    } else if (is_explicit_update_check) {
+                        MessageBox.Show(_("Cadencii is up to date"),
+                                        _("Info"),
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                    }
+                } else if (is_explicit_update_check) {
+                    MessageBox.Show(_("Can't get update information. Please retry after few minutes."),
+                                    _("Error"),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                }
+                var t = new System.Windows.Forms.Timer();
+                t.Tick += (timer_sender, timer_args) => {
+                    menuHelpCheckForUpdates.Enabled = true;
+                    t.Stop();
+                };
+                t.Interval = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+                t.Start();
+            };
+            worker.RunWorkerAsync();
+        }
         #endregion
 
         #region public methods
@@ -2172,13 +2262,13 @@ namespace cadencii
 #if !JAVA
             if ( mGameMode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.Text = _( "Disabled" );
-                stripLblGameCtrlMode.Image = Resources.get_slash().image;
+                stripLblGameCtrlMode.Image = Properties.Resources.slash;
             } else if ( mGameMode == GameControlMode.CURSOR ) {
                 stripLblGameCtrlMode.Text = _( "Cursor" );
                 stripLblGameCtrlMode.Image = null;
             } else if ( mGameMode == GameControlMode.KEYBOARD ) {
                 stripLblGameCtrlMode.Text = _( "Keyboard" );
-                stripLblGameCtrlMode.Image = Resources.get_piano().image;
+                stripLblGameCtrlMode.Image = Properties.Resources.piano;
             } else if ( mGameMode == GameControlMode.NORMAL ) {
                 stripLblGameCtrlMode.Text = _( "Normal" );
                 stripLblGameCtrlMode.Image = null;
@@ -3465,7 +3555,7 @@ namespace cadencii
                 stripBtnStepSequencer.setEnabled( false );
 #else
                 stripLblMidiIn.Text = _( "Disabled" );
-                stripLblMidiIn.Image = Resources.get_slash().image;
+                stripLblMidiIn.Image = Properties.Resources.slash;
 #endif
             } else {
                 if ( midiport >= devices.Count ) {
@@ -3476,7 +3566,7 @@ namespace cadencii
                 stripBtnStepSequencer.setEnabled( true );
 #else
                 stripLblMidiIn.Text = devices[midiport].getName();
-                stripLblMidiIn.Image = Resources.get_piano().image;
+                stripLblMidiIn.Image = Properties.Resources.piano;
 #endif
             }
         }
@@ -4603,8 +4693,9 @@ namespace cadencii
             menuTools.Mnemonic(Keys.O);
             menuToolsCreateVConnectSTANDDb.Text = _("Create vConnect-STAND DB");
 
-            menuHelp.Text = _( "Help" );
-            menuHelp.Mnemonic( Keys.H );
+            menuHelp.Text = _("Help");
+            menuHelp.Mnemonic(Keys.H);
+            menuHelpCheckForUpdates.Text = _("Check For Updates");
             menuHelpLog.Text = _( "Log" );
             menuHelpLog.Mnemonic( Keys.L );
             menuHelpLogSwitch.Text = Logger.isEnabled() ? _( "Disable" ) : _( "Enable" );
@@ -6276,7 +6367,7 @@ namespace cadencii
                                 // 通常のUTAU音源
                                 if (AppManager.mUtauVoiceDB.ContainsKey(sc.VOICEIDSTR)) {
                                     UtauVoiceDB db = AppManager.mUtauVoiceDB[sc.VOICEIDSTR];
-                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp);
+                                    OtoArgs oa = db.attachFileNameFromLyric(lyric_jp, note);
                                     if (oa.fileName == null ||
                                         (oa.fileName != null && oa.fileName == "")) {
                                         is_valid_for_utau = false;
@@ -6977,7 +7068,7 @@ namespace cadencii
                         right = true;
                     } else {
                         g.drawImage(
-                            Resources.get_start_marker(), x, 3, this );
+                            Properties.Resources.start_marker, x, 3, this );
                     }
                 }
                 if ( vsq.config.EndMarkerEnabled ) {
@@ -6988,7 +7079,7 @@ namespace cadencii
                         right = true;
                     } else {
                         g.drawImage(
-                            Resources.get_end_marker(), x, 3, this );
+                            Properties.Resources.end_marker, x, 3, this );
                     }
                 }
 
@@ -7378,14 +7469,14 @@ namespace cadencii
         {
             try {
 #if !JAVA
-                this.stripLblGameCtrlMode.Image = Resources.get_slash().image;
-                this.stripLblMidiIn.Image = Resources.get_slash().image;
+                this.stripLblGameCtrlMode.Image = Properties.Resources.slash;
+                this.stripLblMidiIn.Image = Properties.Resources.slash;
 #endif
 
 #if JAVA
                 stripBtnStepSequencer.setIcon( new ImageIcon( Resources.get_piano() ) );
 #else
-                this.stripBtnStepSequencer.Image = Resources.get_piano().image;
+                this.stripBtnStepSequencer.Image = Properties.Resources.piano;
 #endif
 #if JAVA
                 stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
@@ -7415,7 +7506,7 @@ namespace cadencii
                 buttonVZoom.setIcon( new ImageIcon( Resources.get_plus8x8() ) );
                 buttonVMooz.setIcon( new ImageIcon( Resources.get_minus8x8() ) );
 #endif
-                this.Icon = Resources.get_icon();
+                this.Icon = Properties.Resources.Icon1;
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
                 serr.println( "FormMain#setResources; ex=" + ex );
@@ -10434,6 +10525,10 @@ namespace cadencii
                     serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 }
             }
+
+            if (!AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates) {
+                showUpdateInformationAsync(false);
+            }
         }
 
         public void FormGenerateKeySound_FormClosed( Object sender, FormClosedEventArgs e )
@@ -10638,7 +10733,7 @@ namespace cadencii
                         mGameMode = GameControlMode.KEYBOARD;
 #if !JAVA
                         stripLblGameCtrlMode.Text = mGameMode.ToString();
-                        stripLblGameCtrlMode.Image = Resources.get_piano().image;
+                        stripLblGameCtrlMode.Image = Properties.Resources.piano;
 #endif
                     }
                     mLastBtnSelect = SELECT;
@@ -11496,25 +11591,37 @@ namespace cadencii
                 return;
             }
             int count = mf.getTrackCount();
-            //Encoding def_enc = Encoding.GetEncoding( 0 );
+
+            Func<int[], string> get_string_from_metatext = (buffer) => {
+                var encoding_candidates = new List<Encoding>();
+                encoding_candidates.Add(Encoding.GetEncoding("Shift_JIS"));
+                encoding_candidates.Add(Encoding.Default);
+                encoding_candidates.Add(Encoding.UTF8);
+                encoding_candidates.AddRange(Encoding.GetEncodings().Select((encoding) => encoding.GetEncoding()));
+                foreach (var encoding in encoding_candidates) {
+                    try {
+                        return encoding.GetString(buffer.Select((b) => (byte)(0xFF & b)).ToArray(), 0, buffer.Length);
+                    } catch {
+                        continue;
+                    }
+                }
+                return string.Empty;
+            };
+            
             for ( int i = 0; i < count; i++ ) {
-                String track_name = "";
                 int notes = 0;
                 List<MidiEvent> events = mf.getMidiEventList( i );
                 int events_count = events.Count;
 
                 // トラック名を取得
-                for ( int j = 0; j < events_count; j++ ) {
-                    MidiEvent item = events[ j ];
-                    if ( item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03 ) {
-                        int[] d = new int[item.data.Length];
-                        for ( int k = 0; k < item.data.Length; k++ ) {
-                            d[k] = 0xff & item.data[k];
-                        }
-                        track_name = PortUtil.getDecodedString( "Shift_JIS", d, 1, item.data.Length - 1 );
-                        break;
-                    }
-                }
+                string track_name =
+                    events
+                        .Where((item) => item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03)
+                        .Select((item) => {
+                            int[] d = item.data.Skip(1).ToArray();
+                            return get_string_from_metatext(d);
+                        })
+                        .FirstOrDefault();
 
                 // イベント数を数える
                 for ( int j = 0; j < events_count; j++ ) {
@@ -11777,7 +11884,7 @@ namespace cadencii
                                                 for ( int m = 1; m < itemk.data.Length; m++ ) {
                                                     d[m - 1] = 0xff & itemk.data[m];
                                                 }
-                                                phrase = PortUtil.getDecodedString( "Shift_JIS", d, 0, itemk.data.Length );
+                                                phrase = get_string_from_metatext(d);
                                                 break;
                                             }
                                         }
@@ -14259,8 +14366,8 @@ namespace cadencii
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
                     int tolerance = AppManager.editorConfig.PxTolerance;
-                    int start_marker_width = Resources.get_start_marker().getWidth( this );
-                    int end_marker_width = Resources.get_end_marker().getWidth( this );
+                    int start_marker_width = Properties.Resources.start_marker.Width;
+                    int end_marker_width = Properties.Resources.end_marker.Width;
                     int startx = AppManager.xCoordFromClocks( vsq.config.StartMarker );
                     int endx = AppManager.xCoordFromClocks( vsq.config.EndMarker );
 
@@ -17483,6 +17590,11 @@ namespace cadencii
             if (System.IO.File.Exists(creator)) {
                 Process.Start(creator);
             }
+        }
+
+        private void menuHelpCheckForUpdates_Click(object sender, EventArgs args)
+        {
+            showUpdateInformationAsync(true);
         }
     }
 

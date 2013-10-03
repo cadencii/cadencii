@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "vConnect\lib\ic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vConnectStandDBConvert", "vConnectStandDBConvert\vConnectStandDBConvert.csproj", "{3CDB890B-5FCC-4A36-B808-7FB6C571C584}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostBuildCreateVersionInfo", "..\utils\PostBuildCreateVersionInfo\PostBuildCreateVersionInfo.csproj", "{9F4E318A-2A90-4E06-AB65-F81CEA1BB801}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -137,6 +139,10 @@ Global
 		{3CDB890B-5FCC-4A36-B808-7FB6C571C584}.Debug|x86.Build.0 = Debug|x86
 		{3CDB890B-5FCC-4A36-B808-7FB6C571C584}.Release|x86.ActiveCfg = Release|x86
 		{3CDB890B-5FCC-4A36-B808-7FB6C571C584}.Release|x86.Build.0 = Release|x86
+		{9F4E318A-2A90-4E06-AB65-F81CEA1BB801}.Debug|x86.ActiveCfg = Debug|x86
+		{9F4E318A-2A90-4E06-AB65-F81CEA1BB801}.Debug|x86.Build.0 = Debug|x86
+		{9F4E318A-2A90-4E06-AB65-F81CEA1BB801}.Release|x86.ActiveCfg = Release|x86
+		{9F4E318A-2A90-4E06-AB65-F81CEA1BB801}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

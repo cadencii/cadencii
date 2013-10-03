@@ -36,6 +36,7 @@ using cadencii.java.util;
 using cadencii.windows.forms;
 using cadencii.xml;
 using cadencii.vsq;
+using cadencii.apputil;
 
 namespace cadencii
 {
@@ -587,6 +588,7 @@ namespace cadencii
         /// version 3.3+
         /// </summary>
         public boolean UseWideCharacterWorkaround = false;
+        public bool DoNotAutomaticallyCheckForUpdates = false;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値
@@ -634,22 +636,7 @@ namespace cadencii
 #endif
 
             // 言語設定を，システムのデフォルトの言語を用いる
-            String lang = "";
-#if JAVA
-            String name = System.getProperty( "user.language" );
-            if( name != null ){
-                lang = name;
-            }
-#else
-            String name = System.Windows.Forms.Application.CurrentCulture.Name;
-            if ( name.Equals( "ja" ) ||
-                 name.StartsWith( "ja-" ) ) {
-                lang = "ja";
-            } else {
-                lang = name;
-            }
-#endif
-            this.Language = lang;
+            this.Language = Messaging.getRuntimeLanguageName();
         }
 
         #region public static method

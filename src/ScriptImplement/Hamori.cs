@@ -110,7 +110,7 @@ public class Hamori : System.Windows.Forms.Form {
 
         int note;
         Dictionary<int, int> target_ids = new Dictionary<int, int>();
-        foreach (var see in AppManager.itemSelection.getEventIterator()){
+        foreach (var see in AppManager.itemSelection.getEventIterator()) {
             target_ids.Add( see.original.InternalID, 0 );
         }
         int track = AppManager.getSelected();

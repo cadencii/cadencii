@@ -16,7 +16,7 @@ package cadencii;
 #else
 using System;
 
-namespace cadencii {
+namespace cadencii.utau {
     using boolean = System.Boolean;
 #endif
 
@@ -49,6 +49,11 @@ namespace cadencii {
             } else {
                 return false;
             }
+        }
+
+        public bool isEmpty()
+        {
+            return fileName == null || Alias == null;
         }
     }
 

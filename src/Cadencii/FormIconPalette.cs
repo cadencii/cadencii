@@ -179,29 +179,29 @@ namespace cadencii
                 if ( setimg ) {
                     btn.Image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
                 } else {
-                    Image img = null;
+                    System.Drawing.Image img = null;
                     String str = "";
                     String caption = handle.IDS;
                     if ( caption.Equals( "cresc_1" ) ) {
-                        img = Resources.get_cresc1();
+                        img = Properties.Resources.cresc1;
                     } else if ( caption.Equals( "cresc_2" ) ) {
-                        img = Resources.get_cresc2();
+                        img = Properties.Resources.cresc2;
                     } else if ( caption.Equals( "cresc_3" ) ) {
-                        img = Resources.get_cresc3();
+                        img = Properties.Resources.cresc3;
                     } else if ( caption.Equals( "cresc_4" ) ) {
-                        img = Resources.get_cresc4();
+                        img = Properties.Resources.cresc4;
                     } else if ( caption.Equals( "cresc_5" ) ) {
-                        img = Resources.get_cresc5();
+                        img = Properties.Resources.cresc5;
                     } else if ( caption.Equals( "dim_1" ) ) {
-                        img = Resources.get_dim1();
+                        img = Properties.Resources.dim1;
                     } else if ( caption.Equals( "dim_2" ) ) {
-                        img = Resources.get_dim2();
+                        img = Properties.Resources.dim2;
                     } else if ( caption.Equals( "dim_3" ) ) {
-                        img = Resources.get_dim3();
+                        img = Properties.Resources.dim3;
                     } else if ( caption.Equals( "dim_4" ) ) {
-                        img = Resources.get_dim4();
+                        img = Properties.Resources.dim4;
                     } else if ( caption.Equals( "dim_5" ) ) {
-                        img = Resources.get_dim5();
+                        img = Properties.Resources.dim5;
                     } else if ( caption.Equals( "Dynaff11" ) ) {
                         str = "fff";
                     } else if ( caption.Equals( "Dynaff12" ) ) {
@@ -220,7 +220,7 @@ namespace cadencii
                         str = "ppp";
                     }
                     if ( img != null ) {
-                        btn.Image = img.image;
+                        btn.Image = img;
                     } else {
                         btn.Text = str;
                     }

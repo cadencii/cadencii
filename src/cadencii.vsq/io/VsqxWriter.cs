@@ -329,6 +329,15 @@ namespace cadencii.vsq.io
             return partStyle;
         }
 
+        private XmlElement createMusicalPartSingerNode(VsqEvent @event, int pre_measure_clock)
+        {
+            var node = doc_.CreateElement("singer");
+            node.AppendChild(createNode("posTick", @event.Clock - pre_measure_clock));
+            node.AppendChild(createNode("vBS", @event.ID.IconHandle.Language));
+            node.AppendChild(createNode("vPC", @event.ID.IconHandle.Program));
+            return node;
+        }
+
         private XmlElement createMusicalPartNode(VsqTrack track, int pre_measure_clock, int sequence_length)
         {
             var result = doc_.CreateElement("musicalPart");
@@ -346,17 +355,23 @@ namespace cadencii.vsq.io
             {
                 result.AppendChild(createPartStyleNode());
             }
-            track.MetaText.Events.Events.ForEach((vsq_event) => {
-                if (vsq_event.ID.type == VsqIDType.Singer) {
-                    var node = doc_.CreateElement("singer");
-                    node.AppendChild(createNode("posTick", vsq_event.Clock - pre_measure_clock));
-                    node.AppendChild(createNode("vBS", vsq_event.ID.IconHandle.Language));
-                    node.AppendChild(createNode("vPC", vsq_event.ID.IconHandle.Program));
-                    result.AppendChild(node);
-                } else if (vsq_event.ID.type == VsqIDType.Anote) {
-                    result.AppendChild(createNoteNode(vsq_event, pre_measure_clock));
-                }
-            });
+            
+            // Set first singer 
+            var first_singer = (VsqEvent)track.getSingerEventAt(pre_measure_clock).Clone();
+            first_singer.Clock = pre_measure_clock;
+            result.AppendChild(createMusicalPartSingerNode(first_singer, pre_measure_clock));
+            
+            track.MetaText.Events.Events
+                .Where((@event) => (@event.ID.type == VsqIDType.Singer ? @event.Clock > pre_measure_clock : @event.Clock >= pre_measure_clock))
+                .ToList()
+                .ForEach((@event) => {
+                    if (@event.ID.type == VsqIDType.Singer) {
+                        var node = createMusicalPartSingerNode(@event, pre_measure_clock);
+                        result.AppendChild(node);
+                    } else if (@event.ID.type == VsqIDType.Anote) {
+                        result.AppendChild(createNoteNode(@event, pre_measure_clock));
+                    }
+                });
             return result;
         }
 

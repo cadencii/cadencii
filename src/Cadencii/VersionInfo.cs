@@ -427,7 +427,7 @@ namespace cadencii
 
         private void setResources()
         {
-            pictVstLogo.Image = Resources.get_VSTonWht().image;
+            pictVstLogo.Image = Properties.Resources.VSTonWht;
         }
 
         #region ui implementation

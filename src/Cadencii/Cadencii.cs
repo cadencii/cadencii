@@ -41,7 +41,6 @@ namespace cadencii
         static Thread splashThread = null;
 #endif
         private static String mPathVsq = "";
-        private static String mPathResource = "";
         private static boolean mPrintVersion = false;
 
         /// <summary>
@@ -64,8 +63,6 @@ namespace cadencii
                 } else {
                     if ( currentparse == "" ) {
                         mPathVsq = argi;
-                    } else if ( currentparse == "-resources" ) {
-                        mPathResource = argi;
                     }
                     currentparse = "";
                 }
@@ -140,9 +137,6 @@ namespace cadencii
                 return;
             }
             String file = mPathVsq;
-            if (mPathResource != "") {
-                Resources.setBasePath(mPathResource);
-            }
 
             Logger.setEnabled(false);
             String logfile = PortUtil.createTempFile() + ".txt";

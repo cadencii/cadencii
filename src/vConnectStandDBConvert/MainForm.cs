@@ -34,10 +34,13 @@ namespace cadencii.vconnect
         private const int LINE_BUFFER_LENGTH = 500;
         private string[] line_buffer_ = new string[LINE_BUFFER_LENGTH];
         private int line_buffer_index_ = 0;
+        private string start_button_start_text_;
+        private string start_button_cancel_text_;
 
         public MainForm()
         {
             InitializeComponent();
+            ApplyLanguage();
         }
 
         private void buttonSelectSourceDb_Click(object sender, EventArgs e)
@@ -119,7 +122,7 @@ namespace cadencii.vconnect
             Action<string> set_start_button_text = (text) => {
                 buttonStart.Text = text;
             };
-            Invoke(set_start_button_text, new object[] { _("Start") });
+            Invoke(set_start_button_text, new object[] { start_button_start_text_ });
 
             lock (mutex_) {
                 if (!stop_requested_) {
@@ -162,16 +165,20 @@ namespace cadencii.vconnect
             lock (mutex_) {
                 stop_requested_ = true;
             }
-            buttonStart.Text = _("Start");
+            buttonStart.Text = start_button_start_text_;
         }
 
         private void Start()
         {
+            MessageBox.Show(_("This process will create a copy of source UTAU DB.\n\nPlease make sure that you are not in violation of the license terms of the DB."),
+                            _("Notice"),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);
             lock (mutex_) {
                 stop_requested_ = false;
             }
             textLineBuffer.Text = "";
-            buttonStart.Text = _("Stop");
+            buttonStart.Text = start_button_cancel_text_;
             var starter = new ParameterizedThreadStart(DoConvert);
             var thread = new Thread(starter);
             var parameter = new ConvertParameter(textSourceDb.Text, textDestinationDb.Text);
@@ -180,14 +187,20 @@ namespace cadencii.vconnect
 
         private void ApplyLanguage()
         {
+            Messaging.loadMessages();
+            Messaging.setLanguage(Messaging.getRuntimeLanguageName());
+
             Text = _("UTAU DB Converter for vConnect-STAND");
-            groupSourceDb.Text = _("Select source UTAU database");
+            groupSourceDb.Text = _("Select oto.ini file of source UTAU database");
             buttonSelectSourceDb.Text = _("Select");
 
             groupDestinationDb.Text = _("Select destination directory");
             buttonSelectDestinationDb.Text = _("Select");
 
-            buttonStart.Text = _("Start");
+            start_button_start_text_ = _("Convert");
+            start_button_cancel_text_ = _("Cancel");
+
+            buttonStart.Text = start_button_start_text_;
         }
     }
 }

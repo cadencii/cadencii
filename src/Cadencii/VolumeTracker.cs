@@ -280,7 +280,7 @@ namespace cadencii
 
         public void setPanpot( int value )
         {
-            trackPanpot.Value = value;
+            trackPanpot.Value = Math.Min(trackPanpot.Maximum, Math.Max(trackPanpot.Minimum, value));
         }
 
         public boolean isSoloButtonVisible()

@@ -47,6 +47,7 @@ using cadencii.media;
 using cadencii.vsq;
 using cadencii.windows.forms;
 using cadencii.xml;
+using cadencii.utau;
 
 namespace cadencii
 {
@@ -369,7 +370,7 @@ namespace cadencii
         /// <summary>
         /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
         /// </summary>
-        public static readonly String[] TEXT_ENCODINGS_IN_UTAU = new String[] { "Shift_JIS", "UTF-16", "US-ANSI" };
+        public static readonly String[] TEXT_ENCODINGS_IN_UTAU = new String[] { "Shift_JIS", "UTF-16", "us-ascii" };
         /// <summary>
         /// よく使うボーダー線の色
         /// </summary>
@@ -1478,8 +1479,8 @@ namespace cadencii
             }
             SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
             if ( sc != null && mUtauVoiceDB.ContainsKey( sc.VOICEIDSTR ) ) {
-                UtauVoiceDB db = mUtauVoiceDB[ sc.VOICEIDSTR ];
-                OtoArgs oa = db.attachFileNameFromLyric( item.ID.LyricHandle.L0.Phrase );
+                UtauVoiceDB db = mUtauVoiceDB[sc.VOICEIDSTR];
+                OtoArgs oa = db.attachFileNameFromLyric( item.ID.LyricHandle.L0.Phrase, item.ID.Note );
                 if ( item.UstEvent == null ) {
                     item.UstEvent = new UstEvent();
                 }

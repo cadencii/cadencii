@@ -743,33 +743,21 @@ namespace cadencii.apputil
         /// </summary>
         /// <param name="c"></param>
         /// <param name="font"></param>
-#if JAVA
-        public static void applyFontRecurse( Component c, Font font ){
-#else
-        public static void applyFontRecurse( Control c, java.awt.Font font )
+        public static void applyFontRecurse(Control c, Font font)
         {
-#endif
-            if ( !isApplyFontRecurseEnabled )
-            {
+            if (!isApplyFontRecurseEnabled) {
                 return;
             }
-#if JAVA
-            c.setFont( font );
-            if( c instanceof Container ){
-                Container container = (Container)c;
-                int count = container.getComponentCount();
-                for( int i = 0; i < count; i++ ){
-                    Component component = container.getComponent( i );
-                    applyFontRecurse( component, font );
-                }
+            c.Font = font;
+            for (int i = 0; i < c.Controls.Count; i++) {
+                applyFontRecurse(c.Controls[i], font);
             }
-#else
-            c.Font = font.font;
-            for ( int i = 0; i < c.Controls.Count; i++ )
-            {
-                applyFontRecurse( c.Controls[i], font );
-            }
-#endif
+        }
+
+        [Obsolete]
+        public static void applyFontRecurse(Control c, java.awt.Font font)
+        {
+            applyFontRecurse(c, font.font);
         }
 
 #if !JAVA
