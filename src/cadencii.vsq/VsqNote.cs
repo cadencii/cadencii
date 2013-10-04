@@ -20,7 +20,6 @@ using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -38,7 +37,7 @@ namespace cadencii.vsq
         /// </summary>
         public int Value;
         private static readonly int[] ALTER = new int[] { 0, 1, 0, -1, 0, 0, 1, 0, 1, 0, -1, 0, 0 };
-        private static readonly boolean[] _KEY_TYPE = new boolean[] { 
+        private static readonly bool[] _KEY_TYPE = new bool[] { 
             true,
             false,
             true,
@@ -181,7 +180,7 @@ namespace cadencii.vsq
         /// <summary>
         /// このインスタンスが表す音階が、ピアノの白鍵かどうかを返します
         /// </summary>
-        public boolean isWhiteKey()
+        public bool isWhiteKey()
         {
             return isNoteWhiteKey( Value );
         }
@@ -191,7 +190,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static boolean isNoteWhiteKey( int note )
+        public static bool isNoteWhiteKey( int note )
         {
             if ( 0 <= note && note <= 127 ) {
                 return _KEY_TYPE[note];

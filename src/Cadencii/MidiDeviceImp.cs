@@ -17,16 +17,13 @@ using System.Collections.Generic;
 using cadencii.media;
 
 namespace cadencii {
-
-    using boolean = Boolean;
-
     public class MidiDeviceImp {
         const int CHANNEL = 16;
         private MidiOutDevice s_device;
         private int[] s_last_program = new int[CHANNEL];
-        private boolean s_initialized = false;
+        private bool s_initialized = false;
 
-        public boolean Initialized {
+        public bool Initialized {
             get {
                 return s_initialized;
             }

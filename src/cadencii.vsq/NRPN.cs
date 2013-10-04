@@ -26,8 +26,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     public class NRPN
@@ -573,7 +571,7 @@ namespace cadencii.vsq
         {
         }
 
-        public static IEnumerable<ValuePair<String, Integer>> iterator()
+        public static IEnumerable<ValuePair<String, int>> iterator()
         {
             return new NrpnIterator();
         }
@@ -639,7 +637,7 @@ namespace cadencii.vsq
             return lsb;
         }
 
-        public static boolean is_require_data_lsb( int nrpn )
+        public static bool is_require_data_lsb( int nrpn )
         {
             switch ( nrpn ) {
                 case CVM_NM_VERSION_AND_DEVICE:

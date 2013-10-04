@@ -25,7 +25,6 @@ namespace cadencii{
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -48,7 +47,7 @@ namespace cadencii
         /// workerスレッドが，キャンセル要求の有無を呼び出し元に問い合せるためのメソッド
         /// </summary>
         /// <returns></returns>
-        boolean isCancelRequested();
+        bool isCancelRequested();
         
         /// <summary>
         /// 呼び出し元が，workerスレッドにキャンセル要求を出すためのメソッド

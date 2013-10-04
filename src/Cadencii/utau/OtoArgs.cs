@@ -17,7 +17,6 @@ package cadencii;
 using System;
 
 namespace cadencii.utau {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -32,7 +31,7 @@ namespace cadencii.utau {
         public float msPreUtterance;
         public float msOverlap;
 
-        public boolean equals( OtoArgs obj ) {
+        public bool equals( OtoArgs obj ) {
 #if JAVA
             if ( obj == null ) {
                 return false;

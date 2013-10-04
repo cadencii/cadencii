@@ -40,7 +40,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     class DraggableBButton : Button
@@ -97,7 +96,7 @@ namespace cadencii
         private List<Button> decrescendButtons = new List<Button>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
-        private boolean mPreviousAlwaysOnTop;
+        private bool mPreviousAlwaysOnTop;
 
         public FormIconPalette( FormMain main_window )
         {
@@ -125,7 +124,7 @@ namespace cadencii
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を取得します．
         /// </summary>
-        public boolean getPreviousAlwaysOnTop()
+        public bool getPreviousAlwaysOnTop()
         {
             return mPreviousAlwaysOnTop;
         }
@@ -133,7 +132,7 @@ namespace cadencii
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
         /// </summary>
-        public void setPreviousAlwaysOnTop( boolean value )
+        public void setPreviousAlwaysOnTop( bool value )
         {
             mPreviousAlwaysOnTop = value;
         }
@@ -175,7 +174,7 @@ namespace cadencii
                 btn.setHandle( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
-                boolean setimg = System.IO.File.Exists(buttonIconPath);
+                bool setimg = System.IO.File.Exists(buttonIconPath);
                 if ( setimg ) {
                     btn.Image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
                 } else {

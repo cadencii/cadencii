@@ -17,7 +17,6 @@ package cadencii;
 using System;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class BgmFile : ICloneable {
@@ -25,7 +24,7 @@ namespace cadencii {
         public int feder;
         public int panpot;
         public int mute;
-        public boolean startAfterPremeasure = true;
+        public bool startAfterPremeasure = true;
         public double readOffsetSeconds = 0.0;
 
         public Object clone() {

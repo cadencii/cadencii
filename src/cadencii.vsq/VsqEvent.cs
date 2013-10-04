@@ -26,7 +26,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -48,7 +47,7 @@ namespace cadencii.vsq
         public VsqID ID;
         public UstEvent UstEvent = new UstEvent();
 
-        public boolean equals( VsqEvent item )
+        public bool equals( VsqEvent item )
         {
             if ( this.Clock != item.Clock ) {
                 return false;

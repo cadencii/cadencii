@@ -17,7 +17,6 @@ package cadencii;
 using System;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class QuantizeModeUtil {
@@ -47,7 +46,7 @@ namespace cadencii {
         /// <param name="qm"></param>
         /// <param name="triplet"></param>
         /// <returns></returns>
-        public static int getQuantizeClock( QuantizeMode qm, boolean triplet ) {
+        public static int getQuantizeClock( QuantizeMode qm, bool triplet ) {
             int ret = 1;
             if ( qm == QuantizeMode.p4 ) {
                 ret = 480;

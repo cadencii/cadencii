@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -106,7 +105,7 @@ namespace cadencii {
             // thisに存在していて、workに存在しないものをremoveに登録
             List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
             foreach (var itemThis in this.iterator()) {
-                boolean found = false;
+                bool found = false;
                 foreach (var itemWork in work.iterator()) {
                     if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
@@ -121,7 +120,7 @@ namespace cadencii {
             // workに存在していて、thisに存在しないものをaddに登録
             List<EditedZoneUnit> add = new List<EditedZoneUnit>();
             foreach (var itemWork in work.iterator()) {
-                boolean found = false;
+                bool found = false;
                 foreach (var itemThis in this.iterator()) {
                     if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
@@ -145,7 +144,7 @@ namespace cadencii {
         /// 重複している部分を統合する
         /// </summary>
         private void normalize() {
-            boolean changed = true;
+            bool changed = true;
             while ( changed ) {
                 changed = false;
                 int count = mSeries.Count;

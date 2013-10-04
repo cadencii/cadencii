@@ -39,7 +39,6 @@ using cadencii.java.util;
 using cadencii.java.io;
 
 namespace cadencii.apputil {
-    using boolean = System.Boolean;
 #endif
 
     public class MessageBody
@@ -216,7 +215,7 @@ namespace cadencii.apputil {
             msg.value = "";
             String line = first_line;
             List<String> location = new List<String>();
-            boolean entry_found = false;
+            bool entry_found = false;
             if ( line.StartsWith( entry ) ) {
                 // 1行目がすでに"entry"の行だった場合
                 ByRef<String> dum = new ByRef<String>( "" );

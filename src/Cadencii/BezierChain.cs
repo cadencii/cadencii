@@ -29,7 +29,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -150,7 +149,7 @@ namespace cadencii
             }
 
             // t_start, t_endが既存のベジエデータ点位置を被っていないかどうか検査しながらコピー
-            boolean t_start_added = false; // 最初の区間が追加された直後だけ立つフラグ
+            bool t_start_added = false; // 最初の区間が追加された直後だけ立つフラグ
             BezierChain edited = new BezierChain( mColor );
             int count = 0;
             for ( int i = 0; i < this.points.Count - 1; i++ ) {
@@ -263,7 +262,7 @@ namespace cadencii
         /// </summary>
         /// <param name="chain"></param>
         /// <returns></returns>
-        public static boolean isBezierImplicit( BezierChain chain ) {
+        public static bool isBezierImplicit( BezierChain chain ) {
             int size = chain.points.Count;
             if( size < 2 ){
                 return true;
@@ -291,7 +290,7 @@ namespace cadencii
         /// <param name="pt3">制御点2</param>
         /// <param name="pt4">終点</param>
         /// <returns></returns>
-        private static boolean isUnitBezierImplicit( double pt1, double pt2, double pt3, double pt4 ) {
+        private static bool isUnitBezierImplicit( double pt1, double pt2, double pt3, double pt4 ) {
             double a = pt4 - 3.0 * pt3 + 3.0 * pt2 - pt1;
             double b = 2.0 * pt3 - 4.0 * pt2 + 2.0 * pt1;
             double c = pt2 - pt1;

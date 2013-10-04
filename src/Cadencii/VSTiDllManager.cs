@@ -34,7 +34,6 @@ using cadencii.vsq;
 using cadencii.java.io;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -347,7 +346,7 @@ namespace cadencii {
 
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
                 String dll_path = vocaloidDriver[ i ].path;
-                boolean loaded = false;
+                bool loaded = false;
                 try {
                     if ( dll_path != "" ) {
                         // 読込み。
@@ -419,7 +418,7 @@ namespace cadencii {
         }
 #endif
 
-        public static boolean isRendererAvailable( RendererKind renderer, String wine_prefix, String wine_top ) {
+        public static bool isRendererAvailable( RendererKind renderer, String wine_prefix, String wine_top ) {
 #if ENABLE_VOCALOID
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
                 if ( renderer == vocaloidDriver[ i ].getRendererKind() && vocaloidDriver[ i ].loaded ) {
@@ -439,7 +438,7 @@ namespace cadencii {
 
             if ( renderer == RendererKind.UTAU ) {
                 // ここでは，resamplerの内どれかひとつでも使用可能であればOKの判定にする
-                boolean resampler_exists = false;
+                bool resampler_exists = false;
                 int size = AppManager.editorConfig.getResamplerCount();
                 for ( int i = 0; i < size; i++ ) {
                     String path = AppManager.editorConfig.getResamplerAt( i );

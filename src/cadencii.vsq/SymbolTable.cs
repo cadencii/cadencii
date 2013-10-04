@@ -28,7 +28,6 @@ using cadencii.java.util;
     {
         namespace vsq
         {
-            using boolean = System.Boolean;
 #endif
 
             /// <summary>
@@ -51,7 +50,7 @@ using cadencii.java.util;
                 /// <summary>
                 /// 辞書を有効とするかどうか
                 /// </summary>
-                private boolean mEnabled;
+                private bool mEnabled;
                 /// <summary>
                 /// 英単語の分節分割などにより，この辞書を使うことによって最大いくつの発音記号列に分割されるか
                 /// </summary>
@@ -65,7 +64,7 @@ using cadencii.java.util;
                 /// <summary>
                 /// VOCALOID2のシステム辞書を読み込んだかどうか
                 /// </summary>
-                private static boolean mInitialized = false;
+                private static bool mInitialized = false;
                 #endregion
 
                 #region Static Method and Property
@@ -292,7 +291,7 @@ using cadencii.java.util;
                 /// 辞書が有効かどうかを取得します
                 /// </summary>
                 /// <returns></returns>
-                public boolean isEnabled()
+                public bool isEnabled()
                 {
                     return mEnabled;
                 }
@@ -301,7 +300,7 @@ using cadencii.java.util;
                 /// 辞書が有効かどうかを設定します
                 /// </summary>
                 /// <param name="value"></param>
-                public void setEnabled( boolean value )
+                public void setEnabled( bool value )
                 {
                     mEnabled = value;
                 }
@@ -313,7 +312,7 @@ using cadencii.java.util;
                 /// <param name="is_udc_mode">VOCALOID2仕様の辞書ファイルかどうか</param>
                 /// <param name="enabled">辞書ファイルを有効とするかどうか</param>
                 /// <param name="encoding">辞書ファイルのテキストエンコーディング</param>
-                public SymbolTable( String path, boolean is_udc_mode, boolean enabled, String encoding )
+                public SymbolTable( String path, bool is_udc_mode, bool enabled, String encoding )
                 {
                     mDict = new SortedDictionary<String, SymbolTableEntry>();
                     mEnabled = enabled;

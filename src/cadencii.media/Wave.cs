@@ -23,7 +23,6 @@ using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
-    using boolean = System.Boolean;
 #endif
 
 #if !JAVA
@@ -89,8 +88,8 @@ namespace cadencii.media {
 
 #if !JAVA
 #if DEBUG
-        private static boolean s_test = false;
-        public static boolean TestEnabled {
+        private static bool s_test = false;
+        public static bool TestEnabled {
             get {
                 return s_test;
             }
@@ -259,7 +258,7 @@ namespace cadencii.media {
             double last_slope = 0.0;
             int index = -1;
             List<double> peak_positions = new List<double>();
-            boolean first = true;
+            bool first = true;
             for ( int i = 1; i < window_size - 1; i++ ) {
                 double slope = ma[i + 1] - ma[i - 1];
                 if ( ma[i] > threshold && slope <= 0.0 && 0.0 < last_slope ) {
@@ -1220,7 +1219,7 @@ namespace cadencii.media {
             read( path );
         }
 
-        private boolean parseAiffHeader( RandomAccessFile fs ) {
+        private bool parseAiffHeader( RandomAccessFile fs ) {
             try {
                 byte[] buf = new byte[4];
                 fs.read( buf, 0, 4 );
@@ -1321,7 +1320,7 @@ namespace cadencii.media {
             return (((double)((int)(u - 2147483647 - 1))) + 2147483648.0);
         }
 
-        private boolean parseWaveHeader( RandomAccessFile fs ) {
+        private bool parseWaveHeader( RandomAccessFile fs ) {
             try {
                 byte[] buf = new byte[4];
                 // detect size of RIFF chunk
@@ -1447,15 +1446,15 @@ namespace cadencii.media {
             return true;
         }
 
-        public boolean read( String path ) {
+        public bool read( String path ) {
             RandomAccessFile fs = null;
-            boolean ret = false;
+            bool ret = false;
             try {
                 fs = new RandomAccessFile( path, "r" );
                 // check RIFF header
                 byte[] buf = new byte[4];
                 fs.read( buf, 0, 4 );
-                boolean change_byte_order = false;
+                bool change_byte_order = false;
                 if ( buf[0] == 0x52 && buf[1] == 0x49 && buf[2] == 0x46 && buf[3] == 0x46 ) {
                     ret = parseWaveHeader( fs );
                 } else if ( buf[0] == 0x46 && buf[1] == 0x4f && buf[2] == 0x52 && buf[3] == 0x4d ) {

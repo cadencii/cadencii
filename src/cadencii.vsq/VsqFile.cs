@@ -32,10 +32,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-    using Long = System.Int64;
-    using Float = System.Single;
 #endif
 
     /// <summary>
@@ -418,7 +414,7 @@ namespace cadencii.vsq
             int vpbs = 24;
             int vpit = 0;
 
-            List<Integer> parts = new List<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
+            List<int> parts = new List<int>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
             parts.Add( 0 );
             int lastclock = 0;// premeasure_clock;
             foreach (var ve in vsq.Track[track].getNoteEventIterator()) {
@@ -493,7 +489,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="ms_pre_send_time"></param>
         /// <returns></returns>
-        public boolean checkPreSendTimeValidity( int ms_pre_send_time )
+        public bool checkPreSendTimeValidity( int ms_pre_send_time )
         {
             int track_count = Track.Count;
             for ( int i = 1; i < track_count; i++ ) {
@@ -538,7 +534,7 @@ namespace cadencii.vsq
             if ( type == VsqCommandType.CHANGE_PRE_MEASURE ) {
                 #region CHANGE_PRE_MEASURE
                 VsqCommand ret = VsqCommand.generateCommandChangePreMeasure( Master.PreMeasure );
-                int value = (Integer)command.Args[0];
+                int value = (int)command.Args[0];
                 Master.PreMeasure = value;
                 updateTimesigInfo();
                 return ret;
@@ -547,7 +543,7 @@ namespace cadencii.vsq
                 #region TRACK_ADD
                 VsqTrack track = (VsqTrack)command.Args[0];
                 VsqMixerEntry mixer = (VsqMixerEntry)command.Args[1];
-                int position = (Integer)command.Args[2];
+                int position = (int)command.Args[2];
                 VsqCommand ret = VsqCommand.generateCommandDeleteTrack( position );
                 if ( Track.Count <= 17 ) {
                     Track.Insert( position, (VsqTrack)track.clone() );
@@ -559,7 +555,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_DELETE ) {
                 #region TRACK_DELETE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 VsqCommand ret = VsqCommand.generateCommandAddTrack( Track[ track ], Mixer.Slave[ track - 1 ], track );
                 Track.RemoveAt( track );
                 Mixer.Slave.RemoveAt( track - 1 );
@@ -568,9 +564,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TEMPO ) {
                 #region UPDATE_TEMPO
-                int clock = (Integer)command.Args[0];
-                int tempo = (Integer)command.Args[1];
-                int new_clock = (Integer)command.Args[2];
+                int clock = (int)command.Args[0];
+                int tempo = (int)command.Args[1];
+                int new_clock = (int)command.Args[2];
 
                 int index = -1;
                 int c = TempoTable.Count;
@@ -635,10 +631,10 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.UPDATE_TIMESIG ) {
                 #region UPDATE_TIMESIG
-                int barcount = (Integer)command.Args[0];
-                int numerator = (Integer)command.Args[1];
-                int denominator = (Integer)command.Args[2];
-                int new_barcount = (Integer)command.Args[3];
+                int barcount = (int)command.Args[0];
+                int numerator = (int)command.Args[1];
+                int denominator = (int)command.Args[2];
+                int new_barcount = (int)command.Args[3];
                 int index = -1;
                 int timesig_table_count = TimesigTable.Count;
                 for ( int i = 0; i < timesig_table_count; i++ ) {
@@ -737,7 +733,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_ADD ) {
                 #region EVENT_ADD
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 VsqEvent item = (VsqEvent)command.Args[1];
                 Track[ track ].addEvent( item );
                 VsqCommand ret = VsqCommand.generateCommandEventDelete( track, item.InternalID );
@@ -750,9 +746,9 @@ namespace cadencii.vsq
 #if DEBUG
                 sout.println( "    TrackAddNoteRange" );
 #endif
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 VsqEvent[] items = (VsqEvent[])command.Args[1];
-                List<Integer> inv_ids = new List<Integer>();
+                List<int> inv_ids = new List<int>();
                 int min_clock = (int)TotalClocks;
                 int max_clock = 0;
                 VsqTrack target = Track[ track ];
@@ -775,8 +771,8 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_DELETE ) {
                 #region EVENT_DELETE
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
                 VsqEvent[] original = new VsqEvent[1];
                 VsqTrack target = Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
@@ -799,8 +795,8 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_DELETE_RANGE ) {
                 #region EVENT_DELETE_RANGE
-                List<Integer> internal_ids = (List<Integer>)command.Args[1];
-                int track = (Integer)command.Args[0];
+                List<int> internal_ids = (List<int>)command.Args[1];
+                int track = (int)command.Args[0];
                 List<VsqEvent> inv = new List<VsqEvent>();
                 int min_clock = int.MaxValue;
                 int max_clock = int.MinValue;
@@ -823,9 +819,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK ) {
                 #region EVENT_CHANGE_CLOCK
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
-                int value = (Integer)command.Args[2];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
+                int value = (int)command.Args[2];
                 VsqTrack target = this.Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
@@ -843,11 +839,11 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_LYRIC ) {
                 #region EVENT_CHANGE_LYRIC
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
                 String phrase = (String)command.Args[2];
                 String phonetic_symbol = (String)command.Args[3];
-                boolean protect_symbol = (Boolean)command.Args[4];
+                bool protect_symbol = (Boolean)command.Args[4];
                 VsqTrack target = this.Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
@@ -866,9 +862,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_NOTE ) {
                 #region EVENT_CHANGE_NOTE
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
-                int note = (Integer)command.Args[2];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
+                int note = (int)command.Args[2];
                 VsqTrack target = this.Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
@@ -883,10 +879,10 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE ) {
                 #region EVENT_CHANGE_CLOCK_AND_NOTE
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
-                int clock = (Integer)command.Args[2];
-                int note = (Integer)command.Args[3];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
+                int clock = (int)command.Args[2];
+                int note = (int)command.Args[3];
                 VsqTrack target = this.Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
@@ -905,7 +901,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT ) {
                 #region TRACK_CURVE_EDIT
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 String curve = (String)command.Args[1];
                 List<BPPair> com = (List<BPPair>)command.Args[2];
                 VsqCommand inv = null;
@@ -926,8 +922,8 @@ namespace cadencii.vsq
                                 edit.Add( new BPPair( clock, target_list.getValue( clock ) ) );
                             }
                         }
-                        boolean start_found = false;
-                        boolean end_found = false;
+                        bool start_found = false;
+                        bool end_found = false;
                         int count = edit.Count;
                         for ( int i = 0; i < count; i++ ) {
                             if ( edit[ i ].Clock == start_clock ) {
@@ -964,7 +960,7 @@ namespace cadencii.vsq
                 if ( com.Count == 0 ) {
                     return inv;
                 } else if ( com.Count == 1 ) {
-                    boolean found = false;
+                    bool found = false;
                     foreach (var clock in target_list.keyClockIterator()) {
                         if ( clock == com[ 0 ].Clock ) {
                             found = true;
@@ -978,7 +974,7 @@ namespace cadencii.vsq
                 } else {
                     int start_clock = com[ 0 ].Clock;
                     int end_clock = com[ com.Count - 1 ].Clock;
-                    boolean removed = true;
+                    bool removed = true;
                     while ( removed ) {
                         removed = false;
                         foreach (var clock in target_list.keyClockIterator()) {
@@ -997,13 +993,13 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2 ) {
                 #region TRACK_CURVE_EDIT2
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 String curve = (String)command.Args[1];
-                List<Long> delete = (List<Long>)command.Args[2];
-                SortedDictionary<Integer, VsqBPPair> add = (SortedDictionary<Integer, VsqBPPair>)command.Args[3];
+                List<long> delete = (List<long>)command.Args[2];
+                SortedDictionary<int, VsqBPPair> add = (SortedDictionary<int, VsqBPPair>)command.Args[3];
 
-                List<Long> inv_delete = new List<Long>();
-                SortedDictionary<Integer, VsqBPPair> inv_add = new SortedDictionary<Integer, VsqBPPair>();
+                List<long> inv_delete = new List<long>();
+                SortedDictionary<int, VsqBPPair> inv_add = new SortedDictionary<int, VsqBPPair>();
                 processTrackCurveEdit( track, curve, delete, add, inv_delete, inv_add );
                 updateTotalClocks();
 
@@ -1011,17 +1007,17 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2_ALL ) {
                 #region TRACK_CURVE_EDIT2_ALL
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 List<String> curve = (List<String>)command.Args[1];
-                List<List<Long>> delete = (List<List<Long>>)command.Args[2];
-                List<SortedDictionary<Integer, VsqBPPair>> add = (List<SortedDictionary<Integer, VsqBPPair>>)command.Args[3];
+                List<List<long>> delete = (List<List<long>>)command.Args[2];
+                List<SortedDictionary<int, VsqBPPair>> add = (List<SortedDictionary<int, VsqBPPair>>)command.Args[3];
 
                 int c = curve.Count;
-                List<List<Long>> inv_delete = new List<List<Long>>();
-                List<SortedDictionary<Integer, VsqBPPair>> inv_add = new List<SortedDictionary<Integer, VsqBPPair>>();
+                List<List<long>> inv_delete = new List<List<long>>();
+                List<SortedDictionary<int, VsqBPPair>> inv_add = new List<SortedDictionary<int, VsqBPPair>>();
                 for ( int i = 0; i < c; i++ ) {
-                    List<Long> part_inv_delete = new List<Long>();
-                    SortedDictionary<Integer, VsqBPPair> part_inv_add = new SortedDictionary<Integer, VsqBPPair>();
+                    List<long> part_inv_delete = new List<long>();
+                    SortedDictionary<int, VsqBPPair> part_inv_add = new SortedDictionary<int, VsqBPPair>();
                     processTrackCurveEdit( track, curve[ i ], delete[ i ], add[ i ], part_inv_delete, part_inv_add );
                     inv_delete.Add( part_inv_delete );
                     inv_add.Add( part_inv_add );
@@ -1032,7 +1028,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE ) {
                 #region TRACK_CURVE_REPLACE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 String target_curve = (String)command.Args[1];
                 VsqBPList bplist = (VsqBPList)command.Args[2];
                 VsqCommand inv = VsqCommand.generateCommandTrackCurveReplace( track, target_curve, Track[ track ].getCurve( target_curve ) );
@@ -1041,7 +1037,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ) {
                 #region TRACK_CURVE_REPLACE_RANGE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 String[] target_curve = (String[])command.Args[1];
                 VsqBPList[] bplist = (VsqBPList[])command.Args[2];
                 VsqBPList[] inv_bplist = new VsqBPList[bplist.Length];
@@ -1057,7 +1053,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
                 #region TRACK_CURVE_EDIT_RANGE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 List<String> curves = (List<String>)command.Args[1];
                 List<List<BPPair>> coms = (List<List<BPPair>>)command.Args[2];
                 List<List<BPPair>> inv_coms = new List<List<BPPair>>();
@@ -1084,8 +1080,8 @@ namespace cadencii.vsq
                                     edit.Add( new BPPair( clock, Track[ track ].getCurve( curve ).getValue( clock ) ) );
                                 }
                             }
-                            boolean start_found = false;
-                            boolean end_found = false;
+                            bool start_found = false;
+                            bool end_found = false;
                             for ( int i = 0; i < edit.Count; i++ ) {
                                 if ( edit[ i ].Clock == start_clock ) {
                                     start_found = true;
@@ -1123,7 +1119,7 @@ namespace cadencii.vsq
                     if ( com.Count == 0 ) {
                         return inv;
                     } else if ( com.Count == 1 ) {
-                        boolean found = false;
+                        bool found = false;
                         foreach (var clock in Track[ track ].getCurve( curve ).keyClockIterator()) {
                             if ( clock == com[ 0 ].Clock ) {
                                 found = true;
@@ -1137,7 +1133,7 @@ namespace cadencii.vsq
                     } else {
                         int start_clock = com[ 0 ].Clock;
                         int end_clock = com[ com.Count - 1 ].Clock;
-                        boolean removed = true;
+                        bool removed = true;
                         while ( removed ) {
                             removed = false;
                             foreach (var clock in Track[ track ].getCurve( curve ).keyClockIterator()) {
@@ -1157,14 +1153,14 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_VELOCITY ) {
                 #region EVENT_CHANGE_VELOCITY
-                int track = (Integer)command.Args[0];
-                List<ValuePair<Integer, Integer>> veloc = (List<ValuePair<Integer, Integer>>)command.Args[1];
-                List<ValuePair<Integer, Integer>> inv = new List<ValuePair<Integer, Integer>>();
+                int track = (int)command.Args[0];
+                List<ValuePair<int, int>> veloc = (List<ValuePair<int, int>>)command.Args[1];
+                List<ValuePair<int, int>> inv = new List<ValuePair<int, int>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
                     foreach (var add in veloc) {
                         if ( ev.InternalID == add.getKey() ) {
-                            inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.Dynamics ) );
+                            inv.Add( new ValuePair<int, int>( ev.InternalID, ev.ID.Dynamics ) );
                             ev.ID.Dynamics = add.getValue();
                             break;
                         }
@@ -1174,14 +1170,14 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_ACCENT ) {
                 #region EVENT_CHANGE_ACCENT
-                int track = (Integer)command.Args[0];
-                List<ValuePair<Integer, Integer>> veloc = (List<ValuePair<Integer, Integer>>)command.Args[1];
-                List<ValuePair<Integer, Integer>> inv = new List<ValuePair<Integer, Integer>>();
+                int track = (int)command.Args[0];
+                List<ValuePair<int, int>> veloc = (List<ValuePair<int, int>>)command.Args[1];
+                List<ValuePair<int, int>> inv = new List<ValuePair<int, int>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
                     foreach (var add in veloc) {
                         if ( ev.InternalID == add.getKey() ) {
-                            inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMaccent ) );
+                            inv.Add( new ValuePair<int, int>( ev.InternalID, ev.ID.DEMaccent ) );
                             ev.ID.DEMaccent = add.getValue();
                             break;
                         }
@@ -1191,14 +1187,14 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_DECAY ) {
                 #region EVENT_CHANGE_DECAY
-                int track = (Integer)command.Args[0];
-                List<ValuePair<Integer, Integer>> veloc = (List<ValuePair<Integer, Integer>>)command.Args[1];
-                List<ValuePair<Integer, Integer>> inv = new List<ValuePair<Integer, Integer>>();
+                int track = (int)command.Args[0];
+                List<ValuePair<int, int>> veloc = (List<ValuePair<int, int>>)command.Args[1];
+                List<ValuePair<int, int>> inv = new List<ValuePair<int, int>>();
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ev = itr.next();
                     foreach (var add in veloc) {
                         if ( ev.InternalID == add.getKey() ) {
-                            inv.Add( new ValuePair<Integer, Integer>( ev.InternalID, ev.ID.DEMdecGainRate ) );
+                            inv.Add( new ValuePair<int, int>( ev.InternalID, ev.ID.DEMdecGainRate ) );
                             ev.ID.DEMdecGainRate = add.getValue();
                             break;
                         }
@@ -1208,9 +1204,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_LENGTH ) {
                 #region EVENT_CHANGE_LENGTH
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
-                int new_length = (Integer)command.Args[2];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
+                int new_length = (int)command.Args[2];
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
@@ -1224,10 +1220,10 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH ) {
                 #region EVENT_CHANGE_CLOCK_AND_LENGTH
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
-                int new_clock = (Integer)command.Args[2];
-                int new_length = (Integer)command.Args[3];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
+                int new_clock = (int)command.Args[2];
+                int new_length = (int)command.Args[3];
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
                     if ( item.InternalID == internal_id ) {
@@ -1246,8 +1242,8 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS ) {
                 #region EVENT_CHANGE_ID_CONTAINTS
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
                 VsqID value = (VsqID)command.Args[2];
                 for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                     VsqEvent item = itr.next();
@@ -1263,7 +1259,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE ) {
                 #region EVENT_CHANGE_ID_CONTAINTS_RANGE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 int[] internal_ids = (int[])command.Args[1];
                 VsqID[] values = (VsqID[])command.Args[2];
                 VsqID[] inv_values = new VsqID[values.Length];
@@ -1283,9 +1279,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS ) {
                 #region EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS
-                int track = (Integer)command.Args[0];
-                int internal_id = (Integer)command.Args[1];
-                int new_clock = (Integer)command.Args[2];
+                int track = (int)command.Args[0];
+                int internal_id = (int)command.Args[1];
+                int new_clock = (int)command.Args[2];
                 VsqID value = (VsqID)command.Args[3];
                 VsqTrack target = Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
@@ -1306,12 +1302,12 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE ) {
                 #region EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 int[] internal_ids = (int[])command.Args[1];
                 int[] clocks = (int[])command.Args[2];
                 VsqID[] values = (VsqID[])command.Args[3];
                 List<VsqID> inv_id = new List<VsqID>();
-                List<Integer> inv_clock = new List<Integer>();
+                List<int> inv_clock = new List<int>();
                 for ( int i = 0; i < internal_ids.Length; i++ ) {
                     for ( Iterator<VsqEvent> itr = Track[ track ].getEventIterator(); itr.hasNext(); ) {
                         VsqEvent item = itr.next();
@@ -1337,7 +1333,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CHANGE_NAME ) {
                 #region TRACK_CHANGE_NAME
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 String new_name = (String)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackChangeName( track, Track[ track ].getName() );
                 Track[ track ].setName( new_name );
@@ -1345,7 +1341,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_REPLACE ) {
                 #region TRACK_REPLACE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 VsqTrack item = (VsqTrack)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackReplace( track, Track[ track ] );
                 Track[ track] =  item ;
@@ -1354,9 +1350,9 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CHANGE_PLAY_MODE ) {
                 #region TRACK_CHANGE_PLAY_MODE
-                int track = (Integer)command.Args[0];
-                int play_mode = (Integer)command.Args[1];
-                int last_play_mode = (Integer)command.Args[2];
+                int track = (int)command.Args[0];
+                int play_mode = (int)command.Args[1];
+                int last_play_mode = (int)command.Args[2];
                 VsqTrack vsqTrack = Track[ track ];
                 VsqCommand ret = VsqCommand.generateCommandTrackChangePlayMode( track, vsqTrack.getCommon().PlayMode, vsqTrack.getCommon().LastPlayMode );
                 vsqTrack.getCommon().PlayMode = play_mode;
@@ -1365,7 +1361,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_REPLACE ) {
                 #region EVENT_REPLACE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 VsqEvent item = (VsqEvent)command.Args[1];
                 VsqCommand ret = null;
                 for ( int i = 0; i < Track[ track ].getEventCount(); i++ ) {
@@ -1382,7 +1378,7 @@ namespace cadencii.vsq
                 #endregion
             } else if ( type == VsqCommandType.EVENT_REPLACE_RANGE ) {
                 #region EVENT_REPLACE_RANGE
-                int track = (Integer)command.Args[0];
+                int track = (int)command.Args[0];
                 VsqEvent[] items = (VsqEvent[])command.Args[1];
                 VsqCommand ret = null;
                 VsqEvent[] reverse = new VsqEvent[items.Length];
@@ -1409,10 +1405,10 @@ namespace cadencii.vsq
 
         private void processTrackCurveEdit( int track,
                                             String curve,
-                                            List<Long> delete,
-                                            SortedDictionary<Integer, VsqBPPair> add,
-                                            List<Long> inv_delete,
-                                            SortedDictionary<Integer, VsqBPPair> inv_add )
+                                            List<long> delete,
+                                            SortedDictionary<int, VsqBPPair> add,
+                                            List<long> inv_delete,
+                                            SortedDictionary<int, VsqBPPair> inv_add )
         {
             VsqBPList list = Track[ track ].getCurve( curve );
 
@@ -1483,7 +1479,7 @@ namespace cadencii.vsq
 
             // テンポ情報の削除、シフト
             int tempoAtClockEnd = getTempoAt( clock_end );
-            boolean changed = true;
+            bool changed = true;
             for ( int i = 0; i < TempoTable.Count; ) {
                 TempoTableEntry itemi = TempoTable[ i ];
                 if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
@@ -1497,7 +1493,7 @@ namespace cadencii.vsq
             }
             // clock_end => clock_startに変わるので，この位置におけるテンポ変更が欠けてないかどうかを検査
             int count = TempoTable.Count;
-            boolean contains_clock_start_tempo = false;
+            bool contains_clock_start_tempo = false;
             for ( int i = 0; i < count; i++ ) {
                 TempoTableEntry itemi = TempoTable[ i ];
                 if ( itemi.Clock == clock_start ) {
@@ -1706,7 +1702,7 @@ namespace cadencii.vsq
                 //throw new Exception( "com.boare.vsq.VsqFile.BarLineIterator#remove; not implemented" );
             }
 
-            public boolean hasNext()
+            public bool hasNext()
             {
                 if ( clock < m_end_clock ) {
                     return true;
@@ -1811,7 +1807,7 @@ namespace cadencii.vsq
             return TimesigTable.getTimesigAt( clock );
         }
 
-        public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count )
+        public Timesig getTimesigAt( int clock, ByRef<int> bar_count )
         {
             return TimesigTable.getTimesigAt( clock, bar_count );
         }
@@ -2547,7 +2543,7 @@ namespace cadencii.vsq
         /// <param name="note_loc"></param>
         /// <param name="add_delay_sign"></param>
         /// <returns></returns>
-        public static VsqNrpn generateNoteNRPN( VsqFile vsq, int track, VsqEvent ve, int msPreSend, byte note_loc, boolean add_delay_sign )
+        public static VsqNrpn generateNoteNRPN( VsqFile vsq, int track, VsqEvent ve, int msPreSend, byte note_loc, bool add_delay_sign )
         {
             int clock = ve.Clock;
             String renderer = vsq.Track[ track ].getCommon().Version;
@@ -2578,7 +2574,7 @@ namespace cadencii.vsq
             add.append( NRPN.CVM_NM_NOTE_LOCATION, note_loc, true ); // Note Location
 
             // CVM_NMの直後にビブラートのCCを入れるかどうか。ビブラート長さが100%のときのみtrue
-            boolean add_vib_cc_immediately = false;
+            bool add_vib_cc_immediately = false;
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
@@ -2605,7 +2601,7 @@ namespace cadencii.vsq
             }
             add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
-            List<Integer> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
+            List<int> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
             for ( int j = 0; j < spl.Count; j++ ) {
                 char[] chars = spl[j].ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
@@ -2835,7 +2831,7 @@ namespace cadencii.vsq
                 }
             }
 
-            boolean first = true;
+            bool first = true;
             int last_note_end = 0;
             for ( int i = note_start; i <= note_end; i++ ) {
                 VsqEvent item = target.getEvent( i );
@@ -3317,7 +3313,7 @@ namespace cadencii.vsq
         /// <param name="number"></param>
         public static byte[] getBytesFlexibleLengthUnsignedLong( long number )
         {
-            boolean[] bits = new boolean[64];
+            bool[] bits = new bool[64];
             long val = (byte)0x1;
             bits[0] = (number & val) == val;
             for ( int i = 1; i < 64; i++ ) {

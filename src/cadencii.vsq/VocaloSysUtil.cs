@@ -28,7 +28,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -50,7 +49,7 @@ namespace cadencii.vsq
         /// VOCALOID1にて、バージョン1.1のSynthesize Engineが利用可能かどうか。
         /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
         /// </summary>
-        private static boolean dseVersion101Available = false;
+        private static bool dseVersion101Available = false;
         private static readonly String header1 = "HKLM\\SOFTWARE\\VOCALOID";
         private static readonly String header2 = "HKLM\\SOFTWARE\\VOCALOID2";
 
@@ -71,7 +70,7 @@ namespace cadencii.vsq
         /// VOCALOID1にて、バージョン1.1のSynthesize Engineが利用可能かどうか。
         /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
         /// </summary>
-        public static boolean isDSEVersion101Available()
+        public static bool isDSEVersion101Available()
         {
             return dseVersion101Available;
         }
@@ -173,7 +172,7 @@ namespace cadencii.vsq
                 List<String> installed_singers1 = new List<String>();
 
                 // テキストファイルにレジストリの内容をプリントアウト
-                boolean close = false;
+                bool close = false;
                 ByRef<String> path_vsti = new ByRef<String>( "" );
                 ByRef<String> path_editor = new ByRef<String>( "" );
                 initExtract( dir1,
@@ -283,7 +282,7 @@ namespace cadencii.vsq
                 List<String> installed_singers2 = new List<String>();
 
                 // レジストリの中身をファイルに出力
-                boolean close = false;
+                bool close = false;
                 ByRef<String> path_vsti = new ByRef<String>( "" );
                 ByRef<String> path_editor = new ByRef<String>( "" );
                 initExtract( dir2,

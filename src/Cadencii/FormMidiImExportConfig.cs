@@ -17,12 +17,11 @@ package cadencii;
 using System;
 
 namespace cadencii {
-    using boolean = Boolean;
 #endif
 
     public class FormMidiImExportConfig {
-        public boolean LastPremeasureCheckStatus = true;
-        public boolean LastMetatextCheckStatus = true;
+        public bool LastPremeasureCheckStatus = true;
+        public bool LastMetatextCheckStatus = true;
     }
 
 #if !JAVA

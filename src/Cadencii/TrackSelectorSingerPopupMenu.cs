@@ -23,7 +23,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -32,7 +31,7 @@ namespace cadencii
     public class TrackSelectorSingerPopupMenu : System.Windows.Forms.ContextMenuStrip
 #endif
     {
-        public boolean SingerChangeExists;
+        public bool SingerChangeExists;
         public int Clock;
         public int InternalID;
 

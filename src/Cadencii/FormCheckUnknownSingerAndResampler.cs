@@ -33,7 +33,6 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -49,7 +48,7 @@ namespace cadencii
         /// <param name="apply_singer"></param>
         /// <param name="resampler"></param>
         /// <param name="apply_resampler"></param>
-        public FormCheckUnknownSingerAndResampler( String singer, boolean apply_singer, String resampler, boolean apply_resampler )
+        public FormCheckUnknownSingerAndResampler( String singer, bool apply_singer, String resampler, bool apply_resampler )
         {
 #if JAVA
             super();
@@ -94,7 +93,7 @@ namespace cadencii
         /// 原音の項目にチェックが入れられたか
         /// </summary>
         /// <returns></returns>
-        public boolean isSingerChecked()
+        public bool isSingerChecked()
         {
             return checkSingerImport.Checked;
         }
@@ -112,7 +111,7 @@ namespace cadencii
         /// リサンプラーの項目にチェックが入れられたかどうか
         /// </summary>
         /// <returns></returns>
-        public boolean isResamplerChecked()
+        public bool isResamplerChecked()
         {
             return checkResamplerImport.Checked;
         }
@@ -165,7 +164,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

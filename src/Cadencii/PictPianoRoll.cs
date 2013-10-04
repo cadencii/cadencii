@@ -35,8 +35,6 @@ using cadencii.vsq;
 using cadencii.windows.forms;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -386,12 +384,12 @@ namespace cadencii {
                             } else if (0 > y + track_height) {
                                 break;
                             }
-                            boolean note_is_whitekey = VsqNote.isNoteWhiteKey(i);
+                            bool note_is_whitekey = VsqNote.isNoteWhiteKey(i);
 
                             #region ピアノロール背景
                             Color b = Color.black;
                             Color border;
-                            boolean paint_required = true;
+                            bool paint_required = true;
                             if (order == -2 || order == -1 || (6 <= order && order <= 8)) {
                                 if (note_is_whitekey) {
                                     b = COLOR_R180G180B180;
@@ -476,7 +474,7 @@ namespace cadencii {
                         #region 鍵盤部分
                         g.setColor(COLOR_R212G212B212);
                         g.drawLine(0, y, key_width, y);
-                        boolean hilighted = false;
+                        bool hilighted = false;
                         if (edit_mode == EditMode.ADD_ENTRY) {
                             if (AppManager.mAddingEvent.ID.Note == i) {
                                 hilighted = true;
@@ -575,7 +573,7 @@ namespace cadencii {
                             }
                             List<DrawObject> target_list = AppManager.mDrawObjects[i];
                             int j_start = AppManager.mDrawStartIndex[i];
-                            boolean first = true;
+                            bool first = true;
                             int shift_center = half_track_height;
                             int target_list_count = target_list.Count;
                             for (int j = j_start; j < target_list_count; j++) {
@@ -610,20 +608,20 @@ namespace cadencii {
                     }
 
                     // 選択されているトラックの表示を行う
-                    boolean show_lyrics = AppManager.editorConfig.ShowLyric;
-                    boolean show_exp_line = AppManager.editorConfig.ShowExpLine;
+                    bool show_lyrics = AppManager.editorConfig.ShowLyric;
+                    bool show_exp_line = AppManager.editorConfig.ShowExpLine;
                     if (selected >= 1) {
                         Shape r = g.getClip();
                         g.clipRect(key_width, 0,
                                     width - key_width, height);
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
 
-                        boolean first = true;
+                        bool first = true;
                         List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                         VsqBPList pit = vsq_track.MetaText.PIT;
                         VsqBPList pbs = vsq_track.MetaText.PBS;
-                        ByRef<Integer> indx_pit = new ByRef<Integer>(0);
-                        ByRef<Integer> indx_pbs = new ByRef<Integer>(0);
+                        ByRef<int> indx_pit = new ByRef<int>(0);
+                        ByRef<int> indx_pbs = new ByRef<int>(0);
 
                         int c = target_list.Count;
                         for (int j = j_start; j < c; j++) {
@@ -652,7 +650,7 @@ namespace cadencii {
                                     id_fill = AppManager.getAlertColor();
                                 }
                                 if (AppManager.itemSelection.getEventCount() > 0) {
-                                    boolean found = AppManager.itemSelection.isEventContains(selected, dobj.mInternalID);
+                                    bool found = AppManager.itemSelection.isEventContains(selected, dobj.mInternalID);
                                     if (found) {
                                         id_fill = AppManager.getHilightColor();
                                         if ((!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
@@ -1147,10 +1145,10 @@ namespace cadencii {
                         // 描く四角形の位置とサイズ
                         int tx, ty, twidth, theight;
                         // 上下左右の枠を表示していいかどうか
-                        boolean vtop = true;
-                        boolean vbottom = true;
-                        boolean vleft = true;
-                        boolean vright = true;
+                        bool vtop = true;
+                        bool vbottom = true;
+                        bool vleft = true;
+                        bool vright = true;
                         // マウスが下りた位置のx座標
                         int lx = AppManager.mMouseDownLocation.x - stdx;
                         if (lx < mouse.X) {
@@ -1251,7 +1249,7 @@ namespace cadencii {
                             last_x = x_at_clock;
 
                             // 音符の区間中に，PBSがあるかもしれないのでPBSのデータ点を探しながら塗りつぶす
-                            ByRef<Integer> pbs_index = new ByRef<Integer>(0);
+                            ByRef<int> pbs_index = new ByRef<int>(0);
                             int last_pbs_value = pbs.getValue(clock, pbs_index);
 
                             if (pbs_count <= 0) {

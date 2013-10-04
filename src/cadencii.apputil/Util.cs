@@ -33,7 +33,6 @@ using cadencii;
 namespace cadencii.apputil
 {
     using java = cadencii.java;
-    using boolean = System.Boolean;
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
     using LONG = System.Int32;
@@ -54,7 +53,7 @@ namespace cadencii.apputil
         /// このクラスのメソッド'applyFontRecurse', 'applyToolStripFontRecurse', 'applyContextMenuFontRecurse'の呼び出しを有効とするかどうか。
         /// デフォルトではtrue
         /// </summary>
-        public static boolean isApplyFontRecurseEnabled = true;
+        public static bool isApplyFontRecurseEnabled = true;
 
 #if FOOOOOOOOOOOOOO
         [StructLayout( LayoutKind.Explicit )]
@@ -340,7 +339,7 @@ namespace cadencii.apputil
 #endif
                 // 上端に最初に現れる色つきピクセルを探す
                 int firsty = 0;
-                boolean found = false;
+                bool found = false;
                 for ( int y = 0; y < h; y++ )
                 {
                     for ( int x = 0; x < w; x++ )
@@ -423,7 +422,7 @@ namespace cadencii.apputil
         /// </summary>
         /// <param name="language_code"></param>
         /// <returns></returns>
-        public static boolean isRightToLeftLanguage( String language_code )
+        public static bool isRightToLeftLanguage( String language_code )
         {
             language_code = language_code.ToLower();
             if ( language_code.Equals( "ar" ) ||

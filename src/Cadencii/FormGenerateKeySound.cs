@@ -26,19 +26,13 @@ import cadencii.*;
 using System;
 using System.Windows.Forms;
 using System.IO;
+using System.ComponentModel;
 using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
 using cadencii.windows.forms;
 
 namespace cadencii {
-    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using boolean = System.Boolean;
-    using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
-    using BProgressChangedEventArgs = System.ComponentModel.ProgressChangedEventArgs;
-    using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
-    using BRunWorkerCompletedEventHandler = System.ComponentModel.RunWorkerCompletedEventHandler;
-    using BProgressChangedEventHandler = System.ComponentModel.ProgressChangedEventHandler;
 #endif
 
 #if JAVA
@@ -55,7 +49,7 @@ namespace cadencii {
             public String singer = "Miku";
             public double amplitude = 1.0;
             public String directory = "";
-            public boolean replace = true;
+            public bool replace = true;
         }
 
         const int _SAMPLE_RATE = 44100;
@@ -65,13 +59,13 @@ namespace cadencii {
         private SingerConfig[] m_singer_config1;
         private SingerConfig[] m_singer_config2;
         private SingerConfig[] m_singer_config_utau;
-        private boolean m_cancel_required = false;
+        private bool m_cancel_required = false;
         /// <summary>
         /// 処理が終わったら自動でフォームを閉じるかどうか。デフォルトではfalse（閉じない）
         /// </summary>
-        private boolean m_close_when_finished = false;
+        private bool m_close_when_finished = false;
 
-        public FormGenerateKeySound( boolean close_when_finished ) {
+        public FormGenerateKeySound( bool close_when_finished ) {
 #if JAVA
             super();
             initialize();
@@ -113,9 +107,9 @@ namespace cadencii {
 
         #region helper methods
         private void registerEventHandlers() {
-            bgWork.DoWork += new BDoWorkEventHandler( bgWork_DoWork );
-            bgWork.RunWorkerCompleted += new BRunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
-            bgWork.ProgressChanged += new BProgressChangedEventHandler( bgWork_ProgressChanged );
+            bgWork.DoWork += new DoWorkEventHandler( bgWork_DoWork );
+            bgWork.RunWorkerCompleted += new RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
+            bgWork.ProgressChanged += new ProgressChangedEventHandler( bgWork_ProgressChanged );
         }
 
         private void updateSinger() {
@@ -147,7 +141,7 @@ namespace cadencii {
             this.Text = title;
         }
 
-        private void updateEnabled( boolean enabled ) {
+        private void updateEnabled( bool enabled ) {
             comboSinger.Enabled = enabled;
             comboSingingSynthSystem.Enabled = enabled;
             txtDir.ReadOnly = !enabled;
@@ -205,7 +199,7 @@ namespace cadencii {
             bgWork.RunWorkerAsync( arg );
         }
 
-        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+        public void bgWork_DoWork( Object sender, DoWorkEventArgs e ) {
 #if DEBUG
             sout.println( "FormGenerateKeySound#bgWork_DoWork" );
 #endif
@@ -213,7 +207,7 @@ namespace cadencii {
             String singer = arg.singer;
             double amp = arg.amplitude;
             String dir = arg.directory;
-            boolean replace = arg.replace;
+            bool replace = arg.replace;
             // 音源を準備
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
@@ -251,7 +245,7 @@ namespace cadencii {
             m_cancel_required = false;
         }
 
-        private void bgWork_ProgressChanged( Object sender, BProgressChangedEventArgs e ) {
+        private void bgWork_ProgressChanged( Object sender, ProgressChangedEventArgs e ) {
             String title = "Progress: " + e.ProgressPercentage + "%";
 #if JAVA
             updateTitle( title );
@@ -264,7 +258,7 @@ namespace cadencii {
             VSTiDllManager.terminate();
         }
 
-        public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
+        public void bgWork_RunWorkerCompleted( Object sender, RunWorkerCompletedEventArgs e ) {
             updateEnabled( true );
             if ( m_close_when_finished ) {
                 Close();

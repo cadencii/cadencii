@@ -30,7 +30,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = Boolean;
 #endif
 
 #if JAVA
@@ -40,7 +39,7 @@ namespace cadencii
 #endif
     {
 #if !JAVA
-        public override boolean CanConvertTo( ITypeDescriptorContext context, Type destinationType )
+        public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
         {
             if ( destinationType == typeof( NoteNumberProperty ) ) {
                 return true;
@@ -60,7 +59,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public override boolean CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+        public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
         {
             if ( sourceType == typeof( String ) ) {
                 return true;
@@ -144,9 +143,9 @@ namespace cadencii
 
             int scale = 3;
             int offset = 0;
-            boolean doubled = false;
+            bool doubled = false;
             int odd = 0;
-            boolean first = true;
+            bool first = true;
             NoteNumberExpressionType exp_type = NoteNumberExpressionType.International;
             while ( true ) {
                 int trim = 1;

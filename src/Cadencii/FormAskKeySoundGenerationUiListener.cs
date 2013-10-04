@@ -26,8 +26,6 @@ package cadencii;
             using System;
             using cadencii.windows.forms;
             using cadencii.apputil;
-
-            using boolean = System.Boolean;
 #endif // CSHARP
 
 #endif

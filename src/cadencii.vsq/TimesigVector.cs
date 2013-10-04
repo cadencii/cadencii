@@ -27,7 +27,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -90,7 +89,7 @@ namespace cadencii.vsq
             return ret;
         }
 
-        public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count )
+        public Timesig getTimesigAt( int clock, ByRef<int> bar_count )
         {
             int index = 0;
             int c = Count;

@@ -28,9 +28,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Long = System.Int64;
-    using Integer = System.Int32;
 #endif
 
     public class MidiFile
@@ -86,8 +83,8 @@ namespace cadencii.vsq
                     long startpos = stream.getFilePointer();
 
                     // チャンクの終わりまで読込み
-                    ByRef<Long> clock = new ByRef<Long>( (long)0 );
-                    ByRef<Integer> last_status_byte = new ByRef<Integer>( 0x00 );
+                    ByRef<long> clock = new ByRef<long>( (long)0 );
+                    ByRef<int> last_status_byte = new ByRef<int>( 0x00 );
                     while ( stream.getFilePointer() < startpos + size ) {
                         MidiEvent mi = MidiEvent.read( stream, clock, last_status_byte );
                         track_events.Add( mi );

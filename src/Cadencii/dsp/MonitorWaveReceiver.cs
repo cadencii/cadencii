@@ -25,7 +25,6 @@ using cadencii.media;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -41,7 +40,7 @@ namespace cadencii
 
         private static MonitorWaveReceiver mSingleton = null;
 
-        private boolean mFirstCall = true;
+        private bool mFirstCall = true;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private double[] mBuffer2L = new double[BUFLEN];

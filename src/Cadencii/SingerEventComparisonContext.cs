@@ -22,8 +22,6 @@ using cadencii.vsq;
 using cadencii.java.util;
 
 namespace cadencii {
-    using Integer = System.Int32;
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -36,8 +34,8 @@ namespace cadencii {
 #endif
         VsqTrack track1 = null;
         VsqTrack track2 = null;
-        Iterator<Integer> it1 = null;
-        Iterator<Integer> it2 = null;
+        Iterator<int> it1 = null;
+        Iterator<int> it2 = null;
 
         public SingerEventComparisonContext( VsqTrack track1, VsqTrack track2 ) {
             this.track1 = track1;
@@ -64,11 +62,11 @@ namespace cadencii {
             return it2.next();
         }
 
-        public boolean hasNext1() {
+        public bool hasNext1() {
             return it1.hasNext();
         }
 
-        public boolean hasNext2() {
+        public bool hasNext2() {
             return it2.hasNext();
         }
 
@@ -80,7 +78,7 @@ namespace cadencii {
             return track2.getEvent( index );
         }
 
-        public boolean equals( Object obj1, Object obj2 ) {
+        public bool equals( Object obj1, Object obj2 ) {
             if ( obj1 == null || obj2 == null ) {
                 return false;
             }

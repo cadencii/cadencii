@@ -23,9 +23,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Long = System.Int64;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -46,7 +43,7 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            boolean[] bits = new boolean[64];
+            bool[] bits = new bool[64];
             long val = 0x1;
             bits[0] = (number & val) == val;
             for ( int i = 1; i < 64; i++ ) {
@@ -98,7 +95,7 @@ namespace cadencii.vsq
             return ret;
         }
 
-        public static MidiEvent read( RandomAccessFile stream, ByRef<Long> last_clock, ByRef<Integer> last_status_byte )
+        public static MidiEvent read( RandomAccessFile stream, ByRef<long> last_clock, ByRef<int> last_status_byte )
 #if JAVA
             throws IOException, Exception
 #endif

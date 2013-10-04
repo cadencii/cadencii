@@ -40,8 +40,6 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     public class Utility
@@ -615,7 +613,7 @@ namespace cadencii
         /// <param name="p"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static boolean isInRect( Point p, Rectangle rc ) {
+        public static bool isInRect( Point p, Rectangle rc ) {
             return isInRect( p.x, p.y, rc );
         }
 
@@ -626,7 +624,7 @@ namespace cadencii
         /// <param name="y"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static boolean isInRect( int x, int y, Rectangle rc ) {
+        public static bool isInRect( int x, int y, Rectangle rc ) {
             return isInRect( x, y, rc.x, rc.y, rc.width, rc.height );
         }
 
@@ -640,7 +638,7 @@ namespace cadencii
         /// <param name="rc_width"></param>
         /// <param name="rc_height"></param>
         /// <returns></returns>
-        public static boolean isInRect( int x, int y, int rc_x, int rc_y, int rc_width, int rc_height ) {
+        public static bool isInRect( int x, int y, int rc_x, int rc_y, int rc_width, int rc_height ) {
             if ( rc_x <= x ) {
                 if ( x <= rc_x + rc_width ) {
                     if ( rc_y <= y ) {
@@ -1142,11 +1140,11 @@ namespace cadencii
         {
             RendererKind kind = VsqFileEx.getTrackRendererKind( track1 );
             int iterator_kind = IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND;
-            for ( Iterator<Integer> itr1 = track1.indexIterator( iterator_kind ); itr1.hasNext(); ) {
+            for ( Iterator<int> itr1 = track1.indexIterator( iterator_kind ); itr1.hasNext(); ) {
                 int i = itr1.next();
                 VsqEvent item1 = track1.getEvent( i );
-                boolean found = false;
-                for ( Iterator<Integer> itr2 = track2.indexIterator( iterator_kind ); itr2.hasNext(); ) {
+                bool found = false;
+                for ( Iterator<int> itr2 = track2.indexIterator( iterator_kind ); itr2.hasNext(); ) {
                     int j = itr2.next();
                     VsqEvent item2 = track2.getEvent( j );
                     // item1とitem2が同じかどうか判定する
@@ -1446,7 +1444,7 @@ namespace cadencii
         public static String trimString( String item, Font font, int width ) {
             String edited = item;
             int delete_count = PortUtil.getStringLength( item );
-            boolean д = true;
+            bool д = true;
             for ( ; д; ) {
                 Dimension measured = Util.measureString( edited, font );
                 if ( measured.width <= width ) {

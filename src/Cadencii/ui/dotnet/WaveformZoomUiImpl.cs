@@ -19,8 +19,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-
     /// <summary>
     /// 波形表示の拡大・縮小を行うためのパネルです．
     /// </summary>

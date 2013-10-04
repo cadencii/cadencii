@@ -20,7 +20,6 @@ using System;
 using cadencii.vsq;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -62,11 +61,11 @@ namespace cadencii {
             return pos2;
         }
 
-        public boolean hasNext1() {
+        public bool hasNext1() {
             return (pos1 < list1.size());
         }
 
-        public boolean hasNext2() {
+        public bool hasNext2() {
             return (pos2 < list2.size());
         }
 
@@ -96,7 +95,7 @@ namespace cadencii {
             return ((WrappedVsqBPPair)obj).clock;
         }
 
-        public boolean equals( Object obj1, Object obj2 ) {
+        public bool equals( Object obj1, Object obj2 ) {
             if ( obj1 == null || obj2 == null ) {
                 return false;
             }

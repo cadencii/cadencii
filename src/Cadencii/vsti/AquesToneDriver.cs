@@ -30,7 +30,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA

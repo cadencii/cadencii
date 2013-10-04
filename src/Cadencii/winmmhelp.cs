@@ -18,12 +18,10 @@ using System.Runtime.InteropServices;
 using cadencii;
 
 namespace cadencii {
-    using boolean = Boolean;
-
     public unsafe static class winmmhelp {
         static uint s_num_joydev = 0;
-        static boolean[] s_joy_attatched;
-        static boolean s_initialized = false;
+        static bool[] s_joy_attatched;
+        static bool s_initialized = false;
         static int[] s_joy_available;
         static JOYCAPSW[] s_joycaps;
         static readonly uint[] _BTN = new uint[32] { 0x0001,
@@ -73,7 +71,7 @@ namespace cadencii {
                 num_joydev = 0;
                 return num_joydev;
             }
-            s_joy_attatched = new boolean[num_joydev];
+            s_joy_attatched = new bool[num_joydev];
             s_joycaps = new JOYCAPSW[num_joydev];
             int count = 0;
             for ( int k = 0; k < num_joydev; k++ ) {
@@ -105,7 +103,7 @@ namespace cadencii {
             return (int)s_num_joydev;
         }
 
-        public static boolean IsJoyAttatched( int index ) {
+        public static bool IsJoyAttatched( int index ) {
             if ( !s_initialized ) {
                 JoyInit();
             }
@@ -115,7 +113,7 @@ namespace cadencii {
             return s_joy_attatched[index];
         }
 
-        public static boolean JoyGetStatus( int index_, out byte[] buttons, out int pov ) {
+        public static bool JoyGetStatus( int index_, out byte[] buttons, out int pov ) {
             if ( !s_initialized ) {
                 pov = -1;
                 buttons = new byte[0];

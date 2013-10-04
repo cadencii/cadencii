@@ -24,7 +24,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if DEBUG

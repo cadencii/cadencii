@@ -26,7 +26,6 @@ using cadencii.java.awt;
 using cadencii.windows.forms;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -83,7 +82,7 @@ namespace cadencii {
 #endif
 
         private void validateText() {
-            boolean valid = false;
+            bool valid = false;
             String text = this.Text;
             if ( m_value_type == ValueType.Double ) {
                 double dou;

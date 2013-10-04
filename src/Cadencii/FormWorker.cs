@@ -122,7 +122,7 @@ namespace cadencii
             mControl = worker;
             mIndex = index;
             mArgument.state = new WorkerState(){
-                private boolean mCancelRequested = false;
+                private bool mCancelRequested = false;
                 private double mProcessedJob = 0.0;
 
                 public void reportProgress(double processed_job) {
@@ -138,7 +138,7 @@ namespace cadencii
                     mControl.workerCompleted( mIndex );
                 }
 
-                public boolean isCancelRequested() {
+                public bool isCancelRequested() {
                     return mCancelRequested;
                 }
 

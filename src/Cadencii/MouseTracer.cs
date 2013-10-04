@@ -23,8 +23,6 @@ using cadencii.java.awt;
 using cadencii.java.util;
 
 namespace cadencii {
-    using Integer = System.Int32;
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>

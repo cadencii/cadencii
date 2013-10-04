@@ -32,9 +32,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using BPropertyValueChangedEventHandler = System.Windows.Forms.PropertyValueChangedEventHandler;
-    using BPropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
 #endif
 
 #if JAVA
@@ -46,7 +43,7 @@ namespace cadencii
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
         private List<SelectedEventEntry> m_items;
         private int m_track;
-        private boolean m_editing;
+        private bool m_editing;
 
         public PropertyPanel()
         {
@@ -62,12 +59,12 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public boolean isEditing()
+        public bool isEditing()
         {
             return m_editing;
         }
 
-        public void setEditing( boolean value )
+        public void setEditing( bool value )
         {
             m_editing = value;
         }
@@ -131,7 +128,7 @@ namespace cadencii
         {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
-                boolean found = false;
+                bool found = false;
                 foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     String key = v.getKey();
                     if ( key == null ) {
@@ -176,7 +173,7 @@ namespace cadencii
             setEditing( false );
         }
 
-        public void propertyGrid_PropertyValueChanged( Object s, BPropertyValueChangedEventArgs e )
+        public void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
         {
 #if JAVA
             Object[] selobj = propertyGrid.getSelectedObjects();
@@ -274,7 +271,7 @@ namespace cadencii
             propertyGrid.SelectedGridItemChanged += new SelectedGridItemChangedEventHandler( propertyGrid_SelectedGridItemChanged );
             propertyGrid.Leave += new EventHandler( propertyGrid_Leave );
             propertyGrid.Enter += new EventHandler( propertyGrid_Enter );
-            propertyGrid.PropertyValueChanged += new BPropertyValueChangedEventHandler( propertyGrid_PropertyValueChanged );
+            propertyGrid.PropertyValueChanged += new PropertyValueChangedEventHandler( propertyGrid_PropertyValueChanged );
         }
 
         private void setResources()
@@ -313,7 +310,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

@@ -24,8 +24,6 @@ using cadencii.vsq;
 using cadencii.xml;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-
     /// <summary>
     /// パレットツールを一元管理するクラス
     /// </summary>
@@ -92,7 +90,7 @@ namespace cadencii {
                             if ( File.Exists( config ) ) {
                                 XmlStaticMemberSerializer xsms = new XmlStaticMemberSerializer( instance.GetType() );
                                 FileStream fs = null;
-                                boolean errorOnDeserialize = false;
+                                bool errorOnDeserialize = false;
                                 try {
                                     fs = new FileStream( config, FileMode.Open, FileAccess.Read );
                                     try {
@@ -142,7 +140,7 @@ namespace cadencii {
         /// <param name="vsq_event_intrenal_ids">編集対象のInternalIDのリスト</param>
         /// <param name="button">パレットツールが押し下げられた時のマウスボタンの種類</param>
         /// <returns>パレットツールによって編集が加えられた場合true。そうでなければfalse(パレットツールがエラーを起こした場合も含む)。</returns>
-        public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
+        public static bool invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.ContainsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 VsqTrack item = (VsqTrack)vsq.Track[ track ].clone();
@@ -154,7 +152,7 @@ namespace cadencii {
                     return false;
                 }
                 IPaletteTool pal = (IPaletteTool)objPal;
-                boolean edited = false;
+                bool edited = false;
                 try {
                     edited = pal.edit( item, vsq_event_intrenal_ids, button );
                 } catch ( Exception ex ) {

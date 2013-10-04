@@ -26,8 +26,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -63,7 +61,7 @@ namespace cadencii.vsq
         /// <summary>
         /// 歌詞・発音記号列の前後にクォーテーションマークを付けるかどうか
         /// </summary>
-        public boolean addQuotationMark = true;
+        public bool addQuotationMark = true;
 
         public VsqHandle()
         {
@@ -311,7 +309,7 @@ namespace cadencii.vsq
                     tmpDynBPY = spl[1];
                 } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ) {
                     String num = search.Substring( 1 );
-                    ByRef<Integer> vals = new ByRef<Integer>( 0 );
+                    ByRef<int> vals = new ByRef<int>( 0 );
                     if ( PortUtil.tryParseInt( num, vals ) ) {
                         Lyric lyric = new Lyric( spl[1] );
                         m_type = VsqHandleType.Lyric;

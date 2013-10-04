@@ -28,7 +28,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -45,7 +44,7 @@ namespace cadencii
             m_type = typeof( SelectedEventEntry );
         }
 
-        public override boolean ShouldSerializeValue( Object component ) {
+        public override bool ShouldSerializeValue( Object component ) {
             return true;
         }
 
@@ -65,7 +64,7 @@ namespace cadencii
             return pi.GetValue( component, new Object[] { } );
         }
 
-        public override boolean CanResetValue( Object component ) {
+        public override bool CanResetValue( Object component ) {
             return false;
         }
 
@@ -82,7 +81,7 @@ namespace cadencii
             }
         }
 
-        public override boolean IsReadOnly {
+        public override bool IsReadOnly {
             get {
                 return false;
             }

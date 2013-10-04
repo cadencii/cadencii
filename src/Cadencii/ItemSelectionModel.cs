@@ -30,8 +30,6 @@ using System.Collections.Generic;
             using System;
             using cadencii.java.util;
             using cadencii.vsq;
-            using Integer = System.Int32;
-            using Long = System.Int64;
 #endif
 
 #endif
@@ -52,18 +50,18 @@ using System.Collections.Generic;
                 /// <summary>
                 /// 選択されている拍子変更イベントのリスト
                 /// </summary>
-                private SortedDictionary<Integer, SelectedTimesigEntry> mTimesig = new SortedDictionary<Integer, SelectedTimesigEntry>();
+                private SortedDictionary<int, SelectedTimesigEntry> mTimesig = new SortedDictionary<int, SelectedTimesigEntry>();
                 private int mSelectedTimesig = -1;
                 /// <summary>
                 /// 選択されているテンポ変更イベントのリスト
                 /// </summary>
-                private SortedDictionary<Integer, SelectedTempoEntry> mTempo = new SortedDictionary<Integer, SelectedTempoEntry>();
+                private SortedDictionary<int, SelectedTempoEntry> mTempo = new SortedDictionary<int, SelectedTempoEntry>();
                 private int mLastTempo = -1;
                 /// <summary>
                 /// 選択されているイベントのリスト
                 /// </summary>
                 private List<SelectedEventEntry> mEvents = new List<SelectedEventEntry>();
-                private List<Long> mPointIDs = new List<Long>();
+                private List<long> mPointIDs = new List<long>();
                 /// <summary>
                 /// selectedPointIDsに格納されているデータ点の，CurveType
                 /// </summary>
@@ -193,12 +191,12 @@ using System.Collections.Generic;
                     return mTimesig.Count;
                 }
 
-                public IEnumerable<ValuePair<Integer, SelectedTimesigEntry>> getTimesigIterator()
+                public IEnumerable<ValuePair<int, SelectedTimesigEntry>> getTimesigIterator()
                 {
-                    List<ValuePair<Integer, SelectedTimesigEntry>> list = new List<ValuePair<Integer, SelectedTimesigEntry>>();
+                    List<ValuePair<int, SelectedTimesigEntry>> list = new List<ValuePair<int, SelectedTimesigEntry>>();
                     foreach (var clock in mTimesig.Keys)
                     {
-                        list.Add( new ValuePair<Integer, SelectedTimesigEntry>( clock, mTimesig[ clock ] ) );
+                        list.Add( new ValuePair<int, SelectedTimesigEntry>( clock, mTimesig[ clock ] ) );
                     }
                     return list;
                 }
@@ -279,12 +277,12 @@ using System.Collections.Generic;
                     return mTempo.Count;
                 }
 
-                public IEnumerable<ValuePair<Integer, SelectedTempoEntry>> getTempoIterator()
+                public IEnumerable<ValuePair<int, SelectedTempoEntry>> getTempoIterator()
                 {
-                    List<ValuePair<Integer, SelectedTempoEntry>> list = new List<ValuePair<Integer, SelectedTempoEntry>>();
+                    List<ValuePair<int, SelectedTempoEntry>> list = new List<ValuePair<int, SelectedTempoEntry>>();
                     foreach (var clock in mTempo.Keys)
                     {
-                        list.Add( new ValuePair<Integer, SelectedTempoEntry>( clock, mTempo[ clock ] ) );
+                        list.Add( new ValuePair<int, SelectedTempoEntry>( clock, mTempo[ clock ] ) );
                     }
                     return list;
                 }
@@ -350,8 +348,8 @@ using System.Collections.Generic;
 
                 public void removeEventRange( int[] ids )
                 {
-                    List<Integer> v_ids = new List<Integer>( PortUtil.convertIntArray( ids ) );
-                    List<Integer> index = new List<Integer>();
+                    List<int> v_ids = new List<int>( PortUtil.convertIntArray( ids ) );
+                    List<int> index = new List<int>();
                     int count = mEvents.Count;
                     for ( int i = 0; i < count; i++ )
                     {
@@ -375,7 +373,7 @@ using System.Collections.Generic;
                     checkSelectedItemExistence();
                 }
 
-                public void addEventAll( List<Integer> list )
+                public void addEventAll( List<int> list )
                 {
                     clearTempo();
                     clearTimesig();
@@ -558,7 +556,7 @@ using System.Collections.Generic;
                     return mPointCurveType;
                 }
 
-                public IEnumerable<Long> getPointIDIterator()
+                public IEnumerable<long> getPointIDIterator()
                 {
                     return mPointIDs;
                 }

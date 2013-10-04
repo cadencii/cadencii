@@ -20,7 +20,6 @@ using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -105,7 +104,7 @@ namespace cadencii.vsq
         /// このハンドルが強弱記号を表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isDynaffType()
+        public bool isDynaffType()
         {
             if ( IconID != null ) {
                 return IconID.StartsWith( ICONID_HEAD_DYNAFF );
@@ -118,7 +117,7 @@ namespace cadencii.vsq
         /// このハンドルがクレッシェンドを表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isCrescendType()
+        public bool isCrescendType()
         {
             if ( IconID != null ) {
                 return IconID.StartsWith( ICONID_HEAD_CRESCEND );
@@ -131,7 +130,7 @@ namespace cadencii.vsq
         /// このハンドルがデクレッシェンドを表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isDecrescendType()
+        public bool isDecrescendType()
         {
             if ( IconID != null ) {
                 return IconID.StartsWith( ICONID_HEAD_DECRESCEND );

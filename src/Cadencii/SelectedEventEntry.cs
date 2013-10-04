@@ -29,7 +29,6 @@ using cadencii.utau;
 
 namespace cadencii
 {
-    using Integer = System.Int32;
 #endif
 
 #if JAVA

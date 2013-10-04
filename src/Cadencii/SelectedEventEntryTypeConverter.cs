@@ -17,8 +17,6 @@ using System;
 using System.ComponentModel;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-
     public class SelectedEventEntryTypeConverter : TypeConverter {
         public SelectedEventEntryTypeConverter() {
         }
@@ -34,7 +32,7 @@ namespace cadencii {
             return buffClassProps;
         }
 
-        public override boolean GetPropertiesSupported( ITypeDescriptorContext context ) {
+        public override bool GetPropertiesSupported( ITypeDescriptorContext context ) {
             return true;
         }
     }

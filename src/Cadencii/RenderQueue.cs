@@ -22,7 +22,6 @@ using cadencii.java.util;
 using cadencii.utau;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class RenderQueue {
@@ -35,7 +34,7 @@ namespace cadencii {
         //public double secEnd;
         public double secStart;
         public String FileName;
-        public boolean ResamplerFinished;
+        public bool ResamplerFinished;
         /// <summary>
         /// MD5ハッシュによるファイル名の生成元となる文字列
         /// </summary>

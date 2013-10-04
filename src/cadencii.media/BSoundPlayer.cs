@@ -20,8 +20,8 @@ import javax.sound.sampled.*;
 public class BSoundPlayer{
     private static final int BUFLEN = 128000;
     private AudioInputStream m_stream = null;
-    private boolean m_stop_required = false;
-    private boolean m_playing = false;
+    private bool m_stop_required = false;
+    private bool m_playing = false;
     private String m_sound_location = "";
 
     public BSoundPlayer( String sound_location ){

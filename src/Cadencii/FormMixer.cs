@@ -36,8 +36,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -51,7 +49,7 @@ namespace cadencii
 #endif
         private FormMain m_parent;
         private List<VolumeTracker> m_tracker = null;
-        private boolean mPreviousAlwaysOnTop;
+        private bool mPreviousAlwaysOnTop;
 
         public event FederChangedEventHandler FederChanged;
 
@@ -90,7 +88,7 @@ namespace cadencii
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を取得します．
         /// </summary>
-        public boolean getPreviousAlwaysOnTop()
+        public bool getPreviousAlwaysOnTop()
         {
             return mPreviousAlwaysOnTop;
         }
@@ -98,7 +96,7 @@ namespace cadencii
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
         /// </summary>
-        public void setPreviousAlwaysOnTop( boolean value )
+        public void setPreviousAlwaysOnTop( bool value )
         {
             mPreviousAlwaysOnTop = value;
         }
@@ -156,11 +154,11 @@ namespace cadencii
                 return;
             }
             // マスター
-            boolean masterMuted = vsq.getMasterMute();
+            bool masterMuted = vsq.getMasterMute();
             volumeMaster.setMuted( masterMuted );
 
             // VSQのトラック
-            boolean soloSpecificationExists = false; // 1トラックでもソロ指定があればtrue
+            bool soloSpecificationExists = false; // 1トラックでもソロ指定があればtrue
             for ( int i = 1; i < vsq.Track.Count; i++ ) {
                 if ( vsq.getSolo( i ) ) {
                     soloSpecificationExists = true;
@@ -223,7 +221,7 @@ namespace cadencii
 #endif
 
             // trackerの総数が変化したかどうか
-            boolean num_changed = (m_tracker.Count != num);
+            bool num_changed = (m_tracker.Count != num);
             
             // trackerに過不足があれば数を調節
             if ( m_tracker.Count < num ) {
@@ -472,7 +470,7 @@ namespace cadencii
 #endif
         }
 
-        private void invokeSoloChangedEvent( int track, boolean solo )
+        private void invokeSoloChangedEvent( int track, bool solo )
         {
 #if JAVA
             try{
@@ -488,7 +486,7 @@ namespace cadencii
 #endif
         }
 
-        private void invokeMuteChangedEvent( int track, boolean mute )
+        private void invokeMuteChangedEvent( int track, bool mute )
         {
 #if JAVA
             try{
@@ -632,7 +630,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

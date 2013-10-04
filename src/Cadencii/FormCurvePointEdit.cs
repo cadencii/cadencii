@@ -34,7 +34,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -45,7 +44,7 @@ namespace cadencii
 #endif
         private long m_editing_id = -1;
         private CurveType m_curve;
-        private boolean m_changed = false;
+        private bool m_changed = false;
         private FormMain mMainWindow = null;
 
         public FormCurvePointEdit( FormMain main_window, long editing_id, CurveType curve )
@@ -89,7 +88,7 @@ namespace cadencii
             return Messaging.getMessage( id );
         }
 
-        private void applyValue( boolean mode_clock )
+        private void applyValue( bool mode_clock )
         {
             if ( !m_changed ) {
                 return;
@@ -254,7 +253,7 @@ namespace cadencii
                 return;
             }
             VsqFileEx vsq = AppManager.getVsqFile();
-            boolean exists = false;
+            bool exists = false;
             if ( vsq != null ) {
                 exists = vsq.Track[AppManager.getSelected()].getCurve( m_curve.getName() ).findElement( m_editing_id ).index >= 0;
             }

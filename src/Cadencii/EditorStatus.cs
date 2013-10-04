@@ -15,14 +15,13 @@
 package cadencii;
 #else
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class EditorStatus {
         /// <summary>
         /// トラックのレンダリングが必要かどうかを表すフラグ
         /// </summary>
-        public boolean[] renderRequired = new boolean[AppManager.MAX_NUM_TRACK];
+        public bool[] renderRequired = new bool[AppManager.MAX_NUM_TRACK];
 
         public EditorStatus() {
             for ( int i = 0; i < AppManager.MAX_NUM_TRACK; i++ ) {

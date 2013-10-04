@@ -33,8 +33,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
 #endif
 
 #if JAVA
@@ -51,7 +49,7 @@ namespace cadencii
         /// </summary>
         private Point m_last_mouse_global_location;
         private TrackSelector m_parent;
-        private boolean m_btn_datapoint_downed = false;
+        private bool m_btn_datapoint_downed = false;
         private double m_min_opacity = 0.4;
         private CurveType m_curve_type;
         private int m_track;
@@ -78,7 +76,7 @@ namespace cadencii
             m_track = AppManager.getSelected();
             m_chain_id = selected_chain_id;
             m_point_id = selected_point_id;
-            boolean found = false;
+            bool found = false;
             VsqFileEx vsq = AppManager.getVsqFile();
             BezierCurves attached = vsq.AttachedCurves.get( m_track - 1 );
             List<BezierChain> chains = attached.get( m_curve_type );
@@ -91,7 +89,7 @@ namespace cadencii
             if ( !found ) {
                 return;
             }
-            boolean smooth = false;
+            bool smooth = false;
             foreach (var bp in attached.getBezierChain( m_curve_type, m_chain_id ).points) {
                 if ( bp.getID() == m_point_id ) {
                     m_point = bp;
@@ -158,7 +156,7 @@ namespace cadencii
 
         public void checkboxEnableSmoothCheckedChanged()
         {
-            boolean value = this.ui.isEnableSmoothSelected();
+            bool value = this.ui.isEnableSmoothSelected();
             this.ui.setLeftClockEnabled( value );
             this.ui.setLeftValueEnabled( value );
             this.ui.setLeftButtonEnabled( value );
@@ -166,7 +164,7 @@ namespace cadencii
             this.ui.setRightValueEnabled( value );
             this.ui.setRightButtonEnabled( value );
 
-            boolean old =
+            bool old =
                 (m_point.getControlLeftType() != BezierControlType.None) ||
                 (m_point.getControlRightType() != BezierControlType.None);
             if( value ) {
@@ -209,7 +207,7 @@ namespace cadencii
             Point loc_on_trackselector =
                 new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
             MouseEventArgs event_arg =
-                new MouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+                new MouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseUp( this, event_arg );
             PortUtil.setMousePosition( m_last_mouse_global_location );
             m_parent.doInvalidate();
@@ -230,7 +228,7 @@ namespace cadencii
                 Point loc_on_trackselector =
                     new Point( loc_on_screen.x - loc_trackselector.x, loc_on_screen.y - loc_trackselector.y );
                 MouseEventArgs event_arg =
-                    new MouseEventArgs( BMouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
+                    new MouseEventArgs( MouseButtons.Left, 0, loc_on_trackselector.x, loc_on_trackselector.y, 0 );
                 BezierPoint ret = m_parent.HandleMouseMoveForBezierMove( event_arg, m_picked_side );
 
                 this.ui.setDataPointClockText( ((int)ret.getBase().getX()) + "" );
@@ -296,7 +294,7 @@ namespace cadencii
             PortUtil.setMousePosition( mScreenMouseDownLocation );
             MouseEventArgs event_arg =
                 new MouseEventArgs(
-                    BMouseButtons.Left, 0,
+                    MouseButtons.Left, 0,
                     loc_on_trackselector.x, loc_on_trackselector.y, 0 );
             m_parent.TrackSelector_MouseDown( this, event_arg );
             m_picked_side = side;
@@ -311,7 +309,7 @@ namespace cadencii
             this.ui.setLeftValueText( ((int)(m_point.getBase().getY() + m_point.controlLeft.getY())) + "" );
             this.ui.setRightClockText( ((int)(m_point.getBase().getX() + m_point.controlRight.getX())) + "" );
             this.ui.setRightValueText( ((int)(m_point.getBase().getY() + m_point.controlRight.getY())) + "" );
-            boolean smooth =
+            bool smooth =
                 (m_point.getControlLeftType() != BezierControlType.None) ||
                 (m_point.getControlRightType() != BezierControlType.None);
             this.ui.setEnableSmoothSelected( smooth );

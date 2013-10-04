@@ -18,7 +18,6 @@ package cadencii;
 using System;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -29,10 +28,10 @@ namespace cadencii {
         int getNextIndex2();
         Object getElementAt1( int index );
         Object getElementAt2( int index );
-        boolean hasNext1();
-        boolean hasNext2();
+        bool hasNext1();
+        bool hasNext2();
         int getClockFrom( Object obj );
-        boolean equals( Object obj1, Object obj2 );
+        bool equals( Object obj1, Object obj2 );
     }
 
 #if !JAVA

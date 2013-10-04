@@ -22,10 +22,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Float = System.Single;
-    using Integer = System.Int32;
-
 #if JAVA
     public class AquesToneWaveGenerator implements WaveGenerator
 #else
@@ -69,8 +65,8 @@ namespace cadencii
             VsqBPList por = t.getCurve( "por" );
             foreach (var item in t.getNoteEventIterator()) {
                 int endclock = item.Clock + item.ID.getLength();
-                boolean contains_start = clock_start <= item.Clock && item.Clock <= clock_end;
-                boolean contains_end = clock_start <= endclock && endclock <= clock_end;
+                bool contains_start = clock_start <= item.Clock && item.Clock <= clock_end;
+                bool contains_end = clock_start <= endclock && endclock <= clock_end;
                 if ( contains_start || contains_end ) {
                     if ( contains_start ) {
                         #region contains_start
@@ -168,7 +164,7 @@ namespace cadencii
                         // ビブラートが始まるまでのピッチを取得
                         double sec_vibstart = vsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
                         int pit_count = (int)((sec_vibstart - sec_start_act) / delta_sec);
-                        SortedDictionary<Integer, Float> pit_change = new SortedDictionary<Integer, Float>();
+                        SortedDictionary<int, float> pit_change = new SortedDictionary<int, float>();
                         for ( int i = 0; i < pit_count; i++ ) {
                             double gtime = sec_start_act + delta_sec * i;
                             int clock = (int)vsq.getClockFromSec( gtime );
@@ -269,7 +265,7 @@ namespace cadencii
                 for ( int i = 0; i < keycount; i++ ) {
                     int clock = pit.getKeyClock( i );
                     if ( clock_start <= clock && clock <= clock_end ) {
-                        boolean contains = false;
+                        bool contains = false;
                         foreach (var p in pit_send) {
                             if ( p.x <= clock && clock <= p.y ) {
                                 contains = true;

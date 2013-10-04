@@ -28,7 +28,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -68,7 +67,7 @@ namespace cadencii
         /// <returns></returns>
         protected abstract String[] getKoeFileContents();
 
-        public override boolean open( int block_size, int sample_rate )
+        public override bool open( int block_size, int sample_rate )
         {
             int strlen = 260;
             StringBuilder sb = new StringBuilder( strlen );
@@ -76,12 +75,12 @@ namespace cadencii
             String koe_old = sb.ToString();
 
             String required = prepareKoeFile();
-            boolean refresh_winini = false;
+            bool refresh_winini = false;
             if ( !required.Equals( koe_old ) && !koe_old.Equals( "" ) ) {
                 refresh_winini = true;
             }
             win32.WriteProfileString( getConfigSectionKey(), getKoeConfigKey(), required );
-            boolean ret = false;
+            bool ret = false;
             try {
                 ret = base.open( block_size, sample_rate );
             } catch ( Exception ex ) {

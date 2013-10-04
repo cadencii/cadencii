@@ -42,13 +42,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
-
-    using boolean = System.Boolean;
-    using Float = System.Single;
     using Graphics = cadencii.java.awt.Graphics2D;
-    using Integer = System.Int32;
-    using Long = System.Int64;
 #endif
 
     /// <summary>
@@ -228,7 +222,7 @@ namespace cadencii
         /// <summary>
         /// コントロールカーブを表示するモードかどうか
         /// </summary>
-        private boolean mCurveVisible = true;
+        private bool mCurveVisible = true;
         /// <summary>
         /// 現在のマウス位置におけるカーブの値
         /// </summary>
@@ -244,12 +238,12 @@ namespace cadencii
         /// <summary>
         /// マウスがカーブ部分に下ろされている最中かどうかを表すフラグ
         /// </summary>
-        private boolean mMouseDowned = false;
+        private bool mMouseDowned = false;
         /// <summary>
         /// マウスのトレーサ。コントロールカーブ用の仮想スクリーン座標で表す。
         /// </summary>
         private MouseTracer mMouseTracer = new MouseTracer();
-        private boolean mPencilMoved = false;
+        private bool mPencilMoved = false;
         private Thread mMouseHoverThread = null;
         /// <summary>
         /// cmenuSingerのメニューアイテムを初期化するのに使用したRenderer。
@@ -262,7 +256,7 @@ namespace cadencii
         /// <summary>
         /// マウスがDownしてからマウスが移動したかどうかを表す。
         /// </summary>
-        private boolean mMouseMoved = false;
+        private bool mMouseMoved = false;
         /// <summary>
         /// マウスドラッグで歌手変更イベントの矩形を移動開始した時の、マウス位置におけるクロック
         /// </summary>
@@ -282,7 +276,7 @@ namespace cadencii
         /// <summary>
         /// マウス長押しによるVELの編集。編集対象の音符のリスト。
         /// </summary>
-        private SortedDictionary<Integer, SelectedEventEntry> mVelEditSelected = new SortedDictionary<Integer, SelectedEventEntry>();
+        private SortedDictionary<int, SelectedEventEntry> mVelEditSelected = new SortedDictionary<int, SelectedEventEntry>();
         /// <summary>
         /// 現在編集操作が行われているBezierChainの、編集直前のオリジナル
         /// </summary>
@@ -295,7 +289,7 @@ namespace cadencii
         /// スペースキーが押されているかどうか。
         /// MouseDown時に範囲選択モードをスキップする必要があるので、FormMainでの処理に加えてこのクラス内部でも処理する必要がある
         /// </summary>
-        private boolean mSpaceKeyDowned = false;
+        private bool mSpaceKeyDowned = false;
         /// <summary>
         /// マウスがDownした位置の座標．xは仮想スクリーン座標．yは通常のe.Location.Y
         /// </summary>
@@ -925,7 +919,7 @@ namespace cadencii
         /// </summary>
         /// <param name="command"></param>
         /// <param name="register">Undo/Redo用バッファにExecuteの結果を格納するかどうかを指定するフラグ</param>
-        private void executeCommand( CadenciiCommand command, boolean register )
+        private void executeCommand( CadenciiCommand command, bool register )
         {
             if ( register ) {
                 AppManager.editHistory.register( AppManager.getVsqFile().executeCommand( command ) );
@@ -941,13 +935,13 @@ namespace cadencii
             }
         }
 
-        public ValuePair<Integer, Integer> getSelectedRegion()
+        public ValuePair<int, int> getSelectedRegion()
         {
             int x0 = AppManager.mCurveSelectedInterval.getStart();
             int x1 = AppManager.mCurveSelectedInterval.getEnd();
             int min = Math.Min( x0, x1 );
             int max = Math.Max( x0, x1 );
-            return new ValuePair<Integer, Integer>( min, max );
+            return new ValuePair<int, int>( min, max );
         }
 
         /// <summary>
@@ -1042,7 +1036,7 @@ namespace cadencii
         /// <summary>
         /// カーブエディタを表示するかどうかを取得します
         /// </summary>
-        public boolean isCurveVisible()
+        public bool isCurveVisible()
         {
             return mCurveVisible;
         }
@@ -1051,7 +1045,7 @@ namespace cadencii
         /// カーブエディタを表示するかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setCurveVisible( boolean value )
+        public void setCurveVisible( bool value )
         {
             mCurveVisible = value;
         }
@@ -1590,7 +1584,7 @@ namespace cadencii
                     // 現在表示されているカーブの名前
                     g.setFont( text_font );
                     g.setColor( brs_string );
-                    boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
+                    bool is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
                     String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
                     g.drawString( name, 7, text_font_height / 2 - text_font_offset + 1 );
 
@@ -1694,16 +1688,16 @@ namespace cadencii
 
             Color brs = fill_color;
             Point selected_point = new Point();
-            boolean selected_found = false;
+            bool selected_found = false;
             // yが範囲内なので，xも検索するときtrue
-            boolean search_mouse = (0 <= mouse.y && mouse.y <= height);
+            bool search_mouse = (0 <= mouse.y && mouse.y <= height);
             IEnumerator<VsqEvent> itr = track.getNoteEventIterator().GetEnumerator();
             int dotwid = DOT_WID * 2 + 1;
             int tolerance = AppManager.editorConfig.PxTolerance;
             // 選択アイテムが1個以上あるので，検索するときtrue
-            boolean search_sel = AppManager.itemSelection.getEventCount() > 0;
+            bool search_sel = AppManager.itemSelection.getEventCount() > 0;
             while ( true ) {
-                boolean draw_env_points = false;
+                bool draw_env_points = false;
                 itr_prev = itr_item;
                 itr_item = itr_next;
                 if (itr.MoveNext()) {
@@ -1738,8 +1732,8 @@ namespace cadencii
                         next_item = null;
                     }
                 }
-                ByRef<Integer> preutterance = new ByRef<Integer>();
-                ByRef<Integer> overlap = new ByRef<Integer>();
+                ByRef<int> preutterance = new ByRef<int>();
+                ByRef<int> overlap = new ByRef<int>();
                 Polygon points = getEnvelopePoints( vsq.TempoTable, prev_item, item, next_item, preutterance, overlap );
                 if ( mMouseDownMode == MouseDownMode.ENVELOPE_MOVE && item.InternalID == mEnvelopeEdigintID ) {
                     selected_point = new Point( points.xpoints[mEnvelopePointKind], points.ypoints[mEnvelopePointKind] );
@@ -1825,7 +1819,7 @@ namespace cadencii
         /// <param name="flag_is_pre_utterance">先行発音用の文字列を取得する場合にtrue，そうでなければfalseを指定します</param>
         /// <param name="value">先行発音，またはオーバーラップの値</param>
         /// <returns>旗に描くための文字列（Overlap: 0.00など）</returns>
-        private static String getFlagTitle( boolean flag_is_pre_utterance, float value )
+        private static String getFlagTitle( bool flag_is_pre_utterance, float value )
         {
             if ( flag_is_pre_utterance ) {
                 return "Pre Utterance: " + PortUtil.formatDecimal( "0.00", value );
@@ -1950,7 +1944,7 @@ namespace cadencii
         /// <param name="internal_id">見つかったエンベロープ・ポイントを保持しているVsqEventのID</param>
         /// <param name="point_kind">見つかったエンベロープ・ポイントのタイプ。(p1,v1)なら1、(p2,v2)なら2，(p5,v5)なら3，(p3,v3)なら4，(p4,v4)なら5</param>
         /// <returns>見つかった場合は真を、そうでなければ偽を返します</returns>
-        private boolean findEnvelopePointAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Integer> point_kind )
+        private bool findEnvelopePointAt( int locx, int locy, ByRef<int> internal_id, ByRef<int> point_kind )
         {
             return findEnvelopeCore( locx, locy, internal_id, point_kind, null );
         }
@@ -1963,7 +1957,7 @@ namespace cadencii
         /// <param name="internal_id">見つかったイベントを表現するVsqEventのInternalID</param>
         /// <param name="found_flag_was_overlap">見つかった旗がオーバーラップのものであった場合にtrue，それ以外はfalse</param>
         /// <returns>旗が見つかった場合にtrue，それ以外はfalseを返します</returns>
-        private boolean findPreUtteranceOrOverlapAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Boolean> found_flag_was_overlap )
+        private bool findPreUtteranceOrOverlapAt( int locx, int locy, ByRef<int> internal_id, ByRef<Boolean> found_flag_was_overlap )
         {
             return findEnvelopeCore( locx, locy, internal_id, null, found_flag_was_overlap );
         }
@@ -1977,10 +1971,10 @@ namespace cadencii
         /// <param name="point_kind"></param>
         /// <param name="found_flag_was_overlap"></param>
         /// <returns></returns>
-        private boolean findEnvelopeCore(
+        private bool findEnvelopeCore(
             int locx, int locy,
-            ByRef<Integer> internal_id,
-            ByRef<Integer> point_kind, ByRef<Boolean> found_flag_was_overlap )
+            ByRef<int> internal_id,
+            ByRef<int> point_kind, ByRef<Boolean> found_flag_was_overlap )
         {
             internal_id.value = -1;
             if ( point_kind != null ) {
@@ -1995,8 +1989,8 @@ namespace cadencii
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
-            ByRef<Integer> px_preutterance = new ByRef<Integer>();
-            ByRef<Integer> px_overlap = new ByRef<Integer>();
+            ByRef<int> px_preutterance = new ByRef<int>();
+            ByRef<int> px_overlap = new ByRef<int>();
             Dimension size = new Dimension();
             while( true ){
                 itr_prev = itr_item;
@@ -2082,7 +2076,7 @@ namespace cadencii
         private Polygon getEnvelopePoints(
             TempoVector tempo_table,
             VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
-            ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap )
+            ByRef<int> px_pre_utteramce, ByRef<int> px_overlap )
         {
             ByRef<Double> sec_env_start1 = new ByRef<Double>( 0.0 );
             ByRef<Double> sec_env_end1 = new ByRef<Double>( 0.0 );
@@ -2177,7 +2171,7 @@ namespace cadencii
             env_end_sec.value = sec_env_end1;
         }
 
-        private void drawTrackTab( Graphics2D g, Rectangle destRect, String name, boolean selected, boolean enabled, boolean render_required, Color hilight, Color render_button_hilight )
+        private void drawTrackTab( Graphics2D g, Rectangle destRect, String name, bool selected, bool enabled, bool render_required, Color hilight, Color render_button_hilight )
         {
             int x = destRect.x;
             int panel_width = render_required ? destRect.width - 10 : destRect.width;
@@ -2274,7 +2268,7 @@ namespace cadencii
         /// <param name="color"></param>
         /// <param name="is_front"></param>
         /// <param name="type"></param>
-        public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type )
+        public void drawVEL( Graphics2D g, VsqTrack track, Color color, bool is_front, CurveType type )
         {
             Point mouse = pointToClient( PortUtil.getMousePosition() );
 
@@ -2297,7 +2291,7 @@ namespace cadencii
             int selected = AppManager.getSelected();
 
             g.setFont( AppManager.baseFont10Bold );
-            boolean cursor_should_be_hand = false;
+            bool cursor_should_be_hand = false;
             lock ( AppManager.mDrawObjects ) {
                 List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                 int count = target_list.Count;
@@ -2412,7 +2406,7 @@ namespace cadencii
                     Point pxNext;
                     Point pxCurrent = getScreenCoord( current.getBase() );
                     int target_chain_points_count = target_chain.points.Count;
-                    boolean breaked = false;
+                    bool breaked = false;
                     for ( int j = 0; j < target_chain_points_count; j++ ) {
                         next = target_chain.points[ j ];
                         int next_x = AppManager.xCoordFromClocks( (int)next.getBase().getX() );
@@ -2546,7 +2540,7 @@ namespace cadencii
         /// <param name="startX"></param>
         /// <param name="endX"></param>
         /// <returns></returns>
-        private boolean isVisibleOnScreen( int visibleMinX, int visibleMaxX, int startX, int endX )
+        private bool isVisibleOnScreen( int visibleMinX, int visibleMaxX, int startX, int endX )
         {
             return ((visibleMinX <= startX && startX <= visibleMaxX) || (visibleMinX <= endX && endX <= visibleMaxX) || (startX < visibleMinX && visibleMaxX <= endX));
         }
@@ -2564,7 +2558,7 @@ namespace cadencii
         /// <param name="type">描画するカーブの種類</param>
         /// <param name="color">塗りつぶしに使う色</param>
         /// <param name="is_front">最前面に表示するモードかどうか</param>
-        public void drawVibratoControlCurve( Graphics2D g, VsqTrack draw_target, CurveType type, Color color, boolean is_front )
+        public void drawVibratoControlCurve( Graphics2D g, VsqTrack draw_target, CurveType type, Color color, bool is_front )
         {
             if ( !is_front ) {
                 return;
@@ -2671,7 +2665,7 @@ namespace cadencii
         /// <param name="list">描画するコントロールカーブ</param>
         /// <param name="color">X軸とデータ線の間の塗りつぶしに使用する色</param>
         /// <param name="is_front">最前面に表示するモードかどうか</param>
-        public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front )
+        public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, bool is_front )
         {
             Point pmouse = pointToClient( PortUtil.getMousePosition() );
             int max = list.getMaximum();
@@ -2801,7 +2795,7 @@ namespace cadencii
         public void TrackSelector_MouseClick( Object sender, MouseEventArgs e )
         {
             if ( mCurveVisible ) {
-                if ( e.Button == BMouseButtons.Left ) {
+                if ( e.Button == MouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
                     for ( int i = 0; i < mViewingCurves.Count; i++ ) {
                         CurveType curve = mViewingCurves[ i ];
@@ -2811,7 +2805,7 @@ namespace cadencii
                             return;
                         }
                     }
-                } else if ( e.Button == BMouseButtons.Right ) {
+                } else if ( e.Button == MouseButtons.Right ) {
                     if ( 0 <= e.X && e.X <= AppManager.keyWidth &&
                          0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
                         foreach (var tsi in cmenuCurve.Items) {
@@ -3180,7 +3174,7 @@ namespace cadencii
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
             int selected = AppManager.getSelected();
-            boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
+            bool is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
             if ( is_utau_mode && mSelectedCurve.equals( CurveType.VEL ) ) {
                 max = UstEvent.MAX_INTENSITY;
                 min = UstEvent.MIN_INTENSITY;
@@ -3192,7 +3186,7 @@ namespace cadencii
             }
             mMouseValue = value;
 
-            if ( e.Button == BMouseButtons.None ) {
+            if ( e.Button == MouseButtons.None ) {
                 return;
             }
             int stdx = AppManager.mMainWindowController.getStartToDrawX();
@@ -3221,7 +3215,7 @@ namespace cadencii
                 clock = vsq.getPreMeasure();
             }
 
-            if ( e.Button == BMouseButtons.Left &&
+            if ( e.Button == MouseButtons.Left &&
                  0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB &&
                  mMouseDownMode == MouseDownMode.CURVE_EDIT ) {
                 EditTool selected_tool = AppManager.getSelectedTool();
@@ -3515,7 +3509,7 @@ namespace cadencii
             }
 
             if ( height - OFFSET_TRACK_TAB <= e.Y && e.Y < height ) {
-                if ( e.Button == BMouseButtons.Left ) {
+                if ( e.Button == MouseButtons.Left ) {
                     #region MouseDown occured on track list
                     mMouseDownMode = MouseDownMode.TRACK_LIST;
                     //AppManager.isCurveSelectedIntervalEnabled() = false;
@@ -3583,7 +3577,7 @@ namespace cadencii
                     if ( ve != null ) {
                         if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                             if ( AppManager.itemSelection.isEventContains( AppManager.getSelected(), ve.InternalID ) ) {
-                                List<Integer> old = new List<Integer>();
+                                List<int> old = new List<int>();
                                 foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     int id = item.original.InternalID;
                                     if ( id != ve.InternalID ) {
@@ -3599,7 +3593,7 @@ namespace cadencii
                             int last_clock = AppManager.itemSelection.getLastEvent().original.Clock;
                             int tmin = Math.Min( ve.Clock, last_clock );
                             int tmax = Math.Max( ve.Clock, last_clock );
-                            List<Integer> add_required = new List<Integer>();
+                            List<int> add_required = new List<int>();
                             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getEventIterator(); itr.hasNext(); ) {
                                 VsqEvent item = itr.next();
                                 if ( item.ID.type == VsqIDType.Singer && tmin <= item.Clock && item.Clock <= tmax ) {
@@ -3623,7 +3617,7 @@ namespace cadencii
                 #endregion
             } else {
                 #region MouseDown occred on other position
-                boolean clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
+                bool clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
                 int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
                 int right_clock = AppManager.clockFromXCoord( getWidth() );
                 for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
@@ -3647,7 +3641,7 @@ namespace cadencii
                 AppManager.debugWriteLine( "    clock_inner_note=" + clock_inner_note );
 #endif
                 if ( AppManager.keyWidth <= e.X ) {
-                    if ( e.Button == BMouseButtons.Left && !mSpaceKeyDowned ) {
+                    if ( e.Button == MouseButtons.Left && !mSpaceKeyDowned ) {
                         mMouseDownMode = MouseDownMode.CURVE_EDIT;
                         int quantized_clock = clock;
                         int unit = AppManager.getPositionQuantizeClock();
@@ -3752,7 +3746,7 @@ namespace cadencii
                             #endregion
                         } else if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                             #region Arrow
-                            boolean found = false;
+                            bool found = false;
                             if ( mSelectedCurve.isScalar() || mSelectedCurve.isAttachNote() ) {
                                 if ( mSelectedCurve.equals( CurveType.Env ) ) {
                                     if ( processMouseDownEnvelope( e ) ) {
@@ -3818,10 +3812,10 @@ namespace cadencii
                                 VsqEvent ve = findItemAt( e.X, e.Y );
                                 // マウス位置の音符アイテムを検索
                                 if ( ve != null ) {
-                                    boolean found2 = false;
+                                    bool found2 = false;
                                     if ( (mModifierOnMouseDown & mModifierKey) == mModifierKey ) {
                                         // clicked with CTRL key
-                                        List<Integer> list = new List<Integer>();
+                                        List<int> list = new List<int>();
                                         foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                             VsqEvent ve2 = item.original;
                                             if ( ve.InternalID == ve2.InternalID ) {
@@ -3839,7 +3833,7 @@ namespace cadencii
                                             int last_clock = last_selected.original.Clock;
                                             int tmin = Math.Min( ve.Clock, last_clock );
                                             int tmax = Math.Max( ve.Clock, last_clock );
-                                            List<Integer> add_required = new List<Integer>();
+                                            List<int> add_required = new List<int>();
                                             foreach (var item in AppManager.getVsqFile().Track[AppManager.getSelected()].getNoteEventIterator()) {
                                                 if ( tmin <= item.Clock && item.Clock <= tmax ) {
                                                     add_required.Add( item.InternalID );
@@ -4053,12 +4047,12 @@ namespace cadencii
                             }
                             #endregion
                         }
-                    } else if ( e.Button == BMouseButtons.Right ) {
+                    } else if ( e.Button == MouseButtons.Right ) {
                         if ( AppManager.isCurveMode() ) {
                             if ( !mSelectedCurve.equals( CurveType.VEL ) && !mSelectedCurve.equals( CurveType.Env ) ) {
                                 List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve );
                                 AppManager.itemSelection.clearBezier();
-                                boolean found = false;
+                                bool found = false;
                                 for ( int i = 0; i < dict.Count; i++ ) {
                                     BezierChain bc = dict[ i ];
                                     foreach (var bp in bc.points) {
@@ -4085,7 +4079,7 @@ namespace cadencii
             Invalidate();
         }
 
-        private boolean processMouseDownBezier( MouseEventArgs e )
+        private bool processMouseDownBezier( MouseEventArgs e )
         {
 #if DEBUG
             sout.println( "TrackSelector::processMouseDownBezier" );
@@ -4104,8 +4098,8 @@ namespace cadencii
             Keys modifier = Control.ModifierKeys;
 
             int track = AppManager.getSelected();
-            boolean too_near = false; // clicked position is too near to existing bezier points
-            boolean is_middle = false;
+            bool too_near = false; // clicked position is too near to existing bezier points
+            bool is_middle = false;
 
             // check whether bezier point exists on clicked position
             List<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( mSelectedCurve );
@@ -4222,9 +4216,9 @@ namespace cadencii
             return true;
         }
 
-        private boolean processMouseDownPreutteranceAndOverlap( MouseEventArgs e )
+        private bool processMouseDownPreutteranceAndOverlap( MouseEventArgs e )
         {
-            ByRef<Integer> internal_id = new ByRef<Integer>();
+            ByRef<int> internal_id = new ByRef<int>();
             ByRef<Boolean> found_flag_was_overlap = new ByRef<Boolean>();
             if ( findPreUtteranceOrOverlapAt( e.X, e.Y, internal_id, found_flag_was_overlap ) ) {
                 if ( found_flag_was_overlap.value ) {
@@ -4252,10 +4246,10 @@ namespace cadencii
             return false;
         }
 
-        private boolean processMouseDownEnvelope( MouseEventArgs e )
+        private bool processMouseDownEnvelope( MouseEventArgs e )
         {
-            ByRef<Integer> internal_id = new ByRef<Integer>( -1 );
-            ByRef<Integer> point_kind = new ByRef<Integer>( -1 );
+            ByRef<int> internal_id = new ByRef<int>( -1 );
+            ByRef<int> point_kind = new ByRef<int>( -1 );
             if ( !findEnvelopePointAt( e.X, e.Y, internal_id, point_kind ) ) {
                 return false;
             }
@@ -4367,7 +4361,7 @@ namespace cadencii
             }
         }
 
-        private static boolean isInRect( int x, int y, Rectangle rc )
+        private static bool isInRect( int x, int y, Rectangle rc )
         {
             if ( rc.x <= x && x <= rc.x + rc.width ) {
                 if ( rc.y <= y && y <= rc.y + rc.height ) {
@@ -4452,7 +4446,7 @@ namespace cadencii
             }
 
             int selected = AppManager.getSelected();
-            boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
+            bool is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
             int stdx = AppManager.mMainWindowController.getStartToDrawX();
 
             int max = mSelectedCurve.getMaximum();
@@ -4465,7 +4459,7 @@ namespace cadencii
             if ( mMouseDownMode == MouseDownMode.BEZIER_ADD_NEW ||
                  mMouseDownMode == MouseDownMode.BEZIER_MODE ||
                  mMouseDownMode == MouseDownMode.BEZIER_EDIT ) {
-                if ( e.Button == BMouseButtons.Left && sender is TrackSelector ) {
+                if ( e.Button == MouseButtons.Left && sender is TrackSelector ) {
                     int chain_id = AppManager.itemSelection.getLastBezier().chainID;
                     BezierChain edited = (BezierChain)vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, chain_id ).clone();
                     if ( mMouseDownMode == MouseDownMode.BEZIER_ADD_NEW ) {
@@ -4511,7 +4505,7 @@ namespace cadencii
                 }
             } else if ( mMouseDownMode == MouseDownMode.CURVE_EDIT ||
                       mMouseDownMode == MouseDownMode.VEL_WAIT_HOVER ) {
-                if ( e.Button == BMouseButtons.Left ) {
+                if ( e.Button == MouseButtons.Left ) {
                     if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                         #region Arrow
                         if ( mSelectedCurve.equals( CurveType.Env ) ) {
@@ -4582,7 +4576,7 @@ namespace cadencii
                                 int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
                                 Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.mCurveSelectingRectangle.width ), Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
 
-                                boolean changed = false; //1箇所でも削除が実行されたらtrue
+                                bool changed = false; //1箇所でも削除が実行されたらtrue
 
                                 int count = list.Count;
                                 List<BezierChain> work = new List<BezierChain>();
@@ -4639,7 +4633,7 @@ namespace cadencii
                                 AppManager.mCurveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
                                 AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 AppManager.itemSelection.clearEvent();
-                                List<Integer> deleting = new List<Integer>();
+                                List<int> deleting = new List<int>();
                                 foreach (var ev in vsq_track.getNoteEventIterator()) {
                                     if ( start <= ev.Clock && ev.Clock <= end ) {
                                         deleting.Add( ev.InternalID );
@@ -4655,7 +4649,7 @@ namespace cadencii
                                 #region VibratoRate ViratoDepth
                                 int er_start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int er_end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
-                                List<Integer> internal_ids = new List<Integer>();
+                                List<int> internal_ids = new List<int>();
                                 List<VsqID> items = new List<VsqID>();
                                 foreach (var ve in vsq_track.getNoteEventIterator()) {
                                     if ( ve.ID.VibratoHandle == null ) {
@@ -4693,10 +4687,10 @@ namespace cadencii
                                         } else {
                                             target = item.VibratoHandle.getRateBP();
                                         }
-                                        List<Float> bpx = new List<Float>();
-                                        List<Integer> bpy = new List<Integer>();
-                                        boolean start_added = false;
-                                        boolean end_added = false;
+                                        List<float> bpx = new List<float>();
+                                        List<int> bpy = new List<int>();
+                                        bool start_added = false;
+                                        bool end_added = false;
                                         for ( int i = 0; i < target.getCount(); i++ ) {
                                             VibratoBPPair vbpp = target.getElement( i );
                                             if ( vbpp.X < f_clear_start ) {
@@ -4760,7 +4754,7 @@ namespace cadencii
                                 int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
                                 Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.mCurveSelectingRectangle.width ), Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
-                                List<Long> delete = new List<Long>();
+                                List<long> delete = new List<long>();
                                 int count = work.size();
                                 for ( int i = 0; i < count; i++ ) {
                                     int clock = work.getKeyClock( i );
@@ -4772,7 +4766,7 @@ namespace cadencii
 
                                 if ( delete.Count > 0 ) {
                                     CadenciiCommand run_eraser = new CadenciiCommand(
-                                        VsqCommand.generateCommandTrackCurveEdit2( selected, mSelectedCurve.getName(), delete, new SortedDictionary<Integer, VsqBPPair>() ) );
+                                        VsqCommand.generateCommandTrackCurveEdit2( selected, mSelectedCurve.getName(), delete, new SortedDictionary<int, VsqBPPair>() ) );
                                     executeCommand( run_eraser, true );
                                 }
                                 #endregion
@@ -4793,7 +4787,7 @@ namespace cadencii
                                 AppManager.debugWriteLine( "        start=" + start );
                                 AppManager.debugWriteLine( "        end=" + end );
 #endif
-                                SortedDictionary<Integer, Integer> velocity = new SortedDictionary<Integer, Integer>();
+                                SortedDictionary<int, int> velocity = new SortedDictionary<int, int>();
                                 foreach (var ve in vsq_track.getNoteEventIterator()) {
                                     if ( start <= ve.Clock && ve.Clock < end ) {
                                         int i = -1;
@@ -4834,10 +4828,10 @@ namespace cadencii
                                     }
                                 }
                                 if ( velocity.Count > 0 ) {
-                                    List<ValuePair<Integer, Integer>> cpy = new List<ValuePair<Integer, Integer>>();
+                                    List<ValuePair<int, int>> cpy = new List<ValuePair<int, int>>();
                                     foreach (var internal_id in velocity.Keys) {
-                                        int value = (Integer)velocity[ internal_id ];
-                                        cpy.Add( new ValuePair<Integer, Integer>( internal_id, value ) );
+                                        int value = (int)velocity[ internal_id ];
+                                        cpy.Add( new ValuePair<int, int>( internal_id, value ) );
                                     }
                                     CadenciiCommand run = null;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
@@ -4883,7 +4877,7 @@ namespace cadencii
 #if DEBUG
                                 AppManager.debugWriteLine( "    start,end=" + start + " " + end );
 #endif
-                                List<Integer> internal_ids = new List<Integer>();
+                                List<int> internal_ids = new List<int>();
                                 List<VsqID> items = new List<VsqID>();
                                 foreach (var ve in vsq_track.getNoteEventIterator()) {
                                     if ( ve.ID.VibratoHandle == null ) {
@@ -4909,10 +4903,10 @@ namespace cadencii
                                     float add_min = (AppManager.clockFromXCoord( chk_start - stdx ) - cl_vib_start) / cl_vib_length;
                                     float add_max = (AppManager.clockFromXCoord( chk_end - stdx ) - cl_vib_start) / cl_vib_length;
 
-                                    List<ValuePair<Float, Integer>> edit = new List<ValuePair<Float, Integer>>();
+                                    List<ValuePair<float, int>> edit = new List<ValuePair<float, int>>();
                                     int lclock = -2 * step_clock;
-                                    ValuePair<Float, Integer> first = null; // xの値が0以下の最大のデータ点
-                                    ValuePair<Float, Integer> last = null;//xの値が1以上の最小のデータ点
+                                    ValuePair<float, int> first = null; // xの値が0以下の最大のデータ点
+                                    ValuePair<float, int> last = null;//xの値が1以上の最小のデータ点
                                     foreach (var p in mMouseTracer.iterator()) {
                                         if ( p.x < chk_start ) {
                                             continue;
@@ -4930,7 +4924,7 @@ namespace cadencii
                                             val = max;
                                         }
                                         float x = (clock - cl_vib_start) / cl_vib_length;
-                                        ValuePair<Float, Integer> tmp = new ValuePair<Float, Integer>( x, val );
+                                        ValuePair<float, int> tmp = new ValuePair<float, int>( x, val );
                                         if ( 0.0f < x && x < 1.0f ) {
                                             edit.Add( tmp );
                                         } else if ( x <= 0.0f ) {
@@ -4958,7 +4952,7 @@ namespace cadencii
                                     if ( target.getCount() > 0 ) {
                                         for ( int i = 0; i < target.getCount(); i++ ) {
                                             if ( target.getElement( i ).X < add_min || add_max < target.getElement( i ).X ) {
-                                                edit.Add( new ValuePair<Float, Integer>( target.getElement( i ).X,
+                                                edit.Add( new ValuePair<float, int>( target.getElement( i ).X,
                                                                                          target.getElement( i ).Y ) );
                                             }
                                         }
@@ -5012,7 +5006,7 @@ namespace cadencii
                                 long maxid = list.getMaxID();
 
                                 // 削除するものを列挙
-                                List<Long> delete = new List<Long>();
+                                List<long> delete = new List<long>();
                                 int c = list.size();
                                 for ( int i = 0; i < c; i++ ) {
                                     int clock = list.getKeyClock( i );
@@ -5023,7 +5017,7 @@ namespace cadencii
                                     }
                                 }
 
-                                SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
+                                SortedDictionary<int, VsqBPPair> add = new SortedDictionary<int, VsqBPPair>();
                                 int lvalue = int.MinValue;
                                 int lclock = -2 * step_clock;
                                 int index = 0;
@@ -5081,8 +5075,8 @@ namespace cadencii
                         int[] clocks = new int[count];
                         VsqID[] values = new VsqID[count];
                         int i = -1;
-                        boolean is_valid = true;
-                        boolean contains_first_singer = false;
+                        bool is_valid = true;
+                        bool contains_first_singer = false;
                         int premeasure = vsq.getPreMeasureClocks();
                         foreach (var item in AppManager.itemSelection.getEventIterator()) {
                             i++;
@@ -5116,7 +5110,7 @@ namespace cadencii
                                 System.Media.SystemSounds.Asterisk.Play();
 #endif
                             }
-                            boolean changed = false;
+                            bool changed = false;
                             for ( int j = 0; j < ids.Length; j++ ) {
                                 foreach (var item in AppManager.itemSelection.getEventIterator()) {
                                     if ( item.original.InternalID == ids[j] && item.original.Clock != clocks[j] ) {
@@ -5335,9 +5329,9 @@ namespace cadencii
                                     edited.VibratoHandle.setRateBP( new VibratoBPList( new float[] { x },
                                                                                        new int[] { value } ) );
                                 } else {
-                                    List<Float> xs = new List<Float>();
-                                    List<Integer> vals = new List<Integer>();
-                                    boolean first = true;
+                                    List<float> xs = new List<float>();
+                                    List<int> vals = new List<int>();
+                                    bool first = true;
                                     VibratoBPList ratebp = edited.VibratoHandle.getRateBP();
                                     int c = ratebp.getCount();
                                     for ( int i = 0; i < c; i++ ) {
@@ -5377,9 +5371,9 @@ namespace cadencii
                                     edited.VibratoHandle.setDepthBP(
                                         new VibratoBPList( new float[] { x }, new int[] { value } ) );
                                 } else {
-                                    List<Float> xs = new List<Float>();
-                                    List<Integer> vals = new List<Integer>();
-                                    boolean first = true;
+                                    List<float> xs = new List<float>();
+                                    List<int> vals = new List<int>();
+                                    bool first = true;
                                     VibratoBPList depthbp = edited.VibratoHandle.getDepthBP();
                                     int c = depthbp.getCount();
                                     for ( int i = 0; i < c; i++ ) {
@@ -5422,8 +5416,8 @@ namespace cadencii
                 } else {
                     VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
                     if ( list != null ) {
-                        List<Long> delete = new List<Long>();
-                        SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
+                        List<long> delete = new List<long>();
+                        SortedDictionary<int, VsqBPPair> add = new SortedDictionary<int, VsqBPPair>();
                         long maxid = list.getMaxID();
                         if ( list.isContainsKey( clock ) ) {
                             int c = list.size();
@@ -5481,7 +5475,7 @@ namespace cadencii
             int width = getWidth();
             int key_width = AppManager.keyWidth;
 
-            if ( e.Button == BMouseButtons.Left ) {
+            if ( e.Button == MouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= height - 2 * OFFSET_TRACK_TAB ) {
                     #region MouseDown occured on curve-pane
                     if ( key_width <= e.X && e.X <= width ) {
@@ -5495,7 +5489,7 @@ namespace cadencii
                             List<BezierChain> dict = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
                             BezierChain target_chain = null;
                             BezierPoint target_point = null;
-                            boolean found = false;
+                            bool found = false;
                             int dict_size = dict.Count;
                             for ( int i = 0; i < dict_size; i++ ) {
                                 BezierChain bc = dict[ i ];
@@ -5591,7 +5585,7 @@ namespace cadencii
                             } else {
                                 #region ダブルクリックした位置にベジエデータ点が無かった場合
                                 VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
-                                boolean bp_found = false;
+                                bool bp_found = false;
                                 long bp_id = -1;
                                 int tclock = 0;
                                 if ( list != null ) {
@@ -5989,7 +5983,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

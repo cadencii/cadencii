@@ -36,7 +36,7 @@ namespace cadencii {
             }
         }
 
-        public boolean IsRedoAvailable {
+        public bool IsRedoAvailable {
             get {
                 if ( s_current == null ) {
                     return false;
@@ -55,7 +55,7 @@ namespace cadencii {
             s_current = null;
         }
 
-        public boolean IsUndoAvailable {
+        public bool IsUndoAvailable {
             get {
                 if ( s_current != null ) {
                     if ( Object.ReferenceEquals( s_root, s_current ) ) {

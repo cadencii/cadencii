@@ -26,7 +26,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -76,7 +75,7 @@ namespace cadencii.vsq
             return sb.ToString();
         }
 
-        public boolean ready()
+        public bool ready()
         {
             if ( 0 <= position + 1 && position + 1 < length ) {
                 return true;

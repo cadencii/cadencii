@@ -33,7 +33,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -104,7 +103,7 @@ namespace cadencii
             for ( int i = 0; i < size; i++ ){
                 keys[i] = AppManager.SHORTCUT_ACCEPTABLE[ i ];
             }
-            boolean changed = true;
+            bool changed = true;
             while( changed ){
                 changed = false;
                 for( int i = 0; i < size - 1; i++ ){
@@ -235,7 +234,7 @@ namespace cadencii
                 ValuePair<String, Keys[]> item = mDict[ display ];
                 String field_name = item.getKey();
                 Keys[] keys = item.getValue();
-                boolean add_this_one = false;
+                bool add_this_one = false;
                 if ( category == ".other" ) {
                     add_this_one = true;
                     for ( int i = 0; i < mCategories.Length; i++ ) {
@@ -280,7 +279,7 @@ namespace cadencii
                     continue;
                 }
 
-                boolean found = false;
+                bool found = false;
                 foreach (var display1 in mDict.Keys) {
                     ValuePair<String, Keys[]> item1 = mDict[ display1 ];
                     String field_name1 = item1.getKey();
@@ -502,7 +501,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

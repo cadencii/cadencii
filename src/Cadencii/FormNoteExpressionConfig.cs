@@ -33,7 +33,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -42,7 +41,7 @@ namespace cadencii
     public class FormNoteExpressionConfig : Form
     {
 #endif
-        boolean m_apply_current_track = false;
+        bool m_apply_current_track = false;
         NoteHeadHandle m_note_head_handle = null;
 
         public FormNoteExpressionConfig( SynthesizerType type, NoteHeadHandle note_head_handle )
@@ -238,7 +237,7 @@ namespace cadencii
             txtAccent.Text = value + "";
         }
 
-        public boolean getApplyCurrentTrack()
+        public bool getApplyCurrentTrack()
         {
             return m_apply_current_track;
         }
@@ -540,7 +539,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

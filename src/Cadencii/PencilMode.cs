@@ -17,13 +17,12 @@ package cadencii;
 using System;
 
 namespace cadencii {
-    using boolean = Boolean;
 #endif
 
     public struct PencilMode {
         private PencilModeEnum m_mode;
-        private boolean m_triplet;
-        private boolean m_dot;
+        private bool m_triplet;
+        private bool m_dot;
 
         public int getUnitLength() {
             int b = 1;
@@ -60,22 +59,22 @@ namespace cadencii {
             m_mode = value;
         }
 
-        public boolean isTriplet() {
+        public bool isTriplet() {
             return m_triplet;
         }
 
-        public void setTriplet( boolean value ) {
+        public void setTriplet( bool value ) {
             m_triplet = value;
             if ( m_triplet && m_dot ) {
                 m_dot = false;
             }
         }
 
-        public boolean isDot() {
+        public bool isDot() {
             return m_dot;
         }
 
-        public void setDot( boolean value ) {
+        public void setDot( bool value ) {
             m_dot = value;
             if ( m_dot && m_triplet ) {
                 m_triplet = false;

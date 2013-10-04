@@ -35,8 +35,6 @@ using cadencii.utau;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -63,14 +61,14 @@ namespace cadencii
         private double[] mBuffer2L = new double[BUFLEN];
         private double[] mBuffer2R = new double[BUFLEN];
         protected Object mLocker = null;
-        protected boolean mRunning = false;
+        protected bool mRunning = false;
         protected long mTotalSamples = 0;
         /// <summary>
         /// WaveIncomingで追加されたサンプル数
         /// </summary>
         protected long mTotalAppend = 0;
         protected int mTrimRemain = 0;
-        //protected boolean mAbortRequired = false;
+        //protected bool mAbortRequired = false;
 
         protected int mTrack = 0;
         protected int mTrimMillisec;
@@ -96,7 +94,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }
@@ -395,7 +393,7 @@ namespace cadencii
 
                     if ( mCache.Count > MAX_CACHE ) {
                         // キャッシュの許容個数を超えたので、古いものを削除
-                        boolean first = true;
+                        bool first = true;
                         double old_date = PortUtil.getCurrentTime();
                         String old_key = "";
                         foreach (var key in mCache.Keys) {
@@ -1079,7 +1077,7 @@ namespace cadencii
         /// <param name="oto_ini"></param>
         /// <param name="end_clock"></param>
         /// <param name="world_mode"></param>
-        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, boolean world_mode )
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, bool world_mode )
         {
             SortedDictionary<String, String> dict_singername_otoini = new SortedDictionary<String, String>();
             dict_singername_otoini[ ""] =  oto_ini ;
@@ -1098,7 +1096,7 @@ namespace cadencii
             VsqTrack vsq_track,
             SortedDictionary<String, String> dict_singername_otoini,
             int end_clock,
-            boolean world_mode )
+            bool world_mode )
         {
             CurveType[] CURVE = new CurveType[]{
                 CurveType.PIT,

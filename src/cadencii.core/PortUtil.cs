@@ -64,11 +64,6 @@ using cadencii.java.awt;
 using cadencii.java.util;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-    using Float = System.Single;
-    using Integer = System.Int32;
-    using Long = System.Int64;
-    using Character = System.Char;
 #endif
 
 #if JAVA
@@ -79,10 +74,10 @@ namespace cadencii {
     {
 
 #if JAVA
-        private static boolean s_ctrl = false;
-        private static boolean s_shift = false;
-        private static boolean s_alt = false;
-        private static boolean s_meta = false;
+        private static bool s_ctrl = false;
+        private static bool s_shift = false;
+        private static bool s_alt = false;
+        private static bool s_meta = false;
         private static PortUtil s_instance = null;
 #endif
 
@@ -987,7 +982,7 @@ namespace cadencii {
 
 #if !JAVA
         [Obsolete]
-        public static boolean isFileExists( String path )
+        public static bool isFileExists( String path )
         {
             return System.IO.File.Exists( path );
         }
@@ -1029,7 +1024,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void deleteDirectory( String path, boolean recurse ) {
+        public static void deleteDirectory( String path, bool recurse ) {
 #if JAVA
             File f = new File( path );
             File[] list = f.listFiles();
@@ -1074,7 +1069,7 @@ namespace cadencii {
         #endregion
 
         #region Number Formatting
-        public static boolean tryParseInt( String s, ByRef<Integer> value ) {
+        public static bool tryParseInt( String s, ByRef<int> value ) {
             try {
                 value.value = int.Parse( s );
             } catch ( Exception ex ) {
@@ -1083,7 +1078,7 @@ namespace cadencii {
             return true;
         }
 
-        public static boolean tryParseFloat( String s, ByRef<Float> value ) {
+        public static bool tryParseFloat( String s, ByRef<float> value ) {
             try {
                 value.value = (float)double.Parse( s );
             } catch ( Exception ex ) {
@@ -1171,23 +1166,23 @@ namespace cadencii {
             return splitStringCorB( s, separator, count, false );
         }
 
-        public static String[] splitString( String s, char[] separator, boolean ignore_empty_entries ) {
+        public static String[] splitString( String s, char[] separator, bool ignore_empty_entries ) {
             return splitStringCorB( s, separator, int.MaxValue, ignore_empty_entries );
         }
 
-        public static String[] splitString( String s, String[] separator, boolean ignore_empty_entries ) {
+        public static String[] splitString( String s, String[] separator, bool ignore_empty_entries ) {
             return splitStringCorA( s, separator, int.MaxValue, ignore_empty_entries );
         }
 
-        public static String[] splitString( String s, char[] separator, int count, boolean ignore_empty_entries ) {
+        public static String[] splitString( String s, char[] separator, int count, bool ignore_empty_entries ) {
             return splitStringCorB( s, separator, count, ignore_empty_entries );
         }
 
-        public static String[] splitString( String s, String[] separator, int count, boolean ignore_empty_entries ) {
+        public static String[] splitString( String s, String[] separator, int count, bool ignore_empty_entries ) {
             return splitStringCorA( s, separator, count, ignore_empty_entries );
         }
 
-        private static String[] splitStringCorB( String s, char[] separator, int count, boolean ignore_empty_entries ) {
+        private static String[] splitStringCorB( String s, char[] separator, int count, bool ignore_empty_entries ) {
 #if JAVA
             int length = separator.length;
 #else
@@ -1200,7 +1195,7 @@ namespace cadencii {
             return splitStringCorA( s, spl, count, false );
         }
 
-        private static String[] splitStringCorA( String s, String[] separator, int count, boolean ignore_empty_entries ) {
+        private static String[] splitStringCorA( String s, String[] separator, int count, bool ignore_empty_entries ) {
 #if JAVA
             if( separator.length == 0 ){
                 return new String[]{ s };
@@ -1334,7 +1329,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public static boolean isPointInScreens( Point p ) {
+        public static bool isPointInScreens( Point p ) {
 #if JAVA
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] gs = ge.getScreenDevices();
@@ -1443,7 +1438,7 @@ namespace cadencii {
                 m_extension = extension;
             }
 
-            public boolean accept( File f ){
+            public bool accept( File f ){
                 String file = f.getName();
                 if( file.endsWith( m_extension ) ){
                     return true;
@@ -1455,7 +1450,7 @@ namespace cadencii {
 #endif
 
         #region Array conversion
-        public static Integer[] convertIntArray( int[] arr ) {
+        public static int[] convertIntArray( int[] arr ) {
 #if JAVA
             Integer[] ret = new Integer[arr.length];
             for( int i = 0; i < arr.length; i++ ){
@@ -1467,7 +1462,7 @@ namespace cadencii {
 #endif
         }
 
-        public static Long[] convertLongArray( long[] arr ) {
+        public static long[] convertLongArray( long[] arr ) {
 #if JAVA
             Long[] ret = new Long[arr.length];
             for( int i = 0; i < arr.length; i++ ){
@@ -1479,7 +1474,7 @@ namespace cadencii {
 #endif
         }
 
-        public static Byte[] convertByteArray( byte[] arr ) {
+        public static byte[] convertByteArray( byte[] arr ) {
 #if JAVA
             Byte[] ret = new Byte[arr.length];
             for( int i = 0; i < arr.length; i++ ){
@@ -1491,7 +1486,7 @@ namespace cadencii {
 #endif
         }
 
-        public static Float[] convertFloatArray( float[] arr ) {
+        public static float[] convertFloatArray( float[] arr ) {
 #if JAVA
             Float[] ret = new Float[arr.length];
             for( int i = 0; i < arr.length; i++ ){
@@ -1503,7 +1498,7 @@ namespace cadencii {
 #endif
         }
 
-        public static Character[] convertCharArray( char[] arr ) {
+        public static char[] convertCharArray( char[] arr ) {
 #if JAVA
             Character[] ret = new Character[arr.length];
             for( int i = 0; i < arr.length; i++ ){

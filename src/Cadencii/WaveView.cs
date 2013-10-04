@@ -28,7 +28,6 @@ using cadencii.media;
 using cadencii.windows.forms;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -61,7 +60,7 @@ namespace cadencii {
         /// <summary>
         /// 縦軸のスケールを自動最大化するかどうか
         /// </summary>
-        private boolean mAutoMaximize = false;
+        private bool mAutoMaximize = false;
         /// <summary>
         /// 幅2ピクセルのストローク
         /// </summary>
@@ -97,7 +96,7 @@ namespace cadencii {
         /// 縦軸を自動最大化するかどうかを取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isAutoMaximize() {
+        public bool isAutoMaximize() {
             return mAutoMaximize;
         }
 
@@ -105,7 +104,7 @@ namespace cadencii {
         /// 縦軸を自動最大化するかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setAutoMaximize( boolean value ) {
+        public void setAutoMaximize( bool value ) {
             mAutoMaximize = value;
         }
 

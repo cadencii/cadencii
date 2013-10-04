@@ -34,9 +34,6 @@ using cadencii.xml;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-    using Long = System.Int64;
 #endif
 
 #if JAVA
@@ -224,8 +221,8 @@ namespace cadencii
             } else {
                 String newtag = "";
                 String[] spl = PortUtil.splitString( old_tag, ';' );
-                boolean is_first = true;
-                boolean added = false;
+                bool is_first = true;
+                bool added = false;
                 foreach ( String s in spl ) {
                     String[] spl2 = PortUtil.splitString( s, ':' );
                     if ( spl2.Length == 2 ) {
@@ -328,14 +325,14 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public boolean getActualMuted( int track )
+        public bool getActualMuted( int track )
         {
             if ( track < 1 || Track.Count <= track ) return true;
             if ( getMasterMute() ) return true;
             if ( getMute( track ) ) return true;
             if ( !Track[ track ].isTrackOn() ) return true;
 
-            boolean soloSpecificationExists = false;
+            bool soloSpecificationExists = false;
             for ( int i = 1; i < Track.Count; i++ ) {
                 if ( getSolo( i ) ) {
                     soloSpecificationExists = true;
@@ -357,7 +354,7 @@ namespace cadencii
         /// このVSQシーケンスのマスタートラックをミュートするかどうかを取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean getMasterMute()
+        public bool getMasterMute()
         {
             if ( Mixer == null ) return false;
             return Mixer.MasterMute == 1;
@@ -366,7 +363,7 @@ namespace cadencii
         /// <summary>
         /// このVSQシーケンスのマスタートラックをミュートするかどうかを設定します。
         /// </summary>
-        public void setMasterMute( boolean value )
+        public void setMasterMute( bool value )
         {
             if ( Mixer == null ) return;
             Mixer.MasterMute = value ? 1 : 0;
@@ -377,7 +374,7 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public boolean getMute( int track )
+        public bool getMute( int track )
         {
             if ( Mixer == null ) return false;
             if ( Mixer.Slave == null ) return false;
@@ -396,7 +393,7 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <param name="value"></param>
-        public void setMute( int track, boolean value )
+        public void setMute( int track, bool value )
         {
             if ( Mixer == null ) return;
             if ( Mixer.Slave == null ) return;
@@ -414,7 +411,7 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public boolean getSolo( int track )
+        public bool getSolo( int track )
         {
             if ( Mixer == null ) return false;
             if ( Mixer.Slave == null ) return false;
@@ -433,7 +430,7 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <param name="value"></param>
-        public void setSolo( int track, boolean value )
+        public void setSolo( int track, bool value )
         {
             if ( Mixer == null ) return;
             if ( Mixer.Slave == null ) return;
@@ -506,7 +503,7 @@ namespace cadencii
         /// <param name="first_tempo">ずらす秒数が正の場合に，最初のテンポをいくらにするか</param>
         public static void shift( VsqFileEx vsq, double sec, int first_tempo )
         {
-            boolean first = true; // 負になった最初のアイテムかどうか
+            bool first = true; // 負になった最初のアイテムかどうか
 
             // 最初にテンポをずらす．
             // 古いのから情報をコピー
@@ -546,7 +543,7 @@ namespace cadencii
             int pre_measure_clocks = vsq.getPreMeasureClocks();
             for ( int i = 1; i < tracks; i++ ) {
                 VsqTrack track = vsq.Track[ i ];
-                List<Integer> remove_required_event = new List<Integer>(); // 削除が要求されたイベントのインデクス
+                List<int> remove_required_event = new List<int>(); // 削除が要求されたイベントのインデクス
 
                 // 歌手変更・音符イベントをシフト
                 // 時刻が負になる場合は，後で考える
@@ -833,7 +830,7 @@ namespace cadencii
             return ret;
         }
 
-        public static CadenciiCommand generateCommandChangeSequenceConfig( int sample_rate, int channels, boolean output_master, int pre_measure )
+        public static CadenciiCommand generateCommandChangeSequenceConfig( int sample_rate, int channels, bool output_master, int pre_measure )
         {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.CHANGE_SEQUENCE_CONFIG;
@@ -944,16 +941,16 @@ namespace cadencii
                             type == VsqCommandType.TRACK_CURVE_REPLACE ||
                             type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ||
                             type == VsqCommandType.TRACK_REPLACE ) {
-                    int track = (Integer)command.vsqCommand.Args[0];
+                    int track = (int)command.vsqCommand.Args[0];
                     editorStatus.renderRequired[track - 1] = true;
                 } else if ( type == VsqCommandType.TRACK_ADD ) {
-                    int position = (Integer)command.vsqCommand.Args[2];
+                    int position = (int)command.vsqCommand.Args[2];
                     for ( int i = 15; i >= position; i-- ) {
                         editorStatus.renderRequired[i] = editorStatus.renderRequired[i - 1];
                     }
                     editorStatus.renderRequired[position - 1] = true;
                 } else if ( type == VsqCommandType.TRACK_DELETE ) {
-                    int track = (Integer)command.vsqCommand.Args[0];
+                    int track = (int)command.vsqCommand.Args[0];
                     for ( int i = track - 1; i < 15; i++ ) {
                         editorStatus.renderRequired[i] = editorStatus.renderRequired[i + 1];
                     }
@@ -965,11 +962,11 @@ namespace cadencii
 #if DEBUG
                     AppManager.debugWriteLine( "    AddBezierChain" );
 #endif
-                    int track = (Integer)command.args[0];
+                    int track = (int)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
                     BezierChain chain = (BezierChain)command.args[2];
-                    int clock_resolution = (Integer)command.args[3];
-                    int added_id = (Integer)command.args[4];
+                    int clock_resolution = (int)command.args[3];
+                    int added_id = (int)command.args[4];
                     AttachedCurves.get( track - 1 ).addBezierChain( curve_type, chain, added_id );
                     ret = generateCommandDeleteBezierChain( track, curve_type, added_id, clock_resolution );
                     if ( chain.size() >= 1 ) {
@@ -990,7 +987,7 @@ namespace cadencii
                             // minクロック以上maxクロック以下のコントロールカーブに対して，編集を実行
 
                             // 最初に，min <= clock <= maxとなる範囲のデータ点を抽出（削除コマンドに指定）
-                            List<Long> delete = new List<Long>();
+                            List<long> delete = new List<long>();
                             int list_size = list.size();
                             for ( int i = 0; i < list_size; i++ ) {
                                 int clock = list.getKeyClock( i );
@@ -1001,7 +998,7 @@ namespace cadencii
                             }
 
                             // 追加するデータ点を列挙
-                            SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
+                            SortedDictionary<int, VsqBPPair> add = new SortedDictionary<int, VsqBPPair>();
                             if ( chain.points.Count == 1 ) {
                                 BezierPoint p = chain.points[ 0 ];
                                 add[(int)p.getBase().getX()] = new VsqBPPair( (int)p.getBase().getY(), list.getMaxID() + 1 );
@@ -1033,10 +1030,10 @@ namespace cadencii
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_DELETE ) {
                     #region DeleteBezierChain
-                    int track = (Integer)command.args[0];
+                    int track = (int)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
-                    int chain_id = (Integer)command.args[2];
-                    int clock_resolution = (Integer)command.args[3];
+                    int chain_id = (int)command.args[2];
+                    int clock_resolution = (int)command.args[3];
                     BezierChain chain = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).clone();
                     AttachedCurves.get( track - 1 ).remove( curve_type, chain_id );
                     ret = generateCommandAddBezierChain( track, curve_type, chain_id, clock_resolution, chain );
@@ -1050,7 +1047,7 @@ namespace cadencii
                     }
                     VsqBPList list = Track[ track ].getCurve( curve_type.getName() );
                     int list_size = list.size();
-                    List<Long> delete = new List<Long>();
+                    List<long> delete = new List<long>();
                     for ( int i = 0; i < list_size; i++ ) {
                         int clock = list.getKeyClock( i );
                         if ( min <= clock && clock <= max ) {
@@ -1059,16 +1056,16 @@ namespace cadencii
                             break;
                         }
                     }
-                    command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, new SortedDictionary<Integer, VsqBPPair>() );
+                    command.vsqCommand = VsqCommand.generateCommandTrackCurveEdit2( track, curve_type.getName(), delete, new SortedDictionary<int, VsqBPPair>() );
                     editorStatus.renderRequired[track - 1] = true;
                     #endregion
                 } else if ( command.type == CadenciiCommandType.BEZIER_CHAIN_REPLACE ) {
                     #region ReplaceBezierChain
-                    int track = (Integer)command.args[0];
+                    int track = (int)command.args[0];
                     CurveType curve_type = (CurveType)command.args[1];
-                    int chain_id = (Integer)command.args[2];
+                    int chain_id = (int)command.args[2];
                     BezierChain chain = (BezierChain)command.args[3];
-                    int clock_resolution = (Integer)command.args[4];
+                    int clock_resolution = (int)command.args[4];
                     BezierChain target = (BezierChain)AttachedCurves.get( track - 1 ).getBezierChain( curve_type, chain_id ).clone();
                     AttachedCurves.get( track - 1 ).setBezierChain( curve_type, chain_id, chain );
                     VsqBPList list = Track[ track ].getCurve( curve_type.getName() );
@@ -1087,7 +1084,7 @@ namespace cadencii
                             }
                             if ( ex_min < ex_max ) {
                                 // ex_min以上ex_max以下の範囲にあるデータ点を消す
-                                List<Long> delete = new List<Long>();
+                                List<long> delete = new List<long>();
                                 int list_size = list.size();
                                 for ( int i = 0; i < list_size; i++ ) {
                                     int clock = list.getKeyClock( i );
@@ -1100,7 +1097,7 @@ namespace cadencii
                                 }
 
                                 // リプレース後のデータ点は1個だけ
-                                SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
+                                SortedDictionary<int, VsqBPPair> add = new SortedDictionary<int, VsqBPPair>();
                                 PointD p = chain.points[ 0 ].getBase();
                                 add[(int)p.getX()] = new VsqBPPair( (int)p.getY(), list.getMaxID() + 1 );
 
@@ -1133,7 +1130,7 @@ namespace cadencii
                         }
 
                         // 削除するのを列挙
-                        List<Long> delete = new List<Long>();
+                        List<long> delete = new List<long>();
                         int list_size = list.size();
                         for ( int i = 0; i < list_size; i++ ) {
                             int clock = list.getKeyClock( i );
@@ -1148,7 +1145,7 @@ namespace cadencii
                         // 追加するのを列挙
                         int max_value = curve_type.getMaximum();
                         int min_value = curve_type.getMinimum();
-                        SortedDictionary<Integer, VsqBPPair> add = new SortedDictionary<Integer, VsqBPPair>();
+                        SortedDictionary<int, VsqBPPair> add = new SortedDictionary<int, VsqBPPair>();
                         if ( min < max ) {
                             int last_value = int.MaxValue;
                             int index = 0;
@@ -1208,7 +1205,7 @@ namespace cadencii
                     #endregion
                 } else if ( command.type == CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE ) {
                     #region ReplaceAttachedCurveRange
-                    int track = (Integer)command.args[0];
+                    int track = (int)command.args[0];
                     SortedDictionary<CurveType, List<BezierChain>> curves = (SortedDictionary<CurveType, List<BezierChain>>)command.args[1];
                     SortedDictionary<CurveType, List<BezierChain>> inv = new SortedDictionary<CurveType, List<BezierChain>>();
                     foreach (var ct in curves.Keys) {
@@ -1232,7 +1229,7 @@ namespace cadencii
                     #region AddTrack
                     VsqTrack track = (VsqTrack)command.args[0];
                     VsqMixerEntry mixer = (VsqMixerEntry)command.args[1];
-                    int position = (Integer)command.args[2];
+                    int position = (int)command.args[2];
                     BezierCurves attached_curve = (BezierCurves)command.args[3];
                     ret = VsqFileEx.generateCommandDeleteTrack( position );
                     if ( Track.Count <= 17 ) {
@@ -1248,7 +1245,7 @@ namespace cadencii
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_DELETE ) {
                     #region DeleteTrack
-                    int track = (Integer)command.args[0];
+                    int track = (int)command.args[0];
                     ret = VsqFileEx.generateCommandAddTrack( Track[ track ], Mixer.Slave[ track - 1 ], track, AttachedCurves.get( track - 1 ) );
                     Track.RemoveAt( track );
                     AttachedCurves.removeElementAt( track - 1 );
@@ -1262,7 +1259,7 @@ namespace cadencii
                     #endregion
                 } else if ( command.type == CadenciiCommandType.TRACK_REPLACE ) {
                     #region TrackReplace
-                    int track = (Integer)command.args[0];
+                    int track = (int)command.args[0];
                     VsqTrack item = (VsqTrack)command.args[1];
                     BezierCurves bezier_curves = (BezierCurves)command.args[2];
                     ret = VsqFileEx.generateCommandTrackReplace( track, Track[ track ], AttachedCurves.get( track - 1 ) );
@@ -1287,10 +1284,10 @@ namespace cadencii
                     int old_pre_measure = Master.PreMeasure;
                     ret = VsqFileEx.generateCommandChangeSequenceConfig(
                         config.SamplingRate, config.WaveFileOutputChannel, config.WaveFileOutputFromMasterTrack, old_pre_measure );
-                    int sample_rate = (Integer)command.args[0];
-                    int channels = (Integer)command.args[1];
-                    boolean output_master = (Boolean)command.args[2];
-                    int pre_measure = (Integer)command.args[3];
+                    int sample_rate = (int)command.args[0];
+                    int channels = (int)command.args[1];
+                    bool output_master = (Boolean)command.args[2];
+                    int pre_measure = (int)command.args[3];
                     config.SamplingRate = sample_rate;
                     config.WaveFileOutputChannel = channels;
                     config.WaveFileOutputFromMasterTrack = output_master;

@@ -35,7 +35,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
     using Graphics = cadencii.java.awt.Graphics2D;
 #endif
 
@@ -58,7 +57,7 @@ namespace cadencii
         private double m_scroll_started;
         private AuthorListEntry[] m_credit;
         private String m_version;
-        private boolean m_credit_mode = false;
+        private bool m_credit_mode = false;
         private float m_last_t = 0f;
         private float m_last_speed = 0f;
         private float m_shift = 0f;
@@ -69,9 +68,9 @@ namespace cadencii
         private String m_app_name = "";
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
-        private boolean m_shadow_enablde = false;
+        private bool m_shadow_enablde = false;
         private System.Windows.Forms.Timer timer;
-        private boolean m_show_twitter_id = false;
+        private bool m_show_twitter_id = false;
 
         public VersionInfo( String app_name, String version )
         {
@@ -109,12 +108,12 @@ namespace cadencii
             chkTwitterID.Visible = false;
         }
 
-        public boolean isShowTwitterID()
+        public bool isShowTwitterID()
         {
             return m_show_twitter_id;
         }
 
-        public void setShowTwitterID( boolean value )
+        public void setShowTwitterID( bool value )
         {
             m_show_twitter_id = value;
         }
@@ -193,7 +192,7 @@ namespace cadencii
             m_scroll_with_id = generateAuthorListB( true );
         }
 
-        private Image generateAuthorListB( boolean show_twitter_id )
+        private Image generateAuthorListB( bool show_twitter_id )
         {
             int shadow_shift = 2;
             String font_name = "Arial";
@@ -444,7 +443,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

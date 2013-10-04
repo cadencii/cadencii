@@ -21,7 +21,6 @@ using cadencii;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -139,7 +138,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static boolean isConsonant( String symbol )
+        public static bool isConsonant( String symbol )
         {
             for ( int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++ ) {
                 String s = _SYMBOL_CONSONANT_JP[i];
@@ -160,7 +159,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static boolean isValidSymbol( String symbol )
+        public static bool isValidSymbol( String symbol )
         {
             foreach ( String s in _SYMBOL_VOWEL_JP ) {
                 if ( s == symbol ) {

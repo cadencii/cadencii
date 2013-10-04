@@ -26,9 +26,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using Float = System.Single;
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -272,7 +269,7 @@ namespace cadencii.vsq
 #else
             :
 #endif
- this( vsq, track_index, new SortedDictionary<Integer, Integer>() )
+ this( vsq, track_index, new SortedDictionary<int, int>() )
 #if JAVA
             ;
 #else
@@ -286,7 +283,7 @@ namespace cadencii.vsq
         /// <param name="vsq"></param>
         /// <param name="track_index"></param>
         /// <param name="id_map">UstEventのIndexフィールドと、元になったVsqEventのInternalIDを対応付けるマップ。キーがIndex、値がInternalIDを表す</param>
-        public UstFile( VsqFile vsq, int track_index, SortedDictionary<Integer, Integer> id_map )
+        public UstFile( VsqFile vsq, int track_index, SortedDictionary<int, int> id_map )
         {
             VsqFile work = (VsqFile)vsq.clone();
             //work.removePart( 0, work.getPreMeasureClocks() );
@@ -457,9 +454,9 @@ namespace cadencii.vsq
                     sec_at_clock_begin = tempo.getSecFromClock( clock_begin );
                 }
                 int clock_end = clock + item.getLength();
-                List<Float> pitch = new List<Float>();
-                boolean allzero = true;
-                ByRef<Integer> ref_indx = new ByRef<Integer>( 0 );
+                List<float> pitch = new List<float>();
+                bool allzero = true;
+                ByRef<int> ref_indx = new ByRef<int>( 0 );
                 for ( int cl = clock_begin; cl < clock_end; cl += PBTYPE ) {
                     int abs = abs_pit.getValue( cl, ref_indx );
                     float pit = (float)(abs / 100.0) - item.getNote() * 100;
@@ -622,7 +619,7 @@ namespace cadencii.vsq
             write( file, opt );
         }
 
-        public void write( String file, boolean print_track_end )
+        public void write( String file, bool print_track_end )
         {
             UstFileWriteOptions opt = new UstFileWriteOptions();
             opt.settingCacheDir = true;

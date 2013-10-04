@@ -35,7 +35,6 @@ using System.Collections.Generic;
             using cadencii;
             using cadencii.java.util;
             using cadencii.windows.forms;
-            using boolean = System.Boolean;
 #endif
 
 #endif
@@ -78,9 +77,9 @@ using System.Collections.Generic;
                         {
                             ui.listDictionariesClear();
                             String upper_name = ui.listDictionariesGetItemAt( index );
-                            boolean upper_enabled = ui.listDictionariesIsRowChecked( index );
+                            bool upper_enabled = ui.listDictionariesIsRowChecked( index );
                             String lower_name = ui.listDictionariesGetItemAt( index + 1 );
-                            boolean lower_enabled = ui.listDictionariesIsRowChecked( index + 1 );
+                            bool lower_enabled = ui.listDictionariesIsRowChecked( index + 1 );
 
                             ui.listDictionariesSetItemAt( index + 1, upper_name );
                             ui.listDictionariesSetRowChecked( index + 1, upper_enabled );
@@ -105,9 +104,9 @@ using System.Collections.Generic;
                         {
                             ui.listDictionariesClearSelection();
                             String upper_name = ui.listDictionariesGetItemAt( index - 1 );
-                            boolean upper_enabled = ui.listDictionariesIsRowChecked( index - 1 );
+                            bool upper_enabled = ui.listDictionariesIsRowChecked( index - 1 );
                             String lower_name = ui.listDictionariesGetItemAt( index );
-                            boolean lower_enabled = ui.listDictionariesIsRowChecked( index );
+                            bool lower_enabled = ui.listDictionariesIsRowChecked( index );
 
                             ui.listDictionariesSetItemAt( index - 1, lower_name );
                             ui.listDictionariesSetRowChecked( index - 1, lower_enabled );
@@ -134,7 +133,7 @@ using System.Collections.Generic;
                     for ( int i = 0; i < SymbolTable.getCount(); i++ )
                     {
                         String name = SymbolTable.getSymbolTable( i ).getName();
-                        boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
+                        bool enabled = SymbolTable.getSymbolTable( i ).isEnabled();
                         ui.listDictionariesAddRow( name, enabled );
                     }
                 }

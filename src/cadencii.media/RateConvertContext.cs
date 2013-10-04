@@ -20,7 +20,6 @@ using System;
 
 namespace cadencii.media
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -222,7 +221,7 @@ namespace cadencii.media
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <param name="length"></param>
-        public static boolean convert( RateConvertContext context, double[] left, double[] right, int length )
+        public static bool convert( RateConvertContext context, double[] left, double[] right, int length )
         {
             if ( context.mStatus == Status.COMPLETE ) {
                 context.length = 0;

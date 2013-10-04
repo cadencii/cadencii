@@ -38,7 +38,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -197,12 +196,12 @@ namespace cadencii
             }
         }
 
-        public boolean isWaveFileOutputFromMasterTrack()
+        public bool isWaveFileOutputFromMasterTrack()
         {
             return radioMasterTrack.Checked;
         }
 
-        public void setWaveFileOutputFromMasterTrack( boolean value )
+        public void setWaveFileOutputFromMasterTrack( bool value )
         {
             radioMasterTrack.Checked = value;
             radioCurrentTrack.Checked = !value;
@@ -270,7 +269,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

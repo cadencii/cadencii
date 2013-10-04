@@ -27,7 +27,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -41,7 +40,7 @@ namespace cadencii
         static Thread splashThread = null;
 #endif
         private static String mPathVsq = "";
-        private static boolean mPrintVersion = false;
+        private static bool mPrintVersion = false;
 
         /// <summary>
         /// 起動時に渡されたコマンドライン引数を評価します。

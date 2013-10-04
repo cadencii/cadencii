@@ -19,7 +19,6 @@ using System;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     public class SequenceConfig
@@ -34,7 +33,7 @@ namespace cadencii
         /// waveファイル出力時に、全トラックをmixして出力するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean WaveFileOutputFromMasterTrack = false;
+        public bool WaveFileOutputFromMasterTrack = false;
         /// <summary>
         /// スタートマーカーの位置(clock)
         /// version 3.3+
@@ -44,7 +43,7 @@ namespace cadencii
         /// スタートマーカーが有効かどうか
         /// version 3.3+
         /// </summary>
-        public boolean StartMarkerEnabled = false;
+        public bool StartMarkerEnabled = false;
         /// <summary>
         /// エンドマーカーの位置(clock)
         /// version 3.3+
@@ -54,9 +53,9 @@ namespace cadencii
         /// エンドマーカーが有効かどうか
         /// version 3.3+
         /// </summary>
-        public boolean EndMarkerEnabled = false;
+        public bool EndMarkerEnabled = false;
 
-        public boolean equals( SequenceConfig item )
+        public bool equals( SequenceConfig item )
         {
             if ( item == null ) {
                 return false;

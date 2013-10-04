@@ -26,8 +26,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -434,9 +432,9 @@ namespace cadencii.vsq
             List<VsqHandle> handle = new List<VsqHandle>();
             int current_id = -1;
             int current_handle = -1;
-            boolean add_quotation_mark = true;
-            boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
-            boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
+            bool add_quotation_mark = true;
+            bool is_vocalo1 = Common.Version.StartsWith( "DSB2" );
+            bool is_vocalo2 = Common.Version.StartsWith( "DSB3" );
             foreach (var item in Events.iterator()) {
                 current_id++;
                 item.ID.value = current_id;
@@ -690,7 +688,7 @@ namespace cadencii.vsq
 #endif
         }
 
-        private VsqMetaText( String name, int pre_measure, String singer, boolean is_first_track )
+        private VsqMetaText( String name, int pre_measure, String singer, bool is_first_track )
         {
             Common = new VsqCommon( name, 179, 181, 123, 1, 1 );
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );
@@ -738,9 +736,9 @@ namespace cadencii.vsq
 
         public VsqMetaText( TextStream sr )
         {
-            List<ValuePair<Integer, Integer>> t_event_list = new List<ValuePair<Integer, Integer>>();
-            SortedDictionary<Integer, VsqID> __id = new SortedDictionary<Integer, VsqID>();
-            SortedDictionary<Integer, VsqHandle> __handle = new SortedDictionary<Integer, VsqHandle>();
+            List<ValuePair<int, int>> t_event_list = new List<ValuePair<int, int>>();
+            SortedDictionary<int, VsqID> __id = new SortedDictionary<int, VsqID>();
+            SortedDictionary<int, VsqHandle> __handle = new SortedDictionary<int, VsqHandle>();
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );
             PBS = new VsqBPList( "pbs", 2, 0, 24 );
             DYN = new VsqBPList( "dyn", 64, 0, 127 );
@@ -788,10 +786,10 @@ namespace cadencii.vsq
                             for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
                                 id_number = int.Parse( spl3[1] );
-                                t_event_list.Add( new ValuePair<Integer, Integer>( clock, id_number ) );
+                                t_event_list.Add( new ValuePair<int, int>( clock, id_number ) );
                             }
                         } else {
-                            t_event_list.Add( new ValuePair<Integer, Integer>( clock, -1 ) );
+                            t_event_list.Add( new ValuePair<int, int>( clock, -1 ) );
                         }
                         if ( !sr.ready() ) {
                             break;
@@ -893,7 +891,7 @@ namespace cadencii.vsq
             Events = new VsqEventList();
             int count = 0;
             for ( int i = 0; i < t_event_list.Count; i++ ) {
-                ValuePair<Integer, Integer> item = t_event_list[i];
+                ValuePair<int, int> item = t_event_list[i];
                 int clock = item.getKey();
                 int id_number = item.getValue();
                 if ( __id.ContainsKey( id_number ) ) {

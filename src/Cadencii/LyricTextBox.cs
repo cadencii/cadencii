@@ -20,20 +20,18 @@ using cadencii.windows.forms;
 using cadencii;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-
     /// <summary>
     /// 歌詞入力用のテキストボックス
     /// </summary>
     public class LyricTextBox : TextBox {
         private String m_buf_text;
-        private boolean m_phonetic_symbol_edit_mode;
+        private bool m_phonetic_symbol_edit_mode;
 
         /// <summary>
         /// 発音記号を編集するモードかどうかを表すブール値を取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isPhoneticSymbolEditMode() {
+        public bool isPhoneticSymbolEditMode() {
             return m_phonetic_symbol_edit_mode;
         }
 
@@ -41,7 +39,7 @@ namespace cadencii {
         /// 発音記号を編集するモードかどうかを表すブール値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setPhoneticSymbolEditMode( boolean value ) {
+        public void setPhoneticSymbolEditMode( bool value ) {
             m_phonetic_symbol_edit_mode = value;
         }
 
@@ -68,7 +66,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="keyData">キーの値の一つ</param>
         /// <returns>指定されているキーが入力キーである場合は true．それ以外の場合は false．</returns>
-        protected override boolean IsInputKey( Keys keyData ) {
+        protected override bool IsInputKey( Keys keyData ) {
             switch ( keyData ) {
                 case Keys.Tab:
                 case Keys.Tab | Keys.Shift:

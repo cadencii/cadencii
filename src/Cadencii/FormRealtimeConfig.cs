@@ -27,7 +27,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -36,7 +35,7 @@ namespace cadencii
     public class FormRealtimeConfig : System.Windows.Forms.Form
     {
 #endif
-        private boolean m_game_ctrl_enabled = false;
+        private bool m_game_ctrl_enabled = false;
         private double m_last_event_processed;
         private System.Windows.Forms.Timer timer;
 
@@ -91,19 +90,19 @@ namespace cadencii
                 winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
                 //int[] pov = state.GetPointOfView();
                 //int pov0 = pov[0];
-                boolean btn_x = (buttons[AppManager.editorConfig.GameControlerCross] > 0x00);
-                boolean btn_o = (buttons[AppManager.editorConfig.GameControlerCircle] > 0x00);
-                boolean btn_tr = (buttons[AppManager.editorConfig.GameControlerTriangle] > 0x00);
-                boolean btn_re = (buttons[AppManager.editorConfig.GameControlerRectangle] > 0x00);
-                boolean pov_r = pov0 == 9000;  //(4500 <= pov0 && pov0 <= 13500);
-                boolean pov_l = pov0 == 27000; //(22500 <= pov[0] && pov[0] <= 31500);
-                boolean pov_u = pov0 == 0;     //(31500 <= pov[0] || (0 <= pov[0] && pov[0] <= 4500));
-                boolean pov_d = pov0 == 18000; //(13500 <= pov[0] && pov[0] <= 22500);
-                boolean L1 = (buttons[AppManager.editorConfig.GameControlL1] > 0x00);
-                boolean R1 = (buttons[AppManager.editorConfig.GameControlR1] > 0x00);
-                boolean L2 = (buttons[AppManager.editorConfig.GameControlL2] > 0x00);
-                boolean R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
-                boolean SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
+                bool btn_x = (buttons[AppManager.editorConfig.GameControlerCross] > 0x00);
+                bool btn_o = (buttons[AppManager.editorConfig.GameControlerCircle] > 0x00);
+                bool btn_tr = (buttons[AppManager.editorConfig.GameControlerTriangle] > 0x00);
+                bool btn_re = (buttons[AppManager.editorConfig.GameControlerRectangle] > 0x00);
+                bool pov_r = pov0 == 9000;  //(4500 <= pov0 && pov0 <= 13500);
+                bool pov_l = pov0 == 27000; //(22500 <= pov[0] && pov[0] <= 31500);
+                bool pov_u = pov0 == 0;     //(31500 <= pov[0] || (0 <= pov[0] && pov[0] <= 4500));
+                bool pov_d = pov0 == 18000; //(13500 <= pov[0] && pov[0] <= 22500);
+                bool L1 = (buttons[AppManager.editorConfig.GameControlL1] > 0x00);
+                bool R1 = (buttons[AppManager.editorConfig.GameControlR1] > 0x00);
+                bool L2 = (buttons[AppManager.editorConfig.GameControlL2] > 0x00);
+                bool R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
+                bool SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
                 if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
                     if ( btnStart.Focused ) {
                         if ( btn_o ) {
@@ -197,7 +196,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

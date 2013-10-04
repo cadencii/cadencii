@@ -24,7 +24,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = Boolean;
 #endif
 
     enum CurveTypeImpl
@@ -72,11 +71,11 @@ namespace cadencii
 #endif
     {
         private String mName;
-        private boolean mIsScalar;
+        private bool mIsScalar;
         private int mMinimum;
         private int mMaximum;
         private int mDefault;
-        private boolean mIsAttachNote;
+        private bool mIsAttachNote;
         private int mIndex;
         private CurveTypeImpl mType;
 
@@ -190,7 +189,7 @@ namespace cadencii
 
         public static readonly CurveType Empty = new CurveType( CurveTypeImpl.Empty, false, false, 0, 0, 0, -1 );
 
-        private CurveType( CurveTypeImpl type_impl, boolean is_scalar, boolean is_attach_note, int min, int max, int defalt_value, int index )
+        private CurveType( CurveTypeImpl type_impl, bool is_scalar, bool is_attach_note, int min, int max, int defalt_value, int index )
         {
             mType = type_impl;
             mIsScalar = is_scalar;
@@ -320,12 +319,12 @@ namespace cadencii
             return mName;
         }
 
-        public boolean isAttachNote()
+        public bool isAttachNote()
         {
             return mIsAttachNote;
         }
 
-        public boolean isScalar()
+        public bool isScalar()
         {
             return mIsScalar;
         }
@@ -345,13 +344,13 @@ namespace cadencii
             return mDefault;
         }
 
-        public boolean equals( CurveType other )
+        public bool equals( CurveType other )
         {
             return (mType == other.mType) && (mIsScalar == other.mIsScalar);
         }
 
 #if !JAVA
-        public boolean Equals( CurveType obj )
+        public bool Equals( CurveType obj )
         {
             return this.equals( obj );
         }

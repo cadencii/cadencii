@@ -46,6 +46,7 @@ using System.Linq;
 using System.IO;
 using System.Windows.Forms;
 using System.Net;
+using System.ComponentModel;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -61,16 +62,6 @@ using cadencii.ui;
 
 namespace cadencii
 {
-    using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
-    using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using boolean = System.Boolean;
-
-    using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
-    using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
-
-    using Integer = System.Int32;
-    using Long = System.Int64;
 #endif
 
     /// <summary>
@@ -113,7 +104,7 @@ namespace cadencii
         /// refreshScreenを呼び出す時に使うデリゲート
         /// </summary>
         /// <param name="value"></param>
-        delegate void DelegateRefreshScreen( boolean value );
+        delegate void DelegateRefreshScreen( bool value );
 #endif
 
         #region static readonly field
@@ -330,7 +321,7 @@ namespace cadencii
         /// <summary>
         /// refreshScreenが呼ばれている最中かどうか
         /// </summary>
-        private static boolean mIsRefreshing = false;
+        private static bool mIsRefreshing = false;
         /// <summary>
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
@@ -358,7 +349,7 @@ namespace cadencii
         /// 真ん中ボタンがダウンされたときのhscrollのvalue値
         /// </summary>
         public int mMiddleButtonHScroll;
-        public boolean mEdited = false;
+        public bool mEdited = false;
         /// <summary>
         /// 最後にメイン画面が更新された時刻(秒単位)
         /// </summary>
@@ -391,20 +382,20 @@ namespace cadencii
         /// <summary>
         /// マウスが降りているかどうかを表すフラグ．AppManager.isPointerDownedとは別なので注意
         /// </summary>
-        public boolean mMouseDowned = false;
+        public bool mMouseDowned = false;
         public int mTempoDraggingDeltaClock = 0;
         public int mTimesigDraggingDeltaClock = 0;
-        public boolean mMouseDownedTrackSelector = false;
+        public bool mMouseDownedTrackSelector = false;
         private ExtDragXMode mExtDragXTrackSelector = ExtDragXMode.NONE;
-        public boolean mMouseMoved = false;
+        public bool mMouseMoved = false;
 #if ENABLE_MOUSEHOVER
         /// <summary>
         /// マウスホバーを発生させるスレッド
         /// </summary>
         public Thread mMouseHoverThread = null;
 #endif
-        public boolean mLastIsImeModeOn = true;
-        public boolean mLastSymbolEditMode = false;
+        public bool mLastIsImeModeOn = true;
+        public bool mLastSymbolEditMode = false;
         /// <summary>
         /// 鉛筆のモード
         /// </summary>
@@ -416,23 +407,23 @@ namespace cadencii
         /// <summary>
         /// このフォームがアクティブ化されているかどうか
         /// </summary>
-        public boolean mFormActivated = true;
+        public bool mFormActivated = true;
         private GameControlMode mGameMode = GameControlMode.DISABLED;
         public System.Windows.Forms.Timer mTimer;
-        public boolean mLastPovR = false;
-        public boolean mLastPovL = false;
-        public boolean mLastPovU = false;
-        public boolean mLastPovD = false;
-        public boolean mLastBtnX = false;
-        public boolean mLastBtnO = false;
-        public boolean mLastBtnRe = false;
-        public boolean mLastBtnTr = false;
-        public boolean mLastBtnSelect = false;
+        public bool mLastPovR = false;
+        public bool mLastPovL = false;
+        public bool mLastPovU = false;
+        public bool mLastPovD = false;
+        public bool mLastBtnX = false;
+        public bool mLastBtnO = false;
+        public bool mLastBtnRe = false;
+        public bool mLastBtnTr = false;
+        public bool mLastBtnSelect = false;
         /// <summary>
         /// 前回ゲームコントローラのイベントを処理した時刻
         /// </summary>
         public double mLastEventProcessed;
-        public boolean mSpacekeyDowned = false;
+        public bool mSpacekeyDowned = false;
 #if ENABLE_MIDI
         public MidiInDevice mMidiIn = null;
 #endif
@@ -456,7 +447,7 @@ namespace cadencii
         /// <summary>
         /// AppManager.keyWidthを調節するモードに入ったかどうか
         /// </summary>
-        public boolean mKeyLengthSplitterMouseDowned = false;
+        public bool mKeyLengthSplitterMouseDowned = false;
         /// <summary>
         /// AppManager.keyWidthを調節するモードに入る直前での、マウスのスクリーン座標
         /// </summary>
@@ -484,7 +475,7 @@ namespace cadencii
         /// <summary>
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
         /// </summary>
-        private boolean mIconPaletteOnceDragEntered = false;
+        private bool mIconPaletteOnceDragEntered = false;
         private byte mMtcFrameLsb;
         private byte mMtcFrameMsb;
         private byte mMtcSecLsb;
@@ -1251,11 +1242,11 @@ namespace cadencii
 
             // 歌手はknownかunknownか？
             // 歌手指定が知らない歌手だった場合に，ダイアログを出すかどうか
-            boolean check_unknown_singer = false;
+            bool check_unknown_singer = false;
             if (System.IO.File.Exists(Path.Combine(singer_path.value, "oto.ini"))) {
                 // oto.iniが存在する場合
                 // editorConfigに入っていない場合に，ダイアログを出す
-                boolean found = false;
+                bool found = false;
                 for ( int i = 0; i < AppManager.editorConfig.UtauSingers.Count; i++ ) {
                     SingerConfig sc = AppManager.editorConfig.UtauSingers[i];
                     if ( sc == null ) {
@@ -1270,7 +1261,7 @@ namespace cadencii
             }
 
             // リサンプラーが知っているやつかどうか
-            boolean check_unknwon_resampler = false;
+            bool check_unknwon_resampler = false;
 #if DEBUG
             sout.println( "FormMain#checkUnknownResamplerAndSinger; resampler_path.value=" + resampler_path.value );
 #endif
@@ -1281,7 +1272,7 @@ namespace cadencii
                 resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
             }
             if (resampler_dir != "" && System.IO.File.Exists(resampler_path.value)) {
-                boolean found = false;
+                bool found = false;
                 for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
                     String resampler = AppManager.editorConfig.getResamplerAt( i );
                     if ( resampler == resampler_path.value ) {
@@ -1489,7 +1480,7 @@ namespace cadencii
                 AppManager.mAddingEvent.ID.LyricHandle = lyric;
                 AppManager.mAddingEvent.ID.VibratoDelay = vibrato_delay;
 
-                boolean changed = true;
+                bool changed = true;
                 while ( changed ) {
                     changed = false;
                     for ( int i = 0; i < work.getEventCount(); i++ ) {
@@ -1548,12 +1539,12 @@ namespace cadencii
                 bandPosition,
                 bandTool } );
             // ソートする
-            boolean changed = true;
+            bool changed = true;
             while ( changed ) {
                 changed = false;
                 for ( int i = 0; i < list.Count - 1; i++ ) {
                     // y座標が大きいか，y座標が同じでもx座標が大きい場合に入れ替える
-                    boolean swap =
+                    bool swap =
                         (list[i].Location.Y > list[i + 1].Location.Y) ||
                         (list[i].Location.Y == list[i + 1].Location.Y && list[i].Location.X > list[i + 1].Location.X);
                     if ( swap ) {
@@ -2150,15 +2141,15 @@ namespace cadencii
         /// </summary>
         /// <param name="button"></param>
         /// <returns></returns>
-        public boolean isMouseMiddleButtonDowned( BMouseButtons button )
+        public bool isMouseMiddleButtonDowned( MouseButtons button )
         {
-            boolean ret = false;
+            bool ret = false;
             if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
-                if ( mSpacekeyDowned && button == BMouseButtons.Left ) {
+                if ( mSpacekeyDowned && button == MouseButtons.Left ) {
                     ret = true;
                 }
             } else {
-                if ( button == BMouseButtons.Middle ) {
+                if ( button == MouseButtons.Middle ) {
                     ret = true;
                 }
             }
@@ -2173,7 +2164,7 @@ namespace cadencii
 #endif
         /// 再描画間隔が設定値より短い場合再描画がスキップされます。
         /// </summary>
-        public void refreshScreen( boolean force )
+        public void refreshScreen( bool force )
         {
 #if JAVA
             //refreshScreenCore( this, null );
@@ -2370,7 +2361,7 @@ namespace cadencii
             // 1個後ろのアイテムのIDを検索
             int last_id = -1;
             int clock = AppManager.getCurrentClock();
-            boolean break_next = false;
+            bool break_next = false;
             for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 if ( item.ID.type != type ) {
@@ -2919,7 +2910,7 @@ namespace cadencii
                 toolBarTool.Buttons.Add( item );
             }
             String lang = Messaging.getLanguage();
-            boolean first = true;
+            bool first = true;
             foreach (var id in PaletteToolServer.loadedTools.Keys) {
                 count++;
                 IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
@@ -2986,7 +2977,7 @@ namespace cadencii
         public void updateCopyAndPasteButtonStatus()
         {
             // copy cut deleteの表示状態更新
-            boolean selected_is_null = (AppManager.itemSelection.getEventCount() == 0) &&
+            bool selected_is_null = (AppManager.itemSelection.getEventCount() == 0) &&
                                        (AppManager.itemSelection.getTempoCount() == 0) &&
                                        (AppManager.itemSelection.getTimesigCount() == 0) &&
                                        (AppManager.itemSelection.getPointIDCount() == 0);
@@ -3018,12 +3009,12 @@ namespace cadencii
             int copy_started_clock = ce.copyStartedClock;
             SortedDictionary<CurveType, VsqBPList> copied_curve = ce.points;
             SortedDictionary<CurveType, List<BezierChain>> copied_bezier = ce.beziers;
-            boolean copied_is_null = (ce.events.Count == 0) &&
+            bool copied_is_null = (ce.events.Count == 0) &&
                                   (ce.tempo.Count == 0) &&
                                   (ce.timesig.Count == 0) &&
                                   (copied_curve.Count == 0) &&
                                   (copied_bezier.Count == 0);
-            boolean enabled = !copied_is_null;
+            bool enabled = !copied_is_null;
             if ( copied_curve.Count == 1 ) {
                 // 1種類のカーブがコピーされている場合→コピーされているカーブの種類と、現在選択されているカーブの種類とで、最大値と最小値が一致している場合のみ、ペースト可能
                 CurveType ct = CurveType.Empty;
@@ -3047,7 +3038,7 @@ namespace cadencii
             menuEditPaste.Enabled = enabled;
 
             /*int copy_started_clock;
-            boolean copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
+            bool copied_is_null = (AppManager.GetCopiedEvent().Count == 0) &&
                                   (AppManager.GetCopiedTempo( out copy_started_clock ).Count == 0) &&
                                   (AppManager.GetCopiedTimesig( out copy_started_clock ).Count == 0) &&
                                   (AppManager.GetCopiedCurve( out copy_started_clock ).Count == 0) &&
@@ -3087,7 +3078,7 @@ namespace cadencii
         /// 保存されていない編集内容があるかどうかチェックし、必要なら確認ダイアログを出す。
         /// </summary>
         /// <returns>保存されていない保存内容などない場合、または、保存する必要がある場合で（保存しなくてよいと指定された場合または保存が行われた場合）にtrueを返す</returns>
-        public boolean dirtyCheck()
+        public bool dirtyCheck()
         {
             if ( mEdited ) {
                 String file = AppManager.getFileName();
@@ -3148,14 +3139,14 @@ namespace cadencii
         {
             Object[] argArr = (Object[])arg;
             String file = (String)argArr[0];
-            int track = (Integer)argArr[1];
+            int track = (int)argArr[1];
             waveView.load( track, file );
         }
 
         /// <summary>
         /// AppManager.editorConfig.ViewWaveformの値をもとに、splitterContainer2の表示状態を更新します
         /// </summary>
-        public void updateSplitContainer2Size( boolean save_to_config )
+        public void updateSplitContainer2Size( bool save_to_config )
         {
             if ( AppManager.editorConfig.ViewWaveform ) {
                 splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
@@ -3231,7 +3222,7 @@ namespace cadencii
             }
 #endif
             SelectedEventEntry last_selected_event = AppManager.itemSelection.getLastEvent();
-            boolean phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
+            bool phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
 
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -3239,12 +3230,12 @@ namespace cadencii
 
             // 後続に、連続している音符が何個あるか検査
             int maxcount = SymbolTable.getMaxDivisions(); // 音節の分割によって，高々maxcount個までにしか分割されない
-            boolean check_started = false;
+            bool check_started = false;
             int endclock = 0;  // 直前の音符の終了クロック
             int count = 0;     // 後続音符の連続個数
             int start_index = -1;
             int indx = -1;
-            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+            for ( Iterator<int> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
                 indx = itr.next();
                 VsqEvent itemi = vsq_track.getEvent( indx );
                 if ( itemi.InternalID == last_selected_event.original.InternalID ) {
@@ -3271,9 +3262,9 @@ namespace cadencii
             VsqEvent[] items = new VsqEvent[count];
             String[] original_symbol = new String[count];
             String[] original_phrase = new String[count];
-            boolean[] symbol_protected = new boolean[count];
+            bool[] symbol_protected = new bool[count];
             indx = -1;
-            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+            for ( Iterator<int> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
                 int index = itr.next();
                 if ( index < start_index ) {
                     continue;
@@ -3337,7 +3328,7 @@ namespace cadencii
 
                     // ピックアップした発音記号をスペース区切りで結合
                     phonetic_symbol[0] = "";
-                    boolean first = true;
+                    bool first = true;
                     foreach (var s in list) {
                         if ( first ) {
                             phonetic_symbol[0] += s;
@@ -3400,7 +3391,7 @@ namespace cadencii
 #else
                         List<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #endif
-                        List<Integer> adjustment = new List<Integer>();
+                        List<int> adjustment = new List<int>();
                         for ( int i = 0; i < spl.Count; i++ ) {
                             String s = spl[i];
                             adjustment.Add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
@@ -3438,7 +3429,7 @@ namespace cadencii
         {
 #if !JAVA
             try {
-                boolean init_success = false;
+                bool init_success = false;
                 int num_joydev = winmmhelp.JoyInit();
                 if ( num_joydev <= 0 ) {
                     init_success = false;
@@ -3692,7 +3683,7 @@ namespace cadencii
         /// </summary>
         /// <param name="e"></param>
         /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
-        public void processSpecialShortcutKey( KeyEventArgs e, boolean onPreviewKeyDown )
+        public void processSpecialShortcutKey( KeyEventArgs e, bool onPreviewKeyDown )
         {
 #if DEBUG
             sout.println( "FormMain#processSpecialShortcutKey" );
@@ -3707,7 +3698,7 @@ namespace cadencii
                 return;
             }
 
-            boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
+            bool flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
 
             // 最初に、特殊な取り扱いが必要なショートカット、について、
             // 該当するショートカットがあればそいつらを発動する。
@@ -3934,7 +3925,7 @@ namespace cadencii
         /// <summary>
         /// コントロールトラックの表示・非表示状態を更新します
         /// </summary>
-        public void flipControlCurveVisible( boolean visible )
+        public void flipControlCurveVisible( bool visible )
         {
             trackSelector.setCurveVisible( visible );
             if ( visible ) {
@@ -3957,7 +3948,7 @@ namespace cadencii
         /// ミキサーダイアログの表示・非表示状態を更新します
         /// </summary>
         /// <param name="visible">表示状態にする場合true，そうでなければfalse</param>
-        public void flipMixerDialogVisible( boolean visible )
+        public void flipMixerDialogVisible( bool visible )
         {
             AppManager.mMixerWindow.Visible = visible;
             AppManager.editorConfig.MixerVisible = visible;
@@ -3969,7 +3960,7 @@ namespace cadencii
         /// <summary>
         /// アイコンパレットの表示・非表示状態を更新します
         /// </summary>
-        public void flipIconPaletteVisible( boolean visible )
+        public void flipIconPaletteVisible( bool visible )
         {
             AppManager.iconPalette.Visible = visible;
             AppManager.editorConfig.IconPaletteVisible = visible;
@@ -4213,7 +4204,7 @@ namespace cadencii
         /// </summary>
         public void forward()
         {
-            boolean playing = AppManager.isPlaying();
+            bool playing = AppManager.isPlaying();
             if ( playing ) {
                 return;
             }
@@ -4245,7 +4236,7 @@ namespace cadencii
         /// </summary>
         public void rewind()
         {
-            boolean playing = AppManager.isPlaying();
+            bool playing = AppManager.isPlaying();
             if ( playing ) {
                 return;
             }
@@ -4982,7 +4973,7 @@ namespace cadencii
                     }
                     VsqEvent[] new_events = new VsqEvent[new_phrases.Count];
                     int indx = -1;
-                    for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+                    for ( Iterator<int> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
                         int index = itr.next();
                         if ( index < start ) {
                             continue;
@@ -5155,7 +5146,7 @@ namespace cadencii
             int min = int.MaxValue;
             int max = int.MinValue;
             int premeasure = AppManager.getVsqFile().getPreMeasureClocks();
-            List<Integer> add_required = new List<Integer>();
+            List<int> add_required = new List<int>();
             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = itr.next();
                 if ( premeasure <= ve.Clock ) {
@@ -5212,7 +5203,7 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             VsqTrack vsq_track = vsq.Track[ selected ];
             int premeasureclock = vsq.getPreMeasureClocks();
-            List<Integer> add_required = new List<Integer>();
+            List<int> add_required = new List<int>();
             for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ev = itr.next();
                 if ( ev.ID.type == VsqIDType.Anote && ev.Clock >= premeasureclock ) {
@@ -5247,8 +5238,8 @@ namespace cadencii
             VsqTrack vsq_track = vsq.Track[ selected ];
 
             if ( AppManager.itemSelection.getEventCount() > 0 ) {
-                List<Integer> ids = new List<Integer>();
-                boolean contains_aicon = false;
+                List<int> ids = new List<int>();
+                bool contains_aicon = false;
                 foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                     ids.Add( ev.original.InternalID );
                     if ( ev.original.ID.type == VsqIDType.Aicon ) {
@@ -5308,7 +5299,7 @@ namespace cadencii
                 }
                 Refresh();
             } else if ( AppManager.itemSelection.getTempoCount() > 0 ) {
-                List<Integer> clocks = new List<Integer>();
+                List<int> clocks = new List<int>();
                 foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                     if ( item.getKey() <= 0 ) {
                         String msg = _( "Cannot remove first symbol of track!" );
@@ -5380,7 +5371,7 @@ namespace cadencii
                     curve = trackSelector.getSelectedCurve().getName();
                     VsqBPList src = vsq_track.getCurve( curve );
                     VsqBPList list = (VsqBPList)src.clone();
-                    List<Integer> remove_clock_queue = new List<Integer>();
+                    List<int> remove_clock_queue = new List<int>();
                     int count = list.size();
                     for ( int i = 0; i < count; i++ ) {
                         VsqBPPair item = list.getElementB( i );
@@ -5718,7 +5709,7 @@ namespace cadencii
                 ce.points = new SortedDictionary<CurveType, VsqBPList>();
                 ce.beziers = new SortedDictionary<CurveType, List<BezierChain>>();
 
-                ValuePair<Integer, Integer> t = trackSelector.getSelectedRegion();
+                ValuePair<int, int> t = trackSelector.getSelectedRegion();
                 int start = t.getKey();
                 int end = t.getValue();
                 ce.copyStartedClock = start;
@@ -5779,9 +5770,9 @@ namespace cadencii
 
             // 選択されたノートイベントがあれば、まず、削除を行うコマンドを発行
             VsqCommand delete_event = null;
-            boolean other_command_executed = false;
+            bool other_command_executed = false;
             if ( AppManager.itemSelection.getEventCount() > 0 ) {
-                List<Integer> ids = new List<Integer>();
+                List<int> ids = new List<int>();
                 foreach (var item in AppManager.itemSelection.getEventIterator()) {
                     ids.Add( item.original.InternalID );
                 }
@@ -5815,7 +5806,7 @@ namespace cadencii
                         continue;
                     }
                     int c = list.size();
-                    List<Long> delete = new List<Long>();
+                    List<long> delete = new List<long>();
                     if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                         // 一括選択モード
                         for ( int j = 0; j < c; j++ ) {
@@ -5832,7 +5823,7 @@ namespace cadencii
                             delete.Add( id );
                         }
                     }
-                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new SortedDictionary<Integer, VsqBPPair>() );
+                    VsqCommand tmp = VsqCommand.generateCommandTrackCurveEdit2( track, curve.getName(), delete, new SortedDictionary<int, VsqBPPair>() );
                     work.executeCommand( tmp );
                 }
 
@@ -6093,7 +6084,7 @@ namespace cadencii
 
 #if !JAVA
             QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
-            boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
+            bool triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
             stripDDBtnQuantizeParent.Text =
                 "QUANTIZE " + QuantizeModeUtil.getString( qm ) +
                 ((qm != QuantizeMode.off && triplet) ? " [3]" : "");
@@ -6190,7 +6181,7 @@ namespace cadencii
 #if JAVA
                 if( tsi instanceof PaletteToolButton ){
                     BToggleButton tsb = (PaletteToolButton)tsi;
-                    boolean sel = false;
+                    bool sel = false;
 #if ENABLE_SCRIPT
                     String id = tsb.getPaletteToolID();
                     if( id != null ){
@@ -6223,7 +6214,7 @@ namespace cadencii
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
                     String id = tsmi.getPaletteToolID();
-                    boolean sel = false;
+                    bool sel = false;
 #if ENABLE_SCRIPT
                     if ( tool == EditTool.PALETTE_TOOL ) {
                         sel = (AppManager.mSelectedPaletteTool == id);
@@ -6237,7 +6228,7 @@ namespace cadencii
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
                     String id = tsmi.getPaletteToolID();
-                    boolean sel = false;
+                    bool sel = false;
 #if ENABLE_SCRIPT
                     if ( tool == EditTool.PALETTE_TOOL ) {
                         sel = (AppManager.mSelectedPaletteTool == id);
@@ -6301,7 +6292,7 @@ namespace cadencii
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int track_count = vsq.Track.Count;
                     Polygon env = new Polygon(new int[7], new int[7], 7);
-                    ByRef<Integer> overlap_x = new ByRef<Integer>(0);
+                    ByRef<int> overlap_x = new ByRef<int>(0);
                     for (int track = 1; track < track_count; track++) {
                         VsqTrack vsq_track = vsq.Track[track];
                         List<DrawObject> tmp = AppManager.mDrawObjects[track - 1];
@@ -6345,7 +6336,7 @@ namespace cadencii
 
                             // analyzed/のSTFが引き当てられるかどうか
                             // UTAUのWAVが引き当てられるかどうか
-                            boolean is_valid_for_utau = false;
+                            bool is_valid_for_utau = false;
                             VsqEvent singer_at_clock = vsq_track.getSingerEventAt(timesig);
                             int program = singer_at_clock.ID.IconHandle.Program;
                             if (0 <= program && program < AppManager.editorConfig.UtauSingers.Count) {
@@ -6480,7 +6471,7 @@ namespace cadencii
                             /*if ( itemi.type != DrawObjectType.Note ) {
                                 continue;
                             }*/
-                            boolean overwrapped = false;
+                            bool overwrapped = false;
                             int istart = itemi.mClock;
                             int iend = istart + itemi.mLength;
                             if (itemi.mIsOverlapped) {
@@ -6545,7 +6536,7 @@ namespace cadencii
                     }
                     if ( item != "" ) {
                         String short_name = PortUtil.getFileName( item );
-                        boolean available = System.IO.File.Exists(item);
+                        bool available = System.IO.File.Exists(item);
                         RecentFileMenuItem itm = new RecentFileMenuItem( item );
                         itm.Text = short_name;
                         String tooltip = "";
@@ -6572,12 +6563,12 @@ namespace cadencii
         /// <summary>
         /// 最後に保存したときから変更されているかどうかを取得または設定します
         /// </summary>
-        public boolean isEdited()
+        public bool isEdited()
         {
             return mEdited;
         }
 
-        public void setEdited( boolean value )
+        public void setEdited( bool value )
         {
             mEdited = value;
             String file = AppManager.getFileName();
@@ -6593,8 +6584,8 @@ namespace cadencii
             if ( this.Text != title ) {
                 this.Text = title;
             }
-            boolean redo = AppManager.editHistory.hasRedoHistory();
-            boolean undo = AppManager.editHistory.hasUndoHistory();
+            bool redo = AppManager.editHistory.hasRedoHistory();
+            bool undo = AppManager.editHistory.hasUndoHistory();
             menuEditRedo.Enabled = redo;
             menuEditUndo.Enabled = undo;
             cMenuPianoRedo.Enabled = redo;
@@ -6621,7 +6612,7 @@ namespace cadencii
         /// <summary>
         /// 入力用のテキストボックスを初期化します
         /// </summary>
-        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, boolean phonetic_symbol_edit_mode )
+        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, bool phonetic_symbol_edit_mode )
         {
 #if DEBUG
             AppManager.debugWriteLine( "InitializeInputTextBox" );
@@ -6747,7 +6738,7 @@ namespace cadencii
         /// xvsqファイルを開きます
         /// </summary>
         /// <returns>ファイルを開くのに成功した場合trueを，それ以外はfalseを返します</returns>
-        public boolean openVsqCor( String file )
+        public bool openVsqCor( String file )
         {
             if( AppManager.readVsq( file ) ){
                 return true;
@@ -7044,8 +7035,8 @@ namespace cadencii
                 }
 
                 // スタートマーカーとエンドマーカー
-                boolean right = false;
-                boolean left = false;
+                bool right = false;
+                bool left = false;
                 if ( vsq.config.StartMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( vsq.config.StartMarker );
                     if ( x < key_width ) {
@@ -7317,7 +7308,7 @@ namespace cadencii
             menuHiddenPrintPoToCSV.Click += new EventHandler( menuHiddenPrintPoToCSV_Click );
             menuHiddenFlipCurveOnPianorollMode.Click += new EventHandler( menuHiddenFlipCurveOnPianorollMode_Click );
 
-            cMenuPiano.Opening += new BCancelEventHandler( cMenuPiano_Opening );
+            cMenuPiano.Opening += new CancelEventHandler( cMenuPiano_Opening );
             cMenuPianoPointer.Click += new EventHandler( cMenuPianoPointer_Click );
             cMenuPianoPencil.Click += new EventHandler( cMenuPianoPencil_Click );
             cMenuPianoEraser.Click += new EventHandler( cMenuPianoEraser_Click );
@@ -7353,7 +7344,7 @@ namespace cadencii
             cMenuPianoImportLyric.Click += new EventHandler( cMenuPianoImportLyric_Click );
             cMenuPianoExpressionProperty.Click += new EventHandler( cMenuPianoProperty_Click );
             cMenuPianoVibratoProperty.Click += new EventHandler( cMenuPianoVibratoProperty_Click );
-            cMenuTrackTab.Opening += new BCancelEventHandler( cMenuTrackTab_Opening );
+            cMenuTrackTab.Opening += new CancelEventHandler( cMenuTrackTab_Opening );
             cMenuTrackTabTrackOn.Click += new EventHandler( handleTrackOn_Click );
             cMenuTrackTabAdd.Click += new EventHandler( cMenuTrackTabAdd_Click );
             cMenuTrackTabCopy.Click += new EventHandler( cMenuTrackTabCopy_Click );
@@ -7367,7 +7358,7 @@ namespace cadencii
             cMenuTrackTabRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
             cMenuTrackTabRendererStraight.Click += new EventHandler( handleChangeRenderer );
             cMenuTrackTabRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackSelector.Opening += new BCancelEventHandler( cMenuTrackSelector_Opening );
+            cMenuTrackSelector.Opening += new CancelEventHandler( cMenuTrackSelector_Opening );
             cMenuTrackSelectorPointer.Click += new EventHandler( cMenuTrackSelectorPointer_Click );
             cMenuTrackSelectorPencil.Click += new EventHandler( cMenuTrackSelectorPencil_Click );
             cMenuTrackSelectorLine.Click += new EventHandler( cMenuTrackSelectorLine_Click );
@@ -7385,7 +7376,7 @@ namespace cadencii
             cMenuPositionIndicatorStartMarker.Click += new EventHandler( cMenuPositionIndicatorStartMarker_Click );
             trackBar.ValueChanged += new EventHandler( trackBar_ValueChanged );
             trackBar.Enter += new EventHandler( trackBar_Enter );
-            bgWorkScreen.DoWork += new BDoWorkEventHandler( bgWorkScreen_DoWork );
+            bgWorkScreen.DoWork += new DoWorkEventHandler( bgWorkScreen_DoWork );
             timer.Tick += new EventHandler( timer_Tick );
             pictKeyLengthSplitter.MouseMove += new MouseEventHandler( pictKeyLengthSplitter_MouseMove );
             pictKeyLengthSplitter.MouseDown += new MouseEventHandler( pictKeyLengthSplitter_MouseDown );
@@ -7524,9 +7515,9 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#mInputTextBox_KeyDown" );
 #endif
-            boolean shift = (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift;
-            boolean tab = e.KeyCode == System.Windows.Forms.Keys.Tab;
-            boolean enter = e.KeyCode == System.Windows.Forms.Keys.Return;
+            bool shift = (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift;
+            bool tab = e.KeyCode == System.Windows.Forms.Keys.Tab;
+            bool enter = e.KeyCode == System.Windows.Forms.Keys.Return;
             if ( tab || enter ) {
                 executeLyricChangeCommand();
                 int selected = AppManager.getSelected();
@@ -7579,7 +7570,7 @@ namespace cadencii
                     AppManager.itemSelection.addEvent( item.InternalID );
                     int x = AppManager.xCoordFromClocks( item.Clock );
                     int y = AppManager.yCoordFromNote( item.ID.Note );
-                    boolean phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
+                    bool phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
                     showInputTextBox(
                         item.ID.LyricHandle.L0.Phrase,
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
@@ -7590,7 +7581,7 @@ namespace cadencii
                     // 画面上にAppManager.mInputTextBoxが見えるように，移動
                     int SPACE = 20;
                     // vScrollやhScrollをいじった場合はfalseにする．
-                    boolean refresh_screen = true;
+                    bool refresh_screen = true;
                     // X軸方向について，見えるように移動
                     if ( x < key_width || width < x + AppManager.mInputTextBox.Width ) {
                         int clock, clock_x;
@@ -7689,7 +7680,7 @@ namespace cadencii
 
         //BOOKMARK: AppManager
         #region AppManager
-        public void AppManager_EditedStateChanged( Object sender, boolean edited )
+        public void AppManager_EditedStateChanged( Object sender, bool edited )
         {
             setEdited( edited );
         }
@@ -7756,7 +7747,7 @@ namespace cadencii
             applySelectedTool();
         }
 
-        public void ItemSelectionModel_SelectedEventChanged( Object sender, boolean selected_event_is_null )
+        public void ItemSelectionModel_SelectedEventChanged( Object sender, bool selected_event_is_null )
         {
             menuEditCut.Enabled = !selected_event_is_null;
             menuEditPaste.Enabled = !selected_event_is_null;
@@ -7810,10 +7801,10 @@ namespace cadencii
             Keys modefiers = Control.ModifierKeys;
             EditMode edit_mode = AppManager.getEditMode();
 
-            boolean is_button_left = e.Button == BMouseButtons.Left;
+            bool is_button_left = e.Button == MouseButtons.Left;
             int selected = AppManager.getSelected();
 
-            if ( e.Button == BMouseButtons.Left ) {
+            if ( e.Button == MouseButtons.Left ) {
 #if ENABLE_MOUSEHOVER
                 if ( mMouseHoverThread != null ) {
                     mMouseHoverThread.Abort();
@@ -7850,15 +7841,15 @@ namespace cadencii
                         return;
 #if ENABLE_SCRIPT
                     } else if ( AppManager.getSelectedTool() == EditTool.PALETTE_TOOL ) {
-                        List<Integer> internal_ids = new List<Integer>();
+                        List<int> internal_ids = new List<int>();
                         foreach (var see in AppManager.itemSelection.getEventIterator()) {
                             internal_ids.Add( see.original.InternalID );
                         }
-                        BMouseButtons btn = e.Button;
+                        MouseButtons btn = e.Button;
                         if ( isMouseMiddleButtonDowned( btn ) ) {
-                            btn = BMouseButtons.Middle;
+                            btn = MouseButtons.Middle;
                         }
-                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
+                        bool result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                               selected,
                                                                               internal_ids.ToArray(),
                                                                               btn );
@@ -7924,8 +7915,8 @@ namespace cadencii
                         }
                     }
                 }
-            } else if ( e.Button == BMouseButtons.Right ) {
-                boolean show_context_menu = (e.X > AppManager.keyWidth);
+            } else if ( e.Button == MouseButtons.Right ) {
+                bool show_context_menu = (e.X > AppManager.keyWidth);
 #if ENABLE_MOUSEHOVER
                 if ( mMouseHoverThread != null ) {
                     if ( !mMouseHoverThread.IsAlive && AppManager.editorConfig.PlayPreviewWhenRightClick ) {
@@ -7953,7 +7944,7 @@ namespace cadencii
                         }
                         AppManager.itemSelection.addEvent( item.InternalID );
                     }
-                    boolean item_is_null = (item == null);
+                    bool item_is_null = (item == null);
                     cMenuPianoCopy.Enabled = !item_is_null;
                     cMenuPianoCut.Enabled = !item_is_null;
                     cMenuPianoDelete.Enabled = !item_is_null;
@@ -7978,7 +7969,7 @@ namespace cadencii
                         int itemy = AppManager.yCoordFromNote( item.ID.Note );
                     }
                 }
-            } else if ( e.Button == BMouseButtons.Middle ) {
+            } else if ( e.Button == MouseButtons.Middle ) {
 #if ENABLE_SCRIPT
                 if ( AppManager.getSelectedTool() == EditTool.PALETTE_TOOL ) {
                     ByRef<Rectangle> out_id_rect = new ByRef<Rectangle>();
@@ -7987,11 +7978,11 @@ namespace cadencii
                     if ( item != null ) {
                         AppManager.itemSelection.clearEvent();
                         AppManager.itemSelection.addEvent( item.InternalID );
-                        List<Integer> internal_ids = new List<Integer>();
+                        List<int> internal_ids = new List<int>();
                         foreach (var see in AppManager.itemSelection.getEventIterator()) {
                             internal_ids.Add( see.original.InternalID );
                         }
-                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
+                        bool result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                            AppManager.getSelected(),
                                                                            internal_ids.ToArray(),
                                                                            e.Button );
@@ -8196,13 +8187,13 @@ namespace cadencii
                 }
             }
 
-            if ( e.Button == BMouseButtons.Left ) {
+            if ( e.Button == MouseButtons.Left ) {
                 // 必要な操作が何も無ければ，クリック位置にソングポジションを移動
                 if ( AppManager.keyWidth < e.X ) {
                     int clock = doQuantize( AppManager.clockFromXCoord( e.X ), AppManager.getPositionQuantizeClock() );
                     AppManager.setCurrentClock( clock );
                 }
-            } else if ( e.Button == BMouseButtons.Middle ) {
+            } else if ( e.Button == MouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( AppManager.keyWidth < e.X ) {
                     if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
@@ -8219,9 +8210,9 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseDown" );
 #endif
-            BMouseButtons btn0 = e0.Button;
+            MouseButtons btn0 = e0.Button;
             if ( isMouseMiddleButtonDowned( btn0 ) ) {
-                btn0 = BMouseButtons.Middle;
+                btn0 = MouseButtons.Middle;
             }
             MouseEventArgs e = new MouseEventArgs( btn0, e0.Clicks, e0.X, e0.Y, e0.Delta );
 
@@ -8229,7 +8220,7 @@ namespace cadencii
             if ( !AppManager.isPlaying() && 0 <= e.X && e.X <= AppManager.keyWidth ) {
                 int note = AppManager.noteFromYCoord( e.Y );
                 if ( 0 <= note && note <= 126 ) {
-                    if ( e.Button == BMouseButtons.Left ) {
+                    if ( e.Button == MouseButtons.Left ) {
                         KeySoundPlayer.play( note );
                     }
                     return;
@@ -8249,7 +8240,7 @@ namespace cadencii
 
             EditTool selected_tool = AppManager.getSelectedTool();
 #if ENABLE_SCRIPT
-            if ( selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Middle ) {
+            if ( selected_tool != EditTool.PALETTE_TOOL && e.Button == MouseButtons.Middle ) {
 #else
             if ( e.Button == BMouseButtons.Middle ) {
 #endif
@@ -8261,7 +8252,7 @@ namespace cadencii
 
             int stdx = controller.getStartToDrawX();
             int stdy = controller.getStartToDrawY();
-            if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
+            if ( e.Button == MouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mMouseTracer.clear();
                 pictPianoRoll.mMouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
                 this.Cursor = Cursors.Default;
@@ -8274,7 +8265,7 @@ namespace cadencii
             Rectangle rect = out_rect.value;
 
 #if ENABLE_SCRIPT
-            if ( selected_tool == EditTool.PALETTE_TOOL && item == null && e.Button == BMouseButtons.Middle ) {
+            if ( selected_tool == EditTool.PALETTE_TOOL && item == null && e.Button == MouseButtons.Middle ) {
                 AppManager.setEditMode( EditMode.MIDDLE_DRAG );
                 mMiddleButtonVScroll = vScroll.Value;
                 mMiddleButtonHScroll = hScroll.Value;
@@ -8289,7 +8280,7 @@ namespace cadencii
 
             // マウス位置にある音符を検索
             if ( item == null ) {
-                if ( e.Button == BMouseButtons.Left ) {
+                if ( e.Button == MouseButtons.Left ) {
                     AppManager.setWholeSelectedIntervalEnabled( false );
                 }
                 #region 音符がなかった時
@@ -8299,7 +8290,7 @@ namespace cadencii
                 if ( AppManager.itemSelection.getLastEvent() != null ) {
                     executeLyricChangeCommand();
                 }
-                boolean start_mouse_hover_generator = true;
+                bool start_mouse_hover_generator = true;
 
                 // CTRLキーを押しながら範囲選択
                 if ( (modefier & s_modifier_key) == s_modifier_key ) {
@@ -8366,7 +8357,7 @@ namespace cadencii
                     }
                     if ( vibrato_dobj == null ) {
                         if ( (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) &&
-                            e.Button == BMouseButtons.Left &&
+                            e.Button == MouseButtons.Left &&
                             e.X >= key_width ) {
                             int clock = AppManager.clockFromXCoord( e.X );
                             if ( AppManager.getVsqFile().getPreMeasureClocks() - AppManager.editorConfig.PxTolerance * controller.getScaleXInv() <= clock ) {
@@ -8402,7 +8393,7 @@ namespace cadencii
 #endif
                             }
 #if ENABLE_SCRIPT
-                        } else if ( (selected_tool == EditTool.ARROW || selected_tool == EditTool.PALETTE_TOOL) && e.Button == BMouseButtons.Left ) {
+                        } else if ( (selected_tool == EditTool.ARROW || selected_tool == EditTool.PALETTE_TOOL) && e.Button == MouseButtons.Left ) {
 #else
                         } else if ( (selected_tool == EditTool.ARROW) && e.Button == BMouseButtons.Left ) {
 #endif
@@ -8416,7 +8407,7 @@ namespace cadencii
                         }
                     }
                 }
-                if ( e.Button == BMouseButtons.Right && !AppManager.editorConfig.PlayPreviewWhenRightClick ) {
+                if ( e.Button == MouseButtons.Right && !AppManager.editorConfig.PlayPreviewWhenRightClick ) {
                     start_mouse_hover_generator = false;
                 }
 #if ENABLE_MOUSEHOVER
@@ -8446,7 +8437,7 @@ namespace cadencii
                 if ( item.ID.type != VsqIDType.Aicon ||
                      (item.ID.type == VsqIDType.Aicon && !item.ID.IconDynamicsHandle.isDynaffType()) ) {
 #if ENABLE_SCRIPT
-                    if ( selected_tool != EditTool.ERASER && selected_tool != EditTool.PALETTE_TOOL && e.Button == BMouseButtons.Left ) {
+                    if ( selected_tool != EditTool.ERASER && selected_tool != EditTool.PALETTE_TOOL && e.Button == MouseButtons.Left ) {
 #else
                     if ( selected_tool != EditTool.ERASER && e.Button == BMouseButtons.Left ) {
 #endif
@@ -8505,7 +8496,7 @@ namespace cadencii
                     }
                 }
 
-                if ( e.Button == BMouseButtons.Left || e.Button == BMouseButtons.Middle ) {
+                if ( e.Button == MouseButtons.Left || e.Button == MouseButtons.Middle ) {
 #if ENABLE_SCRIPT
                     if ( selected_tool == EditTool.PALETTE_TOOL ) {
                         AppManager.setWholeSelectedIntervalEnabled( false );
@@ -8520,7 +8511,7 @@ namespace cadencii
                             mMouseMoveOffset = e.X - head_x;
                             if ( (modefier & Keys.Shift) == Keys.Shift ) {
                                 // シフトキー同時押しによる範囲選択
-                                List<Integer> add_required = new List<Integer>();
+                                List<int> add_required = new List<int>();
                                 add_required.Add( item.InternalID );
 
                                 // 現在の選択アイテムがある場合，
@@ -8531,7 +8522,7 @@ namespace cadencii
                                     int last_id = sel.original.InternalID;
                                     int last_clock = 0;
                                     int this_clock = 0;
-                                    boolean this_found = false, last_found = false;
+                                    bool this_found = false, last_found = false;
                                     for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                                         VsqEvent ev = itr.next();
                                         if ( ev.InternalID == last_id ) {
@@ -8783,7 +8774,7 @@ namespace cadencii
                         }
 
                         Rectangle rect = new Rectangle(tx, ty, twidth, theight);
-                        List<Integer> add_required = new List<Integer>();
+                        List<int> add_required = new List<int>();
                         int internal_id = -1;
                         foreach (var dobj in AppManager.mDrawObjects[selected - 1]) {
                             int x0 = dobj.mRectangleInPixel.x + AppManager.keyWidth;
@@ -8797,7 +8788,7 @@ namespace cadencii
                             if (tx + twidth < x0) {
                                 break;
                             }
-                            boolean found = Utility.isInRect(new Point(x0, y0), rect) |
+                            bool found = Utility.isInRect(new Point(x0, y0), rect) |
                                             Utility.isInRect(new Point(x0, y1), rect) |
                                             Utility.isInRect(new Point(x1, y0), rect) |
                                             Utility.isInRect(new Point(x1, y1), rect);
@@ -8823,7 +8814,7 @@ namespace cadencii
                                 }
                             }
                         }
-                        List<Integer> remove_required = new List<Integer>();
+                        List<int> remove_required = new List<int>();
                         foreach (var selectedEvent in AppManager.itemSelection.getEventIterator()) {
                             if (!add_required.Contains(selectedEvent.original.InternalID)) {
                                 remove_required.Add(selectedEvent.original.InternalID);
@@ -8841,7 +8832,7 @@ namespace cadencii
                     #region MiddleDrag
                     int drafth = computeHScrollValueForMiddleDrag(e.X);
                     int draftv = computeVScrollValueForMiddleDrag(e.Y);
-                    boolean moved = false;
+                    bool moved = false;
                     if (drafth != hScroll.Value) {
                         //moved = true;
                         //hScroll.beQuiet();
@@ -9004,8 +8995,8 @@ namespace cadencii
                 if (!mMouseDowned &&
                      edit_mode != EditMode.CURVE_ON_PIANOROLL &&
                      !(AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE))) {
-                    boolean split_cursor = false;
-                    boolean hand_cursor = false;
+                    bool split_cursor = false;
+                    bool hand_cursor = false;
                     int min_width = 4 * _EDIT_HANDLE_WIDTH;
                     foreach (var dobj in AppManager.mDrawObjects[selected - 1]) {
                         Rectangle rc;
@@ -9125,7 +9116,7 @@ namespace cadencii
                     int cl_end = AppManager.clockFromXCoord( px_end - stdx );
 
                     // 編集が行われたかどうか
-                    boolean edited = false;
+                    bool edited = false;
                     // 作業用のPITカーブのコピー
                     VsqBPList pit = (VsqBPList)vsq_track.getCurve( "pit" ).clone();
                     VsqBPList pbs = (VsqBPList)vsq_track.getCurve( "pbs" ); // こっちはクローンしないよ
@@ -9149,7 +9140,7 @@ namespace cadencii
                         int cl_remove_end = Math.Min( cl_item_end, cl_end );
                         int value_at_remove_end = pit.getValue( cl_remove_end );
                         int value_at_remove_start = pit.getValue( cl_remove_start );
-                        List<Integer> remove = new List<Integer>();
+                        List<int> remove = new List<int>();
                         foreach (var clock in pit.keyClockIterator()) {
                             if ( cl_remove_start <= clock && clock <= cl_remove_end ) {
                                 remove.Add( clock );
@@ -9164,8 +9155,8 @@ namespace cadencii
                         int px_item_end = AppManager.xCoordFromClocks( cl_item_end ) + stdx;
 
                         int lastv = value_at_remove_start;
-                        boolean cl_item_end_added = false;
-                        boolean cl_item_start_added = false;
+                        bool cl_item_end_added = false;
+                        bool cl_item_start_added = false;
                         int last_px = 0, last_py = 0;
                         foreach (var p in pictPianoRoll.mMouseTracer.iterator()) {
                             if ( p.x < px_item_start ) {
@@ -9272,8 +9263,8 @@ namespace cadencii
                     VsqEvent original = last_selected_event.original;
                     if ( original.Clock != last_selected_event.editing.Clock ||
                          original.ID.Note != last_selected_event.editing.ID.Note ) {
-                        boolean out_of_range = false; // プリメジャーにめり込んでないかどうか
-                        boolean contains_dynamics = false; // Dynaff, Crescend, Desrecendが含まれているかどうか
+                        bool out_of_range = false; // プリメジャーにめり込んでないかどうか
+                        bool contains_dynamics = false; // Dynaff, Crescend, Desrecendが含まれているかどうか
                         VsqTrack copied = (VsqTrack)vsq_track.clone();
                         int clockAtPremeasure = vsq.getPreMeasureClocks();
                         foreach (var ev in AppManager.itemSelection.getEventIterator()) {
@@ -9336,7 +9327,7 @@ namespace cadencii
                     int[] clocks = new int[count];
                     VsqID[] values = new VsqID[count];
                     int i = -1;
-                    boolean contains_aicon = false; // dynaff, crescend, decrescendが含まれていればtrue
+                    bool contains_aicon = false; // dynaff, crescend, decrescendが含まれていればtrue
                     foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                         if ( ev.original.ID.type == VsqIDType.Aicon ) {
                             contains_aicon = true;
@@ -9492,7 +9483,7 @@ namespace cadencii
 
                 // 音符の再選択
                 AppManager.itemSelection.clearEvent();
-                List<Integer> list_selected_ids = new List<Integer>();
+                List<int> list_selected_ids = new List<int>();
                 for ( int i = 0; i < num; i++ ) {
                     list_selected_ids.Add( selected_ids[i] );
                 }
@@ -9510,7 +9501,7 @@ namespace cadencii
                 AppManager.itemSelection.clearEvent();
 
                 // 音符の選択状態を更新
-                List<Integer> add_required_event = new List<Integer>();
+                List<int> add_required_event = new List<int>();
                 for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = itr.next();
                     if ( start <= ve.Clock && ve.Clock + ve.ID.getLength() <= end ) {
@@ -9520,7 +9511,7 @@ namespace cadencii
                 AppManager.itemSelection.addEventAll( add_required_event );
 
                 // コントロールカーブ点の選択状態を更新
-                List<Long> add_required_point = new List<Long>();
+                List<long> add_required_point = new List<long>();
                 VsqBPList list = vsq_track.getCurve( selected_curve.getName() );
                 if ( list != null ) {
                     int count = list.size();
@@ -9549,7 +9540,7 @@ namespace cadencii
         public void pictPianoRoll_MouseWheel( Object sender, MouseEventArgs e )
         {
             Keys modifier = Control.ModifierKeys;
-            boolean horizontal = (modifier & Keys.Shift) == Keys.Shift;
+            bool horizontal = (modifier & Keys.Shift) == Keys.Shift;
             if ( AppManager.editorConfig.ScrollHorizontalOnWheel ) {
                 horizontal = !horizontal;
             }
@@ -9673,7 +9664,7 @@ namespace cadencii
 
         public void menuVisualMixer_Click( Object sender, EventArgs e )
         {
-            boolean v = !AppManager.editorConfig.MixerVisible;
+            bool v = !AppManager.editorConfig.MixerVisible;
             flipMixerDialogVisible( v );
             this.Focus();
         }
@@ -9686,7 +9677,7 @@ namespace cadencii
 
         public void menuVisualIconPalette_Click( Object sender, EventArgs e )
         {
-            boolean v = !AppManager.editorConfig.IconPaletteVisible;
+            bool v = !AppManager.editorConfig.IconPaletteVisible;
             flipIconPaletteVisible( v );
         }
 
@@ -9725,7 +9716,7 @@ namespace cadencii
             int c = VSTiDllManager.vocaloidDriver.Count;
             for ( int i = 0; i < c; i++ ) {
                 VocaloidDriver vd = VSTiDllManager.vocaloidDriver[ i ];
-                boolean chkv = true;
+                bool chkv = true;
                 if ( vd == null ) {
                     chkv = false;
                 } else if ( !vd.loaded ) {
@@ -9750,7 +9741,7 @@ namespace cadencii
 #if ENABLE_AQUESTONE
             // AquesTone
             AquesToneDriver drv = VSTiDllManager.getAquesToneDriver();
-            boolean chk = true;
+            bool chk = true;
             if ( drv == null ) {
                 chk = false;
             } else if ( !drv.loaded ) {
@@ -9791,7 +9782,7 @@ namespace cadencii
             int c = VSTiDllManager.vocaloidDriver.Count;
             for ( int i = 0; i < c; i++ ) {
                 VocaloidDriver vd = VSTiDllManager.vocaloidDriver[ i ];
-                boolean chk = true;
+                bool chk = true;
                 if ( vd == null ) {
                     chk = false;
                 } else if ( !vd.loaded ) {
@@ -9808,7 +9799,7 @@ namespace cadencii
                     continue;
                 }
                 RendererKind kind = vd.getRendererKind();
-                boolean v = true;
+                bool v = true;
                 if ( kind == search ) {
                     if ( search == RendererKind.VOCALOID1 ) {
                         v = !menuVisualPluginUiVocaloid1.Checked;
@@ -9831,7 +9822,7 @@ namespace cadencii
             bool visible = !menu.Checked;
             menu.Checked = visible;
 #if ENABLE_AQUESTONE
-            boolean chk = true;
+            bool chk = true;
             FormPluginUi ui = null;
             if ( drv == null ) {
                 chk = false;
@@ -9873,7 +9864,7 @@ namespace cadencii
             flipMixerDialogVisible( AppManager.mMixerWindow.Visible );
         }
 
-        public void mixerWindow_SoloChanged( int track, boolean solo )
+        public void mixerWindow_SoloChanged( int track, bool solo )
         {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#mixerWindow_SoloChanged" );
@@ -9890,7 +9881,7 @@ namespace cadencii
             }
         }
 
-        public void mixerWindow_MuteChanged( int track, boolean mute )
+        public void mixerWindow_MuteChanged( int track, bool mute )
         {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#mixerWindow_MuteChanged" );
@@ -10046,7 +10037,7 @@ namespace cadencii
                     return;
                 }
             }
-            MouseEventArgs e0 = new MouseEventArgs( BMouseButtons.Left,
+            MouseEventArgs e0 = new MouseEventArgs( MouseButtons.Left,
                                                     1,
                                                     screen_x - pt.X,
                                                     screen_y - pt.Y,
@@ -10217,7 +10208,7 @@ namespace cadencii
                 return;
             }
 #endif
-            boolean cancel = handleFormClosing();
+            bool cancel = handleFormClosing();
             e.Cancel = cancel;
 #if JAVA
             if( !cancel ){
@@ -10231,7 +10222,7 @@ namespace cadencii
         /// 戻り値がtrueの場合，ウィンドウが閉じるのをキャンセルする処理が必要
         /// </summary>
         /// <returns></returns>
-        public boolean handleFormClosing()
+        public bool handleFormClosing()
         {
             if ( isEdited() ) {
                 String file = AppManager.getFileName();
@@ -10373,7 +10364,7 @@ namespace cadencii
             bands[AppManager.editorConfig.BandOrderPosition] = bandPosition;
             bands[AppManager.editorConfig.BandOrderTool] = bandTool;
             // nullチェック
-            boolean null_exists = false;
+            bool null_exists = false;
             for ( var i = 0; i < bands.Length; i++ ) {
                 if ( bands[i] == null ) {
                     null_exists = true;
@@ -10418,7 +10409,7 @@ namespace cadencii
             String cache_new = Utility.getKeySoundPath();
             String cache_old = Path.Combine( PortUtil.getApplicationStartupPath(), "cache" );
             if (Directory.Exists(cache_old)) {
-                boolean exists = false;
+                bool exists = false;
                 for ( int i = 0; i < 127; i++ ) {
                     String s = Path.Combine( cache_new, i + ".wav" );
                     if (System.IO.File.Exists(s)) {
@@ -10446,7 +10437,7 @@ namespace cadencii
             }
 
             // 足りてないキャッシュがひとつでもあればFormGenerateKeySound発動する
-            boolean cache_is_incomplete = false;
+            bool cache_is_incomplete = false;
             for ( int i = 0; i < 127; i++ ) {
                 String wav = Path.Combine( cache_new, i + ".wav" );
                 if (!System.IO.File.Exists(wav)) {
@@ -10456,12 +10447,12 @@ namespace cadencii
             }
 #endif
 
-            boolean init_key_sound_player_immediately = true; //FormGenerateKeySoundの終了を待たずにKeySoundPlayer.initするかどうか。
+            bool init_key_sound_player_immediately = true; //FormGenerateKeySoundの終了を待たずにKeySoundPlayer.initするかどうか。
 #if !JAVA
             if ( !AppManager.editorConfig.DoNotAskKeySoundGeneration && cache_is_incomplete ) {
                 FormAskKeySoundGenerationController dialog = null;
                 int dialog_result = 0;
-                boolean always_check_this = !AppManager.editorConfig.DoNotAskKeySoundGeneration;
+                bool always_check_this = !AppManager.editorConfig.DoNotAskKeySoundGeneration;
                 try {
                     dialog = new FormAskKeySoundGenerationController();
                     dialog.setupUi( new FormAskKeySoundGenerationUiImpl( dialog ) );
@@ -10545,7 +10536,7 @@ namespace cadencii
                 }
 #endif
                 // ミキサーウィンドウの状態を更新
-                boolean vm = AppManager.editorConfig.MixerVisible;
+                bool vm = AppManager.editorConfig.MixerVisible;
                 if( vm != AppManager.mMixerWindow.Visible ){
                     AppManager.mMixerWindow.Visible = vm;
                 }
@@ -10641,25 +10632,25 @@ namespace cadencii
                 byte[] buttons;
                 int pov0;
 #if !JAVA
-                boolean ret = winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
+                bool ret = winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
 #endif
-                boolean event_processed = false;
+                bool event_processed = false;
                 double dt_ms = (now - mLastEventProcessed) * 1000.0;
 
                 EditorConfig m = AppManager.editorConfig;
-                boolean btn_x = (0 <= m.GameControlerCross && m.GameControlerCross < buttons.Length && buttons[m.GameControlerCross] > 0x00);
-                boolean btn_o = (0 <= m.GameControlerCircle && m.GameControlerCircle < buttons.Length && buttons[m.GameControlerCircle] > 0x00);
-                boolean btn_tr = (0 <= m.GameControlerTriangle && m.GameControlerTriangle < buttons.Length && buttons[m.GameControlerTriangle] > 0x00);
-                boolean btn_re = (0 <= m.GameControlerRectangle && m.GameControlerRectangle < buttons.Length && buttons[m.GameControlerRectangle] > 0x00);
-                boolean pov_r = pov0 == m.GameControlPovRight;
-                boolean pov_l = pov0 == m.GameControlPovLeft;
-                boolean pov_u = pov0 == m.GameControlPovUp;
-                boolean pov_d = pov0 == m.GameControlPovDown;
-                boolean L1 = (0 <= m.GameControlL1 && m.GameControlL1 < buttons.Length && buttons[m.GameControlL1] > 0x00);
-                boolean R1 = (0 <= m.GameControlL2 && m.GameControlL2 < buttons.Length && buttons[m.GameControlR1] > 0x00);
-                boolean L2 = (0 <= m.GameControlR1 && m.GameControlR1 < buttons.Length && buttons[m.GameControlL2] > 0x00);
-                boolean R2 = (0 <= m.GameControlR2 && m.GameControlR2 < buttons.Length && buttons[m.GameControlR2] > 0x00);
-                boolean SELECT = (0 <= m.GameControlSelect && m.GameControlSelect <= buttons.Length && buttons[m.GameControlSelect] > 0x00);
+                bool btn_x = (0 <= m.GameControlerCross && m.GameControlerCross < buttons.Length && buttons[m.GameControlerCross] > 0x00);
+                bool btn_o = (0 <= m.GameControlerCircle && m.GameControlerCircle < buttons.Length && buttons[m.GameControlerCircle] > 0x00);
+                bool btn_tr = (0 <= m.GameControlerTriangle && m.GameControlerTriangle < buttons.Length && buttons[m.GameControlerTriangle] > 0x00);
+                bool btn_re = (0 <= m.GameControlerRectangle && m.GameControlerRectangle < buttons.Length && buttons[m.GameControlerRectangle] > 0x00);
+                bool pov_r = pov0 == m.GameControlPovRight;
+                bool pov_l = pov0 == m.GameControlPovLeft;
+                bool pov_u = pov0 == m.GameControlPovUp;
+                bool pov_d = pov0 == m.GameControlPovDown;
+                bool L1 = (0 <= m.GameControlL1 && m.GameControlL1 < buttons.Length && buttons[m.GameControlL1] > 0x00);
+                bool R1 = (0 <= m.GameControlL2 && m.GameControlL2 < buttons.Length && buttons[m.GameControlR1] > 0x00);
+                bool L2 = (0 <= m.GameControlR1 && m.GameControlR1 < buttons.Length && buttons[m.GameControlL2] > 0x00);
+                bool R2 = (0 <= m.GameControlR2 && m.GameControlR2 < buttons.Length && buttons[m.GameControlR2] > 0x00);
+                bool SELECT = (0 <= m.GameControlSelect && m.GameControlSelect <= buttons.Length && buttons[m.GameControlSelect] > 0x00);
                 if ( mGameMode == GameControlMode.NORMAL ) {
                     mLastBtnX = btn_x;
 
@@ -10938,7 +10929,7 @@ namespace cadencii
                             List<MidiEvent> events = new List<MidiEvent>();
 
                             // tempo
-                            boolean print_tempo = mDialogMidiImportAndExport.isTempo();
+                            bool print_tempo = mDialogMidiImportAndExport.isTempo();
                             if ( print_tempo && count == 0 ) {
                                 List<MidiEvent> tempo_events = vsq.generateTempoChange();
                                 for ( int j = 0; j < tempo_events.Count; j++ ) {
@@ -11172,7 +11163,7 @@ namespace cadencii
 
             // 全部レンダリング済みの状態にするためのキュー
             VsqFileEx vsq = AppManager.getVsqFile();
-            List<Integer> tracks = new List<Integer>();
+            List<int> tracks = new List<int>();
             int size = vsq.Track.Count;
             for ( int i = 1; i < size; i++ ) {
                 tracks.Add( i );
@@ -11482,7 +11473,7 @@ namespace cadencii
                     cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                 return;
             }
-            List<Integer> other_tracks = new List<Integer>();
+            List<int> other_tracks = new List<int>();
             int selected = AppManager.getSelected();
             for ( int i = 1; i < vsq.Track.Count; i++ ) {
                 if ( i != selected ) {
@@ -11617,23 +11608,23 @@ namespace cadencii
                 return;
             }
 
-            boolean secondBasis = mDialogMidiImportAndExport.isSecondBasis();
+            bool secondBasis = mDialogMidiImportAndExport.isSecondBasis();
             int offsetClocks = mDialogMidiImportAndExport.getOffsetClocks();
             double offsetSeconds = mDialogMidiImportAndExport.getOffsetSeconds();
-            boolean importFromPremeasure = mDialogMidiImportAndExport.isPreMeasure();
+            bool importFromPremeasure = mDialogMidiImportAndExport.isPreMeasure();
 
             // インポートするしないにかかわらずテンポと拍子を取得
             VsqFileEx tempo = new VsqFileEx( "Miku", 2, 4, 4, 500000 ); //テンポリスト用のVsqFile。テンポの部分のみ使用
             tempo.executeCommand( VsqCommand.generateCommandChangePreMeasure( 0 ) );
-            boolean tempo_added = false;
-            boolean timesig_added = false;
+            bool tempo_added = false;
+            bool timesig_added = false;
             tempo.TempoTable.Clear();
             tempo.TimesigTable.Clear();
             int mf_getTrackCount = mf.getTrackCount();
             for ( int i = 0; i < mf_getTrackCount; i++ ) {
                 List<MidiEvent> events = mf.getMidiEventList( i );
-                boolean t_tempo_added = false;   //第iトラックからテンポをインポートしたかどうか
-                boolean t_timesig_added = false; //第iトラックから拍子をインポートしたかどうか
+                bool t_tempo_added = false;   //第iトラックからテンポをインポートしたかどうか
+                bool t_timesig_added = false; //第iトラックから拍子をインポートしたかどうか
                 int last_timesig_clock = 0; // 最後に拍子変更を検出したゲートタイム
                 int last_num = 4; // 最後に検出した拍子変更の分子
                 int last_den = 4; // 最後に検出した拍子変更の分母
@@ -11642,7 +11633,7 @@ namespace cadencii
                 for ( int j = 0; j < events_Count; j++ ) {
                     MidiEvent itemj = events[ j ];
                     if ( !tempo_added && itemj.firstByte == 0xff && itemj.data.Length >= 4 && itemj.data[0] == 0x51 ) {
-                        boolean contains_same_clock = false;
+                        bool contains_same_clock = false;
                         int size = tempo.TempoTable.Count;
                         // 同時刻のテンポ変更は、最初以外無視する
                         for ( int k = 0; k < size; k++ ) {
@@ -11667,7 +11658,7 @@ namespace cadencii
                         int barcount_at_itemj = last_barcount + ((int)itemj.clock - last_timesig_clock) / clock_per_bar;
                         // 同時刻の拍子変更は、最初以外無視する
                         int size = tempo.TimesigTable.Count;
-                        boolean contains_same_clock = false;
+                        bool contains_same_clock = false;
                         for ( int k = 0; k < size; k++ ) {
                             if ( tempo.TimesigTable[ k ].Clock == itemj.clock ) {
                                 contains_same_clock = true;
@@ -11695,7 +11686,7 @@ namespace cadencii
                     break;
                 }
             }
-            boolean contains_zero = false;
+            bool contains_zero = false;
             int c = tempo.TempoTable.Count;
             for ( int i = 0; i < c; i++ ) {
                 if ( tempo.TempoTable[ i ].Clock == 0 ) {
@@ -11738,7 +11729,7 @@ namespace cadencii
             tempo.updateTimesigInfo();
 
             // tempoをインポート
-            boolean import_tempo = mDialogMidiImportAndExport.isTempo();
+            bool import_tempo = mDialogMidiImportAndExport.isTempo();
             if ( import_tempo ) {
 #if DEBUG
                 sout.println( "FormMain#menuFileImportMidi_Click; sec_at_premeasure=" + sec_at_premeasure );
@@ -12084,7 +12075,7 @@ namespace cadencii
                 return;
             }
 
-            List<Integer> add_track = new List<Integer>();
+            List<int> add_track = new List<int>();
             for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++ ) {
                 if ( mDialogMidiImportAndExport.listTrack.Items[i].Checked ) {
                     add_track.Add( i + 1 );
@@ -12394,7 +12385,7 @@ namespace cadencii
                         VsqFileEx vsq = AppManager.getVsqFile();
                         VsqTrack vsq_track = vsq.Track[ selected ];
                         VsqTrack copy = (VsqTrack)vsq_track.clone();
-                        boolean changed = false;
+                        bool changed = false;
                         for ( int i = 0; i < copy.getEventCount(); i++ ) {
                             if ( copy.getEvent( i ).ID.type == VsqIDType.Anote ) {
                                 AppManager.editorConfig.applyDefaultSingerStyle( copy.getEvent( i ).ID );
@@ -12901,7 +12892,7 @@ namespace cadencii
                     foreach (var display in res.Keys) {
                         String name = res[ display ].getKey();
                         Keys[] keys = res[ display ].getValue();
-                        boolean found = false;
+                        bool found = false;
                         if ( name.Equals( "SpecialShortcutGoToFirst" ) ) {
                             AppManager.editorConfig.SpecialShortcutGoToFirst = keys;
                         } else {
@@ -13047,7 +13038,7 @@ namespace cadencii
 
         public void menuLyricPhonemeTransformation_Click( Object sender, EventArgs e )
         {
-            List<Integer> internal_ids = new List<Integer>();
+            List<int> internal_ids = new List<int>();
             List<VsqID> ids = new List<VsqID>();
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
@@ -13185,7 +13176,7 @@ namespace cadencii
                         }
                     }
                 }
-                boolean changed = true;
+                bool changed = true;
                 while ( changed ) {
                     changed = false;
                     for ( int i = 0; i < list.Length - 1; i++ ) {
@@ -13197,7 +13188,7 @@ namespace cadencii
                         }
                     }
                 }
-                boolean continued = true;
+                bool continued = true;
                 for ( int i = 0; i < list.Length - 1; i++ ) {
                     if ( list[i] + 1 != list[i + 1] ) {
                         continued = false;
@@ -13228,7 +13219,7 @@ namespace cadencii
                 ids[i] = (VsqID)item.original.ID.clone();
                 internalids[i] = item.original.InternalID;
             }
-            boolean changed = true;
+            bool changed = true;
             while ( changed ) {
                 changed = false;
                 for ( int j = 0; j < clocks.Length - 1; j++ ) {
@@ -13431,7 +13422,7 @@ namespace cadencii
 
             FormSequenceConfig dialog = new FormSequenceConfig();
             int old_channels = vsq.config.WaveFileOutputChannel;
-            boolean old_output_master = vsq.config.WaveFileOutputFromMasterTrack;
+            bool old_output_master = vsq.config.WaveFileOutputFromMasterTrack;
             int old_sample_rate = vsq.config.SamplingRate;
             int old_pre_measure = vsq.getPreMeasure();
 
@@ -13446,7 +13437,7 @@ namespace cadencii
             }
 
             int new_channels = dialog.getWaveFileOutputChannel();
-            boolean new_output_master = dialog.isWaveFileOutputFromMasterTrack();
+            bool new_output_master = dialog.isWaveFileOutputFromMasterTrack();
             int new_sample_rate = dialog.getSampleRate();
             int new_pre_measure = dialog.getPreMeasure();
 
@@ -13572,8 +13563,8 @@ namespace cadencii
         {
             VsqFile work = (VsqFile)AppManager.getVsqFile().clone();
             int track = AppManager.getSelected();
-            boolean changed = true;
-            boolean total_changed = false;
+            bool changed = true;
+            bool total_changed = false;
 
             // 最初、開始時刻が同じになっている奴を削除
             while ( changed ) {
@@ -13787,7 +13778,7 @@ namespace cadencii
 
                         StringBuilder sb = new StringBuilder();
                         count = pit.size();
-                        boolean first = true;
+                        bool first = true;
                         for ( int i = 0; i < count; i++ ) {
                             int clock = pit.getKeyClock( i );
                             if ( clock < startClock ) {
@@ -13893,7 +13884,7 @@ namespace cadencii
         #region waveView
         public void waveView_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
-            if ( e.Button == BMouseButtons.Middle ) {
+            if ( e.Button == MouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( e.Y < trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB * 2 ) {
                     if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
@@ -13976,7 +13967,7 @@ namespace cadencii
 
         public void picturePositionIndicator_MouseClick( Object sender, MouseEventArgs e )
         {
-            if ( e.Button == BMouseButtons.Right && 0 < e.Y && e.Y <= 18 && AppManager.keyWidth < e.X ) {
+            if ( e.Button == MouseButtons.Right && 0 < e.Y && e.Y <= 18 && AppManager.keyWidth < e.X ) {
                 // クリックされた位置でのクロックを保存
                 int clock = AppManager.clockFromXCoord( e.X );
                 int unit = AppManager.getPositionQuantizeClock();
@@ -13994,7 +13985,7 @@ namespace cadencii
             if ( e.X < AppManager.keyWidth || this.Width - 3 < e.X ) {
                 return;
             }
-            if ( e.Button == BMouseButtons.Left ) {
+            if ( e.Button == MouseButtons.Left ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( 18 < e.Y && e.Y <= 32 ) {
                     #region テンポの変更
@@ -14197,7 +14188,7 @@ namespace cadencii
                             int bar_count = vsq.getBarCountFromClock( clock );
                             int total_clock = vsq.TotalClocks;
                             Timesig timesig = vsq.getTimesigAt( clock );
-                            boolean num_enabled = !(bar_count == 0);
+                            bool num_enabled = !(bar_count == 0);
                             FormBeatConfigController dlg = null;
                             try {
                                 dlg = new FormBeatConfigController( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
@@ -14339,7 +14330,7 @@ namespace cadencii
             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
             Keys modifiers = Control.ModifierKeys;
             VsqFileEx vsq = AppManager.getVsqFile();
-            if ( e.Button == BMouseButtons.Left ) {
+            if ( e.Button == MouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
                     int tolerance = AppManager.editorConfig.PxTolerance;
@@ -14508,7 +14499,7 @@ namespace cadencii
 #if DEBUG
             AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
 #endif
-            if ( e.Button == BMouseButtons.Left ) {
+            if ( e.Button == MouseButtons.Left ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.NONE ) {
                     if ( 4 <= e.Y && e.Y <= 18 ) {
@@ -14614,7 +14605,7 @@ namespace cadencii
                     int[] new_clocks = new int[count];
                     int[] tempos = new int[count];
                     int i = -1;
-                    boolean contains_first_tempo = false;
+                    bool contains_first_tempo = false;
                     foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                         int clock = item.getKey();
                         i++;
@@ -14643,7 +14634,7 @@ namespace cadencii
                     int[] numerators = new int[count];
                     int[] denominators = new int[count];
                     int i = -1;
-                    boolean contains_first_bar = false;
+                    bool contains_first_bar = false;
                     foreach (var item in AppManager.itemSelection.getTimesigIterator()) {
                         int bar = item.getKey();
                         i++;
@@ -14898,7 +14889,7 @@ namespace cadencii
 
         public void trackSelector_MouseClick( Object sender, MouseEventArgs e )
         {
-            if ( e.Button == BMouseButtons.Right ) {
+            if ( e.Button == MouseButtons.Right ) {
                 if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() ) {
                     if ( trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.getHeight() ) {
                         cMenuTrackTab.Show( trackSelector, e.X, e.Y );
@@ -14911,7 +14902,7 @@ namespace cadencii
 
         public void trackSelector_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
-            if ( e.Button == BMouseButtons.Middle ) {
+            if ( e.Button == MouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( AppManager.keyWidth < e.X &&
                      e.Y < trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB * 2 ) {
@@ -14943,20 +14934,20 @@ namespace cadencii
         {
             if ( mFormActivated && AppManager.mInputTextBox != null ){
 #if JAVA
-                boolean input_visible = AppManager.mInputTextBox.isVisible();
+                bool input_visible = AppManager.mInputTextBox.isVisible();
 #else
-                boolean input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.Visible;
+                bool input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.Visible;
 #endif
 #if ENABLE_PROPERTY
-                boolean prop_editing = AppManager.propertyPanel.isEditing();
+                bool prop_editing = AppManager.propertyPanel.isEditing();
 #else
-                boolean prop_editing = false;
+                bool prop_editing = false;
 #endif
                 if( !input_visible && !prop_editing ){
                     trackSelector.requestFocus();
                 }
             }
-            if ( e.Button == BMouseButtons.None ) {
+            if ( e.Button == MouseButtons.None ) {
                 if ( !timer.Enabled ) {
                     refreshScreen( true );
                 }
@@ -15069,7 +15060,7 @@ namespace cadencii
 
         public void trackSelector_RenderRequired( Object sender, int track )
         {
-            List<Integer> list = new List<Integer>();
+            List<int> list = new List<int>();
             list.Add( track );
             AppManager.patchWorkToFreeze( this, list );
             /*int selected = AppManager.getSelected();
@@ -15196,7 +15187,7 @@ namespace cadencii
 
         public void cMenuPianoGrid_Click( Object sender, EventArgs e )
         {
-            boolean new_v = !AppManager.isGridVisible();
+            bool new_v = !AppManager.isGridVisible();
             cMenuPianoGrid.Checked = new_v;
             AppManager.setGridVisible( new_v );
         }
@@ -15226,7 +15217,7 @@ namespace cadencii
             importLyric();
         }
 
-        public void cMenuPiano_Opening( Object sender, BCancelEventArgs e )
+        public void cMenuPiano_Opening( Object sender, CancelEventArgs e )
         {
             updateCopyAndPasteButtonStatus();
             cMenuPianoImportLyric.Enabled = AppManager.itemSelection.getLastEvent() != null;
@@ -15348,7 +15339,7 @@ namespace cadencii
 
         public void menuTrackRenderCurrent_Click( Object sender, EventArgs e )
         {
-            List<Integer> tracks = new List<Integer>();
+            List<int> tracks = new List<int>();
             tracks.Add( AppManager.getSelected() );
             AppManager.patchWorkToFreeze( this, tracks );
         }
@@ -15384,7 +15375,7 @@ namespace cadencii
         public void menuHiddenShorten_Click( Object sender, EventArgs e )
         {
             QuantizeMode qmode = AppManager.editorConfig.getLengthQuantize();
-            boolean triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
+            bool triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
             int delta = -QuantizeModeUtil.getQuantizeClock( qmode, triplet );
             lengthenSelectedEvent( delta );
         }
@@ -15441,7 +15432,7 @@ namespace cadencii
         public void menuHiddenLengthen_Click( Object sender, EventArgs e )
         {
             QuantizeMode qmode = AppManager.editorConfig.getLengthQuantize();
-            boolean triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
+            bool triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
             int delta = QuantizeModeUtil.getQuantizeClock( qmode, triplet );
             lengthenSelectedEvent( delta );
         }
@@ -15527,7 +15518,7 @@ namespace cadencii
         public void menuHiddenMoveLeft_Click( Object sender, EventArgs e )
         {
             QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
-            boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
+            bool triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
             int delta = -QuantizeModeUtil.getQuantizeClock( mode, triplet );
 #if DEBUG
             sout.println( "FormMain#menuHiddenMoveLeft_Click; delta=" + delta );
@@ -15538,7 +15529,7 @@ namespace cadencii
         public void menuHiddenMoveRight_Click( Object sender, EventArgs e )
         {
             QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
-            boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
+            bool triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
             int delta = QuantizeModeUtil.getQuantizeClock( mode, triplet );
             moveUpDownLeftRight( 0, delta );
         }
@@ -15576,9 +15567,9 @@ namespace cadencii
         public void menuHiddenEditLyric_Click( Object sender, EventArgs e )
         {
 #if JAVA
-            boolean input_enabled = AppManager.mInputTextBox.isVisible();
+            bool input_enabled = AppManager.mInputTextBox.isVisible();
 #else
-            boolean input_enabled = AppManager.mInputTextBox.Enabled;
+            bool input_enabled = AppManager.mInputTextBox.Enabled;
 #endif
             if ( !input_enabled && AppManager.itemSelection.getEventCount() > 0 ) {
                 VsqEvent original = AppManager.itemSelection.getLastEvent().original;
@@ -15622,7 +15613,7 @@ namespace cadencii
             addTrackCore();
         }
 
-        public void cMenuTrackTab_Opening( Object sender, BCancelEventArgs e )
+        public void cMenuTrackTab_Opening( Object sender, CancelEventArgs e )
         {
 #if DEBUG
             sout.println( "FormMain#cMenuTrackTab_Opening" );
@@ -15643,7 +15634,7 @@ namespace cadencii
             cMenuTrackTabCopy.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
             menuTrackCopy.Enabled = tracks <= AppManager.MAX_NUM_TRACK;
 
-            boolean on = vsq_track.isTrackOn();
+            bool on = vsq_track.isTrackOn();
             cMenuTrackTabTrackOn.Checked = on;
             menuTrackOn.Checked = on;
 
@@ -15675,7 +15666,7 @@ namespace cadencii
 
         public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e )
         {
-            List<Integer> tracks = new List<Integer>();
+            List<int> tracks = new List<int>();
             tracks.Add( AppManager.getSelected() );
             AppManager.patchWorkToFreeze( this, tracks );
         }
@@ -15718,7 +15709,7 @@ namespace cadencii
 
         //BOOKMARK: cMenuTrackSelector
         #region cMenuTrackSelector
-        public void cMenuTrackSelector_Opening( Object sender, BCancelEventArgs e )
+        public void cMenuTrackSelector_Opening( Object sender, CancelEventArgs e )
         {
             updateCopyAndPasteButtonStatus();
 
@@ -15944,7 +15935,7 @@ namespace cadencii
         #region stripBtn*
         public void stripBtnGrid_Click( Object sender, EventArgs e )
         {
-            boolean new_v = !AppManager.isGridVisible();
+            bool new_v = !AppManager.isGridVisible();
 #if JAVA
             stripBtnGrid.setSelected( new_v );
 #else
@@ -15987,7 +15978,7 @@ namespace cadencii
         public void stripBtnScroll_CheckedChanged( Object sender, EventArgs e )
         {
 #if JAVA
-            boolean pushed = stripBtnScroll.isSelected();
+            bool pushed = stripBtnScroll.isSelected();
 #else
             bool pushed = stripBtnScroll.Pushed;
 #endif
@@ -16001,9 +15992,9 @@ namespace cadencii
         public void stripBtnLoop_CheckedChanged( Object sender, EventArgs e )
         {
 #if JAVA
-            boolean pushed = stripBtnLoop.isSelected();
+            bool pushed = stripBtnLoop.isSelected();
 #else
-            boolean pushed = stripBtnLoop.Pushed;
+            bool pushed = stripBtnLoop.Pushed;
 #endif
             AppManager.setRepeatMode( pushed );
             focusPianoRoll();
@@ -16336,7 +16327,7 @@ namespace cadencii
             refreshScreen();
         }
 
-        public void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e )
+        public void bgWorkScreen_DoWork( Object sender, DoWorkEventArgs e )
         {
             try {
 #if JAVA
@@ -16380,7 +16371,7 @@ namespace cadencii
             Dimension minsize = getWindowMinimumSize();
             int wid = this.Width;
             int hei = this.Height;
-            boolean change_size_required = false;
+            bool change_size_required = false;
             if ( minsize.width > wid ) {
                 wid = minsize.width;
                 change_size_required = true;
@@ -16507,8 +16498,8 @@ namespace cadencii
         {
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = AppManager.getVsqFile().Track[ selected ];
-            boolean old_status = vsq_track.isTrackOn();
-            boolean new_status = !old_status;
+            bool old_status = vsq_track.isTrackOn();
+            bool new_status = !old_status;
             int last_play_mode = vsq_track.getCommon().LastPlayMode;
             CadenciiCommand run = new CadenciiCommand(
                 VsqCommand.generateCommandTrackChangePlayMode(
@@ -16524,7 +16515,7 @@ namespace cadencii
 
         public void handleTrackRenderAll_Click( Object sender, EventArgs e )
         {
-            List<Integer> list = new List<Integer>();
+            List<int> list = new List<int>();
             int c = AppManager.getVsqFile().Track.Count;
             for ( int i = 1; i < c; i++ ) {
                 if ( AppManager.getRenderRequired( i ) ) {
@@ -16715,7 +16706,7 @@ namespace cadencii
 
         public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e )
         {
-            boolean triplet = !AppManager.editorConfig.isPositionQuantizeTriplet();
+            bool triplet = !AppManager.editorConfig.isPositionQuantizeTriplet();
             AppManager.editorConfig.setPositionQuantizeTriplet( triplet );
             AppManager.editorConfig.setLengthQuantizeTriplet( triplet );
             refreshScreen();
@@ -16755,7 +16746,7 @@ namespace cadencii
                 return;
             }
 
-            boolean notfound = false;
+            bool notfound = false;
             String text = "";
             if ( sender == menuEditUndo ) {
                 text = _( "Undo." );
@@ -16984,7 +16975,7 @@ namespace cadencii
             VsqTrack vsq_track = vsq.Track[ selected ];
             RendererKind old = VsqFileEx.getTrackRendererKind( vsq_track );
             int old_resampler_index = VsqFileEx.getTrackResamplerUsed( vsq_track );
-            boolean changed = (old != kind);
+            bool changed = (old != kind);
             if ( !changed && kind == RendererKind.UTAU ) {
                 changed = (old_resampler_index != resampler_index);
             }
@@ -17110,7 +17101,7 @@ namespace cadencii
 
             // 既に開かれていたらキャンセル
             int count = AppManager.getBgmCount();
-            boolean found = false;
+            bool found = false;
             for ( int i = 0; i < count; i++ ) {
                 BgmFile item = AppManager.getBgm( i );
                 if ( file == item.file ) {

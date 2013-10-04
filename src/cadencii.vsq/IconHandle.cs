@@ -22,7 +22,6 @@ using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 
@@ -93,7 +92,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item">比較対象の歌手変更。</param>
         /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
-        public boolean equals( IconHandle item )
+        public bool equals( IconHandle item )
         {
 #if __cplusplus
             return IconID == item.IconID;

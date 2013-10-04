@@ -25,7 +25,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -109,7 +108,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public boolean equals( VibratoBPList item )
+        public bool equals( VibratoBPList item )
         {
             if ( item == null ) {
                 return false;

@@ -22,7 +22,6 @@ using cadencii.vsq;
 using cadencii.java.util;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -47,7 +46,7 @@ namespace cadencii {
         double mSec;
         float mFadeWidth;
         int mIndex;
-        boolean mFirst = true;
+        bool mFirst = true;
 
         public void rewind() {
             mSec0 = mTempoTable.getSecFromClock( mClockStart );
@@ -95,7 +94,7 @@ namespace cadencii {
             }
         }
 
-        public boolean hasNext() {
+        public bool hasNext() {
             if ( mFirst ) {
                 return true;
             } else {

@@ -21,7 +21,6 @@ using System;
 using System.Drawing;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -92,7 +91,7 @@ namespace cadencii {
         /// <summary>
         /// flushの後、一度もappendされていない時にtrue。
         /// </summary>
-        private boolean mFirst = true;
+        private bool mFirst = true;
         /// <summary>
         /// flushの後、最初にappendされてきたデータ点のx座標の値
         /// </summary>
@@ -108,7 +107,7 @@ namespace cadencii {
         /// <summary>
         /// グラフの線とX軸との間隙を塗りつぶすかどうか
         /// </summary>
-        private boolean mFill = true;
+        private bool mFill = true;
         /// <summary>
         /// グラフの線とX軸との間隙の塗りつぶしに使用する色
         /// </summary>
@@ -153,7 +152,7 @@ namespace cadencii {
         /// <summary>
         /// 線を描画するかどうか
         /// </summary>
-        private boolean mLine = true;
+        private bool mLine = true;
         /// <summary>
         /// 線の描画幅
         /// </summary>
@@ -265,7 +264,7 @@ namespace cadencii {
         /// 線を描画するかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setDrawLine( boolean value ) {
+        public void setDrawLine( bool value ) {
             mLine = value;
         }
 
@@ -273,7 +272,7 @@ namespace cadencii {
         /// 線を描画するかどうかを取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isDrawLine() {
+        public bool isDrawLine() {
             return mLine;
         }
 
@@ -297,7 +296,7 @@ namespace cadencii {
         /// グラフの線とX軸の間を塗りつぶすかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setFill( boolean value ) {
+        public void setFill( bool value ) {
             mFill = value;
         }
 
@@ -305,7 +304,7 @@ namespace cadencii {
         /// グラフの線とX軸の間を塗りつぶすかどうかを取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isFill() {
+        public bool isFill() {
             return mFill;
         }
 

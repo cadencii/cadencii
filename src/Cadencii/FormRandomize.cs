@@ -28,7 +28,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -37,9 +36,9 @@ namespace cadencii
     public class FormRandomize : System.Windows.Forms.Form
     {
 #endif
-        private static boolean lastPositionRandomizeEnabled = true;
+        private static bool lastPositionRandomizeEnabled = true;
         private static int lastPositionRandomizeValue = 3;
-        private static boolean lastPitRandomizeEnabled = true;
+        private static bool lastPitRandomizeEnabled = true;
         private static int lastResolution = 5;
         private static int lastPitRandomizeValue = 3;
         private static int lastPitRandomizePattern = 1;
@@ -50,7 +49,7 @@ namespace cadencii
         /// <summary>
         /// trueなら、numStartBar, numStartBeat, numEndBar, numEndBeatの値が変更されたときに、イベントハンドラを起動しない
         /// </summary>
-        private boolean lockRequired = false;
+        private bool lockRequired = false;
 
         public FormRandomize()
         {
@@ -209,13 +208,13 @@ namespace cadencii
         #region event handlers
         public void chkShift_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean v = chkShift.Checked;
+            bool v = chkShift.Checked;
             comboShiftValue.Enabled = v;
         }
 
         public void chkPit_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean v = chkPit.Checked;
+            bool v = chkPit.Checked;
             numResolution.Enabled = v;
             comboPitPattern.Enabled = v;
             comboPitValue.Enabled = v;
@@ -276,7 +275,7 @@ namespace cadencii
             return (int)numEndBeat.Value;
         }
 
-        public boolean isPositionRandomizeEnabled()
+        public bool isPositionRandomizeEnabled()
         {
             return chkShift.Checked;
         }
@@ -290,7 +289,7 @@ namespace cadencii
             return draft;
         }
 
-        public boolean isPitRandomizeEnabled()
+        public bool isPitRandomizeEnabled()
         {
             return chkPit.Checked;
         }

@@ -25,7 +25,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -52,7 +51,7 @@ namespace cadencii
         /// <summary>
         /// トラック全体を合成する場合true，それ以外はfalse
         /// </summary>
-        public boolean renderAll;
+        public bool renderAll;
         /// <summary>
         /// シーケンスのインスタンス
         /// </summary>

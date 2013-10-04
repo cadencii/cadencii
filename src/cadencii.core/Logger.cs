@@ -26,7 +26,6 @@ using System;
 using System.IO;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class Logger {
@@ -36,16 +35,16 @@ namespace cadencii {
         private static StreamWriter log = null;
 #endif
         private static String path = "";
-        private static boolean is_enabled = false;
+        private static bool is_enabled = false;
 
         private Logger() {
         }
 
-        public static boolean isEnabled() {
+        public static bool isEnabled() {
             return is_enabled;
         }
 
-        public static void setEnabled( boolean value ) {
+        public static void setEnabled( bool value ) {
             is_enabled = value;
         }
 
@@ -96,7 +95,7 @@ namespace cadencii {
         }
 
         public static void setPath( String file ) {
-            boolean append = false;
+            bool append = false;
             if ( log != null && !path.Equals( file ) ) {
                 try {
 #if JAVA

@@ -27,7 +27,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -49,7 +48,7 @@ namespace cadencii
         private delegate void AddIconThreadSafeDelegate( String path_image, String singer_name );
 #endif
 
-        boolean mouseDowned = false;
+        bool mouseDowned = false;
         private FlowLayoutPanel panelIcon;
         private ToolTip toolTip;
         private System.ComponentModel.IContainer components;

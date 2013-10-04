@@ -27,7 +27,6 @@ namespace cadencii.media {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
-    using boolean = System.Boolean;
 #endif
 
     public class PlaySound {
@@ -101,7 +100,7 @@ namespace cadencii.media {
 #endif
 #endif
 
-        private static boolean _is_initialized = false;
+        private static bool _is_initialized = false;
 
         public static void setResolution( int value ) {
 #if JAVA

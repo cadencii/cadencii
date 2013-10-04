@@ -21,13 +21,11 @@ using cadencii.vsq;
 
 namespace cadencii {
 
-    using boolean = Boolean;
-
     public interface IPaletteTool {
-        boolean edit( VsqTrack track, int[] event_internal_ids, MouseButtons button );
+        bool edit( VsqTrack track, int[] event_internal_ids, MouseButtons button );
         String getName( String language );
         String getDescription( String language );
-        boolean hasDialog();
+        bool hasDialog();
         DialogResult openDialog();
         Bitmap getIcon();
         void applyLanguage( String language );

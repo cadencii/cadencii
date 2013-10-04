@@ -20,7 +20,6 @@ using System;
 using cadencii.java.awt;
 
 namespace cadencii.apputil {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>

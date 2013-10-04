@@ -40,7 +40,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -60,7 +59,7 @@ namespace cadencii
         public float BaseFontSize = 9.0f;
         public String ScreenFontName = "MS UI Gothic";
         public int WheelOrder = 20;
-        public boolean CursorFixed = false;
+        public bool CursorFixed = false;
         /// <summary>
         /// RecentFilesに登録することの出来る最大のファイル数
         /// </summary>
@@ -80,11 +79,11 @@ namespace cadencii
         /// <summary>
         /// ピアノロール上に歌詞を表示するかどうか
         /// </summary>
-        public boolean ShowLyric = true;
+        public bool ShowLyric = true;
         /// <summary>
         /// ピアノロール上に，ビブラートとアタックの概略を表す波線を表示するかどうか
         /// </summary>
-        public boolean ShowExpLine = true;
+        public bool ShowExpLine = true;
         public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;
         /// <summary>
         /// デフォルトビブラートのRate
@@ -131,7 +130,7 @@ namespace cadencii
         /// <summary>
         /// ビブラートの自動追加を行うかどうか
         /// </summary>
-        public boolean EnableAutoVibrato = true;
+        public bool EnableAutoVibrato = true;
         /// <summary>
         /// ピアノロール上での，音符の表示高さ(ピクセル)
         /// </summary>
@@ -141,12 +140,12 @@ namespace cadencii
         /// <summary>
         /// ミキサーウィンドウが表示された状態かどうか
         /// </summary>
-        public boolean MixerVisible = false;
+        public bool MixerVisible = false;
         /// <summary>
         /// アイコンパレットが表示された状態かどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean IconPaletteVisible = false;
+        public bool IconPaletteVisible = false;
         public int PreSendTime = 500;
         public ClockResolution ControlCurveResolution = ClockResolution.L30;
         /// <summary>
@@ -160,7 +159,7 @@ namespace cadencii
         /// <summary>
         /// マウスホイールでピアノロールを水平方向にスクロールするかどうか。
         /// </summary>
-        public boolean ScrollHorizontalOnWheel = true;
+        public bool ScrollHorizontalOnWheel = true;
         /// <summary>
         /// 画面描画の最大フレームレート
         /// </summary>
@@ -179,7 +178,7 @@ namespace cadencii
         /// <summary>
         /// ウィンドウが最大化された状態かどうか
         /// </summary>
-        public boolean WindowMaximized = false;
+        public bool WindowMaximized = false;
         /// <summary>
         /// ウィンドウの位置とサイズ．
         /// 最小化された状態での値は，この変数に代入されない(ことになっている)
@@ -192,11 +191,11 @@ namespace cadencii
         /// <summary>
         /// 発音記号入力モードを，維持するかどうか
         /// </summary>
-        public boolean KeepLyricInputMode = false;
+        public bool KeepLyricInputMode = false;
         /// <summary>
         /// ピアノロールの何もないところをクリックした場合、右クリックでもプレビュー音を再生するかどうか
         /// </summary>
-        public boolean PlayPreviewWhenRightClick = false;
+        public bool PlayPreviewWhenRightClick = false;
         /// <summary>
         /// ゲームコントローラで、異なるイベントと識別する最小の時間間隔(millisec)
         /// </summary>
@@ -204,12 +203,12 @@ namespace cadencii
         /// <summary>
         /// カーブの選択範囲もクオンタイズするかどうか
         /// </summary>
-        public boolean CurveSelectingQuantized = true;
+        public bool CurveSelectingQuantized = true;
 
         private QuantizeMode m_position_quantize = QuantizeMode.p32;
-        private boolean m_position_quantize_triplet = false;
+        private bool m_position_quantize_triplet = false;
         private QuantizeMode m_length_quantize = QuantizeMode.p32;
-        private boolean m_length_quantize_triplet = false;
+        private bool m_length_quantize_triplet = false;
         private int m_mouse_hover_time = 500;
         /// <summary>
         /// Button index of "△"
@@ -259,27 +258,27 @@ namespace cadencii
         /// Button index of Right Stick
         /// </summary>
         public int GameControlStirckR = 11;
-        public boolean CurveVisibleVelocity = true;
-        public boolean CurveVisibleAccent = true;
-        public boolean CurveVisibleDecay = true;
-        public boolean CurveVisibleVibratoRate = true;
-        public boolean CurveVisibleVibratoDepth = true;
-        public boolean CurveVisibleDynamics = true;
-        public boolean CurveVisibleBreathiness = true;
-        public boolean CurveVisibleBrightness = true;
-        public boolean CurveVisibleClearness = true;
-        public boolean CurveVisibleOpening = true;
-        public boolean CurveVisibleGendorfactor = true;
-        public boolean CurveVisiblePortamento = true;
-        public boolean CurveVisiblePit = true;
-        public boolean CurveVisiblePbs = true;
-        public boolean CurveVisibleHarmonics = false;
-        public boolean CurveVisibleFx2Depth = false;
-        public boolean CurveVisibleReso1 = false;
-        public boolean CurveVisibleReso2 = false;
-        public boolean CurveVisibleReso3 = false;
-        public boolean CurveVisibleReso4 = false;
-        public boolean CurveVisibleEnvelope = false;
+        public bool CurveVisibleVelocity = true;
+        public bool CurveVisibleAccent = true;
+        public bool CurveVisibleDecay = true;
+        public bool CurveVisibleVibratoRate = true;
+        public bool CurveVisibleVibratoDepth = true;
+        public bool CurveVisibleDynamics = true;
+        public bool CurveVisibleBreathiness = true;
+        public bool CurveVisibleBrightness = true;
+        public bool CurveVisibleClearness = true;
+        public bool CurveVisibleOpening = true;
+        public bool CurveVisibleGendorfactor = true;
+        public bool CurveVisiblePortamento = true;
+        public bool CurveVisiblePit = true;
+        public bool CurveVisiblePbs = true;
+        public bool CurveVisibleHarmonics = false;
+        public bool CurveVisibleFx2Depth = false;
+        public bool CurveVisibleReso1 = false;
+        public bool CurveVisibleReso2 = false;
+        public bool CurveVisibleReso3 = false;
+        public bool CurveVisibleReso4 = false;
+        public bool CurveVisibleEnvelope = false;
         public int GameControlPovRight = 9000;
         public int GameControlPovLeft = 27000;
         public int GameControlPovUp = 0;
@@ -287,7 +286,7 @@ namespace cadencii
         /// <summary>
         /// wave波形を表示するかどうか
         /// </summary>
-        public boolean ViewWaveform = false;
+        public bool ViewWaveform = false;
         /// <summary>
         /// スプリットコンテナのディバイダの位置
         /// <version>3.3+</version>
@@ -298,8 +297,8 @@ namespace cadencii
         /// </summary>
         public MidiPortConfig MidiInPort = new MidiPortConfig();
 
-        public boolean ViewAtcualPitch = false;
-        private boolean __revoked__InvokeUtauCoreWithWine = false;
+        public bool ViewAtcualPitch = false;
+        private bool __revoked__InvokeUtauCoreWithWine = false;
 #if JAVA
         @XmlGenericType( SingerConfig.class )
 #endif
@@ -312,7 +311,7 @@ namespace cadencii
         /// UTAU互換の合成器の1個目を，wine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
-        public boolean ResamplerWithWine = false;
+        public bool ResamplerWithWine = false;
         /// <summary>
         /// UTAU互換の合成器のパス(2個目以降)
         /// </summary>
@@ -336,7 +335,7 @@ namespace cadencii
         /// wavtoolをwine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
-        public boolean WavtoolWithWine = false;
+        public bool WavtoolWithWine = false;
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
         /// </summary>
@@ -344,7 +343,7 @@ namespace cadencii
         /// <summary>
         /// 歌詞入力においてローマ字が入力されたとき，Cadencii側でひらがなに変換するかどうか
         /// </summary>
-        public boolean SelfDeRomanization = false;
+        public bool SelfDeRomanization = false;
         /// <summary>
         /// openMidiDialogで最後に選択された拡張子
         /// </summary>
@@ -353,7 +352,7 @@ namespace cadencii
         /// ミキサーダイアログを常に手前に表示するかどうか
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__MixerTopMost = true;
+        private bool __revoked__MixerTopMost = true;
 #if JAVA
         @XmlGenericType( ValuePairOfStringArrayOfKeys.class )
 #endif
@@ -362,7 +361,7 @@ namespace cadencii
         /// <summary>
         /// 概観ペインが表示されているかどうか
         /// </summary>
-        public boolean OverviewEnabled = false;
+        public bool OverviewEnabled = false;
         public int OverviewScaleCount = 5;
         public FormMidiImExportConfig MidiImExportConfigExport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImport = new FormMidiImExportConfig();
@@ -378,7 +377,7 @@ namespace cadencii
         /// <summary>
         /// スペースキーを押しながら左クリックで、中ボタンクリックとみなす動作をさせるかどうか。
         /// </summary>
-        public boolean UseSpaceKeyAsMiddleButtonModifier = false;
+        public bool UseSpaceKeyAsMiddleButtonModifier = false;
         /// <summary>
         /// AquesToneのVSTi dllへのパス
         /// </summary>
@@ -395,7 +394,7 @@ namespace cadencii
         /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__FormIconTopMost = true;
+        private bool __revoked__FormIconTopMost = true;
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>
@@ -410,7 +409,7 @@ namespace cadencii
         /// waveファイル出力時に、全トラックをmixして出力するかどうか
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__WaveFileOutputFromMasterTrack = false;
+        private bool __revoked__WaveFileOutputFromMasterTrack = false;
         /// <summary>
         /// MTCスレーブ動作を行う際使用するMIDI INポートの設定
         /// </summary>
@@ -418,26 +417,26 @@ namespace cadencii
         /// <summary>
         /// プロジェクトごとのキャッシュディレクトリを使うかどうか
         /// </summary>
-        public boolean UseProjectCache = true;
+        public bool UseProjectCache = true;
         /// <summary>
         /// 鍵盤用のキャッシュが無いとき、FormGenerateKeySoundを表示しないかどうか。
         /// trueなら表示しない、falseなら表示する（デフォルト）
         /// </summary>
-        public boolean DoNotAskKeySoundGeneration = false;
+        public bool DoNotAskKeySoundGeneration = false;
         /// <summary>
         /// VOCALOID1 (1.0)のDLLを読み込まない場合true。既定ではfalse
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__DoNotUseVocaloid100 = false;
+        private bool __revoked__DoNotUseVocaloid100 = false;
         /// <summary>
         /// VOCALOID1 (1.1)のDLLを読み込まない場合true。既定ではfalse
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__DoNotUseVocaloid101 = false;
+        private bool __revoked__DoNotUseVocaloid101 = false;
         /// <summary>
         /// VOCALOID2のDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        public boolean DoNotUseVocaloid2 = false;
+        public bool DoNotUseVocaloid2 = false;
         /// <summary>
         /// AquesToneのDLLを読み込まない場合true。既定ではfalse
         /// </summary>
@@ -450,11 +449,11 @@ namespace cadencii
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__LoadSecondaryVocaloid1Dll = false;
+        private bool __revoked__LoadSecondaryVocaloid1Dll = false;
         /// <summary>
         /// VOALOID1のDLLを読み込まない場合はtrue．既定ではfalse
         /// </summary>
-        public boolean DoNotUseVocaloid1 = false;
+        public bool DoNotUseVocaloid1 = false;
         /// <summary>
         /// WAVE再生時のバッファーサイズ。既定では1000ms。
         /// </summary>
@@ -471,12 +470,12 @@ namespace cadencii
         /// <summary>
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか．デフォルトではfalse
         /// </summary>
-        public boolean UseUserDefinedAutoVibratoType = false;
+        public bool UseUserDefinedAutoVibratoType = false;
         /// <summary>
         /// 再生中に画面を描画するかどうか。デフォルトはfalse
         /// <version>3.3+</version>
         /// </summary>
-        public boolean SkipDrawWhilePlaying = false;
+        public bool SkipDrawWhilePlaying = false;
         /// <summary>
         /// ピアノロール画面の縦方向のスケール.
         /// <verssion>3.3+</verssion>
@@ -506,22 +505,22 @@ namespace cadencii
         /// ファイル・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowFile = false;
+        public bool BandNewRowFile = false;
         /// <summary>
         /// ツール・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowTool = false;
+        public bool BandNewRowTool = false;
         /// <summary>
         /// メジャー・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowMeasure = false;
+        public bool BandNewRowMeasure = false;
         /// <summary>
         /// ポジション・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowPosition = true;
+        public bool BandNewRowPosition = true;
         /// <summary>
         /// ファイル・ツールバーの順番
         /// <remarks>version 3.3+</remarks>
@@ -582,12 +581,12 @@ namespace cadencii
         /// Cadencii付属のWineを使う場合にtrue，そうでなければWineTopで指定されたWineが利用される
         /// version 3.3+
         /// </summary>
-        public boolean WineTopBuiltin = true;
+        public bool WineTopBuiltin = true;
         /// <summary>
         /// UTAUのresampler用に，ジャンクション機能を使うかどうか
         /// version 3.3+
         /// </summary>
-        public boolean UseWideCharacterWorkaround = false;
+        public bool UseWideCharacterWorkaround = false;
         public bool DoNotAutomaticallyCheckForUpdates = false;
 
         /// <summary>
@@ -790,7 +789,7 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public boolean isResamplerWithWineAt( int index )
+        public bool isResamplerWithWineAt( int index )
         {
             if ( index == 0 ) {
                 return ResamplerWithWine;
@@ -808,7 +807,7 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <param name="with_wine"></param>
-        public void setResamplerWithWineAt( int index, boolean with_wine )
+        public void setResamplerWithWineAt( int index, bool with_wine )
         {
             if ( index == 0 ) {
                 ResamplerWithWine = with_wine;
@@ -898,7 +897,7 @@ namespace cadencii
         /// 新しいUTAU互換合成器のパスを登録します
         /// </summary>
         /// <param name="path"></param>
-        public void addResampler( String path, boolean with_wine )
+        public void addResampler( String path, bool with_wine )
         {
             int count = getResamplerCount();
             if ( count == 0 ) {
@@ -1119,12 +1118,12 @@ namespace cadencii
         }
 #endif
 
-        public boolean isPositionQuantizeTriplet()
+        public bool isPositionQuantizeTriplet()
         {
             return m_position_quantize_triplet;
         }
 
-        public void setPositionQuantizeTriplet( boolean value )
+        public void setPositionQuantizeTriplet( bool value )
         {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
@@ -1139,7 +1138,7 @@ namespace cadencii
 
 #if !JAVA
         // XMLシリアライズ用
-        public boolean PositionQuantizeTriplet
+        public bool PositionQuantizeTriplet
         {
             get
             {
@@ -1184,12 +1183,12 @@ namespace cadencii
         }
 #endif
 
-        public boolean isLengthQuantizeTriplet()
+        public bool isLengthQuantizeTriplet()
         {
             return m_length_quantize_triplet;
         }
 
-        public void setLengthQuantizeTriplet( boolean value )
+        public void setLengthQuantizeTriplet( bool value )
         {
             if ( m_length_quantize_triplet != value ) {
                 m_length_quantize_triplet = value;
@@ -1214,7 +1213,7 @@ namespace cadencii
 
 #if !JAVA
         // XMLシリアライズ用
-        public boolean LengthQuantizeTriplet
+        public bool LengthQuantizeTriplet
         {
             get
             {
@@ -1246,7 +1245,7 @@ namespace cadencii
             // 重複があれば消す
             List<String> dict = new List<String>();
             foreach (var s in RecentFiles) {
-                boolean found = false;
+                bool found = false;
                 for ( int i = 0; i < dict.Count; i++ ) {
                     if ( s.Equals( dict[ i ] ) ) {
                         found = true;
@@ -1294,7 +1293,7 @@ namespace cadencii
             int count = SymbolTable.getCount();
             for ( int i = 0; i < count; i++ ) {
                 SymbolTable st = SymbolTable.getSymbolTable( i );
-                boolean found = false;
+                bool found = false;
                 foreach (var s in UserDictionaries) {
                     String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {

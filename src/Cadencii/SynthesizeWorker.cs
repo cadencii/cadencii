@@ -38,8 +38,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using Integer = System.Int32;
-    using boolean = System.Boolean;
 #endif
 
     public class SynthesizeWorker
@@ -60,13 +58,13 @@ namespace cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             Object[] args = (Object[])arg;
             List<PatchWorkQueue> queue = (List<PatchWorkQueue>)args[0];
-            List<Integer> tracks = (List<Integer>)args[1];
+            List<int> tracks = (List<int>)args[1];
             int finished = queue.Count;
             String temppath = AppManager.getTempWaveDir();
             for ( int k = 0; k < tracks.Count; k++ ) {
                 int track = tracks[ k ];
                 String wavePath = Path.Combine( temppath, track + ".wav" );
-                List<Integer> queueIndex = new List<Integer>();
+                List<int> queueIndex = new List<int>();
 
                 for ( int i = 0; i < queue.Count; i++ ) {
                     if ( queue[ i ].track == track ) {
@@ -192,7 +190,7 @@ namespace cadencii
                             // startの位置に歌手変更が既に指定されていないかどうかを検査
                             int foundStart = -1;
                             int foundEnd = -1;
-                            for ( Iterator<Integer> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
+                            for ( Iterator<int> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
                                 int j = itr.next();
                                 VsqEvent ve = copied.getEvent( j );
                                 if ( ve.Clock == start ) {

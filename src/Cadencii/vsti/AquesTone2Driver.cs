@@ -22,7 +22,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using Integer = System.Int32;
 
     /// <summary>
     /// AquesTone2 用 VSTi ドライバ

@@ -25,7 +25,6 @@ using System.ComponentModel;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -50,7 +49,7 @@ namespace cadencii
             this.description = description;
         }
 
-        public boolean equals( Object obj )
+        public bool equals( Object obj )
         {
             if ( obj != null && obj is VibratoVariation ) {
                 return ((VibratoVariation)obj).description.Equals( description );

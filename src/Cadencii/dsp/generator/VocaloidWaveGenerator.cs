@@ -37,7 +37,6 @@ using cadencii.media;
 using cadencii.vsq;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 
     /// <summary>
     /// ドライバーからの波形を受け取るためのインターフェース
@@ -55,7 +54,6 @@ namespace cadencii {
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -73,12 +71,12 @@ namespace cadencii
         private int mStartClock;
         private int mEndClock;
         private long mTotalSamples;
-        //private boolean mAbortRequired = false;
+        //private bool mAbortRequired = false;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private WaveReceiver mReceiver = null;
         private int mTrimRemain = 0;
-        private boolean mRunning = false;
+        private bool mRunning = false;
 #if !JAVA
         private VocaloidDriver mDriver = null;
 #endif
@@ -101,7 +99,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }

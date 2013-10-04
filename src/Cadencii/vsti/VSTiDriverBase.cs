@@ -26,7 +26,6 @@ using VstSdk;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
     using VstInt32 = Int32;
     using VstIntPtr = Int32;
 
@@ -51,13 +50,13 @@ namespace cadencii
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
-        public boolean loaded = false;
+        public bool loaded = false;
         public String path = "";
         /// <summary>
         /// プラグインのUI
         /// </summary>
         protected FormPluginUi ui = null;
-        private boolean isUiOpened = false;
+        private bool isUiOpened = false;
 
         protected PVSTMAIN mainDelegate;
         private IntPtr mainProcPointer;
@@ -106,7 +105,7 @@ namespace cadencii
         /* /// <summary>
         /// win32.LoadLibraryExを使うかどうか。trueならwin32.LoadLibraryExを使い、falseならutil.dllのLoadDllをつかう。既定ではtrue
         /// </summary>
-        private boolean useNativeDllLoader = true;*/
+        private bool useNativeDllLoader = true;*/
         protected MemoryManager memoryManager = new MemoryManager();
         private Object mSyncRoot = new Object();
 
@@ -322,7 +321,7 @@ namespace cadencii
 
         private void createPluginUi()
         {
-            boolean hasUi = (aEffect.aeffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
+            bool hasUi = (aEffect.aeffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
             if ( !hasUi ) {
                 return;
             }

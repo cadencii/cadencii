@@ -17,12 +17,10 @@ using cadencii.apputil;
 using cadencii.vsq;
 using cadencii.xml;
 
-namespace cadencii {
-
-    using boolean = System.Boolean;
-
-    public delegate boolean EditVsqScriptDelegate( VsqFile vsq );
-    public delegate boolean EditVsqScriptDelegateEx( VsqFileEx vsq );
+namespace cadencii
+{
+    public delegate bool EditVsqScriptDelegate( VsqFile vsq );
+    public delegate bool EditVsqScriptDelegateEx( VsqFileEx vsq );
     public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus( VsqFile vsq );
     public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus( VsqFileEx vsq );
     public delegate String ScriptDelegateGetDisplayName();

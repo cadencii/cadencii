@@ -29,8 +29,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-
 #endif
 
 #if JAVA

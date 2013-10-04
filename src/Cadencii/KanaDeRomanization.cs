@@ -20,7 +20,6 @@ using System;
 using cadencii;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class KanaDeRomanization {
@@ -283,7 +282,7 @@ namespace cadencii {
             int index = 0;
             while ( index < arr.Length ) {
                 // _MAX_MATCH～2文字のマッチ
-                boolean processed = false;
+                bool processed = false;
                 for ( int i = _MAX_MATCH; i >= 2; i-- ) {
                     if ( index + (i - 1) < arr.Length ) {
                         String s = "";

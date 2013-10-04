@@ -27,8 +27,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -406,7 +404,7 @@ namespace cadencii.vsq
             }
         }
 
-        public boolean isContainsKey( int clock )
+        public bool isContainsKey( int clock )
         {
             ensureBufferLength( length );
             return (findIndexFromClock( clock ) >= 0);
@@ -526,7 +524,7 @@ namespace cadencii.vsq
             }
         }
 
-        public int getValue( int clock, ByRef<Integer> index )
+        public int getValue( int clock, ByRef<int> index )
         {
             if ( length == 0 ) {
                 return defaultValue;
@@ -558,7 +556,7 @@ namespace cadencii.vsq
         {
             writer.writeLine( header );
             int lastvalue = defaultValue;
-            boolean value_at_start_written = false;
+            bool value_at_start_written = false;
             for ( int i = 0; i < length; i++ ) {
                 int key = clocks[i];
                 if ( start_clock == key ) {
@@ -691,7 +689,7 @@ namespace cadencii.vsq
             return length;
         }
 
-        public IEnumerable<Integer> keyClockIterator()
+        public IEnumerable<int> keyClockIterator()
         {
             return new KeyClockIterator( this );
         }

@@ -30,7 +30,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -43,7 +42,7 @@ namespace cadencii
         private String m_number = "0";
         private String m_title = "";
         private Object m_tag = null;
-        private boolean mMuted = false;
+        private bool mMuted = false;
         private int mPanpot = 0;
         private int mTrack = 0;
 
@@ -248,27 +247,27 @@ namespace cadencii
             updateTitle();
         }
 
-        public boolean isMuted()
+        public bool isMuted()
         {
             return chkMute.Checked;
         }
 
-        public void setMuted( boolean value )
+        public void setMuted( bool value )
         {
-            boolean old = chkMute.Checked;
+            bool old = chkMute.Checked;
             chkMute.Checked = value;
             chkMute.BackColor = value ? System.Drawing.Color.DimGray : System.Drawing.Color.White;
             mMuted = value;
         }
 
-        public boolean isSolo()
+        public bool isSolo()
         {
             return chkSolo.Checked;
         }
 
-        public void setSolo( boolean value )
+        public void setSolo( bool value )
         {
-            boolean old = chkSolo.Checked;
+            bool old = chkSolo.Checked;
             chkSolo.Checked = value;
             chkSolo.BackColor = value ? System.Drawing.Color.DarkCyan : System.Drawing.Color.White;
         }
@@ -283,12 +282,12 @@ namespace cadencii
             trackPanpot.Value = Math.Min(trackPanpot.Maximum, Math.Max(trackPanpot.Minimum, value));
         }
 
-        public boolean isSoloButtonVisible()
+        public bool isSoloButtonVisible()
         {
             return chkSolo.Visible;
         }
 
-        public void setSoloButtonVisible( boolean value )
+        public void setSoloButtonVisible( bool value )
         {
             chkSolo.Visible = value;
         }
@@ -560,7 +559,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

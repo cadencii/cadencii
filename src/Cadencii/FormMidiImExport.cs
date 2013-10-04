@@ -29,7 +29,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -130,7 +129,7 @@ namespace cadencii
             return v;
         }
 
-        public boolean isSecondBasis()
+        public bool isSecondBasis()
         {
             return radioPlayTime.Checked;
         }
@@ -182,7 +181,7 @@ namespace cadencii
             }
         }
 
-        public boolean isVocaloidMetatext()
+        public bool isVocaloidMetatext()
         {
             if ( chkNote.Checked ) {
                 return false;
@@ -191,42 +190,42 @@ namespace cadencii
             }
         }
 
-        public boolean isVocaloidNrpn()
+        public bool isVocaloidNrpn()
         {
             return chkExportVocaloidNrpn.Checked;
         }
 
-        public boolean isTempo()
+        public bool isTempo()
         {
             return chkTempo.Checked;
         }
 
-        public void setTempo( boolean value )
+        public void setTempo( bool value )
         {
             chkTempo.Checked = value;
         }
 
-        public boolean isTimesig()
+        public bool isTimesig()
         {
             return chkBeat.Checked;
         }
 
-        public void setTimesig( boolean value )
+        public void setTimesig( bool value )
         {
             chkBeat.Checked = value;
         }
 
-        public boolean isNotes()
+        public bool isNotes()
         {
             return chkNote.Checked;
         }
 
-        public boolean isLyric()
+        public bool isLyric()
         {
             return chkLyric.Checked;
         }
 
-        public boolean isPreMeasure()
+        public bool isPreMeasure()
         {
             return chkPreMeasure.Checked;
         }
@@ -356,7 +355,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

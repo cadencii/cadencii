@@ -25,7 +25,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -47,8 +46,8 @@ namespace cadencii
         private long mTotalSamples = 1L;
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
-        //private boolean mAbortRequired = false;
-        private boolean mRunning = false;
+        //private bool mAbortRequired = false;
+        private bool mRunning = false;
         private int mSampleRate;
 
         public int getSampleRate()
@@ -56,7 +55,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }

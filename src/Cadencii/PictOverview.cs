@@ -31,8 +31,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -92,27 +90,27 @@ namespace cadencii
         /// <summary>
         /// ミニチュアピアノロールの左側の第1ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean mOverviewButtonLeft1MouseDowned = false;
+        private bool mOverviewButtonLeft1MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの左側の第2ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean mOverviewButtonLeft2MouseDowned = false;
+        private bool mOverviewButtonLeft2MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの右側の第1ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean mOverviewButtonRight1MouseDowned = false;
+        private bool mOverviewButtonRight1MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの右側の第2ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean mOverviewButtonRight2MouseDowned = false;
+        private bool mOverviewButtonRight2MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの拡大ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean mOverviewButtonZoomMouseDowned = false;
+        private bool mOverviewButtonZoomMouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの縮小ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean mOverviewButtonMoozMouseDowned = false;
+        private bool mOverviewButtonMoozMouseDowned = false;
         private FormMain mMainForm = null;
         private Color mBackgroundColor = new Color( 106, 108, 108 );
         private Object mDrawerSyncRoot;
@@ -345,7 +343,7 @@ namespace cadencii
         public void updateOverview()
         {
 #endif
-            boolean д = true;
+            bool д = true;
 #if DEBUG
             int count = 0;
 #endif
@@ -474,15 +472,15 @@ namespace cadencii
 
         public void handleMouseDown( Object sender, MouseEventArgs e )
         {
-            BMouseButtons btn = e.Button;
+            MouseButtons btn = e.Button;
             if ( mMainForm.isMouseMiddleButtonDowned( e.Button ) ) {
-                btn = BMouseButtons.Middle;
+                btn = MouseButtons.Middle;
             }
-            if ( btn == BMouseButtons.Middle ) {
+            if ( btn == MouseButtons.Middle ) {
                 mOverviewMouseDownMode = OverviewMouseDownMode.MIDDLE;
                 mOverviewMouseDownedLocationX = e.X;
                 mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
-            } else if ( e.Button == BMouseButtons.Left ) {
+            } else if ( e.Button == MouseButtons.Left ) {
                 if ( e.X <= AppManager.keyWidth || this.Width - 19 <= e.X ) {
                     Point mouse = new Point( e.X, e.Y );
                     if ( Utility.isInRect( mouse, getButtonBoundsLeft1() ) ) {

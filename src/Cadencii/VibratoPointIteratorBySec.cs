@@ -22,7 +22,6 @@ using cadencii.vsq;
 using cadencii.java.util;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -49,7 +48,7 @@ namespace cadencii {
         double sec;
         float fadewidth;
         int i;
-        boolean first = true;
+        bool first = true;
 
         // Rate値から周期を高速に求めるためのキャッシュ
         private static float[] mVibratoPeriod = null;
@@ -108,7 +107,7 @@ namespace cadencii {
             }
         }
 
-        public boolean hasNext() {
+        public bool hasNext() {
             if ( first ) {
                 return true;
             } else {

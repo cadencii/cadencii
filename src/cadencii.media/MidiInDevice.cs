@@ -26,7 +26,6 @@ using cadencii;
 
 namespace cadencii.media
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -44,9 +43,9 @@ namespace cadencii.media
         private uint m_hmidiin = 0;
 #endif
         private int m_port_number;
-        private boolean mReceiveSystemCommonMessage = false;
-        private boolean mReceiveSystemRealtimeMessage = false;
-        private boolean mIsActive = false;
+        private bool mReceiveSystemCommonMessage = false;
+        private bool mReceiveSystemRealtimeMessage = false;
+        private bool mIsActive = false;
 
         public event MidiReceivedEventHandler MidiReceived;
 
@@ -93,19 +92,19 @@ namespace cadencii.media
 #endif
         }
 
-        public boolean isReceiveSystemRealtimeMessage() {
+        public bool isReceiveSystemRealtimeMessage() {
             return mReceiveSystemRealtimeMessage;
         }
 
-        public void setReceiveSystemRealtimeMessage( boolean value ) {
+        public void setReceiveSystemRealtimeMessage( bool value ) {
             mReceiveSystemRealtimeMessage = value;
         }
 
-        public boolean isReceiveSystemCommonMessage() {
+        public bool isReceiveSystemCommonMessage() {
             return mReceiveSystemCommonMessage;
         }
 
-        public void setReceiveSystemCommonMessage( boolean value ) {
+        public void setReceiveSystemCommonMessage( bool value ) {
             mReceiveSystemCommonMessage = value;
         }
 

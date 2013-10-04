@@ -27,7 +27,6 @@ using System.ComponentModel;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>

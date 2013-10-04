@@ -26,8 +26,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using Integer = System.Int32;
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -44,7 +42,7 @@ namespace cadencii.vsq
         @XmlGenericType( VsqEvent.class )
 #endif
         public List<VsqEvent> Events;
-        private List<Integer> m_ids;
+        private List<int> m_ids;
 
         /// <summary>
         /// コンストラクタ
@@ -52,7 +50,7 @@ namespace cadencii.vsq
         public VsqEventList()
         {
             Events = new List<VsqEvent>();
-            m_ids = new List<Integer>();
+            m_ids = new List<int>();
         }
 
         /// <summary>
@@ -150,7 +148,7 @@ namespace cadencii.vsq
         {
             updateIDList();
             int index = -1;
-            List<Integer> current = new List<Integer>( m_ids );
+            List<int> current = new List<int>( m_ids );
             int nfound = 0;
             while ( true ) {
                 index++;

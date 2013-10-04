@@ -24,8 +24,6 @@ using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-    using Integer = Int32;
 #endif
 
     /// <summary>
@@ -231,7 +229,7 @@ namespace cadencii {
             int chain_end = (int)chain.getEnd();
 
             // まず、全削除する必要のあるBezierChainを検索
-            List<Integer> delete_list = new List<Integer>();
+            List<int> delete_list = new List<int>();
             List<BezierChain> src = this.get( curve );
             //foreach ( int id in this[curve].Keys ) {
             for ( int j = 0; j < src.Count; j++ ) {
@@ -254,7 +252,7 @@ namespace cadencii {
             }
 
             // マージする必要があるかどうかを検査。
-            boolean processed = true;
+            bool processed = true;
             while ( processed ) {
                 processed = false;
                 List<BezierChain> list = this.get( curve );
@@ -493,13 +491,13 @@ namespace cadencii {
         /// <param name="clock_start"></param>
         /// <param name="clock_end"></param>
         /// <returns></returns>
-        public boolean deleteBeziers(
+        public bool deleteBeziers(
             List<CurveType> target_curve,
             int clock_start,
             int clock_end
         )
         {
-            boolean edited = false;
+            bool edited = false;
             foreach (var curve in target_curve) {
                 if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
@@ -623,7 +621,7 @@ namespace cadencii {
         {
             List<BezierChain> bc = this.get( curve_type );
             int ret = bc.Count;
-            boolean found = true;
+            bool found = true;
             while ( found ) {
                 found = false;
                 for ( int i = 0; i < bc.Count; i++ ) {

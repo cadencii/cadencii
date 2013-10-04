@@ -51,10 +51,6 @@ using cadencii.utau;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-    using Long = System.Int64;
-    using Float = System.Single;
 #endif
 
 #if JAVA
@@ -400,14 +396,14 @@ namespace cadencii
         private static String mFile = "";
         private static int mSelected = 1;
         private static int mCurrentClock = 0;
-        private static boolean mPlaying = false;
-        private static boolean mRepeatMode = false;
-        private static boolean mGridVisible = false;
+        private static bool mPlaying = false;
+        private static bool mRepeatMode = false;
+        private static bool mGridVisible = false;
         private static EditMode mEditMode = EditMode.NONE;
         /// <summary>
         /// トラックのオーバーレイ表示
         /// </summary>
-        private static boolean mOverlay = true;
+        private static bool mOverlay = true;
         private static EditTool mSelectedTool = EditTool.PENCIL;
 
         /// <summary>
@@ -420,7 +416,7 @@ namespace cadencii
         /// <summary>
         /// SelectedRegionが有効かどうかを表すフラグ
         /// </summary>
-        private static boolean mWholeSelectedIntervalEnabled = false;
+        private static bool mWholeSelectedIntervalEnabled = false;
         /// <summary>
         /// Ctrlキーを押しながらのマウスドラッグ操作による選択が行われた範囲(単位：クロック)
         /// </summary>
@@ -436,7 +432,7 @@ namespace cadencii
         /// <summary>
         /// 選択範囲が有効かどうか。
         /// </summary>
-        private static boolean mCurveSelectedIntervalEnabled = false;
+        private static bool mCurveSelectedIntervalEnabled = false;
         /// <summary>
         /// 範囲選択モードで音符を動かしている最中の、選択範囲の開始位置（クロック）。マウスが動いているときのみ使用
         /// </summary>
@@ -446,15 +442,15 @@ namespace cadencii
         /// <summary>
         /// 自動ノーマライズモードかどうかを表す値を取得、または設定します。
         /// </summary>
-        public static boolean mAutoNormalize = false;
+        public static bool mAutoNormalize = false;
         /// <summary>
         /// Bezierカーブ編集モードが有効かどうかを表す
         /// </summary>
-        private static boolean mIsCurveMode = false;
+        private static bool mIsCurveMode = false;
         /// <summary>
         /// 再生時に自動スクロールするかどうか
         /// </summary>
-        public static boolean mAutoScroll = true;
+        public static bool mAutoScroll = true;
         /// <summary>
         /// プレビュー再生が開始された時刻
         /// </summary>
@@ -470,7 +466,7 @@ namespace cadencii
         /// <summary>
         /// ダイアログを表示中かどうか
         /// </summary>
-        private static boolean mShowingDialog = false;
+        private static bool mShowingDialog = false;
         /// <summary>
         /// メインの編集画面のインスタンス
         /// </summary>
@@ -503,11 +499,11 @@ namespace cadencii
         /// <summary>
         /// 各トラックがUTAUモードかどうか．mDrawObjectsと同じタイミングで更新される
         /// </summary>
-        public static boolean[] mDrawIsUtau = new boolean[MAX_NUM_TRACK];
+        public static bool[] mDrawIsUtau = new bool[MAX_NUM_TRACK];
         /// <summary>
         /// マウスが降りていて，かつ範囲選択をしているときに立つフラグ
         /// </summary>
-        public static boolean mIsPointerDowned = false;
+        public static bool mIsPointerDowned = false;
         /// <summary>
         /// マウスが降りた仮想スクリーン上の座標(ピクセル)
         /// </summary>
@@ -536,7 +532,7 @@ namespace cadencii
         /// <summary>
         /// ピアノロール画面に，コントロールカーブをオーバーレイしているモード
         /// </summary>
-        public static boolean mCurveOnPianoroll = false;
+        public static bool mCurveOnPianoroll = false;
         /// <summary>
         /// 直接再生モード時の、再生開始した位置の曲頭からの秒数
         /// </summary>
@@ -557,19 +553,19 @@ namespace cadencii
         /// <summary>
         /// 再生中にWAVE波形の描画をスキップするかどうか（デフォルトはtrue）
         /// </summary>
-        public static boolean skipDrawingWaveformWhenPlaying = true;
+        public static bool skipDrawingWaveformWhenPlaying = true;
         /// <summary>
         /// コントロールカーブに、音符の境界線を重ね描きするかどうか（デフォルトはtrue）
         /// </summary>
-        public static boolean drawItemBorderInControlCurveView = true;
+        public static bool drawItemBorderInControlCurveView = true;
         /// <summary>
         /// コントロールカーブに、データ点を表す四角を描くかどうか（デフォルトはtrue）
         /// </summary>
-        public static boolean drawCurveDotInControlCurveView = true;
+        public static bool drawCurveDotInControlCurveView = true;
         /// <summary>
         /// ピアノロール画面に、現在選択中の歌声合成エンジンの種類を描くかどうか
         /// </summary>
-        public static boolean drawOverSynthNameOnPianoroll = true;
+        public static bool drawOverSynthNameOnPianoroll = true;
         /// <summary>
         /// 音符の長さが変更されたとき、ビブラートの長さがどう影響を受けるかを決める因子
         /// </summary>
@@ -577,7 +573,7 @@ namespace cadencii
         /// <summary>
         /// ピアノロール上で右クリックでコンテキストメニューを表示するかどうか
         /// </summary>
-        public static boolean showContextMenuWhenRightClickedOnPianoroll = true;
+        public static bool showContextMenuWhenRightClickedOnPianoroll = true;
         #endregion // 裏設定項目
 
         /// <summary>
@@ -657,7 +653,7 @@ namespace cadencii
         /// プレビュー再生を開始します．
         /// 合成処理などが途中でキャンセルされた場合にtrue，それ以外の場合にfalseを返します
         /// </summary>
-        private static boolean previewStart( FormMain form )
+        private static bool previewStart( FormMain form )
         {
             int selected = mSelected;
             RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track[ selected ] );
@@ -668,7 +664,7 @@ namespace cadencii
 
             int track_count = mVsq.Track.Count;
 
-            List<Integer> tracks = new List<Integer>();
+            List<int> tracks = new List<int>();
             for ( int track = 1; track < track_count; track++ ) {
                 tracks.Add( track );
             }
@@ -799,7 +795,7 @@ namespace cadencii
         /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
         /// </summary>
         /// <param name="tracks"></param>
-        public static boolean patchWorkToFreeze( FormMain main_window, List<Integer> tracks )
+        public static bool patchWorkToFreeze( FormMain main_window, List<int> tracks )
         {
             mVsq.updateTotalClocks();
             List<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
@@ -829,7 +825,7 @@ namespace cadencii
 
             // ダイアログを表示する
             beginShowDialog();
-            boolean ret = fw.getUi().showDialogTo( main_window );
+            bool ret = fw.getUi().showDialogTo( main_window );
 #if DEBUG
             sout.println( "AppManager#patchWorkToFreeze; showDialog returns " + ret );
 #endif
@@ -870,7 +866,7 @@ namespace cadencii
         /// </summary>
         /// <param name="tracks">リストを作成するトラック番号の一覧</param>
         /// <returns></returns>
-        public static List<PatchWorkQueue> patchWorkCreateQueue( List<Integer> tracks )
+        public static List<PatchWorkQueue> patchWorkCreateQueue( List<int> tracks )
         {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
@@ -950,7 +946,7 @@ namespace cadencii
                                 saStart = (long)(secStart * sampleRate);
                                 int samples = (int)(saEnd - saStart);
                                 long pos = saStart;
-                                boolean allzero = true;
+                                bool allzero = true;
                                 while ( samples > 0 ) {
                                     int delta = samples > buflen ? buflen : samples;
                                     wr.read( pos, delta, left, right );
@@ -986,7 +982,7 @@ namespace cadencii
                                     saEnd = (long)(secEnd * sampleRate);
                                     int samples = (int)(saEnd - saStart);
                                     long pos = saStart;
-                                    boolean allzero = true;
+                                    bool allzero = true;
                                     while ( samples > 0 ) {
                                         int delta = samples > buflen ? buflen : samples;
                                         wr.read( pos, delta, left, right );
@@ -1087,9 +1083,9 @@ namespace cadencii
             }
 
             // まず，先行発音も考慮した音符の範囲を列挙する
-            List<Integer> clockStartList = new List<Integer>();
-            List<Integer> clockEndList = new List<Integer>();
-            List<Integer> internalIdList = new List<Integer>();
+            List<int> clockStartList = new List<int>();
+            List<int> clockEndList = new List<int>();
+            List<int> internalIdList = new List<int>();
             int size = vsq_track.getEventCount();
             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
             for ( int i = 0; i < size; i++ ) {
@@ -1121,7 +1117,7 @@ namespace cadencii
                 internalIdList.Add( internal_id );
             }
 
-            SortedDictionary<Integer, Integer> ids = new SortedDictionary<Integer, Integer>();
+            SortedDictionary<int, int> ids = new SortedDictionary<int, int>();
             //for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
             for( int indx = 0; indx < size; indx++ ){
                 int internal_id = internalIdList[ indx ];
@@ -1157,7 +1153,7 @@ namespace cadencii
             }
 
             // idsに登録された音符のうち、前後がつながっているものを列挙する。
-            boolean changed = true;
+            bool changed = true;
             int numEvents = vsq_track.getEventCount();
             while ( changed ) {
                 changed = false;
@@ -1223,9 +1219,9 @@ namespace cadencii
         /// 波形生成器が実行中かどうかを取得します
         /// </summary>
         /// <returns></returns>
-        public static boolean isGeneratorRunning()
+        public static bool isGeneratorRunning()
         {
-            boolean ret = false;
+            bool ret = false;
             lock ( mLocker ) {
                 WaveGenerator g = mWaveGenerator;
                 if ( g != null ) {
@@ -1531,7 +1527,7 @@ namespace cadencii
         public static void serializeRenderingStatus( String temppath, int track )
         {
             FileOutputStream fs = null;
-            boolean failed = true;
+            bool failed = true;
             String xml = Path.Combine( temppath, track + ".xml" );
             try {
                 fs = new FileOutputStream( xml );
@@ -1597,17 +1593,17 @@ namespace cadencii
         }
 
         #region 選択範囲の管理
-        public static boolean isWholeSelectedIntervalEnabled()
+        public static bool isWholeSelectedIntervalEnabled()
         {
             return mWholeSelectedIntervalEnabled;
         }
 
-        public static boolean isCurveSelectedIntervalEnabled()
+        public static bool isCurveSelectedIntervalEnabled()
         {
             return mCurveSelectedIntervalEnabled;
         }
 
-        public static void setWholeSelectedIntervalEnabled( boolean value )
+        public static void setWholeSelectedIntervalEnabled( bool value )
         {
             mWholeSelectedIntervalEnabled = value;
             if ( value ) {
@@ -1615,7 +1611,7 @@ namespace cadencii
             }
         }
 
-        public static void setCurveSelectedIntervalEnabled( boolean value )
+        public static void setCurveSelectedIntervalEnabled( bool value )
         {
             mCurveSelectedIntervalEnabled = value;
             if ( value ) {
@@ -1694,9 +1690,9 @@ namespace cadencii
         /// <param name="main_form"></param>
         /// <returns></returns>
 #if JAVA
-        public static int showModalDialog( BFileChooser dialog, boolean open_mode, Object main_form )
+        public static int showModalDialog( BFileChooser dialog, bool open_mode, Object main_form )
 #else
-        public static DialogResult showModalDialog( FileDialog dialog, boolean open_mode, Form main_form )
+        public static DialogResult showModalDialog( FileDialog dialog, bool open_mode, Form main_form )
 #endif
         {
             beginShowDialog();
@@ -1709,7 +1705,7 @@ namespace cadencii
         /// beginShowDialogが呼ばれた後，endShowDialogがまだ呼ばれていないときにtrue
         /// </summary>
         /// <returns></returns>
-        public static boolean isShowingDialog()
+        public static bool isShowingDialog()
         {
             return mShowingDialog;
         }
@@ -1722,7 +1718,7 @@ namespace cadencii
             mShowingDialog = true;
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
-                boolean previous = propertyWindow.getUi().isAlwaysOnTop();
+                bool previous = propertyWindow.getUi().isAlwaysOnTop();
                 propertyWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
                     propertyWindow.getUi().setAlwaysOnTop( false );
@@ -1730,7 +1726,7 @@ namespace cadencii
             }
 #endif
             if ( mMixerWindow != null ) {
-                boolean previous = mMixerWindow.TopMost;
+                bool previous = mMixerWindow.TopMost;
                 mMixerWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
                     mMixerWindow.TopMost = false;
@@ -1738,7 +1734,7 @@ namespace cadencii
             }
 
             if ( iconPalette != null ) {
-                boolean previous = iconPalette.TopMost;
+                bool previous = iconPalette.TopMost;
                 iconPalette.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
                     iconPalette.TopMost = false;
@@ -2015,7 +2011,7 @@ namespace cadencii
         /// ベジエ曲線を編集するモードかどうかを取得します。
         /// </summary>
         /// <returns></returns>
-        public static boolean isCurveMode()
+        public static bool isCurveMode()
         {
             return mIsCurveMode;
         }
@@ -2024,9 +2020,9 @@ namespace cadencii
         /// ベジエ曲線を編集するモードかどうかを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public static void setCurveMode( boolean value )
+        public static void setCurveMode( bool value )
         {
-            boolean old = mIsCurveMode;
+            bool old = mIsCurveMode;
             mIsCurveMode = value;
             if ( old != mIsCurveMode ) {
                 try {
@@ -2047,16 +2043,16 @@ namespace cadencii
         public static void undo()
         {
             if ( editHistory.hasUndoHistory() ) {
-                List<ValuePair<Integer, Integer>> before_ids = new List<ValuePair<Integer, Integer>>();
+                List<ValuePair<int, int>> before_ids = new List<ValuePair<int, int>>();
                 foreach (var item in itemSelection.getEventIterator()) {
-                    before_ids.Add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
+                    before_ids.Add( new ValuePair<int, int>( item.track, item.original.InternalID ) );
                 }
 
                 ICommand run_src = editHistory.getUndo();
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
-                        int track = (Integer)run.vsqCommand.Args[0];
+                        int track = (int)run.vsqCommand.Args[0];
                         if ( track == getSelected() && track >= 2 ) {
                             setSelected( track - 1 );
                         }
@@ -2086,16 +2082,16 @@ namespace cadencii
         public static void redo()
         {
             if ( editHistory.hasRedoHistory() ) {
-                List<ValuePair<Integer, Integer>> before_ids = new List<ValuePair<Integer, Integer>>();
+                List<ValuePair<int, int>> before_ids = new List<ValuePair<int, int>>();
                 foreach (var item in itemSelection.getEventIterator()) {
-                    before_ids.Add( new ValuePair<Integer, Integer>( item.track, item.original.InternalID ) );
+                    before_ids.Add( new ValuePair<int, int>( item.track, item.original.InternalID ) );
                 }
 
                 ICommand run_src = editHistory.getRedo();
                 CadenciiCommand run = (CadenciiCommand)run_src;
                 if ( run.vsqCommand != null ) {
                     if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
-                        int track = (Integer)run.args[0];
+                        int track = (int)run.args[0];
                         if ( track == getSelected() && track >= 2 ) {
                             setSelected( track - 1 );
                         }
@@ -2128,11 +2124,11 @@ namespace cadencii
         /// <summary>
         /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
         /// </summary>
-        public static void cleanupDeadSelection( List<ValuePair<Integer, Integer>> before_ids )
+        public static void cleanupDeadSelection( List<ValuePair<int, int>> before_ids )
         {
             int size = mVsq.Track.Count;
             foreach (var specif in before_ids) {
-                boolean found = false;
+                bool found = false;
                 int track = specif.getKey();
                 int internal_id = specif.getValue();
                 if ( 1 <= track && track < size ) {
@@ -2186,17 +2182,17 @@ namespace cadencii
             }
         }
 
-        public static boolean isOverlay()
+        public static bool isOverlay()
         {
             return mOverlay;
         }
 
-        public static void setOverlay( boolean value )
+        public static void setOverlay( bool value )
         {
             mOverlay = value;
         }
 
-        public static boolean getRenderRequired( int track )
+        public static bool getRenderRequired( int track )
         {
             if ( mVsq == null ) {
                 return false;
@@ -2204,7 +2200,7 @@ namespace cadencii
             return mVsq.editorStatus.renderRequired[track - 1];
         }
 
-        public static void setRenderRequired( int track, boolean value )
+        public static void setRenderRequired( int track, bool value )
         {
             if ( mVsq == null ) {
                 return;
@@ -2232,7 +2228,7 @@ namespace cadencii
         /// <summary>
         /// グリッドを表示するか否かを表す値を取得します
         /// </summary>
-        public static boolean isGridVisible()
+        public static bool isGridVisible()
         {
             return mGridVisible;
         }
@@ -2241,7 +2237,7 @@ namespace cadencii
         /// グリッドを表示するか否かを設定します
         /// </summary>
         /// <param name="value"></param>
-        public static void setGridVisible( boolean value )
+        public static void setGridVisible( bool value )
         {
             if ( value != mGridVisible ) {
                 mGridVisible = value;
@@ -2259,7 +2255,7 @@ namespace cadencii
         /// <summary>
         /// 現在のプレビューがリピートモードであるかどうかを表す値を取得します
         /// </summary>
-        public static boolean isRepeatMode()
+        public static bool isRepeatMode()
         {
             return mRepeatMode;
         }
@@ -2268,7 +2264,7 @@ namespace cadencii
         /// 現在のプレビューがリピートモードかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public static void setRepeatMode( boolean value )
+        public static void setRepeatMode( bool value )
         {
             mRepeatMode = value;
         }
@@ -2276,7 +2272,7 @@ namespace cadencii
         /// <summary>
         /// 現在プレビュー中かどうかを示す値を取得します
         /// </summary>
-        public static boolean isPlaying()
+        public static bool isPlaying()
         {
             return mPlaying;
         }
@@ -2286,13 +2282,13 @@ namespace cadencii
         /// </summary>
         /// <param name="value"></param>
         /// <param name="form"></param>
-        public static void setPlaying( boolean value, FormMain form )
+        public static void setPlaying( bool value, FormMain form )
         {
 #if DEBUG
             sout.println( "AppManager#setPlaying; value=" + value );
 #endif
             lock ( mLockerPlayingProperty ) {
-                boolean previous = mPlaying;
+                bool previous = mPlaying;
                 mPlaying = value;
                 if ( previous != mPlaying ) {
                     if ( mPlaying ) {
@@ -2345,7 +2341,7 @@ namespace cadencii
 
         private static void saveToCor( String file )
         {
-            boolean hide = false;
+            bool hide = false;
             if ( mVsq != null ) {
                 String path = PortUtil.getDirectoryName( file );
                 //String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
@@ -2512,7 +2508,7 @@ namespace cadencii
         /// </summary>
         /// <param name="file"></param>
         /// <returns>ファイルの読み込みに成功した場合にtrueを，それ以外の場合はfalseを返します</returns>
-        public static boolean readVsq( String file )
+        public static bool readVsq( String file )
         {
             mSelected = 1;
             mFile = file;
@@ -2944,7 +2940,7 @@ namespace cadencii
             if ( mMainWindow != null ) {
                 List<ValuePairOfStringArrayOfKeys> defs = mMainWindow.getDefaultShortcutKeys();
                 for ( int j = 0; j < defs.Count; j++ ) {
-                    boolean found = false;
+                    bool found = false;
                     for ( int i = 0; i < ret.ShortcutKeys.Count; i++ ) {
                         if ( defs[ j ].Key.Equals( ret.ShortcutKeys[ i ].Key ) ) {
                             found = true;
@@ -3042,7 +3038,7 @@ namespace cadencii
                 foreach ( String s0 in dirs0 ) {
                     String s = PortUtil.getFileName( s0 );
                     int length = PortUtil.getStringLength( s );
-                    boolean register = true;
+                    bool register = true;
                     int num_period = 0;
                     for ( int i = 0; i < length; i++ ) {
                         char c = PortUtil.charAt( s, i );
@@ -3069,7 +3065,7 @@ namespace cadencii
                 }
 
                 // 並べ替える
-                boolean changed = true;
+                bool changed = true;
                 int size = dirs.Count;
                 while ( changed ) {
                     changed = false;

@@ -20,7 +20,6 @@ import cadencii.*;
 using System;
 
 namespace cadencii.media {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>

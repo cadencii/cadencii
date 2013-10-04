@@ -22,7 +22,6 @@ using cadencii.vsq;
 using cadencii.java.awt;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -46,8 +45,8 @@ namespace cadencii {
         /// <summary>
         /// このアイテムが他のアイテムと再生時にオーバーラップするかどうかを表すフラグ
         /// </summary>
-        public boolean mIsOverlapped;
-        public boolean mIsSymbolProtected;
+        public bool mIsOverlapped;
+        public bool mIsSymbolProtected;
         public int mNote;
         public UstEnvelope mUstEnvelope;
         /// <summary>
@@ -63,12 +62,12 @@ namespace cadencii {
         /// UTAUモードにて、歌詞から*.wavを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean mIsValidForUtau = false;
+        public bool mIsValidForUtau = false;
         /// <summary>
         /// Straight x UTAUモードにて、歌詞からanalyzed\*.stfを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean mIsValidForStraight = false;
+        public bool mIsValidForStraight = false;
         public int mVibDelay = 0;
         /// <summary>
         /// ビブラートによるピッチカーブ。
@@ -89,8 +88,8 @@ namespace cadencii {
                            int velocity,
                            int internal_id,
                            int vibrato_delay,
-                           boolean overwrapped, 
-                           boolean symbol_protected,
+                           bool overwrapped, 
+                           bool symbol_protected,
                            VibratoBPList vib_rate,
                            VibratoBPList vib_depth,
                            int vib_start_rate,
@@ -99,8 +98,8 @@ namespace cadencii {
                            UstEnvelope ust_envelope,
                            int length,
                            int clock,
-                           boolean is_valid_for_utau,
-                           boolean is_valid_for_straight,
+                           bool is_valid_for_utau,
+                           bool is_valid_for_straight,
                            int vib_delay,
                            int intensity ) {
             this.mType = type;

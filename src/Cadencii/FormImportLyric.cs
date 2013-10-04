@@ -30,8 +30,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using Character = System.Char;
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -59,10 +57,10 @@ namespace cadencii
 
         #region public methods
 #if JAVA
-        public void setVisible( boolean value ){
+        public void setVisible( bool value ){
             super.setVisible( value );
 #else
-        public void __setVisible( boolean value )
+        public void __setVisible( bool value )
         {
             base.Visible = value;
 #endif
@@ -95,10 +93,10 @@ namespace cadencii
 
         public String[] getLetters()
         {
-            List<Character> _SMALL = new List<Character>( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
-                                                                                'ゃ', 'ゅ', 'ょ',
-                                                                                'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
-                                                                                'ャ', 'ュ', 'ョ' } );
+            List<char> _SMALL = new List<char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+                                                             'ゃ', 'ゅ', 'ょ',
+                                                             'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
+                                                             'ャ', 'ュ', 'ョ' } );
             String tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
                 if ( i >= txtLyrics.Lines.Length ) {

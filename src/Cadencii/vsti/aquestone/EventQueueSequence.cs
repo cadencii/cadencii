@@ -17,7 +17,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using Integer = System.Int32;
 
     /// <summary>
     /// 時刻(clock 単位)順に並べ替えられた、MidiEventQueue のリスト。
@@ -25,11 +24,11 @@ namespace cadencii
     /// </summary>
     public class EventQueueSequence
     {
-        private SortedDictionary<Integer, MidiEventQueue> sequence;
+        private SortedDictionary<int, MidiEventQueue> sequence;
 
         public EventQueueSequence()
         {
-            sequence = new SortedDictionary<Integer, MidiEventQueue>();
+            sequence = new SortedDictionary<int, MidiEventQueue>();
         }
 
         /// <summary>
@@ -50,12 +49,12 @@ namespace cadencii
         /// MidiEventQueue が登録されている時刻を小さい順に返す反復子を取得する
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Integer> keyIterator()
+        public IEnumerable<int> keyIterator()
         {
             return sequence.Keys;
         }
 
-        public SortedDictionary<Integer, MidiEventQueue> getSequence() { return sequence; }
+        public SortedDictionary<int, MidiEventQueue> getSequence() { return sequence; }
     }
 
 }

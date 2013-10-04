@@ -36,13 +36,6 @@ namespace cadencii.vsq
 
 #endif
 
-#if JAVA
-#elif __cplusplus
-#else
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-#endif
-
     /// <summary>
     /// VsqHandleに格納される歌詞の情報を扱うクラス。
     /// </summary>
@@ -61,8 +54,8 @@ namespace cadencii.vsq
         public String Phrase;
         private List<String> mPhoneticSymbols;
         public float UnknownFloat;
-        private List<Integer> mConsonantAdjustments;
-        public boolean PhoneticSymbolProtected;
+        private List<int> mConsonantAdjustments;
+        public bool PhoneticSymbolProtected;
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
@@ -82,7 +75,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public boolean equalsForSynth( Lyric item )
+        public bool equalsForSynth( Lyric item )
         {
             if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
             if ( this.getPhoneticSymbol() != item.getPhoneticSymbol() ) return false;
@@ -95,7 +88,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public boolean equals( Lyric item )
+        public bool equals( Lyric item )
         {
             if ( !equalsForSynth( item ) ) return false;
             if ( this.Phrase != item.Phrase ) return false;
@@ -110,7 +103,7 @@ namespace cadencii.vsq
         public String getConsonantAdjustment()
         {
             String ret = "";
-            List<Integer> arr = getConsonantAdjustmentList();
+            List<int> arr = getConsonantAdjustmentList();
             int size = arr.Count;
 
             for ( int i = 0; i < size; i++ )
@@ -134,7 +127,7 @@ namespace cadencii.vsq
 #if __cplusplus
             vector<Integer> arr;
 #else
-            List<Integer> arr = new List<Integer>();
+            List<int> arr = new List<int>();
 #endif
             for ( int i = 0; i < size; i++ )
             {
@@ -176,7 +169,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlIgnore
 #endif
-        public List<Integer> getConsonantAdjustmentList()
+        public List<int> getConsonantAdjustmentList()
         {
 #if !__cplusplus
             if ( mConsonantAdjustments != null )
@@ -185,7 +178,7 @@ namespace cadencii.vsq
             }
             if ( mPhoneticSymbols == null )
             {
-                mConsonantAdjustments = new List<Integer>();
+                mConsonantAdjustments = new List<int>();
                 return mConsonantAdjustments;
             }
 #endif
@@ -206,7 +199,7 @@ namespace cadencii.vsq
 #if JAVA
         @XmlIgnore
 #endif
-        public void setConsonantAdjustmentList( List<Integer> value )
+        public void setConsonantAdjustmentList( List<int> value )
         {
 #if !__cplusplus
             if ( value == null )
@@ -239,7 +232,7 @@ namespace cadencii.vsq
             result.UnknownFloat = this.UnknownFloat;
             if ( mConsonantAdjustments != null )
             {
-                result.mConsonantAdjustments = new List<Integer>();
+                result.mConsonantAdjustments = new List<int>();
                 for ( int i = 0; i < mConsonantAdjustments.Count; i++ )
                 {
                     result.mConsonantAdjustments.Add( mConsonantAdjustments[i] );
@@ -262,7 +255,7 @@ namespace cadencii.vsq
         public Lyric()
         {
             UnknownFloat = 1.0f;
-            mConsonantAdjustments = new List<Integer>();
+            mConsonantAdjustments = new List<int>();
             mPhoneticSymbols = new List<String>();
         }
 
@@ -436,10 +429,10 @@ namespace cadencii.vsq
             }
 
             // 古いconsonant adjustmentを保持しておく
-            List<Integer> old_adjustment = null;
+            List<int> old_adjustment = null;
             if ( mConsonantAdjustments != null )
             {
-                old_adjustment = new List<Integer>();
+                old_adjustment = new List<int>();
                 int count = mConsonantAdjustments.Count;
                 for ( int i = 0; i < count; i++ )
                 {
@@ -472,7 +465,7 @@ namespace cadencii.vsq
             if ( mConsonantAdjustments == null ||
                 (mConsonantAdjustments != null && mConsonantAdjustments.Count != mPhoneticSymbols.Count) )
             {
-                mConsonantAdjustments = new List<Integer>();
+                mConsonantAdjustments = new List<int>();
                 for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
                 {
                     mConsonantAdjustments.Add( 0 );
@@ -490,7 +483,7 @@ namespace cadencii.vsq
                     }
                     String s0 = mPhoneticSymbols[i];
                     String s1 = old_symbol[i];
-                    boolean use_old_value = (old_symbol != null && i < old_symbol.Count) &&
+                    bool use_old_value = (old_symbol != null && i < old_symbol.Count) &&
                                             (s0 == s1) &&
                                             (old_adjustment != null && i < old_adjustment.Count);
                     if ( use_old_value )
@@ -538,7 +531,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="add_quatation_mark">クォーテーションマークを付けるかどうか</param>
         /// <returns>変換後の文字列</returns>
-        public String toString( boolean add_quatation_mark )
+        public String toString( bool add_quatation_mark )
         {
             String quot = (add_quatation_mark ? "\"" : "");
             String result;
@@ -557,7 +550,7 @@ namespace cadencii.vsq
             result = result.Replace( "\\" + "\\", "\\" );
             if ( mConsonantAdjustments == null )
             {
-                mConsonantAdjustments = new List<Integer>();
+                mConsonantAdjustments = new List<int>();
                 for ( int i = 0; i < symbol.Count; i++ )
                 {
                     mConsonantAdjustments.Add( VsqPhoneticSymbol.isConsonant( symbol[i] ) ? 64 : 0 );

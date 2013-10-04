@@ -25,7 +25,6 @@ using System.Threading;
 
 namespace cadencii
 {
-    using Integer = System.Int32;
 #endif
 
     public class TestFormWorker
@@ -49,7 +48,7 @@ namespace cadencii
         public void testMethod( WorkerState receiver, Object argument )
         {
             int wait_ms = 10;
-            int amount = ((Integer)argument) / wait_ms;
+            int amount = ((int)argument) / wait_ms;
             int proc = 0;
             for ( int i = 0; i < amount; i++ ) {
                 // 中止処理後にreportCompleteを送ってはいけない

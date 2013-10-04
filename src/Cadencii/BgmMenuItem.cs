@@ -26,7 +26,6 @@ using cadencii;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA

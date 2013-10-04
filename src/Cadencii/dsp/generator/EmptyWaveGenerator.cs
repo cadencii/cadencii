@@ -20,7 +20,6 @@ using System.Threading;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 
@@ -36,8 +35,8 @@ namespace cadencii
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
         private WaveReceiver mReceiver = null;
-        private boolean mAbortRequested = false;
-        private boolean mRunning = false;
+        private bool mAbortRequested = false;
+        private bool mRunning = false;
         private long mTotalAppend = 0L;
         private long mTotalSamples = 0L;
         private int mSampleRate = 0;
@@ -47,7 +46,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }

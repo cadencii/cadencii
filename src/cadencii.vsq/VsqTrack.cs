@@ -26,8 +26,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -70,16 +68,16 @@ namespace cadencii.vsq
 #if JAVA
         private class IndexIterator implements Iterator<Integer> {
 #else
-        private class IndexIterator : Iterator<Integer>
+        private class IndexIterator : Iterator<int>
         {
 #endif
             VsqEventList list;
             int pos;
-            boolean kindSinger = false;
-            boolean kindNote = false;
-            boolean kindCrescend = false;
-            boolean kindDecrescend = false;
-            boolean kindDynaff = false;
+            bool kindSinger = false;
+            bool kindNote = false;
+            bool kindCrescend = false;
+            bool kindDecrescend = false;
+            bool kindDynaff = false;
 
             public IndexIterator( VsqEventList list, int iterator_kind )
             {
@@ -92,7 +90,7 @@ namespace cadencii.vsq
                 kindDynaff = (iterator_kind & IndexIteratorKind.DYNAFF) == IndexIteratorKind.DYNAFF;
             }
 
-            public boolean hasNext()
+            public bool hasNext()
             {
                 int count = list.getCount();
                 for ( int i = pos + 1; i < count; i++ ) {
@@ -129,7 +127,7 @@ namespace cadencii.vsq
                 return false;
             }
 
-            public Integer next()
+            public int next()
             {
                 int count = list.getCount();
                 for ( int i = pos + 1; i < count; i++ ) {
@@ -210,7 +208,7 @@ namespace cadencii.vsq
                 this.end = end;
             }
 
-            public boolean hasNext()
+            public bool hasNext()
             {
                 int nextIndex = findNextIndex();
                 return 0 <= nextIndex && nextIndex < source.getCount();
@@ -307,7 +305,7 @@ namespace cadencii.vsq
                 m_pos = -1;
             }
 
-            public boolean hasNext()
+            public bool hasNext()
             {
                 int c = m_list.getCount();
                 for ( int i = m_pos + 1; i < c; i++ ) {
@@ -354,7 +352,7 @@ namespace cadencii.vsq
                 m_pos = -1;
             }
 
-            public boolean hasNext()
+            public bool hasNext()
             {
                 if ( 0 <= m_pos + 1 && m_pos + 1 < m_list.getCount() ) {
                     return true;
@@ -439,7 +437,7 @@ namespace cadencii.vsq
                 last_singer.Clock = clock_end;
             }
 
-            boolean changed = true;
+            bool changed = true;
             // イベントの削除
             while ( changed ) {
                 changed = false;
@@ -475,7 +473,7 @@ namespace cadencii.vsq
                 VsqBPList buf_bplist = (VsqBPList)bplist.clone();
                 bplist.clear();
                 int value_at_end = buf_bplist.getValue( clock_end );
-                boolean at_end_added = false;
+                bool at_end_added = false;
                 foreach (var key in buf_bplist.keyClockIterator()) {
                     if ( key < clock_start ) {
                         bplist.add( key, buf_bplist.getValue( key ) );
@@ -497,7 +495,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="iterator_kind"></param>
         /// <returns></returns>
-        public Iterator<Integer> indexIterator( int iterator_kind )
+        public Iterator<int> indexIterator( int iterator_kind )
         {
             if ( MetaText == null ) {
                 return new IndexIterator( new VsqEventList(), iterator_kind );
@@ -549,7 +547,7 @@ namespace cadencii.vsq
         /// このトラックがレンダリングされるかどうかを取得します．
         /// </summary>
         /// <returns></returns>
-        public boolean isTrackOn()
+        public bool isTrackOn()
         {
             if ( MetaText == null ) return true;
             if ( MetaText.Common == null ) return true;
@@ -560,7 +558,7 @@ namespace cadencii.vsq
         /// このトラックがレンダリングされるかどうかを設定します，
         /// </summary>
         /// <param name="value"></param>
-        public void setTrackOn( boolean value )
+        public void setTrackOn( bool value )
         {
             if ( MetaText == null ) return;
             if ( MetaText.Common == null ) {
@@ -955,7 +953,7 @@ namespace cadencii.vsq
                 VsqEvent ve = itr.next();
                 IconHandle singer_handle = (IconHandle)ve.ID.IconHandle;
                 int program = singer_handle.Program;
-                boolean found = false;
+                bool found = false;
                 for ( int i = 0; i < singers_size; i++ ) {
                     VsqID id = singers[ i ];
                     if ( program == singer_handle.Program ) {
@@ -1111,7 +1109,7 @@ namespace cadencii.vsq
             try {
                 sw = new TextStream();
                 int count = midi_event.Count;
-                List<Integer> buffer = new List<Integer>();
+                List<int> buffer = new List<int>();
                 for ( int i = 0; i < count; i++ ) {
                     MidiEvent item = midi_event[ i ];
                     if ( item.firstByte == 0xff && item.data.Length > 0 ) {

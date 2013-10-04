@@ -30,8 +30,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -40,8 +38,8 @@ namespace cadencii
     public class FormGameControlerConfig : System.Windows.Forms.Form
 #endif
     {
-        private List<Integer> m_list = new List<Integer>();
-        private List<Integer> m_povs = new List<Integer>();
+        private List<int> m_list = new List<int>();
+        private List<int> m_povs = new List<int>();
         private int index;
         private System.Windows.Forms.Timer timer;
 
@@ -213,7 +211,7 @@ namespace cadencii
             AppManager.debugWriteLine( "FormGameControlerConfig+timer_Tick" );
             AppManager.debugWriteLine( "    pov=" + pov );
 #endif
-            boolean added = false;
+            bool added = false;
             if ( index <= 4 ) {
                 if ( pov >= 0 && !m_povs.Contains( pov ) ) {
                     m_povs[ index - 1] =  pov ;
@@ -331,7 +329,7 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose( bool disposing )
         {
             if ( disposing && (components != null) ) {
                 components.Dispose();

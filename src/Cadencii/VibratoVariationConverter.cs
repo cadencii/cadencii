@@ -31,7 +31,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -50,7 +49,7 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public boolean isStandardValuesSupported()
+        public bool isStandardValuesSupported()
         {
             return true;
         }

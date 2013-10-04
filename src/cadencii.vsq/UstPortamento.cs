@@ -28,7 +28,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -50,7 +49,7 @@ namespace cadencii.vsq
         /// <summary>
         /// mUnknownIntが設定されているかどうか
         /// </summary>
-        private boolean mIsUnknownIntSpecified = false;
+        private bool mIsUnknownIntSpecified = false;
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する

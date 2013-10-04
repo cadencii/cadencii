@@ -23,7 +23,6 @@ using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -33,7 +32,7 @@ namespace cadencii.media {
 #endif
         private int m_channel;
         private int m_byte_per_sample;
-        private boolean m_opened;
+        private bool m_opened;
         private RandomAccessFile m_stream;
         private int m_total_samples;
         private double m_amplify_left = 1.0;
@@ -71,7 +70,7 @@ namespace cadencii.media {
             throws IOException, FileNotFoundException
 #endif
  {
-            boolean ret = open( file );
+            bool ret = open( file );
             m_file = file;
         }
 
@@ -121,7 +120,7 @@ namespace cadencii.media {
         }
 #endif
 
-        public boolean open( String file )
+        public bool open( String file )
 #if JAVA
             throws IOException, FileNotFoundException
 #endif

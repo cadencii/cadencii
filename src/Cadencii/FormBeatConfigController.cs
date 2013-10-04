@@ -26,7 +26,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -37,7 +36,7 @@ namespace cadencii
     {
         private FormBeatConfigUi mUi;
 
-        public FormBeatConfigController( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure )
+        public FormBeatConfigController( int bar_count, int numerator, int denominator, bool num_enabled, int pre_measure )
         {
             mUi = new FormBeatConfigUiImpl( this );
 
@@ -167,7 +166,7 @@ namespace cadencii
             return (int)mUi.getValueStartNum();
         }
 
-        public boolean isEndSpecified()
+        public bool isEndSpecified()
         {
             return mUi.isCheckedEndCheckbox();
         }

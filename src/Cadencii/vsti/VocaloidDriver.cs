@@ -24,7 +24,6 @@ using VstSdk;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
     using VstIntPtr = System.Int32;
 
     public unsafe class VocaloidDriver : VSTiDriverBase
@@ -41,23 +40,23 @@ namespace cadencii
         /// <summary>
         /// s_track_events[0]のmidiイベントを受信済みかどうかを表すフラグ
         /// </summary>
-        boolean g_midiPrepared0;
+        bool g_midiPrepared0;
         /// <summary>
         /// s_track_events[1]のmidiイベントを受信済みかどうかを表すフラグ
         /// </summary>
-        boolean g_midiPrepared1;
+        bool g_midiPrepared1;
         int g_tcCurrent;
         int g_tcPrevious;
         int g_saProcessed;
         int g_saTotalSamples;
         List<TempoInfo> g_tempoList;
         int g_numTempoList;
-        //boolean g_cancelRequired;
+        //bool g_cancelRequired;
         double g_progress;
         /// <summary>
         /// StartRenderingメソッドが回っている最中にtrue
         /// </summary>
-        boolean rendering = false;
+        bool rendering = false;
         //int dseVersion;
         private Object locker = new Object();
         RendererKind kind;
@@ -124,9 +123,9 @@ namespace cadencii
             return ret;
         }
 
-        public override boolean open( int block_size, int sample_rate )
+        public override bool open( int block_size, int sample_rate )
         {
-            boolean ret = base.open( block_size, sample_rate );
+            bool ret = base.open( block_size, sample_rate );
 #if DEBUG
             sout.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
 #endif
@@ -254,7 +253,7 @@ namespace cadencii
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner, WorkerState state )
+        public int startRendering( long total_samples, bool mode_infinite, int sample_rate, IWaveIncoming runner, WorkerState state )
         {
 #if DEBUG
             sout.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
@@ -556,7 +555,7 @@ namespace cadencii
             return 1;
         }
 
-        public boolean isRendering()
+        public bool isRendering()
         {
             return rendering;
         }
@@ -580,7 +579,7 @@ namespace cadencii
             for ( int i = 0; i < y0.Count; i++ ) {
                 ret.Add( y0[ i ] );
             }
-            boolean changed = true;
+            bool changed = true;
             while ( changed ) {
                 changed = false;
                 for ( int i = 0; i < ret.Count - 1; i++ ) {

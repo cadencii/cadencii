@@ -34,7 +34,6 @@ using cadencii.apputil;
 
 namespace cadencii.new_
 {
-    using boolean = System.Boolean;
 
     public class WaveDrawContext : IDisposable
     {
@@ -118,7 +117,7 @@ namespace cadencii.new_
             TempoVector tempo_table,
             float pixel_per_clock,
             float scale_y,
-            boolean auto_maximize )
+            bool auto_maximize )
         {
         }
 
@@ -134,7 +133,6 @@ namespace cadencii.new_
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -517,7 +515,7 @@ namespace cadencii
             TempoVector tempo_table,
             float pixel_per_clock,
             float scale_y,
-            boolean auto_maximize )
+            bool auto_maximize )
         {
             if ( mWave.Length == 0 ) {
                 return;
@@ -549,7 +547,7 @@ namespace cadencii
             int lastYMin = lastYMax;
             int lasty = lastYMin;
             int lasty2 = lastYMin;
-            boolean skipped = false;
+            bool skipped = false;
             mDrawer.append( ox, lasty );
             int xmax = rect.x + rect.width;
             int lastTempo = 500000;
@@ -605,7 +603,7 @@ namespace cadencii
                     j1 = (int)((rect.x + rect.width - xoffset) / pixel_per_sample) + sStart;
                 }
 
-                boolean breakRequired = false;
+                bool breakRequired = false;
                 for ( int j = j0; j < j1; j++ ) {
                     int v = mWave[j];
                     if ( v == last ) {

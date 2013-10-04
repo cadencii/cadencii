@@ -20,8 +20,6 @@ using cadencii.java.io;
 using cadencii.java.util;
 
 namespace cadencii {
-    using boolean = System.Boolean;
-
     /// <summary>
     /// スクリプトを管理するクラス
     /// </summary>
@@ -63,7 +61,7 @@ namespace cadencii {
                 double time = PortUtil.getFileLastModified( file );
                 added.Add( id );
 
-                boolean loadthis = true;
+                bool loadthis = true;
                 if ( scripts.ContainsKey( id ) ) {
                     double otime = scripts[ id ].fileTimestamp;
                     if ( time <= otime ) {
@@ -82,7 +80,7 @@ namespace cadencii {
             }
 
             // 削除されたスクリプトがあれば登録を解除する
-            boolean changed = true;
+            bool changed = true;
             while ( changed ) {
                 changed = false;
                 foreach (var id in scripts.Keys) {
@@ -99,7 +97,7 @@ namespace cadencii {
         /// スクリプトを実行します。
         /// </summary>
         /// <param name="evsd"></param>
-        public static boolean invokeScript( String id, VsqFileEx vsq ) {
+        public static bool invokeScript( String id, VsqFileEx vsq ) {
             ScriptInvoker script_invoker = null;
             if ( scripts.ContainsKey( id ) ) {
                 script_invoker = scripts[ id ];
@@ -111,14 +109,14 @@ namespace cadencii {
                     VsqFileEx work = (VsqFileEx)vsq.clone();
                     ScriptReturnStatus ret = ScriptReturnStatus.ERROR;
                     if ( script_invoker.scriptDelegate is EditVsqScriptDelegate ) {
-                        boolean b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke( work );
+                        bool b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke( work );
                         if ( b_ret ) {
                             ret = ScriptReturnStatus.EDITED;
                         } else {
                             ret = ScriptReturnStatus.ERROR;
                         }
                     } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateEx ) {
-                        boolean b_ret = ((EditVsqScriptDelegateEx)script_invoker.scriptDelegate).Invoke( work );
+                        bool b_ret = ((EditVsqScriptDelegateEx)script_invoker.scriptDelegate).Invoke( work );
                         if ( b_ret ) {
                             ret = ScriptReturnStatus.EDITED;
                         } else {
@@ -139,7 +137,7 @@ namespace cadencii {
                     }
                     String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;
-                    boolean delete_xml_when_exit = false; // xmlを消すときtrue
+                    bool delete_xml_when_exit = false; // xmlを消すときtrue
                     try {
                         fs = new FileOutputStream( config_file );
                         script_invoker.Serializer.serialize( fs, null );
@@ -234,7 +232,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static boolean isAvailable( String id ) {
+        public static bool isAvailable( String id ) {
             if ( scripts.ContainsKey( id ) ) {
                 return scripts[ id ].scriptDelegate != null;
             } else {

@@ -20,7 +20,6 @@ using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -68,7 +67,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public boolean equals( VibratoHandle item )
+        public bool equals( VibratoHandle item )
         {
             if ( item == null ) {
                 return false;

@@ -28,7 +28,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -50,50 +49,50 @@ namespace cadencii.vsq
         public String Tag;
 
         private String mLyric = "";
-        private boolean mIsLyricSpec = false;
+        private bool mIsLyricSpec = false;
 
         private int mNote = -1;
-        private boolean mIsNoteSpec = false;
+        private bool mIsNoteSpec = false;
 
         private int mIntensity = 100;
-        private boolean mIsIntensitySpec = false;
+        private bool mIsIntensitySpec = false;
 
         private int mPBType = -1;
-        private boolean mIsPBTypeSpec = false;
+        private bool mIsPBTypeSpec = false;
 
         private float[] mPitches = null;
-        private boolean mIsPitchesSpec = false;
+        private bool mIsPitchesSpec = false;
         
         private float mTempo = -1;
-        private boolean mIsTempoSpec = false;
+        private bool mIsTempoSpec = false;
 
         private UstVibrato mVibrato = null;
-        private boolean mIsVibratoSpec = false;
+        private bool mIsVibratoSpec = false;
 
         private UstPortamento mPortamento = null;
-        private boolean mIsPortamentoSpec = false;
+        private bool mIsPortamentoSpec = false;
 
         private float mPreUtterance = 0;
-        private boolean mIsPreUtteranceSpec = false;
+        private bool mIsPreUtteranceSpec = false;
 
         private float mVoiceOverlap = 0;
-        private boolean mIsVoiceOverlapSpec = false;
+        private bool mIsVoiceOverlapSpec = false;
         
         private UstEnvelope mEnvelope = null;
-        private boolean mIsEnvelopeSpec = false;
+        private bool mIsEnvelopeSpec = false;
 
         public String Flags = "";
         
         private int mModuration = 100;
-        private boolean mIsModurationSpec = false;
+        private bool mIsModurationSpec = false;
         
         public int Index;
 
         private float mStartPoint;
-        private boolean mIsStartPointSpec = false;
+        private bool mIsStartPointSpec = false;
         
         private int mLength = 0;
-        private boolean mIsLengthSpec = false;
+        private bool mIsLengthSpec = false;
 
 #if JAVA
         @XmlGenericType( UstEventProperty.class )
@@ -116,7 +115,7 @@ namespace cadencii.vsq
             mIsLyricSpec = true;
         }
 
-        public boolean isLyricSpecified()
+        public bool isLyricSpecified()
         {
             return mIsLyricSpec;
         }
@@ -148,7 +147,7 @@ namespace cadencii.vsq
             mIsNoteSpec = true;
         }
 
-        public boolean isNoteSpecified()
+        public bool isNoteSpecified()
         {
             return mIsNoteSpec;
         }
@@ -180,7 +179,7 @@ namespace cadencii.vsq
             mIsIntensitySpec = true;
         }
 
-        public boolean isIntensitySpecified()
+        public bool isIntensitySpecified()
         {
             return mIsIntensitySpec;
         }
@@ -212,7 +211,7 @@ namespace cadencii.vsq
             mIsPBTypeSpec = true;
         }
 
-        public boolean isPBTypeSpecified()
+        public bool isPBTypeSpecified()
         {
             return mIsPBTypeSpec;
         }
@@ -244,7 +243,7 @@ namespace cadencii.vsq
             mIsPitchesSpec = true;
         }
 
-        public boolean isPitchesSpecified()
+        public bool isPitchesSpecified()
         {
             return mIsPitchesSpec;
         }
@@ -276,7 +275,7 @@ namespace cadencii.vsq
             mIsTempoSpec = true;
         }
 
-        public boolean isTempoSpecified()
+        public bool isTempoSpecified()
         {
             return mIsTempoSpec;
         }
@@ -308,7 +307,7 @@ namespace cadencii.vsq
             mIsVibratoSpec = true;
         }
 
-        public boolean isVibratoSpecified()
+        public bool isVibratoSpecified()
         {
             return mIsVibratoSpec;
         }
@@ -340,7 +339,7 @@ namespace cadencii.vsq
             mIsPortamentoSpec = true;
         }
 
-        public boolean isPortamentoSpecified()
+        public bool isPortamentoSpecified()
         {
             return mIsPortamentoSpec;
         }
@@ -372,7 +371,7 @@ namespace cadencii.vsq
             mIsPreUtteranceSpec = true;
         }
 
-        public boolean isPreUtteranceSpecified()
+        public bool isPreUtteranceSpecified()
         {
             return mIsPreUtteranceSpec;
         }
@@ -404,7 +403,7 @@ namespace cadencii.vsq
             mIsVoiceOverlapSpec = true;
         }
 
-        public boolean isVoiceOverlapSpecified()
+        public bool isVoiceOverlapSpecified()
         {
             return mIsVoiceOverlapSpec;
         }
@@ -436,7 +435,7 @@ namespace cadencii.vsq
             mIsEnvelopeSpec = true;
         }
 
-        public boolean isEnvelopeSpecified()
+        public bool isEnvelopeSpecified()
         {
             return mIsEnvelopeSpec;
         }
@@ -468,7 +467,7 @@ namespace cadencii.vsq
             mIsModurationSpec = true;
         }
 
-        public boolean isModurationSpecified()
+        public bool isModurationSpecified()
         {
             return mIsModurationSpec;
         }
@@ -513,7 +512,7 @@ namespace cadencii.vsq
         /// この値がfalseの場合，getStartPointで得られる値は不定です
         /// </summary>
         /// <returns></returns>
-        public boolean isStartPointSpecified()
+        public bool isStartPointSpecified()
         {
             return mIsStartPointSpec;
         }
@@ -539,7 +538,7 @@ namespace cadencii.vsq
         /// この値がfalseの場合，getLengthで得られる値は不定です
         /// </summary>
         /// <returns></returns>
-        public boolean isLengthSpecified()
+        public bool isLengthSpecified()
         {
             return mIsLengthSpec;
         }
@@ -730,12 +729,12 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public boolean equalsForSynth( UstEvent item )
+        public bool equalsForSynth( UstEvent item )
         {
             if ( item == null ) {
                 return false;
             }
-            boolean ret = true;
+            bool ret = true;
             // モジュレーション・先行発声・スタート位置・オーバーラップのみチェック．
             // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
             if ( this.getModuration() != item.getModuration() ) ret = false;

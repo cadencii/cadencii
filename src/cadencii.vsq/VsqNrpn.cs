@@ -27,7 +27,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -40,8 +39,8 @@ namespace cadencii.vsq
         public int Nrpn;
         public byte DataMsb;
         public byte DataLsb;
-        public boolean DataLsbSpecified;
-        public boolean msbOmitRequired;
+        public bool DataLsbSpecified;
+        public bool msbOmitRequired;
         private List<VsqNrpn> m_list;
 
         public VsqNrpn( int clock, int nrpn, byte data_msb )
@@ -100,7 +99,7 @@ namespace cadencii.vsq
                     } else {
                         // まずworkを並べ替え
                         last_clock = itemi.Clock;
-                        boolean changed = true;
+                        bool changed = true;
                         int work_size = work.Count;
                         while ( changed ) {
                             changed = false;
@@ -210,14 +209,14 @@ namespace cadencii.vsq
             m_list.Add( new VsqNrpn( Clock, nrpn, data_msb, data_lsb ) );
         }
 
-        public void append( int nrpn, byte data_msb, boolean msb_omit_required )
+        public void append( int nrpn, byte data_msb, bool msb_omit_required )
         {
             VsqNrpn v = new VsqNrpn( Clock, nrpn, data_msb );
             v.msbOmitRequired = msb_omit_required;
             m_list.Add( v );
         }
 
-        public void append( int nrpn, byte data_msb, byte data_lsb, boolean msb_omit_required )
+        public void append( int nrpn, byte data_msb, byte data_lsb, bool msb_omit_required )
         {
             VsqNrpn v = new VsqNrpn( Clock, nrpn, data_msb, data_lsb );
             v.msbOmitRequired = msb_omit_required;

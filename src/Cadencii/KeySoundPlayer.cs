@@ -23,7 +23,6 @@ using cadencii.media;
 using cadencii;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     public class KeySoundPlayer {
@@ -32,7 +31,7 @@ namespace cadencii {
         /// </summary>
         private static BSoundPlayer[] m_sound_previewer;
         private static BSoundPlayer m_temp_player;
-        private static boolean[] m_prepared;
+        private static bool[] m_prepared;
         
         public static void init() {
 #if DEBUG
@@ -40,7 +39,7 @@ namespace cadencii {
 #endif
             m_sound_previewer = new BSoundPlayer[48];
             m_temp_player = null;
-            m_prepared = new boolean[127];
+            m_prepared = new bool[127];
             String cache_path = Utility.getKeySoundPath();
             for ( int i = 0; i <= 126; i++ ) {
                 String path = Path.Combine( cache_path, i + ".wav" );

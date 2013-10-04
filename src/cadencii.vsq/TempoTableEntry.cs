@@ -20,7 +20,6 @@ using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -81,7 +80,7 @@ namespace cadencii.vsq
         }
 #endif
 
-        public boolean Equals( TempoTableEntry entry )
+        public bool Equals( TempoTableEntry entry )
         {
             if ( this.Clock == entry.Clock ) {
                 return true;

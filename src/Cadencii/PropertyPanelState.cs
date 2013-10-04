@@ -29,7 +29,6 @@ using cadencii.windows.forms;
 using cadencii.xml;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>

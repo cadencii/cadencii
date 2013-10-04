@@ -38,8 +38,6 @@ using cadencii.utau;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -66,10 +64,10 @@ namespace cadencii
         private String mResampler;
         private String mWavtool;
         private String mTempDir;
-        private boolean mResamplerWithWine;
-        private boolean mWavtoolWithWine;
-        //private boolean mAbortRequired = false;
-        private boolean mRunning = false;
+        private bool mResamplerWithWine;
+        private bool mWavtoolWithWine;
+        //private bool mAbortRequired = false;
+        private bool mRunning = false;
         private String mWine = "";
 
         private long mTotalSamples;
@@ -87,23 +85,23 @@ namespace cadencii
         private int mThisSampleRate = 44100;
         private RateConvertContext mContext = null;
         private WorkerState mState;
-        private boolean mUseWideCharacterWorkaround = false;
+        private bool mUseWideCharacterWorkaround = false;
         // 作成したジャンクションのリスト
         private List<String> mJunctions = new List<String>();
 #if DEBUG
         /// <summary>
         /// ログを出さない設定の時true
         /// </summary>
-        private boolean mIsQuiet = false;
+        private bool mIsQuiet = false;
 
-        private boolean mUseShortTemp = false;
-        private boolean mUseShortResampler = false;
-        private boolean mUseShortWavtool = false;
-        private boolean mUseShortVoicebank = false;
+        private bool mUseShortTemp = false;
+        private bool mUseShortResampler = false;
+        private bool mUseShortWavtool = false;
+        private bool mUseShortVoicebank = false;
 #endif
 
 #if DEBUG
-        public void setDebugCondition( boolean use_short_temp, boolean use_short_resampler, boolean use_short_wavtool, boolean use_short_voicebank )
+        public void setDebugCondition( bool use_short_temp, bool use_short_resampler, bool use_short_wavtool, bool use_short_voicebank )
         {
             mUseShortTemp = use_short_temp;
             mUseShortResampler = use_short_resampler;
@@ -111,7 +109,7 @@ namespace cadencii
             mUseShortVoicebank = use_short_voicebank;
         }
 
-        public void setQuiet( boolean value )
+        public void setQuiet( bool value )
         {
             mIsQuiet = value;
         }
@@ -122,7 +120,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }
@@ -530,7 +528,7 @@ namespace cadencii
 
                     // ピッチを取得
                     List<String> pitch = new List<String>();
-                    boolean allzero = true;
+                    bool allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
                     int tempo = BASE_TEMPO;
                     double delta_sec = delta_clock / (8.0 * tempo); //ピッチを取得する時間間隔
@@ -662,7 +660,7 @@ namespace cadencii
                         rq2.appendArgRange( pitch.ToArray() );
                     }
 
-                    boolean exist_in_cache = mCache.ContainsKey( rq2.hashSource );
+                    bool exist_in_cache = mCache.ContainsKey( rq2.hashSource );
                     if ( !exist_in_cache ) {
                         if ( mCache.Count + 1 >= MAX_CACHE ) {
                             double old = PortUtil.getCurrentTime();
@@ -738,7 +736,7 @@ namespace cadencii
                 int channel = 0; // .whdに記録されたチャンネル数
                 int byte_per_sample = 0;
                 // 引き続き、wavtoolを呼ぶ作業に移行
-                boolean first = true;
+                bool first = true;
                 //int trim_remain = (int)( trimMillisec / 1000.0 * VSTiProxy.SAMPLE_RATE); //先頭から省かなければならないサンプル数の残り
                 VsqBPList dyn_curve = mVsq.Track[ mTrack ].getCurve( "dyn" );
 #if MAKEBAT_SP
@@ -771,7 +769,7 @@ namespace cadencii
 #endif
                         ProcessBuilder pb = new ProcessBuilder( list );
                         Process process = pb.start();
-                        boolean д = true;
+                        bool д = true;
                         for( ; д; ){
                             try{
                                 int ecode = process.exitValue();
@@ -979,7 +977,7 @@ namespace cadencii
                             dat.seek( processed_sample * channel * byte_per_sample );
                             double sec_start = processed_sample / (double)mSampleRate;
                             double sec_per_sa = 1.0 / (double)mSampleRate;
-                            ByRef<Integer> index = new ByRef<Integer>( 0 );
+                            ByRef<int> index = new ByRef<int>( 0 );
                             #region チャンネル数／ビット深度ごとの読み取り操作
                             if ( byte_per_sample == 1 ) {
                                 if ( channel == 1 ) {
@@ -1223,7 +1221,7 @@ namespace cadencii
             }
         }
 
-        private void processWavtool( List<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
+        private void processWavtool( List<String> arg, String filebase, String temp_dir, String wavtool, bool invoke_with_wine )
         {
 #if JAVA
             Vector<String> args = new Vector<String>();

@@ -25,7 +25,6 @@ namespace cadencii{
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -34,7 +33,7 @@ namespace cadencii
     public class WorkerStateImp : WorkerState
 #endif
     {
-        private boolean mCancelRequested;
+        private bool mCancelRequested;
 
         public double getJobAmount()
         {
@@ -46,7 +45,7 @@ namespace cadencii
             return 0;
         }
 
-        public boolean isCancelRequested()
+        public bool isCancelRequested()
         {
             return mCancelRequested;
         }

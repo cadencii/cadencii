@@ -25,7 +25,6 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -37,15 +36,15 @@ namespace cadencii
         /// <summary>
         /// 波形表示部の拡大ボタン上でマウスが下りた状態かどうか
         /// </summary>
-        private boolean mWaveViewButtonZoomMouseDowned = false;
+        private bool mWaveViewButtonZoomMouseDowned = false;
         /// <summary>
         /// 波形表示部のAutoMaximizeボタン上でマウスが下りた状態かどうか
         /// </summary>
-        private boolean mWaveViewButtonAutoMaximizeMouseDowned = false;
+        private bool mWaveViewButtonAutoMaximizeMouseDowned = false;
         /// <summary>
         /// 波形表示部の縦軸の拡大率を自動最大化するかどうか
         /// </summary>
-        private boolean mWaveViewAutoMaximize = false;
+        private bool mWaveViewAutoMaximize = false;
         /// <summary>
         /// 波形表示部分のズーム時に，マウスが下りた瞬間のY座標
         /// </summary>
@@ -78,7 +77,7 @@ namespace cadencii
             mFormMain.refreshScreen();
         }
 
-        public void setAutoMaximize( boolean value )
+        public void setAutoMaximize( bool value )
         {
             mWaveView.setAutoMaximize( value );
         }

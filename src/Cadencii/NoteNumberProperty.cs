@@ -25,7 +25,6 @@ using System.ComponentModel;
 
 namespace cadencii
 {
-    using boolean = Boolean;
 #endif
 
 #if JAVA
@@ -55,13 +54,13 @@ namespace cadencii
         }
 
 #if !JAVA
-        public override boolean Equals( Object obj )
+        public override bool Equals( Object obj )
         {
             return equals( obj );
         }
 #endif
 
-        public boolean equals( Object obj )
+        public bool equals( Object obj )
         {
             if ( obj is NoteNumberProperty ) {
                 if ( noteNumber == ((NoteNumberProperty)obj).noteNumber ) {

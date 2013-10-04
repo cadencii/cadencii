@@ -21,10 +21,6 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Float = System.Single;
-    using Integer = System.Int32;
-
 #if JAVA
     public class AquesToneWaveGeneratorBase implements WaveGenerator
 #else
@@ -40,8 +36,8 @@ namespace cadencii
         private int mTrack;
         private int mStartClock;
         private int mEndClock;
-        private boolean mRunning = false;
-        //private boolean mAbortRequired;
+        private bool mRunning = false;
+        //private bool mAbortRequired;
         private long mTotalSamples;
         private int mSampleRate;
         /// <summary>
@@ -66,7 +62,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }
@@ -269,7 +265,7 @@ namespace cadencii
                     // MIDiイベントを送信
                     MidiEventQueue queue = list.get( clock );
                     // まずnoteoff
-                    boolean noteoff_send = false;
+                    bool noteoff_send = false;
                     if ( queue.noteoff.Count > 0 ) {
 #if DEBUG
                         for ( int i = 0; i < queue.noteoff.Count; i++ ) {

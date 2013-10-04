@@ -20,7 +20,6 @@ package cadencii;
 using System;
 
 namespace cadencii {
-    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -94,7 +93,7 @@ namespace cadencii {
         /// 合成処理が実行中かどうかを取得します
         /// </summary>
         /// <returns></returns>
-        boolean isRunning();
+        bool isRunning();
 
         /// <summary>
         /// メインウィンドウへの参照を設定します

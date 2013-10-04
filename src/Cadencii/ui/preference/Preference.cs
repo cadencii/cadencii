@@ -27,8 +27,6 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-
     partial class Preference : Form
     {
         private static int columnWidthHeaderProgramChange = 60;
@@ -150,7 +148,7 @@ namespace cadencii
         /// UseWideCharacterWorkaroundに対する設定値を取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isEnableWideCharacterWorkaround()
+        public bool isEnableWideCharacterWorkaround()
         {
             return checkEnableWideCharacterWorkaround.Checked;
         }
@@ -159,7 +157,7 @@ namespace cadencii
         /// UseWideCharacterWorkaroundの設定値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setEnableWideCharacterWorkaround( boolean value )
+        public void setEnableWideCharacterWorkaround( bool value )
         {
             checkEnableWideCharacterWorkaround.Checked = value;
         }
@@ -206,7 +204,7 @@ namespace cadencii
         /// <summary>
         /// Cadencii付属のWineを使うかどうかを表す設定値を取得します
         /// </summary>
-        public boolean isWineBuiltin()
+        public bool isWineBuiltin()
         {
             return radioWineBuiltin.Checked;
         }
@@ -214,7 +212,7 @@ namespace cadencii
         /// <summary>
         /// Cadencii付属のWineを使うかどうかを表す設定値を設定します
         /// </summary>        
-        public void setWineBuiltin( boolean value )
+        public void setWineBuiltin( bool value )
         {
             radioWineBuiltin.Checked = value;
             radioWineCustom.Checked = !value;
@@ -224,7 +222,7 @@ namespace cadencii
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか，を表す値を取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isUseUserDefinedAutoVibratoType()
+        public bool isUseUserDefinedAutoVibratoType()
         {
             return radioUserDefined.Checked;
         }
@@ -234,7 +232,7 @@ namespace cadencii
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public void setUseUserDefinedAutoVibratoType( boolean value )
+        public void setUseUserDefinedAutoVibratoType( bool value )
         {
             radioUserDefined.Checked = value;
             radioVocaloidEditorCompatible.Checked = !value;
@@ -302,7 +300,7 @@ namespace cadencii
         /// VOCALOID1DLLを読み込むかどうかを表すブール値を取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isVocaloid1Required()
+        public bool isVocaloid1Required()
         {
             if ( chkLoadVocaloid1.Enabled ) {
                 return chkLoadVocaloid1.Checked;
@@ -315,7 +313,7 @@ namespace cadencii
         /// VOCALOID1DLLを読み込むかどうかを表すブール値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setVocaloid1Required( boolean value )
+        public void setVocaloid1Required( bool value )
         {
             if ( chkLoadVocaloid1.Enabled ) {
                 chkLoadVocaloid1.Checked = value;
@@ -326,7 +324,7 @@ namespace cadencii
         /// VOCALOID2 DLLを読み込むかどうかを表すブール値を取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isVocaloid2Required()
+        public bool isVocaloid2Required()
         {
             return chkLoadVocaloid2.Checked;
         }
@@ -335,7 +333,7 @@ namespace cadencii
         /// VOCALOID2 DLLを読み込むかどうかを表すブール値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setVocaloid2Required( boolean value )
+        public void setVocaloid2Required( bool value )
         {
             chkLoadVocaloid2.Checked = value;
         }
@@ -344,7 +342,7 @@ namespace cadencii
         /// AquesTone DLLを読み込むかどうかを表すブール値を取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isAquesToneRequired()
+        public bool isAquesToneRequired()
         {
             return chkLoadAquesTone.Checked;
         }
@@ -353,7 +351,7 @@ namespace cadencii
         /// AquesTone DLLを読み込むかどうかを表すブール値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setAquesToneRequired( boolean value )
+        public void setAquesToneRequired( bool value )
         {
             chkLoadAquesTone.Checked = value;
         }
@@ -361,22 +359,22 @@ namespace cadencii
         public bool isAquesTone2Required() { return chkLoadAquesTone2.Checked; }
         public void setAquesTone2Requried( bool value ) { chkLoadAquesTone2.Checked = value; }
 
-        public boolean isUseProjectCache()
+        public bool isUseProjectCache()
         {
             return chkKeepProjectCache.Checked;
         }
 
-        public void setUseProjectCache( boolean value )
+        public void setUseProjectCache( bool value )
         {
             chkKeepProjectCache.Checked = value;
         }
 
-        public boolean isUseSpaceKeyAsMiddleButtonModifier()
+        public bool isUseSpaceKeyAsMiddleButtonModifier()
         {
             return chkUseSpaceKeyAsMiddleButtonModifier.Checked;
         }
 
-        public void setUseSpaceKeyAsMiddleButtonModifier( boolean value )
+        public void setUseSpaceKeyAsMiddleButtonModifier( bool value )
         {
             chkUseSpaceKeyAsMiddleButtonModifier.Checked = value;
         }
@@ -400,12 +398,12 @@ namespace cadencii
             }
         }
 
-        public boolean isSelfDeRomantization()
+        public bool isSelfDeRomantization()
         {
             return chkTranslateRoman.Checked;
         }
 
-        public void setSelfDeRomantization( boolean value )
+        public void setSelfDeRomantization( bool value )
         {
             chkTranslateRoman.Checked = value;
         }
@@ -465,232 +463,232 @@ namespace cadencii
         }
 #endif
 
-        public boolean isCurveVisibleVel()
+        public bool isCurveVisibleVel()
         {
             return chkVel.Checked;
         }
 
-        public void setCurveVisibleVel( boolean value )
+        public void setCurveVisibleVel( bool value )
         {
             chkVel.Checked = value;
         }
 
-        public boolean isCurveVisibleAccent()
+        public bool isCurveVisibleAccent()
         {
             return chkAccent.Checked;
         }
 
-        public void setCurveVisibleAccent( boolean value )
+        public void setCurveVisibleAccent( bool value )
         {
             chkAccent.Checked = value;
         }
 
-        public boolean isCurveVisibleDecay()
+        public bool isCurveVisibleDecay()
         {
             return chkDecay.Checked;
         }
 
-        public void setCurveVisibleDecay( boolean value )
+        public void setCurveVisibleDecay( bool value )
         {
             chkDecay.Checked = value;
         }
 
-        public boolean isCurveVisibleVibratoRate()
+        public bool isCurveVisibleVibratoRate()
         {
             return chkVibratoRate.Checked;
         }
 
-        public void setCurveVisibleVibratoRate( boolean value )
+        public void setCurveVisibleVibratoRate( bool value )
         {
             chkVibratoRate.Checked = value;
         }
 
-        public boolean isCurveVisibleVibratoDepth()
+        public bool isCurveVisibleVibratoDepth()
         {
             return chkVibratoDepth.Checked;
         }
 
-        public void setCurveVisibleVibratoDepth( boolean value )
+        public void setCurveVisibleVibratoDepth( bool value )
         {
             chkVibratoDepth.Checked = value;
         }
 
-        public boolean isCurveVisibleDyn()
+        public bool isCurveVisibleDyn()
         {
             return chkDyn.Checked;
         }
 
-        public void setCurveVisibleDyn( boolean value )
+        public void setCurveVisibleDyn( bool value )
         {
             chkDyn.Checked = value;
         }
 
-        public boolean isCurveVisibleBre()
+        public bool isCurveVisibleBre()
         {
             return chkBre.Checked;
         }
 
-        public void setCurveVisibleBre( boolean value )
+        public void setCurveVisibleBre( bool value )
         {
             chkBre.Checked = value;
         }
 
-        public boolean isCurveVisibleBri()
+        public bool isCurveVisibleBri()
         {
             return chkBri.Checked;
         }
 
-        public void setCurveVisibleBri( boolean value )
+        public void setCurveVisibleBri( bool value )
         {
             chkBri.Checked = value;
         }
 
-        public boolean isCurveVisibleCle()
+        public bool isCurveVisibleCle()
         {
             return chkCle.Checked;
         }
 
-        public void setCurveVisibleCle( boolean value )
+        public void setCurveVisibleCle( bool value )
         {
             chkCle.Checked = value;
         }
 
-        public boolean isCurveVisibleOpe()
+        public bool isCurveVisibleOpe()
         {
             return chkOpe.Checked;
         }
 
-        public void setCurveVisibleOpe( boolean value )
+        public void setCurveVisibleOpe( bool value )
         {
             chkOpe.Checked = value;
         }
 
-        public boolean isCurveVisiblePor()
+        public bool isCurveVisiblePor()
         {
             return chkPor.Checked;
         }
 
-        public void setCurveVisiblePor( boolean value )
+        public void setCurveVisiblePor( bool value )
         {
             chkPor.Checked = value;
         }
 
-        public boolean isCurveVisibleGen()
+        public bool isCurveVisibleGen()
         {
             return chkGen.Checked;
         }
 
-        public void setCurveVisibleGen( boolean value )
+        public void setCurveVisibleGen( bool value )
         {
             chkGen.Checked = value;
         }
 
-        public boolean isCurveVisiblePit()
+        public bool isCurveVisiblePit()
         {
             return chkPit.Checked;
         }
 
-        public void setCurveVisiblePit( boolean value )
+        public void setCurveVisiblePit( bool value )
         {
             chkPit.Checked = value;
         }
 
-        public boolean isCurveVisiblePbs()
+        public bool isCurveVisiblePbs()
         {
             return chkPbs.Checked;
         }
 
-        public void setCurveVisiblePbs( boolean value )
+        public void setCurveVisiblePbs( bool value )
         {
             chkPbs.Checked = value;
         }
 
-        public boolean isCurveVisibleFx2Depth()
+        public bool isCurveVisibleFx2Depth()
         {
             return chkFx2Depth.Checked;
         }
 
-        public void setCurveVisibleFx2Depth( boolean value )
+        public void setCurveVisibleFx2Depth( bool value )
         {
             chkFx2Depth.Checked = value;
         }
 
-        public boolean isCurveVisibleHarmonics()
+        public bool isCurveVisibleHarmonics()
         {
             return chkHarmonics.Checked;
         }
 
-        public void setCurveVisibleHarmonics( boolean value )
+        public void setCurveVisibleHarmonics( bool value )
         {
             chkHarmonics.Checked = value;
         }
 
-        public boolean isCurveVisibleReso1()
+        public bool isCurveVisibleReso1()
         {
             return chkReso1.Checked;
         }
 
-        public void setCurveVisibleReso1( boolean value )
+        public void setCurveVisibleReso1( bool value )
         {
             chkReso1.Checked = value;
         }
 
-        public boolean isCurveVisibleReso2()
+        public bool isCurveVisibleReso2()
         {
             return chkReso2.Checked;
         }
 
-        public void setCurveVisibleReso2( boolean value )
+        public void setCurveVisibleReso2( bool value )
         {
             chkReso2.Checked = value;
         }
 
-        public boolean isCurveVisibleReso3()
+        public bool isCurveVisibleReso3()
         {
             return chkReso3.Checked;
         }
 
-        public void setCurveVisibleReso3( boolean value )
+        public void setCurveVisibleReso3( bool value )
         {
             chkReso3.Checked = value;
         }
 
-        public boolean isCurveVisibleReso4()
+        public bool isCurveVisibleReso4()
         {
             return chkReso4.Checked;
         }
 
-        public void setCurveVisibleReso4( boolean value )
+        public void setCurveVisibleReso4( bool value )
         {
             chkReso4.Checked = value;
         }
 
-        public boolean isCurveVisibleEnvelope()
+        public bool isCurveVisibleEnvelope()
         {
             return chkEnvelope.Checked;
         }
 
-        public void setCurveVisibleEnvelope( boolean value )
+        public void setCurveVisibleEnvelope( bool value )
         {
             chkEnvelope.Checked = value;
         }
 
-        public boolean isCurveSelectingQuantized()
+        public bool isCurveSelectingQuantized()
         {
             return chkCurveSelectingQuantized.Checked;
         }
 
-        public void setCurveSelectingQuantized( boolean value )
+        public void setCurveSelectingQuantized( bool value )
         {
             chkCurveSelectingQuantized.Checked = value;
         }
 
-        public boolean isPlayPreviewWhenRightClick()
+        public bool isPlayPreviewWhenRightClick()
         {
             return chkPlayPreviewWhenRightClick.Checked;
         }
 
-        public void setPlayPreviewWhenRightClick( boolean value )
+        public void setPlayPreviewWhenRightClick( bool value )
         {
             chkPlayPreviewWhenRightClick.Checked = value;
         }
@@ -715,12 +713,12 @@ namespace cadencii
             numTrackHeight.Value = value;
         }
 
-        public boolean isKeepLyricInputMode()
+        public bool isKeepLyricInputMode()
         {
             return chkKeepLyricInputMode.Checked;
         }
 
-        public void setKeepLyricInputMode( boolean value )
+        public void setKeepLyricInputMode( bool value )
         {
             chkKeepLyricInputMode.Checked = value;
         }
@@ -735,12 +733,12 @@ namespace cadencii
             numMaximumFrameRate.Value = value;
         }
 
-        public boolean isScrollHorizontalOnWheel()
+        public bool isScrollHorizontalOnWheel()
         {
             return chkScrollHorizontal.Checked;
         }
 
-        public void setScrollHorizontalOnWheel( boolean value )
+        public void setScrollHorizontalOnWheel( bool value )
         {
             chkScrollHorizontal.Checked = value;
         }
@@ -930,12 +928,12 @@ namespace cadencii
             numPreSendTime.Value = value;
         }
 
-        public boolean isEnableAutoVibrato()
+        public bool isEnableAutoVibrato()
         {
             return chkEnableAutoVibrato.Checked;
         }
 
-        public void setEnableAutoVibrato( boolean value )
+        public void setEnableAutoVibrato( bool value )
         {
             chkEnableAutoVibrato.Checked = value;
         }
@@ -1062,12 +1060,12 @@ namespace cadencii
             }
         }
 
-        public boolean isCursorFixed()
+        public bool isCursorFixed()
         {
             return chkCursorFix.Checked;
         }
 
-        public void setCursorFixed( boolean value )
+        public void setCursorFixed( bool value )
         {
             chkCursorFix.Checked = value;
         }
@@ -1157,12 +1155,12 @@ namespace cadencii
             }
         }
 
-        public void setWavtoolWithWine( boolean value )
+        public void setWavtoolWithWine( bool value )
         {
             chkWavtoolWithWine.Checked = value;
         }
 
-        public boolean isWavtoolWithWine()
+        public bool isWavtoolWithWine()
         {
             return chkWavtoolWithWine.Checked;
         }
@@ -1221,7 +1219,7 @@ namespace cadencii
 
         public void btnOK_Click( Object sender, EventArgs e )
         {
-            boolean was_modified = false;
+            bool was_modified = false;
             if ( AppManager.editorConfig.DoNotUseVocaloid2 != (!isVocaloid2Required()) ) {
                 was_modified = true;
             }
@@ -1256,8 +1254,8 @@ namespace cadencii
             var dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
                 String path = openUtauCore.FileName;
-                boolean check = false;
-                boolean is_mac = isMac();
+                bool check = false;
+                bool is_mac = isMac();
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
@@ -1294,7 +1292,7 @@ namespace cadencii
             }
 
             String sel = (String)listResampler.Items[index].SubItems[0].Text;
-            boolean chk = listResampler.Items[index].Checked;
+            bool chk = listResampler.Items[index].Checked;
             listResampler.Items[index].SubItems[0].Text = listResampler.Items[index + delta].SubItems[0].Text;
             listResampler.Items[index].Checked = listResampler.Items[index + delta].Checked;
             listResampler.Items[index + delta].SubItems[0].Text = sel;
@@ -1334,8 +1332,8 @@ namespace cadencii
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
                 String path = openUtauCore.FileName;
                 txtWavtool.Text = path;
-                boolean is_mac = isMac();
-                boolean check = false;
+                bool is_mac = isMac();
+                bool check = false;
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
@@ -1469,8 +1467,8 @@ namespace cadencii
 
         public void commonChangeAutoVibratoType( Object sender, EventArgs e )
         {
-            boolean v = radioVocaloidEditorCompatible.Checked;
-            boolean ud = radioUserDefined.Checked;
+            bool v = radioVocaloidEditorCompatible.Checked;
+            bool ud = radioUserDefined.Checked;
             groupVocaloidEditorCompatible.Enabled = v;
             groupUserDefined.Enabled = ud;
             comboAutoVibratoType1.Enabled = v;
@@ -1525,19 +1523,19 @@ namespace cadencii
 
         public void radioWineBuiltin_CheckedChanged( Object sender, EventArgs e )
         {
-            boolean enable = !radioWineBuiltin.Checked;
+            bool enable = !radioWineBuiltin.Checked;
             textWineTop.Enabled = enable;
             buttonWineTop.Enabled = enable;
         }
         #endregion
 
         #region helper methods
-        private boolean isMac()
+        private bool isMac()
         {
             return false;
         }
 
-        private boolean isWindowsExecutable( String path )
+        private bool isWindowsExecutable( String path )
         {
             if (!System.IO.File.Exists(path)) {
                 return false;
