@@ -388,8 +388,7 @@ namespace cadencii
 
                 // 前後の音符の先行発音やオーバーラップやらを取得したいので、一度リストに格納する
                 List<VsqEvent> events = new List<VsqEvent>();
-                for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent itemi = itr.next();
+                foreach (var itemi in target.getNoteEventIterator()) {
                     events.Add( itemi );
 #if DEBUG
 #if !JAVA

@@ -1698,7 +1698,7 @@ namespace cadencii
             boolean selected_found = false;
             // yが範囲内なので，xも検索するときtrue
             boolean search_mouse = (0 <= mouse.y && mouse.y <= height);
-            Iterator<VsqEvent> itr = track.getNoteEventIterator();
+            IEnumerator<VsqEvent> itr = track.getNoteEventIterator().GetEnumerator();
             int dotwid = DOT_WID * 2 + 1;
             int tolerance = AppManager.editorConfig.PxTolerance;
             // 選択アイテムが1個以上あるので，検索するときtrue
@@ -1707,8 +1707,8 @@ namespace cadencii
                 boolean draw_env_points = false;
                 itr_prev = itr_item;
                 itr_item = itr_next;
-                if ( itr.hasNext() ) {
-                    itr_next = itr.next();
+                if (itr.MoveNext()) {
+                    itr_next = itr.Current;
                 } else {
                     itr_next = null;
                 }
@@ -1992,7 +1992,7 @@ namespace cadencii
             int clock_end = AppManager.clockFromXCoord( getWidth() );
             int dotwid = DOT_WID * 2 + 1;
             VsqFileEx vsq = AppManager.getVsqFile();
-            Iterator<VsqEvent> itr = vsq.Track[AppManager.getSelected()].getNoteEventIterator();
+            IEnumerator<VsqEvent> itr = vsq.Track[AppManager.getSelected()].getNoteEventIterator().GetEnumerator();
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
@@ -2002,8 +2002,8 @@ namespace cadencii
             while( true ){
                 itr_prev = itr_item;
                 itr_item = itr_next;
-                if ( itr.hasNext() ) {
-                    itr_next = itr.next();
+                if (itr.MoveNext()) {
+                    itr_next = itr.Current;
                 } else {
                     itr_next = null;
                 }
@@ -2588,8 +2588,7 @@ namespace cadencii
 
             // カーブを描く
             int last_shadow_x = key_width;
-            for ( Iterator<VsqEvent> itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = itr.next();
+            foreach (var ve in draw_target.getNoteEventIterator()) {
                 int start = ve.Clock + ve.ID.VibratoDelay;
                 int end = ve.Clock + ve.ID.getLength();
                 if ( end < cl_start ) {
@@ -3842,8 +3841,7 @@ namespace cadencii
                                             int tmin = Math.Min( ve.Clock, last_clock );
                                             int tmax = Math.Max( ve.Clock, last_clock );
                                             List<Integer> add_required = new List<Integer>();
-                                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[AppManager.getSelected()].getNoteEventIterator(); itr.hasNext(); ) {
-                                                VsqEvent item = itr.next();
+                                            foreach (var item in AppManager.getVsqFile().Track[AppManager.getSelected()].getNoteEventIterator()) {
                                                 if ( tmin <= item.Clock && item.Clock <= tmax ) {
                                                     add_required.Add( item.InternalID );
                                                 }
@@ -4290,12 +4288,12 @@ namespace cadencii
             VsqEvent item_prev = null;
             VsqEvent item = null;
             VsqEvent item_next = null;
-            Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator();
+            IEnumerator<VsqEvent> itr = vsq_track.getNoteEventIterator().GetEnumerator();
             while ( true ) {
                 item_prev = item;
                 item = item_next;
-                if ( itr.hasNext() ) {
-                    item_next = itr.next();
+                if (itr.MoveNext()) {
+                    item_next = itr.Current;
                 } else {
                     item_next = null;
                 }
@@ -4643,8 +4641,7 @@ namespace cadencii
                                 AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 AppManager.itemSelection.clearEvent();
                                 List<Integer> deleting = new List<Integer>();
-                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ev = itr.next();
+                                foreach (var ev in vsq_track.getNoteEventIterator()) {
                                     if ( start <= ev.Clock && ev.Clock <= end ) {
                                         deleting.Add( ev.InternalID );
                                     }
@@ -4661,8 +4658,7 @@ namespace cadencii
                                 int er_end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 List<Integer> internal_ids = new List<Integer>();
                                 List<VsqID> items = new List<VsqID>();
-                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
+                                foreach (var ve in vsq_track.getNoteEventIterator()) {
                                     if ( ve.ID.VibratoHandle == null ) {
                                         continue;
                                     }
@@ -4799,8 +4795,7 @@ namespace cadencii
                                 AppManager.debugWriteLine( "        end=" + end );
 #endif
                                 SortedDictionary<Integer, Integer> velocity = new SortedDictionary<Integer, Integer>();
-                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
+                                foreach (var ve in vsq_track.getNoteEventIterator()) {
                                     if ( start <= ve.Clock && ve.Clock < end ) {
                                         int i = -1;
                                         int lkey = 0;
@@ -4892,8 +4887,7 @@ namespace cadencii
 #endif
                                 List<Integer> internal_ids = new List<Integer>();
                                 List<VsqID> items = new List<VsqID>();
-                                for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
+                                foreach (var ve in vsq_track.getNoteEventIterator()) {
                                     if ( ve.ID.VibratoHandle == null ) {
                                         continue;
                                     }
@@ -5320,8 +5314,7 @@ namespace cadencii
                     float x = -1f;
                     VsqID edited = null;
                     int event_id = -1;
-                    for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                        VsqEvent ve = itr.next();
+                    foreach (var ve in vsq_track.getNoteEventIterator()) {
                         if ( ve.ID.VibratoHandle == null ) {
                             continue;
                         }

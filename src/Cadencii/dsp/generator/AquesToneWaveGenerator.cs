@@ -67,8 +67,7 @@ namespace cadencii
             VsqBPList bre = t.getCurve( "bre" );
             VsqBPList cle = t.getCurve( "cle" );
             VsqBPList por = t.getCurve( "por" );
-            for ( Iterator<VsqEvent> itr = t.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in t.getNoteEventIterator()) {
                 int endclock = item.Clock + item.ID.getLength();
                 boolean contains_start = clock_start <= item.Clock && item.Clock <= clock_end;
                 boolean contains_end = clock_start <= endclock && endclock <= clock_end;

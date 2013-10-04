@@ -145,8 +145,7 @@ public class Utau_Plugin_Invoker : Form {
         VsqEvent ve_prev = null;
         VsqEvent ve_next = null;
         VsqEvent l = null;
-        for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-            VsqEvent item = itr.next();
+        foreach (var item in vsq_track.getNoteEventIterator()) {
             if ( item.InternalID == id_start ) {
                 if ( l != null ) {
                     ve_prev = l;
@@ -206,8 +205,7 @@ public class Utau_Plugin_Invoker : Form {
         // 選択トラックの音符を全消去する
         VsqTrack v_track = v.Track[ 1 ];
         v_track.MetaText.getEventList().clear();
-        for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-            VsqEvent item = itr.next();
+        foreach (var item in vsq_track.getNoteEventIterator()) {
             if ( clock_start <= item.Clock && item.Clock + item.ID.getLength() <= clock_end ) {
                 v_track.addEvent( (VsqEvent)item.clone(), item.InternalID );
             }

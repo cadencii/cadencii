@@ -177,8 +177,7 @@ namespace cadencii.vsq
 
             // 音符の先頭位置のピッチが必ず指定された状態にする
             int search_start = 0;
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 int clock = item.Clock;
                 int size = abs_pitch.size();
                 int x0 = -1;
@@ -209,8 +208,7 @@ namespace cadencii.vsq
             // 絶対ピッチから，音符を考慮した相対ピッチに変換する
             VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
             search_start = 0;
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 int clock_start = item.Clock;
                 int clock_end = item.Clock + item.ID.getLength();
 
@@ -423,8 +421,7 @@ namespace cadencii.vsq
             List<Integer> parts = new List<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
             parts.Add( 0 );
             int lastclock = 0;// premeasure_clock;
-            for ( Iterator<VsqEvent> itr = vsq.Track[ track ].getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = itr.next();
+            foreach (var ve in vsq.Track[track].getNoteEventIterator()) {
                 if ( ve.Clock <= lastclock ) {
                     lastclock = Math.Max( lastclock, ve.Clock + ve.ID.getLength() );
                 } else {
@@ -501,8 +498,7 @@ namespace cadencii.vsq
             int track_count = Track.Count;
             for ( int i = 1; i < track_count; i++ ) {
                 VsqTrack track = Track[ i ];
-                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent item = itr.next();
+                foreach (var item in track.getNoteEventIterator()) {
                     int presend_clock = getPresendClockAt( item.Clock, ms_pre_send_time );
                     if ( item.Clock - presend_clock < 0 ) {
                         return false;
@@ -2811,8 +2807,7 @@ namespace cadencii.vsq
             int ms_presend = msPreSend;
             if ( version.StartsWith( "UTU0" ) ) {
                 double sec_maxlen = 0.0;
-                for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = itr.next();
+                foreach (var ve in target.getNoteEventIterator()) {
                     double len = vsq.getSecFromClock( ve.Clock + ve.ID.getLength() ) - vsq.getSecFromClock( ve.Clock );
                     sec_maxlen = Math.Max( sec_maxlen, len );
                 }

@@ -306,8 +306,7 @@ namespace cadencii.vsq
             TempoVector tempo = new TempoVector();
             int last_clock = 0;
             int itempo = (int)(60e6 / m_tempo);
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 if ( last_clock < item.Clock ) {
                     // 休符Rの分
                     tempo.Add( new TempoTableEntry( last_clock, itempo, work.getSecFromClock( last_clock ) ) );
@@ -368,8 +367,7 @@ namespace cadencii.vsq
             UstTrack track_add = new UstTrack();
             last_clock = 0;
             int index = 0;
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 if ( last_clock < item.Clock ) {
                     // ゲートタイム差あり，Rを追加
                     UstEvent itemust = (UstEvent)template.clone();

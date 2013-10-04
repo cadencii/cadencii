@@ -6309,21 +6309,7 @@ namespace cadencii
                         AppManager.mDrawIsUtau[track - 1] = kind == RendererKind.UTAU;
 
                         // 音符イベント
-                        Iterator<VsqEvent> itr_note = vsq_track.getNoteEventIterator();
-                        VsqEvent item_prev = null;
-                        VsqEvent item = null;
-                        VsqEvent item_next = itr_note.hasNext() ? itr_note.next() : null;
-                        while (item_prev != null || item != null || item_next != null) {
-                            item_prev = item;
-                            item = item_next;
-                            if (itr_note.hasNext()) {
-                                item_next = itr_note.next();
-                            } else {
-                                item_next = null;
-                            }
-                            if (item == null) {
-                                continue;
-                            }
+                        foreach (var item in vsq_track.getNoteEventIterator()) {
                             if (item.ID.LyricHandle == null) {
                                 continue;
                             }
@@ -7917,8 +7903,7 @@ namespace cadencii
                                 VsqID item2 = null;
                                 int internal_id = -1;
                                 internal_id = dobj.mInternalID;
-                                for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track[ selected ].getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
+                                foreach (var ve in AppManager.getVsqFile().Track[ selected ].getNoteEventIterator()) {
                                     if ( ve.InternalID == dobj.mInternalID ) {
                                         item2 = (VsqID)ve.ID.clone();
                                         item3 = ve;
@@ -9146,8 +9131,7 @@ namespace cadencii
                     VsqBPList pbs = (VsqBPList)vsq_track.getCurve( "pbs" ); // こっちはクローンしないよ
 
                     // トラック内の全音符に対して、マウス軌跡と被っている部分のPITを編集する
-                    for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                        VsqEvent item = itr.next();
+                    foreach (var item in vsq_track.getNoteEventIterator()) {
                         int cl_item_start = item.Clock;
                         if ( cl_end < cl_item_start ) {
                             break;
@@ -9401,8 +9385,7 @@ namespace cadencii
                     }
                     int vibrato_length = (int)(AppManager.mAddingEventLength * rate);
                     VsqEvent item = null;
-                    for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                        VsqEvent ve = itr.next();
+                    foreach (var ve in vsq_track.getNoteEventIterator()) {
                         if ( ve.InternalID == mVibratoEditingId ) {
                             item = (VsqEvent)ve.clone();
                             break;
@@ -9448,8 +9431,7 @@ namespace cadencii
 #if DEBUG
                     sout.println( "FormMain#pictPianoRoll_MouseUp; internal_id=" + internal_id );
 #endif
-                    for ( Iterator<VsqEvent> itr2 = work.getNoteEventIterator(); itr2.hasNext(); ) {
-                        VsqEvent vsq_event = itr2.next();
+                    foreach (var vsq_event in work.getNoteEventIterator()) {
                         if ( internal_id == vsq_event.InternalID ) {
 #if DEBUG
                             sout.println( "FormMain#pictPianoRoll_MouseUp; before: clock=" + vsq_event.Clock + "; after: clock=" + item.editing.Clock );
@@ -10888,8 +10870,7 @@ namespace cadencii
             for ( int i = 0; i < vsq.Track.Count; i++ ) {
                 VsqTrack track = vsq.Track[ i ];
                 int notes = 0;
-                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent obj = itr.next();
+                foreach (var obj in track.getNoteEventIterator()) {
                     notes++;
                 }
                 mDialogMidiImportAndExport.listTrack.AddRow( new String[] { i + "", track.getName(), notes + "" }, true );
@@ -10976,8 +10957,7 @@ namespace cadencii
 
                             // Notes
                             if ( mDialogMidiImportAndExport.isNotes() ) {
-                                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
+                                foreach (var ve in track.getNoteEventIterator()) {
                                     int clock_on = ve.Clock;
                                     int clock_off = ve.Clock + ve.ID.getLength();
                                     if ( !print_tempo ) {
@@ -11006,8 +10986,7 @@ namespace cadencii
 
                             // lyric
                             if ( mDialogMidiImportAndExport.isLyric() ) {
-                                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
+                                foreach (var ve in track.getNoteEventIterator()) {
                                     int clock_on = ve.Clock;
                                     if ( !print_tempo ) {
                                         double time_on = vsq.getSecFromClock( clock_on );
@@ -13077,8 +13056,7 @@ namespace cadencii
             }
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track[ selected ];
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 VsqID id = item.ID;
                 if ( id.LyricHandle.L0.PhoneticSymbolProtected ) {
                     continue;

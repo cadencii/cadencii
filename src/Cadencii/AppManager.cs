@@ -708,8 +708,7 @@ namespace cadencii
 
             // clock以降に音符があるかどうかを調べる
             int count = 0;
-            for ( Iterator<VsqEvent> itr = mVsq.Track[ selected ].getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent ve = itr.next();
+            foreach (var ve in mVsq.Track[selected].getNoteEventIterator()) {
                 if ( ve.Clock >= clock ) {
                     count++;
                     break;
@@ -2137,8 +2136,7 @@ namespace cadencii
                 int track = specif.getKey();
                 int internal_id = specif.getValue();
                 if ( 1 <= track && track < size ) {
-                    for ( Iterator<VsqEvent> itr2 = mVsq.Track[ track ].getNoteEventIterator(); itr2.hasNext(); ) {
-                        VsqEvent item = itr2.next();
+                    foreach (var item in mVsq.Track[track].getNoteEventIterator()) {
                         if ( item.InternalID == internal_id ) {
                             found = true;
                             break;

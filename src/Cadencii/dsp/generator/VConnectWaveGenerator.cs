@@ -1044,8 +1044,7 @@ namespace cadencii
 
             // 最後のクロックがいくつかを調べる
             int tlast_clock = 0;
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 tlast_clock = item.Clock + item.ID.getLength();
             }
             double abstract_sec = tlast_clock / (8.0 * TEMPO);

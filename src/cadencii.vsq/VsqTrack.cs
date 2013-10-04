@@ -250,48 +250,46 @@ namespace cadencii.vsq
 #if JAVA
         private class NoteEventIterator implements Iterator{
 #else
-        private class NoteEventIterator : Iterator<VsqEvent>
+        private class NoteEventEnumerator : IEnumerable<VsqEvent>, IEnumerator<VsqEvent>
         {
 #endif
             VsqEventList m_list;
             int m_pos;
 
-            public NoteEventIterator( VsqEventList list )
+            public NoteEventEnumerator( VsqEventList list )
             {
                 m_list = list;
                 m_pos = -1;
             }
 
-            public boolean hasNext()
+            public void Reset()
+            {
+                m_pos = -1;
+            }
+
+            public bool MoveNext()
             {
                 int count = m_list.getCount();
-                for ( int i = m_pos + 1; i < count; i++ ) {
-                    if ( m_list.getElement( i ).ID.type == VsqIDType.Anote ) {
+                for (int i = m_pos + 1; i < count; i++) {
+                    VsqEvent item = m_list.getElement(i);
+                    if (item.ID.type == VsqIDType.Anote) {
+                        m_pos = i;
                         return true;
                     }
                 }
+                m_pos = count;
                 return false;
             }
 
-            public VsqEvent next()
-            {
-                int count = m_list.getCount();
-                for ( int i = m_pos + 1; i < count; i++ ) {
-                    VsqEvent item = m_list.getElement( i );
-                    if ( item.ID.type == VsqIDType.Anote ) {
-                        m_pos = i;
-                        return item;
-                    }
-                }
-                return null;
-            }
+            public VsqEvent Current { get { return m_list.getElement(m_pos); } }
 
-            public void remove()
-            {
-                if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
-                    m_list.removeAt( m_pos );
-                }
-            }
+            object System.Collections.IEnumerator.Current { get { return m_list.getElement(m_pos); } }
+
+            public void Dispose() { }
+
+            public System.Collections.Generic.IEnumerator<VsqEvent> GetEnumerator() { return this; }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this; }
         }
 
 #if JAVA
@@ -791,12 +789,12 @@ namespace cadencii.vsq
         /// 音符イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator<VsqEvent> getNoteEventIterator()
+        public IEnumerable<VsqEvent> getNoteEventIterator()
         {
             if ( MetaText == null ) {
-                return new NoteEventIterator( new VsqEventList() );
+                return new NoteEventEnumerator( new VsqEventList() );
             } else {
-                return new NoteEventIterator( MetaText.getEventList() );
+                return new NoteEventEnumerator( MetaText.getEventList() );
             }
         }
 

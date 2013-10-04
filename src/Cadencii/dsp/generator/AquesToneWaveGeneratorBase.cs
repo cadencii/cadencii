@@ -221,15 +221,13 @@ namespace cadencii
             log.WriteLine( "pre-process done" );
             log.WriteLine( "-----------------------------------------------------" );
             VsqTrack vsq_track = mVsq.Track[ mTrack ];
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in vsq_track.getNoteEventIterator()) {
                 log.WriteLine( "c" + item.Clock + "; " + item.ID.LyricHandle.L0.Phrase );
             }
 #endif
 
             // レンダリング開始位置での、パラメータの値をセットしておく
-            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in track.getNoteEventIterator()) {
 #if DEBUG
                 sout.println( "AquesToneWaveGenerator#begin; item.Clock=" + item.Clock );
                 log.WriteLine( "*********************************************************" );

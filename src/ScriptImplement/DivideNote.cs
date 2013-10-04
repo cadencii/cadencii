@@ -115,8 +115,7 @@ namespace cadencii {
                 Console.WriteLine( "DivideNote#edit; (event_internal_ids==null)=" + (event_internal_ids == null) );
                 foreach ( int id in event_internal_ids ) {
                     Console.WriteLine( "DivideNote#edit; (track==null)=" + (track == null) );
-                    for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                        VsqEvent ve = itr.next();
+                    foreach (var ve in track.getNoteEventIterator()) {
                         Console.WriteLine( "DivideNote#edit; (ve==null)=" + (ve == null) );
                         if ( ve.InternalID == id ) {
                             Console.WriteLine( "DivideNote#edit; (ve.ID==null)=" + (ve.ID == null) );

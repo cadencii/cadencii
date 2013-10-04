@@ -100,8 +100,7 @@ public static class AutoBRI {
         for ( int i = 0; i < ids.Count; i++ ) {
             int internal_id = ids[i];
 
-            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                cadencii.vsq.VsqEvent item = itr.next();
+            foreach (var item in track.getNoteEventIterator()) {
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
@@ -169,8 +168,7 @@ public class AutoBRITool : IPaletteTool {
         for ( int i = 0; i < ids.Length; i++ ) {
             int internal_id = ids[i];
             
-            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                cadencii.vsq.VsqEvent item = itr.next();
+            foreach (var item in track.getNoteEventIterator()) {
                 // 指定されたInternalIDと同じなら，編集する
                 if ( item.InternalID == internal_id ) {
                     // Brightnessカーブを取得
@@ -286,8 +284,7 @@ public static class PrintLyric {
         System.IO.StreamWriter sw = null;
         try {
             sw = new System.IO.StreamWriter( @"c:\lyrics.txt" );
-            for ( Iterator<VsqEvent> itr = Vsq.Track[ 1 ].getNoteEventIterator(); itr.hasNext(); ) {
-                cadencii.vsq.VsqEvent item = itr.next();
+            foreach (var item in Vsq.Track[ 1 ].getNoteEventIterator()) {
                 int clStart = item.Clock;
                 int clEnd = clStart + item.ID.Length;
                 double secStart = Vsq.getSecFromClock( clStart );
@@ -308,8 +305,7 @@ public static class PrintLyric {
 public static class UpHalfStep {
     public static bool Edit( cadencii.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.Count; i++ ) {
-            for ( Iterator<VsqEvent> itr = Vsq.Track[ i ].getNoteEventIterator(); itr.hasNext(); ) {
-                cadencii.vsq.VsqEvent item = itr.next();
+            foreach (var item in Vsq.Track[i].getNoteEventIterator()) {
                 if ( item.ID.Note < 127 ) {
                     item.ID.Note++;
                 }
@@ -322,8 +318,7 @@ public static class UpHalfStep {
 public static class Trim32 {
     public static bool Edit( cadencii.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.Count; i++ ) {
-            for ( Iterator<VsqEvent> itr = Vsq.Track[ i ].getNoteEventIterator(); itr.hasNext(); ) {
-                cadencii.vsq.VsqEvent item = itr.next();
+            foreach (var item in Vsq.Track[i].getNoteEventIterator()) {
                 // 32分音符の長さは，クロック数に直すと60クロック
                 if ( item.ID.Length > 60 ) {
                     item.ID.Length -= 60;
