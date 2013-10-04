@@ -1313,8 +1313,7 @@ namespace cadencii {
                             commonDrawer.clear();
                             g.setColor(PortUtil.Orchid);
                             g.setStroke(getStroke2px());
-                            for (Iterator<Point> itr = mMouseTracer.iterator(); itr.hasNext(); ) {
-                                Point pt = itr.next();
+                            foreach (var pt in mMouseTracer.iterator()) {
                                 commonDrawer.append(pt.x - stdx, pt.y - stdy);
                             }
                             commonDrawer.flush();

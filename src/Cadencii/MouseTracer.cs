@@ -18,6 +18,7 @@ import java.awt.*;
 import java.util.*;
 #else
 using System;
+using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 
@@ -33,30 +34,44 @@ namespace cadencii {
 #if JAVA
         class MouseTracerIterator implements Iterator<Point> {
 #else
-        class MouseTracerIterator : Iterator<Point> {
+        class MouseTracerIterator : IEnumerable<Point>, IEnumerator<Point> {
 #endif
             private MouseTracer mTracer;
             private int mIndex;
 
             public MouseTracerIterator( MouseTracer tracer ) {
                 mTracer = tracer;
+                Reset();
+            }
+
+            public IEnumerator<Point> GetEnumerator() { return this; }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this; }
+
+            public Point Current
+            {
+                get
+                {
+                    int x = mIndex + mTracer.mXAt0;
+                    int y = mTracer.mTrace[mIndex];
+                    return new Point(x, y);
+                }
+            }
+
+            object System.Collections.IEnumerator.Current { get { return Current; } }
+
+            public void Reset()
+            {
                 mIndex = -1;
             }
 
-            public boolean hasNext() {
-                return mIndex + 1 < mTracer.mSize;
+            public bool MoveNext()
+            {
+                ++mIndex;
+                return mIndex < mTracer.mSize;
             }
 
-            public Point next() {
-                mIndex++;
-                int x = mIndex + mTracer.mXAt0;
-                int y = mTracer.mTrace[mIndex];
-                return new Point( x, y );
-            }
-
-            public void remove() {
-                // do nothing
-            }
+            public void Dispose() { }
         }
 
         /// <summary>
@@ -84,7 +99,7 @@ namespace cadencii {
         /// 軌跡の点を順に返す反復子を取得します．単純にデータ点を返すのではなく，x+1ごとの補間も含めた点が返される点に注意
         /// </summary>
         /// <returns></returns>
-        public Iterator<Point> iterator() {
+        public IEnumerable<Point> iterator() {
             return new MouseTracerIterator( this );
         }
 

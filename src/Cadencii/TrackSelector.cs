@@ -1459,7 +1459,7 @@ namespace cadencii
                             g.drawLine( xini, yini, AppManager.xCoordFromClocks( clock_at_mouse ), yCoordFromValue( value ) );
 #else
                             if ( mMouseTracer.size() > 0 ) {
-                                Point pt = mMouseTracer.iterator().next();
+                                Point pt = mMouseTracer.iterator().First();
                                 int xini = pt.x - stdx;
                                 int yini = pt.y;
                                 g.setColor( Color.ORANGE );
@@ -1484,8 +1484,7 @@ namespace cadencii
                                 d.setDotMode( LineGraphDrawer.DOTMODE_NO );
                                 d.setDrawLine( false );
                                 d.setFillColor( COLOR_MOUSE_TRACER );
-                                for ( Iterator<Point> itr = mMouseTracer.iterator(); itr.hasNext(); ) {
-                                    Point pt = itr.next();
+                                foreach (var pt in mMouseTracer.iterator()) {
                                     int x = pt.x - stdx;
                                     int y = pt.y;
                                     if ( y < graph_min_y ) {
@@ -4801,9 +4800,8 @@ namespace cadencii
                                         int lkey = 0;
                                         int lvalue = 0;
                                         int count = mMouseTracer.size();
-                                        for ( Iterator<Point> itr2 = mMouseTracer.iterator(); itr2.hasNext(); ) {
+                                        foreach (var p in mMouseTracer.iterator()) {
                                             i++;
-                                            Point p = itr2.next();
                                             int key = p.x;
                                             int value = p.y;
                                             if ( i == 0 ) {
@@ -4915,8 +4913,7 @@ namespace cadencii
                                     int lclock = -2 * step_clock;
                                     ValuePair<Float, Integer> first = null; // xの値が0以下の最大のデータ点
                                     ValuePair<Float, Integer> last = null;//xの値が1以上の最小のデータ点
-                                    for ( Iterator<Point> itr2 = mMouseTracer.iterator(); itr2.hasNext(); ) {
-                                        Point p = itr2.next();
+                                    foreach (var p in mMouseTracer.iterator()) {
                                         if ( p.x < chk_start ) {
                                             continue;
                                         } else if ( chk_end < p.x ) {
@@ -5030,8 +5027,7 @@ namespace cadencii
                                 int lvalue = int.MinValue;
                                 int lclock = -2 * step_clock;
                                 int index = 0;
-                                for ( Iterator<Point> itr = mMouseTracer.iterator(); itr.hasNext(); ) {
-                                    Point p = itr.next();
+                                foreach (var p in mMouseTracer.iterator()) {
                                     if ( p.x < start ) {
                                         continue;
                                     } else if ( end < p.x ) {

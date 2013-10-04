@@ -9167,8 +9167,7 @@ namespace cadencii
                         boolean cl_item_end_added = false;
                         boolean cl_item_start_added = false;
                         int last_px = 0, last_py = 0;
-                        for ( Iterator<Point> itr2 = pictPianoRoll.mMouseTracer.iterator(); itr2.hasNext(); ) {
-                            Point p = itr2.next();
+                        foreach (var p in pictPianoRoll.mMouseTracer.iterator()) {
                             if ( p.x < px_item_start ) {
                                 last_px = p.x;
                                 last_py = p.y;
