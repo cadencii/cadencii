@@ -28,11 +28,8 @@ namespace cadencii {
     /// <summary>
     /// ビブラート用のデータ点のリストを取得します。返却されるリストは、{クロック, ビブラートの振幅(ノートナンバー単位)}の値ペアとなっています
     /// </summary>
-#if JAVA
-    public class VibratoPointIteratorByClock implements Iterator<Double> {
-#else
-    public class VibratoPointIteratorByClock : Iterator<Double> {
-#endif
+    public class VibratoPointIteratorByClock
+    {
         TempoVector mTempoTable;
         VibratoBPList mRate;
         int mStartRate;

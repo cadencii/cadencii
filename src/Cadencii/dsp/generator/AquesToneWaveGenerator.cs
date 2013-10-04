@@ -178,7 +178,7 @@ namespace cadencii
                         }
                         // ビブラート部分のピッチを取得
                         List<PointD> ret = new List<PointD>();
-                        Iterator<PointD> itr2 = new VibratoPointIteratorBySec(
+                        var itr2 = new VibratoPointIteratorBySec(
                             vsq,
                             item.ID.VibratoHandle.getRateBP(),
                             item.ID.VibratoHandle.getStartRate(),
