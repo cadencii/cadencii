@@ -543,17 +543,16 @@ namespace cadencii
                     double sec_vibstart = mVsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
                     int totalcount = 0;
 
-                    Iterator<PointD> vibitr = null;
+                    VibratoPointIteratorBySec vibitr = null;
                     if ( item.ID.VibratoHandle != null ) {
-                        vibitr = new VibratoPointIteratorBySec(
-                            mVsq,
-                            item.ID.VibratoHandle.getRateBP(),
-                            item.ID.VibratoHandle.getStartRate(),
-                            item.ID.VibratoHandle.getDepthBP(),
-                            item.ID.VibratoHandle.getStartDepth(),
-                            item.Clock + item.ID.VibratoDelay,
-                            item.ID.getLength() - item.ID.VibratoDelay,
-                            (float)delta_sec );
+                        vibitr = new VibratoPointIteratorBySec(mVsq,
+                                                               item.ID.VibratoHandle.getRateBP(),
+                                                               item.ID.VibratoHandle.getStartRate(),
+                                                               item.ID.VibratoHandle.getDepthBP(),
+                                                               item.ID.VibratoHandle.getStartDepth(),
+                                                               item.Clock + item.ID.VibratoDelay,
+                                                               item.ID.getLength() - item.ID.VibratoDelay,
+                                                               (float)delta_sec);
                     }
                     
 #if DEBUG

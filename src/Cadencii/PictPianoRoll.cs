@@ -1385,14 +1385,14 @@ namespace cadencii {
             int tempo = vsq.getTempoAt( clock_start );
 
             drawer.clear();
-            Iterator<PointD> itr = new VibratoPointIteratorBySec( vsq,
-                                                             rate,
-                                                             start_rate,
-                                                             depth,
-                                                             start_depth,
-                                                             clock_start,
-                                                             clock_end - clock_start,
-                                                             (float)(tempo * 1e-6 / 480.0) );
+            var itr = new VibratoPointIteratorBySec(vsq,
+                                                    rate,
+                                                    start_rate,
+                                                    depth,
+                                                    start_depth,
+                                                    clock_start,
+                                                    clock_end - clock_start,
+                                                    (float)(tempo * 1e-6 / 480.0));
             Graphics2D g = drawer.getGraphics();
             g.setColor( Color.blue );
 #if DEBUG
