@@ -14,12 +14,8 @@
     namespace cadencii
     {
 
-#if CSHARP
             using System;
             using cadencii;
-#else
-            using namespace org::kbinani::cadencii;
-#endif
 
             public interface WaveformZoomUi
             {

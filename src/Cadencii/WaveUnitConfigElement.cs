@@ -106,8 +106,6 @@ namespace cadencii
             return this.key + SEPARATOR + this.value;
         }
 
-#if CSHARP
-
         public string Key
         {
             get
@@ -141,7 +139,6 @@ namespace cadencii
         {
             return this.toString();
         }
-#endif
     }
 
 }

@@ -15,11 +15,9 @@
     namespace cadencii
     {
 
-#if CSHARP
             using System;
             using cadencii.windows.forms;
             using cadencii.apputil;
-#endif // CSHARP
 
             public interface FormAskKeySoundGenerationUiListener
             {

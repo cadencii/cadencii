@@ -1,4 +1,3 @@
-#if CSHARP
 namespace cadencii
 {
     partial class ExceptionNotifyFormUiImpl
@@ -112,4 +111,3 @@ namespace cadencii
 
     }
 }
-#endif

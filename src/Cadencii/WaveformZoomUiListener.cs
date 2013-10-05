@@ -13,10 +13,8 @@
  */
     namespace cadencii
     {
-#if CSHARP
             using System;
             using cadencii.java.awt;
-#endif
 
             public interface WaveformZoomUiListener
             {

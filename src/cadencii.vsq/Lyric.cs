@@ -118,7 +118,6 @@ namespace cadencii.vsq
             setConsonantAdjustmentList( arr );
         }
 
-#if CSHARP
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -133,7 +132,6 @@ namespace cadencii.vsq
                 setConsonantAdjustment( value );
             }
         }
-#endif
 
         /// <summary>
         /// Consonant Adjustmentを、整数配列で取得します。
@@ -446,7 +444,6 @@ namespace cadencii.vsq
             }
         }
 
-#if CSHARP
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -461,7 +458,6 @@ namespace cadencii.vsq
                 setPhoneticSymbol( value );
             }
         }
-#endif
 
         public List<string> getPhoneticSymbolList()
         {
@@ -517,12 +513,10 @@ namespace cadencii.vsq
             return result;
         }
 
-#if CSHARP
         public override string ToString()
         {
             return toString( true );
         }
-#endif
     }
 
 }

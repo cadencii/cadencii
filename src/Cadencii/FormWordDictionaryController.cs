@@ -35,9 +35,7 @@ using System.Collections.Generic;
                     ui = new FormWordDictionaryUiImpl( this );
                     applyLanguage();
                     ui.setSize( mWidth, mHeight );
-#if CSHARP
                     ui.listDictionariesSetColumnWidth( mColumnWidth );
-#endif
                 }
 
 
@@ -120,9 +118,7 @@ using System.Collections.Generic;
 
                 public void formClosing()
                 {
-#if CSHARP
                     mColumnWidth = ui.listDictionariesGetColumnWidth();
-#endif
                     mWidth = ui.getWidth();
                     mHeight = ui.getHeight();
                 }

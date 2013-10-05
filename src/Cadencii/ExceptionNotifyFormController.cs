@@ -14,10 +14,8 @@
 
     namespace cadencii
     {
-#if CSHARP
             using System;
             using cadencii.apputil;
-#endif
 
             public class ExceptionNotifyFormController : ControllerBase, ExceptionNotifyFormUiListener
             {
