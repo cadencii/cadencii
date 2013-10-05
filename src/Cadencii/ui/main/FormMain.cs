@@ -1834,8 +1834,8 @@ namespace cadencii
                         form.setMessage(string.Format(_("New version {0} is available."), recent_version_string));
                         form.setAutomaticallyCheckForUpdates(!AppManager.editorConfig.DoNotAutomaticallyCheckForUpdates);
                         form.setAutomaticallyCheckForUpdatesMessage(_("Automatically check for updates"));
-                        form.okButtonClicked += (_1, _2) => form.close();
-                        form.downloadLinkClicked += (_1, _2) => {
+                        form.okButtonClicked += () => form.close();
+                        form.downloadLinkClicked += () => {
                             form.close();
                             System.Diagnostics.Process.Start(update_info.DownloadUrl);
                         };

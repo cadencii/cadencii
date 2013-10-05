@@ -27,7 +27,7 @@ namespace cadencii.ui
         bool isAutomaticallyCheckForUpdates();
         void setAutomaticallyCheckForUpdates(bool check_always);
         void setAutomaticallyCheckForUpdatesMessage(string message);
-        event EventHandler downloadLinkClicked;
-        event EventHandler okButtonClicked;
+        event Action downloadLinkClicked;
+        event Action okButtonClicked;
     }
 }

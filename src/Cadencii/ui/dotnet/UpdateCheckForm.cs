@@ -26,8 +26,8 @@ namespace cadencii.ui.dotnet
         private CheckBox checkBox1;
         private Button button1;
 
-        public event EventHandler okButtonClicked;
-        public event EventHandler downloadLinkClicked;
+        public event Action okButtonClicked;
+        public event Action downloadLinkClicked;
 
         public UpdateCheckForm()
         {
@@ -160,14 +160,14 @@ namespace cadencii.ui.dotnet
         private void button1_Click(object sender, System.EventArgs e)
         {
             if (okButtonClicked != null) {
-                okButtonClicked.Invoke(sender, e);
+                okButtonClicked.Invoke();
             }
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (downloadLinkClicked != null) {
-                downloadLinkClicked.Invoke(sender, new EventArgs());
+                downloadLinkClicked.Invoke();
             }
         }
     }
