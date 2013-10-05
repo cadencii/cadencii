@@ -1542,11 +1542,11 @@ namespace cadencii
             if (!System.IO.File.Exists(path)) {
                 return false;
             }
-            RandomAccessFile fs = null;
+            Stream fs = null;
             try {
-                fs = new RandomAccessFile(path, "r");
-                int r0 = fs.read(); // 'M'
-                int r1 = fs.read(); // 'Z'
+                fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                int r0 = fs.ReadByte(); // 'M'
+                int r1 = fs.ReadByte(); // 'Z'
                 if ('M' == (char)r0 && 'Z' == (char)r1) {
                     return true;
                 }
@@ -1555,7 +1555,7 @@ namespace cadencii
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                     }
                 }

@@ -912,50 +912,50 @@ namespace cadencii.media
         /// <param name="file"></param>
         public void write(string file)
         {
-            RandomAccessFile fs = null;
+            Stream fs = null;
             try {
-                fs = new RandomAccessFile(file, "rw");
+                fs = new FileStream(file, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 // RIFF
-                fs.write(0x52);
-                fs.write(0x49);
-                fs.write(0x46);
-                fs.write(0x46);
+                fs.WriteByte(0x52);
+                fs.WriteByte(0x49);
+                fs.WriteByte(0x46);
+                fs.WriteByte(0x46);
 
                 // ファイルサイズ - 8最後に記入
-                fs.write(0x00);
-                fs.write(0x00);
-                fs.write(0x00);
-                fs.write(0x00);
+                fs.WriteByte(0x00);
+                fs.WriteByte(0x00);
+                fs.WriteByte(0x00);
+                fs.WriteByte(0x00);
 
                 // WAVE
-                fs.write(0x57);
-                fs.write(0x41);
-                fs.write(0x56);
-                fs.write(0x45);
+                fs.WriteByte(0x57);
+                fs.WriteByte(0x41);
+                fs.WriteByte(0x56);
+                fs.WriteByte(0x45);
 
                 // fmt 
-                fs.write(0x66);
-                fs.write(0x6d);
-                fs.write(0x74);
-                fs.write(0x20);
+                fs.WriteByte(0x66);
+                fs.WriteByte(0x6d);
+                fs.WriteByte(0x74);
+                fs.WriteByte(0x20);
 
                 // fmt チャンクのサイズ
-                fs.write(0x12);
-                fs.write(0x00);
-                fs.write(0x00);
-                fs.write(0x00);
+                fs.WriteByte(0x12);
+                fs.WriteByte(0x00);
+                fs.WriteByte(0x00);
+                fs.WriteByte(0x00);
 
                 // format ID
-                fs.write(0x01);
-                fs.write(0x00);
+                fs.WriteByte(0x01);
+                fs.WriteByte(0x00);
 
                 // チャンネル数
                 if (m_channel == WaveChannel.Monoral) {
-                    fs.write(0x01);
-                    fs.write(0x00);
+                    fs.WriteByte(0x01);
+                    fs.WriteByte(0x00);
                 } else {
-                    fs.write(0x02);
-                    fs.write(0x00);
+                    fs.WriteByte(0x02);
+                    fs.WriteByte(0x00);
                 }
 
                 // サンプリングレート
@@ -978,14 +978,14 @@ namespace cadencii.media
                 writeByteArray(fs, buf, 2);
 
                 // 拡張部分
-                fs.write(0x00);
-                fs.write(0x00);
+                fs.WriteByte(0x00);
+                fs.WriteByte(0x00);
 
                 // data
-                fs.write(0x64);
-                fs.write(0x61);
-                fs.write(0x74);
-                fs.write(0x61);
+                fs.WriteByte(0x64);
+                fs.WriteByte(0x61);
+                fs.WriteByte(0x74);
+                fs.WriteByte(0x61);
 
                 // size of data chunk
                 long size = block_size * m_total_samples;
@@ -995,9 +995,9 @@ namespace cadencii.media
                 // 波形データ
                 for (int i = 0; i < m_total_samples; i++) {
                     if (m_bit_per_sample == 8) {
-                        fs.write(L8[i]);
+                        fs.WriteByte(L8[i]);
                         if (m_channel == WaveChannel.Stereo) {
-                            fs.write(R8[i]);
+                            fs.WriteByte(R8[i]);
                         }
                     } else {
                         buf = PortUtil.getbytes_int16_le(L16[i]);
@@ -1010,27 +1010,27 @@ namespace cadencii.media
                 }
 
                 // 最後にWAVEチャンクのサイズ
-                long position = fs.getFilePointer();
-                fs.seek(4);
+                long position = fs.Position;
+                fs.Seek(4, SeekOrigin.Begin);
                 buf = PortUtil.getbytes_uint32_le(position - 8);
                 writeByteArray(fs, buf, 4);
             } catch (Exception ex) {
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                     }
                 }
             }
         }
 
-        private static void writeByteArray(RandomAccessFile fs, byte[] dat, int limit)
+        private static void writeByteArray(Stream fs, byte[] dat, int limit)
         {
-            fs.write(dat, 0, (dat.Length > limit) ? limit : dat.Length);
+            fs.Write(dat, 0, (dat.Length > limit) ? limit : dat.Length);
             if (dat.Length < limit) {
                 for (int i = 0; i < limit - dat.Length; i++) {
-                    fs.write(0x00);
+                    fs.WriteByte(0x00);
                 }
             }
         }
@@ -1217,13 +1217,13 @@ namespace cadencii.media
             read(path);
         }
 
-        private bool parseAiffHeader(RandomAccessFile fs)
+        private bool parseAiffHeader(Stream fs)
         {
             try {
                 byte[] buf = new byte[4];
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 long chunk_size_form = PortUtil.make_uint32_be(buf);
-                fs.read(buf, 0, 4); // AIFF
+                fs.Read(buf, 0, 4); // AIFF
                 string tag = new string(new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] });
                 if (!tag.Equals("AIFF")) {
 #if DEBUG
@@ -1231,7 +1231,7 @@ namespace cadencii.media
 #endif
                     return false;
                 }
-                fs.read(buf, 0, 4); // COMM
+                fs.Read(buf, 0, 4); // COMM
                 tag = new string(new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] });
                 if (!tag.Equals("COMM")) {
 #if DEBUG
@@ -1239,32 +1239,32 @@ namespace cadencii.media
 #endif
                     return false;
                 }
-                fs.read(buf, 0, 4); // COMM chunk size
+                fs.Read(buf, 0, 4); // COMM chunk size
                 long chunk_size_comm = PortUtil.make_uint32_be(buf);
-                long chunk_loc_comm = fs.getFilePointer();
-                fs.read(buf, 0, 2); // number of channel
+                long chunk_loc_comm = fs.Position;
+                fs.Read(buf, 0, 2); // number of channel
                 int num_channel = PortUtil.make_uint16_be(buf);
                 if (num_channel == 1) {
                     m_channel = WaveChannel.Monoral;
                 } else {
                     m_channel = WaveChannel.Stereo;
                 }
-                fs.read(buf, 0, 4); // number of samples
+                fs.Read(buf, 0, 4); // number of samples
                 m_total_samples = PortUtil.make_uint32_be(buf);
 #if DEBUG
                 sout.println("Wave#parseAiffHeader; m_total_samples=" + m_total_samples);
 #endif
-                fs.read(buf, 0, 2); // block size
+                fs.Read(buf, 0, 2); // block size
                 m_bit_per_sample = PortUtil.make_uint16_be(buf);
                 byte[] buf10 = new byte[10];
-                fs.read(buf10, 0, 10); // sample rate
+                fs.Read(buf10, 0, 10); // sample rate
                 m_sample_rate = (long)make_double_from_extended(buf10);
 #if DEBUG
                 sout.println("Wave#parseAiffHeader; m_sample_rate=" + m_sample_rate);
 #endif
-                fs.seek(chunk_loc_comm + (long)chunk_size_comm);
+                fs.Seek(chunk_loc_comm + (long)chunk_size_comm, SeekOrigin.Begin);
 
-                fs.read(buf, 0, 4); // SSND
+                fs.Read(buf, 0, 4); // SSND
                 tag = new string(new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] });
                 if (!tag.Equals("SSND")) {
 #if DEBUG
@@ -1272,7 +1272,7 @@ namespace cadencii.media
 #endif
                     return false;
                 }
-                fs.read(buf, 0, 4); // SSND chunk size
+                fs.Read(buf, 0, 4); // SSND chunk size
                 long chunk_size_ssnd = PortUtil.make_uint32_be(buf);
             } catch (Exception ex) {
                 return false;
@@ -1321,20 +1321,20 @@ namespace cadencii.media
             return (((double)((int)(u - 2147483647 - 1))) + 2147483648.0);
         }
 
-        private bool parseWaveHeader(RandomAccessFile fs)
+        private bool parseWaveHeader(Stream fs)
         {
             try {
                 byte[] buf = new byte[4];
                 // detect size of RIFF chunk
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 long riff_chunk_size = PortUtil.make_uint32_le(buf);
 #if DEBUG
                 sout.println("Wave#parseWaveHeader; riff_chunk_size=" + riff_chunk_size);
 #endif
 
                 // check wave header
-                fs.seek(8);
-                fs.read(buf, 0, 4);
+                fs.Seek(8, SeekOrigin.Begin);
+                fs.Read(buf, 0, 4);
                 if (buf[0] != 0x57 ||
                     buf[1] != 0x41 ||
                     buf[2] != 0x56 ||
@@ -1342,12 +1342,12 @@ namespace cadencii.media
 #if DEBUG
                     serr.println("Wave#parseWaveHeader; invalid wave header");
 #endif
-                    fs.close();
+                    fs.Close();
                     return false;
                 }
 
                 // check fmt chunk header
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 if (buf[0] != 0x66 ||
                     buf[1] != 0x6d ||
                     buf[2] != 0x74 ||
@@ -1355,23 +1355,23 @@ namespace cadencii.media
 #if DEBUG
                     serr.println("Wave#parseWaveHeader; invalid fmt header");
 #endif
-                    fs.close();
+                    fs.Close();
                     return false;
                 }
 
                 // detect size of fmt chunk
                 long fmt_chunk_bytes;
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 fmt_chunk_bytes = PortUtil.make_uint32_le(buf);
 #if DEBUG
                 sout.println("Wave#parseWaveHeader; fmt_chunk_bytes=" + fmt_chunk_bytes);
 #endif
 
                 // get format ID
-                fs.read(buf, 0, 2);
+                fs.Read(buf, 0, 2);
                 int format_id = PortUtil.make_uint16_le(buf);
                 if (format_id != 1) {
-                    fs.close();
+                    fs.Close();
                     return false;
                 }
 #if DEBUG
@@ -1379,14 +1379,14 @@ namespace cadencii.media
 #endif
 
                 // get the number of channel(s)
-                fs.read(buf, 0, 2);
+                fs.Read(buf, 0, 2);
                 int num_channels = PortUtil.make_uint16_le(buf);
                 if (num_channels == 1) {
                     m_channel = WaveChannel.Monoral;
                 } else if (num_channels == 2) {
                     m_channel = WaveChannel.Stereo;
                 } else {
-                    fs.close();
+                    fs.Close();
                     return false;
                 }
 #if DEBUG
@@ -1394,38 +1394,38 @@ namespace cadencii.media
 #endif
 
                 // get sampling rate
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 m_sample_rate = PortUtil.make_uint32_le(buf);
 #if DEBUG
                 sout.println("Wave#parseWaveHeader; m_sample_rate=" + m_sample_rate);
 #endif
 
                 // get bit per sample
-                fs.seek(0x22);
-                fs.read(buf, 0, 2);
+                fs.Seek(0x22, SeekOrigin.Begin);
+                fs.Read(buf, 0, 2);
                 m_bit_per_sample = PortUtil.make_uint16_le(buf);
 #if DEBUG
                 sout.println("Wave#parseWaveHeader; m_bit_per_sample=" + m_bit_per_sample);
 #endif
                 if (m_bit_per_sample != 0x08 && m_bit_per_sample != 0x10) {
-                    fs.close();
+                    fs.Close();
                     return false;
                 }
 
                 // move to the end of fmt chunk
-                fs.seek(0x14 + fmt_chunk_bytes);
+                fs.Seek(0x14 + fmt_chunk_bytes, SeekOrigin.Begin);
 
                 // move to the top of data chunk
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 string tag = new string(new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] });
 #if DEBUG
                 sout.println("Wave#parseWaveHeader; tag=" + tag);
 #endif
                 while (!tag.Equals("data")) {
-                    fs.read(buf, 0, 4);
+                    fs.Read(buf, 0, 4);
                     long size = PortUtil.make_uint32_le(buf);
-                    fs.seek(fs.getFilePointer() + size);
-                    fs.read(buf, 0, 4);
+                    fs.Seek(fs.Position + size, SeekOrigin.Begin);
+                    fs.Read(buf, 0, 4);
                     tag = new string(new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] });
 #if DEBUG
                     sout.println("Wave#parseWaveHeader; tag=" + tag);
@@ -1433,7 +1433,7 @@ namespace cadencii.media
                 }
 
                 // get size of data chunk
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 long data_chunk_bytes = PortUtil.make_uint32_le(buf);
                 m_total_samples = (long)(data_chunk_bytes / (num_channels * m_bit_per_sample / 8));
 #if DEBUG
@@ -1450,13 +1450,13 @@ namespace cadencii.media
 
         public bool read(string path)
         {
-            RandomAccessFile fs = null;
+            Stream fs = null;
             bool ret = false;
             try {
-                fs = new RandomAccessFile(path, "r");
+                fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 // check RIFF header
                 byte[] buf = new byte[4];
-                fs.read(buf, 0, 4);
+                fs.Read(buf, 0, 4);
                 bool change_byte_order = false;
                 if (buf[0] == 0x52 && buf[1] == 0x49 && buf[2] == 0x46 && buf[3] == 0x46) {
                     ret = parseWaveHeader(fs);
@@ -1484,14 +1484,14 @@ namespace cadencii.media
                 byte[] buf2 = new byte[2];
                 for (int i = 0; i < m_total_samples; i++) {
                     if (m_bit_per_sample == 8) {
-                        fs.read(buf, 0, 1);
+                        fs.Read(buf, 0, 1);
                         L8[i] = buf[0];
                         if (m_channel == WaveChannel.Stereo) {
-                            fs.read(buf, 0, 1);
+                            fs.Read(buf, 0, 1);
                             R8[i] = buf[0];
                         }
                     } else {
-                        fs.read(buf2, 0, 2);
+                        fs.Read(buf2, 0, 2);
                         if (change_byte_order) {
                             byte b = buf2[0];
                             buf2[0] = buf2[1];
@@ -1499,7 +1499,7 @@ namespace cadencii.media
                         }
                         L16[i] = PortUtil.make_int16_le(buf2);
                         if (m_channel == WaveChannel.Stereo) {
-                            fs.read(buf2, 0, 2);
+                            fs.Read(buf2, 0, 2);
                             if (change_byte_order) {
                                 byte b = buf2[0];
                                 buf2[0] = buf2[1];
@@ -1513,7 +1513,7 @@ namespace cadencii.media
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                     }
                 }

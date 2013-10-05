@@ -788,16 +788,16 @@ namespace cadencii
 #endif
                     // whdを読みに行く
                     if (first) {
-                        RandomAccessFile whd = null;
+                        Stream whd = null;
                         // このファイルのサンプリングレート．ヘッダで読み込むけど初期値はコレにしとく
                         mThisSampleRate = 44100;
                         try {
-                            whd = new RandomAccessFile(file_whd, "r");
+                            whd = new FileStream(file_whd, FileMode.Open, FileAccess.Read);
                             #region whdを読みに行く
-                            whd.seek(0);
+                            whd.Seek(0, SeekOrigin.Begin);
                             // RIFF
                             byte[] buf = new byte[4];
-                            int gcount = whd.read(buf, 0, 4);
+                            int gcount = whd.Read(buf, 0, 4);
                             if (buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F') {
 #if DEBUG
                                 debugWriteLine("UtauWaveGenerator#run; whd header error");
@@ -805,9 +805,9 @@ namespace cadencii
                                 continue;
                             }
                             // ファイルサイズ
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             // WAVE
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             if (buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E') {
 #if DEBUG
                                 debugWriteLine("UtauWaveGenerator#run; whd header error");
@@ -815,7 +815,7 @@ namespace cadencii
                                 continue;
                             }
                             // fmt 
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             if (buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ') {
 #if DEBUG
                                 debugWriteLine("UtauWaveGenerator#run; whd header error");
@@ -823,35 +823,35 @@ namespace cadencii
                                 continue;
                             }
                             // fmt チャンクのサイズ
-                            whd.read(buf, 0, 4);
-                            long loc_end_of_fmt = whd.getFilePointer(); //fmtチャンクの終了位置．ここは一定値でない可能性があるので読込み
+                            whd.Read(buf, 0, 4);
+                            long loc_end_of_fmt = whd.Position; //fmtチャンクの終了位置．ここは一定値でない可能性があるので読込み
                             loc_end_of_fmt += buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
                             // format ID
-                            whd.read(buf, 0, 2);
+                            whd.Read(buf, 0, 2);
                             int id = buf[0] | buf[1] << 8;
                             if (id != 0x0001) { //0x0001はリニアPCM
                                 continue;
                             }
                             // チャンネル数
-                            whd.read(buf, 0, 2);
+                            whd.Read(buf, 0, 2);
                             channel = buf[1] << 8 | buf[0];
                             // サンプリングレート
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             mThisSampleRate = PortUtil.make_int32_le(buf);//.__BBBBBBBBBAAAAAAAAAAAAAAAAAAAAAAAARRRRRRRR__stderr buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
 #if DEBUG
                             debugWriteLine("UtauWaveGenerator#begin; mThisSampleRate=" + mThisSampleRate);
 #endif
                             // データ速度
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             // ブロックサイズ
-                            whd.read(buf, 0, 2);
+                            whd.Read(buf, 0, 2);
                             // 1チャンネル、1サンプルあたりのビット数
-                            whd.read(buf, 0, 2);
+                            whd.Read(buf, 0, 2);
                             int bit_per_sample = buf[1] << 8 | buf[0];
                             byte_per_sample = bit_per_sample / 8;
-                            whd.seek(loc_end_of_fmt);
+                            whd.Seek(loc_end_of_fmt, SeekOrigin.Begin);
                             // data
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             if (buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a') {
 #if DEBUG
                                 debugWriteLine("UtauWaveGenerator#run; whd header error");
@@ -859,7 +859,7 @@ namespace cadencii
                                 continue;
                             }
                             // size of data chunk
-                            whd.read(buf, 0, 4);
+                            whd.Read(buf, 0, 4);
                             //int size = buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0];
                             //int total_samples = size / (channel * byte_per_sample);
                             #endregion
@@ -869,7 +869,7 @@ namespace cadencii
                         } finally {
                             if (whd != null) {
                                 try {
-                                    whd.close();
+                                    whd.Close();
                                 } catch (Exception ex2) {
                                     serr.println("UtauWaveGenerator#begin; ex2=" + ex2);
                                     Logger.write("UtauWaveGenerator::begin(long); ex=" + ex2 + "\n");
@@ -895,10 +895,10 @@ namespace cadencii
                         int buflen = 1024;
                         byte[] wavbuf = new byte[buflen];
                         int pos = 0;
-                        RandomAccessFile dat = null;
+                        Stream dat = null;
                         try {
-                            dat = new RandomAccessFile(file_dat, "r");
-                            dat.seek(processed_sample * channel * byte_per_sample);
+                            dat = new FileStream(file_dat, FileMode.Open, FileAccess.Read);
+                            dat.Seek(processed_sample * channel * byte_per_sample, SeekOrigin.Begin);
                             double sec_start = processed_sample / (double)mSampleRate;
                             double sec_per_sa = 1.0 / (double)mSampleRate;
                             ByRef<int> index = new ByRef<int>(0);
@@ -909,7 +909,7 @@ namespace cadencii
                                         if (state.isCancelRequested()) {
                                             break;
                                         }
-                                        int len = dat.read(wavbuf, 0, buflen);
+                                        int len = dat.Read(wavbuf, 0, buflen);
                                         if (len <= 0) {
                                             break;
                                         }
@@ -940,7 +940,7 @@ namespace cadencii
                                         if (state.isCancelRequested()) {
                                             break;
                                         }
-                                        int len = dat.read(wavbuf, 0, buflen);
+                                        int len = dat.Read(wavbuf, 0, buflen);
                                         if (len <= 0) {
                                             break;
                                         }
@@ -974,7 +974,7 @@ namespace cadencii
                                         if (state.isCancelRequested()) {
                                             break;
                                         }
-                                        int len = dat.read(wavbuf, 0, buflen);
+                                        int len = dat.Read(wavbuf, 0, buflen);
                                         if (len <= 0) {
                                             break;
                                         }
@@ -1005,7 +1005,7 @@ namespace cadencii
                                         if (state.isCancelRequested()) {
                                             break;
                                         }
-                                        int len = dat.read(wavbuf, 0, buflen);
+                                        int len = dat.Read(wavbuf, 0, buflen);
                                         if (len <= 0) {
                                             break;
                                         }
@@ -1041,7 +1041,7 @@ namespace cadencii
                         } finally {
                             if (dat != null) {
                                 try {
-                                    dat.close();
+                                    dat.Close();
                                 } catch (Exception ex2) {
                                     serr.println("UtauWaveGenerator#run; ex2=" + ex2);
                                     Logger.write(typeof(UtauWaveGenerator) + "::begin(long); ex=" + ex2 + "\n");

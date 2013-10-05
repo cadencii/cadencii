@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 
@@ -24,7 +25,7 @@ namespace cadencii.media
         private int m_bit_per_sample;
         private int m_sample_rate;
         private long m_total_samples = 0;
-        private RandomAccessFile m_stream = null;
+        private Stream m_stream = null;
         private string m_path = "";
         /// <summary>
         /// dataチャンクの開始位置。第1番目のデータが、このアドレスに書き込まれることになる。
@@ -42,12 +43,12 @@ namespace cadencii.media
 #if DEBUG
             sout.println("WaveWriter#.ctor; m_path=" + m_path);
 #endif
-            m_stream = new RandomAccessFile(m_path, "rw");
+            m_stream = new FileStream(m_path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             m_channel = channel;
             m_bit_per_sample = bit_per_sample;
             m_sample_rate = sample_rate;
             writeHeader();
-            m_total_samples = (m_stream.length() - m_pos_data_chunk) / m_channel / (m_bit_per_sample / 8);
+            m_total_samples = (m_stream.Length - m_pos_data_chunk) / m_channel / (m_bit_per_sample / 8);
         }
 
         /// <summary>
@@ -59,34 +60,34 @@ namespace cadencii.media
         /// <param name="R"></param>
         public void replace(long pos, int length, double[] L, double[] R)
         {
-            long lastPos = m_stream.getFilePointer();
+            long lastPos = m_stream.Position;
             long posFile = pos * m_channel * m_bit_per_sample / 8 + m_pos_data_chunk;
-            long streamLen = m_stream.length();
+            long streamLen = m_stream.Length;
             if (streamLen < posFile) {
                 // ファイルの長さが足りていない場合、とりあえず0で埋める。
-                m_stream.seek(streamLen - 1);
+                m_stream.Seek(streamLen - 1, SeekOrigin.Begin);
                 long remain = posFile - streamLen;
                 int buflen = 1024;
                 byte[] data = new byte[buflen];
                 while (remain > 0) {
                     int delta = remain > buflen ? buflen : (int)remain;
-                    m_stream.write(data, 0, delta);
+                    m_stream.Write(data, 0, delta);
                     remain -= delta;
                 }
                 m_total_samples = pos;
             }
-            m_stream.seek(posFile);
+            m_stream.Seek(posFile, SeekOrigin.Begin);
 
             // 書き込み
             if (m_bit_per_sample == 8) {
                 if (m_channel == 1) {
                     for (int i = 0; i < length; i++) {
-                        m_stream.writeByte((int)((L[i] + R[i] + 2.0) * 63.75));
+                        m_stream.WriteByte((byte)((L[i] + R[i] + 2.0) * 63.75));
                     }
                 } else {
                     for (int i = 0; i < length; i++) {
-                        m_stream.writeByte((int)((L[i] + 1.0) * 127.5));
-                        m_stream.writeByte((int)((R[i] + 1.0) * 127.5));
+                        m_stream.WriteByte((byte)((L[i] + 1.0) * 127.5));
+                        m_stream.WriteByte((byte)((R[i] + 1.0) * 127.5));
                     }
                 }
             } else {
@@ -108,7 +109,7 @@ namespace cadencii.media
             m_total_samples = (m_total_samples < pos + length) ? (pos + length) : (m_total_samples);
 
             // 最後にファイルポインタを戻す
-            m_stream.seek(lastPos);
+            m_stream.Seek(lastPos, SeekOrigin.Begin);
         }
 
         public void Dispose()
@@ -122,46 +123,46 @@ namespace cadencii.media
         private void writeHeader()
         {
             // RIFF
-            m_stream.writeByte(0x52); // loc=0x00
-            m_stream.writeByte(0x49);
-            m_stream.writeByte(0x46);
-            m_stream.writeByte(0x46);
+            m_stream.WriteByte(0x52); // loc=0x00
+            m_stream.WriteByte(0x49);
+            m_stream.WriteByte(0x46);
+            m_stream.WriteByte(0x46);
 
             // ファイルサイズ - 8最後に記入
-            m_stream.writeByte(0x00); // loc=0x04
-            m_stream.writeByte(0x00);
-            m_stream.writeByte(0x00);
-            m_stream.writeByte(0x00);
+            m_stream.WriteByte(0x00); // loc=0x04
+            m_stream.WriteByte(0x00);
+            m_stream.WriteByte(0x00);
+            m_stream.WriteByte(0x00);
 
             // WAVE
-            m_stream.writeByte(0x57); // loc=0x08
-            m_stream.writeByte(0x41);
-            m_stream.writeByte(0x56);
-            m_stream.writeByte(0x45);
+            m_stream.WriteByte(0x57); // loc=0x08
+            m_stream.WriteByte(0x41);
+            m_stream.WriteByte(0x56);
+            m_stream.WriteByte(0x45);
 
             // fmt 
-            m_stream.writeByte(0x66); // loc=0x0c
-            m_stream.writeByte(0x6d);
-            m_stream.writeByte(0x74);
-            m_stream.writeByte(0x20);
+            m_stream.WriteByte(0x66); // loc=0x0c
+            m_stream.WriteByte(0x6d);
+            m_stream.WriteByte(0x74);
+            m_stream.WriteByte(0x20);
 
             // fmt チャンクのサイズ
-            m_stream.writeByte(0x12); // loc=0x10
-            m_stream.writeByte(0x00);
-            m_stream.writeByte(0x00);
-            m_stream.writeByte(0x00);
+            m_stream.WriteByte(0x12); // loc=0x10
+            m_stream.WriteByte(0x00);
+            m_stream.WriteByte(0x00);
+            m_stream.WriteByte(0x00);
 
             // format ID
-            m_stream.writeByte(0x01); // loc=0x14
-            m_stream.writeByte(0x00);
+            m_stream.WriteByte(0x01); // loc=0x14
+            m_stream.WriteByte(0x00);
 
             // チャンネル数
             if (m_channel == 1) {
-                m_stream.writeByte(0x01); // loc=0x16
-                m_stream.writeByte(0x00);
+                m_stream.WriteByte(0x01); // loc=0x16
+                m_stream.WriteByte(0x00);
             } else {
-                m_stream.writeByte(0x02); //loc=0x16
-                m_stream.writeByte(0x00);
+                m_stream.WriteByte(0x02); //loc=0x16
+                m_stream.WriteByte(0x00);
             }
 
             // サンプリングレート
@@ -183,20 +184,20 @@ namespace cadencii.media
             writeByteArray(m_stream, buf, 2); //loc=0x22
 
             // 拡張部分
-            m_stream.writeByte(0x00); //loc=0x24
-            m_stream.writeByte(0x00);
+            m_stream.WriteByte(0x00); //loc=0x24
+            m_stream.WriteByte(0x00);
 
             // data
-            m_stream.writeByte(0x64); //loc=0x26
-            m_stream.writeByte(0x61);
-            m_stream.writeByte(0x74);
-            m_stream.writeByte(0x61);
+            m_stream.WriteByte(0x64); //loc=0x26
+            m_stream.WriteByte(0x61);
+            m_stream.WriteByte(0x74);
+            m_stream.WriteByte(0x61);
 
             // size of data chunk
             long size = block_size * m_total_samples;
             buf = PortUtil.getbytes_uint32_le(size);
             writeByteArray(m_stream, buf, 4);
-            m_pos_data_chunk = m_stream.getFilePointer();
+            m_pos_data_chunk = m_stream.Position;
         }
 
         public void close()
@@ -209,19 +210,19 @@ namespace cadencii.media
             }
             try {
                 // 最後にWAVEチャンクのサイズ
-                int position = (int)m_stream.getFilePointer();
-                m_stream.seek(4);
+                int position = (int)m_stream.Position;
+                m_stream.Seek(4, SeekOrigin.Begin);
                 byte[] buf = PortUtil.getbytes_uint32_le(position - 8);
                 writeByteArray(m_stream, buf, 4);
 
                 // size of data chunk
                 int block_size = (int)(m_bit_per_sample / 8 * (int)m_channel);
                 long size = block_size * m_total_samples;
-                m_stream.seek(42);
+                m_stream.Seek(42, SeekOrigin.Begin);
                 buf = PortUtil.getbytes_uint32_le(size);
                 writeByteArray(m_stream, buf, 4);
 
-                m_stream.close();
+                m_stream.Close();
             } catch (Exception ex) {
                 serr.println("WaveWriter#close; ex=" + ex);
             }
@@ -238,13 +239,13 @@ namespace cadencii.media
             if (m_bit_per_sample == 8) {
                 if (m_channel == 1) {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte((int)((L[i] + 1.0f) * 127.5f));
+                        m_stream.WriteByte((byte)((L[i] + 1.0f) * 127.5f));
                     }
                 } else {
                     for (int i = 0; i < total; i++) {
-                        int b = (int)((L[i] + 1.0f) * 127.5f);
-                        m_stream.writeByte(b);
-                        m_stream.writeByte(b);
+                        byte b = (byte)((L[i] + 1.0f) * 127.5f);
+                        m_stream.WriteByte(b);
+                        m_stream.WriteByte(b);
                     }
                 }
             } else {
@@ -271,13 +272,13 @@ namespace cadencii.media
             if (m_bit_per_sample == 8) {
                 if (m_channel == 1) {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte((int)((L[i] + 1.0) * 127.5));
+                        m_stream.WriteByte((byte)((L[i] + 1.0) * 127.5));
                     }
                 } else {
                     for (int i = 0; i < total; i++) {
-                        int b = (int)((L[i] + 1.0) * 127.5);
-                        m_stream.writeByte(b);
-                        m_stream.writeByte(b);
+                        byte b = (byte)((L[i] + 1.0) * 127.5);
+                        m_stream.WriteByte(b);
+                        m_stream.WriteByte(b);
                     }
                 }
             } else {
@@ -304,12 +305,12 @@ namespace cadencii.media
             if (m_bit_per_sample == 8) {
                 if (m_channel == 1) {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte((byte)((L[i] + R[i] + 2.0f) * 63.75f));
+                        m_stream.WriteByte((byte)((L[i] + R[i] + 2.0f) * 63.75f));
                     }
                 } else {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte((byte)((L[i] + 1.0f) * 127.5f));
-                        m_stream.writeByte((byte)((R[i] + 1.0f) * 127.5f));
+                        m_stream.WriteByte((byte)((L[i] + 1.0f) * 127.5f));
+                        m_stream.WriteByte((byte)((R[i] + 1.0f) * 127.5f));
                     }
                 }
             } else {
@@ -343,12 +344,12 @@ namespace cadencii.media
                 if (m_bit_per_sample == 8) {
                     if (m_channel == 1) {
                         for (int i = 0; i < length; i++) {
-                            m_stream.writeByte((int)((L[i] + R[i] + 2.0) * 63.75));
+                            m_stream.WriteByte((byte)((L[i] + R[i] + 2.0) * 63.75));
                         }
                     } else {
                         for (int i = 0; i < length; i++) {
-                            m_stream.writeByte((int)((L[i] + 1.0) * 127.5));
-                            m_stream.writeByte((int)((R[i] + 1.0) * 127.5));
+                            m_stream.WriteByte((byte)((L[i] + 1.0) * 127.5));
+                            m_stream.WriteByte((byte)((R[i] + 1.0) * 127.5));
                         }
                     }
                 } else {
@@ -379,12 +380,12 @@ namespace cadencii.media
             if (m_bit_per_sample == 8) {
                 if (m_channel == 1) {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte(0xff & ((L[i] + R[i]) / 2));
+                        m_stream.WriteByte((byte)(0xff & ((L[i] + R[i]) / 2)));
                     }
                 } else {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte(0xff & L[i]);
-                        m_stream.writeByte(0xff & R[i]);
+                        m_stream.WriteByte((byte)(0xff & L[i]));
+                        m_stream.WriteByte((byte)(0xff & R[i]));
                     }
                 }
             } else {
@@ -412,12 +413,12 @@ namespace cadencii.media
             if (m_bit_per_sample == 8) {
                 if (m_channel == 1) {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte((int)(((L[i] + R[i]) / 2f + 32768f) / 255f));
+                        m_stream.WriteByte((byte)(((L[i] + R[i]) / 2f + 32768f) / 255f));
                     }
                 } else {
                     for (int i = 0; i < total; i++) {
-                        m_stream.writeByte((int)((L[i] + 32768f) / 255f));
-                        m_stream.writeByte((int)((R[i] + 32768f) / 255f));
+                        m_stream.WriteByte((byte)((L[i] + 32768f) / 255f));
+                        m_stream.WriteByte((byte)((R[i] + 32768f) / 255f));
                     }
                 }
             } else {
@@ -439,12 +440,12 @@ namespace cadencii.media
             m_total_samples += (int)total;
         }
 
-        private static void writeByteArray(RandomAccessFile fs, byte[] dat, int limit)
+        private static void writeByteArray(Stream fs, byte[] dat, int limit)
         {
-            fs.write(dat, 0, (dat.Length > limit) ? limit : dat.Length);
+            fs.Write(dat, 0, (dat.Length > limit) ? limit : dat.Length);
             if (dat.Length < limit) {
                 for (int i = 0; i < limit - dat.Length; i++) {
-                    fs.writeByte(0x00);
+                    fs.WriteByte(0x00);
                 }
             }
         }

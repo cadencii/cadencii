@@ -2258,22 +2258,22 @@ namespace cadencii.vsq
             return s.Substring(0, count);
         }
 
-        private static void printTrack(VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, string encoding)
+        private static void printTrack(VsqFile vsq, int track, Stream fs, int msPreSend, string encoding)
         {
             //VsqTrack item = Tracks[track];
             string _NL = "" + (char)(byte)0x0a;
             //ヘッダ
-            fs.write(_MTRK, 0, 4);
+            fs.Write(_MTRK, 0, 4);
             //データ長。とりあえず0
-            fs.write(new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4);
-            long first_position = fs.getFilePointer();
+            fs.Write(new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4);
+            long first_position = fs.Position;
             //トラック名
             writeFlexibleLengthUnsignedLong(fs, (byte)0x00);//デルタタイム
-            fs.write((byte)0xff);//ステータスタイプ
-            fs.write((byte)0x03);//イベントタイプSequence/Track Name
+            fs.WriteByte((byte)0xff);//ステータスタイプ
+            fs.WriteByte((byte)0x03);//イベントタイプSequence/Track Name
             byte[] seq_name = PortUtil.getEncodedByte(encoding, vsq.Track[track].getName());
             writeFlexibleLengthUnsignedLong(fs, (long)seq_name.Length);//seq_nameの文字数
-            fs.write(seq_name, 0, seq_name.Length);
+            fs.Write(seq_name, 0, seq_name.Length);
 
             //Meta Textを準備
             List<MidiEvent> meta = vsq.generateMetaTextEvent(track, encoding);
@@ -2322,9 +2322,9 @@ namespace cadencii.vsq
 #endif
             for (int i = 0; i < nrpns.Length; i++) {
                 writeFlexibleLengthUnsignedLong(fs, (long)(nrpns[i].getClock() - last));
-                fs.write((byte)0xb0);
-                fs.write(nrpns[i].getParameter());
-                fs.write(nrpns[i].Value);
+                fs.WriteByte((byte)0xb0);
+                fs.WriteByte(nrpns[i].getParameter());
+                fs.WriteByte(nrpns[i].Value);
                 last = nrpns[i].getClock();
             }
 
@@ -2332,13 +2332,13 @@ namespace cadencii.vsq
             VsqEvent last_event = vsq.Track[track].getEvent(vsq.Track[track].getEventCount() - 1);
             int last_clock = last_event.Clock + last_event.ID.getLength();
             writeFlexibleLengthUnsignedLong(fs, (long)last_clock);
-            fs.write((byte)0xff);
-            fs.write((byte)0x2f);
-            fs.write((byte)0x00);
-            long pos = fs.getFilePointer();
-            fs.seek(first_position - 4);
+            fs.WriteByte((byte)0xff);
+            fs.WriteByte((byte)0x2f);
+            fs.WriteByte((byte)0x00);
+            long pos = fs.Position;
+            fs.Seek(first_position - 4, SeekOrigin.Begin);
             writeUnsignedInt(fs, (long)(pos - first_position));
-            fs.seek(pos);
+            fs.Seek(pos, SeekOrigin.Begin);
         }
 
         /// <summary>
@@ -3062,41 +3062,41 @@ namespace cadencii.vsq
                 }
             }
 
-            RandomAccessFile fs = null;
+            FileStream fs = null;
             try {
-                fs = new RandomAccessFile(file, "rw");
+                fs = new FileStream(file, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 long first_position;//チャンクの先頭のファイル位置
 
                 #region  ヘッダ
                 //チャンクタイプ
-                fs.write(_MTHD, 0, 4);
+                fs.Write(_MTHD, 0, 4);
                 //データ長
-                fs.write((byte)0x00);
-                fs.write((byte)0x00);
-                fs.write((byte)0x00);
-                fs.write((byte)0x06);
+                fs.WriteByte((byte)0x00);
+                fs.WriteByte((byte)0x00);
+                fs.WriteByte((byte)0x00);
+                fs.WriteByte((byte)0x06);
                 //フォーマット
-                fs.write((byte)0x00);
-                fs.write((byte)0x01);
+                fs.WriteByte((byte)0x00);
+                fs.WriteByte((byte)0x01);
                 //トラック数
                 writeUnsignedShort(fs, Track.Count);
                 //時間単位
-                fs.write((byte)0x01);
-                fs.write((byte)0xe0);
+                fs.WriteByte((byte)0x01);
+                fs.WriteByte((byte)0xe0);
                 #endregion
 
                 #region Master Track
                 //チャンクタイプ
-                fs.write(_MTRK, 0, 4);
+                fs.Write(_MTRK, 0, 4);
                 //データ長。とりあえず0を入れておく
-                fs.write(new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4);
-                first_position = fs.getFilePointer();
+                fs.Write(new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4);
+                first_position = fs.Position;
                 //トラック名
                 writeFlexibleLengthUnsignedLong(fs, 0);//デルタタイム
-                fs.write((byte)0xff);//ステータスタイプ
-                fs.write((byte)0x03);//イベントタイプSequence/Track Name
-                fs.write((byte)_MASTER_TRACK.Length);//トラック名の文字数。これは固定
-                fs.write(_MASTER_TRACK, 0, _MASTER_TRACK.Length);
+                fs.WriteByte((byte)0xff);//ステータスタイプ
+                fs.WriteByte((byte)0x03);//イベントタイプSequence/Track Name
+                fs.WriteByte((byte)_MASTER_TRACK.Length);//トラック名の文字数。これは固定
+                fs.Write(_MASTER_TRACK, 0, _MASTER_TRACK.Length);
 
                 List<MidiEvent> events = new List<MidiEvent>();
                 foreach (var entry in TimesigTable) {
@@ -3123,13 +3123,13 @@ namespace cadencii.vsq
 
                 //WriteFlexibleLengthUnsignedLong( fs, (ulong)(last_clock + 120 - last) );
                 writeFlexibleLengthUnsignedLong(fs, 0);
-                fs.write((byte)0xff);
-                fs.write((byte)0x2f);//イベントタイプEnd of Track
-                fs.write((byte)0x00);
-                long pos = fs.getFilePointer();
-                fs.seek(first_position - 4);
+                fs.WriteByte((byte)0xff);
+                fs.WriteByte((byte)0x2f);//イベントタイプEnd of Track
+                fs.WriteByte((byte)0x00);
+                long pos = fs.Position;
+                fs.Seek(first_position - 4, SeekOrigin.Begin);
                 writeUnsignedInt(fs, pos - first_position);
-                fs.seek(pos);
+                fs.Seek(pos, SeekOrigin.Begin);
                 #endregion
 
                 #region トラック
@@ -3146,7 +3146,7 @@ namespace cadencii.vsq
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                     }
                 }
@@ -3211,10 +3211,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="item"></param>
-        public static void writeCharArray(RandomAccessFile fs, char[] item)
+        public static void writeCharArray(Stream fs, char[] item)
         {
             for (int i = 0; i < item.Length; i++) {
-                fs.write((byte)item[i]);
+                fs.WriteByte((byte)item[i]);
             }
         }
 
@@ -3222,20 +3222,20 @@ namespace cadencii.vsq
         /// ushort値をビッグエンディアンでfsに書き込みます
         /// </summary>
         /// <param name="data"></param>
-        public static void writeUnsignedShort(RandomAccessFile fs, int data)
+        public static void writeUnsignedShort(Stream fs, int data)
         {
             byte[] dat = PortUtil.getbytes_uint16_be(data);
-            fs.write(dat, 0, dat.Length);
+            fs.Write(dat, 0, dat.Length);
         }
 
         /// <summary>
         /// uint値をビッグエンディアンでfsに書き込みます
         /// </summary>
         /// <param name="data"></param>
-        public static void writeUnsignedInt(RandomAccessFile fs, long data)
+        public static void writeUnsignedInt(Stream fs, long data)
         {
             byte[] dat = PortUtil.getbytes_uint32_be(data);
-            fs.write(dat, 0, dat.Length);
+            fs.Write(dat, 0, dat.Length);
         }
 
         /// <summary>
@@ -3283,10 +3283,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="number"></param>
-        public static void writeFlexibleLengthUnsignedLong(RandomAccessFile fs, long number)
+        public static void writeFlexibleLengthUnsignedLong(Stream fs, long number)
         {
             byte[] bytes = getBytesFlexibleLengthUnsignedLong(number);
-            fs.write(bytes, 0, bytes.Length);
+            fs.Write(bytes, 0, bytes.Length);
         }
     }
 

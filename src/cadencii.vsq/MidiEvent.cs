@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 
@@ -27,7 +28,7 @@ namespace cadencii.vsq
         public int firstByte;
         public int[] data;
 
-        private static void writeDeltaClock(RandomAccessFile stream, long number)
+        private static void writeDeltaClock(Stream stream, long number)
         {
             bool[] bits = new bool[64];
             long val = 0x1;
@@ -57,15 +58,15 @@ namespace cadencii.vsq
                 if (i != bytes) {
                     num += 0x80;
                 }
-                stream.write((byte)num);
+                stream.WriteByte((byte)num);
             }
         }
 
-        private static long readDeltaClock(RandomAccessFile stream)
+        private static long readDeltaClock(Stream stream)
         {
             long ret = 0;
             while (true) {
-                int i = stream.read();
+                int i = stream.ReadByte();
                 if (i < 0) {
                     break;
                 }
@@ -78,15 +79,15 @@ namespace cadencii.vsq
             return ret;
         }
 
-        public static MidiEvent read(RandomAccessFile stream, ByRef<long> last_clock, ByRef<int> last_status_byte)
+        public static MidiEvent read(Stream stream, ByRef<long> last_clock, ByRef<int> last_status_byte)
         {
             long delta_clock = readDeltaClock(stream);
             last_clock.value += delta_clock;
-            int first_byte = stream.read();
+            int first_byte = stream.ReadByte();
             if (first_byte < 0x80) {
                 // ランニングステータスが適用される
-                long pos = stream.getFilePointer();
-                stream.seek(pos - 1);
+                long pos = stream.Position;
+                stream.Seek(pos - 1, SeekOrigin.Begin);
                 first_byte = last_status_byte.value;
             } else {
                 last_status_byte.value = first_byte;
@@ -106,7 +107,7 @@ namespace cadencii.vsq
                 me.firstByte = first_byte;
                 me.data = new int[2];
                 byte[] d = new byte[2];
-                stream.read(d, 0, 2);
+                stream.Read(d, 0, 2);
                 for (int i = 0; i < 2; i++) {
                     me.data[i] = 0xff & d[i];
                 }
@@ -123,7 +124,7 @@ namespace cadencii.vsq
                 me.firstByte = first_byte;
                 me.data = new int[1];
                 byte[] d = new byte[1];
-                stream.read(d, 0, 1);
+                stream.Read(d, 0, 1);
                 me.data[0] = 0xff & d[0];
                 return me;
             } else if (first_byte == 0xF6) {
@@ -143,7 +144,7 @@ namespace cadencii.vsq
                 return me;
             } else if (first_byte == 0xff) {
                 // メタイベント
-                int meta_event_type = stream.read();
+                int meta_event_type = stream.ReadByte();
                 long meta_event_length = readDeltaClock(stream);
                 MidiEvent me = new MidiEvent();
                 me.clock = last_clock.value;
@@ -151,7 +152,7 @@ namespace cadencii.vsq
                 me.data = new int[(int)meta_event_length + 1];
                 me.data[0] = meta_event_type;
                 byte[] d = new byte[(int)meta_event_length + 1];
-                stream.read(d, 1, (int)meta_event_length);
+                stream.Read(d, 1, (int)meta_event_length);
                 for (int i = 1; i < meta_event_length + 1; i++) {
 
                     me.data[i] = 0xff & d[i];
@@ -165,7 +166,7 @@ namespace cadencii.vsq
                 long sysex_length = readDeltaClock(stream);
                 me.data = new int[(int)sysex_length + 1];
                 byte[] d = new byte[(int)sysex_length + 1];
-                stream.read(d, 0, (int)(sysex_length + 1));
+                stream.Read(d, 0, (int)(sysex_length + 1));
                 for (int i = 0; i < sysex_length + 1; i++) {
                     me.data[i] = 0xff & d[i];
                 }
@@ -178,7 +179,7 @@ namespace cadencii.vsq
                 long sysex_length = readDeltaClock(stream);
                 me.data = new int[(int)sysex_length];
                 byte[] d = new byte[(int)sysex_length];
-                stream.read(d, 0, (int)sysex_length);
+                stream.Read(d, 0, (int)sysex_length);
                 for (int i = 0; i < sysex_length; i++) {
                     me.data[i] = 0xff & d[i];
                 }
@@ -188,18 +189,18 @@ namespace cadencii.vsq
             }
         }
 
-        public void writeData(RandomAccessFile stream)
+        public void writeData(Stream stream)
         {
-            stream.write(firstByte);
+            stream.WriteByte((byte)firstByte);
             if (firstByte == 0xff) {
-                stream.write(data[0]);
+                stream.WriteByte((byte)data[0]);
                 writeDeltaClock(stream, data.Length - 1);
                 for (int i = 1; i < data.Length; i++) {
-                    stream.writeByte(data[i]);
+                    stream.WriteByte((byte)data[i]);
                 }
             } else {
                 for (int i = 0; i < data.Length; i++) {
-                    stream.writeByte(data[i]);
+                    stream.WriteByte((byte)data[i]);
                 }
             }
         }

@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 
@@ -23,7 +24,7 @@ namespace cadencii.media
         private int m_channel;
         private int m_byte_per_sample;
         private bool m_opened;
-        private RandomAccessFile m_stream;
+        private Stream m_stream;
         private int m_total_samples;
         private double m_amplify_left = 1.0;
         private double m_amplify_right = 1.0;
@@ -123,15 +124,15 @@ namespace cadencii.media
             sout.println("WaveReader#open; file=" + file);
 #endif
             if (m_opened) {
-                m_stream.close();
+                m_stream.Close();
             }
-            m_stream = new RandomAccessFile(file, "r");
+            m_stream = new FileStream(file, FileMode.Open, FileAccess.Read);
 
             // RIFF
             byte[] buf = new byte[4];
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             if (buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F') {
-                m_stream.close();
+                m_stream.Close();
 #if DEBUG
                 serr.println("WaveReader#open; header error(RIFF)");
 #endif
@@ -139,12 +140,12 @@ namespace cadencii.media
             }
 
             // ファイルサイズ - 8最後に記入
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
 
             // WAVE
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             if (buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E') {
-                m_stream.close();
+                m_stream.Close();
 #if DEBUG
                 serr.println("WaveReader#open; header error(WAVE)");
 #endif
@@ -152,9 +153,9 @@ namespace cadencii.media
             }
 
             // fmt 
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             if (buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ') {
-                m_stream.close();
+                m_stream.Close();
 #if DEBUG
                 serr.println("WaveReader#open; header error(fmt )");
 #endif
@@ -162,35 +163,35 @@ namespace cadencii.media
             }
 
             // fmt チャンクのサイズ
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             int chunksize = (int)PortUtil.make_uint32_le(buf);
-            long fmt_chunk_end_location = m_stream.getFilePointer() + chunksize;
+            long fmt_chunk_end_location = m_stream.Position + chunksize;
 
             // format ID
-            m_stream.read(buf, 0, 2);
+            m_stream.Read(buf, 0, 2);
 
             // チャンネル数
-            m_stream.read(buf, 0, 2);
+            m_stream.Read(buf, 0, 2);
             m_channel = buf[1] << 8 | buf[0];
 #if DEBUG
             sout.println("WaveReader#open; m_channel=" + m_channel);
 #endif
 
             // サンプリングレート
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             m_sample_per_sec = (int)PortUtil.make_uint32_le(buf);
 #if DEBUG
             sout.println("WaveReader#open; m_sample_per_sec=" + m_sample_per_sec);
 #endif
 
             // データ速度
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
 
             // ブロックサイズ
-            m_stream.read(buf, 0, 2);
+            m_stream.Read(buf, 0, 2);
 
             // サンプルあたりのビット数
-            m_stream.read(buf, 0, 2);
+            m_stream.Read(buf, 0, 2);
             int bit_per_sample = buf[1] << 8 | buf[0];
             m_byte_per_sample = bit_per_sample / 8;
 #if DEBUG
@@ -198,13 +199,13 @@ namespace cadencii.media
 #endif
 
             // 拡張部分
-            m_stream.seek(fmt_chunk_end_location);
+            m_stream.Seek(fmt_chunk_end_location, SeekOrigin.Begin);
             //m_stream.Read( buf, 0, 2 );
 
             // data
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             if (buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a') {
-                m_stream.close();
+                m_stream.Close();
 #if DEBUG
                 serr.println("WaveReader#open; header error (data)");
 #endif
@@ -212,7 +213,7 @@ namespace cadencii.media
             }
 
             // size of data chunk
-            m_stream.read(buf, 0, 4);
+            m_stream.Read(buf, 0, 4);
             int size = (int)PortUtil.make_uint32_le(buf);
             m_total_samples = size / (m_channel * m_byte_per_sample);
 #if DEBUG
@@ -220,7 +221,7 @@ namespace cadencii.media
 #endif
 
             m_opened = true;
-            m_header_offset = (int)m_stream.getFilePointer();
+            m_header_offset = (int)m_stream.Position;
             return true;
         }
 
@@ -261,10 +262,10 @@ namespace cadencii.media
                         right[i] = 0.0;
                     }
                 }
-                m_stream.seek(m_header_offset);
+                m_stream.Seek(m_header_offset, SeekOrigin.Begin);
             } else {
                 long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.seek(loc);
+                m_stream.Seek(loc, SeekOrigin.Begin);
             }
             if (m_total_samples < required_sample_end) {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
@@ -290,7 +291,7 @@ namespace cadencii.media
                     double coeff_left = m_amplify_left / 32768.0;
                     double coeff_right = m_amplify_right / 32768.0;
                     for (int i = i_start; i <= i_end; i++) {
-                        int ret = m_stream.read(buf, 0, 4);
+                        int ret = m_stream.Read(buf, 0, 4);
                         if (ret < 4) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -307,7 +308,7 @@ namespace cadencii.media
                     byte[] buf = new byte[2];
                     double coeff_left = m_amplify_left / 32768.0;
                     for (int i = i_start; i <= i_end; i++) {
-                        int ret = m_stream.read(buf, 0, 2);
+                        int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -326,7 +327,7 @@ namespace cadencii.media
                     double coeff_left = m_amplify_left / 64.0;
                     double coeff_right = m_amplify_right / 64.0;
                     for (int i = i_start; i <= i_end; i++) {
-                        int ret = m_stream.read(buf, 0, 2);
+                        int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -341,7 +342,7 @@ namespace cadencii.media
                     byte[] buf = new byte[1];
                     double coeff_left = m_amplify_left / 64.0;
                     for (int i = i_start; i <= i_end; i++) {
-                        int ret = m_stream.read(buf, 0, 1);
+                        int ret = m_stream.Read(buf, 0, 1);
                         if (ret < 1) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -375,10 +376,10 @@ namespace cadencii.media
                     left.value[i] = 0.0f;
                     right.value[i] = 0.0f;
                 }
-                m_stream.seek(m_header_offset);
+                m_stream.Seek(m_header_offset, SeekOrigin.Begin);
             } else {
                 long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.seek(loc);
+                m_stream.Seek(loc, SeekOrigin.Begin);
             }
             if (m_total_samples < required_sample_end) {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
@@ -395,7 +396,7 @@ namespace cadencii.media
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     float coeff_right = (float)(m_amplify_right / 32768.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 4);
+                        int ret = m_stream.Read(buf, 0, 4);
                         if (ret < 4) {
                             for (int j = i; j < length; j++) {
                                 left.value[j] = 0.0f;
@@ -412,7 +413,7 @@ namespace cadencii.media
                     byte[] buf = new byte[2];
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 2);
+                        int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
                                 left.value[j] = 0.0f;
@@ -431,7 +432,7 @@ namespace cadencii.media
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     float coeff_right = (float)(m_amplify_right / 64.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 2);
+                        int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
                                 left.value[j] = 0.0f;
@@ -446,7 +447,7 @@ namespace cadencii.media
                     byte[] buf = new byte[1];
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 1);
+                        int ret = m_stream.Read(buf, 0, 1);
                         if (ret < 1) {
                             for (int j = i; j < length; j++) {
                                 left.value[j] = 0.0f;
@@ -480,10 +481,10 @@ namespace cadencii.media
                     left[i] = 0.0f;
                     right[i] = 0.0f;
                 }
-                m_stream.seek(m_header_offset);
+                m_stream.Seek(m_header_offset, SeekOrigin.Begin);
             } else {
                 long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.seek(loc);
+                m_stream.Seek(loc, SeekOrigin.Begin);
             }
             if (m_total_samples < required_sample_end) {
                 i_end = length - 1 - (int)required_sample_end + m_total_samples;
@@ -500,7 +501,7 @@ namespace cadencii.media
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     float coeff_right = (float)(m_amplify_right / 32768.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 4);
+                        int ret = m_stream.Read(buf, 0, 4);
                         if (ret < 4) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -517,7 +518,7 @@ namespace cadencii.media
                     byte[] buf = new byte[2];
                     float coeff_left = (float)(m_amplify_left / 32768.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 2);
+                        int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -536,7 +537,7 @@ namespace cadencii.media
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     float coeff_right = (float)(m_amplify_right / 64.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 2);
+                        int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -551,7 +552,7 @@ namespace cadencii.media
                     byte[] buf = new byte[1];
                     float coeff_left = (float)(m_amplify_left / 64.0f);
                     for (int i = 0; i < length; i++) {
-                        int ret = m_stream.read(buf, 0, 1);
+                        int ret = m_stream.Read(buf, 0, 1);
                         if (ret < 1) {
                             for (int j = i; j < length; j++) {
                                 left[j] = 0.0f;
@@ -573,7 +574,7 @@ namespace cadencii.media
 #endif
             m_opened = false;
             if (m_stream != null) {
-                m_stream.close();
+                m_stream.Close();
                 m_stream = null;
             }
         }

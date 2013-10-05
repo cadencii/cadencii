@@ -30,30 +30,30 @@ namespace cadencii.vsq
 
         public MidiFile(string path)
         {
-            RandomAccessFile stream = new RandomAccessFile(path, "r");
+            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
             try {
                 // ヘッダ
                 byte[] byte4 = new byte[4];
-                stream.read(byte4, 0, 4);
+                stream.Read(byte4, 0, 4);
                 if (PortUtil.make_uint32_be(byte4) != 0x4d546864) {
                     throw new Exception("header error: MThd");
                 }
 
                 // データ長
-                stream.read(byte4, 0, 4);
+                stream.Read(byte4, 0, 4);
                 long length = PortUtil.make_uint32_be(byte4);
 
                 // フォーマット
-                stream.read(byte4, 0, 2);
+                stream.Read(byte4, 0, 2);
                 m_format = PortUtil.make_uint16_be(byte4);
 
                 // トラック数
                 int tracks = 0;
-                stream.read(byte4, 0, 2);
+                stream.Read(byte4, 0, 2);
                 tracks = (int)PortUtil.make_uint16_be(byte4);
 
                 // 時間分解能
-                stream.read(byte4, 0, 2);
+                stream.Read(byte4, 0, 2);
                 m_time_format = PortUtil.make_uint16_be(byte4);
 
                 // 各トラックを読込み
@@ -61,20 +61,20 @@ namespace cadencii.vsq
                 for (int track = 0; track < tracks; track++) {
                     List<MidiEvent> track_events = new List<MidiEvent>();
                     // ヘッダー
-                    stream.read(byte4, 0, 4);
+                    stream.Read(byte4, 0, 4);
                     if (PortUtil.make_uint32_be(byte4) != 0x4d54726b) {
                         throw new Exception("header error; MTrk");
                     }
 
                     // チャンクサイズ
-                    stream.read(byte4, 0, 4);
+                    stream.Read(byte4, 0, 4);
                     long size = (long)PortUtil.make_uint32_be(byte4);
-                    long startpos = stream.getFilePointer();
+                    long startpos = stream.Position;
 
                     // チャンクの終わりまで読込み
                     ByRef<long> clock = new ByRef<long>((long)0);
                     ByRef<int> last_status_byte = new ByRef<int>(0x00);
-                    while (stream.getFilePointer() < startpos + size) {
+                    while (stream.Position < startpos + size) {
                         MidiEvent mi = MidiEvent.read(stream, clock, last_status_byte);
                         track_events.Add(mi);
                     }
@@ -151,7 +151,7 @@ namespace cadencii.vsq
             } finally {
                 if (stream != null) {
                     try {
-                        stream.close();
+                        stream.Close();
                     } catch (Exception ex2) {
                         serr.println("MidiFile#.ctor; ex2=" + ex2);
                     }

@@ -10242,26 +10242,26 @@ namespace cadencii
                 var dialog_result = AppManager.showModalDialog(saveMidiDialog, false, this);
 
                 if (dialog_result == System.Windows.Forms.DialogResult.OK) {
-                    RandomAccessFile fs = null;
+                    FileStream fs = null;
                     string filename = saveMidiDialog.FileName;
                     AppManager.editorConfig.setLastUsedPathOut(filename, ".mid");
                     try {
-                        fs = new RandomAccessFile(filename, "rw");
+                        fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                         // ヘッダー
-                        fs.write(new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4);
+                        fs.Write(new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4);
                         //データ長
-                        fs.write((byte)0x00);
-                        fs.write((byte)0x00);
-                        fs.write((byte)0x00);
-                        fs.write((byte)0x06);
+                        fs.WriteByte((byte)0x00);
+                        fs.WriteByte((byte)0x00);
+                        fs.WriteByte((byte)0x00);
+                        fs.WriteByte((byte)0x06);
                         //フォーマット
-                        fs.write((byte)0x00);
-                        fs.write((byte)0x01);
+                        fs.WriteByte((byte)0x00);
+                        fs.WriteByte((byte)0x01);
                         //トラック数
                         VsqFile.writeUnsignedShort(fs, track_count);
                         //時間単位
-                        fs.write((byte)0x01);
-                        fs.write((byte)0xe0);
+                        fs.WriteByte((byte)0x01);
+                        fs.WriteByte((byte)0xe0);
                         int count = -1;
                         for (int i = 0; i < mDialogMidiImportAndExport.listTrack.Items.Count; i++) {
                             if (!mDialogMidiImportAndExport.listTrack.Items[i].Checked) {
@@ -10269,17 +10269,17 @@ namespace cadencii
                             }
                             VsqTrack track = vsq.Track[i];
                             count++;
-                            fs.write(new byte[] { 0x4d, 0x54, 0x72, 0x6b }, 0, 4);
+                            fs.Write(new byte[] { 0x4d, 0x54, 0x72, 0x6b }, 0, 4);
                             //データ長。とりあえず0を入れておく
-                            fs.write(new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, 4);
-                            long first_position = fs.getFilePointer();
+                            fs.Write(new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, 4);
+                            long first_position = fs.Position;
                             //トラック名
                             VsqFile.writeFlexibleLengthUnsignedLong(fs, 0);//デルタタイム
-                            fs.write((byte)0xff);//ステータスタイプ
-                            fs.write((byte)0x03);//イベントタイプSequence/Track Name
+                            fs.WriteByte((byte)0xff);//ステータスタイプ
+                            fs.WriteByte((byte)0x03);//イベントタイプSequence/Track Name
                             byte[] track_name = PortUtil.getEncodedByte("Shift_JIS", track.getName());
-                            fs.write((byte)track_name.Length);
-                            fs.write(track_name, 0, track_name.Length);
+                            fs.WriteByte((byte)track_name.Length);
+                            fs.Write(track_name, 0, track_name.Length);
 
                             List<MidiEvent> events = new List<MidiEvent>();
 
@@ -10426,22 +10426,22 @@ namespace cadencii
 
                             // トラックエンドを記入し、
                             VsqFile.writeFlexibleLengthUnsignedLong(fs, (long)0);
-                            fs.write((byte)0xff);
-                            fs.write((byte)0x2f);
-                            fs.write((byte)0x00);
+                            fs.WriteByte((byte)0xff);
+                            fs.WriteByte((byte)0x2f);
+                            fs.WriteByte((byte)0x00);
                             // チャンクの先頭に戻ってチャンクのサイズを記入
-                            long pos = fs.getFilePointer();
-                            fs.seek(first_position - 4);
+                            long pos = fs.Position;
+                            fs.Seek(first_position - 4, SeekOrigin.Begin);
                             VsqFile.writeUnsignedInt(fs, pos - first_position);
                             // ファイルを元の位置にseek
-                            fs.seek(pos);
+                            fs.Seek(pos, SeekOrigin.Begin);
                         }
                     } catch (Exception ex) {
                         Logger.write(typeof(FormMain) + ".menuFileExportMidi_Click; ex=" + ex + "\n");
                     } finally {
                         if (fs != null) {
                             try {
-                                fs.close();
+                                fs.Close();
                             } catch (Exception ex2) {
                                 Logger.write(typeof(FormMain) + ".menuFileExportMidi_Click; ex=" + ex2 + "\n");
                             }
@@ -16306,7 +16306,7 @@ namespace cadencii
                 string config = Path.Combine(dir, cfg);
                 FileStream fs = null;
                 try {
-                    fs = new FileStream(config, FileMode.Create, FileAccess.Write);
+                    fs = new FileStream(config, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                     xsms.serialize(fs, null);
                 } catch (Exception ex) {
                     Logger.write(typeof(FormMain) + ".handleSettingPaletteTool; ex=" + ex + "\n");

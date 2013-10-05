@@ -375,53 +375,53 @@ namespace cadencii
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
 #if DEBUG
             // master
-            RandomAccessFile fos_master =
-                new RandomAccessFile(
+            Stream fos_master =
+                new FileStream(
                     Path.Combine(
                         PortUtil.getApplicationStartupPath(),
-                        "src_master.bin"), "rw");
-            fos_master.write(0x01);
-            fos_master.write(0x04);
+                        "src_master.bin"), FileMode.OpenOrCreate, FileAccess.Write);
+            fos_master.WriteByte(0x01);
+            fos_master.WriteByte(0x04);
             byte[] buf = PortUtil.getbytes_uint32_le(tempo_count);
-            fos_master.write(buf, 0, 4);
+            fos_master.Write(buf, 0, 4);
             count = 0;
             for (int i = 0; i < tempo_count; i++) {
                 buf = PortUtil.getbytes_uint32_le(masterClocksSrc[i]);
-                fos_master.write(buf, 0, 4);
-                fos_master.write(masterEventsSrc, count, 3);
+                fos_master.Write(buf, 0, 4);
+                fos_master.Write(masterEventsSrc, count, 3);
                 count += 3;
             }
-            fos_master.close();
+            fos_master.Close();
             // body
-            RandomAccessFile fos_body =
-                new RandomAccessFile(
+            Stream fos_body =
+                new FileStream(
                     Path.Combine(
                         PortUtil.getApplicationStartupPath(),
-                        "src_body.bin"), "rw");
+                        "src_body.bin"), FileMode.OpenOrCreate, FileAccess.ReadWrite);
             buf = PortUtil.getbytes_uint32_le(numEvents);
-            fos_body.write(0x02);
-            fos_body.write(0x04);
-            fos_body.write(buf, 0, 4);
+            fos_body.WriteByte(0x02);
+            fos_body.WriteByte(0x04);
+            fos_body.Write(buf, 0, 4);
             count = 0;
             for (int i = 0; i < numEvents; i++) {
                 buf = PortUtil.getbytes_uint32_le(bodyClocksSrc[i]);
-                fos_body.write(buf, 0, 4);
-                fos_body.write(bodyEventsSrc, count, 3);
+                fos_body.Write(buf, 0, 4);
+                fos_body.Write(bodyEventsSrc, count, 3);
                 count += 3;
             }
-            fos_body.close();
+            fos_body.Close();
             // synth
             long act_total_samples = mTotalSamples + mTrimRemain;
             buf = PortUtil.getbytes_int64_le(act_total_samples);
-            RandomAccessFile fos_synth =
-                new RandomAccessFile(
+            Stream fos_synth =
+                new FileStream(
                     Path.Combine(
                         PortUtil.getApplicationStartupPath(),
-                        "src_synth.bin"), "rw");
-            fos_synth.write(0x03);
-            fos_synth.write(0x08);
-            fos_synth.write(buf, 0, 8);
-            fos_synth.close();
+                        "src_synth.bin"), FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            fos_synth.WriteByte(0x03);
+            fos_synth.WriteByte(0x08);
+            fos_synth.Write(buf, 0, 8);
+            fos_synth.Close();
 #endif
             mDriver.startRendering(
                 mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mDriverSampleRate),

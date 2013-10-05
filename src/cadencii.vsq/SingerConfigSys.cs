@@ -61,14 +61,14 @@ namespace cadencii.vsq
             }
 
             // voice.mapから、プログラムチェンジ、バンクセレクトと音源との紐付け情報を読み出す。
-            RandomAccessFile fs = null;
+            FileStream fs = null;
             try {
-                fs = new RandomAccessFile(map, "r");
+                fs = new FileStream(map, FileMode.Open, FileAccess.Read);
                 byte[] dat = new byte[8];
-                fs.seek(0x20);
+                fs.Seek(0x20, SeekOrigin.Begin);
                 for (int language = 0; language < 0x80; language++) {
                     for (int program = 0; program < 0x80; program++) {
-                        fs.read(dat, 0, 8);
+                        fs.Read(dat, 0, 8);
                         long value = PortUtil.make_int64_le(dat);
                         if (value >= 1) {
                             string vvd = Path.Combine(path_voicedb, "vvoice" + value + ".vvd");
@@ -82,7 +82,7 @@ namespace cadencii.vsq
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                         serr.println("SingerConfigSys#.ctor; ex2=" + ex2);
                     }

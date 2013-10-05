@@ -1037,13 +1037,13 @@ namespace cadencii.vsq
             if (!System.IO.File.Exists(expression)) {
                 return;
             }
-            RandomAccessFile fs = null;
+            FileStream fs = null;
             try {
-                fs = new RandomAccessFile(expression, "r");
+                fs = new FileStream(expression, FileMode.Open, FileAccess.Read);
                 byte[] dat = new byte[8];
-                fs.seek(0x20);
+                fs.Seek(0x20, SeekOrigin.Begin);
                 for (int i = 0; i < MAX_VIBRATO; i++) {
-                    fs.read(dat, 0, 8);
+                    fs.Read(dat, 0, 8);
                     long value = PortUtil.make_int64_le(dat);
                     if (value <= 0) {
                         continue;
@@ -1059,11 +1059,11 @@ namespace cadencii.vsq
                     }
 
                     string NL = (char)0x0D + "" + (char)0x0A;
-                    RandomAccessFile fs_ved = null;
+                    FileStream fs_ved = null;
                     try {
-                        fs_ved = new RandomAccessFile(ved, "r");
-                        byte[] byte_ved = new byte[(int)fs_ved.length()];
-                        fs_ved.read(byte_ved, 0, byte_ved.Length);
+                        fs_ved = new FileStream(ved, FileMode.Open, FileAccess.Read);
+                        byte[] byte_ved = new byte[(int)fs_ved.Length];
+                        fs_ved.Read(byte_ved, 0, byte_ved.Length);
                         TransCodeUtil.decodeBytes(byte_ved);
                         int[] int_ved = new int[byte_ved.Length];
                         for (int j = 0; j < byte_ved.Length; j++) {
@@ -1119,7 +1119,7 @@ namespace cadencii.vsq
                     } finally {
                         if (fs_ved != null) {
                             try {
-                                fs_ved.close();
+                                fs_ved.Close();
                             } catch (Exception ex2) {
                                 serr.println("ExpressionConfigSys#.ctor; ex2=" + ex2);
                             }
@@ -1131,7 +1131,7 @@ namespace cadencii.vsq
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                         serr.println("ExpressionConfigSys#.ctor; ex2=" + ex2);
                     }

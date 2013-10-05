@@ -13,6 +13,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -114,12 +115,12 @@ namespace cadencii.vsq
             sc.VvdPath = file;
             sc.Language = language;
             sc.Program = program;
-            RandomAccessFile fs = null;
+            Stream fs = null;
             try {
-                fs = new RandomAccessFile(file, "r");
-                int length = (int)fs.length();
+                fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+                int length = (int)fs.Length;
                 byte[] dat = new byte[length];
-                fs.read(dat, 0, length);
+                fs.Read(dat, 0, length);
                 TransCodeUtil.decodeBytes(dat);
                 int[] idat = new int[length];
                 for (int i = 0; i < length; i++) {
@@ -201,7 +202,7 @@ namespace cadencii.vsq
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                     }
                 }
