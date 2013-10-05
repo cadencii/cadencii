@@ -78,7 +78,6 @@
     <Compile Include="fft.cs" />
     <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
-    <Compile Include="lang.cs" />
     <Compile Include="ListIterator.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="math.cs" />
