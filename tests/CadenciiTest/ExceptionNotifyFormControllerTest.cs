@@ -12,29 +12,29 @@ namespace cadencii
         public void testSetReportTarget()
         {
             string expected = "OSVersion=" + Environment.OSVersion.ToString() + "\ndotNetVersion=" + System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
-            Assert.AreEqual( expected, base.getSystemInfo() );
+            Assert.AreEqual(expected, base.getSystemInfo());
         }
 
         [Test]
         public void testExtractMessageString()
         {
             Exception ex = this.prepareException();
-            string actual = base.extractMessageString( ex, 0 );
-            Assert.AreEqual( "[exception-0]\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n", actual );
+            string actual = base.extractMessageString(ex, 0);
+            Assert.AreEqual("[exception-0]\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n", actual);
         }
 
         //[Test]
         public void test()
         {
-            this.setReportTarget( this.prepareException() );
-            this.getUi().showDialog( null );
+            this.setReportTarget(this.prepareException());
+            this.getUi().showDialog(null);
         }
 
         private Exception prepareException()
         {
             try {
-                int.Parse( "XYZ" );
-            } catch ( Exception ex ) {
+                int.Parse("XYZ");
+            } catch (Exception ex) {
                 return ex;
             }
             return null;

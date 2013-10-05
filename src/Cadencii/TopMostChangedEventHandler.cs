@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void TopMostChangedEventHandler( Object sender, bool top_most );
+    public delegate void TopMostChangedEventHandler(Object sender, bool top_most);
 
 }

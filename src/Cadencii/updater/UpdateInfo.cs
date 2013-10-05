@@ -18,7 +18,7 @@ namespace cadencii.updater
     public class UpdateInfo
     {
         public UpdateInfo()
-        {}
+        { }
 
         public int Major { get; set; }
         public int Minor { get; set; }

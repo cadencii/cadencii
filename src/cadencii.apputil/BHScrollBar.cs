@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * BHScrollBar.cs
  * Copyright © 2009-2011 kbinani
@@ -15,74 +14,92 @@
 using System;
 using System.Windows.Forms;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
     /// <summary>
     /// Valueの値が正しくMinimumからMaximumの間を動くスクロールバー
     /// </summary>
-    public partial class OBSOLUTE_BHScrollBar : UserControl {
+    public partial class OBSOLUTE_BHScrollBar : UserControl
+    {
         int m_max = 100;
         int m_min = 0;
 
         public event EventHandler ValueChanged;
 
-        public OBSOLUTE_BHScrollBar() {
+        public OBSOLUTE_BHScrollBar()
+        {
             InitializeComponent();
         }
 
-        public int Value {
-            get {
+        public int Value
+        {
+            get
+            {
                 return hScroll.Value;
             }
-            set {
+            set
+            {
                 hScroll.Value = value;
             }
         }
 
-        public int LargeChange {
-            get {
+        public int LargeChange
+        {
+            get
+            {
                 return hScroll.LargeChange;
             }
-            set {
+            set
+            {
                 hScroll.LargeChange = value;
                 hScroll.Maximum = m_max + value;
             }
         }
 
-        public int SmallChange {
-            get {
+        public int SmallChange
+        {
+            get
+            {
                 return hScroll.SmallChange;
             }
-            set {
+            set
+            {
                 hScroll.SmallChange = value;
             }
         }
 
-        public int Maximum {
-            get {
+        public int Maximum
+        {
+            get
+            {
                 return m_max;
             }
-            set {
+            set
+            {
                 m_max = value;
                 hScroll.Maximum = m_max + hScroll.LargeChange;
             }
         }
 
-        public int Minimum {
-            get {
+        public int Minimum
+        {
+            get
+            {
                 return m_min;
             }
-            set {
+            set
+            {
                 m_min = value;
             }
         }
 
-        private void hScroll_ValueChanged( object sender, EventArgs e ) {
-            if ( ValueChanged != null ) {
-                ValueChanged( this, e );
+        private void hScroll_ValueChanged(object sender, EventArgs e)
+        {
+            if (ValueChanged != null) {
+                ValueChanged(this, e);
             }
         }
     }
 
 }
-#endif

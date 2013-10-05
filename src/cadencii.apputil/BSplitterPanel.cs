@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * BSplitterPanel.cs
  * Copyright © 2008-2011 kbinani
@@ -17,82 +16,99 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
-    public class BSplitterPanel : Panel {
+    public class BSplitterPanel : Panel
+    {
         private BorderStyle m_border_style = BorderStyle.None;
         private Color m_border_color = Color.Black;
 
         public event EventHandler BorderStyleChanged;
 
         public BSplitterPanel()
-            : base() {
+            : base()
+        {
             base.AutoScroll = false;
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public Color BorderColor {
-            get {
+        public Color BorderColor
+        {
+            get
+            {
                 return m_border_color;
             }
-            set {
+            set
+            {
                 m_border_color = value;
             }
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public new BorderStyle BorderStyle {
-            get {
+        public new BorderStyle BorderStyle
+        {
+            get
+            {
                 return m_border_style;
             }
-            set {
+            set
+            {
                 BorderStyle old = m_border_style;
                 m_border_style = value;
-                if ( m_border_style == BorderStyle.Fixed3D ) {
+                if (m_border_style == BorderStyle.Fixed3D) {
                     base.BorderStyle = BorderStyle.Fixed3D;
-                } else if ( m_border_style == BorderStyle.FixedSingle ) {
+                } else if (m_border_style == BorderStyle.FixedSingle) {
                     base.BorderStyle = BorderStyle.None;
-                    base.Padding = new Padding( 1 );
+                    base.Padding = new Padding(1);
                 } else {
-                    base.Padding = new Padding( 0 );
+                    base.Padding = new Padding(0);
                     base.BorderStyle = BorderStyle.None;
                 }
-                if ( old != m_border_style && BorderStyleChanged != null ) {
-                    BorderStyleChanged( this, new EventArgs() );
+                if (old != m_border_style && BorderStyleChanged != null) {
+                    BorderStyleChanged(this, new EventArgs());
                 }
             }
         }
 
         [Browsable(false)]
-        public new int Width {
-            get {
+        public new int Width
+        {
+            get
+            {
                 return base.Width;
             }
-            internal set {
+            internal set
+            {
                 base.Width = value;
             }
         }
 
         [Browsable(false)]
-        public new int Height {
-            get {
+        public new int Height
+        {
+            get
+            {
                 return base.Height;
             }
-            internal set {
+            internal set
+            {
                 base.Height = value;
             }
         }
 
         [Browsable(false)]
-        public new Rectangle Bounds {
-            get {
+        public new Rectangle Bounds
+        {
+            get
+            {
                 return base.Bounds;
             }
-            internal set {
+            internal set
+            {
                 base.Bounds = value;
             }
         }
     }
 
 }
-#endif

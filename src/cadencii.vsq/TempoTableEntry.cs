@@ -11,54 +11,39 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class TempoTableEntry implements Comparable<TempoTableEntry>, Cloneable, Serializable
-#else
     [Serializable]
     public class TempoTableEntry : IComparable<TempoTableEntry>, ICloneable
-#endif
     {
         public int Clock;
         public int Tempo;
         public double Time;
 
-        public String toString()
+        public string toString()
         {
             return "{Clock=" + Clock + ", Tempo=" + Tempo + ", Time=" + Time + "}";
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
         public Object clone()
         {
-            return new TempoTableEntry( Clock, Tempo, Time );
+            return new TempoTableEntry(Clock, Tempo, Time);
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
-        public TempoTableEntry( int clock, int _tempo, double _time )
+        public TempoTableEntry(int clock, int _tempo, double _time)
         {
             this.Clock = clock;
             this.Tempo = _tempo;
@@ -69,21 +54,19 @@ namespace cadencii.vsq
         {
         }
 
-        public int compareTo( TempoTableEntry entry )
+        public int compareTo(TempoTableEntry entry)
         {
             return this.Clock - entry.Clock;
         }
 
-#if !JAVA
-        public int CompareTo( TempoTableEntry entry )
+        public int CompareTo(TempoTableEntry entry)
         {
-            return compareTo( entry );
+            return compareTo(entry);
         }
-#endif
 
-        public boolean Equals( TempoTableEntry entry )
+        public bool Equals(TempoTableEntry entry)
         {
-            if ( this.Clock == entry.Clock ) {
+            if (this.Clock == entry.Clock) {
                 return true;
             } else {
                 return false;
@@ -91,6 +74,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

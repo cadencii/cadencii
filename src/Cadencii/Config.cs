@@ -11,56 +11,41 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-
-#else
-
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
 {
 
-#endif
-
     public class Config
     {
-        private static TreeMap<String, Boolean> mDirectives = new TreeMap<String, Boolean>();
+        private static SortedDictionary<string, Boolean> mDirectives = new SortedDictionary<string, Boolean>();
 
-#if JAVA
-        static
-#else
         static Config()
-#endif
         {
-            mDirectives.put( "script", true );
-            mDirectives.put( "vocaloid", true );
-            mDirectives.put( "aquestone", true );
-            mDirectives.put( "midi", true );
-            mDirectives.put( "debug", false );
-            mDirectives.put( "property", true );
+            mDirectives["script"] = true;
+            mDirectives["vocaloid"] = true;
+            mDirectives["aquestone"] = true;
+            mDirectives["midi"] = true;
+            mDirectives["debug"] = false;
+            mDirectives["property"] = true;
         }
 
-        public static String getWineVersion()
+        public static string getWineVersion()
         {
             return "1.1.2";
         }
 
-        public static TreeMap<String, Boolean> getDirectives()
+        public static SortedDictionary<string, Boolean> getDirectives()
         {
-            TreeMap<String, Boolean> ret = new TreeMap<String, Boolean>();
-            for( Iterator<String> itr = mDirectives.keySet().iterator(); itr.hasNext(); ){
-                String key = itr.next();
-                ret.put( key, mDirectives.get( key ) );
+            SortedDictionary<string, Boolean> ret = new SortedDictionary<string, Boolean>();
+            foreach (var key in mDirectives.Keys) {
+                ret[key] = mDirectives[key];
             }
             return ret;
         }
 
     }
-#if !JAVA
+
 }
-#endif

@@ -17,23 +17,27 @@ using System.Linq;
 using cadencii;
 using cadencii.java.awt;
 
-namespace cadencii {
+
+
+namespace cadencii
+{
 
     /// <summary>
     /// 歌声合成システムの種類
     /// </summary>
-    public static class RendererKindUtil {
+    public static class RendererKindUtil
+    {
         /// <summary>
         /// 歌声合成システム、ビューのための設定値を保持する
         /// </summary>
         struct Config
         {
-            public Config( string display,
+            public Config(string display,
                            string version,
                            Color background,
                            Color dark_background,
                            Color bar,
-                           Color beat )
+                           Color beat)
             {
                 display_ = display;
                 version_ = version;
@@ -68,7 +72,7 @@ namespace cadencii {
             /// </summary>
             public Color beat_;
 
-            public static readonly Config empty = new Config( "VOCALOID2", "DSB301", new Color( 240, 240, 240 ), new Color( 212, 212, 212 ), new Color( 161, 157, 136 ), new Color( 209, 204, 172 ) );
+            public static readonly Config empty = new Config("VOCALOID2", "DSB301", new Color(240, 240, 240), new Color(212, 212, 212), new Color(161, 157, 136), new Color(209, 204, 172));
         }
 
         static readonly Dictionary<RendererKind, Config> configs_ = new Dictionary<RendererKind, Config>(){
@@ -85,10 +89,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="value">合成システム</param>
         /// <returns>合成システム名。取得できない場合は空文字を返す</returns>
-        public static string getString( this RendererKind value )
+        public static string getString(this RendererKind value)
         {
             Config config;
-            if ( configs_.TryGetValue( value, out config ) ) {
+            if (configs_.TryGetValue(value, out config)) {
                 return config.display_;
             }
             return "";
@@ -99,10 +103,11 @@ namespace cadencii {
         /// </summary>
         /// <param name="value">画面表記</param>
         /// <returns>合成システムの種類。取得できない場合は RendererKind.NULL を返す</returns>
-        public static RendererKind fromString( String value ) {
+        public static RendererKind fromString(string value)
+        {
             try {
-                return configs_.Where( ( item ) => item.Value.display_ == value ).Select( ( item ) => item.Key ).First();
-            } catch ( Exception e ) {
+                return configs_.Where((item) => item.Value.display_ == value).Select((item) => item.Key).First();
+            } catch (Exception e) {
                 return RendererKind.NULL;
             }
         }
@@ -112,10 +117,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="kind">歌声合成システムの種類</param>
         /// <returns>歌声合成システムを識別する文字列(VOCALOID2=DSB301, VOCALOID1[1.0,1.1]=DSB202, AquesTone=AQT000, Straight x UTAU=STR000, UTAU=UTAU000)</returns>
-        public static String getVersionString( this RendererKind kind )
+        public static string getVersionString(this RendererKind kind)
         {
             Config config;
-            if ( configs_.TryGetValue( kind, out config ) ) {
+            if (configs_.TryGetValue(kind, out config)) {
                 return config.version_;
             }
             return "";
@@ -126,10 +131,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="kind">歌声合成システムの種類</param>
         /// <returns>背景色。取得できない場合はデフォルトの背景色を返す</returns>
-        public static Color getPianorollBackground( this RendererKind kind )
+        public static Color getPianorollBackground(this RendererKind kind)
         {
             Config config;
-            if ( configs_.TryGetValue( kind, out config ) ) {
+            if (configs_.TryGetValue(kind, out config)) {
                 return config.background_;
             }
             return Config.empty.background_;
@@ -140,10 +145,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="kind">歌声合成システムの種類</param>
         /// <returns>背景色。取得できない場合はデフォルトの背景色を返す</returns>
-        public static Color getPianorollDarkBackground( this RendererKind kind )
+        public static Color getPianorollDarkBackground(this RendererKind kind)
         {
             Config config;
-            if ( configs_.TryGetValue( kind, out config ) ) {
+            if (configs_.TryGetValue(kind, out config)) {
                 return config.dark_background_;
             }
             return Config.empty.dark_background_;
@@ -154,10 +159,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="kind">歌声合成システムの種類</param>
         /// <returns>区切り線の色。取得できない場合はデフォルトの色を返す</returns>
-        public static Color getPianorollBar( this RendererKind kind )
+        public static Color getPianorollBar(this RendererKind kind)
         {
             Config config;
-            if ( configs_.TryGetValue( kind, out config ) ) {
+            if (configs_.TryGetValue(kind, out config)) {
                 return config.bar_;
             }
             return Config.empty.bar_;
@@ -168,10 +173,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="kind">歌声合成システムの種類</param>
         /// <returns>区切り線の色。取得できない場合はデフォルトの色を返す</returns>
-        public static Color getPianorollBeat( this RendererKind kind )
+        public static Color getPianorollBeat(this RendererKind kind)
         {
             Config config;
-            if ( configs_.TryGetValue( kind, out config ) ) {
+            if (configs_.TryGetValue(kind, out config)) {
                 return config.beat_;
             }
             return Config.empty.beat_;

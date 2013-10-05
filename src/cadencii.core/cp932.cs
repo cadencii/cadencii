@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * cp932.cs
  * Copyright © 2008-2011 kbinani
@@ -17,9 +16,11 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class cp932 {
+    public class cp932
+    {
 
         private static readonly Dictionary<int, int> _DICT = new Dictionary<int, int>() {
             { 0, 0 },
@@ -9512,9 +9513,10 @@ namespace cadencii {
         static bool m_cp932_available = false;
         static Encoding m_cp932 = null;
 
-        static void init() {
+        static void init()
+        {
             try {
-                m_cp932 = Encoding.GetEncoding( 932 );
+                m_cp932 = Encoding.GetEncoding(932);
                 m_cp932_available = true;
             } catch {
                 m_cp932_available = false;
@@ -9525,65 +9527,67 @@ namespace cadencii {
             m_initialized = true;
         }
 
-        public static byte[] convert( string str ) {
-            if ( !m_initialized ) {
+        public static byte[] convert(string str)
+        {
+            if (!m_initialized) {
                 init();
             }
-            if ( m_cp932_available ) {
-                return m_cp932.GetBytes( str );
+            if (m_cp932_available) {
+                return m_cp932.GetBytes(str);
             } else {
                 char[] arr = str.ToCharArray();
                 List<byte> list = new List<byte>();
-                for ( int i = 0; i < arr.Length; i++ ) {
+                for (int i = 0; i < arr.Length; i++) {
 #if DEBUG
-                    System.Diagnostics.Debug.WriteLine( "arr[i]=" + arr[i] );
+                    System.Diagnostics.Debug.WriteLine("arr[i]=" + arr[i]);
 #endif
-                    if ( _DICT.ContainsKey( (int)arr[i] ) ) {
+                    if (_DICT.ContainsKey((int)arr[i])) {
                         int t = _DICT[(int)arr[i]];
-                        if ( t > 0xff ) {
+                        if (t > 0xff) {
                             byte b1 = (byte)(t >> 8);
                             byte b2 = (byte)(t - (b1 << 8));
-                            list.Add( b1 );
-                            list.Add( b2 );
+                            list.Add(b1);
+                            list.Add(b2);
                         } else {
-                            list.Add( (byte)t );
+                            list.Add((byte)t);
                         }
                     } else {
-                        list.Add( 0x63 );
+                        list.Add(0x63);
                     }
                 }
                 return list.ToArray();
             }
         }
 
-        public static string convert( byte[] dat ) {
-            if ( !m_initialized ) {
+        public static string convert(byte[] dat)
+        {
+            if (!m_initialized) {
                 init();
             }
-            if ( m_cp932_available ) {
-                char[] res = m_cp932.GetChars( dat );
-                return new string( res );
+            if (m_cp932_available) {
+                char[] res = m_cp932.GetChars(dat);
+                return new string(res);
             } else {
                 StringBuilder sb = new StringBuilder();
                 int i = 0;
-                while ( i < dat.Length ) {
+                while (i < dat.Length) {
                     int b1 = dat[i];
                     bool found = false;
-                    foreach ( int key in _DICT.Keys ) {
+                    foreach (int key in _DICT.Keys) {
                         int test = _DICT[key];
-                        if ( b1 == test ) {
+                        if (b1 == test) {
                             found = true;
-                            sb.Append( ((char)key).ToString() );
+                            sb.Append(((char)key).ToString());
                             break;
                         }
                     }
                     i++;
-                    if ( !found && i < dat.Length ) {
+                    if (!found && i < dat.Length) {
                         int b2 = (dat[i - 1] << 8) + dat[i];
-                        foreach ( int key in _DICT.Keys ) {
+                        foreach (int key in _DICT.Keys) {
                             int test = _DICT[key];
-                            if ( test == b2 ) {
-                                sb.Append( ((char)key).ToString() );
+                            if (test == b2) {
+                                sb.Append(((char)key).ToString());
                                 break;
                             }
                         }
@@ -9596,4 +9600,3 @@ namespace cadencii {
     };
 
 }
-#endif

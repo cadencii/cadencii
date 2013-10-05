@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Threading;
 using cadencii.java.awt;
@@ -25,19 +18,13 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// WaveSenderをWaveGeneratorとして使うためのドライバー．
     /// WaveSenderは受動的波形生成器なので，自分では波形を作らない．
     /// </summary>
-#if JAVA
-    public class WaveSenderDriver extends WaveUnit implements WaveGenerator {
-#else
     public class WaveSenderDriver : WaveUnit, WaveGenerator
     {
-#endif
         private const int BUFLEN = 1024;
 
         private WaveSender mWaveSender = null;
@@ -47,8 +34,8 @@ namespace cadencii
         private long mTotalSamples = 1L;
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
-        //private boolean mAbortRequired = false;
-        private boolean mRunning = false;
+        //private bool mAbortRequired = false;
+        private bool mRunning = false;
         private int mSampleRate;
 
         public int getSampleRate()
@@ -56,7 +43,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }
@@ -68,7 +55,7 @@ namespace cadencii
 
         public double getProgress()
         {
-            if ( mTotalSamples <= 0 ) {
+            if (mTotalSamples <= 0) {
                 return 0.0;
             } else {
                 return mTotalAppend / (double)mTotalSamples;
@@ -80,14 +67,7 @@ namespace cadencii
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                    }
-#else
                     Thread.Sleep( 100 );
-#endif
                 }
             }
         }*/
@@ -97,7 +77,7 @@ namespace cadencii
             return mVersion;
         }
 
-        public override void setConfig( String parameters )
+        public override void setConfig(string parameters)
         {
             // do nothing
         }
@@ -109,22 +89,22 @@ namespace cadencii
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        public void init(VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate)
         {
             mSampleRate = sample_rate;
 #if DEBUG
-            sout.println( "WaveSenderDriver#init; sample_rate=" + sample_rate );
+            sout.println("WaveSenderDriver#init; sample_rate=" + sample_rate);
 #endif
         }
 
-        public void setSender( WaveSender wave_sender )
+        public void setSender(WaveSender wave_sender)
         {
             mWaveSender = wave_sender;
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;
@@ -135,15 +115,15 @@ namespace cadencii
             return mTotalAppend;
         }
 
-        public void begin( long length, WorkerState state )
+        public void begin(long length, WorkerState state)
         {
             mRunning = true;
             mTotalSamples = length;
             long remain = length;
-            while ( remain > 0 && !state.isCancelRequested() ) {
+            while (remain > 0 && !state.isCancelRequested()) {
                 int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
-                mWaveSender.pull( mBufferL, mBufferR, amount );
-                mReceiver.push( mBufferL, mBufferR, amount );
+                mWaveSender.pull(mBufferL, mBufferR, amount);
+                mReceiver.push(mBufferL, mBufferR, amount);
                 remain -= amount;
                 mTotalAppend += amount;
             }
@@ -153,6 +133,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

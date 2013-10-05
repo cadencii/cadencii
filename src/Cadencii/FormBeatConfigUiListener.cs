@@ -1,5 +1,3 @@
-#if !__FormBeatConfigUiListener__
-#define __FormBeatConfigUiListener__
 /*
  * FormBeatConfigUiListener.cs
  * Copyright © 2011 kbinani
@@ -13,37 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
 
-package cadencii;
+namespace cadencii
+{
 
-#else
-
-    namespace cadencii
+    public interface FormBeatConfigUiListener
     {
+        [PureVirtualFunction]
+        void buttonCancelClickedSlot();
 
-#endif
+        [PureVirtualFunction]
+        void buttonOkClickedSlot();
 
-#if __cplusplus
-            class FormBeatConfigUiListener
-#else
-            public interface FormBeatConfigUiListener
-#endif
-            {
-#if __cplusplus
-            public:
-#endif
-                [PureVirtualFunction]
-                void buttonCancelClickedSlot();
+        [PureVirtualFunction]
+        void checkboxEndCheckedChangedSlot();
+    };
 
-                [PureVirtualFunction]
-                void buttonOkClickedSlot();
-
-                [PureVirtualFunction]
-                void checkboxEndCheckedChangedSlot();
-            };
-
-#if !JAVA
-    }
-#endif
-#endif
+}

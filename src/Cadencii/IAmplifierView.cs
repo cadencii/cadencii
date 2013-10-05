@@ -11,19 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
+namespace cadencii
+{
 
-#else
-namespace cadencii {
-#endif
-
-    public interface IAmplifierView {
+    public interface IAmplifierView
+    {
         double getAmplifyL();
 
         double getAmplifyR();
     }
 
-#if !JAVA
 }
-#endif

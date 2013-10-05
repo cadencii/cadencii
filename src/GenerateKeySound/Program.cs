@@ -20,25 +20,30 @@ using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
 
-namespace cadencii.generatekeysound {
 
-    class Program {
+
+namespace cadencii.generatekeysound
+{
+
+    class Program
+    {
         #region static members
         [STAThread]
-        static void Main( string[] args ) {
+        static void Main(string[] args)
+        {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault( false );
+            Application.SetCompatibleTextRenderingDefault(false);
             AppManager.init();
-            String singer = "Miku";
+            string singer = "Miku";
             object locker = new object();
             double amp = 1.0;
-            String dir = Path.Combine( Application.StartupPath, "cache" );
+            string dir = Path.Combine(Application.StartupPath, "cache");
             bool replace = true;
             int search = -1;
             int arguments = 0;
-            while ( search + 1 < args.Length ) {
+            while (search + 1 < args.Length) {
                 search++;
-                switch ( args[search].ToLower() ) {
+                switch (args[search].ToLower()) {
                     case "-help":
                     case "-h":
                     case "/help":
@@ -47,136 +52,140 @@ namespace cadencii.generatekeysound {
                     case "/?":
                     case "--h":
                     case "--help":
-                        arguments++;
-                        ShowHelp();
-                        return;
+                    arguments++;
+                    ShowHelp();
+                    return;
                     case "-amplify":
                     case "-a":
                     case "/amplify":
                     case "/a":
-                        if ( search + 1 < args.Length ) {
-                            double t_amp = amp;
-                            if ( double.TryParse( args[search + 1], out t_amp ) ) {
-                                if ( t_amp < 0.0 ) {
-                                    Console.WriteLine( "error; amilify coefficient must be >= 0. specified value was \"" + t_amp + "\"" );
-                                    return;
-                                }
-                                amp = t_amp;
-                            } else {
-                                InvalidNumberExpressionAt( args[search + 1] );
+                    if (search + 1 < args.Length) {
+                        double t_amp = amp;
+                        if (double.TryParse(args[search + 1], out t_amp)) {
+                            if (t_amp < 0.0) {
+                                Console.WriteLine("error; amilify coefficient must be >= 0. specified value was \"" + t_amp + "\"");
                                 return;
                             }
+                            amp = t_amp;
                         } else {
-                            TooFewArgumentFor( args[search] );
+                            InvalidNumberExpressionAt(args[search + 1]);
                             return;
                         }
-                        arguments++;
-                        search++;
-                        break;
+                    } else {
+                        TooFewArgumentFor(args[search]);
+                        return;
+                    }
+                    arguments++;
+                    search++;
+                    break;
                     case "-singer":
                     case "-s":
                     case "/singer":
                     case "/s":
-                        if ( search + 1 < args.Length ) {
-                            singer = args[search + 1];
-                        } else {
-                            TooFewArgumentFor( args[search] );
-                            return;
-                        }
-                        arguments++;
-                        search++;
-                        break;
+                    if (search + 1 < args.Length) {
+                        singer = args[search + 1];
+                    } else {
+                        TooFewArgumentFor(args[search]);
+                        return;
+                    }
+                    arguments++;
+                    search++;
+                    break;
                     case "-dir":
                     case "-d":
                     case "/dir":
                     case "/d":
-                        if ( search + 1 < args.Length ) {
-                            dir = args[search + 1];
-                        } else {
-                            TooFewArgumentFor( args[search] );
-                            return;
-                        }
-                        arguments++;
-                        search++;
-                        break;
+                    if (search + 1 < args.Length) {
+                        dir = args[search + 1];
+                    } else {
+                        TooFewArgumentFor(args[search]);
+                        return;
+                    }
+                    arguments++;
+                    search++;
+                    break;
                     case "-replace":
                     case "-r":
                     case "/replace":
                     case "/r":
-                        replace = true;
-                        arguments++;
-                        break;
+                    replace = true;
+                    arguments++;
+                    break;
                     default:
-                        Console.WriteLine( "error; unknown option \"" + args[search] + "\"" );
-                        return;
+                    Console.WriteLine("error; unknown option \"" + args[search] + "\"");
+                    return;
                 }
             }
-            if ( arguments == 0 ) {
-                Application.Run( new FormGenerateKeySound( false ) );
+            if (arguments == 0) {
+                Application.Run(new FormGenerateKeySound(false));
             } else {
                 FormGenerateKeySound.PrepareStartArgument arg = new FormGenerateKeySound.PrepareStartArgument();
                 arg.singer = singer;
                 arg.amplitude = amp;
                 arg.directory = dir;
                 arg.replace = replace;
-                run( arg );
+                run(arg);
             }
         }
 
-        static void InvalidNumberExpressionAt( string expression ) {
-            Console.WriteLine( "error; string parse error. invalid number expression at \"" + expression + "\"" );
+        static void InvalidNumberExpressionAt(string expression)
+        {
+            Console.WriteLine("error; string parse error. invalid number expression at \"" + expression + "\"");
         }
 
-        static void TooFewArgumentFor( string argument ) {
-            Console.WriteLine( "error; too few argument for \"" + argument + "\"" );
+        static void TooFewArgumentFor(string argument)
+        {
+            Console.WriteLine("error; too few argument for \"" + argument + "\"");
         }
 
-        static void ShowHelp() {
-            Console.WriteLine( "GenerateKeySound, Copyright (C) 2008-2009, kbinani" );
-            Console.WriteLine( "Usage: GenerateKeySound [options]" );
-            Console.WriteLine( "    -help            Shows this message and return (short: -h, -?)" );
-            Console.WriteLine( "    -amplify AMP     Sets sound amplify coefficients (short: -a)" );
-            Console.WriteLine( "                     AMP must be 0 <= AMP (defualt is 1.0)" );
+        static void ShowHelp()
+        {
+            Console.WriteLine("GenerateKeySound, Copyright (C) 2008-2009, kbinani");
+            Console.WriteLine("Usage: GenerateKeySound [options]");
+            Console.WriteLine("    -help            Shows this message and return (short: -h, -?)");
+            Console.WriteLine("    -amplify AMP     Sets sound amplify coefficients (short: -a)");
+            Console.WriteLine("                     AMP must be 0 <= AMP (defualt is 1.0)");
             //Console.WriteLine( "    -pchange NUMBER  Sets the value of Program Change (short: -p)" );
-            Console.WriteLine( "    -dir DIRECTORY   Specifies the directory of output (short: -d)" );
-            Console.WriteLine( "                     default of DIRECTORY is \"." + System.IO.Path.DirectorySeparatorChar + "cache\"" );
-            Console.WriteLine( "    -replace         Switch to overwrite exisiting WAVs (short: -r)" );
-            Console.WriteLine( "    -singer          Specifies singer (short: -s)" );
+            Console.WriteLine("    -dir DIRECTORY   Specifies the directory of output (short: -d)");
+            Console.WriteLine("                     default of DIRECTORY is \"." + System.IO.Path.DirectorySeparatorChar + "cache\"");
+            Console.WriteLine("    -replace         Switch to overwrite exisiting WAVs (short: -r)");
+            Console.WriteLine("    -singer          Specifies singer (short: -s)");
             Console.WriteLine();
-            Console.WriteLine( "Options can be of the form -option or /option" );
+            Console.WriteLine("Options can be of the form -option or /option");
         }
 
-        private static void run( FormGenerateKeySound.PrepareStartArgument arg ) {
-            String singer = arg.singer;
+        private static void run(FormGenerateKeySound.PrepareStartArgument arg)
+        {
+            string singer = arg.singer;
             double amp = arg.amplitude;
-            String dir = arg.directory;
+            string dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
             if (!Directory.Exists(dir)) {
-                System.IO.Directory.CreateDirectory( dir );
+                System.IO.Directory.CreateDirectory(dir);
             }
 
-            for ( int i = 0; i < 127; i++ ) {
-                string path = Path.Combine( dir, i + ".wav" );
-                Console.Write( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !File.Exists( path )) ) {
+            for (int i = 0; i < 127; i++) {
+                string path = Path.Combine(dir, i + ".wav");
+                Console.Write("writing \"" + path + "\" ...");
+                if (replace || (!replace && !File.Exists(path))) {
                     try {
-                        FormGenerateKeySound.GenerateSinglePhone( i, singer, path, amp );
-                        if ( File.Exists( path ) ) {
+                        FormGenerateKeySound.GenerateSinglePhone(i, singer, path, amp);
+                        if (File.Exists(path)) {
                             try {
-                                Wave wv = new Wave( path );
+                                Wave wv = new Wave(path);
                                 wv.trimSilence();
                                 wv.monoralize();
-                                wv.write( path );
-                            } catch( Exception ex ) {
-                                serr.println( "Program#run; ex=" + ex );
+                                wv.write(path);
+                            } catch (Exception ex) {
+                                serr.println("Program#run; ex=" + ex);
                             }
                         }
-                    } catch( Exception ex ) {
-                        serr.println( "Program#run; ex=" + ex );
+                    } catch (Exception ex) {
+                        serr.println("Program#run; ex=" + ex);
                     }
                 }
-                sout.println( " done" );
+                sout.println(" done");
             }
         }
 

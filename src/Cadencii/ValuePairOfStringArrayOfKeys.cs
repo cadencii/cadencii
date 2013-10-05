@@ -11,33 +11,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Xml.Serialization;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public class ValuePairOfStringArrayOfKeys {
-        public String Key;
+    public class ValuePairOfStringArrayOfKeys
+    {
+        public string Key;
         [XmlArrayItem("Keys")]
         public Keys[] Value;
 
-        public ValuePairOfStringArrayOfKeys() {
+        public ValuePairOfStringArrayOfKeys()
+        {
         }
 
-        public ValuePairOfStringArrayOfKeys( String key, Keys[] value ) {
+        public ValuePairOfStringArrayOfKeys(string key, Keys[] value)
+        {
             Key = key;
             Value = value;
         }
     }
 
-#if !JAVA
 }
-#endif

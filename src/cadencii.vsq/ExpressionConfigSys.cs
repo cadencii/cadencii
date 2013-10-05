@@ -11,23 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#elif __cplusplus
-namespace org { namespace kbinani { namespace vsq {
-#else
 using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Text;
 using cadencii.java.io;
 using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// VOCALOID1またはVOCALOID2の、表情ライブラリの設定値を表します。
@@ -35,9 +27,9 @@ namespace cadencii.vsq
     public class ExpressionConfigSys
     {
         private const int MAX_VIBRATO = 0x400;
-        private Vector<VibratoHandle> m_vibrato_configs;
-        private Vector<NoteHeadHandle> m_attack_configs;
-        private Vector<IconDynamicsHandle> m_dynamics_configs;
+        private List<VibratoHandle> m_vibrato_configs;
+        private List<NoteHeadHandle> m_attack_configs;
+        private List<IconDynamicsHandle> m_dynamics_configs;
 
         /*private void printTo( String file ) {
             BufferedWriter sw = null;
@@ -147,9 +139,9 @@ namespace cadencii.vsq
         public static ExpressionConfigSys getVocaloid1Default()
         {
             ExpressionConfigSys ret = new ExpressionConfigSys();
-            ret.m_vibrato_configs = new Vector<VibratoHandle>();
-            ret.m_attack_configs = new Vector<NoteHeadHandle>();
-            ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
+            ret.m_vibrato_configs = new List<VibratoHandle>();
+            ret.m_attack_configs = new List<NoteHeadHandle>();
+            ret.m_dynamics_configs = new List<IconDynamicsHandle>();
             VibratoHandle v1 = new VibratoHandle();
             /*v1.author = "Taro";
             v1.file = "normal.aic";
@@ -159,13 +151,13 @@ namespace cadencii.vsq
             v1.IconID = "$04040001";
             v1.IDS = "normal";
             v1.Original = 0;
-            v1.setCaption( "Normal Vibrato" );
-            v1.setLength( 480 );
-            v1.setStartDepth( 64 );
-            v1.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v1.setStartRate( 64 );
-            v1.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v1 );
+            v1.setCaption("Normal Vibrato");
+            v1.setLength(480);
+            v1.setStartDepth(64);
+            v1.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v1.setStartRate(64);
+            v1.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v1);
 
             VibratoHandle v2 = new VibratoHandle();
             /*v2.author = "Taro";
@@ -176,13 +168,13 @@ namespace cadencii.vsq
             v2.IconID = "$04040002";
             v2.IDS = "normal";
             v2.Original = 0;
-            v2.setCaption( "Subtle Vibrato" );
-            v2.setLength( 480 );
-            v2.setStartDepth( 32 );
-            v2.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v2.setStartRate( 56 );
-            v2.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v2 );
+            v2.setCaption("Subtle Vibrato");
+            v2.setLength(480);
+            v2.setStartDepth(32);
+            v2.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v2.setStartRate(56);
+            v2.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v2);
 
             VibratoHandle v3 = new VibratoHandle();
             /*v3.author = "Taro";
@@ -193,13 +185,13 @@ namespace cadencii.vsq
             v3.IconID = "$04040003";
             v3.IDS = "slight";
             v3.Original = 0;
-            v3.setCaption( "Slight Vibrato" );
-            v3.setLength( 480 );
-            v3.setStartDepth( 32 );
-            v3.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v3.setStartRate( 64 );
-            v3.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v3 );
+            v3.setCaption("Slight Vibrato");
+            v3.setLength(480);
+            v3.setStartDepth(32);
+            v3.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v3.setStartRate(64);
+            v3.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v3);
 
             VibratoHandle v4 = new VibratoHandle();
             /*v4.author = "Taro";
@@ -210,13 +202,13 @@ namespace cadencii.vsq
             v4.IconID = "$04040004";
             v4.IDS = "deep";
             v4.Original = 0;
-            v4.setCaption( "Deep Vibrato" );
-            v4.setLength( 480 );
-            v4.setStartDepth( 64 );
-            v4.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v4.setStartRate( 64 );
-            v4.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v4 );
+            v4.setCaption("Deep Vibrato");
+            v4.setLength(480);
+            v4.setStartDepth(64);
+            v4.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v4.setStartRate(64);
+            v4.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v4);
 
             VibratoHandle v5 = new VibratoHandle();
             /*v5.author = "Taro";
@@ -227,13 +219,13 @@ namespace cadencii.vsq
             v5.IconID = "$04040005";
             v5.IDS = "extreme";
             v5.Original = 0;
-            v5.setCaption( "Very Deep Vibrato" );
-            v5.setLength( 480 );
-            v5.setStartDepth( 64 );
-            v5.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v5.setStartRate( 120 );
-            v5.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v5 );
+            v5.setCaption("Very Deep Vibrato");
+            v5.setLength(480);
+            v5.setStartDepth(64);
+            v5.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v5.setStartRate(120);
+            v5.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v5);
 
             VibratoHandle v6 = new VibratoHandle();
             /*v6.author = "Taro";
@@ -244,13 +236,13 @@ namespace cadencii.vsq
             v6.IconID = "$04040006";
             v6.IDS = "extreme";
             v6.Original = 0;
-            v6.setCaption( "Extreme Vibrato (like Japanese Enka)" );
-            v6.setLength( 480 );
-            v6.setStartDepth( 64 );
-            v6.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v6.setStartRate( 64 );
-            v6.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v6 );
+            v6.setCaption("Extreme Vibrato (like Japanese Enka)");
+            v6.setLength(480);
+            v6.setStartDepth(64);
+            v6.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v6.setStartRate(64);
+            v6.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v6);
 
             NoteHeadHandle a1 = new NoteHeadHandle();
             /*a1.author = "Taro";
@@ -261,11 +253,11 @@ namespace cadencii.vsq
             a1.IconID = "$01010001";
             a1.IDS = "tenuto";
             a1.Original = 0;
-            a1.setCaption( "Tenuto" );
-            a1.setLength( 120 );
-            a1.setDuration( 64 );
-            a1.setDepth( 64 );
-            ret.m_attack_configs.add( a1 );
+            a1.setCaption("Tenuto");
+            a1.setLength(120);
+            a1.setDuration(64);
+            a1.setDepth(64);
+            ret.m_attack_configs.Add(a1);
 
             NoteHeadHandle a2 = new NoteHeadHandle();
             /*a2.author = "Taro";
@@ -276,11 +268,11 @@ namespace cadencii.vsq
             a2.IconID = "$01010002";
             a2.IDS = "accent";
             a2.Original = 0;
-            a2.setCaption( "Accent" );
-            a2.setLength( 120 );
-            a2.setDuration( 64 );
-            a2.setDepth( 64 );
-            ret.m_attack_configs.add( a2 );
+            a2.setCaption("Accent");
+            a2.setLength(120);
+            a2.setDuration(64);
+            a2.setDepth(64);
+            ret.m_attack_configs.Add(a2);
 
             NoteHeadHandle a3 = new NoteHeadHandle();
             /*a3.author = "Taro";
@@ -291,11 +283,11 @@ namespace cadencii.vsq
             a3.IconID = "$01010003";
             a3.IDS = "accent_extreme";
             a3.Original = 0;
-            a3.setCaption( "Extreme Accent" );
-            a3.setLength( 120 );
-            a3.setDuration( 64 );
-            a3.setDepth( 64 );
-            ret.m_attack_configs.add( a3 );
+            a3.setCaption("Extreme Accent");
+            a3.setLength(120);
+            a3.setDuration(64);
+            a3.setDepth(64);
+            ret.m_attack_configs.Add(a3);
 
             NoteHeadHandle a4 = new NoteHeadHandle();
             /*a4.author = "Taro";
@@ -306,11 +298,11 @@ namespace cadencii.vsq
             a4.IconID = "$01010004";
             a4.IDS = "legato";
             a4.Original = 0;
-            a4.setCaption( "Legato" );
-            a4.setLength( 120 );
-            a4.setDuration( 64 );
-            a4.setDepth( 64 );
-            ret.m_attack_configs.add( a4 );
+            a4.setCaption("Legato");
+            a4.setLength(120);
+            a4.setDuration(64);
+            a4.setDepth(64);
+            ret.m_attack_configs.Add(a4);
 
             NoteHeadHandle a5 = new NoteHeadHandle();
             /*a5.author = "Taro";
@@ -321,11 +313,11 @@ namespace cadencii.vsq
             a5.IconID = "$01010005";
             a5.IDS = "bendup_fast";
             a5.Original = 0;
-            a5.setCaption( "Fast Bendu" );
-            a5.setLength( 120 );
-            a5.setDuration( 64 );
-            a5.setDepth( 64 );
-            ret.m_attack_configs.add( a5 );
+            a5.setCaption("Fast Bendu");
+            a5.setLength(120);
+            a5.setDuration(64);
+            a5.setDepth(64);
+            ret.m_attack_configs.Add(a5);
 
             NoteHeadHandle a6 = new NoteHeadHandle();
             /*a6.author = "Taro";
@@ -336,11 +328,11 @@ namespace cadencii.vsq
             a6.IconID = "$01010006";
             a6.IDS = "bendup_slow";
             a6.Original = 0;
-            a6.setCaption( "Slow Bendup" );
-            a6.setLength( 120 );
-            a6.setDuration( 64 );
-            a6.setDepth( 64 );
-            ret.m_attack_configs.add( a6 );
+            a6.setCaption("Slow Bendup");
+            a6.setLength(120);
+            a6.setDuration(64);
+            a6.setDepth(64);
+            ret.m_attack_configs.Add(a6);
 
             NoteHeadHandle a7 = new NoteHeadHandle();
             /*a7.author = "Taro";
@@ -351,11 +343,11 @@ namespace cadencii.vsq
             a7.IconID = "$01010007";
             a7.IDS = "trill_semi";
             a7.Original = 0;
-            a7.setCaption( "Trill Semitone" );
-            a7.setLength( 120 );
-            a7.setDuration( 64 );
-            a7.setDepth( 64 );
-            ret.m_attack_configs.add( a7 );
+            a7.setCaption("Trill Semitone");
+            a7.setLength(120);
+            a7.setDuration(64);
+            a7.setDepth(64);
+            ret.m_attack_configs.Add(a7);
 
             NoteHeadHandle a8 = new NoteHeadHandle();
             /*a8.author = "Taro";
@@ -366,11 +358,11 @@ namespace cadencii.vsq
             a8.IconID = "$01010008";
             a8.IDS = "trill_whole";
             a8.Original = 0;
-            a8.setCaption( "Trill Wholetone" );
-            a8.setLength( 120 );
-            a8.setDuration( 64 );
-            a8.setDepth( 64 );
-            ret.m_attack_configs.add( a8 );
+            a8.setCaption("Trill Wholetone");
+            a8.setLength(120);
+            a8.setDuration(64);
+            a8.setDepth(64);
+            ret.m_attack_configs.Add(a8);
 
             NoteHeadHandle a9 = new NoteHeadHandle();
             /*a9.author = "Taro";
@@ -381,11 +373,11 @@ namespace cadencii.vsq
             a9.IconID = "$01010009";
             a9.IDS = "mordent_semi";
             a9.Original = 0;
-            a9.setCaption( "Mordent Semitone" );
-            a9.setLength( 120 );
-            a9.setDuration( 64 );
-            a9.setDepth( 64 );
-            ret.m_attack_configs.add( a9 );
+            a9.setCaption("Mordent Semitone");
+            a9.setLength(120);
+            a9.setDuration(64);
+            a9.setDepth(64);
+            ret.m_attack_configs.Add(a9);
 
             NoteHeadHandle a10 = new NoteHeadHandle();
             /*a10.author = "Taro";
@@ -396,195 +388,195 @@ namespace cadencii.vsq
             a10.IconID = "$0101000a";
             a10.IDS = "mordent_whole";
             a10.Original = 0;
-            a10.setCaption( "Mordent Wholetone" );
-            a10.setLength( 120 );
-            a10.setDuration( 64 );
-            a10.setDepth( 64 );
-            ret.m_attack_configs.add( a10 );
+            a10.setCaption("Mordent Wholetone");
+            a10.setLength(120);
+            a10.setDuration(64);
+            a10.setDepth(64);
+            ret.m_attack_configs.Add(a10);
 
             IconDynamicsHandle d0 = new IconDynamicsHandle();
             d0.IDS = "Dynaff11";
             d0.IconID = "$05010000";
             d0.Original = 0;
-            d0.setCaption( "Fortississimo" );
-            d0.setStartDyn( 120 );
-            d0.setEndDyn( 120 );
-            d0.setLength( 0 );
-            ret.m_dynamics_configs.add( d0 );
+            d0.setCaption("Fortississimo");
+            d0.setStartDyn(120);
+            d0.setEndDyn(120);
+            d0.setLength(0);
+            ret.m_dynamics_configs.Add(d0);
 
             IconDynamicsHandle d1 = new IconDynamicsHandle();
             d1.IDS = "Dynaff12";
             d1.IconID = "$05010001";
             d1.Original = 1;
-            d1.setCaption( "Fortissimo" );
-            d1.setStartDyn( 104 );
-            d1.setEndDyn( 104 );
-            d1.setLength( 0 );
-            ret.m_dynamics_configs.add( d1 );
+            d1.setCaption("Fortissimo");
+            d1.setStartDyn(104);
+            d1.setEndDyn(104);
+            d1.setLength(0);
+            ret.m_dynamics_configs.Add(d1);
 
             IconDynamicsHandle d2 = new IconDynamicsHandle();
             d2.IDS = "Dynaff13";
             d2.IconID = "$05010002";
             d2.Original = 2;
-            d2.setCaption( "Forte" );
-            d2.setStartDyn( 88 );
-            d2.setEndDyn( 88 );
-            d2.setLength( 0 );
-            ret.m_dynamics_configs.add( d2 );
+            d2.setCaption("Forte");
+            d2.setStartDyn(88);
+            d2.setEndDyn(88);
+            d2.setLength(0);
+            ret.m_dynamics_configs.Add(d2);
 
             IconDynamicsHandle d3 = new IconDynamicsHandle();
             d3.IDS = "Dynaff21";
             d3.IconID = "$05010003";
             d3.Original = 3;
-            d3.setCaption( "MesoForte" );
-            d3.setStartDyn( 72 );
-            d3.setEndDyn( 72 );
-            d3.setLength( 0 );
-            ret.m_dynamics_configs.add( d3 );
+            d3.setCaption("MesoForte");
+            d3.setStartDyn(72);
+            d3.setEndDyn(72);
+            d3.setLength(0);
+            ret.m_dynamics_configs.Add(d3);
 
             IconDynamicsHandle d4 = new IconDynamicsHandle();
             d4.IDS = "Dynaff22";
             d4.IconID = "$05010004";
             d4.Original = 4;
-            d4.setCaption( "MesoPiano" );
-            d4.setStartDyn( 56 );
-            d4.setEndDyn( 56 );
-            d4.setLength( 0 );
-            ret.m_dynamics_configs.add( d4 );
+            d4.setCaption("MesoPiano");
+            d4.setStartDyn(56);
+            d4.setEndDyn(56);
+            d4.setLength(0);
+            ret.m_dynamics_configs.Add(d4);
 
             IconDynamicsHandle d5 = new IconDynamicsHandle();
             d5.IDS = "Dynaff31";
             d5.IconID = "$05010005";
             d5.Original = 5;
-            d5.setCaption( "Piano" );
-            d5.setStartDyn( 40 );
-            d5.setEndDyn( 40 );
-            d5.setLength( 0 );
-            ret.m_dynamics_configs.add( d5 );
+            d5.setCaption("Piano");
+            d5.setStartDyn(40);
+            d5.setEndDyn(40);
+            d5.setLength(0);
+            ret.m_dynamics_configs.Add(d5);
 
             IconDynamicsHandle d6 = new IconDynamicsHandle();
             d6.IDS = "Dynaff32";
             d6.IconID = "$05010006";
             d6.Original = 6;
-            d6.setCaption( "Pianissimo" );
-            d6.setStartDyn( 24 );
-            d6.setEndDyn( 24 );
-            d6.setLength( 0 );
-            ret.m_dynamics_configs.add( d6 );
+            d6.setCaption("Pianissimo");
+            d6.setStartDyn(24);
+            d6.setEndDyn(24);
+            d6.setLength(0);
+            ret.m_dynamics_configs.Add(d6);
 
             IconDynamicsHandle d7 = new IconDynamicsHandle();
             d7.IDS = "Dynaff33";
             d7.IconID = "$05010007";
             d7.Original = 7;
-            d7.setCaption( "Pianississimo" );
-            d7.setStartDyn( 8 );
-            d7.setEndDyn( 8 );
-            d7.setLength( 0 );
-            ret.m_dynamics_configs.add( d7 );
+            d7.setCaption("Pianississimo");
+            d7.setStartDyn(8);
+            d7.setEndDyn(8);
+            d7.setLength(0);
+            ret.m_dynamics_configs.Add(d7);
 
             IconDynamicsHandle d8 = new IconDynamicsHandle();
             d8.IDS = "cresc_1";
             d8.IconID = "$05020000";
             d8.Original = 0;
-            d8.setCaption( "Zero Crescendo" );
-            d8.setStartDyn( 0 );
-            d8.setEndDyn( 38 );
-            d8.setLength( 960 );
-            ret.m_dynamics_configs.add( d8 );
+            d8.setCaption("Zero Crescendo");
+            d8.setStartDyn(0);
+            d8.setEndDyn(38);
+            d8.setLength(960);
+            ret.m_dynamics_configs.Add(d8);
 
             IconDynamicsHandle d9 = new IconDynamicsHandle();
             d9.IDS = "cresc_2";
             d9.IconID = "$05020001";
             d9.Original = 1;
-            d9.setCaption( "Zero Crescendo" );
-            d9.setStartDyn( 0 );
-            d9.setEndDyn( 64 );
-            d9.setLength( 960 );
-            ret.m_dynamics_configs.add( d9 );
+            d9.setCaption("Zero Crescendo");
+            d9.setStartDyn(0);
+            d9.setEndDyn(64);
+            d9.setLength(960);
+            ret.m_dynamics_configs.Add(d9);
 
             IconDynamicsHandle d10 = new IconDynamicsHandle();
             d10.IDS = "cresc_3";
             d10.IconID = "$05020002";
             d10.Original = 2;
-            d10.setCaption( "Zero Crescendo" );
-            d10.setStartDyn( 0 );
-            d10.setEndDyn( 127 );
-            d10.setLength( 960 );
-            ret.m_dynamics_configs.add( d10 );
+            d10.setCaption("Zero Crescendo");
+            d10.setStartDyn(0);
+            d10.setEndDyn(127);
+            d10.setLength(960);
+            ret.m_dynamics_configs.Add(d10);
 
             IconDynamicsHandle d11 = new IconDynamicsHandle();
             d11.IDS = "cresc_4";
             d11.IconID = "$05020003";
             d11.Original = 3;
-            d11.setCaption( "Zero Crescendo Curve" );
-            d11.setStartDyn( 0 );
-            d11.setEndDyn( 38 );
-            d11.setLength( 960 );
-            d11.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { 11 } ) );
-            ret.m_dynamics_configs.add( d11 );
+            d11.setCaption("Zero Crescendo Curve");
+            d11.setStartDyn(0);
+            d11.setEndDyn(38);
+            d11.setLength(960);
+            d11.setDynBP(new VibratoBPList(new float[] { 0.5f }, new int[] { 11 }));
+            ret.m_dynamics_configs.Add(d11);
 
             IconDynamicsHandle d12 = new IconDynamicsHandle();
             d12.IDS = "cresc_5";
             d12.IconID = "$05020004";
             d12.Original = 4;
-            d12.setCaption( "Zero Crescendo Curve" );
-            d12.setStartDyn( 0 );
-            d12.setEndDyn( 102 );
-            d12.setLength( 960 );
-            d12.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { 40 } ) );
-            ret.m_dynamics_configs.add( d12 );
+            d12.setCaption("Zero Crescendo Curve");
+            d12.setStartDyn(0);
+            d12.setEndDyn(102);
+            d12.setLength(960);
+            d12.setDynBP(new VibratoBPList(new float[] { 0.5f }, new int[] { 40 }));
+            ret.m_dynamics_configs.Add(d12);
 
             IconDynamicsHandle d13 = new IconDynamicsHandle();
             d13.IDS = "dim_1";
             d13.IconID = "$05030000";
             d13.Original = 0;
-            d13.setCaption( "Zero Decrescendo" );
-            d13.setStartDyn( 0 );
-            d13.setEndDyn( -38 );
-            d13.setLength( 960 );
-            ret.m_dynamics_configs.add( d13 );
+            d13.setCaption("Zero Decrescendo");
+            d13.setStartDyn(0);
+            d13.setEndDyn(-38);
+            d13.setLength(960);
+            ret.m_dynamics_configs.Add(d13);
 
             IconDynamicsHandle d14 = new IconDynamicsHandle();
             d14.IDS = "dim_2";
             d14.IconID = "$05030001";
             d14.Original = 1;
-            d14.setCaption( "Zero Decrescendo" );
-            d14.setStartDyn( 0 );
-            d14.setEndDyn( -64 );
-            d14.setLength( 960 );
-            ret.m_dynamics_configs.add( d14 );
+            d14.setCaption("Zero Decrescendo");
+            d14.setStartDyn(0);
+            d14.setEndDyn(-64);
+            d14.setLength(960);
+            ret.m_dynamics_configs.Add(d14);
 
             IconDynamicsHandle d15 = new IconDynamicsHandle();
             d15.IDS = "dim_3";
             d15.IconID = "$05030002";
             d15.Original = 2;
-            d15.setCaption( "Zero Decrescendo" );
-            d15.setStartDyn( 0 );
-            d15.setEndDyn( -127 );
-            d15.setLength( 960 );
-            ret.m_dynamics_configs.add( d15 );
+            d15.setCaption("Zero Decrescendo");
+            d15.setStartDyn(0);
+            d15.setEndDyn(-127);
+            d15.setLength(960);
+            ret.m_dynamics_configs.Add(d15);
 
             IconDynamicsHandle d16 = new IconDynamicsHandle();
             d16.IDS = "dim_4";
             d16.IconID = "$05030003";
             d16.Original = 3;
-            d16.setCaption( "Zero Decrescendo Curve" );
-            d16.setStartDyn( 0 );
-            d16.setEndDyn( -38 );
-            d16.setLength( 960 );
-            d16.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { -11 } ) );
-            ret.m_dynamics_configs.add( d16 );
+            d16.setCaption("Zero Decrescendo Curve");
+            d16.setStartDyn(0);
+            d16.setEndDyn(-38);
+            d16.setLength(960);
+            d16.setDynBP(new VibratoBPList(new float[] { 0.5f }, new int[] { -11 }));
+            ret.m_dynamics_configs.Add(d16);
 
             IconDynamicsHandle d17 = new IconDynamicsHandle();
             d17.IDS = "dim_5";
             d17.IconID = "$05030004";
             d17.Original = 4;
-            d17.setCaption( "Zero Decrescendo Curve" );
-            d17.setStartDyn( 0 );
-            d17.setEndDyn( -102 );
-            d17.setLength( 960 );
-            d17.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { -40 } ) );
-            ret.m_dynamics_configs.add( d17 );
+            d17.setCaption("Zero Decrescendo Curve");
+            d17.setStartDyn(0);
+            d17.setEndDyn(-102);
+            d17.setLength(960);
+            d17.setDynBP(new VibratoBPList(new float[] { 0.5f }, new int[] { -40 }));
+            ret.m_dynamics_configs.Add(d17);
 
             return ret;
         }
@@ -595,19 +587,11 @@ namespace cadencii.vsq
         /// <returns></returns>
         public static ExpressionConfigSys getVocaloid2Default()
         {
-#if __cplusplus
-            ExpressionConfigSys ret;
-#else
             ExpressionConfigSys ret = new ExpressionConfigSys();
-            ret.m_vibrato_configs = new Vector<VibratoHandle>();
-            ret.m_attack_configs = new Vector<NoteHeadHandle>();
-            ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
-#endif
-#if __cplusplus
-            VibratoHandle v1;
-#else
+            ret.m_vibrato_configs = new List<VibratoHandle>();
+            ret.m_attack_configs = new List<NoteHeadHandle>();
+            ret.m_dynamics_configs = new List<IconDynamicsHandle>();
             VibratoHandle v1 = new VibratoHandle();
-#endif
             /*v1.author = "Standard";
             v1.file = "normal2_type1.aic";
             v1.number = 1;
@@ -616,19 +600,15 @@ namespace cadencii.vsq
             v1.IconID = "$04040001";
             v1.IDS = "normal";
             v1.Original = 0;
-            v1.setCaption( "[Normal] Type 1" );
-            v1.setLength( 480 );
-            v1.setStartDepth( 64 );
-            v1.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v1.setStartRate( 50 );
-            v1.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v1 );
+            v1.setCaption("[Normal] Type 1");
+            v1.setLength(480);
+            v1.setStartDepth(64);
+            v1.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v1.setStartRate(50);
+            v1.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v1);
 
-#if __cplusplus
-            VibratoHandle v2;
-#else
             VibratoHandle v2 = new VibratoHandle();
-#endif
             /*v2.author = "Standard";
             v2.file = "normal2_type2.aic";
             v2.number = 2;
@@ -637,19 +617,15 @@ namespace cadencii.vsq
             v2.IconID = "$04040002";
             v2.IDS = "normal";
             v2.Original = 0;
-            v2.setCaption( "[Normal] Type 2" );
-            v2.setLength( 480 );
-            v2.setStartDepth( 40 );
-            v2.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v2.setStartRate( 50 );
-            v2.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v2 );
+            v2.setCaption("[Normal] Type 2");
+            v2.setLength(480);
+            v2.setStartDepth(40);
+            v2.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v2.setStartRate(50);
+            v2.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v2);
 
-#if __cplusplus
-            VibratoHandle v3;
-#else
             VibratoHandle v3 = new VibratoHandle();
-#endif
             /*v3.author = "Standard";
             v3.file = "normal2_type3.aic";
             v3.number = 3;
@@ -658,19 +634,15 @@ namespace cadencii.vsq
             v3.IconID = "$04040003";
             v3.IDS = "normal";
             v3.Original = 0;
-            v3.setCaption( "[Normal] Type 3" );
-            v3.setLength( 480 );
-            v3.setStartDepth( 127 );
-            v3.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v3.setStartRate( 50 );
-            v3.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v3 );
+            v3.setCaption("[Normal] Type 3");
+            v3.setLength(480);
+            v3.setStartDepth(127);
+            v3.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v3.setStartRate(50);
+            v3.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v3);
 
-#if __cplusplus
-            VibratoHandle v4;
-#else
             VibratoHandle v4 = new VibratoHandle();
-#endif
             /*v4.author = "Standard";
             v4.file = "normal2_type4.aic";
             v4.number = 4;
@@ -679,19 +651,15 @@ namespace cadencii.vsq
             v4.IconID = "$04040004";
             v4.IDS = "normal";
             v4.Original = 0;
-            v4.setCaption( "[Normal] Type 4" );
-            v4.setLength( 480 );
-            v4.setStartDepth( 64 );
-            v4.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            v4.setStartRate( 50 );
-            v4.setRateBP( new VibratoBPList( new float[] { 0.6f, 0.6125f, 0.6167f, 0.6208f, 0.6292f, 0.6333f, 0.6375f, 0.6417f, 0.6542f, 0.6583f, 0.6625f, 0.6667f, 0.675f, 0.6833f, 0.6875f, 0.6917f, 0.7f, 0.7042f, 0.7083f, 0.7125f, 0.725f, 0.7292f, 0.7333f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7708f, 0.775f, 0.7792f, 0.7833f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8167f, 0.8208f, 0.8292f, 0.8333f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8667f, 0.8708f, 0.875f, 0.8792f, 0.8875f, 0.8917f, 0.9f, 1f }, new int[] { 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v4 );
+            v4.setCaption("[Normal] Type 4");
+            v4.setLength(480);
+            v4.setStartDepth(64);
+            v4.setDepthBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            v4.setStartRate(50);
+            v4.setRateBP(new VibratoBPList(new float[] { 0.6f, 0.6125f, 0.6167f, 0.6208f, 0.6292f, 0.6333f, 0.6375f, 0.6417f, 0.6542f, 0.6583f, 0.6625f, 0.6667f, 0.675f, 0.6833f, 0.6875f, 0.6917f, 0.7f, 0.7042f, 0.7083f, 0.7125f, 0.725f, 0.7292f, 0.7333f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7708f, 0.775f, 0.7792f, 0.7833f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8167f, 0.8208f, 0.8292f, 0.8333f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8667f, 0.8708f, 0.875f, 0.8792f, 0.8875f, 0.8917f, 0.9f, 1f }, new int[] { 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            ret.m_vibrato_configs.Add(v4);
 
-#if __cplusplus
-            VibratoHandle v5;
-#else
             VibratoHandle v5 = new VibratoHandle();
-#endif
             /*v5.author = "Standard";
             v5.file = "extreme2_type1.aic";
             v5.number = 5;
@@ -700,19 +668,15 @@ namespace cadencii.vsq
             v5.IconID = "$04040005";
             v5.IDS = "extreme";
             v5.Original = 0;
-            v5.setCaption( "[Extreme] Type 1" );
-            v5.setLength( 480 );
-            v5.setStartDepth( 64 );
-            v5.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v5.setStartRate( 64 );
-            v5.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v5 );
+            v5.setCaption("[Extreme] Type 1");
+            v5.setLength(480);
+            v5.setStartDepth(64);
+            v5.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v5.setStartRate(64);
+            v5.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v5);
 
-#if __cplusplus
-            VibratoHandle v6;
-#else
             VibratoHandle v6 = new VibratoHandle();
-#endif
             /*v6.author = "Standard";
             v6.file = "extreme2_type2.aic";
             v6.number = 6;
@@ -721,19 +685,15 @@ namespace cadencii.vsq
             v6.IconID = "$04040006";
             v6.IDS = "extreme";
             v6.Original = 0;
-            v6.setCaption( "[Extreme] Type 2" );
-            v6.setLength( 480 );
-            v6.setStartDepth( 32 );
-            v6.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v6.setStartRate( 32 );
-            v6.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v6 );
+            v6.setCaption("[Extreme] Type 2");
+            v6.setLength(480);
+            v6.setStartDepth(32);
+            v6.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v6.setStartRate(32);
+            v6.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v6);
 
-#if __cplusplus
-            VibratoHandle v7;
-#else
             VibratoHandle v7 = new VibratoHandle();
-#endif
             /*v7.author = "Standard";
             v7.file = "extreme2_type3.aic";
             v7.number = 7;
@@ -742,19 +702,15 @@ namespace cadencii.vsq
             v7.IconID = "$04040007";
             v7.IDS = "extreme";
             v7.Original = 0;
-            v7.setCaption( "[Extreme] Type 3" );
-            v7.setLength( 480 );
-            v7.setStartDepth( 100 );
-            v7.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v7.setStartRate( 50 );
-            v7.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v7 );
+            v7.setCaption("[Extreme] Type 3");
+            v7.setLength(480);
+            v7.setStartDepth(100);
+            v7.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v7.setStartRate(50);
+            v7.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v7);
 
-#if __cplusplus
-            VibratoHandle v8;
-#else
             VibratoHandle v8 = new VibratoHandle();
-#endif
             /*v8.author = "Standard";
             v8.file = "extreme2_type4.aic";
             v8.number = 8;
@@ -763,19 +719,15 @@ namespace cadencii.vsq
             v8.IconID = "$04040008";
             v8.IDS = "extreme";
             v8.Original = 0;
-            v8.setCaption( "[Extreme] Type 4" );
-            v8.setLength( 480 );
-            v8.setStartDepth( 64 );
-            v8.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            v8.setStartRate( 64 );
-            v8.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v8 );
+            v8.setCaption("[Extreme] Type 4");
+            v8.setLength(480);
+            v8.setStartDepth(64);
+            v8.setDepthBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            v8.setStartRate(64);
+            v8.setRateBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            ret.m_vibrato_configs.Add(v8);
 
-#if __cplusplus
-            VibratoHandle v9;
-#else
             VibratoHandle v9 = new VibratoHandle();
-#endif
             /*v9.author = "Standard";
             v9.file = "fast2_type1.aic";
             v9.number = 9;
@@ -784,19 +736,15 @@ namespace cadencii.vsq
             v9.IconID = "$04040009";
             v9.IDS = "fast";
             v9.Original = 0;
-            v9.setCaption( "[Fast] Type 1" );
-            v9.setLength( 480 );
-            v9.setStartDepth( 64 );
-            v9.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v9.setStartRate( 64 );
-            v9.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v9 );
+            v9.setCaption("[Fast] Type 1");
+            v9.setLength(480);
+            v9.setStartDepth(64);
+            v9.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v9.setStartRate(64);
+            v9.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v9);
 
-#if __cplusplus
-            VibratoHandle v10;
-#else
             VibratoHandle v10 = new VibratoHandle();
-#endif
             /*v10.author = "Standard";
             v10.file = "fast2_type2.aic";
             v10.number = 10;
@@ -805,19 +753,15 @@ namespace cadencii.vsq
             v10.IconID = "$0404000a";
             v10.IDS = "fast";
             v10.Original = 0;
-            v10.setCaption( "[Fast] Type 2" );
-            v10.setLength( 480 );
-            v10.setStartDepth( 40 );
-            v10.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v10.setStartRate( 50 );
-            v10.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v10 );
+            v10.setCaption("[Fast] Type 2");
+            v10.setLength(480);
+            v10.setStartDepth(40);
+            v10.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v10.setStartRate(50);
+            v10.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v10);
 
-#if __cplusplus
-            VibratoHandle v11;
-#else
             VibratoHandle v11 = new VibratoHandle();
-#endif
             /*v11.author = "Standard";
             v11.file = "fast2_type3.aic";
             v11.number = 11;
@@ -826,13 +770,13 @@ namespace cadencii.vsq
             v11.IconID = "$0404000b";
             v11.IDS = "fast";
             v11.Original = 0;
-            v11.setCaption( "[Fast] Type 3" );
-            v11.setLength( 480 );
-            v11.setStartDepth( 80 );
-            v11.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v11.setStartRate( 70 );
-            v11.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v11 );
+            v11.setCaption("[Fast] Type 3");
+            v11.setLength(480);
+            v11.setStartDepth(80);
+            v11.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v11.setStartRate(70);
+            v11.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v11);
 
             VibratoHandle v12 = new VibratoHandle();
             /*v12.author = "Standard";
@@ -843,13 +787,13 @@ namespace cadencii.vsq
             v12.IconID = "$0404000c";
             v12.IDS = "fast";
             v12.Original = 0;
-            v12.setCaption( "[Fast] Type 4" );
-            v12.setLength( 480 );
-            v12.setStartDepth( 64 );
-            v12.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            v12.setStartRate( 64 );
-            v12.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v12 );
+            v12.setCaption("[Fast] Type 4");
+            v12.setLength(480);
+            v12.setStartDepth(64);
+            v12.setDepthBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            v12.setStartRate(64);
+            v12.setRateBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            ret.m_vibrato_configs.Add(v12);
 
             VibratoHandle v13 = new VibratoHandle();
             /*v13.author = "Standard";
@@ -860,13 +804,13 @@ namespace cadencii.vsq
             v13.IconID = "$0404000d";
             v13.IDS = "slight";
             v13.Original = 0;
-            v13.setCaption( "[Slight] Type 1" );
-            v13.setLength( 480 );
-            v13.setStartDepth( 64 );
-            v13.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v13.setStartRate( 64 );
-            v13.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v13 );
+            v13.setCaption("[Slight] Type 1");
+            v13.setLength(480);
+            v13.setStartDepth(64);
+            v13.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v13.setStartRate(64);
+            v13.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v13);
 
             VibratoHandle v14 = new VibratoHandle();
             /*v14.author = "Standard";
@@ -877,13 +821,13 @@ namespace cadencii.vsq
             v14.IconID = "$0404000e";
             v14.IDS = "slight";
             v14.Original = 0;
-            v14.setCaption( "[Slight] Type 2" );
-            v14.setLength( 480 );
-            v14.setStartDepth( 40 );
-            v14.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v14.setStartRate( 64 );
-            v14.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v14 );
+            v14.setCaption("[Slight] Type 2");
+            v14.setLength(480);
+            v14.setStartDepth(40);
+            v14.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v14.setStartRate(64);
+            v14.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v14);
 
             VibratoHandle v15 = new VibratoHandle();
             /*v15.author = "Standard";
@@ -894,13 +838,13 @@ namespace cadencii.vsq
             v15.IconID = "$0404000f";
             v15.IDS = "slight";
             v15.Original = 0;
-            v15.setCaption( "[Slight] Type 3" );
-            v15.setLength( 480 );
-            v15.setStartDepth( 72 );
-            v15.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            v15.setStartRate( 64 );
-            v15.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v15 );
+            v15.setCaption("[Slight] Type 3");
+            v15.setLength(480);
+            v15.setStartDepth(72);
+            v15.setDepthBP(new VibratoBPList(new float[] { }, new int[] { }));
+            v15.setStartRate(64);
+            v15.setRateBP(new VibratoBPList(new float[] { }, new int[] { }));
+            ret.m_vibrato_configs.Add(v15);
 
             VibratoHandle v16 = new VibratoHandle();
             /*v16.author = "Standard";
@@ -911,13 +855,13 @@ namespace cadencii.vsq
             v16.IconID = "$04040010";
             v16.IDS = "slight";
             v16.Original = 0;
-            v16.setCaption( "[Slight] Type 4" );
-            v16.setLength( 480 );
-            v16.setStartDepth( 64 );
-            v16.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            v16.setStartRate( 64 );
-            v16.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v16 );
+            v16.setCaption("[Slight] Type 4");
+            v16.setLength(480);
+            v16.setStartDepth(64);
+            v16.setDepthBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            v16.setStartRate(64);
+            v16.setRateBP(new VibratoBPList(new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 }));
+            ret.m_vibrato_configs.Add(v16);
 
             return ret;
         }
@@ -928,7 +872,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int getVibratoConfigCount()
         {
-            return m_vibrato_configs.size();
+            return m_vibrato_configs.Count;
         }
 
         /// <summary>
@@ -937,7 +881,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int getAttackConfigCount()
         {
-            return m_attack_configs.size();
+            return m_attack_configs.Count;
         }
 
         /// <summary>
@@ -946,46 +890,34 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int getDynamicsConfigCount()
         {
-            return m_dynamics_configs.size();
+            return m_dynamics_configs.Count;
         }
 
         /// <summary>
         /// 登録されているビブラート設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-#if __cplusplus
-        public: vector<VibratoHandle>::iterator vibratoConfigIterator()
-#else
-        public Iterator<VibratoHandle> vibratoConfigIterator()
-#endif
+        public IEnumerable<VibratoHandle> vibratoConfigIterator()
         {
-            return m_vibrato_configs.iterator();
+            return m_vibrato_configs;
         }
 
         /// <summary>
         /// 登録されているアタック設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-#if __cplusplus
-        public: vector<NoteHeadHandle>::iterator attackConfigIterator()
-#else
-        public Iterator<NoteHeadHandle> attackConfigIterator()
-#endif
+        public IEnumerable<NoteHeadHandle> attackConfigIterator()
         {
-            return m_attack_configs.iterator();
+            return m_attack_configs;
         }
 
         /// <summary>
         /// 登録されている強弱記号設定を順に返す反復子を返します。
         /// </summary>
         /// <returns></returns>
-#if __cplusplus
-        public: vector<IconDynamicsHandle>::iterator dynamicsConfigIterator()
-#else
-        public Iterator<IconDynamicsHandle> dynamicsConfigIterator()
-#endif
+        public IEnumerable<IconDynamicsHandle> dynamicsConfigIterator()
         {
-            return m_dynamics_configs.iterator();
+            return m_dynamics_configs;
         }
 
         private ExpressionConfigSys()
@@ -997,103 +929,101 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="path_editor"></param>
         /// <param name="path_expdb"></param>
-        public ExpressionConfigSys( String path_editor, String path_expdb )
+        public ExpressionConfigSys(string path_editor, string path_expdb)
         {
-            m_vibrato_configs = new Vector<VibratoHandle>();
-            m_attack_configs = new Vector<NoteHeadHandle>();
-            m_dynamics_configs = new Vector<IconDynamicsHandle>();
+            m_vibrato_configs = new List<VibratoHandle>();
+            m_attack_configs = new List<NoteHeadHandle>();
+            m_dynamics_configs = new List<IconDynamicsHandle>();
 
-            String base_path = PortUtil.getDirectoryName( path_editor );
-            String aiconDB_def = Path.Combine( base_path, "AiconDB.def" );
+            string base_path = PortUtil.getDirectoryName(path_editor);
+            string aiconDB_def = Path.Combine(base_path, "AiconDB.def");
             if (System.IO.File.Exists(aiconDB_def)) {
-                String folder_name = "";
-                TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
-                BufferedReader sr = null;
+                string folder_name = "";
+                SortedDictionary<string, List<string>> list = new SortedDictionary<string, List<string>>();
+                StreamReader sr = null;
                 try {
-                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( aiconDB_def ), "Shift_JIS" ) );
-                    String line = "";
-                    String current = "";
-                    while ( (line = sr.readLine()) != null ) {
-                        int index_semicollon = line.IndexOf( ';' );
-                        if ( index_semicollon >= 0 ) {
-                            line = line.Substring( 0, index_semicollon );
+                    sr = new StreamReader(aiconDB_def, Encoding.GetEncoding("Shift_JIS"));
+                    string line = "";
+                    string current = "";
+                    while ((line = sr.ReadLine()) != null) {
+                        int index_semicollon = line.IndexOf(';');
+                        if (index_semicollon >= 0) {
+                            line = line.Substring(0, index_semicollon);
                         }
                         line = line.Trim();
-                        if ( line.StartsWith( "[" ) ) {
+                        if (line.StartsWith("[")) {
                             current = line;
                         } else {
-                            int index_eq = line.IndexOf( '=' );
-                            if ( index_eq > 0 ) {
-                                String[] spl = PortUtil.splitString( line, '=' );
-                                if ( spl.Length != 2 ) {
+                            int index_eq = line.IndexOf('=');
+                            if (index_eq > 0) {
+                                string[] spl = PortUtil.splitString(line, '=');
+                                if (spl.Length != 2) {
                                     continue;
                                 }
-                                if ( current.Equals( "[Common]" ) ) {
-                                    if ( spl[0].Equals( "FolderName" ) ) {
+                                if (current.Equals("[Common]")) {
+                                    if (spl[0].Equals("FolderName")) {
                                         folder_name = spl[1];
                                     }
                                 } else {
-                                    Vector<String> add = null;
-                                    if ( list.containsKey( current ) ) {
-                                        add = list.get( current );
-                                        list.remove( current );
+                                    List<string> add = null;
+                                    if (list.ContainsKey(current)) {
+                                        add = list[current];
+                                        list.Remove(current);
                                     } else {
-                                        add = new Vector<String>();
+                                        add = new List<string>();
                                     }
-                                    add.add( line );
-                                    list.put( current, add );
+                                    add.Add(line);
+                                    list[current] = add;
                                 }
                             }
                         }
                     }
-                } catch ( Exception ex ) {
-                    serr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+                } catch (Exception ex) {
+                    serr.println("ExpressionConfigSys#.ctor; ex=" + ex);
                 } finally {
-                    if ( sr != null ) {
+                    if (sr != null) {
                         try {
-                            sr.close();
-                        } catch ( Exception ex2 ) {
-                            serr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                            sr.Close();
+                        } catch (Exception ex2) {
+                            serr.println("ExpressionConfigSys#.ctor; ex2=" + ex2);
                         }
                     }
                 }
 
-                if ( !folder_name.Equals( "" ) ) {
-                    String aiconDB_path = Path.Combine( base_path, folder_name );
+                if (!folder_name.Equals("")) {
+                    string aiconDB_path = Path.Combine(base_path, folder_name);
                     if (Directory.Exists(aiconDB_path)) {
-                        for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ) {
-                            String key = itr.next();
-                            String section_name = key.Replace( "[", "" ).Replace( "]", "" );
-                            String section_path = Path.Combine( aiconDB_path, section_name );
+                        foreach (var key in list.Keys) {
+                            string section_name = key.Replace("[", "").Replace("]", "");
+                            string section_path = Path.Combine(aiconDB_path, section_name);
                             if (Directory.Exists(section_path)) {
-                                for ( Iterator<String> itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
-                                    String line = itr2.next();
-                                    String[] spl = PortUtil.splitString( line, '=' );
-                                    if ( spl.Length != 2 ) {
+                                foreach (var line in list[key]) {
+                                    string[] spl = PortUtil.splitString(line, '=');
+                                    if (spl.Length != 2) {
                                         continue;
                                     }
-                                    String name = spl[0];
-                                    String[] spl2 = PortUtil.splitString( spl[1], ',' );
-                                    String preset = "";
-                                    if ( name.Equals( "Dynaff" ) ) {
+                                    string name = spl[0];
+                                    string[] spl2 = PortUtil.splitString(spl[1], ',');
+                                    string preset = "";
+                                    if (name.Equals("Dynaff")) {
                                         preset = IconDynamicsHandle.ICONID_HEAD_DYNAFF;
-                                    } else if ( name.Equals( "Crescendo" ) ) {
+                                    } else if (name.Equals("Crescendo")) {
                                         preset = IconDynamicsHandle.ICONID_HEAD_CRESCEND;
-                                    } else if ( name.Equals( "Decrescendo" ) ) {
+                                    } else if (name.Equals("Decrescendo")) {
                                         preset = IconDynamicsHandle.ICONID_HEAD_DECRESCEND;
                                     }
-                                    for ( int i = 0; i < spl2.Length; i++ ) {
-                                        String aic_name = spl2[i];
-                                        if ( !aic_name.EndsWith( ".aic" ) ) {
+                                    for (int i = 0; i < spl2.Length; i++) {
+                                        string aic_name = spl2[i];
+                                        if (!aic_name.EndsWith(".aic")) {
                                             aic_name += ".aic";
                                         }
-                                        String aic_path = Path.Combine( section_path, aic_name );
-                                        String ids = spl2[i];
-                                        String icon_id = preset + PortUtil.formatDecimal( "0000", i );
+                                        string aic_path = Path.Combine(section_path, aic_name);
+                                        string ids = spl2[i];
+                                        string icon_id = preset + PortUtil.formatDecimal("0000", i);
                                         if (System.IO.File.Exists(aic_path)) {
-                                            IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
-                                            handle.setButtonImageFullPath( Path.Combine( section_path, handle.getButton() ) );
-                                            m_dynamics_configs.add( handle );
+                                            IconDynamicsHandle handle = new IconDynamicsHandle(aic_path, ids, icon_id, i);
+                                            handle.setButtonImageFullPath(Path.Combine(section_path, handle.getButton()));
+                                            m_dynamics_configs.Add(handle);
                                         }
                                     }
                                 }
@@ -1103,107 +1033,107 @@ namespace cadencii.vsq
                 }
             }
 
-            String expression = Path.Combine( path_expdb, "expression.map" );
+            string expression = Path.Combine(path_expdb, "expression.map");
             if (!System.IO.File.Exists(expression)) {
                 return;
             }
-            RandomAccessFile fs = null;
+            FileStream fs = null;
             try {
-                fs = new RandomAccessFile( expression, "r" );
+                fs = new FileStream(expression, FileMode.Open, FileAccess.Read);
                 byte[] dat = new byte[8];
-                fs.seek( 0x20 );
-                for ( int i = 0; i < MAX_VIBRATO; i++ ) {
-                    fs.read( dat, 0, 8 );
-                    long value = PortUtil.make_int64_le( dat );
-                    if ( value <= 0 ) {
+                fs.Seek(0x20, SeekOrigin.Begin);
+                for (int i = 0; i < MAX_VIBRATO; i++) {
+                    fs.Read(dat, 0, 8);
+                    long value = PortUtil.make_int64_le(dat);
+                    if (value <= 0) {
                         continue;
                     }
 
-                    String ved = Path.Combine( path_expdb, "vexp" + value + ".ved" );
+                    string ved = Path.Combine(path_expdb, "vexp" + value + ".ved");
                     if (!System.IO.File.Exists(ved)) {
                         continue;
                     }
-                    String vexp_dir = Path.Combine( path_expdb, "vexp" + value );
+                    string vexp_dir = Path.Combine(path_expdb, "vexp" + value);
                     if (!Directory.Exists(vexp_dir)) {
                         continue;
                     }
 
-                    String NL = (char)0x0D + "" + (char)0x0A;
-                    RandomAccessFile fs_ved = null;
+                    string NL = (char)0x0D + "" + (char)0x0A;
+                    FileStream fs_ved = null;
                     try {
-                        fs_ved = new RandomAccessFile( ved, "r" );
-                        byte[] byte_ved = new byte[(int)fs_ved.length()];
-                        fs_ved.read( byte_ved, 0, byte_ved.Length );
-                        TransCodeUtil.decodeBytes( byte_ved );
+                        fs_ved = new FileStream(ved, FileMode.Open, FileAccess.Read);
+                        byte[] byte_ved = new byte[(int)fs_ved.Length];
+                        fs_ved.Read(byte_ved, 0, byte_ved.Length);
+                        TransCodeUtil.decodeBytes(byte_ved);
                         int[] int_ved = new int[byte_ved.Length];
-                        for ( int j = 0; j < byte_ved.Length; j++ ) {
+                        for (int j = 0; j < byte_ved.Length; j++) {
                             int_ved[j] = 0xff & byte_ved[j];
                         }
-                        String s = PortUtil.getDecodedString( "ASCII", int_ved );
-                        String[] spl = PortUtil.splitString( s, new String[] { NL }, true );
-                        String current_entry = "";
-                        for ( int j = 0; j < spl.Length; j++ ) {
-                            if ( spl[j].StartsWith( "[" ) ) {
+                        string s = PortUtil.getDecodedString("ASCII", int_ved);
+                        string[] spl = PortUtil.splitString(s, new string[] { NL }, true);
+                        string current_entry = "";
+                        for (int j = 0; j < spl.Length; j++) {
+                            if (spl[j].StartsWith("[")) {
                                 current_entry = spl[j];
                                 continue;
-                            } else if ( spl[j].Equals( "" ) ) {
+                            } else if (spl[j].Equals("")) {
                                 continue;
                             }
-                            if ( current_entry.Equals( "[VIBRATO]" ) ) {
-                                String[] spl2 = PortUtil.splitString( spl[j], ',' );
-                                if ( spl2.Length < 6 ) {
+                            if (current_entry.Equals("[VIBRATO]")) {
+                                string[] spl2 = PortUtil.splitString(spl[j], ',');
+                                if (spl2.Length < 6) {
                                     continue;
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
-                                String file = spl2[3].Replace( "\"", "" );
-                                String aic_file = Path.Combine( vexp_dir, file );
-                                int index = int.Parse( spl2[0] );
-                                String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
-                                String ids = "";//spl2[2].Replace( "\"", "" );
-                                String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
-                                VibratoHandle item = new VibratoHandle( aic_file, ids, icon_id, index );
-                                item.setCaption( caption );
-                                m_vibrato_configs.add( item );
-                            } if ( current_entry.Equals( "[NOTEATTACK]" ) ) {
-                                String[] spl2 = PortUtil.splitString( spl[j], ',' );
-                                if ( spl2.Length < 6 ) {
+                                string file = spl2[3].Replace("\"", "");
+                                string aic_file = Path.Combine(vexp_dir, file);
+                                int index = int.Parse(spl2[0]);
+                                string icon_id = "$0404" + PortUtil.toHexString(index, 4);
+                                string ids = "";//spl2[2].Replace( "\"", "" );
+                                string caption = spl2[4].Replace("\"", "").Replace(":", " ");
+                                VibratoHandle item = new VibratoHandle(aic_file, ids, icon_id, index);
+                                item.setCaption(caption);
+                                m_vibrato_configs.Add(item);
+                            } if (current_entry.Equals("[NOTEATTACK]")) {
+                                string[] spl2 = PortUtil.splitString(spl[j], ',');
+                                if (spl2.Length < 6) {
                                     continue;
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
-                                String file = spl2[3].Replace( "\"", "" );
-                                String aic_path = Path.Combine( vexp_dir, file );
+                                string file = spl2[3].Replace("\"", "");
+                                string aic_path = Path.Combine(vexp_dir, file);
                                 if (!System.IO.File.Exists(aic_path)) {
                                     continue;
                                 }
-                                String ids = "";// spl2[2].Replace( "\"", "" );
-                                String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
-                                int index = int.Parse( spl2[0] );
-                                String icon_id = "$0101" + PortUtil.toHexString( index, 4 );
-                                NoteHeadHandle item = new NoteHeadHandle( aic_path, ids, icon_id, index );
-                                item.setCaption( caption );
-                                m_attack_configs.add( item );
+                                string ids = "";// spl2[2].Replace( "\"", "" );
+                                string caption = spl2[4].Replace("\"", "").Replace(":", " ");
+                                int index = int.Parse(spl2[0]);
+                                string icon_id = "$0101" + PortUtil.toHexString(index, 4);
+                                NoteHeadHandle item = new NoteHeadHandle(aic_path, ids, icon_id, index);
+                                item.setCaption(caption);
+                                m_attack_configs.Add(item);
                             }
                         }
-                    } catch ( Exception ex ) {
-                        serr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+                    } catch (Exception ex) {
+                        serr.println("ExpressionConfigSys#.ctor; ex=" + ex);
                     } finally {
-                        if ( fs_ved != null ) {
+                        if (fs_ved != null) {
                             try {
-                                fs_ved.close();
-                            } catch ( Exception ex2 ) {
-                                serr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                                fs_ved.Close();
+                            } catch (Exception ex2) {
+                                serr.println("ExpressionConfigSys#.ctor; ex2=" + ex2);
                             }
                         }
                     }
                 }
-            } catch ( Exception ex ) {
-                serr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+            } catch (Exception ex) {
+                serr.println("ExpressionConfigSys#.ctor; ex=" + ex);
             } finally {
-                if ( fs != null ) {
+                if (fs != null) {
                     try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                        serr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                        fs.Close();
+                    } catch (Exception ex2) {
+                        serr.println("ExpressionConfigSys#.ctor; ex2=" + ex2);
                     }
                 }
             }
@@ -1211,9 +1141,4 @@ namespace cadencii.vsq
 
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

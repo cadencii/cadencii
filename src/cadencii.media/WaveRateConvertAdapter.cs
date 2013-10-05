@@ -11,17 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 
 namespace cadencii.media
 {
-#endif
 
     /// <summary>
     /// 接頭辞b: 単位が変換前のサンプル数になっている変数
@@ -37,14 +30,14 @@ namespace cadencii.media
         /// </summary>
         /// <param name="receiver">変換した波形を送る相手先</param>
         /// <param name="sample_rate">変換前のサンプリング周波数</param>
-        public WaveRateConvertAdapter( IWaveReceiver receiver, int sample_rate )
+        public WaveRateConvertAdapter(IWaveReceiver receiver, int sample_rate)
         {
             mReceiver = receiver;
             int rate_from = sample_rate;
             int rate_to = receiver.getSampleRate();
             try {
-                mContext = new RateConvertContext( rate_from, rate_to );
-            } catch ( Exception ex ) {
+                mContext = new RateConvertContext(rate_from, rate_to);
+            } catch (Exception ex) {
                 mContext = null; // m9(＠ｑ＠)
             }
         }
@@ -52,19 +45,17 @@ namespace cadencii.media
         public void close()
         {
 #if DEBUG
-            sout.println( "WaveRateConvertAdapter#close" );
+            sout.println("WaveRateConvertAdapter#close");
 #endif
             mReceiver.close();
         }
 
-        public void append( double[] left, double[] right, int length )
+        public void append(double[] left, double[] right, int length)
         {
-            while ( RateConvertContext.convert( mContext, left, right, length ) ) {
-                mReceiver.append( mContext.bufferLeft, mContext.bufferRight, mContext.length );
+            while (RateConvertContext.convert(mContext, left, right, length)) {
+                mReceiver.append(mContext.bufferLeft, mContext.bufferRight, mContext.length);
             }
         }
     }
 
-#if !JAVA
 }
-#endif

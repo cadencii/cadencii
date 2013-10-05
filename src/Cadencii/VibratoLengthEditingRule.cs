@@ -11,19 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// 音符長さが変更されるとき、ビブラート長さがどのように影響を受けるかを決定する列挙子
     /// </summary>
-    public enum VibratoLengthEditingRule {
+    public enum VibratoLengthEditingRule
+    {
         /// <summary>
         /// 音符頭からビブラート開始位置までのディレイが保存される
         /// </summary>
@@ -38,6 +35,4 @@ namespace cadencii {
         PERCENTAGE,
     }
 
-#if !JAVA
 }
-#endif

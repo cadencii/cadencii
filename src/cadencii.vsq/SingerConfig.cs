@@ -11,36 +11,26 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
+using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class SingerConfig implements Cloneable {
-#else
     public class SingerConfig : ICloneable
     {
-#endif
-        public String ID = "";
-        public String FORMAT = "";
+        public string ID = "";
+        public string FORMAT = "";
         /// <summary>
         /// VOCALOIDの場合，音源のディレクトリへのパス．
         /// UTAUの場合，oto.iniが保存されているディレクトリへのパス
         /// </summary>
-        public String VOICEIDSTR = "";
-        public String VOICENAME = "Unknown";
+        public string VOICEIDSTR = "";
+        public string VOICENAME = "Unknown";
         public int Breathiness;
         public int Brightness;
         public int Clearness;
@@ -60,14 +50,14 @@ namespace cadencii.vsq
         public int Resonance4Frequency;
         public int Resonance4BandWidth;
         public int Harmonics;
-        public String VvdPath = "";
+        public string VvdPath = "";
         public int Language;
 
         public SingerConfig()
         {
         }
 
-        public SingerConfig( String voiceName, int language, int program )
+        public SingerConfig(string voiceName, int language, int program)
         {
             VOICENAME = voiceName;
             Language = language;
@@ -105,14 +95,12 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
-        public static SingerConfig fromVvd( String file, int language, int program )
+        public static SingerConfig fromVvd(string file, int language, int program)
         {
             SingerConfig sc = new SingerConfig();
             sc.ID = "VOCALOID:VIRTUAL:VOICE";
@@ -127,95 +115,95 @@ namespace cadencii.vsq
             sc.VvdPath = file;
             sc.Language = language;
             sc.Program = program;
-            RandomAccessFile fs = null;
+            Stream fs = null;
             try {
-                fs = new RandomAccessFile( file, "r" );
-                int length = (int)fs.length();
+                fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+                int length = (int)fs.Length;
                 byte[] dat = new byte[length];
-                fs.read( dat, 0, length );
-                TransCodeUtil.decodeBytes( dat );
+                fs.Read(dat, 0, length);
+                TransCodeUtil.decodeBytes(dat);
                 int[] idat = new int[length];
-                for ( int i = 0; i < length; i++ ) {
+                for (int i = 0; i < length; i++) {
                     idat[i] = dat[i];
                 }
-                String str1 = PortUtil.getDecodedString( "Shift_JIS", idat );
+                string str1 = PortUtil.getDecodedString("Shift_JIS", idat);
 #if DEBUG
-                sout.println( "SingerConfig.readSingerConfig; str1=" + str1 );
+                sout.println("SingerConfig.readSingerConfig; str1=" + str1);
 #endif
-                String crlf = "" + (char)0x0d + "" + (char)0x0a;
-                String[] spl = PortUtil.splitString( str1, new String[] { crlf }, true );
+                string crlf = "" + (char)0x0d + "" + (char)0x0a;
+                string[] spl = PortUtil.splitString(str1, new string[] { crlf }, true);
 
                 int count = spl.Length;
-                for ( int i = 0; i < spl.Length; i++ ) {
-                    String s = spl[i];
-                    int first = s.IndexOf( '"' );
-                    int first_end = get_quated_string( s, first );
-                    int second = s.IndexOf( '"', first_end + 1 );
-                    int second_end = get_quated_string( s, second );
+                for (int i = 0; i < spl.Length; i++) {
+                    string s = spl[i];
+                    int first = s.IndexOf('"');
+                    int first_end = get_quated_string(s, first);
+                    int second = s.IndexOf('"', first_end + 1);
+                    int second_end = get_quated_string(s, second);
                     char[] chs = s.ToCharArray();
-                    String id = new String( chs, first, first_end - first + 1 );
-                    String value = new String( chs, second, second_end - second + 1 );
-                    id = id.Substring( 1, PortUtil.getStringLength( id ) - 2 );
-                    value = value.Substring( 1, PortUtil.getStringLength( value ) - 2 );
-                    value = value.Replace( "\\" + "\"", "\"" );
+                    string id = new string(chs, first, first_end - first + 1);
+                    string value = new string(chs, second, second_end - second + 1);
+                    id = id.Substring(1, PortUtil.getStringLength(id) - 2);
+                    value = value.Substring(1, PortUtil.getStringLength(value) - 2);
+                    value = value.Replace("\\" + "\"", "\"");
                     int parsed_int = 64;
                     try {
-                        parsed_int = int.Parse( value );
-                    } catch ( Exception ex ) {
+                        parsed_int = int.Parse(value);
+                    } catch (Exception ex) {
                     }
-                    if ( id.Equals( "ID" ) ) {
+                    if (id.Equals("ID")) {
                         sc.ID = value;
-                    } else if ( id.Equals( "FORMAT" ) ) {
+                    } else if (id.Equals("FORMAT")) {
                         sc.FORMAT = value;
-                    } else if ( id.Equals( "VOICEIDSTR" ) ) {
+                    } else if (id.Equals("VOICEIDSTR")) {
                         sc.VOICEIDSTR = value;
-                    } else if ( id.Equals( "VOICENAME" ) ) {
+                    } else if (id.Equals("VOICENAME")) {
                         sc.VOICENAME = value;
-                    } else if ( id.Equals( "Breathiness" ) || id.Equals( "Noise" ) ) {
+                    } else if (id.Equals("Breathiness") || id.Equals("Noise")) {
                         sc.Breathiness = parsed_int;
-                    } else if ( id.Equals( "Brightness" ) ) {
+                    } else if (id.Equals("Brightness")) {
                         sc.Brightness = parsed_int;
-                    } else if ( id.Equals( "Clearness" ) ) {
+                    } else if (id.Equals("Clearness")) {
                         sc.Clearness = parsed_int;
-                    } else if ( id.Equals( "Opening" ) ) {
+                    } else if (id.Equals("Opening")) {
                         sc.Opening = parsed_int;
-                    } else if ( id.Equals( "Gender:Factor" ) ) {
+                    } else if (id.Equals("Gender:Factor")) {
                         sc.GenderFactor = parsed_int;
-                    } else if ( id.Equals( "Resonance1:Frequency" ) ) {
+                    } else if (id.Equals("Resonance1:Frequency")) {
                         sc.Resonance1Frequency = parsed_int;
-                    } else if ( id.Equals( "Resonance1:Band:Width" ) ) {
+                    } else if (id.Equals("Resonance1:Band:Width")) {
                         sc.Resonance1BandWidth = parsed_int;
-                    } else if ( id.Equals( "Resonance1:Amplitude" ) ) {
+                    } else if (id.Equals("Resonance1:Amplitude")) {
                         sc.Resonance1Amplitude = parsed_int;
-                    } else if ( id.Equals( "Resonance2:Frequency" ) ) {
+                    } else if (id.Equals("Resonance2:Frequency")) {
                         sc.Resonance2Frequency = parsed_int;
-                    } else if ( id.Equals( "Resonance2:Band:Width" ) ) {
+                    } else if (id.Equals("Resonance2:Band:Width")) {
                         sc.Resonance2BandWidth = parsed_int;
-                    } else if ( id.Equals( "Resonance2:Amplitude" ) ) {
+                    } else if (id.Equals("Resonance2:Amplitude")) {
                         sc.Resonance2Amplitude = parsed_int;
-                    } else if ( id.Equals( "Resonance3:Frequency" ) ) {
+                    } else if (id.Equals("Resonance3:Frequency")) {
                         sc.Resonance3Frequency = parsed_int;
-                    } else if ( id.Equals( "Resonance3:Band:Width" ) ) {
+                    } else if (id.Equals("Resonance3:Band:Width")) {
                         sc.Resonance3BandWidth = parsed_int;
-                    } else if ( id.Equals( "Resonance3:Amplitude" ) ) {
+                    } else if (id.Equals("Resonance3:Amplitude")) {
                         sc.Resonance3Amplitude = parsed_int;
-                    } else if ( id.Equals( "Resonance4:Frequency" ) ) {
+                    } else if (id.Equals("Resonance4:Frequency")) {
                         sc.Resonance4Frequency = parsed_int;
-                    } else if ( id.Equals( "Resonance4:Band:Width" ) ) {
+                    } else if (id.Equals("Resonance4:Band:Width")) {
                         sc.Resonance4BandWidth = parsed_int;
-                    } else if ( id.Equals( "Resonance4:Amplitude" ) ) {
+                    } else if (id.Equals("Resonance4:Amplitude")) {
                         sc.Resonance4Amplitude = parsed_int;
-                    } else if ( id.Equals( "Harmonics" ) ) {
+                    } else if (id.Equals("Harmonics")) {
                         sc.Harmonics = parsed_int;
                     }
                 }
-            } catch ( Exception ex ) {
+            } catch (Exception ex) {
 
             } finally {
-                if ( fs != null ) {
+                if (fs != null) {
                     try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
+                        fs.Close();
+                    } catch (Exception ex2) {
                     }
                 }
             }
@@ -228,21 +216,21 @@ namespace cadencii.vsq
         /// <param name="s"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        static int get_quated_string( String s, int position )
+        static int get_quated_string(string s, int position)
         {
-            if ( position < 0 ) {
+            if (position < 0) {
                 return -1;
             }
             char[] chs = s.ToCharArray();
-            if ( position >= chs.Length ) {
+            if (position >= chs.Length) {
                 return -1;
             }
-            if ( chs[position] != '"' ) {
+            if (chs[position] != '"') {
                 return -1;
             }
             int end = -1;
-            for ( int i = position + 1; i < chs.Length; i++ ) {
-                if ( chs[i] == '"' && chs[i - 1] != '\\' ) {
+            for (int i = position + 1; i < chs.Length; i++) {
+                if (chs[i] == '"' && chs[i - 1] != '\\') {
                     end = i;
                     break;
                 }
@@ -250,41 +238,37 @@ namespace cadencii.vsq
             return end;
         }
 
-        public String[] ToStringArray()
+        public string[] ToStringArray()
         {
-            Vector<String> ret = new Vector<String>();
-            ret.add( "\"ID\":=:\"" + ID + "\"" );
-            ret.add( "\"FORMAT\":=:\"" + FORMAT + "\"" );
-            ret.add( "\"VOICEIDSTR\":=:\"" + VOICEIDSTR + "\"" );
-            ret.add( "\"VOICENAME\":=:\"" + VOICENAME.Replace( "\"", "\\\"" ) + "\"" );
-            ret.add( "\"Breathiness\":=:\"" + Breathiness + "\"" );
-            ret.add( "\"Brightness\":=:\"" + Brightness + "\"" );
-            ret.add( "\"Clearness\":=:\"" + Clearness + "\"" );
-            ret.add( "\"Opening\":=:\"" + Opening + "\"" );
-            ret.add( "\"Gender:Factor\":=:\"" + GenderFactor + "\"" );
-            return ret.toArray( new String[] { } );
+            List<string> ret = new List<string>();
+            ret.Add("\"ID\":=:\"" + ID + "\"");
+            ret.Add("\"FORMAT\":=:\"" + FORMAT + "\"");
+            ret.Add("\"VOICEIDSTR\":=:\"" + VOICEIDSTR + "\"");
+            ret.Add("\"VOICENAME\":=:\"" + VOICENAME.Replace("\"", "\\\"") + "\"");
+            ret.Add("\"Breathiness\":=:\"" + Breathiness + "\"");
+            ret.Add("\"Brightness\":=:\"" + Brightness + "\"");
+            ret.Add("\"Clearness\":=:\"" + Clearness + "\"");
+            ret.Add("\"Opening\":=:\"" + Opening + "\"");
+            ret.Add("\"Gender:Factor\":=:\"" + GenderFactor + "\"");
+            return ret.ToArray();
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
-        public String toString()
+        public string toString()
         {
-            String[] r = ToStringArray();
-            String ret = "";
+            string[] r = ToStringArray();
+            string ret = "";
             int count = r.Length;
-            for ( int i = 0; i < count; i++ ) {
-                String s = r[i];
+            for (int i = 0; i < count; i++) {
+                string s = r[i];
                 ret += s + "\n";
             }
             return ret;
         }
     }
 
-#if !JAVA
 }
-#endif

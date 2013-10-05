@@ -11,15 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
 namespace cadencii
 {
-#endif
 
     public interface FormNotePropertyUi
     {
@@ -28,7 +21,7 @@ namespace cadencii
         /// </summary>
         /// <param name="c">追加するコンポーネント</param>
         [PureVirtualFunction]
-        void addComponent( object c );
+        void addComponent(object c);
 
         /// <summary>
         /// プロパティウィンドウが最小化された状態かどうかを取得する
@@ -48,14 +41,14 @@ namespace cadencii
         /// </summary>
         /// <param name="title"></param>
         [PureVirtualFunction]
-        void setTitle( string title );
+        void setTitle(string title);
 
         /// <summary>
         /// ウィンドウを常に最前面に表示するかどうかを設定する
         /// </summary>
         /// <param name="alwaysOnTop"></param>
         [PureVirtualFunction]
-        void setAlwaysOnTop( bool alwaysOnTop );
+        void setAlwaysOnTop(bool alwaysOnTop);
 
         /// <summary>
         /// ウィンドウを常に最前面に表示するかどうか
@@ -75,14 +68,14 @@ namespace cadencii
         /// </summary>
         /// <param name="value"></param>
         [PureVirtualFunction]
-        void setMenuCloseAccelerator( System.Windows.Forms.Keys value );
+        void setMenuCloseAccelerator(System.Windows.Forms.Keys value);
 
         /// <summary>
         /// ウィンドウが可視状態かどうかを設定する
         /// </summary>
         /// <param name="visible"></param>
         [PureVirtualFunction]
-        void setVisible( bool visible );
+        void setVisible(bool visible);
 
         /// <summary>
         /// ウィンドウが可視状態かどうかを取得する
@@ -99,7 +92,7 @@ namespace cadencii
         /// <param name="width"></param>
         /// <param name="height"></param>
         [PureVirtualFunction]
-        void setBounds( int x, int y, int width, int height );
+        void setBounds(int x, int y, int width, int height);
 
         /// <summary>
         /// ウィンドウ位置のX座標を取得する
@@ -164,7 +157,5 @@ namespace cadencii
         void hideWindow();
     }
 
-#if !JAVA
 }
-#endif
 

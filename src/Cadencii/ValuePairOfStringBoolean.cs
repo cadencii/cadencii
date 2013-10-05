@@ -11,32 +11,26 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
-namespace cadencii{
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// ValuePair&lt;String,Boolean&gt;をXMLシリアライズするためのクラス
     /// </summary>
-    public class ValuePairOfStringBoolean{
-        private String _key;
+    public class ValuePairOfStringBoolean
+    {
+        private string _key;
         private Boolean _value;
 
         /// <summary>
         /// デフォルトのコンストラクタ．
         /// Key="", Value=falseで初期化されます．
         /// </summary>
-#if JAVA
-        public ValuePairOfStringBoolean() {
-            this( "", false );
-#else
-        public ValuePairOfStringBoolean() : this( "", false ) {
-#endif
+        public ValuePairOfStringBoolean()
+            : this("", false)
+        {
         }
 
         /// <summary>
@@ -44,7 +38,8 @@ namespace cadencii{
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public ValuePairOfStringBoolean( String key, Boolean value ) {
+        public ValuePairOfStringBoolean(string key, Boolean value)
+        {
             _key = key;
             _value = value;
         }
@@ -53,7 +48,8 @@ namespace cadencii{
         /// キー値を取得します
         /// </summary>
         /// <returns></returns>
-        public String getKey() {
+        public string getKey()
+        {
             return _key;
         }
 
@@ -61,7 +57,8 @@ namespace cadencii{
         /// キー値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setKey( String value ) {
+        public void setKey(string value)
+        {
             _key = value;
         }
 
@@ -69,7 +66,8 @@ namespace cadencii{
         /// 値を取得します
         /// </summary>
         /// <returns></returns>
-        public Boolean getValue() {
+        public Boolean getValue()
+        {
             return _value;
         }
 
@@ -77,11 +75,10 @@ namespace cadencii{
         /// 値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setValue( Boolean value ) {
+        public void setValue(Boolean value)
+        {
             _value = value;
         }
     }
 
-#if !JAVA
 }
-#endif

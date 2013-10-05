@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void MuteChangedEventHandler( int track, bool mute );
+    public delegate void MuteChangedEventHandler(int track, bool mute);
 
 }

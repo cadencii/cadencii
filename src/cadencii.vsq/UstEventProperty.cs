@@ -11,40 +11,26 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-import java.io.*;
-#else
-
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class UstEventProperty implements Serializable
-#else
     [Serializable]
     public class UstEventProperty
-#endif
     {
-        public String Name;
-        public String Value;
+        public string Name;
+        public string Value;
 
         public UstEventProperty()
         {
         }
 
-        public UstEventProperty( String name, String value )
+        public UstEventProperty(string name, string value)
         {
             Name = name;
             Value = value;
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,54 +11,45 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.io.*;
-
-#else
 using System;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-#if JAVA
-    public class EditedZoneUnit implements Cloneable, Comparable<EditedZoneUnit> {
-#else
-    public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit> {
-#endif
+    public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit>
+    {
         public int mStart;
         public int mEnd;
 
-        private EditedZoneUnit(){
+        private EditedZoneUnit()
+        {
         }
 
-        public EditedZoneUnit( int start, int end ){
+        public EditedZoneUnit(int start, int end)
+        {
             this.mStart = start;
             this.mEnd = end;
         }
 
-        public int compareTo( EditedZoneUnit item ) {
+        public int compareTo(EditedZoneUnit item)
+        {
             return this.mStart - item.mStart;
         }
 
-#if !JAVA
-        public int CompareTo( EditedZoneUnit item ) {
-            return compareTo( item );
-        }
-#endif
-
-        public Object clone() {
-            return new EditedZoneUnit( mStart, mEnd );
+        public int CompareTo(EditedZoneUnit item)
+        {
+            return compareTo(item);
         }
 
-#if !JAVA
-        public Object Clone(){
+        public Object clone()
+        {
+            return new EditedZoneUnit(mStart, mEnd);
+        }
+
+        public Object Clone()
+        {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

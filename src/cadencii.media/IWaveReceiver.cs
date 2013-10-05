@@ -11,19 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
+namespace cadencii.media
+{
 
-#else
-namespace cadencii.media {
-#endif
-
-    public interface IWaveReceiver {
-        void append( double[] left, double[] right, int length );
+    public interface IWaveReceiver
+    {
+        void append(double[] left, double[] right, int length);
         int getSampleRate();
         void close();
     }
 
-#if !JAVA
 }
-#endif

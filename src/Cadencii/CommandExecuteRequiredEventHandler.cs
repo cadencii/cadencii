@@ -15,6 +15,6 @@
 namespace cadencii
 {
 
-    public delegate void CommandExecuteRequiredEventHandler( object sender, CadenciiCommand command );
+    public delegate void CommandExecuteRequiredEventHandler(object sender, CadenciiCommand command);
 
 }

@@ -11,29 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using cadencii.java.util;
 using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
     public class RenderedStatus
     {
         public VsqTrack track;
-#if JAVA
-        @XmlGenericType( TempoTableEntry.class )
-#endif
         public TempoVector tempo;
         public SequenceConfig config;
 
@@ -42,24 +29,22 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <param name="tempo"></param>
-        public RenderedStatus( VsqTrack track, TempoVector tempo, SequenceConfig config )
+        public RenderedStatus(VsqTrack track, TempoVector tempo, SequenceConfig config)
         {
             this.track = track;
             this.tempo = new TempoVector();
-            for ( Iterator<TempoTableEntry> itr = tempo.iterator(); itr.hasNext(); ) {
-                this.tempo.Add( (TempoTableEntry)itr.next().clone() );
+            foreach (var entry in tempo) {
+                this.tempo.Add((TempoTableEntry)entry.clone());
             }
             this.config = config;
         }
 
         public RenderedStatus()
         {
-            track = new VsqTrack( 0, 0, 0 );
+            track = new VsqTrack(0, 0, 0);
             tempo = new TempoVector();
             config = new SequenceConfig();
         }
     }
 
-#if !JAVA
 }
-#endif

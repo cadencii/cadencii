@@ -11,46 +11,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.Serializable;
-#elif __cplusplus
-namespace org { namespace kbinani { namespace vsq {
-#else
 using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-#endif
-
-
     /// <summary>
     /// 歌手設定を表します。
     /// </summary>
-#if JAVA
-    public class IconHandle implements Cloneable, Serializable
-#elif __cplusplus
-    class IconHandle
-#else
     [Serializable]
     public class IconHandle : ICloneable
-#endif
     {
         /// <summary>
         /// キャプション。
         /// </summary>
-        public String Caption;
+        public string Caption;
         /// <summary>
         /// この歌手設定を一意に識別するためのIDです。
         /// </summary>
-        public String IconID;
+        public string IconID;
         /// <summary>
         /// ユーザ・フレンドリー名。
         /// このフィールドの値は、他の歌手設定のユーザ・フレンドリー名と重複する場合があります。
         /// </summary>
-        public String IDS;
+        public string IDS;
         public int Index;
         /// <summary>
         /// ゲートタイム長さ。
@@ -83,7 +66,7 @@ namespace cadencii.vsq
         /// ゲートタイム長さを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value )
+        public void setLength(int value)
         {
             Length = value;
         }
@@ -93,20 +76,15 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item">比較対象の歌手変更。</param>
         /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
-        public boolean equals( IconHandle item )
+        public bool equals(IconHandle item)
         {
-#if __cplusplus
-            return IconID == item.IconID;
-#else
-            if ( item == null ) {
+            if (item == null) {
                 return false;
             } else {
-                return IconID.Equals( item.IconID );
+                return IconID.Equals(item.IconID);
             }
-#endif
         }
 
-#if !__cplusplus
         /// <summary>
         /// このインスタンスのコピーを作成します。
         /// </summary>
@@ -119,16 +97,12 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Index = Index;
             ret.Language = Language;
-            ret.setLength( Length );
+            ret.setLength(Length);
             ret.Original = Original;
             ret.Program = Program;
             return ret;
         }
-#endif
 
-#if JAVA
-#elif __cplusplus
-#else
         /// <summary>
         /// このインスタンスのコピーを作成します。
         /// </summary>
@@ -137,17 +111,7 @@ namespace cadencii.vsq
         {
             return clone();
         }
-#endif
 
-#if __cplusplus
-    };
-#else
     }
-#endif
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

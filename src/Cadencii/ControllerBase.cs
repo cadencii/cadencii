@@ -11,48 +11,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
 
-package cadencii;
+namespace cadencii
+{
+    using System;
+    using cadencii.apputil;
 
-import cadencii.apputil.*;
 
-#else
-
-    namespace cadencii
+    /// <summary>
+    /// コントローラーの基底となる抽象クラス．
+    /// </summary>
+    public abstract class ControllerBase
     {
-#if CSHARP
-            using System;
-            using cadencii.apputil;
-#endif // CSHARP
 
-#endif
+        /// <summary>
+        /// 現在の言語設定に基づき，文字列messageに対応するメッセージを取得します．
+        /// </summary>
+        /// <param name="message">翻訳元の英語のメッセージ文字列．</param>
+        /// <returns>翻訳後のメッセージ文字列．デフォルトではmessageと同じ値を返します．</returns>
+        /*protected static String _( String message )
+        {
+            return Messaging.getMessage( message );
+        }*/
 
-            /// <summary>
-            /// コントローラーの基底となる抽象クラス．
-            /// </summary>
-#if __cplusplus
-            class ControllerBase
-#else
-            public abstract class ControllerBase
-#endif
-            {
+    };
 
-                /// <summary>
-                /// 現在の言語設定に基づき，文字列messageに対応するメッセージを取得します．
-                /// </summary>
-                /// <param name="message">翻訳元の英語のメッセージ文字列．</param>
-                /// <returns>翻訳後のメッセージ文字列．デフォルトではmessageと同じ値を返します．</returns>
-                /*protected static String _( String message )
-                {
-                    return Messaging.getMessage( message );
-                }*/
-
-            };
-
-#if JAVA
-#else
-    }
-#endif
-#if !!JAVA
-#endif
+}

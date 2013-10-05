@@ -11,20 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
+namespace cadencii
+{
 
-#else
-namespace cadencii {
-#endif
-
-    public enum DrawObjectType {
+    public enum DrawObjectType
+    {
         Note,
         Dynaff,
         Crescend,
         Decrescend,
     }
 
-#if !JAVA
 }
-#endif

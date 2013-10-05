@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void FederChangedEventHandler( int track, int feder );
+    public delegate void FederChangedEventHandler(int track, int feder);
 
 }

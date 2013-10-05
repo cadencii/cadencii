@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * MidiDeviceImp.cs
  * Copyright © 2009-2011 kbinani
@@ -16,47 +15,50 @@ using System;
 using System.Collections.Generic;
 using cadencii.media;
 
-namespace cadencii {
-
-    using boolean = Boolean;
-
-    public class MidiDeviceImp {
+namespace cadencii
+{
+    public class MidiDeviceImp
+    {
         const int CHANNEL = 16;
         private MidiOutDevice s_device;
         private int[] s_last_program = new int[CHANNEL];
-        private boolean s_initialized = false;
+        private bool s_initialized = false;
 
-        public boolean Initialized {
-            get {
+        public bool Initialized
+        {
+            get
+            {
                 return s_initialized;
             }
         }
 
-        public MidiDeviceImp( uint device_id ){
-            s_device = new MidiOutDevice( device_id );
+        public MidiDeviceImp(uint device_id)
+        {
+            s_device = new MidiOutDevice(device_id);
             s_initialized = true;
-            for ( int i = 0; i < CHANNEL; i++ ) {
+            for (int i = 0; i < CHANNEL; i++) {
                 s_last_program[i] = -1;
             }
         }
 
-        public void Play( byte channel, byte program, byte note, byte velocity ) {
-            if ( CHANNEL < channel ) {
+        public void Play(byte channel, byte program, byte note, byte velocity)
+        {
+            if (CHANNEL < channel) {
                 return;
             }
-            if ( s_last_program[channel] != program ) {
-                s_device.ProgramChange( channel, program );
+            if (s_last_program[channel] != program) {
+                s_device.ProgramChange(channel, program);
                 s_last_program[channel] = program;
             }
-            s_device.Play( channel, note, velocity );
+            s_device.Play(channel, note, velocity);
         }
 
-        public void Terminate() {
-            if ( s_initialized && s_device != null ) {
+        public void Terminate()
+        {
+            if (s_initialized && s_device != null) {
                 s_device.Close();
             }
         }
     }
 
 }
-#endif

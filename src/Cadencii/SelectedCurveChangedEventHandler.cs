@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void SelectedCurveChangedEventHandler( Object sender, CurveType curve_type );
+    public delegate void SelectedCurveChangedEventHandler(Object sender, CurveType curve_type);
 
 }

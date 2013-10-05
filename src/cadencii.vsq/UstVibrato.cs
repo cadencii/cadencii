@@ -11,25 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class UstVibrato implements Cloneable, Serializable
-#else
     [Serializable]
     public class UstVibrato : ICloneable
-#endif
     {
         /// <summary>
         /// 音符の長さに対する、パーセントで表したビブラートの長さ。
@@ -61,21 +50,21 @@ namespace cadencii.vsq
         public float Shift;
         public float Unknown = 100;
 
-        public UstVibrato( String line )
+        public UstVibrato(string line)
         {
-            if ( line.ToLower().StartsWith( "vbr=" ) ) {
-                String[] spl = PortUtil.splitString( line, '=' );
-                spl = PortUtil.splitString( spl[1], ',' );
+            if (line.ToLower().StartsWith("vbr=")) {
+                string[] spl = PortUtil.splitString(line, '=');
+                spl = PortUtil.splitString(spl[1], ',');
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
-                if ( spl.Length >= 8 ) {
-                    Length = (float)double.Parse( spl[0] );
-                    Period = (float)double.Parse( spl[1] );
-                    Depth = (float)double.Parse( spl[2] );
-                    In = (float)double.Parse( spl[3] );
-                    Out = (float)double.Parse( spl[4] );
-                    Phase = (float)double.Parse( spl[5] );
-                    Shift = (float)double.Parse( spl[6] );
-                    Unknown = (float)double.Parse( spl[7] );
+                if (spl.Length >= 8) {
+                    Length = (float)double.Parse(spl[0]);
+                    Period = (float)double.Parse(spl[1]);
+                    Depth = (float)double.Parse(spl[2]);
+                    In = (float)double.Parse(spl[3]);
+                    Out = (float)double.Parse(spl[4]);
+                    Phase = (float)double.Parse(spl[5]);
+                    Shift = (float)double.Parse(spl[6]);
+                    Unknown = (float)double.Parse(spl[7]);
                 }
             }
         }
@@ -89,19 +78,17 @@ namespace cadencii.vsq
             return Length;
         }
 
-        public void setLength( float value )
+        public void setLength(float value)
         {
             Length = value;
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
-        public String toString()
+        public string toString()
         {
             return "VBR=" + Length + "," + Period + "," + Depth + "," + In + "," + Out + "," + Phase + "," + Shift + "," + Unknown;
         }
@@ -109,7 +96,7 @@ namespace cadencii.vsq
         public Object clone()
         {
             UstVibrato ret = new UstVibrato();
-            ret.setLength( Length );
+            ret.setLength(Length);
             ret.Period = Period;
             ret.Depth = Depth;
             ret.In = In;
@@ -120,14 +107,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

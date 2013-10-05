@@ -14,12 +14,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region Windows フォーム デザイナで生成されたコード
@@ -259,8 +259,8 @@ namespace cadencii
             // 
             // tabPreference
             // 
-            this.tabPreference.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabPreference.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabPreference.Controls.Add(this.tabSequence);
             this.tabPreference.Controls.Add(this.tabAnother);
@@ -1157,7 +1157,7 @@ namespace cadencii
             // 
             // comboMtcMidiInPortNumber
             // 
-            this.comboMtcMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboMtcMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboMtcMidiInPortNumber.FormattingEnabled = true;
             this.comboMtcMidiInPortNumber.Location = new System.Drawing.Point(176, 101);
@@ -1185,7 +1185,7 @@ namespace cadencii
             // 
             // comboMidiInPortNumber
             // 
-            this.comboMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.comboMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboMidiInPortNumber.FormattingEnabled = true;
             this.comboMidiInPortNumber.Location = new System.Drawing.Point(176, 74);
@@ -1448,7 +1448,7 @@ namespace cadencii
             // 
             // textWineTop
             // 
-            this.textWineTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textWineTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textWineTop.Location = new System.Drawing.Point(112, 93);
             this.textWineTop.Name = "textWineTop";
@@ -1476,7 +1476,7 @@ namespace cadencii
             // 
             // textWinePrefix
             // 
-            this.textWinePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textWinePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textWinePrefix.Location = new System.Drawing.Point(100, 22);
             this.textWinePrefix.Name = "textWinePrefix";
@@ -1575,7 +1575,7 @@ namespace cadencii
             // 
             // listResampler
             // 
-            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listResampler.CheckBoxes = true;
             this.listResampler.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -1636,7 +1636,7 @@ namespace cadencii
             // 
             // txtWavtool
             // 
-            this.txtWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWavtool.Location = new System.Drawing.Point(100, 46);
             this.txtWavtool.Name = "txtWavtool";
@@ -1701,8 +1701,8 @@ namespace cadencii
             // 
             // listSingers
             // 
-            this.listSingers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.listSingers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
             listViewGroup1.Header = "ListViewGroup";

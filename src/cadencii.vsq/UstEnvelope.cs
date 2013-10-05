@@ -11,28 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// UTAUスクリプト形式で使用されるエンベロープのデータ点を表現します
     /// </summary>
-#if JAVA
-    public class UstEnvelope implements Cloneable, Serializable
-#else
     [Serializable]
     public class UstEnvelope : ICloneable
-#endif
     {
         public int p1 = 0;
         public int p2 = 5;
@@ -56,33 +45,33 @@ namespace cadencii.vsq
         /// UTAUスクリプト形式に記録されているエンベロープの表現に基づき，インスタンスを構成します
         /// </summary>
         /// <param name="line">ustに記録されるエンベロープの記述行</param>
-        public UstEnvelope( String line )
+        public UstEnvelope(string line)
         {
-            if ( !line.ToLower().StartsWith( "envelope=" ) ) {
+            if (!line.ToLower().StartsWith("envelope=")) {
                 return;
             }
-            String[] spl = PortUtil.splitString( line, '=' );
-            if ( spl.Length < 2 ) {
+            string[] spl = PortUtil.splitString(line, '=');
+            if (spl.Length < 2) {
                 return;
             }
-            spl = PortUtil.splitString( spl[1], ',' );
-            if ( spl.Length < 7 ) {
+            spl = PortUtil.splitString(spl[1], ',');
+            if (spl.Length < 7) {
                 return;
             }
             try {
-                p1 = (int)double.Parse( spl[0] );
-                p2 = (int)double.Parse( spl[1] );
-                p3 = (int)double.Parse( spl[2] );
-                v1 = (int)double.Parse( spl[3] );
-                v2 = (int)double.Parse( spl[4] );
-                v3 = (int)double.Parse( spl[5] );
-                v4 = (int)double.Parse( spl[6] );
-                if ( spl.Length == 11 ) {
-                    p4 = (int)double.Parse( spl[8] );
-                    p5 = (int)double.Parse( spl[9] );
-                    v5 = (int)double.Parse( spl[10] );
+                p1 = (int)double.Parse(spl[0]);
+                p2 = (int)double.Parse(spl[1]);
+                p3 = (int)double.Parse(spl[2]);
+                v1 = (int)double.Parse(spl[3]);
+                v2 = (int)double.Parse(spl[4]);
+                v3 = (int)double.Parse(spl[5]);
+                v4 = (int)double.Parse(spl[6]);
+                if (spl.Length == 11) {
+                    p4 = (int)double.Parse(spl[8]);
+                    p5 = (int)double.Parse(spl[9]);
+                    v5 = (int)double.Parse(spl[10]);
                 }
-            } catch ( Exception ex ) {
+            } catch (Exception ex) {
             }
         }
 
@@ -92,10 +81,9 @@ namespace cadencii.vsq
         /// <returns></returns>
         public Object clone()
         {
-            return new UstEnvelope( toString() );
+            return new UstEnvelope(toString());
         }
 
-#if !JAVA
         /// <summary>
         /// このインスタンスのディープコピーを作成します
         /// </summary>
@@ -104,26 +92,23 @@ namespace cadencii.vsq
         {
             return clone();
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// このインスタンスの文字列表現を取得します
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
         /// <summary>
         /// このインスタンスの文字列表現を取得します
         /// </summary>
         /// <returns></returns>
-        public String toString()
+        public string toString()
         {
-            String ret = "Envelope=" + p1 + "," + p2 + "," + p3 + "," + v1 + "," + v2 + "," + v3 + "," + v4;
+            string ret = "Envelope=" + p1 + "," + p2 + "," + p3 + "," + v1 + "," + v2 + "," + v3 + "," + v4;
             ret += ",%," + p4 + "," + p5 + "," + v5;
             return ret;
         }
@@ -134,6 +119,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

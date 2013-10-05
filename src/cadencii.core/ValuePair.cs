@@ -11,81 +11,79 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-#if JAVA
-    public class ValuePair<K extends Comparable<K>, V> implements Comparable<ValuePair<K, V>>{
-#else
-    public class ValuePair<K, V> : IComparable<ValuePair<K, V>> where K : IComparable {
-#endif
+    public class ValuePair<K, V> : IComparable<ValuePair<K, V>> where K : IComparable
+    {
         private K m_key;
         private V m_value;
 
-        public ValuePair() {
+        public ValuePair()
+        {
         }
 
-        public ValuePair( K key_, V value_ ) {
+        public ValuePair(K key_, V value_)
+        {
             m_key = key_;
             m_value = value_;
         }
 
-        public int compareTo( ValuePair<K, V> item ) {
-#if JAVA
-            return m_key.compareTo( item.m_key );
-#else
-            return m_key.CompareTo( item.m_key );
-#endif
+        public int compareTo(ValuePair<K, V> item)
+        {
+            return m_key.CompareTo(item.m_key);
         }
 
-#if !JAVA
-        public int CompareTo( ValuePair<K, V> item ){
-            return compareTo( item );
+        public int CompareTo(ValuePair<K, V> item)
+        {
+            return compareTo(item);
         }
-#endif
 
-        public K getKey() {
+        public K getKey()
+        {
             return m_key;
         }
 
-        public void setKey( K value ) {
+        public void setKey(K value)
+        {
             m_key = value;
         }
 
-        public V getValue() {
+        public V getValue()
+        {
             return m_value;
         }
 
-        public void setValue( V v ) {
+        public void setValue(V v)
+        {
             m_value = v;
         }
 
-#if !JAVA
-        public K Key {
-            get {
+        public K Key
+        {
+            get
+            {
                 return getKey();
             }
-            set {
-                setKey( value );
+            set
+            {
+                setKey(value);
             }
         }
 
-        public V Value {
-            get {
+        public V Value
+        {
+            get
+            {
                 return getValue();
             }
-            set {
-                setValue( value );
+            set
+            {
+                setValue(value);
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

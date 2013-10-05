@@ -11,42 +11,30 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
+using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-#endif
 
     /// <summary>
     /// ハンドルを取り扱います。ハンドルにはLyricHandle、VibratoHandle、IconHandleおよびNoteHeadHandleがある
     /// </summary>
-#if JAVA
-    public class VsqHandle implements Serializable
-#else
     [Serializable]
     public class VsqHandle
-#endif
     {
         public VsqHandleType m_type;
         public int Index;
-        public String IconID = "";
-        public String IDS = "";
+        public string IconID = "";
+        public string IDS = "";
         public Lyric L0;
-        public Vector<Lyric> Trailing = new Vector<Lyric>();
+        public List<Lyric> Trailing = new List<Lyric>();
         public int Original;
-        public String Caption = "";
+        public string Caption = "";
         public int Length;
         public int StartDepth;
         public VibratoBPList DepthBP;
@@ -62,7 +50,7 @@ namespace cadencii.vsq
         /// <summary>
         /// 歌詞・発音記号列の前後にクォーテーションマークを付けるかどうか
         /// </summary>
-        public boolean addQuotationMark = true;
+        public bool addQuotationMark = true;
 
         public VsqHandle()
         {
@@ -73,7 +61,7 @@ namespace cadencii.vsq
             return Length;
         }
 
-        public void setLength( int value )
+        public void setLength(int value)
         {
             Length = value;
         }
@@ -91,16 +79,16 @@ namespace cadencii.vsq
         {
             VibratoHandle ret = new VibratoHandle();
             ret.Index = Index;
-            ret.setCaption( Caption );
-            ret.setDepthBP( (VibratoBPList)DepthBP.clone() );
+            ret.setCaption(Caption);
+            ret.setDepthBP((VibratoBPList)DepthBP.clone());
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Index = Index;
-            ret.setLength( Length );
+            ret.setLength(Length);
             ret.Original = Original;
-            ret.setRateBP( (VibratoBPList)RateBP.clone() );
-            ret.setStartDepth( StartDepth );
-            ret.setStartRate( StartRate );
+            ret.setRateBP((VibratoBPList)RateBP.clone());
+            ret.setStartDepth(StartDepth);
+            ret.setStartRate(StartRate);
             return ret;
         }
 
@@ -113,7 +101,7 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Index = Index;
             ret.Language = Language;
-            ret.setLength( Length );
+            ret.setLength(Length);
             ret.Original = Original;
             ret.Program = Program;
             return ret;
@@ -122,12 +110,12 @@ namespace cadencii.vsq
         public NoteHeadHandle castToNoteHeadHandle()
         {
             NoteHeadHandle ret = new NoteHeadHandle();
-            ret.setCaption( Caption );
-            ret.setDepth( Depth );
-            ret.setDuration( Duration );
+            ret.setCaption(Caption);
+            ret.setDepth(Depth);
+            ret.setDuration(Duration);
             ret.IconID = IconID;
             ret.IDS = IDS;
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.Original = Original;
             return ret;
         }
@@ -138,28 +126,19 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.IconID = IconID;
             ret.Original = Original;
-            ret.setCaption( Caption );
-            ret.setDynBP( DynBP );
-            ret.setEndDyn( EndDyn );
-            ret.setLength( getLength() );
-            ret.setStartDyn( StartDyn );
+            ret.setCaption(Caption);
+            ret.setDynBP(DynBP);
+            ret.setEndDyn(EndDyn);
+            ret.setLength(getLength());
+            ret.setStartDyn(StartDyn);
             return ret;
         }
 
-        public static VsqHandle castFromLyricHandle( LyricHandle handle )
+        public static VsqHandle castFromLyricHandle(LyricHandle handle)
         {
-#if __cplusplus
-            VsqHandle ret;
-#else
             VsqHandle ret = new VsqHandle();
-#endif
-#if __cplusplus
-            ret.m_type = org::kbinani::vsq::Lyric;
-            ret.L0 = handle.L0;
-#else
             ret.m_type = VsqHandleType.Lyric;
             ret.L0 = (Lyric)handle.L0.clone();
-#endif
             ret.Trailing = handle.Trailing;
             ret.Index = handle.Index;
             return ret;
@@ -169,24 +148,16 @@ namespace cadencii.vsq
         /// 歌手設定のインスタンスを、VsqHandleに型キャストします。
         /// </summary>
         /// <returns></returns>
-        public static VsqHandle castFromIconHandle( IconHandle handle )
+        public static VsqHandle castFromIconHandle(IconHandle handle)
         {
-#if __cplusplus
-            VsqHandle ret;
-#else
             VsqHandle ret = new VsqHandle();
-#endif
-#if __cplusplus
-            ret.m_type = org::kbinani::vsq::Singer;
-#else
             ret.m_type = VsqHandleType.Singer;
-#endif
             ret.Caption = handle.Caption;
             ret.IconID = handle.IconID;
             ret.IDS = handle.IDS;
             ret.Index = handle.Index;
             ret.Language = handle.Language;
-            ret.setLength( handle.getLength() );
+            ret.setLength(handle.getLength());
             ret.Program = handle.Program;
             return ret;
         }
@@ -196,37 +167,31 @@ namespace cadencii.vsq
         /// encode=trueの場合、2バイト文字をエンコードして出力します。
         /// </summary>
         /// <param name="sw">書き込み対象</param>
-        public void write( ITextWriter sw )
-#if JAVA
-            throws IOException
-#endif
+        public void write(ITextWriter sw)
         {
-            sw.writeLine( this.toString() );
+            sw.writeLine(this.toString());
         }
 
-        public void write( BufferedWriter sw )
-#if JAVA
-            throws IOException
-#endif
+        public void write(StreamWriter sw)
         {
-            write( new WrappedStreamWriter( sw ) );
+            write(new WrappedStreamWriter(sw));
         }
 
         /// <summary>
         /// FileStreamから読み込みながらコンストラクト
         /// </summary>
         /// <param name="sr">読み込み対象</param>
-        public VsqHandle( TextStream sr, int value, ByRef<String> last_line )
+        public VsqHandle(TextStream sr, int value, ByRef<string> last_line)
         {
             this.Index = value;
-            String[] spl;
-            String[] spl2;
+            string[] spl;
+            string[] spl2;
 
             // default値で梅
             m_type = VsqHandleType.Vibrato;
             IconID = "";
             IDS = "normal";
-            L0 = new Lyric( "" );
+            L0 = new Lyric("");
             Original = 0;
             Caption = "";
             Length = 0;
@@ -239,111 +204,111 @@ namespace cadencii.vsq
             Duration = 0;
             Depth = 64;
 
-            String tmpDepthBPX = "";
-            String tmpDepthBPY = "";
-            String tmpDepthBPNum = "";
+            string tmpDepthBPX = "";
+            string tmpDepthBPY = "";
+            string tmpDepthBPNum = "";
 
-            String tmpRateBPX = "";
-            String tmpRateBPY = "";
-            String tmpRateBPNum = "";
+            string tmpRateBPX = "";
+            string tmpRateBPY = "";
+            string tmpRateBPNum = "";
 
-            String tmpDynBPX = "";
-            String tmpDynBPY = "";
-            String tmpDynBPNum = "";
+            string tmpDynBPX = "";
+            string tmpDynBPY = "";
+            string tmpDynBPNum = "";
 
             // "["にぶち当たるまで読込む
             last_line.value = sr.readLine().ToString();
-            while ( !last_line.value.StartsWith( "[" ) ) {
-                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                String search = spl[0];
-                if ( search.Equals( "Language" ) ) {
+            while (!last_line.value.StartsWith("[")) {
+                spl = PortUtil.splitString(last_line.value, new char[] { '=' });
+                string search = spl[0];
+                if (search.Equals("Language")) {
                     m_type = VsqHandleType.Singer;
-                    Language = int.Parse( spl[1] );
-                } else if ( search.Equals( "Program" ) ) {
-                    Program = int.Parse( spl[1] );
-                } else if ( search.Equals( "IconID" ) ) {
+                    Language = int.Parse(spl[1]);
+                } else if (search.Equals("Program")) {
+                    Program = int.Parse(spl[1]);
+                } else if (search.Equals("IconID")) {
                     IconID = spl[1];
-                } else if ( search.Equals( "IDS" ) ) {
+                } else if (search.Equals("IDS")) {
                     IDS = spl[1];
-                } else if ( search.Equals( "Original" ) ) {
-                    Original = int.Parse( spl[1] );
-                } else if ( search.Equals( "Caption" ) ) {
+                } else if (search.Equals("Original")) {
+                    Original = int.Parse(spl[1]);
+                } else if (search.Equals("Caption")) {
                     Caption = spl[1];
-                    for ( int i = 2; i < spl.Length; i++ ) {
+                    for (int i = 2; i < spl.Length; i++) {
                         Caption += "=" + spl[i];
                     }
-                } else if ( search.Equals( "Length" ) ) {
-                    Length = int.Parse( spl[1] );
-                } else if ( search.Equals( "StartDepth" ) ) {
-                    StartDepth = int.Parse( spl[1] );
-                } else if ( search.Equals( "DepthBPNum" ) ) {
+                } else if (search.Equals("Length")) {
+                    Length = int.Parse(spl[1]);
+                } else if (search.Equals("StartDepth")) {
+                    StartDepth = int.Parse(spl[1]);
+                } else if (search.Equals("DepthBPNum")) {
                     tmpDepthBPNum = spl[1];
-                } else if ( search.Equals( "DepthBPX" ) ) {
+                } else if (search.Equals("DepthBPX")) {
                     tmpDepthBPX = spl[1];
-                } else if ( search.Equals( "DepthBPY" ) ) {
+                } else if (search.Equals("DepthBPY")) {
                     tmpDepthBPY = spl[1];
-                } else if ( search.Equals( "StartRate" ) ) {
+                } else if (search.Equals("StartRate")) {
                     m_type = VsqHandleType.Vibrato;
-                    StartRate = int.Parse( spl[1] );
-                } else if ( search.Equals( "RateBPNum" ) ) {
+                    StartRate = int.Parse(spl[1]);
+                } else if (search.Equals("RateBPNum")) {
                     tmpRateBPNum = spl[1];
-                } else if ( search.Equals( "RateBPX" ) ) {
+                } else if (search.Equals("RateBPX")) {
                     tmpRateBPX = spl[1];
-                } else if ( search.Equals( "RateBPY" ) ) {
+                } else if (search.Equals("RateBPY")) {
                     tmpRateBPY = spl[1];
-                } else if ( search.Equals( "Duration" ) ) {
+                } else if (search.Equals("Duration")) {
                     m_type = VsqHandleType.NoteHeadHandle;
-                    Duration = int.Parse( spl[1] );
-                } else if ( search.Equals( "Depth" ) ) {
-                    Depth = int.Parse( spl[1] );
-                } else if ( search.Equals( "StartDyn" ) ) {
+                    Duration = int.Parse(spl[1]);
+                } else if (search.Equals("Depth")) {
+                    Depth = int.Parse(spl[1]);
+                } else if (search.Equals("StartDyn")) {
                     m_type = VsqHandleType.DynamicsHandle;
-                    StartDyn = int.Parse( spl[1] );
-                } else if ( search.Equals( "EndDyn" ) ) {
+                    StartDyn = int.Parse(spl[1]);
+                } else if (search.Equals("EndDyn")) {
                     m_type = VsqHandleType.DynamicsHandle;
-                    EndDyn = int.Parse( spl[1] );
-                } else if ( search.Equals( "DynBPNum" ) ) {
+                    EndDyn = int.Parse(spl[1]);
+                } else if (search.Equals("DynBPNum")) {
                     tmpDynBPNum = spl[1];
-                } else if ( search.Equals( "DynBPX" ) ) {
+                } else if (search.Equals("DynBPX")) {
                     tmpDynBPX = spl[1];
-                } else if ( search.Equals( "DynBPY" ) ) {
+                } else if (search.Equals("DynBPY")) {
                     tmpDynBPY = spl[1];
-                } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ) {
-                    String num = search.Substring( 1 );
-                    ByRef<Integer> vals = new ByRef<Integer>( 0 );
-                    if ( PortUtil.tryParseInt( num, vals ) ) {
-                        Lyric lyric = new Lyric( spl[1] );
+                } else if (search.StartsWith("L") && PortUtil.getStringLength(search) >= 2) {
+                    string num = search.Substring(1);
+                    ByRef<int> vals = new ByRef<int>(0);
+                    if (PortUtil.tryParseInt(num, vals)) {
+                        Lyric lyric = new Lyric(spl[1]);
                         m_type = VsqHandleType.Lyric;
                         int index = vals.value;
-                        if ( index == 0 ) {
+                        if (index == 0) {
                             L0 = lyric;
                         } else {
-                            if ( Trailing.size() < index ) {
-                                for ( int i = Trailing.size(); i < index; i++ ) {
-                                    Trailing.add( new Lyric( "a", "a" ) );
+                            if (Trailing.Count < index) {
+                                for (int i = Trailing.Count; i < index; i++) {
+                                    Trailing.Add(new Lyric("a", "a"));
                                 }
                             }
-                            Trailing.set( index - 1, lyric );
+                            Trailing[index - 1] = lyric;
                         }
                     }
                 }
-                if ( !sr.ready() ) {
+                if (!sr.ready()) {
                     break;
                 }
                 last_line.value = sr.readLine().ToString();
             }
 
             // RateBPX, RateBPYの設定
-            if ( m_type == VsqHandleType.Vibrato ) {
-                if ( !tmpRateBPNum.Equals( "" ) ) {
-                    RateBP = new VibratoBPList( tmpRateBPNum, tmpRateBPX, tmpRateBPY );
+            if (m_type == VsqHandleType.Vibrato) {
+                if (!tmpRateBPNum.Equals("")) {
+                    RateBP = new VibratoBPList(tmpRateBPNum, tmpRateBPX, tmpRateBPY);
                 } else {
                     RateBP = new VibratoBPList();
                 }
 
                 // DepthBPX, DepthBPYの設定
-                if ( !tmpDepthBPNum.Equals( "" ) ) {
-                    DepthBP = new VibratoBPList( tmpDepthBPNum, tmpDepthBPX, tmpDepthBPY );
+                if (!tmpDepthBPNum.Equals("")) {
+                    DepthBP = new VibratoBPList(tmpDepthBPNum, tmpDepthBPX, tmpDepthBPY);
                 } else {
                     DepthBP = new VibratoBPList();
                 }
@@ -352,8 +317,8 @@ namespace cadencii.vsq
                 RateBP = new VibratoBPList();
             }
 
-            if ( !tmpDynBPNum.Equals( "" ) ) {
-                DynBP = new VibratoBPList( tmpDynBPNum, tmpDynBPX, tmpDynBPY );
+            if (!tmpDynBPNum.Equals("")) {
+                DynBP = new VibratoBPList(tmpDynBPNum, tmpDynBPX, tmpDynBPY);
             } else {
                 DynBP = new VibratoBPList();
             }
@@ -364,24 +329,20 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="_string">ハンドル指定子</param>
         /// <returns>ハンドル番号</returns>
-        public static int HandleIndexFromString( String _string )
+        public static int HandleIndexFromString(string _string)
         {
-            String[] spl = PortUtil.splitString( _string, new char[] { '#' } );
-            return int.Parse( spl[1] );
+            string[] spl = PortUtil.splitString(_string, new char[] { '#' });
+            return int.Parse(spl[1]);
         }
 
         /// <summary>
         /// インスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void print( BufferedWriter sw )
-#if JAVA
-            throws IOException
-#endif
+        public void print(StreamWriter sw)
         {
-            String result = toString();
-            sw.write( result );
-            sw.newLine();
+            string result = toString();
+            sw.WriteLine(result);
         }
 
         /// <summary>
@@ -389,25 +350,25 @@ namespace cadencii.vsq
         /// </summary>
         private void print()
         {
-            String result = toString();
-            sout.println( result );
+            string result = toString();
+            sout.println(result);
         }
 
         /// <summary>
         /// インスタンスを文字列に変換します
         /// </summary>
         /// <returns>インスタンスを変換した文字列</returns>
-        public String toString()
+        public string toString()
         {
-            String result = "";
-            result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
-            if ( m_type == VsqHandleType.Lyric ) {
-                result += "\n" + "L0=" + L0.toString( addQuotationMark );
-                int c = Trailing.size();
-                for ( int i = 0; i < c; i++ ) {
-                    result += "\n" + "L" + (i + 1) + "=" + Trailing.get( i ).toString( addQuotationMark );
+            string result = "";
+            result += "[h#" + PortUtil.formatDecimal("0000", Index) + "]";
+            if (m_type == VsqHandleType.Lyric) {
+                result += "\n" + "L0=" + L0.toString(addQuotationMark);
+                int c = Trailing.Count;
+                for (int i = 0; i < c; i++) {
+                    result += "\n" + "L" + (i + 1) + "=" + Trailing[i].toString(addQuotationMark);
                 }
-            } else if ( m_type == VsqHandleType.Vibrato ) {
+            } else if (m_type == VsqHandleType.Vibrato) {
                 result += "\n" + "IconID=" + IconID + "\n";
                 result += "IDS=" + IDS + "\n";
                 result += "Original=" + Original + "\n";
@@ -415,30 +376,30 @@ namespace cadencii.vsq
                 result += "Length=" + Length + "\n";
                 result += "StartDepth=" + StartDepth + "\n";
                 result += "DepthBPNum=" + DepthBP.getCount() + "\n";
-                if ( DepthBP.getCount() > 0 ) {
-                    result += "DepthBPX=" + PortUtil.formatDecimal( "0.000000", DepthBP.getElement( 0 ).X );
-                    for ( int i = 1; i < DepthBP.getCount(); i++ ) {
-                        result += "," + PortUtil.formatDecimal( "0.000000", DepthBP.getElement( i ).X );
+                if (DepthBP.getCount() > 0) {
+                    result += "DepthBPX=" + PortUtil.formatDecimal("0.000000", DepthBP.getElement(0).X);
+                    for (int i = 1; i < DepthBP.getCount(); i++) {
+                        result += "," + PortUtil.formatDecimal("0.000000", DepthBP.getElement(i).X);
                     }
-                    result += "\n" + "DepthBPY=" + DepthBP.getElement( 0 ).Y;
-                    for ( int i = 1; i < DepthBP.getCount(); i++ ) {
-                        result += "," + DepthBP.getElement( i ).Y;
+                    result += "\n" + "DepthBPY=" + DepthBP.getElement(0).Y;
+                    for (int i = 1; i < DepthBP.getCount(); i++) {
+                        result += "," + DepthBP.getElement(i).Y;
                     }
                     result += "\n";
                 }
                 result += "StartRate=" + StartRate + "\n";
                 result += "RateBPNum=" + RateBP.getCount();
-                if ( RateBP.getCount() > 0 ) {
-                    result += "\n" + "RateBPX=" + PortUtil.formatDecimal( "0.000000", RateBP.getElement( 0 ).X );
-                    for ( int i = 1; i < RateBP.getCount(); i++ ) {
-                        result += "," + PortUtil.formatDecimal( "0.000000", RateBP.getElement( i ).X );
+                if (RateBP.getCount() > 0) {
+                    result += "\n" + "RateBPX=" + PortUtil.formatDecimal("0.000000", RateBP.getElement(0).X);
+                    for (int i = 1; i < RateBP.getCount(); i++) {
+                        result += "," + PortUtil.formatDecimal("0.000000", RateBP.getElement(i).X);
                     }
-                    result += "\n" + "RateBPY=" + RateBP.getElement( 0 ).Y;
-                    for ( int i = 1; i < RateBP.getCount(); i++ ) {
-                        result += "," + RateBP.getElement( i ).Y;
+                    result += "\n" + "RateBPY=" + RateBP.getElement(0).Y;
+                    for (int i = 1; i < RateBP.getCount(); i++) {
+                        result += "," + RateBP.getElement(i).Y;
                     }
                 }
-            } else if ( m_type == VsqHandleType.Singer ) {
+            } else if (m_type == VsqHandleType.Singer) {
                 result += "\n" + "IconID=" + IconID + "\n";
                 result += "IDS=" + IDS + "\n";
                 result += "Original=" + Original + "\n";
@@ -446,7 +407,7 @@ namespace cadencii.vsq
                 result += "Length=" + Length + "\n";
                 result += "Language=" + Language + "\n";
                 result += "Program=" + Program;
-            } else if ( m_type == VsqHandleType.NoteHeadHandle ) {
+            } else if (m_type == VsqHandleType.NoteHeadHandle) {
                 result += "\n" + "IconID=" + IconID + "\n";
                 result += "IDS=" + IDS + "\n";
                 result += "Original=" + Original + "\n";
@@ -454,7 +415,7 @@ namespace cadencii.vsq
                 result += "Length=" + Length + "\n";
                 result += "Duration=" + Duration + "\n";
                 result += "Depth=" + Depth;
-            } else if ( m_type == VsqHandleType.DynamicsHandle ) {
+            } else if (m_type == VsqHandleType.DynamicsHandle) {
                 result += "\n" + "IconID=" + IconID + "\n";
                 result += "IDS=" + IDS + "\n";
                 result += "Original=" + Original + "\n";
@@ -462,18 +423,18 @@ namespace cadencii.vsq
                 result += "StartDyn=" + StartDyn + "\n";
                 result += "EndDyn=" + EndDyn + "\n";
                 result += "Length=" + Length + "\n";
-                if ( DynBP != null ) {
-                    if ( DynBP.getCount() <= 0 ) {
+                if (DynBP != null) {
+                    if (DynBP.getCount() <= 0) {
                         result += "DynBPNum=0";
                     } else {
-                        result += "DynBPX=" + PortUtil.formatDecimal( "0.000000", DynBP.getElement( 0 ).X );
+                        result += "DynBPX=" + PortUtil.formatDecimal("0.000000", DynBP.getElement(0).X);
                         int c = DynBP.getCount();
-                        for ( int i = 1; i < c; i++ ) {
-                            result += "," + PortUtil.formatDecimal( "0.000000", DynBP.getElement( i ).X );
+                        for (int i = 1; i < c; i++) {
+                            result += "," + PortUtil.formatDecimal("0.000000", DynBP.getElement(i).X);
                         }
-                        result += "\n" + "DynBPY=" + DynBP.getElement( 0 ).Y;
-                        for ( int i = 1; i < c; i++ ) {
-                            result += "," + DynBP.getElement( i ).Y;
+                        result += "\n" + "DynBPY=" + DynBP.getElement(0).Y;
+                        for (int i = 1; i < c; i++) {
+                            result += "," + DynBP.getElement(i).Y;
                         }
                     }
                 } else {
@@ -483,15 +444,11 @@ namespace cadencii.vsq
             return result;
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

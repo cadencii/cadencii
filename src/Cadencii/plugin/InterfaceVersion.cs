@@ -34,12 +34,12 @@ namespace cadencii
         public static PlayPositionSpecifier getPlayPosition()
         {
             var clock = getCurrentClock();
-            var timesig = mVsq.TimesigTable.getTimesigAt( clock );
+            var timesig = mVsq.TimesigTable.getTimesigAt(clock);
 
             var result = new PlayPositionSpecifier();
-            int barCount = mVsq.TimesigTable.getBarCountFromClock( clock );
+            int barCount = mVsq.TimesigTable.getBarCountFromClock(clock);
 
-            int bar_top_clock = mVsq.TimesigTable.getClockFromBarCount( barCount );
+            int bar_top_clock = mVsq.TimesigTable.getClockFromBarCount(barCount);
             int clock_per_beat = 480 / 4 * timesig.denominator;
             int beat = (clock - bar_top_clock) / clock_per_beat;
 
@@ -48,7 +48,7 @@ namespace cadencii
             result.clock = clock - bar_top_clock - clock_per_beat * beat;
             result.denominator = timesig.denominator;
             result.numerator = timesig.numerator;
-            result.tempo = mVsq.getTempoAt( clock );
+            result.tempo = mVsq.getTempoAt(clock);
 
             return result;
         }
@@ -66,18 +66,16 @@ namespace cadencii
         }
 
         [Obsolete]
-        public static cadencii.java.util.Iterator<SelectedEventEntry> getSelectedEventIterator()
+        public static IEnumerable<SelectedEventEntry> getSelectedEventIterator()
         {
             return itemSelection.getEventIterator();
         }
 
         [Obsolete]
-        public static bool isSelectedEventContains( int track, int id )
+        public static bool isSelectedEventContains(int track, int id)
         {
-            var i = itemSelection.getEventIterator();
-            while ( i.hasNext() ) {
-                var item = i.next();
-                if ( item.original.InternalID == id && item.track == track ) {
+            foreach (var item in itemSelection.getEventIterator()) {
+                if (item.original.InternalID == id && item.track == track) {
                     return true;
                 }
             }
@@ -85,15 +83,15 @@ namespace cadencii
         }
 
         [Obsolete]
-        public static void removeSelectedEvent( int id )
+        public static void removeSelectedEvent(int id)
         {
-            itemSelection.removeEvent( id );
+            itemSelection.removeEvent(id);
         }
 
         [Obsolete]
-        public static void addSelectedEvent( int id )
+        public static void addSelectedEvent(int id)
         {
-            itemSelection.addEvent( id );
+            itemSelection.addEvent(id);
         }
 
         [Obsolete]

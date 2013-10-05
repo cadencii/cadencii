@@ -11,57 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+namespace cadencii
+{
+    using System;
+    using cadencii.java.awt;
 
-package cadencii;
-
-import java.awt.*;
-
-#else
-
-    namespace cadencii
+    public interface WaveformZoomUiListener
     {
-#if CSHARP
-            using System;
-            using cadencii.java.awt;
-#endif
-#endif
+        void receivePaintSignal(Graphics g);
 
-#if __cplusplus
-            class WaveformZoomUiListener
-#else
-            public interface WaveformZoomUiListener
-#endif
-            {
-#if __cplusplus
-                virtual void receivePaintSignal( QPainter *g ){}
-#else
-                void receivePaintSignal( Graphics g );
-#endif
+        void receiveMouseDownSignal(int x, int y);
 
-#if __cplusplus
-                virtual void receiveMouseDownSignal( int x, int y ){}
-#else
-                void receiveMouseDownSignal( int x, int y );
-#endif
+        void receiveMouseMoveSignal(int x, int y);
 
-#if __cplusplus
-                virtual void receiveMouseMoveSignal( int x, int y ){}
-#else
-                void receiveMouseMoveSignal( int x, int y );
-#endif
+        void receiveMouseUpSignal(int x, int y);
+    };
 
-#if __cplusplus
-                virtual void receiveMouseUpSignal( int x, int y ){}
-#else
-                void receiveMouseUpSignal( int x, int y );
-#endif
-            };
 
-#if JAVA
-
-#else
-
-    }
-
-#endif
+}

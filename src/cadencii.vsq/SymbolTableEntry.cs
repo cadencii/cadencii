@@ -11,50 +11,40 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// SymbolTableの要素を表すクラス。
     /// </summary>
-#if JAVA
-    public class SymbolTableEntry implements Cloneable {
-#else
     public class SymbolTableEntry : ICloneable
     {
-#endif
         /// <summary>
         /// 単語（英語の場合、分節位置にハイフンが入る）
         /// </summary>
-        public String Word = "";
+        public string Word = "";
         /// <summary>
         /// 発音記号列．タブ記号を含む形式
         /// </summary>
-        private String m_raw_symbol = "";
+        private string m_raw_symbol = "";
         /// <summary>
         /// 発音記号列．タブ記号を含まない形式
         /// </summary>
-        private String m_symbol = "";
+        private string m_symbol = "";
 
-        public SymbolTableEntry( String word, String symbol )
+        public SymbolTableEntry(string word, string symbol)
         {
             Word = word;
-            if ( Word == null ) {
+            if (Word == null) {
                 Word = "";
             }
             m_raw_symbol = symbol;
-            if ( m_raw_symbol == null ) {
+            if (m_raw_symbol == null) {
                 m_raw_symbol = "";
             }
-            m_symbol = m_raw_symbol.Replace( '\t', ' ' );
+            m_symbol = m_raw_symbol.Replace('\t', ' ');
         }
 
         /// <summary>
@@ -63,7 +53,7 @@ namespace cadencii.vsq
         /// タブ記号の位置を調べてください．
         /// </summary>
         /// <returns></returns>
-        public String getSymbol()
+        public string getSymbol()
         {
             return m_symbol;
         }
@@ -74,12 +64,11 @@ namespace cadencii.vsq
         /// 空白による区切りは分節中に複数の発音記号がある場合の区切りを表します．
         /// </summary>
         /// <returns></returns>
-        public String getRawSymbol()
+        public string getRawSymbol()
         {
             return m_raw_symbol;
         }
 
-#if !JAVA
         /// <summary>
         /// 発音記号列を取得します．発音記号列は空白' 'またはタブ'\t'で区切られています．
         /// タブによる区切りは英単語の分節の分割位置を表し，
@@ -87,23 +76,20 @@ namespace cadencii.vsq
         /// </summary>
         /// <returns></returns>
         [Obsolete]
-        public String Symbol
+        public string Symbol
         {
             get
             {
                 return getSymbol();
             }
         }
-#endif
 
         /// <summary>
         /// このオブジェクトのSymbolフィールドのタブ文字を空白に置き換えた文字列を取得します．
         /// </summary>
         /// <returns></returns>
-#if !JAVA
         [Obsolete]
-#endif
-        public String getParsedSymbol()
+        public string getParsedSymbol()
         {
             return getSymbol();
         }
@@ -114,21 +100,17 @@ namespace cadencii.vsq
         /// <returns></returns>
         public Object clone()
         {
-            return new SymbolTableEntry( Word, m_raw_symbol );
+            return new SymbolTableEntry(Word, m_raw_symbol);
         }
 
         /// <summary>
         /// このオブジェクトのディープ・コピーを取得します
         /// </summary>
         /// <returns></returns>
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

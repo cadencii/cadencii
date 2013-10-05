@@ -11,39 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.windows.forms.*;
-
-#else
-
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class TrackSelectorSingerPopupMenu extends BPopupMenu
-#else
     public class TrackSelectorSingerPopupMenu : System.Windows.Forms.ContextMenuStrip
-#endif
     {
-        public boolean SingerChangeExists;
+        public bool SingerChangeExists;
         public int Clock;
         public int InternalID;
 
-#if !JAVA
-        public TrackSelectorSingerPopupMenu( System.ComponentModel.IContainer cont )
-            : base( cont )
+        public TrackSelectorSingerPopupMenu(System.ComponentModel.IContainer cont)
+            : base(cont)
         {
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

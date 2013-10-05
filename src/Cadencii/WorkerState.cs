@@ -11,22 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#elif __cplusplus
-
-namespace org{
-namespace kbinani{
-namespace cadencii{
-
-#else
-
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// FormWorkerに登録されている1個のジョブについての状態を表現します
@@ -37,8 +23,8 @@ namespace cadencii
         /// workerスレッドから呼び出し元に進捗を通知します
         /// </summary>
         /// <param name="processed_job">ジョブの処理済み量</param>
-        void reportProgress( double processed_job );
-        
+        void reportProgress(double processed_job);
+
         /// <summary>
         /// workerスレッドから呼び出し元に，workerスレッドの処理が完了したことを通知します
         /// </summary>
@@ -48,8 +34,8 @@ namespace cadencii
         /// workerスレッドが，キャンセル要求の有無を呼び出し元に問い合せるためのメソッド
         /// </summary>
         /// <returns></returns>
-        boolean isCancelRequested();
-        
+        bool isCancelRequested();
+
         /// <summary>
         /// 呼び出し元が，workerスレッドにキャンセル要求を出すためのメソッド
         /// </summary>
@@ -68,9 +54,4 @@ namespace cadencii
         double getJobAmount();
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

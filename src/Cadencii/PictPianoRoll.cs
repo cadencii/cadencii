@@ -11,21 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
-import java.awt.geom.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.awt;
 using cadencii.java.awt.geom;
@@ -33,35 +21,29 @@ using cadencii.java.util;
 using cadencii.vsq;
 using cadencii.windows.forms;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-#endif
-
+namespace cadencii
+{
     /// <summary>
     /// ピアノロール用のコンポーネント
     /// </summary>
-#if JAVA
-    public class PictPianoRoll extends BPanel {
-#else
-    public class PictPianoRoll : PictureBox {
-#endif
-        private readonly Color COLOR_R192G192B192 = new Color( 192, 192, 192 );
-        private readonly Color COLOR_A098R000G000B000 = new Color( 0, 0, 0, 98 );
-        private readonly Color COLOR_R106G108B108 = new Color( 106, 108, 108 );
-        private readonly Color COLOR_R180G180B180 = new Color( 180, 180, 180 );
-        private readonly Color COLOR_R212G212B212 = new Color( 212, 212, 212 );
-        private readonly Color COLOR_R125G123B124 = new Color( 125, 123, 124 );
-        private readonly Color COLOR_R240G240B240 = new Color( 240, 240, 240 );
-        private readonly Color COLOR_R072G077B098 = new Color( 72, 77, 98 );
-        private readonly Color COLOR_R153G153B153 = new Color( 153, 153, 153 );
-        private readonly Color COLOR_R147G147B147 = new Color( 147, 147, 147 );
-        private readonly Color COLOR_LINE_LU = new Color( 106, 52, 255, 128 );
-        private readonly Color COLOR_LINE_RD = new Color( 40, 47, 255, 204 );
-        private readonly Color COLOR_R051G051B000 = new Color( 51, 51, 0 );
-        private readonly Color COLOR_ADDING_NOTE_BORDER = new Color( 0, 0, 0, 136 );
-        private readonly Color COLOR_ADDING_NOTE_FILL = new Color( 255, 0, 0, 136 );
-        
+    public class PictPianoRoll : PictureBox
+    {
+        private readonly Color COLOR_R192G192B192 = new Color(192, 192, 192);
+        private readonly Color COLOR_A098R000G000B000 = new Color(0, 0, 0, 98);
+        private readonly Color COLOR_R106G108B108 = new Color(106, 108, 108);
+        private readonly Color COLOR_R180G180B180 = new Color(180, 180, 180);
+        private readonly Color COLOR_R212G212B212 = new Color(212, 212, 212);
+        private readonly Color COLOR_R125G123B124 = new Color(125, 123, 124);
+        private readonly Color COLOR_R240G240B240 = new Color(240, 240, 240);
+        private readonly Color COLOR_R072G077B098 = new Color(72, 77, 98);
+        private readonly Color COLOR_R153G153B153 = new Color(153, 153, 153);
+        private readonly Color COLOR_R147G147B147 = new Color(147, 147, 147);
+        private readonly Color COLOR_LINE_LU = new Color(106, 52, 255, 128);
+        private readonly Color COLOR_LINE_RD = new Color(40, 47, 255, 204);
+        private readonly Color COLOR_R051G051B000 = new Color(51, 51, 0);
+        private readonly Color COLOR_ADDING_NOTE_BORDER = new Color(0, 0, 0, 136);
+        private readonly Color COLOR_ADDING_NOTE_FILL = new Color(255, 0, 0, 136);
+
         public readonly Color[] COLORS_HIDDEN = new Color[]{
             new Color( 181, 162, 123 ),
             new Color( 179, 181, 123 ),
@@ -79,10 +61,10 @@ namespace cadencii {
             new Color( 181, 123, 127 ),
             new Color( 181, 140, 123 ),
             new Color( 181, 126, 123 ) };
-        private readonly Color COLOR_NOTE_FILL = new Color( 181, 220, 86 );
+        private readonly Color COLOR_NOTE_FILL = new Color(181, 220, 86);
         private readonly Color COLOR_DYNAFF_FILL = PortUtil.Pink;
-        private readonly Color COLOR_DYNAFF_FILL_HIGHLIGHT = new Color( 66, 193, 169 );
-        private readonly Font FONT_9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
+        private readonly Color COLOR_DYNAFF_FILL_HIGHLIGHT = new Color(66, 193, 169);
+        private readonly Font FONT_9PT = new Font("SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9);
         /// <summary>
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
@@ -114,131 +96,50 @@ namespace cadencii {
         private FormMain mMainForm = null;
 
         public PictPianoRoll()
-        {
-#if JAVA
-            super();
-            final int action = DnDConstants.ACTION_COPY;
-            new DropTarget(
-                this,
-                action,
-                new DropTargetListener(){
-                    public void drop( DropTargetDropEvent e ) { 
-                        e.acceptDrop( action );
-            
-                        Transferable tr = e.getTransferable(); 
-            
-                        IconDynamicsHandle data = null;
-                        try{
-                            String icon_id = null;
-                            if ( e.isDataFlavorSupported( DataFlavor.stringFlavor ) ) { 
-                                String s = (String)tr.getTransferData( DataFlavor.stringFlavor );
-                                String prefix = ClipboardModel.CLIP_PREFIX + ":";
-                                if( str.startsWith( s, prefix ) ){
-                                    icon_id = str.sub( s, str.length( prefix ) );
-                                }
-                            }
-            
-                            if( mMainForm != null ){
-                                for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                                    IconDynamicsHandle handle = itr.next();
-                                    String id = handle.IconID;
-                                    if( str.compare( id, icon_id ) ){
-                                        data = (IconDynamicsHandle)handle.clone();
-                                        break;
-                                    }
-                                }
-                                Point p = pointToScreen( e.getLocation() );                            
-                                mMainForm.handleDragDrop( data, p.x, p.y );
-                            }
-                        }catch( Exception ex ){
-                            ex.printStackTrace();
-                        }finally{
-                            e.dropComplete( (data != null) );
-                        }
-                    }
-            
-                    //@Override
-                    public void dragOver( DropTargetDragEvent dtde ){ 
-                        if( mMainForm != null ){
-                            Point p = pointToScreen( dtde.getLocation() );
-                            mMainForm.handleDragOver( p.x, p.y );
-                        }
-                    }
-
-                    //@Override
-                    public void dragExit(DropTargetEvent dte) {
-                        if( mMainForm != null ){
-                            mMainForm.handleDragExit();
-                        }
-                    }
-
-                    //@Override
-                    public void dragEnter(DropTargetDragEvent dtde) {
-                        if( mMainForm != null ){
-                            mMainForm.handleDragEnter();
-                        }
-                    }
-
-                    //@Override
-                    public void dropActionChanged(DropTargetDragEvent dtde) {
-                    }
-                } );
-#endif
-        }
+        { }
 
         /// <summary>
         /// メイン画面への参照を設定します
         /// </summary>
         /// <param name="form"></param>
-        public void setMainForm( FormMain form )
+        public void setMainForm(FormMain form)
         {
             mMainForm = form;
         }
 
-#if !JAVA
-        protected override void OnMouseDown( MouseEventArgs e )
+        protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown( e );
+            base.OnMouseDown(e);
             this.Focus();
         }
-#endif
 
-#if !JAVA
-        protected override void OnPaint( PaintEventArgs pe ) {
-            base.OnPaint( pe );
-            paint( new Graphics2D( pe.Graphics ) );
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            base.OnPaint(pe);
+            paint(new Graphics2D(pe.Graphics));
         }
-#endif
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-#if JAVA
-        Object tag = null;
-        public Object getTag(){
-            return tag;
-        }
-
-        public void setTag( Object value ){
-            tag = value;
-        }
-#else
-        public Object getTag() {
+        public Object getTag()
+        {
             return base.Tag;
         }
 
-        public void setTag( Object value ) {
+        public void setTag(Object value)
+        {
             base.Tag = value;
         }
-#endif
         #endregion
 
         /// <summary>
         /// 幅が2ピクセルのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStroke2px() {
-            if ( mStroke2px == null ) {
-                mStroke2px = new BasicStroke( 2.0f );
+        private BasicStroke getStroke2px()
+        {
+            if (mStroke2px == null) {
+                mStroke2px = new BasicStroke(2.0f);
             }
             return mStroke2px;
         }
@@ -247,8 +148,9 @@ namespace cadencii {
         /// デフォルトのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDefault() {
-            if ( mStrokeDefault == null ) {
+        private BasicStroke getStrokeDefault()
+        {
+            if (mStrokeDefault == null) {
                 mStrokeDefault = new BasicStroke();
             }
             return mStrokeDefault;
@@ -258,9 +160,10 @@ namespace cadencii {
         /// 3ドット間隔の破線を表すストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDashed() {
-            if ( mStrokeDashed == null ) {
-                mStrokeDashed = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
+        private BasicStroke getStrokeDashed()
+        {
+            if (mStrokeDashed == null) {
+                mStrokeDashed = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f);
             }
             return mStrokeDashed;
         }
@@ -270,12 +173,13 @@ namespace cadencii {
         /// </summary>
         /// <param name="g"></param>
         /// <returns></returns>
-        private PolylineDrawer getCommonPolylineDrawer( Graphics2D g ) {
-            if ( mCommonPolylineDrawer == null ) {
-                mCommonPolylineDrawer = new PolylineDrawer( g, 1024 );
+        private PolylineDrawer getCommonPolylineDrawer(Graphics2D g)
+        {
+            if (mCommonPolylineDrawer == null) {
+                mCommonPolylineDrawer = new PolylineDrawer(g, 1024);
             } else {
                 mCommonPolylineDrawer.clear();
-                mCommonPolylineDrawer.setGraphics( g );
+                mCommonPolylineDrawer.setGraphics(g);
             }
             return mCommonPolylineDrawer;
         }
@@ -284,8 +188,9 @@ namespace cadencii {
         /// 描画ルーチン
         /// </summary>
         /// <param name="g1"></param>
-        public void paint( Graphics g1 ) {
-            if ( mMainForm == null ) {
+        public void paint(Graphics g1)
+        {
+            if (mMainForm == null) {
                 return;
             }
 
@@ -311,7 +216,7 @@ namespace cadencii {
                     PolylineDrawer commonDrawer = getCommonPolylineDrawer(g);
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get(selected);
+                    VsqTrack vsq_track = vsq.Track[selected];
 
                     var p = PortUtil.getMousePosition();
                     var mouse_position = this.PointToClient(new System.Drawing.Point(p.x, p.y));
@@ -339,12 +244,8 @@ namespace cadencii {
                         VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                         int event_x = (int)(original.Clock * scalex + xoffset);
                         int event_y = -original.ID.Note * track_height + yoffset;
-#if JAVA
-                    AppManager.mInputTextBox.setLocation( pointToScreen( new Point( event_x + 4, event_y + 2 ) ) );
-#else
                         AppManager.mInputTextBox.Left = event_x + 4;
                         AppManager.mInputTextBox.Top = event_y + 2;
-#endif
                     }
 
                     RendererKind renderer = RendererKind.VOCALOID2;
@@ -385,12 +286,12 @@ namespace cadencii {
                             } else if (0 > y + track_height) {
                                 break;
                             }
-                            boolean note_is_whitekey = VsqNote.isNoteWhiteKey(i);
+                            bool note_is_whitekey = VsqNote.isNoteWhiteKey(i);
 
                             #region ピアノロール背景
                             Color b = Color.black;
                             Color border;
-                            boolean paint_required = true;
+                            bool paint_required = true;
                             if (order == -2 || order == -1 || (6 <= order && order <= 8)) {
                                 if (note_is_whitekey) {
                                     b = COLOR_R180G180B180;
@@ -475,7 +376,7 @@ namespace cadencii {
                         #region 鍵盤部分
                         g.setColor(COLOR_R212G212B212);
                         g.drawLine(0, y, key_width, y);
-                        boolean hilighted = false;
+                        bool hilighted = false;
                         if (edit_mode == EditMode.ADD_ENTRY) {
                             if (AppManager.mAddingEvent.ID.Note == i) {
                                 hilighted = true;
@@ -548,7 +449,7 @@ namespace cadencii {
                     if (AppManager.drawOverSynthNameOnPianoroll) {
                         g.setFont(AppManager.baseFont50Bold);
                         g.setColor(new Color(0, 0, 0, 32));
-                        String str = "VOCALOID2";
+                        string str = "VOCALOID2";
                         //FIXME: この分岐無くしたい
                         if (renderer == RendererKind.AQUES_TONE) {
                             str = "AquesTone";
@@ -572,13 +473,13 @@ namespace cadencii {
                             if (i == selected - 1) {
                                 continue;
                             }
-                            Vector<DrawObject> target_list = AppManager.mDrawObjects[i];
+                            List<DrawObject> target_list = AppManager.mDrawObjects[i];
                             int j_start = AppManager.mDrawStartIndex[i];
-                            boolean first = true;
+                            bool first = true;
                             int shift_center = half_track_height;
-                            int target_list_count = target_list.size();
+                            int target_list_count = target_list.Count;
                             for (int j = j_start; j < target_list_count; j++) {
-                                DrawObject dobj = target_list.get(j);
+                                DrawObject dobj = target_list[j];
                                 if (dobj.mType != DrawObjectType.Note) {
                                     continue;
                                 }
@@ -609,24 +510,24 @@ namespace cadencii {
                     }
 
                     // 選択されているトラックの表示を行う
-                    boolean show_lyrics = AppManager.editorConfig.ShowLyric;
-                    boolean show_exp_line = AppManager.editorConfig.ShowExpLine;
+                    bool show_lyrics = AppManager.editorConfig.ShowLyric;
+                    bool show_exp_line = AppManager.editorConfig.ShowExpLine;
                     if (selected >= 1) {
                         Shape r = g.getClip();
                         g.clipRect(key_width, 0,
                                     width - key_width, height);
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
 
-                        boolean first = true;
-                        Vector<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
+                        bool first = true;
+                        List<DrawObject> target_list = AppManager.mDrawObjects[selected - 1];
                         VsqBPList pit = vsq_track.MetaText.PIT;
                         VsqBPList pbs = vsq_track.MetaText.PBS;
-                        ByRef<Integer> indx_pit = new ByRef<Integer>(0);
-                        ByRef<Integer> indx_pbs = new ByRef<Integer>(0);
+                        ByRef<int> indx_pit = new ByRef<int>(0);
+                        ByRef<int> indx_pbs = new ByRef<int>(0);
 
-                        int c = target_list.size();
+                        int c = target_list.Count;
                         for (int j = j_start; j < c; j++) {
-                            DrawObject dobj = target_list.get(j);
+                            DrawObject dobj = target_list[j];
                             int x = dobj.mRectangleInPixel.x + key_width - stdx;
                             y = dobj.mRectangleInPixel.y - stdy;
                             int lyric_width = dobj.mRectangleInPixel.width;
@@ -651,7 +552,7 @@ namespace cadencii {
                                     id_fill = AppManager.getAlertColor();
                                 }
                                 if (AppManager.itemSelection.getEventCount() > 0) {
-                                    boolean found = AppManager.itemSelection.isEventContains(selected, dobj.mInternalID);
+                                    bool found = AppManager.itemSelection.isEventContains(selected, dobj.mInternalID);
                                     if (found) {
                                         id_fill = AppManager.getHilightColor();
                                         if ((!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
@@ -713,9 +614,7 @@ namespace cadencii {
                                         int cl_end = cl_start + dobj.mLength;
 
                                         commonDrawer.clear();
-#if !JAVA
                                         //g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                                         Color color_normal_picthbend = PortUtil.DarkOrchid;
                                         Color color_thin_pitchbend = new Color(color_normal_picthbend.getRed(), color_normal_picthbend.getGreen(), color_normal_picthbend.getBlue(), 128);
                                         int viblength = dobj.mLength - dobj.mVibDelay;
@@ -798,9 +697,7 @@ namespace cadencii {
                                             }
                                         }
                                         commonDrawer.flush();
-#if !JAVA
                                         g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
                                         g.setStroke(getStrokeDefault());
                                     }
                                     #endregion
@@ -832,7 +729,7 @@ namespace cadencii {
                                 if (dobj.mIsOverlapped) {
                                     g.setColor(COLOR_R147G147B147);
                                 }
-                                String str = dobj.mText;
+                                string str = dobj.mText;
 #if DEBUG
                                 str += "(" + dobj.mInternalID + ")";
 #endif
@@ -855,15 +752,13 @@ namespace cadencii {
                                     g.setColor(Color.black);
                                 }
                                 g.setFont(AppManager.baseFont10);
-                                String str = dobj.mText;
+                                string str = dobj.mText;
 #if DEBUG
                                 str += "(" + dobj.mInternalID + ")";
 #endif
                                 g.drawString(str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1);
-#if !JAVA
                                 System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
                                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                                 if (dobj.mType == DrawObjectType.Crescend) {
                                     g.drawLine(xend - 2, y + 4, x + 3, y + half_track_height);
                                     g.drawLine(x + 3, y + half_track_height, xend - 2, y + track_height - 3);
@@ -871,9 +766,7 @@ namespace cadencii {
                                     g.drawLine(x + 3, y + 4, xend - 2, y + half_track_height);
                                     g.drawLine(xend - 2, y + half_track_height, x + 3, y + track_height - 3);
                                 }
-#if !JAVA
                                 g.nativeGraphics.SmoothingMode = old;
-#endif
                                 #endregion
                             }
                         }
@@ -917,8 +810,7 @@ namespace cadencii {
                                     edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
                                     edit_mode == EditMode.EDIT_LEFT_EDGE ||
                                     edit_mode == EditMode.EDIT_RIGHT_EDGE) && AppManager.itemSelection.getEventCount() > 0) {
-                        for (Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-                            SelectedEventEntry ev = itr.next();
+                        foreach (var ev in AppManager.itemSelection.getEventIterator()) {
                             int x = (int)(ev.editing.Clock * scalex + xoffset);
                             y = -ev.editing.ID.Note * track_height + yoffset + 1;
                             if (ev.editing.ID.type == VsqIDType.Aicon) {
@@ -1090,7 +982,7 @@ namespace cadencii {
                             drate = 1.00;
                         }
                         int rate = (int)(drate * 100.0);
-                        String percent = rate + "%";
+                        string percent = rate + "%";
                         Dimension size = Util.measureString(percent, AppManager.baseFont9);
                         int delay_x = (int)((AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() - AppManager.mAddingEventLength + AppManager.mAddingEvent.ID.VibratoDelay) * scalex + xoffset);
                         Rectangle pxArea = new Rectangle(delay_x,
@@ -1147,10 +1039,10 @@ namespace cadencii {
                         // 描く四角形の位置とサイズ
                         int tx, ty, twidth, theight;
                         // 上下左右の枠を表示していいかどうか
-                        boolean vtop = true;
-                        boolean vbottom = true;
-                        boolean vleft = true;
-                        boolean vright = true;
+                        bool vtop = true;
+                        bool vbottom = true;
+                        bool vleft = true;
+                        bool vright = true;
                         // マウスが下りた位置のx座標
                         int lx = AppManager.mMouseDownLocation.x - stdx;
                         if (lx < mouse.X) {
@@ -1192,9 +1084,7 @@ namespace cadencii {
                         Color pen = new Color(0, 0, 0, 200);
                         g.setColor(new Color(0, 0, 0, 100));
                         g.fillRect(tx, ty, twidth, theight);
-#if !JAVA
                         g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                         g.setColor(pen);
                         if (vtop && twidth > 1 && ty < height) {
                             g.drawLine(tx, ty, tx + twidth - 1, ty);
@@ -1211,9 +1101,7 @@ namespace cadencii {
                     }
                     #endregion
 
-#if !JAVA
                     g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
 
                     #region コントロールカーブのオーバーレイ表示
                     if (AppManager.mCurveOnPianoroll) {
@@ -1233,9 +1121,9 @@ namespace cadencii {
 
                         Color pitline = PortUtil.MidnightBlue;
                         g.setStroke(getStroke2px());
-                        Vector<DrawObject> list = AppManager.mDrawObjects[selected - 1];
+                        List<DrawObject> list = AppManager.mDrawObjects[selected - 1];
                         int j_start = AppManager.mDrawStartIndex[selected - 1];
-                        int c = list.size();
+                        int c = list.Count;
                         int last_x = key_width;
 
                         int pbs_count = pbs.size();
@@ -1245,13 +1133,13 @@ namespace cadencii {
                         //ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
 
                         for (int j = j_start; j < c; j++) {
-                            DrawObject dobj = list.get(j);
+                            DrawObject dobj = list[j];
                             int clock = dobj.mClock;
                             int x_at_clock = (int)(clock * scalex + xoffset);
                             last_x = x_at_clock;
 
                             // 音符の区間中に，PBSがあるかもしれないのでPBSのデータ点を探しながら塗りつぶす
-                            ByRef<Integer> pbs_index = new ByRef<Integer>(0);
+                            ByRef<int> pbs_index = new ByRef<int>(0);
                             int last_pbs_value = pbs.getValue(clock, pbs_index);
 
                             if (pbs_count <= 0) {
@@ -1313,8 +1201,7 @@ namespace cadencii {
                             commonDrawer.clear();
                             g.setColor(PortUtil.Orchid);
                             g.setStroke(getStroke2px());
-                            for (Iterator<Point> itr = mMouseTracer.iterator(); itr.hasNext(); ) {
-                                Point pt = itr.next();
+                            foreach (var pt in mMouseTracer.iterator()) {
                                 commonDrawer.append(pt.x - stdx, pt.y - stdy);
                             }
                             commonDrawer.flush();
@@ -1343,16 +1230,17 @@ namespace cadencii {
         /// </summary>
         /// <param name="g"></param>
         /// <param name="accent"></param>
-        private void drawAccentLine( Graphics g, Point origin, int accent ) {
+        private void drawAccentLine(Graphics g, Point origin, int accent)
+        {
             int x0 = origin.x + 1;
             int y0 = origin.y + 10;
             int height = 4 + accent * 4 / 100;
             //SmoothingMode sm = g.SmoothingMode;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.setColor( Color.black );
-            g.drawPolyline( new int[] { x0, x0 + 2, x0 + 8, x0 + 13, x0 + 16, x0 + 20 },
+            g.setColor(Color.black);
+            g.drawPolyline(new int[] { x0, x0 + 2, x0 + 8, x0 + 13, x0 + 16, x0 + 20 },
                             new int[] { y0, y0, y0 - height, y0, y0, y0 - 4 },
-                            6 );
+                            6);
             //g.SmoothingMode = sm;
         }
 
@@ -1367,68 +1255,66 @@ namespace cadencii {
         /// <param name="note">描画する音符のノートナンバー</param>
         /// <param name="clock_start">ビブラートが始まるクロック位置</param>
         /// <param name="clock_width">ビブラートのクロック長さ</param>
-        private void drawVibratoPitchbend( PolylineDrawer drawer,
+        private void drawVibratoPitchbend(PolylineDrawer drawer,
                                            VibratoBPList rate,
                                            int start_rate,
                                            VibratoBPList depth,
                                            int start_depth,
                                            int note,
                                            int x_start,
-                                           int px_width ) {
-            if ( rate == null || depth == null ) {
+                                           int px_width)
+        {
+            if (rate == null || depth == null) {
                 return;
             }
-            int y0 = AppManager.yCoordFromNote( note - 0.5f );
+            int y0 = AppManager.yCoordFromNote(note - 0.5f);
             float px_track_height = (int)(AppManager.mMainWindowController.getScaleY() * 100);
             VsqFileEx vsq = AppManager.getVsqFile();
-            int clock_start = AppManager.clockFromXCoord( x_start );
-            int clock_end = AppManager.clockFromXCoord( x_start + px_width );
-            int tempo = vsq.getTempoAt( clock_start );
+            int clock_start = AppManager.clockFromXCoord(x_start);
+            int clock_end = AppManager.clockFromXCoord(x_start + px_width);
+            int tempo = vsq.getTempoAt(clock_start);
 
             drawer.clear();
-            Iterator<PointD> itr = new VibratoPointIteratorBySec( vsq,
-                                                             rate,
-                                                             start_rate,
-                                                             depth,
-                                                             start_depth,
-                                                             clock_start,
-                                                             clock_end - clock_start,
-                                                             (float)(tempo * 1e-6 / 480.0) );
+            var itr = new VibratoPointIteratorBySec(vsq,
+                                                    rate,
+                                                    start_rate,
+                                                    depth,
+                                                    start_depth,
+                                                    clock_start,
+                                                    clock_end - clock_start,
+                                                    (float)(tempo * 1e-6 / 480.0));
             Graphics2D g = drawer.getGraphics();
-            g.setColor( Color.blue );
+            g.setColor(Color.blue);
 #if DEBUG
-            g.setColor( Color.red );
+            g.setColor(Color.red);
 #endif
-#if !JAVA
             System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;
             g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
             int lx = 0;
-            for ( ; itr.hasNext(); ) {
+            for (; itr.hasNext(); ) {
                 PointD p = itr.next();
-                int x = AppManager.xCoordFromClocks( vsq.getClockFromSec( p.getX() ) );
+                int x = AppManager.xCoordFromClocks(vsq.getClockFromSec(p.getX()));
                 int y = (int)(p.getY() * px_track_height + y0);
-                if ( x - lx > 0 ) {
+                if (x - lx > 0) {
                     continue;
                 }
-                drawer.append( x, y );
+                drawer.append(x, y);
                 lx = x;
             }
             drawer.flush();
-#if !JAVA
             g.nativeGraphics.SmoothingMode = sm;
-#endif
         }
 
-        private void drawVibratoLine( Graphics g, int origin_x, int origin_y, int vibrato_length ) {
+        private void drawVibratoLine(Graphics g, int origin_x, int origin_y, int vibrato_length)
+        {
             int x0 = origin_x + 1;
             int y0 = origin_y + 10;
             int clipx = origin_x + 1;
             int clip_length = vibrato_length;
-            if ( clipx < AppManager.keyWidth ) {
+            if (clipx < AppManager.keyWidth) {
                 clipx = AppManager.keyWidth;
                 clip_length = origin_x + 1 + vibrato_length - AppManager.keyWidth;
-                if ( clip_length <= 0 ) {
+                if (clip_length <= 0) {
                     return;
                 }
             }
@@ -1439,38 +1325,42 @@ namespace cadencii {
             int[] _BASE_X = new int[] { x0 - _UWID, x0 + 2 - _UWID, x0 + 4 - _UWID, x0 + 7 - _UWID, x0 + 9 - _UWID, x0 + 10 - _UWID };
             int[] _BASE_Y = new int[] { y0 - 4, y0 - 7, y0 - 7, y0 - 1, y0 - 1, y0 - 4 };
             Shape old = g.getClip();
-            g.clipRect( clipx, origin_y + 10 - 8, clip_length, 10 );
-            g.setColor( Color.black );
-            for ( int i = 0; i < count; i++ ) {
-                for ( int j = 0; j < _BASE_X.Length; j++ ) {
+            g.clipRect(clipx, origin_y + 10 - 8, clip_length, 10);
+            g.setColor(Color.black);
+            for (int i = 0; i < count; i++) {
+                for (int j = 0; j < _BASE_X.Length; j++) {
                     _BASE_X[j] += _UWID;
                 }
-                g.drawPolyline( _BASE_X, _BASE_Y, _BASE_X.Length );
+                g.drawPolyline(_BASE_X, _BASE_Y, _BASE_X.Length);
             }
             //g.SmoothingMode = sm;
-            g.setClip( old );
+            g.setClip(old);
         }
 
-#if !JAVA
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public java.awt.Dimension getMinimumSize() {
-            return new cadencii.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+        public java.awt.Dimension getMinimumSize()
+        {
+            return new cadencii.java.awt.Dimension(base.MinimumSize.Width, base.MinimumSize.Height);
         }
 
-        public void setMinimumSize( java.awt.Dimension value ) {
-            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+        public void setMinimumSize(java.awt.Dimension value)
+        {
+            base.MinimumSize = new System.Drawing.Size(value.width, value.height);
         }
 
-        public java.awt.Dimension getMaximumSize() {
-            return new cadencii.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        public java.awt.Dimension getMaximumSize()
+        {
+            return new cadencii.java.awt.Dimension(base.MaximumSize.Width, base.MaximumSize.Height);
         }
 
-        public void setMaximumSize( java.awt.Dimension value ) {
-            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        public void setMaximumSize(java.awt.Dimension value)
+        {
+            base.MaximumSize = new System.Drawing.Size(value.width, value.height);
         }
 
-        public void invalidate() {
+        public void invalidate()
+        {
             base.Invalidate();
         }
 
@@ -1524,11 +1414,13 @@ namespace cadencii {
         }
 #endif
 
-        public bool isVisible() {
+        public bool isVisible()
+        {
             return base.Visible;
         }
 
-        public void setVisible( bool value ) {
+        public void setVisible(bool value)
+        {
             base.Visible = value;
         }
 
@@ -1549,16 +1441,19 @@ namespace cadencii {
             return base.OwnerItem;
         }
 #else
-        public Object getParent() {
+        public Object getParent()
+        {
             return base.Parent;
         }
 #endif
 
-        public String getName() {
+        public string getName()
+        {
             return base.Name;
         }
 
-        public void setName( String value ) {
+        public void setName(string value)
+        {
             base.Name = value;
         }
 
@@ -1590,9 +1485,10 @@ namespace cadencii {
         }
 #endif
 
-        public cadencii.java.awt.Rectangle getBounds() {
+        public cadencii.java.awt.Rectangle getBounds()
+        {
             System.Drawing.Rectangle r = base.Bounds;
-            return new cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new cadencii.java.awt.Rectangle(r.X, r.Y, r.Width, r.Height);
         }
 
 #if COMPONENT_ENABLE_X
@@ -1607,47 +1503,58 @@ namespace cadencii {
         }
 #endif
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return base.Width;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return base.Height;
         }
 
-        public cadencii.java.awt.Dimension getSize() {
-            return new cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
+        public cadencii.java.awt.Dimension getSize()
+        {
+            return new cadencii.java.awt.Dimension(base.Size.Width, base.Size.Height);
         }
 
-        public void setSize( int width, int height ) {
-            base.Size = new System.Drawing.Size( width, height );
+        public void setSize(int width, int height)
+        {
+            base.Size = new System.Drawing.Size(width, height);
         }
 
-        public void setSize( cadencii.java.awt.Dimension d ) {
-            setSize( d.width, d.height );
+        public void setSize(cadencii.java.awt.Dimension d)
+        {
+            setSize(d.width, d.height);
         }
 
-        public void setBackground( cadencii.java.awt.Color color ) {
-            base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
+        public void setBackground(cadencii.java.awt.Color color)
+        {
+            base.BackColor = System.Drawing.Color.FromArgb(color.getRed(), color.getGreen(), color.getBlue());
         }
 
-        public cadencii.java.awt.Color getBackground() {
-            return new cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+        public cadencii.java.awt.Color getBackground()
+        {
+            return new cadencii.java.awt.Color(base.BackColor.R, base.BackColor.G, base.BackColor.B);
         }
 
-        public void setForeground( cadencii.java.awt.Color color ) {
+        public void setForeground(cadencii.java.awt.Color color)
+        {
             base.ForeColor = color.color;
         }
 
-        public cadencii.java.awt.Color getForeground() {
-            return new cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+        public cadencii.java.awt.Color getForeground()
+        {
+            return new cadencii.java.awt.Color(base.ForeColor.R, base.ForeColor.G, base.ForeColor.B);
         }
 
-        public bool isEnabled() {
+        public bool isEnabled()
+        {
             return base.Enabled;
         }
 
-        public void setEnabled( bool value ) {
+        public void setEnabled(bool value)
+        {
             base.Enabled = value;
         }
 
@@ -1661,27 +1568,27 @@ namespace cadencii {
         }
 #endif
 
-        public void setPreferredSize( cadencii.java.awt.Dimension size ) {
-            base.Size = new System.Drawing.Size( size.width, size.height );
+        public void setPreferredSize(cadencii.java.awt.Dimension size)
+        {
+            base.Size = new System.Drawing.Size(size.width, size.height);
         }
 
-        public cadencii.java.awt.Font getFont() {
-            return new cadencii.java.awt.Font( base.Font );
+        public cadencii.java.awt.Font getFont()
+        {
+            return new cadencii.java.awt.Font(base.Font);
         }
 
-        public void setFont( cadencii.java.awt.Font font ) {
-            if ( font == null ) {
+        public void setFont(cadencii.java.awt.Font font)
+        {
+            if (font == null) {
                 return;
             }
-            if ( font.font == null ) {
+            if (font.font == null) {
                 return;
             }
             base.Font = font.font;
         }
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -11,16 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-//INCLUDE ./MidiReceivedEventHandler.java
-#else
 using System;
 using cadencii;
 
 namespace cadencii.media
 {
 
-    public delegate void MidiReceivedEventHandler( Object sender, cadencii.javax.sound.midi.MidiMessage message );
+    public delegate void MidiReceivedEventHandler(Object sender, cadencii.javax.sound.midi.MidiMessage message);
 
 }
-#endif

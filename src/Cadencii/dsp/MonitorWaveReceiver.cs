@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.media.*;
-#else
 using System;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -25,23 +18,17 @@ using cadencii.media;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// スピーカへの出力を行う波形受信器
     /// </summary>
-#if JAVA
-    public class MonitorWaveReceiver extends WaveUnit implements WaveReceiver {
-#else
     public class MonitorWaveReceiver : WaveUnit, WaveReceiver
     {
-#endif
         private const int BUFLEN = 1024;
 
         private static MonitorWaveReceiver mSingleton = null;
 
-        private boolean mFirstCall = true;
+        private bool mFirstCall = true;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private double[] mBuffer2L = new double[BUFLEN];
@@ -67,7 +54,7 @@ namespace cadencii
 
         public static MonitorWaveReceiver prepareInstance()
         {
-            if ( mSingleton == null ) {
+            if (mSingleton == null) {
                 mSingleton = new MonitorWaveReceiver();
             }
             mSingleton.end();
@@ -76,7 +63,7 @@ namespace cadencii
             return mSingleton;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
@@ -86,26 +73,26 @@ namespace cadencii
             return mVersion;
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;
         }
 
-        public void push( double[] l, double[] r, int length )
+        public void push(double[] l, double[] r, int length)
         {
-            if ( mFirstCall ) {
+            if (mFirstCall) {
                 mSampleRate = mRoot.getSampleRate();
                 PlaySound.init();
-                PlaySound.prepare( mSampleRate );
+                PlaySound.prepare(mSampleRate);
                 mFirstCall = false;
             }
-            PlaySound.append( l, r, length );
+            PlaySound.append(l, r, length);
             mPosition += length;
-            if ( mReceiver != null ) {
-                mReceiver.push( l, r, length );
+            if (mReceiver != null) {
+                mReceiver.push(l, r, length);
             }
         }
 
@@ -115,12 +102,10 @@ namespace cadencii
             //pushが終了していても，たいていの場合再生されずにキャッシュが残っているので．
             //PlaySound.exit();
             PlaySound.waitForExit();
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
         }
     }
 
-#if !JAVA
 }
-#endif

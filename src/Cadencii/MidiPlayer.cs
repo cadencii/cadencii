@@ -18,7 +18,7 @@ using org.kbinani;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
-    using boolean = System.Boolean;
+    using bool = System.Boolean;
     using Integer = System.Int32;
 
     public static class MidiPlayer {
@@ -41,7 +41,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 小節ごとのベル音を鳴らすかどうか
         /// </summary>
-        private static boolean s_ring_bell = true;
+        private static bool s_ring_bell = true;
         /// <summary>
         /// 先行発音
         /// </summary>
@@ -49,21 +49,21 @@ namespace org.kbinani.cadencii {
         public static byte ProgramGeneral = 0;
 
         private static System.Threading.Thread m_thread;
-        private static boolean m_stop_required = false;
+        private static bool m_stop_required = false;
         private static double m_started;
         private static VsqFileEx m_vsq;
         private static float m_speed = 1.0f;
         private static int m_started_clock;
         private static double m_started_sec;
         private static Vector<MidiQueue> s_queue = new Vector<MidiQueue>();
-        private static boolean m_temp_exit = false;
+        private static bool m_temp_exit = false;
         private static MidiDeviceImp s_device0; // メトロノーム用。一般用のデバイスIDが同じなら、こちらを共用
         private static MidiDeviceImp s_device1; // 一般用。メトロノームのデバイスIDと違うときのみ使用
         private static uint s_metronome_device = 0;
         private static uint s_general_device = 0;
-        private static boolean m_stop_metronome_required = false;
+        private static bool m_stop_metronome_required = false;
 
-        public static boolean RingBell {
+        public static bool RingBell {
             get {
                 return s_ring_bell;
             }
@@ -243,7 +243,7 @@ namespace org.kbinani.cadencii {
                     VsqEvent item = itr.next();
                     if ( clock < item.Clock ) {
                         int thisclock = item.Clock;
-                        boolean first = true;
+                        bool first = true;
                         while( !m_stop_required ) {
                             MidiQueue q = new MidiQueue();
                             q.Track = track;

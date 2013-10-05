@@ -11,23 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.xml.*;
-import cadencii.windows.forms.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.IO;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -37,10 +25,10 @@ using cadencii.xml;
 using cadencii.vsq;
 using cadencii.apputil;
 
+
+
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// Cadenciiの環境設定
@@ -50,16 +38,16 @@ namespace cadencii
         /// <summary>
         /// デフォルトで使用する歌手の名前
         /// </summary>
-        public String DefaultSingerName = "Miku";
+        public string DefaultSingerName = "Miku";
         /// <summary>
         /// デフォルトの横軸方向のスケール
         /// </summary>
         public int DefaultXScale = 65;
-        public String BaseFontName = "MS UI Gothic";
+        public string BaseFontName = "MS UI Gothic";
         public float BaseFontSize = 9.0f;
-        public String ScreenFontName = "MS UI Gothic";
+        public string ScreenFontName = "MS UI Gothic";
         public int WheelOrder = 20;
-        public boolean CursorFixed = false;
+        public bool CursorFixed = false;
         /// <summary>
         /// RecentFilesに登録することの出来る最大のファイル数
         /// </summary>
@@ -67,10 +55,7 @@ namespace cadencii
         /// <summary>
         /// 最近使用したファイルのリスト
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
-        public Vector<String> RecentFiles = new Vector<String>();
+        public List<string> RecentFiles = new List<string>();
         public int DefaultPMBendDepth = 8;
         public int DefaultPMBendLength = 0;
         public int DefaultPMbPortamentoUse = 3;
@@ -79,27 +64,23 @@ namespace cadencii
         /// <summary>
         /// ピアノロール上に歌詞を表示するかどうか
         /// </summary>
-        public boolean ShowLyric = true;
+        public bool ShowLyric = true;
         /// <summary>
         /// ピアノロール上に，ビブラートとアタックの概略を表す波線を表示するかどうか
         /// </summary>
-        public boolean ShowExpLine = true;
+        public bool ShowExpLine = true;
         public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;
         /// <summary>
         /// デフォルトビブラートのRate
         /// バージョン3.3で廃止
         /// </summary>
-#if !JAVA
         [Obsolete]
-#endif
         private int __revoked__DefaultVibratoRate = 64;
         /// <summary>
         /// デフォルトビブラートのDepth
         /// バージョン3.3で廃止
         /// </summary>
-#if !JAVA
         [Obsolete]
-#endif
         private int __revoked__DefaultVibratoDepth = 64;
         /// <summary>
         /// ビブラートの自動追加を行うかどうかを決める音符長さの閾値．単位はclock
@@ -109,28 +90,25 @@ namespace cadencii
         /// <summary>
         /// VOCALOID1用のデフォルトビブラート設定
         /// </summary>
-        public String AutoVibratoType1 = "$04040001";
+        public string AutoVibratoType1 = "$04040001";
         /// <summary>
         /// VOCALOID2用のデフォルトビブラート設定
         /// </summary>
-        public String AutoVibratoType2 = "$04040001";
+        public string AutoVibratoType2 = "$04040001";
         /// <summary>
         /// カスタムのデフォルトビブラート設定
         /// <version>3.3+</version>
         /// </summary>
-        public String AutoVibratoTypeCustom = "$04040001";
+        public string AutoVibratoTypeCustom = "$04040001";
         /// <summary>
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
         /// </summary>
-#if JAVA
-        @XmlGenericType( VibratoHandle.class )
-#endif
-        public Vector<VibratoHandle> AutoVibratoCustom = new Vector<VibratoHandle>();
+        public List<VibratoHandle> AutoVibratoCustom = new List<VibratoHandle>();
         /// <summary>
         /// ビブラートの自動追加を行うかどうか
         /// </summary>
-        public boolean EnableAutoVibrato = true;
+        public bool EnableAutoVibrato = true;
         /// <summary>
         /// ピアノロール上での，音符の表示高さ(ピクセル)
         /// </summary>
@@ -140,18 +118,18 @@ namespace cadencii
         /// <summary>
         /// ミキサーウィンドウが表示された状態かどうか
         /// </summary>
-        public boolean MixerVisible = false;
+        public bool MixerVisible = false;
         /// <summary>
         /// アイコンパレットが表示された状態かどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean IconPaletteVisible = false;
+        public bool IconPaletteVisible = false;
         public int PreSendTime = 500;
         public ClockResolution ControlCurveResolution = ClockResolution.L30;
         /// <summary>
         /// 言語設定
         /// </summary>
-        public String Language = "";
+        public string Language = "";
         /// <summary>
         /// マウスの操作などの許容範囲。プリメジャーにPxToleranceピクセルめり込んだ入力を行っても、エラーにならない。(補正はされる)
         /// </summary>
@@ -159,7 +137,7 @@ namespace cadencii
         /// <summary>
         /// マウスホイールでピアノロールを水平方向にスクロールするかどうか。
         /// </summary>
-        public boolean ScrollHorizontalOnWheel = true;
+        public bool ScrollHorizontalOnWheel = true;
         /// <summary>
         /// 画面描画の最大フレームレート
         /// </summary>
@@ -167,10 +145,7 @@ namespace cadencii
         /// <summary>
         /// ユーザー辞書のOn/Offと順序
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
-        public Vector<String> UserDictionaries = new Vector<String>();
+        public List<string> UserDictionaries = new List<string>();
         /// <summary>
         /// 実行環境
         /// </summary>
@@ -178,12 +153,12 @@ namespace cadencii
         /// <summary>
         /// ウィンドウが最大化された状態かどうか
         /// </summary>
-        public boolean WindowMaximized = false;
+        public bool WindowMaximized = false;
         /// <summary>
         /// ウィンドウの位置とサイズ．
         /// 最小化された状態での値は，この変数に代入されない(ことになっている)
         /// </summary>
-        public Rectangle WindowRect = new Rectangle( 0, 0, 970, 718 );
+        public Rectangle WindowRect = new Rectangle(0, 0, 970, 718);
         /// <summary>
         /// hScrollのスクロールボックスの最小幅(px)
         /// </summary>
@@ -191,11 +166,11 @@ namespace cadencii
         /// <summary>
         /// 発音記号入力モードを，維持するかどうか
         /// </summary>
-        public boolean KeepLyricInputMode = false;
+        public bool KeepLyricInputMode = false;
         /// <summary>
         /// ピアノロールの何もないところをクリックした場合、右クリックでもプレビュー音を再生するかどうか
         /// </summary>
-        public boolean PlayPreviewWhenRightClick = false;
+        public bool PlayPreviewWhenRightClick = false;
         /// <summary>
         /// ゲームコントローラで、異なるイベントと識別する最小の時間間隔(millisec)
         /// </summary>
@@ -203,12 +178,12 @@ namespace cadencii
         /// <summary>
         /// カーブの選択範囲もクオンタイズするかどうか
         /// </summary>
-        public boolean CurveSelectingQuantized = true;
+        public bool CurveSelectingQuantized = true;
 
         private QuantizeMode m_position_quantize = QuantizeMode.p32;
-        private boolean m_position_quantize_triplet = false;
+        private bool m_position_quantize_triplet = false;
         private QuantizeMode m_length_quantize = QuantizeMode.p32;
-        private boolean m_length_quantize_triplet = false;
+        private bool m_length_quantize_triplet = false;
         private int m_mouse_hover_time = 500;
         /// <summary>
         /// Button index of "△"
@@ -258,27 +233,27 @@ namespace cadencii
         /// Button index of Right Stick
         /// </summary>
         public int GameControlStirckR = 11;
-        public boolean CurveVisibleVelocity = true;
-        public boolean CurveVisibleAccent = true;
-        public boolean CurveVisibleDecay = true;
-        public boolean CurveVisibleVibratoRate = true;
-        public boolean CurveVisibleVibratoDepth = true;
-        public boolean CurveVisibleDynamics = true;
-        public boolean CurveVisibleBreathiness = true;
-        public boolean CurveVisibleBrightness = true;
-        public boolean CurveVisibleClearness = true;
-        public boolean CurveVisibleOpening = true;
-        public boolean CurveVisibleGendorfactor = true;
-        public boolean CurveVisiblePortamento = true;
-        public boolean CurveVisiblePit = true;
-        public boolean CurveVisiblePbs = true;
-        public boolean CurveVisibleHarmonics = false;
-        public boolean CurveVisibleFx2Depth = false;
-        public boolean CurveVisibleReso1 = false;
-        public boolean CurveVisibleReso2 = false;
-        public boolean CurveVisibleReso3 = false;
-        public boolean CurveVisibleReso4 = false;
-        public boolean CurveVisibleEnvelope = false;
+        public bool CurveVisibleVelocity = true;
+        public bool CurveVisibleAccent = true;
+        public bool CurveVisibleDecay = true;
+        public bool CurveVisibleVibratoRate = true;
+        public bool CurveVisibleVibratoDepth = true;
+        public bool CurveVisibleDynamics = true;
+        public bool CurveVisibleBreathiness = true;
+        public bool CurveVisibleBrightness = true;
+        public bool CurveVisibleClearness = true;
+        public bool CurveVisibleOpening = true;
+        public bool CurveVisibleGendorfactor = true;
+        public bool CurveVisiblePortamento = true;
+        public bool CurveVisiblePit = true;
+        public bool CurveVisiblePbs = true;
+        public bool CurveVisibleHarmonics = false;
+        public bool CurveVisibleFx2Depth = false;
+        public bool CurveVisibleReso1 = false;
+        public bool CurveVisibleReso2 = false;
+        public bool CurveVisibleReso3 = false;
+        public bool CurveVisibleReso4 = false;
+        public bool CurveVisibleEnvelope = false;
         public int GameControlPovRight = 9000;
         public int GameControlPovLeft = 27000;
         public int GameControlPovUp = 0;
@@ -286,7 +261,7 @@ namespace cadencii
         /// <summary>
         /// wave波形を表示するかどうか
         /// </summary>
-        public boolean ViewWaveform = false;
+        public bool ViewWaveform = false;
         /// <summary>
         /// スプリットコンテナのディバイダの位置
         /// <version>3.3+</version>
@@ -297,45 +272,36 @@ namespace cadencii
         /// </summary>
         public MidiPortConfig MidiInPort = new MidiPortConfig();
 
-        public boolean ViewAtcualPitch = false;
-        private boolean __revoked__InvokeUtauCoreWithWine = false;
-#if JAVA
-        @XmlGenericType( SingerConfig.class )
-#endif
-        public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
+        public bool ViewAtcualPitch = false;
+        private bool __revoked__InvokeUtauCoreWithWine = false;
+        public List<SingerConfig> UtauSingers = new List<SingerConfig>();
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
         /// </summary>
-        public String PathResampler = "";
+        public string PathResampler = "";
         /// <summary>
         /// UTAU互換の合成器の1個目を，wine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
-        public boolean ResamplerWithWine = false;
+        public bool ResamplerWithWine = false;
         /// <summary>
         /// UTAU互換の合成器のパス(2個目以降)
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
-        public Vector<String> PathResamplers = new Vector<String>();
+        public List<string> PathResamplers = new List<string>();
         /// <summary>
         /// UTAU互換の合成器を，wine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
-#if JAVA
-        @XmlGenericType( Boolean.class )
-#endif
-        public Vector<Boolean> ResamplersWithWine = new Vector<Boolean>();
+        public List<Boolean> ResamplersWithWine = new List<Boolean>();
         /// <summary>
         /// UTAU用のwave切り貼りツール
         /// </summary>
-        public String PathWavtool = "";
+        public string PathWavtool = "";
         /// <summary>
         /// wavtoolをwine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
-        public boolean WavtoolWithWine = false;
+        public bool WavtoolWithWine = false;
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
         /// </summary>
@@ -343,25 +309,22 @@ namespace cadencii
         /// <summary>
         /// 歌詞入力においてローマ字が入力されたとき，Cadencii側でひらがなに変換するかどうか
         /// </summary>
-        public boolean SelfDeRomanization = false;
+        public bool SelfDeRomanization = false;
         /// <summary>
         /// openMidiDialogで最後に選択された拡張子
         /// </summary>
-        public String LastUsedExtension = ".vsq";
+        public string LastUsedExtension = ".vsq";
         /// <summary>
         /// ミキサーダイアログを常に手前に表示するかどうか
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__MixerTopMost = true;
-#if JAVA
-        @XmlGenericType( ValuePairOfStringArrayOfKeys.class )
-#endif
-        public Vector<ValuePairOfStringArrayOfKeys> ShortcutKeys = new Vector<ValuePairOfStringArrayOfKeys>();
+        private bool __revoked__MixerTopMost = true;
+        public List<ValuePairOfStringArrayOfKeys> ShortcutKeys = new List<ValuePairOfStringArrayOfKeys>();
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
         /// <summary>
         /// 概観ペインが表示されているかどうか
         /// </summary>
-        public boolean OverviewEnabled = false;
+        public bool OverviewEnabled = false;
         public int OverviewScaleCount = 5;
         public FormMidiImExportConfig MidiImExportConfigExport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImport = new FormMidiImExportConfig();
@@ -377,11 +340,11 @@ namespace cadencii
         /// <summary>
         /// スペースキーを押しながら左クリックで、中ボタンクリックとみなす動作をさせるかどうか。
         /// </summary>
-        public boolean UseSpaceKeyAsMiddleButtonModifier = false;
+        public bool UseSpaceKeyAsMiddleButtonModifier = false;
         /// <summary>
         /// AquesToneのVSTi dllへのパス
         /// </summary>
-        public String PathAquesTone = "";
+        public string PathAquesTone = "";
         /// <summary>
         /// AquesTone2 の VSTi dll へのパス
         /// </summary>
@@ -389,12 +352,12 @@ namespace cadencii
         /// <summary>
         /// アイコンパレット・ウィンドウの位置
         /// </summary>
-        public XmlPoint FormIconPaletteLocation = new XmlPoint( 0, 0 );
+        public XmlPoint FormIconPaletteLocation = new XmlPoint(0, 0);
         /// <summary>
         /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__FormIconTopMost = true;
+        private bool __revoked__FormIconTopMost = true;
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>
@@ -409,7 +372,7 @@ namespace cadencii
         /// waveファイル出力時に、全トラックをmixして出力するかどうか
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__WaveFileOutputFromMasterTrack = false;
+        private bool __revoked__WaveFileOutputFromMasterTrack = false;
         /// <summary>
         /// MTCスレーブ動作を行う際使用するMIDI INポートの設定
         /// </summary>
@@ -417,26 +380,26 @@ namespace cadencii
         /// <summary>
         /// プロジェクトごとのキャッシュディレクトリを使うかどうか
         /// </summary>
-        public boolean UseProjectCache = true;
+        public bool UseProjectCache = true;
         /// <summary>
         /// 鍵盤用のキャッシュが無いとき、FormGenerateKeySoundを表示しないかどうか。
         /// trueなら表示しない、falseなら表示する（デフォルト）
         /// </summary>
-        public boolean DoNotAskKeySoundGeneration = false;
+        public bool DoNotAskKeySoundGeneration = false;
         /// <summary>
         /// VOCALOID1 (1.0)のDLLを読み込まない場合true。既定ではfalse
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__DoNotUseVocaloid100 = false;
+        private bool __revoked__DoNotUseVocaloid100 = false;
         /// <summary>
         /// VOCALOID1 (1.1)のDLLを読み込まない場合true。既定ではfalse
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__DoNotUseVocaloid101 = false;
+        private bool __revoked__DoNotUseVocaloid101 = false;
         /// <summary>
         /// VOCALOID2のDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        public boolean DoNotUseVocaloid2 = false;
+        public bool DoNotUseVocaloid2 = false;
         /// <summary>
         /// AquesToneのDLLを読み込まない場合true。既定ではfalse
         /// </summary>
@@ -449,11 +412,11 @@ namespace cadencii
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
         /// 3.3で廃止
         /// </summary>
-        private boolean __revoked__LoadSecondaryVocaloid1Dll = false;
+        private bool __revoked__LoadSecondaryVocaloid1Dll = false;
         /// <summary>
         /// VOALOID1のDLLを読み込まない場合はtrue．既定ではfalse
         /// </summary>
-        public boolean DoNotUseVocaloid1 = false;
+        public bool DoNotUseVocaloid1 = false;
         /// <summary>
         /// WAVE再生時のバッファーサイズ。既定では1000ms。
         /// </summary>
@@ -463,19 +426,19 @@ namespace cadencii
         /// </summary>
         public RendererKind DefaultSynthesizer
 #if ENABLE_VOCALOID
-            = RendererKind.VOCALOID2;
+ = RendererKind.VOCALOID2;
 #else
             = RendererKind.VCNT;
 #endif
         /// <summary>
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか．デフォルトではfalse
         /// </summary>
-        public boolean UseUserDefinedAutoVibratoType = false;
+        public bool UseUserDefinedAutoVibratoType = false;
         /// <summary>
         /// 再生中に画面を描画するかどうか。デフォルトはfalse
         /// <version>3.3+</version>
         /// </summary>
-        public boolean SkipDrawWhilePlaying = false;
+        public bool SkipDrawWhilePlaying = false;
         /// <summary>
         /// ピアノロール画面の縦方向のスケール.
         /// <verssion>3.3+</verssion>
@@ -505,22 +468,22 @@ namespace cadencii
         /// ファイル・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowFile = false;
+        public bool BandNewRowFile = false;
         /// <summary>
         /// ツール・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowTool = false;
+        public bool BandNewRowTool = false;
         /// <summary>
         /// メジャー・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowMeasure = false;
+        public bool BandNewRowMeasure = false;
         /// <summary>
         /// ポジション・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowPosition = true;
+        public bool BandNewRowPosition = true;
         /// <summary>
         /// ファイル・ツールバーの順番
         /// <remarks>version 3.3+</remarks>
@@ -553,40 +516,34 @@ namespace cadencii
         /// 拡張子はピリオドを含めない
         /// <remarks>version 3.3+</remarks>
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
-        public Vector<String> LastUsedPathIn = new Vector<String>();
+        public List<string> LastUsedPathIn = new List<string>();
         /// <summary>
         /// 最後に出力したファイルパスのリスト
         /// リストに入る文字列は，拡張子+タブ文字+パスの形式にする
         /// 拡張子はピリオドを含めない
         /// <remarks>version 3.3+</remarks>
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
-        public Vector<String> LastUsedPathOut = new Vector<String>();
+        public List<string> LastUsedPathOut = new List<string>();
         /// <summary>
         /// 使用するWINEPREFIX
         /// version 3.3+
         /// </summary>
-        public String WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
+        public string WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
         /// <summary>
         /// wineのトップディレクトリ
         /// version 3.3+
         /// </summary>
-        public String WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
+        public string WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
         /// <summary>
         /// Cadencii付属のWineを使う場合にtrue，そうでなければWineTopで指定されたWineが利用される
         /// version 3.3+
         /// </summary>
-        public boolean WineTopBuiltin = true;
+        public bool WineTopBuiltin = true;
         /// <summary>
         /// UTAUのresampler用に，ジャンクション機能を使うかどうか
         /// version 3.3+
         /// </summary>
-        public boolean UseWideCharacterWorkaround = false;
+        public bool UseWideCharacterWorkaround = false;
         public bool DoNotAutomaticallyCheckForUpdates = false;
 
         /// <summary>
@@ -607,11 +564,7 @@ namespace cadencii
         public const int MIN_PIANOROLL_SCALEY = -4;
 
         #region static fields
-#if JAVA
-        private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
-#else
-        private static cadencii.xml.XmlSerializer s_serializer = new cadencii.xml.XmlSerializer( typeof( EditorConfig ) );
-#endif
+        private static cadencii.xml.XmlSerializer s_serializer = new cadencii.xml.XmlSerializer(typeof(EditorConfig));
         #endregion
 
         /// <summary>
@@ -625,14 +578,12 @@ namespace cadencii
         /// </summary>
         public EditorConfig()
         {
-#if !JAVA
             // デフォルトのフォントを，システムのメニューフォントと同じにする
             System.Drawing.Font f = System.Windows.Forms.SystemInformation.MenuFont;
-            if ( f != null ) {
+            if (f != null) {
                 this.BaseFontName = f.Name;
                 this.ScreenFontName = f.Name;
             }
-#endif
 
             // 言語設定を，システムのデフォルトの言語を用いる
             this.Language = Messaging.getRuntimeLanguageName();
@@ -650,22 +601,22 @@ namespace cadencii
         #endregion
 
         #region private static method
-        private static String getLastUsedPathCore( Vector<String> list, String extension )
+        private static string getLastUsedPathCore(List<string> list, string extension)
         {
-            if ( extension == null ) return "";
-            if ( PortUtil.getStringLength( extension ) <= 0 ) return "";
-            if ( extension.Equals( "." ) ) return "";
+            if (extension == null) return "";
+            if (PortUtil.getStringLength(extension) <= 0) return "";
+            if (extension.Equals(".")) return "";
 
-            if ( extension.StartsWith( "." ) ) {
-                extension = extension.Substring( 1 );
+            if (extension.StartsWith(".")) {
+                extension = extension.Substring(1);
             }
 
-            int c = list.size();
-            for ( int i = 0; i < c; i++ ) {
-                String s = list.get( i );
-                if ( s.StartsWith( extension ) ) {
-                    String[] spl = PortUtil.splitString( s, '\t' );
-                    if ( spl.Length >= 2 ) {
+            int c = list.Count;
+            for (int i = 0; i < c; i++) {
+                string s = list[i];
+                if (s.StartsWith(extension)) {
+                    string[] spl = PortUtil.splitString(s, '\t');
+                    if (spl.Length >= 2) {
                         return spl[1];
                     }
                     break;
@@ -674,25 +625,25 @@ namespace cadencii
             return "";
         }
 
-        private static void setLastUsedPathCore( Vector<String> list, String path, String ext_with_dot )
+        private static void setLastUsedPathCore(List<string> list, string path, string ext_with_dot)
         {
-            String extension = ext_with_dot;
-            if ( extension == null ) return;
-            if ( extension.Equals( "." ) ) return;
-            if ( extension.StartsWith( "." ) ) {
-                extension = extension.Substring( 1 );
+            string extension = ext_with_dot;
+            if (extension == null) return;
+            if (extension.Equals(".")) return;
+            if (extension.StartsWith(".")) {
+                extension = extension.Substring(1);
             }
 
-            int c = list.size();
-            String entry = extension + "\t" + path;
-            for ( int i = 0; i < c; i++ ) {
-                String s = list.get( i );
-                if ( s.StartsWith( extension ) ) {
-                    list.set( i, entry );
+            int c = list.Count;
+            string entry = extension + "\t" + path;
+            for (int i = 0; i < c; i++) {
+                string s = list[i];
+                if (s.StartsWith(extension)) {
+                    list[i] = entry;
                     return;
                 }
             }
-            list.add( entry );
+            list.Add(entry);
         }
         #endregion
 
@@ -701,9 +652,9 @@ namespace cadencii
         /// 音符イベントに，デフォルトの歌唱スタイルを適用します
         /// </summary>
         /// <param name="item"></param>
-        public void applyDefaultSingerStyle( VsqID item )
+        public void applyDefaultSingerStyle(VsqID item)
         {
-            if ( item == null ) return;
+            if (item == null) return;
             item.PMBendDepth = this.DefaultPMBendDepth;
             item.PMBendLength = this.DefaultPMBendLength;
             item.PMbPortamentoUse = this.DefaultPMbPortamentoUse;
@@ -714,50 +665,50 @@ namespace cadencii
         /// <summary>
         /// 使用するWineのインストールディレクトリを取得します
         /// </summary>
-        public String getWineTop()
+        public string getWineTop()
         {
-            if( WineTopBuiltin ){
-                return getBuiltinWineTop( "Wine.bundle" );
-            }else{
+            if (WineTopBuiltin) {
+                return getBuiltinWineTop("Wine.bundle");
+            } else {
                 return WineTop;
             }
         }
-        
+
         /// <summary>
         /// 指定した名前のバンドルの，Wineのインストールディレクトリを取得します
         /// </summary>
-        private String getBuiltinWineTop( String bundle_name )
+        private string getBuiltinWineTop(string bundle_name)
         {
-            String appstart = PortUtil.getApplicationStartupPath();
+            string appstart = PortUtil.getApplicationStartupPath();
             // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
-            String parent = PortUtil.getDirectoryName( appstart );
-            String ret = Path.Combine( parent, bundle_name );
+            string parent = PortUtil.getDirectoryName(appstart);
+            string ret = Path.Combine(parent, bundle_name);
             if (!Directory.Exists(ret)) {
                 // ../Wine.bundleが無い場合
-                ret = Path.Combine( appstart, bundle_name );
+                ret = Path.Combine(appstart, bundle_name);
             }
-            ret = Path.Combine( ret, "Contents" );
-            ret = Path.Combine( ret, "SharedSupport" );
+            ret = Path.Combine(ret, "Contents");
+            ret = Path.Combine(ret, "SharedSupport");
             return ret;
         }
 
-        public String getBuiltinWineMinimumExecutable()
+        public string getBuiltinWineMinimumExecutable()
         {
-            String ret = getBuiltinWineTop( "WineMinimum.bundle" );
-            ret = Path.Combine( ret, "bin" );
-            ret = Path.Combine( ret, "wine" );
+            string ret = getBuiltinWineTop("WineMinimum.bundle");
+            ret = Path.Combine(ret, "bin");
+            ret = Path.Combine(ret, "wine");
             return ret;
         }
 
         /// <summary>
         /// wineの実行ファイルのパスを取得します
         /// </summary>
-        public String getBuiltinWineExecutable__()
+        public string getBuiltinWineExecutable__()
         {
-            String ret = getBuiltinWineTop( "Wine.bundle" );
-            ret = Path.Combine( ret, "bin" );
-            ret = Path.Combine( ret, "wine" );
+            string ret = getBuiltinWineTop("Wine.bundle");
+            ret = Path.Combine(ret, "bin");
+            ret = Path.Combine(ret, "wine");
             return ret;
         }
 
@@ -767,8 +718,8 @@ namespace cadencii
         /// <returns></returns>
         public int getResamplerCount()
         {
-            int ret = PathResamplers.size();
-            if ( !PathResampler.Equals( "" ) ) {
+            int ret = PathResamplers.Count;
+            if (!PathResampler.Equals("")) {
                 ret++;
             }
             return ret;
@@ -779,9 +730,9 @@ namespace cadencii
         /// </summary>
         public void clearResampler()
         {
-            PathResamplers.clear();
+            PathResamplers.Clear();
             PathResampler = "";
-            ResamplersWithWine.clear();
+            ResamplersWithWine.Clear();
         }
 
         /// <summary>
@@ -789,13 +740,13 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public boolean isResamplerWithWineAt( int index )
+        public bool isResamplerWithWineAt(int index)
         {
-            if ( index == 0 ) {
+            if (index == 0) {
                 return ResamplerWithWine;
             } else {
                 index--;
-                if ( 0 <= index && index < ResamplersWithWine.Count ) {
+                if (0 <= index && index < ResamplersWithWine.Count) {
                     return ResamplersWithWine[index];
                 }
                 return false;
@@ -807,13 +758,13 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <param name="with_wine"></param>
-        public void setResamplerWithWineAt( int index, boolean with_wine )
+        public void setResamplerWithWineAt(int index, bool with_wine)
         {
-            if ( index == 0 ) {
+            if (index == 0) {
                 ResamplerWithWine = with_wine;
             } else {
                 index--;
-                if ( 0 <= index && index < ResamplersWithWine.Count ) {
+                if (0 <= index && index < ResamplersWithWine.Count) {
                     ResamplersWithWine[index] = with_wine;
                 }
             }
@@ -824,14 +775,14 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public String getResamplerAt( int index )
+        public string getResamplerAt(int index)
         {
-            if ( index == 0 ) {
+            if (index == 0) {
                 return PathResampler;
             } else {
                 index--;
-                if ( 0 <= index && index < PathResamplers.size() ) {
-                    return PathResamplers.get( index );
+                if (0 <= index && index < PathResamplers.Count) {
+                    return PathResamplers[index];
                 }
             }
             return "";
@@ -842,20 +793,20 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <param name="path"></param>
-        public void setResamplerAt( int index, String path )
+        public void setResamplerAt(int index, string path)
         {
-            if ( path == null ) {
+            if (path == null) {
                 return;
             }
-            if ( path.Equals( "" ) ) {
+            if (path.Equals("")) {
                 return;
             }
-            if ( index == 0 ) {
+            if (index == 0) {
                 PathResampler = path;
             } else {
                 index--;
-                if ( 0 <= index && index < PathResamplers.size() ) {
-                    PathResamplers.set( index, path );
+                if (0 <= index && index < PathResamplers.Count) {
+                    PathResamplers[index] = path;
                 }
             }
         }
@@ -864,31 +815,31 @@ namespace cadencii
         /// 第index番目のUTAU互換合成器を登録解除します
         /// </summary>
         /// <param name="index"></param>
-        public void removeResamplerAt( int index )
+        public void removeResamplerAt(int index)
         {
-            int size = PathResamplers.size();
-            if ( index == 0 ) {
-                if ( size > 0 ) {
-                    PathResampler = PathResamplers.get( 0 );
-                    ResamplerWithWine = ResamplersWithWine.get( 0 );
-                    for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
-                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
+            int size = PathResamplers.Count;
+            if (index == 0) {
+                if (size > 0) {
+                    PathResampler = PathResamplers[0];
+                    ResamplerWithWine = ResamplersWithWine[0];
+                    for (int i = 0; i < size - 1; i++) {
+                        PathResamplers[i] = PathResamplers[i + 1];
+                        ResamplersWithWine[i] = ResamplersWithWine[i + 1];
                     }
-                    PathResamplers.removeElementAt( size - 1 );
-                    ResamplersWithWine.removeElementAt( size - 1 );
+                    PathResamplers.RemoveAt(size - 1);
+                    ResamplersWithWine.RemoveAt(size - 1);
                 } else {
                     PathResampler = "";
                 }
             } else {
                 index--;
-                if ( 0 <= index && index < size ) {
-                    for ( int i = 0; i < size - 1; i++ ) {
-                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
-                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
+                if (0 <= index && index < size) {
+                    for (int i = 0; i < size - 1; i++) {
+                        PathResamplers[i] = PathResamplers[i + 1];
+                        ResamplersWithWine[i] = ResamplersWithWine[i + 1];
                     }
-                    PathResamplers.removeElementAt( size - 1 );
-                    ResamplersWithWine.removeElementAt( size - 1 );
+                    PathResamplers.RemoveAt(size - 1);
+                    ResamplersWithWine.RemoveAt(size - 1);
                 }
             }
         }
@@ -897,15 +848,15 @@ namespace cadencii
         /// 新しいUTAU互換合成器のパスを登録します
         /// </summary>
         /// <param name="path"></param>
-        public void addResampler( String path, boolean with_wine )
+        public void addResampler(string path, bool with_wine)
         {
             int count = getResamplerCount();
-            if ( count == 0 ) {
+            if (count == 0) {
                 PathResampler = path;
                 ResamplerWithWine = with_wine;
             } else {
-                PathResamplers.add( path );
-                ResamplersWithWine.add( with_wine );
+                PathResamplers.Add(path);
+                ResamplersWithWine.Add(with_wine);
             }
         }
 
@@ -914,11 +865,11 @@ namespace cadencii
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public String getLastUsedPathIn( String extension )
+        public string getLastUsedPathIn(string extension)
         {
-            String ret = getLastUsedPathCore( LastUsedPathIn, extension );
-            if ( ret.Equals( "" ) ) {
-                return getLastUsedPathCore( LastUsedPathOut, extension );
+            string ret = getLastUsedPathCore(LastUsedPathIn, extension);
+            if (ret.Equals("")) {
+                return getLastUsedPathCore(LastUsedPathOut, extension);
             }
             /*if ( !ret.Equals( "" ) ) {
                 ret = PortUtil.getDirectoryName( ret );
@@ -930,9 +881,9 @@ namespace cadencii
         /// 最後に出力したファイルのパスを設定します
         /// </summary>
         /// <param name="path"></param>
-        public void setLastUsedPathIn( String path, String ext_with_dot )
+        public void setLastUsedPathIn(string path, string ext_with_dot)
         {
-            setLastUsedPathCore( LastUsedPathIn, path, ext_with_dot );
+            setLastUsedPathCore(LastUsedPathIn, path, ext_with_dot);
         }
 
         /// <summary>
@@ -940,11 +891,11 @@ namespace cadencii
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public String getLastUsedPathOut( String extension )
+        public string getLastUsedPathOut(string extension)
         {
-            String ret = getLastUsedPathCore( LastUsedPathOut, extension );
-            if ( ret.Equals( "" ) ) {
-                ret = getLastUsedPathCore( LastUsedPathIn, extension );
+            string ret = getLastUsedPathCore(LastUsedPathOut, extension);
+            if (ret.Equals("")) {
+                ret = getLastUsedPathCore(LastUsedPathIn, extension);
             }
             /*if ( !ret.Equals( "" ) ) {
                 ret = PortUtil.getDirectoryName( ret );
@@ -957,9 +908,9 @@ namespace cadencii
         /// </summary>
         /// <param name="path"></param>
         /// <param name="ext_with_dot">ピリオド付きの拡張子（ex. ".txt"）</param>
-        public void setLastUsedPathOut( String path, String ext_with_dot )
+        public void setLastUsedPathOut(string path, string ext_with_dot)
         {
-            setLastUsedPathCore( LastUsedPathOut, path, ext_with_dot );
+            setLastUsedPathCore(LastUsedPathOut, path, ext_with_dot);
         }
 
         /// <summary>
@@ -968,60 +919,60 @@ namespace cadencii
         /// <param name="type"></param>
         /// <param name="vibrato_clocks"></param>
         /// <returns></returns>
-        public VibratoHandle createAutoVibrato( SynthesizerType type, int vibrato_clocks )
+        public VibratoHandle createAutoVibrato(SynthesizerType type, int vibrato_clocks)
         {
-            if ( UseUserDefinedAutoVibratoType ) {
-                if ( AutoVibratoCustom == null ) {
-                    AutoVibratoCustom = new Vector<VibratoHandle>();
+            if (UseUserDefinedAutoVibratoType) {
+                if (AutoVibratoCustom == null) {
+                    AutoVibratoCustom = new List<VibratoHandle>();
                 }
 
                 // 下4桁からインデックスを取得
                 int index = 0;
-                if ( this.AutoVibratoTypeCustom == null ) {
+                if (this.AutoVibratoTypeCustom == null) {
                     index = 0;
                 } else {
                     int trimlen = 4;
-                    int len = PortUtil.getStringLength( this.AutoVibratoTypeCustom );
-                    if ( len < 4 ) {
+                    int len = PortUtil.getStringLength(this.AutoVibratoTypeCustom);
+                    if (len < 4) {
                         trimlen = len;
                     }
-                    if ( trimlen > 0 ) {
-                        String s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
+                    if (trimlen > 0) {
+                        string s = this.AutoVibratoTypeCustom.Substring(len - trimlen, trimlen);
                         try {
-                            index = (int)PortUtil.fromHexString( s );
+                            index = (int)PortUtil.fromHexString(s);
                             index--;
-                        } catch ( Exception ex ) {
-                            serr.println( typeof( EditorConfig ) + ".createAutoVibrato; ex=" + ex + "; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; s=" + s );
+                        } catch (Exception ex) {
+                            serr.println(typeof(EditorConfig) + ".createAutoVibrato; ex=" + ex + "; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; s=" + s);
                             index = 0;
                         }
                     }
                 }
 
 #if DEBUG
-                sout.println( "EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index );
+                sout.println("EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index);
 #endif
                 VibratoHandle ret = null;
-                if ( 0 <= index && index < this.AutoVibratoCustom.size() ) {
-                    ret = this.AutoVibratoCustom.get( index );
-                    if ( ret != null ) {
+                if (0 <= index && index < this.AutoVibratoCustom.Count) {
+                    ret = this.AutoVibratoCustom[index];
+                    if (ret != null) {
                         ret = (VibratoHandle)ret.clone();
                     }
                 }
-                if ( ret == null ) {
+                if (ret == null) {
                     ret = new VibratoHandle();
                 }
-                ret.IconID = "$0404" + PortUtil.toHexString( index + 1, 4 );
-                ret.setLength( vibrato_clocks );
+                ret.IconID = "$0404" + PortUtil.toHexString(index + 1, 4);
+                ret.setLength(vibrato_clocks);
                 return ret;
             } else {
-                String iconid = type == SynthesizerType.VOCALOID1 ? AutoVibratoType1 : AutoVibratoType2;
-                VibratoHandle ret = VocaloSysUtil.getDefaultVibratoHandle( iconid,
+                string iconid = type == SynthesizerType.VOCALOID1 ? AutoVibratoType1 : AutoVibratoType2;
+                VibratoHandle ret = VocaloSysUtil.getDefaultVibratoHandle(iconid,
                                                                            vibrato_clocks,
-                                                                           type );
-                if ( ret == null ) {
+                                                                           type);
+                if (ret == null) {
                     ret = new VibratoHandle();
                     ret.IconID = "$04040001";
-                    ret.setLength( vibrato_clocks );
+                    ret.setLength(vibrato_clocks);
                 }
                 return ret;
             }
@@ -1029,19 +980,18 @@ namespace cadencii
 
         public int getControlCurveResolutionValue()
         {
-            return ClockResolutionUtility.getValue( ControlCurveResolution );
+            return ClockResolutionUtility.getValue(ControlCurveResolution);
         }
 
-        public TreeMap<String, Keys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
+        public SortedDictionary<string, Keys[]> getShortcutKeysDictionary(List<ValuePairOfStringArrayOfKeys> defs)
         {
-            TreeMap<String, Keys[]> ret = new TreeMap<String, Keys[]>();
-            for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
-                ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
+            SortedDictionary<string, Keys[]> ret = new SortedDictionary<string, Keys[]>();
+            for (int i = 0; i < ShortcutKeys.Count; i++) {
+                ret[ShortcutKeys[i].Key] = ShortcutKeys[i].Value;
             }
-            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = defs.iterator(); itr.hasNext(); ) {
-                ValuePairOfStringArrayOfKeys item = itr.next();
-                if ( !ret.containsKey( item.Key ) ) {
-                    ret.put( item.Key, item.Value );
+            foreach (var item in defs) {
+                if (!ret.ContainsKey(item.Key)) {
+                    ret[item.Key] = item.Value;
                 }
             }
             return ret;
@@ -1049,7 +999,7 @@ namespace cadencii
 
         public Font getBaseFont()
         {
-            return new Font( BaseFontName, Font.PLAIN, (int)BaseFontSize );
+            return new Font(BaseFontName, Font.PLAIN, (int)BaseFontSize);
         }
 
         public int getMouseHoverTime()
@@ -1057,18 +1007,17 @@ namespace cadencii
             return m_mouse_hover_time;
         }
 
-        public void setMouseHoverTime( int value )
+        public void setMouseHoverTime(int value)
         {
-            if ( value < 0 ) {
+            if (value < 0) {
                 m_mouse_hover_time = 0;
-            } else if ( 2000 < m_mouse_hover_time ) {
+            } else if (2000 < m_mouse_hover_time) {
                 m_mouse_hover_time = 2000;
             } else {
                 m_mouse_hover_time = value;
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
         /// <summary>
         /// ピアノロール上でマウスホバーイベントが発生するまでの時間(millisec)
@@ -1081,30 +1030,28 @@ namespace cadencii
             }
             set
             {
-                setMouseHoverTime( value );
+                setMouseHoverTime(value);
             }
         }
-#endif
 
         public QuantizeMode getPositionQuantize()
         {
             return m_position_quantize;
         }
 
-        public void setPositionQuantize( QuantizeMode value )
+        public void setPositionQuantize(QuantizeMode value)
         {
-            if ( m_position_quantize != value ) {
+            if (m_position_quantize != value) {
                 m_position_quantize = value;
                 try {
                     invokeQuantizeModeChangedEvent();
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( EditorConfig ) + ".getPositionQuantize; ex=" + ex + "\n" );
-                    serr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
+                } catch (Exception ex) {
+                    Logger.write(typeof(EditorConfig) + ".getPositionQuantize; ex=" + ex + "\n");
+                    serr.println("EditorConfig#setPositionQuantize; ex=" + ex);
                 }
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
         public QuantizeMode PositionQuantize
         {
@@ -1114,32 +1061,30 @@ namespace cadencii
             }
             set
             {
-                setPositionQuantize( value );
+                setPositionQuantize(value);
             }
         }
-#endif
 
-        public boolean isPositionQuantizeTriplet()
+        public bool isPositionQuantizeTriplet()
         {
             return m_position_quantize_triplet;
         }
 
-        public void setPositionQuantizeTriplet( boolean value )
+        public void setPositionQuantizeTriplet(bool value)
         {
-            if ( m_position_quantize_triplet != value ) {
+            if (m_position_quantize_triplet != value) {
                 m_position_quantize_triplet = value;
                 try {
                     invokeQuantizeModeChangedEvent();
-                } catch ( Exception ex ) {
-                    serr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
-                    Logger.write( typeof( EditorConfig ) + ".setPositionQuantizeTriplet; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("EditorConfig#setPositionQuantizeTriplet; ex=" + ex);
+                    Logger.write(typeof(EditorConfig) + ".setPositionQuantizeTriplet; ex=" + ex + "\n");
                 }
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
-        public boolean PositionQuantizeTriplet
+        public bool PositionQuantizeTriplet
         {
             get
             {
@@ -1147,30 +1092,28 @@ namespace cadencii
             }
             set
             {
-                setPositionQuantizeTriplet( value );
+                setPositionQuantizeTriplet(value);
             }
         }
-#endif
 
         public QuantizeMode getLengthQuantize()
         {
             return m_length_quantize;
         }
 
-        public void setLengthQuantize( QuantizeMode value )
+        public void setLengthQuantize(QuantizeMode value)
         {
-            if ( m_length_quantize != value ) {
+            if (m_length_quantize != value) {
                 m_length_quantize = value;
                 try {
                     invokeQuantizeModeChangedEvent();
-                } catch ( Exception ex ) {
-                    serr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
-                    Logger.write( typeof( EditorConfig ) + ".setLengthQuantize; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("EditorConfig#setLengthQuantize; ex=" + ex);
+                    Logger.write(typeof(EditorConfig) + ".setLengthQuantize; ex=" + ex + "\n");
                 }
             }
         }
 
-#if !JAVA
         public QuantizeMode LengthQuantize
         {
             get
@@ -1179,25 +1122,24 @@ namespace cadencii
             }
             set
             {
-                setLengthQuantize( value );
+                setLengthQuantize(value);
             }
         }
-#endif
 
-        public boolean isLengthQuantizeTriplet()
+        public bool isLengthQuantizeTriplet()
         {
             return m_length_quantize_triplet;
         }
 
-        public void setLengthQuantizeTriplet( boolean value )
+        public void setLengthQuantizeTriplet(bool value)
         {
-            if ( m_length_quantize_triplet != value ) {
+            if (m_length_quantize_triplet != value) {
                 m_length_quantize_triplet = value;
                 try {
                     invokeQuantizeModeChangedEvent();
-                } catch ( Exception ex ) {
-                    serr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
-                    Logger.write( typeof( EditorConfig ) + ".setLengthQuantizeTriplet; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("EditorConfig#setLengthQuantizeTriplet; ex=" + ex);
+                    Logger.write(typeof(EditorConfig) + ".setLengthQuantizeTriplet; ex=" + ex + "\n");
                 }
             }
         }
@@ -1207,14 +1149,13 @@ namespace cadencii
         /// </summary>
         private void invokeQuantizeModeChangedEvent()
         {
-            if ( QuantizeModeChanged != null ) {
-                QuantizeModeChanged.Invoke( typeof( EditorConfig ), new EventArgs() );
+            if (QuantizeModeChanged != null) {
+                QuantizeModeChanged.Invoke(typeof(EditorConfig), new EventArgs());
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
-        public boolean LengthQuantizeTriplet
+        public bool LengthQuantizeTriplet
         {
             get
             {
@@ -1222,67 +1163,64 @@ namespace cadencii
             }
             set
             {
-                setLengthQuantizeTriplet( value );
+                setLengthQuantizeTriplet(value);
             }
         }
-#endif
 
         /// <summary>
         /// 「最近使用したファイル」のリストに、アイテムを追加します
         /// </summary>
         /// <param name="new_file"></param>
-        public void pushRecentFiles( String new_file )
+        public void pushRecentFiles(string new_file)
         {
             // NumRecentFilesは0以下かも知れない
-            if ( NumRecentFiles <= 0 ) {
+            if (NumRecentFiles <= 0) {
                 NumRecentFiles = 5;
             }
 
             // RecentFilesはnullかもしれない．
-            if ( RecentFiles == null ) {
-                RecentFiles = new Vector<String>();
+            if (RecentFiles == null) {
+                RecentFiles = new List<string>();
             }
 
             // 重複があれば消す
-            Vector<String> dict = new Vector<String>();
-            for ( Iterator<String> itr = RecentFiles.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
-                boolean found = false;
-                for ( int i = 0; i < dict.size(); i++ ) {
-                    if ( s.Equals( dict.get( i ) ) ) {
+            List<string> dict = new List<string>();
+            foreach (var s in RecentFiles) {
+                bool found = false;
+                for (int i = 0; i < dict.Count; i++) {
+                    if (s.Equals(dict[i])) {
                         found = true;
                     }
                 }
-                if ( !found ) {
-                    dict.add( s );
+                if (!found) {
+                    dict.Add(s);
                 }
             }
-            RecentFiles.clear();
-            for ( Iterator<String> itr = dict.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
-                RecentFiles.add( s );
+            RecentFiles.Clear();
+            foreach (var s in dict) {
+                RecentFiles.Add(s);
             }
 
             // 現在登録されているRecentFilesのサイズが規定より大きければ，下の方から消す
-            if ( RecentFiles.size() > NumRecentFiles ) {
-                for ( int i = RecentFiles.size() - 1; i > NumRecentFiles; i-- ) {
-                    RecentFiles.removeElementAt( i );
+            if (RecentFiles.Count > NumRecentFiles) {
+                for (int i = RecentFiles.Count - 1; i > NumRecentFiles; i--) {
+                    RecentFiles.RemoveAt(i);
                 }
             }
 
             // 登録しようとしているファイルは，RecentFilesの中に既に登録されているかs？
             int index = -1;
-            for ( int i = 0; i < RecentFiles.size(); i++ ) {
-                if ( RecentFiles.get( i ).Equals( new_file ) ) {
+            for (int i = 0; i < RecentFiles.Count; i++) {
+                if (RecentFiles[i].Equals(new_file)) {
                     index = i;
                     break;
                 }
             }
 
-            if ( index >= 0 ) {  // 登録されてる場合
-                RecentFiles.removeElementAt( index );
+            if (index >= 0) {  // 登録されてる場合
+                RecentFiles.RemoveAt(index);
             }
-            RecentFiles.insertElementAt( new_file, 0 );
+            RecentFiles.Insert(0, new_file);
         }
         #endregion
 
@@ -1294,59 +1232,56 @@ namespace cadencii
         public void check()
         {
             int count = SymbolTable.getCount();
-            for ( int i = 0; i < count; i++ ) {
-                SymbolTable st = SymbolTable.getSymbolTable( i );
-                boolean found = false;
-                for ( Iterator<String> itr = UserDictionaries.iterator(); itr.hasNext(); ) {
-                    String s = itr.next();
-                    String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
-                    if ( st.getName().Equals( spl[0] ) ) {
+            for (int i = 0; i < count; i++) {
+                SymbolTable st = SymbolTable.getSymbolTable(i);
+                bool found = false;
+                foreach (var s in UserDictionaries) {
+                    string[] spl = PortUtil.splitString(s, new char[] { '\t' }, 2);
+                    if (st.getName().Equals(spl[0])) {
                         found = true;
                         break;
                     }
                 }
-                if ( !found ) {
-                    UserDictionaries.add( st.getName() + "\tT" );
+                if (!found) {
+                    UserDictionaries.Add(st.getName() + "\tT");
                 }
             }
 
             // key_widthを最大，最小の間に収める
             int draft_key_width = this.KeyWidth;
-            if ( draft_key_width < AppManager.MIN_KEY_WIDTH ) {
+            if (draft_key_width < AppManager.MIN_KEY_WIDTH) {
                 draft_key_width = AppManager.MIN_KEY_WIDTH;
-            } else if ( AppManager.MAX_KEY_WIDTH < draft_key_width ) {
+            } else if (AppManager.MAX_KEY_WIDTH < draft_key_width) {
                 draft_key_width = AppManager.MAX_KEY_WIDTH;
             }
 
             // PathResamplersWithWineの個数があってるかどうかチェック
-            if ( PathResamplers == null ) {
-                PathResamplers = new Vector<String>();
+            if (PathResamplers == null) {
+                PathResamplers = new List<string>();
             }
-            if ( ResamplersWithWine == null ) {
-                ResamplersWithWine = new Vector<Boolean>();
+            if (ResamplersWithWine == null) {
+                ResamplersWithWine = new List<Boolean>();
             }
-            if ( PathResamplers.Count != ResamplersWithWine.Count ) {
+            if (PathResamplers.Count != ResamplersWithWine.Count) {
                 int delta = ResamplersWithWine.Count - PathResamplers.Count;
-                if ( delta > 0 ) {
-                    for ( int i = 0; i < delta; i++ ) {
-                        ResamplersWithWine.removeElementAt( ResamplersWithWine.Count - 1 );
+                if (delta > 0) {
+                    for (int i = 0; i < delta; i++) {
+                        ResamplersWithWine.RemoveAt(ResamplersWithWine.Count - 1);
                     }
-                } else if ( delta < 0 ) {
-                    for ( int i = 0; i < -delta; i++ ) {
-                        ResamplersWithWine.Add( false );
+                } else if (delta < 0) {
+                    for (int i = 0; i < -delta; i++) {
+                        ResamplersWithWine.Add(false);
                     }
                 }
             }
 
             // SynthEngineの違いを識別しないように変更．VOALOID1に縮約する
-            if ( DefaultSynthesizer == RendererKind.VOCALOID1_100 ||
-                DefaultSynthesizer == RendererKind.VOCALOID1_101 ) {
+            if (DefaultSynthesizer == RendererKind.VOCALOID1_100 ||
+                DefaultSynthesizer == RendererKind.VOCALOID1_101) {
                 DefaultSynthesizer = RendererKind.VOCALOID1;
             }
         }
         #endregion
     }
 
-#if !JAVA
 }
-#endif

@@ -11,21 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-public class VsqxConverter
-{
-    public static VsqFile readFromVsqx( String filePath )
-        throws UnsupportedOperationException
-    {
-        throw new UnsupportedOperationException();
-    }
-}
-
-#else
-
 using System;
 using System.Xml;
 using System.Collections.Generic;
@@ -45,64 +30,64 @@ namespace cadencii.vsq.io
         /// <param name="filePath">ファイルパス</param>
         /// <exception cref="System.Exception">読み込みに失敗した時スローされる</exception>
         /// <returns>生成したシーケンスオブジェクト</returns>
-        public static VsqFile readFromVsqx( string filePath )
+        public static VsqFile readFromVsqx(string filePath)
         {
-            if ( filePath == null ) {
-                throw new ArgumentNullException( "filePath" );
+            if (filePath == null) {
+                throw new ArgumentNullException("filePath");
             }
 
-            if ( false == File.Exists( filePath ) ) {
-                throw new Exception( "file not found" );
+            if (false == File.Exists(filePath)) {
+                throw new Exception("file not found");
             }
 
             var xml = new XmlDocument();
-            xml.Load( filePath );
+            xml.Load(filePath);
 
             // 音源テーブルを解釈
-            var voiceTable = getVoiceTable( xml );
+            var voiceTable = getVoiceTable(xml);
 
             // マスタートラックを解釈
             XmlElement masterTrack = xml.DocumentElement["masterTrack"];
-            int preMeasure = int.Parse( masterTrack["preMeasure"].InnerText );
-            VsqFile result = new VsqFile( "", preMeasure, 4, 4, 500000 );
+            int preMeasure = int.Parse(masterTrack["preMeasure"].InnerText);
+            VsqFile result = new VsqFile("", preMeasure, 4, 4, 500000);
 
             // テンポ変更を読み取る
-            result.TempoTable.clear();
-            foreach ( XmlNode node in masterTrack.GetElementsByTagName( "tempo" ) ) {
-                int posTick = int.Parse( node["posTick"].InnerText );
-                int bpm = int.Parse( node["bpm"].InnerText );
+            result.TempoTable.Clear();
+            foreach (XmlNode node in masterTrack.GetElementsByTagName("tempo")) {
+                int posTick = int.Parse(node["posTick"].InnerText);
+                int bpm = int.Parse(node["bpm"].InnerText);
                 int tempo = (int)(6000000000L / bpm);
-                TempoTableEntry tempoEntry = new TempoTableEntry( posTick, tempo, 0.0 );
-                result.TempoTable.add( tempoEntry );
+                TempoTableEntry tempoEntry = new TempoTableEntry(posTick, tempo, 0.0);
+                result.TempoTable.Add(tempoEntry);
             }
             result.TempoTable.updateTempoInfo();
             // 拍子変更を読み取る
-            result.TimesigTable.clear();
-            foreach ( XmlNode node in masterTrack.GetElementsByTagName( "timeSig" ) ) {
-                int posMes = int.Parse( node["posMes"].InnerText );
-                int numerator = int.Parse( node["nume"].InnerText );
-                int denominator = int.Parse( node["denomi"].InnerText );
-                TimeSigTableEntry timesigEntry = new TimeSigTableEntry( 0, numerator, denominator, posMes );
-                result.TimesigTable.add( timesigEntry );
+            result.TimesigTable.Clear();
+            foreach (XmlNode node in masterTrack.GetElementsByTagName("timeSig")) {
+                int posMes = int.Parse(node["posMes"].InnerText);
+                int numerator = int.Parse(node["nume"].InnerText);
+                int denominator = int.Parse(node["denomi"].InnerText);
+                TimeSigTableEntry timesigEntry = new TimeSigTableEntry(0, numerator, denominator, posMes);
+                result.TimesigTable.Add(timesigEntry);
             }
             result.TimesigTable.updateTimesigInfo();
 
             // マスター以外のトラックを解釈
-            foreach ( XmlNode node in xml.DocumentElement.GetElementsByTagName( "vsTrack" ) ) {
-                int trackIndex = int.Parse( node["vsTrackNo"].InnerText ) + 1;
+            foreach (XmlNode node in xml.DocumentElement.GetElementsByTagName("vsTrack")) {
+                int trackIndex = int.Parse(node["vsTrackNo"].InnerText) + 1;
                 VsqTrack track = null;
-                if ( result.Track.size() <= trackIndex ) {
-                    int amount = trackIndex + 1 - result.Track.size();
-                    for ( int i = 0; i < amount; i++ ) {
-                        result.Track.add( new VsqTrack( "", "" ) );
+                if (result.Track.Count <= trackIndex) {
+                    int amount = trackIndex + 1 - result.Track.Count;
+                    for (int i = 0; i < amount; i++) {
+                        result.Track.Add(new VsqTrack("", ""));
                     }
                 }
-                track = result.Track.get( trackIndex );
-                track.setName( node["trackName"].InnerText );
+                track = result.Track[trackIndex];
+                track.setName(node["trackName"].InnerText);
 
-                foreach ( XmlNode child in node.ChildNodes ) {
-                    if ( child.Name == "musicalPart" ) {
-                        parseMusicalPart( voiceTable, track, child );
+                foreach (XmlNode child in node.ChildNodes) {
+                    if (child.Name == "musicalPart") {
+                        parseMusicalPart(voiceTable, track, child);
                     }
                 }
             }
@@ -110,23 +95,23 @@ namespace cadencii.vsq.io
             // MasterMixerをパース
             var mixer = xml.DocumentElement["mixer"];
             var masterUnit = mixer["masterUnit"];
-            result.Mixer.MasterFeder = int.Parse( masterUnit["vol"].InnerText );
+            result.Mixer.MasterFeder = int.Parse(masterUnit["vol"].InnerText);
             result.Mixer.MasterMute = 0;
             result.Mixer.MasterPanpot = 64;
 
             // SlaveMixerをパース
-            result.Mixer.Slave.clear();
-            for ( int i = 1; i < result.Track.size(); i++ ) {
-                result.Mixer.Slave.add( null );
+            result.Mixer.Slave.Clear();
+            for (int i = 1; i < result.Track.Count; i++) {
+                result.Mixer.Slave.Add(null);
             }
-            foreach ( XmlNode vsUnit in mixer.GetElementsByTagName( "vsUnit" ) ) {
-                int vsTrackNo = int.Parse( vsUnit["vsTrackNo"].InnerText );
-                int mute = int.Parse( vsUnit["mute"].InnerText );
-                int solo = int.Parse( vsUnit["solo"].InnerText );
-                int pan = int.Parse( vsUnit["pan"].InnerText );
-                int vol = int.Parse( vsUnit["vol"].InnerText );
-                var slave = new VsqMixerEntry( vol, pan, mute, solo );
-                result.Mixer.Slave.set( vsTrackNo, slave );
+            foreach (XmlNode vsUnit in mixer.GetElementsByTagName("vsUnit")) {
+                int vsTrackNo = int.Parse(vsUnit["vsTrackNo"].InnerText);
+                int mute = int.Parse(vsUnit["mute"].InnerText);
+                int solo = int.Parse(vsUnit["solo"].InnerText);
+                int pan = int.Parse(vsUnit["pan"].InnerText);
+                int vol = int.Parse(vsUnit["vol"].InnerText);
+                var slave = new VsqMixerEntry(vol, pan, mute, solo);
+                result.Mixer.Slave[vsTrackNo] = slave;
             }
 
             return result;
@@ -138,55 +123,55 @@ namespace cadencii.vsq.io
         /// <param name="voiceTable">音源情報のテーブル</param>
         /// <param name="track">追加先のトラック</param>
         /// <param name="musicalPart">解釈対象のmusicalPart</param>
-        private static void parseMusicalPart( Dictionary<int, Dictionary<int, IconHandle>> voiceTable, VsqTrack track, XmlNode musicalPart )
+        private static void parseMusicalPart(Dictionary<int, Dictionary<int, IconHandle>> voiceTable, VsqTrack track, XmlNode musicalPart)
         {
-            int offset = int.Parse( musicalPart["posTick"].InnerText );
+            int offset = int.Parse(musicalPart["posTick"].InnerText);
 
             // 歌手切り替え情報をパース
-            foreach ( XmlNode singer in musicalPart.ChildNodes ) {
-                if ( singer.Name != "singer" ) {
+            foreach (XmlNode singer in musicalPart.ChildNodes) {
+                if (singer.Name != "singer") {
                     continue;
                 }
-                int posTick = int.Parse( singer["posTick"].InnerText );
-                int bankSelect = int.Parse( singer["vBS"].InnerText );
-                int programChange = int.Parse( singer["vPC"].InnerText );
-                if ( voiceTable.ContainsKey( bankSelect ) && voiceTable[bankSelect].ContainsKey( programChange ) ) {
+                int posTick = int.Parse(singer["posTick"].InnerText);
+                int bankSelect = int.Parse(singer["vBS"].InnerText);
+                int programChange = int.Parse(singer["vPC"].InnerText);
+                if (voiceTable.ContainsKey(bankSelect) && voiceTable[bankSelect].ContainsKey(programChange)) {
                     var iconHandle = voiceTable[bankSelect][programChange];
                     var item = new VsqEvent();
                     item.ID.IconHandle = (IconHandle)iconHandle.clone();
                     item.ID.type = VsqIDType.Singer;
                     item.Clock = offset + posTick;
-                    track.addEvent( item );
+                    track.addEvent(item);
                 } else {
-                    throw new Exception( "音源情報のparseに失敗しました。" );
+                    throw new Exception("音源情報のparseに失敗しました。");
                 }
             }
 
             // ノート情報をパース
-            foreach ( XmlNode note in musicalPart.ChildNodes ) {
-                if ( note.Name != "note" ) {
+            foreach (XmlNode note in musicalPart.ChildNodes) {
+                if (note.Name != "note") {
                     continue;
                 }
-                var item = createNoteEvent( note, offset );
-                track.addEvent( item );
+                var item = createNoteEvent(note, offset);
+                track.addEvent(item);
 
                 // OPEカーブを更新
-                int ope = getOpening( note );
-                var list = track.getCurve( "OPE" );
-                list.add( item.Clock, ope );
+                int ope = getOpening(note);
+                var list = track.getCurve("OPE");
+                list.add(item.Clock, ope);
             }
 
             // OPE以外のコントロールカーブをパース
-            foreach ( XmlNode ctrl in musicalPart.ChildNodes ) {
-                if ( ctrl.Name != "mCtrl" ) {
+            foreach (XmlNode ctrl in musicalPart.ChildNodes) {
+                if (ctrl.Name != "mCtrl") {
                     continue;
                 }
-                int posTick = int.Parse( ctrl["posTick"].InnerText );
+                int posTick = int.Parse(ctrl["posTick"].InnerText);
                 string id = ctrl["attr"].Attributes["id"].Value;
-                int value = int.Parse( ctrl["attr"].InnerText );
-                var list = track.getCurve( id );
-                if ( list != null ) {
-                    list.add( posTick, value );
+                int value = int.Parse(ctrl["attr"].InnerText);
+                var list = track.getCurve(id);
+                if (list != null) {
+                    list.add(posTick, value);
                 }
             }
         }
@@ -196,10 +181,10 @@ namespace cadencii.vsq.io
         /// </summary>
         /// <param name="node">note要素を表すxml要素</param>
         /// <returns>opening値</returns>
-        private static int getOpening( XmlNode node )
+        private static int getOpening(XmlNode node)
         {
-            var attributes = getNoteAttributes( node );
-            if ( attributes.ContainsKey( "opening" ) ) {
+            var attributes = getNoteAttributes(node);
+            if (attributes.ContainsKey("opening")) {
                 return attributes["opening"];
             } else {
                 return 127;
@@ -211,13 +196,13 @@ namespace cadencii.vsq.io
         /// </summary>
         /// <param name="note">note要素を表すxml要素</param>
         /// <returns>attrの要素名をキーとした値のリスト</returns>
-        private static Dictionary<string, int> getNoteAttributes( XmlNode note )
+        private static Dictionary<string, int> getNoteAttributes(XmlNode note)
         {
             var result = new Dictionary<string, int>();
             var noteStyle = note["noteStyle"];
-            foreach ( XmlNode attr in noteStyle.GetElementsByTagName( "attr" ) ) {
+            foreach (XmlNode attr in noteStyle.GetElementsByTagName("attr")) {
                 string id = attr.Attributes["id"].Value;
-                int value = int.Parse( attr.InnerText );
+                int value = int.Parse(attr.InnerText);
                 result[id] = value;
             }
             return result;
@@ -229,9 +214,9 @@ namespace cadencii.vsq.io
         /// <param name="note">xml要素</param>
         /// <param name="tickOffset">指定したxml要素が所属しているmusicalPartの、オフセットtick数</param>
         /// <returns>生成した音符イベント</returns>
-        private static VsqEvent createNoteEvent( XmlNode note, int tickOffset )
+        private static VsqEvent createNoteEvent(XmlNode note, int tickOffset)
         {
-            int posTick = int.Parse( note["posTick"].InnerText );
+            int posTick = int.Parse(note["posTick"].InnerText);
             VsqEvent item = new VsqEvent();
             item.Clock = posTick + tickOffset;
             item.ID = new VsqID();
@@ -242,56 +227,56 @@ namespace cadencii.vsq.io
             XmlElement phnmsElement = note["phnms"];
             string symbols = phnmsElement.InnerText;
             bool symbolsProtected = false;
-            if ( phnmsElement.HasAttribute( "lock" ) ) {
-                int value = int.Parse( phnmsElement.Attributes["lock"].Value );
+            if (phnmsElement.HasAttribute("lock")) {
+                int value = int.Parse(phnmsElement.Attributes["lock"].Value);
                 symbolsProtected = value == 1;
             }
             item.ID.LyricHandle.L0.PhoneticSymbolProtected = symbolsProtected;
 
             item.ID.LyricHandle.L0.Phrase = lyric;
-            item.ID.LyricHandle.L0.setPhoneticSymbol( symbols );
+            item.ID.LyricHandle.L0.setPhoneticSymbol(symbols);
 
-            item.ID.Note = int.Parse( note["noteNum"].InnerText );
-            item.ID.setLength( int.Parse( note["durTick"].InnerText ) );
-            item.ID.Dynamics = int.Parse( note["velocity"].InnerText );
+            item.ID.Note = int.Parse(note["noteNum"].InnerText);
+            item.ID.setLength(int.Parse(note["durTick"].InnerText));
+            item.ID.Dynamics = int.Parse(note["velocity"].InnerText);
 
-            var attributes = getNoteAttributes( note );
-            if ( attributes.ContainsKey( "accent" ) ) {
+            var attributes = getNoteAttributes(note);
+            if (attributes.ContainsKey("accent")) {
                 item.ID.DEMaccent = attributes["accent"];
             }
-            if ( attributes.ContainsKey( "bendDep" ) ) {
+            if (attributes.ContainsKey("bendDep")) {
                 item.ID.PMBendDepth = attributes["bendDep"];
             }
-            if ( attributes.ContainsKey( "bendLen" ) ) {
+            if (attributes.ContainsKey("bendLen")) {
                 item.ID.PMBendLength = attributes["bendLen"];
             }
-            if ( attributes.ContainsKey( "decay" ) ) {
+            if (attributes.ContainsKey("decay")) {
                 item.ID.DEMdecGainRate = attributes["decay"];
             }
-            if ( attributes.ContainsKey( "fallPort" ) ) {
-                item.ID.setFallPortamento( attributes["fallPort"] == 1 );
+            if (attributes.ContainsKey("fallPort")) {
+                item.ID.setFallPortamento(attributes["fallPort"] == 1);
             }
-            if ( attributes.ContainsKey( "risePort" ) ) {
-                item.ID.setRisePortamento( attributes["risePort"] == 1 );
+            if (attributes.ContainsKey("risePort")) {
+                item.ID.setRisePortamento(attributes["risePort"] == 1);
             }
 
             // vibrato
-            if ( attributes.ContainsKey( "vibLen" ) && attributes.ContainsKey( "vibType" ) ) {
+            if (attributes.ContainsKey("vibLen") && attributes.ContainsKey("vibType")) {
                 int lengthPercentage = attributes["vibLen"];
                 int vibratoType = attributes["vibType"] - 1;
-                if ( lengthPercentage > 0 ) {
+                if (lengthPercentage > 0) {
                     var vibratoHandle = new VibratoHandle();
                     int length = item.ID.getLength();
                     int duration = (int)(length * (lengthPercentage / 100.0));
-                    vibratoHandle.setLength( duration );
+                    vibratoHandle.setLength(duration);
                     item.ID.VibratoDelay = length - duration;
                     vibratoHandle.IconID = "$0404" + vibratoType.ToString("X4");
 
                     double delayRatio = (double)(length - duration) / (double)length;
                     // VibDepth
-                    vibratoHandle.setDepthBP( getVibratoCurve( note, "vibDep", delayRatio ) );
+                    vibratoHandle.setDepthBP(getVibratoCurve(note, "vibDep", delayRatio));
                     // VibRate
-                    vibratoHandle.setRateBP( getVibratoCurve( note, "vibRate", delayRatio ) );
+                    vibratoHandle.setRateBP(getVibratoCurve(note, "vibRate", delayRatio));
 
                     item.ID.VibratoHandle = vibratoHandle;
                 }
@@ -305,34 +290,34 @@ namespace cadencii.vsq.io
         /// <param name="note">xml要素</param>
         /// <param name="type">取得するVibratoBPListのタイプ。vibDepまたはvibRateを指定する</param>
         /// <param name="delayRatio">音符の長さに対する、音符の先頭位置からビブラート開始位置までの距離の比率</param>
-        private static VibratoBPList getVibratoCurve( XmlNode note, string type, double delayRatio )
+        private static VibratoBPList getVibratoCurve(XmlNode note, string type, double delayRatio)
         {
             List<float> x = new List<float>();
             List<int> y = new List<int>();
 
             XmlElement noteStyle = note["noteStyle"];
-            foreach ( XmlNode seqAttr in noteStyle.GetElementsByTagName( "seqAttr" ) ) {
+            foreach (XmlNode seqAttr in noteStyle.GetElementsByTagName("seqAttr")) {
                 string id = seqAttr.Attributes["id"].Value;
-                if ( id == type ) {
-                    foreach ( XmlNode elem in seqAttr.ChildNodes ) {
-                        if ( elem.Name == "elem" ) {
-                            int posNrm = int.Parse( elem["posNrm"].InnerText );
-                            int elv = int.Parse( elem["elv"].InnerText );
+                if (id == type) {
+                    foreach (XmlNode elem in seqAttr.ChildNodes) {
+                        if (elem.Name == "elem") {
+                            int posNrm = int.Parse(elem["posNrm"].InnerText);
+                            int elv = int.Parse(elem["elv"].InnerText);
                             double pos = posNrm / 65535.0;
                             float actualPos = (float)(pos - delayRatio);
-                            if ( actualPos < 0.0f ) {
+                            if (actualPos < 0.0f) {
                                 actualPos = 0.0f;
-                            } else if ( 1.0f < actualPos ) {
+                            } else if (1.0f < actualPos) {
                                 actualPos = 1.0f;
                             }
-                            x.Add( actualPos );
-                            y.Add( elv );
+                            x.Add(actualPos);
+                            y.Add(elv);
                         }
                     }
                 }
             }
 
-            return new VibratoBPList( x.ToArray(), y.ToArray() );
+            return new VibratoBPList(x.ToArray(), y.ToArray());
         }
 
         /// <summary>
@@ -340,12 +325,12 @@ namespace cadencii.vsq.io
         /// </summary>
         /// <param name="xml">xmlドキュメント</param>
         /// <returns>バンクセレクト、プログラムチェンジをキーとしたIconHandleのマップ</returns>
-        private static Dictionary<int, Dictionary<int, IconHandle>> getVoiceTable( XmlDocument xml )
+        private static Dictionary<int, Dictionary<int, IconHandle>> getVoiceTable(XmlDocument xml)
         {
             var result = new Dictionary<int, Dictionary<int, IconHandle>>();
-            foreach ( XmlNode vVoice in xml.DocumentElement.GetElementsByTagName( "vVoice" ) ) {
-                int bankSelect = int.Parse( vVoice["vBS"].InnerText );
-                int programChange = int.Parse( vVoice["vPC"].InnerText );
+            foreach (XmlNode vVoice in xml.DocumentElement.GetElementsByTagName("vVoice")) {
+                int bankSelect = int.Parse(vVoice["vBS"].InnerText);
+                int programChange = int.Parse(vVoice["vPC"].InnerText);
                 var name = vVoice["vVoiceName"].InnerText;
                 var iconHandle = new IconHandle();
                 iconHandle.IDS = name;
@@ -353,13 +338,12 @@ namespace cadencii.vsq.io
                 iconHandle.Program = programChange;
                 iconHandle.IconID =
                     "$0701" + bankSelect.ToString("X2") + programChange.ToString("X2");
-                if ( false == result.ContainsKey( bankSelect ) ) {
-                    result.Add( bankSelect, new Dictionary<int, IconHandle>() );
+                if (false == result.ContainsKey(bankSelect)) {
+                    result.Add(bankSelect, new Dictionary<int, IconHandle>());
                 }
-                result[bankSelect].Add( programChange, iconHandle );
+                result[bankSelect].Add(programChange, iconHandle);
             }
             return result;
         }
     }
 }
-#endif

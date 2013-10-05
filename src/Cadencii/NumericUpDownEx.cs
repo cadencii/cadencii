@@ -11,60 +11,44 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// MouseWheel��Increment���l�𑝌������邱�Ƃ̂ł���NumericUpDown
     /// </summary>
-#if JAVA
-    public class NumericUpDownEx extends BNumericUpDown {
-#else
     public class NumericUpDownEx : NumericUpDown
     {
-#endif
         private const long serialVersionUID = -4608658084088065812L;
 
         public NumericUpDownEx()
         {
-            this.GotFocus += new EventHandler( NumericUpDownEx_GotFocus );
+            this.GotFocus += new EventHandler(NumericUpDownEx_GotFocus);
         }
 
-#if !JAVA
-        private void NumericUpDownEx_GotFocus( Object sender, EventArgs e )
+        private void NumericUpDownEx_GotFocus(Object sender, EventArgs e)
         {
-            this.Select( 0, 10 );
+            this.Select(0, 10);
         }
-#endif
 
-#if !JAVA
-        protected override void OnMouseWheel( MouseEventArgs e )
+        protected override void OnMouseWheel(MouseEventArgs e)
         {
             decimal new_val;
-            if ( e.Delta > 0 ) {
+            if (e.Delta > 0) {
                 new_val = this.Value + this.Increment;
-            } else if ( e.Delta < 0 ) {
+            } else if (e.Delta < 0) {
                 new_val = this.Value - this.Increment;
             } else {
                 return;
             }
-            if ( this.Minimum <= new_val && new_val <= this.Maximum ) {
+            if (this.Minimum <= new_val && new_val <= this.Maximum) {
                 this.Value = new_val;
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * windows.cs
  * Copyright © 2008-2011 kbinani
@@ -18,34 +17,36 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace cadencii {
+namespace cadencii
+{
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
     using LONG = System.Int32;
     using BYTE = System.Byte;
     using HANDLE = System.IntPtr;
 
-    public static partial class win32 {
+    public static partial class win32
+    {
         #region winbase.h
-        public static readonly HANDLE INVALID_HANDLE_VALUE = new HANDLE( -1 );
+        public static readonly HANDLE INVALID_HANDLE_VALUE = new HANDLE(-1);
 
         public const DWORD CONSOLE_TEXTMODE_BUFFER = 1;
-        public const DWORD  CREATE_NEW = 1;
-        public const DWORD  CREATE_ALWAYS = 2;
-        public const DWORD  OPEN_EXISTING = 3;
-        public const DWORD  OPEN_ALWAYS = 4;
-        public const DWORD  TRUNCATE_EXISTING = 5;
+        public const DWORD CREATE_NEW = 1;
+        public const DWORD CREATE_ALWAYS = 2;
+        public const DWORD OPEN_EXISTING = 3;
+        public const DWORD OPEN_ALWAYS = 4;
+        public const DWORD TRUNCATE_EXISTING = 5;
 
-        public const DWORD  FILE_FLAG_WRITE_THROUGH = 0x80000000;
-        public const DWORD  FILE_FLAG_OVERLAPPED = 1073741824;
-        public const DWORD  FILE_FLAG_NO_BUFFERING = 536870912;
-        public const DWORD  FILE_FLAG_RANDOM_ACCESS = 268435456;
-        public const DWORD  FILE_FLAG_SEQUENTIAL_SCAN = 134217728;
-        public const DWORD  FILE_FLAG_DELETE_ON_CLOSE = 67108864;
-        public const DWORD  FILE_FLAG_BACKUP_SEMANTICS = 33554432;
-        public const DWORD  FILE_FLAG_POSIX_SEMANTICS = 16777216;
-        public const DWORD  FILE_FLAG_OPEN_REPARSE_POINT = 2097152;
-        public const DWORD  FILE_FLAG_OPEN_NO_RECALL = 1048576;
+        public const DWORD FILE_FLAG_WRITE_THROUGH = 0x80000000;
+        public const DWORD FILE_FLAG_OVERLAPPED = 1073741824;
+        public const DWORD FILE_FLAG_NO_BUFFERING = 536870912;
+        public const DWORD FILE_FLAG_RANDOM_ACCESS = 268435456;
+        public const DWORD FILE_FLAG_SEQUENTIAL_SCAN = 134217728;
+        public const DWORD FILE_FLAG_DELETE_ON_CLOSE = 67108864;
+        public const DWORD FILE_FLAG_BACKUP_SEMANTICS = 33554432;
+        public const DWORD FILE_FLAG_POSIX_SEMANTICS = 16777216;
+        public const DWORD FILE_FLAG_OPEN_REPARSE_POINT = 2097152;
+        public const DWORD FILE_FLAG_OPEN_NO_RECALL = 1048576;
         public const DWORD FILE_FLAG_FIRST_PIPE_INSTANCE = 524288;
 
         public const int OF_READ = 0;
@@ -89,13 +90,13 @@ namespace cadencii {
         /// <param name="samDesired">セキュリティアクセスマスク</param>
         /// <param name="phkResult">ハンドルを格納する変数のアドレス</param>
         /// <returns></returns>
-        [DllImport( "Advapi32.dll" )]
+        [DllImport("Advapi32.dll")]
         public static unsafe extern int RegOpenKeyExW(
             uint hKey,
-            [MarshalAs( UnmanagedType.LPWStr )] string pSubKey,
+            [MarshalAs(UnmanagedType.LPWStr)] string pSubKey,
             uint ulOptions,
             uint samDesired,
-            uint* phkResult );
+            uint* phkResult);
 
         /// <summary>
         /// 
@@ -109,16 +110,16 @@ namespace cadencii {
         /// <param name="pcbClass">pClass のサイズを入れた変数</param>
         /// <param name="pftLastWrite">最終書き込み時間</param>
         /// <returns></returns>
-        [DllImport( "Advapi32.dll" )]
+        [DllImport("Advapi32.dll")]
         public static unsafe extern int RegEnumKeyExW(
             uint hKey,
             uint dwIndex,
-            [MarshalAs( UnmanagedType.LPWStr )] string pName,
+            [MarshalAs(UnmanagedType.LPWStr)] string pName,
             uint* pcbName,
             uint* pReserved,
-            [MarshalAs( UnmanagedType.LPWStr )] string pClass,
+            [MarshalAs(UnmanagedType.LPWStr)] string pClass,
             uint* pcbClass,
-            FILETIME* pftLastWrite );
+            FILETIME* pftLastWrite);
 
         /// <summary>
         /// 
@@ -130,14 +131,14 @@ namespace cadencii {
         /// <param name="pData">データを格納するバッファ</param>
         /// <param name="pcbData">バッファサイズを入れた変数</param>
         /// <returns></returns>
-        [DllImport( "Advapi32.dll" )]
+        [DllImport("Advapi32.dll")]
         public static unsafe extern int RegQueryValueExW(
             uint hKey,
-            [MarshalAs( UnmanagedType.LPWStr )] string pValueName,
+            [MarshalAs(UnmanagedType.LPWStr)] string pValueName,
             uint* pReserved,
             uint* pType,
             byte* pData,
-            uint* pcbData );
+            uint* pcbData);
 
 
         /// <summary>
@@ -145,8 +146,8 @@ namespace cadencii {
         /// </summary>
         /// <param name="hKey">キーのハンドル</param>
         /// <returns></returns>
-        [DllImport( "Advapi32.dll" )]
-        public static extern int RegCloseKey( uint hKey );
+        [DllImport("Advapi32.dll")]
+        public static extern int RegCloseKey(uint hKey);
         #endregion
 
         #region winnt.h
@@ -251,7 +252,7 @@ namespace cadencii {
         public const DWORD GENERIC_EXECUTE = 0x20000000;
         public const DWORD GENERIC_ALL = 0x10000000;
 
-        public const DWORD INVALID_FILE_ATTRIBUTES = unchecked( (DWORD)(-1) );
+        public const DWORD INVALID_FILE_ATTRIBUTES = unchecked((DWORD)(-1));
 
         public const DWORD FILE_ATTRIBUTE_READONLY = 0x00000001;
         public const DWORD FILE_ATTRIBUTE_HIDDEN = 0x00000002;
@@ -274,7 +275,7 @@ namespace cadencii {
         public const DWORD FILE_SHARE_WRITE = 0x00000002;
         public const DWORD FILE_SHARE_DELETE = 0x00000004;
         public const DWORD FILE_SHARE_VALID_FLAGS = 0x00000007;
-			
+
         #endregion
 
         #region windef.h
@@ -493,39 +494,39 @@ namespace cadencii {
         public const int WM_PENWINLAST = 0x038F;
         public const int WM_APP = 0x8000;
         public const int WM_USER = 0x0400;
-		public const uint WS_OVERLAPPED      = 0x00000000U;
-		public const uint WS_POPUP           = 0x80000000U;
-		public const uint WS_CHILD           = 0x40000000U;
-		public const uint WS_MINIMIZE        = 0x20000000U;
-		public const uint WS_VISIBLE         = 0x10000000U;
-		public const uint WS_DISABLED        = 0x08000000U;
-		public const uint WS_CLIPSIBLINGS    = 0x04000000U;
-		public const uint WS_CLIPCHILDREN    = 0x02000000U;
-		public const uint WS_MAXIMIZE        = 0x01000000U;
-		public const uint WS_CAPTION         = 0x00C00000U;    /* WS_BORDER | WS_DLGFRAME  */
-		public const uint WS_BORDER          = 0x00800000U;
-		public const uint WS_DLGFRAME        = 0x00400000U;
-		public const uint WS_VSCROLL         = 0x00200000U;
-		public const uint WS_HSCROLL         = 0x00100000U;
-		public const uint WS_SYSMENU         = 0x00080000U;
-		public const uint WS_THICKFRAME      = 0x00040000U;
-		public const uint WS_GROUP           = 0x00020000U;
-		public const uint WS_TABSTOP         = 0x00010000U;
-		public const uint WS_MINIMIZEBOX     = 0x00020000U;
-		public const uint WS_MAXIMIZEBOX     = 0x00010000U;
-		public const uint WS_TILED           = WS_OVERLAPPED;
-		public const uint WS_ICONIC          = WS_MINIMIZE;
-		public const uint WS_SIZEBOX         = WS_THICKFRAME;
-		public const uint WS_TILEDWINDOW     = WS_OVERLAPPEDWINDOW;
-		public const uint WS_OVERLAPPEDWINDOW = (WS_OVERLAPPED     | 
-			WS_CAPTION        | 
-			WS_SYSMENU        | 
-			WS_THICKFRAME     | 
-			WS_MINIMIZEBOX    | 
-			WS_MAXIMIZEBOX);
-		public const uint WS_POPUPWINDOW     = (WS_POPUP          | 
-			WS_BORDER         | 
-			WS_SYSMENU);
+        public const uint WS_OVERLAPPED = 0x00000000U;
+        public const uint WS_POPUP = 0x80000000U;
+        public const uint WS_CHILD = 0x40000000U;
+        public const uint WS_MINIMIZE = 0x20000000U;
+        public const uint WS_VISIBLE = 0x10000000U;
+        public const uint WS_DISABLED = 0x08000000U;
+        public const uint WS_CLIPSIBLINGS = 0x04000000U;
+        public const uint WS_CLIPCHILDREN = 0x02000000U;
+        public const uint WS_MAXIMIZE = 0x01000000U;
+        public const uint WS_CAPTION = 0x00C00000U;    /* WS_BORDER | WS_DLGFRAME  */
+        public const uint WS_BORDER = 0x00800000U;
+        public const uint WS_DLGFRAME = 0x00400000U;
+        public const uint WS_VSCROLL = 0x00200000U;
+        public const uint WS_HSCROLL = 0x00100000U;
+        public const uint WS_SYSMENU = 0x00080000U;
+        public const uint WS_THICKFRAME = 0x00040000U;
+        public const uint WS_GROUP = 0x00020000U;
+        public const uint WS_TABSTOP = 0x00010000U;
+        public const uint WS_MINIMIZEBOX = 0x00020000U;
+        public const uint WS_MAXIMIZEBOX = 0x00010000U;
+        public const uint WS_TILED = WS_OVERLAPPED;
+        public const uint WS_ICONIC = WS_MINIMIZE;
+        public const uint WS_SIZEBOX = WS_THICKFRAME;
+        public const uint WS_TILEDWINDOW = WS_OVERLAPPEDWINDOW;
+        public const uint WS_OVERLAPPEDWINDOW = (WS_OVERLAPPED |
+            WS_CAPTION |
+            WS_SYSMENU |
+            WS_THICKFRAME |
+            WS_MINIMIZEBOX |
+            WS_MAXIMIZEBOX);
+        public const uint WS_POPUPWINDOW = (WS_POPUP |
+            WS_BORDER |
+            WS_SYSMENU);
         public const uint WS_CHILDWINDOW = (WS_CHILD);
         public const int EM_GETSEL = 0x00B0;
         public const int EM_SETSEL = 0x00B1;
@@ -566,26 +567,26 @@ namespace cadencii {
         public const int EM_CHARFROMPOS = 0x00D7;
         public const int EM_SETIMESTATUS = 0x00D8;
         public const int EM_GETIMESTATUS = 0x00D9;
-        public const int BM_GETCHECK= 0x00F0;
-        public const int BM_SETCHECK= 0x00F1;
-        public const int BM_GETSTATE= 0x00F2;
-        public const int BM_SETSTATE= 0x00F3;
-        public const int BM_SETSTYLE= 0x00F4;
+        public const int BM_GETCHECK = 0x00F0;
+        public const int BM_SETCHECK = 0x00F1;
+        public const int BM_GETSTATE = 0x00F2;
+        public const int BM_SETSTATE = 0x00F3;
+        public const int BM_SETSTYLE = 0x00F4;
         public const int BM_CLICK = 0x00F5;
-        public const int BM_GETIMAGE= 0x00F6;
-        public const int BM_SETIMAGE= 0x00F7;
+        public const int BM_GETIMAGE = 0x00F6;
+        public const int BM_SETIMAGE = 0x00F7;
         public const int STM_SETICON = 0x0170;
         public const int STM_GETICON = 0x0171;
         public const int STM_SETIMAGE = 0x0172;
         public const int STM_GETIMAGE = 0x0173;
         public const int STM_MSGMAX = 0x0174;
-        public const int DM_GETDEFID = (WM_USER+0);
-        public const int DM_SETDEFID = (WM_USER+1);
-        public const int DM_REPOSITION = (WM_USER+2);
+        public const int DM_GETDEFID = (WM_USER + 0);
+        public const int DM_SETDEFID = (WM_USER + 1);
+        public const int DM_REPOSITION = (WM_USER + 2);
         public const int LB_ADDSTRING = 0x0180;
         public const int LB_INSERTSTRING = 0x0181;
         public const int LB_DELETESTRING = 0x0182;
-        public const int LB_SELITEMRANGEEX= 0x0183;
+        public const int LB_SELITEMRANGEEX = 0x0183;
         public const int LB_RESETCONTENT = 0x0184;
         public const int LB_SETSEL = 0x0185;
         public const int LB_SETCURSEL = 0x0186;
@@ -623,7 +624,7 @@ namespace cadencii {
         public const int LB_INITSTORAGE = 0x01A8;
         public const int LB_ITEMFROMPOINT = 0x01A9;
         public const int LB_MULTIPLEADDSTRING = 0x01B1;
-        public const int LB_GETLISTBOXINFO= 0x01B2;
+        public const int LB_GETLISTBOXINFO = 0x01B2;
         public const int LB_MSGMAX_501 = 0x01B3;
         public const int LB_MSGMAX_WCE4 = 0x01B1;
         public const int LB_MSGMAX_4 = 0x01B0;
@@ -676,7 +677,7 @@ namespace cadencii {
         public const int SBM_ENABLE_ARROWS = 0x00E4;
         public const int SBM_SETSCROLLINFO = 0x00E9;
         public const int SBM_GETSCROLLINFO = 0x00EA;
-        public const int SBM_GETSCROLLBARINFO= 0x00EB;
+        public const int SBM_GETSCROLLBARINFO = 0x00EB;
         public const int GWL_EXSTYLE = (-20);
         public const int GWL_STYLE = (-16);
         public const int GWL_WNDPROC = (-4);
@@ -690,7 +691,7 @@ namespace cadencii {
         public const int GWL_USERDATA = (-21);
         public const int GWLP_USERDATA = (-21);
         public const uint TPM_CENTERALIGN = 4U;
-        public const uint TPM_LEFTALIGN  = 0U;
+        public const uint TPM_LEFTALIGN = 0U;
         public const uint TPM_RIGHTALIGN = 8U;
         public const uint TPM_LEFTBUTTON = 0U;
         public const uint TPM_RIGHTBUTTON = 2U;
@@ -711,32 +712,32 @@ namespace cadencii {
         public const uint MIIM_STRING = 64U;
         public const uint MIIM_BITMAP = 128U;
         public const uint MIIM_FTYPE = 256U;
-        public const uint  MF_ENABLED = 0U;
-        public const uint  MF_GRAYED = 1U;
-        public const uint  MF_DISABLED = 2U;
-        public const uint  MF_BITMAP = 4U;
-        public const uint  MF_CHECKED = 8U;
-        public const uint  MF_MENUBARBREAK = 32U;
-        public const uint  MF_MENUBREAK = 64U;
-        public const uint  MF_OWNERDRAW = 256U;
-        public const uint  MF_POPUP = 16U;
-        public const uint  MF_SEPARATOR = 0x800U;
-        public const uint  MF_STRING = 0U;
-        public const uint  MF_UNCHECKED = 0U;
-        public const uint  MF_DEFAULT = 4096U;
-        public const uint  MF_SYSMENU = 0x2000U;
-        public const uint  MF_HELP = 0x4000U;
-        public const uint  MF_END = 128U;
-        public const uint  MF_RIGHTJUSTIFY = 0x4000U;
-        public const uint  MF_MOUSESELECT = 0x8000U;
-        public const uint  MF_INSERT = 0U;
-        public const uint  MF_CHANGE = 128U;
-        public const uint  MF_APPEND = 256U;
-        public const uint  MF_DELETE = 512U;
-        public const uint  MF_REMOVE = 4096U;
-        public const uint  MF_USECHECKBITMAPS = 512U;
-        public const uint  MF_UNHILITE = 0U;
-        public const uint  MF_HILITE = 128U;
+        public const uint MF_ENABLED = 0U;
+        public const uint MF_GRAYED = 1U;
+        public const uint MF_DISABLED = 2U;
+        public const uint MF_BITMAP = 4U;
+        public const uint MF_CHECKED = 8U;
+        public const uint MF_MENUBARBREAK = 32U;
+        public const uint MF_MENUBREAK = 64U;
+        public const uint MF_OWNERDRAW = 256U;
+        public const uint MF_POPUP = 16U;
+        public const uint MF_SEPARATOR = 0x800U;
+        public const uint MF_STRING = 0U;
+        public const uint MF_UNCHECKED = 0U;
+        public const uint MF_DEFAULT = 4096U;
+        public const uint MF_SYSMENU = 0x2000U;
+        public const uint MF_HELP = 0x4000U;
+        public const uint MF_END = 128U;
+        public const uint MF_RIGHTJUSTIFY = 0x4000U;
+        public const uint MF_MOUSESELECT = 0x8000U;
+        public const uint MF_INSERT = 0U;
+        public const uint MF_CHANGE = 128U;
+        public const uint MF_APPEND = 256U;
+        public const uint MF_DELETE = 512U;
+        public const uint MF_REMOVE = 4096U;
+        public const uint MF_USECHECKBITMAPS = 512U;
+        public const uint MF_UNHILITE = 0U;
+        public const uint MF_HILITE = 128U;
         public const int MK_LBUTTON = 1;
         public const int MK_RBUTTON = 2;
         public const int MK_SHIFT = 4;
@@ -789,70 +790,70 @@ namespace cadencii {
         #endregion
 
         #region commctrl.h
-        public const int NM_FIRST              = (0-  0);       // generic to all controls
-        public const int NM_LAST               = (0- 99);
-        public const int LVN_FIRST             = (0-100);       // listview
-        public const int LVN_LAST              = (0-199);
-        public const int HDN_FIRST             = (0-300);       // header
-        public const int HDN_LAST              = (0-399);
-        public const int TVN_FIRST             = (0-400);       // treeview
-        public const int TVN_LAST              = (0-499);
-        public const int TTN_FIRST             = (0-520);       // tooltips
-        public const int TTN_LAST              = (0-549);
-        public const int TCN_FIRST             = (0-550);       // tab control
-        public const int TCN_LAST              = (0-580);
-        public const int CDN_FIRST             = (0-601);       // common dialog (new)
-        public const int CDN_LAST              = (0-699);
-        public const int TBN_FIRST             = (0-700);       // toolbar
-        public const int TBN_LAST              = (0-720);
-        public const int UDN_FIRST             = (0-721);        // updown
-        public const int UDN_LAST              = (0-740);
-        public const int MCN_FIRST             = (0-750);       // monthcal
-        public const int MCN_LAST              = (0-759);
-        public const int DTN_FIRST             = (0-760);       // datetimepick
-        public const int DTN_LAST              = (0-799);
-        public const int CBEN_FIRST            = (0-800);       // combo box ex
-        public const int CBEN_LAST             = (0-830);
-        public const int RBN_FIRST             = (0-831);       // rebar
-        public const int RBN_LAST              = (0-859);
-        public const int IPN_FIRST             = (0-860);       // internet address
-        public const int IPN_LAST              = (0-879);       // internet address
-        public const int SBN_FIRST             = (0-880);       // status bar
-        public const int SBN_LAST              = (0-899);
-        public const int PGN_FIRST             = (0-900);       // Pager Control
-        public const int PGN_LAST              = (0-950);
-        public const int WMN_FIRST             = (0-1000);
-        public const int MN_LAST              = (0-1200);
-        public const int BCN_FIRST             = (0-1250);
-        public const int BCN_LAST              = (0-1350);
-        public const uint CCS_TOP                = 0x00000001U;
-		public const uint CCS_NOMOVEY            = 0x00000002U;
-		public const uint CCS_BOTTOM             = 0x00000003U;
-		public const uint CCS_NORESIZE           = 0x00000004U;
-		public const uint CCS_NOPARENTALIGN      = 0x00000008U;
-		public const uint CCS_ADJUSTABLE         = 0x00000020U;
-		public const uint CCS_NODIVIDER          = 0x00000040U;
-		public const uint CCS_VERT               = 0x00000080U;
-		public const uint CCS_LEFT               = (CCS_VERT | CCS_TOP);
-		public const uint CCS_RIGHT              = (CCS_VERT | CCS_BOTTOM);
+        public const int NM_FIRST = (0 - 0);       // generic to all controls
+        public const int NM_LAST = (0 - 99);
+        public const int LVN_FIRST = (0 - 100);       // listview
+        public const int LVN_LAST = (0 - 199);
+        public const int HDN_FIRST = (0 - 300);       // header
+        public const int HDN_LAST = (0 - 399);
+        public const int TVN_FIRST = (0 - 400);       // treeview
+        public const int TVN_LAST = (0 - 499);
+        public const int TTN_FIRST = (0 - 520);       // tooltips
+        public const int TTN_LAST = (0 - 549);
+        public const int TCN_FIRST = (0 - 550);       // tab control
+        public const int TCN_LAST = (0 - 580);
+        public const int CDN_FIRST = (0 - 601);       // common dialog (new)
+        public const int CDN_LAST = (0 - 699);
+        public const int TBN_FIRST = (0 - 700);       // toolbar
+        public const int TBN_LAST = (0 - 720);
+        public const int UDN_FIRST = (0 - 721);        // updown
+        public const int UDN_LAST = (0 - 740);
+        public const int MCN_FIRST = (0 - 750);       // monthcal
+        public const int MCN_LAST = (0 - 759);
+        public const int DTN_FIRST = (0 - 760);       // datetimepick
+        public const int DTN_LAST = (0 - 799);
+        public const int CBEN_FIRST = (0 - 800);       // combo box ex
+        public const int CBEN_LAST = (0 - 830);
+        public const int RBN_FIRST = (0 - 831);       // rebar
+        public const int RBN_LAST = (0 - 859);
+        public const int IPN_FIRST = (0 - 860);       // internet address
+        public const int IPN_LAST = (0 - 879);       // internet address
+        public const int SBN_FIRST = (0 - 880);       // status bar
+        public const int SBN_LAST = (0 - 899);
+        public const int PGN_FIRST = (0 - 900);       // Pager Control
+        public const int PGN_LAST = (0 - 950);
+        public const int WMN_FIRST = (0 - 1000);
+        public const int MN_LAST = (0 - 1200);
+        public const int BCN_FIRST = (0 - 1250);
+        public const int BCN_LAST = (0 - 1350);
+        public const uint CCS_TOP = 0x00000001U;
+        public const uint CCS_NOMOVEY = 0x00000002U;
+        public const uint CCS_BOTTOM = 0x00000003U;
+        public const uint CCS_NORESIZE = 0x00000004U;
+        public const uint CCS_NOPARENTALIGN = 0x00000008U;
+        public const uint CCS_ADJUSTABLE = 0x00000020U;
+        public const uint CCS_NODIVIDER = 0x00000040U;
+        public const uint CCS_VERT = 0x00000080U;
+        public const uint CCS_LEFT = (CCS_VERT | CCS_TOP);
+        public const uint CCS_RIGHT = (CCS_VERT | CCS_BOTTOM);
         public const uint CCS_NOMOVEX = (CCS_VERT | CCS_NOMOVEY);
-		public const uint RBS_TOOLTIPS = 0x0100;
-		public const uint RBS_VARHEIGHT = 0x0200;
-		public const uint RBS_BANDBORDERS = 0x0400;
-		public const uint RBS_FIXEDORDER = 0x0800;
-		public const uint RBS_REGISTERDROP = 0x1000;
-		public const uint RBS_AUTOSIZE = 0x2000;
-		public const uint RBS_VERTICALGRIPPER = 0x4000; // this always has the vertical gripper (default for horizontal mode)
-		public const uint RBS_DBLCLKTOGGLE = 0x8000;
-		public const int LVM_FIRST = 0x1000;// ListView messages
-		public const int TV_FIRST = 0x1100;// TreeView messages
-		public const int HDM_FIRST = 0x1200;// Header messages
+        public const uint RBS_TOOLTIPS = 0x0100;
+        public const uint RBS_VARHEIGHT = 0x0200;
+        public const uint RBS_BANDBORDERS = 0x0400;
+        public const uint RBS_FIXEDORDER = 0x0800;
+        public const uint RBS_REGISTERDROP = 0x1000;
+        public const uint RBS_AUTOSIZE = 0x2000;
+        public const uint RBS_VERTICALGRIPPER = 0x4000; // this always has the vertical gripper (default for horizontal mode)
+        public const uint RBS_DBLCLKTOGGLE = 0x8000;
+        public const int LVM_FIRST = 0x1000;// ListView messages
+        public const int TV_FIRST = 0x1100;// TreeView messages
+        public const int HDM_FIRST = 0x1200;// Header messages
         public const int TCM_FIRST = 0x1300;
         public const int PGM_FIRST = 0x1400;
         public const int ECM_FIRST = 0x1500;// Edit control messages
-		public const int BCM_FIRST = 0x1600;// Button control messages
-		public const int CBM_FIRST = 0x1700;// Combobox control messages
-		public const int CCM_FIRST = 0x2000;// Common control shared messages
+        public const int BCM_FIRST = 0x1600;// Button control messages
+        public const int CBM_FIRST = 0x1700;// Combobox control messages
+        public const int CCM_FIRST = 0x2000;// Common control shared messages
         public const int CCM_LAST = (CCM_FIRST + 0x200);
 
         public const int CCM_SETBKCOLOR = (CCM_FIRST + 1);
@@ -888,9 +889,9 @@ namespace cadencii {
         public const int HDM_GETBITMAPMARGIN = (HDM_FIRST + 21);
         public const int HDM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int HDM_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
-        public const int HDM_SETFILTERCHANGETIMEOUT = (HDM_FIRST+22);
-        public const int HDM_EDITFILTER = (HDM_FIRST+23);
-        public const int HDM_CLEARFILTER = (HDM_FIRST+24);
+        public const int HDM_SETFILTERCHANGETIMEOUT = (HDM_FIRST + 22);
+        public const int HDM_EDITFILTER = (HDM_FIRST + 23);
+        public const int HDM_CLEARFILTER = (HDM_FIRST + 24);
         public const int TB_ENABLEBUTTON = (WM_USER + 1);
         public const int TB_CHECKBUTTON = (WM_USER + 2);
         public const int TB_PRESSBUTTON = (WM_USER + 3);
@@ -953,12 +954,12 @@ namespace cadencii {
         public const int TB_GETTEXTROWS = (WM_USER + 61);
         public const int TB_GETOBJECT = (WM_USER + 62);
         public const int TB_GETHOTITEM = (WM_USER + 71);
-        public const int TB_SETHOTITEM = (WM_USER + 72); 
-        public const int TB_SETANCHORHIGHLIGHT = (WM_USER + 73); 
+        public const int TB_SETHOTITEM = (WM_USER + 72);
+        public const int TB_SETANCHORHIGHLIGHT = (WM_USER + 73);
         public const int TB_GETANCHORHIGHLIGHT = (WM_USER + 74);
-        public const int TB_MAPACCELERATORA = (WM_USER + 78); 
-        public const int TB_GETINSERTMARK = (WM_USER + 79); 
-        public const int TB_SETINSERTMARK = (WM_USER + 80); 
+        public const int TB_MAPACCELERATORA = (WM_USER + 78);
+        public const int TB_GETINSERTMARK = (WM_USER + 79);
+        public const int TB_SETINSERTMARK = (WM_USER + 80);
         public const int TB_INSERTMARKHITTEST = (WM_USER + 81);
         public const int TB_MOVEBUTTON = (WM_USER + 82);
         public const int TB_GETMAXSIZE = (WM_USER + 83);
@@ -1002,7 +1003,7 @@ namespace cadencii {
         public const int RB_GETBANDCOUNT = (WM_USER + 12);
         public const int RB_GETROWCOUNT = (WM_USER + 13);
         public const int RB_GETROWHEIGHT = (WM_USER + 14);
-        public const int RB_IDTOINDEX = (WM_USER + 16); 
+        public const int RB_IDTOINDEX = (WM_USER + 16);
         public const int RB_GETTOOLTIPS = (WM_USER + 17);
         public const int RB_SETTOOLTIPS = (WM_USER + 18);
         public const int RB_SETBKCOLOR = (WM_USER + 19);
@@ -1022,8 +1023,8 @@ namespace cadencii {
         public const int RB_MINIMIZEBAND = (WM_USER + 30);
         public const int RB_MAXIMIZEBAND = (WM_USER + 31);
         public const int RB_GETDROPTARGET = (CCM_GETDROPTARGET);
-        public const int RB_GETBANDBORDERS = (WM_USER + 34); 
-        public const int RB_SHOWBAND = (WM_USER + 35); 
+        public const int RB_GETBANDBORDERS = (WM_USER + 34);
+        public const int RB_SHOWBAND = (WM_USER + 35);
         public const int RB_SETPALETTE = (WM_USER + 37);
         public const int RB_GETPALETTE = (WM_USER + 38);
         public const int RB_MOVEBAND = (WM_USER + 39);
@@ -1045,16 +1046,16 @@ namespace cadencii {
         public const int TTM_GETTOOLINFOW = (WM_USER + 53);
         public const int TTM_SETTOOLINFOA = (WM_USER + 9);
         public const int TTM_SETTOOLINFOW = (WM_USER + 54);
-        public const int TTM_HITTESTA = (WM_USER +10);
-        public const int TTM_HITTESTW = (WM_USER +55);
-        public const int TTM_GETTEXTA = (WM_USER +11);
-        public const int TTM_GETTEXTW = (WM_USER +56);
-        public const int TTM_UPDATETIPTEXTA = (WM_USER +12);
+        public const int TTM_HITTESTA = (WM_USER + 10);
+        public const int TTM_HITTESTW = (WM_USER + 55);
+        public const int TTM_GETTEXTA = (WM_USER + 11);
+        public const int TTM_GETTEXTW = (WM_USER + 56);
+        public const int TTM_UPDATETIPTEXTA = (WM_USER + 12);
 
-        public const int TTM_UPDATETIPTEXTW = (WM_USER +57);
-        public const int TTM_GETTOOLCOUNT = (WM_USER +13);
-        public const int TTM_ENUMTOOLSA = (WM_USER +14);
-        public const int TTM_ENUMTOOLSW = (WM_USER +58);
+        public const int TTM_UPDATETIPTEXTW = (WM_USER + 57);
+        public const int TTM_GETTOOLCOUNT = (WM_USER + 13);
+        public const int TTM_ENUMTOOLSA = (WM_USER + 14);
+        public const int TTM_ENUMTOOLSW = (WM_USER + 58);
         public const int TTM_GETCURRENTTOOLA = (WM_USER + 15);
         public const int TTM_GETCURRENTTOOLW = (WM_USER + 59);
         public const int TTM_WINDOWFROMPOINT = (WM_USER + 16);
@@ -1078,98 +1079,98 @@ namespace cadencii {
         public const int TTM_POPUP = (WM_USER + 34);
         public const int TTM_GETTITLE = (WM_USER + 35);
         public const int TTM_SETWINDOWTHEME = CCM_SETWINDOWTHEME;
-        public const int SB_SETTEXTA = (WM_USER+1);
-        public const int SB_SETTEXTW = (WM_USER+11);
-        public const int SB_GETTEXTA = (WM_USER+2);
-        public const int SB_GETTEXTW = (WM_USER+13);
-        public const int SB_GETTEXTLENGTHA = (WM_USER+3);
-        public const int SB_GETTEXTLENGTHW = (WM_USER+12);
-        public const int SB_SETPARTS = (WM_USER+4);
-        public const int SB_GETPARTS = (WM_USER+6);
-        public const int SB_GETBORDERS = (WM_USER+7);
-        public const int SB_SETMINHEIGHT = (WM_USER+8);
+        public const int SB_SETTEXTA = (WM_USER + 1);
+        public const int SB_SETTEXTW = (WM_USER + 11);
+        public const int SB_GETTEXTA = (WM_USER + 2);
+        public const int SB_GETTEXTW = (WM_USER + 13);
+        public const int SB_GETTEXTLENGTHA = (WM_USER + 3);
+        public const int SB_GETTEXTLENGTHW = (WM_USER + 12);
+        public const int SB_SETPARTS = (WM_USER + 4);
+        public const int SB_GETPARTS = (WM_USER + 6);
+        public const int SB_GETBORDERS = (WM_USER + 7);
+        public const int SB_SETMINHEIGHT = (WM_USER + 8);
 
-        public const int SB_SIMPLE = (WM_USER+9);
-        public const int SB_GETRECT = (WM_USER+10);
-        public const int SB_ISSIMPLE = (WM_USER+14);
-        public const int SB_SETICON = (WM_USER+15);
-        public const int SB_SETTIPTEXTA = (WM_USER+16);
-        public const int SB_SETTIPTEXTW = (WM_USER+17);
-        public const int SB_GETTIPTEXTA = (WM_USER+18);
-        public const int SB_GETTIPTEXTW = (WM_USER+19);
-        public const int SB_GETICON = (WM_USER+20);
+        public const int SB_SIMPLE = (WM_USER + 9);
+        public const int SB_GETRECT = (WM_USER + 10);
+        public const int SB_ISSIMPLE = (WM_USER + 14);
+        public const int SB_SETICON = (WM_USER + 15);
+        public const int SB_SETTIPTEXTA = (WM_USER + 16);
+        public const int SB_SETTIPTEXTW = (WM_USER + 17);
+        public const int SB_GETTIPTEXTA = (WM_USER + 18);
+        public const int SB_GETTIPTEXTW = (WM_USER + 19);
+        public const int SB_GETICON = (WM_USER + 20);
         public const int SB_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int SB_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
         public const int SB_SETBKCOLOR = CCM_SETBKCOLOR;
         public const int SB_SIMPLEID = 0x00ff;
         public const int TBM_GETPOS = (WM_USER);
-        public const int TBM_GETRANGEMIN = (WM_USER+1);
-        public const int TBM_GETRANGEMAX = (WM_USER+2);
-        public const int TBM_GETTIC = (WM_USER+3);
-        public const int TBM_SETTIC = (WM_USER+4);
-        public const int TBM_SETPOS = (WM_USER+5);
-        public const int TBM_SETRANGE = (WM_USER+6);
-        public const int TBM_SETRANGEMIN = (WM_USER+7);
-        public const int TBM_SETRANGEMAX = (WM_USER+8);
-        public const int TBM_CLEARTICS = (WM_USER+9);
-        public const int TBM_SETSEL = (WM_USER+10);
-        public const int TBM_SETSELSTART = (WM_USER+11);
-        public const int TBM_SETSELEND = (WM_USER+12);
-        public const int TBM_GETPTICS = (WM_USER+14);
-        public const int TBM_GETTICPOS = (WM_USER+15);
-        public const int TBM_GETNUMTICS = (WM_USER+16);
-        public const int TBM_GETSELSTART = (WM_USER+17);
-        public const int TBM_GETSELEND = (WM_USER+18);
-        public const int TBM_CLEARSEL = (WM_USER+19);
-        public const int TBM_SETTICFREQ = (WM_USER+20);
-        public const int TBM_SETPAGESIZE = (WM_USER+21);
-        public const int TBM_GETPAGESIZE = (WM_USER+22);
-        public const int TBM_SETLINESIZE = (WM_USER+23);
-        public const int TBM_GETLINESIZE = (WM_USER+24);
-        public const int TBM_GETTHUMBRECT = (WM_USER+25);
-        public const int TBM_GETCHANNELRECT = (WM_USER+26);
-        public const int TBM_SETTHUMBLENGTH = (WM_USER+27);
-        public const int TBM_GETTHUMBLENGTH = (WM_USER+28);
-        public const int TBM_SETTOOLTIPS = (WM_USER+29);
-        public const int TBM_GETTOOLTIPS = (WM_USER+30);
-        public const int TBM_SETTIPSIDE = (WM_USER+31);
-        public const int TBM_SETBUDDY = (WM_USER+32); 
-        public const int TBM_GETBUDDY = (WM_USER+33); 
+        public const int TBM_GETRANGEMIN = (WM_USER + 1);
+        public const int TBM_GETRANGEMAX = (WM_USER + 2);
+        public const int TBM_GETTIC = (WM_USER + 3);
+        public const int TBM_SETTIC = (WM_USER + 4);
+        public const int TBM_SETPOS = (WM_USER + 5);
+        public const int TBM_SETRANGE = (WM_USER + 6);
+        public const int TBM_SETRANGEMIN = (WM_USER + 7);
+        public const int TBM_SETRANGEMAX = (WM_USER + 8);
+        public const int TBM_CLEARTICS = (WM_USER + 9);
+        public const int TBM_SETSEL = (WM_USER + 10);
+        public const int TBM_SETSELSTART = (WM_USER + 11);
+        public const int TBM_SETSELEND = (WM_USER + 12);
+        public const int TBM_GETPTICS = (WM_USER + 14);
+        public const int TBM_GETTICPOS = (WM_USER + 15);
+        public const int TBM_GETNUMTICS = (WM_USER + 16);
+        public const int TBM_GETSELSTART = (WM_USER + 17);
+        public const int TBM_GETSELEND = (WM_USER + 18);
+        public const int TBM_CLEARSEL = (WM_USER + 19);
+        public const int TBM_SETTICFREQ = (WM_USER + 20);
+        public const int TBM_SETPAGESIZE = (WM_USER + 21);
+        public const int TBM_GETPAGESIZE = (WM_USER + 22);
+        public const int TBM_SETLINESIZE = (WM_USER + 23);
+        public const int TBM_GETLINESIZE = (WM_USER + 24);
+        public const int TBM_GETTHUMBRECT = (WM_USER + 25);
+        public const int TBM_GETCHANNELRECT = (WM_USER + 26);
+        public const int TBM_SETTHUMBLENGTH = (WM_USER + 27);
+        public const int TBM_GETTHUMBLENGTH = (WM_USER + 28);
+        public const int TBM_SETTOOLTIPS = (WM_USER + 29);
+        public const int TBM_GETTOOLTIPS = (WM_USER + 30);
+        public const int TBM_SETTIPSIDE = (WM_USER + 31);
+        public const int TBM_SETBUDDY = (WM_USER + 32);
+        public const int TBM_GETBUDDY = (WM_USER + 33);
         public const int TBM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int TBM_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
-        public const int DL_BEGINDRAG = (WM_USER+133);
-        public const int DL_DRAGGING = (WM_USER+134);
-        public const int DL_DROPPED = (WM_USER+135);
-        public const int DL_CANCELDRAG = (WM_USER+136);
-        public const int UDM_SETRANGE = (WM_USER+101);
-        public const int UDM_GETRANGE = (WM_USER+102);
-        public const int UDM_SETPOS = (WM_USER+103);
-        public const int UDM_GETPOS = (WM_USER+104);
-        public const int UDM_SETBUDDY = (WM_USER+105);
-        public const int UDM_GETBUDDY = (WM_USER+106);
-        public const int UDM_SETACCEL = (WM_USER+107);
-        public const int UDM_GETACCEL = (WM_USER+108);
-        public const int UDM_SETBASE = (WM_USER+109);
-        public const int UDM_GETBASE = (WM_USER+110);
-        public const int UDM_SETRANGE32 = (WM_USER+111);
-        public const int UDM_GETRANGE32 = (WM_USER+112);
+        public const int DL_BEGINDRAG = (WM_USER + 133);
+        public const int DL_DRAGGING = (WM_USER + 134);
+        public const int DL_DROPPED = (WM_USER + 135);
+        public const int DL_CANCELDRAG = (WM_USER + 136);
+        public const int UDM_SETRANGE = (WM_USER + 101);
+        public const int UDM_GETRANGE = (WM_USER + 102);
+        public const int UDM_SETPOS = (WM_USER + 103);
+        public const int UDM_GETPOS = (WM_USER + 104);
+        public const int UDM_SETBUDDY = (WM_USER + 105);
+        public const int UDM_GETBUDDY = (WM_USER + 106);
+        public const int UDM_SETACCEL = (WM_USER + 107);
+        public const int UDM_GETACCEL = (WM_USER + 108);
+        public const int UDM_SETBASE = (WM_USER + 109);
+        public const int UDM_GETBASE = (WM_USER + 110);
+        public const int UDM_SETRANGE32 = (WM_USER + 111);
+        public const int UDM_GETRANGE32 = (WM_USER + 112);
         public const int UDM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int UDM_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
-        public const int UDM_SETPOS32 = (WM_USER+113);
-        public const int UDM_GETPOS32 = (WM_USER+114);
-        public const int PBM_SETRANGE = (WM_USER+1);
-        public const int PBM_SETPOS = (WM_USER+2);
-        public const int PBM_DELTAPOS = (WM_USER+3);
-        public const int PBM_SETSTEP = (WM_USER+4);
-        public const int PBM_STEPIT = (WM_USER+5);
-        public const int PBM_SETRANGE32 = (WM_USER+6);
-        public const int PBM_GETRANGE = (WM_USER+7); 
-        public const int PBM_GETPOS = (WM_USER+8);
-        public const int PBM_SETBARCOLOR = (WM_USER+9);
-        public const int PBM_SETBKCOLOR = CCM_SETBKCOLOR; 
-        public const int HKM_SETHOTKEY = (WM_USER+1);
-        public const int HKM_GETHOTKEY = (WM_USER+2);
-        public const int HKM_SETRULES = (WM_USER+3);
+        public const int UDM_SETPOS32 = (WM_USER + 113);
+        public const int UDM_GETPOS32 = (WM_USER + 114);
+        public const int PBM_SETRANGE = (WM_USER + 1);
+        public const int PBM_SETPOS = (WM_USER + 2);
+        public const int PBM_DELTAPOS = (WM_USER + 3);
+        public const int PBM_SETSTEP = (WM_USER + 4);
+        public const int PBM_STEPIT = (WM_USER + 5);
+        public const int PBM_SETRANGE32 = (WM_USER + 6);
+        public const int PBM_GETRANGE = (WM_USER + 7);
+        public const int PBM_GETPOS = (WM_USER + 8);
+        public const int PBM_SETBARCOLOR = (WM_USER + 9);
+        public const int PBM_SETBKCOLOR = CCM_SETBKCOLOR;
+        public const int HKM_SETHOTKEY = (WM_USER + 1);
+        public const int HKM_GETHOTKEY = (WM_USER + 2);
+        public const int HKM_SETRULES = (WM_USER + 3);
         public const int LVM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int LVM_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
         public const int LVM_GETBKCOLOR = (LVM_FIRST + 0);
@@ -1393,10 +1394,10 @@ namespace cadencii {
         public const int TCM_GETEXTENDEDSTYLE = (TCM_FIRST + 53);
         public const int TCM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int TCM_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
-        public const int ACM_OPENA = (WM_USER+100);
-        public const int ACM_OPENW = (WM_USER+103);
-        public const int ACM_PLAY = (WM_USER+101);
-        public const int ACM_STOP = (WM_USER+102);
+        public const int ACM_OPENA = (WM_USER + 100);
+        public const int ACM_OPENW = (WM_USER + 103);
+        public const int ACM_PLAY = (WM_USER + 101);
+        public const int ACM_STOP = (WM_USER + 102);
         public const int MCM_FIRST = 0x1000;
         public const int MCM_GETCURSEL = (MCM_FIRST + 1);
         public const int MCM_SETCURSEL = (MCM_FIRST + 2);
@@ -1451,10 +1452,10 @@ namespace cadencii {
         public const int BCM_GETIMAGELIST = (BCM_FIRST + 0x0003);
         public const int BCM_SETTEXTMARGIN = (BCM_FIRST + 0x0004);
         public const int BCM_GETTEXTMARGIN = (BCM_FIRST + 0x0005);
-        public const int EM_SETCUEBANNER	 = (ECM_FIRST + 1);
-        public const int EM_GETCUEBANNER	 = (ECM_FIRST + 2);
+        public const int EM_SETCUEBANNER = (ECM_FIRST + 1);
+        public const int EM_GETCUEBANNER = (ECM_FIRST + 2);
         public const int EM_SHOWBALLOONTIP = (ECM_FIRST + 3);
-        public const int EM_HIDEBALLOONTIP = (ECM_FIRST + 4); 
+        public const int EM_HIDEBALLOONTIP = (ECM_FIRST + 4);
         public const int CB_SETMINVISIBLE = (CBM_FIRST + 1);
         public const int CB_GETMINVISIBLE = (CBM_FIRST + 2);
         public const int LM_HITTEST = (WM_USER + 0x300);
@@ -1474,9 +1475,9 @@ namespace cadencii {
         public const int RBBIM_LPARAM = 1024;
         public const int RBBIM_HEADERSIZE = 2048;
         public const int RBIM_IMAGELIST = 1;
-        public const int RBBS_BREAK	= 0x0001;
+        public const int RBBS_BREAK = 0x0001;
         public const int RBBS_FIXEDSIZE = 0x0002;
-        public const int RBBS_CHILDEDGE	= 0x0004;
+        public const int RBBS_CHILDEDGE = 0x0004;
         public const int RBBS_HIDDEN = 0x0008;
         public const int RBBS_NOVERT = 0x0010;
         public const int RBBS_FIXEDBMP = 0x0020;
@@ -1486,34 +1487,34 @@ namespace cadencii {
         public const int RBBS_USECHEVRON = 0x0200;
         public const int RBBS_HIDETITLE = 0x0400;
         public const int RBBS_TOPALIGN = 0x0800;
-		public const int ICC_LISTVIEW_CLASSES = 0x00000001; // listview; header
-		public const int ICC_TREEVIEW_CLASSES = 0x00000002; // treeview; tooltips
-		public const int ICC_BAR_CLASSES = 0x00000004; // toolbar; statusbar; trackbar; tooltips
-		public const int ICC_TAB_CLASSES = 0x00000008; // tab; tooltips
-		public const int ICC_UPDOWN_CLASS = 0x00000010; // updown
-		public const int ICC_PROGRESS_CLASS = 0x00000020; // progress
-		public const int ICC_HOTKEY_CLASS = 0x00000040; // hotkey
-		public const int ICC_ANIMATE_CLASS = 0x00000080; // animate
-		public const int ICC_WIN95_CLASSES = 0x000000FF;
-		public const int ICC_DATE_CLASSES = 0x00000100; // month picker; date picker; time picker; updown
-		public const int ICC_USEREX_CLASSES = 0x00000200; // comboex
-		public const int ICC_COOL_CLASSES = 0x00000400; // rebar (coolbar) control
-		public const int ICC_INTERNET_CLASSES = 0x00000800;
-		public const int ICC_PAGESCROLLER_CLASS = 0x00001000; // page scroller
-		public const int ICC_NATIVEFNTCTL_CLASS = 0x00002000; // native font control
-		public const int ICC_STANDARD_CLASSES = 0x00004000;
-		public const int ICC_LINK_CLASS = 0x00008000;
-		public const int RBN_HEIGHTCHANGE   = (RBN_FIRST - 0);
-		public const int RBN_GETOBJECT      = (RBN_FIRST - 1);
-		public const int RBN_LAYOUTCHANGED  = (RBN_FIRST - 2);
-		public const int RBN_AUTOSIZE       = (RBN_FIRST - 3);
-		public const int RBN_BEGINDRAG      = (RBN_FIRST - 4);
-		public const int RBN_ENDDRAG         = (RBN_FIRST - 5);
-		public const int RBN_DELETINGBAND   = (RBN_FIRST - 6);    // Uses NMREBAR
-		public const int RBN_DELETEDBAND    = (RBN_FIRST - 7);     // Uses NMREBAR
-		public const int RBN_CHILDSIZE      = (RBN_FIRST - 8);
-		public const int RBN_CHEVRONPUSHED  = (RBN_FIRST - 10);
-		public const int RBN_MINMAX         = (RBN_FIRST - 21);
+        public const int ICC_LISTVIEW_CLASSES = 0x00000001; // listview; header
+        public const int ICC_TREEVIEW_CLASSES = 0x00000002; // treeview; tooltips
+        public const int ICC_BAR_CLASSES = 0x00000004; // toolbar; statusbar; trackbar; tooltips
+        public const int ICC_TAB_CLASSES = 0x00000008; // tab; tooltips
+        public const int ICC_UPDOWN_CLASS = 0x00000010; // updown
+        public const int ICC_PROGRESS_CLASS = 0x00000020; // progress
+        public const int ICC_HOTKEY_CLASS = 0x00000040; // hotkey
+        public const int ICC_ANIMATE_CLASS = 0x00000080; // animate
+        public const int ICC_WIN95_CLASSES = 0x000000FF;
+        public const int ICC_DATE_CLASSES = 0x00000100; // month picker; date picker; time picker; updown
+        public const int ICC_USEREX_CLASSES = 0x00000200; // comboex
+        public const int ICC_COOL_CLASSES = 0x00000400; // rebar (coolbar) control
+        public const int ICC_INTERNET_CLASSES = 0x00000800;
+        public const int ICC_PAGESCROLLER_CLASS = 0x00001000; // page scroller
+        public const int ICC_NATIVEFNTCTL_CLASS = 0x00002000; // native font control
+        public const int ICC_STANDARD_CLASSES = 0x00004000;
+        public const int ICC_LINK_CLASS = 0x00008000;
+        public const int RBN_HEIGHTCHANGE = (RBN_FIRST - 0);
+        public const int RBN_GETOBJECT = (RBN_FIRST - 1);
+        public const int RBN_LAYOUTCHANGED = (RBN_FIRST - 2);
+        public const int RBN_AUTOSIZE = (RBN_FIRST - 3);
+        public const int RBN_BEGINDRAG = (RBN_FIRST - 4);
+        public const int RBN_ENDDRAG = (RBN_FIRST - 5);
+        public const int RBN_DELETINGBAND = (RBN_FIRST - 6);    // Uses NMREBAR
+        public const int RBN_DELETEDBAND = (RBN_FIRST - 7);     // Uses NMREBAR
+        public const int RBN_CHILDSIZE = (RBN_FIRST - 8);
+        public const int RBN_CHEVRONPUSHED = (RBN_FIRST - 10);
+        public const int RBN_MINMAX = (RBN_FIRST - 21);
         public const int RBN_AUTOBREAK = (RBN_FIRST - 22);
         public const DWORD TBIF_BYINDEX = 0x80000000U;
         public const DWORD TBIF_COMMAND = 32U;
@@ -1528,8 +1529,8 @@ namespace cadencii {
         public const uint SHGFI_ICON = 0x100;
         public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
         public const uint SHGFI_SMALLICON = 0x1; // 'Small icon
-		public const uint CLR_NONE = 0xFFFFFFFFU;
-		public const uint CLR_DEFAULT = 0xFF000000U;
+        public const uint CLR_NONE = 0xFFFFFFFFU;
+        public const uint CLR_DEFAULT = 0xFF000000U;
 
         #region kernel32.dll
         private const string kernel32 = "kernel32.dll";
@@ -1545,9 +1546,9 @@ namespace cadencii {
         /// <param name="dwFlagsAndAttributes">ファイル属性(DWORD)</param>
         /// <param name="hTemplateFile">テンプレートファイルのハンドル(HANDLE)</param>
         /// <returns></returns>
-        [DllImport( kernel32 )]
+        [DllImport(kernel32)]
         public static extern HANDLE CreateFileW(
-            [MarshalAs( UnmanagedType.LPWStr )]
+            [MarshalAs(UnmanagedType.LPWStr)]
             string lpFileName,
             DWORD dwDesiredAccess,
             DWORD dwShareMode,
@@ -1563,9 +1564,9 @@ namespace cadencii {
         /// <param name="lpPathName">ディレクトリ名(LPCTSTR)</param>
         /// <param name="lpSecurityAttributes">セキュリティ識別子(LPSECURITY_ATTRIBUTES)</param>
         /// <returns></returns>
-        [DllImport( kernel32 )]
+        [DllImport(kernel32)]
         public static extern bool CreateDirectoryW(
-            [MarshalAs( UnmanagedType.LPWStr )]
+            [MarshalAs(UnmanagedType.LPWStr)]
             string lpPathName,
             IntPtr lpSecurityAttributes
         );
@@ -1575,7 +1576,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="lpFileName">ファイルまたはディレクトリの名前(LPCWSTR)</param>
         /// <returns></returns>
-        [DllImport( "kernel32.dll" )]
+        [DllImport("kernel32.dll")]
         public static extern DWORD GetFileAttributesW(
             [MarshalAs(UnmanagedType.LPWStr)]
             string lpFileName
@@ -1589,73 +1590,73 @@ namespace cadencii {
         /// <param name="lpBuffer">パス名を格納するバッファ(LPTSTR)</param>
         /// <param name="lpFilePart">パス内のファイル名のアドレス(LPTSTR*)</param>
         /// <returns></returns>
-        [DllImport( "kernel32.dll" )]
+        [DllImport("kernel32.dll")]
         public static extern DWORD GetFullPathNameW(
-            [MarshalAs( UnmanagedType.LPWStr )]
+            [MarshalAs(UnmanagedType.LPWStr)]
             string lpFileName,
             DWORD nBufferLength,
-            [MarshalAs( UnmanagedType.LPWStr )][Out]
+            [MarshalAs(UnmanagedType.LPWStr)][Out]
             StringBuilder lpBuffer,
-            [Out]
+          [Out]
             IntPtr lpFilePart
-        );
-        
-        [DllImport( "kernel32.dll" )]
-        public static extern bool DeviceIoControl( 
+      );
+
+        [DllImport("kernel32.dll")]
+        public static extern bool DeviceIoControl(
             IntPtr hDevice,
-            uint dwIoControlCode, 
-            byte[] lpInBuffer, 
-            uint nInBufferSize, 
-            [Out] byte[] lpOutBuffer, 
-            uint nOutBufferSize, 
+            uint dwIoControlCode,
+            byte[] lpInBuffer,
+            uint nInBufferSize,
+            [Out] byte[] lpOutBuffer,
+            uint nOutBufferSize,
             IntPtr lpBytesReturned,
-            IntPtr lpOverlapped );
-        
-        [DllImport( "kernel32.dll", CharSet = CharSet.Unicode )]
-        public static extern int GetShortPathNameW( string longPath, StringBuilder shortPathBuffer, int bufferSize );
-        
-        [DllImport( "kernel32.dll" )]
-        public static extern IntPtr LoadLibraryExW( [MarshalAs( UnmanagedType.LPWStr )]string lpFileName, IntPtr hFile, uint dwFlags );
+            IntPtr lpOverlapped);
 
-        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "GetProcAddress", ExactSpelling = true )]
-        public static extern IntPtr GetProcAddress( IntPtr hModule, string lpProcName );
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern int GetShortPathNameW(string longPath, StringBuilder shortPathBuffer, int bufferSize);
 
-        [DllImport( "kernel32.dll" )]
-        public static extern bool FreeLibrary( IntPtr hModule );
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr LoadLibraryExW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName, IntPtr hFile, uint dwFlags);
 
-        [DllImport( "kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "WriteProfileStringA", ExactSpelling = true )]
-        public static extern bool WriteProfileString( string section, string keyName, string value );
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "GetProcAddress", ExactSpelling = true)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-        [DllImport( "kernel32.dll" )]
-        public static extern uint GetProfileString( string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize );
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeLibrary(IntPtr hModule);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="lpCriticalSection">元はLPCRITICAL_SECTION</param>
-        [DllImport( "kernel32.dll" )]
-        public static extern void InitializeCriticalSection( ref IntPtr lpCriticalSection );
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, EntryPoint = "WriteProfileStringA", ExactSpelling = true)]
+        public static extern bool WriteProfileString(string section, string keyName, string value);
+
+        [DllImport("kernel32.dll")]
+        public static extern uint GetProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lpCriticalSection">元はLPCRITICAL_SECTION</param>
-        [DllImport( "kernel32.dll" )]
-        public static extern void DeleteCriticalSection( ref IntPtr lpCriticalSection );
+        [DllImport("kernel32.dll")]
+        public static extern void InitializeCriticalSection(ref IntPtr lpCriticalSection);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lpCriticalSection">元はLPCRITICAL_SECTION</param>
+        [DllImport("kernel32.dll")]
+        public static extern void DeleteCriticalSection(ref IntPtr lpCriticalSection);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lpCriticalSection">もとはLPCRITICAL_SECTION</param>
-        [DllImport( "kernel32.dll" )]
-        public static extern void LeaveCriticalSection( ref IntPtr lpCriticalSection );
+        [DllImport("kernel32.dll")]
+        public static extern void LeaveCriticalSection(ref IntPtr lpCriticalSection);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lpCriticalSection">LPCRITICAL_SECTION</param>
-        [DllImport( "kernel32.dll" )]
-        public static extern void EnterCriticalSection( ref IntPtr lpCriticalSection );
+        [DllImport("kernel32.dll")]
+        public static extern void EnterCriticalSection(ref IntPtr lpCriticalSection);
 
         /// <summary>
         /// 
@@ -1664,7 +1665,7 @@ namespace cadencii {
         /// <param name="lpFilename">モジュールのファイル名(LPTSTR)</param>
         /// <param name="nSize">バッファのサイズ</param>
         /// <returns></returns>
-        [DllImport( "kernel32.dll" )]
+        [DllImport("kernel32.dll")]
         public static extern DWORD GetModuleFileName(
           IntPtr hModule,    // 
           IntPtr lpFilename,  // 
@@ -1673,19 +1674,19 @@ namespace cadencii {
         #endregion
 
         #region shell32.dll
-        [DllImport( "shell32.dll" )]
-        public static extern IntPtr SHGetFileInfo( string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags );
+        [DllImport("shell32.dll")]
+        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
         #endregion
 
         #region user32.dll
-        [DllImport( "user32.dll" )]
-        public static extern bool GetWindowRect( IntPtr hWnd, ref RECT lpRect );
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
 
-        [DllImport( "user32.dll" )]
-        public static extern bool GetClientRect( IntPtr hWnd, ref RECT lpRect );
+        [DllImport("user32.dll")]
+        public static extern bool GetClientRect(IntPtr hWnd, ref RECT lpRect);
 
-        [DllImport( "user32.dll" )]
-        public static extern bool EnumChildWindows( IntPtr hWndParent, [MarshalAs( UnmanagedType.FunctionPtr )]EnumChildProc lpEnumFunc, int lParam );
+        [DllImport("user32.dll")]
+        public static extern bool EnumChildWindows(IntPtr hWndParent, [MarshalAs(UnmanagedType.FunctionPtr)]EnumChildProc lpEnumFunc, int lParam);
 
         /// <summary>
         /// 
@@ -1694,10 +1695,10 @@ namespace cadencii {
         /// <param name="lpRect">長方形の座標(CONST RECT *lpRect)</param>
         /// <param name="bErase">消去するかどうかの状態</param>
         /// <returns></returns>
-        [DllImport( "user32.dll" )]
-        public static extern bool InvalidateRect( IntPtr hWnd, IntPtr lpRect, bool bErase );
+        [DllImport("user32.dll")]
+        public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr CreateWindowEx(
             uint dwExStyle,      // extended window style
             string lpClassName,  // registered class name
@@ -1713,24 +1714,24 @@ namespace cadencii {
             int lpParam        // window-creation data
             );
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool DestroyWindow( IntPtr hWnd );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool DestroyWindow(IntPtr hWnd);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool DispatchMessage( ref Message msg );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool DispatchMessage(ref Message msg);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool GetMessage( ref Message msg, int hWnd, uint wFilterMin, uint wFilterMax );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool GetMessage(ref Message msg, int hWnd, uint wFilterMin, uint wFilterMax);
 
         //[DllImport("User32.dll", CharSet=CharSet.Auto)] 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto,
-             EntryPoint = "GetWindowLong", ExactSpelling = false )] //My Computer can't seem to find the entry point for GetWindowLongPtr
-        public static extern IntPtr GetWindowLongPtr( IntPtr hWnd, int nIndex );
+        [DllImport("User32.dll", CharSet = CharSet.Auto,
+             EntryPoint = "GetWindowLong", ExactSpelling = false)] //My Computer can't seem to find the entry point for GetWindowLongPtr
+        public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern int MessageBox( int h, string m, string c, int type );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern int MessageBox(int h, string m, string c, int type);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern int MoveWindow(
             IntPtr hWnd,      // handle to window
             int X,          // horizontal position
@@ -1740,82 +1741,82 @@ namespace cadencii {
             bool bRepaint   // repaint option
             );
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool PeekMessage( ref Message msg, int hWnd, uint wFilterMin, uint wFilterMax, uint wFlag );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool PeekMessage(ref Message msg, int hWnd, uint wFilterMin, uint wFilterMax, uint wFlag);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool PostMessage( IntPtr hWnd, int Msg, uint wParam, uint lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool PostMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool RedrawWindow( IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, uint wParam, uint lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, IntPtr lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, ref REBARINFO lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, ref REBARINFO lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, ref REBARBANDINFO lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, ref REBARBANDINFO lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, ref COLORSCHEME lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, ref COLORSCHEME lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, COLORREF lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, COLORREF lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, ref RECT lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, ref RECT lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, ref MARGINS lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, ref MARGINS lParam);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern uint SendMessage( IntPtr hWnd, int Msg, int wParam, ref TBBUTTONINFO lParam );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, ref TBBUTTONINFO lParam);
 
         //[DllImport("User32.dll", CharSet=CharSet.Auto)]
-        [DllImport( "User32.dll", CharSet = CharSet.Auto,
-             EntryPoint = "SetWindowLong", ExactSpelling = false )] //My Computer can't seem to find the entry point for SetWindowLongPtr
-        public static extern IntPtr SetWindowLongPtr( IntPtr hWnd, int nIndex, IntPtr dwNewLong );
+        [DllImport("User32.dll", CharSet = CharSet.Auto,
+             EntryPoint = "SetWindowLong", ExactSpelling = false)] //My Computer can't seem to find the entry point for SetWindowLongPtr
+        public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool SetWindowPos( IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool TrackMouseEvent( ref TRACKMOUSEEVENT lpEventTrack );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
-        public static extern bool TranslateMessage( ref Message msg );
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern bool TranslateMessage(ref Message msg);
 
-        [DllImport( "User32.dll", CharSet = CharSet.Auto )]
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool WaitMessage();
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool IntersectRect( ref RECT lprcDst, ref RECT lprcSrc1, ref RECT lprcSrc2 );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool IntersectRect(ref RECT lprcDst, ref RECT lprcSrc1, ref RECT lprcSrc2);
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool EqualRect( ref RECT lprc1, ref RECT lprc2 );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool EqualRect(ref RECT lprc1, ref RECT lprc2);
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern int TrackPopupMenu( IntPtr hMenu, uint uFlags, int x, int y, int nReserved, IntPtr hWnd, ref RECT prcRect );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y, int nReserved, IntPtr hWnd, ref RECT prcRect);
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr CreatePopupMenu();
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool DestroyMenu( IntPtr hMenu );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool DestroyMenu(IntPtr hMenu);
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool InsertMenuItem( IntPtr hMenu, uint uItem, bool fByPosition, ref MENUITEMINFO lpmii );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition, ref MENUITEMINFO lpmii);
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool AppendMenu( IntPtr hMenu, uint uFlags, uint uIDNewItem, string lpNewItem );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool AppendMenu(IntPtr hMenu, uint uFlags, uint uIDNewItem, string lpNewItem);
 
         /// <summary>
         /// 
@@ -1823,10 +1824,10 @@ namespace cadencii {
         /// <param name="hWnd">ウィンドウのハンドル</param>
         /// <param name="lpPoint">クライアント座標</param>
         /// <returns></returns>
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool ClientToScreen( IntPtr hWnd, ref POINT lpPoint );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr CreateMenu();
 
         /// <summary>
@@ -1835,111 +1836,128 @@ namespace cadencii {
         /// <param name="hWnd">ウィンドウのハンドル</param>
         /// <param name="hMenu">メニューのハンドル</param>
         /// <returns></returns>
-        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
-        public static extern bool SetMenu( IntPtr hWnd, IntPtr hMenu );
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool SetMenu(IntPtr hWnd, IntPtr hMenu);
         #endregion
 
         #region gdi32.dll
-        [DllImport( "GDI32.dll" )]
+        [DllImport("GDI32.dll")]
         public static extern bool DeleteObject(
             IntPtr hObject   // handle to graphic object
             );
         #endregion
 
         #region comctl32.dll
-        [DllImport( "ComCtl32.dll" )]
-        public static extern IntPtr ImageList_Create( int cx, int cy, uint flags, int cInitial, int cGrow );
+        [DllImport("ComCtl32.dll")]
+        public static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
 
-        [DllImport( "ComCtl32.dll" )]
-        public static extern bool ImageList_Destroy( IntPtr himl );
+        [DllImport("ComCtl32.dll")]
+        public static extern bool ImageList_Destroy(IntPtr himl);
 
-        [DllImport( "ComCtl32.dll" )]
-        public static extern int ImageList_GetImageCount( IntPtr himl );
+        [DllImport("ComCtl32.dll")]
+        public static extern int ImageList_GetImageCount(IntPtr himl);
 
-        [DllImport( "ComCtl32.dll" )]
-        public static extern bool InitCommonControlsEx( ref INITCOMMONCONTROLSEX ComCtls );
+        [DllImport("ComCtl32.dll")]
+        public static extern bool InitCommonControlsEx(ref INITCOMMONCONTROLSEX ComCtls);
         #endregion
 
-        public static int MAKELONG( int a, int b ) {
+        public static int MAKELONG(int a, int b)
+        {
             return 0xffff & a | ((0xffff & b) << 16);
         }
     }
 
-    public delegate bool EnumChildProc( IntPtr hwnd, int lParam );
+    public delegate bool EnumChildProc(IntPtr hwnd, int lParam);
 
     #region windef.h
-    public struct FILETIME {
+    public struct FILETIME
+    {
         public uint dwLowDateTime;
         public uint dwHighDateTime;
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct RECT {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct RECT
+    {
         public int left;
         public int top;
-	    public int right;
-	    public int bottom;
+        public int right;
+        public int bottom;
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return "{left=" + left + ", top=" + top + ", right=" + right + ", bottom=" + bottom + "}";
         }
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct COLORREF {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct COLORREF
+    {
         public uint _ColorDWORD;
 
         //Those goofs at MS store a COLORREF as XXBBGGRR and a Color as AARRGGBB
         //I'm sure that there's a good reason for it but it sure is a bummer
         //Lets do some bit shifting
-        public COLORREF( Color color ) {
+        public COLORREF(Color color)
+        {
             _ColorDWORD = ((uint)color.R) +
                 (uint)(color.G << 8) +
                 (uint)(color.B << 16);
         }
 
-        public Color GetColor() {
-            return Color.FromArgb( (int)(0x000000FFU | _ColorDWORD),
+        public Color GetColor()
+        {
+            return Color.FromArgb((int)(0x000000FFU | _ColorDWORD),
                 (int)((0x0000FF00 | _ColorDWORD) >> 2),
-                (int)((0x00FF0000 | _ColorDWORD) >> 4) );
+                (int)((0x00FF0000 | _ColorDWORD) >> 4));
         }
 
-        public void SetColor( Color color ) {
+        public void SetColor(Color color)
+        {
             _ColorDWORD = ((uint)color.R) +
                 (uint)(color.G << 8) +
                 (uint)(color.B << 16);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return _ColorDWORD.ToString();
         }
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct POINT {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
         public int x;
         public int y;
     }
     #endregion
 
     #region winnt.h
-    public struct IMAGE_IMPORT_DESCRIPTOR {
+    public struct IMAGE_IMPORT_DESCRIPTOR
+    {
         DWORD union;
 
-        public DWORD Characteristics {
-            get {
+        public DWORD Characteristics
+        {
+            get
+            {
                 return union;
             }
-            set {
+            set
+            {
                 union = value;
             }
         }
 
-        public DWORD OriginalFirstThunk {
-            get {
+        public DWORD OriginalFirstThunk
+        {
+            get
+            {
                 return union;
             }
-            set {
+            set
+            {
                 union = value;
             }
         }
@@ -1951,13 +1969,15 @@ namespace cadencii {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct LIST_ENTRY {
+    public unsafe struct LIST_ENTRY
+    {
         public LIST_ENTRY* Flink;
         public LIST_ENTRY* Blink;
     }
 
-    [StructLayout( LayoutKind.Sequential)]
-    public struct IMAGE_FILE_HEADER {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct IMAGE_FILE_HEADER
+    {
         public WORD Machine;
         public WORD NumberOfSections;
         public DWORD TimeDateStamp;
@@ -1968,13 +1988,15 @@ namespace cadencii {
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct IMAGE_DATA_DIRECTORY {
-    	public DWORD VirtualAddress;
-	    public DWORD Size;
+    public struct IMAGE_DATA_DIRECTORY
+    {
+        public DWORD VirtualAddress;
+        public DWORD Size;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct IMAGE_EXPORT_DIRECTORY {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct IMAGE_EXPORT_DIRECTORY
+    {
         public DWORD Characteristics;
         public DWORD TimeDateStamp;
         public WORD MajorVersion;
@@ -1988,8 +2010,9 @@ namespace cadencii {
         public DWORD AddressOfNameOrdinals;
     }
 
-    [StructLayout( LayoutKind.Sequential)]
-    public unsafe struct IMAGE_DOS_HEADER {
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct IMAGE_DOS_HEADER
+    {
         public WORD e_magic;
         public WORD e_cblp;
         public WORD e_cp;
@@ -2011,8 +2034,9 @@ namespace cadencii {
         public LONG e_lfanew;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public unsafe struct IMAGE_OPTIONAL_HEADER {
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct IMAGE_OPTIONAL_HEADER
+    {
         public WORD Magic;
         public BYTE MajorLinkerVersion;
         public BYTE MinorLinkerVersion;
@@ -2059,42 +2083,43 @@ namespace cadencii {
         private IMAGE_DATA_DIRECTORY dataDirectory13;
         private IMAGE_DATA_DIRECTORY dataDirectory14;
         private IMAGE_DATA_DIRECTORY dataDirectory15;
-        public IMAGE_DATA_DIRECTORY getDataDirectory( int index ) {
-            switch ( index ) {
+        public IMAGE_DATA_DIRECTORY getDataDirectory(int index)
+        {
+            switch (index) {
                 case 0:
-                    return dataDirectory00;
+                return dataDirectory00;
                 case 1:
-                    return dataDirectory01;
+                return dataDirectory01;
                 case 2:
-                    return dataDirectory02;
+                return dataDirectory02;
                 case 3:
-                    return dataDirectory03;
+                return dataDirectory03;
                 case 4:
-                    return dataDirectory04;
+                return dataDirectory04;
                 case 5:
-                    return dataDirectory05;
+                return dataDirectory05;
                 case 6:
-                    return dataDirectory06;
+                return dataDirectory06;
                 case 7:
-                    return dataDirectory07;
+                return dataDirectory07;
                 case 8:
-                    return dataDirectory08;
+                return dataDirectory08;
                 case 9:
-                    return dataDirectory09;
+                return dataDirectory09;
                 case 10:
-                    return dataDirectory10;
+                return dataDirectory10;
                 case 11:
-                    return dataDirectory11;
+                return dataDirectory11;
                 case 12:
-                    return dataDirectory12;
+                return dataDirectory12;
                 case 13:
-                    return dataDirectory13;
+                return dataDirectory13;
                 case 14:
-                    return dataDirectory14;
+                return dataDirectory14;
                 case 15:
-                    return dataDirectory15;
+                return dataDirectory15;
                 default:
-                    return new IMAGE_DATA_DIRECTORY();
+                return new IMAGE_DATA_DIRECTORY();
             }
         }
     }
@@ -2102,7 +2127,8 @@ namespace cadencii {
 
     #region winbase
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct CRITICAL_SECTION_DEBUG {
+    public unsafe struct CRITICAL_SECTION_DEBUG
+    {
         WORD Type;
         WORD CreatorBackTraceIndex;
         CRITICAL_SECTION* CriticalSection;
@@ -2112,8 +2138,9 @@ namespace cadencii {
         fixed DWORD Spare[2];
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public unsafe struct CRITICAL_SECTION {
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct CRITICAL_SECTION
+    {
         CRITICAL_SECTION_DEBUG* DebugInfo;
         LONG LockCount;
         LONG RecursionCount;
@@ -2124,9 +2151,11 @@ namespace cadencii {
     #endregion
 
     #region uxtheme.h
-    [StructLayout( LayoutKind.Sequential )]
-    public struct MARGINS {
-        public MARGINS( int Left, int Right, int Top, int Bottom ) {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MARGINS
+    {
+        public MARGINS(int Left, int Right, int Top, int Bottom)
+        {
             cxLeftWidth = Left;
             cxRightWidth = Right;
             cyTopHeight = Top;
@@ -2141,21 +2170,24 @@ namespace cadencii {
     #endregion
 
     #region commctrl.h
-    [StructLayout( LayoutKind.Sequential )]
-    public struct REBARINFO {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct REBARINFO
+    {
         public uint cbSize;
         public uint fMask;
         public IntPtr himl;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct REBARBANDINFO {
-        public void REBARABANDINFO() {
-            cbSize = (uint)Marshal.SizeOf( this );
+    [StructLayout(LayoutKind.Sequential)]
+    public struct REBARBANDINFO
+    {
+        public void REBARABANDINFO()
+        {
+            cbSize = (uint)Marshal.SizeOf(this);
             fMask = 0U;
             fStyle = 0U;
-            clrFore = new COLORREF( SystemColors.ControlText );
-            clrBack = new COLORREF( SystemColors.Control );
+            clrFore = new COLORREF(SystemColors.ControlText);
+            clrBack = new COLORREF(SystemColors.Control);
             lpText = "";
             cch = 0U;
             iImage = 0;
@@ -2195,21 +2227,24 @@ namespace cadencii {
         public uint cxHeader;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct COLORSCHEME {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct COLORSCHEME
+    {
         public uint dwSize;
         public COLORREF clrBtnHighlight;
         public COLORREF clrBtnShadow;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct INITCOMMONCONTROLSEX {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct INITCOMMONCONTROLSEX
+    {
         public uint dwSize;             // size of this structure
         public uint dwICC;              // flags indicating which classes to be initialized
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct NMREBARCHEVRON {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMREBARCHEVRON
+    {
         public NMHDR hdr;
         public int uBand;
         public int wID;
@@ -2218,8 +2253,9 @@ namespace cadencii {
         public int lParamNM;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct NMREBARCHILDSIZE {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMREBARCHILDSIZE
+    {
         public NMHDR hdr;
         public uint uBand;
         public uint wID;
@@ -2227,8 +2263,9 @@ namespace cadencii {
         public RECT rcBand;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct NMMOUSE {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMMOUSE
+    {
         public NMHDR hdr;
         public IntPtr dwItemSpec;
         public IntPtr dwItemData;
@@ -2236,42 +2273,46 @@ namespace cadencii {
         public IntPtr dwHitInfo;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct TBBUTTONINFO {
-        public uint      cbSize;
-        public DWORD     dwMask;
-        public int       idCommand;
-        public int       iImage;
-        public BYTE      fsState;
-        public BYTE      fsStyle;
-        public WORD      cx;
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TBBUTTONINFO
+    {
+        public uint cbSize;
+        public DWORD dwMask;
+        public int idCommand;
+        public int iImage;
+        public BYTE fsState;
+        public BYTE fsStyle;
+        public WORD cx;
         /// <summary>
         /// DWORD_PTR
         /// </summary>
         public IntPtr lParam;
-        public string    pszText;
-        public int       cchText;
+        public string pszText;
+        public int cchText;
     }
     #endregion
 
     #region winuser.h
-    [StructLayout( LayoutKind.Sequential )]
-    public struct TRACKMOUSEEVENT {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TRACKMOUSEEVENT
+    {
         public int cbSize;
         public uint dwFlags;
         public IntPtr hwndTrack;
         public int dwHoverTime;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct NMHDR {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMHDR
+    {
         public IntPtr hwndFrom;
         public uint idFrom;
         public int code;
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct MENUITEMINFO {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MENUITEMINFO
+    {
         public uint cbSize;
         public uint fMask;
         public uint fType;
@@ -2302,15 +2343,15 @@ namespace cadencii {
     }
     #endregion
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct SHFILEINFO {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SHFILEINFO
+    {
         public IntPtr hIcon;
         public IntPtr iIcon;
         public uint dwAttributes;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = 260 )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
         public string szDisplayName;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = 80 )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
         public string szTypeName;
     }
 }
-#endif

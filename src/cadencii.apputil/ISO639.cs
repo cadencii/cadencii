@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * ISO639.cs
  * Copyright © 2008-2011 kbinani
@@ -14,12 +13,15 @@
  */
 using System.Globalization;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
-    internal class iso639 {
-        public static bool CheckValidity( string code_string ) {
+    internal class iso639
+    {
+        public static bool CheckValidity(string code_string)
+        {
             try {
-                CultureInfo c = CultureInfo.CreateSpecificCulture( code_string );
+                CultureInfo c = CultureInfo.CreateSpecificCulture(code_string);
             } catch {
                 return false;
             }
@@ -28,4 +30,3 @@ namespace cadencii.apputil {
     }
 
 }
-#endif

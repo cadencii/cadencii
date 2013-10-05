@@ -11,57 +11,43 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+namespace cadencii
+{
 
-package cadencii;
-
-#else
-
-    namespace cadencii
+    public interface ExceptionNotifyFormUi : UiBase
     {
+        /// <summary>
+        /// ウィンドウのタイトルを設定する
+        /// </summary>
+        /// <param name="vlaue"></param>
+        [PureVirtualFunction]
+        void setTitle(string vlaue);
 
-#endif
+        /// <summary>
+        /// 説明文を設定する
+        /// </summary>
+        /// <param name="value"></param>
+        [PureVirtualFunction]
+        void setDescription(string value);
 
-#if JAVA
-            public interface ExceptionNotifyFormUi extends UiBase
-#else
-            public interface ExceptionNotifyFormUi : UiBase
-#endif
-            {
-                /// <summary>
-                /// ウィンドウのタイトルを設定する
-                /// </summary>
-                /// <param name="vlaue"></param>
-                [PureVirtualFunction]
-                void setTitle( string vlaue );
+        /// <summary>
+        /// 例外情報を設定する
+        /// </summary>
+        /// <param name="value"></param>
+        [PureVirtualFunction]
+        void setExceptionMessage(string value);
 
-                /// <summary>
-                /// 説明文を設定する
-                /// </summary>
-                /// <param name="value"></param>
-                [PureVirtualFunction]
-                void setDescription( string value );
+        [PureVirtualFunction]
+        void setCancelButtonText(string value);
 
-                /// <summary>
-                /// 例外情報を設定する
-                /// </summary>
-                /// <param name="value"></param>
-                [PureVirtualFunction]
-                void setExceptionMessage( string value );
+        [PureVirtualFunction]
+        void setSendButtonText(string value);
 
-                [PureVirtualFunction]
-                void setCancelButtonText( string value );
-
-                [PureVirtualFunction]
-                void setSendButtonText( string value );
-
-                /// <summary>
-                /// ダイアログを閉じる
-                /// </summary>
-                [PureVirtualFunction]
-                void close();
-            }
-
-#if !JAVA
+        /// <summary>
+        /// ダイアログを閉じる
+        /// </summary>
+        [PureVirtualFunction]
+        void close();
     }
-#endif
+
+}

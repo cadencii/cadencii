@@ -11,7 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if CSHARP
 using System;
 
 namespace cadencii
@@ -39,4 +38,3 @@ namespace cadencii
     public class PureVirtualFunctionAttribute : Attribute { }
 
 }
-#endif

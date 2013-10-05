@@ -11,50 +11,50 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.utau;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
 
-    public class RenderQueue {
-        private Vector<String> _resampler_arg = new Vector<String>();
-        public Vector<String> WavtoolArgPrefix = new Vector<String>();
-        public Vector<String> WavtoolArgSuffix = new Vector<String>();
+
+namespace cadencii
+{
+
+    public class RenderQueue
+    {
+        private List<string> _resampler_arg = new List<string>();
+        public List<string> WavtoolArgPrefix = new List<string>();
+        public List<string> WavtoolArgSuffix = new List<string>();
         //public String WavtoolArgPrefix;
         //public String WavtoolArgSuffix;
         public OtoArgs Oto;
         //public double secEnd;
         public double secStart;
-        public String FileName;
-        public boolean ResamplerFinished;
+        public string FileName;
+        public bool ResamplerFinished;
         /// <summary>
         /// MD5ハッシュによるファイル名の生成元となる文字列
         /// </summary>
-        public String hashSource;
+        public string hashSource;
 
         /// <summary>
         /// このキューの引数リストに、引数を1つ追加します
         /// </summary>
         /// <param name="value"></param>
-        public void appendArg( String value ) {
-            _resampler_arg.add( value );
+        public void appendArg(string value)
+        {
+            _resampler_arg.Add(value);
         }
 
         /// <summary>
         /// このキューの引数リストに、指定された引数をすべて追加します
         /// </summary>
         /// <param name="args"></param>
-        public void appendArgRange( String[] args ) {
-            foreach ( String s in args ) {
-                _resampler_arg.add( s );
+        public void appendArgRange(string[] args)
+        {
+            foreach (string s in args) {
+                _resampler_arg.Add(s);
             }
         }
 
@@ -62,24 +62,24 @@ namespace cadencii {
         /// このキューの引数リストを、文字列配列の形式で取得します
         /// </summary>
         /// <returns></returns>
-        public String[] getResamplerArg() {
-            return _resampler_arg.toArray( new String[0] );
+        public string[] getResamplerArg()
+        {
+            return _resampler_arg.ToArray();
         }
 
         /// <summary>
         /// このキューの引数リストを、スペースで繋げた文字列形式で取得します
         /// </summary>
         /// <returns></returns>
-        public String getResamplerArgString() {
-            String ret = "";
-            int c = _resampler_arg.size();
-            for ( int i = 0; i < c; i++ ) {
-                ret += _resampler_arg.get( i ) + ((i < c - 1) ? " " : "");
+        public string getResamplerArgString()
+        {
+            string ret = "";
+            int c = _resampler_arg.Count;
+            for (int i = 0; i < c; i++) {
+                ret += _resampler_arg[i] + ((i < c - 1) ? " " : "");
             }
             return ret;
         }
     }
 
-#if !JAVA
 }
-#endif

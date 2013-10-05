@@ -11,16 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// スクリプトの編集・実行結果を表すための列挙型
     /// </summary>
-    public enum ScriptReturnStatus {
+    public enum ScriptReturnStatus
+    {
         /// <summary>
         /// スクリプトの実行が成功し、編集が行われた。
         /// </summary>
@@ -35,6 +33,4 @@ namespace cadencii {
         ERROR,
     }
 
-#if !JAVA
 }
-#endif

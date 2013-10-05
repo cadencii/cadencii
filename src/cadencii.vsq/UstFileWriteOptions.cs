@@ -11,16 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-#else
 using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// UstFileクラスのwriteメソッドで出力する際の詳細オプションを表します
@@ -30,41 +24,39 @@ namespace cadencii.vsq
         /// <summary>
         /// [#TRACKEND]セクションを出力するかどうか
         /// </summary>
-        public boolean trackEnd;
+        public bool trackEnd;
         /// <summary>
         /// [#SETTING]セクションのTempoエントリーを出力するかどうか
         /// </summary>
-        public boolean settingTempo;
+        public bool settingTempo;
         /// <summary>
         /// [#SETTING]セクションのTracksエントリーを出力するかどうか
         /// </summary>
-        public boolean settingTracks;
+        public bool settingTracks;
         /// <summary>
         /// [#SETTING]セクションのProjectNameエントリーを出力するかどうか
         /// </summary>
-        public boolean settingProjectName;
+        public bool settingProjectName;
         /// <summary>
         /// [#SETTING]セクションのVoiceDirエントリーを出力するかどうか
         /// </summary>
-        public boolean settingVoiceDir;
+        public bool settingVoiceDir;
         /// <summary>
         /// [#SETTING]セクションのOutFileエントリーを出力するかどうか
         /// </summary>
-        public boolean settingOutFile;
+        public bool settingOutFile;
         /// <summary>
         /// [#SETTING]セクションのCacheDirエントリーを出力するかどうか
         /// </summary>
-        public boolean settingCacheDir;
+        public bool settingCacheDir;
         /// <summary>
         /// [#SETTING]セクションのTool1エントリーを出力するかどうか
         /// </summary>
-        public boolean settingTool1;
+        public bool settingTool1;
         /// <summary>
         /// [#SETTING]セクションのTool2エントリーを出力するかどうか
         /// </summary>
-        public boolean settingTool2;
+        public bool settingTool2;
     }
 
-#if !JAVA
 }
-#endif

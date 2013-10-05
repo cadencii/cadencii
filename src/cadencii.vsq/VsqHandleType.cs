@@ -11,35 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-#elif __cplusplus
-namespace org { namespace kbinani { namespace vsq {
-#else
 namespace cadencii.vsq
 {
-#endif
 
-#if __cplusplus
-    enum VsqHandleType
-#else
     public enum VsqHandleType
-#endif
     {
         Lyric,
         Vibrato,
         Singer,
         NoteHeadHandle,
         DynamicsHandle,
-#if __cplusplus
-    };
-#else
     }
-#endif
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

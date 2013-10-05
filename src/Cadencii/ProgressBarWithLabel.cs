@@ -11,20 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.ui.*;
-
-#else
-
 using System;
 
 namespace cadencii
 {
-
-#endif
 
     /// <summary>
     /// 実行内容を表示するためのラベル付きのプログレスバー
@@ -34,28 +24,23 @@ namespace cadencii
         private ProgressBarWithLabelUi ptrUi = null;
         private Object ptrArgument = null;
 
-#if !JAVA
         ~ProgressBarWithLabel()
         {
-#if __cplusplus
-            mman.del( ptrUi );
-#endif
         }
-#endif
 
-        public void setWidth( int value )
+        public void setWidth(int value)
         {
-            if ( ptrUi == null ) return;
-            ptrUi.setWidth( value );
+            if (ptrUi == null) return;
+            ptrUi.setWidth(value);
         }
 
         /// <summary>
         /// UIのセットアップを行います
         /// </summary>
         /// <param name="ui"></param>
-        public void setupUi( ProgressBarWithLabelUi ui )
+        public void setupUi(ProgressBarWithLabelUi ui)
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 ptrUi = ui;
             }
         }
@@ -73,21 +58,21 @@ namespace cadencii
         /// ラベルのテキストを設定します
         /// </summary>
         /// <param name="value">設定するテキスト</param>
-        public void setText( String value )
+        public void setText(string value)
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 return;
             }
-            ptrUi.setText( value );
+            ptrUi.setText(value);
         }
 
         /// <summary>
         /// ラベルのテキストを取得します
         /// </summary>
         /// <returns>ラベルのテキスト</returns>
-        public String getText()
+        public string getText()
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 return "";
             }
             return ptrUi.getText();
@@ -97,10 +82,10 @@ namespace cadencii
         /// 進捗状況をパーセントで設定します
         /// </summary>
         /// <param name="value">設定する値</param>
-        public void setProgress( int value )
+        public void setProgress(int value)
         {
-            if ( ptrUi == null ) return;
-            ptrUi.setProgress( value );
+            if (ptrUi == null) return;
+            ptrUi.setProgress(value);
         }
 
         /// <summary>
@@ -109,13 +94,11 @@ namespace cadencii
         /// <returns>進捗状況を表すパーセント値</returns>
         public int getProgress()
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 return 0;
             }
             return ptrUi.getProgress();
         }
     };
 
-#if !JAVA
 }
-#endif

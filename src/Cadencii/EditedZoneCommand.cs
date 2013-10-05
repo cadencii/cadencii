@@ -11,61 +11,41 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public class EditedZoneCommand {
-        public Vector<EditedZoneUnit> mAdd;
-        public Vector<EditedZoneUnit> mRemove;
+    public class EditedZoneCommand
+    {
+        public List<EditedZoneUnit> mAdd;
+        public List<EditedZoneUnit> mRemove;
 
-        public EditedZoneCommand( int addStart, int addEnd )
-#if JAVA
-        {
-#else
+        public EditedZoneCommand(int addStart, int addEnd)
             :
-#endif
-            this( new EditedZoneUnit[] { new EditedZoneUnit( addStart, addEnd ) }, new EditedZoneUnit[] { } )
-#if JAVA
-            ;
-#else
+            this(new EditedZoneUnit[] { new EditedZoneUnit(addStart, addEnd) }, new EditedZoneUnit[] { })
         {
-#endif
         }
 
-        public EditedZoneCommand( EditedZoneUnit[] add, EditedZoneUnit[] remove ) {
-            this.mAdd = new Vector<EditedZoneUnit>();
-            for ( int i = 0; i < add.Length; i++ ) {
-                this.mAdd.add( (EditedZoneUnit)add[i].clone() );
+        public EditedZoneCommand(EditedZoneUnit[] add, EditedZoneUnit[] remove)
+        {
+            this.mAdd = new List<EditedZoneUnit>();
+            for (int i = 0; i < add.Length; i++) {
+                this.mAdd.Add((EditedZoneUnit)add[i].clone());
             }
-            this.mRemove = new Vector<EditedZoneUnit>();
-            for ( int i = 0; i < remove.Length; i++ ) {
-                this.mRemove.add( (EditedZoneUnit)remove[i].clone() );
+            this.mRemove = new List<EditedZoneUnit>();
+            for (int i = 0; i < remove.Length; i++) {
+                this.mRemove.Add((EditedZoneUnit)remove[i].clone());
             }
         }
 
-        public EditedZoneCommand( Vector<EditedZoneUnit> add, Vector<EditedZoneUnit> remove )
-#if JAVA
-            {
-#else
+        public EditedZoneCommand(List<EditedZoneUnit> add, List<EditedZoneUnit> remove)
             :
-#endif
-            this( add.toArray( new EditedZoneUnit[] { } ), remove.toArray( new EditedZoneUnit[] { } ) )
-#if JAVA
-            ;
-#else
+            this(add.ToArray(), remove.ToArray())
         {
-#endif
         }
     }
 
-#if !JAVA
 }
-#endif

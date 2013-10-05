@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * PipedAviWriter.cs
  * Copyright © 2008-2011 kbinani
@@ -25,9 +24,11 @@ using System.Threading;
 
 using cadencii;
 
-namespace cadencii.media {
+namespace cadencii.media
+{
 
-    public class PipedAviWriter {
+    public class PipedAviWriter
+    {
         private const string _PIPE_NAME = "fifo";
         private uint m_scale = 1;
         private uint m_rate = 30;
@@ -44,15 +45,16 @@ namespace cadencii.media {
         private PixelFormat m_pix_fmt = PixelFormat.Format24bppRgb;
         private int m_bit_count = 24;
 
-        public bool AddFrame( Bitmap bmp ) {
-            if ( bmp.PixelFormat != m_pix_fmt ) {
+        public bool AddFrame(Bitmap bmp)
+        {
+            if (bmp.PixelFormat != m_pix_fmt) {
                 return false;
             }
-            BitmapData bdat = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ),
+            BitmapData bdat = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
                                             ImageLockMode.ReadOnly,
-                                            bmp.PixelFormat );
-            BinaryWriter bw = new BinaryWriter( new MemoryStream() );
-            if ( !m_header_written ) {
+                                            bmp.PixelFormat);
+            BinaryWriter bw = new BinaryWriter(new MemoryStream());
+            if (!m_header_written) {
                 m_bitmapsize = (uint)(bdat.Stride * bdat.Height);
                 //m_stream.SetLength( (long)(0xdc + (m_bitmapsize + 0x8) * m_frames) );
 
@@ -119,14 +121,14 @@ namespace cadencii.media {
             //bw.Write( (uint)m_bitmapsize );
             int address = bdat.Scan0.ToInt32();
             byte[] bitmapData = new byte[bdat.Stride * bdat.Height];
-            Marshal.Copy( new IntPtr( address ), bitmapData, 0, bitmapData.Length );
+            Marshal.Copy(new IntPtr(address), bitmapData, 0, bitmapData.Length);
             //bw.Write( (uint)m_main_avi_header.dwSuggestedBufferSize );
-            bw.Write( "BM".ToCharArray() );
-            bw.Write( m_bitmapsize );
-            bw.Write( (uint)0x0 );
-            bw.Write( (uint)0x36 );
+            bw.Write("BM".ToCharArray());
+            bw.Write(m_bitmapsize);
+            bw.Write((uint)0x0);
+            bw.Write((uint)0x36);
             BITMAPINFOHEADER bih = new BITMAPINFOHEADER(); //(BITMAPINFOHEADER)Marshal.PtrToStructure( Marshal.AllocHGlobal( sizeof( BITMAPINFOHEADER ) ), typeof( BITMAPINFOHEADER ) );
-            bih.biSize = (uint)(Marshal.SizeOf( bih ));
+            bih.biSize = (uint)(Marshal.SizeOf(bih));
             bih.biWidth = bdat.Width;
             bih.biHeight = bdat.Height;
             bih.biPlanes = 1;
@@ -137,65 +139,69 @@ namespace cadencii.media {
             bih.biYPelsPerMeter = 0;
             bih.biClrUsed = 0;
             bih.biClrImportant = 0;
-            bih.Write( bw );
-            bw.Write( bitmapData, 0, bitmapData.Length );
+            bih.Write(bw);
+            bw.Write(bitmapData, 0, bitmapData.Length);
             //const int _BUF_LEN = 512;
             byte[] buf = new byte[m_bitmapsize + 6];
-            bw.BaseStream.Seek( 0, SeekOrigin.Begin );
-            int len = bw.BaseStream.Read( buf, 0, (int)(m_bitmapsize + 6) );
-            if ( len > 0 ) {
-                m_stream.BeginWrite( buf, 0, len, null, null );
+            bw.BaseStream.Seek(0, SeekOrigin.Begin);
+            int len = bw.BaseStream.Read(buf, 0, (int)(m_bitmapsize + 6));
+            if (len > 0) {
+                m_stream.BeginWrite(buf, 0, len, null, null);
             }
             m_stream.Flush();
             bw.Close();
 
-            bmp.UnlockBits( bdat );
+            bmp.UnlockBits(bdat);
             return true;
         }
 
 
-        private void WriteFourCC( string value ) {
+        private void WriteFourCC(string value)
+        {
             byte[] b = new byte[4];
-            for ( int i = 0; i < 4; i++ ) {
+            for (int i = 0; i < 4; i++) {
                 b[i] = (byte)value[i];
             }
-            m_stream.Write( b, 0, 4 );
+            m_stream.Write(b, 0, 4);
         }
 
 
-        private void Write4Byte( uint value ) {
+        private void Write4Byte(uint value)
+        {
             byte[] b;
-            b = BitConverter.GetBytes( value );
-            if ( !BitConverter.IsLittleEndian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(value);
+            if (!BitConverter.IsLittleEndian) {
+                Array.Reverse(b);
             }
-            m_stream.Write( b, 0, 4 );
+            m_stream.Write(b, 0, 4);
         }
 
 
-        public void Close() {
-            if ( m_stream != null ) {
+        public void Close()
+        {
+            if (m_stream != null) {
 #if !TEST
                 m_stream.Disconnect();
 #endif
                 m_stream.Close();
             }
-            if ( m_ffmpeg != null ) {
-                if ( m_ffmpeg.IsAlive ) {
+            if (m_ffmpeg != null) {
+                if (m_ffmpeg.IsAlive) {
                     m_ffmpeg.Abort();
-                    while ( m_ffmpeg.IsAlive ) {
+                    while (m_ffmpeg.IsAlive) {
                     }
                 }
             }
         }
 
 
-        public void Open( uint scale, uint rate, ulong frames, PixelFormat pix_fmt ) {
-            if ( m_stream != null ) {
+        public void Open(uint scale, uint rate, ulong frames, PixelFormat pix_fmt)
+        {
+            if (m_stream != null) {
                 m_stream.Close();
             }
 #if TEST
-            m_stream = new FileStream( "test.out.avi", FileMode.Create );
+            m_stream = new FileStream("test.out.avi", FileMode.Create);
 #else
             m_stream = new NamedPipeServerStream( _PIPE_NAME, PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.None, 1, 1 );
 #endif
@@ -215,8 +221,8 @@ namespace cadencii.media {
             m_main_avi_header.dwTotalFrames = (uint)m_frames;
 
             m_pix_fmt = pix_fmt;
-            if ( m_pix_fmt != PixelFormat.Format24bppRgb && m_pix_fmt != PixelFormat.Format32bppArgb ) {
-                throw new ApplicationException( "pixel format not supported" );
+            if (m_pix_fmt != PixelFormat.Format24bppRgb && m_pix_fmt != PixelFormat.Format32bppArgb) {
+                throw new ApplicationException("pixel format not supported");
             }
 #if !TEST
             m_ffmpeg = new Thread( new ThreadStart( FFmpegEnc ) );
@@ -226,8 +232,9 @@ namespace cadencii.media {
         }
 
 
-        private void FFmpegEnc() {
-            Thread.Sleep( 1000 );
+        private void FFmpegEnc()
+        {
+            Thread.Sleep(1000);
             Process client = new Process();
             client.StartInfo.FileName = "ffmpeg";
 
@@ -242,12 +249,11 @@ namespace cadencii.media {
             client.Start();
             StreamReader sr = client.StandardOutput;
             string line = "";
-            while ( (line = sr.ReadLine()) != null ) {
-                Console.WriteLine( line );
+            while ((line = sr.ReadLine()) != null) {
+                Console.WriteLine(line);
             }
         }
     }
 
 }
-#endif
 #endif

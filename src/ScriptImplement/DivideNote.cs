@@ -10,12 +10,16 @@ using cadencii;
 using cadencii.java.util;
 using cadencii.windows.forms;
 
-namespace cadencii {
 
-    public partial class DivideNote : Form, IPaletteTool {
+
+namespace cadencii
+{
+
+    public partial class DivideNote : Form, IPaletteTool
+    {
         public static int Numerator = 1;
         public static int Denominator = 32;
-        public static String Modifier = "Control";
+        public static string Modifier = "Control";
 
         private Bitmap m_icon = null;
         private Label lblLength;
@@ -33,49 +37,52 @@ namespace cadencii {
         private Label lblModifierKey;
         private ComboBox comboKeys;
         private static int[] _DENOMI = new int[] { 1, 2, 4, 8, 16, 32, 64, 128 };
-        private static String[] MODIFIER = new String[] { "None", "Control", "Shift", "Alt" };
+        private static string[] MODIFIER = new string[] { "None", "Control", "Shift", "Alt" };
 
-        public DivideNote() {
+        public DivideNote()
+        {
             InitializeComponent();
             comboDenominator.Items.Clear();
-            for ( int i = 0; i < _DENOMI.Length; i++ ) {
-                comboDenominator.Items.Add( _DENOMI[i].ToString() );
+            for (int i = 0; i < _DENOMI.Length; i++) {
+                comboDenominator.Items.Add(_DENOMI[i].ToString());
             }
             txtNumerator.Text = "1";
-            
+
             // ショートカットキー用のコンボボックスを更新
             comboKeys.Items.Clear();
             int selected = -1;
             int count = -1;
-            for ( int i = 0; i < MODIFIER.Length; i++ ) {
-                String item = MODIFIER[i];
-                comboKeys.Items.Add( item );
+            for (int i = 0; i < MODIFIER.Length; i++) {
+                string item = MODIFIER[i];
+                comboKeys.Items.Add(item);
                 count++;
-                if ( item.Equals( getModifier() ) ) {
+                if (item.Equals(getModifier())) {
                     selected = count;
                 }
             }
-            if ( selected >= 0 ) {
+            if (selected >= 0) {
                 comboKeys.SelectedIndex = selected;
             }
 
             // アイコンを作成
-            byte[] b = Base64.decode( iconbase64 );
-            using ( MemoryStream ms = new MemoryStream( b ) ) {
-                m_icon = new Bitmap( ms );
+            byte[] b = Base64.decode(iconbase64);
+            using (MemoryStream ms = new MemoryStream(b)) {
+                m_icon = new Bitmap(ms);
             }
         }
 
-        private static string getModifier() {
-            if ( Modifier == null ) {
+        private static string getModifier()
+        {
+            if (Modifier == null) {
                 Modifier = "Control";
             }
             return Modifier;
         }
 
-        public void applyLanguage( string language ) {
-            this.Text = getName( language );
-            if ( language == "ja" ) {
+        public void applyLanguage(string language)
+        {
+            this.Text = getName(language);
+            if (language == "ja") {
                 lblDenominator.Text = "分母";
                 lblNumerator.Text = "分子";
                 lblLength.Text = "最初の音符の長さ";
@@ -92,107 +99,111 @@ namespace cadencii {
             }
         }
 
-        public bool edit( VsqTrack track, int[] event_internal_ids, MouseButtons button ) {
+        public bool edit(VsqTrack track, int[] event_internal_ids, MouseButtons button)
+        {
             bool edited = false;
             try {
                 int divide_threshold = Numerator * 480 * 4 / Denominator;
-                Console.WriteLine( "s_divide_threshold=" + divide_threshold );
+                Console.WriteLine("s_divide_threshold=" + divide_threshold);
                 Keys modifier = Control.ModifierKeys;
                 bool middle_mode = button == MouseButtons.Middle;
-                if ( getModifier().Equals( "Alt" ) ) {
-                    if ( (modifier & Keys.Alt) == Keys.Alt ) {
+                if (getModifier().Equals("Alt")) {
+                    if ((modifier & Keys.Alt) == Keys.Alt) {
                         middle_mode = true;
                     }
-                } else if ( getModifier().Equals( "Control" ) ) {
-                    if ( (modifier & Keys.Control) == Keys.Control ) {
+                } else if (getModifier().Equals("Control")) {
+                    if ((modifier & Keys.Control) == Keys.Control) {
                         middle_mode = true;
                     }
-                } else if ( getModifier().Equals( "Shift" ) ) {
-                    if ( (modifier & Keys.Shift) == Keys.Shift ) {
+                } else if (getModifier().Equals("Shift")) {
+                    if ((modifier & Keys.Shift) == Keys.Shift) {
                         middle_mode = true;
                     }
                 }
-                Console.WriteLine( "DivideNote#edit; (event_internal_ids==null)=" + (event_internal_ids == null) );
-                foreach ( int id in event_internal_ids ) {
-                    Console.WriteLine( "DivideNote#edit; (track==null)=" + (track == null) );
-                    for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                        VsqEvent ve = itr.next();
-                        Console.WriteLine( "DivideNote#edit; (ve==null)=" + (ve == null) );
-                        if ( ve.InternalID == id ) {
-                            Console.WriteLine( "DivideNote#edit; (ve.ID==null)=" + (ve.ID == null) );
-                            if ( ve.ID.Length >= divide_threshold * 2 ) {
-                                Console.WriteLine( "before; clock=" + ve.Clock + "; length=" + ve.ID.Length );
+                Console.WriteLine("DivideNote#edit; (event_internal_ids==null)=" + (event_internal_ids == null));
+                foreach (int id in event_internal_ids) {
+                    Console.WriteLine("DivideNote#edit; (track==null)=" + (track == null));
+                    foreach (var ve in track.getNoteEventIterator()) {
+                        Console.WriteLine("DivideNote#edit; (ve==null)=" + (ve == null));
+                        if (ve.InternalID == id) {
+                            Console.WriteLine("DivideNote#edit; (ve.ID==null)=" + (ve.ID == null));
+                            if (ve.ID.Length >= divide_threshold * 2) {
+                                Console.WriteLine("before; clock=" + ve.Clock + "; length=" + ve.ID.Length);
                                 VsqEvent add = (VsqEvent)ve.clone();
                                 int length = ve.ID.Length;
                                 List<string> symbol = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
-                                for ( int i = 0; i < symbol.Count; i++ ) {
-                                    Console.WriteLine( "symbol[" + i + "]=" + symbol[i] );
+                                for (int i = 0; i < symbol.Count; i++) {
+                                    Console.WriteLine("symbol[" + i + "]=" + symbol[i]);
                                 }
                                 ve.ID.Length = divide_threshold;
                                 add.Clock = ve.Clock + divide_threshold;
                                 add.ID.Length = length - divide_threshold;
-                                if ( add.ID.VibratoHandle != null ) {
-                                    if ( add.ID.VibratoDelay >= add.ID.Length ) {
+                                if (add.ID.VibratoHandle != null) {
+                                    if (add.ID.VibratoDelay >= add.ID.Length) {
                                         add.ID.VibratoHandle = null;
                                     }
                                 }
-                                if ( ve.ID.VibratoHandle != null ) {
-                                    if ( ve.ID.VibratoDelay >= ve.ID.Length ) {
+                                if (ve.ID.VibratoHandle != null) {
+                                    if (ve.ID.VibratoDelay >= ve.ID.Length) {
                                         ve.ID.VibratoHandle = null;
                                     }
                                 }
-                                if ( symbol.Count >= 2 ) {
-                                    if ( middle_mode && !VsqPhoneticSymbol.isConsonant( symbol[1] ) ) {
-                                        ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] + " " + symbol[1] );
+                                if (symbol.Count >= 2) {
+                                    if (middle_mode && !VsqPhoneticSymbol.isConsonant(symbol[1])) {
+                                        ve.ID.LyricHandle.L0.setPhoneticSymbol(symbol[0] + " " + symbol[1]);
                                     } else {
-                                        ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] );
+                                        ve.ID.LyricHandle.L0.setPhoneticSymbol(symbol[0]);
                                     }
                                     string symbol2 = "";
-                                    for ( int i = 1; i < symbol.Count; i++ ) {
+                                    for (int i = 1; i < symbol.Count; i++) {
                                         symbol2 += ((i == 1) ? "" : " ") + symbol[i];
                                     }
-                                    Console.WriteLine( "symbol2=" + symbol2 );
-                                    add.ID.LyricHandle.L0.setPhoneticSymbol( symbol2 );
+                                    Console.WriteLine("symbol2=" + symbol2);
+                                    add.ID.LyricHandle.L0.setPhoneticSymbol(symbol2);
                                 }
-                                track.addEvent( add );
+                                track.addEvent(add);
                                 edited = true;
                             }
                             break;
                         }
                     }
                 }
-            } catch ( Exception ex ) {
-                Console.WriteLine( "DivideNote#edit; ex=" + ex );
+            } catch (Exception ex) {
+                Console.WriteLine("DivideNote#edit; ex=" + ex);
             }
             return edited;
         }
 
-        public string getName( string language ) {
-            if ( language.ToLower() == "ja" ) {
+        public string getName(string language)
+        {
+            if (language.ToLower() == "ja") {
                 return "音符分割";
             } else {
                 return "Devide Note";
             }
         }
 
-        public string getDescription( string language ) {
-            if ( language.ToLower() == "ja" ) {
+        public string getDescription(string language)
+        {
+            if (language.ToLower() == "ja") {
                 return "音符を「母音-母音」または「子音-母音」のペアに分割します";
             } else {
                 return "devides note into a phoneme pair, 'vowel-vowel' or 'consonant-vowel'";
             }
         }
 
-        public bool hasDialog() {
+        public bool hasDialog()
+        {
             return true;
         }
 
-        public DialogResult openDialog() {
+        public DialogResult openDialog()
+        {
             int num = Numerator;
             int den = Denominator;
-            String key = getModifier();
+            string key = getModifier();
             DialogResult ret = this.ShowDialog();
-            if ( ret != DialogResult.OK ) {
+            if (ret != DialogResult.OK) {
                 // 元に戻す
                 Numerator = num;
                 Denominator = den;
@@ -201,11 +212,13 @@ namespace cadencii {
             return ret;
         }
 
-        public Bitmap getIcon() {
+        public Bitmap getIcon()
+        {
             return m_icon;
         }
 
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.lblLength = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -222,9 +235,9 @@ namespace cadencii {
             this.lblLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lblLength.AutoEllipsis = true;
-            this.lblLength.Location = new System.Drawing.Point( 12, 18 );
+            this.lblLength.Location = new System.Drawing.Point(12, 18);
             this.lblLength.Name = "lblLength";
-            this.lblLength.Size = new System.Drawing.Size( 282, 19 );
+            this.lblLength.Size = new System.Drawing.Size(282, 19);
             this.lblLength.TabIndex = 0;
             this.lblLength.Text = "Length of precursor note";
             // 
@@ -232,9 +245,9 @@ namespace cadencii {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point( 112, 165 );
+            this.btnOK.Location = new System.Drawing.Point(112, 165);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size( 88, 23 );
+            this.btnOK.Size = new System.Drawing.Size(88, 23);
             this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -243,9 +256,9 @@ namespace cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 206, 165 );
+            this.btnCancel.Location = new System.Drawing.Point(206, 165);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
+            this.btnCancel.Size = new System.Drawing.Size(88, 23);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -253,73 +266,73 @@ namespace cadencii {
             // comboDenominator
             // 
             this.comboDenominator.FormattingEnabled = true;
-            this.comboDenominator.Location = new System.Drawing.Point( 101, 67 );
+            this.comboDenominator.Location = new System.Drawing.Point(101, 67);
             this.comboDenominator.Name = "comboDenominator";
-            this.comboDenominator.Size = new System.Drawing.Size( 108, 20 );
+            this.comboDenominator.Size = new System.Drawing.Size(108, 20);
             this.comboDenominator.TabIndex = 2;
-            this.comboDenominator.SelectedIndexChanged += new System.EventHandler( this.comboLength_SelectedIndexChanged );
+            this.comboDenominator.SelectedIndexChanged += new System.EventHandler(this.comboLength_SelectedIndexChanged);
             // 
             // lblNumerator
             // 
             this.lblNumerator.AutoSize = true;
-            this.lblNumerator.Location = new System.Drawing.Point( 26, 43 );
+            this.lblNumerator.Location = new System.Drawing.Point(26, 43);
             this.lblNumerator.Name = "lblNumerator";
-            this.lblNumerator.Size = new System.Drawing.Size( 58, 12 );
+            this.lblNumerator.Size = new System.Drawing.Size(58, 12);
             this.lblNumerator.TabIndex = 29;
             this.lblNumerator.Text = "Numerator";
             // 
             // lblDenominator
             // 
             this.lblDenominator.AutoSize = true;
-            this.lblDenominator.Location = new System.Drawing.Point( 26, 70 );
+            this.lblDenominator.Location = new System.Drawing.Point(26, 70);
             this.lblDenominator.Name = "lblDenominator";
-            this.lblDenominator.Size = new System.Drawing.Size( 69, 12 );
+            this.lblDenominator.Size = new System.Drawing.Size(69, 12);
             this.lblDenominator.TabIndex = 30;
             this.lblDenominator.Text = "Denominator";
             // 
             // txtNumerator
             // 
-            this.txtNumerator.Location = new System.Drawing.Point( 101, 40 );
+            this.txtNumerator.Location = new System.Drawing.Point(101, 40);
             this.txtNumerator.Name = "txtNumerator";
-            this.txtNumerator.Size = new System.Drawing.Size( 108, 19 );
+            this.txtNumerator.Size = new System.Drawing.Size(108, 19);
             this.txtNumerator.TabIndex = 1;
             this.txtNumerator.Text = "1";
-            this.txtNumerator.TextChanged += new System.EventHandler( this.txtNumerator_TextChanged );
+            this.txtNumerator.TextChanged += new System.EventHandler(this.txtNumerator_TextChanged);
             // 
             // lblModifierKey
             // 
             this.lblModifierKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.lblModifierKey.AutoEllipsis = true;
-            this.lblModifierKey.Location = new System.Drawing.Point( 12, 103 );
+            this.lblModifierKey.Location = new System.Drawing.Point(12, 103);
             this.lblModifierKey.Name = "lblModifierKey";
-            this.lblModifierKey.Size = new System.Drawing.Size( 282, 23 );
+            this.lblModifierKey.Size = new System.Drawing.Size(282, 23);
             this.lblModifierKey.TabIndex = 31;
             this.lblModifierKey.Text = "Modifier key for separating [consonant+vowel][vowel]";
             // 
             // comboKeys
             // 
             this.comboKeys.FormattingEnabled = true;
-            this.comboKeys.Location = new System.Drawing.Point( 28, 125 );
+            this.comboKeys.Location = new System.Drawing.Point(28, 125);
             this.comboKeys.Name = "comboKeys";
-            this.comboKeys.Size = new System.Drawing.Size( 108, 20 );
+            this.comboKeys.Size = new System.Drawing.Size(108, 20);
             this.comboKeys.TabIndex = 32;
-            this.comboKeys.SelectedIndexChanged += new System.EventHandler( this.comboKeys_SelectedIndexChanged );
+            this.comboKeys.SelectedIndexChanged += new System.EventHandler(this.comboKeys_SelectedIndexChanged);
             // 
             // DivideNote
             // 
             this.AcceptButton = this.btnOK;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 306, 200 );
-            this.Controls.Add( this.comboKeys );
-            this.Controls.Add( this.lblModifierKey );
-            this.Controls.Add( this.txtNumerator );
-            this.Controls.Add( this.lblDenominator );
-            this.Controls.Add( this.lblNumerator );
-            this.Controls.Add( this.comboDenominator );
-            this.Controls.Add( this.btnOK );
-            this.Controls.Add( this.btnCancel );
-            this.Controls.Add( this.lblLength );
+            this.ClientSize = new System.Drawing.Size(306, 200);
+            this.Controls.Add(this.comboKeys);
+            this.Controls.Add(this.lblModifierKey);
+            this.Controls.Add(this.txtNumerator);
+            this.Controls.Add(this.lblDenominator);
+            this.Controls.Add(this.lblNumerator);
+            this.Controls.Add(this.comboDenominator);
+            this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.lblLength);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -328,17 +341,18 @@ namespace cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Divide Note";
-            this.Load += new System.EventHandler( this.DivideNote_Load );
-            this.ResumeLayout( false );
+            this.Load += new System.EventHandler(this.DivideNote_Load);
+            this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
-        private void comboLength_SelectedIndexChanged( object sender, EventArgs e ) {
-            if ( comboDenominator.SelectedIndex < 0 ) {
+        private void comboLength_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboDenominator.SelectedIndex < 0) {
                 Denominator = 32;
-                for ( int i = 0; i < _DENOMI.Length; i++ ) {
-                    if ( _DENOMI[i] == 32 ) {
+                for (int i = 0; i < _DENOMI.Length; i++) {
+                    if (_DENOMI[i] == 32) {
                         comboDenominator.SelectedIndex = i;
                         break;
                     }
@@ -348,29 +362,32 @@ namespace cadencii {
             }
         }
 
-        private void DivideNote_Load( object sender, EventArgs e ) {
+        private void DivideNote_Load(object sender, EventArgs e)
+        {
             txtNumerator.Text = Numerator.ToString();
-            for ( int i = 0; i < _DENOMI.Length; i++ ) {
-                if ( Denominator == _DENOMI[i] ) {
+            for (int i = 0; i < _DENOMI.Length; i++) {
+                if (Denominator == _DENOMI[i]) {
                     comboDenominator.SelectedIndex = i;
                     break;
                 }
             }
         }
 
-        private void txtNumerator_TextChanged( object sender, EventArgs e ) {
+        private void txtNumerator_TextChanged(object sender, EventArgs e)
+        {
             int v = Numerator;
-            if ( int.TryParse( txtNumerator.Text, out v ) ) {
+            if (int.TryParse(txtNumerator.Text, out v)) {
                 Numerator = v;
             }
         }
 
-        private void comboKeys_SelectedIndexChanged( object sender, EventArgs e ) {
+        private void comboKeys_SelectedIndexChanged(object sender, EventArgs e)
+        {
             int index = comboKeys.SelectedIndex;
-            if ( index < 0 ) {
+            if (index < 0) {
                 return;
             }
-            Modifier = (String)comboKeys.Items[index];
+            Modifier = (string)comboKeys.Items[index];
         }
     }
 

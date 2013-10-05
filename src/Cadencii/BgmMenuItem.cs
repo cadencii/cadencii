@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.windows.forms.BMenuItem;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
@@ -26,25 +18,14 @@ using cadencii;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class BgmMenuItem extends BMenuItem
-#else
     public class BgmMenuItem : ToolStripMenuItem
-#endif
     {
         private int mBgmIndex;
 
-        public BgmMenuItem( int bgm_index )
-#if JAVA
-        {
-            super();
-#else
+        public BgmMenuItem(int bgm_index)
             : base()
         {
-#endif
             mBgmIndex = bgm_index;
         }
 
@@ -58,6 +39,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

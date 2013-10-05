@@ -11,38 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormAskKeySoundGeneration.java
-
-import cadencii.*;
-import cadencii.windows.forms.*;
-import cadencii.apputil.*;
-
-#else
-
 using System;
 using cadencii.windows.forms;
 using cadencii.apputil;
 
+
+
 namespace cadencii
 {
-    using boolean = System.Boolean;
 
-#endif
-
-#if JAVA
-    public class FormAskKeySoundGenerationController extends ControllerBase implements FormAskKeySoundGenerationUiListener
-#else
     public class FormAskKeySoundGenerationController : ControllerBase, FormAskKeySoundGenerationUiListener
-#endif
     {
         private FormAskKeySoundGenerationUi mUi = null;
 
         #region public methods
-        public void setupUi( FormAskKeySoundGenerationUi ui )
+        public void setupUi(FormAskKeySoundGenerationUi ui)
         {
             mUi = ui;
             applyLanguage();
@@ -55,31 +38,29 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            mUi.setMessageLabelText( _( "It seems some key-board sounds are missing. Do you want to re-generate them now?" ) );
-            mUi.setAlwaysPerformThisCheckCheckboxText( _( "Always perform this check when starting Cadencii." ) );
-            mUi.setYesButtonText( _( "Yes" ) );
-            mUi.setNoButtonText( _( "No" ) );
+            mUi.setMessageLabelText(_("It seems some key-board sounds are missing. Do you want to re-generate them now?"));
+            mUi.setAlwaysPerformThisCheckCheckboxText(_("Always perform this check when starting Cadencii."));
+            mUi.setYesButtonText(_("Yes"));
+            mUi.setNoButtonText(_("No"));
         }
 
         public void buttonCancelClickedSlot()
         {
-            mUi.close( true );
+            mUi.close(true);
         }
 
         public void buttonOkClickedSlot()
         {
-            mUi.close( false );
+            mUi.close(false);
         }
         #endregion
 
         #region private methods
-        private static String _( String message )
+        private static string _(string message)
         {
-            return Messaging.getMessage( message );
+            return Messaging.getMessage(message);
         }
         #endregion
     }
 
-#if !JAVA
 }
-#endif

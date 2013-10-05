@@ -1,19 +1,21 @@
-#if !JAVA
 #define VST_2_4_EXTENSIONS
 
 using System;
 using System.Runtime.InteropServices;
 
-namespace VstSdk {
+namespace VstSdk
+{
     #region VST SDK 2.4 declarations
     using VstInt32 = System.Int32;
     using VstIntPtr = System.Int32;
     using VstInt16 = System.Int16;
 
+
     /// <summary>
     /// 定数値のコンテナクラス
     /// </summary>
-    public static class Constants {
+    public static class Constants
+    {
         /// <summary>
         /// VST SDKのバージョンを表す定数
         /// </summary>
@@ -23,7 +25,8 @@ namespace VstSdk {
     /// <summary>
     /// String length limits (in characters excl. 0 byte)
     /// </summary>
-    public static class VstStringConstants {
+    public static class VstStringConstants
+    {
         /// <summary>
         /// used for #effGetProgramName, #effSetProgramName, #effGetProgramNameIndexed
         /// </summary>
@@ -46,7 +49,8 @@ namespace VstSdk {
         public const int kVstMaxEffectNameLen = 32;
     }
 
-    public static class AudioMasterOpcodes {
+    public static class AudioMasterOpcodes
+    {
         /// <summary>
         /// [index]: parameter index [opt]: parameter value  @see AudioEffect::setParameterAutomated
         /// </summary>
@@ -73,7 +77,8 @@ namespace VstSdk {
     /// <summary>
     /// Basic dispatcher Opcodes (Host to Plug-in)
     /// </summary>
-    public static class AEffectOpcodes {
+    public static class AEffectOpcodes
+    {
         /// <summary>
         /// no arguments  @see AudioEffect::open
         /// </summary>
@@ -194,7 +199,8 @@ namespace VstSdk {
         public const int effNumOpcodes = 25;
     }
 
-    public static class AEffectXOpcodes {
+    public static class AEffectXOpcodes
+    {
         /// <summary>
         /// [ptr]: #VstEvents*  @see AudioEffectX::processEvents
         /// </summary>
@@ -450,7 +456,8 @@ namespace VstSdk {
         public const int effGetNumMidiOutputChannels = 79;
     }
 
-    public static class VstAEffectFlags {
+    public static class VstAEffectFlags
+    {
         /// <summary>
         /// set if the plug-in provides a custom editor
         /// </summary>
@@ -504,21 +511,22 @@ namespace VstSdk {
         public const int __effFlagsExtHasBufferDeprecated = 1 << 11;
     }
 
-    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public delegate VstIntPtr AEffectDispatcherProc( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt );
-    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public delegate void AEffectProcessProc( ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames );
-    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public delegate void AEffectProcessDoubleProc( ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames );
-    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public delegate void AEffectSetParameterProc( ref AEffect effect, VstInt32 index, float parameter );
-    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public delegate float AEffectGetParameterProc( ref AEffect effect, VstInt32 index );
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate VstIntPtr AEffectDispatcherProc(ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void AEffectProcessProc(ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void AEffectProcessDoubleProc(ref AEffect effect, IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void AEffectSetParameterProc(ref AEffect effect, VstInt32 index, float parameter);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate float AEffectGetParameterProc(ref AEffect effect, VstInt32 index);
 
-    [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-    public delegate VstIntPtr audioMasterCallback( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt );
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate VstIntPtr audioMasterCallback(ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt);
 
-    public class AEffectWrapper {
+    public class AEffectWrapper
+    {
         public AEffect aeffect;
 
         private AEffectDispatcherProc dispatcherProc = null;
@@ -531,17 +539,18 @@ namespace VstSdk {
         /// <summary>
         /// Host to Plug-in dispatcher @see AudioEffect::dispatcher
         /// </summary>
-        public VstIntPtr Dispatch( VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt ) {
-            if ( dispatcherProc == null && aeffect.dispatcher != IntPtr.Zero ) {
-                dispatcherProc = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer( aeffect.dispatcher, typeof( AEffectDispatcherProc ) );
+        public VstIntPtr Dispatch(VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt)
+        {
+            if (dispatcherProc == null && aeffect.dispatcher != IntPtr.Zero) {
+                dispatcherProc = (AEffectDispatcherProc)Marshal.GetDelegateForFunctionPointer(aeffect.dispatcher, typeof(AEffectDispatcherProc));
             }
             VstIntPtr ret = 0;
             try {
-                if ( dispatcherProc != null ) {
-                    ret = dispatcherProc( ref aeffect, opcode, index, value, ptr, opt );
+                if (dispatcherProc != null) {
+                    ret = dispatcherProc(ref aeffect, opcode, index, value, ptr, opt);
                 }
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffectWrapper#Dispatch; ex=" + ex );
+            } catch (Exception ex) {
+                Console.Error.WriteLine("AEffectWrapper#Dispatch; ex=" + ex);
             }
             return ret;
         }
@@ -549,49 +558,52 @@ namespace VstSdk {
         /// <summary>
         /// deprecated Accumulating process mode is deprecated in VST 2.4! Use AEffect::processReplacing instead!
         /// </summary>
-        public void __ProcessDeprecated( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
-            if ( processProc == null && aeffect.__processDeprecated != IntPtr.Zero ) {
-                processProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( aeffect.__processDeprecated, typeof( AEffectProcessProc ) );
+        public void __ProcessDeprecated(IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames)
+        {
+            if (processProc == null && aeffect.__processDeprecated != IntPtr.Zero) {
+                processProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer(aeffect.__processDeprecated, typeof(AEffectProcessProc));
             }
             try {
-                if ( processProc != null ) {
-                    processProc( ref aeffect, inputs, outputs, sampleFrames );
+                if (processProc != null) {
+                    processProc(ref aeffect, inputs, outputs, sampleFrames);
                 }
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#__ProcessDeprecated; ex=" + ex );
+            } catch (Exception ex) {
+                Console.Error.WriteLine("AEffect#__ProcessDeprecated; ex=" + ex);
             }
         }
 
         /// <summary>
         /// Set new value of automatable parameter @see AudioEffect::setParameter
         /// </summary>
-        public void SetParameter( VstInt32 index, float parameter ) {
-            if ( setParameterProc == null && aeffect.setParameter != IntPtr.Zero ) {
-                setParameterProc = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer( aeffect.setParameter, typeof( AEffectSetParameterProc ) );
+        public void SetParameter(VstInt32 index, float parameter)
+        {
+            if (setParameterProc == null && aeffect.setParameter != IntPtr.Zero) {
+                setParameterProc = (AEffectSetParameterProc)Marshal.GetDelegateForFunctionPointer(aeffect.setParameter, typeof(AEffectSetParameterProc));
             }
             try {
-                if ( setParameterProc != null ) {
-                    setParameterProc( ref aeffect, index, parameter );
+                if (setParameterProc != null) {
+                    setParameterProc(ref aeffect, index, parameter);
                 }
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#SetParameter; ex=" + ex );
+            } catch (Exception ex) {
+                Console.Error.WriteLine("AEffect#SetParameter; ex=" + ex);
             }
         }
 
         /// <summary>
         /// Returns current value of automatable parameter @see AudioEffect::getParameter
         /// </summary>
-        public float GetParameter( VstInt32 index ) {
-            if ( getParameterProc == null && aeffect.getParameter != IntPtr.Zero ) {
-                getParameterProc = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer( aeffect.getParameter, typeof( AEffectGetParameterProc ) );
+        public float GetParameter(VstInt32 index)
+        {
+            if (getParameterProc == null && aeffect.getParameter != IntPtr.Zero) {
+                getParameterProc = (AEffectGetParameterProc)Marshal.GetDelegateForFunctionPointer(aeffect.getParameter, typeof(AEffectGetParameterProc));
             }
             float ret = 0.0f;
             try {
-                if ( getParameterProc != null ) {
-                    ret = getParameterProc( ref aeffect, index );
+                if (getParameterProc != null) {
+                    ret = getParameterProc(ref aeffect, index);
                 }
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#GetParameter; ex=" + ex );
+            } catch (Exception ex) {
+                Console.Error.WriteLine("AEffect#GetParameter; ex=" + ex);
             }
             return ret;
         }
@@ -599,16 +611,17 @@ namespace VstSdk {
         /// <summary>
         /// Process audio samples in replacing mode @see AudioEffect::processReplacing
         /// </summary>
-        public void ProcessReplacing( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
-            if ( processReplacingProc == null && aeffect.processReplacing != IntPtr.Zero ) {
-                processReplacingProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer( aeffect.processReplacing, typeof( AEffectProcessProc ) );
+        public void ProcessReplacing(IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames)
+        {
+            if (processReplacingProc == null && aeffect.processReplacing != IntPtr.Zero) {
+                processReplacingProc = (AEffectProcessProc)Marshal.GetDelegateForFunctionPointer(aeffect.processReplacing, typeof(AEffectProcessProc));
             }
             try {
-                if ( processReplacingProc != null ) {
-                    processReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
+                if (processReplacingProc != null) {
+                    processReplacingProc(ref aeffect, inputs, outputs, sampleFrames);
                 }
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#ProcessReplacing; ex=" + ex );
+            } catch (Exception ex) {
+                Console.Error.WriteLine("AEffect#ProcessReplacing; ex=" + ex);
             }
         }
 
@@ -619,23 +632,25 @@ namespace VstSdk {
         /// <param name="inputs"></param>
         /// <param name="outputs"></param>
         /// <param name="sampleFrames"></param>
-        public void ProcessDoubleReplacing( IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames ) {
-            if ( processDoubleReplacingProc == null && aeffect.processDoubleReplacing != IntPtr.Zero ) {
-                processDoubleReplacingProc = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer( aeffect.processDoubleReplacing, typeof( AEffectProcessDoubleProc ) );
+        public void ProcessDoubleReplacing(IntPtr inputs, IntPtr outputs, VstInt32 sampleFrames)
+        {
+            if (processDoubleReplacingProc == null && aeffect.processDoubleReplacing != IntPtr.Zero) {
+                processDoubleReplacingProc = (AEffectProcessDoubleProc)Marshal.GetDelegateForFunctionPointer(aeffect.processDoubleReplacing, typeof(AEffectProcessDoubleProc));
             }
             try {
-                if ( processDoubleReplacingProc != null ) {
-                    processDoubleReplacingProc( ref aeffect, inputs, outputs, sampleFrames );
+                if (processDoubleReplacingProc != null) {
+                    processDoubleReplacingProc(ref aeffect, inputs, outputs, sampleFrames);
                 }
-            } catch ( Exception ex ) {
-                Console.Error.WriteLine( "AEffect#ProcessDoubleReplacing; ex=" + ex );
+            } catch (Exception ex) {
+                Console.Error.WriteLine("AEffect#ProcessDoubleReplacing; ex=" + ex);
             }
         }
 #endif
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct AEffect {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct AEffect
+    {
         /// <summary>
         /// must be #kEffectMagic ('VstP')
         /// </summary>
@@ -848,8 +863,9 @@ namespace VstSdk {
     /// <summary>
     /// A generic timestamped event.
     /// </summary>
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public unsafe struct VstEvent {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public unsafe struct VstEvent
+    {
         /// <summary>
         /// @see VstEventTypes
         /// </summary>
@@ -872,7 +888,8 @@ namespace VstSdk {
         public fixed byte data[16];
     }
 
-    public static class VstEventTypes {
+    public static class VstEventTypes
+    {
         /// <summary>
         /// MIDI event  @see VstMidiEvent
         /// </summary>
@@ -906,8 +923,9 @@ namespace VstSdk {
     /// <summary>
     /// A block of events for the current processed audio block.
     /// </summary>
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public unsafe struct VstEvents {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public unsafe struct VstEvents
+    {
         const int MAX_VST_EVENTS = 1024;
         /// <summary>
         /// number of Events in array
@@ -927,8 +945,9 @@ namespace VstSdk {
     /// <summary>
     /// MIDI Event (to be casted from VstEvent).
     /// </summary>
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public unsafe struct VstMidiEvent {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public unsafe struct VstMidiEvent
+    {
         /// <summary>
         /// #kVstMidiType
         /// </summary>
@@ -975,8 +994,9 @@ namespace VstSdk {
         public byte reserved2;
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct ERect {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct ERect
+    {
         /// <summary>
         /// top coordinate
         /// </summary>
@@ -994,11 +1014,11 @@ namespace VstSdk {
         /// </summary>
         public VstInt16 right;
 
-        public override String ToString() {
+        public override string ToString()
+        {
             return "{top=" + top + ", left=" + left + ", bottom=" + bottom + ", right=" + right + "}";
         }
     }
     #endregion
 
 }
-#endif

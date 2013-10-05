@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormRealtimeConfig.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii;
 using cadencii.windows.forms;
@@ -27,33 +18,21 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class FormRealtimeConfig extends BDialog {
-#else
     public class FormRealtimeConfig : System.Windows.Forms.Form
     {
-#endif
-        private boolean m_game_ctrl_enabled = false;
+        private bool m_game_ctrl_enabled = false;
         private double m_last_event_processed;
         private System.Windows.Forms.Timer timer;
 
         public FormRealtimeConfig()
         {
-#if JAVA
-            super();
-            initialize();
-            timer = new BTimer();
-#else
             InitializeComponent();
-            timer = new System.Windows.Forms.Timer( this.components );
-#endif
+            timer = new System.Windows.Forms.Timer(this.components);
             timer.Interval = 10;
             registerEventHandlers();
             setResources();
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            Util.applyFontRecurse(this, AppManager.editorConfig.getBaseFont());
         }
 
         #region public methods
@@ -64,103 +43,96 @@ namespace cadencii
         #endregion
 
         #region event handlers
-        public void FormRealtimeConfig_Load( Object sender, EventArgs e )
+        public void FormRealtimeConfig_Load(Object sender, EventArgs e)
         {
-#if JAVA
-            System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
-            int num_joydev = 0;
-#else
             int num_joydev = winmmhelp.JoyGetNumJoyDev();
-#endif
             m_game_ctrl_enabled = (num_joydev > 0);
-            if ( m_game_ctrl_enabled ) {
+            if (m_game_ctrl_enabled) {
                 timer.Start();
             }
         }
 
-        public void timer_Tick( Object sender, EventArgs e )
+        public void timer_Tick(Object sender, EventArgs e)
         {
-#if !JAVA
             try {
                 double now = PortUtil.getCurrentTime();
                 double dt_ms = (now - m_last_event_processed) * 1000.0;
                 //JoystickState state = m_game_ctrl.CurrentJoystickState;
-                int len = winmmhelp.JoyGetNumButtons( 0 );
+                int len = winmmhelp.JoyGetNumButtons(0);
                 byte[] buttons = new byte[len];
                 int pov0;
-                winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
+                winmmhelp.JoyGetStatus(0, out buttons, out pov0);
                 //int[] pov = state.GetPointOfView();
                 //int pov0 = pov[0];
-                boolean btn_x = (buttons[AppManager.editorConfig.GameControlerCross] > 0x00);
-                boolean btn_o = (buttons[AppManager.editorConfig.GameControlerCircle] > 0x00);
-                boolean btn_tr = (buttons[AppManager.editorConfig.GameControlerTriangle] > 0x00);
-                boolean btn_re = (buttons[AppManager.editorConfig.GameControlerRectangle] > 0x00);
-                boolean pov_r = pov0 == 9000;  //(4500 <= pov0 && pov0 <= 13500);
-                boolean pov_l = pov0 == 27000; //(22500 <= pov[0] && pov[0] <= 31500);
-                boolean pov_u = pov0 == 0;     //(31500 <= pov[0] || (0 <= pov[0] && pov[0] <= 4500));
-                boolean pov_d = pov0 == 18000; //(13500 <= pov[0] && pov[0] <= 22500);
-                boolean L1 = (buttons[AppManager.editorConfig.GameControlL1] > 0x00);
-                boolean R1 = (buttons[AppManager.editorConfig.GameControlR1] > 0x00);
-                boolean L2 = (buttons[AppManager.editorConfig.GameControlL2] > 0x00);
-                boolean R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
-                boolean SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
-                if ( dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                    if ( btnStart.Focused ) {
-                        if ( btn_o ) {
+                bool btn_x = (buttons[AppManager.editorConfig.GameControlerCross] > 0x00);
+                bool btn_o = (buttons[AppManager.editorConfig.GameControlerCircle] > 0x00);
+                bool btn_tr = (buttons[AppManager.editorConfig.GameControlerTriangle] > 0x00);
+                bool btn_re = (buttons[AppManager.editorConfig.GameControlerRectangle] > 0x00);
+                bool pov_r = pov0 == 9000;  //(4500 <= pov0 && pov0 <= 13500);
+                bool pov_l = pov0 == 27000; //(22500 <= pov[0] && pov[0] <= 31500);
+                bool pov_u = pov0 == 0;     //(31500 <= pov[0] || (0 <= pov[0] && pov[0] <= 4500));
+                bool pov_d = pov0 == 18000; //(13500 <= pov[0] && pov[0] <= 22500);
+                bool L1 = (buttons[AppManager.editorConfig.GameControlL1] > 0x00);
+                bool R1 = (buttons[AppManager.editorConfig.GameControlR1] > 0x00);
+                bool L2 = (buttons[AppManager.editorConfig.GameControlL2] > 0x00);
+                bool R2 = (buttons[AppManager.editorConfig.GameControlR2] > 0x00);
+                bool SELECT = (buttons[AppManager.editorConfig.GameControlSelect] > 0x00);
+                if (dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval) {
+                    if (btnStart.Focused) {
+                        if (btn_o) {
                             timer.Stop();
-                            btnStart_Click( this, new EventArgs() );
+                            btnStart_Click(this, new EventArgs());
                             m_last_event_processed = now;
-                        } else if ( pov_r ) {
+                        } else if (pov_r) {
                             btnCancel.Focus();
                             m_last_event_processed = now;
-                        } else if ( pov_d ) {
+                        } else if (pov_d) {
                             numSpeed.Focus();
                             m_last_event_processed = now;
                         }
-                    } else if ( btnCancel.Focused ) {
-                        if ( btn_o ) {
+                    } else if (btnCancel.Focused) {
+                        if (btn_o) {
                             timer.Stop();
                             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
                             Close();
-                        } else if ( pov_l ) {
+                        } else if (pov_l) {
                             btnStart.Focus();
                             m_last_event_processed = now;
-                        } else if ( pov_d || pov_r ) {
+                        } else if (pov_d || pov_r) {
                             numSpeed.Focus();
                             m_last_event_processed = now;
                         }
-                    } else if ( numSpeed.Focused ) {
-                        if ( R1 ) {
-                            if ( numSpeed.Value + numSpeed.Increment <= numSpeed.Maximum ) {
+                    } else if (numSpeed.Focused) {
+                        if (R1) {
+                            if (numSpeed.Value + numSpeed.Increment <= numSpeed.Maximum) {
                                 numSpeed.Value = numSpeed.Value + numSpeed.Increment;
                                 m_last_event_processed = now;
                             }
-                        } else if ( L1 ) {
-                            if ( numSpeed.Value - numSpeed.Increment >= numSpeed.Minimum ) {
+                        } else if (L1) {
+                            if (numSpeed.Value - numSpeed.Increment >= numSpeed.Minimum) {
                                 numSpeed.Value = numSpeed.Value - numSpeed.Increment;
                                 m_last_event_processed = now;
                             }
-                        } else if ( pov_l ) {
+                        } else if (pov_l) {
                             btnCancel.Focus();
                             m_last_event_processed = now;
-                        } else if ( pov_u ) {
+                        } else if (pov_u) {
                             btnStart.Focus();
                             m_last_event_processed = now;
                         }
                     }
                 }
-            } catch ( Exception ex ) {
+            } catch (Exception ex) {
             }
-#endif
         }
 
-        public void btnStart_Click( Object sender, EventArgs e )
+        public void btnStart_Click(Object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             Close();
         }
 
-        public void btnCancel_Click( Object sender, EventArgs e )
+        public void btnCancel_Click(Object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
@@ -169,10 +141,10 @@ namespace cadencii
         #region helper methods
         private void registerEventHandlers()
         {
-            this.Load += new EventHandler( FormRealtimeConfig_Load );
-            timer.Tick += new EventHandler( timer_Tick );
-            btnStart.Click += new EventHandler( btnStart_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+            this.Load += new EventHandler(FormRealtimeConfig_Load);
+            timer.Tick += new EventHandler(timer_Tick);
+            btnStart.Click += new EventHandler(btnStart_Click);
+            btnCancel.Click += new EventHandler(btnCancel_Click);
         }
 
         private void setResources()
@@ -181,12 +153,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormRealtimeConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormRealtimeConfig.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -197,12 +163,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region Windows フォーム デザイナで生成されたコード
@@ -225,9 +191,9 @@ namespace cadencii
             // btnStart
             // 
             this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStart.Location = new System.Drawing.Point( 25, 52 );
+            this.btnStart.Location = new System.Drawing.Point(25, 52);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size( 120, 33 );
+            this.btnStart.Size = new System.Drawing.Size(120, 33);
             this.btnStart.TabIndex = 0;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -236,19 +202,19 @@ namespace cadencii
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Location = new System.Drawing.Point( 196, 52 );
+            this.btnCancel.Location = new System.Drawing.Point(196, 52);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size( 120, 33 );
+            this.btnCancel.Size = new System.Drawing.Size(120, 33);
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // lblRealTimeInput
             // 
-            this.lblRealTimeInput.Font = new System.Drawing.Font( "Verdana", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)) );
-            this.lblRealTimeInput.Location = new System.Drawing.Point( 23, 9 );
+            this.lblRealTimeInput.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRealTimeInput.Location = new System.Drawing.Point(23, 9);
             this.lblRealTimeInput.Name = "lblRealTimeInput";
-            this.lblRealTimeInput.Size = new System.Drawing.Size( 293, 28 );
+            this.lblRealTimeInput.Size = new System.Drawing.Size(293, 28);
             this.lblRealTimeInput.TabIndex = 2;
             this.lblRealTimeInput.Text = "Realtime Input";
             this.lblRealTimeInput.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -256,54 +222,54 @@ namespace cadencii
             // lblSpeed
             // 
             this.lblSpeed.AutoSize = true;
-            this.lblSpeed.Location = new System.Drawing.Point( 49, 114 );
+            this.lblSpeed.Location = new System.Drawing.Point(49, 114);
             this.lblSpeed.Name = "lblSpeed";
-            this.lblSpeed.Size = new System.Drawing.Size( 36, 12 );
+            this.lblSpeed.Size = new System.Drawing.Size(36, 12);
             this.lblSpeed.TabIndex = 3;
             this.lblSpeed.Text = "Speed";
             // 
             // numSpeed
             // 
             this.numSpeed.DecimalPlaces = 1;
-            this.numSpeed.Increment = new decimal( new int[] {
+            this.numSpeed.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536} );
-            this.numSpeed.Location = new System.Drawing.Point( 107, 112 );
-            this.numSpeed.Maximum = new decimal( new int[] {
+            65536});
+            this.numSpeed.Location = new System.Drawing.Point(107, 112);
+            this.numSpeed.Maximum = new decimal(new int[] {
             30,
             0,
             0,
-            65536} );
-            this.numSpeed.Minimum = new decimal( new int[] {
+            65536});
+            this.numSpeed.Minimum = new decimal(new int[] {
             1,
             0,
             0,
-            65536} );
+            65536});
             this.numSpeed.Name = "numSpeed";
-            this.numSpeed.Size = new System.Drawing.Size( 120, 19 );
+            this.numSpeed.Size = new System.Drawing.Size(120, 19);
             this.numSpeed.TabIndex = 4;
             this.numSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.numSpeed.Value = new decimal( new int[] {
+            this.numSpeed.Value = new decimal(new int[] {
             1,
             0,
             0,
-            0} );
+            0});
             // 
             // FormRealtimeConfig
             // 
             this.AcceptButton = this.btnStart;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 347, 161 );
-            this.Controls.Add( this.numSpeed );
-            this.Controls.Add( this.lblSpeed );
-            this.Controls.Add( this.lblRealTimeInput );
-            this.Controls.Add( this.btnCancel );
-            this.Controls.Add( this.btnStart );
+            this.ClientSize = new System.Drawing.Size(347, 161);
+            this.Controls.Add(this.numSpeed);
+            this.Controls.Add(this.lblSpeed);
+            this.Controls.Add(this.lblRealTimeInput);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnStart);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -313,7 +279,7 @@ namespace cadencii
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormRealtimeConfig";
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).EndInit();
-            this.ResumeLayout( false );
+            this.ResumeLayout(false);
             this.PerformLayout();
 
         }
@@ -326,10 +292,7 @@ namespace cadencii
         private System.Windows.Forms.Label lblSpeed;
         private System.Windows.Forms.NumericUpDown numSpeed;
         #endregion
-#endif
         #endregion
     }
 
-#if !JAVA
 }
-#endif

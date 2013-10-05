@@ -11,30 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.windows.forms.*;
-import cadencii.xml.*;
-#else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
 using cadencii.windows.forms;
 using cadencii.xml;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// プロパティウィンドウの状態を表すクラス
     /// </summary>
-    public class PropertyPanelState {
+    public class PropertyPanelState
+    {
         /// <summary>
         /// プロパティパネルの状態を表す
         /// </summary>
@@ -42,14 +34,11 @@ namespace cadencii {
         /// <summary>
         /// プロパティウィンドウの位置と大きさ
         /// </summary>
-        public XmlRectangle Bounds = new XmlRectangle( 0, 0, 200, 300 );
+        public XmlRectangle Bounds = new XmlRectangle(0, 0, 200, 300);
         /// <summary>
         /// プロパティの表示項目の展開・縮小状態を格納したリスト
         /// </summary>
-#if JAVA
-        @XmlGenericType( ValuePairOfStringBoolean.class )
-#endif
-        public Vector<ValuePairOfStringBoolean> ExpandStatus = new Vector<ValuePairOfStringBoolean>();
+        public List<ValuePairOfStringBoolean> ExpandStatus = new List<ValuePairOfStringBoolean>();
         /// <summary>
         /// 音階の表現形式
         /// </summary>
@@ -64,6 +53,4 @@ namespace cadencii {
         public int DockWidth = 240;
     }
 
-#if !JAVA
 }
-#endif

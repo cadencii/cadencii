@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * UpdateProgressEventHandler.cs
  * Copyright © 2009-2011 kbinani
@@ -22,7 +21,6 @@ namespace cadencii
     /// </summary>
     /// <param name="sender">イベントの送信元</param>
     /// <param name="value">進捗状況を表す値</param>
-    public delegate void UpdateProgressEventHandler( Object sender, int value );
+    public delegate void UpdateProgressEventHandler(Object sender, int value);
 
 }
-#endif

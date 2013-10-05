@@ -11,63 +11,42 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class NoteHeadHandle extends IconParameter implements Cloneable, Serializable
-#else
     [Serializable]
     public class NoteHeadHandle : IconParameter, ICloneable
-#endif
     {
         public int Index;
-        public String IconID = "";
-        public String IDS = "";
+        public string IconID = "";
+        public string IDS = "";
         public int Original;
 
         public NoteHeadHandle()
         {
         }
 
-        public NoteHeadHandle( String aic_file, String ids, String icon_id, int index )
-#if JAVA
-        {
-#else
+        public NoteHeadHandle(string aic_file, string ids, string icon_id, int index)
             :
-#endif
- base( aic_file )
-#if JAVA
-            ;
-#else
+ base(aic_file)
         {
-#endif
             IDS = ids;
             IconID = icon_id;
             Index = index;
         }
 
-        public String toString()
+        public string toString()
         {
             return getDisplayString();
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -79,22 +58,20 @@ namespace cadencii.vsq
             }
             set
             {
-                setDepth( value );
+                setDepth(value);
             }
         }
-#endif
 
         public int getDepth()
         {
             return depth;
         }
 
-        public void setDepth( int value )
+        public void setDepth(int value)
         {
             depth = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -106,26 +83,24 @@ namespace cadencii.vsq
             }
             set
             {
-                setDuration( value );
+                setDuration(value);
             }
         }
-#endif
 
         public int getDuration()
         {
             return duration;
         }
 
-        public void setDuration( int value )
+        public void setDuration(int value)
         {
             duration = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Caption
+        public string Caption
         {
             get
             {
@@ -133,22 +108,20 @@ namespace cadencii.vsq
             }
             set
             {
-                setCaption( value );
+                setCaption(value);
             }
         }
-#endif
 
-        public String getCaption()
+        public string getCaption()
         {
             return caption;
         }
 
-        public void setCaption( String value )
+        public void setCaption(string value)
         {
             caption = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -160,32 +133,29 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
-#endif
 
         public int getLength()
         {
             return length;
         }
 
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
 
-        public String getDisplayString()
+        public string getDisplayString()
         {
             return IDS + caption;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public Object clone()
         {
@@ -194,10 +164,10 @@ namespace cadencii.vsq
             result.IconID = IconID;
             result.IDS = IDS;
             result.Original = Original;
-            result.setCaption( getCaption() );
-            result.setLength( getLength() );
-            result.setDuration( getDuration() );
-            result.setDepth( getDepth() );
+            result.setCaption(getCaption());
+            result.setLength(getLength());
+            result.setDuration(getDuration());
+            result.setDepth(getDepth());
             return result;
         }
 
@@ -210,13 +180,11 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Original = Original;
             ret.Caption = getCaption();
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.Duration = getDuration();
             ret.Depth = getDepth();
             return ret;
         }
     }
 
-#if !JAVA
 }
-#endif

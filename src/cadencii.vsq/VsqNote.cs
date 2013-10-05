@@ -11,34 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// 音階を表現するためのクラス
     /// </summary>
-#if JAVA
-    public class VsqNote implements Serializable
-#else
     [Serializable]
     public class VsqNote
-#endif
     {
         /// <summary>
         /// このインスタンスが表す音階のノート値
         /// </summary>
         public int Value;
         private static readonly int[] ALTER = new int[] { 0, 1, 0, -1, 0, 0, 1, 0, 1, 0, -1, 0, 0 };
-        private static readonly boolean[] _KEY_TYPE = new boolean[] { 
+        private static readonly bool[] _KEY_TYPE = new bool[] { 
             true,
             false,
             true,
@@ -173,7 +162,7 @@ namespace cadencii.vsq
         /// 音階のノート値からのコンストラクタ。
         /// </summary>
         /// <param name="note">この音階を初期化するためのノート値</param>
-        public VsqNote( int note )
+        public VsqNote(int note)
         {
             Value = note;
         }
@@ -181,9 +170,9 @@ namespace cadencii.vsq
         /// <summary>
         /// このインスタンスが表す音階が、ピアノの白鍵かどうかを返します
         /// </summary>
-        public boolean isWhiteKey()
+        public bool isWhiteKey()
         {
-            return isNoteWhiteKey( Value );
+            return isNoteWhiteKey(Value);
         }
 
         /// <summary>
@@ -191,13 +180,13 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static boolean isNoteWhiteKey( int note )
+        public static bool isNoteWhiteKey(int note)
         {
-            if ( 0 <= note && note <= 127 ) {
+            if (0 <= note && note <= 127) {
                 return _KEY_TYPE[note];
             } else {
                 int odd = note % 12;
-                switch ( odd ) {
+                switch (odd) {
                     case 1:
                     case 3:
                     case 6:
@@ -215,7 +204,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int getNoteAlter( int note )
+        public static int getNoteAlter(int note)
         {
             return ALTER[note % 12];
         }
@@ -226,7 +215,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int getNoteOctave( int note )
+        public static int getNoteOctave(int note)
         {
             int odd = note % 12;
             return (note - odd) / 12 - 2;
@@ -238,10 +227,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static String getNoteStringBase( int note )
+        public static string getNoteStringBase(int note)
         {
             int odd = note % 12;
-            switch ( odd ) {
+            switch (odd) {
                 case 0:
                 case 1:
                 return "C";
@@ -266,11 +255,11 @@ namespace cadencii.vsq
             }
         }
 
-        public static String getNoteString( int note )
+        public static string getNoteString(int note)
         {
             int odd = note % 12;
             int order = (note - odd) / 12 - 2;
-            switch ( odd ) {
+            switch (odd) {
                 case 0:
                 return "C" + order;
                 case 1:
@@ -300,19 +289,15 @@ namespace cadencii.vsq
             }
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
-        public String toString()
+        public string toString()
         {
-            return getNoteString( Value );
+            return getNoteString(Value);
         }
     }
 
-#if !JAVA
 }
-#endif

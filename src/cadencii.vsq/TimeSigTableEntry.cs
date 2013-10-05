@@ -11,24 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 using cadencii;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class TimeSigTableEntry implements Comparable<TimeSigTableEntry>, Cloneable, Serializable
-#else
     [Serializable]
     public class TimeSigTableEntry : IComparable<TimeSigTableEntry>, ICloneable
-#endif
     {
         /// <summary>
         /// クロック数
@@ -51,7 +41,7 @@ namespace cadencii.vsq
             int clock,
             int numerator,
             int denominator,
-            int bar_count )
+            int bar_count)
         {
             Clock = clock;
             Numerator = numerator;
@@ -63,36 +53,30 @@ namespace cadencii.vsq
         {
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "{Clock=" + Clock + ", Numerator=" + Numerator + ", Denominator=" + Denominator + ", BarCount=" + BarCount + "}";
         }
 
         public Object clone()
         {
-            return new TimeSigTableEntry( Clock, Numerator, Denominator, BarCount );
+            return new TimeSigTableEntry(Clock, Numerator, Denominator, BarCount);
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
-        public int compareTo( TimeSigTableEntry item )
+        public int compareTo(TimeSigTableEntry item)
         {
             return this.BarCount - item.BarCount;
         }
 
-#if !JAVA
-        public int CompareTo( TimeSigTableEntry item )
+        public int CompareTo(TimeSigTableEntry item)
         {
-            return compareTo( item );
+            return compareTo(item);
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

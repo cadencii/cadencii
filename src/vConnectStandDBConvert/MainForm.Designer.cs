@@ -48,7 +48,7 @@
             // 
             // textSourceDb
             // 
-            this.textSourceDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textSourceDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textSourceDb.Location = new System.Drawing.Point(19, 29);
             this.textSourceDb.Name = "textSourceDb";
@@ -57,7 +57,7 @@
             // 
             // groupSourceDb
             // 
-            this.groupSourceDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupSourceDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupSourceDb.Controls.Add(this.buttonSelectSourceDb);
             this.groupSourceDb.Controls.Add(this.textSourceDb);
@@ -70,7 +70,7 @@
             // 
             // groupDestinationDb
             // 
-            this.groupDestinationDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupDestinationDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupDestinationDb.Controls.Add(this.buttonSelectDestinationDb);
             this.groupDestinationDb.Controls.Add(this.textDestinationDb);
@@ -105,7 +105,7 @@
             // 
             // textDestinationDb
             // 
-            this.textDestinationDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textDestinationDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textDestinationDb.Location = new System.Drawing.Point(19, 28);
             this.textDestinationDb.Name = "textDestinationDb";
@@ -126,8 +126,8 @@
             // 
             // textBox1
             // 
-            this.textLineBuffer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.textLineBuffer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textLineBuffer.BackColor = System.Drawing.Color.DimGray;
             this.textLineBuffer.ForeColor = System.Drawing.Color.White;

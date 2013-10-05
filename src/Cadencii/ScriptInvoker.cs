@@ -17,21 +17,22 @@ using cadencii.apputil;
 using cadencii.vsq;
 using cadencii.xml;
 
-namespace cadencii {
 
-    using boolean = System.Boolean;
 
-    public delegate boolean EditVsqScriptDelegate( VsqFile vsq );
-    public delegate boolean EditVsqScriptDelegateEx( VsqFileEx vsq );
-    public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus( VsqFile vsq );
-    public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus( VsqFileEx vsq );
-    public delegate String ScriptDelegateGetDisplayName();
+namespace cadencii
+{
+    public delegate bool EditVsqScriptDelegate(VsqFile vsq);
+    public delegate bool EditVsqScriptDelegateEx(VsqFileEx vsq);
+    public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus(VsqFile vsq);
+    public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus(VsqFileEx vsq);
+    public delegate string ScriptDelegateGetDisplayName();
 
     /// <summary>
     /// スクリプトの起動とスクリプト設定の保存を行うためのオブジェクトの纏まり．
     /// FormMain.menuScript.DropDownItems[*].DropDownItems[0]のTagに代入される．
     /// </summary>
-    public class ScriptInvoker {
+    public class ScriptInvoker
+    {
         /// <summary>
         /// スクリプトを起動するためのデリゲート
         /// </summary>
@@ -43,19 +44,15 @@ namespace cadencii {
         /// <summary>
         /// スクリプトが記述されたファイルのパス
         /// </summary>
-        public String ScriptFile;
+        public string ScriptFile;
         /// <summary>
         /// スクリプトをコンパイルしたときのエラーメッセージ
         /// </summary>
-        public String ErrorMessage;
+        public string ErrorMessage;
         /// <summary>
         /// スクリプト設定を保存し/読み込むためのXMLシリアライザ
         /// </summary>
-#if JAVA
-        public XmlSerializer Serializer;
-#else
         public XmlStaticMemberSerializerEx Serializer;
-#endif
         /// <summary>
         /// 最後にスクリプトをコンパイルしたときの，スクリプトが記述されたファイルのタイムスタンプ
         /// </summary>

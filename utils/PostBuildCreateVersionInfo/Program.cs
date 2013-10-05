@@ -31,14 +31,14 @@ namespace cadencii.utils.PostBuildCreateVersionInfo
             var output_file = args[0];
 
             var info = new cadencii.updater.UpdateInfo();
-            
+
             var version = new Version(BAssemblyInfo.fileVersion);
             info.Major = version.Major;
             info.Minor = version.Minor;
             info.Build = version.Build;
             info.ReleaseDate = DateTime.UtcNow;
             info.DownloadUrl = BAssemblyInfo.downloadUrl;
-            
+
             var serializer = new XmlSerializer(typeof(cadencii.updater.UpdateInfo));
             using (var stream = new FileStream(output_file, FileMode.Create, FileAccess.Write)) {
                 var writer = new XmlTextWriter(stream, Encoding.UTF8);

@@ -11,30 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#elif __cplusplus
-
-namespace org{
-namespace kbinani{
-namespace cadencii{
-
-#else
-
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class WorkerStateImp implements WorkerState
-#else
     public class WorkerStateImp : WorkerState
-#endif
     {
-        private boolean mCancelRequested;
+        private bool mCancelRequested;
 
         public double getJobAmount()
         {
@@ -46,7 +28,7 @@ namespace cadencii
             return 0;
         }
 
-        public boolean isCancelRequested()
+        public bool isCancelRequested()
         {
             return mCancelRequested;
         }
@@ -55,7 +37,7 @@ namespace cadencii
         {
         }
 
-        public void reportProgress( double prog )
+        public void reportProgress(double prog)
         {
         }
 
@@ -70,9 +52,4 @@ namespace cadencii
         }
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

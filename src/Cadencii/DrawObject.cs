@@ -11,30 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.vsq.*;
-import java.awt.*;
-#else
 using System;
 using cadencii.vsq;
 using cadencii.java.awt;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// 画面に描画するアイテムを表します
     /// </summary>
-#if JAVA
-    public class DrawObject implements Comparable<DrawObject>{
-#else
-    public class DrawObject : IComparable<DrawObject> {
-#endif
+    public class DrawObject : IComparable<DrawObject>
+    {
         public Rectangle mRectangleInPixel;
-        public String mText;
+        public string mText;
         public int mAccent;
         public int mDecay;
         public int mVelocity;
@@ -46,8 +36,8 @@ namespace cadencii {
         /// <summary>
         /// このアイテムが他のアイテムと再生時にオーバーラップするかどうかを表すフラグ
         /// </summary>
-        public boolean mIsOverlapped;
-        public boolean mIsSymbolProtected;
+        public bool mIsOverlapped;
+        public bool mIsSymbolProtected;
         public int mNote;
         public UstEnvelope mUstEnvelope;
         /// <summary>
@@ -63,12 +53,12 @@ namespace cadencii {
         /// UTAUモードにて、歌詞から*.wavを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean mIsValidForUtau = false;
+        public bool mIsValidForUtau = false;
         /// <summary>
         /// Straight x UTAUモードにて、歌詞からanalyzed\*.stfを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean mIsValidForStraight = false;
+        public bool mIsValidForStraight = false;
         public int mVibDelay = 0;
         /// <summary>
         /// ビブラートによるピッチカーブ。
@@ -80,17 +70,17 @@ namespace cadencii {
         /// </summary>
         public int mIntensity = 100;
 
-        public DrawObject( DrawObjectType type,
+        public DrawObject(DrawObjectType type,
                            VsqFileEx vsq,
-                           Rectangle rect, 
-                           String text_,
+                           Rectangle rect,
+                           string text_,
                            int accent_,
                            int decay,
                            int velocity,
                            int internal_id,
                            int vibrato_delay,
-                           boolean overwrapped, 
-                           boolean symbol_protected,
+                           bool overwrapped,
+                           bool symbol_protected,
                            VibratoBPList vib_rate,
                            VibratoBPList vib_depth,
                            int vib_start_rate,
@@ -99,10 +89,11 @@ namespace cadencii {
                            UstEnvelope ust_envelope,
                            int length,
                            int clock,
-                           boolean is_valid_for_utau,
-                           boolean is_valid_for_straight,
+                           bool is_valid_for_utau,
+                           bool is_valid_for_straight,
                            int vib_delay,
-                           int intensity ) {
+                           int intensity)
+        {
             this.mType = type;
             mRectangleInPixel = rect;
             mText = text_;
@@ -124,15 +115,15 @@ namespace cadencii {
             this.mVibDelay = vib_delay;
 
             int viblength = length - vib_delay;
-            if ( viblength > 0 && vib_rate != null && vib_depth != null ) {
+            if (viblength > 0 && vib_rate != null && vib_depth != null) {
                 VibratoPointIteratorByClock itr =
-                    new VibratoPointIteratorByClock( vsq.TempoTable,
+                    new VibratoPointIteratorByClock(vsq.TempoTable,
                                                      vib_rate, vib_start_rate,
                                                      vib_depth, vib_start_depth,
-                                                     clock + vib_delay, viblength );
+                                                     clock + vib_delay, viblength);
                 mVibratoPit = new float[viblength];
-                for ( int i = 0; i < viblength; i++ ) {
-                    if ( !itr.hasNext() ) {
+                for (int i = 0; i < viblength; i++) {
+                    if (!itr.hasNext()) {
                         break;
                     }
                     double v = itr.next();
@@ -141,17 +132,15 @@ namespace cadencii {
             }
         }
 
-        public int compareTo( DrawObject item ) {
+        public int compareTo(DrawObject item)
+        {
             return mRectangleInPixel.x - item.mRectangleInPixel.x;
         }
 
-#if !JAVA
-        public int CompareTo( DrawObject item ){
-            return compareTo( item );
+        public int CompareTo(DrawObject item)
+        {
+            return compareTo(item);
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

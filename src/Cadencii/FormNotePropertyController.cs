@@ -11,43 +11,27 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import javax.swing.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-import cadencii.ui.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
-using cadencii.javax.swing;
 using cadencii.apputil;
 using cadencii;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormNotePropertyController implements FormNotePropertyUiListener
-#else
     public class FormNotePropertyController : FormNotePropertyUiListener
-#endif
     {
         private bool mPreviousAlwaysOnTop;
         private FormNotePropertyUi ui;
         private PropertyWindowListener propertyWindowListener;
 
-        public FormNotePropertyController( PropertyWindowListener propertyWindowListener )
+        public FormNotePropertyController(PropertyWindowListener propertyWindowListener)
         {
             this.propertyWindowListener = propertyWindowListener;
-            this.ui = (FormNotePropertyUi)new FormNotePropertyUiImpl( this );
+            this.ui = (FormNotePropertyUi)new FormNotePropertyUiImpl(this);
             applyLanguage();
         }
 
@@ -65,19 +49,19 @@ namespace cadencii
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
         /// </summary>
-        public void setPreviousAlwaysOnTop( bool value )
+        public void setPreviousAlwaysOnTop(bool value)
         {
             mPreviousAlwaysOnTop = value;
         }
 
         public void applyLanguage()
         {
-            this.ui.setTitle( _( "Note Property" ) );
+            this.ui.setTitle(_("Note Property"));
         }
 
-        public void applyShortcut( Keys value )
+        public void applyShortcut(Keys value)
         {
-            this.ui.setMenuCloseAccelerator( value );
+            this.ui.setMenuCloseAccelerator(value);
         }
 
         public FormNotePropertyUi getUi()
@@ -90,9 +74,9 @@ namespace cadencii
 
         #region helper methods
 
-        private static String _( String id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         #endregion
@@ -102,7 +86,7 @@ namespace cadencii
 
         public void onLoad()
         {
-            this.ui.setAlwaysOnTop( true );
+            this.ui.setAlwaysOnTop(true);
         }
 
         public void menuCloseClick()
@@ -129,6 +113,4 @@ namespace cadencii
 
     }
 
-#if !JAVA
 }
-#endif

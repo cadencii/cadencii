@@ -21,15 +21,8 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-    using Float = System.Single;
-    using Integer = System.Int32;
 
-#if JAVA
-    public class AquesToneWaveGeneratorBase implements WaveGenerator
-#else
     public abstract class AquesToneWaveGeneratorBase : WaveUnit, WaveGenerator
-#endif
     {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
@@ -40,8 +33,8 @@ namespace cadencii
         private int mTrack;
         private int mStartClock;
         private int mEndClock;
-        private boolean mRunning = false;
-        //private boolean mAbortRequired;
+        private bool mRunning = false;
+        //private bool mAbortRequired;
         private long mTotalSamples;
         private int mSampleRate;
         /// <summary>
@@ -53,7 +46,7 @@ namespace cadencii
         private double[] mBufferR = new double[BUFLEN];
         System.IO.StreamWriter log = null;
 
-        protected abstract EventQueueSequence generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end );
+        protected abstract EventQueueSequence generateMidiEvent(VsqFileEx vsq, int track, int clock_start, int clock_end);
 
         protected abstract AquesToneDriverBase getDriver();
 
@@ -66,7 +59,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }
@@ -78,7 +71,7 @@ namespace cadencii
 
         public double getProgress()
         {
-            if ( mTotalSamples <= 0 ) {
+            if (mTotalSamples <= 0) {
                 return 0.0;
             } else {
                 return mTotalAppend / (double)mTotalSamples;
@@ -90,7 +83,7 @@ namespace cadencii
             return VERSION;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
@@ -99,9 +92,9 @@ namespace cadencii
         /// 初期化メソッド
         /// </summary>
         /// <param name="parameter"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        public void init(VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate)
         {
-            getDriver().setSampleRate( sample_rate );
+            getDriver().setSampleRate(sample_rate);
             mTrack = track;
             mStartClock = start_clock;
             mEndClock = end_clock;
@@ -110,32 +103,32 @@ namespace cadencii
             this.mVsq = (VsqFileEx)vsq.clone();
             this.mVsq.updateTotalClocks();
 
-            if ( mEndClock < this.mVsq.TotalClocks ) {
-                this.mVsq.removePart( mEndClock, this.mVsq.TotalClocks + 480 );
+            if (mEndClock < this.mVsq.TotalClocks) {
+                this.mVsq.removePart(mEndClock, this.mVsq.TotalClocks + 480);
             }
 
-            double end_sec = mVsq.getSecFromClock( start_clock );
-            double start_sec = mVsq.getSecFromClock( end_clock );
+            double end_sec = mVsq.getSecFromClock(start_clock);
+            double start_sec = mVsq.getSecFromClock(end_clock);
 
             double trim_sec = 0.0; // レンダリング結果から省かなければならない秒数。
-            if ( mStartClock < this.mVsq.getPreMeasureClocks() ) {
-                trim_sec = this.mVsq.getSecFromClock( mStartClock );
+            if (mStartClock < this.mVsq.getPreMeasureClocks()) {
+                trim_sec = this.mVsq.getSecFromClock(mStartClock);
             } else {
-                this.mVsq.removePart( mVsq.getPreMeasureClocks(), mStartClock );
-                trim_sec = this.mVsq.getSecFromClock( this.mVsq.getPreMeasureClocks() );
+                this.mVsq.removePart(mVsq.getPreMeasureClocks(), mStartClock);
+                trim_sec = this.mVsq.getSecFromClock(this.mVsq.getPreMeasureClocks());
             }
             this.mVsq.updateTotalClocks();
 
             mTrimRemain = (int)(trim_sec * mSampleRate);
             //mTrimRemain = 0;
 #if DEBUG
-            sout.println( "AeuqsToneWaveGenerator#init; mTrimRemain=" + mTrimRemain );
+            sout.println("AeuqsToneWaveGenerator#init; mTrimRemain=" + mTrimRemain);
 #endif
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;
@@ -151,18 +144,18 @@ namespace cadencii
             mReceiver.end();
         }
 
-        public void begin( long total_samples, WorkerState state )
+        public void begin(long total_samples, WorkerState state)
         {
             var mDriver = getDriver();
 #if DEBUG
-            sout.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
-            String file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
-            log = new System.IO.StreamWriter( file );
+            sout.println("AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null));
+            string file = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt");
+            log = new System.IO.StreamWriter(file);
             log.AutoFlush = true;
 #endif
-            if ( mDriver == null ) {
+            if (mDriver == null) {
 #if DEBUG
-                log.WriteLine( "mDriver==null" );
+                log.WriteLine("mDriver==null");
                 log.Close();
 #endif
                 exitBegin();
@@ -171,11 +164,11 @@ namespace cadencii
             }
 
 #if DEBUG
-            sout.println( "AquesToneRenderingRunner#begin; mDriver.loaded=" + mDriver.loaded );
+            sout.println("AquesToneRenderingRunner#begin; mDriver.loaded=" + mDriver.loaded);
 #endif
-            if ( !mDriver.loaded ) {
+            if (!mDriver.loaded) {
 #if DEBUG
-                log.WriteLine( "mDriver.loaded=" + mDriver.loaded );
+                log.WriteLine("mDriver.loaded=" + mDriver.loaded);
                 log.Close();
 #endif
                 exitBegin();
@@ -187,12 +180,12 @@ namespace cadencii
             //mAbortRequired = false;
             mTotalSamples = total_samples;
 #if DEBUG
-            sout.println( "AquesToneWaveGenerator#begin; mTotalSamples=" + mTotalSamples );
-            log.WriteLine( "mTotalSamples=" + mTotalSamples );
-            log.WriteLine( "mTrimRemain=" + mTrimRemain );
+            sout.println("AquesToneWaveGenerator#begin; mTotalSamples=" + mTotalSamples);
+            log.WriteLine("mTotalSamples=" + mTotalSamples);
+            log.WriteLine("mTrimRemain=" + mTrimRemain);
 #endif
 
-            VsqTrack track = mVsq.Track.get( mTrack );
+            VsqTrack track = mVsq.Track[mTrack];
             int BUFLEN = mSampleRate / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
@@ -203,138 +196,134 @@ namespace cadencii
             // 最初にダミーの音を鳴らす
             // (最初に入るノイズを回避するためと、前回途中で再生停止した場合に無音から始まるようにするため)
             mDriver.resetAllParameters();
-            mDriver.process( left, right, BUFLEN );
+            mDriver.process(left, right, BUFLEN);
             MidiEvent f_noteon = new MidiEvent();
             f_noteon.firstByte = 0x90;
             f_noteon.data = new int[] { 0x40, 0x40 };
             f_noteon.clock = 0;
-            mDriver.send( new MidiEvent[] { f_noteon } );
-            mDriver.process( left, right, BUFLEN );
+            mDriver.send(new MidiEvent[] { f_noteon });
+            mDriver.process(left, right, BUFLEN);
             MidiEvent f_noteoff = new MidiEvent();
             f_noteoff.firstByte = 0x80;
             f_noteoff.data = new int[] { 0x40, 0x7F };
-            mDriver.send( new MidiEvent[] { f_noteoff } );
-            for ( int i = 0; i < 3; i++ ) {
-                mDriver.process( left, right, BUFLEN );
+            mDriver.send(new MidiEvent[] { f_noteoff });
+            for (int i = 0; i < 3; i++) {
+                mDriver.process(left, right, BUFLEN);
             }
 #if DEBUG
-            log.WriteLine( "pre-process done" );
-            log.WriteLine( "-----------------------------------------------------" );
-            VsqTrack vsq_track = mVsq.Track.get( mTrack );
-            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
-                log.WriteLine( "c" + item.Clock + "; " + item.ID.LyricHandle.L0.Phrase );
+            log.WriteLine("pre-process done");
+            log.WriteLine("-----------------------------------------------------");
+            VsqTrack vsq_track = mVsq.Track[mTrack];
+            foreach (var item in vsq_track.getNoteEventIterator()) {
+                log.WriteLine("c" + item.Clock + "; " + item.ID.LyricHandle.L0.Phrase);
             }
 #endif
 
             // レンダリング開始位置での、パラメータの値をセットしておく
-            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+            foreach (var item in track.getNoteEventIterator()) {
 #if DEBUG
-                sout.println( "AquesToneWaveGenerator#begin; item.Clock=" + item.Clock );
-                log.WriteLine( "*********************************************************" );
-                log.WriteLine( "item.Clock=" + item.Clock );
+                sout.println("AquesToneWaveGenerator#begin; item.Clock=" + item.Clock);
+                log.WriteLine("*********************************************************");
+                log.WriteLine("item.Clock=" + item.Clock);
 #endif
-                long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * mSampleRate);
-                long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * mSampleRate);
+                long saNoteStart = (long)(mVsq.getSecFromClock(item.Clock) * mSampleRate);
+                long saNoteEnd = (long)(mVsq.getSecFromClock(item.Clock + item.ID.getLength()) * mSampleRate);
 #if DEBUG
-                log.WriteLine( "saNoteStart=" + saNoteStart + "; saNoteEnd=" + saNoteEnd );
+                log.WriteLine("saNoteStart=" + saNoteStart + "; saNoteEnd=" + saNoteEnd);
 #endif
 
-                EventQueueSequence list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
+                EventQueueSequence list = generateMidiEvent(mVsq, mTrack, lastClock, item.Clock + item.ID.getLength());
                 lastClock = item.Clock + item.ID.Length + 1;
-                for ( Iterator<Integer> itr2 = list.keyIterator(); itr2.hasNext(); ) {
+                foreach (var clock in list.keyIterator()) {
                     // まず直前までの分を合成
-                    Integer clock = itr2.next();
 #if DEBUG
-                    log.WriteLine( "-------------------------------------------------------" );
-                    sout.println( "AquesToneWaveGenerator#begin;     clock=" + clock );
+                    log.WriteLine("-------------------------------------------------------");
+                    sout.println("AquesToneWaveGenerator#begin;     clock=" + clock);
 #endif
-                    long saStart = (long)(mVsq.getSecFromClock( clock ) * mSampleRate);
+                    long saStart = (long)(mVsq.getSecFromClock(clock) * mSampleRate);
                     saRemain = (int)(saStart - saProcessed);
 #if DEBUG
-                    log.WriteLine( "saStart=" + saStart );
-                    log.WriteLine( "saRemain=" + saRemain );
+                    log.WriteLine("saStart=" + saStart);
+                    log.WriteLine("saRemain=" + saRemain);
 #endif
-                    while ( saRemain > 0 ) {
-                        if ( state.isCancelRequested() ) {
+                    while (saRemain > 0) {
+                        if (state.isCancelRequested()) {
                             goto heaven;
                         }
                         int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                        mDriver.process( left, right, len );
-                        waveIncoming( left, right, len );
+                        mDriver.process(left, right, len);
+                        waveIncoming(left, right, len);
                         saRemain -= len;
                         saProcessed += len;
-                        state.reportProgress( saProcessed );
+                        state.reportProgress(saProcessed);
                         //mTotalAppend += len; <- waveIncomingで計算されるので
                     }
 
                     // MIDiイベントを送信
-                    MidiEventQueue queue = list.get( clock );
+                    MidiEventQueue queue = list.get(clock);
                     // まずnoteoff
-                    boolean noteoff_send = false;
-                    if ( queue.noteoff.size() > 0 ) {
+                    bool noteoff_send = false;
+                    if (queue.noteoff.Count > 0) {
 #if DEBUG
-                        for ( int i = 0; i < queue.noteoff.size(); i++ ) {
-                            String str = "";
-                            MidiEvent itemi = queue.noteoff.get( i );
-                            str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
-                            for ( int j = 0; j < itemi.data.Length; j++ ) {
-                                str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
+                        for (int i = 0; i < queue.noteoff.Count; i++) {
+                            string str = "";
+                            MidiEvent itemi = queue.noteoff[i];
+                            str += "0x" + PortUtil.toHexString(itemi.firstByte, 2) + " ";
+                            for (int j = 0; j < itemi.data.Length; j++) {
+                                str += "0x" + PortUtil.toHexString(itemi.data[j], 2) + " ";
                             }
-                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteoff; " + str );
+                            sout.println(typeof(AquesToneWaveGenerator) + "#begin;         noteoff; " + str);
                         }
 #endif
-                        mDriver.send( queue.noteoff.toArray( new MidiEvent[] { } ) );
+                        mDriver.send(queue.noteoff.ToArray());
                         noteoff_send = true;
                     }
                     // parameterの変更
-                    if ( queue.param.size() > 0 ) {
-                        for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
-                            ParameterEvent pe = itr3.next();
+                    if (queue.param.Count > 0) {
+                        foreach (var pe in queue.param) {
 #if DEBUG
-                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value );
+                            sout.println(typeof(AquesToneWaveGenerator) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value);
 #endif
-                            mDriver.setParameter( pe.index, pe.value );
+                            mDriver.setParameter(pe.index, pe.value);
                         }
                     }
                     // ついでnoteon
-                    if ( queue.noteon.size() > 0 ) {
+                    if (queue.noteon.Count > 0) {
                         // 同ゲートタイムにピッチベンドも指定されている場合、同時に送信しないと反映されないようだ！
-                        if ( queue.pit.size() > 0 ) {
-                            queue.noteon.addAll( queue.pit );
-                            queue.pit.clear();
+                        if (queue.pit.Count > 0) {
+                            queue.noteon.AddRange(queue.pit);
+                            queue.pit.Clear();
                         }
 #if DEBUG
-                        for ( int i = 0; i < queue.noteon.size(); i++ ) {
-                            String str = "";
-                            MidiEvent itemi = queue.noteon.get( i );
-                            str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
-                            for ( int j = 0; j < itemi.data.Length; j++ ) {
-                                str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
+                        for (int i = 0; i < queue.noteon.Count; i++) {
+                            string str = "";
+                            MidiEvent itemi = queue.noteon[i];
+                            str += "0x" + PortUtil.toHexString(itemi.firstByte, 2) + " ";
+                            for (int j = 0; j < itemi.data.Length; j++) {
+                                str += "0x" + PortUtil.toHexString(itemi.data[j], 2) + " ";
                             }
-                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteon;  " + str );
+                            sout.println(typeof(AquesToneWaveGenerator) + "#begin;         noteon;  " + str);
                         }
 #endif
-                        mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
+                        mDriver.send(queue.noteon.ToArray());
                     }
                     // PIT
-                    if ( queue.pit.size() > 0 && !noteoff_send ) {
+                    if (queue.pit.Count > 0 && !noteoff_send) {
 #if DEBUG
-                        for ( int i = 0; i < queue.pit.size(); i++ ) {
-                            String str = "";
-                            MidiEvent itemi = queue.pit.get( i );
-                            str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
-                            for ( int j = 0; j < itemi.data.Length; j++ ) {
-                                str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
+                        for (int i = 0; i < queue.pit.Count; i++) {
+                            string str = "";
+                            MidiEvent itemi = queue.pit[i];
+                            str += "0x" + PortUtil.toHexString(itemi.firstByte, 2) + " ";
+                            for (int j = 0; j < itemi.data.Length; j++) {
+                                str += "0x" + PortUtil.toHexString(itemi.data[j], 2) + " ";
                             }
-                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         pit;     " + str );
+                            sout.println(typeof(AquesToneWaveGenerator) + "#begin;         pit;     " + str);
                         }
 #endif
-                        mDriver.send( queue.pit.toArray( new MidiEvent[] { } ) );
+                        mDriver.send(queue.pit.ToArray());
                     }
-                    if ( mDriver.getUi( mMainWindow ) != null ) {
-                        mDriver.getUi( mMainWindow ).invalidateUi();
+                    if (mDriver.getUi(mMainWindow) != null) {
+                        mDriver.getUi(mMainWindow).invalidateUi();
                     }
                 }
             }
@@ -342,18 +331,18 @@ namespace cadencii
             // totalSamplesに足りなかったら、追加してレンダリング
             saRemain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
-            sout.println( "AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; mTotalAppend=" + mTotalAppend + "; saRemain=" + saRemain );
+            sout.println("AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; mTotalAppend=" + mTotalAppend + "; saRemain=" + saRemain);
 #endif
-            while ( saRemain > 0 ) {
-                if ( state.isCancelRequested() ) {
+            while (saRemain > 0) {
+                if (state.isCancelRequested()) {
                     goto heaven;
                 }
                 int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                mDriver.process( left, right, len );
-                waveIncoming( left, right, len );
+                mDriver.process(left, right, len);
+                waveIncoming(left, right, len);
                 saRemain -= len;
                 saProcessed += len;
-                state.reportProgress( saProcessed );
+                state.reportProgress(saProcessed);
                 //mTotalAppend += len;
             }
         heaven:
@@ -364,12 +353,12 @@ namespace cadencii
             state.reportComplete();
         }
 
-        private void waveIncoming( double[] l, double[] r, int length )
+        private void waveIncoming(double[] l, double[] r, int length)
         {
             //int length = l.Length;
             int offset = 0;
-            if ( mTrimRemain > 0 ) {
-                if ( length <= mTrimRemain ) {
+            if (mTrimRemain > 0) {
+                if (length <= mTrimRemain) {
                     mTrimRemain -= length;
                     return;
                 } else {
@@ -378,18 +367,18 @@ namespace cadencii
                 }
             }
             int remain = length - offset;
-            while ( remain > 0 ) {
+            while (remain > 0) {
                 int amount = (remain > BUFLEN) ? BUFLEN : remain;
-                for ( int i = 0; i < amount; i++ ) {
+                for (int i = 0; i < amount; i++) {
                     mBufferL[i] = l[i + offset];
                     mBufferR[i] = r[i + offset];
                 }
 #if DEBUG
-                log.WriteLine( "waveIncoming; sending " + amount + " samples..." );
+                log.WriteLine("waveIncoming; sending " + amount + " samples...");
 #endif
-                mReceiver.push( mBufferL, mBufferR, amount );
+                mReceiver.push(mBufferL, mBufferR, amount);
 #if DEBUG
-                log.WriteLine( "waveIncoming; ...done." );
+                log.WriteLine("waveIncoming; ...done.");
 #endif
                 remain -= amount;
                 offset += amount;

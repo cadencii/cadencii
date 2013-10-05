@@ -9,18 +9,18 @@ namespace cadencii.test.dsp.generator
     class AquesTone2WaveGeneratorStub : AquesTone2WaveGenerator
     {
         public AquesTone2WaveGeneratorStub()
-            : base( new AquesTone2Driver( "" ) )
+            : base(new AquesTone2Driver(""))
         {
         }
 
-        public EventQueueSequence generateMidiEvent( VsqFileEx vsq, int track )
+        public EventQueueSequence generateMidiEvent(VsqFileEx vsq, int track)
         {
-            return base.generateMidiEvent( vsq, track );
+            return base.generateMidiEvent(vsq, track);
         }
 
-        public void reflectVibratoPitch( VsqEvent item, VsqBPList pitchBend, VsqBPList pitchBendSensitivity, TempoVector tempoTable )
+        public void reflectVibratoPitch(VsqEvent item, VsqBPList pitchBend, VsqBPList pitchBendSensitivity, TempoVector tempoTable)
         {
-            base.reflectNoteEventPitch( item, pitchBend, pitchBendSensitivity, tempoTable );
+            base.reflectNoteEventPitch(item, pitchBend, pitchBendSensitivity, tempoTable);
         }
     }
 
@@ -31,24 +31,24 @@ namespace cadencii.test.dsp.generator
         public void testReflectVibratoPitch()
         {
             var tempoTable = new TempoVector();
-            var pitchBend = new VsqBPList( CurveType.PIT.getName(), CurveType.PIT.getDefault(), CurveType.PIT.getMinimum(), CurveType.PIT.getMaximum() );
-            var pitchBendSensitivity = new VsqBPList( CurveType.PIT.getName(), CurveType.PIT.getDefault(), CurveType.PIT.getMinimum(), CurveType.PIT.getMaximum() );
+            var pitchBend = new VsqBPList(CurveType.PIT.getName(), CurveType.PIT.getDefault(), CurveType.PIT.getMinimum(), CurveType.PIT.getMaximum());
+            var pitchBendSensitivity = new VsqBPList(CurveType.PIT.getName(), CurveType.PIT.getDefault(), CurveType.PIT.getMinimum(), CurveType.PIT.getMaximum());
 
-            pitchBend.add( 0, 8191 );
-            pitchBendSensitivity.add( 0, 2 );
+            pitchBend.add(0, 8191);
+            pitchBendSensitivity.add(0, 2);
 
             var generator = new AquesTone2WaveGeneratorStub();
-            var item = new VsqEvent( 0, new VsqID() );
+            var item = new VsqEvent(0, new VsqID());
             item.ID.type = VsqIDType.Anote;
             item.ID.VibratoHandle = new VibratoHandle();
             item.ID.VibratoHandle.StartRate = 0x40;
             item.ID.VibratoHandle.RateBP.clear();
             item.ID.VibratoHandle.StartDepth = 0x40;
             item.ID.VibratoHandle.DepthBP.clear();
-            item.ID.setLength( 480 );
+            item.ID.setLength(480);
             item.ID.VibratoDelay = 430;
-            item.ID.VibratoHandle.setLength( 50 );
-            generator.reflectVibratoPitch( item, pitchBend, pitchBendSensitivity, tempoTable );
+            item.ID.VibratoHandle.setLength(50);
+            generator.reflectVibratoPitch(item, pitchBend, pitchBendSensitivity, tempoTable);
 
             {
                 var expectedPit = new Dictionary<int, int> {
@@ -65,11 +65,11 @@ namespace cadencii.test.dsp.generator
                     { 475, 6320 }, { 476, 6149 }, { 477, 5976 }, { 478, 5804 }, { 479, 5632 },
                     { 480, 8191 }
                 };
-                Assert.AreEqual( expectedPit.Count, pitchBend.size() );
+                Assert.AreEqual(expectedPit.Count, pitchBend.size());
                 int i = 0;
-                foreach ( var pitInfo in expectedPit ) {
-                    Assert.AreEqual( pitInfo.Key, pitchBend.getKeyClock( i ) );
-                    Assert.AreEqual( pitInfo.Value, pitchBend.getElementA( i ) );
+                foreach (var pitInfo in expectedPit) {
+                    Assert.AreEqual(pitInfo.Key, pitchBend.getKeyClock(i));
+                    Assert.AreEqual(pitInfo.Value, pitchBend.getElementA(i));
                     ++i;
                 }
             }
@@ -78,11 +78,11 @@ namespace cadencii.test.dsp.generator
                 var expectedPbs = new Dictionary<int, int> {
                     { 0, 2 }, { 430, 3 }, { 480, 2 }
                 };
-                Assert.AreEqual( expectedPbs.Count, pitchBendSensitivity.size() );
+                Assert.AreEqual(expectedPbs.Count, pitchBendSensitivity.size());
                 int i = 0;
-                foreach ( var pbsInfo in expectedPbs ) {
-                    Assert.AreEqual( pbsInfo.Key, pitchBendSensitivity.getKeyClock( i ) );
-                    Assert.AreEqual( pbsInfo.Value, pitchBendSensitivity.getElementA( i ) );
+                foreach (var pbsInfo in expectedPbs) {
+                    Assert.AreEqual(pbsInfo.Key, pitchBendSensitivity.getKeyClock(i));
+                    Assert.AreEqual(pbsInfo.Value, pitchBendSensitivity.getElementA(i));
                     ++i;
                 }
             }

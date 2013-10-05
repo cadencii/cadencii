@@ -11,91 +11,58 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.apputil;
-
-import java.awt.Font;
-
-#else
 using System;
 using cadencii.java.awt;
 
-namespace cadencii.apputil {
-#endif
+namespace cadencii.apputil
+{
 
-    public class AuthorListEntry {
-        String m_name = "";
+    public class AuthorListEntry
+    {
+        string m_name = "";
         int m_style;
-        String m_twtr_id = "";
+        string m_twtr_id = "";
 
-        public AuthorListEntry( String name, String twitter_id, int style ) {
+        public AuthorListEntry(string name, string twitter_id, int style)
+        {
             m_name = name;
             m_twtr_id = twitter_id;
             m_style = style;
         }
 
-        public AuthorListEntry( String name, int style )
-#if JAVA
-        {
-#else
-            :
-#endif
-            this( name, "", style )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+        public AuthorListEntry(string name, int style)
+            : this(name, "", style)
+        { }
 
-        public AuthorListEntry( String name, String twitter_id )
-#if JAVA
-        {
-#else
-            :
-#endif
-            this( name, twitter_id, Font.PLAIN )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+        public AuthorListEntry(string name, string twitter_id)
+            : this(name, twitter_id, Font.PLAIN)
+        { }
 
-        public AuthorListEntry( String name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            this( name, "", Font.PLAIN )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+        public AuthorListEntry(string name)
+            : this(name, "", Font.PLAIN)
+        { }
 
-        public AuthorListEntry() {
+        public AuthorListEntry()
+        {
             m_name = "";
             m_style = Font.PLAIN;
             m_twtr_id = "";
         }
 
-        public String getName() {
+        public string getName()
+        {
             return m_name;
         }
 
-        public int getStyle() {
+        public int getStyle()
+        {
             return m_style;
         }
 
-        public String getTwitterID() {
+        public string getTwitterID()
+        {
             return m_twtr_id;
         }
     }
 
-#if !JAVA
 }
-#endif

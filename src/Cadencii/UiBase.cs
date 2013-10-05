@@ -1,5 +1,3 @@
-#if !__UiBase_h__
-#define __UiBase_h__
 /*
  * UiBase.cs
  * Copyright © 2011 kbinani
@@ -13,37 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+namespace cadencii
+{
 
-package cadencii;
+    using System;
 
-#else
-
-    namespace cadencii
+    public interface UiBase
     {
+        int showDialog(Object parent_form);
+    };
 
-#if __cplusplus
-#else
-            using System;
-#endif
-
-#endif
-
-#if __cplusplus
-            class UiBase
-#else
-            public interface UiBase
-#endif
-            {
-#if __cplusplus
-                virtual int showDialog( QObject *parent_form );
-#else
-                int showDialog( Object parent_form );
-#endif
-            };
-
-#if !JAVA
-    }
-#endif
-
-#endif
+}

@@ -11,49 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-    /// <summary>
-    /// 歌声合成システムの種類
-    /// </summary>
-    public enum RendererKind
-    {
-        VOCALOID1,
-        /// <summary>
-        /// Synthesize Engine 1.0のVOCALOID1
-        /// </summary>
-        VOCALOID1_100,
-        /// <summary>
-        /// Synthesize Engine 1.1のVOCALOID1
-        /// </summary>
-        VOCALOID1_101,
-        /// <summary>
-        /// VOCALOID2
-        /// </summary>
-        VOCALOID2,
-        /// <summary>
-        /// AquesTone
-        /// </summary>
-        AQUES_TONE,
-        /// <summary>
-        /// UTAU
-        /// </summary>
-        UTAU,
-        /// <summary>
-        /// vConnect-STAND
-        /// </summary>
-        VCNT,
-        /// <summary>
-        /// 何もしない歌声合成システム(EmptyRenderingRunner)
-        /// </summary>
-        NULL,
-    }
-
-#else
 using System;
 
-namespace cadencii{
+namespace cadencii
+{
 
     /// <summary>
     /// 歌声合成システムの種類
@@ -103,4 +64,3 @@ namespace cadencii{
     }
 
 }
-#endif

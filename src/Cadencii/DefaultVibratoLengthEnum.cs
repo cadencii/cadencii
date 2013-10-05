@@ -11,21 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public enum DefaultVibratoLengthEnum {
+    public enum DefaultVibratoLengthEnum
+    {
         L50,
         L66,
         L75,
         L100,
     }
 
-#if !JAVA
 }
-#endif

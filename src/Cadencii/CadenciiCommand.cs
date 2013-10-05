@@ -11,59 +11,54 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.vsq.*;
-#else
 using System;
+using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii.java.util;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// Undo/Redoを実現するためのコマンド。
     /// Boare.Lib.Vsq.VsqFileレベルのコマンドは、Type=VsqCommandとして取り扱う。
     /// Boare.Cadencii.VsqFileExレベルのコマンドは、Argsに処理内容を格納して取り扱う。
     /// </summary>
-#if JAVA
-    public class CadenciiCommand implements ICommand{
-#else
     [Serializable]
-    public class CadenciiCommand : ICommand {
-#endif
+    public class CadenciiCommand : ICommand
+    {
         public CadenciiCommandType type;
         public VsqCommand vsqCommand;
         private ICommand mParent;
         public Object[] args;
-        private Vector<ICommand> mChild = new Vector<ICommand>();
+        private List<ICommand> mChild = new List<ICommand>();
 
-        public CadenciiCommand( VsqCommand command ) {
+        public CadenciiCommand(VsqCommand command)
+        {
             type = CadenciiCommandType.VSQ_COMMAND;
             vsqCommand = command;
-            mChild = new Vector<ICommand>();
+            mChild = new List<ICommand>();
         }
 
-        public CadenciiCommand() {
-            mChild = new Vector<ICommand>();
+        public CadenciiCommand()
+        {
+            mChild = new List<ICommand>();
         }
 
-        public ICommand getParent() {
+        public ICommand getParent()
+        {
             return mParent;
         }
 
-        public void setParent( ICommand value ) {
+        public void setParent(ICommand value)
+        {
             mParent = value;
         }
 
-        public Vector<ICommand> getChild() {
+        public List<ICommand> getChild()
+        {
             return mChild;
         }
     }
 
-#if !JAVA
 }
-#endif

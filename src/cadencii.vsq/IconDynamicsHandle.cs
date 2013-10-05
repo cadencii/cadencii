@@ -11,50 +11,38 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-#endif
-
     /// <summary>
     /// 強弱記号設定を表します。
     /// </summary>
-#if JAVA
-    public class IconDynamicsHandle extends IconParameter implements Cloneable, Serializable
-#else
     [Serializable]
     public class IconDynamicsHandle : IconParameter, ICloneable
-#endif
     {
         /// <summary>
         /// 強弱記号の場合の、IconIDの最初の5文字。
         /// </summary>
-        public const String ICONID_HEAD_DYNAFF = "$0501";
+        public const string ICONID_HEAD_DYNAFF = "$0501";
         /// <summary>
         /// クレッシェンドの場合の、IconIDの最初の5文字。
         /// </summary>
-        public const String ICONID_HEAD_CRESCEND = "$0502";
+        public const string ICONID_HEAD_CRESCEND = "$0502";
         /// <summary>
         /// デクレッシェンドの場合の、IconIDの最初の5文字。
         /// </summary>
-        public const String ICONID_HEAD_DECRESCEND = "$0503";
+        public const string ICONID_HEAD_DECRESCEND = "$0503";
 
         /// <summary>
         /// この強弱記号設定を一意に識別するためのIDです。
         /// </summary>
-        public String IconID = "";
+        public string IconID = "";
         /// <summary>
         /// ユーザ・フレンドリー名です。
         /// このフィールドの値は、他の強弱記号設定のユーザ・フレンドリー名と重複する場合があります。
         /// </summary>
-        public String IDS = "";
+        public string IDS = "";
         /// <summary>
         /// この強弱記号設定が他の強弱記号設定から派生したものである場合、派生元を特定するための番号です。
         /// </summary>
@@ -64,18 +52,8 @@ namespace cadencii.vsq
         /// デフォルトの設定で、新しい強弱記号設定のインスタンスを初期化します。
         /// </summary>
         public IconDynamicsHandle()
-#if JAVA
-        {
-#else
-            :
-#endif
- base()
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+            : base()
+        { }
 
         /// <summary>
         /// 指定されたパラメータを使って、新しい強弱記号設定のインスタンスを初期化します。
@@ -84,18 +62,9 @@ namespace cadencii.vsq
         /// <param name="ids">フィールドIDSの初期値</param>
         /// <param name="icon_id">フィールドIconIDの初期値</param>
         /// <param name="index">フィールドOriginalの初期値</param>
-        public IconDynamicsHandle( String aic_file, String ids, String icon_id, int index )
-#if JAVA
+        public IconDynamicsHandle(string aic_file, string ids, string icon_id, int index)
+            : base(aic_file)
         {
-#else
-            :
-#endif
- base( aic_file )
-#if JAVA
-            ;
-#else
-        {
-#endif
             IDS = ids;
             IconID = icon_id;
             Original = index;
@@ -105,10 +74,10 @@ namespace cadencii.vsq
         /// このハンドルが強弱記号を表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isDynaffType()
+        public bool isDynaffType()
         {
-            if ( IconID != null ) {
-                return IconID.StartsWith( ICONID_HEAD_DYNAFF );
+            if (IconID != null) {
+                return IconID.StartsWith(ICONID_HEAD_DYNAFF);
             } else {
                 return false;
             }
@@ -118,10 +87,10 @@ namespace cadencii.vsq
         /// このハンドルがクレッシェンドを表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isCrescendType()
+        public bool isCrescendType()
         {
-            if ( IconID != null ) {
-                return IconID.StartsWith( ICONID_HEAD_CRESCEND );
+            if (IconID != null) {
+                return IconID.StartsWith(ICONID_HEAD_CRESCEND);
             } else {
                 return false;
             }
@@ -131,10 +100,10 @@ namespace cadencii.vsq
         /// このハンドルがデクレッシェンドを表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isDecrescendType()
+        public bool isDecrescendType()
         {
-            if ( IconID != null ) {
-                return IconID.StartsWith( ICONID_HEAD_DECRESCEND );
+            if (IconID != null) {
+                return IconID.StartsWith(ICONID_HEAD_DECRESCEND);
             } else {
                 return false;
             }
@@ -144,12 +113,10 @@ namespace cadencii.vsq
         /// このインスタンスのコピーを作成します。
         /// </summary>
         /// <returns></returns>
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
 
         /// <summary>
         /// このインスタンスのコピーを作成します。
@@ -161,13 +128,13 @@ namespace cadencii.vsq
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Original = Original;
-            ret.setCaption( getCaption() );
-            ret.setStartDyn( getStartDyn() );
-            ret.setEndDyn( getEndDyn() );
-            if ( dynBP != null ) {
-                ret.setDynBP( (VibratoBPList)dynBP.clone() );
+            ret.setCaption(getCaption());
+            ret.setStartDyn(getStartDyn());
+            ret.setEndDyn(getEndDyn());
+            if (dynBP != null) {
+                ret.setDynBP((VibratoBPList)dynBP.clone());
             }
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             return ret;
         }
 
@@ -185,7 +152,7 @@ namespace cadencii.vsq
             ret.Caption = getCaption();
             ret.DynBP = getDynBP();
             ret.EndDyn = getEndDyn();
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.StartDyn = getStartDyn();
             return ret;
         }
@@ -194,7 +161,7 @@ namespace cadencii.vsq
         /// キャプションを取得します。
         /// </summary>
         /// <returns></returns>
-        public String getCaption()
+        public string getCaption()
         {
             return caption;
         }
@@ -203,16 +170,15 @@ namespace cadencii.vsq
         /// キャプションを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setCaption( String value )
+        public void setCaption(string value)
         {
             caption = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、キャプションです。
         /// </summary>
-        public String Caption
+        public string Caption
         {
             get
             {
@@ -220,10 +186,9 @@ namespace cadencii.vsq
             }
             set
             {
-                setCaption( value );
+                setCaption(value);
             }
         }
-#endif
 
         /// <summary>
         /// ゲートタイム長さを取得します。
@@ -238,12 +203,11 @@ namespace cadencii.vsq
         /// ゲートタイム長さを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、ゲートタイム長さです。
         /// </summary>
@@ -255,10 +219,9 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
-#endif
 
         /// <summary>
         /// DYNの開始値を取得します。
@@ -273,12 +236,11 @@ namespace cadencii.vsq
         /// DYNの開始値を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setStartDyn( int value )
+        public void setStartDyn(int value)
         {
             startDyn = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、DYNの開始値です。
         /// </summary>
@@ -290,10 +252,9 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartDyn( value );
+                setStartDyn(value);
             }
         }
-#endif
 
         /// <summary>
         /// DYNの終了値を取得します。
@@ -308,12 +269,11 @@ namespace cadencii.vsq
         /// DYNの終了値を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setEndDyn( int value )
+        public void setEndDyn(int value)
         {
             endDyn = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、DYNの終了値です。
         /// </summary>
@@ -325,10 +285,9 @@ namespace cadencii.vsq
             }
             set
             {
-                setEndDyn( value );
+                setEndDyn(value);
             }
         }
-#endif
 
         /// <summary>
         /// DYNカーブを表すリストを取得します。
@@ -343,12 +302,11 @@ namespace cadencii.vsq
         /// DYNカーブを表すリストを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setDynBP( VibratoBPList value )
+        public void setDynBP(VibratoBPList value)
         {
             dynBP = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、DYNカーブを表すリストです。
         /// </summary>
@@ -360,13 +318,10 @@ namespace cadencii.vsq
             }
             set
             {
-                setDynBP( value );
+                setDynBP(value);
             }
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * IPaletteTool.cs
  * Copyright © 2009-2011 kbinani
@@ -19,19 +18,20 @@ using System.Windows.Forms;
 
 using cadencii.vsq;
 
-namespace cadencii {
 
-    using boolean = Boolean;
 
-    public interface IPaletteTool {
-        boolean edit( VsqTrack track, int[] event_internal_ids, MouseButtons button );
-        String getName( String language );
-        String getDescription( String language );
-        boolean hasDialog();
+namespace cadencii
+{
+
+    public interface IPaletteTool
+    {
+        bool edit(VsqTrack track, int[] event_internal_ids, MouseButtons button);
+        string getName(string language);
+        string getDescription(string language);
+        bool hasDialog();
         DialogResult openDialog();
         Bitmap getIcon();
-        void applyLanguage( String language );
+        void applyLanguage(string language);
     }
 
 }
-#endif

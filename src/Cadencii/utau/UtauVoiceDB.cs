@@ -35,7 +35,7 @@ namespace cadencii.utau
         public UtauVoiceDB(SingerConfig singer_config)
         {
             name_ = singer_config.VOICENAME;
-            
+
             string oto_ini = Path.Combine(singer_config.VOICEIDSTR, "oto.ini");
             root_ = new Oto(oto_ini, singer_config.VOICEIDSTR);
 

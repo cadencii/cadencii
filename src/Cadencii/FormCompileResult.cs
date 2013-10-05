@@ -11,57 +11,40 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormCompileResult.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.apputil;
 using cadencii;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormCompileResult extends BDialog {
-#else
     public class FormCompileResult : System.Windows.Forms.Form
     {
-#endif
-        public FormCompileResult( String message, String errors )
+        public FormCompileResult(string message, string errors)
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
             label1.Text = message;
             textBox1.Text = errors;
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            Util.applyFontRecurse(this, AppManager.editorConfig.getBaseFont());
         }
 
         #region public methods
         public void applyLanguage()
         {
-            textBox1.Text = _( "Script Compilation Result" );
+            textBox1.Text = _("Script Compilation Result");
         }
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         private void setResources()
@@ -70,22 +53,18 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new EventHandler( btnOK_Click );
+            btnOK.Click += new EventHandler(btnOK_Click);
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, EventArgs e )
+        public void btnOK_Click(Object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormCompileResult.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormCompileResult.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -95,12 +74,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -119,9 +98,9 @@ namespace cadencii
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoEllipsis = true;
-            this.label1.Location = new System.Drawing.Point( 12, 9 );
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size( 354, 41 );
+            this.label1.Size = new System.Drawing.Size(354, 41);
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             //
@@ -130,21 +109,21 @@ namespace cadencii
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point( 12, 53 );
+            this.textBox1.Location = new System.Drawing.Point(12, 53);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size( 354, 174 );
+            this.textBox1.Size = new System.Drawing.Size(354, 174);
             this.textBox1.TabIndex = 1;
             //
             // btnOK
             //
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point( 291, 240 );
+            this.btnOK.Location = new System.Drawing.Point(291, 240);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size( 75, 23 );
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 10;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -152,17 +131,17 @@ namespace cadencii
             // FormCompileResult
             //
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size( 378, 275 );
-            this.Controls.Add( this.btnOK );
-            this.Controls.Add( this.textBox1 );
-            this.Controls.Add( this.label1 );
+            this.ClientSize = new System.Drawing.Size(378, 275);
+            this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label1);
             this.Name = "FormCompileResult";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Script Compilation Result";
-            this.ResumeLayout( false );
+            this.ResumeLayout(false);
             this.PerformLayout();
 
         }
@@ -171,10 +150,7 @@ namespace cadencii
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnOK;
 
-#endif
         #endregion
     }
 
-#if !JAVA
 }
-#endif

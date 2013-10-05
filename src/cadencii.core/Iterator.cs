@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * Iterator.cs
  * Copyright © 2009-2011 kbinani
@@ -12,13 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii.java.util {
+namespace cadencii.java.util
+{
 
-    public interface Iterator<E> {
+    public interface Iterator<E>
+    {
         bool hasNext();
         E next();
         void remove();
     }
 
 }
-#endif

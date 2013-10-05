@@ -23,7 +23,7 @@ namespace cadencii
     {
         private FormBeatConfigUiListener mListener;
 
-        public FormBeatConfigUiImpl( FormBeatConfigUiListener listener )
+        public FormBeatConfigUiImpl(FormBeatConfigUiListener listener)
         {
             mListener = listener;
             InitializeComponent();
@@ -47,19 +47,16 @@ namespace cadencii
             return this.Height;
         }
 
-        public void setLocation( int x, int y )
+        public void setLocation(int x, int y)
         {
-            this.Location = new System.Drawing.Point( x, y );
+            this.Location = new System.Drawing.Point(x, y);
         }
 
-        public void setDialogResult( bool value )
+        public void setDialogResult(bool value)
         {
-            if ( value )
-            {
+            if (value) {
                 this.DialogResult = DialogResult.OK;
-            }
-            else
-            {
+            } else {
                 this.DialogResult = DialogResult.Cancel;
             }
         }
@@ -74,32 +71,32 @@ namespace cadencii
             return chkEnd.Checked;
         }
 
-        public void setTextBar2Label( string value )
+        public void setTextBar2Label(string value)
         {
             lblBar2.Text = value;
         }
 
-        public void setTextBar1Label( string value )
+        public void setTextBar1Label(string value)
         {
             lblBar1.Text = value;
         }
 
-        public void setTextStartLabel( string value )
+        public void setTextStartLabel(string value)
         {
             lblStart.Text = value;
         }
 
-        public void setTextOkButton( string value )
+        public void setTextOkButton(string value)
         {
             btnOK.Text = value;
         }
 
-        public void setTextCancelButton( string value )
+        public void setTextCancelButton(string value)
         {
             btnCancel.Text = value;
         }
 
-        public void setTextBeatGroup( string value )
+        public void setTextBeatGroup(string value)
         {
             groupBeat.Text = value;
         }
@@ -114,7 +111,7 @@ namespace cadencii
             return chkEnd.Enabled;
         }
 
-        public void setTextEndCheckbox( string value )
+        public void setTextEndCheckbox(string value)
         {
             chkEnd.Text = value;
         }
@@ -124,12 +121,12 @@ namespace cadencii
             return (int)numNumerator.Value;
         }
 
-        public void setFont( string fontName, float fontSize )
+        public void setFont(string fontName, float fontSize)
         {
-            Util.applyFontRecurse( this, new cadencii.java.awt.Font( new System.Drawing.Font( fontName, fontSize ) ) );
+            Util.applyFontRecurse(this, new cadencii.java.awt.Font(new System.Drawing.Font(fontName, fontSize)));
         }
 
-        public void setTextPositionGroup( string value )
+        public void setTextPositionGroup(string value)
         {
             groupPosition.Text = value;
         }
@@ -144,9 +141,9 @@ namespace cadencii
             return (int)numStart.Minimum;
         }
 
-        public void setValueStartNum( int value )
+        public void setValueStartNum(int value)
         {
-            numStart.Value = new decimal( value );
+            numStart.Value = new decimal(value);
         }
 
         public int getValueStartNum()
@@ -164,44 +161,44 @@ namespace cadencii
             return (int)numNumerator.Maximum;
         }
 
-        public void setValueNumeratorNum( int value )
+        public void setValueNumeratorNum(int value)
         {
-            numNumerator.Value = new decimal( value );
+            numNumerator.Value = new decimal(value);
         }
 
-        public void setSelectedIndexDenominatorCombobox( int value )
+        public void setSelectedIndexDenominatorCombobox(int value)
         {
             comboDenominator.SelectedIndex = value;
         }
 
-        public void addItemDenominatorCombobox( string value )
+        public void addItemDenominatorCombobox(string value)
         {
-            comboDenominator.Items.Add( value );
+            comboDenominator.Items.Add(value);
         }
 
-        public void setMinimumStartNum( int value )
+        public void setMinimumStartNum(int value)
         {
             numStart.Minimum = value;
         }
 
-        public void setMaximumStartNum( int value )
+        public void setMaximumStartNum(int value)
         {
             numStart.Maximum = value;
         }
 
-        public void setMinimumEndNum( int value )
+        public void setMinimumEndNum(int value)
         {
             numEnd.Minimum = value;
         }
 
-        public void setMaximumEndNum( int value )
+        public void setMaximumEndNum(int value)
         {
             numEnd.Maximum = value;
         }
 
-        public void setValueEndNum( int value )
+        public void setValueEndNum(int value)
         {
-            numEnd.Value = new decimal( value );
+            numEnd.Value = new decimal(value);
         }
 
         public int getMinimumEndNum()
@@ -214,29 +211,23 @@ namespace cadencii
             return (int)numEnd.Maximum;
         }
 
-        public void setTitle( string value )
+        public void setTitle(string value)
         {
             this.Text = value;
         }
 
-        public int showDialog( object parent )
+        public int showDialog(object parent)
         {
             DialogResult ret;
-            if ( parent == null || (parent != null && !(parent is Form)) )
-            {
+            if (parent == null || (parent != null && !(parent is Form))) {
                 ret = base.ShowDialog();
-            }
-            else
-            {
+            } else {
                 Form form = (Form)parent;
-                ret = base.ShowDialog( form );
+                ret = base.ShowDialog(form);
             }
-            if ( ret == DialogResult.OK || ret == DialogResult.Yes )
-            {
+            if (ret == DialogResult.OK || ret == DialogResult.Yes) {
                 return 1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
@@ -246,17 +237,17 @@ namespace cadencii
             comboDenominator.Items.Clear();
         }
 
-        public void setEnabledEndCheckbox( bool value )
+        public void setEnabledEndCheckbox(bool value)
         {
             chkEnd.Enabled = value;
         }
 
-        public void setEnabledStartNum( bool value )
+        public void setEnabledStartNum(bool value)
         {
             numStart.Enabled = value;
         }
 
-        public void setEnabledEndNum( bool value )
+        public void setEnabledEndNum(bool value)
         {
             numEnd.Enabled = value;
         }
@@ -267,17 +258,17 @@ namespace cadencii
 
         #region イベントハンドラーの実装
 
-        public void chkEnd_CheckedChanged( Object sender, EventArgs e )
+        public void chkEnd_CheckedChanged(Object sender, EventArgs e)
         {
             mListener.checkboxEndCheckedChangedSlot();
         }
 
-        public void btnOK_Click( Object sender, EventArgs e )
+        public void btnOK_Click(Object sender, EventArgs e)
         {
             mListener.buttonOkClickedSlot();
         }
 
-        public void btnCancel_Click( Object sender, EventArgs e )
+        public void btnCancel_Click(Object sender, EventArgs e)
         {
             mListener.buttonCancelClickedSlot();
         }
@@ -297,13 +288,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) )
-            {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -337,15 +327,15 @@ namespace cadencii
             // 
             this.groupPosition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupPosition.Controls.Add( this.lblBar2 );
-            this.groupPosition.Controls.Add( this.lblBar1 );
-            this.groupPosition.Controls.Add( this.numEnd );
-            this.groupPosition.Controls.Add( this.numStart );
-            this.groupPosition.Controls.Add( this.chkEnd );
-            this.groupPosition.Controls.Add( this.lblStart );
-            this.groupPosition.Location = new System.Drawing.Point( 7, 7 );
+            this.groupPosition.Controls.Add(this.lblBar2);
+            this.groupPosition.Controls.Add(this.lblBar1);
+            this.groupPosition.Controls.Add(this.numEnd);
+            this.groupPosition.Controls.Add(this.numStart);
+            this.groupPosition.Controls.Add(this.chkEnd);
+            this.groupPosition.Controls.Add(this.lblStart);
+            this.groupPosition.Location = new System.Drawing.Point(7, 7);
             this.groupPosition.Name = "groupPosition";
-            this.groupPosition.Size = new System.Drawing.Size( 261, 71 );
+            this.groupPosition.Size = new System.Drawing.Size(261, 71);
             this.groupPosition.TabIndex = 0;
             this.groupPosition.TabStop = false;
             this.groupPosition.Text = "Position";
@@ -353,52 +343,52 @@ namespace cadencii
             // lblBar2
             // 
             this.lblBar2.AutoSize = true;
-            this.lblBar2.Location = new System.Drawing.Point( 176, 46 );
+            this.lblBar2.Location = new System.Drawing.Point(176, 46);
             this.lblBar2.Name = "lblBar2";
-            this.lblBar2.Size = new System.Drawing.Size( 48, 12 );
+            this.lblBar2.Size = new System.Drawing.Size(48, 12);
             this.lblBar2.TabIndex = 5;
             this.lblBar2.Text = "Measure";
             // 
             // lblBar1
             // 
             this.lblBar1.AutoSize = true;
-            this.lblBar1.Location = new System.Drawing.Point( 176, 20 );
+            this.lblBar1.Location = new System.Drawing.Point(176, 20);
             this.lblBar1.Name = "lblBar1";
-            this.lblBar1.Size = new System.Drawing.Size( 48, 12 );
+            this.lblBar1.Size = new System.Drawing.Size(48, 12);
             this.lblBar1.TabIndex = 4;
             this.lblBar1.Text = "Measure";
             // 
             // numEnd
             // 
-            this.numEnd.Location = new System.Drawing.Point( 97, 44 );
+            this.numEnd.Location = new System.Drawing.Point(97, 44);
             this.numEnd.Name = "numEnd";
-            this.numEnd.Size = new System.Drawing.Size( 73, 19 );
+            this.numEnd.Size = new System.Drawing.Size(73, 19);
             this.numEnd.TabIndex = 6;
             // 
             // numStart
             // 
-            this.numStart.Location = new System.Drawing.Point( 97, 18 );
+            this.numStart.Location = new System.Drawing.Point(97, 18);
             this.numStart.Name = "numStart";
-            this.numStart.Size = new System.Drawing.Size( 73, 19 );
+            this.numStart.Size = new System.Drawing.Size(73, 19);
             this.numStart.TabIndex = 7;
             // 
             // chkEnd
             // 
             this.chkEnd.AutoSize = true;
-            this.chkEnd.Location = new System.Drawing.Point( 23, 45 );
+            this.chkEnd.Location = new System.Drawing.Point(23, 45);
             this.chkEnd.Name = "chkEnd";
-            this.chkEnd.Size = new System.Drawing.Size( 52, 16 );
+            this.chkEnd.Size = new System.Drawing.Size(52, 16);
             this.chkEnd.TabIndex = 1;
             this.chkEnd.Text = "To(&T)";
             this.chkEnd.UseVisualStyleBackColor = true;
-            this.chkEnd.CheckedChanged += new System.EventHandler( this.chkEnd_CheckedChanged );
+            this.chkEnd.CheckedChanged += new System.EventHandler(this.chkEnd_CheckedChanged);
             // 
             // lblStart
             // 
             this.lblStart.AutoSize = true;
-            this.lblStart.Location = new System.Drawing.Point( 21, 20 );
+            this.lblStart.Location = new System.Drawing.Point(21, 20);
             this.lblStart.Name = "lblStart";
-            this.lblStart.Size = new System.Drawing.Size( 46, 12 );
+            this.lblStart.Size = new System.Drawing.Size(46, 12);
             this.lblStart.TabIndex = 0;
             this.lblStart.Text = "From(&F)";
             // 
@@ -406,13 +396,13 @@ namespace cadencii
             // 
             this.groupBeat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBeat.Controls.Add( this.comboDenominator );
-            this.groupBeat.Controls.Add( this.label2 );
-            this.groupBeat.Controls.Add( this.label1 );
-            this.groupBeat.Controls.Add( this.numNumerator );
-            this.groupBeat.Location = new System.Drawing.Point( 7, 84 );
+            this.groupBeat.Controls.Add(this.comboDenominator);
+            this.groupBeat.Controls.Add(this.label2);
+            this.groupBeat.Controls.Add(this.label1);
+            this.groupBeat.Controls.Add(this.numNumerator);
+            this.groupBeat.Location = new System.Drawing.Point(7, 84);
             this.groupBeat.Name = "groupBeat";
-            this.groupBeat.Size = new System.Drawing.Size( 261, 55 );
+            this.groupBeat.Size = new System.Drawing.Size(261, 55);
             this.groupBeat.TabIndex = 1;
             this.groupBeat.TabStop = false;
             this.groupBeat.Text = "Beat";
@@ -420,68 +410,68 @@ namespace cadencii
             // comboDenominator
             // 
             this.comboDenominator.FormattingEnabled = true;
-            this.comboDenominator.Location = new System.Drawing.Point( 182, 20 );
+            this.comboDenominator.Location = new System.Drawing.Point(182, 20);
             this.comboDenominator.Name = "comboDenominator";
-            this.comboDenominator.Size = new System.Drawing.Size( 73, 20 );
+            this.comboDenominator.Size = new System.Drawing.Size(73, 20);
             this.comboDenominator.TabIndex = 8;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point( 160, 23 );
+            this.label2.Location = new System.Drawing.Point(160, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size( 11, 12 );
+            this.label2.Size = new System.Drawing.Size(11, 12);
             this.label2.TabIndex = 7;
             this.label2.Text = "/";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point( 102, 23 );
+            this.label1.Location = new System.Drawing.Point(102, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size( 51, 12 );
+            this.label1.Size = new System.Drawing.Size(51, 12);
             this.label1.TabIndex = 6;
             this.label1.Text = "(1 - 255)";
             // 
             // numNumerator
             // 
-            this.numNumerator.Location = new System.Drawing.Point( 23, 21 );
+            this.numNumerator.Location = new System.Drawing.Point(23, 21);
             this.numNumerator.Name = "numNumerator";
-            this.numNumerator.Size = new System.Drawing.Size( 73, 19 );
+            this.numNumerator.Size = new System.Drawing.Size(73, 19);
             this.numNumerator.TabIndex = 9;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point( 113, 150 );
+            this.btnOK.Location = new System.Drawing.Point(113, 150);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size( 75, 23 );
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 194, 150 );
+            this.btnCancel.Location = new System.Drawing.Point(194, 150);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // FormBeatConfigUiImpl
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 278, 182 );
-            this.Controls.Add( this.btnCancel );
-            this.Controls.Add( this.btnOK );
-            this.Controls.Add( this.groupBeat );
-            this.Controls.Add( this.groupPosition );
+            this.ClientSize = new System.Drawing.Size(278, 182);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.groupBeat);
+            this.Controls.Add(this.groupPosition);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -490,14 +480,14 @@ namespace cadencii
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Beat Change";
-            this.groupPosition.ResumeLayout( false );
+            this.groupPosition.ResumeLayout(false);
             this.groupPosition.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).EndInit();
-            this.groupBeat.ResumeLayout( false );
+            this.groupBeat.ResumeLayout(false);
             this.groupBeat.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numNumerator)).EndInit();
-            this.ResumeLayout( false );
+            this.ResumeLayout(false);
 
         }
 
@@ -519,6 +509,4 @@ namespace cadencii
         #endregion
     }
 
-#if !JAVA
 }
-#endif

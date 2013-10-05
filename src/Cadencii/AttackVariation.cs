@@ -11,66 +11,51 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    @TypeConverterAnnotation( AttackVariationConverter.class )
-#else
-    [TypeConverter( typeof( AttackVariationConverter ) )]
-#endif
+    [TypeConverter(typeof(AttackVariationConverter))]
     public class AttackVariation
     {
-        public String mDescription = "";
+        public string mDescription = "";
 
-        public AttackVariation() {
+        public AttackVariation()
+        {
             mDescription = "-";
         }
 
-        public AttackVariation( String description ) {
+        public AttackVariation(string description)
+        {
             this.mDescription = description;
         }
 
-        public boolean equals( Object obj ) {
-            if ( obj != null && obj is AttackVariation ) {
-                return ((AttackVariation)obj).mDescription.Equals( mDescription );
+        public bool equals(Object obj)
+        {
+            if (obj != null && obj is AttackVariation) {
+                return ((AttackVariation)obj).mDescription.Equals(mDescription);
             } else {
-                return base.Equals( obj );
+                return base.Equals(obj);
             }
         }
 
-#if !JAVA
-        public override bool Equals( Object obj ) {
-            return equals( obj );
+        public override bool Equals(Object obj)
+        {
+            return equals(obj);
         }
-#endif
 
-#if !JAVA
-        public override int GetHashCode() {
-            if ( mDescription == null ) {
+        public override int GetHashCode()
+        {
+            if (mDescription == null) {
                 return "".GetHashCode();
             } else {
                 return mDescription.GetHashCode();
             }
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

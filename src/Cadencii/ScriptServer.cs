@@ -14,26 +14,30 @@
  */
 using System;
 using System.IO;
+using System.Collections.Generic;
 using cadencii.apputil;
 using cadencii.java.io;
 using cadencii.java.util;
 
-namespace cadencii {
-    using boolean = System.Boolean;
 
+
+namespace cadencii
+{
     /// <summary>
     /// スクリプトを管理するクラス
     /// </summary>
-    public static class ScriptServer {
-        private static TreeMap<String, ScriptInvoker> scripts = new TreeMap<String, ScriptInvoker>();
+    public static class ScriptServer
+    {
+        private static SortedDictionary<string, ScriptInvoker> scripts = new SortedDictionary<string, ScriptInvoker>();
 
         /// <summary>
         /// 指定したIDのスクリプトを再読込みするか、または新規の場合読み込んで追加します。
         /// </summary>
         /// <param name="id"></param>
-        public static void reload( String id ) {
-            String dir = Utility.getScriptPath();
-            String file = Path.Combine( dir, id );
+        public static void reload(string id)
+        {
+            string dir = Utility.getScriptPath();
+            string file = Path.Combine(dir, id);
 #if DEBUG
             sout.println("ScriptServer#reload; file=" + file + "; isFileExists(file)=" + System.IO.File.Exists(file));
 #endif
@@ -41,53 +45,53 @@ namespace cadencii {
                 return;
             }
 
-            ScriptInvoker si = (new PluginLoader()).loadScript( file );
-            scripts.put( id, si );
+            ScriptInvoker si = (new PluginLoader()).loadScript(file);
+            scripts[id] = si;
         }
 
         /// <summary>
         /// スクリプトを読み込み、コンパイルします。
         /// </summary>
-        public static void reload() {
+        public static void reload()
+        {
             // 拡張子がcs, txtのファイルを列挙
-            String dir = Utility.getScriptPath();
-            Vector<String> files = new Vector<String>();
-            files.addAll( Arrays.asList( PortUtil.listFiles( dir, ".txt" ) ) );
-            files.addAll( Arrays.asList( PortUtil.listFiles( dir, ".cs" ) ) );
+            string dir = Utility.getScriptPath();
+            List<string> files = new List<string>();
+            files.AddRange(new List<string>(PortUtil.listFiles(dir, ".txt")));
+            files.AddRange(new List<string>(PortUtil.listFiles(dir, ".cs")));
 
             // 既存のスクリプトに無いまたは新しいやつはロード。
-            Vector<String> added = new Vector<String>(); //追加または更新が行われたスクリプトのID
-            foreach ( String file in files ) {
-                String id = PortUtil.getFileName( file );
-                double time = PortUtil.getFileLastModified( file );
-                added.add( id );
+            List<string> added = new List<string>(); //追加または更新が行われたスクリプトのID
+            foreach (string file in files) {
+                string id = PortUtil.getFileName(file);
+                double time = PortUtil.getFileLastModified(file);
+                added.Add(id);
 
-                boolean loadthis = true;
-                if ( scripts.containsKey( id ) ) {
-                    double otime = scripts.get( id ).fileTimestamp;
-                    if ( time <= otime ) {
+                bool loadthis = true;
+                if (scripts.ContainsKey(id)) {
+                    double otime = scripts[id].fileTimestamp;
+                    if (time <= otime) {
                         // 前回コンパイルした時点でのスクリプトファイルよりも更新日が同じか古い。
                         loadthis = false;
                     }
                 }
 
                 // ロードする処理
-                if ( !loadthis ) {
+                if (!loadthis) {
                     continue;
                 }
 
-                ScriptInvoker si = (new PluginLoader()).loadScript( file );
-                scripts.put( id, si );
+                ScriptInvoker si = (new PluginLoader()).loadScript(file);
+                scripts[id] = si;
             }
 
             // 削除されたスクリプトがあれば登録を解除する
-            boolean changed = true;
-            while ( changed ) {
+            bool changed = true;
+            while (changed) {
                 changed = false;
-                for ( Iterator<String> itr = scripts.keySet().iterator(); itr.hasNext(); ) {
-                    String id = itr.next();
-                    if ( !added.contains( id ) ) {
-                        scripts.remove( id );
+                foreach (var id in scripts.Keys) {
+                    if (!added.Contains(id)) {
+                        scripts.Remove(id);
                         changed = true;
                         break;
                     }
@@ -99,72 +103,73 @@ namespace cadencii {
         /// スクリプトを実行します。
         /// </summary>
         /// <param name="evsd"></param>
-        public static boolean invokeScript( String id, VsqFileEx vsq ) {
+        public static bool invokeScript(string id, VsqFileEx vsq)
+        {
             ScriptInvoker script_invoker = null;
-            if ( scripts.containsKey( id ) ) {
-                script_invoker = scripts.get( id );
+            if (scripts.ContainsKey(id)) {
+                script_invoker = scripts[id];
             } else {
                 return false;
             }
-            if ( script_invoker != null && script_invoker.scriptDelegate != null ) {
+            if (script_invoker != null && script_invoker.scriptDelegate != null) {
                 try {
                     VsqFileEx work = (VsqFileEx)vsq.clone();
                     ScriptReturnStatus ret = ScriptReturnStatus.ERROR;
-                    if ( script_invoker.scriptDelegate is EditVsqScriptDelegate ) {
-                        boolean b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke( work );
-                        if ( b_ret ) {
+                    if (script_invoker.scriptDelegate is EditVsqScriptDelegate) {
+                        bool b_ret = ((EditVsqScriptDelegate)script_invoker.scriptDelegate).Invoke(work);
+                        if (b_ret) {
                             ret = ScriptReturnStatus.EDITED;
                         } else {
                             ret = ScriptReturnStatus.ERROR;
                         }
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateEx ) {
-                        boolean b_ret = ((EditVsqScriptDelegateEx)script_invoker.scriptDelegate).Invoke( work );
-                        if ( b_ret ) {
+                    } else if (script_invoker.scriptDelegate is EditVsqScriptDelegateEx) {
+                        bool b_ret = ((EditVsqScriptDelegateEx)script_invoker.scriptDelegate).Invoke(work);
+                        if (b_ret) {
                             ret = ScriptReturnStatus.EDITED;
                         } else {
                             ret = ScriptReturnStatus.ERROR;
                         }
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateWithStatus ) {
-                        ret = ((EditVsqScriptDelegateWithStatus)script_invoker.scriptDelegate).Invoke( work );
-                    } else if ( script_invoker.scriptDelegate is EditVsqScriptDelegateExWithStatus ) {
-                        ret = ((EditVsqScriptDelegateExWithStatus)script_invoker.scriptDelegate).Invoke( work );
+                    } else if (script_invoker.scriptDelegate is EditVsqScriptDelegateWithStatus) {
+                        ret = ((EditVsqScriptDelegateWithStatus)script_invoker.scriptDelegate).Invoke(work);
+                    } else if (script_invoker.scriptDelegate is EditVsqScriptDelegateExWithStatus) {
+                        ret = ((EditVsqScriptDelegateExWithStatus)script_invoker.scriptDelegate).Invoke(work);
                     } else {
                         ret = ScriptReturnStatus.ERROR;
                     }
-                    if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                    } else if ( ret == ScriptReturnStatus.EDITED ) {
-                        CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
-                        AppManager.editHistory.register( vsq.executeCommand( run ) );
+                    if (ret == ScriptReturnStatus.ERROR) {
+                        AppManager.showMessageBox(_("Script aborted"), "Cadencii", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE);
+                    } else if (ret == ScriptReturnStatus.EDITED) {
+                        CadenciiCommand run = VsqFileEx.generateCommandReplace(work);
+                        AppManager.editHistory.register(vsq.executeCommand(run));
                     }
-                    String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
-                    FileOutputStream fs = null;
-                    boolean delete_xml_when_exit = false; // xmlを消すときtrue
+                    string config_file = configFileNameFromScriptFileName(script_invoker.ScriptFile);
+                    FileStream fs = null;
+                    bool delete_xml_when_exit = false; // xmlを消すときtrue
                     try {
-                        fs = new FileOutputStream( config_file );
-                        script_invoker.Serializer.serialize( fs, null );
-                    } catch ( Exception ex ) {
-                        serr.println( "AppManager#invokeScript; ex=" + ex );
+                        fs = new FileStream(config_file, FileMode.Create, FileAccess.Write);
+                        script_invoker.Serializer.serialize(fs, null);
+                    } catch (Exception ex) {
+                        serr.println("AppManager#invokeScript; ex=" + ex);
                         delete_xml_when_exit = true;
                     } finally {
-                        if ( fs != null ) {
+                        if (fs != null) {
                             try {
-                                fs.close();
-                                if ( delete_xml_when_exit ) {
-                                    PortUtil.deleteFile( config_file );
+                                fs.Close();
+                                if (delete_xml_when_exit) {
+                                    PortUtil.deleteFile(config_file);
                                 }
-                            } catch ( Exception ex2 ) {
-                                serr.println( "AppManager#invokeScript; ex2=" + ex2 );
+                            } catch (Exception ex2) {
+                                serr.println("AppManager#invokeScript; ex2=" + ex2);
                             }
                         }
                     }
                     return (ret == ScriptReturnStatus.EDITED);
-                } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                    serr.println( "AppManager#invokeScript; ex=" + ex );
+                } catch (Exception ex) {
+                    AppManager.showMessageBox(_("Script runtime error:") + " " + ex, _("Error"), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE);
+                    serr.println("AppManager#invokeScript; ex=" + ex);
                 }
             } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox(_("Script compilation failed."), _("Error"), cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE);
             }
             return false;
         }
@@ -174,24 +179,27 @@ namespace cadencii {
         /// </summary>
         /// <param name="script_file"></param>
         /// <returns></returns>
-        public static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = Path.Combine( Utility.getApplicationDataPath(), "script" );
+        public static string configFileNameFromScriptFileName(string script_file)
+        {
+            string dir = Path.Combine(Utility.getApplicationDataPath(), "script");
             if (!Directory.Exists(dir)) {
-                PortUtil.createDirectory( dir );
+                PortUtil.createDirectory(dir);
             }
-            return Path.Combine( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
+            return Path.Combine(dir, PortUtil.getFileNameWithoutExtension(script_file) + ".config");
         }
 
-        private static String _( String id ) {
-            return Messaging.getMessage( id );
+        private static string _(string id)
+        {
+            return Messaging.getMessage(id);
         }
 
         /// <summary>
         /// 読み込まれたスクリプトのIDを順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static Iterator<String> getScriptIdIterator() {
-            return scripts.keySet().iterator();
+        public static IEnumerable<string> getScriptIdIterator()
+        {
+            return scripts.Keys;
         }
 
         /// <summary>
@@ -199,21 +207,22 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String getDisplayName( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                ScriptInvoker invoker = scripts.get( id );
-                if ( invoker.getDisplayNameDelegate != null ) {
-                    String ret = "";
+        public static string getDisplayName(string id)
+        {
+            if (scripts.ContainsKey(id)) {
+                ScriptInvoker invoker = scripts[id];
+                if (invoker.getDisplayNameDelegate != null) {
+                    string ret = "";
                     try {
                         ret = invoker.getDisplayNameDelegate();
-                    } catch ( Exception ex ) {
-                        serr.println( "ScriptServer#getDisplayName; ex=" + ex );
-                        ret = PortUtil.getFileNameWithoutExtension( id );
+                    } catch (Exception ex) {
+                        serr.println("ScriptServer#getDisplayName; ex=" + ex);
+                        ret = PortUtil.getFileNameWithoutExtension(id);
                     }
                     return ret;
                 }
             }
-            return PortUtil.getFileNameWithoutExtension( id );
+            return PortUtil.getFileNameWithoutExtension(id);
         }
 
         /// <summary>
@@ -221,9 +230,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static double getTimestamp( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                return scripts.get( id ).fileTimestamp;
+        public static double getTimestamp(string id)
+        {
+            if (scripts.ContainsKey(id)) {
+                return scripts[id].fileTimestamp;
             } else {
                 return 0;
             }
@@ -234,9 +244,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static boolean isAvailable( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                return scripts.get( id ).scriptDelegate != null;
+        public static bool isAvailable(string id)
+        {
+            if (scripts.ContainsKey(id)) {
+                return scripts[id].scriptDelegate != null;
             } else {
                 return false;
             }
@@ -247,9 +258,10 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String getCompileMessage( String id ) {
-            if ( scripts.containsKey( id ) ) {
-                return scripts.get( id ).ErrorMessage;
+        public static string getCompileMessage(string id)
+        {
+            if (scripts.ContainsKey(id)) {
+                return scripts[id].ErrorMessage;
             } else {
                 return "";
             }

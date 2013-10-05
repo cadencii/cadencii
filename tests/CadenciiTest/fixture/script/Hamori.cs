@@ -19,14 +19,10 @@ public class Hamori : Form
 
     public static bool Edit(VsqFile vsq)
     {
-        using (Hamori d = new Hamori())
-        {
-            if (d.ShowDialog() != DialogResult.OK)
-            {
+        using (Hamori d = new Hamori()) {
+            if (d.ShowDialog() != DialogResult.OK) {
                 return false;
-            }
-            else
-            {
+            } else {
                 hamori(vsq, d.cbbBaseCode.SelectedIndex, d.cbbSlide.SelectedIndex);
                 return true;
             }
@@ -35,8 +31,7 @@ public class Hamori : Form
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing && (components != null))
-        {
+        if (disposing && (components != null)) {
             components.Dispose();
         }
         base.Dispose(disposing);
@@ -141,18 +136,16 @@ public class Hamori : Form
         if (opt == 6) return;
         if (opt < 6)
             step = steps[opt];
-        else
-        {
+        else {
             step = steps[opt - 7];
             for (int i = 0; i < 12; i++) step[i] -= 12;
         }
 
         int note, tmp;
         VsqTrack track = vsq.Track[AppManager.Selected];
-        for( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+        for (Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
             VsqEvent item = track.findEventFromID(((SelectedEventEntry)itr.next()).original.InternalID);
-            if (item.ID.type == VsqIDType.Anote )
-            {
+            if (item.ID.type == VsqIDType.Anote) {
                 tmp = (item.ID.Note + 12 - basecode) % 12;
                 note = item.ID.Note + step[tmp];
                 if (note < 0) note = 0;

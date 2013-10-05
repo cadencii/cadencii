@@ -11,25 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import cadencii.*;
-import cadencii.xml.*;
-#else
 using cadencii;
 using cadencii.java.awt;
 using cadencii.xml;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// toolStrip*の位置を保存します
     /// </summary>
-    public class ToolStripLocation {
-        public enum ParentPanel {
+    public class ToolStripLocation
+    {
+        public enum ParentPanel
+        {
             Top,
             Bottom,
         }
@@ -37,17 +32,17 @@ namespace cadencii {
         public XmlPoint Location;
         public ParentPanel Parent;
 
-        public ToolStripLocation() {
-            Location = new XmlPoint( 0, 0 );
+        public ToolStripLocation()
+        {
+            Location = new XmlPoint(0, 0);
             Parent = ParentPanel.Top;
         }
 
-        public ToolStripLocation( Point location, ParentPanel parent ) {
-            Location = new XmlPoint( location );
+        public ToolStripLocation(Point location, ParentPanel parent)
+        {
+            Location = new XmlPoint(location);
             Parent = parent;
         }
     }
 
-#if !JAVA
 }
-#endif

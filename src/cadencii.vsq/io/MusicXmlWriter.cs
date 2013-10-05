@@ -274,7 +274,7 @@ namespace cadencii.vsq.io
 
             var quantized_tempo_table = quantizeTempoTable(sequence.TempoTable);
 
-            score.part = 
+            score.part =
                 sequence.Track.Skip(1).Select((track) => {
                     var result = createScorePart(track, sequence.TimesigTable, quantized_tempo_table);
                     quantized_tempo_table.Clear();
@@ -319,7 +319,7 @@ namespace cadencii.vsq.io
                     tempo_table
                         .Where((tempo) => measure_start_clock <= tempo.Clock && tempo.Clock < measure_end_clock)
                         .Select((tempo) => (TempoTableEntry)tempo.Clone()));
-                
+
                 // get the list of TiedEvent, contained in target measure.
                 var in_measure_tied_note_list =
                     note_list

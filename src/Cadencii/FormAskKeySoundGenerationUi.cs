@@ -11,77 +11,58 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
 
-package cadencii;
+namespace cadencii
+{
 
-#else
+    using System;
 
-    namespace cadencii
+    /// <summary>
+    /// FormAskKeySoundGenerationフォームのビューが実装すべきメソッドを規定します．
+    /// </summary>
+    public interface FormAskKeySoundGenerationUi : UiBase
     {
+        [PureVirtualFunction]
+        void setAlwaysPerformThisCheck(bool value);
 
-#if __cplusplus
-            using namespace std;
-            using namespace org::kbinani::cadencii;
-#else
-            using System;
-#endif
-#endif
+        [PureVirtualFunction]
+        bool isAlwaysPerformThisCheck();
 
-            /// <summary>
-            /// FormAskKeySoundGenerationフォームのビューが実装すべきメソッドを規定します．
-            /// </summary>
-#if JAVA
-            public interface FormAskKeySoundGenerationUi extends UiBase
-#elif __cplusplus
-            class FormAskKeySoundGenerationUi : UiBase
-#else
-            public interface FormAskKeySoundGenerationUi : UiBase
-#endif
-            {
-                [PureVirtualFunction]
-                void setAlwaysPerformThisCheck( bool value );
+        /// <summary>
+        /// フォームを閉じます．
+        /// valueがtrueのときダイアログの結果をCancelに，それ以外の場合はOKとなるようにします．
+        /// </summary>
+        [PureVirtualFunction]
+        void close(bool value);
 
-                [PureVirtualFunction]
-                bool isAlwaysPerformThisCheck();
+        /// <summary>
+        /// メッセージの文字列を設定します．
+        /// </summary>
+        /// <param name="value">設定する文字列．</param>
+        [PureVirtualFunction]
+        void setMessageLabelText(string value);
 
-                /// <summary>
-                /// フォームを閉じます．
-                /// valueがtrueのときダイアログの結果をCancelに，それ以外の場合はOKとなるようにします．
-                /// </summary>
-                [PureVirtualFunction]
-                void close( bool value );
+        /// <summary>
+        /// チェックボックスの文字列を設定します．
+        /// </summary>
+        /// <param name="value">設定する文字列．</param>
+        [PureVirtualFunction]
+        void setAlwaysPerformThisCheckCheckboxText(string value);
 
-                /// <summary>
-                /// メッセージの文字列を設定します．
-                /// </summary>
-                /// <param name="value">設定する文字列．</param>
-                [PureVirtualFunction]
-                void setMessageLabelText( string value );
+        /// <summary>
+        /// 「はい」ボタンの文字列を設定します．
+        /// </summary>
+        /// <param name="value">設定する文字列．</param>
+        [PureVirtualFunction]
+        void setYesButtonText(string value);
 
-                /// <summary>
-                /// チェックボックスの文字列を設定します．
-                /// </summary>
-                /// <param name="value">設定する文字列．</param>
-                [PureVirtualFunction]
-                void setAlwaysPerformThisCheckCheckboxText( string value );
+        /// <summary>
+        /// 「いいえ」ボタンの文字列を設定します．
+        /// </summary>
+        /// <param name="value">設定する文字列．</param>
+        [PureVirtualFunction]
+        void setNoButtonText(string value);
+    };
 
-                /// <summary>
-                /// 「はい」ボタンの文字列を設定します．
-                /// </summary>
-                /// <param name="value">設定する文字列．</param>
-                [PureVirtualFunction]
-                void setYesButtonText( string value );
 
-                /// <summary>
-                /// 「いいえ」ボタンの文字列を設定します．
-                /// </summary>
-                /// <param name="value">設定する文字列．</param>
-                [PureVirtualFunction]
-                void setNoButtonText( string value );
-            };
-
-#if !JAVA
-
-    }
-#endif
+}

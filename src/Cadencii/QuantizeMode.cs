@@ -11,13 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public enum QuantizeMode {
+    public enum QuantizeMode
+    {
         p4,
         p8,
         p16,
@@ -27,6 +25,4 @@ namespace cadencii {
         p128,
     }
 
-#if !JAVA
 }
-#endif

@@ -11,17 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.util.*;
-#else
 using System;
 
 namespace cadencii.media
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// サンプリング周波数を変換するコア機能を提供
@@ -105,24 +98,13 @@ namespace cadencii.media
         /// </summary>
         /// <param name="sample_rate_from"></param>
         /// <param name="sample_rate_to"></param>
-        public RateConvertContext( int sample_rate_from, int sample_rate_to )
-#if JAVA
-            throws Exception
-#endif
+        public RateConvertContext(int sample_rate_from, int sample_rate_to)
         {
-            if ( sample_rate_from <= 0 ) {
-#if JAVA
-                throw new Exception();
-#else
-                throw new ArgumentOutOfRangeException( "sample_rate_from" );
-#endif
+            if (sample_rate_from <= 0) {
+                throw new ArgumentOutOfRangeException("sample_rate_from");
             }
-            if ( sample_rate_to <= 0 ) {
-#if JAVA
-                throw new Exception();
-#else
-                throw new ArgumentOutOfRangeException( "sample_rate_to" );
-#endif
+            if (sample_rate_to <= 0) {
+                throw new ArgumentOutOfRangeException("sample_rate_to");
             }
             bRate = sample_rate_from;
             aRate = sample_rate_to;
@@ -132,7 +114,6 @@ namespace cadencii.media
             aEnd = -1;
         }
 
-#if !JAVA
         /// <summary>
         /// デストラクタ
         /// </summary>
@@ -140,7 +121,6 @@ namespace cadencii.media
         {
             dispose();
         }
-#endif
 
         public int getSampleRateFrom()
         {
@@ -157,25 +137,25 @@ namespace cadencii.media
         /// </summary>
         public void dispose()
         {
-            if ( bBufLeft != null ) {
+            if (bBufLeft != null) {
                 // C# m9ﾌﾟｷﾞｬｰ
                 bBufLeft = null;
             }
-            if ( bBufRight != null ) {
+            if (bBufRight != null) {
                 // C#脳乙
                 bBufRight = null;
             }
-            if ( this.bufferLeft != null ) {
+            if (this.bufferLeft != null) {
                 // GC仕事しろ
                 this.bufferLeft = null;
             }
-            if ( this.bufferRight != null ) {
+            if (this.bufferRight != null) {
                 // C++厨はちゃんとdelete[]すること。
                 this.bufferRight = null;
             }
         }
 
-        private static long calculateNextEnd( RateConvertContext context, int length )
+        private static long calculateNextEnd(RateConvertContext context, int length)
         {
             double secStart = context.bCount * context.invBRate;
             double secEnd = (context.bCount + length - 1) * context.invBRate;
@@ -187,7 +167,7 @@ namespace cadencii.media
             double tx = next_aend * context.invARate;
             long btRequired = (long)(tx * context.bRate);
             int tindx1 = (int)(btRequired - context.bCount) + 1;
-            if ( tindx1 >= length ) {
+            if (tindx1 >= length) {
                 next_aend--;
             }
             return next_aend;
@@ -199,15 +179,15 @@ namespace cadencii.media
         /// <param name="context"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public static int estimateResultSamples( RateConvertContext context, int length )
+        public static int estimateResultSamples(RateConvertContext context, int length)
         {
-            if ( context.aRate == context.bRate ) {
+            if (context.aRate == context.bRate) {
                 // 変換を行わなくてもいい場合
                 return length;
             } else {
                 // 変換しなくちゃならん
                 long astart = context.aEnd + 1;
-                long aend = calculateNextEnd( context, length );
+                long aend = calculateNextEnd(context, length);
                 return (int)(aend - astart + 1);
             }
         }
@@ -222,29 +202,29 @@ namespace cadencii.media
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <param name="length"></param>
-        public static boolean convert( RateConvertContext context, double[] left, double[] right, int length )
+        public static bool convert(RateConvertContext context, double[] left, double[] right, int length)
         {
-            if ( context.mStatus == Status.COMPLETE ) {
+            if (context.mStatus == Status.COMPLETE) {
                 context.length = 0;
                 context.mStatus = Status.NORMAL;
                 return false;
             }
 
             // 変換前後で周波数が同じ，という指定の場合
-            if ( context.aRate == context.bRate ) {
-                if ( context.mStatus == Status.NORMAL ) {
+            if (context.aRate == context.bRate) {
+                if (context.mStatus == Status.NORMAL) {
                     context.a = context.aCount;
                     context.aStart = context.aCount;
                     context.aEnd = context.aCount + length;
                 }
                 int i = 0;
                 int offset = (int)(context.a - context.aStart);
-                for ( ; context.a < context.aEnd; context.a++ ) {
+                for (; context.a < context.aEnd; context.a++) {
                     context.bufferLeft[i] = left[i + offset];
                     context.bufferRight[i] = right[i + offset];
 
                     i++;
-                    if ( i >= BUFLEN ) {
+                    if (i >= BUFLEN) {
                         context.length = BUFLEN;
                         context.mStatus = Status.CONTINUE;
                         return true;
@@ -257,15 +237,15 @@ namespace cadencii.media
                 context.mStatus = Status.COMPLETE;
                 return true;
             } else {
-                if ( context.mStatus == Status.NORMAL ) {
+                if (context.mStatus == Status.NORMAL) {
                     // 送られてきたデータで、aStartからaEndまでのデータを作成できる
                     context.aStart = context.aEnd + 1;
-                    context.aEnd = calculateNextEnd( context, length );//
+                    context.aEnd = calculateNextEnd(context, length);//
                     context.a = context.aStart;
                 }
 
                 int i = 0;
-                for ( ; context.a <= context.aEnd; context.a++ ) {
+                for (; context.a <= context.aEnd; context.a++) {
                     double x = context.a * context.invARate;
                     long bRequired = (long)(x * context.bRate);
                     double x0 = bRequired * context.invBRate;
@@ -275,24 +255,24 @@ namespace cadencii.media
 
                     // 左チャンネル
                     double y0 = 0.0;
-                    if ( 0 <= indx0 ) {
-                        if ( indx0 < length ) {
+                    if (0 <= indx0) {
+                        if (indx0 < length) {
                             y0 = left[indx0];
                         }
                     } else {
                         int j = (int)(bRequired - context.bBufBase);
-                        if ( 0 <= j && j < context.bBufLeft.Length ) {
+                        if (0 <= j && j < context.bBufLeft.Length) {
                             y0 = context.bBufLeft[j];
                         }
                     }
                     double y1 = 0.0;
-                    if ( indx1 >= 0 ) {
-                        if ( indx1 < length ) {
+                    if (indx1 >= 0) {
+                        if (indx1 < length) {
                             y1 = left[indx1];
                         }
                     } else {
                         int j = (int)(bRequired + 1 - context.bBufBase);
-                        if ( 0 <= j && j < context.bBufLeft.Length ) {
+                        if (0 <= j && j < context.bBufLeft.Length) {
                             y1 = context.bBufLeft[j];
                         }
                     }
@@ -301,23 +281,23 @@ namespace cadencii.media
                     context.bufferLeft[i] = y;
 
                     // 右チャンネル
-                    if ( indx0 >= 0 ) {
-                        if ( indx0 < length ) {
+                    if (indx0 >= 0) {
+                        if (indx0 < length) {
                             y0 = right[indx0];
                         }
                     } else {
                         int j = (int)(bRequired - context.bBufBase);
-                        if ( 0 <= j && j < context.bBufRight.Length ) {
+                        if (0 <= j && j < context.bBufRight.Length) {
                             y0 = context.bBufRight[j];
                         }
                     }
-                    if ( indx1 >= 0 ) {
-                        if ( indx1 < length ) {
+                    if (indx1 >= 0) {
+                        if (indx1 < length) {
                             y1 = right[indx1];
                         }
                     } else {
                         int j = (int)(bRequired + 1 - context.bBufBase);
-                        if ( 0 <= j && j < context.bBufRight.Length ) {
+                        if (0 <= j && j < context.bBufRight.Length) {
                             y1 = context.bBufRight[j];
                         }
                     }
@@ -327,7 +307,7 @@ namespace cadencii.media
 
                     // 事後処理
                     i++;
-                    if ( i >= BUFLEN ) {
+                    if (i >= BUFLEN) {
                         // バッファがいっぱいだったら送信
                         context.length = BUFLEN;
                         context.mStatus = Status.CONTINUE;
@@ -343,37 +323,21 @@ namespace cadencii.media
                 // 次に送られてくるデータはbCount + length + 1から
                 long aNext = (long)((context.bCount + length + 1) * context.invBRate * context.aRate) + 1;
                 //long aNext = (long)((context.bCount + length + 1) * context.invBRate * context.aRate);
-                if ( context.aEnd + 1 < aNext ) {
+                if (context.aEnd + 1 < aNext) {
                     context.bBufBase = (long)((context.aEnd + 1) * context.invARate * context.bRate) - 2; // aEnd + 1番目のデータを作成するのに必要なデータ点のインデクス
                     int num = (int)(context.bCount + length - context.bBufBase);
-                    if ( num > 0 ) {
-                        if ( context.bBufLeft == null ) {
+                    if (num > 0) {
+                        if (context.bBufLeft == null) {
                             context.bBufLeft = new double[num];
-                        } else if ( context.bBufLeft.Length < num ) {
-#if JAVA
-#if JAVA_1_5
-                            context.bBufLeft = new double[num];
-#else
-                            context.bBufLeft = Arrays.copyOf( context.bBufLeft, num );
-#endif
-#else
-                            Array.Resize( ref context.bBufLeft, num );
-#endif
+                        } else if (context.bBufLeft.Length < num) {
+                            Array.Resize(ref context.bBufLeft, num);
                         }
-                        if ( context.bBufRight == null ) {
+                        if (context.bBufRight == null) {
                             context.bBufRight = new double[num];
-                        } else if ( context.bBufRight.Length < num ) {
-#if JAVA
-#if JAVA_1_5
-                            context.bBufRight = new double[num];
-#else
-                            context.bBufRight = Arrays.copyOf( context.bBufRight, num );
-#endif
-#else
-                            Array.Resize( ref context.bBufRight, num );
-#endif
+                        } else if (context.bBufRight.Length < num) {
+                            Array.Resize(ref context.bBufRight, num);
                         }
-                        for ( int j = 0; j < num; j++ ) {
+                        for (int j = 0; j < num; j++) {
                             int indx = (int)(context.bBufBase + j - context.bCount);
                             context.bBufLeft[j] = left[indx];
                             context.bBufRight[j] = right[indx];
@@ -390,7 +354,6 @@ namespace cadencii.media
     }
 
 #if DEBUG
-#if !JAVA
     /// <summary>
     /// RateConvertContextをテストするクラス
     /// </summary>
@@ -409,49 +372,49 @@ namespace cadencii.media
             const double hz = 440.0;
             // 周期
             double period = 1.0 / hz;
-            RateConvertContext c = new RateConvertContext( rate_from, rate_to );
+            RateConvertContext c = new RateConvertContext(rate_from, rate_to);
 
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
             int j = 0;
             int total_s = 0;
             int total_d = 0;
-            using ( System.IO.StreamWriter sw_src = new System.IO.StreamWriter( System.IO.Path.Combine( dir, "TestRateConvertContext_src.txt" ) ) )
-            using ( System.IO.StreamWriter sw_dst = new System.IO.StreamWriter( System.IO.Path.Combine( dir, "TestRateConvertContext_dst.txt" ) ) ) {
-                for ( int i = 0; i < LEN; i++ ) {
+            using (System.IO.StreamWriter sw_src = new System.IO.StreamWriter(System.IO.Path.Combine(dir, "TestRateConvertContext_src.txt")))
+            using (System.IO.StreamWriter sw_dst = new System.IO.StreamWriter(System.IO.Path.Combine(dir, "TestRateConvertContext_dst.txt"))) {
+                for (int i = 0; i < LEN; i++) {
                     double x = i / (double)rate_from;
-                    double y = Math.Sin( 2.0 * Math.PI * x / period );
+                    double y = Math.Sin(2.0 * Math.PI * x / period);
                     left[j] = y;
                     right[j] = y;
                     j++;
-                    if ( j >= BUFLEN ) {
+                    if (j >= BUFLEN) {
                         // srcログに時系列データを書き込み
-                        for ( int k = 0; k < BUFLEN; k++ ) {
+                        for (int k = 0; k < BUFLEN; k++) {
                             double sx = total_s / (double)rate_from;
-                            sw_src.WriteLine( sx + "\t" + left[k] );
+                            sw_src.WriteLine(sx + "\t" + left[k]);
                             total_s++;
                         }
-                        while ( RateConvertContext.convert( c, left, right, j ) ) {
-                            for ( int k = 0; k < c.length; k++ ) {
+                        while (RateConvertContext.convert(c, left, right, j)) {
+                            for (int k = 0; k < c.length; k++) {
                                 double dx = total_d / (double)rate_to;
-                                sw_dst.WriteLine( dx + "\t" + c.bufferRight[k] );
+                                sw_dst.WriteLine(dx + "\t" + c.bufferRight[k]);
                                 total_d++;
                             }
                         }
                         j = 0;
                     }
                 }
-                if ( j > 0 ) {
+                if (j > 0) {
                     // srcログに時系列データを書き込み
-                    for ( int k = 0; k < BUFLEN; k++ ) {
+                    for (int k = 0; k < BUFLEN; k++) {
                         double sx = total_s / (double)rate_from;
-                        sw_src.WriteLine( sx + "\t" + left[k] );
+                        sw_src.WriteLine(sx + "\t" + left[k]);
                         total_s++;
                     }
-                    while ( RateConvertContext.convert( c, left, right, j ) ) {
-                        for ( int k = 0; k < c.length; k++ ) {
+                    while (RateConvertContext.convert(c, left, right, j)) {
+                        for (int k = 0; k < c.length; k++) {
                             double dx = total_d / (double)rate_to;
-                            sw_dst.WriteLine( dx + "\t" + c.bufferRight[k] );
+                            sw_dst.WriteLine(dx + "\t" + c.bufferRight[k]);
                             total_d++;
                         }
                     }
@@ -460,8 +423,5 @@ namespace cadencii.media
         }
     }
 #endif
-#endif
 
-#if !JAVA
 }
-#endif

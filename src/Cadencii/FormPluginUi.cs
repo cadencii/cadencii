@@ -12,65 +12,59 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if ENABLE_AQUESTONE
-#if JAVA
-package cadencii;
-
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-#if JAVA
-    public class FormPluginUi extends BForm{
-#else
-    public class FormPluginUi : Form {
-#endif
+    public class FormPluginUi : Form
+    {
         private System.ComponentModel.IContainer components;
         public IntPtr childWnd = IntPtr.Zero;
         private double lastDrawn = 0.0;
 
-        public FormPluginUi() {
-            this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
-            this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
+        public FormPluginUi()
+        {
+            this.SetStyle(System.Windows.Forms.ControlStyles.DoubleBuffer, true);
+            this.SetStyle(System.Windows.Forms.ControlStyles.UserPaint, true);
             InitializeComponent();
-            this.FormClosing += new FormClosingEventHandler( FormPluginUi_FormClosing );
-#if !JAVA
+            this.FormClosing += new FormClosingEventHandler(FormPluginUi_FormClosing);
             this.Icon = Properties.Resources._switch;
-#endif
         }
 
-        public void FormPluginUi_FormClosing( Object sender, FormClosingEventArgs e ) {
+        public void FormPluginUi_FormClosing(Object sender, FormClosingEventArgs e)
+        {
             e.Cancel = true;
             this.Visible = false;
         }
 
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.SuspendLayout();
             // 
             // FormPluginUi
             // 
-            this.ClientSize = new System.Drawing.Size( 334, 164 );
+            this.ClientSize = new System.Drawing.Size(334, 164);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormPluginUi";
-            this.ResumeLayout( false );
+            this.ResumeLayout(false);
 
         }
 
-        public void invalidateUi() {
+        public void invalidateUi()
+        {
             double now = PortUtil.getCurrentTime();
 
-            if ( now - lastDrawn > 0.04 ) {
-                if ( childWnd != IntPtr.Zero ) {
+            if (now - lastDrawn > 0.04) {
+                if (childWnd != IntPtr.Zero) {
                     bool ret = false;
                     try {
-                        ret = win32.InvalidateRect( childWnd, IntPtr.Zero, false );
-                    } catch ( Exception ex ) {
-                        serr.println( "FormPluginUi#invalidateUi; ex=" + ex );
+                        ret = win32.InvalidateRect(childWnd, IntPtr.Zero, false);
+                    } catch (Exception ex) {
+                        serr.println("FormPluginUi#invalidateUi; ex=" + ex);
                         ret = false;
                     }
                     lastDrawn = now;
@@ -79,7 +73,5 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif
 #endif

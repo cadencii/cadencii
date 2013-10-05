@@ -11,30 +11,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.apputil;
-
-import java.util.Vector;
-
-#else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
-namespace cadencii.apputil {
-#endif
+namespace cadencii.apputil
+{
 
-    public class MessageBodyEntry {
-        public String message;
-        public Vector<String> location = new Vector<String>();
+    public class MessageBodyEntry
+    {
+        public string message;
+        public List<string> location = new List<string>();
 
-        public MessageBodyEntry( String message_, String[] location_ ) {
+        public MessageBodyEntry(string message_, string[] location_)
+        {
             message = message_;
-            for ( int i = 0; i < location_.Length; i++ ) {
-                location.add( location_[i] );
+            for (int i = 0; i < location_.Length; i++) {
+                location.Add(location_[i]);
             }
         }
     }
 
-#if !JAVA
 }
-#endif

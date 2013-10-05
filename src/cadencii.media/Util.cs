@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * Util.cs
  * Copyright © 2007-2011 kbinani
@@ -17,9 +16,11 @@ using System.IO;
 
 using cadencii;
 
-namespace cadencii.media {
+namespace cadencii.media
+{
 
-    internal static class Util {
+    internal static class Util
+    {
         public const byte AVI_INDEX_OF_INDEXES = 0x00; //when each entry in aIndex
         // array points to an index chunk
         public const byte AVI_INDEX_OF_CHUNKS = 0x01;  // when each entry in aIndex
@@ -62,65 +63,68 @@ namespace cadencii.media {
         /// <summary>
         /// ファイルにAVIStreamHeader構造体の値を書き込みます
         /// </summary>
-        public static void aviWriteStreamHeader( AVIStreamHeader streamHeader, MainAVIHeader mainHeader, BinaryWriter stream ) {
+        public static void aviWriteStreamHeader(AVIStreamHeader streamHeader, MainAVIHeader mainHeader, BinaryWriter stream)
+        {
             //type(AVI_CONTAINER), intent(inout) :: avi
-            Util.fwrite( "strh", stream );
-            Util.WriteDWORD( 56, stream );// call bmpQWordWrite( 56, avi%fp )    !// AVIStreamHeaderのサイズ
+            Util.fwrite("strh", stream);
+            Util.WriteDWORD(56, stream);// call bmpQWordWrite( 56, avi%fp )    !// AVIStreamHeaderのサイズ
             //fwrite( streamHeader.fccType, fp );// i = fwrite( avi%streamHeader%fccType, 1, 4, avi%fp )
-            Util.WriteDWORD( (uint)streamHeader.fccType, stream );
+            Util.WriteDWORD((uint)streamHeader.fccType, stream);
             //fwrite( streamHeader.fccHandler, fp );//            i = fwrite( streamHeader.fccHandler, 1, 4, fp );
-            Util.WriteDWORD( (uint)streamHeader.fccHandler, stream );
+            Util.WriteDWORD((uint)streamHeader.fccHandler, stream);
             //WriteDWORD( 0, fp );
-            Util.WriteDWORD( streamHeader.dwFlags, stream );
+            Util.WriteDWORD(streamHeader.dwFlags, stream);
             //WriteDWORD( streamHeader.dwReserved1, fp );
-            Util.WriteWORD( 0, stream );//wPriority
-            Util.WriteWORD( 0, stream );//wLanghage
-            Util.WriteDWORD( streamHeader.dwInitialFrames, stream );
-            Util.WriteDWORD( streamHeader.dwScale, stream );
-            Util.WriteDWORD( streamHeader.dwRate, stream );
-            Util.WriteDWORD( streamHeader.dwStart, stream );
-            Util.WriteDWORD( streamHeader.dwLength, stream );
-            Util.WriteDWORD( streamHeader.dwSuggestedBufferSize, stream );
-            Util.WriteDWORD( streamHeader.dwQuality, stream );
-            Util.WriteDWORD( streamHeader.dwSampleSize, stream );
-            Util.WriteWORD( 0, stream );//left
-            Util.WriteWORD( 0, stream );//top
-            Util.WriteWORD( (ushort)mainHeader.dwWidth, stream );//right
-            Util.WriteWORD( (ushort)mainHeader.dwHeight, stream );//bottom
+            Util.WriteWORD(0, stream);//wPriority
+            Util.WriteWORD(0, stream);//wLanghage
+            Util.WriteDWORD(streamHeader.dwInitialFrames, stream);
+            Util.WriteDWORD(streamHeader.dwScale, stream);
+            Util.WriteDWORD(streamHeader.dwRate, stream);
+            Util.WriteDWORD(streamHeader.dwStart, stream);
+            Util.WriteDWORD(streamHeader.dwLength, stream);
+            Util.WriteDWORD(streamHeader.dwSuggestedBufferSize, stream);
+            Util.WriteDWORD(streamHeader.dwQuality, stream);
+            Util.WriteDWORD(streamHeader.dwSampleSize, stream);
+            Util.WriteWORD(0, stream);//left
+            Util.WriteWORD(0, stream);//top
+            Util.WriteWORD((ushort)mainHeader.dwWidth, stream);//right
+            Util.WriteWORD((ushort)mainHeader.dwHeight, stream);//bottom
         }
 
 
         /// <summary>
         /// ファイルにMainAviHeader構造体の値を書き込みます
         /// </summary>
-        public static void aviWriteMainHeader( MainAVIHeader mainHeader, BinaryWriter stream ) {
+        public static void aviWriteMainHeader(MainAVIHeader mainHeader, BinaryWriter stream)
+        {
             //type(AVI_CONTAINER), intent(inout) :: avi
-            Util.fwrite( "avih", stream );//    i = fwrite( 'avih', 1, 4, avi%fp )
-            Util.WriteDWORD( 56, stream );    // MainAVIHeaderのサイズ
-            Util.WriteDWORD( mainHeader.dwMicroSecPerFrame, stream );
-            Util.WriteDWORD( 0/*this.mainHeader.dwMaxBytesPerSec*/, stream );
-            Util.WriteDWORD( mainHeader.dwReserved1, stream );
-            Util.WriteDWORD( mainHeader.dwFlags, stream );
-            Util.WriteDWORD( mainHeader.dwTotalFrames, stream );
-            Util.WriteDWORD( mainHeader.dwInitialFrames, stream );
-            Util.WriteDWORD( mainHeader.dwStreams, stream );
-            Util.WriteDWORD( 0/*this.mainHeader.dwSuggestedBufferSize*/, stream );
-            Util.WriteDWORD( mainHeader.dwWidth, stream );
-            Util.WriteDWORD( mainHeader.dwHeight, stream );
-            Util.WriteDWORD( mainHeader.dwScale, stream );
-            Util.WriteDWORD( mainHeader.dwRate, stream );
-            Util.WriteDWORD( mainHeader.dwStart, stream );
-            Util.WriteDWORD( mainHeader.dwLength, stream );
+            Util.fwrite("avih", stream);//    i = fwrite( 'avih', 1, 4, avi%fp )
+            Util.WriteDWORD(56, stream);    // MainAVIHeaderのサイズ
+            Util.WriteDWORD(mainHeader.dwMicroSecPerFrame, stream);
+            Util.WriteDWORD(0/*this.mainHeader.dwMaxBytesPerSec*/, stream);
+            Util.WriteDWORD(mainHeader.dwReserved1, stream);
+            Util.WriteDWORD(mainHeader.dwFlags, stream);
+            Util.WriteDWORD(mainHeader.dwTotalFrames, stream);
+            Util.WriteDWORD(mainHeader.dwInitialFrames, stream);
+            Util.WriteDWORD(mainHeader.dwStreams, stream);
+            Util.WriteDWORD(0/*this.mainHeader.dwSuggestedBufferSize*/, stream);
+            Util.WriteDWORD(mainHeader.dwWidth, stream);
+            Util.WriteDWORD(mainHeader.dwHeight, stream);
+            Util.WriteDWORD(mainHeader.dwScale, stream);
+            Util.WriteDWORD(mainHeader.dwRate, stream);
+            Util.WriteDWORD(mainHeader.dwStart, stream);
+            Util.WriteDWORD(mainHeader.dwLength, stream);
         }//end subroutine
 
 
-        public static void fwrite( string str, BinaryWriter fp ) {
+        public static void fwrite(string str, BinaryWriter fp)
+        {
             int length = str.Length;
-            if ( length <= 0 ) {
+            if (length <= 0) {
                 return;
             }
-            foreach ( char ch in str ) {
-                fp.Write( (byte)ch );
+            foreach (char ch in str) {
+                fp.Write((byte)ch);
             }
         }
 
@@ -130,8 +134,9 @@ namespace cadencii.media {
         /// </summary>
         /// <param name="number"></param>
         /// <param name="fp"></param>
-        public static void WriteBYTE( byte number, BinaryWriter fp ) {
-            fp.Write( number );
+        public static void WriteBYTE(byte number, BinaryWriter fp)
+        {
+            fp.Write(number);
         }
 
 
@@ -140,12 +145,13 @@ namespace cadencii.media {
         /// </summary>
         /// <param name="number"></param>
         /// <param name="fp"></param>
-        public static void WriteWORD( ushort number, BinaryWriter fp ) {
+        public static void WriteWORD(ushort number, BinaryWriter fp)
+        {
             byte k1, k2;
             k1 = (byte)(number >> 8);
             k2 = (byte)(number - (k1 << 8));
-            fp.Write( k2 );
-            fp.Write( k1 );
+            fp.Write(k2);
+            fp.Write(k1);
         }
 
 
@@ -154,7 +160,8 @@ namespace cadencii.media {
         /// </summary>
         /// <param name="number"></param>
         /// <param name="fp"></param>
-        public static void WriteDWORD( uint number, BinaryWriter fp ) {
+        public static void WriteDWORD(uint number, BinaryWriter fp)
+        {
             uint tmp;
             byte k1, k2, k3, k4;
             k1 = (byte)(number >> 24);
@@ -163,10 +170,10 @@ namespace cadencii.media {
             number -= (uint)(k2 << 16);
             k3 = (byte)(number >> 8);
             k4 = (byte)(number - (k3 << 8));
-            fp.Write( k4 );
-            fp.Write( k3 );
-            fp.Write( k2 );
-            fp.Write( k1 );
+            fp.Write(k4);
+            fp.Write(k3);
+            fp.Write(k2);
+            fp.Write(k1);
         }
 
 
@@ -175,7 +182,8 @@ namespace cadencii.media {
         /// </summary>
         /// <param name="number"></param>
         /// <param name="fp"></param>
-        public static void WriteQWORD( ulong number, BinaryWriter fp ) {
+        public static void WriteQWORD(ulong number, BinaryWriter fp)
+        {
             byte k1, k2, k3, k4, k5, k6, k7, k8;
             k1 = (byte)(number >> 56);
             number -= (ulong)k1 << 56;
@@ -191,34 +199,35 @@ namespace cadencii.media {
             number -= (ulong)k6 << 16;
             k7 = (byte)(number >> 8);
             k8 = (byte)(number - (ulong)(k7 << 8));
-            fp.Write( k8 );
-            fp.Write( k7 );
-            fp.Write( k6 );
-            fp.Write( k5 );
-            fp.Write( k4 );
-            fp.Write( k3 );
-            fp.Write( k2 );
-            fp.Write( k1 );
+            fp.Write(k8);
+            fp.Write(k7);
+            fp.Write(k6);
+            fp.Write(k5);
+            fp.Write(k4);
+            fp.Write(k3);
+            fp.Write(k2);
+            fp.Write(k1);
         }
 
 
-        public static uint mmioFOURCC( string fcc ) {
+        public static uint mmioFOURCC(string fcc)
+        {
             char[] str = new char[4];
-            for ( int i = 0; i < 4; i++ ) {
-                if ( i < fcc.Length ) {
+            for (int i = 0; i < 4; i++) {
+                if (i < fcc.Length) {
                     str[i] = fcc[i];
                 } else {
                     str[i] = ' ';
                 }
             }
-            return mmioFOURCC( str[0], str[1], str[2], str[3] );
+            return mmioFOURCC(str[0], str[1], str[2], str[3]);
         }
 
 
-        public static uint mmioFOURCC( char ch0, char ch1, char ch2, char ch3 ) {
+        public static uint mmioFOURCC(char ch0, char ch1, char ch2, char ch3)
+        {
             return (uint)((byte)(ch0) | ((byte)(ch1) << 8) | ((byte)(ch2) << 16) | ((byte)(ch3) << 24));
         }
     }
 
 }
-#endif

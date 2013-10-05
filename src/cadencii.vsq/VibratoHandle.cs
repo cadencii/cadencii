@@ -11,31 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// ビブラートハンドル
     /// </summary>
-#if JAVA
-    public class VibratoHandle extends IconParameter implements Cloneable, Serializable
-#else
     [Serializable]
     public class VibratoHandle : IconParameter, ICloneable
-#endif
     {
         public int Index;
-        public String IconID = "";
-        public String IDS = "";
+        public string IconID = "";
+        public string IDS = "";
         public int Original;
 
         public VibratoHandle()
@@ -46,18 +35,10 @@ namespace cadencii.vsq
             depthBP = new VibratoBPList();
         }
 
-        public VibratoHandle( String aic_file, String ids, String icon_id, int index )
-#if JAVA
-        {
-#else
+        public VibratoHandle(string aic_file, string ids, string icon_id, int index)
             :
-#endif
- base( aic_file )
-#if JAVA
-            ;
-#else
+ base(aic_file)
         {
-#endif
             IDS = ids;
             IconID = icon_id;
             Index = index;
@@ -68,77 +49,74 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public boolean equals( VibratoHandle item )
+        public bool equals(VibratoHandle item)
         {
-            if ( item == null ) {
+            if (item == null) {
                 return false;
             }
-            if ( startRate != item.startRate ) {
+            if (startRate != item.startRate) {
                 return false;
             }
-            if ( startDepth != item.startDepth ) {
+            if (startDepth != item.startDepth) {
                 return false;
             }
-            if ( IconID != item.IconID ) {
+            if (IconID != item.IconID) {
                 return false;
             }
-            if ( (item.depthBP == null) != (this.depthBP == null) ) {
+            if ((item.depthBP == null) != (this.depthBP == null)) {
                 // どちらかがnullで，どちらかがnullでない場合，一致するのは考えられない
                 return false;
             }
-            if ( (item.rateBP == null) != (this.rateBP == null) ) {
+            if ((item.rateBP == null) != (this.rateBP == null)) {
                 return false;
             }
-            if ( this.depthBP != null ) {
-                if ( !this.depthBP.equals( item.depthBP ) ) {
+            if (this.depthBP != null) {
+                if (!this.depthBP.equals(item.depthBP)) {
                     return false;
                 }
             }
-            if ( this.rateBP != null ) {
-                if ( !this.rateBP.equals( item.rateBP ) ) {
+            if (this.rateBP != null) {
+                if (!this.rateBP.equals(item.rateBP)) {
                     return false;
                 }
             }
             return true;
         }
 
-        public String toString()
+        public string toString()
         {
             return getDisplayString();
         }
 
-#if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
-#endif
 
         public VibratoBPList getRateBP()
         {
             return rateBP;
         }
 
-        public void setRateBP( VibratoBPList value )
+        public void setRateBP(VibratoBPList value)
         {
             rateBP = value;
         }
 
-        public String getCaption()
+        public string getCaption()
         {
             return caption;
         }
 
-        public void setCaption( String value )
+        public void setCaption(string value)
         {
             caption = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Caption
+        public string Caption
         {
             get
             {
@@ -146,12 +124,10 @@ namespace cadencii.vsq
             }
             set
             {
-                setCaption( value );
+                setCaption(value);
             }
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -163,22 +139,20 @@ namespace cadencii.vsq
             }
             set
             {
-                setRateBP( value );
+                setRateBP(value);
             }
         }
-#endif
 
         public int getStartRate()
         {
             return startRate;
         }
 
-        public void setStartRate( int value )
+        public void setStartRate(int value)
         {
             startRate = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -190,22 +164,20 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartRate( value );
+                setStartRate(value);
             }
         }
-#endif
 
         public VibratoBPList getDepthBP()
         {
             return depthBP;
         }
 
-        public void setDepthBP( VibratoBPList value )
+        public void setDepthBP(VibratoBPList value)
         {
             depthBP = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -217,22 +189,20 @@ namespace cadencii.vsq
             }
             set
             {
-                setDepthBP( value );
+                setDepthBP(value);
             }
         }
-#endif
 
         public int getStartDepth()
         {
             return startDepth;
         }
 
-        public void setStartDepth( int value )
+        public void setStartDepth(int value)
         {
             startDepth = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -244,22 +214,20 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartDepth( value );
+                setStartDepth(value);
             }
         }
-#endif
 
         public int getLength()
         {
             return length;
         }
 
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -271,22 +239,19 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
-#endif
 
-        public String getDisplayString()
+        public string getDisplayString()
         {
             return caption;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public Object clone()
         {
@@ -295,15 +260,15 @@ namespace cadencii.vsq
             result.IconID = IconID;
             result.IDS = this.IDS;
             result.Original = this.Original;
-            result.setCaption( caption );
-            result.setLength( getLength() );
-            result.setStartDepth( startDepth );
-            if ( depthBP != null ) {
-                result.setDepthBP( (VibratoBPList)depthBP.clone() );
+            result.setCaption(caption);
+            result.setLength(getLength());
+            result.setStartDepth(startDepth);
+            if (depthBP != null) {
+                result.setDepthBP((VibratoBPList)depthBP.clone());
             }
-            result.setStartRate( startRate );
-            if ( rateBP != null ) {
-                result.setRateBP( (VibratoBPList)rateBP.clone() );
+            result.setStartRate(startRate);
+            if (rateBP != null) {
+                result.setRateBP((VibratoBPList)rateBP.clone());
             }
             return result;
         }
@@ -317,7 +282,7 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Original = Original;
             ret.Caption = caption;
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.StartDepth = startDepth;
             ret.StartRate = startRate;
             ret.DepthBP = (VibratoBPList)depthBP.clone();
@@ -326,6 +291,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

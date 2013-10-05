@@ -11,13 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public enum PencilModeEnum {
+    public enum PencilModeEnum
+    {
         Off,
         L1,
         L2,
@@ -29,6 +27,4 @@ namespace cadencii {
         L128,
     }
 
-#if !JAVA
 }
-#endif

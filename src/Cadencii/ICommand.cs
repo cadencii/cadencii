@@ -11,31 +11,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public interface ICommand {
+    public interface ICommand
+    {
         /// <summary>
         /// 子コマンドのリスト
         /// </summary>
-        Vector<ICommand> getChild();
+        List<ICommand> getChild();
 
         /// <summary>
         /// 親コマンドへの参照
         /// </summary>
         ICommand getParent();
-        void setParent( ICommand value );
+        void setParent(ICommand value);
     }
 
-#if !JAVA
 }
-#endif

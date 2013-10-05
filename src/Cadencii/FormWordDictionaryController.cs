@@ -11,211 +11,176 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+using System.Collections.Generic;
 
-package cadencii;
+namespace cadencii
+{
+    using System;
+    using System.Windows.Forms;
+    using cadencii.apputil;
+    using cadencii.vsq;
+    using cadencii;
+    using cadencii.java.util;
+    using cadencii.windows.forms;
 
-import java.util.*;
-import cadencii.ui.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-
-#else
-
-    namespace cadencii
+    public class FormWordDictionaryController : ControllerBase, FormWordDictionaryUiListener
     {
-#if __cplusplus
-#else
-            using System;
-            using System.Windows.Forms;
-            using cadencii.apputil;
-            using cadencii.vsq;
-            using cadencii;
-            using cadencii.java.util;
-            using cadencii.windows.forms;
-            using boolean = System.Boolean;
-#endif
+        private FormWordDictionaryUiImpl ui;
+        private static int mColumnWidth = 256;
+        private static int mWidth = 327;
+        private static int mHeight = 404;
 
-#endif
-
-#if JAVA
-            public class FormWordDictionaryController extends ControllerBase implements FormWordDictionaryUiListener
-#else
-            public class FormWordDictionaryController : ControllerBase, FormWordDictionaryUiListener
-#endif
-            {
-                private FormWordDictionaryUiImpl ui;
-                private static int mColumnWidth = 256;
-                private static int mWidth = 327;
-                private static int mHeight = 404;
-
-                public FormWordDictionaryController()
-                {
-                    ui = new FormWordDictionaryUiImpl( this );
-                    applyLanguage();
-                    ui.setSize( mWidth, mHeight );
-#if CSHARP
-                    ui.listDictionariesSetColumnWidth( mColumnWidth );
-#endif
-                }
+        public FormWordDictionaryController()
+        {
+            ui = new FormWordDictionaryUiImpl(this);
+            applyLanguage();
+            ui.setSize(mWidth, mHeight);
+            ui.listDictionariesSetColumnWidth(mColumnWidth);
+        }
 
 
-                #region FormWordDictionaryUiListenerの実装
+        #region FormWordDictionaryUiListenerの実装
 
-                public void buttonCancelClick()
-                {
-                    ui.setDialogResult( false );
-                }
+        public void buttonCancelClick()
+        {
+            ui.setDialogResult(false);
+        }
 
-                public void buttonDownClick()
-                {
-                    int index = ui.listDictionariesGetSelectedRow();
-                    if ( 0 <= index && index + 1 < ui.listDictionariesGetItemCountRow() )
-                    {
-                        try
-                        {
-                            ui.listDictionariesClear();
-                            String upper_name = ui.listDictionariesGetItemAt( index );
-                            boolean upper_enabled = ui.listDictionariesIsRowChecked( index );
-                            String lower_name = ui.listDictionariesGetItemAt( index + 1 );
-                            boolean lower_enabled = ui.listDictionariesIsRowChecked( index + 1 );
-
-                            ui.listDictionariesSetItemAt( index + 1, upper_name );
-                            ui.listDictionariesSetRowChecked( index + 1, upper_enabled );
-                            ui.listDictionariesSetItemAt( index, lower_name );
-                            ui.listDictionariesSetRowChecked( index, lower_enabled );
-
-                            ui.listDictionariesSetSelectedRow( index + 1 );
-                        }
-                        catch ( Exception ex )
-                        {
-                            serr.println( "FormWordDictionary#btnDown_Click; ex=" + ex );
-                        }
-                    }
-                }
-
-                public void buttonUpClick()
-                {
-                    int index = ui.listDictionariesGetSelectedRow();
-                    if ( index >= 1 )
-                    {
-                        try
-                        {
-                            ui.listDictionariesClearSelection();
-                            String upper_name = ui.listDictionariesGetItemAt( index - 1 );
-                            boolean upper_enabled = ui.listDictionariesIsRowChecked( index - 1 );
-                            String lower_name = ui.listDictionariesGetItemAt( index );
-                            boolean lower_enabled = ui.listDictionariesIsRowChecked( index );
-
-                            ui.listDictionariesSetItemAt( index - 1, lower_name );
-                            ui.listDictionariesSetRowChecked( index - 1, lower_enabled );
-                            ui.listDictionariesSetItemAt( index, upper_name );
-                            ui.listDictionariesSetRowChecked( index, upper_enabled );
-
-                            ui.listDictionariesSetSelectedRow( index - 1 );
-                        }
-                        catch ( Exception ex )
-                        {
-                            serr.println( "FormWordDictionary#btnUp_Click; ex=" + ex );
-                        }
-                    }
-                }
-
-                public void buttonOkClick()
-                {
-                    ui.setDialogResult( true );
-                }
-
-                public void formLoad()
-                {
+        public void buttonDownClick()
+        {
+            int index = ui.listDictionariesGetSelectedRow();
+            if (0 <= index && index + 1 < ui.listDictionariesGetItemCountRow()) {
+                try {
                     ui.listDictionariesClear();
-                    for ( int i = 0; i < SymbolTable.getCount(); i++ )
-                    {
-                        String name = SymbolTable.getSymbolTable( i ).getName();
-                        boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
-                        ui.listDictionariesAddRow( name, enabled );
-                    }
+                    string upper_name = ui.listDictionariesGetItemAt(index);
+                    bool upper_enabled = ui.listDictionariesIsRowChecked(index);
+                    string lower_name = ui.listDictionariesGetItemAt(index + 1);
+                    bool lower_enabled = ui.listDictionariesIsRowChecked(index + 1);
+
+                    ui.listDictionariesSetItemAt(index + 1, upper_name);
+                    ui.listDictionariesSetRowChecked(index + 1, upper_enabled);
+                    ui.listDictionariesSetItemAt(index, lower_name);
+                    ui.listDictionariesSetRowChecked(index, lower_enabled);
+
+                    ui.listDictionariesSetSelectedRow(index + 1);
+                } catch (Exception ex) {
+                    serr.println("FormWordDictionary#btnDown_Click; ex=" + ex);
                 }
-
-                public void formClosing()
-                {
-#if CSHARP
-                    mColumnWidth = ui.listDictionariesGetColumnWidth();
-#endif
-                    mWidth = ui.getWidth();
-                    mHeight = ui.getHeight();
-                }
-
-                #endregion
-
-
-                #region public methods
-
-                public void close()
-                {
-                    ui.close();
-                }
-
-                public UiBase getUi()
-                {
-                    return ui;
-                }
-
-                public int getWidth()
-                {
-                    return ui.getWidth();
-                }
-
-                public int getHeight()
-                {
-                    return ui.getHeight();
-                }
-
-                public void setLocation( int x, int y )
-                {
-                    ui.setLocation( x, y );
-                }
-
-                public void applyLanguage()
-                {
-                    ui.setTitle( _( "User Dictionary Configuration" ) );
-                    ui.labelAvailableDictionariesSetText( _( "Available Dictionaries" ) );
-                    ui.buttonOkSetText( _( "OK" ) );
-                    ui.buttonCancelSetText( _( "Cancel" ) );
-                    ui.buttonUpSetText( _( "Up" ) );
-                    ui.buttonDownSetText( _( "Down" ) );
-                }
-
-                public Vector<ValuePair<String, Boolean>> getResult()
-                {
-                    Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
-                    int count = ui.listDictionariesGetItemCountRow();
-#if DEBUG
-                    sout.println( "FormWordDictionary#getResult; count=" + count );
-#endif
-                    for ( int i = 0; i < count; i++ )
-                    {
-                        String name = ui.listDictionariesGetItemAt( i );
-
-                        ret.add( new ValuePair<String, Boolean>(
-                            ui.listDictionariesGetItemAt( i ), ui.listDictionariesIsRowChecked( i ) ) );
-                    }
-                    return ret;
-                }
-
-                #endregion
-
-
-                #region private methods
-
-                private static String _( String id )
-                {
-                    return Messaging.getMessage( id );
-                }
-
-                #endregion
             }
+        }
 
-#if !JAVA
-    }
+        public void buttonUpClick()
+        {
+            int index = ui.listDictionariesGetSelectedRow();
+            if (index >= 1) {
+                try {
+                    ui.listDictionariesClearSelection();
+                    string upper_name = ui.listDictionariesGetItemAt(index - 1);
+                    bool upper_enabled = ui.listDictionariesIsRowChecked(index - 1);
+                    string lower_name = ui.listDictionariesGetItemAt(index);
+                    bool lower_enabled = ui.listDictionariesIsRowChecked(index);
+
+                    ui.listDictionariesSetItemAt(index - 1, lower_name);
+                    ui.listDictionariesSetRowChecked(index - 1, lower_enabled);
+                    ui.listDictionariesSetItemAt(index, upper_name);
+                    ui.listDictionariesSetRowChecked(index, upper_enabled);
+
+                    ui.listDictionariesSetSelectedRow(index - 1);
+                } catch (Exception ex) {
+                    serr.println("FormWordDictionary#btnUp_Click; ex=" + ex);
+                }
+            }
+        }
+
+        public void buttonOkClick()
+        {
+            ui.setDialogResult(true);
+        }
+
+        public void formLoad()
+        {
+            ui.listDictionariesClear();
+            for (int i = 0; i < SymbolTable.getCount(); i++) {
+                string name = SymbolTable.getSymbolTable(i).getName();
+                bool enabled = SymbolTable.getSymbolTable(i).isEnabled();
+                ui.listDictionariesAddRow(name, enabled);
+            }
+        }
+
+        public void formClosing()
+        {
+            mColumnWidth = ui.listDictionariesGetColumnWidth();
+            mWidth = ui.getWidth();
+            mHeight = ui.getHeight();
+        }
+
+        #endregion
+
+
+        #region public methods
+
+        public void close()
+        {
+            ui.close();
+        }
+
+        public UiBase getUi()
+        {
+            return ui;
+        }
+
+        public int getWidth()
+        {
+            return ui.getWidth();
+        }
+
+        public int getHeight()
+        {
+            return ui.getHeight();
+        }
+
+        public void setLocation(int x, int y)
+        {
+            ui.setLocation(x, y);
+        }
+
+        public void applyLanguage()
+        {
+            ui.setTitle(_("User Dictionary Configuration"));
+            ui.labelAvailableDictionariesSetText(_("Available Dictionaries"));
+            ui.buttonOkSetText(_("OK"));
+            ui.buttonCancelSetText(_("Cancel"));
+            ui.buttonUpSetText(_("Up"));
+            ui.buttonDownSetText(_("Down"));
+        }
+
+        public List<ValuePair<string, Boolean>> getResult()
+        {
+            List<ValuePair<string, Boolean>> ret = new List<ValuePair<string, Boolean>>();
+            int count = ui.listDictionariesGetItemCountRow();
+#if DEBUG
+            sout.println("FormWordDictionary#getResult; count=" + count);
 #endif
+            for (int i = 0; i < count; i++) {
+                string name = ui.listDictionariesGetItemAt(i);
+
+                ret.Add(new ValuePair<string, Boolean>(
+                    ui.listDictionariesGetItemAt(i), ui.listDictionariesIsRowChecked(i)));
+            }
+            return ret;
+        }
+
+        #endregion
+
+
+        #region private methods
+
+        private static string _(string id)
+        {
+            return Messaging.getMessage(id);
+        }
+
+        #endregion
+    }
+
+}

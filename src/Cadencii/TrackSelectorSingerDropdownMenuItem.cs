@@ -11,34 +11,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.windows.forms.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class TrackSelectorSingerDropdownMenuItem extends BMenuItem
-#else
     public class TrackSelectorSingerDropdownMenuItem : ToolStripMenuItem
-#endif
     {
         public int ToolTipPxWidth;
-        public String ToolTipText;
+        public string ToolTipText;
         public int Language;
         public int Program;
     }
 
-#if !JAVA
 }
-#endif

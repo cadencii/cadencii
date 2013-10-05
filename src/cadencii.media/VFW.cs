@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * VFW.cs
  * Copyright © 2007-2011 kbinani
@@ -19,102 +18,105 @@ using System.Runtime.InteropServices;
 
 using cadencii;
 
-namespace cadencii.media {
+namespace cadencii.media
+{
 
-    public static class VFW {
-        public static UInt32 streamtypeVIDEO = Util.mmioFOURCC( 'v', 'i', 'd', 's' );
-        public static UInt32 streamtypeAUDIO = Util.mmioFOURCC( 'a', 'u', 'd', 's' );
+    public static class VFW
+    {
+        public static UInt32 streamtypeVIDEO = Util.mmioFOURCC('v', 'i', 'd', 's');
+        public static UInt32 streamtypeAUDIO = Util.mmioFOURCC('a', 'u', 'd', 's');
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamOpenFromFileW(
             out IntPtr ppavi,
-            [MarshalAs( UnmanagedType.LPWStr )]string szfile,
+            [MarshalAs(UnmanagedType.LPWStr)]string szfile,
             uint fccType,
             int lParam,
             int mode,
             int dumy
         );
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern void AVIFileInit();
 
-        [DllImport( "avifil32.dll" )]
-        public static extern int AVIFileOpenW( ref int ptr_pfile, [MarshalAs( UnmanagedType.LPWStr )]string fileName, int flags, int dummy );
+        [DllImport("avifil32.dll")]
+        public static extern int AVIFileOpenW(ref int ptr_pfile, [MarshalAs(UnmanagedType.LPWStr)]string fileName, int flags, int dummy);
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIFileCreateStream(
-          int ptr_pfile, out IntPtr ptr_ptr_avi, ref AVISTREAMINFOW ptr_streaminfo );
+          int ptr_pfile, out IntPtr ptr_ptr_avi, ref AVISTREAMINFOW ptr_streaminfo);
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIMakeCompressedStream(
-          out IntPtr ppsCompressed, IntPtr aviStream, ref AVICOMPRESSOPTIONS ao, int dummy );
+          out IntPtr ppsCompressed, IntPtr aviStream, ref AVICOMPRESSOPTIONS ao, int dummy);
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamSetFormat(
-          IntPtr aviStream, Int32 lPos, ref BITMAPINFOHEADER lpFormat, Int32 cbFormat );
+          IntPtr aviStream, Int32 lPos, ref BITMAPINFOHEADER lpFormat, Int32 cbFormat);
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static unsafe extern int AVISaveOptions(
-          IntPtr hwnd, UInt32 flags, int nStreams, IntPtr* ptr_ptr_avi, AVICOMPRESSOPTIONS** ao );
+          IntPtr hwnd, UInt32 flags, int nStreams, IntPtr* ptr_ptr_avi, AVICOMPRESSOPTIONS** ao);
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamWrite(
           IntPtr aviStream, Int32 lStart, Int32 lSamples, IntPtr lpBuffer,
-          Int32 cbBuffer, Int32 dwFlags, Int32 dummy1, Int32 dummy2 );
+          Int32 cbBuffer, Int32 dwFlags, Int32 dummy1, Int32 dummy2);
 
-        [DllImport( "avifil32.dll" )]
-        public static extern int AVIStreamRelease( IntPtr aviStream );
+        [DllImport("avifil32.dll")]
+        public static extern int AVIStreamRelease(IntPtr aviStream);
 
-        [DllImport( "avifil32.dll" )]
-        public static extern int AVIFileRelease( int pfile );
+        [DllImport("avifil32.dll")]
+        public static extern int AVIFileRelease(int pfile);
 
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern void AVIFileExit();
 
         //Get a pointer to a GETFRAME object (returns 0 on error)
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamGetFrameOpen(
             IntPtr pAVIStream,
-            ref BITMAPINFOHEADER bih );
+            ref BITMAPINFOHEADER bih);
 
         //Get a stream from an open AVI file
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIFileGetStream(
             int pfile,
             out IntPtr ppavi,
             int fccType,
-            int lParam );
+            int lParam);
 
         //Get the start position of a stream
-        [DllImport( "avifil32.dll", PreserveSig = true )]
-        public static extern int AVIStreamStart( int pavi );
+        [DllImport("avifil32.dll", PreserveSig = true)]
+        public static extern int AVIStreamStart(int pavi);
 
         //Get the length of a stream in frames
-        [DllImport( "avifil32.dll", PreserveSig = true )]
-        public static extern int AVIStreamLength( int pavi );
+        [DllImport("avifil32.dll", PreserveSig = true)]
+        public static extern int AVIStreamLength(int pavi);
 
         //Get information about an open stream
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamInfo(
             int pAVIStream,
             ref AVISTREAMINFOW psi,
-            int lSize );
+            int lSize);
 
         //Get a pointer to a packed DIB (returns 0 on error)
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamGetFrame(
             int pGetFrameObj,
-            int lPos );
+            int lPos);
         //Release the GETFRAME object
-        [DllImport( "avifil32.dll" )]
+        [DllImport("avifil32.dll")]
         public static extern int AVIStreamGetFrameClose(
-            int pGetFrameObj );
+            int pGetFrameObj);
     }
 
 
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct AVISTREAMINFOW {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct AVISTREAMINFOW
+    {
         public UInt32 fccType, fccHandler, dwFlags, dwCaps;
 
         public UInt16 wPriority, wLanguage;
@@ -138,8 +140,9 @@ namespace cadencii.media {
 
 
     [Serializable]
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct AVICOMPRESSOPTIONS {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct AVICOMPRESSOPTIONS
+    {
         public UInt32 fccType;
         public UInt32 fccHandler;
         public UInt32 dwKeyFrameEvery;  // only used with AVICOMRPESSF_KEYFRAMES
@@ -151,7 +154,8 @@ namespace cadencii.media {
         public IntPtr lpParms;
         public UInt32 cbParms;
         public UInt32 dwInterleaveEvery;
-        new public string ToString() {
+        new public string ToString()
+        {
             return "fccType=" + fccType + "\n" +
                 "fccHandler=" + fccHandler + "\n" +
                 "dwKeyFrameEvery=" + dwKeyFrameEvery + "\n" +
@@ -167,8 +171,9 @@ namespace cadencii.media {
     }
 
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct AVIStreamHeader {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct AVIStreamHeader
+    {
         public uint fccType;//    character(len = 4) fccType
         public uint fccHandler;//character(len = 4) fccHandler
         public uint dwFlags;
@@ -181,80 +186,82 @@ namespace cadencii.media {
         public uint dwSuggestedBufferSize;
         public uint dwQuality;
         public uint dwSampleSize;
-        public void Write( Stream s ) {
+        public void Write(Stream s)
+        {
             bool bigendian = !BitConverter.IsLittleEndian;
             byte[] b;
-            b = BitConverter.GetBytes( fccType );
-            s.Write( b, 0, 4 );
+            b = BitConverter.GetBytes(fccType);
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( fccHandler );
-            s.Write( b, 0, 4 );
+            b = BitConverter.GetBytes(fccHandler);
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwFlags );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwFlags);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwReserved1 );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwReserved1);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwInitialFrames );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwInitialFrames);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwScale );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwScale);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwRate );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwRate);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwStart );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwStart);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwLength );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwLength);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwSuggestedBufferSize );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwSuggestedBufferSize);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwQuality );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwQuality);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( dwSampleSize );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwSampleSize);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
         }
     }
 
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct MainAVIHeader {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct MainAVIHeader
+    {
         public uint dwMicroSecPerFrame;     // specifies the period between video frames. This value indicates the overall timing for the file.
         public uint dwMaxBytesPerSec;       // specifies the approximate maximum data rate of the file.
         public uint dwReserved1;
@@ -269,113 +276,115 @@ namespace cadencii.media {
         public uint dwRate;                 // used to specify the general time scale that the file will use.
         public uint dwStart;                // specify the starting time of the AVI file and the length of the file. The units are 
         public uint dwLength;               // defined by dwRate and dwScale. The dwStart field is usually set to zero.
-        public void Write( Stream s ) {
+        public void Write(Stream s)
+        {
             byte[] b;
             bool bigendian = !BitConverter.IsLittleEndian;
 
             // dwMicroSecPerFrame
-            b = BitConverter.GetBytes( dwMicroSecPerFrame );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwMicroSecPerFrame);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwMaxBytesPerSec
-            b = BitConverter.GetBytes( dwMaxBytesPerSec );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwMaxBytesPerSec);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwReserved1
-            b = BitConverter.GetBytes( dwReserved1 );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwReserved1);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwFlags
-            b = BitConverter.GetBytes( dwFlags );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwFlags);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwtotalFrames
-            b = BitConverter.GetBytes( dwTotalFrames );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwTotalFrames);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwInitialFrames
-            b = BitConverter.GetBytes( dwInitialFrames );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwInitialFrames);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwStreams
-            b = BitConverter.GetBytes( dwStreams );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwStreams);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwSuggestedBufferSize
-            b = BitConverter.GetBytes( dwSuggestedBufferSize );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwSuggestedBufferSize);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwWidth
-            b = BitConverter.GetBytes( dwWidth );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwWidth);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwHeight
-            b = BitConverter.GetBytes( dwHeight );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwHeight);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwScale
-            b = BitConverter.GetBytes( dwScale );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwScale);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwrate
-            b = BitConverter.GetBytes( dwRate );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwRate);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwStart
-            b = BitConverter.GetBytes( dwStart );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwStart);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
             // dwLength
-            b = BitConverter.GetBytes( dwLength );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(dwLength);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
         }
     }
 
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct BITMAPFILEHEADER {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct BITMAPFILEHEADER
+    {
         public Int16 bfType; //"magic cookie" - must be "BM"
         public Int32 bfSize;
         public Int16 bfReserved1;
@@ -383,4 +392,3 @@ namespace cadencii.media {
         public Int32 bfOffBits;
     }
 }
-#endif

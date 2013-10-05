@@ -12,86 +12,65 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 
+
+
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    @TypeConverterAnnotation( VibratoVariationConverter.class )
+    [TypeConverter(typeof(VibratoVariationConverter))]
     public class VibratoVariation
-#else
-    [TypeConverter( typeof( VibratoVariationConverter ) )]
-    public class VibratoVariation
-#endif
     {
         public static readonly VibratoVariation empty = new VibratoVariation();
 
-        public String description = "";
+        public string description = "";
 
         private VibratoVariation()
         {
             description = "-";
         }
 
-        public VibratoVariation( String description )
+        public VibratoVariation(string description)
         {
             this.description = description;
         }
 
-        public boolean equals( Object obj )
+        public bool equals(Object obj)
         {
-            if ( obj != null && obj is VibratoVariation ) {
-                return ((VibratoVariation)obj).description.Equals( description );
+            if (obj != null && obj is VibratoVariation) {
+                return ((VibratoVariation)obj).description.Equals(description);
             } else {
-                return base.Equals( obj );
+                return base.Equals(obj);
             }
         }
 
-#if !JAVA
-        public override bool Equals( Object obj )
+        public override bool Equals(Object obj)
         {
-            return equals( obj );
+            return equals(obj);
         }
-#endif
 
-#if !JAVA
         public override int GetHashCode()
         {
-            if ( description == null ) {
+            if (description == null) {
                 return "".GetHashCode();
             } else {
                 return description.GetHashCode();
             }
         }
-#endif
 
         public Object clone()
         {
-            return new VibratoVariation( this.description );
+            return new VibratoVariation(this.description);
         }
 
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif
 #endif

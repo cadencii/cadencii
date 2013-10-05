@@ -11,29 +11,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+namespace cadencii
+{
 
-package cadencii;
-
-#else
-
-    namespace cadencii
+    /// <summary>
+    /// メイン画面の実装クラスが持つべきメソッドを定義するインターフェース
+    /// </summary>
+    public interface FormMainUi
     {
-
-#endif
-
-            /// <summary>
-            /// メイン画面の実装クラスが持つべきメソッドを定義するインターフェース
-            /// </summary>
-            public interface FormMainUi
-            {
-                /// <summary>
-                /// ピアノロールの部品にフォーカスを持たせる
-                /// </summary>
-                [PureVirtualFunction]
-                void focusPianoRoll();
-            }
-
-#if !JAVA
+        /// <summary>
+        /// ピアノロールの部品にフォーカスを持たせる
+        /// </summary>
+        [PureVirtualFunction]
+        void focusPianoRoll();
     }
-#endif
+
+}

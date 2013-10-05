@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * wingdi.cs
  * Copyright © 2008-2011 kbinani
@@ -16,10 +15,12 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct BITMAPINFOHEADER {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct BITMAPINFOHEADER
+    {
         public UInt32 biSize;
         public Int32 biWidth;
         public Int32 biHeight;
@@ -32,137 +33,144 @@ namespace cadencii {
         public UInt32 biClrUsed;
         public UInt32 biClrImportant;
 
-        public static BITMAPINFOHEADER Read( Stream stream ) {
+        public static BITMAPINFOHEADER Read(Stream stream)
+        {
             BITMAPINFOHEADER bifh = new BITMAPINFOHEADER();
             byte[] buf = new byte[4];
-            bifh.biSize = readUInt32( stream );
-            bifh.biWidth = readInt32( stream );
-            bifh.biHeight = readInt32( stream );
-            bifh.biPlanes = readInt16( stream );
-            bifh.biBitCount = readInt16( stream );
-            bifh.biCompression = readUInt32( stream );
-            bifh.biSizeImage = readUInt32( stream );
-            bifh.biXPelsPerMeter = readInt32( stream );
-            bifh.biYPelsPerMeter = readInt32( stream );
-            bifh.biClrUsed = readUInt32( stream );
-            bifh.biClrImportant = readUInt32( stream );
+            bifh.biSize = readUInt32(stream);
+            bifh.biWidth = readInt32(stream);
+            bifh.biHeight = readInt32(stream);
+            bifh.biPlanes = readInt16(stream);
+            bifh.biBitCount = readInt16(stream);
+            bifh.biCompression = readUInt32(stream);
+            bifh.biSizeImage = readUInt32(stream);
+            bifh.biXPelsPerMeter = readInt32(stream);
+            bifh.biYPelsPerMeter = readInt32(stream);
+            bifh.biClrUsed = readUInt32(stream);
+            bifh.biClrImportant = readUInt32(stream);
             return bifh;
         }
 
-        private static uint readUInt32( Stream fs ){
+        private static uint readUInt32(Stream fs)
+        {
             byte[] buf = new byte[4];
-            fs.Read( buf, 0, 4 );
-            return BitConverter.ToUInt32( buf, 0 );
+            fs.Read(buf, 0, 4);
+            return BitConverter.ToUInt32(buf, 0);
         }
 
-        private static int readInt32( Stream fs ){
+        private static int readInt32(Stream fs)
+        {
             byte[] buf = new byte[4];
-            fs.Read( buf, 0, 4 );
-            return BitConverter.ToInt32( buf, 0 );
+            fs.Read(buf, 0, 4);
+            return BitConverter.ToInt32(buf, 0);
         }
 
-        private static ushort readUInt16( Stream fs ){
+        private static ushort readUInt16(Stream fs)
+        {
             byte[] buf = new byte[2];
-            fs.Read( buf, 0, 2 );
-            return BitConverter.ToUInt16( buf, 0 );
+            fs.Read(buf, 0, 2);
+            return BitConverter.ToUInt16(buf, 0);
         }
 
-        private static short readInt16( Stream fs ){
+        private static short readInt16(Stream fs)
+        {
             byte[] buf = new byte[2];
-            fs.Read( buf, 0, 2 );
-            return BitConverter.ToInt16( buf, 0 );
+            fs.Read(buf, 0, 2);
+            return BitConverter.ToInt16(buf, 0);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return "{biSize=" + biSize + ", biWidth=" + biWidth + ", biHeight=" + biHeight + ", biPlanes=" + biPlanes + ", biBitCount=" + biBitCount +
                    ", biCompression=" + biCompression + ", biSizeImage=" + biSizeImage + ", biXPelsPerMeter=" + biXPelsPerMeter + ", biYPelsPerMeter=" + biYPelsPerMeter +
                    ", biClrUsed=" + biClrUsed + ", biClrImportant=" + biClrImportant + "}";
         }
 
-        public void Write( BinaryWriter bw ) {
-            bw.Write( biSize );
-            bw.Write( (uint)biWidth );
-            bw.Write( (uint)biHeight );
-            bw.Write( (ushort)biPlanes );
-            bw.Write( (ushort)biBitCount );
-            bw.Write( (uint)biCompression );
-            bw.Write( (uint)biSizeImage );
-            bw.Write( (uint)biXPelsPerMeter );
-            bw.Write( (uint)biYPelsPerMeter );
-            bw.Write( (uint)biClrUsed );
-            bw.Write( (uint)biClrImportant );
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(biSize);
+            bw.Write((uint)biWidth);
+            bw.Write((uint)biHeight);
+            bw.Write((ushort)biPlanes);
+            bw.Write((ushort)biBitCount);
+            bw.Write((uint)biCompression);
+            bw.Write((uint)biSizeImage);
+            bw.Write((uint)biXPelsPerMeter);
+            bw.Write((uint)biYPelsPerMeter);
+            bw.Write((uint)biClrUsed);
+            bw.Write((uint)biClrImportant);
         }
-        public void Write( Stream s ) {
+        public void Write(Stream s)
+        {
             byte[] b;
             bool bigendian = !BitConverter.IsLittleEndian;
 
-            b = BitConverter.GetBytes( biSize );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biSize);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biWidth );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biWidth);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biHeight );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biHeight);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biPlanes );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biPlanes);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 2 );
+            s.Write(b, 0, 2);
 
-            b = BitConverter.GetBytes( biBitCount );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biBitCount);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 2 );
+            s.Write(b, 0, 2);
 
-            b = BitConverter.GetBytes( biCompression );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biCompression);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biSizeImage );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biSizeImage);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biXPelsPerMeter );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biXPelsPerMeter);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biYPelsPerMeter );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biYPelsPerMeter);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biClrUsed );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biClrUsed);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
 
-            b = BitConverter.GetBytes( biClrImportant );
-            if ( bigendian ) {
-                Array.Reverse( b );
+            b = BitConverter.GetBytes(biClrImportant);
+            if (bigendian) {
+                Array.Reverse(b);
             }
-            s.Write( b, 0, 4 );
+            s.Write(b, 0, 4);
         }
     }
 
 }
-#endif

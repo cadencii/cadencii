@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * RebarBand.cs
  * Copyright © Anthony Baraff
@@ -20,18 +19,21 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using cadencii;
 
-namespace cadencii.windows.forms {
+namespace cadencii.windows.forms
+{
     /// <summary>
     /// Summary description for BandWrapper.
     /// </summary>
-    public enum GripperSettings {
+    public enum GripperSettings
+    {
         Always,
         Auto,
         Never
     }
 
-    [ToolboxItem( false )]
-    public class RebarBand : Component, IDisposable {
+    [ToolboxItem(false)]
+    public class RebarBand : Component, IDisposable
+    {
         private RebarBandCollection _bands;
         private bool _allowVertical = true;
         private Color _backColor;
@@ -77,44 +79,47 @@ namespace cadencii.windows.forms {
         public event EventHandler Resize; //Done
         public event EventHandler VisibleChanged; //Done
 
-        public RebarBand() {
+        public RebarBand()
+        {
             _foreColor = SystemColors.ControlText;
             _backColor = SystemColors.Control;
         }
 
-        ~RebarBand() {
-            Dispose( false );
+        ~RebarBand()
+        {
+            Dispose(false);
         }
 
-        public void Show( Control control, Rectangle chevron_rect ) {
-            if ( !(control is Rebar) ) return;
+        public void Show(Control control, Rectangle chevron_rect)
+        {
+            if (!(control is Rebar)) return;
             Rebar parent = (Rebar)control;
             // Bandの外形を調べる
             RECT rc_band = new RECT();
-            if ( win32.SendMessage( parent.RebarHwnd, win32.RB_GETRECT, this.BandIndex, ref rc_band ) == 0 ) return;
+            if (win32.SendMessage(parent.RebarHwnd, win32.RB_GETRECT, this.BandIndex, ref rc_band) == 0) return;
             // chevronの分の幅を引く
             rc_band.right -= chevron_rect.Width;
-            if( this._child == null ) return;
+            if (this._child == null) return;
             //TODO: このへんmanagedな処理に書き換える
             // ツールバーのボタンの数を調べる
-            int num_buttons = (int)win32.SendMessage( this._child.Handle, (int)win32.TB_BUTTONCOUNT, 0, IntPtr.Zero );
-            if ( num_buttons <= 0 ) return;
+            int num_buttons = (int)win32.SendMessage(this._child.Handle, (int)win32.TB_BUTTONCOUNT, 0, IntPtr.Zero);
+            if (num_buttons <= 0) return;
             // ツールバーの各ボタンについて処理
             int hidden_start = num_buttons;
             // ツールバー
-            if ( !(this._child is ToolBar) ) return;
+            if (!(this._child is ToolBar)) return;
             ToolBar toolbar = (ToolBar)this._child;
-            for ( int i = 0; i < num_buttons; i++ ) {
+            for (int i = 0; i < num_buttons; i++) {
                 // ボタンの外形を調べる
                 RECT rc_button = new RECT();
-                if ( win32.SendMessage( this._child.Handle, win32.TB_GETITEMRECT, i, ref rc_button ) == 0 ) return;
+                if (win32.SendMessage(this._child.Handle, win32.TB_GETITEMRECT, i, ref rc_button) == 0) return;
                 rc_button.left += rc_band.left;
                 rc_button.right += rc_band.left;
                 rc_button.top += rc_band.top;
                 rc_button.bottom += rc_band.top;
                 RECT rc_intersect = new RECT();
-                win32.IntersectRect( ref rc_intersect, ref rc_button, ref rc_band );
-                if ( win32.EqualRect( ref rc_intersect, ref rc_button ) ) {
+                win32.IntersectRect(ref rc_intersect, ref rc_button, ref rc_band);
+                if (win32.EqualRect(ref rc_intersect, ref rc_button)) {
                     // ボタンは隠れていないので続ける
                     continue;
                 }
@@ -122,15 +127,15 @@ namespace cadencii.windows.forms {
                 break;
             }
             // 隠れているボタンが一つもない場合は何もしない
-            if ( hidden_start >= num_buttons ) return;
+            if (hidden_start >= num_buttons) return;
             // pop-upメニューを作成する
             ContextMenu popup = new ContextMenu();
-            for ( int i = hidden_start; i < num_buttons; i++ ) {
+            for (int i = hidden_start; i < num_buttons; i++) {
                 uint id = (uint)i;
                 // ボタンの情報を調べながら，ポップアップに追加
                 ToolBarButton button = toolbar.Buttons[i];
-                if ( button.Style == ToolBarButtonStyle.PushButton ||
-                     button.Style == ToolBarButtonStyle.ToggleButton ) {
+                if (button.Style == ToolBarButtonStyle.PushButton ||
+                     button.Style == ToolBarButtonStyle.ToggleButton) {
                     MenuItem menu = new MenuItem();
                     menu.Text = button.Text;
                     menu.Tag = button;
@@ -138,18 +143,18 @@ namespace cadencii.windows.forms {
                     menu.MeasureItem += measureChevronMenuItem;
                     menu.OwnerDraw = true;
                     menu.Click += handleChevronMenuItemClick;
-                    popup.MenuItems.Add( menu );
-                } else if ( button.Style == ToolBarButtonStyle.DropDownButton ) {
-                    if ( button.DropDownMenu != null && button.DropDownMenu.MenuItems != null ) {
+                    popup.MenuItems.Add(menu);
+                } else if (button.Style == ToolBarButtonStyle.DropDownButton) {
+                    if (button.DropDownMenu != null && button.DropDownMenu.MenuItems != null) {
                         MenuItem menu = new MenuItem();
-                        cloneMenuItemRecursive( menu.MenuItems, button.DropDownMenu.MenuItems );
+                        cloneMenuItemRecursive(menu.MenuItems, button.DropDownMenu.MenuItems);
                         menu.Text = button.Text;
-                        popup.MenuItems.Add( menu );
+                        popup.MenuItems.Add(menu);
                     }
                 }
             }
             // ポップアップメニューを表示
-            popup.Show( control, new Point( chevron_rect.Left, chevron_rect.Bottom ) );
+            popup.Show(control, new Point(chevron_rect.Left, chevron_rect.Bottom));
         }
 
         /// <summary>
@@ -157,54 +162,57 @@ namespace cadencii.windows.forms {
         /// </summary>
         /// <param name="dest"></param>
         /// <param name="src"></param>
-        private void cloneMenuItemRecursive( Menu.MenuItemCollection dest, Menu.MenuItemCollection src ) {
-            if ( src.Count > 0 ) {
-                foreach ( MenuItem item in src ) {
+        private void cloneMenuItemRecursive(Menu.MenuItemCollection dest, Menu.MenuItemCollection src)
+        {
+            if (src.Count > 0) {
+                foreach (MenuItem item in src) {
                     MenuItem clone = item.CloneMenu();
-                    cloneMenuItemRecursive( clone.MenuItems, item.MenuItems );
-                    dest.Add( clone );
+                    cloneMenuItemRecursive(clone.MenuItems, item.MenuItems);
+                    dest.Add(clone);
                 }
             }
         }
 
-        private void handleChevronMenuItemClick( object sender, EventArgs e ) {
-            if ( sender == null ) return;
-            if ( !(sender is MenuItem) ) return;
+        private void handleChevronMenuItemClick(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            if (!(sender is MenuItem)) return;
             MenuItem menu = (MenuItem)sender;
-            if ( menu.Tag == null ) return;
-            if ( !(menu.Tag is ToolBarButton) ) return;
+            if (menu.Tag == null) return;
+            if (!(menu.Tag is ToolBarButton)) return;
             ToolBarButton button = (ToolBarButton)menu.Tag;
             ToolBar parent = button.Parent;
             Rectangle rc = button.Rectangle;
-            uint lparam = (uint)win32.MAKELONG( rc.Left + rc.Width / 2, rc.Top + rc.Height / 2 );
+            uint lparam = (uint)win32.MAKELONG(rc.Left + rc.Width / 2, rc.Top + rc.Height / 2);
             win32.SendMessage(
                 parent.Handle,
                 win32.WM_LBUTTONDOWN,
                 win32.MK_LBUTTON,
-                lparam );
+                lparam);
             win32.SendMessage(
                 parent.Handle,
                 win32.WM_LBUTTONUP,
                 win32.MK_LBUTTON,
-                lparam );
+                lparam);
         }
 
-        void measureChevronMenuItem( object sender, MeasureItemEventArgs e ) {
-            if ( !(sender is MenuItem) ) return;
+        void measureChevronMenuItem(object sender, MeasureItemEventArgs e)
+        {
+            if (!(sender is MenuItem)) return;
             MenuItem menu = (MenuItem)sender;
-            if ( menu.Tag == null ) return;
-            if ( !(menu.Tag is ToolBarButton) ) return;
+            if (menu.Tag == null) return;
+            if (!(menu.Tag is ToolBarButton)) return;
             ToolBarButton button = (ToolBarButton)menu.Tag;
-            SizeF text_size = e.Graphics.MeasureString( menu.Text, SystemInformation.MenuFont );
+            SizeF text_size = e.Graphics.MeasureString(menu.Text, SystemInformation.MenuFont);
             int width = (int)text_size.Width;
             int height = (int)text_size.Height;
-            height = Math.Max( height, button.Parent.Height );
-            if ( button.Parent != null && button.Parent.ImageList != null ) {
-                if ( 0 <= button.ImageIndex && button.ImageIndex < button.Parent.ImageList.Images.Count ) {
+            height = Math.Max(height, button.Parent.Height);
+            if (button.Parent != null && button.Parent.ImageList != null) {
+                if (0 <= button.ImageIndex && button.ImageIndex < button.Parent.ImageList.Images.Count) {
                     Image img = button.Parent.ImageList.Images[button.ImageIndex];
-                    if ( img != null ) {
+                    if (img != null) {
                         width += img.Width;
-                        height = Math.Max( height, img.Height );
+                        height = Math.Max(height, img.Height);
                     }
                 }
             }
@@ -212,24 +220,25 @@ namespace cadencii.windows.forms {
             e.ItemWidth = width;
         }
 
-        private void drawChevronMenuItem( object sender, DrawItemEventArgs e ) {
+        private void drawChevronMenuItem(object sender, DrawItemEventArgs e)
+        {
             Brush brush_back = ((e.State & DrawItemState.Selected) != 0) ?
                     SystemBrushes.Highlight :  // 選択時の背景色
                     SystemBrushes.Menu;       // 非選択時の背景色
-            e.Graphics.FillRectangle( brush_back, e.Bounds );
-            
-            if ( !(sender is MenuItem) ) return;
+            e.Graphics.FillRectangle(brush_back, e.Bounds);
+
+            if (!(sender is MenuItem)) return;
             MenuItem menu = (MenuItem)sender;
-            if( menu.Tag == null ) return;
-            if( !(menu.Tag is ToolBarButton) ) return;
+            if (menu.Tag == null) return;
+            if (!(menu.Tag is ToolBarButton)) return;
             ToolBarButton button = (ToolBarButton)menu.Tag;
             int x = 0;
-            if ( button.Parent != null && button.Parent.ImageList != null ) {
-                if ( 0 <= button.ImageIndex && button.ImageIndex < button.Parent.ImageList.Images.Count ) {
+            if (button.Parent != null && button.Parent.ImageList != null) {
+                if (0 <= button.ImageIndex && button.ImageIndex < button.Parent.ImageList.Images.Count) {
                     Image img = button.Parent.ImageList.Images[button.ImageIndex];
-                    if( img != null ){
+                    if (img != null) {
                         int image_offset = (e.Bounds.Height - img.Height) / 2;
-                        if ( !button.Enabled ) {
+                        if (!button.Enabled) {
                             const float R = 0.298912f;
                             const float G = 0.586611f;
                             const float B = 0.114478f;
@@ -240,93 +249,102 @@ namespace cadencii.windows.forms {
                                     new float[]{ G, G, G, 0, 0}, 
                                     new float[]{ B, B, B, 0, 0}, 
                                     new float[]{ 0, 0, 0, 1, 0}, 
-                                    new float[]{ 0, 0, 0, 0, 1} } );
+                                    new float[]{ 0, 0, 0, 0, 1} });
                             System.Drawing.Imaging.ImageAttributes atr = new System.Drawing.Imaging.ImageAttributes();
-                            atr.SetColorMatrix( cm );
-                            e.Graphics.DrawImage( 
-                                img, 
-                                new Rectangle( 
+                            atr.SetColorMatrix(cm);
+                            e.Graphics.DrawImage(
+                                img,
+                                new Rectangle(
                                     e.Bounds.X + SPACE_CHEVRON_MENU,
                                     e.Bounds.Y + image_offset,
                                     img.Width,
-                                    img.Height ),
+                                    img.Height),
                                 0, 0, img.Width, img.Height,
                                 GraphicsUnit.Pixel,
-                                atr );
+                                atr);
                         } else {
                             button.Parent.ImageList.Draw(
                                 e.Graphics,
                                 e.Bounds.X + SPACE_CHEVRON_MENU,
                                 e.Bounds.Y + image_offset,
-                                button.ImageIndex );
+                                button.ImageIndex);
                             x += button.Parent.ImageList.Images[button.ImageIndex].Width;
                         }
                     }
                 }
             }
-            SizeF text_size = e.Graphics.MeasureString( menu.Text, e.Font );
+            SizeF text_size = e.Graphics.MeasureString(menu.Text, e.Font);
             int text_offset = (int)(e.Bounds.Height - text_size.Height) / 2;
-            e.Graphics.DrawString( menu.Text, e.Font, Brushes.Black, e.Bounds.X + x + SPACE_CHEVRON_MENU, e.Bounds.Y + text_offset );
+            e.Graphics.DrawString(menu.Text, e.Font, Brushes.Black, e.Bounds.X + x + SPACE_CHEVRON_MENU, e.Bounds.Y + text_offset);
         }
 
-        public bool UseChevron {
-            get {
+        public bool UseChevron
+        {
+            get
+            {
                 return this._useChevron;
             }
-            set {
+            set
+            {
                 this._useChevron = value;
-                if ( this.Created ) {
+                if (this.Created) {
                     this.UpdateStyles();
                 }
             }
         }
 
-        [Browsable( false ),
-        System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int BandSize {
-            get {
-                if ( this.Created ) {
+        [Browsable(false),
+        System.ComponentModel.DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int BandSize
+        {
+            get
+            {
+                if (this.Created) {
                     REBARBANDINFO info = new REBARBANDINFO();
                     info.fMask = (uint)win32.RBBIM_SIZE;
-                    
+
                     win32.SendMessage(
                         this._bands.Rebar.RebarHwnd,
                         (int)win32.RB_GETBANDINFO,
                         this.BandIndex,
-                        ref info );
+                        ref info);
 
                     return (int)info.cx;
                 } else {
                     return 0;
                 }
             }
-            set {
+            set
+            {
                 this._bandSize = value;
-                if ( this._bandSize < 0 ) this._bandSize = 0;
-                if ( this.Created ) {
+                if (this._bandSize < 0) this._bandSize = 0;
+                if (this.Created) {
                     REBARBANDINFO info = new REBARBANDINFO();
                     info.fMask = (uint)win32.RBBIM_SIZE;
                     info.cx = (uint)this._bandSize;
-                    
+
                     win32.SendMessage(
                         this._bands.Rebar.RebarHwnd,
                         (int)win32.RB_SETBANDINFOA,
                         this.BandIndex,
-                        ref info );
+                        ref info);
                 }
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( true ),
-        NotifyParentProperty( true )]
-        public bool AllowVertical {
-            get {
+        [Browsable(true),
+        DefaultValue(true),
+        NotifyParentProperty(true)]
+        public bool AllowVertical
+        {
+            get
+            {
                 return _allowVertical;
             }
-            set {
-                if ( value != _allowVertical ) {
+            set
+            {
+                if (value != _allowVertical) {
                     //Code to set the style
                     _allowVertical = value;
                     UpdateStyles();
@@ -334,32 +352,38 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( typeof( Color ), "Control" ),
-        NotifyParentProperty( true )]
-        public Color BackColor {
-            get {
+        [Browsable(true),
+        DefaultValue(typeof(Color), "Control"),
+        NotifyParentProperty(true)]
+        public Color BackColor
+        {
+            get
+            {
                 return _backColor;
             }
-            set {
-                if ( value != _backColor ) {
+            set
+            {
+                if (value != _backColor) {
                     //Code to set BackColor
                     _backColor = value;
                 }
             }
         }
 
-        [Browsable( true )]
-        [DefaultValue( null )]
-        [NotifyParentProperty( true )]
-        public Bitmap BackgroundImage {
-            get {
+        [Browsable(true)]
+        [DefaultValue(null)]
+        [NotifyParentProperty(true)]
+        public Bitmap BackgroundImage
+        {
+            get
+            {
                 return _backgroundImage;
             }
-            set {
-                if ( value != _backgroundImage ) {
-                    if ( _pictureHandle != IntPtr.Zero ) {
-                        win32.DeleteObject( _pictureHandle );
+            set
+            {
+                if (value != _backgroundImage) {
+                    if (_pictureHandle != IntPtr.Zero) {
+                        win32.DeleteObject(_pictureHandle);
                     }
                     _backgroundImage = value;
                     _pictureHandle = (value == null) ? IntPtr.Zero : _backgroundImage.GetHbitmap();
@@ -368,62 +392,72 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false ),
-        System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int BandIndex {
-            get {
-                if ( Created ) {
-                    return (int)win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_IDTOINDEX, (uint)_id, 0U );
+        [Browsable(false),
+        System.ComponentModel.DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int BandIndex
+        {
+            get
+            {
+                if (Created) {
+                    return (int)win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_IDTOINDEX, (uint)_id, 0U);
                 } else {
                     return -1;
                 }
             }
         }
 
-        [Browsable( false ),
-        System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public RebarBandCollection Bands {
-            get {
+        [Browsable(false),
+        System.ComponentModel.DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public RebarBandCollection Bands
+        {
+            get
+            {
                 return _bands;
             }
 
-            set {
-                if ( !Created ) {
+            set
+            {
+                if (!Created) {
                     _bands = value;
                     _id = _bands.NextID();
-                    if ( _useCoolbarPicture )
+                    if (_useCoolbarPicture)
                         BackgroundImage = _bands.Rebar.BackgroundImage;
                     CreateBand();
                 }
             }
         }
 
-        [Browsable( false ),
-        System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public Rectangle Bounds {
-            get {
-                if ( Created ) {
+        [Browsable(false),
+        System.ComponentModel.DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public Rectangle Bounds
+        {
+            get
+            {
+                if (Created) {
                     RECT rect = new RECT();
-                    win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_GETRECT, BandIndex, ref rect );
-                    return new Rectangle( rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top );
+                    win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_GETRECT, BandIndex, ref rect);
+                    return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
                 } else {
-                    return new Rectangle( 0, 0, 0, 0 );
+                    return new Rectangle(0, 0, 0, 0);
                 }
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( "" ),
-        NotifyParentProperty( true )]
-        public string Caption {
-            get {
+        [Browsable(true),
+        DefaultValue(""),
+        NotifyParentProperty(true)]
+        public string Caption
+        {
+            get
+            {
                 return _caption;
             }
-            set {
-                if ( value != _caption ) {
+            set
+            {
+                if (value != _caption) {
                     //Code to set Caption
                     _caption = value;
                     UpdateCaption();
@@ -431,31 +465,34 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( null ),
-        NotifyParentProperty( true )]
-        public Control Child {
-            get {
+        [Browsable(true),
+        DefaultValue(null),
+        NotifyParentProperty(true)]
+        public Control Child
+        {
+            get
+            {
                 return _child;
             }
-            set {
-                if ( value != _child ) {
-                    if ( _child != null && Created ) {
-                        _child.HandleCreated -= new EventHandler( OnChildHandleCreated );
-                        _child.SizeChanged -= new EventHandler( OnChildSizeChanged );
-                        _child.Move -= new EventHandler( OnChildMove );
-                        _child.ParentChanged -= new EventHandler( OnChildParentChanged );
+            set
+            {
+                if (value != _child) {
+                    if (_child != null && Created) {
+                        _child.HandleCreated -= new EventHandler(OnChildHandleCreated);
+                        _child.SizeChanged -= new EventHandler(OnChildSizeChanged);
+                        _child.Move -= new EventHandler(OnChildMove);
+                        _child.ParentChanged -= new EventHandler(OnChildParentChanged);
                         _child.Parent = _bands.Rebar.Parent;
                     }
                     //Code to set Child
 
                     _child = value;
-                    if ( _bands != null ) {
+                    if (_bands != null) {
                         _child.Parent = _bands.Rebar;
-                        _child.HandleCreated += new EventHandler( OnChildHandleCreated );
-                        _child.SizeChanged += new EventHandler( OnChildSizeChanged );
-                        _child.Move += new EventHandler( OnChildMove );
-                        _child.ParentChanged += new EventHandler( OnChildParentChanged );
+                        _child.HandleCreated += new EventHandler(OnChildHandleCreated);
+                        _child.SizeChanged += new EventHandler(OnChildSizeChanged);
+                        _child.Move += new EventHandler(OnChildMove);
+                        _child.ParentChanged += new EventHandler(OnChildParentChanged);
                     }
                     UpdateChild();
                 }
@@ -463,52 +500,55 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false ),
-        System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public Rectangle ClientArea {
-            get {
-                if ( Created ) {
+        [Browsable(false),
+        System.ComponentModel.DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public Rectangle ClientArea
+        {
+            get
+            {
+                if (Created) {
                     RECT rect = new RECT();
-                    win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_GETBANDBORDERS, BandIndex, ref rect );
-                    return new Rectangle( rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top );
+                    win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_GETBANDBORDERS, BandIndex, ref rect);
+                    return new Rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
                 } else {
-                    return new Rectangle( 0, 0, 0, 0 );
+                    return new Rectangle(0, 0, 0, 0);
                 }
             }
         }
 
-        internal void CreateBand() {
-            if ( !Created && _bands != null && _bands.Rebar.NativeRebar != null ) {
-                if ( _child != null ) _child.Parent = _bands.Rebar;
+        internal void CreateBand()
+        {
+            if (!Created && _bands != null && _bands.Rebar.NativeRebar != null) {
+                if (_child != null) _child.Parent = _bands.Rebar;
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)(win32.RBBIM_STYLE
                     | win32.RBBIM_ID | win32.RBBIM_TEXT
                     );//| RebarBandInfoConstants.RBBIM_HEADERSIZE);
-                if ( !_useCoolbarColors )
+                if (!_useCoolbarColors)
                     rbBand.fMask |= (uint)win32.RBBIM_COLORS;
-                if ( _child != null ) //Add ChildSize stuff at some point
+                if (_child != null) //Add ChildSize stuff at some point
 				{
                     rbBand.fMask |= (uint)win32.RBBIM_CHILD;
                 }
                 rbBand.fMask |= (uint)win32.RBBIM_CHILDSIZE;
-                if ( _image >= 0 )
+                if (_image >= 0)
                     rbBand.fMask |= (uint)win32.RBBIM_IMAGE;
-                if ( _backgroundImage != null ) {
+                if (_backgroundImage != null) {
                     rbBand.fMask |= (uint)win32.RBBIM_BACKGROUND;
                 }
                 rbBand.cx = (uint)_bandSize;
                 rbBand.fMask |= (uint)win32.RBBIM_SIZE;
                 rbBand.fMask |= (uint)win32.RBBIM_IDEALSIZE;
-                rbBand.clrFore = new COLORREF( ForeColor );
-                rbBand.clrBack = new COLORREF( BackColor );
+                rbBand.clrFore = new COLORREF(ForeColor);
+                rbBand.clrBack = new COLORREF(BackColor);
                 rbBand.fStyle = (uint)Style;
-                if ( _backgroundImage != null ) {
+                if (_backgroundImage != null) {
                     rbBand.hbmBack = _pictureHandle;
                 }
                 rbBand.lpText = _caption;
-                if ( _child != null ) {
+                if (_child != null) {
                     rbBand.hwndChild = _child.Handle;
                     rbBand.cxMinChild = (uint)_minWidth;
                     rbBand.cyMinChild = (uint)_minHeight;
@@ -517,19 +557,19 @@ namespace cadencii.windows.forms {
                     rbBand.cyMaxChild = (uint)_maxHeight;
                     rbBand.cxIdeal = (uint)_idealWidth;
                 }
-                if ( _showIcon ) {
+                if (_showIcon) {
                     rbBand.iImage = _image;
                 }
                 rbBand.wID = (uint)_id;
                 rbBand.cxHeader = (uint)_header;
 
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_INSERTBANDA, -1, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_INSERTBANDA, -1, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Creating Band.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Creating Band.", ex));
                     }
 
                 } else {
@@ -539,40 +579,47 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public bool Created {
-            get {
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public bool Created
+        {
+            get
+            {
                 return (_created);
             }
         }
 
-        internal void DestroyBand() {
-            if ( Created ) {
-                win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_DELETEBAND, (uint)BandIndex, 0U );
+        internal void DestroyBand()
+        {
+            if (Created) {
+                win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_DELETEBAND, (uint)BandIndex, 0U);
                 _bands = null;
                 _created = false;
             }
         }
 
-        protected override void Dispose( bool disposing ) {
+        protected override void Dispose(bool disposing)
+        {
             DestroyBand();
-            if ( _pictureHandle != IntPtr.Zero ) win32.DeleteObject( _pictureHandle );
-            if ( disposing ) {
+            if (_pictureHandle != IntPtr.Zero) win32.DeleteObject(_pictureHandle);
+            if (disposing) {
 
             }
             _disposed = true;
         }
 
-        [Browsable( true ),
-        DefaultValue( true ),
-        NotifyParentProperty( true )]
-        public bool EmbossPicture {
-            get {
+        [Browsable(true),
+        DefaultValue(true),
+        NotifyParentProperty(true)]
+        public bool EmbossPicture
+        {
+            get
+            {
                 return _embossPicture;
             }
-            set {
-                if ( value != _embossPicture ) {
+            set
+            {
+                if (value != _embossPicture) {
                     //Code to set Style
                     _embossPicture = value;
                     UpdateStyles();
@@ -580,15 +627,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( true ),
-        NotifyParentProperty( true )]
-        public bool FixedBackground {
-            get {
+        [Browsable(true),
+        DefaultValue(true),
+        NotifyParentProperty(true)]
+        public bool FixedBackground
+        {
+            get
+            {
                 return _fixedBackground;
             }
-            set {
-                if ( value != _fixedBackground ) {
+            set
+            {
+                if (value != _fixedBackground) {
                     //Code to set Style
                     _fixedBackground = value;
                     UpdateStyles();
@@ -596,15 +646,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( false ),
-        NotifyParentProperty( true )]
-        public bool FixedSize {
-            get {
+        [Browsable(true),
+        DefaultValue(false),
+        NotifyParentProperty(true)]
+        public bool FixedSize
+        {
+            get
+            {
                 return _fixedSize;
             }
-            set {
-                if ( value != _fixedSize ) {
+            set
+            {
+                if (value != _fixedSize) {
                     //Code to set Style
                     _fixedSize = value;
                     UpdateStyles();
@@ -612,15 +665,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( typeof( Color ), "ControlText" ),
-        NotifyParentProperty( true )]
-        public Color ForeColor {
-            get {
+        [Browsable(true),
+        DefaultValue(typeof(Color), "ControlText"),
+        NotifyParentProperty(true)]
+        public Color ForeColor
+        {
+            get
+            {
                 return _foreColor;
             }
-            set {
-                if ( value != _foreColor ) {
+            set
+            {
+                if (value != _foreColor) {
                     //Code to set ForeColor
                     _foreColor = value;
                     UpdateColors();
@@ -628,15 +684,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( GripperSettings.Auto ),
-        NotifyParentProperty( true )]
-        public GripperSettings GripSettings {
-            get {
+        [Browsable(true),
+        DefaultValue(GripperSettings.Auto),
+        NotifyParentProperty(true)]
+        public GripperSettings GripSettings
+        {
+            get
+            {
                 return _gripSettings;
             }
-            set {
-                if ( value != _gripSettings ) {
+            set
+            {
+                if (value != _gripSettings) {
                     //Code to set Caption
                     _gripSettings = value;
                     UpdateStyles();
@@ -644,15 +703,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( 0 ),
-        NotifyParentProperty( true )]
-        public int Header {
-            get {
+        [Browsable(true),
+        DefaultValue(0),
+        NotifyParentProperty(true)]
+        public int Header
+        {
+            get
+            {
                 return _header;
             }
-            set {
-                if ( value != _header ) {
+            set
+            {
+                if (value != _header) {
                     //Set Band Header
                     _header = value;
                     UpdateMinimums();
@@ -660,49 +722,59 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int Height {
-            get {
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int Height
+        {
+            get
+            {
                 return Bounds.Height;
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int ID {
-            get {
-                if ( _bands != null )
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int ID
+        {
+            get
+            {
+                if (_bands != null)
                     return _id;
                 else
                     return -1;
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( 0 ),
-        NotifyParentProperty( true )]
-        public int IdealWidth {
-            get {
+        [Browsable(true),
+        DefaultValue(0),
+        NotifyParentProperty(true)]
+        public int IdealWidth
+        {
+            get
+            {
                 return _idealWidth;
             }
-            set {
-                if ( value != _idealWidth ) {
+            set
+            {
+                if (value != _idealWidth) {
                     _idealWidth = value;
                     UpdateMinimums();
                 }
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( -1 ),
-        NotifyParentProperty( true )]
-        public int Image {
-            get {
+        [Browsable(true),
+        DefaultValue(-1),
+        NotifyParentProperty(true)]
+        public int Image
+        {
+            get
+            {
                 return _image;
             }
-            set {
-                if ( value != _image ) {
+            set
+            {
+                if (value != _image) {
                     //Set Image for band
                     _image = value;
                     UpdateIcon();
@@ -710,42 +782,50 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int Index {
-            get {
-                if ( _bands != null )
-                    return _bands.IndexOf( this );
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int Index
+        {
+            get
+            {
+                if (_bands != null)
+                    return _bands.IndexOf(this);
                 else
                     return -1;
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( "1" )]
-        public int Integral {
-            get {
+        [Browsable(true),
+        DefaultValue("1")]
+        public int Integral
+        {
+            get
+            {
                 return _integral;
             }
-            set {
-                if ( value != _integral ) {
+            set
+            {
+                if (value != _integral) {
                     _integral = value;
                     UpdateMinimums();
                 }
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( "" )]
-        public string Key {
-            get {
+        [Browsable(true),
+        DefaultValue("")]
+        public string Key
+        {
+            get
+            {
                 return _key;
             }
-            set {
-                if ( value != _key ) {
-                    if ( _bands != null & value != "" ) {
-                        if ( _bands[value] != null ) {
-                            if ( _throwExceptions ) throw (new ArgumentException( "The key specified is not unique.", "Key" ));
+            set
+            {
+                if (value != _key) {
+                    if (_bands != null & value != "") {
+                        if (_bands[value] != null) {
+                            if (_throwExceptions) throw (new ArgumentException("The key specified is not unique.", "Key"));
                             return;
                         }
                     }
@@ -754,55 +834,65 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int Left {
-            get {
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int Left
+        {
+            get
+            {
                 return Bounds.Left;
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public Point Location {
-            get {
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public Point Location
+        {
+            get
+            {
                 return Bounds.Location;
             }
         }
 
-        [Browsable( false ),
-        System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public MARGINS Margins {//RB_GETBANDMARGINS
-            get {
-                if ( Created ) {
-                    if ( OSFeature.Feature.GetVersionPresent( OSFeature.Themes ) != null ) {
+        [Browsable(false),
+        System.ComponentModel.DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public MARGINS Margins
+        {//RB_GETBANDMARGINS
+            get
+            {
+                if (Created) {
+                    if (OSFeature.Feature.GetVersionPresent(OSFeature.Themes) != null) {
                         MARGINS margins = new MARGINS();
-                        win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_GETBANDMARGINS, 0, ref margins );
+                        win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_GETBANDMARGINS, 0, ref margins);
                         return margins;
                     }
-                    return new MARGINS( 0, 0, 0, 0 );
+                    return new MARGINS(0, 0, 0, 0);
                 } else {
-                    return new MARGINS( 0, 0, 0, 0 );
+                    return new MARGINS(0, 0, 0, 0);
                 }
             }
         }
 
-        public void Maximize() {
-            if ( Created ) {
-                win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_MAXIMIZEBAND, (uint)BandIndex, (uint)_idealWidth );
+        public void Maximize()
+        {
+            if (Created) {
+                win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_MAXIMIZEBAND, (uint)BandIndex, (uint)_idealWidth);
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( 24 ),
-        NotifyParentProperty( true )]
-        public int MaxHeight {
-            get {
+        [Browsable(true),
+        DefaultValue(24),
+        NotifyParentProperty(true)]
+        public int MaxHeight
+        {
+            get
+            {
                 return _maxHeight;
             }
-            set {
-                if ( value != _maxHeight ) {
+            set
+            {
+                if (value != _maxHeight) {
                     //Set Band Height
                     _maxHeight = value;
                     UpdateMinimums();
@@ -810,21 +900,25 @@ namespace cadencii.windows.forms {
             }
         }
 
-        public void Minimize() {
-            if ( Created ) {
-                win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_MINIMIZEBAND, (uint)BandIndex, (uint)_idealWidth );
+        public void Minimize()
+        {
+            if (Created) {
+                win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_MINIMIZEBAND, (uint)BandIndex, (uint)_idealWidth);
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( 24 ),
-        NotifyParentProperty( true )]
-        public int MinHeight {
-            get {
+        [Browsable(true),
+        DefaultValue(24),
+        NotifyParentProperty(true)]
+        public int MinHeight
+        {
+            get
+            {
                 return _minHeight;
             }
-            set {
-                if ( value != _minHeight ) {
+            set
+            {
+                if (value != _minHeight) {
                     //Set Band Height
                     _minHeight = value;
                     UpdateMinimums();
@@ -832,15 +926,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( 24 ),
-        NotifyParentProperty( true )]
-        public int MinWidth {
-            get {
+        [Browsable(true),
+        DefaultValue(24),
+        NotifyParentProperty(true)]
+        public int MinWidth
+        {
+            get
+            {
                 return _minWidth;
             }
-            set {
-                if ( value != _minWidth ) {
+            set
+            {
+                if (value != _minWidth) {
                     //Set Band Width
                     _minWidth = value;
                     UpdateMinimums();
@@ -848,15 +945,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( true ),
-        NotifyParentProperty( true )]
-        public bool NewRow {
-            get {
+        [Browsable(true),
+        DefaultValue(true),
+        NotifyParentProperty(true)]
+        public bool NewRow
+        {
+            get
+            {
                 return _newRow;
             }
-            set {
-                if ( value != _newRow ) {
+            set
+            {
+                if (value != _newRow) {
                     //Set Style
                     _newRow = value;
                     UpdateStyles();
@@ -864,71 +964,84 @@ namespace cadencii.windows.forms {
             }
         }
 
-        protected void OnChildHandleCreated( object sender, EventArgs e ) {
+        protected void OnChildHandleCreated(object sender, EventArgs e)
+        {
             //UpdateChild();
         }
 
-        protected void OnChildMove( object sender, EventArgs e ) {
+        protected void OnChildMove(object sender, EventArgs e)
+        {
 
         }
 
-        protected void OnChildParentChanged( object sender, EventArgs e ) {
+        protected void OnChildParentChanged(object sender, EventArgs e)
+        {
             UpdateChild();
         }
 
-        protected void OnChildSizeChanged( object sender, EventArgs e ) {
+        protected void OnChildSizeChanged(object sender, EventArgs e)
+        {
 
         }
 
-        internal void OnMouseDown( MouseEventArgs e ) {
-            if ( MouseDown != null ) {
-                MouseDown( this, e );
+        internal void OnMouseDown(MouseEventArgs e)
+        {
+            if (MouseDown != null) {
+                MouseDown(this, e);
             }
         }
 
-        internal void OnMouseMove( MouseEventArgs e ) {
-            if ( MouseMove != null ) {
-                MouseMove( this, e );
+        internal void OnMouseMove(MouseEventArgs e)
+        {
+            if (MouseMove != null) {
+                MouseMove(this, e);
             }
         }
 
-        internal void OnMouseUp( MouseEventArgs e ) {
-            if ( MouseUp != null ) {
-                MouseUp( this, e );
+        internal void OnMouseUp(MouseEventArgs e)
+        {
+            if (MouseUp != null) {
+                MouseUp(this, e);
             }
         }
 
-        internal void OnMouseWheel( MouseEventArgs e ) {
-            if ( MouseWheel != null ) {
-                MouseWheel( this, e );
+        internal void OnMouseWheel(MouseEventArgs e)
+        {
+            if (MouseWheel != null) {
+                MouseWheel(this, e);
             }
         }
 
-        internal void OnMove( EventArgs e ) {
-            if ( Move != null ) {
-                Move( this, e );
+        internal void OnMove(EventArgs e)
+        {
+            if (Move != null) {
+                Move(this, e);
             }
         }
 
-        internal void OnResize( EventArgs e ) {
-            if ( Resize != null ) {
-                Resize( this, e );
+        internal void OnResize(EventArgs e)
+        {
+            if (Resize != null) {
+                Resize(this, e);
             }
         }
 
-        internal void OnVisibleChanged( EventArgs e ) {
-            if ( VisibleChanged != null ) {
-                VisibleChanged( this, e );
+        internal void OnVisibleChanged(EventArgs e)
+        {
+            if (VisibleChanged != null) {
+                VisibleChanged(this, e);
             }
         }
 
-        [Browsable( false )]
-        [EditorBrowsable( EditorBrowsableState.Always )]
-        public int Position {
-            get {
-                if ( Created ) {
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        public int Position
+        {
+            get
+            {
+                if (Created) {
                     return BandIndex;
-                } else if ( _bands != null ) {
+                } else if (_bands != null) {
                     return Index;
                 } else {
                     return -1;
@@ -936,19 +1049,23 @@ namespace cadencii.windows.forms {
             }
         }
 
-        private bool ShouldSerializeForeColor() {
+        private bool ShouldSerializeForeColor()
+        {
             return _foreColor != SystemColors.ControlText;
         }
 
-        [Browsable( true )]
-        [DefaultValue( true )]
-        [NotifyParentProperty( true )]
-        public bool ShowCaption {
-            get {
+        [Browsable(true)]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        public bool ShowCaption
+        {
+            get
+            {
                 return _showCaption;
             }
-            set {
-                if ( value != _showCaption ) {
+            set
+            {
+                if (value != _showCaption) {
                     //Set band style
                     _showCaption = value;
                     UpdateStyles();
@@ -956,33 +1073,38 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true )]
-        [DefaultValue( false )]
-        [NotifyParentProperty( true )]
-        public bool ShowIcon {
-            get {
+        [Browsable(true)]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        public bool ShowIcon
+        {
+            get
+            {
                 return _showIcon;
             }
-            set {
-                if ( value != _showIcon ) {
+            set
+            {
+                if (value != _showIcon) {
                     _showIcon = value;
                     UpdateIcon();
                 }
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public Size Size {
-            get {
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public Size Size
+        {
+            get
+            {
                 return Bounds.Size;
             }
         }
 
-        [Category( "Appearance" ),
-        Browsable( true ),
-        DefaultValue( false ),
-        NotifyParentProperty( true )]
+        [Category("Appearance"),
+        Browsable(true),
+        DefaultValue(false),
+        NotifyParentProperty(true)]
         public bool VariantHeight
         {
             get
@@ -991,7 +1113,7 @@ namespace cadencii.windows.forms {
             }
             set
             {
-                if ( value != _variantHeight ) {
+                if (value != _variantHeight) {
                     //Code to set Style
                     _variantHeight = value;
                     UpdateStyles();
@@ -999,37 +1121,40 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( false )]
-        [EditorBrowsable( EditorBrowsableState.Always )]
-        protected int Style {
-            get {
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        protected int Style
+        {
+            get
+            {
                 int style = 0;
-                if ( !_allowVertical )
+                if (!_allowVertical)
                     style |= (int)win32.RBBS_NOVERT;
-                if ( _embossPicture )
+                if (_embossPicture)
                     style |= (int)win32.RBBS_CHILDEDGE;
-                if ( _fixedBackground )
+                if (_fixedBackground)
                     style |= (int)win32.RBBS_FIXEDBMP;
-                if ( _fixedSize )
+                if (_fixedSize)
                     style |= (int)win32.RBBS_FIXEDSIZE;
-                if ( _newRow )
+                if (_newRow)
                     style |= (int)win32.RBBS_BREAK;
-                if ( !_showCaption )
+                if (!_showCaption)
                     style |= (int)win32.RBBS_HIDETITLE;
-                if ( !_visible )
+                if (!_visible)
                     style |= (int)win32.RBBS_HIDDEN;
-                if ( _gripSettings == GripperSettings.Always )
+                if (_gripSettings == GripperSettings.Always)
                     style |= (int)win32.RBBS_GRIPPERALWAYS;
-                else if ( _gripSettings == GripperSettings.Never )
+                else if (_gripSettings == GripperSettings.Never)
                     style |= (int)win32.RBBS_NOGRIPPER;
-                if ( _useChevron )
+                if (_useChevron)
                     style |= (int)win32.RBBS_USECHEVRON;
-                if ( _variantHeight ) {
+                if (_variantHeight) {
                     style |= win32.RBBS_VARIABLEHEIGHT;
                 }
                 return style;
             }
-            set {
+            set
+            {
                 _allowVertical = !((value & (int)win32.RBBS_NOVERT)
                     == (int)win32.RBBS_NOVERT);
                 _embossPicture = (value & (int)win32.RBBS_CHILDEDGE)
@@ -1046,11 +1171,11 @@ namespace cadencii.windows.forms {
                     == (int)win32.RBBS_HIDDEN);
                 _useChevron = !((value & (int)win32.RBBS_USECHEVRON)
                     == (int)win32.RBBS_USECHEVRON);
-                if ( (value & (int)win32.RBBS_GRIPPERALWAYS)
-                    == (int)win32.RBBS_GRIPPERALWAYS ) {
+                if ((value & (int)win32.RBBS_GRIPPERALWAYS)
+                    == (int)win32.RBBS_GRIPPERALWAYS) {
                     _gripSettings = GripperSettings.Always;
-                } else if ( (value & (int)win32.RBBS_NOGRIPPER)
-                    == (int)win32.RBBS_NOGRIPPER ) {
+                } else if ((value & (int)win32.RBBS_NOGRIPPER)
+                    == (int)win32.RBBS_NOGRIPPER) {
                     _gripSettings = GripperSettings.Never;
                 } else {
                     _gripSettings = GripperSettings.Auto;
@@ -1060,42 +1185,49 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true ),
-        DefaultValue( null )]
-        public object Tag {
-            get {
+        [Browsable(true),
+        DefaultValue(null)]
+        public object Tag
+        {
+            get
+            {
                 return _tag;
             }
-            set {
+            set
+            {
                 _tag = value;
             }
         }
 
-        [Category( "Behavior" ),
-        Browsable( true ),
-        DefaultValue( true )]
-        public bool ThrowExceptions {
-            get {
+        [Category("Behavior"),
+        Browsable(true),
+        DefaultValue(true)]
+        public bool ThrowExceptions
+        {
+            get
+            {
                 return _throwExceptions;
             }
-            set {
+            set
+            {
                 _throwExceptions = value;
             }
         }
 
-        protected void UpdateCaption() {
-            if ( Created ) {
+        protected void UpdateCaption()
+        {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)win32.RBBIM_TEXT;
                 rbBand.lpText = _caption;
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Caption.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Caption.", ex));
                     }
 
                 }
@@ -1103,28 +1235,30 @@ namespace cadencii.windows.forms {
         }
 
 #if DEBUG
-        public void setChildByHandle( IntPtr handle ) {
+        public void setChildByHandle(IntPtr handle)
+        {
         }
 #endif
 
-        private void UpdateChildByHandle( IntPtr handle ){
-            if ( Created ) {
+        private void UpdateChildByHandle(IntPtr handle)
+        {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)win32.RBBIM_CHILD;
-                if ( handle.Equals( IntPtr.Zero ) ) {
+                if (handle.Equals(IntPtr.Zero)) {
                     rbBand.hwndChild = IntPtr.Zero;
                 } else {
                     rbBand.hwndChild = handle;
                 }
 
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Child.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Child.", ex));
                     }
 
                 }
@@ -1132,68 +1266,72 @@ namespace cadencii.windows.forms {
             }
         }
 
-        protected void UpdateChild() {
-            UpdateChildByHandle( this._child == null ? IntPtr.Zero : this._child.Handle );
+        protected void UpdateChild()
+        {
+            UpdateChildByHandle(this._child == null ? IntPtr.Zero : this._child.Handle);
         }
 
-        protected void UpdateColors() {
-            if ( Created ) {
+        protected void UpdateColors()
+        {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)win32.RBBIM_COLORS;
-                if ( _useCoolbarColors ) {
+                if (_useCoolbarColors) {
                     rbBand.clrBack = new COLORREF();
                     rbBand.clrBack._ColorDWORD = (uint)win32.CLR_DEFAULT;
                     rbBand.clrFore = new COLORREF();
                     rbBand.clrFore._ColorDWORD = (uint)win32.CLR_DEFAULT;
                 } else {
-                    rbBand.clrBack = new COLORREF( _backColor );
-                    rbBand.clrFore = new COLORREF( _foreColor );
+                    rbBand.clrBack = new COLORREF(_backColor);
+                    rbBand.clrFore = new COLORREF(_foreColor);
                 }
 
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Foreground and Background Colors.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Foreground and Background Colors.", ex));
                     }
 
                 }
             }
         }
 
-        protected void UpdateIcon() {
-            if ( Created ) {
+        protected void UpdateIcon()
+        {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)win32.RBBIM_IMAGE;
-                if ( _showIcon ) {
+                if (_showIcon) {
                     rbBand.iImage = _image;
                 } else {
                     rbBand.iImage = -1;
                 }
 
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Icon.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Icon.", ex));
                     }
                 }
             }
         }
 
-        protected void UpdateMinimums() {
+        protected void UpdateMinimums()
+        {
             //return;
-            if ( Created ) {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)(win32.RBBIM_CHILDSIZE);
-                if ( _header != -1 ) rbBand.fMask |= (uint)win32.RBBIM_HEADERSIZE;
+                if (_header != -1) rbBand.fMask |= (uint)win32.RBBIM_HEADERSIZE;
                 rbBand.cxMinChild = (uint)_minWidth;
                 rbBand.cyMinChild = (uint)_minHeight;
                 rbBand.cyIntegral = (uint)_integral;//1;
@@ -1201,13 +1339,13 @@ namespace cadencii.windows.forms {
                 rbBand.cyMaxChild = (uint)_maxHeight;
                 rbBand.cxIdeal = (uint)_idealWidth;
                 rbBand.cxHeader = (uint)_header;
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Minimums.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Minimums.", ex));
                     }
 
                 }
@@ -1215,20 +1353,21 @@ namespace cadencii.windows.forms {
             }
         }
 
-        protected void UpdatePicture() {
-            if ( Created ) {
+        protected void UpdatePicture()
+        {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)win32.RBBIM_BACKGROUND;
                 rbBand.hbmBack = _pictureHandle;
 
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Background.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Background.", ex));
                     }
 
                 }
@@ -1236,35 +1375,39 @@ namespace cadencii.windows.forms {
 
         }
 
-        protected void UpdateStyles() {
-            if ( Created ) {
+        protected void UpdateStyles()
+        {
+            if (Created) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
-                rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
+                rbBand.cbSize = (uint)Marshal.SizeOf(rbBand);
                 rbBand.fMask = (uint)win32.RBBIM_STYLE;
                 rbBand.fStyle = (uint)Style;
 
-                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if (win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand) == 0) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
-                        Marshal.ThrowExceptionForHR( LastErr );
-                    } catch ( Exception ex ) {
-                        Console.WriteLine( LastErr + " " + ex.Message );
-                        if ( _throwExceptions ) throw (new Exception( "Error Updating Styles.", ex ));
+                        Marshal.ThrowExceptionForHR(LastErr);
+                    } catch (Exception ex) {
+                        Console.WriteLine(LastErr + " " + ex.Message);
+                        if (_throwExceptions) throw (new Exception("Error Updating Styles.", ex));
                     }
 
                 }
             }
         }
 
-        [Browsable( true )]
-        [DefaultValue( true )]
-        [NotifyParentProperty( true )]
-        public bool UseCoolbarColors {
-            get {
+        [Browsable(true)]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        public bool UseCoolbarColors
+        {
+            get
+            {
                 return _useCoolbarColors;
             }
-            set {
-                if ( value != _useCoolbarColors ) {
+            set
+            {
+                if (value != _useCoolbarColors) {
                     //Set the Colors
                     _useCoolbarColors = value;
                     UpdateColors();
@@ -1272,15 +1415,18 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true )]
-        [DefaultValue( true )]
-        [NotifyParentProperty( true )]
-        public bool UseCoolbarPicture {
-            get {
+        [Browsable(true)]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        public bool UseCoolbarPicture
+        {
+            get
+            {
                 return _useCoolbarPicture;
             }
-            set {
-                if ( value != _useCoolbarPicture ) {
+            set
+            {
+                if (value != _useCoolbarPicture) {
                     //Set the Picture
                     _useCoolbarPicture = value;
                     UpdatePicture();
@@ -1288,31 +1434,35 @@ namespace cadencii.windows.forms {
             }
         }
 
-        [Browsable( true )]
-        [DefaultValue( true )]
-        public bool Visible {
-            get {
+        [Browsable(true)]
+        [DefaultValue(true)]
+        public bool Visible
+        {
+            get
+            {
                 return _visible;
             }
-            set {
-                if ( value != _visible ) {
+            set
+            {
+                if (value != _visible) {
                     //Set band style
                     _visible = value;
-                    if ( Created ) {
-                        win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SHOWBAND, (uint)BandIndex, (_visible) ? 1U : 0U );
-                        OnVisibleChanged( new System.EventArgs() );
+                    if (Created) {
+                        win32.SendMessage(_bands.Rebar.RebarHwnd, (int)win32.RB_SHOWBAND, (uint)BandIndex, (_visible) ? 1U : 0U);
+                        OnVisibleChanged(new System.EventArgs());
                     }
                 }
             }
         }
 
-        [Browsable( false ),
-        EditorBrowsable( EditorBrowsableState.Always )]
-        public int Width {
-            get {
+        [Browsable(false),
+        EditorBrowsable(EditorBrowsableState.Always)]
+        public int Width
+        {
+            get
+            {
                 return Bounds.Width;
             }
         }
     }
 }
-#endif

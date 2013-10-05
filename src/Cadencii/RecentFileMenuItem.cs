@@ -11,47 +11,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.windows.forms.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class RecentFileMenuItem extends BMenuItem
-#else
     public class RecentFileMenuItem : ToolStripMenuItem
-#endif
     {
-        private String mFilePath;
+        private string mFilePath;
 
-        public RecentFileMenuItem( String file_path )
-#if JAVA
-        {
-            super();
-#else
+        public RecentFileMenuItem(string file_path)
             : base()
         {
-#endif
             mFilePath = file_path;
         }
 
-        public String getFilePath()
+        public string getFilePath()
         {
             return mFilePath;
         }
     }
 
-#if !JAVA
 }
-#endif

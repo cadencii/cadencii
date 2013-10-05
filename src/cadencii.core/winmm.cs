@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * winmm.cs
  * Copyright © 2009-2011 kbinani
@@ -16,7 +15,8 @@ using System;
 using System.Runtime.InteropServices;
 using cadencii;
 
-namespace cadencii {
+namespace cadencii
+{
 
     using MMRESULT = System.UInt32;
     using HMIDIIN = System.Int32;
@@ -25,76 +25,79 @@ namespace cadencii {
     using WORD = System.UInt16;
     using BYTE = System.Byte;
 
-    public delegate void delegateWaveOutProc( IntPtr hwo, uint uMsg, uint dwInstance, uint dwParam1, uint dwParam2 );
+    public delegate void delegateWaveOutProc(IntPtr hwo, uint uMsg, uint dwInstance, uint dwParam1, uint dwParam2);
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct JOYINFO {
-        [MarshalAs( UnmanagedType.U4 )]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct JOYINFO
+    {
+        [MarshalAs(UnmanagedType.U4)]
         public uint wXpos;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wYpos;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wZpos;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wButtons;
     }
 
-    [StructLayout( LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1 )]
-    public struct JOYCAPSW {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+    public struct JOYCAPSW
+    {
         const int MAXPNAMELEN = 32;
         const int MAX_JOYSTICKOEMVXDNAME = 260;
-        [MarshalAs( UnmanagedType.U2 )]
+        [MarshalAs(UnmanagedType.U2)]
         public ushort wMid;
-        [MarshalAs( UnmanagedType.U2 )]
+        [MarshalAs(UnmanagedType.U2)]
         public ushort wPid;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = MAXPNAMELEN )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAXPNAMELEN)]
         public string szPname;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wXmin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wXmax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wYmin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wYmax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wZmin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wZmax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wNumButtons;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wPeriodMin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wPeriodMax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wRmin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wRmax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wUmin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wUmax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wVmin;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wVmax;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wCaps;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wMaxAxes;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wNumAxes;
-        [MarshalAs( UnmanagedType.U4 )]
+        [MarshalAs(UnmanagedType.U4)]
         public uint wMaxButtons;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = MAXPNAMELEN )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAXPNAMELEN)]
         public string szRegKey;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = MAX_JOYSTICKOEMVXDNAME )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_JOYSTICKOEMVXDNAME)]
         public string szOEMVxD;
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct JOYINFOEX {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct JOYINFOEX
+    {
         public uint dwSize;
         public uint dwFlags;
         public uint dwXpos;
@@ -110,8 +113,9 @@ namespace cadencii {
         public uint dwReserved2;
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct WAVEFORMATEX {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct WAVEFORMATEX
+    {
         public ushort wFormatTag;
         public ushort nChannels;
         public uint nSamplesPerSec;
@@ -121,8 +125,9 @@ namespace cadencii {
         public ushort cbSize;
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct WAVEHDR {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct WAVEHDR
+    {
         public IntPtr lpData; // pointer to locked data buffer
         public uint dwBufferLength; // length of data buffer
         public uint dwBytesRecorded; // used for input only
@@ -133,15 +138,18 @@ namespace cadencii {
         public uint reserved; // reserved for driver
     }
 
-    [StructLayout( LayoutKind.Explicit )]
-    public struct MMTIME {
-        [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-        public struct MIDI {
+    [StructLayout(LayoutKind.Explicit)]
+    public struct MMTIME
+    {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct MIDI
+        {
             public DWORD songptrpos;   // song pointer position 
         }
 
-        [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-        public unsafe struct SMPTE {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public unsafe struct SMPTE
+        {
             public BYTE hour;       // hours
             public BYTE min;        // minutes
             public BYTE sec;        // seconds
@@ -151,38 +159,41 @@ namespace cadencii {
             public fixed BYTE pad[2];
         }
 
-        [FieldOffset( 0 )]
+        [FieldOffset(0)]
         public uint wType;
-        [FieldOffset( 4 )]
+        [FieldOffset(4)]
         public SMPTE smpte;
-        [FieldOffset( 4 )]
+        [FieldOffset(4)]
         public MIDI midi;
-        [FieldOffset( 4 )]
+        [FieldOffset(4)]
         public uint ms;
-        [FieldOffset( 4 )]
+        [FieldOffset(4)]
         public uint sample;
-        [FieldOffset( 4 )]
+        [FieldOffset(4)]
         public uint cb;
-        [FieldOffset( 4 )]
+        [FieldOffset(4)]
         public uint ticks;
     }
 
-    [StructLayout( LayoutKind.Sequential, CharSet = CharSet.Ansi )]
-    public struct MIDIINCAPS {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct MIDIINCAPS
+    {
         public ushort wMid;
         public ushort wPid;
         public uint vDriverVersion;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = win32.MAXPNAMELEN )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = win32.MAXPNAMELEN)]
         public string szPname;
         public uint dwSupport;
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return szPname;
         }
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public unsafe struct MIDIHDR {
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct MIDIHDR
+    {
         public byte* lpData;
         public DWORD dwBufferLength;
         public DWORD dwBytesRecorded;
@@ -194,12 +205,13 @@ namespace cadencii {
         public fixed DWORD dwReserved[8];
     }
 
-    [StructLayout( LayoutKind.Sequential )]
-    public struct MIDIOUTCAPSA {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MIDIOUTCAPSA
+    {
         public WORD wMid;
         public WORD wPid;
         public uint vDriverVersion;
-        [MarshalAs( UnmanagedType.ByValTStr, SizeConst = win32.MAXPNAMELEN )]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = win32.MAXPNAMELEN)]
         public string szPname;
         public WORD wTechnology;
         public WORD wVoices;
@@ -208,8 +220,10 @@ namespace cadencii {
         public DWORD dwSupport;
     }
 
-    public static partial class win32 {
-        private enum DllStatus {
+    public static partial class win32
+    {
+        private enum DllStatus
+        {
             Unknown,
             Found,
             NotFound,
@@ -313,393 +327,407 @@ namespace cadencii {
 
         private static DllStatus status_winmm = DllStatus.Unknown;
         private static DllStatus status_winmm_so = DllStatus.Unknown;
-        
+
         #region midi
-        [DllImport( "winmm", EntryPoint = "midiInGetDevCaps", CharSet = CharSet.Ansi )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiInGetDevCaps( [MarshalAs( UnmanagedType.U4 )]uint uDeviceID, ref MIDIINCAPS lpMidiInCaps, [MarshalAs( UnmanagedType.U4 )]uint cbMidiInCaps );
+        [DllImport("winmm", EntryPoint = "midiInGetDevCaps", CharSet = CharSet.Ansi)]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiInGetDevCaps([MarshalAs(UnmanagedType.U4)]uint uDeviceID, ref MIDIINCAPS lpMidiInCaps, [MarshalAs(UnmanagedType.U4)]uint cbMidiInCaps);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiInGetDevCaps", CharSet = CharSet.Ansi )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiInGetDevCaps( [MarshalAs( UnmanagedType.U4 )]uint uDeviceID, ref MIDIINCAPS lpMidiInCaps, [MarshalAs( UnmanagedType.U4 )]uint cbMidiInCaps );
+        [DllImport("winmm.dll.so", EntryPoint = "midiInGetDevCaps", CharSet = CharSet.Ansi)]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiInGetDevCaps([MarshalAs(UnmanagedType.U4)]uint uDeviceID, ref MIDIINCAPS lpMidiInCaps, [MarshalAs(UnmanagedType.U4)]uint cbMidiInCaps);
 
-        public static uint midiInGetDevCaps( uint uDeviceID, ref MIDIINCAPS lpMidiInCaps, uint cbMidiInCaps ) {
+        public static uint midiInGetDevCaps(uint uDeviceID, ref MIDIINCAPS lpMidiInCaps, uint cbMidiInCaps)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiInGetDevCaps( uDeviceID, ref lpMidiInCaps, cbMidiInCaps );
+                    ret = __midiInGetDevCaps(uDeviceID, ref lpMidiInCaps, cbMidiInCaps);
                     status_winmm = DllStatus.Found;
-                } catch ( DllNotFoundException ex ) {
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiInGetDevCaps( uDeviceID, ref lpMidiInCaps, cbMidiInCaps );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiInGetDevCaps(uDeviceID, ref lpMidiInCaps, cbMidiInCaps);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiInClose" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiInClose( uint hMidiIn );
+        [DllImport("winmm", EntryPoint = "midiInClose")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiInClose(uint hMidiIn);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiInClose" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiInClose( uint hMidiIn );
+        [DllImport("winmm.dll.so", EntryPoint = "midiInClose")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiInClose(uint hMidiIn);
 
-        public static uint midiInClose( uint hMidiIn ) {
+        public static uint midiInClose(uint hMidiIn)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiInClose( hMidiIn );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiInClose(hMidiIn);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiInClose( hMidiIn );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiInClose(hMidiIn);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiInStart" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiInStart( uint hMidiIn );
+        [DllImport("winmm", EntryPoint = "midiInStart")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiInStart(uint hMidiIn);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiInStart" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiInStart( uint hMidiIn );
+        [DllImport("winmm.dll.so", EntryPoint = "midiInStart")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiInStart(uint hMidiIn);
 
-        public static uint midiInStart( uint hMidiIn ) {
+        public static uint midiInStart(uint hMidiIn)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiInStart( hMidiIn );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiInStart(hMidiIn);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiInStart( hMidiIn );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiInStart(hMidiIn);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiInReset" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiInReset( uint hMidiIn );
+        [DllImport("winmm", EntryPoint = "midiInReset")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiInReset(uint hMidiIn);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiInReset" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiInReset( uint hMidiIn );
+        [DllImport("winmm.dll.so", EntryPoint = "midiInReset")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiInReset(uint hMidiIn);
 
-        public static uint midiInReset( uint hMidiIn ) {
+        public static uint midiInReset(uint hMidiIn)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiInReset( hMidiIn );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiInReset(hMidiIn);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiInReset( hMidiIn );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiInReset(hMidiIn);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiInGetNumDevs" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
+        [DllImport("winmm", EntryPoint = "midiInGetNumDevs")]
+        [return: MarshalAs(UnmanagedType.U4)]
         private static extern uint __midiInGetNumDevs();
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiInGetNumDevs" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
+        [DllImport("winmm.dll.so", EntryPoint = "midiInGetNumDevs")]
+        [return: MarshalAs(UnmanagedType.U4)]
         private static extern uint __so_midiInGetNumDevs();
 
-        public static uint midiInGetNumDevs() {
+        public static uint midiInGetNumDevs()
+        {
             uint ret = 0;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
                     ret = __midiInGetNumDevs();
-                } catch ( DllNotFoundException ex ) {
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
                     ret = __so_midiInGetNumDevs();
-                } catch ( DllNotFoundException ex ) {
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiInOpen" )]
-        private static extern uint __midiInOpen( ref uint lphMidiIn, 
-                                                int uDeviceID, 
-                                                IntPtr dwCallback,
-                                                int dwCallbackInstance,
-                                                int dwFlags );
-
-        [DllImport( "winmm.dll.so", EntryPoint = "midiInOpen" )]
-        private static extern uint __so_midiInOpen( ref uint lphMidiIn,
+        [DllImport("winmm", EntryPoint = "midiInOpen")]
+        private static extern uint __midiInOpen(ref uint lphMidiIn,
                                                 int uDeviceID,
                                                 IntPtr dwCallback,
                                                 int dwCallbackInstance,
-                                                int dwFlags );
+                                                int dwFlags);
 
-        public static uint midiInOpen( ref uint lphMidiIn,
+        [DllImport("winmm.dll.so", EntryPoint = "midiInOpen")]
+        private static extern uint __so_midiInOpen(ref uint lphMidiIn,
+                                                int uDeviceID,
+                                                IntPtr dwCallback,
+                                                int dwCallbackInstance,
+                                                int dwFlags);
+
+        public static uint midiInOpen(ref uint lphMidiIn,
                                       int uDeviceID,
                                       IntPtr dwCallback,
                                       int dwCallbackInstance,
-                                      int dwFlags ) {
+                                      int dwFlags)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiInOpen( ref lphMidiIn, uDeviceID, dwCallback, dwCallbackInstance, dwFlags );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiInOpen(ref lphMidiIn, uDeviceID, dwCallback, dwCallbackInstance, dwFlags);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiInOpen( ref lphMidiIn, uDeviceID, dwCallback, dwCallbackInstance, dwFlags );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiInOpen(ref lphMidiIn, uDeviceID, dwCallback, dwCallbackInstance, dwFlags);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutGetNumDevs" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
+        [DllImport("winmm", EntryPoint = "midiOutGetNumDevs")]
+        [return: MarshalAs(UnmanagedType.U4)]
         private static extern uint __midiOutGetNumDevs();
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutGetNumDevs" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutGetNumDevs")]
+        [return: MarshalAs(UnmanagedType.U4)]
         private static extern uint __so_midiOutGetNumDevs();
 
-        public static uint midiOutGetNumDevs() {
+        public static uint midiOutGetNumDevs()
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
                     ret = __midiOutGetNumDevs();
-                } catch ( DllNotFoundException ex ) {
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
                     ret = __so_midiOutGetNumDevs();
-                } catch ( DllNotFoundException ex ) {
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutGetDevCapsA", CharSet = CharSet.Ansi )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutGetDevCapsA( [MarshalAs( UnmanagedType.U4 )] uint uDeviceID,
-                                                       ref MIDIOUTCAPSA pMidiOutCaps,
-                                                       [MarshalAs( UnmanagedType.U4 )] uint cbMidiOutCaps );
+        [DllImport("winmm", EntryPoint = "midiOutGetDevCapsA", CharSet = CharSet.Ansi)]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutGetDevCapsA([MarshalAs(UnmanagedType.U4)] uint uDeviceID,
+                                                      ref MIDIOUTCAPSA pMidiOutCaps,
+                                                      [MarshalAs(UnmanagedType.U4)] uint cbMidiOutCaps);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutGetDevCapsA", CharSet = CharSet.Ansi )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutGetDevCapsA( [MarshalAs( UnmanagedType.U4 )] uint uDeviceID,
-                                                       ref MIDIOUTCAPSA pMidiOutCaps,
-                                                       [MarshalAs( UnmanagedType.U4 )] uint cbMidiOutCaps );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutGetDevCapsA", CharSet = CharSet.Ansi)]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutGetDevCapsA([MarshalAs(UnmanagedType.U4)] uint uDeviceID,
+                                                      ref MIDIOUTCAPSA pMidiOutCaps,
+                                                      [MarshalAs(UnmanagedType.U4)] uint cbMidiOutCaps);
 
-        public static uint midiOutGetDevCapsA( uint uDeviceID, ref MIDIOUTCAPSA pMidiOutCaps, uint cbMidiOutCaps ) {
+        public static uint midiOutGetDevCapsA(uint uDeviceID, ref MIDIOUTCAPSA pMidiOutCaps, uint cbMidiOutCaps)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutGetDevCapsA( uDeviceID, ref pMidiOutCaps, cbMidiOutCaps );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutGetDevCapsA(uDeviceID, ref pMidiOutCaps, cbMidiOutCaps);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutGetDevCapsA( uDeviceID, ref pMidiOutCaps, cbMidiOutCaps );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutGetDevCapsA(uDeviceID, ref pMidiOutCaps, cbMidiOutCaps);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutOpen" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutOpen( [MarshalAs( UnmanagedType.SysUInt )] ref IntPtr lphMidiOut, 
-                                                [MarshalAs( UnmanagedType.U4 )] uint uDeviceID, 
-                                                [MarshalAs( UnmanagedType.FunctionPtr )] Delegate dwCallback, 
-                                                [MarshalAs( UnmanagedType.U4 )] uint dwInstance,
-                                                [MarshalAs( UnmanagedType.U4 )] uint dwFlags );
+        [DllImport("winmm", EntryPoint = "midiOutOpen")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutOpen([MarshalAs(UnmanagedType.SysUInt)] ref IntPtr lphMidiOut,
+                                               [MarshalAs(UnmanagedType.U4)] uint uDeviceID,
+                                               [MarshalAs(UnmanagedType.FunctionPtr)] Delegate dwCallback,
+                                               [MarshalAs(UnmanagedType.U4)] uint dwInstance,
+                                               [MarshalAs(UnmanagedType.U4)] uint dwFlags);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutOpen" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutOpen( [MarshalAs( UnmanagedType.SysUInt )] ref IntPtr lphMidiOut,
-                                                [MarshalAs( UnmanagedType.U4 )] uint uDeviceID,
-                                                [MarshalAs( UnmanagedType.FunctionPtr )] Delegate dwCallback,
-                                                [MarshalAs( UnmanagedType.U4 )] uint dwInstance,
-                                                [MarshalAs( UnmanagedType.U4 )] uint dwFlags );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutOpen")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutOpen([MarshalAs(UnmanagedType.SysUInt)] ref IntPtr lphMidiOut,
+                                               [MarshalAs(UnmanagedType.U4)] uint uDeviceID,
+                                               [MarshalAs(UnmanagedType.FunctionPtr)] Delegate dwCallback,
+                                               [MarshalAs(UnmanagedType.U4)] uint dwInstance,
+                                               [MarshalAs(UnmanagedType.U4)] uint dwFlags);
 
-        public static uint midiOutOpen( ref IntPtr lphMidiOut,
+        public static uint midiOutOpen(ref IntPtr lphMidiOut,
                                         uint uDeviceID,
                                         Delegate dwCallback,
                                         uint dwInstance,
-                                        uint dwFlags ) {
+                                        uint dwFlags)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutOpen( ref lphMidiOut, uDeviceID, dwCallback, dwInstance, dwFlags );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutOpen(ref lphMidiOut, uDeviceID, dwCallback, dwInstance, dwFlags);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutOpen( ref lphMidiOut, uDeviceID, dwCallback, dwInstance, dwFlags );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutOpen(ref lphMidiOut, uDeviceID, dwCallback, dwInstance, dwFlags);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutClose" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutClose( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut );
+        [DllImport("winmm", EntryPoint = "midiOutClose")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutClose([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutClose" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutClose( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutClose")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutClose([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut);
 
-        public static uint midiOutClose( IntPtr hMidiOut ) {
+        public static uint midiOutClose(IntPtr hMidiOut)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutClose( hMidiOut );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutClose(hMidiOut);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutClose( hMidiOut );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutClose(hMidiOut);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutShortMsg" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutShortMsg( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, [MarshalAs( UnmanagedType.U4 )] uint dwMsg );
+        [DllImport("winmm", EntryPoint = "midiOutShortMsg")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutShortMsg([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, [MarshalAs(UnmanagedType.U4)] uint dwMsg);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutShortMsg" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutShortMsg( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, [MarshalAs( UnmanagedType.U4 )] uint dwMsg );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutShortMsg")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutShortMsg([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, [MarshalAs(UnmanagedType.U4)] uint dwMsg);
 
-        public static uint midiOutShortMsg( IntPtr hMidiOut, uint dwMsg ) {
+        public static uint midiOutShortMsg(IntPtr hMidiOut, uint dwMsg)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutShortMsg( hMidiOut, dwMsg );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutShortMsg(hMidiOut, dwMsg);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutShortMsg( hMidiOut, dwMsg );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutShortMsg(hMidiOut, dwMsg);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutLongMsg" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutLongMsg( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs( UnmanagedType.U4 )] uint uSize );
+        [DllImport("winmm", EntryPoint = "midiOutLongMsg")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutLongMsg([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs(UnmanagedType.U4)] uint uSize);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutLongMsg" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutLongMsg( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs( UnmanagedType.U4 )] uint uSize );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutLongMsg")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutLongMsg([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs(UnmanagedType.U4)] uint uSize);
 
-        public static uint midiOutLongMsg( IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, uint uSize ) {
+        public static uint midiOutLongMsg(IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, uint uSize)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutLongMsg( hMidiOut, ref lpMidiOutHdr, uSize );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutLongMsg(hMidiOut, ref lpMidiOutHdr, uSize);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutLongMsg( hMidiOut, ref lpMidiOutHdr, uSize );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutLongMsg(hMidiOut, ref lpMidiOutHdr, uSize);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutPrepareHeader" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutPrepareHeader( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs( UnmanagedType.U4 )] uint uSize );
+        [DllImport("winmm", EntryPoint = "midiOutPrepareHeader")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutPrepareHeader([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs(UnmanagedType.U4)] uint uSize);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutPrepareHeader" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutPrepareHeader( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs( UnmanagedType.U4 )] uint uSize );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutPrepareHeader")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutPrepareHeader([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs(UnmanagedType.U4)] uint uSize);
 
-        public static uint midiOutPrepareHeader( IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, uint uSize ) {
+        public static uint midiOutPrepareHeader(IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, uint uSize)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutPrepareHeader( hMidiOut, ref lpMidiOutHdr, uSize );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutPrepareHeader(hMidiOut, ref lpMidiOutHdr, uSize);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutPrepareHeader( hMidiOut, ref lpMidiOutHdr, uSize );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutPrepareHeader(hMidiOut, ref lpMidiOutHdr, uSize);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "midiOutUnprepareHeader" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __midiOutUnprepareHeader( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs( UnmanagedType.U4 )] uint uSize );
+        [DllImport("winmm", EntryPoint = "midiOutUnprepareHeader")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __midiOutUnprepareHeader([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs(UnmanagedType.U4)] uint uSize);
 
-        [DllImport( "winmm.dll.so", EntryPoint = "midiOutUnprepareHeader" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
-        private static extern uint __so_midiOutUnprepareHeader( [MarshalAs( UnmanagedType.SysUInt )] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs( UnmanagedType.U4 )] uint uSize );
+        [DllImport("winmm.dll.so", EntryPoint = "midiOutUnprepareHeader")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        private static extern uint __so_midiOutUnprepareHeader([MarshalAs(UnmanagedType.SysUInt)] IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, [MarshalAs(UnmanagedType.U4)] uint uSize);
 
-        public static uint midiOutUnprepareHeader( IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, uint uSize ) {
+        public static uint midiOutUnprepareHeader(IntPtr hMidiOut, ref MIDIHDR lpMidiOutHdr, uint uSize)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __midiOutUnprepareHeader( hMidiOut, ref lpMidiOutHdr, uSize );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __midiOutUnprepareHeader(hMidiOut, ref lpMidiOutHdr, uSize);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
-            } else if ( status_winmm_so != DllStatus.NotFound ) {
+            } else if (status_winmm_so != DllStatus.NotFound) {
                 try {
-                    ret = __so_midiOutUnprepareHeader( hMidiOut, ref lpMidiOutHdr, uSize );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __so_midiOutUnprepareHeader(hMidiOut, ref lpMidiOutHdr, uSize);
+                } catch (DllNotFoundException ex) {
                     status_winmm_so = DllStatus.NotFound;
                 }
             }
@@ -708,61 +736,65 @@ namespace cadencii {
         #endregion
 
         #region joy
-        [DllImport( "winmm", EntryPoint = "joyGetNumDevs" )]
-        [return: MarshalAs( UnmanagedType.U4 )]
+        [DllImport("winmm", EntryPoint = "joyGetNumDevs")]
+        [return: MarshalAs(UnmanagedType.U4)]
         private static extern uint __joyGetNumDevs();
 
-        public static uint joyGetNumDevs() {
+        public static uint joyGetNumDevs()
+        {
             uint ret = 0;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
                     ret = __joyGetNumDevs();
-                } catch ( DllNotFoundException ex ) {
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "joyGetPos" )]
-        private static extern uint __joyGetPos( uint uJoyID, ref JOYINFO pji );
+        [DllImport("winmm", EntryPoint = "joyGetPos")]
+        private static extern uint __joyGetPos(uint uJoyID, ref JOYINFO pji);
 
-        public static uint joyGetPos( uint uJoyID, ref JOYINFO pji ) {
+        public static uint joyGetPos(uint uJoyID, ref JOYINFO pji)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __joyGetPos( uJoyID, ref pji );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __joyGetPos(uJoyID, ref pji);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "joyGetDevCapsW" )]
-        private static extern uint __joyGetDevCapsW( uint uJoyID, ref JOYCAPSW pjc, uint cbjc );
+        [DllImport("winmm", EntryPoint = "joyGetDevCapsW")]
+        private static extern uint __joyGetDevCapsW(uint uJoyID, ref JOYCAPSW pjc, uint cbjc);
 
-        public static uint joyGetDevCapsW( uint uJoyID, ref JOYCAPSW pjc, uint cbjc ) {
+        public static uint joyGetDevCapsW(uint uJoyID, ref JOYCAPSW pjc, uint cbjc)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __joyGetDevCapsW( uJoyID, ref pjc, cbjc );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __joyGetDevCapsW(uJoyID, ref pjc, cbjc);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
             }
             return ret;
         }
 
-        [DllImport( "winmm", EntryPoint = "joyGetPosEx" )]
-        private static extern uint __joyGetPosEx( uint uJoyID, ref JOYINFOEX pji );
+        [DllImport("winmm", EntryPoint = "joyGetPosEx")]
+        private static extern uint __joyGetPosEx(uint uJoyID, ref JOYINFOEX pji);
 
-        public static uint joyGetPosEx( uint uJoyID, ref JOYINFOEX pji ) {
+        public static uint joyGetPosEx(uint uJoyID, ref JOYINFOEX pji)
+        {
             uint ret = MMSYSERR_ERROR;
-            if ( status_winmm != DllStatus.NotFound ) {
+            if (status_winmm != DllStatus.NotFound) {
                 try {
-                    ret = __joyGetPosEx( uJoyID, ref pji );
-                } catch ( DllNotFoundException ex ) {
+                    ret = __joyGetPosEx(uJoyID, ref pji);
+                } catch (DllNotFoundException ex) {
                     status_winmm = DllStatus.NotFound;
                 }
             }
@@ -771,34 +803,33 @@ namespace cadencii {
         #endregion
 
         #region wave
-        [DllImport( "winmm.dll" )]
-        public static extern uint waveOutWrite( IntPtr hwo, ref WAVEHDR pwh, uint cbwh );
-        [DllImport( "winmm.dll" )]
+        [DllImport("winmm.dll")]
+        public static extern uint waveOutWrite(IntPtr hwo, ref WAVEHDR pwh, uint cbwh);
+        [DllImport("winmm.dll")]
         //[return: MarshalAs(UnmanagedType.U4)]
-        public static extern uint waveOutOpen( ref IntPtr hWaveOut,
+        public static extern uint waveOutOpen(ref IntPtr hWaveOut,
                                                int uDeviceID,
                                                ref WAVEFORMATEX lpFormat,
                                                delegateWaveOutProc dwCallback,
                                                IntPtr dwInstance,
-                                               uint dwFlags );
+                                               uint dwFlags);
         //public static extern uint waveOutOpen( ref IntPtr phwo, UINT uDeviceID, ref WAVEFORMATEX pwfx, delegateWaveOutProc dwCallback, IntPtr dwInstance, uint fdwOpen );
-        [DllImport( "winmm.dll" )]
-        public static extern uint waveOutPrepareHeader( IntPtr hwo, ref WAVEHDR pwh, UINT cbwh );
-        [DllImport( "winmm.dll" )]
-        public static extern uint waveOutGetPosition( IntPtr hwo, ref MMTIME pmmt, UINT cbmmt );
-        [DllImport( "winmm.dll" )]
-        public static extern uint waveOutReset( IntPtr hwo );
-        [DllImport( "winmm.dll" )]
-        public static extern uint waveOutUnprepareHeader( IntPtr hwo, ref WAVEHDR pwh, UINT cbwh );
-        [DllImport( "winmm.dll" )]
-        public static extern uint waveOutClose( IntPtr hwo );
+        [DllImport("winmm.dll")]
+        public static extern uint waveOutPrepareHeader(IntPtr hwo, ref WAVEHDR pwh, UINT cbwh);
+        [DllImport("winmm.dll")]
+        public static extern uint waveOutGetPosition(IntPtr hwo, ref MMTIME pmmt, UINT cbmmt);
+        [DllImport("winmm.dll")]
+        public static extern uint waveOutReset(IntPtr hwo);
+        [DllImport("winmm.dll")]
+        public static extern uint waveOutUnprepareHeader(IntPtr hwo, ref WAVEHDR pwh, UINT cbwh);
+        [DllImport("winmm.dll")]
+        public static extern uint waveOutClose(IntPtr hwo);
         #endregion
 
         #region mci
-        [DllImport( "winmm.dll", CharSet = CharSet.Ansi )]
-        public static extern bool mciGetErrorStringA( uint mcierr, [MarshalAs( UnmanagedType.LPStr )] string pszText, UINT cchText );
+        [DllImport("winmm.dll", CharSet = CharSet.Ansi)]
+        public static extern bool mciGetErrorStringA(uint mcierr, [MarshalAs(UnmanagedType.LPStr)] string pszText, UINT cchText);
         #endregion
     }
 
 }
-#endif

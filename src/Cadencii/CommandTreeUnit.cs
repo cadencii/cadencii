@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * CommandTreeUnit.cs
  * Copyright © 2008-2011 kbinani
@@ -18,14 +17,15 @@ using cadencii.vsq;
 using cadencii;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
     [Serializable]
-    public class CommandTreeUnit {
+    public class CommandTreeUnit
+    {
         public CadenciiCommand Command = null;
         public CadenciiCommand Parent = null;
-        public Vector<CadenciiCommand> Children = null;
+        public List<CadenciiCommand> Children = null;
     }
 
 }
-#endif

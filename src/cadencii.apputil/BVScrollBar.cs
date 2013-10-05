@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * BVScrollBar.cs
  * Copyright © 2009-2011 kbinani
@@ -15,74 +14,92 @@
 using System;
 using System.Windows.Forms;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
     /// <summary>
     /// Valueの値が正しくMinimumからMaximumの間を動くスクロールバー
     /// </summary>
-    public partial class OBSOLUTE_BVScrollBar : UserControl {
+    public partial class OBSOLUTE_BVScrollBar : UserControl
+    {
         int m_max = 100;
         int m_min = 0;
 
         public event EventHandler ValueChanged;
 
-        public OBSOLUTE_BVScrollBar() {
+        public OBSOLUTE_BVScrollBar()
+        {
             InitializeComponent();
         }
 
-        public int Value {
-            get {
+        public int Value
+        {
+            get
+            {
                 return vScroll.Value;
             }
-            set {
+            set
+            {
                 vScroll.Value = value;
             }
         }
 
-        public int LargeChange {
-            get {
+        public int LargeChange
+        {
+            get
+            {
                 return vScroll.LargeChange;
             }
-            set {
+            set
+            {
                 vScroll.LargeChange = value;
                 vScroll.Maximum = m_max + value;
             }
         }
 
-        public int SmallChange {
-            get {
+        public int SmallChange
+        {
+            get
+            {
                 return vScroll.SmallChange;
             }
-            set {
+            set
+            {
                 vScroll.SmallChange = value;
             }
         }
 
-        public int Maximum {
-            get {
+        public int Maximum
+        {
+            get
+            {
                 return m_max;
             }
-            set {
+            set
+            {
                 m_max = value;
                 vScroll.Maximum = m_max + vScroll.LargeChange;
             }
         }
 
-        public int Minimum {
-            get {
+        public int Minimum
+        {
+            get
+            {
                 return m_min;
             }
-            set {
+            set
+            {
                 m_min = value;
             }
         }
 
-        private void vScroll_ValueChanged( object sender, EventArgs e ) {
-            if ( ValueChanged != null ) {
-                ValueChanged( this, e );
+        private void vScroll_ValueChanged(object sender, EventArgs e)
+        {
+            if (ValueChanged != null) {
+                ValueChanged(this, e);
             }
         }
     }
 
 }
-#endif

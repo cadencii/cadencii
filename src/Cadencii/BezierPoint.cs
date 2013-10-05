@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.io.*;
-import cadencii.xml.*;
-
-#else
-
 using System;
 using System.Drawing;
 using System.Xml.Serialization;
@@ -27,61 +18,41 @@ using System.ComponentModel;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
     /// <summary>
     /// ベジエ曲線を構成するデータ点。
     /// </summary>
-#if JAVA
-    public class BezierPoint implements Comparable<BezierPoint>, Cloneable, Serializable
-#else
     [Serializable]
     public class BezierPoint : IComparable<BezierPoint>, ICloneable
-#endif
     {
-#if JAVA
-        @XmlIgnore
-#else
         [XmlIgnore]
-#endif
         public PointD controlLeft;
-#if JAVA
-        @XmlIgnore
-#else
         [XmlIgnore]
-#endif
         public PointD controlRight;
 
-#if !JAVA
         [NonSerialized]
-#endif
         private int mID;
         private PointD mCenter;
         private BezierControlType mTypeLeft;
         private BezierControlType mTypeRight;
 
-#if JAVA
-        @XmlIgnore
-#endif
-        public int getID() {
+        public int getID()
+        {
             return mID;
         }
 
-#if JAVA
-        @XmlIgnore
-#endif
-        public void setID( int value ) {
+        public void setID(int value)
+        {
             mID = value;
         }
 
-#if !JAVA
-        public override String ToString() {
+        public override string ToString()
+        {
             return toString();
         }
-#endif
 
-        public String toString() {
+        public string toString()
+        {
             return "m_base=" + mCenter.getX() + "," + mCenter.getY() + "\n" +
                 "m_control_left=" + controlLeft.getX() + "," + controlLeft.getY() + "\n" +
                 "m_control_right=" + controlRight.getX() + "," + controlRight.getY() + "\n" +
@@ -89,25 +60,18 @@ namespace cadencii
                 "m_type_right=" + mTypeRight + "\n";
         }
 
-#if JAVA
-        public BezierPoint(){
-        }
-#else
-        private BezierPoint() {
-        }
-#endif
-
-#if JAVA
-        public BezierPoint( PointD p1 ){
-            this( p1.getX(), p1.getY() );
-#else
-        public BezierPoint( PointD p1 )
-            : this( p1.getX(), p1.getY() ) {
-#endif
+        private BezierPoint()
+        {
         }
 
-        public BezierPoint( double x, double y ) {
-            PointD p = new PointD( x, y );
+        public BezierPoint(PointD p1)
+            : this(p1.getX(), p1.getY())
+        {
+        }
+
+        public BezierPoint(double x, double y)
+        {
+            PointD p = new PointD(x, y);
             mCenter = p;
             controlLeft = p;
             controlRight = p;
@@ -115,16 +79,18 @@ namespace cadencii
             mTypeRight = BezierControlType.None;
         }
 
-        public BezierPoint( PointD p1, PointD left, PointD right ) {
+        public BezierPoint(PointD p1, PointD left, PointD right)
+        {
             mCenter = p1;
-            controlLeft = new PointD( left.getX() - mCenter.getX(), left.getY() - mCenter.getY() );
-            controlRight = new PointD( right.getX() - mCenter.getX(), right.getY() - mCenter.getY() );
+            controlLeft = new PointD(left.getX() - mCenter.getX(), left.getY() - mCenter.getY());
+            controlRight = new PointD(right.getX() - mCenter.getX(), right.getY() - mCenter.getY());
             mTypeLeft = BezierControlType.None;
             mTypeRight = BezierControlType.None;
         }
 
-        public Object clone() {
-            BezierPoint result = new BezierPoint( this.getBase(), this.getControlLeft(), this.getControlRight() );
+        public Object clone()
+        {
+            BezierPoint result = new BezierPoint(this.getBase(), this.getControlLeft(), this.getControlRight());
             result.controlLeft = this.controlLeft;
             result.controlRight = this.controlRight;
             result.mTypeLeft = this.mTypeLeft;
@@ -133,29 +99,28 @@ namespace cadencii
             return result;
         }
 
-#if !JAVA
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
-#endif
 
-#if !JAVA
-        public int CompareTo( BezierPoint item ) {
-            return compareTo( item );
+        public int CompareTo(BezierPoint item)
+        {
+            return compareTo(item);
         }
-#endif
 
-        public int compareTo( BezierPoint item ) {
+        public int compareTo(BezierPoint item)
+        {
             double thisx = this.getBase().getX();
             double itemx = item.getBase().getX();
-            if ( thisx > itemx ) {
+            if (thisx > itemx) {
                 return 1;
-            } else if ( thisx < itemx ) {
+            } else if (thisx < itemx) {
                 return -1;
             } else {
-                if ( this.getID() > item.getID() ) {
+                if (this.getID() > item.getID()) {
                     return 1;
-                } else if ( this.getID() < item.getID() ) {
+                } else if (this.getID() < item.getID()) {
                     return -1;
                 } else {
                     return 0;
@@ -163,161 +128,177 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
-        public PointD Base {
-            get {
+        public PointD Base
+        {
+            get
+            {
                 return getBase();
             }
-            set {
-                setBase( value );
+            set
+            {
+                setBase(value);
             }
         }
-#endif
 
-        public PointD getBase() {
+        public PointD getBase()
+        {
             return mCenter;
         }
 
-        public void setBase( PointD value ) {
+        public void setBase(PointD value)
+        {
             mCenter = value;
         }
 
-        public void setPosition( BezierPickedSide picked_side, PointD new_position ) {
-            if ( picked_side == BezierPickedSide.BASE ) {
-                this.setBase( new_position );
-            } else if ( picked_side == BezierPickedSide.LEFT ) {
-                this.controlLeft = new PointD( new_position.getX() - this.getBase().getX(), new_position.getY() - this.getBase().getY() );
+        public void setPosition(BezierPickedSide picked_side, PointD new_position)
+        {
+            if (picked_side == BezierPickedSide.BASE) {
+                this.setBase(new_position);
+            } else if (picked_side == BezierPickedSide.LEFT) {
+                this.controlLeft = new PointD(new_position.getX() - this.getBase().getX(), new_position.getY() - this.getBase().getY());
             } else {
-                this.controlRight = new PointD( new_position.getX() - this.getBase().getX(), new_position.getY() - this.getBase().getY() );
+                this.controlRight = new PointD(new_position.getX() - this.getBase().getX(), new_position.getY() - this.getBase().getY());
             }
         }
 
-        public PointD getPosition( BezierPickedSide picked_side ) {
-            if ( picked_side == BezierPickedSide.BASE ) {
+        public PointD getPosition(BezierPickedSide picked_side)
+        {
+            if (picked_side == BezierPickedSide.BASE) {
                 return this.getBase();
-            } else if ( picked_side == BezierPickedSide.LEFT ) {
+            } else if (picked_side == BezierPickedSide.LEFT) {
                 return this.getControlLeft();
             } else {
                 return this.getControlRight();
             }
         }
 
-        public BezierControlType getControlType( BezierPickedSide picked_side ) {
-            if ( picked_side == BezierPickedSide.LEFT ) {
+        public BezierControlType getControlType(BezierPickedSide picked_side)
+        {
+            if (picked_side == BezierPickedSide.LEFT) {
                 return this.getControlLeftType();
-            } else if ( picked_side == BezierPickedSide.RIGHT ) {
+            } else if (picked_side == BezierPickedSide.RIGHT) {
                 return this.getControlRightType();
             } else {
                 return BezierControlType.None;
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
-        public PointD ControlLeft{
-            get {
+        public PointD ControlLeft
+        {
+            get
+            {
                 return getControlLeft();
             }
-            set {
-                setControlLeft( value );
+            set
+            {
+                setControlLeft(value);
             }
         }
-#endif
 
-        public PointD getControlLeft() {
-            if ( mTypeLeft != BezierControlType.None ) {
-                return new PointD( mCenter.getX() + controlLeft.getX(), mCenter.getY() + controlLeft.getY() );
+        public PointD getControlLeft()
+        {
+            if (mTypeLeft != BezierControlType.None) {
+                return new PointD(mCenter.getX() + controlLeft.getX(), mCenter.getY() + controlLeft.getY());
             } else {
                 return mCenter;
             }
         }
 
-        public void setControlLeft( PointD value ) {
-            controlLeft = new PointD( value.getX() - mCenter.getX(), value.getY() - mCenter.getY() );
+        public void setControlLeft(PointD value)
+        {
+            controlLeft = new PointD(value.getX() - mCenter.getX(), value.getY() - mCenter.getY());
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
-        public PointD ControlRight {
-            get {
+        public PointD ControlRight
+        {
+            get
+            {
                 return getControlRight();
             }
-            set {
-                setControlRight( value );
+            set
+            {
+                setControlRight(value);
             }
         }
-#endif
 
-        public PointD getControlRight() {
-            if ( mTypeRight != BezierControlType.None ) {
-                return new PointD( mCenter.getX() + controlRight.getX(), mCenter.getY() + controlRight.getY() );
+        public PointD getControlRight()
+        {
+            if (mTypeRight != BezierControlType.None) {
+                return new PointD(mCenter.getX() + controlRight.getX(), mCenter.getY() + controlRight.getY());
             } else {
                 return mCenter;
             }
         }
 
-        public void setControlRight( PointD value ) {
-            controlRight = new PointD( value.getX() - mCenter.getX(), value.getY() - mCenter.getY() );
+        public void setControlRight(PointD value)
+        {
+            controlRight = new PointD(value.getX() - mCenter.getX(), value.getY() - mCenter.getY());
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerializer用
         /// </summary>
-        public BezierControlType ControlLeftType {
-            get {
+        public BezierControlType ControlLeftType
+        {
+            get
+            {
                 return getControlLeftType();
             }
-            set {
-                setControlLeftType( value );
+            set
+            {
+                setControlLeftType(value);
             }
         }
-#endif
 
-        public BezierControlType getControlLeftType() {
+        public BezierControlType getControlLeftType()
+        {
             return mTypeLeft;
         }
 
-        public void setControlLeftType( BezierControlType value ) {
+        public void setControlLeftType(BezierControlType value)
+        {
             mTypeLeft = value;
-            if ( mTypeLeft == BezierControlType.Master && mTypeRight != BezierControlType.None ) {
+            if (mTypeLeft == BezierControlType.Master && mTypeRight != BezierControlType.None) {
                 mTypeRight = BezierControlType.Master;
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerializer用
         /// </summary>
-        public BezierControlType ControlRightType {
-            get {
+        public BezierControlType ControlRightType
+        {
+            get
+            {
                 return getControlRightType();
             }
-            set {
-                setControlRightType( value );
+            set
+            {
+                setControlRightType(value);
             }
         }
-#endif
 
-        public BezierControlType getControlRightType() {
+        public BezierControlType getControlRightType()
+        {
             return mTypeRight;
         }
 
-        public void setControlRightType( BezierControlType value ) {
+        public void setControlRightType(BezierControlType value)
+        {
             mTypeRight = value;
-            if ( mTypeRight == BezierControlType.Master && mTypeLeft != BezierControlType.None ) {
+            if (mTypeRight == BezierControlType.Master && mTypeLeft != BezierControlType.None) {
                 mTypeLeft = BezierControlType.Master;
             }
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,19 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
 
-    public class KanaDeRomanization {
+
+namespace cadencii
+{
+
+    public class KanaDeRomanization
+    {
         const int _MAX_MATCH = 4;
 
         /// <summary>
@@ -31,69 +28,70 @@ namespace cadencii {
         /// </summary>
         /// <param name="maybe_katakana"></param>
         /// <returns></returns>
-        public static String hiragana2katakana( String maybe_hiragana ) {
+        public static string hiragana2katakana(string maybe_hiragana)
+        {
             char[] arr = maybe_hiragana.ToCharArray();
-            String ret = "";
+            string ret = "";
             int i = -1;
-            while ( i + 1 < arr.Length ) {
+            while (i + 1 < arr.Length) {
                 i++;
-                char transformed = hiragana2katakanaCor( arr[i] );
-                if ( i + 1 < arr.Length ) {
-                    if ( arr[i + 1] == 'ﾞ' || arr[i + 1] == '゛' ) {
-                        if ( transformed == 'カ' ) {
+                char transformed = hiragana2katakanaCor(arr[i]);
+                if (i + 1 < arr.Length) {
+                    if (arr[i + 1] == 'ﾞ' || arr[i + 1] == '゛') {
+                        if (transformed == 'カ') {
                             transformed = 'ガ';
-                        } else if ( transformed == 'キ' ) {
+                        } else if (transformed == 'キ') {
                             transformed = 'ギ';
-                        } else if ( transformed == 'ク' ) {
+                        } else if (transformed == 'ク') {
                             transformed = 'グ';
-                        } else if ( transformed == 'ケ' ) {
+                        } else if (transformed == 'ケ') {
                             transformed = 'ゲ';
-                        } else if ( transformed == 'コ' ) {
+                        } else if (transformed == 'コ') {
                             transformed = 'ゴ';
-                        } else if ( transformed == 'サ' ) {
+                        } else if (transformed == 'サ') {
                             transformed = 'ザ';
-                        } else if ( transformed == 'シ' ) {
+                        } else if (transformed == 'シ') {
                             transformed = 'ジ';
-                        } else if ( transformed == 'ス' ) {
+                        } else if (transformed == 'ス') {
                             transformed = 'ズ';
-                        } else if ( transformed == 'セ' ) {
+                        } else if (transformed == 'セ') {
                             transformed = 'ゼ';
-                        } else if ( transformed == 'ソ' ) {
+                        } else if (transformed == 'ソ') {
                             transformed = 'ゾ';
-                        } else if ( transformed == 'タ' ) {
+                        } else if (transformed == 'タ') {
                             transformed = 'ダ';
-                        } else if ( transformed == 'チ' ) {
+                        } else if (transformed == 'チ') {
                             transformed = 'ヂ';
-                        } else if ( transformed == 'ツ' ) {
+                        } else if (transformed == 'ツ') {
                             transformed = 'ヅ';
-                        } else if ( transformed == 'テ' ) {
+                        } else if (transformed == 'テ') {
                             transformed = 'デ';
-                        } else if ( transformed == 'ト' ) {
+                        } else if (transformed == 'ト') {
                             transformed = 'ド';
-                        } else if ( transformed == 'ハ' ) {
+                        } else if (transformed == 'ハ') {
                             transformed = 'バ';
-                        } else if ( transformed == 'ヒ' ) {
+                        } else if (transformed == 'ヒ') {
                             transformed = 'ビ';
-                        } else if ( transformed == 'フ' ) {
+                        } else if (transformed == 'フ') {
                             transformed = 'ブ';
-                        } else if ( transformed == 'ヘ' ) {
+                        } else if (transformed == 'ヘ') {
                             transformed = 'ベ';
-                        } else if ( transformed == 'ホ' ) {
+                        } else if (transformed == 'ホ') {
                             transformed = 'ボ';
-                        } else if ( transformed == 'ウ' ) {
+                        } else if (transformed == 'ウ') {
                             transformed = 'ヴ';
                         }
                         i++;
-                    } else if ( arr[i + 1] == 'ﾟ' || arr[i + 1] == '゜' ) {
-                        if ( transformed == 'ハ' ) {
+                    } else if (arr[i + 1] == 'ﾟ' || arr[i + 1] == '゜') {
+                        if (transformed == 'ハ') {
                             transformed = 'パ';
-                        } else if ( transformed == 'ヒ' ) {
+                        } else if (transformed == 'ヒ') {
                             transformed = 'ピ';
-                        } else if ( transformed == 'フ' ) {
+                        } else if (transformed == 'フ') {
                             transformed = 'プ';
-                        } else if ( transformed == 'ヘ' ) {
+                        } else if (transformed == 'ヘ') {
                             transformed = 'ペ';
-                        } else if ( transformed == 'ホ' ) {
+                        } else if (transformed == 'ホ') {
                             transformed = 'ポ';
                         }
                         i++;
@@ -104,196 +102,198 @@ namespace cadencii {
             return ret;
         }
 
-        private static char hiragana2katakanaCor( char maybe_hiragana ) {
-            if ( maybe_hiragana == 'あ' || maybe_hiragana == 'ｱ' ) {
+        private static char hiragana2katakanaCor(char maybe_hiragana)
+        {
+            if (maybe_hiragana == 'あ' || maybe_hiragana == 'ｱ') {
                 return 'ア';
-            } else if ( maybe_hiragana == 'い' || maybe_hiragana == 'ｲ' ) {
+            } else if (maybe_hiragana == 'い' || maybe_hiragana == 'ｲ') {
                 return 'イ';
-            } else if ( maybe_hiragana == 'う' || maybe_hiragana == 'ｳ' ) {
+            } else if (maybe_hiragana == 'う' || maybe_hiragana == 'ｳ') {
                 return 'ウ';
-            } else if ( maybe_hiragana == 'え' || maybe_hiragana == 'ｴ' ) {
+            } else if (maybe_hiragana == 'え' || maybe_hiragana == 'ｴ') {
                 return 'エ';
-            } else if ( maybe_hiragana == 'お' || maybe_hiragana == 'ｵ' ) {
+            } else if (maybe_hiragana == 'お' || maybe_hiragana == 'ｵ') {
                 return 'オ';
-            } else if ( maybe_hiragana == 'か' || maybe_hiragana == 'ｶ' ) {
+            } else if (maybe_hiragana == 'か' || maybe_hiragana == 'ｶ') {
                 return 'カ';
-            } else if ( maybe_hiragana == 'き' || maybe_hiragana == 'ｷ' ) {
+            } else if (maybe_hiragana == 'き' || maybe_hiragana == 'ｷ') {
                 return 'キ';
-            } else if ( maybe_hiragana == 'く' || maybe_hiragana == 'ｸ' ) {
+            } else if (maybe_hiragana == 'く' || maybe_hiragana == 'ｸ') {
                 return 'ク';
-            } else if ( maybe_hiragana == 'け' || maybe_hiragana == 'ｹ' ) {
+            } else if (maybe_hiragana == 'け' || maybe_hiragana == 'ｹ') {
                 return 'ケ';
-            } else if ( maybe_hiragana == 'こ' || maybe_hiragana == 'ｺ' ) {
+            } else if (maybe_hiragana == 'こ' || maybe_hiragana == 'ｺ') {
                 return 'コ';
-            } else if ( maybe_hiragana == 'さ' || maybe_hiragana == 'ｻ' ) {
+            } else if (maybe_hiragana == 'さ' || maybe_hiragana == 'ｻ') {
                 return 'サ';
-            } else if ( maybe_hiragana == 'し' || maybe_hiragana == 'ｼ' ) {
+            } else if (maybe_hiragana == 'し' || maybe_hiragana == 'ｼ') {
                 return 'シ';
-            } else if ( maybe_hiragana == 'す' || maybe_hiragana == 'ｽ' ) {
+            } else if (maybe_hiragana == 'す' || maybe_hiragana == 'ｽ') {
                 return 'ス';
-            } else if ( maybe_hiragana == 'せ' || maybe_hiragana == 'ｾ' ) {
+            } else if (maybe_hiragana == 'せ' || maybe_hiragana == 'ｾ') {
                 return 'セ';
-            } else if ( maybe_hiragana == 'そ' || maybe_hiragana == 'ｿ' ) {
+            } else if (maybe_hiragana == 'そ' || maybe_hiragana == 'ｿ') {
                 return 'ソ';
-            } else if ( maybe_hiragana == 'た' || maybe_hiragana == 'ﾀ' ) {
+            } else if (maybe_hiragana == 'た' || maybe_hiragana == 'ﾀ') {
                 return 'タ';
-            } else if ( maybe_hiragana == 'ち' || maybe_hiragana == 'ﾁ' ) {
+            } else if (maybe_hiragana == 'ち' || maybe_hiragana == 'ﾁ') {
                 return 'チ';
-            } else if ( maybe_hiragana == 'つ' || maybe_hiragana == 'ﾂ' ) {
+            } else if (maybe_hiragana == 'つ' || maybe_hiragana == 'ﾂ') {
                 return 'ツ';
-            } else if ( maybe_hiragana == 'て' || maybe_hiragana == 'ﾃ' ) {
+            } else if (maybe_hiragana == 'て' || maybe_hiragana == 'ﾃ') {
                 return 'テ';
-            } else if ( maybe_hiragana == 'と' || maybe_hiragana == 'ﾄ' ) {
+            } else if (maybe_hiragana == 'と' || maybe_hiragana == 'ﾄ') {
                 return 'ト';
-            } else if ( maybe_hiragana == 'な' || maybe_hiragana == 'ﾅ' ) {
+            } else if (maybe_hiragana == 'な' || maybe_hiragana == 'ﾅ') {
                 return 'ナ';
-            } else if ( maybe_hiragana == 'に' || maybe_hiragana == 'ﾆ' ) {
+            } else if (maybe_hiragana == 'に' || maybe_hiragana == 'ﾆ') {
                 return 'ニ';
-            } else if ( maybe_hiragana == 'ぬ' || maybe_hiragana == 'ﾇ' ) {
+            } else if (maybe_hiragana == 'ぬ' || maybe_hiragana == 'ﾇ') {
                 return 'ヌ';
-            } else if ( maybe_hiragana == 'ね' || maybe_hiragana == 'ﾈ' ) {
+            } else if (maybe_hiragana == 'ね' || maybe_hiragana == 'ﾈ') {
                 return 'ネ';
-            } else if ( maybe_hiragana == 'の' || maybe_hiragana == 'ﾉ' ) {
+            } else if (maybe_hiragana == 'の' || maybe_hiragana == 'ﾉ') {
                 return 'ノ';
-            } else if ( maybe_hiragana == 'は' || maybe_hiragana == 'ﾊ' ) {
+            } else if (maybe_hiragana == 'は' || maybe_hiragana == 'ﾊ') {
                 return 'ハ';
-            } else if ( maybe_hiragana == 'ひ' || maybe_hiragana == 'ﾋ' ) {
+            } else if (maybe_hiragana == 'ひ' || maybe_hiragana == 'ﾋ') {
                 return 'ヒ';
-            } else if ( maybe_hiragana == 'ふ' || maybe_hiragana == 'ﾌ' ) {
+            } else if (maybe_hiragana == 'ふ' || maybe_hiragana == 'ﾌ') {
                 return 'フ';
-            } else if ( maybe_hiragana == 'へ' || maybe_hiragana == 'ﾍ' ) {
+            } else if (maybe_hiragana == 'へ' || maybe_hiragana == 'ﾍ') {
                 return 'ヘ';
-            } else if ( maybe_hiragana == 'ほ' || maybe_hiragana == 'ﾎ' ) {
+            } else if (maybe_hiragana == 'ほ' || maybe_hiragana == 'ﾎ') {
                 return 'ホ';
-            } else if ( maybe_hiragana == 'ま' || maybe_hiragana == 'ﾏ' ) {
+            } else if (maybe_hiragana == 'ま' || maybe_hiragana == 'ﾏ') {
                 return 'マ';
-            } else if ( maybe_hiragana == 'み' || maybe_hiragana == 'ﾐ' ) {
+            } else if (maybe_hiragana == 'み' || maybe_hiragana == 'ﾐ') {
                 return 'ミ';
-            } else if ( maybe_hiragana == 'む' || maybe_hiragana == 'ﾑ' ) {
+            } else if (maybe_hiragana == 'む' || maybe_hiragana == 'ﾑ') {
                 return 'ム';
-            } else if ( maybe_hiragana == 'め' || maybe_hiragana == 'ﾒ' ) {
+            } else if (maybe_hiragana == 'め' || maybe_hiragana == 'ﾒ') {
                 return 'メ';
-            } else if ( maybe_hiragana == 'も' || maybe_hiragana == 'ﾓ' ) {
+            } else if (maybe_hiragana == 'も' || maybe_hiragana == 'ﾓ') {
                 return 'モ';
-            } else if ( maybe_hiragana == 'や' || maybe_hiragana == 'ﾔ' ) {
+            } else if (maybe_hiragana == 'や' || maybe_hiragana == 'ﾔ') {
                 return 'ヤ';
-            } else if ( maybe_hiragana == 'ゆ' || maybe_hiragana == 'ﾕ' ) {
+            } else if (maybe_hiragana == 'ゆ' || maybe_hiragana == 'ﾕ') {
                 return 'ユ';
-            } else if ( maybe_hiragana == 'よ' || maybe_hiragana == 'ﾖ' ) {
+            } else if (maybe_hiragana == 'よ' || maybe_hiragana == 'ﾖ') {
                 return 'ヨ';
-            } else if ( maybe_hiragana == 'ら' || maybe_hiragana == 'ﾗ' ) {
+            } else if (maybe_hiragana == 'ら' || maybe_hiragana == 'ﾗ') {
                 return 'ラ';
-            } else if ( maybe_hiragana == 'り' || maybe_hiragana == 'ﾘ' ) {
+            } else if (maybe_hiragana == 'り' || maybe_hiragana == 'ﾘ') {
                 return 'リ';
-            } else if ( maybe_hiragana == 'る' || maybe_hiragana == 'ﾙ' ) {
+            } else if (maybe_hiragana == 'る' || maybe_hiragana == 'ﾙ') {
                 return 'ル';
-            } else if ( maybe_hiragana == 'れ' || maybe_hiragana == 'ﾚ' ) {
+            } else if (maybe_hiragana == 'れ' || maybe_hiragana == 'ﾚ') {
                 return 'レ';
-            } else if ( maybe_hiragana == 'ろ' || maybe_hiragana == 'ﾛ' ) {
+            } else if (maybe_hiragana == 'ろ' || maybe_hiragana == 'ﾛ') {
                 return 'ロ';
-            } else if ( maybe_hiragana == 'わ' || maybe_hiragana == 'ﾜ' ) {
+            } else if (maybe_hiragana == 'わ' || maybe_hiragana == 'ﾜ') {
                 return 'ワ';
-            } else if ( maybe_hiragana == 'を' || maybe_hiragana == 'ｦ' ) {
+            } else if (maybe_hiragana == 'を' || maybe_hiragana == 'ｦ') {
                 return 'ヲ';
-            } else if ( maybe_hiragana == 'ん' || maybe_hiragana == 'ﾝ' ) {
+            } else if (maybe_hiragana == 'ん' || maybe_hiragana == 'ﾝ') {
                 return 'ン';
-            } else if ( maybe_hiragana == 'が' ) {
+            } else if (maybe_hiragana == 'が') {
                 return 'ガ';
-            } else if ( maybe_hiragana == 'ぱ' ) {
+            } else if (maybe_hiragana == 'ぱ') {
                 return 'パ';
-            } else if ( maybe_hiragana == 'ぁ' || maybe_hiragana == 'ｧ' ) {
+            } else if (maybe_hiragana == 'ぁ' || maybe_hiragana == 'ｧ') {
                 return 'ァ';
-            } else if ( maybe_hiragana == 'ぃ' || maybe_hiragana == 'ｨ' ) {
+            } else if (maybe_hiragana == 'ぃ' || maybe_hiragana == 'ｨ') {
                 return 'ィ';
-            } else if ( maybe_hiragana == 'ぅ' || maybe_hiragana == 'ｩ' ) {
+            } else if (maybe_hiragana == 'ぅ' || maybe_hiragana == 'ｩ') {
                 return 'ゥ';
-            } else if ( maybe_hiragana == 'ぇ' || maybe_hiragana == 'ｪ' ) {
+            } else if (maybe_hiragana == 'ぇ' || maybe_hiragana == 'ｪ') {
                 return 'ェ';
-            } else if ( maybe_hiragana == 'ぉ' || maybe_hiragana == 'ｫ' ) {
+            } else if (maybe_hiragana == 'ぉ' || maybe_hiragana == 'ｫ') {
                 return 'ォ';
-            } else if ( maybe_hiragana == 'ゃ' || maybe_hiragana == 'ｬ' ) {
+            } else if (maybe_hiragana == 'ゃ' || maybe_hiragana == 'ｬ') {
                 return 'ャ';
-            } else if ( maybe_hiragana == 'ゅ' || maybe_hiragana == 'ｭ' ) {
+            } else if (maybe_hiragana == 'ゅ' || maybe_hiragana == 'ｭ') {
                 return 'ュ';
-            } else if ( maybe_hiragana == 'ょ' || maybe_hiragana == 'ｮ' ) {
+            } else if (maybe_hiragana == 'ょ' || maybe_hiragana == 'ｮ') {
                 return 'ョ';
-            } else if ( maybe_hiragana == 'っ' || maybe_hiragana == 'ｯ' ) {
+            } else if (maybe_hiragana == 'っ' || maybe_hiragana == 'ｯ') {
                 return 'ッ';
-            } else if ( maybe_hiragana == 'ゐ' ) {
+            } else if (maybe_hiragana == 'ゐ') {
                 return 'ヰ';
-            } else if ( maybe_hiragana == 'ゑ' ) {
+            } else if (maybe_hiragana == 'ゑ') {
                 return 'ヱ';
-            } else if ( maybe_hiragana == 'ぎ' ) {
+            } else if (maybe_hiragana == 'ぎ') {
                 return 'ギ';
-            } else if ( maybe_hiragana == 'ぐ' ) {
+            } else if (maybe_hiragana == 'ぐ') {
                 return 'グ';
-            } else if ( maybe_hiragana == 'げ' ) {
+            } else if (maybe_hiragana == 'げ') {
                 return 'ゲ';
-            } else if ( maybe_hiragana == 'ご' ) {
+            } else if (maybe_hiragana == 'ご') {
                 return 'ゴ';
-            } else if ( maybe_hiragana == 'ざ' ) {
+            } else if (maybe_hiragana == 'ざ') {
                 return 'ザ';
-            } else if ( maybe_hiragana == 'じ' ) {
+            } else if (maybe_hiragana == 'じ') {
                 return 'ジ';
-            } else if ( maybe_hiragana == 'ず' ) {
+            } else if (maybe_hiragana == 'ず') {
                 return 'ズ';
-            } else if ( maybe_hiragana == 'ぜ' ) {
+            } else if (maybe_hiragana == 'ぜ') {
                 return 'ゼ';
-            } else if ( maybe_hiragana == 'ぞ' ) {
+            } else if (maybe_hiragana == 'ぞ') {
                 return 'ゾ';
-            } else if ( maybe_hiragana == 'だ' ) {
+            } else if (maybe_hiragana == 'だ') {
                 return 'ダ';
-            } else if ( maybe_hiragana == 'ぢ' ) {
+            } else if (maybe_hiragana == 'ぢ') {
                 return 'ヂ';
-            } else if ( maybe_hiragana == 'づ' ) {
+            } else if (maybe_hiragana == 'づ') {
                 return 'ヅ';
-            } else if ( maybe_hiragana == 'で' ) {
+            } else if (maybe_hiragana == 'で') {
                 return 'デ';
-            } else if ( maybe_hiragana == 'ど' ) {
+            } else if (maybe_hiragana == 'ど') {
                 return 'ド';
-            } else if ( maybe_hiragana == 'ば' ) {
+            } else if (maybe_hiragana == 'ば') {
                 return 'バ';
-            } else if ( maybe_hiragana == 'び' ) {
+            } else if (maybe_hiragana == 'び') {
                 return 'ビ';
-            } else if ( maybe_hiragana == 'ぶ' ) {
+            } else if (maybe_hiragana == 'ぶ') {
                 return 'ブ';
-            } else if ( maybe_hiragana == 'べ' ) {
+            } else if (maybe_hiragana == 'べ') {
                 return 'ベ';
-            } else if ( maybe_hiragana == 'ぼ' ) {
+            } else if (maybe_hiragana == 'ぼ') {
                 return 'ボ';
-            } else if ( maybe_hiragana == 'ぴ' ) {
+            } else if (maybe_hiragana == 'ぴ') {
                 return 'ピ';
-            } else if ( maybe_hiragana == 'ぷ' ) {
+            } else if (maybe_hiragana == 'ぷ') {
                 return 'プ';
-            } else if ( maybe_hiragana == 'ぺ' ) {
+            } else if (maybe_hiragana == 'ぺ') {
                 return 'ペ';
-            } else if ( maybe_hiragana == 'ぽ' ) {
+            } else if (maybe_hiragana == 'ぽ') {
                 return 'ポ';
-            } else if ( maybe_hiragana == 'ゎ' ) {
+            } else if (maybe_hiragana == 'ゎ') {
                 return 'ワ';
-            } else if ( maybe_hiragana == 'ヴ' ) {
+            } else if (maybe_hiragana == 'ヴ') {
                 return 'ヴ';
             }
             return maybe_hiragana;
         }
 
-        public static String Attach( String roman ) {
+        public static string Attach(string roman)
+        {
             char[] arr = roman.ToCharArray();
-            String ret = "";
+            string ret = "";
             int index = 0;
-            while ( index < arr.Length ) {
+            while (index < arr.Length) {
                 // _MAX_MATCH～2文字のマッチ
-                boolean processed = false;
-                for ( int i = _MAX_MATCH; i >= 2; i-- ) {
-                    if ( index + (i - 1) < arr.Length ) {
-                        String s = "";
-                        for ( int j = 0; j < i; j++ ) {
+                bool processed = false;
+                for (int i = _MAX_MATCH; i >= 2; i--) {
+                    if (index + (i - 1) < arr.Length) {
+                        string s = "";
+                        for (int j = 0; j < i; j++) {
                             s += "" + arr[index + j];
                         }
                         ByRef<Boolean> trailing = new ByRef<Boolean>();
-                        String res = AttachCor( s, trailing );
-                        if ( res != s ) {
-                            if ( !trailing.value ) {
+                        string res = AttachCor(s, trailing);
+                        if (res != s) {
+                            if (!trailing.value) {
                                 index = index + i;
                             } else {
                                 index = index + i - 1;
@@ -304,461 +304,460 @@ namespace cadencii {
                         }
                     }
                 }
-                if ( processed ) {
+                if (processed) {
                     continue;
                 }
 
                 // 1文字のマッチ
                 ByRef<Boolean> trailing1 = new ByRef<Boolean>();
-                ret += AttachCor( arr[index] + "", trailing1 );
+                ret += AttachCor(arr[index] + "", trailing1);
                 index++;
             }
             return ret;
         }
 
-        private static String AttachCor( String roman, ByRef<Boolean> trailing ) {
-            String s = roman.ToLower();
+        private static string AttachCor(string roman, ByRef<Boolean> trailing)
+        {
+            string s = roman.ToLower();
             trailing.value = false;
-            if ( s.Equals( "a" ) ) {
+            if (s.Equals("a")) {
                 return "あ";
-            } else if ( s.Equals( "i" ) ||
-                        s.Equals( "yi" ) ) {
+            } else if (s.Equals("i") ||
+                        s.Equals("yi")) {
                 return "い";
-            } else if ( s.Equals( "u" ) ||
-                        s.Equals( "wu" ) ) {
+            } else if (s.Equals("u") ||
+                        s.Equals("wu")) {
                 return "う";
-            } else if ( s.Equals( "e" ) ) {
+            } else if (s.Equals("e")) {
                 return "え";
-            } else if ( s.Equals( "o" ) ) {
+            } else if (s.Equals("o")) {
                 return "お";
-            } else if ( s.Equals( "ka" ) ||
-                        s.Equals( "ca" ) ) {
+            } else if (s.Equals("ka") ||
+                        s.Equals("ca")) {
                 return "か";
-            } else if ( s.Equals( "ki" ) ) {
+            } else if (s.Equals("ki")) {
                 return "き";
-            } else if ( s.Equals( "ku" ) ||
-                        s.Equals( "cu" ) ||
-                        s.Equals( "qu" ) ) {
+            } else if (s.Equals("ku") ||
+                        s.Equals("cu") ||
+                        s.Equals("qu")) {
                 return "く";
-            } else if ( s.Equals( "ke" ) ) {
+            } else if (s.Equals("ke")) {
                 return "け";
-            } else if ( s.Equals( "ko" ) ||
-                        s.Equals( "co" ) ) {
+            } else if (s.Equals("ko") ||
+                        s.Equals("co")) {
                 return "こ";
-            } else if ( s.Equals( "sa" ) ) {
+            } else if (s.Equals("sa")) {
                 return "さ";
-            } else if ( s.Equals( "si" ) ||
-                        s.Equals( "shi" ) ||
-                        s.Equals( "ci" ) ) {
+            } else if (s.Equals("si") ||
+                        s.Equals("shi") ||
+                        s.Equals("ci")) {
                 return "し";
-            } else if ( s.Equals( "su" ) ) {
+            } else if (s.Equals("su")) {
                 return "す";
-            } else if ( s.Equals( "se" ) ||
-                        s.Equals( "ce" ) ) {
+            } else if (s.Equals("se") ||
+                        s.Equals("ce")) {
                 return "せ";
-            } else if ( s.Equals( "so" ) ) {
+            } else if (s.Equals("so")) {
                 return "そ";
-            } else if ( s.Equals( "ta" ) ) {
+            } else if (s.Equals("ta")) {
                 return "た";
-            } else if ( s.Equals( "chi" ) ||
-                        s.Equals( "ti" ) ) {
+            } else if (s.Equals("chi") ||
+                        s.Equals("ti")) {
                 return "ち";
-            } else if ( s.Equals( "tu" ) ||
-                        s.Equals( "tsu" ) ) {
+            } else if (s.Equals("tu") ||
+                        s.Equals("tsu")) {
                 return "つ";
-            } else if ( s.Equals( "te" ) ) {
+            } else if (s.Equals("te")) {
                 return "て";
-            } else if ( s.Equals( "to" ) ) {
+            } else if (s.Equals("to")) {
                 return "と";
-            } else if ( s.Equals( "na" ) ) {
+            } else if (s.Equals("na")) {
                 return "な";
-            } else if ( s.Equals( "ni" ) ) {
+            } else if (s.Equals("ni")) {
                 return "に";
-            } else if ( s.Equals( "nu" ) ) {
+            } else if (s.Equals("nu")) {
                 return "ぬ";
-            } else if ( s.Equals( "ne" ) ) {
+            } else if (s.Equals("ne")) {
                 return "ね";
-            } else if ( s.Equals( "no" ) ) {
+            } else if (s.Equals("no")) {
                 return "の";
-            } else if ( s.Equals( "ha" ) ) {
+            } else if (s.Equals("ha")) {
                 return "は";
-            } else if ( s.Equals( "hi" ) ) {
+            } else if (s.Equals("hi")) {
                 return "ひ";
-            } else if ( s.Equals( "hu" ) ||
-                        s.Equals( "fu" ) ) {
+            } else if (s.Equals("hu") ||
+                        s.Equals("fu")) {
                 return "ふ";
-            } else if ( s.Equals( "he" ) ) {
+            } else if (s.Equals("he")) {
                 return "へ";
-            } else if ( s.Equals( "ho" ) ) {
+            } else if (s.Equals("ho")) {
                 return "ほ";
-            } else if ( s.Equals( "ma" ) ) {
+            } else if (s.Equals("ma")) {
                 return "ま";
-            } else if ( s.Equals( "mi" ) ) {
+            } else if (s.Equals("mi")) {
                 return "み";
-            } else if ( s.Equals( "mu" ) ) {
+            } else if (s.Equals("mu")) {
                 return "む";
-            } else if ( s.Equals( "me" ) ) {
+            } else if (s.Equals("me")) {
                 return "め";
-            } else if ( s.Equals( "mo" ) ) {
+            } else if (s.Equals("mo")) {
                 return "も";
-            } else if ( s.Equals( "ya" ) ) {
+            } else if (s.Equals("ya")) {
                 return "や";
-            } else if ( s.Equals( "yu" ) ) {
+            } else if (s.Equals("yu")) {
                 return "ゆ";
-            } else if ( s.Equals( "ye" ) ) {
+            } else if (s.Equals("ye")) {
                 return "いぇ";
-            } else if ( s.Equals( "yo" ) ) {
+            } else if (s.Equals("yo")) {
                 return "よ";
-            } else if ( s.Equals( "ra" ) ) {
+            } else if (s.Equals("ra")) {
                 return "ら";
-            } else if ( s.Equals( "ri" ) ) {
+            } else if (s.Equals("ri")) {
                 return "り";
-            } else if ( s.Equals( "ru" ) ) {
+            } else if (s.Equals("ru")) {
                 return "る";
-            } else if ( s.Equals( "re" ) ) {
+            } else if (s.Equals("re")) {
                 return "れ";
-            } else if ( s.Equals( "ro" ) ) {
+            } else if (s.Equals("ro")) {
                 return "ろ";
-            } else if ( s.Equals( "wa" ) ) {
+            } else if (s.Equals("wa")) {
                 return "わ";
-            } else if ( s.Equals( "wi" ) ) {
+            } else if (s.Equals("wi")) {
                 return "うぃ";
-            } else if ( s.Equals( "wyi" ) ) {
+            } else if (s.Equals("wyi")) {
                 return "ゐ";
-            } else if ( s.Equals( "we" ) ) {
+            } else if (s.Equals("we")) {
                 return "うぇ";
-            } else if ( s.Equals( "wye" ) ) {
+            } else if (s.Equals("wye")) {
                 return "ゑ";
-            } else if ( s.Equals( "wo" ) ) {
+            } else if (s.Equals("wo")) {
                 return "を";
-            } else if ( s.Equals( "nn" ) ||
-                        s.Equals( "n" ) ) {
+            } else if (s.Equals("nn") ||
+                        s.Equals("n")) {
                 return "ん";
-            } else if ( s.Equals( "ga" ) ) {
+            } else if (s.Equals("ga")) {
                 return "が";
-            } else if ( s.Equals( "gi" ) ) {
+            } else if (s.Equals("gi")) {
                 return "ぎ";
-            } else if ( s.Equals( "gu" ) ) {
+            } else if (s.Equals("gu")) {
                 return "ぐ";
-            } else if ( s.Equals( "ge" ) ) {
+            } else if (s.Equals("ge")) {
                 return "げ";
-            } else if ( s.Equals( "go" ) ) {
+            } else if (s.Equals("go")) {
                 return "ご";
-            } else if ( s.Equals( "za" ) ) {
+            } else if (s.Equals("za")) {
                 return "ざ";
-            } else if ( s.Equals( "zi" ) ||
-                        s.Equals( "ji" ) ) {
+            } else if (s.Equals("zi") ||
+                        s.Equals("ji")) {
                 return "じ";
-            } else if ( s.Equals( "zu" ) ) {
+            } else if (s.Equals("zu")) {
                 return "ず";
-            } else if ( s.Equals( "ze" ) ) {
+            } else if (s.Equals("ze")) {
                 return "ぜ";
-            } else if ( s.Equals( "zo" ) ) {
+            } else if (s.Equals("zo")) {
                 return "ぞ";
-            } else if ( s.Equals( "da" ) ) {
+            } else if (s.Equals("da")) {
                 return "だ";
-            } else if ( s.Equals( "di" ) ) {
+            } else if (s.Equals("di")) {
                 return "ぢ";
-            } else if ( s.Equals( "du" ) ) {
+            } else if (s.Equals("du")) {
                 return "づ";
-            } else if ( s.Equals( "de" ) ) {
+            } else if (s.Equals("de")) {
                 return "で";
-            } else if ( s.Equals( "do" ) ) {
+            } else if (s.Equals("do")) {
                 return "ど";
-            } else if ( s.Equals( "ba" ) ) {
+            } else if (s.Equals("ba")) {
                 return "ば";
-            } else if ( s.Equals( "bi" ) ) {
+            } else if (s.Equals("bi")) {
                 return "び";
-            } else if ( s.Equals( "bu" ) ) {
+            } else if (s.Equals("bu")) {
                 return "ぶ";
-            } else if ( s.Equals( "be" ) ) {
+            } else if (s.Equals("be")) {
                 return "べ";
-            } else if ( s.Equals( "bo" ) ) {
+            } else if (s.Equals("bo")) {
                 return "ぼ";
-            } else if ( s.Equals( "pa" ) ) {
+            } else if (s.Equals("pa")) {
                 return "ぱ";
-            } else if ( s.Equals( "pi" ) ) {
+            } else if (s.Equals("pi")) {
                 return "ぴ";
-            } else if ( s.Equals( "pu" ) ) {
+            } else if (s.Equals("pu")) {
                 return "ぷ";
-            } else if ( s.Equals( "pe" ) ) {
+            } else if (s.Equals("pe")) {
                 return "ぺ";
-            } else if ( s.Equals( "po" ) ) {
+            } else if (s.Equals("po")) {
                 return "ぽ";
-            } else if ( s.Equals( "sha" ) ) {
+            } else if (s.Equals("sha")) {
                 return "しゃ";
-            } else if ( s.Equals( "shu" ) ) {
+            } else if (s.Equals("shu")) {
                 return "しゅ";
-            } else if ( s.Equals( "sho" ) ) {
+            } else if (s.Equals("sho")) {
                 return "しょ";
-            } else if ( s.Equals( "cha" ) ||
-                        s.Equals( "tya" ) ) {
+            } else if (s.Equals("cha") ||
+                        s.Equals("tya")) {
                 return "ちゃ";
-            } else if ( s.Equals( "chu" ) ||
-                        s.Equals( "tyu" ) ) {
+            } else if (s.Equals("chu") ||
+                        s.Equals("tyu")) {
                 return "ちゅ";
-            } else if ( s.Equals( "cho" ) ||
-                        s.Equals( "tyo" ) ) {
+            } else if (s.Equals("cho") ||
+                        s.Equals("tyo")) {
                 return "ちょ";
-            } else if ( s.Equals( "dya" ) ) {
+            } else if (s.Equals("dya")) {
                 return "ぢゃ";
-            } else if ( s.Equals( "dyu" ) ) {
+            } else if (s.Equals("dyu")) {
                 return "ぢゅ";
-            } else if ( s.Equals( "dyo" ) ) {
+            } else if (s.Equals("dyo")) {
                 return "ぢょ";
-            } else if ( s.Equals( "kwa" ) ) {
+            } else if (s.Equals("kwa")) {
                 return "くゎ";
-            } else if ( s.Equals( "kwi" ) ) {
+            } else if (s.Equals("kwi")) {
                 return "くぃ";
-            } else if ( s.Equals( "kwu" ) ) {
+            } else if (s.Equals("kwu")) {
                 return "くぅ";
-            } else if ( s.Equals( "kwe" ) ) {
+            } else if (s.Equals("kwe")) {
                 return "くぇ";
-            } else if ( s.Equals( "kwo" ) ) {
+            } else if (s.Equals("kwo")) {
                 return "くぉ";
-            } else if ( s.Equals( "gwa" ) ) {
+            } else if (s.Equals("gwa")) {
                 return "ぐゎ";
-            } else if ( s.Equals( "kya" ) ) {
+            } else if (s.Equals("kya")) {
                 return "きゃ";
-            } else if ( s.Equals( "kyu" ) ) {
+            } else if (s.Equals("kyu")) {
                 return "きゅ";
-            } else if ( s.Equals( "kyo" ) ) {
+            } else if (s.Equals("kyo")) {
                 return "きょ";
-            } else if ( s.Equals( "sya" ) ) {
+            } else if (s.Equals("sya")) {
                 return "しゃ";
-            } else if ( s.Equals( "syu" ) ) {
+            } else if (s.Equals("syu")) {
                 return "しゅ";
-            } else if ( s.Equals( "syo" ) ) {
+            } else if (s.Equals("syo")) {
                 return "しょ";
-            } else if ( s.Equals( "nya" ) ) {
+            } else if (s.Equals("nya")) {
                 return "にゃ";
-            } else if ( s.Equals( "nyu" ) ) {
+            } else if (s.Equals("nyu")) {
                 return "にゅ";
-            } else if ( s.Equals( "nyo" ) ) {
+            } else if (s.Equals("nyo")) {
                 return "にょ";
-            } else if ( s.Equals( "mya" ) ) {
+            } else if (s.Equals("mya")) {
                 return "みゃ";
-            } else if ( s.Equals( "myu" ) ) {
+            } else if (s.Equals("myu")) {
                 return "みゅ";
-            } else if ( s.Equals( "myo" ) ) {
+            } else if (s.Equals("myo")) {
                 return "みょ";
-            } else if ( s.Equals( "rya" ) ) {
+            } else if (s.Equals("rya")) {
                 return "りゃ";
-            } else if ( s.Equals( "ryu" ) ) {
+            } else if (s.Equals("ryu")) {
                 return "りゅ";
-            } else if ( s.Equals( "ryo" ) ) {
+            } else if (s.Equals("ryo")) {
                 return "りょ";
-            } else if ( s.Equals( "gya" ) ) {
+            } else if (s.Equals("gya")) {
                 return "ぎゃ";
-            } else if ( s.Equals( "gyu" ) ) {
+            } else if (s.Equals("gyu")) {
                 return "ぎゅ";
-            } else if ( s.Equals( "gyo" ) ) {
+            } else if (s.Equals("gyo")) {
                 return "ぎょ";
-            } else if ( s.Equals( "zya" ) ||
-                        s.Equals( "ja" ) ) {
+            } else if (s.Equals("zya") ||
+                        s.Equals("ja")) {
                 return "じゃ";
-            } else if ( s.Equals( "zyu" ) ||
-                        s.Equals( "ju" ) ) {
+            } else if (s.Equals("zyu") ||
+                        s.Equals("ju")) {
                 return "じゅ";
-            } else if ( s.Equals( "zyo" ) ||
-                        s.Equals( "jo" ) ) {
+            } else if (s.Equals("zyo") ||
+                        s.Equals("jo")) {
                 return "じょ";
-            } else if ( s.Equals( "bya" ) ) {
+            } else if (s.Equals("bya")) {
                 return "びゃ";
-            } else if ( s.Equals( "byu" ) ) {
+            } else if (s.Equals("byu")) {
                 return "びゅ";
-            } else if ( s.Equals( "byo" ) ) {
+            } else if (s.Equals("byo")) {
                 return "びょ";
-            } else if ( s.Equals( "pya" ) ) {
+            } else if (s.Equals("pya")) {
                 return "ぴゃ";
-            } else if ( s.Equals( "pyu" ) ) {
+            } else if (s.Equals("pyu")) {
                 return "ぴゅ";
-            } else if ( s.Equals( "pyo" ) ) {
+            } else if (s.Equals("pyo")) {
                 return "ぴょ";
-            } else if ( s.Equals( "la" ) ||
-                        s.Equals( "xa" ) ) {
+            } else if (s.Equals("la") ||
+                        s.Equals("xa")) {
                 return "ぁ";
-            } else if ( s.Equals( "li" ) ||
-                        s.Equals( "xi" ) ||
-                        s.Equals( "lyi" ) ||
-                        s.Equals( "xyi" ) ) {
+            } else if (s.Equals("li") ||
+                        s.Equals("xi") ||
+                        s.Equals("lyi") ||
+                        s.Equals("xyi")) {
                 return "ぃ";
-            } else if ( s.Equals( "lu" ) ||
-                        s.Equals( "xu" ) ) {
+            } else if (s.Equals("lu") ||
+                        s.Equals("xu")) {
                 return "ぅ";
-            } else if ( s.Equals( "le" ) ||
-                        s.Equals( "xe" ) ||
-                        s.Equals( "lye" ) ||
-                        s.Equals( "xye" ) ) {
+            } else if (s.Equals("le") ||
+                        s.Equals("xe") ||
+                        s.Equals("lye") ||
+                        s.Equals("xye")) {
                 return "ぇ";
-            } else if ( s.Equals( "lo" ) ||
-                        s.Equals( "xo" ) ) {
+            } else if (s.Equals("lo") ||
+                        s.Equals("xo")) {
                 return "ぉ";
-            } else if ( s.Equals( "lya" ) ||
-                        s.Equals( "xya" ) ) {
+            } else if (s.Equals("lya") ||
+                        s.Equals("xya")) {
                 return "ゃ";
-            } else if ( s.Equals( "lyu" ) ||
-                        s.Equals( "xyu" ) ) {
+            } else if (s.Equals("lyu") ||
+                        s.Equals("xyu")) {
                 return "ゅ";
-            } else if ( s.Equals( "lyo" ) ||
-                        s.Equals( "xyo" ) ) {
+            } else if (s.Equals("lyo") ||
+                        s.Equals("xyo")) {
                 return "ょ";
-            } else if ( s.Equals( "lwa" ) ||
-                        s.Equals( "xwa" ) ) {
+            } else if (s.Equals("lwa") ||
+                        s.Equals("xwa")) {
                 return "ゎ";
-            } else if ( s.Equals( "ltu" ) ||
-                        s.Equals( "xtu" ) ||
-                        s.Equals( "xtsu" ) ||
-                        s.Equals( "ltsu" ) ) {
+            } else if (s.Equals("ltu") ||
+                        s.Equals("xtu") ||
+                        s.Equals("xtsu") ||
+                        s.Equals("ltsu")) {
                 return "っ";
-            } else if ( s.Equals( "va" ) ) {
+            } else if (s.Equals("va")) {
                 return "ゔぁ";
-            } else if ( s.Equals( "vi" ) ) {
+            } else if (s.Equals("vi")) {
                 return "ゔぃ";
-            } else if ( s.Equals( "vu" ) ) {
+            } else if (s.Equals("vu")) {
                 return "ゔ";
-            } else if ( s.Equals( "ve" ) ) {
+            } else if (s.Equals("ve")) {
                 return "ゔぇ";
-            } else if ( s.Equals( "vo" ) ) {
+            } else if (s.Equals("vo")) {
                 return "ゔぉ";
-            } else if ( s.Equals( "fa" ) ) {
+            } else if (s.Equals("fa")) {
                 return "ふぁ";
-            } else if ( s.Equals( "fi" ) ) {
+            } else if (s.Equals("fi")) {
                 return "ふぃ";
-            } else if ( s.Equals( "fe" ) ) {
+            } else if (s.Equals("fe")) {
                 return "ふぇ";
-            } else if ( s.Equals( "fo" ) ) {
+            } else if (s.Equals("fo")) {
                 return "ふぉ";
-            } else if ( s.Equals( "qa" ) ) {
+            } else if (s.Equals("qa")) {
                 return "くぁ";
-            } else if ( s.Equals( "qi" ) ) {
+            } else if (s.Equals("qi")) {
                 return "くぃ";
-            } else if ( s.Equals( "qe" ) ) {
+            } else if (s.Equals("qe")) {
                 return "くぇ";
-            } else if ( s.Equals( "qo" ) ) {
+            } else if (s.Equals("qo")) {
                 return "くぉ";
-            } else if ( s.Equals( "vyu" ) ) {
+            } else if (s.Equals("vyu")) {
                 return "ゔゅ";
-            } else if ( s.Equals( "qq" ) ||
-                        s.Equals( "ww" ) ||
-                        s.Equals( "rr" ) ||
-                        s.Equals( "tt" ) ||
-                        s.Equals( "yy" ) ||
-                        s.Equals( "pp" ) ||
-                        s.Equals( "ss" ) ||
-                        s.Equals( "dd" ) ||
-                        s.Equals( "ff" ) ||
-                        s.Equals( "gg" ) ||
-                        s.Equals( "hh" ) ||
-                        s.Equals( "jj" ) ||
-                        s.Equals( "kk" ) ||
-                        s.Equals( "ll" ) ||
-                        s.Equals( "zz" ) ||
-                        s.Equals( "xx" ) ||
-                        s.Equals( "cc" ) ||
-                        s.Equals( "vv" ) ||
-                        s.Equals( "bb" ) ||
-                        s.Equals( "mm" ) ) {
+            } else if (s.Equals("qq") ||
+                        s.Equals("ww") ||
+                        s.Equals("rr") ||
+                        s.Equals("tt") ||
+                        s.Equals("yy") ||
+                        s.Equals("pp") ||
+                        s.Equals("ss") ||
+                        s.Equals("dd") ||
+                        s.Equals("ff") ||
+                        s.Equals("gg") ||
+                        s.Equals("hh") ||
+                        s.Equals("jj") ||
+                        s.Equals("kk") ||
+                        s.Equals("ll") ||
+                        s.Equals("zz") ||
+                        s.Equals("xx") ||
+                        s.Equals("cc") ||
+                        s.Equals("vv") ||
+                        s.Equals("bb") ||
+                        s.Equals("mm")) {
                 trailing.value = true;
                 return "っ";
-            } else if ( s.Equals( "-" ) ) {
+            } else if (s.Equals("-")) {
                 return "ー";
-            } else if ( s.Equals( "tha" ) ) {
+            } else if (s.Equals("tha")) {
                 return "てゃ";
-            } else if ( s.Equals( "thi" ) ) {
+            } else if (s.Equals("thi")) {
                 return "てぃ";
-            } else if ( s.Equals( "thu" ) ) {
+            } else if (s.Equals("thu")) {
                 return "てゅ";
-            } else if ( s.Equals( "the" ) ) {
+            } else if (s.Equals("the")) {
                 return "てぇ";
-            } else if ( s.Equals( "tho" ) ) {
+            } else if (s.Equals("tho")) {
                 return "てょ";
-            } else if ( s.Equals( "twa" ) ) {
+            } else if (s.Equals("twa")) {
                 return "とぁ";
-            } else if ( s.Equals( "twi" ) ) {
+            } else if (s.Equals("twi")) {
                 return "とぃ";
-            } else if ( s.Equals( "twu" ) ) {
+            } else if (s.Equals("twu")) {
                 return "とぅ";
-            } else if ( s.Equals( "twe" ) ) {
+            } else if (s.Equals("twe")) {
                 return "とぇ";
-            } else if ( s.Equals( "two" ) ) {
+            } else if (s.Equals("two")) {
                 return "とぉ";
-            } else if ( s.Equals( "dha" ) ) {
+            } else if (s.Equals("dha")) {
                 return "でゃ";
-            } else if ( s.Equals( "dhi" ) ) {
+            } else if (s.Equals("dhi")) {
                 return "でぃ";
-            } else if ( s.Equals( "dhu" ) ) {
+            } else if (s.Equals("dhu")) {
                 return "でゅ";
-            } else if ( s.Equals( "dhe" ) ) {
+            } else if (s.Equals("dhe")) {
                 return "でぇ";
-            } else if ( s.Equals( "dho" ) ) {
+            } else if (s.Equals("dho")) {
                 return "でょ";
-            } else if ( s.Equals( "wha" ) ) {
+            } else if (s.Equals("wha")) {
                 return "うぁ";
-            } else if ( s.Equals( "whi" ) ) {
+            } else if (s.Equals("whi")) {
                 return "うぃ";
-            } else if ( s.Equals( "whu" ) ) {
+            } else if (s.Equals("whu")) {
                 return "う";
-            } else if ( s.Equals( "whe" ) ) {
+            } else if (s.Equals("whe")) {
                 return "うぇ";
-            } else if ( s.Equals( "who" ) ) {
+            } else if (s.Equals("who")) {
                 return "うぉ";
-            } else if ( s.Equals( "lka" ) ||
-                        s.Equals( "xka" ) ) {
+            } else if (s.Equals("lka") ||
+                        s.Equals("xka")) {
                 return "ヵ";
-            } else if ( s.Equals( "lke" ) ||
-                        s.Equals( "xke" ) ) {
+            } else if (s.Equals("lke") ||
+                        s.Equals("xke")) {
                 return "ヶ";
-            } else if ( s.Equals( "tsa" ) ) {
+            } else if (s.Equals("tsa")) {
                 return "つぁ";
-            } else if ( s.Equals( "tsi" ) ) {
+            } else if (s.Equals("tsi")) {
                 return "つぃ";
-            } else if ( s.Equals( "tse" ) ) {
+            } else if (s.Equals("tse")) {
                 return "つぇ";
-            } else if ( s.Equals( "tso" ) ) {
+            } else if (s.Equals("tso")) {
                 return "つぉ";
-            } else if ( s.Equals( "jya" ) ) {
+            } else if (s.Equals("jya")) {
                 return "じゃ";
-            } else if ( s.Equals( "jyu" ) ) {
+            } else if (s.Equals("jyu")) {
                 return "じゅ";
-            } else if ( s.Equals( "jyo" ) ) {
+            } else if (s.Equals("jyo")) {
                 return "じょ";
-            } else if ( s.Equals( "cya" ) ) {
+            } else if (s.Equals("cya")) {
                 return "ちゃ";
-            } else if ( s.Equals( "cyi" ) ) {
+            } else if (s.Equals("cyi")) {
                 return "ちぃ";
-            } else if ( s.Equals( "cyu" ) ) {
+            } else if (s.Equals("cyu")) {
                 return "ちゅ";
-            } else if ( s.Equals( "cye" ) ) {
+            } else if (s.Equals("cye")) {
                 return "ちぇ";
-            } else if ( s.Equals( "cyo" ) ) {
+            } else if (s.Equals("cyo")) {
                 return "ちょ";
-            } else if ( s.Equals( "dwa" ) ) {
+            } else if (s.Equals("dwa")) {
                 return "どぁ";
-            } else if ( s.Equals( "dwi" ) ) {
+            } else if (s.Equals("dwi")) {
                 return "どぃ";
-            } else if ( s.Equals( "dwu" ) ) {
+            } else if (s.Equals("dwu")) {
                 return "どぅ";
-            } else if ( s.Equals( "dwe" ) ) {
+            } else if (s.Equals("dwe")) {
                 return "どぇ";
-            } else if ( s.Equals( "dwo" ) ) {
+            } else if (s.Equals("dwo")) {
                 return "どぉ";
-            } else if ( s.Equals( "hwa" ) ) {
+            } else if (s.Equals("hwa")) {
                 return "ふぁ";
-            } else if ( s.Equals( "hwi" ) ) {
+            } else if (s.Equals("hwi")) {
                 return "ふぃ";
-            } else if ( s.Equals( "hwu" ) ) {
+            } else if (s.Equals("hwu")) {
                 return "ふぇ";
-            } else if ( s.Equals( "hwo" ) ) {
+            } else if (s.Equals("hwo")) {
                 return "ふぉ";
-            } else if ( s.Equals( "fyu" ) ||
-                        s.Equals( "hwyu" ) ) {
+            } else if (s.Equals("fyu") ||
+                        s.Equals("hwyu")) {
                 return "ふゅ";
             }
             return roman;
         }
     }
 
-#if !JAVA
 }
-#endif

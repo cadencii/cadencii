@@ -11,58 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+namespace cadencii
+{
 
-package cadencii;
+    using System;
+    using cadencii;
 
-#else
-
-    namespace cadencii
+    public interface WaveformZoomUi
     {
+        int getWidth();
 
-#if CSHARP
-            using System;
-            using cadencii;
-#else
-            using namespace org::kbinani::cadencii;
-#endif
-#endif
+        int getHeight();
 
-#if __cplusplus
-            class WaveformZoomUi
-#else
-            public interface WaveformZoomUi
-#endif
-            {
-#if __cplusplus
-                virtual int getWidth(){}
-#else
-                int getWidth();
-#endif
+        void setListener(WaveformZoomUiListener listener);
 
-#if __cplusplus
-                virtual int getHeight(){}
-#else
-                int getHeight();
-#endif
+        void repaint();
+    };
 
-#if __cplusplus
-                virtual void setListener( WaveformZoomUiListener listener ){}
-#else
-                void setListener( WaveformZoomUiListener listener );
-#endif
-
-#if __cplusplus
-                virtual void repaint(){}
-#else
-                void repaint();
-#endif
-            };
-
-#if JAVA
-
-#else
-
-    }
-
-#endif
+}

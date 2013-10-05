@@ -12,11 +12,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii
 {
-    using Integer = System.Int32;
 
     /// <summary>
     /// 時刻(clock 単位)順に並べ替えられた、MidiEventQueue のリスト。
@@ -24,11 +24,11 @@ namespace cadencii
     /// </summary>
     public class EventQueueSequence
     {
-        private TreeMap<Integer, MidiEventQueue> sequence;
+        private SortedDictionary<int, MidiEventQueue> sequence;
 
         public EventQueueSequence()
         {
-            sequence = new TreeMap<Integer, MidiEventQueue>();
+            sequence = new SortedDictionary<int, MidiEventQueue>();
         }
 
         /// <summary>
@@ -37,24 +37,24 @@ namespace cadencii
         /// </summary>
         /// <param name="clock">時刻(clock 単位)</param>
         /// <returns>指定した時刻での MidiEventQueue</returns>
-        public MidiEventQueue get( int clock )
+        public MidiEventQueue get(int clock)
         {
-            if ( !sequence.containsKey( clock ) ) {
-                sequence.put( clock, new MidiEventQueue() );
+            if (!sequence.ContainsKey(clock)) {
+                sequence[clock] = new MidiEventQueue();
             }
-            return sequence.get( clock );
+            return sequence[clock];
         }
 
         /// <summary>
         /// MidiEventQueue が登録されている時刻を小さい順に返す反復子を取得する
         /// </summary>
         /// <returns></returns>
-        public Iterator<Integer> keyIterator()
+        public IEnumerable<int> keyIterator()
         {
-            return sequence.keySet().iterator();
+            return sequence.Keys;
         }
 
-        public TreeMap<Integer, MidiEventQueue> getSequence() { return sequence; }
+        public SortedDictionary<int, MidiEventQueue> getSequence() { return sequence; }
     }
 
 }

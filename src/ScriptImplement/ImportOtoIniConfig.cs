@@ -12,33 +12,32 @@ public class ImportOtoIniConfig
     /// </summary>
     /// <param name="vsq"></param>
     /// <returns></returns>
-    public static ScriptReturnStatus Edit( VsqFileEx vsq )
+    public static ScriptReturnStatus Edit(VsqFileEx vsq)
     {
         int selected = AppManager.getSelected();
-        VsqTrack vsq_track = vsq.Track.get( selected );
-        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
-        if ( kind != RendererKind.UTAU ) {
+        VsqTrack vsq_track = vsq.Track[selected];
+        RendererKind kind = VsqFileEx.getTrackRendererKind(vsq_track);
+        if (kind != RendererKind.UTAU) {
             return ScriptReturnStatus.NOT_EDITED;
         }
         bool edited = false;
-        for ( Iterator<SelectedEventEntry> itr = AppManager.itemSelection.getEventIterator(); itr.hasNext(); ) {
-            SelectedEventEntry item = itr.next();
+        foreach (var item in AppManager.itemSelection.getEventIterator()) {
             VsqEvent original = item.original;
-            if ( original.ID.type != VsqIDType.Anote ) {
+            if (original.ID.type != VsqIDType.Anote) {
                 continue;
             }
-            VsqEvent singer = vsq_track.getSingerEventAt( original.Clock );
-            SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-            if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+            VsqEvent singer = vsq_track.getSingerEventAt(original.Clock);
+            SingerConfig sc = AppManager.getSingerInfoUtau(singer.ID.IconHandle.Language, singer.ID.IconHandle.Program);
+            if (sc != null && AppManager.mUtauVoiceDB.ContainsKey(sc.VOICEIDSTR)) {
                 string phrase = original.ID.LyricHandle.L0.Phrase;
-                UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
-                OtoArgs oa = db.attachFileNameFromLyric( phrase, original.ID.Note );
-                VsqEvent editing = vsq_track.findEventFromID( original.InternalID );
-                if ( editing.UstEvent == null ) {
+                UtauVoiceDB db = AppManager.mUtauVoiceDB[sc.VOICEIDSTR];
+                OtoArgs oa = db.attachFileNameFromLyric(phrase, original.ID.Note);
+                VsqEvent editing = vsq_track.findEventFromID(original.InternalID);
+                if (editing.UstEvent == null) {
                     editing.UstEvent = new UstEvent();
                 }
-                editing.UstEvent.setVoiceOverlap( oa.msOverlap );
-                editing.UstEvent.setPreUtterance( oa.msPreUtterance );
+                editing.UstEvent.setVoiceOverlap(oa.msOverlap);
+                editing.UstEvent.setPreUtterance(oa.msPreUtterance);
                 edited = true;
             }
         }
@@ -53,11 +52,11 @@ public class ImportOtoIniConfig
     public static string GetDisplayName()
     {
         string lang = Messaging.getLanguage();
-        if ( lang == "ja" ) {
+        if (lang == "ja") {
             return "先行発音とオーバーラップをoto.iniからコピー";
         } else {
             return "Copy pre-utterance & overlap from oto.ini";
         }
     }
-    
+
 }

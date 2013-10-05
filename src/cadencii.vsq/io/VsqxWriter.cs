@@ -102,7 +102,7 @@ namespace cadencii.vsq.io
 
             root.AppendChild(doc_.CreateElement("seTrack"));
             root.AppendChild(doc_.CreateElement("karaokeTrack"));
-            
+
             doc_.AppendChild(root);
             using (var stream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write)) {
                 var writer = new XmlTextWriter(stream, Encoding.UTF8);
@@ -355,12 +355,12 @@ namespace cadencii.vsq.io
             {
                 result.AppendChild(createPartStyleNode());
             }
-            
+
             // Set first singer 
             var first_singer = (VsqEvent)track.getSingerEventAt(pre_measure_clock).Clone();
             first_singer.Clock = pre_measure_clock;
             result.AppendChild(createMusicalPartSingerNode(first_singer, pre_measure_clock));
-            
+
             track.MetaText.Events.Events
                 .Where((@event) => (@event.ID.type == VsqIDType.Singer ? @event.Clock > pre_measure_clock : @event.Clock >= pre_measure_clock))
                 .ToList()

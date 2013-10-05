@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormCheckUnknownSingerAndResampler.java
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.apputil;
 using cadencii.vsq;
@@ -31,16 +19,12 @@ using cadencii.java.util;
 using cadencii.windows.forms;
 using cadencii.java.awt;
 
+
+
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class FormCheckUnknownSingerAndResampler extends BDialog
-#else
     public class FormCheckUnknownSingerAndResampler : System.Windows.Forms.Form
-#endif
     {
         /// <summary>
         /// コンストラクタ．
@@ -49,30 +33,25 @@ namespace cadencii
         /// <param name="apply_singer"></param>
         /// <param name="resampler"></param>
         /// <param name="apply_resampler"></param>
-        public FormCheckUnknownSingerAndResampler( String singer, boolean apply_singer, String resampler, boolean apply_resampler )
+        public FormCheckUnknownSingerAndResampler(string singer, bool apply_singer, string resampler, bool apply_resampler)
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             applyLanguage();
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            Util.applyFontRecurse(this, AppManager.editorConfig.getBaseFont());
 
             // singers
             checkSingerImport.Checked = apply_singer;
             checkSingerImport.Enabled = apply_singer;
             textSingerPath.ReadOnly = true;
             textSingerPath.Enabled = apply_singer;
-            if ( apply_singer ) {
+            if (apply_singer) {
                 textSingerPath.Text = singer;
                 SingerConfig sc = new SingerConfig();
-                String path_image = Utility.readUtauSingerConfig( singer, sc );
+                string path_image = Utility.readUtauSingerConfig(singer, sc);
 #if DEBUG
-                sout.println( "FormCheckUnknownSingerAndResampler#.ctor;  path_image=" + path_image );
+                sout.println("FormCheckUnknownSingerAndResampler#.ctor;  path_image=" + path_image);
 #endif
-                Image img = IconParader.createIconImage( path_image, sc.VOICENAME );
+                Image img = IconParader.createIconImage(path_image, sc.VOICENAME);
                 pictureSinger.Image = img.image;
                 labelSingerName.Text = sc.VOICENAME;
             }
@@ -82,7 +61,7 @@ namespace cadencii
             checkResamplerImport.Enabled = apply_resampler;
             textResamplerPath.ReadOnly = true;
             textResamplerPath.Enabled = apply_resampler;
-            if ( apply_resampler ) {
+            if (apply_resampler) {
                 textResamplerPath.Text = resampler;
             }
 
@@ -94,7 +73,7 @@ namespace cadencii
         /// 原音の項目にチェックが入れられたか
         /// </summary>
         /// <returns></returns>
-        public boolean isSingerChecked()
+        public bool isSingerChecked()
         {
             return checkSingerImport.Checked;
         }
@@ -103,7 +82,7 @@ namespace cadencii
         /// 原音のパスを取得します
         /// </summary>
         /// <returns></returns>
-        public String getSingerPath()
+        public string getSingerPath()
         {
             return textSingerPath.Text;
         }
@@ -112,7 +91,7 @@ namespace cadencii
         /// リサンプラーの項目にチェックが入れられたかどうか
         /// </summary>
         /// <returns></returns>
-        public boolean isResamplerChecked()
+        public bool isResamplerChecked()
         {
             return checkResamplerImport.Checked;
         }
@@ -121,7 +100,7 @@ namespace cadencii
         /// リサンプラーのパスを取得します
         /// </summary>
         /// <returns></returns>
-        public String getResamplerPath()
+        public string getResamplerPath()
         {
             return textResamplerPath.Text;
         }
@@ -135,26 +114,20 @@ namespace cadencii
         {
         }
 
-        private static String _( String id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         private void applyLanguage()
         {
-            this.Text = _( "Unknown singers and resamplers" );
-            labelMessage.Text = _( "These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them." );
-            checkSingerImport.Text = _( "Import singer" );
-            checkResamplerImport.Text = _( "Import resampler" );
+            this.Text = _("Unknown singers and resamplers");
+            labelMessage.Text = _("These singers and resamplers are not registered to Cadencii.\nCheck the box if you want to register them.");
+            checkSingerImport.Text = _("Import singer");
+            checkResamplerImport.Text = _("Import resampler");
         }
         #endregion
 
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormCheckUnknownSingerAndResampler.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormCheckUnknownSingerAndResampler.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -165,12 +138,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region Windows フォーム デザイナで生成されたコード
@@ -197,9 +170,9 @@ namespace cadencii
             //
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point( 300, 254 );
+            this.buttonCancel.Location = new System.Drawing.Point(300, 254);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 11;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -208,9 +181,9 @@ namespace cadencii
             //
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOk.Location = new System.Drawing.Point( 219, 254 );
+            this.buttonOk.Location = new System.Drawing.Point(219, 254);
             this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 10;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
@@ -219,9 +192,9 @@ namespace cadencii
             //
             this.labelMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelMessage.Location = new System.Drawing.Point( 12, 12 );
+            this.labelMessage.Location = new System.Drawing.Point(12, 12);
             this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size( 357, 57 );
+            this.labelMessage.Size = new System.Drawing.Size(357, 57);
             this.labelMessage.TabIndex = 146;
             this.labelMessage.Text = "These singers and resamplers are not registered to Cadencii.\r\nCheck the box if yo" +
                 "u want to register them.";
@@ -231,21 +204,21 @@ namespace cadencii
             this.checkSingerImport.AutoSize = true;
             this.checkSingerImport.Checked = true;
             this.checkSingerImport.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkSingerImport.Location = new System.Drawing.Point( 14, 83 );
+            this.checkSingerImport.Location = new System.Drawing.Point(14, 83);
             this.checkSingerImport.Name = "checkSingerImport";
-            this.checkSingerImport.Padding = new System.Windows.Forms.Padding( 5, 0, 5, 0 );
-            this.checkSingerImport.Size = new System.Drawing.Size( 101, 16 );
+            this.checkSingerImport.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.checkSingerImport.Size = new System.Drawing.Size(101, 16);
             this.checkSingerImport.TabIndex = 148;
             this.checkSingerImport.Text = "Import singer";
             this.checkSingerImport.UseVisualStyleBackColor = true;
             //
             // pictureSinger
             //
-            this.pictureSinger.Location = new System.Drawing.Point( 38, 105 );
-            this.pictureSinger.MaximumSize = new System.Drawing.Size( 48, 48 );
-            this.pictureSinger.MinimumSize = new System.Drawing.Size( 48, 48 );
+            this.pictureSinger.Location = new System.Drawing.Point(38, 105);
+            this.pictureSinger.MaximumSize = new System.Drawing.Size(48, 48);
+            this.pictureSinger.MinimumSize = new System.Drawing.Size(48, 48);
             this.pictureSinger.Name = "pictureSinger";
-            this.pictureSinger.Size = new System.Drawing.Size( 48, 48 );
+            this.pictureSinger.Size = new System.Drawing.Size(48, 48);
             this.pictureSinger.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureSinger.TabIndex = 149;
             this.pictureSinger.TabStop = false;
@@ -253,9 +226,9 @@ namespace cadencii
             // labelSingerName
             //
             this.labelSingerName.AutoSize = true;
-            this.labelSingerName.Location = new System.Drawing.Point( 103, 111 );
+            this.labelSingerName.Location = new System.Drawing.Point(103, 111);
             this.labelSingerName.Name = "labelSingerName";
-            this.labelSingerName.Size = new System.Drawing.Size( 40, 12 );
+            this.labelSingerName.Size = new System.Drawing.Size(40, 12);
             this.labelSingerName.TabIndex = 150;
             this.labelSingerName.Text = "(name)";
             //
@@ -263,9 +236,9 @@ namespace cadencii
             //
             this.textSingerPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textSingerPath.Location = new System.Drawing.Point( 99, 130 );
+            this.textSingerPath.Location = new System.Drawing.Point(99, 130);
             this.textSingerPath.Name = "textSingerPath";
-            this.textSingerPath.Size = new System.Drawing.Size( 270, 19 );
+            this.textSingerPath.Size = new System.Drawing.Size(270, 19);
             this.textSingerPath.TabIndex = 151;
             //
             // checkResamplerImport
@@ -273,10 +246,10 @@ namespace cadencii
             this.checkResamplerImport.AutoSize = true;
             this.checkResamplerImport.Checked = true;
             this.checkResamplerImport.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkResamplerImport.Location = new System.Drawing.Point( 14, 192 );
+            this.checkResamplerImport.Location = new System.Drawing.Point(14, 192);
             this.checkResamplerImport.Name = "checkResamplerImport";
-            this.checkResamplerImport.Padding = new System.Windows.Forms.Padding( 5, 0, 5, 0 );
-            this.checkResamplerImport.Size = new System.Drawing.Size( 120, 16 );
+            this.checkResamplerImport.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.checkResamplerImport.Size = new System.Drawing.Size(120, 16);
             this.checkResamplerImport.TabIndex = 152;
             this.checkResamplerImport.Text = "Import resampler";
             this.checkResamplerImport.UseVisualStyleBackColor = true;
@@ -285,27 +258,27 @@ namespace cadencii
             //
             this.textResamplerPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.textResamplerPath.Location = new System.Drawing.Point( 38, 214 );
+            this.textResamplerPath.Location = new System.Drawing.Point(38, 214);
             this.textResamplerPath.Name = "textResamplerPath";
-            this.textResamplerPath.Size = new System.Drawing.Size( 331, 19 );
+            this.textResamplerPath.Size = new System.Drawing.Size(331, 19);
             this.textResamplerPath.TabIndex = 153;
             //
             // FormCheckUnknownSingerAndResampler
             //
             this.AcceptButton = this.buttonOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size( 387, 289 );
-            this.Controls.Add( this.textResamplerPath );
-            this.Controls.Add( this.checkResamplerImport );
-            this.Controls.Add( this.textSingerPath );
-            this.Controls.Add( this.labelSingerName );
-            this.Controls.Add( this.pictureSinger );
-            this.Controls.Add( this.checkSingerImport );
-            this.Controls.Add( this.labelMessage );
-            this.Controls.Add( this.buttonOk );
-            this.Controls.Add( this.buttonCancel );
+            this.ClientSize = new System.Drawing.Size(387, 289);
+            this.Controls.Add(this.textResamplerPath);
+            this.Controls.Add(this.checkResamplerImport);
+            this.Controls.Add(this.textSingerPath);
+            this.Controls.Add(this.labelSingerName);
+            this.Controls.Add(this.pictureSinger);
+            this.Controls.Add(this.checkSingerImport);
+            this.Controls.Add(this.labelMessage);
+            this.Controls.Add(this.buttonOk);
+            this.Controls.Add(this.buttonCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -315,7 +288,7 @@ namespace cadencii
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Unknown singers and resamplers";
             ((System.ComponentModel.ISupportInitialize)(this.pictureSinger)).EndInit();
-            this.ResumeLayout( false );
+            this.ResumeLayout(false);
             this.PerformLayout();
 
         }
@@ -332,9 +305,6 @@ namespace cadencii
         private IconParader pictureSinger;
 
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

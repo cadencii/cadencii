@@ -11,16 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// （互換性維持のため、None->NONE等とリファクタしていない）
     /// </summary>
-    public enum BezierControlType {
+    public enum BezierControlType
+    {
         /// <summary>
         /// 制御点無し
         /// </summary>
@@ -35,6 +33,4 @@ namespace cadencii {
         Master,
     }
 
-#if !JAVA
 }
-#endif

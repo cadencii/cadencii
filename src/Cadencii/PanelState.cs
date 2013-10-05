@@ -11,16 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// ドッキング可能なパネルの状態を表す列挙型
     /// </summary>
-    public enum PanelState {
+    public enum PanelState
+    {
         /// <summary>
         /// 非表示状態
         /// </summary>
@@ -35,6 +33,4 @@ namespace cadencii {
         Docked,
     }
 
-#if !JAVA
 }
-#endif

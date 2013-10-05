@@ -11,30 +11,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
+namespace cadencii
+{
 
     /// <summary>
     /// 2つのタイムラインを比較するのに必要な機能を実装するためのインターフェース．
     /// </summary>
-    public interface IComparisonContext {
+    public interface IComparisonContext
+    {
         int getNextIndex1();
         int getNextIndex2();
-        Object getElementAt1( int index );
-        Object getElementAt2( int index );
-        boolean hasNext1();
-        boolean hasNext2();
-        int getClockFrom( Object obj );
-        boolean equals( Object obj1, Object obj2 );
+        Object getElementAt1(int index);
+        Object getElementAt2(int index);
+        bool hasNext1();
+        bool hasNext2();
+        int getClockFrom(Object obj);
+        bool equals(Object obj1, Object obj2);
     }
 
-#if !JAVA
 }
-#endif

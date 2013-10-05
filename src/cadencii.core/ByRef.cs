@@ -11,25 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public class ByRef<T> {
+    public class ByRef<T>
+    {
         public T value;
 
-        public ByRef() {
+        public ByRef()
+        {
         }
 
-        public ByRef( T value_ ) {
+        public ByRef(T value_)
+        {
             value = value_;
         }
     }
 
-#if !JAVA
 }
-#endif

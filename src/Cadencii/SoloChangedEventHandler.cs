@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void SoloChangedEventHandler( int track, bool solo );
+    public delegate void SoloChangedEventHandler(int track, bool solo);
 
 }

@@ -36,12 +36,12 @@ namespace cadencii
             InitializeComponent();
         }
 
-        public void setWidth( int value )
+        public void setWidth(int value)
         {
             this.Width = value;
         }
 
-        public void setText( string value )
+        public void setText(string value)
         {
             label1.Text = value;
         }
@@ -51,10 +51,10 @@ namespace cadencii
             return label1.Text;
         }
 
-        public void setProgress( int value )
+        public void setProgress(int value)
         {
-            if ( value < progressBar1.Minimum ) value = progressBar1.Minimum;
-            if ( progressBar1.Maximum < value ) value = progressBar1.Maximum;
+            if (value < progressBar1.Minimum) value = progressBar1.Minimum;
+            if (progressBar1.Maximum < value) value = progressBar1.Maximum;
             progressBar1.Value = value;
         }
 
@@ -67,12 +67,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region コンポーネント デザイナで生成されたコード
@@ -91,29 +91,29 @@ namespace cadencii
             //
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point( 16, 11 );
+            this.progressBar1.Location = new System.Drawing.Point(16, 11);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size( 290, 10 );
+            this.progressBar1.Size = new System.Drawing.Size(290, 10);
             this.progressBar1.TabIndex = 0;
             //
             // label1
             //
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point( 14, 24 );
+            this.label1.Location = new System.Drawing.Point(14, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size( 292, 12 );
+            this.label1.Size = new System.Drawing.Size(292, 12);
             this.label1.TabIndex = 1;
             //
             // ProgressBarWithLabelUi
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add( this.label1 );
-            this.Controls.Add( this.progressBar1 );
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.progressBar1);
             this.Name = "ProgressBarWithLabelUi";
-            this.Size = new System.Drawing.Size( 322, 45 );
-            this.ResumeLayout( false );
+            this.Size = new System.Drawing.Size(322, 45);
+            this.ResumeLayout(false);
 
         }
 

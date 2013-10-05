@@ -1,5 +1,3 @@
-#if !__FormAskKeySoundGenerationUiListener__
-#define __FormAskKeySoundGenerationUiListener__
 /*
  * FormAskKeySoundGenerationUiListener.cs
  * Copyright © 2011 kbinani
@@ -13,47 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
 
-package cadencii;
+namespace cadencii
+{
 
-#else
+    using System;
+    using cadencii.windows.forms;
+    using cadencii.apputil;
 
-    namespace cadencii
+    public interface FormAskKeySoundGenerationUiListener
     {
+        [PureVirtualFunction]
+        void buttonCancelClickedSlot();
 
-#if CSHARP
-            using System;
-            using cadencii.windows.forms;
-            using cadencii.apputil;
+        [PureVirtualFunction]
+        void buttonOkClickedSlot();
+    };
 
-            using boolean = System.Boolean;
-#endif // CSHARP
 
-#endif
-
-#if __cplusplus
-            class FormAskKeySoundGenerationUiListener
-#else
-            public interface FormAskKeySoundGenerationUiListener
-#endif
-            {
-#if __cplusplus
-            public:
-#endif
-                [PureVirtualFunction]
-                void buttonCancelClickedSlot();
-
-                [PureVirtualFunction]
-                void buttonOkClickedSlot();
-            };
-
-#if JAVA
-
-#else
-
-    }
-
-#endif
-
-#endif
+}

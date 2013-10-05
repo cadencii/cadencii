@@ -11,33 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 using System.Threading;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
-
 
     /// <summary>
     /// 無音の波形を送信するWaveGenerator
     /// </summary>
-#if JAVA
-    public class EmptyWaveGenerator extends WaveUnit implements WaveGenerator
-#else
     public class EmptyWaveGenerator : WaveUnit, WaveGenerator
-#endif
     {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
         private WaveReceiver mReceiver = null;
-        private boolean mAbortRequested = false;
-        private boolean mRunning = false;
+        private bool mAbortRequested = false;
+        private bool mRunning = false;
         private long mTotalAppend = 0L;
         private long mTotalSamples = 0L;
         private int mSampleRate = 0;
@@ -47,7 +36,7 @@ namespace cadencii
             return mSampleRate;
         }
 
-        public boolean isRunning()
+        public bool isRunning()
         {
             return mRunning;
         }
@@ -64,7 +53,7 @@ namespace cadencii
 
         public double getProgress()
         {
-            if ( mTotalSamples <= 0 ) {
+            if (mTotalSamples <= 0) {
                 return 0.0;
             } else {
                 return mTotalAppend / (double)mTotalSamples;
@@ -76,26 +65,26 @@ namespace cadencii
             return VERSION;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
 
-        public void begin( long samples, WorkerState state )
+        public void begin(long samples, WorkerState state)
         {
-            if ( mReceiver == null ) return;
+            if (mReceiver == null) return;
             mRunning = true;
             mTotalSamples = samples;
             double[] l = new double[BUFLEN];
             double[] r = new double[BUFLEN];
-            for ( int i = 0; i < BUFLEN; i++ ) {
+            for (int i = 0; i < BUFLEN; i++) {
                 l[i] = 0.0;
                 r[i] = 0.0;
             }
             long remain = samples;
-            while ( remain > 0 && !mAbortRequested ) {
+            while (remain > 0 && !mAbortRequested) {
                 int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
-                mReceiver.push( l, r, amount );
+                mReceiver.push(l, r, amount);
                 remain -= amount;
                 mTotalAppend += amount;
             }
@@ -103,34 +92,25 @@ namespace cadencii
             mReceiver.end();
         }
 
-        public void setReceiver( WaveReceiver receiver )
+        public void setReceiver(WaveReceiver receiver)
         {
             mReceiver = receiver;
         }
 
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        public void init(VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate)
         {
             mSampleRate = sample_rate;
         }
 
         public void stop()
         {
-            if ( mRunning ) {
+            if (mRunning) {
                 mAbortRequested = true;
-                while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                    }
-#else
-                    Thread.Sleep( 100 );
-#endif
+                while (mRunning) {
+                    Thread.Sleep(100);
                 }
             }
         }
     }
 
-#if !JAVA
 }
-#endif

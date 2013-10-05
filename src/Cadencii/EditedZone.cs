@@ -11,189 +11,185 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
+using System.Collections.Generic;
 using cadencii.java.util;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
+namespace cadencii
+{
 
-#if JAVA
-    public class EditedZone implements Cloneable {
-#else
-    public class EditedZone : ICloneable {
-#endif
-        private Vector<EditedZoneUnit> mSeries = new Vector<EditedZoneUnit>();
+    public class EditedZone : ICloneable
+    {
+        private List<EditedZoneUnit> mSeries = new List<EditedZoneUnit>();
 
-        public EditedZone(){
+        public EditedZone()
+        {
         }
 
-        public int size() {
-            return mSeries.size();
+        public int size()
+        {
+            return mSeries.Count;
         }
 
-        public Iterator<EditedZoneUnit> iterator() {
-            return mSeries.iterator();
+        public IEnumerable<EditedZoneUnit> iterator()
+        {
+            return mSeries;
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             EditedZone ret = new EditedZone();
-            int count = mSeries.size();
-            for ( int i = 0; i < count; i++ ) {
-                EditedZoneUnit p = mSeries.get( i );
-                ret.mSeries.add( (EditedZoneUnit)p.clone() );
+            int count = mSeries.Count;
+            for (int i = 0; i < count; i++) {
+                EditedZoneUnit p = mSeries[i];
+                ret.mSeries.Add((EditedZoneUnit)p.clone());
             }
             return ret;
         }
 
-        public EditedZoneCommand add( int start, int end ) {
-            EditedZoneCommand com = generateCommandAdd( start, end );
-            return executeCommand( com );
+        public EditedZoneCommand add(int start, int end)
+        {
+            EditedZoneCommand com = generateCommandAdd(start, end);
+            return executeCommand(com);
         }
 
-        public EditedZoneCommand add( EditedZoneUnit[] items ) {
-            EditedZoneCommand com = generateCommandAdd( items );
-            return executeCommand( com );
+        public EditedZoneCommand add(EditedZoneUnit[] items)
+        {
+            EditedZoneCommand com = generateCommandAdd(items);
+            return executeCommand(com);
         }
 
-        public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
-            for ( Iterator<EditedZoneUnit> itr = run.mRemove.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
-                int count = mSeries.size();
-                for ( int i = 0; i < count; i++ ) {
-                    EditedZoneUnit item2 = mSeries.get( i );
-                    if ( item.mStart == item2.mStart && item.mEnd == item2.mEnd ) {
-                        mSeries.removeElementAt( i );
+        public EditedZoneCommand executeCommand(EditedZoneCommand run)
+        {
+            foreach (var item in run.mRemove) {
+                int count = mSeries.Count;
+                for (int i = 0; i < count; i++) {
+                    EditedZoneUnit item2 = mSeries[i];
+                    if (item.mStart == item2.mStart && item.mEnd == item2.mEnd) {
+                        mSeries.RemoveAt(i);
                         break;
                     }
                 }
             }
 
-            for ( Iterator<EditedZoneUnit> itr = run.mAdd.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
-                mSeries.add( (EditedZoneUnit)item.clone() );
+            foreach (var item in run.mAdd) {
+                mSeries.Add((EditedZoneUnit)item.clone());
             }
 
             mSeries.Sort();
 
-            return new EditedZoneCommand( run.mRemove, run.mAdd );
+            return new EditedZoneCommand(run.mRemove, run.mAdd);
         }
 
-        private EditedZoneCommand generateCommandClear() {
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = mSeries.iterator(); itr.hasNext(); ) {
-                EditedZoneUnit item = itr.next();
-                remove.add( (EditedZoneUnit)item.clone() );
+        private EditedZoneCommand generateCommandClear()
+        {
+            List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
+            foreach (var item in mSeries) {
+                remove.Add((EditedZoneUnit)item.clone());
             }
 
-            return new EditedZoneCommand( new Vector<EditedZoneUnit>(), remove );
+            return new EditedZoneCommand(new List<EditedZoneUnit>(), remove);
         }
 
-        private EditedZoneCommand generateCommandAdd( EditedZoneUnit[] areas ) {
+        private EditedZoneCommand generateCommandAdd(EditedZoneUnit[] areas)
+        {
             EditedZone work = (EditedZone)clone();
-            for ( int i = 0; i < areas.Length; i++ ) {
+            for (int i = 0; i < areas.Length; i++) {
                 EditedZoneUnit item = areas[i];
-                if ( item == null ) {
+                if (item == null) {
                     continue;
                 }
-                work.mSeries.add( new EditedZoneUnit( item.mStart, item.mEnd ) );
+                work.mSeries.Add(new EditedZoneUnit(item.mStart, item.mEnd));
             }
             work.normalize();
 
             // thisに存在していて、workに存在しないものをremoveに登録
-            Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
-                boolean found = false;
-                EditedZoneUnit itemThis = itrThis.next();
-                for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
-                    EditedZoneUnit itemWork = itrWork.next();
-                    if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
+            List<EditedZoneUnit> remove = new List<EditedZoneUnit>();
+            foreach (var itemThis in this.iterator()) {
+                bool found = false;
+                foreach (var itemWork in work.iterator()) {
+                    if (itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd) {
                         found = true;
                         break;
                     }
                 }
-                if ( !found ) {
-                    remove.add( new EditedZoneUnit( itemThis.mStart, itemThis.mEnd ) );
+                if (!found) {
+                    remove.Add(new EditedZoneUnit(itemThis.mStart, itemThis.mEnd));
                 }
             }
 
             // workに存在していて、thisに存在しないものをaddに登録
-            Vector<EditedZoneUnit> add = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
-                boolean found = false;
-                EditedZoneUnit itemWork = itrWork.next();
-                for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
-                    EditedZoneUnit itemThis = itrThis.next();
-                    if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
+            List<EditedZoneUnit> add = new List<EditedZoneUnit>();
+            foreach (var itemWork in work.iterator()) {
+                bool found = false;
+                foreach (var itemThis in this.iterator()) {
+                    if (itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd) {
                         found = true;
                         break;
                     }
                 }
-                if ( !found ) {
-                    add.add( new EditedZoneUnit( itemWork.mStart, itemWork.mEnd ) );
+                if (!found) {
+                    add.Add(new EditedZoneUnit(itemWork.mStart, itemWork.mEnd));
                 }
             }
 
             work = null;
-            return new EditedZoneCommand( add, remove );
+            return new EditedZoneCommand(add, remove);
         }
 
-        private EditedZoneCommand generateCommandAdd( int start, int end ) {
-            return generateCommandAdd( new EditedZoneUnit[] { new EditedZoneUnit( start, end ) } );
+        private EditedZoneCommand generateCommandAdd(int start, int end)
+        {
+            return generateCommandAdd(new EditedZoneUnit[] { new EditedZoneUnit(start, end) });
         }
 
         /// <summary>
         /// 重複している部分を統合する
         /// </summary>
-        private void normalize() {
-            boolean changed = true;
-            while ( changed ) {
+        private void normalize()
+        {
+            bool changed = true;
+            while (changed) {
                 changed = false;
-                int count = mSeries.size();
-                for ( int i = 0; i < count - 1; i++ ) {
-                    EditedZoneUnit itemi = mSeries.get( i );
-                    if ( itemi.mEnd < itemi.mStart ) {
+                int count = mSeries.Count;
+                for (int i = 0; i < count - 1; i++) {
+                    EditedZoneUnit itemi = mSeries[i];
+                    if (itemi.mEnd < itemi.mStart) {
                         int d = itemi.mStart;
                         itemi.mStart = itemi.mEnd;
                         itemi.mEnd = d;
                     }
-                    for ( int j = i + 1; j < count; j++ ) {
-                        EditedZoneUnit itemj = mSeries.get( j );
-                        if ( itemj.mEnd < itemj.mStart ) {
+                    for (int j = i + 1; j < count; j++) {
+                        EditedZoneUnit itemj = mSeries[j];
+                        if (itemj.mEnd < itemj.mStart) {
                             int d = itemj.mStart;
                             itemj.mStart = itemj.mEnd;
                             itemj.mEnd = d;
                         }
-                        if ( itemj.mStart == itemi.mStart && itemj.mEnd == itemi.mEnd ) {
-                            mSeries.removeElementAt( j );
+                        if (itemj.mStart == itemi.mStart && itemj.mEnd == itemi.mEnd) {
+                            mSeries.RemoveAt(j);
                             changed = true;
                             break;
-                        } else if ( itemj.mStart <= itemi.mStart && itemi.mEnd <= itemj.mEnd ) {
-                            mSeries.removeElementAt( i );
+                        } else if (itemj.mStart <= itemi.mStart && itemi.mEnd <= itemj.mEnd) {
+                            mSeries.RemoveAt(i);
                             changed = true;
                             break;
-                        } else if ( itemi.mStart <= itemj.mStart && itemj.mEnd <= itemi.mEnd ) {
-                            mSeries.removeElementAt( j );
+                        } else if (itemi.mStart <= itemj.mStart && itemj.mEnd <= itemi.mEnd) {
+                            mSeries.RemoveAt(j);
                             changed = true;
                             break;
-                        } else if ( itemi.mStart <= itemj.mEnd && itemj.mEnd < itemi.mEnd ) {
+                        } else if (itemi.mStart <= itemj.mEnd && itemj.mEnd < itemi.mEnd) {
                             itemj.mEnd = itemi.mEnd;
-                            mSeries.removeElementAt( i );
+                            mSeries.RemoveAt(i);
                             changed = true;
                             break;
-                        } else if ( itemi.mStart <= itemj.mStart && itemj.mStart <= itemi.mEnd ) {
+                        } else if (itemi.mStart <= itemj.mStart && itemj.mStart <= itemi.mEnd) {
                             itemi.mEnd = itemj.mEnd;
-                            mSeries.removeElementAt( j );
+                            mSeries.RemoveAt(j);
                             changed = true;
                             break;
                         }
                     }
-                    if ( changed ) {
+                    if (changed) {
                         break;
                     }
                 }
@@ -201,13 +197,10 @@ namespace cadencii {
             mSeries.Sort();
         }
 
-#if !JAVA
-        public Object Clone(){
+        public Object Clone()
+        {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

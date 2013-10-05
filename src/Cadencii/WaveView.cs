@@ -11,35 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.awt.image.*;
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii;
 using cadencii.java.awt;
-using cadencii.java.awt.image;
 using cadencii.media;
 using cadencii.windows.forms;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
+
+
+namespace cadencii
+{
 
     /// <summary>
     /// トラック16個分の波形描画コンテキストを保持し、それらの描画を行うコンポーネントです。
     /// </summary>
-#if JAVA
-    public class WaveView extends BPanel
-#else
     public class WaveView : UserControl
-#endif
     {
         /// <summary>
         /// 波形描画用のコンテキスト
@@ -58,11 +45,11 @@ namespace cadencii {
         /// <summary>
         /// 左側のボタン部との境界線の色
         /// </summary>
-        private Color mBorderColor = new Color( 105, 105, 105 );
+        private Color mBorderColor = new Color(105, 105, 105);
         /// <summary>
         /// 縦軸のスケールを自動最大化するかどうか
         /// </summary>
-        private boolean mAutoMaximize = false;
+        private bool mAutoMaximize = false;
         /// <summary>
         /// 幅2ピクセルのストローク
         /// </summary>
@@ -76,29 +63,20 @@ namespace cadencii {
         /// コンストラクタ
         /// </summary>
         public WaveView()
-#if JAVA
-        {
-#else
             :
-#endif
             base()
-#if JAVA
-            ;
-#else
         {
-#endif
-#if !JAVA
-            this.SetStyle( ControlStyles.DoubleBuffer, true );
-            this.SetStyle( ControlStyles.UserPaint, true );
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
             this.DoubleBuffered = true;
-#endif
         }
 
         /// <summary>
         /// 縦軸を自動最大化するかどうかを取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isAutoMaximize() {
+        public bool isAutoMaximize()
+        {
             return mAutoMaximize;
         }
 
@@ -106,7 +84,8 @@ namespace cadencii {
         /// 縦軸を自動最大化するかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setAutoMaximize( boolean value ) {
+        public void setAutoMaximize(bool value)
+        {
             mAutoMaximize = value;
         }
 
@@ -114,89 +93,92 @@ namespace cadencii {
         /// コンポーネントの描画関数です
         /// </summary>
         /// <param name="g"></param>
-        public void paint( Graphics g1 ) {
+        public void paint(Graphics g1)
+        {
             int width = Width;
             int height = Height;
-            Rectangle rc = new Rectangle( 0, 0, width, height );
+            Rectangle rc = new Rectangle(0, 0, width, height);
 
             Graphics2D g = (Graphics2D)g1;
 
             // 背景を塗りつぶす
-            g.setStroke( getStrokeDefault() );
-            g.setColor( Color.gray );
-            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setStroke(getStrokeDefault());
+            g.setColor(Color.gray);
+            g.fillRect(rc.x, rc.y, rc.width, rc.height);
 
-            if ( AppManager.skipDrawingWaveformWhenPlaying && AppManager.isPlaying() ) {
+            if (AppManager.skipDrawingWaveformWhenPlaying && AppManager.isPlaying()) {
                 // 左側のボタン部との境界線
-                g.setColor( mBorderColor );
-                g.drawLine( 0, 0, 0, height );
+                g.setColor(mBorderColor);
+                g.drawLine(0, 0, 0, height);
 
-                g.setColor( Color.black );
+                g.setColor(Color.black);
                 PortUtil.drawStringEx(
                     g,
-                    "(hidden for performance)", 
+                    "(hidden for performance)",
                     AppManager.baseFont8,
-                    rc, 
+                    rc,
                     PortUtil.STRING_ALIGN_CENTER,
-                    PortUtil.STRING_ALIGN_CENTER );
+                    PortUtil.STRING_ALIGN_CENTER);
                 return;
             }
-            
+
             // スケール線を描く
             int half_height = height / 2;
-            g.setColor( Color.black );
-            g.drawLine( 0, half_height, width, half_height );
+            g.setColor(Color.black);
+            g.drawLine(0, half_height, width, half_height);
 
             // 描画コンテキストを用いて波形を描画
             int selected = AppManager.getSelected();
             WaveDrawContext context = mDrawer[selected - 1];
 
-            if ( context != null ) {
-                if ( mAutoMaximize ) {
+            if (context != null) {
+                if (mAutoMaximize) {
                     context.draw(
                         g,
                         Color.black,
                         rc,
-                        AppManager.clockFromXCoord( AppManager.keyWidth ),
-                        AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                        AppManager.clockFromXCoord(AppManager.keyWidth),
+                        AppManager.clockFromXCoord(AppManager.keyWidth + width),
                         AppManager.getVsqFile().TempoTable,
-                        AppManager.mMainWindowController.getScaleX() );
+                        AppManager.mMainWindowController.getScaleX());
                 } else {
                     context.draw(
                         g,
                         Color.black,
                         rc,
-                        AppManager.clockFromXCoord( AppManager.keyWidth ),
-                        AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                        AppManager.clockFromXCoord(AppManager.keyWidth),
+                        AppManager.clockFromXCoord(AppManager.keyWidth + width),
                         AppManager.getVsqFile().TempoTable,
                         AppManager.mMainWindowController.getScaleX(),
-                        mScale );
+                        mScale);
                 }
             }
 
             // 左側のボタン部との境界線
-            g.setColor( mBorderColor );
-            g.drawLine( 0, 0, 0, height );
+            g.setColor(mBorderColor);
+            g.drawLine(0, 0, 0, height);
 
             // ソングポジション
-            int song_pos_x = AppManager.xCoordFromClocks( AppManager.getCurrentClock() ) - AppManager.keyWidth;
-            if ( 0 < song_pos_x ) {
-                g.setColor( Color.white );
-                g.setStroke( getStroke2px() );
-                g.drawLine( song_pos_x, 0, song_pos_x, height );
+            int song_pos_x = AppManager.xCoordFromClocks(AppManager.getCurrentClock()) - AppManager.keyWidth;
+            if (0 < song_pos_x) {
+                g.setColor(Color.white);
+                g.setStroke(getStroke2px());
+                g.drawLine(song_pos_x, 0, song_pos_x, height);
             }
         }
 
-        private BasicStroke getStrokeDefault() {
-            if ( mStrokeDefault == null ) {
+        private BasicStroke getStrokeDefault()
+        {
+            if (mStrokeDefault == null) {
                 mStrokeDefault = new BasicStroke();
             }
             return mStrokeDefault;
         }
 
-        private BasicStroke getStroke2px() {
-            if ( mStroke2px == null ) {
-                mStroke2px = new BasicStroke( 2.0f );
+        private BasicStroke getStroke2px()
+        {
+            if (mStroke2px == null) {
+                mStroke2px = new BasicStroke(2.0f);
             }
             return mStroke2px;
         }
@@ -206,7 +188,8 @@ namespace cadencii {
         /// </summary>
         /// <seealso cref="getScale"/>
         /// <returns></returns>
-        public float scale() {
+        public float scale()
+        {
             return mScale;
         }
 
@@ -214,7 +197,8 @@ namespace cadencii {
         /// 縦方向の描画倍率を取得します。
         /// </summary>
         /// <returns></returns>
-        public float getScale() {
+        public float getScale()
+        {
             return mScale;
         }
 
@@ -222,10 +206,11 @@ namespace cadencii {
         /// 縦方向の描画倍率を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setScale( float value ) {
-            if ( value < MIN_SCALE ) {
+        public void setScale(float value)
+        {
+            if (value < MIN_SCALE) {
                 mScale = MIN_SCALE;
-            } else if ( MAX_SCALE < value ) {
+            } else if (MAX_SCALE < value) {
                 mScale = MAX_SCALE;
             } else {
                 mScale = value;
@@ -235,10 +220,11 @@ namespace cadencii {
         /// <summary>
         /// 全ての波形描画コンテキストが保持しているデータをクリアします
         /// </summary>
-        public void unloadAll() {
-            for ( int i = 0; i < mDrawer.Length; i++ ) {
+        public void unloadAll()
+        {
+            for (int i = 0; i < mDrawer.Length; i++) {
                 WaveDrawContext context = mDrawer[i];
-                if ( context == null ) {
+                if (context == null) {
                     continue;
                 }
                 context.unload();
@@ -252,15 +238,16 @@ namespace cadencii {
         /// <param name="file">読み込むWAVEファイルのパス</param>
         /// <param name="sec_from">読み込み区間の開始秒時</param>
         /// <param name="sec_to">読み込み区間の終了秒時</param>
-        public void reloadPartial( int index, String file, double sec_from, double sec_to ) {
-            if ( index < 0 || mDrawer.Length <= index ) {
+        public void reloadPartial(int index, string file, double sec_from, double sec_to)
+        {
+            if (index < 0 || mDrawer.Length <= index) {
                 return;
             }
-            if ( mDrawer[index] == null ) {
+            if (mDrawer[index] == null) {
                 mDrawer[index] = new WaveDrawContext();
-                mDrawer[index].load( file );
+                mDrawer[index].load(file);
             } else {
-                mDrawer[index].reloadPartial( file, sec_from, sec_to );
+                mDrawer[index].reloadPartial(file, sec_from, sec_to);
             }
         }
 
@@ -269,39 +256,37 @@ namespace cadencii {
         /// </summary>
         /// <param name="index">読込を行わせる波形描画コンテキストのインデックス</param>
         /// <param name="wave_path">読み込むWAVEファイルのパス</param>
-        public void load( int index, String wave_path ) {
-            if ( index < 0 || mDrawer.Length <= index ) {
+        public void load(int index, string wave_path)
+        {
+            if (index < 0 || mDrawer.Length <= index) {
 #if DEBUG
-                sout.println( "WaveView#load; index out of range" );
+                sout.println("WaveView#load; index out of range");
 #endif
                 return;
             }
 #if DEBUG
-            sout.println( "WaveView#load; index=" + index );
+            sout.println("WaveView#load; index=" + index);
 #endif
-            if ( mDrawer[index] == null ) {
+            if (mDrawer[index] == null) {
                 mDrawer[index] = new WaveDrawContext();
             }
-            mDrawer[index].load( wave_path );
+            mDrawer[index].load(wave_path);
         }
 
-#if !JAVA
         /// <summary>
         /// オーバーライドされます。
         /// <seealso cref="M:System.Windows.Forms.Control.OnPaint"/>
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnPaint( PaintEventArgs e ) {
-            base.OnPaint( e );
-            if ( mGraphics == null ) {
-                mGraphics = new Graphics2D( null );
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (mGraphics == null) {
+                mGraphics = new Graphics2D(null);
             }
             mGraphics.nativeGraphics = e.Graphics;
-            paint( mGraphics );
+            paint(mGraphics);
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

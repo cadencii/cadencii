@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.apputil;
-
-import java.awt.*;
-import javax.swing.*;
-import java.awt.image.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -33,7 +25,6 @@ using cadencii;
 namespace cadencii.apputil
 {
     using java = cadencii.java;
-    using boolean = System.Boolean;
     using WORD = System.UInt16;
     using DWORD = System.UInt32;
     using LONG = System.Int32;
@@ -41,20 +32,15 @@ namespace cadencii.apputil
     using HANDLE = System.IntPtr;
     using WCHAR = Char;
     using ULONG = System.UInt32;
-#endif
 
-#if JAVA
-    public class Util{
-#else
     public static partial class Util
     {
-#endif
-        public static readonly String PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
+        public static readonly string PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
         /// <summary>
         /// このクラスのメソッド'applyFontRecurse', 'applyToolStripFontRecurse', 'applyContextMenuFontRecurse'の呼び出しを有効とするかどうか。
         /// デフォルトではtrue
         /// </summary>
-        public static boolean isApplyFontRecurseEnabled = true;
+        public static bool isApplyFontRecurseEnabled = true;
 
 #if FOOOOOOOOOOOOOO
         [StructLayout( LayoutKind.Explicit )]
@@ -109,9 +95,6 @@ namespace cadencii.apputil
 
         public static bool createJunction( String mount_point_path, String target )
         {
-#if JAVA
-            return true;
-#else
             unsafe {
                 /*union
                 {
@@ -234,131 +217,81 @@ namespace cadencii.apputil
                 win32.CloseHandle( hFile );
                 return true;
             }
-#endif
         }
 #endif
 
-#if JAVA
-        public static void applyContextMenuFontRecurse( MenuElement item, Font font ){
-            if ( !isApplyFontRecurseEnabled ) {
-                return;
-            }
-            applyToolStripFontRecurse( item, font );
-        }
-#else
-        public static void applyContextMenuFontRecurse( ContextMenuStrip item, cadencii.java.awt.Font font )
+        public static void applyContextMenuFontRecurse(ContextMenuStrip item, cadencii.java.awt.Font font)
         {
-            if ( !isApplyFontRecurseEnabled )
-            {
+            if (!isApplyFontRecurseEnabled) {
                 return;
             }
             item.Font = font.font;
-            foreach ( ToolStripItem tsi in item.Items )
-            {
-                applyToolStripFontRecurse( tsi, font );
+            foreach (ToolStripItem tsi in item.Items) {
+                applyToolStripFontRecurse(tsi, font);
             }
         }
-#endif
 
-#if JAVA
-        public static void applyToolStripFontRecurse( MenuElement item, Font font ){
-            if ( !isApplyFontRecurseEnabled ) {
-                return;
-            }
-            if( item instanceof Component ){
-                ((Component)item).setFont( font );
-            }
-            for( MenuElement element : item.getSubElements() ){
-                applyToolStripFontRecurse( element, font );
-            }
-        }
-#else
-        public static void applyToolStripFontRecurse( ToolStripItem item, cadencii.java.awt.Font font )
+        public static void applyToolStripFontRecurse(ToolStripItem item, cadencii.java.awt.Font font)
         {
-            if ( !isApplyFontRecurseEnabled )
-            {
+            if (!isApplyFontRecurseEnabled) {
                 return;
             }
             item.Font = font.font;
-            if ( item is ToolStripMenuItem )
-            {
+            if (item is ToolStripMenuItem) {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
-                foreach ( ToolStripItem tsi in tsmi.DropDownItems )
-                {
-                    applyToolStripFontRecurse( tsi, font );
+                foreach (ToolStripItem tsi in tsmi.DropDownItems) {
+                    applyToolStripFontRecurse(tsi, font);
                 }
-            }
-            else if ( item is ToolStripDropDownItem )
-            {
+            } else if (item is ToolStripDropDownItem) {
                 ToolStripDropDownItem tsdd = (ToolStripDropDownItem)item;
-                foreach ( ToolStripItem tsi in tsdd.DropDownItems )
-                {
-                    applyToolStripFontRecurse( tsi, font );
+                foreach (ToolStripItem tsi in tsdd.DropDownItems) {
+                    applyToolStripFontRecurse(tsi, font);
                 }
             }
         }
-#endif
 
         /// <summary>
         /// 指定したフォントを描画するとき、描画指定したy座標と、描かれる文字の中心線のズレを調べます
         /// </summary>
         /// <param name="font"></param>
         /// <returns></returns>
-        public static int getStringDrawOffset( java.awt.Font font )
+        public static int getStringDrawOffset(java.awt.Font font)
         {
             int ret = 0;
-            java.awt.Dimension size = measureString( PANGRAM, font );
-            if ( size.height <= 0 )
-            {
+            java.awt.Dimension size = measureString(PANGRAM, font);
+            if (size.height <= 0) {
                 return 0;
             }
-            java.awt.image.BufferedImage b = null;
+            java.awt.Image b = null;
             java.awt.Graphics2D g = null;
-#if JAVA
-            java.awt.image.BufferedImage b2 = null;
-#else
             BitmapEx b2 = null;
-#endif
-            try
-            {
+            try {
                 int string_desty = size.height * 2; // 文字列が書き込まれるy座標
                 int w = size.width * 4;
                 int h = size.height * 4;
-                b = new java.awt.image.BufferedImage( w, h, java.awt.image.BufferedImage.TYPE_INT_BGR );
-                g = b.createGraphics();
-                g.setColor( java.awt.Color.white );
-                g.fillRect( 0, 0, w, h );
-                g.setFont( font );
-                g.setColor( java.awt.Color.black );
-                g.drawString( PANGRAM, size.width, string_desty );
+                b = new java.awt.Image();
+                b.image = new System.Drawing.Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                g = new java.awt.Graphics2D(System.Drawing.Graphics.FromImage(b.image));
+                g.setColor(java.awt.Color.white);
+                g.fillRect(0, 0, w, h);
+                g.setFont(font);
+                g.setColor(java.awt.Color.black);
+                g.drawString(PANGRAM, size.width, string_desty);
 
-#if JAVA
-                b2 = b;
-#else
-                b2 = new BitmapEx( b.image );
-#endif
+                b2 = new BitmapEx(b.image);
                 // 上端に最初に現れる色つきピクセルを探す
                 int firsty = 0;
-                boolean found = false;
-                for ( int y = 0; y < h; y++ )
-                {
-                    for ( int x = 0; x < w; x++ )
-                    {
-#if JAVA
-                        int ic = b2.getRGB( x, y );
-                        Color c = new Color( ic );
-#else
-                        java.awt.Color c = new cadencii.java.awt.Color( b2.GetPixel( x, y ) );
-#endif
-                        if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
-                        {
+                bool found = false;
+                for (int y = 0; y < h; y++) {
+                    for (int x = 0; x < w; x++) {
+                        java.awt.Color c = new cadencii.java.awt.Color(b2.GetPixel(x, y));
+                        if (c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255) {
                             found = true;
                             firsty = y;
                             break;
                         }
                     }
-                    if ( found )
-                    {
+                    if (found) {
                         break;
                     }
                 }
@@ -366,53 +299,34 @@ namespace cadencii.apputil
                 // 下端
                 int endy = h - 1;
                 found = false;
-                for ( int y = h - 1; y >= 0; y-- )
-                {
-                    for ( int x = 0; x < w; x++ )
-                    {
-#if JAVA
-                        int ic = b2.getRGB( x, y );
-                        Color c = new Color( ic );
-#else
-                        java.awt.Color c = new cadencii.java.awt.Color( b2.GetPixel( x, y ) );
-#endif
-                        if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
-                        {
+                for (int y = h - 1; y >= 0; y--) {
+                    for (int x = 0; x < w; x++) {
+                        java.awt.Color c = new cadencii.java.awt.Color(b2.GetPixel(x, y));
+                        if (c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255) {
                             found = true;
                             endy = y;
                             break;
                         }
                     }
-                    if ( found )
-                    {
+                    if (found) {
                         break;
                     }
                 }
 
                 int center = (firsty + endy) / 2;
                 ret = center - string_desty;
-            }
-            catch ( Exception ex )
-            {
-                serr.println( "Util#getStringDrawOffset; ex=" + ex );
-            }
-            finally
-            {
-#if JAVA
-#else
-                if ( b != null && b.image != null )
-                {
+            } catch (Exception ex) {
+                serr.println("Util#getStringDrawOffset; ex=" + ex);
+            } finally {
+                if (b != null && b.image != null) {
                     b.image.Dispose();
                 }
-                if ( g != null )
-                {
+                if (g != null) {
                     g.nativeGraphics.Dispose();
                 }
-                if ( b2 != null && b2 != null )
-                {
+                if (b2 != null && b2 != null) {
                     b2.Dispose();
                 }
-#endif
             }
             return ret;
         }
@@ -422,112 +336,93 @@ namespace cadencii.apputil
         /// </summary>
         /// <param name="language_code"></param>
         /// <returns></returns>
-        public static boolean isRightToLeftLanguage( String language_code )
+        public static bool isRightToLeftLanguage(string language_code)
         {
             language_code = language_code.ToLower();
-            if ( language_code.Equals( "ar" ) ||
-                 language_code.Equals( "he" ) ||
-                 language_code.Equals( "iw" ) ||
-                 language_code.Equals( "fa" ) ||
-                 language_code.Equals( "ur" ) )
-            {
+            if (language_code.Equals("ar") ||
+                 language_code.Equals("he") ||
+                 language_code.Equals("iw") ||
+                 language_code.Equals("fa") ||
+                 language_code.Equals("ur")) {
                 return true;
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
 
-#if !JAVA
         /// <summary>
         /// 指定したディレクトリに作成可能な、一時ファイル名を取得します
         /// </summary>
         /// <param name="directory">ディレクトリ</param>
         /// <returns></returns>
-        public static string GetTempFileNameIn( string directory )
+        public static string GetTempFileNameIn(string directory)
         {
-            for ( uint i = uint.MinValue; i <= uint.MaxValue; i++ )
-            {
-                string file = Path.Combine( directory, "temp" + i );
-                if ( !File.Exists( file ) )
-                {
+            for (uint i = uint.MinValue; i <= uint.MaxValue; i++) {
+                string file = Path.Combine(directory, "temp" + i);
+                if (!File.Exists(file)) {
                     return file;
                 }
             }
             return "";
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定したディレクトリに作成可能な、一時ファイル名を取得します
         /// </summary>
         /// <param name="directory">ディレクトリ</param>
         /// <param name="extention">拡張子（ex. ".txt"）</param>
         /// <returns></returns>
-        public static string GetTempFileNameIn( string directory, string extention )
+        public static string GetTempFileNameIn(string directory, string extention)
         {
-            for ( uint i = uint.MinValue; i <= uint.MaxValue; i++ )
-            {
-                string file = Path.Combine( directory, "temp" + i + extention );
-                if ( !File.Exists( file ) )
-                {
+            for (uint i = uint.MinValue; i <= uint.MaxValue; i++) {
+                string file = Path.Combine(directory, "temp" + i + extention);
+                if (!File.Exists(file)) {
                     return file;
                 }
             }
             return "";
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定した画像ファイルから新しいBitmapオブジェクトを作成します
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static Bitmap BitmapFromStream( string file )
+        public static Bitmap BitmapFromStream(string file)
         {
-            if ( !File.Exists( file ) )
-            {
+            if (!File.Exists(file)) {
                 return null;
             }
-            FileStream fs = new FileStream( file, FileMode.Open );
-            Bitmap ret = new Bitmap( fs );
+            FileStream fs = new FileStream(file, FileMode.Open);
+            Bitmap ret = new Bitmap(fs);
             fs.Close();
             return ret;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定した画像ファイルから新しいImageオブジェクトを作成します
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static Image ImageFromStream( string file )
+        public static Image ImageFromStream(string file)
         {
-            if ( !File.Exists( file ) )
-            {
+            if (!File.Exists(file)) {
                 return null;
             }
-            FileStream fs = new FileStream( file, FileMode.Open );
-            Image ret = Image.FromStream( fs );
+            FileStream fs = new FileStream(file, FileMode.Open);
+            Image ret = Image.FromStream(fs);
             fs.Close();
             return ret;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// ImageFormatから，デフォルトの拡張子を取得します
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public static string GetExtensionFromImageFormat( ImageFormat format )
+        public static string GetExtensionFromImageFormat(ImageFormat format)
         {
-            switch ( format.ToString().ToLower() )
-            {
+            switch (format.ToString().ToLower()) {
                 case "bmp":
                 return ".bmp";
                 case "emf":
@@ -547,9 +442,7 @@ namespace cadencii.apputil
 
             }
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// System.Drawimg.Imaging.ImageFormatで使用可能なフォーマットの一覧を取得します
         /// </summary>
@@ -557,69 +450,53 @@ namespace cadencii.apputil
         public static ImageFormat[] GetImageFormats()
         {
 #if DEBUG
-            Console.WriteLine( "GetImageFormats()" );
+            Console.WriteLine("GetImageFormats()");
 #endif
-            PropertyInfo[] properties = typeof( System.Drawing.Imaging.ImageFormat ).GetProperties();
+            PropertyInfo[] properties = typeof(System.Drawing.Imaging.ImageFormat).GetProperties();
             List<ImageFormat> ret = new List<ImageFormat>();
-            foreach ( PropertyInfo pi in properties )
-            {
-                if ( pi.PropertyType.Equals( typeof( System.Drawing.Imaging.ImageFormat ) ) )
-                {
-                    ImageFormat ifmt = (System.Drawing.Imaging.ImageFormat)pi.GetValue( null, null );
+            foreach (PropertyInfo pi in properties) {
+                if (pi.PropertyType.Equals(typeof(System.Drawing.Imaging.ImageFormat))) {
+                    ImageFormat ifmt = (System.Drawing.Imaging.ImageFormat)pi.GetValue(null, null);
 #if DEBUG
-                    Console.WriteLine( ifmt.ToString() );
+                    Console.WriteLine(ifmt.ToString());
 #endif
-                    ret.Add( ifmt );
+                    ret.Add(ifmt);
                 }
             }
             return ret.ToArray();
         }
-#endif
 
-#if !JAVA
-        public static void RgbToHsv( int r, int g, int b, out double h, out double s, out double v )
+        public static void RgbToHsv(int r, int g, int b, out double h, out double s, out double v)
         {
-            RgbToHsv( r / 255.0, g / 255.0, b / 255.0, out h, out s, out v );
+            RgbToHsv(r / 255.0, g / 255.0, b / 255.0, out h, out s, out v);
         }
 
-        public static void RgbToHsv( double r, double g, double b, out double h, out double s, out double v )
+        public static void RgbToHsv(double r, double g, double b, out double h, out double s, out double v)
         {
             double tmph, imax, imin;
             const double sqrt3 = 1.7320508075688772935274463415059;
-            imax = Math.Max( r, Math.Max( g, b ) );
-            imin = Math.Min( r, Math.Min( g, b ) );
-            if ( imax == 0.0 )
-            {
+            imax = Math.Max(r, Math.Max(g, b));
+            imin = Math.Min(r, Math.Min(g, b));
+            if (imax == 0.0) {
                 h = 0;
                 s = 0;
                 v = 0;
                 return;
-            }
-            else if ( imax == imin )
-            {
+            } else if (imax == imin) {
                 tmph = 0;
-            }
-            else
-            {
-                if ( r == imax )
-                {
+            } else {
+                if (r == imax) {
                     tmph = 60.0 * (g - b) / (imax - imin);
-                }
-                else if ( g == imax )
-                {
+                } else if (g == imax) {
                     tmph = 60.0 * (b - r) / (imax - imin) + 120.0;
-                }
-                else
-                {
+                } else {
                     tmph = 60.0 * (r - g) / (imax - imin) + 240.0;
                 }
             }
-            while ( tmph < 0.0 )
-            {
+            while (tmph < 0.0) {
                 tmph = tmph + 360.0;
             }
-            while ( tmph >= 360.0 )
-            {
+            while (tmph >= 360.0) {
                 tmph = tmph - 360.0;
             }
             h = tmph / 360.0;
@@ -627,43 +504,39 @@ namespace cadencii.apputil
             v = imax;
         }
 
-        public static Color HsvToColor( double h, double s, double v )
+        public static Color HsvToColor(double h, double s, double v)
         {
             double dr, dg, db;
-            HsvToRgb( h, s, v, out dr, out dg, out db );
-            return Color.FromArgb( (int)(dr * 255), (int)(dg * 255), (int)(db * 255) );
+            HsvToRgb(h, s, v, out dr, out dg, out db);
+            return Color.FromArgb((int)(dr * 255), (int)(dg * 255), (int)(db * 255));
         }
 
-        public static void HsvToRgb( double h, double s, double v, out byte r, out byte g, out byte b )
+        public static void HsvToRgb(double h, double s, double v, out byte r, out byte g, out byte b)
         {
             double dr, dg, db;
-            HsvToRgb( h, s, v, out dr, out dg, out db );
+            HsvToRgb(h, s, v, out dr, out dg, out db);
             r = (byte)(dr * 255);
             g = (byte)(dg * 255);
             b = (byte)(db * 255);
         }
 
-        public static void HsvToRgb( double h, double s, double v, out double r, out double g, out double b )
+        public static void HsvToRgb(double h, double s, double v, out double r, out double g, out double b)
         {
             double f, p, q, t, hh;
             int hi;
             r = g = b = 0.0;
-            if ( s == 0 )
-            {
+            if (s == 0) {
                 r = v;
                 g = v;
                 b = v;
-            }
-            else
-            {
+            } else {
                 hh = h * 360.0;
                 hi = (int)(hh / 60.0) % 6;
                 f = hh / 60.0 - (double)(hi);
                 p = v * (1.0 - s);
                 q = v * (1.0 - f * s);
                 t = v * (1.0 - (1.0 - f) * s);
-                switch ( hi )
-                {
+                switch (hi) {
                     case 0:
                     r = v;
                     g = t;
@@ -697,7 +570,6 @@ namespace cadencii.apputil
                 }
             }
         }
-#endif
 
         /// <summary>
         /// 指定された文字列を指定されたフォントで描画したときのサイズを計測します。
@@ -705,25 +577,12 @@ namespace cadencii.apputil
         /// <param name="text"></param>
         /// <param name="font"></param>
         /// <returns></returns>
-#if JAVA
-        public static Dimension measureString( String text, Font font ){
-            BufferedImage dumy = new BufferedImage( 1, 1, BufferedImage.TYPE_INT_BGR );
-            Graphics2D g = dumy.createGraphics();
-            g.setFont( font );
-            FontMetrics fm = g.getFontMetrics();
-            Dimension ret = new Dimension( fm.stringWidth( text ), fm.getHeight() );
-            g = null;
-            dumy = null;
-            return ret;
-        }
-#else
-        public static java.awt.Dimension measureString( string text, java.awt.Font font )
+        public static java.awt.Dimension measureString(string text, java.awt.Font font)
         {
-            using ( Bitmap dumy = new Bitmap( 1, 1 ) )
-            using ( Graphics g = Graphics.FromImage( dumy ) )
-            {
-                SizeF tmp = g.MeasureString( text, font.font );
-                return new java.awt.Dimension( (int)tmp.Width, (int)tmp.Height );
+            using (Bitmap dumy = new Bitmap(1, 1))
+            using (Graphics g = Graphics.FromImage(dumy)) {
+                SizeF tmp = g.MeasureString(text, font.font);
+                return new java.awt.Dimension((int)tmp.Width, (int)tmp.Height);
             }
         }
 
@@ -735,7 +594,6 @@ namespace cadencii.apputil
                 return new java.awt.Dimension((int)tmp.Width, (int)tmp.Height);
             }
         }
-#endif
 
         /// <summary>
         /// 指定したコントロールと、その子コントロールのフォントを再帰的に変更します
@@ -759,7 +617,6 @@ namespace cadencii.apputil
             applyFontRecurse(c, font.font);
         }
 
-#if !JAVA
         /// <summary>
         ///
         /// </summary>
@@ -768,35 +625,22 @@ namespace cadencii.apputil
         /// <param name="start2"></param>
         /// <param name="end2"></param>
         /// <returns></returns>
-        public static bool IsOverwrapped( double start1, double end1, double start2, double end2 )
+        public static bool IsOverwrapped(double start1, double end1, double start2, double end2)
         {
-            if ( start2 <= start1 && start1 < end2 )
-            {
+            if (start2 <= start1 && start1 < end2) {
                 return true;
-            }
-            else if ( start2 < end1 && end1 < end2 )
-            {
+            } else if (start2 < end1 && end1 < end2) {
                 return true;
-            }
-            else
-            {
-                if ( start1 <= start2 && start2 < end1 )
-                {
+            } else {
+                if (start1 <= start2 && start2 < end1) {
                     return true;
-                }
-                else if ( start1 < end2 && end2 < end1 )
-                {
+                } else if (start1 < end2 && end2 < end1) {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

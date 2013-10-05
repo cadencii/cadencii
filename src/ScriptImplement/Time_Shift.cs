@@ -9,14 +9,17 @@ using System.Windows.Forms;
 
 using cadencii.vsq;
 
-public class Time_Shift : Form {
-    public Time_Shift() {
+public class Time_Shift : Form
+{
+    public Time_Shift()
+    {
         InitializeComponent();
     }
 
-    public static bool Edit( VsqFile vsq ) {
+    public static bool Edit(VsqFile vsq)
+    {
         Time_Shift ts = new Time_Shift();
-        if ( ts.ShowDialog() != DialogResult.OK ) {
+        if (ts.ShowDialog() != DialogResult.OK) {
             return false;
         }
         return true;
@@ -31,11 +34,12 @@ public class Time_Shift : Form {
     /// 使用中のリソースをすべてクリーンアップします。
     /// </summary>
     /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-    protected override void Dispose( bool disposing ) {
-        if ( disposing && (components != null) ) {
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && (components != null)) {
             components.Dispose();
         }
-        base.Dispose( disposing );
+        base.Dispose(disposing);
     }
 
     #region Windows フォーム デザイナで生成されたコード
@@ -44,7 +48,8 @@ public class Time_Shift : Form {
     /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
     /// コード エディタで変更しないでください。
     /// </summary>
-    private void InitializeComponent() {
+    private void InitializeComponent()
+    {
         this.components = new System.ComponentModel.Container();
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.Text = "Time_Shift";

@@ -11,24 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.lang.reflect.*;
-import cadencii.*;
-#else
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
-#endif
-
     public class NRPN
     {
         /// <summary>
@@ -572,16 +562,15 @@ namespace cadencii.vsq
         {
         }
 
-        public static Iterator<ValuePair<String, Integer>> iterator()
+        public static IEnumerable<ValuePair<string, int>> iterator()
         {
             return new NrpnIterator();
         }
 
-        public static String getName( int nrpn )
+        public static string getName(int nrpn)
         {
-            for ( Iterator<ValuePair<String, Integer>> itr = iterator(); itr.hasNext(); ) {
-                ValuePair<String, Integer> v = itr.next();
-                if ( v.getValue() == nrpn ) {
+            foreach (var v in iterator()) {
+                if (v.getValue() == nrpn) {
                     return v.getKey();
                 }
             }
@@ -593,55 +582,55 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="curve_name"></param>
         /// <returns></returns>
-        public static byte getVoiceChangeParameterID( String curve_name )
+        public static byte getVoiceChangeParameterID(string curve_name)
         {
             byte lsb = 0x31;
             curve_name = curve_name.ToLower();
-            if ( curve_name.Equals( "harmonics" ) ) {
+            if (curve_name.Equals("harmonics")) {
                 lsb = 0x30;
-            } else if ( curve_name.Equals( "bre" ) ) {
+            } else if (curve_name.Equals("bre")) {
                 lsb = 0x31;
-            } else if ( curve_name.Equals( "bri" ) ) {
+            } else if (curve_name.Equals("bri")) {
                 lsb = 0x32;
-            } else if ( curve_name.Equals( "cle" ) ) {
+            } else if (curve_name.Equals("cle")) {
                 lsb = 0x33;
-            } else if ( curve_name.Equals( "por" ) ) {
+            } else if (curve_name.Equals("por")) {
                 lsb = 0x34;
-            } else if ( curve_name.Equals( "ope" ) ) {
+            } else if (curve_name.Equals("ope")) {
                 lsb = 0x35;
-            } else if ( curve_name.Equals( "reso1freq" ) ) {
+            } else if (curve_name.Equals("reso1freq")) {
                 lsb = 0x40;
-            } else if ( curve_name.Equals( "reso2freq" ) ) {
+            } else if (curve_name.Equals("reso2freq")) {
                 lsb = 0x41;
-            } else if ( curve_name.Equals( "reso3freq" ) ) {
+            } else if (curve_name.Equals("reso3freq")) {
                 lsb = 0x42;
-            } else if ( curve_name.Equals( "reso4freq" ) ) {
+            } else if (curve_name.Equals("reso4freq")) {
                 lsb = 0x43;
-            } else if ( curve_name.Equals( "reso1bw" ) ) {
+            } else if (curve_name.Equals("reso1bw")) {
                 lsb = 0x50;
-            } else if ( curve_name.Equals( "reso2bw" ) ) {
+            } else if (curve_name.Equals("reso2bw")) {
                 lsb = 0x51;
-            } else if ( curve_name.Equals( "reso3bw" ) ) {
+            } else if (curve_name.Equals("reso3bw")) {
                 lsb = 0x52;
-            } else if ( curve_name.Equals( "reso4bw" ) ) {
+            } else if (curve_name.Equals("reso4bw")) {
                 lsb = 0x53;
-            } else if ( curve_name.Equals( "reso1amp" ) ) {
+            } else if (curve_name.Equals("reso1amp")) {
                 lsb = 0x60;
-            } else if ( curve_name.Equals( "reso2amp" ) ) {
+            } else if (curve_name.Equals("reso2amp")) {
                 lsb = 0x61;
-            } else if ( curve_name.Equals( "reso3amp" ) ) {
+            } else if (curve_name.Equals("reso3amp")) {
                 lsb = 0x62;
-            } else if ( curve_name.Equals( "reso4amp" ) ) {
+            } else if (curve_name.Equals("reso4amp")) {
                 lsb = 0x63;
-            } else if ( curve_name.Equals( "gen" ) ) {
+            } else if (curve_name.Equals("gen")) {
                 lsb = 0x70;
             }
             return lsb;
         }
 
-        public static boolean is_require_data_lsb( int nrpn )
+        public static bool is_require_data_lsb(int nrpn)
         {
-            switch ( nrpn ) {
+            switch (nrpn) {
                 case CVM_NM_VERSION_AND_DEVICE:
                 case CVM_NM_DELAY:
                 case CVM_NM_NOTE_DURATION:
@@ -713,6 +702,4 @@ namespace cadencii.vsq
 
     }
 
-#if !JAVA
 }
-#endif

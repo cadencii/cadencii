@@ -11,7 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 #define RGB24
 using System;
 using System.Runtime.InteropServices;
@@ -30,23 +29,28 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using cadencii;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
-    public static class CursorUtil {
-        public static void SaveAsIcon( Bitmap item, Stream stream, Color transp ) {
-            SaveCor( item, new Point( 0, 0 ), stream, 1, transp );
+    public static class CursorUtil
+    {
+        public static void SaveAsIcon(Bitmap item, Stream stream, Color transp)
+        {
+            SaveCor(item, new Point(0, 0), stream, 1, transp);
         }
 
-        public static void SaveAsCursor( Bitmap item, Point hotspot, Stream stream, Color transp ) {
-            SaveCor( item, hotspot, stream, 2, transp );
+        public static void SaveAsCursor(Bitmap item, Point hotspot, Stream stream, Color transp)
+        {
+            SaveCor(item, hotspot, stream, 2, transp);
         }
 
-        private static void SaveCor( Bitmap item, Point hotspot, Stream stream, ushort type, Color transp ) {
+        private static void SaveCor(Bitmap item, Point hotspot, Stream stream, ushort type, Color transp)
+        {
             IconFileHeader ifh = new IconFileHeader();
             ifh.icoReserved = 0x0;
             ifh.icoResourceCount = 1;
             ifh.icoResourceType = type;
-            ifh.Write( stream );
+            ifh.Write(stream);
             IconInfoHeader iif = new IconInfoHeader();
             BITMAPINFOHEADER bih = new BITMAPINFOHEADER();
             iif.Width = (byte)item.Width;
@@ -63,11 +67,11 @@ namespace cadencii.apputil {
             int linesize_mask = ((item.Width * 1 + 31) / 32) * 4;
             int size = linesize * item.Height + linesize_mask * item.Height + 40;
 #if DEBUG
-            Console.WriteLine( "linesize=" + linesize );
+            Console.WriteLine("linesize=" + linesize);
 #endif
             iif.icoDIBSize = (uint)size;
             iif.icoDIBOffset = 0x16;
-            iif.Write( stream );
+            iif.Write(stream);
             bih.biSize = 40;
             bih.biWidth = item.Width;
 #if RGB24
@@ -87,17 +91,17 @@ namespace cadencii.apputil {
             bih.biYPelsPerMeter = 0;//            (int)(item.VerticalResolution / 2.54e-2);
             bih.biClrUsed = 0;
             bih.biClrImportant = 0;
-            bih.Write( stream );
-            for ( int y = item.Height - 1; y >= 0; y-- ) {
+            bih.Write(stream);
+            for (int y = item.Height - 1; y >= 0; y--) {
                 int count = 0;
-                for ( int x = 0; x < item.Width; x++ ) {
-                    Color c = item.GetPixel( x, y );
-                    stream.WriteByte( (byte)c.B );
-                    stream.WriteByte( (byte)c.G );
-                    stream.WriteByte( (byte)c.R );
+                for (int x = 0; x < item.Width; x++) {
+                    Color c = item.GetPixel(x, y);
+                    stream.WriteByte((byte)c.B);
+                    stream.WriteByte((byte)c.G);
+                    stream.WriteByte((byte)c.R);
 #if DEBUG
-                    if ( c.R != transp.R || c.G != transp.G || c.B != transp.B ) {
-                        Console.WriteLine( "color=" + c );
+                    if (c.R != transp.R || c.G != transp.G || c.B != transp.B) {
+                        Console.WriteLine("color=" + c);
                     }
 #endif
 #if RGB24
@@ -107,73 +111,77 @@ namespace cadencii.apputil {
                     count += 4;
 #endif
                 }
-                for ( int i = count; i < linesize; i++ ) {
-                    stream.WriteByte( 0x0 );
+                for (int i = count; i < linesize; i++) {
+                    stream.WriteByte(0x0);
                 }
             }
 
-            for ( int y = item.Height - 1; y >= 0; y-- ) {
+            for (int y = item.Height - 1; y >= 0; y--) {
                 int count = 0;
                 byte v = 0x0;
                 int tcount = 0;
-                for ( int x = 0; x < item.Width; x++ ) {
-                    Color c = item.GetPixel( x, y );
+                for (int x = 0; x < item.Width; x++) {
+                    Color c = item.GetPixel(x, y);
                     byte tr = 0x0;
-                    if ( c.R == transp.R && c.G == transp.G && c.B == transp.B ){
+                    if (c.R == transp.R && c.G == transp.G && c.B == transp.B) {
                         tr = 0x1;
                     }
                     v = (byte)((byte)(v << 1) | (byte)(tr & 0x1));
                     tcount++;
-                    if ( tcount == 8 ) {
-                        stream.WriteByte( v );
+                    if (tcount == 8) {
+                        stream.WriteByte(v);
                         count++;
                         tcount = 0;
                         v = 0x0;
                     }
                 }
-                if ( 0 < tcount ) {
+                if (0 < tcount) {
                     v = (byte)(v << (9 - tcount));
-                    stream.WriteByte( v );
+                    stream.WriteByte(v);
                     count++;
                 }
-                for ( int i = count; i < linesize_mask; i++ ) {
-                    stream.WriteByte( 0x0 );
+                for (int i = count; i < linesize_mask; i++) {
+                    stream.WriteByte(0x0);
                 }
             }
         }
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct IconFileHeader {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct IconFileHeader
+    {
         public ushort icoReserved;
         public ushort icoResourceType;
         public ushort icoResourceCount;
 
-        public void Write( Stream stream ) {
+        public void Write(Stream stream)
+        {
             byte[] buf;
-            buf = BitConverter.GetBytes( icoReserved );
-            stream.Write( buf, 0, 2 );
-            buf = BitConverter.GetBytes( icoResourceType );
-            stream.Write( buf, 0, 2 );
-            buf = BitConverter.GetBytes( icoResourceCount );
-            stream.Write( buf, 0, 2 );
+            buf = BitConverter.GetBytes(icoReserved);
+            stream.Write(buf, 0, 2);
+            buf = BitConverter.GetBytes(icoResourceType);
+            stream.Write(buf, 0, 2);
+            buf = BitConverter.GetBytes(icoResourceCount);
+            stream.Write(buf, 0, 2);
         }
 
-        public static IconFileHeader Read( Stream fs ) {
+        public static IconFileHeader Read(Stream fs)
+        {
             IconFileHeader ifh = new IconFileHeader();
             byte[] buf = new byte[2];
-            fs.Read( buf, 0, 2 );
-            ifh.icoReserved = BitConverter.ToUInt16( buf, 0 );
-            fs.Read( buf, 0, 2 );
-            ifh.icoResourceType = BitConverter.ToUInt16( buf, 0 );
-            fs.Read( buf, 0, 2 );
-            ifh.icoResourceCount = BitConverter.ToUInt16( buf, 0 );
+            fs.Read(buf, 0, 2);
+            ifh.icoReserved = BitConverter.ToUInt16(buf, 0);
+            fs.Read(buf, 0, 2);
+            ifh.icoResourceType = BitConverter.ToUInt16(buf, 0);
+            fs.Read(buf, 0, 2);
+            ifh.icoResourceCount = BitConverter.ToUInt16(buf, 0);
             return ifh;
         }
     }
 
-    [StructLayout( LayoutKind.Sequential, Pack = 1 )]
-    public struct IconInfoHeader {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct IconInfoHeader
+    {
         public byte Width;
         public byte Height;
         public byte ColorCount;
@@ -183,43 +191,45 @@ namespace cadencii.apputil {
         public uint icoDIBSize;
         public uint icoDIBOffset;
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return "{Width=" + Width + ", Height=" + Height + ", ColorCount=" + ColorCount + ", Reserved1=" + Reserved1 + ", Reserved2=" + Reserved2 + ", Reserved3=" + Reserved3 + ", icoDIBSize=" + icoDIBSize + ", icoDIBOffset=" + icoDIBOffset + "}";
         }
 
-        public void Write( Stream stream ) {
+        public void Write(Stream stream)
+        {
             byte[] buf;
-            stream.WriteByte( Width );
-            stream.WriteByte( Height );
-            stream.WriteByte( ColorCount );
-            stream.WriteByte( Reserved1 );
-            buf = BitConverter.GetBytes( Reserved2 );
-            stream.Write( buf, 0, 2 );
-            buf = BitConverter.GetBytes( Reserved3 );
-            stream.Write( buf, 0, 2 );
-            buf = BitConverter.GetBytes( icoDIBSize );
-            stream.Write( buf, 0, 4 );
-            buf = BitConverter.GetBytes( icoDIBOffset );
-            stream.Write( buf, 0, 4 );
+            stream.WriteByte(Width);
+            stream.WriteByte(Height);
+            stream.WriteByte(ColorCount);
+            stream.WriteByte(Reserved1);
+            buf = BitConverter.GetBytes(Reserved2);
+            stream.Write(buf, 0, 2);
+            buf = BitConverter.GetBytes(Reserved3);
+            stream.Write(buf, 0, 2);
+            buf = BitConverter.GetBytes(icoDIBSize);
+            stream.Write(buf, 0, 4);
+            buf = BitConverter.GetBytes(icoDIBOffset);
+            stream.Write(buf, 0, 4);
         }
 
-        public static IconInfoHeader Read( Stream stream ) {
+        public static IconInfoHeader Read(Stream stream)
+        {
             IconInfoHeader iih = new IconInfoHeader();
             iih.Width = (byte)stream.ReadByte();
             iih.Height = (byte)stream.ReadByte();
             iih.ColorCount = (byte)stream.ReadByte();
             iih.Reserved1 = (byte)stream.ReadByte();
             byte[] buf = new byte[4];
-            stream.Read( buf, 0, 4 );
-            iih.Reserved2 = BitConverter.ToUInt16( buf, 0 );
-            iih.Reserved3 = BitConverter.ToUInt16( buf, 2 );
-            stream.Read( buf, 0, 4 );
-            iih.icoDIBSize = BitConverter.ToUInt32( buf, 0 );
-            stream.Read( buf, 0, 4 );
-            iih.icoDIBOffset = BitConverter.ToUInt32( buf, 0 );
+            stream.Read(buf, 0, 4);
+            iih.Reserved2 = BitConverter.ToUInt16(buf, 0);
+            iih.Reserved3 = BitConverter.ToUInt16(buf, 2);
+            stream.Read(buf, 0, 4);
+            iih.icoDIBSize = BitConverter.ToUInt32(buf, 0);
+            stream.Read(buf, 0, 4);
+            iih.icoDIBOffset = BitConverter.ToUInt32(buf, 0);
             return iih;
         }
     }
 
 }
-#endif

@@ -11,24 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
-namespace cadencii {
-    using boolean = System.Boolean;
-#endif
+namespace cadencii
+{
 
-    public class BgmFile : ICloneable {
-        public String file;
+    public class BgmFile : ICloneable
+    {
+        public string file;
         public int feder;
         public int panpot;
         public int mute;
-        public boolean startAfterPremeasure = true;
+        public bool startAfterPremeasure = true;
         public double readOffsetSeconds = 0.0;
 
-        public Object clone() {
+        public Object clone()
+        {
             BgmFile ret = new BgmFile();
             ret.feder = feder;
             ret.file = file;
@@ -39,13 +37,10 @@ namespace cadencii {
             return ret;
         }
 
-#if !JAVA
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

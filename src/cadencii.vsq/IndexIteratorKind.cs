@@ -11,13 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-#else
 namespace cadencii.vsq
 {
-#endif
 
     public class IndexIteratorKind
     {
@@ -32,6 +27,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

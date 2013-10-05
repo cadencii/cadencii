@@ -11,34 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-import java.util.*;
-import cadencii.*;
-
-#else
 using System;
+using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class UstTrack implements Cloneable {
-#else
     public class UstTrack : ICloneable
     {
-#endif
         public Object Tag;
-        private Vector<UstEvent> m_events;
+        private List<UstEvent> m_events;
 
         public UstTrack()
         {
-            m_events = new Vector<UstEvent>();
+            m_events = new List<UstEvent>();
         }
 
         /// <summary>
@@ -46,64 +34,60 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="index">検索するindex値</param>
         /// <returns>見つからなかったらnullを返す</returns>
-        public UstEvent findEventFromIndex( int index )
+        public UstEvent findEventFromIndex(int index)
         {
-            foreach ( UstEvent ue in m_events ) {
-                if ( ue.Index == index ) {
+            foreach (UstEvent ue in m_events) {
+                if (ue.Index == index) {
                     return ue;
                 }
             }
             return null;
         }
 
-        public UstEvent getEvent( int index )
+        public UstEvent getEvent(int index)
         {
-            return m_events.get( index );
+            return m_events[index];
         }
 
-        public void setEvent( int index, UstEvent item )
+        public void setEvent(int index, UstEvent item)
         {
-            m_events.set( index, item );
+            m_events[index] = item;
         }
 
-        public void addEvent( UstEvent item )
+        public void addEvent(UstEvent item)
         {
-            m_events.add( item );
+            m_events.Add(item);
         }
 
-        public void removeEventAt( int index )
+        public void removeEventAt(int index)
         {
-            m_events.removeElementAt( index );
+            m_events.RemoveAt(index);
         }
 
         public int getEventCount()
         {
-            return m_events.size();
+            return m_events.Count;
         }
 
-        public Iterator<UstEvent> getNoteEventIterator()
+        public IEnumerable<UstEvent> getNoteEventIterator()
         {
-            return m_events.iterator();
+            return m_events;
         }
 
         public Object clone()
         {
             UstTrack ret = new UstTrack();
             int c = m_events.Count;
-            for ( int i = 0; i < c; i++ ) {
-                ret.m_events.Add( (UstEvent)m_events[i].clone() );
+            for (int i = 0; i < c; i++) {
+                ret.m_events.Add((UstEvent)m_events[i].clone());
             }
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

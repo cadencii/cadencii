@@ -11,19 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
-namespace cadencii {
-#endif
+namespace cadencii
+{
 
-    public class MidiPortConfig {
+    public class MidiPortConfig
+    {
         public int PortNumber;
-        public String PortName;
+        public string PortName;
     }
 
-#if !JAVA
 }
-#endif

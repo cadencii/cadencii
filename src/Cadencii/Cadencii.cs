@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-import cadencii.*;
-import cadencii.apputil.*;
-
-#else
-
 using System;
 using System.Threading;
 using System.Windows.Forms;
@@ -27,41 +20,32 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-    using boolean = System.Boolean;
-#endif
-
-#if JAVA
-    public class Cadencii implements Thread.UncaughtExceptionHandler
-#else
     public class Cadencii
-#endif
     {
-#if !JAVA
         public static FormSplash splash = null;
         static Thread splashThread = null;
-#endif
-        private static String mPathVsq = "";
-        private static boolean mPrintVersion = false;
+        private static string mPathVsq = "";
+        private static bool mPrintVersion = false;
 
         /// <summary>
         /// 起動時に渡されたコマンドライン引数を評価します。
         /// 戻り値は、コマンドライン引数のうちVSQ,またはXVSQファイルとして指定された引数、または空文字です。
         /// </summary>
         /// <param name="arg"></param>
-        private static void parseArguments( String[] arg )
+        private static void parseArguments(string[] arg)
         {
-            String currentparse = "";
+            string currentparse = "";
 
-            for ( int i = 0; i < arg.Length; i++ ) {
-                String argi = arg[i];
-                if ( argi.StartsWith( "-" ) ) {
+            for (int i = 0; i < arg.Length; i++) {
+                string argi = arg[i];
+                if (argi.StartsWith("-")) {
                     currentparse = argi;
-                    if ( argi == "--version" ) {
+                    if (argi == "--version") {
                         mPrintVersion = true;
                         currentparse = "";
                     }
                 } else {
-                    if ( currentparse == "" ) {
+                    if (currentparse == "") {
                         mPathVsq = argi;
                     }
                     currentparse = "";
@@ -69,60 +53,15 @@ namespace cadencii
             }
         }
 
-        private static void handleUnhandledException( Exception ex )
+        private static void handleUnhandledException(Exception ex)
         {
             ExceptionNotifyFormController controller = new ExceptionNotifyFormController();
-            controller.setReportTarget( ex );
-            controller.getUi().showDialog( null );
+            controller.setReportTarget(ex);
+            controller.getUi().showDialog(null);
         }
-
-#if JAVA
-        public static void main( String[] args )
-#if DEBUG
-            throws Exception
-#endif
-        {
-            Thread.setDefaultUncaughtExceptionHandler( new Cadencii() );
-
-            // 引数を解釈
-            parseArguments( args );
-            if( mPrintVersion ){
-                System.out.print( BAssemblyInfo.fileVersion );
-                return;
-            }
-            String file = mPathVsq;
-            if ( !str.compare( mPathResource, "" ) ) {
-                Resources.setBasePath( mPathResource );
-            }
-            try{
-            	Messaging.loadMessages();
-            }catch( Exception ex ){
-                Logger.write( Cadencii.class + ".main; ex=" + ex + "\n" );
-                serr.println( "Cadencii.main; ex=" + ex );
-            }
-            AppManager.init();
-            AppManager.mMainWindowController = new FormMainController();
-            AppManager.mMainWindow = new FormMain( AppManager.mMainWindowController, file );
-            AppManager.mMainWindow.setVisible( true );
-#if DEBUG
-            throw new Exception( "foo" );
-#endif
-        }
-
-        @Override
-        public void uncaughtException( Thread arg0, Throwable arg1 )
-        {
-            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
-            if( arg1 != null && arg1 instanceof Exception ){
-                ex = (Exception)arg1;
-            }
-            handleUnhandledException( ex );
-        }
-
-#else
 
         [STAThread]
-        public static void Main( String[] args )
+        public static void Main(string[] args)
         {
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(Cadencii_UnhandledException);
@@ -136,10 +75,10 @@ namespace cadencii
                 Console.Write(BAssemblyInfo.fileVersion);
                 return;
             }
-            String file = mPathVsq;
+            string file = mPathVsq;
 
             Logger.setEnabled(false);
-            String logfile = PortUtil.createTempFile() + ".txt";
+            string logfile = PortUtil.createTempFile() + ".txt";
 
             Logger.setPath(logfile);
 #if DEBUG
@@ -163,7 +102,7 @@ namespace cadencii
             }
 
             // 開発版の場合の警告ダイアログ
-            String str_minor = BAssemblyInfo.fileVersionMinor;
+            string str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
                 minor = int.Parse(str_minor);
@@ -220,18 +159,18 @@ namespace cadencii
 #endif
         }
 
-        private static void Cadencii_UnhandledException( object sender, UnhandledExceptionEventArgs e )
+        private static void Cadencii_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
-            if ( e.ExceptionObject != null && e.ExceptionObject is Exception ) {
+            Exception ex = new Exception("unknown exception handled at 'Cadencii::Cadencii_UnhandledException");
+            if (e.ExceptionObject != null && e.ExceptionObject is Exception) {
                 ex = (Exception)e.ExceptionObject;
             }
-            handleUnhandledException( ex );
+            handleUnhandledException(ex);
         }
 
-        private static void Application_ThreadException( object sender, ThreadExceptionEventArgs e )
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            handleUnhandledException( e.Exception );
+            handleUnhandledException(e.Exception);
         }
 
         /// <summary>
@@ -240,26 +179,26 @@ namespace cadencii
         /// <param name="ex"></param>
         /// <param name="depth_count"></param>
         /// <returns></returns>
-        private static String getExceptionText( Exception ex, int depth_count )
+        private static string getExceptionText(Exception ex, int depth_count)
         {
-            String ret = ex.ToString();
-            if ( ex.InnerException != null ) {
+            string ret = ex.ToString();
+            if (ex.InnerException != null) {
                 ret += "\n" +
                        "-- InnerException; Depth Level " + depth_count + " -----------------------" +
-                       getExceptionText( ex.InnerException, depth_count + 1 );
+                       getExceptionText(ex.InnerException, depth_count + 1);
             }
             return ret;
         }
 
-        private static String _( String id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         static void showSplash()
         {
             splash = new FormSplash();
-            splash.ShowDialog( null );
+            splash.ShowDialog(null);
         }
 
         static void closeSplash()
@@ -267,9 +206,9 @@ namespace cadencii
             splash.Close();
         }
 
-        public static void mainWindow_Load( Object sender, EventArgs e )
+        public static void mainWindow_Load(Object sender, EventArgs e)
         {
-            if ( splash != null ) {
+            if (splash != null) {
                 splash.Invoke(new Action(closeSplash));
             }
             splash = null;
@@ -278,15 +217,12 @@ namespace cadencii
             // これを回避するため、UI インスタンスの初回生成をココで行う。
             // AquesTone2 DLL のリロード時にも同様の処理が必要だが、これは VSTiDllManager.getAquesTone2Driver にて行う。
             var driver = VSTiDllManager.getAquesTone2Driver();
-            if ( driver != null ) {
-                driver.getUi( AppManager.mMainWindow );
+            if (driver != null) {
+                driver.getUi(AppManager.mMainWindow);
             }
 
             AppManager.mMainWindow.Load -= mainWindow_Load;
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

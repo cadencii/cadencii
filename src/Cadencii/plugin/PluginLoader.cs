@@ -23,6 +23,8 @@ using cadencii;
 using cadencii.apputil;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
     /// <summary>
@@ -36,91 +38,91 @@ namespace cadencii
         private static List<string> usedAssemblyChache = new List<string>();
 
 #if ENABLE_SCRIPT
-        public Assembly compileScript( string code, List<string> errors )
+        public Assembly compileScript(string code, List<string> errors)
         {
             Assembly ret = null;
 
-            String md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
-            String cached_asm_file = Path.Combine( Utility.getCachedAssemblyPath(), md5 + ".dll" );
+            string md5 = PortUtil.getMD5FromString(code).Replace("_", "");
+            string cached_asm_file = Path.Combine(Utility.getCachedAssemblyPath(), md5 + ".dll");
             bool compiled = false;
 
-            if ( File.Exists( cached_asm_file ) ) {
-                ret = Assembly.LoadFile( cached_asm_file );
-                if ( !isValidCachedAssembly( ret ) ){
+            if (File.Exists(cached_asm_file)) {
+                ret = Assembly.LoadFile(cached_asm_file);
+                if (!isValidCachedAssembly(ret)) {
                     ret = null;
-                    usedAssemblyChache.Remove( cached_asm_file );
+                    usedAssemblyChache.Remove(cached_asm_file);
                 }
-                if ( ret != null ) {
-                    if ( !usedAssemblyChache.Contains( cached_asm_file ) ) {
-                        usedAssemblyChache.Add( cached_asm_file );
+                if (ret != null) {
+                    if (!usedAssemblyChache.Contains(cached_asm_file)) {
+                        usedAssemblyChache.Add(cached_asm_file);
                     }
                 }
             }
 
             CompilerResults cr = null;
-            if ( ret == null ) {
+            if (ret == null) {
                 CSharpCodeProvider provider = new CSharpCodeProvider();
-                String path = System.Windows.Forms.Application.StartupPath;
+                string path = System.Windows.Forms.Application.StartupPath;
 
-                if ( System.IO.Path.GetFileName( System.Windows.Forms.Application.ExecutablePath ).ToLower().StartsWith( "nunit" ) ) {
+                if (System.IO.Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToLower().StartsWith("nunit")) {
                     // nunit の場合は、 StartupPath が nunit のものになってしまうため、
                     // CadenciiTest.dll がデプロイされているディレクトリを、アセンブリのロード起点とする。
-                    foreach ( var asm in AppDomain.CurrentDomain.GetAssemblies() ) {
-                        if ( System.IO.Path.GetFileName( asm.Location ).ToLower() == "cadenciitest.dll" ) {
-                            path = System.IO.Path.GetDirectoryName( asm.Location );
+                    foreach (var asm in AppDomain.CurrentDomain.GetAssemblies()) {
+                        if (System.IO.Path.GetFileName(asm.Location).ToLower() == "cadenciitest.dll") {
+                            path = System.IO.Path.GetDirectoryName(asm.Location);
                             break;
                         }
                     }
                 }
 
-                CompilerParameters parameters = new CompilerParameters( new String[] {
+                CompilerParameters parameters = new CompilerParameters(new string[] {
                     Path.Combine( path, "cadencii.vsq.dll" ),
                     Path.Combine( path, "Cadencii.exe" ),
                     Path.Combine( path, "cadencii.media.dll" ),
                     Path.Combine( path, "cadencii.apputil.dll" ),
                     Path.Combine( path, "cadencii.windows.forms.dll" ),
                     Path.Combine( path, "cadencii.core.dll" )
-                } );
-                parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
-                parameters.ReferencedAssemblies.Add( "System.dll" );
-                parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );
-                parameters.ReferencedAssemblies.Add( "System.Xml.dll" );
+                });
+                parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+                parameters.ReferencedAssemblies.Add("System.dll");
+                parameters.ReferencedAssemblies.Add("System.Drawing.dll");
+                parameters.ReferencedAssemblies.Add("System.Xml.dll");
                 parameters.GenerateInMemory = false;
                 parameters.GenerateExecutable = false;
                 parameters.IncludeDebugInformation = true;
                 try {
-                    cr = provider.CompileAssemblyFromSource( parameters, code );
+                    cr = provider.CompileAssemblyFromSource(parameters, code);
                     ret = cr.CompiledAssembly;
                     compiled = true;
-                } catch ( Exception ex ) {
-                    serr.println( "Utility#compileScript; ex=" + ex );
-                    Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("Utility#compileScript; ex=" + ex);
+                    Logger.write(typeof(Utility) + ".compileScript; ex=" + ex + "\n");
                 }
-                if ( !compiled ) {
+                if (!compiled) {
                     int c = cr.Errors.Count;
-                    for ( int i = 0; i < c; i++ ) {
-                        errors.Add( _( "line" ) + ":" + cr.Errors[i].Line + " " + cr.Errors[i].ErrorText );
+                    for (int i = 0; i < c; i++) {
+                        errors.Add(_("line") + ":" + cr.Errors[i].Line + " " + cr.Errors[i].ErrorText);
                     }
                 }
             }
 
-            if ( compiled ) {
-                if ( !usedAssemblyChache.Contains( cached_asm_file ) ) {
-                    usedAssemblyChache.Add( cached_asm_file );
+            if (compiled) {
+                if (!usedAssemblyChache.Contains(cached_asm_file)) {
+                    usedAssemblyChache.Add(cached_asm_file);
                 }
-                if ( File.Exists( cached_asm_file ) ) {
+                if (File.Exists(cached_asm_file)) {
                     try {
-                        PortUtil.deleteFile( cached_asm_file );
-                    } catch ( Exception ex ) {
-                        serr.println( "Utility#compileScript; ex=" + ex );
-                        Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
+                        PortUtil.deleteFile(cached_asm_file);
+                    } catch (Exception ex) {
+                        serr.println("Utility#compileScript; ex=" + ex);
+                        Logger.write(typeof(Utility) + ".compileScript; ex=" + ex + "\n");
                     }
                 }
                 try {
-                    PortUtil.copyFile( cr.PathToAssembly, cached_asm_file );
-                } catch ( Exception ex ) {
-                    serr.println( "Utility#compileScript; ex=" + ex );
-                    Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
+                    PortUtil.copyFile(cr.PathToAssembly, cached_asm_file);
+                } catch (Exception ex) {
+                    serr.println("Utility#compileScript; ex=" + ex);
+                    Logger.write(typeof(Utility) + ".compileScript; ex=" + ex + "\n");
                 }
             }
 
@@ -133,9 +135,9 @@ namespace cadencii
         /// </summary>
         /// <param name="assembly">対象のアセンブリ</param>
         /// <returns>使えるようであれば true</returns>
-        private static bool isValidCachedAssembly( Assembly assembly )
+        private static bool isValidCachedAssembly(Assembly assembly)
         {
-            return assembly.GetReferencedAssemblies().All( ( asm ) => !asm.Name.Contains( "org.kbinani" ) );
+            return assembly.GetReferencedAssemblies().All((asm) => !asm.Name.Contains("org.kbinani"));
         }
 
         /// <summary>
@@ -143,25 +145,25 @@ namespace cadencii
         /// </summary>
         public static void cleanupUnusedAssemblyCache()
         {
-            String dir = Utility.getCachedAssemblyPath();
-            String[] files = PortUtil.listFiles( dir, ".dll" );
-            foreach ( String file in files ) {
-                String name = PortUtil.getFileName( file );
-                String full = Path.Combine( dir, name );
-                if ( !usedAssemblyChache.Contains( full ) ) {
+            string dir = Utility.getCachedAssemblyPath();
+            string[] files = PortUtil.listFiles(dir, ".dll");
+            foreach (string file in files) {
+                string name = PortUtil.getFileName(file);
+                string full = Path.Combine(dir, name);
+                if (!usedAssemblyChache.Contains(full)) {
                     try {
-                        PortUtil.deleteFile( full );
-                    } catch ( Exception ex ) {
-                        serr.println( "Utility#cleanupUnusedAssemblyCache; ex=" + ex );
-                        Logger.write( typeof( Utility ) + ".cleanupUnusedAssemblyCache; ex=" + ex + "\n" );
+                        PortUtil.deleteFile(full);
+                    } catch (Exception ex) {
+                        serr.println("Utility#cleanupUnusedAssemblyCache; ex=" + ex);
+                        Logger.write(typeof(Utility) + ".cleanupUnusedAssemblyCache; ex=" + ex + "\n");
                     }
                 }
             }
         }
 
-        private string _( string id )
+        private string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         /// <summary>
@@ -170,68 +172,68 @@ namespace cadencii
         /// <param name="file">スクリプトを発動するのに使用するコンテナを返します．</param>
         /// <returns></returns>
 #if ENABLE_SCRIPT
-        public ScriptInvoker loadScript( String file )
+        public ScriptInvoker loadScript(string file)
         {
             ScriptInvoker ret = new ScriptInvoker();
             ret.ScriptFile = file;
-            ret.fileTimestamp = PortUtil.getFileLastModified( file );
+            ret.fileTimestamp = PortUtil.getFileLastModified(file);
             // スクリプトの記述のうち、以下のリストに当てはまる部分は空文字に置換される
-            string config_file = ScriptServer.configFileNameFromScriptFileName( file );
+            string config_file = ScriptServer.configFileNameFromScriptFileName(file);
             string script = "";
-            using ( StreamReader sr = new StreamReader( file ) ) {
+            using (StreamReader sr = new StreamReader(file)) {
                 script += sr.ReadToEnd();
             }
 
-            var code = createPluginCode( script );
+            var code = createPluginCode(script);
             ret.ErrorMessage = "";
 
             List<string> errors = new List<string>();
-            Assembly testAssembly = compileScript( code, errors );
-            if ( testAssembly == null ) {
+            Assembly testAssembly = compileScript(code, errors);
+            if (testAssembly == null) {
                 ret.scriptDelegate = null;
-                if ( errors.Count == 0 ) {
+                if (errors.Count == 0) {
                     ret.ErrorMessage = "failed compiling";
                 } else {
-                    for ( int i = 0; i < errors.Count; i++ ) {
+                    for (int i = 0; i < errors.Count; i++) {
                         ret.ErrorMessage += errors[i] + "\r\n";
                     }
                 }
                 return ret;
             } else {
-                foreach ( Type implemented in testAssembly.GetTypes() ) {
+                foreach (Type implemented in testAssembly.GetTypes()) {
                     Object scriptDelegate = null;
                     ScriptDelegateGetDisplayName getDisplayNameDelegate = null;
 
-                    MethodInfo get_displayname_delegate = implemented.GetMethod( "GetDisplayName", new Type[] { } );
-                    if ( get_displayname_delegate != null && get_displayname_delegate.IsStatic && get_displayname_delegate.IsPublic ) {
-                        if ( get_displayname_delegate.ReturnType.Equals( typeof( String ) ) ) {
-                            getDisplayNameDelegate = (ScriptDelegateGetDisplayName)Delegate.CreateDelegate( typeof( ScriptDelegateGetDisplayName ), get_displayname_delegate );
+                    MethodInfo get_displayname_delegate = implemented.GetMethod("GetDisplayName", new Type[] { });
+                    if (get_displayname_delegate != null && get_displayname_delegate.IsStatic && get_displayname_delegate.IsPublic) {
+                        if (get_displayname_delegate.ReturnType.Equals(typeof(string))) {
+                            getDisplayNameDelegate = (ScriptDelegateGetDisplayName)Delegate.CreateDelegate(typeof(ScriptDelegateGetDisplayName), get_displayname_delegate);
                         }
                     }
 
-                    MethodInfo tmi = implemented.GetMethod( "Edit", new Type[] { typeof( VsqFile ) } );
-                    if ( tmi != null && tmi.IsStatic && tmi.IsPublic ) {
-                        if ( tmi.ReturnType.Equals( typeof( bool ) ) ) {
-                            scriptDelegate = (EditVsqScriptDelegate)Delegate.CreateDelegate( typeof( EditVsqScriptDelegate ), tmi );
-                        } else if ( tmi.ReturnType.Equals( typeof( ScriptReturnStatus ) ) ) {
-                            scriptDelegate = (EditVsqScriptDelegateWithStatus)Delegate.CreateDelegate( typeof( EditVsqScriptDelegateWithStatus ), tmi );
+                    MethodInfo tmi = implemented.GetMethod("Edit", new Type[] { typeof(VsqFile) });
+                    if (tmi != null && tmi.IsStatic && tmi.IsPublic) {
+                        if (tmi.ReturnType.Equals(typeof(bool))) {
+                            scriptDelegate = (EditVsqScriptDelegate)Delegate.CreateDelegate(typeof(EditVsqScriptDelegate), tmi);
+                        } else if (tmi.ReturnType.Equals(typeof(ScriptReturnStatus))) {
+                            scriptDelegate = (EditVsqScriptDelegateWithStatus)Delegate.CreateDelegate(typeof(EditVsqScriptDelegateWithStatus), tmi);
                         }
                     }
-                    tmi = implemented.GetMethod( "Edit", new Type[] { typeof( VsqFileEx ) } );
-                    if ( tmi != null && tmi.IsStatic && tmi.IsPublic ) {
-                        if ( tmi.ReturnType.Equals( typeof( bool ) ) ) {
-                            scriptDelegate = (EditVsqScriptDelegateEx)Delegate.CreateDelegate( typeof( EditVsqScriptDelegateEx ), tmi );
-                        } else if ( tmi.ReturnType.Equals( typeof( ScriptReturnStatus ) ) ) {
-                            scriptDelegate = (EditVsqScriptDelegateExWithStatus)Delegate.CreateDelegate( typeof( EditVsqScriptDelegateExWithStatus ), tmi );
+                    tmi = implemented.GetMethod("Edit", new Type[] { typeof(VsqFileEx) });
+                    if (tmi != null && tmi.IsStatic && tmi.IsPublic) {
+                        if (tmi.ReturnType.Equals(typeof(bool))) {
+                            scriptDelegate = (EditVsqScriptDelegateEx)Delegate.CreateDelegate(typeof(EditVsqScriptDelegateEx), tmi);
+                        } else if (tmi.ReturnType.Equals(typeof(ScriptReturnStatus))) {
+                            scriptDelegate = (EditVsqScriptDelegateExWithStatus)Delegate.CreateDelegate(typeof(EditVsqScriptDelegateExWithStatus), tmi);
                         }
                     }
-                    if ( scriptDelegate != null ) {
+                    if (scriptDelegate != null) {
                         ret.ScriptType = implemented;
                         ret.scriptDelegate = scriptDelegate;
-                        ret.Serializer = new XmlStaticMemberSerializerEx( implemented );
+                        ret.Serializer = new XmlStaticMemberSerializerEx(implemented);
                         ret.getDisplayNameDelegate = getDisplayNameDelegate;
 
-                        if ( !File.Exists( config_file ) ) {
+                        if (!File.Exists(config_file)) {
                             continue;
                         }
 
@@ -239,27 +241,27 @@ namespace cadencii
                         System.IO.FileStream fs = null;
                         bool delete_when_exit = false;
                         try {
-                            fs = new System.IO.FileStream( config_file, System.IO.FileMode.Open, System.IO.FileAccess.Read );
-                            ret.Serializer.deserialize( fs );
-                        } catch ( Exception ex ) {
-                            serr.println( "Utility#loadScript; ex=" + ex );
-                            Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex + "\n" );
+                            fs = new System.IO.FileStream(config_file, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+                            ret.Serializer.deserialize(fs);
+                        } catch (Exception ex) {
+                            serr.println("Utility#loadScript; ex=" + ex);
+                            Logger.write(typeof(Utility) + ".loadScript; ex=" + ex + "\n");
                             delete_when_exit = true;
                         } finally {
-                            if ( fs != null ) {
+                            if (fs != null) {
                                 try {
                                     fs.Close();
-                                    if ( delete_when_exit ) {
-                                        System.IO.File.Delete( config_file );
+                                    if (delete_when_exit) {
+                                        System.IO.File.Delete(config_file);
                                     }
-                                } catch ( Exception ex2 ) {
-                                    serr.println( "Utility#loadScript; ex2=" + ex2 );
-                                    Logger.write( typeof( Utility ) + ".loadScritp; ex=" + ex2 + "\n" );
+                                } catch (Exception ex2) {
+                                    serr.println("Utility#loadScript; ex2=" + ex2);
+                                    Logger.write(typeof(Utility) + ".loadScritp; ex=" + ex2 + "\n");
                                 }
                             }
                         }
                     } else {
-                        ret.ErrorMessage = _( "'Edit' Method not implemented" );
+                        ret.ErrorMessage = _("'Edit' Method not implemented");
                     }
                 }
             }
@@ -272,11 +274,11 @@ namespace cadencii
         /// </summary>
         /// <param name="code">プラグインのソースコード</param>
         /// <returns>推定されたプラグインのバージョン</returns>
-        private PluginVersion estimateVersionByCode( string code )
+        private PluginVersion estimateVersionByCode(string code)
         {
-            if ( code.Contains( "Boare." ) ) {
+            if (code.Contains("Boare.")) {
                 return PluginVersion.Version1;
-            } else if ( code.Contains( "org.kbinani." ) ) {
+            } else if (code.Contains("org.kbinani.")) {
                 return PluginVersion.Version2;
             } else {
                 return PluginVersion.Latest;
@@ -288,10 +290,10 @@ namespace cadencii
         /// </summary>
         /// <param name="code">ファイルから読み込んだプラグインのソースコード</param>
         /// <returns>加工済みのソースコード</returns>
-        private string createPluginCode( string code )
+        private string createPluginCode(string code)
         {
             ScriptProcessor processor = null;
-            switch ( estimateVersionByCode( code ) ) {
+            switch (estimateVersionByCode(code)) {
                 case PluginVersion.Version1: {
                     processor = new ScriptProcessorVersion1();
                     break;
@@ -305,7 +307,7 @@ namespace cadencii
                     break;
                 }
             }
-            return processor.process( code );
+            return processor.process(code);
         }
     }
 }

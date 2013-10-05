@@ -11,26 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
+namespace cadencii
+{
 
-package cadencii;
-
-#else
-
-    namespace cadencii
+    public interface FormMainUiListener
     {
-
-#endif
-
-            public interface FormMainUiListener
-            {
-                /// <summary>
-                /// ナビゲーションパネルがフォーカスを得たときに呼ばれる
-                /// </summary>
-                [PureVirtualFunction]
-                void navigationPanelGotFocus();
-            }
-
-#if !JAVA
+        /// <summary>
+        /// ナビゲーションパネルがフォーカスを得たときに呼ばれる
+        /// </summary>
+        [PureVirtualFunction]
+        void navigationPanelGotFocus();
     }
-#endif
+
+}

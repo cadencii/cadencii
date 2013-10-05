@@ -1,5 +1,3 @@
-#if !__FormWordDictionaryUiListener__
-#define __FormWordDictionaryUiListener__
 /*
  * FormWordDictionaryUiListener.cs
  * Copyright © 2011 kbinani
@@ -13,44 +11,29 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
 
-package cadencii;
+namespace cadencii
+{
 
-#else
-
-    namespace cadencii
+    public interface FormWordDictionaryUiListener
     {
+        [PureVirtualFunction]
+        void formClosing();
 
-#endif
+        [PureVirtualFunction]
+        void formLoad();
 
-#if __cplusplus
-            class FormWordDictionaryUiListener
-#else
-            public interface FormWordDictionaryUiListener
-#endif
-            {
-                [PureVirtualFunction]
-                void formClosing();
+        [PureVirtualFunction]
+        void buttonOkClick();
 
-                [PureVirtualFunction]
-                void formLoad();
+        [PureVirtualFunction]
+        void buttonUpClick();
 
-                [PureVirtualFunction]
-                void buttonOkClick();
+        [PureVirtualFunction]
+        void buttonDownClick();
 
-                [PureVirtualFunction]
-                void buttonUpClick();
+        [PureVirtualFunction]
+        void buttonCancelClick();
+    };
 
-                [PureVirtualFunction]
-                void buttonDownClick();
-
-                [PureVirtualFunction]
-                void buttonCancelClick();
-            };
-
-#if !JAVA
-    }
-#endif
-
-#endif
+}
