@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 
@@ -20,32 +21,31 @@ namespace cadencii.vsq
 
     public class WrappedStreamWriter : ITextWriter
     {
-        BufferedWriter m_writer;
+        StreamWriter m_writer;
 
-        public WrappedStreamWriter(BufferedWriter stream_writer)
+        public WrappedStreamWriter(StreamWriter stream_writer)
         {
             m_writer = stream_writer;
         }
 
         public void newLine()
         {
-            m_writer.newLine();
+            m_writer.WriteLine();
         }
 
         public void write(string value)
         {
-            m_writer.write(value);
+            m_writer.Write(value);
         }
 
         public void writeLine(string value)
         {
-            m_writer.write(value);
-            m_writer.newLine();
+            m_writer.WriteLine(value);
         }
 
         public void close()
         {
-            m_writer.close();
+            m_writer.Close();
         }
     }
 

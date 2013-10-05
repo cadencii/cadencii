@@ -498,7 +498,7 @@ namespace cadencii
         /// <summary>
         /// ログ出力用
         /// </summary>
-        private static BufferedWriter mDebugLog = null;
+        private static StreamWriter mDebugLog = null;
 #endif
 
         #region 裏設定項目
@@ -1419,11 +1419,11 @@ namespace cadencii
         /// <param name="track"></param>
         public static void serializeRenderingStatus(string temppath, int track)
         {
-            FileOutputStream fs = null;
+            FileStream fs = null;
             bool failed = true;
             string xml = Path.Combine(temppath, track + ".xml");
             try {
-                fs = new FileOutputStream(xml);
+                fs = new FileStream(xml, FileMode.Create, FileAccess.Write);
                 mRenderingStatusSerializer.serialize(fs, mLastRenderedStatus[track - 1]);
                 failed = false;
             } catch (Exception ex) {
@@ -1432,7 +1432,7 @@ namespace cadencii
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                         serr.println("FormMain#patchWorkToFreeze; ex2=" + ex2);
                         Logger.write(typeof(AppManager) + ".serializeRenderingStatus; ex=" + ex2 + "\n");
@@ -1805,10 +1805,9 @@ namespace cadencii
             try {
                 if (mDebugLog == null) {
                     string log_file = Path.Combine(PortUtil.getApplicationStartupPath(), "log.txt");
-                    mDebugLog = new BufferedWriter(new FileWriter(log_file));
+                    mDebugLog = new StreamWriter(log_file);
                 }
-                mDebugLog.write(message);
-                mDebugLog.newLine();
+                mDebugLog.WriteLine(message);
             } catch (Exception ex) {
                 serr.println("AppManager#debugWriteLine; ex=" + ex);
                 Logger.write(typeof(AppManager) + ".debugWriteLine; ex=" + ex + "\n");
@@ -2639,16 +2638,16 @@ namespace cadencii
 
         public static void serializeEditorConfig(EditorConfig instance, string file)
         {
-            FileOutputStream fs = null;
+            FileStream fs = null;
             try {
-                fs = new FileOutputStream(file);
+                fs = new FileStream(file, FileMode.Create, FileAccess.Write);
                 EditorConfig.getSerializer().serialize(fs, instance);
             } catch (Exception ex) {
                 Logger.write(typeof(EditorConfig) + ".serialize; ex=" + ex + "\n");
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                         Logger.write(typeof(EditorConfig) + ".serialize; ex=" + ex2 + "\n");
                     }

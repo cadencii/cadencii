@@ -14,11 +14,10 @@
  */
 using System;
 using System.Text;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 using cadencii.vsq;
-
-
 
 namespace cadencii
 {
@@ -86,18 +85,18 @@ namespace cadencii
         private string prepareKoeFile()
         {
             string ret = PortUtil.createTempFile();
-            BufferedWriter bw = null;
+            StreamWriter bw = null;
             try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ret), "Shift_JIS"));
+                bw = new StreamWriter(ret, false, Encoding.GetEncoding("Shift_JIS"));
                 foreach (string s in getKoeFileContents()) {
-                    bw.write(s); bw.newLine();
+                    bw.WriteLine(s);
                 }
             } catch (Exception ex) {
                 reportError(GetType() + ".getKoeFilePath; ex=" + ex);
             } finally {
                 if (bw != null) {
                     try {
-                        bw.close();
+                        bw.Close();
                     } catch (Exception ex2) {
                         reportError(GetType() + ".getKoeFilePath; ex=" + ex2);
                     }

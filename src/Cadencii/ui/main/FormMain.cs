@@ -10732,9 +10732,9 @@ namespace cadencii
             // 出力処理
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track[selected];
-            BufferedWriter bw = null;
+            StreamWriter bw = null;
             try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file_name), "UTF-8"));
+                bw = new StreamWriter(file_name, false, new UTF8Encoding(false));
                 string oto_ini = AppManager.editorConfig.UtauSingers[0].VOICEIDSTR;
                 // 先頭に登録されている歌手変更を検出
                 VsqEvent singer = null;
@@ -10768,7 +10768,7 @@ namespace cadencii
             } finally {
                 if (bw != null) {
                     try {
-                        bw.close();
+                        bw.Close();
                     } catch (Exception ex2) {
                     }
                 }
@@ -14716,30 +14716,28 @@ namespace cadencii
             sout.println("FormMain#menuHiddenPrintPoToCSV_Click; fname=" + fname);
 #endif
             string old_lang = Messaging.getLanguage();
-            BufferedWriter br = null;
+            StreamWriter br = null;
             try {
-                br = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fname), "UTF-8"));
+                br = new StreamWriter(fname, false, new UTF8Encoding(false));
                 string line = "\"en\"";
                 foreach (string lang in langs) {
                     line += ",\"" + lang + "\"";
                 }
-                br.write(line);
-                br.newLine();
+                br.WriteLine(line);
                 foreach (string key in keys) {
                     line = "\"" + key + "\"";
                     foreach (string lang in langs) {
                         Messaging.setLanguage(lang);
                         line += ",\"" + Messaging.getMessage(key) + "\"";
                     }
-                    br.write(line);
-                    br.newLine();
+                    br.WriteLine(line);
                 }
             } catch (Exception ex) {
                 serr.println("FormMain#menuHiddenPrintPoToCSV_Click; ex=" + ex);
             } finally {
                 if (br != null) {
                     try {
-                        br.close();
+                        br.Close();
                     } catch (Exception ex2) {
                     }
                 }
@@ -16306,16 +16304,16 @@ namespace cadencii
                 }
                 string cfg = id + ".config";
                 string config = Path.Combine(dir, cfg);
-                FileOutputStream fs = null;
+                FileStream fs = null;
                 try {
-                    fs = new FileOutputStream(config);
+                    fs = new FileStream(config, FileMode.Create, FileAccess.Write);
                     xsms.serialize(fs, null);
                 } catch (Exception ex) {
                     Logger.write(typeof(FormMain) + ".handleSettingPaletteTool; ex=" + ex + "\n");
                 } finally {
                     if (fs != null) {
                         try {
-                            fs.close();
+                            fs.Close();
                         } catch (Exception ex2) {
                             Logger.write(typeof(FormMain) + ".handleSettingPaletteTool; ex=" + ex2 + "\n");
                         }

@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 using cadencii.java.awt;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -279,9 +280,9 @@ namespace cadencii
                 sout.println("VConnectWaveGenerator#begin; tmp_file=" + tmp_file);
 #endif
                 string hash = "";
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp_file), "Shift_JIS"));
+                    sw = new StreamWriter(tmp_file, false, Encoding.GetEncoding("Shift_JIS"));
                     prepareMetaText(sw, queue.track, queue.oto_ini, queue.endClock);
                 } catch (Exception ex) {
 #if DEBUG
@@ -290,7 +291,7 @@ namespace cadencii
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch (Exception ex2) {
 #if DEBUG
                             serr.println("VConnectWaveGenerator#begin; ex2=" + ex2);
@@ -999,7 +1000,7 @@ namespace cadencii
         /// <param name="vsq_track">出力対象のトラック</param>
         /// <param name="oto_ini">原音設定ファイルのパス</param>
         /// <param name="end_clock"></param>
-        public static void prepareMetaText(BufferedWriter writer, VsqTrack vsq_track, string oto_ini, int end_clock)
+        public static void prepareMetaText(StreamWriter writer, VsqTrack vsq_track, string oto_ini, int end_clock)
         {
             prepareMetaText(writer, vsq_track, oto_ini, end_clock, true);
         }
@@ -1012,7 +1013,7 @@ namespace cadencii
         /// <param name="oto_ini"></param>
         /// <param name="end_clock"></param>
         /// <param name="world_mode"></param>
-        public static void prepareMetaText(BufferedWriter writer, VsqTrack vsq_track, string oto_ini, int end_clock, bool world_mode)
+        public static void prepareMetaText(StreamWriter writer, VsqTrack vsq_track, string oto_ini, int end_clock, bool world_mode)
         {
             SortedDictionary<string, string> dict_singername_otoini = new SortedDictionary<string, string>();
             dict_singername_otoini[""] = oto_ini;
@@ -1027,7 +1028,7 @@ namespace cadencii
         /// <param name="oto_ini"></param>
         /// <param name="end_clock"></param>
         private static void prepareMetaText(
-            BufferedWriter writer,
+            StreamWriter writer,
             VsqTrack vsq_track,
             SortedDictionary<string, string> dict_singername_otoini,
             int end_clock,
@@ -1043,20 +1044,15 @@ namespace cadencii
                 CurveType.BRI, };
             // メモリーストリームに出力
             try {
-                writer.write("[Tempo]");
-                writer.newLine();
-                writer.write(TEMPO + "");
-                writer.newLine();
-                writer.write("[oto.ini]");
-                writer.newLine();
+                writer.WriteLine("[Tempo]");
+                writer.WriteLine(TEMPO + "");
+                writer.WriteLine("[oto.ini]");
                 foreach (var singername in dict_singername_otoini.Keys) {
                     string oto_ini = dict_singername_otoini[singername];
                     if (world_mode) {
-                        writer.write(singername + "\t" + oto_ini);
-                        writer.newLine();
+                        writer.WriteLine(singername + "\t" + oto_ini);
                     } else {
-                        writer.write(oto_ini);
-                        writer.newLine();
+                        writer.WriteLine(oto_ini);
                         break;
                     }
                 }

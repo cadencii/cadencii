@@ -91,14 +91,13 @@ namespace cadencii.vsq
                 m_time_format = 480;
 #if DEBUG && MIDI_PRINT_TO_FILE
                 string dbg = Path.Combine(PortUtil.getDirectoryName(path), PortUtil.getFileNameWithoutExtension(path) + ".txt");
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new FileWriter(dbg));
+                    sw = new StreamWriter(dbg);
                     const string format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
                     const string format0 = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2}";
                     for (int track = 1; track < m_events.Count; track++) {
-                        sw.write("MidiFile..ctor; track=" + track);
-                        sw.newLine();
+                        sw.WriteLine("MidiFile..ctor; track=" + track);
                         byte msb, lsb, data_msb, data_lsb;
                         msb = lsb = data_msb = data_lsb = 0x0;
                         for (int i = 0; i < m_events[track].Count; i++) {
@@ -117,12 +116,10 @@ namespace cadencii.vsq
                                     string name = NRPN.getName(nrpn);
                                     if (name.Equals("")) {
                                         name = "* * UNKNOWN * *";
-                                        sw.write(string.Format(format0, m_events[track][i].clock, nrpn, name, data_msb));
-                                        sw.newLine();
+                                        sw.WriteLine(string.Format(format0, m_events[track][i].clock, nrpn, name, data_msb));
                                     } else {
                                         //if ( !NRPN.is_require_data_lsb( nrpn ) ) {
-                                        sw.write(string.Format(format0, m_events[track][i].clock, nrpn, name, data_msb));
-                                        sw.newLine();
+                                        sw.WriteLine(string.Format(format0, m_events[track][i].clock, nrpn, name, data_msb));
                                         //}
                                     }
                                     break;
@@ -133,8 +130,7 @@ namespace cadencii.vsq
                                     if (name2.Equals("")) {
                                         name2 = "* * UNKNOWN * *";
                                     }
-                                    sw.write(string.Format(format, m_events[track][i].clock, nrpn2, name2, data_msb, data_lsb));
-                                    sw.newLine();
+                                    sw.WriteLine(string.Format(format, m_events[track][i].clock, nrpn2, name2, data_msb, data_lsb));
                                     break;
                                 }
                             }
@@ -144,7 +140,7 @@ namespace cadencii.vsq
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch (Exception ex2) {
                         }
                     }

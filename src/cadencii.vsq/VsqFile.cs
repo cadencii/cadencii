@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -2288,19 +2289,18 @@ namespace cadencii.vsq
 #if DEBUG
             string suffix = "_win";
             string path = Path.Combine(PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt");
-            BufferedWriter bw = null;
+            StreamWriter bw = null;
             try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF-8"));
+                bw = new StreamWriter(path, false, new UTF8Encoding(false));
                 for (int i = 0; i < data.Length; i++) {
                     VsqNrpn item = data[i];
-                    bw.write(item.Clock + "\t0x" + PortUtil.toHexString(item.Nrpn, 4) + "\t0x" + PortUtil.toHexString(item.DataMsb, 2) + "\t0x" + PortUtil.toHexString(item.DataLsb, 2));
-                    bw.newLine();
+                    bw.WriteLine(item.Clock + "\t0x" + PortUtil.toHexString(item.Nrpn, 4) + "\t0x" + PortUtil.toHexString(item.DataMsb, 2) + "\t0x" + PortUtil.toHexString(item.DataLsb, 2));
                 }
             } catch (Exception ex) {
             } finally {
                 if (bw != null) {
                     try {
-                        bw.close();
+                        bw.Close();
                     } catch (Exception ex2) {
                     }
                 }
@@ -2311,11 +2311,10 @@ namespace cadencii.vsq
 #if DEBUG
             path = Path.Combine(PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt");
             try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF-8"));
+                bw = new StreamWriter(path, false, new UTF8Encoding(false));
                 for (int i = 0; i < nrpns.Length; i++) {
                     NrpnData item = nrpns[i];
-                    bw.write(item.getClock() + "\t0x" + PortUtil.toHexString(item.getParameter(), 2) + "\t0x" + PortUtil.toHexString(item.Value, 2));
-                    bw.newLine();
+                    bw.WriteLine(item.getClock() + "\t0x" + PortUtil.toHexString(item.getParameter(), 2) + "\t0x" + PortUtil.toHexString(item.Value, 2));
                 }
             } catch (Exception ex) {
             } finally {

@@ -143,10 +143,10 @@ namespace cadencii
                         AppManager.editHistory.register(vsq.executeCommand(run));
                     }
                     string config_file = configFileNameFromScriptFileName(script_invoker.ScriptFile);
-                    FileOutputStream fs = null;
+                    FileStream fs = null;
                     bool delete_xml_when_exit = false; // xmlを消すときtrue
                     try {
-                        fs = new FileOutputStream(config_file);
+                        fs = new FileStream(config_file, FileMode.Create, FileAccess.Write);
                         script_invoker.Serializer.serialize(fs, null);
                     } catch (Exception ex) {
                         serr.println("AppManager#invokeScript; ex=" + ex);
@@ -154,7 +154,7 @@ namespace cadencii
                     } finally {
                         if (fs != null) {
                             try {
-                                fs.close();
+                                fs.Close();
                                 if (delete_xml_when_exit) {
                                     PortUtil.deleteFile(config_file);
                                 }

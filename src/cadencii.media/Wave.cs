@@ -13,6 +13,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 
@@ -104,18 +105,17 @@ namespace cadencii.media
             double[] formanto = GetFormanto(time, window_function);
 #if DEBUG
             if (s_test) {
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new FileWriter(@"C:\TEST_GetF0_formanto.txt"));
+                    sw = new StreamWriter(@"C:\TEST_GetF0_formanto.txt");
                     for (int i = 0; i < formanto.Length; i++) {
-                        sw.write(Math.Abs(formanto[i]) + "");
-                        sw.newLine();
+                        sw.WriteLine(Math.Abs(formanto[i]) + "");
                     }
                 } catch (Exception ex) {
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch (Exception ex2) {
                         }
                     }
@@ -139,18 +139,17 @@ namespace cadencii.media
             }
 #if DEBUG
             if (s_test) {
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new FileWriter(@"C:\TEST_GetF0_fft_formanto.txt"));
+                    sw = new StreamWriter(@"C:\TEST_GetF0_fft_formanto.txt");
                     for (int i = 0; i < wv.Length; i++) {
-                        sw.write(Math.Abs(wv[i]) + "");
-                        sw.newLine();
+                        sw.WriteLine(Math.Abs(wv[i]) + "");
                     }
                 } catch (Exception ex) {
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch {
                         }
                     }
@@ -190,18 +189,17 @@ namespace cadencii.media
 #if DEBUG
             sout.println("Wave+GetF0");
             if (s_test) {
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new FileWriter("formanto.txt"));
+                    sw = new StreamWriter("formanto.txt");
                     for (int i = 0; i < length; i++) {
-                        sw.write((i * hz_from_index) + "\t" + formanto[i]);
-                        sw.newLine();
+                        sw.WriteLine((i * hz_from_index) + "\t" + formanto[i]);
                     }
                 } catch (Exception ex) {
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch (Exception ex2) {
                         }
                     }
@@ -231,18 +229,17 @@ namespace cadencii.media
             }
 #if DEBUG
             if (s_test) {
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new FileWriter("ma.txt"));
+                    sw = new StreamWriter("ma.txt");
                     for (int i = 0; i < length; i++) {
-                        sw.write((i * hz_from_index) + "\t" + ma[i]);
-                        sw.newLine();
+                        sw.WriteLine((i * hz_from_index) + "\t" + ma[i]);
                     }
                 } catch (Exception ex) {
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch (Exception ex2) {
                         }
                     }
@@ -269,18 +266,17 @@ namespace cadencii.media
             }
 #if DEBUG
             if (s_test) {
-                BufferedWriter sw = null;
+                StreamWriter sw = null;
                 try {
-                    sw = new BufferedWriter(new FileWriter("peak_positions.txt"));
+                    sw = new StreamWriter("peak_positions.txt");
                     for (int i = 0; i < peak_positions.Count; i++) {
-                        sw.write(peak_positions[i].ToString());
-                        sw.newLine();
+                        sw.WriteLine(peak_positions[i].ToString());
                     }
                 } catch (Exception ex) {
                 } finally {
                     if (sw != null) {
                         try {
-                            sw.close();
+                            sw.Close();
                         } catch (Exception ex2) {
                         }
                     }
@@ -300,18 +296,17 @@ namespace cadencii.media
                 }
 #if DEBUG
                 if (s_test) {
-                    BufferedWriter sw = null;
+                    StreamWriter sw = null;
                     try {
-                        sw = new BufferedWriter(new FileWriter("peaks.txt"));
+                        sw = new StreamWriter("peaks.txt");
                         for (int i = 0; i < peaks.Count; i++) {
-                            sw.write(peaks[i] + "");
-                            sw.newLine();
+                            sw.WriteLine(peaks[i] + "");
                         }
                     } catch (Exception ex) {
                     } finally {
                         if (sw != null) {
                             try {
-                                sw.close();
+                                sw.Close();
                             } catch (Exception ex2) {
                             }
                         }
@@ -325,18 +320,17 @@ namespace cadencii.media
 #if DEBUG
                 sout.println("Wave#GetF0; min_peak_distance=" + min_peak_distance);
                 if (s_test) {
-                    BufferedWriter sw = null;
+                    StreamWriter sw = null;
                     try {
-                        sw = new BufferedWriter(new FileWriter("evaluation.txt"));
+                        sw = new StreamWriter("evaluation.txt");
                         for (int i = (int)min_peak_distance; i < (int)(4 * min_peak_distance); i++) {
-                            sw.write(i + "\t" + GetFormantoGetEvaluationValue(peaks, i));
-                            sw.newLine();
+                            sw.WriteLine(i + "\t" + GetFormantoGetEvaluationValue(peaks, i));
                         }
                     } catch (Exception ex) {
                     } finally {
                         if (sw != null) {
                             try {
-                                sw.close();
+                                sw.Close();
                             } catch (Exception ex2) {
                             }
                         }
@@ -833,31 +827,27 @@ namespace cadencii.media
 
         public void printToText(string path)
         {
-            BufferedWriter sw = null;
+            StreamWriter sw = null;
             try {
-                sw = new BufferedWriter(new FileWriter(path));
+                sw = new StreamWriter(path);
                 if (m_channel == WaveChannel.Monoral) {
                     if (m_bit_per_sample == 8) {
                         for (int i = 0; i < m_total_samples; i++) {
-                            sw.write(L8[i] + "");
-                            sw.newLine();
+                            sw.WriteLine(L8[i] + "");
                         }
                     } else {
                         for (int i = 0; i < m_total_samples; i++) {
-                            sw.write(L16[i] + "");
-                            sw.newLine();
+                            sw.WriteLine(L16[i] + "");
                         }
                     }
                 } else {
                     if (m_bit_per_sample == 8) {
                         for (int i = 0; i < m_total_samples; i++) {
-                            sw.write(L8[i] + "\t" + R8[i]);
-                            sw.newLine();
+                            sw.WriteLine(L8[i] + "\t" + R8[i]);
                         }
                     } else {
                         for (int i = 0; i < m_total_samples; i++) {
-                            sw.write(L16[i] + "\t" + R16[i]);
-                            sw.newLine();
+                            sw.WriteLine(L16[i] + "\t" + R16[i]);
                         }
                     }
                 }
@@ -865,7 +855,7 @@ namespace cadencii.media
             } finally {
                 if (sw != null) {
                     try {
-                        sw.close();
+                        sw.Close();
                     } catch (Exception ex2) {
                     }
                 }

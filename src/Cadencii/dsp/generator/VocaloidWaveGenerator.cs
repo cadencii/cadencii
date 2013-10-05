@@ -17,6 +17,7 @@ using System;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using System.Text;
 using cadencii;
 using cadencii.java.awt;
 using cadencii.java.io;
@@ -267,9 +268,9 @@ namespace cadencii
 #if DEBUG
             string suffix = "_win";
             string path = Path.Combine(PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt");
-            BufferedWriter bw = null;
+            StreamWriter bw = null;
             try {
-                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF-8"));
+                bw = new StreamWriter(path, false, new UTF8Encoding(false));
                 for (int i = 0; i < vsq_nrpn.Length; i++) {
                     VsqNrpn item = vsq_nrpn[i];
                     string name = NRPN.getName(item.Nrpn);
@@ -277,14 +278,13 @@ namespace cadencii
                     for (int j = len; j < 35; j++) {
                         name += " ";
                     }
-                    bw.write("     " + item.Clock.ToString("D8") + " 0x" + item.Nrpn.ToString("X4") + " " + name + " 0x" + item.DataMsb.ToString("X2") + " 0x" + item.DataLsb.ToString("X2"));
-                    bw.newLine();
+                    bw.WriteLine("     " + item.Clock.ToString("D8") + " 0x" + item.Nrpn.ToString("X4") + " " + name + " 0x" + item.DataMsb.ToString("X2") + " 0x" + item.DataLsb.ToString("X2"));
                 }
             } catch (Exception ex) {
             } finally {
                 if (bw != null) {
                     try {
-                        bw.close();
+                        bw.Close();
                     } catch (Exception ex2) {
                     }
                 }

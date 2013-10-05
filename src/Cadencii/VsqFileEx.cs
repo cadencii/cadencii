@@ -1323,9 +1323,9 @@ namespace cadencii
 
         public void writeAsXml(string file)
         {
-            FileOutputStream xw = null;
+            FileStream xw = null;
             try {
-                xw = new FileOutputStream(file);
+                xw = new FileStream(file, FileMode.Create, FileAccess.Write);
                 mVsqSerializer.serialize(xw, this);
             } catch (Exception ex) {
                 serr.println("VsqFileEx#writeAsXml; ex=" + ex);
@@ -1333,7 +1333,7 @@ namespace cadencii
             } finally {
                 if (xw != null) {
                     try {
-                        xw.close();
+                        xw.Close();
                     } catch (Exception ex2) {
                         serr.println("VsqFileEx#writeAsXml; ex2=" + ex2);
                         Logger.write(typeof(VsqFileEx) + ".writeAsXml; ex=" + ex2 + "\n");

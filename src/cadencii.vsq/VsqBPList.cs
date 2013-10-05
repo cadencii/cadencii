@@ -14,6 +14,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -517,7 +518,7 @@ namespace cadencii.vsq
         /// このBPListの内容をテキストファイルに書き出します
         /// </summary>
         /// <param name="writer"></param>
-        public void print(BufferedWriter writer, int start, string header)
+        public void print(StreamWriter writer, int start, string header)
         {
             printCor(new WrappedStreamWriter(writer), start, header);
         }

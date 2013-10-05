@@ -13,6 +13,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -153,7 +154,7 @@ namespace cadencii.vsq
             writeCor(writer, print_targets);
         }
 
-        public void write(BufferedWriter writer, List<string> print_targets)
+        public void write(StreamWriter writer, List<string> print_targets)
         {
             writeCor(new WrappedStreamWriter(writer), print_targets);
         }

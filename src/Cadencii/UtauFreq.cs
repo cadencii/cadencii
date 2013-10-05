@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 
@@ -96,7 +97,7 @@ namespace cadencii
             return ret;
         }
 
-        public void Write(FileOutputStream fs)
+        public void Write(FileStream fs)
         {
             byte[] buf0 = new byte[8];
             char[] ch8 = Header.ToCharArray();
@@ -107,25 +108,25 @@ namespace cadencii
                     buf0[i] = (byte)ch8[i];
                 }
             }
-            fs.write(buf0, 0, 8);
+            fs.Write(buf0, 0, 8);
 
             buf0 = PortUtil.getbytes_uint32_le(SampleInterval);
-            fs.write(buf0, 0, 4);
+            fs.Write(buf0, 0, 4);
 
             buf0 = PortUtil.getbytes_double_le(AverageFrequency);
-            fs.write(buf0, 0, 8);
+            fs.Write(buf0, 0, 8);
 
             for (int i = 0; i < 4; i++) {
                 buf0 = PortUtil.getbytes_int32_le(0);
-                fs.write(buf0, 0, 4);
+                fs.Write(buf0, 0, 4);
             }
             buf0 = PortUtil.getbytes_int32_le(NumPoints);
-            fs.write(buf0, 0, 4);
+            fs.Write(buf0, 0, 4);
             for (int i = 0; i < NumPoints; i++) {
                 buf0 = PortUtil.getbytes_double_le(Frequency[i]);
-                fs.write(buf0, 0, 8);
+                fs.Write(buf0, 0, 8);
                 buf0 = PortUtil.getbytes_double_le(Volume[i]);
-                fs.write(buf0, 0, 8);
+                fs.Write(buf0, 0, 8);
             }
         }
     }

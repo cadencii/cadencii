@@ -13,6 +13,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -615,7 +616,7 @@ namespace cadencii.vsq
             return writeEventListCor(sw, eos);
         }
 
-        public List<VsqHandle> writeEventList(BufferedWriter stream_writer, int eos)
+        public List<VsqHandle> writeEventList(StreamWriter stream_writer, int eos)
         {
             return writeEventListCor(new WrappedStreamWriter(stream_writer), eos);
         }

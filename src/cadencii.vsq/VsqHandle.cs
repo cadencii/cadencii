@@ -13,6 +13,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using cadencii;
 using cadencii.java.io;
 using cadencii.java.util;
@@ -171,7 +172,7 @@ namespace cadencii.vsq
             sw.writeLine(this.toString());
         }
 
-        public void write(BufferedWriter sw)
+        public void write(StreamWriter sw)
         {
             write(new WrappedStreamWriter(sw));
         }
@@ -338,11 +339,10 @@ namespace cadencii.vsq
         /// インスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void print(BufferedWriter sw)
+        public void print(StreamWriter sw)
         {
             string result = toString();
-            sw.write(result);
-            sw.newLine();
+            sw.WriteLine(result);
         }
 
         /// <summary>

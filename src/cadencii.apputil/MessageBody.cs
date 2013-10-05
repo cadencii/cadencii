@@ -13,6 +13,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -123,31 +125,24 @@ namespace cadencii.apputil
 
         public void write(string file)
         {
-            BufferedWriter sw = null;
+            StreamWriter sw = null;
             try {
-                sw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                sw = new StreamWriter(file, false, new UTF8Encoding(false));
                 if (!poHeader.Equals("")) {
-                    sw.write("msgid \"\"");
-                    sw.newLine();
-                    sw.write("msgstr \"\"");
-                    sw.newLine();
+                    sw.WriteLine("msgid \"\"");
+                    sw.WriteLine("msgstr \"\"");
                     string[] spl = PortUtil.splitString(poHeader, new char[] { (char)0x0d, (char)0x0a }, true);
                     for (int i = 0; i < spl.Length; i++) {
                         string line = spl[i];
-                        sw.write("\"" + line + "\\" + "n\"");
-                        sw.newLine();
+                        sw.WriteLine("\"" + line + "\\" + "n\"");
                     }
-                    sw.newLine();
+                    sw.WriteLine();
                 } else {
-                    sw.write("msgid \"\"");
-                    sw.newLine();
-                    sw.write("msgstr \"\"");
-                    sw.newLine();
-                    sw.write("\"Content-Type: text/plain; charset=UTF-8\\" + "n\"");
-                    sw.newLine();
-                    sw.write("\"Content-Transfer-Encoding: 8bit\\" + "n\"");
-                    sw.newLine();
-                    sw.newLine();
+                    sw.WriteLine("msgid \"\"");
+                    sw.WriteLine("msgstr \"\"");
+                    sw.WriteLine("\"Content-Type: text/plain; charset=UTF-8\\" + "n\"");
+                    sw.WriteLine("\"Content-Transfer-Encoding: 8bit\\" + "n\"");
+                    sw.WriteLine();
                 }
                 foreach (var key in list.Keys) {
                     string skey = key.Replace("\n", "\\n\"\n\"");
@@ -156,21 +151,18 @@ namespace cadencii.apputil
                     List<string> location = mbe.location;
                     int count = location.Count;
                     for (int i = 0; i < count; i++) {
-                        sw.write("#: " + location[i]);
-                        sw.newLine();
+                        sw.WriteLine("#: " + location[i]);
                     }
-                    sw.write("msgid \"" + skey + "\"");
-                    sw.newLine();
+                    sw.WriteLine("msgid \"" + skey + "\"");
                     s = s.Replace("\n", "\\n\"\n\"");
-                    sw.write("msgstr \"" + s + "\"");
-                    sw.newLine();
-                    sw.newLine();
+                    sw.WriteLine("msgstr \"" + s + "\"");
+                    sw.WriteLine();
                 }
             } catch (Exception ex) {
             } finally {
                 if (sw != null) {
                     try {
-                        sw.close();
+                        sw.Close();
                     } catch (Exception ex2) {
                     }
                 }
