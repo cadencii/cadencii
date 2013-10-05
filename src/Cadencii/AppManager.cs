@@ -92,7 +92,7 @@ namespace cadencii
         /// プリメジャーの最大値
         /// </summary>
         public const int MAX_PRE_MEASURE = 8;
-        private const String CONFIG_FILE_NAME = "config.xml";
+        private const string CONFIG_FILE_NAME = "config.xml";
         /// <summary>
         /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
         /// </summary>
@@ -263,7 +263,7 @@ namespace cadencii
         /// <summary>
         /// スクリプトに前置されるusingのリスト
         /// </summary>
-        public static readonly String[] usingS = new String[] { "using System;",
+        public static readonly string[] usingS = new string[] { "using System;",
                                              "using System.IO;",
                                              "using cadencii.vsq;",
                                              "using cadencii;",
@@ -366,7 +366,7 @@ namespace cadencii
         /// <summary>
         /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
         /// </summary>
-        public static readonly String[] TEXT_ENCODINGS_IN_UTAU = new String[] { "Shift_JIS", "UTF-16", "us-ascii" };
+        public static readonly string[] TEXT_ENCODINGS_IN_UTAU = new string[] { "Shift_JIS", "UTF-16", "us-ascii" };
         /// <summary>
         /// よく使うボーダー線の色
         /// </summary>
@@ -393,7 +393,7 @@ namespace cadencii
 #if !TREECOM
         private static VsqFileEx mVsq;
 #endif
-        private static String mFile = "";
+        private static string mFile = "";
         private static int mSelected = 1;
         private static int mCurrentClock = 0;
         private static bool mPlaying = false;
@@ -458,11 +458,11 @@ namespace cadencii
         /// <summary>
         /// 現在選択中のパレットアイテムの名前
         /// </summary>
-        public static String mSelectedPaletteTool = "";
+        public static string mSelectedPaletteTool = "";
         /// <summary>
         /// このCadenciiのID。起動ごとにユニークな値が設定され、一時フォルダのフォルダ名等に使用する
         /// </summary>
-        private static String mID = "";
+        private static string mID = "";
         /// <summary>
         /// ダイアログを表示中かどうか
         /// </summary>
@@ -512,7 +512,7 @@ namespace cadencii
         /// <summary>
         /// UTAUの原音設定のリスト。TreeMapのキーは、oto.iniのあるディレクトリ名になっている。
         /// </summary>
-        public static SortedDictionary<String, UtauVoiceDB> mUtauVoiceDB = new SortedDictionary<String, UtauVoiceDB>();
+        public static SortedDictionary<string, UtauVoiceDB> mUtauVoiceDB = new SortedDictionary<string, UtauVoiceDB>();
         /// <summary>
         /// 最後にレンダリングが行われた時の、トラックの情報が格納されている。
         /// </summary>
@@ -524,7 +524,7 @@ namespace cadencii
         /// <summary>
         /// wavを出力するための一時ディレクトリのパス。
         /// </summary>
-        private static String mTempWaveDir = "";
+        private static string mTempWaveDir = "";
         /// <summary>
         /// 再生開始からの経過時刻がこの秒数以下の場合、再生を止めることが禁止される。
         /// </summary>
@@ -618,7 +618,7 @@ namespace cadencii
         /// </summary>
         public static event WaveViewRealoadRequiredEventHandler WaveViewReloadRequired;
 
-        private const String TEMPDIR_NAME = "cadencii";
+        private const string TEMPDIR_NAME = "cadencii";
 
         static AppManager()
         {
@@ -631,19 +631,19 @@ namespace cadencii
         /// voacloidrv.shからwineを呼ぶために，ProcessBuilderに渡す
         /// 引数リストの最初の部分を取得します
         /// </summary>
-        public static List<String> getWineProxyArgument()
+        public static List<string> getWineProxyArgument()
         {
-            List<String> ret = new List<String>();
+            List<string> ret = new List<string>();
             ret.Add( "/bin/sh" );
-            String vocaloidrv_sh =
+            string vocaloidrv_sh =
                 Utility.normalizePath( Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
             ret.Add( vocaloidrv_sh );
 
-            String wine_prefix =
+            string wine_prefix =
                 Utility.normalizePath( editorConfig.WinePrefix );
             ret.Add( wine_prefix );
 
-            String wine_top =
+            string wine_top =
                 Utility.normalizePath( editorConfig.WineTop );
             ret.Add( wine_top );
             return ret;
@@ -660,7 +660,7 @@ namespace cadencii
             int clock = mCurrentClock;
             mDirectPlayShift = (float)mVsq.getSecFromClock( clock );
             // リアルタイム再生で無い場合
-            String tmppath = getTempWaveDir();
+            string tmppath = getTempWaveDir();
 
             int track_count = mVsq.Track.Count;
 
@@ -681,7 +681,7 @@ namespace cadencii
             List<Amplifier> waves = new List<Amplifier>();
             for ( int i = 0; i < tracks.Count; i++ ) {
                 int track = tracks[ i ];
-                String file = Path.Combine( tmppath, track + ".wav" );
+                string file = Path.Combine( tmppath, track + ".wav" );
                 WaveReader wr = null;
                 try {
                     wr = new WaveReader( file );
@@ -833,7 +833,7 @@ namespace cadencii
             return ret;
         }
 
-        public static void invokeWaveViewReloadRequiredEvent( int track, String wavePath, double secStart, double secEnd )
+        public static void invokeWaveViewReloadRequiredEvent( int track, string wavePath, double secStart, double secEnd )
         {
             try {
 #if QT_VERSION
@@ -869,7 +869,7 @@ namespace cadencii
         public static List<PatchWorkQueue> patchWorkCreateQueue( List<int> tracks )
         {
             mVsq.updateTotalClocks();
-            String temppath = getTempWaveDir();
+            string temppath = getTempWaveDir();
             int presend = editorConfig.PreSendTime;
             int totalClocks = mVsq.TotalClocks;
 
@@ -880,7 +880,7 @@ namespace cadencii
                 startIndex[k] = queue.Count;
                 int track = tracks[ k ];
                 VsqTrack vsq_track = mVsq.Track[ track ];
-                String wavePath = Path.Combine( temppath, track + ".wav" );
+                string wavePath = Path.Combine( temppath, track + ".wav" );
 
                 if ( mLastRenderedStatus[track - 1] == null ) {
                     // この場合は全部レンダリングする必要がある
@@ -1489,9 +1489,9 @@ namespace cadencii
         /// </summary>
         /// <param name="directory">読み込むxmlが保存されたディレクトリ</param>
         /// <param name="track">読み込みを行うトラックの番号</param>
-        public static void deserializeRenderingStatus( String directory, int track )
+        public static void deserializeRenderingStatus( string directory, int track )
         {
-            String xml = Path.Combine( directory, track + ".xml" );
+            string xml = Path.Combine( directory, track + ".xml" );
             RenderedStatus status = null;
             if (System.IO.File.Exists(xml)) {
                 FileInputStream fs = null;
@@ -1524,11 +1524,11 @@ namespace cadencii
         /// </summary>
         /// <param name="temppath"></param>
         /// <param name="track"></param>
-        public static void serializeRenderingStatus( String temppath, int track )
+        public static void serializeRenderingStatus( string temppath, int track )
         {
             FileOutputStream fs = null;
             bool failed = true;
-            String xml = Path.Combine( temppath, track + ".xml" );
+            string xml = Path.Combine( temppath, track + ".xml" );
             try {
                 fs = new FileOutputStream( xml );
                 mRenderingStatusSerializer.serialize( fs, mLastRenderedStatus[track - 1] );
@@ -1621,17 +1621,17 @@ namespace cadencii
         #endregion
 
         #region MessageBoxのラッパー
-        public static DialogResult showMessageBox( String text )
+        public static DialogResult showMessageBox( string text )
         {
             return showMessageBox( text, "", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static DialogResult showMessageBox( String text, String caption )
+        public static DialogResult showMessageBox( string text, string caption )
         {
             return showMessageBox( text, caption, cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static DialogResult showMessageBox( String text, String caption, int optionType )
+        public static DialogResult showMessageBox( string text, string caption, int optionType )
         {
             return showMessageBox( text, caption, optionType, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
@@ -1771,7 +1771,7 @@ namespace cadencii
             mShowingDialog = false;
         }
 
-        public static DialogResult showMessageBox( String text, String caption, int optionType, int messageType )
+        public static DialogResult showMessageBox( string text, string caption, int optionType, int messageType )
         {
             beginShowDialog();
             DialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
@@ -1854,7 +1854,7 @@ namespace cadencii
             mMixerWindow.updateStatus();
         }
 
-        public static void addBgm( String file )
+        public static void addBgm( string file )
         {
             if ( mVsq == null ) {
                 return;
@@ -1911,9 +1911,9 @@ namespace cadencii
             sout.println( "AppManager::handleAutoBackupTimerTick" );
 #endif
             if (!mFile.Equals("") && System.IO.File.Exists(mFile)) {
-                String path = PortUtil.getDirectoryName( mFile );
-                String backup = Path.Combine( path, "~$" + PortUtil.getFileName( mFile ) );
-                String file2 = Path.Combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
+                string path = PortUtil.getDirectoryName( mFile );
+                string backup = Path.Combine( path, "~$" + PortUtil.getFileName( mFile ) );
+                string file2 = Path.Combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
                 if (System.IO.File.Exists(backup)) {
                     try {
                         PortUtil.deleteFile( backup );
@@ -1935,12 +1935,12 @@ namespace cadencii
         }
         #endregion
 
-        public static void debugWriteLine( String message )
+        public static void debugWriteLine( string message )
         {
 #if DEBUG
             try {
                 if ( mDebugLog == null ) {
-                    String log_file = Path.Combine( PortUtil.getApplicationStartupPath(), "log.txt" );
+                    string log_file = Path.Combine( PortUtil.getApplicationStartupPath(), "log.txt" );
                     mDebugLog = new BufferedWriter( new FileWriter( log_file ) );
                 }
                 mDebugLog.write( message );
@@ -1956,7 +1956,7 @@ namespace cadencii
         /// <summary>
         /// FormMainを識別するID
         /// </summary>
-        public static String getID()
+        public static string getID()
         {
             return mID;
         }
@@ -1966,7 +1966,7 @@ namespace cadencii
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String _( String id )
+        public static string _( string id )
         {
             return Messaging.getMessage( id );
         }
@@ -1976,7 +1976,7 @@ namespace cadencii
         /// このメソッドでは、キャッシュディレクトリの変更に伴う他の処理は実行されません。
         /// </summary>
         /// <param name="value"></param>
-        public static void setTempWaveDir( String value )
+        public static void setTempWaveDir( string value )
         {
 #if DEBUG
             sout.println( "AppManager#setTempWaveDir; before: \"" + mTempWaveDir + "\"" );
@@ -1989,7 +1989,7 @@ namespace cadencii
         /// 音声ファイルのキャッシュディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getTempWaveDir()
+        public static string getTempWaveDir()
         {
             return mTempWaveDir;
         }
@@ -1998,9 +1998,9 @@ namespace cadencii
         /// Cadenciiが使用する一時ディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getCadenciiTempDir()
+        public static string getCadenciiTempDir()
         {
-            String temp = Path.Combine( PortUtil.getTempPath(), TEMPDIR_NAME );
+            string temp = Path.Combine( PortUtil.getTempPath(), TEMPDIR_NAME );
             if (!Directory.Exists(temp)) {
                 PortUtil.createDirectory( temp );
             }
@@ -2334,16 +2334,16 @@ namespace cadencii
         /// <summary>
         /// _vsq_fileにセットされたvsqファイルの名前を取得します。
         /// </summary>
-        public static String getFileName()
+        public static string getFileName()
         {
             return mFile;
         }
 
-        private static void saveToCor( String file )
+        private static void saveToCor( string file )
         {
             bool hide = false;
             if ( mVsq != null ) {
-                String path = PortUtil.getDirectoryName( file );
+                string path = PortUtil.getDirectoryName( file );
                 //String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
                 mVsq.writeAsXml( file );
                 //mVsq.write( file2 );
@@ -2361,14 +2361,14 @@ namespace cadencii
             }
         }
 
-        public static void saveTo( String file )
+        public static void saveTo( string file )
         {
             if ( mVsq != null ) {
                 if ( editorConfig.UseProjectCache ) {
                     // キャッシュディレクトリの処理
-                    String dir = PortUtil.getDirectoryName( file );
-                    String name = PortUtil.getFileNameWithoutExtension( file );
-                    String cacheDir = Path.Combine( dir, name + ".cadencii" );
+                    string dir = PortUtil.getDirectoryName( file );
+                    string name = PortUtil.getFileNameWithoutExtension( file );
+                    string cacheDir = Path.Combine( dir, name + ".cadencii" );
 
                     if (!Directory.Exists(cacheDir)) {
                         try {
@@ -2384,11 +2384,11 @@ namespace cadencii
                         }
                     }
 
-                    String currentCacheDir = getTempWaveDir();
+                    string currentCacheDir = getTempWaveDir();
                     if ( !currentCacheDir.Equals( cacheDir ) ) {
                         for ( int i = 1; i < mVsq.Track.Count; i++ ) {
-                            String wavFrom = Path.Combine( currentCacheDir, i + ".wav" );
-                            String wavTo = Path.Combine( cacheDir, i + ".wav" );
+                            string wavFrom = Path.Combine( currentCacheDir, i + ".wav" );
+                            string wavTo = Path.Combine( cacheDir, i + ".wav" );
                             if (System.IO.File.Exists(wavFrom)) {
                                 if (System.IO.File.Exists(wavTo)) {
                                     try {
@@ -2411,8 +2411,8 @@ namespace cadencii
                                 }
                             }
 
-                            String xmlFrom = Path.Combine( currentCacheDir, i + ".xml" );
-                            String xmlTo = Path.Combine( cacheDir, i + ".xml" );
+                            string xmlFrom = Path.Combine( currentCacheDir, i + ".xml" );
+                            string xmlTo = Path.Combine( cacheDir, i + ".xml" );
                             if (System.IO.File.Exists(xmlFrom)) {
                                 if (System.IO.File.Exists(xmlTo)) {
                                     try {
@@ -2508,7 +2508,7 @@ namespace cadencii
         /// </summary>
         /// <param name="file"></param>
         /// <returns>ファイルの読み込みに成功した場合にtrueを，それ以外の場合はfalseを返します</returns>
-        public static bool readVsq( String file )
+        public static bool readVsq( string file )
         {
             mSelected = 1;
             mFile = file;
@@ -2626,9 +2626,9 @@ namespace cadencii
                 if ( sc == null ) {
                     continue;
                 }
-                String dir = sc.VOICEIDSTR;
+                string dir = sc.VOICEIDSTR;
                 SingerConfig sc_temp = new SingerConfig();
-                String path_image = Utility.readUtauSingerConfig( dir, sc_temp );
+                string path_image = Utility.readUtauSingerConfig( dir, sc_temp );
 
 #if DEBUG
                 sout.println( "AppManager#init; path_image=" + path_image );
@@ -2728,8 +2728,8 @@ namespace cadencii
                     if ( sc == null ) {
                         continue;
                     }
-                    String name = sc.VOICENAME.ToLower();
-                    String path_image = Path.Combine(
+                    string name = sc.VOICENAME.ToLower();
+                    string path_image = Path.Combine(
                                             Path.Combine(
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
@@ -2754,8 +2754,8 @@ namespace cadencii
                     if ( sc == null ) {
                         continue;
                     }
-                    String name = sc.VOICENAME.ToLower();
-                    String path_image = Path.Combine(
+                    string name = sc.VOICENAME.ToLower();
+                    string path_image = Path.Combine(
                                             Path.Combine(
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
@@ -2796,29 +2796,29 @@ namespace cadencii
             // 辞書の設定を適用
             try {
                 // 現在辞書リストに読込済みの辞書を列挙
-                List<ValuePair<String, Boolean>> current = new List<ValuePair<String, Boolean>>();
+                List<ValuePair<string, Boolean>> current = new List<ValuePair<string, Boolean>>();
                 for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                    current.Add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
+                    current.Add( new ValuePair<string, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
                 }
                 // editorConfig.UserDictionariesの設定値をコピー
-                List<ValuePair<String, Boolean>> config_data = new List<ValuePair<String, Boolean>>();
+                List<ValuePair<string, Boolean>> config_data = new List<ValuePair<string, Boolean>>();
                 int count = editorConfig.UserDictionaries.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    String[] spl = PortUtil.splitString( editorConfig.UserDictionaries[ i ], new char[] { '\t' }, 2 );
-                    config_data.Add( new ValuePair<String, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
+                    string[] spl = PortUtil.splitString( editorConfig.UserDictionaries[ i ], new char[] { '\t' }, 2 );
+                    config_data.Add( new ValuePair<string, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
 #if DEBUG
                     AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
 #endif
                 }
                 // 辞書リストとeditorConfigの設定を比較する
                 // currentの方には、editorConfigと共通するものについてのみsetValue(true)とする
-                List<ValuePair<String, Boolean>> common = new List<ValuePair<String, Boolean>>();
+                List<ValuePair<string, Boolean>> common = new List<ValuePair<string, Boolean>>();
                 for ( int i = 0; i < config_data.Count; i++ ) {
                     for ( int j = 0; j < current.Count; j++ ) {
                         if ( config_data[ i ].getKey().Equals( current[ j ].getKey() ) ) {
                             // editorConfig.UserDictionariesにもKeyが含まれていたらtrue
                             current[ j ].setValue( true );
-                            common.Add( new ValuePair<String, Boolean>( config_data[ i ].getKey(), config_data[ i ].getValue() ) );
+                            common.Add( new ValuePair<string, Boolean>( config_data[ i ].getKey(), config_data[ i ].getValue() ) );
                             break;
                         }
                     }
@@ -2827,7 +2827,7 @@ namespace cadencii
                 // この場合は、デフォルトでENABLEとし、優先順位を最後尾とする。
                 for ( int i = 0; i < current.Count; i++ ) {
                     if ( !current[ i ].getValue() ) {
-                        common.Add( new ValuePair<String, Boolean>( current[ i ].getKey(), true ) );
+                        common.Add( new ValuePair<string, Boolean>( current[ i ].getKey(), true ) );
                     }
                 }
                 SymbolTable.changeOrder( common );
@@ -2841,7 +2841,7 @@ namespace cadencii
             if (!Directory.Exists(mTempWaveDir)) {
                 PortUtil.createDirectory( mTempWaveDir );
             }
-            String log = Path.Combine( getTempWaveDir(), "run.log" );
+            string log = Path.Combine( getTempWaveDir(), "run.log" );
 #endif
 
             reloadUtauVoiceDB();
@@ -2891,7 +2891,7 @@ namespace cadencii
             return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
         }
 
-        public static void serializeEditorConfig( EditorConfig instance, String file )
+        public static void serializeEditorConfig( EditorConfig instance, string file )
         {
             FileOutputStream fs = null;
             try {
@@ -2910,7 +2910,7 @@ namespace cadencii
             }
         }
 
-        public static EditorConfig deserializeEditorConfig( String file )
+        public static EditorConfig deserializeEditorConfig( string file )
         {
             EditorConfig ret = null;
             FileInputStream fs = null;
@@ -2984,7 +2984,7 @@ namespace cadencii
 #endif
 
             // シリアライズして保存
-            String file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            string file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
 #if DEBUG
             sout.println( "AppManager#saveConfig; file=" + file );
 #endif
@@ -3005,7 +3005,7 @@ namespace cadencii
         /// </summary>
         public static void loadConfig()
         {
-            String appdata = Utility.getApplicationDataPath();
+            string appdata = Utility.getApplicationDataPath();
 #if DEBUG
             sout.println( "AppManager#loadConfig; appdata=" + appdata );
 #endif
@@ -3015,7 +3015,7 @@ namespace cadencii
             }
 
             // バージョン番号付きのファイル
-            String config_file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            string config_file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
 #if DEBUG
             sout.println( "AppManager#loadConfig; config_file=" + config_file );
 #endif
@@ -3032,11 +3032,11 @@ namespace cadencii
             } else {
                 // このバージョン用の設定ファイルがなかった場合
                 // まず，古いバージョン用の設定ファイルがないかどうか順に調べる
-                String[] dirs0 = PortUtil.listDirectories( appdata );
+                string[] dirs0 = PortUtil.listDirectories( appdata );
                 // 数字と，2個以下のピリオドからなるディレクトリ名のみを抽出
                 List<VersionString> dirs = new List<VersionString>();
-                foreach ( String s0 in dirs0 ) {
-                    String s = PortUtil.getFileName( s0 );
+                foreach ( string s0 in dirs0 ) {
+                    string s = PortUtil.getFileName( s0 );
                     int length = PortUtil.getStringLength( s );
                     bool register = true;
                     int num_period = 0;

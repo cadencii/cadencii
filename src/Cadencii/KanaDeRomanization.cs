@@ -19,6 +19,8 @@ import cadencii.*;
 using System;
 using cadencii;
 
+
+
 namespace cadencii {
 #endif
 
@@ -30,9 +32,9 @@ namespace cadencii {
         /// </summary>
         /// <param name="maybe_katakana"></param>
         /// <returns></returns>
-        public static String hiragana2katakana( String maybe_hiragana ) {
+        public static string hiragana2katakana( string maybe_hiragana ) {
             char[] arr = maybe_hiragana.ToCharArray();
-            String ret = "";
+            string ret = "";
             int i = -1;
             while ( i + 1 < arr.Length ) {
                 i++;
@@ -276,21 +278,21 @@ namespace cadencii {
             return maybe_hiragana;
         }
 
-        public static String Attach( String roman ) {
+        public static string Attach( string roman ) {
             char[] arr = roman.ToCharArray();
-            String ret = "";
+            string ret = "";
             int index = 0;
             while ( index < arr.Length ) {
                 // _MAX_MATCH～2文字のマッチ
                 bool processed = false;
                 for ( int i = _MAX_MATCH; i >= 2; i-- ) {
                     if ( index + (i - 1) < arr.Length ) {
-                        String s = "";
+                        string s = "";
                         for ( int j = 0; j < i; j++ ) {
                             s += "" + arr[index + j];
                         }
                         ByRef<Boolean> trailing = new ByRef<Boolean>();
-                        String res = AttachCor( s, trailing );
+                        string res = AttachCor( s, trailing );
                         if ( res != s ) {
                             if ( !trailing.value ) {
                                 index = index + i;
@@ -315,8 +317,8 @@ namespace cadencii {
             return ret;
         }
 
-        private static String AttachCor( String roman, ByRef<Boolean> trailing ) {
-            String s = roman.ToLower();
+        private static string AttachCor( string roman, ByRef<Boolean> trailing ) {
+            string s = roman.ToLower();
             trailing.value = false;
             if ( s.Equals( "a" ) ) {
                 return "あ";

@@ -34,6 +34,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using cadencii.java.util;
 
+
+
 namespace cadencii
 {
 #endif
@@ -41,7 +43,7 @@ namespace cadencii
     class FormWorkerJobArgument
     {
         public Object invoker;
-        public String name;
+        public string name;
         public Object arguments;
         public int index;
         public WorkerState state;
@@ -239,7 +241,7 @@ namespace cadencii
         /// <param name="job_description">ジョブの概要</param>
         /// <param name="job_amount">ジョブの処理量を表す，何らかの量．</param>
         /// <param name="argument">メソッドの第二引数</param>
-        public void addJob( Object obj, String method_name, String job_description, double job_amount, Object argument )
+        public void addJob( Object obj, string method_name, string job_description, double job_amount, Object argument )
         {
             // プログレスバーのUIを作成
             ProgressBarWithLabelUi ui = new ProgressBarWithLabelUi();

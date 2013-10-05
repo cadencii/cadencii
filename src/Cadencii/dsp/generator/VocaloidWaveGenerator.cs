@@ -36,6 +36,7 @@ using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
 
+
 namespace cadencii {
 
     /// <summary>
@@ -118,7 +119,7 @@ namespace cadencii
             }
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }
@@ -286,15 +287,15 @@ namespace cadencii
 #if JAVA
             String suffix = "_java";
 #else
-            String suffix = "_win";
+            string suffix = "_win";
 #endif
-            String path = Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
+            string path = Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
                 for ( int i = 0; i < vsq_nrpn.Length; i++ ) {
                     VsqNrpn item = vsq_nrpn[i];
-                    String name = NRPN.getName( item.Nrpn );
+                    string name = NRPN.getName( item.Nrpn );
                     int len = name.Length;
                     for( int j = len; j < 35; j++ ){
                         name += " ";

@@ -26,6 +26,7 @@ using System;
 using System.IO;
 
 namespace cadencii {
+
 #endif
 
     public class Logger {
@@ -34,7 +35,7 @@ namespace cadencii {
 #else
         private static StreamWriter log = null;
 #endif
-        private static String path = "";
+        private static string path = "";
         private static bool is_enabled = false;
 
         private Logger() {
@@ -48,7 +49,7 @@ namespace cadencii {
             is_enabled = value;
         }
 
-        public static void write( String s ) {
+        public static void write( string s ) {
             if ( !is_enabled ) {
                 return;
             }
@@ -85,16 +86,16 @@ namespace cadencii {
             }
         }
 
-        public static void writeLine( String s )
+        public static void writeLine( string s )
         {
             write( s + "\n" );
         }
 
-        public static String getPath() {
+        public static string getPath() {
             return path;
         }
 
-        public static void setPath( String file ) {
+        public static void setPath( string file ) {
             bool append = false;
             if ( log != null && !path.Equals( file ) ) {
                 try {

@@ -40,11 +40,12 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
+
 #endif
 
     public class Utility
     {
-        private const String CONFIG_DIR_NAME = "Cadencii";
+        private const string CONFIG_DIR_NAME = "Cadencii";
         public static readonly CurveType[] CURVE_USAGE = new CurveType[]{ CurveType.DYN,
                                                                           CurveType.BRE,
                                                                           CurveType.BRI,
@@ -77,7 +78,7 @@ namespace cadencii
         /// <summary>
         /// vocaloid.shに渡すために，パス文字列を正規化します
         /// </summary>
-        public static String normalizePath( String path )
+        public static string normalizePath( string path )
         {
 #if JAVA
             if( path.indexOf( "~" ) >= 0 ){
@@ -94,7 +95,7 @@ namespace cadencii
         /// 実行中のUTAUがあれば，その実行ファイルのパスを調べます(Windowsのみ)
         /// </summary>
         /// <returns></returns>
-        public static String getExecutingUtau()
+        public static string getExecutingUtau()
         {
 #if !JAVA
             foreach ( System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName( "utau" ) ) {
@@ -656,25 +657,25 @@ namespace cadencii
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static String readUtauSingerConfig( String directory, SingerConfig sc ) {
+        public static string readUtauSingerConfig( string directory, SingerConfig sc ) {
             sc.VOICEIDSTR = directory;
 
             // character.txt読込み
-            String character = Path.Combine( directory, "character.txt" );
-            String name = null;
-            String image = "";
+            string character = Path.Combine( directory, "character.txt" );
+            string name = null;
+            string image = "";
             int mode = 0;
             if (System.IO.File.Exists(character)) {
                 // 読み込みを試みるエンコーディングのリスト
-                foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
+                foreach ( string encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
                     BufferedReader sr2 = null;
                     try {
                         sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), encoding ) );
-                        String line = "";
+                        string line = "";
                         while ( (line = sr2.readLine()) != null ) {
-                            String[] spl = PortUtil.splitString( line, '=' );
+                            string[] spl = PortUtil.splitString( line, '=' );
                             if ( spl.Length > 1 ) {
-                                String s = spl[0].ToLower();
+                                string s = spl[0].ToLower();
                                 if ( s == "name" ) {
                                     name = spl[1];
                                     mode |= 1;
@@ -791,8 +792,8 @@ namespace cadencii
         /// <param name="x"></param>
         /// <param name="equation"></param>
         /// <returns></returns>
-        public static double eval( double x, String equation ) {
-            String equ = "(" + equation + ")"; // ( )でくくる
+        public static double eval( double x, string equation ) {
+            string equ = "(" + equation + ")"; // ( )でくくる
             equ = equ.Replace( "Math.PI", Math.PI + "" ); // πを数値に置換
             equ = equ.Replace( "Math.E", Math.E + "" ); // eを数値に置換
             equ = equ.Replace( "exp", "ezp" ); // exp を ezp に置換しておく
@@ -847,8 +848,8 @@ namespace cadencii
         }
 
         //----------------------------------------------------------------------------------
-        private static String evalMy0( String equation ) {
-            String equ = equation;
+        private static string evalMy0( string equation ) {
+            string equ = equation;
             while ( true ) {
                 // 最内側の（ ） から計算する（注釈：最内側（ ）内には、Math.…() のようなものはない）
                 int n1 = equ.IndexOf( ")" );
@@ -859,7 +860,7 @@ namespace cadencii
                 if ( n2 < 0 ) {
                     break;
                 }
-                String str2 = equ.Substring( n2 + 1, n1 - n2 - 1 ); // ( )内の文字
+                string str2 = equ.Substring( n2 + 1, n1 - n2 - 1 ); // ( )内の文字
                 int ne0 = str2.IndexOf( "," ); // ( )内の , の検索
                 double val = 0;
 
@@ -867,16 +868,16 @@ namespace cadencii
                     // ( )内に , があるので、 Math.log(A,B) or Math.Pow(A,B) の処理
                     if ( equ.Substring( n2 - 3, n2 - n2 + 3 ) == "log" ) {
                         // Math.log(A,B) のとき
-                        String strA = str2.Substring( 0, ne0 - 0 ); // Math.log(A,B)の A の文字
+                        string strA = str2.Substring( 0, ne0 - 0 ); // Math.log(A,B)の A の文字
                         double valA = double.Parse( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
-                        String strB = str2.Substring( ne0 + 1 ); // Math.log(A,B)の B の文字
+                        string strB = str2.Substring( ne0 + 1 ); // Math.log(A,B)の B の文字
                         double valB = double.Parse( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
                         val = Math.Log( valB ) / Math.Log( valA );
                         equ = equ.Replace( "Math.Log(" + strA + "," + strB + ")", "" + val );
                     } else if ( equ.Substring( n2 - 3, n2 - n2 + 3 ) == "pow" ) { // Math.Pow(A,B) のとき
-                        String strA = str2.Substring( 0, ne0 - 0 ); // Math.Pow(A,B)の A の文字
+                        string strA = str2.Substring( 0, ne0 - 0 ); // Math.Pow(A,B)の A の文字
                         double valA = double.Parse( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
-                        String strB = str2.Substring( ne0 + 1 ); // Math.Pow(A,B)の B の文字
+                        string strB = str2.Substring( ne0 + 1 ); // Math.Pow(A,B)の B の文字
                         double valB = double.Parse( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
                         val = Math.Pow( valA, valB );
                         equ = equ.Replace( "Math.Pow(" + strA + "," + strB + ")", "" + val );
@@ -913,7 +914,7 @@ namespace cadencii
                         val = double.Parse( str2 ); // 文字を数値に変換
                     }
                     if ( n2 - 8 >= 0 ) {
-                        String str1 = equ.Substring( n2 - 8, n2 - (n2 - 8) );
+                        string str1 = equ.Substring( n2 - 8, n2 - (n2 - 8) );
                         if ( str1 == "Math.Sin" ) {
                             val = Math.Sin( val );
                             equ = equ.Replace( "Math.Sin(" + str2 + ")", "" + val );
@@ -966,10 +967,10 @@ namespace cadencii
         }
 
         //　* と / のみからなる数式の いくつかの和、差からなる式の処理----------------
-        private static double evalMy1( String equation ) {
+        private static double evalMy1( string equation ) {
             double val = 0;
             while ( true ) {
-                String equ0 = "";
+                string equ0 = "";
                 int n0 = equation.IndexOf( "+" );
                 if ( n0 < 0 ) {
                     equ0 = equation;
@@ -987,10 +988,10 @@ namespace cadencii
         }
 
         //　* と / のみからなる数式についての処理-----------------------------------
-        private static double evalMy2( String equation ) {
+        private static double evalMy2( string equation ) {
             double val0 = 1;
             while ( true ) {
-                String equ0 = "";
+                string equ0 = "";
                 int n0 = equation.IndexOf( "*" );
                 if ( n0 < 0 ) {
                     equ0 = equation;
@@ -1001,7 +1002,7 @@ namespace cadencii
                 int kai = 0;
                 double val1 = 1;
                 while ( true ) { // / を含んだ項の計算
-                    String equ1 = "";
+                    string equ1 = "";
                     int n1 = equ0.IndexOf( "/" );
                     if ( n1 < 0 ) {
                         equ1 = equ0;
@@ -1285,8 +1286,8 @@ namespace cadencii
             }
         }
 
-        public static String getShortcutDisplayString( Keys[] keys ) {
-            String ret = "";
+        public static string getShortcutDisplayString( Keys[] keys ) {
+            string ret = "";
 #if JAVA_MAC
             String plus = "";
             String ctrl = "^";
@@ -1294,11 +1295,11 @@ namespace cadencii
             String option = "⌥";
             String command = "⌘";
 #else
-            String plus = "+";
-            String ctrl = "Ctrl";
-            String shift = "Shift";
-            String option = "Alt";
-            String command = "Meta";
+            string plus = "+";
+            string ctrl = "Ctrl";
+            string shift = "Shift";
+            string option = "Alt";
+            string command = "Meta";
 #endif
             List<Keys> list = new List<Keys>( keys );
             if ( list.Contains( Keys.Control ) ) {
@@ -1326,7 +1327,7 @@ namespace cadencii
             return ret;
         }
 
-        private static String getKeyDisplayString( Keys key ) {
+        private static string getKeyDisplayString( Keys key ) {
             if ( key.Equals( Keys.PageDown ) ) {
                 return "PgDn";
             } else if ( key.Equals( Keys.PageUp ) ) {
@@ -1355,7 +1356,7 @@ namespace cadencii
 #if JAVA
                 return new String( new char[]{ '\u2318' } );
 #else
-                return new String( '\x2318', 1 );
+                return new string( '\x2318', 1 );
 #endif
 #if JAVA_MAC
             } else if ( key.Equals( Keys.Back ) ){
@@ -1370,7 +1371,7 @@ namespace cadencii
         /// アプリケーションデータの保存位置を取得します
         /// Gets the path for application data
         /// </summary>
-        public static String getApplicationDataPath() {
+        public static string getApplicationDataPath() {
 #if JAVA
             String osname =  System.getProperty( "os.name" );
             String appdata = "./";
@@ -1401,13 +1402,13 @@ namespace cadencii
             }
             String dir = fsys.combine( appdata, "Boare" );
 #else
-            String dir = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            string dir = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
 
-            String dir2 = Path.Combine( dir, CONFIG_DIR_NAME );
+            string dir2 = Path.Combine( dir, CONFIG_DIR_NAME );
             if (!Directory.Exists(dir2)) {
                 PortUtil.createDirectory( dir2 );
             }
@@ -1420,16 +1421,16 @@ namespace cadencii
         /// 設定ファイルを保存するディレクトリへのパスを取得します
         /// </summary>
         /// <returns></returns>
-        public static String getConfigPath() {
-            String dir2 = getApplicationDataPath();
-            String dir3 = Path.Combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
+        public static string getConfigPath() {
+            string dir2 = getApplicationDataPath();
+            string dir3 = Path.Combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
             if (!Directory.Exists(dir3)) {
                 PortUtil.createDirectory( dir3 );
             }
             return dir3;
         }
 
-        private static String _( String id ) {
+        private static string _( string id ) {
             return Messaging.getMessage( id );
         }
 
@@ -1441,8 +1442,8 @@ namespace cadencii
         /// <param name="font"></param>
         /// <param name="width"></param>
         /// <returns></returns>
-        public static String trimString( String item, Font font, int width ) {
-            String edited = item;
+        public static string trimString( string item, Font font, int width ) {
+            string edited = item;
             int delete_count = PortUtil.getStringLength( item );
             bool д = true;
             for ( ; д; ) {
@@ -1464,8 +1465,8 @@ namespace cadencii
         /// スクリプトが格納されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getScriptPath() {
-            String dir = Path.Combine( PortUtil.getApplicationStartupPath(), "script" );
+        public static string getScriptPath() {
+            string dir = Path.Combine( PortUtil.getApplicationStartupPath(), "script" );
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
@@ -1476,8 +1477,8 @@ namespace cadencii
         /// キャッシュされたアセンブリが保存されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getCachedAssemblyPath() {
-            String dir = Path.Combine( Utility.getApplicationDataPath(), "cachedAssembly" );
+        public static string getCachedAssemblyPath() {
+            string dir = Path.Combine( Utility.getApplicationDataPath(), "cachedAssembly" );
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
@@ -1488,8 +1489,8 @@ namespace cadencii
         /// パレットツールが格納されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getToolPath() {
-            String dir = Path.Combine( PortUtil.getApplicationStartupPath(), "tool" );
+        public static string getToolPath() {
+            string dir = Path.Combine( PortUtil.getApplicationStartupPath(), "tool" );
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
@@ -1500,18 +1501,18 @@ namespace cadencii
         /// 鍵盤用の音源が保存されているディレクトリへのパスを返します。
         /// </summary>
         /// <returns></returns>
-        public static String getKeySoundPath() {
-            String data_path = getApplicationDataPath();
-            String ret = Path.Combine( data_path, "cache" );
+        public static string getKeySoundPath() {
+            string data_path = getApplicationDataPath();
+            string ret = Path.Combine( data_path, "cache" );
             if (!Directory.Exists(ret)) {
                 PortUtil.createDirectory( ret );
             }
             return ret;
         }
 
-        public static String getVersion() {
-            String suffix = "";
-            SortedDictionary<String, Boolean> directives = Config.getDirectives();
+        public static string getVersion() {
+            string suffix = "";
+            SortedDictionary<string, Boolean> directives = Config.getDirectives();
             suffix += "\n\n";
             foreach (var k in directives.Keys){
                 Boolean v = directives[ k ];
@@ -1525,7 +1526,7 @@ namespace cadencii
         }
 
 #if !JAVA
-        public static String getAssemblyConfigurationAttribute() {
+        public static string getAssemblyConfigurationAttribute() {
             Assembly a = Assembly.GetAssembly( typeof( AppManager ) );
             AssemblyConfigurationAttribute attr = (AssemblyConfigurationAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyConfigurationAttribute ) );
             return attr.Configuration;
@@ -1533,7 +1534,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public static String getAssemblyFileVersion( Type t ) {
+        public static string getAssemblyFileVersion( Type t ) {
             Assembly a = Assembly.GetAssembly( t );
             AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
             return afva.Version;
@@ -1541,7 +1542,7 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public static String getAssemblyNameAndFileVersion( Type t ) {
+        public static string getAssemblyNameAndFileVersion( Type t ) {
             Assembly a = Assembly.GetAssembly( t );
             AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
             return a.GetName().Name + " v" + afva.Version;

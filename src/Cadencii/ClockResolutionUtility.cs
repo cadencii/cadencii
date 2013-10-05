@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
+
 #endif
 
     public class ClockResolutionUtility {
@@ -58,7 +59,7 @@ namespace cadencii {
             return 1;
         }
 
-        public static String toString( ClockResolution value ) {
+        public static string toString( ClockResolution value ) {
             if ( value == ClockResolution.Free ) {
                 return "Free";
             } else {

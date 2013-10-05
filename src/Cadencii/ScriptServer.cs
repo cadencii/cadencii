@@ -19,20 +19,22 @@ using cadencii.apputil;
 using cadencii.java.io;
 using cadencii.java.util;
 
+
+
 namespace cadencii {
     /// <summary>
     /// スクリプトを管理するクラス
     /// </summary>
     public static class ScriptServer {
-        private static SortedDictionary<String, ScriptInvoker> scripts = new SortedDictionary<String, ScriptInvoker>();
+        private static SortedDictionary<string, ScriptInvoker> scripts = new SortedDictionary<string, ScriptInvoker>();
 
         /// <summary>
         /// 指定したIDのスクリプトを再読込みするか、または新規の場合読み込んで追加します。
         /// </summary>
         /// <param name="id"></param>
-        public static void reload( String id ) {
-            String dir = Utility.getScriptPath();
-            String file = Path.Combine( dir, id );
+        public static void reload( string id ) {
+            string dir = Utility.getScriptPath();
+            string file = Path.Combine( dir, id );
 #if DEBUG
             sout.println("ScriptServer#reload; file=" + file + "; isFileExists(file)=" + System.IO.File.Exists(file));
 #endif
@@ -49,15 +51,15 @@ namespace cadencii {
         /// </summary>
         public static void reload() {
             // 拡張子がcs, txtのファイルを列挙
-            String dir = Utility.getScriptPath();
-            List<String> files = new List<String>();
+            string dir = Utility.getScriptPath();
+            List<string> files = new List<string>();
             files.AddRange( new List<string>( PortUtil.listFiles( dir, ".txt" ) ) );
             files.AddRange( new List<string>( PortUtil.listFiles( dir, ".cs" ) ) );
 
             // 既存のスクリプトに無いまたは新しいやつはロード。
-            List<String> added = new List<String>(); //追加または更新が行われたスクリプトのID
-            foreach ( String file in files ) {
-                String id = PortUtil.getFileName( file );
+            List<string> added = new List<string>(); //追加または更新が行われたスクリプトのID
+            foreach ( string file in files ) {
+                string id = PortUtil.getFileName( file );
                 double time = PortUtil.getFileLastModified( file );
                 added.Add( id );
 
@@ -97,7 +99,7 @@ namespace cadencii {
         /// スクリプトを実行します。
         /// </summary>
         /// <param name="evsd"></param>
-        public static bool invokeScript( String id, VsqFileEx vsq ) {
+        public static bool invokeScript( string id, VsqFileEx vsq ) {
             ScriptInvoker script_invoker = null;
             if ( scripts.ContainsKey( id ) ) {
                 script_invoker = scripts[ id ];
@@ -135,7 +137,7 @@ namespace cadencii {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         AppManager.editHistory.register( vsq.executeCommand( run ) );
                     }
-                    String config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
+                    string config_file = configFileNameFromScriptFileName( script_invoker.ScriptFile );
                     FileOutputStream fs = null;
                     bool delete_xml_when_exit = false; // xmlを消すときtrue
                     try {
@@ -172,15 +174,15 @@ namespace cadencii {
         /// </summary>
         /// <param name="script_file"></param>
         /// <returns></returns>
-        public static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = Path.Combine( Utility.getApplicationDataPath(), "script" );
+        public static string configFileNameFromScriptFileName( string script_file ) {
+            string dir = Path.Combine( Utility.getApplicationDataPath(), "script" );
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
             return Path.Combine( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
         }
 
-        private static String _( String id ) {
+        private static string _( string id ) {
             return Messaging.getMessage( id );
         }
 
@@ -188,7 +190,7 @@ namespace cadencii {
         /// 読み込まれたスクリプトのIDを順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<String> getScriptIdIterator() {
+        public static IEnumerable<string> getScriptIdIterator() {
             return scripts.Keys;
         }
 
@@ -197,11 +199,11 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String getDisplayName( String id ) {
+        public static string getDisplayName( string id ) {
             if ( scripts.ContainsKey( id ) ) {
                 ScriptInvoker invoker = scripts[ id ];
                 if ( invoker.getDisplayNameDelegate != null ) {
-                    String ret = "";
+                    string ret = "";
                     try {
                         ret = invoker.getDisplayNameDelegate();
                     } catch ( Exception ex ) {
@@ -219,7 +221,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static double getTimestamp( String id ) {
+        public static double getTimestamp( string id ) {
             if ( scripts.ContainsKey( id ) ) {
                 return scripts[ id ].fileTimestamp;
             } else {
@@ -232,7 +234,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static bool isAvailable( String id ) {
+        public static bool isAvailable( string id ) {
             if ( scripts.ContainsKey( id ) ) {
                 return scripts[ id ].scriptDelegate != null;
             } else {
@@ -245,7 +247,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String getCompileMessage( String id ) {
+        public static string getCompileMessage( string id ) {
             if ( scripts.ContainsKey( id ) ) {
                 return scripts[ id ].ErrorMessage;
             } else {

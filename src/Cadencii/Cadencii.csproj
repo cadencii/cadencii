@@ -464,15 +464,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSequenceConfig.resx">
       <DependentUpon>FormSequenceConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FormShortcutKeys.resx">
       <DependentUpon>FormShortcutKeys.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoConfig.resx">
       <DependentUpon>FormVibratoConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoPreset.resx">
       <DependentUpon>FormVibratoPreset.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -481,6 +484,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TrackSelector.resx">
       <DependentUpon>TrackSelector.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\dotnet\ExceptionNotifyFormUiImpl.resx">
       <DependentUpon>ExceptionNotifyFormUiImpl.cs</DependentUpon>

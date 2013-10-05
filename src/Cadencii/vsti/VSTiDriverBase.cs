@@ -29,6 +29,7 @@ namespace cadencii
     using VstInt32 = Int32;
     using VstIntPtr = Int32;
 
+
     public struct TempoInfo
     {
         /// <summary>
@@ -51,7 +52,7 @@ namespace cadencii
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
         public bool loaded = false;
-        public String path = "";
+        public string path = "";
         /// <summary>
         /// プラグインのUI
         /// </summary>
@@ -150,7 +151,7 @@ namespace cadencii
             }
         }
 
-        private String getStringCore( int opcode, int index, int str_capacity )
+        private string getStringCore( int opcode, int index, int str_capacity )
         {
             byte[] arr = new byte[str_capacity + 1];
             for ( int i = 0; i < str_capacity; i++ ) {
@@ -167,21 +168,21 @@ namespace cadencii
             } catch ( Exception ex ) {
                 serr.println( "vstidrv#getStringCore; ex=" + ex );
             }
-            String ret = Encoding.ASCII.GetString( arr );
+            string ret = Encoding.ASCII.GetString( arr );
             return ret;
         }
 
-        public String getParameterDisplay( int index )
+        public string getParameterDisplay( int index )
         {
             return getStringCore( AEffectOpcodes.effGetParamDisplay, index, VstStringConstants.kVstMaxParamStrLen );
         }
 
-        public String getParameterLabel( int index )
+        public string getParameterLabel( int index )
         {
             return getStringCore( AEffectOpcodes.effGetParamLabel, index, VstStringConstants.kVstMaxParamStrLen );
         }
 
-        public String getParameterName( int index )
+        public string getParameterName( int index )
         {
             return getStringCore( AEffectOpcodes.effGetParamName, index, VstStringConstants.kVstMaxParamStrLen );
         }
@@ -333,7 +334,7 @@ namespace cadencii
                 if ( (aEffect.aeffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor ) {
                     try {
                         // プラグインの名前を取得
-                        String product = getStringCore( AEffectXOpcodes.effGetProductString, 0, VstStringConstants.kVstMaxProductStrLen );
+                        string product = getStringCore( AEffectXOpcodes.effGetProductString, 0, VstStringConstants.kVstMaxProductStrLen );
                         ui.Text = product;
                         ui.Location = new System.Drawing.Point( 0, 0 );
                         unsafe {

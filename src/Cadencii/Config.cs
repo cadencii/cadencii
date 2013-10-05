@@ -30,7 +30,7 @@ namespace cadencii
 
     public class Config
     {
-        private static SortedDictionary<String, Boolean> mDirectives = new SortedDictionary<String, Boolean>();
+        private static SortedDictionary<string, Boolean> mDirectives = new SortedDictionary<string, Boolean>();
 
 #if JAVA
         static
@@ -46,14 +46,14 @@ namespace cadencii
             mDirectives[ "property"] =  true ;
         }
 
-        public static String getWineVersion()
+        public static string getWineVersion()
         {
             return "1.1.2";
         }
 
-        public static SortedDictionary<String, Boolean> getDirectives()
+        public static SortedDictionary<string, Boolean> getDirectives()
         {
-            SortedDictionary<String, Boolean> ret = new SortedDictionary<String, Boolean>();
+            SortedDictionary<string, Boolean> ret = new SortedDictionary<string, Boolean>();
             foreach (var key in mDirectives.Keys){
                 ret[ key] =  mDirectives[ key ] ;
             }

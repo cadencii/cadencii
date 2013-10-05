@@ -60,6 +60,8 @@ using cadencii.xml;
 using cadencii.utau;
 using cadencii.ui;
 
+
+
 namespace cadencii
 {
 #endif
@@ -279,12 +281,12 @@ namespace cadencii
         /// 単音プレビュー時に、wave生成完了を待つ最大の秒数
         /// </summary>
         public const double _WAIT_LIMIT = 5.0;
-        public const String _APP_NAME = "Cadencii";
+        public const string _APP_NAME = "Cadencii";
         /// <summary>
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
         public const int _PX_ACCENT_HEADER = 21;
-        public const String RECENT_UPDATE_INFO_URL = "https://raw.github.com/cadencii/cadencii/master/update_info/recent.xml";
+        public const string RECENT_UPDATE_INFO_URL = "https://raw.github.com/cadencii/cadencii/master/update_info/recent.xml";
         /// <summary>
         /// splitContainer2.Panel2の最小サイズ
         /// </summary>
@@ -548,7 +550,7 @@ namespace cadencii
         /// コンストラクタ
         /// </summary>
         /// <param name="file">最初に開くxvsq，vsqファイルのパス</param>
-        public FormMain( FormMainController controller, String file )
+        public FormMain( FormMainController controller, string file )
         {
 #if JAVA
 		    super();
@@ -583,7 +585,7 @@ namespace cadencii
                     4,
                     500000 );
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = kind.getVersionString();
+            string renderer = kind.getVersionString();
             List<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
             tvsq.Track[ 1 ].changeRenderer( renderer, singers );
             AppManager.setVsqFile( tvsq );
@@ -819,7 +821,7 @@ namespace cadencii
 #endif // else JAVA
 
 #if !JAVA
-            String _HAND = "AAACAAEAICAAABAAEADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+            string _HAND = "AAACAAEAICAAABAAEADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAAA" +
                 "AAAgAAAAACAAACAgAAAAACAAIAAgAAAgIAAwMDAAICAgAD/AAAAAP8AAP//AAAAAP8A/wD/AAD//wD///8AAAAAAAAAAAAAAAAAAAA" +
                 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
                 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAD" +
@@ -856,7 +858,7 @@ namespace cadencii
             // ファイルを開く
             if ( file != "" ) {
                 if (System.IO.File.Exists(file)) {
-                    String low_file = file.ToLower();
+                    string low_file = file.ToLower();
                     if ( low_file.EndsWith( ".xvsq" ) ) {
                         openVsqCor( low_file );
                         //AppManager.readVsq( file );
@@ -1123,10 +1125,10 @@ namespace cadencii
 
 #if !JAVA
 #if DEBUG
-            System.Collections.Generic.List<ValuePair<String, String>> list = new System.Collections.Generic.List<ValuePair<String, String>>();
+            System.Collections.Generic.List<ValuePair<string, string>> list = new System.Collections.Generic.List<ValuePair<string, string>>();
             foreach ( System.Reflection.FieldInfo fi in typeof( EditorConfig ).GetFields() ) {
                 if ( fi.IsPublic && !fi.IsStatic ) {
-                    list.Add( new ValuePair<String, String>( fi.Name, fi.FieldType.ToString() ) );
+                    list.Add( new ValuePair<string, string>( fi.Name, fi.FieldType.ToString() ) );
                 }
             }
 
@@ -1142,7 +1144,7 @@ namespace cadencii
                 if ( !getmethod.IsPublic || getmethod.IsStatic ) {
                     continue;
                 }
-                list.Add( new ValuePair<String, String>( pi.Name, pi.PropertyType.ToString() ) );
+                list.Add( new ValuePair<string, string>( pi.Name, pi.PropertyType.ToString() ) );
             }
 
             list.Sort();
@@ -1150,11 +1152,11 @@ namespace cadencii
             System.IO.StreamWriter sw = null;
             try {
                 sw = new System.IO.StreamWriter( "EditorConfig.txt" );
-                foreach ( ValuePair<String, String> s in list ) {
+                foreach ( ValuePair<string, string> s in list ) {
                     sw.WriteLine( s.Key );
                 }
                 sw.WriteLine( "--------------------------------------------" );
-                foreach ( ValuePair<String, String> s in list ) {
+                foreach ( ValuePair<string, string> s in list ) {
                     sw.WriteLine( s.Value + "\t" + s.Key + ";" );
                 }
             } catch ( Exception ex ) {
@@ -1225,16 +1227,16 @@ namespace cadencii
         /// </summary>
         /// <param name="resampler_path"></param>
         /// <param name="singer_path"></param>
-        private void checkUnknownResamplerAndSinger( ByRef<String> resampler_path, ByRef<String> singer_path )
+        private void checkUnknownResamplerAndSinger( ByRef<string> resampler_path, ByRef<string> singer_path )
         {
-            String utau = Utility.getExecutingUtau();
-            String utau_dir = "";
+            string utau = Utility.getExecutingUtau();
+            string utau_dir = "";
             if ( utau != "" ) {
                 utau_dir = PortUtil.getDirectoryName( utau );
             }
 
             // 可能なら，VOICEの文字列を置換する
-            String search = "%VOICE%";
+            string search = "%VOICE%";
             if ( singer_path.value.StartsWith( search ) && singer_path.value.Length > search.Length ) {
                 singer_path.value = singer_path.value.Substring( search.Length );
                 singer_path.value = Path.Combine( Path.Combine( utau_dir, "voice" ), singer_path.value );
@@ -1265,7 +1267,7 @@ namespace cadencii
 #if DEBUG
             sout.println( "FormMain#checkUnknownResamplerAndSinger; resampler_path.value=" + resampler_path.value );
 #endif
-            String resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
+            string resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
             if ( resampler_dir == "" ) {
                 // ディレクトリが空欄なので，UTAUのデフォルトのリサンプラー指定である
                 resampler_path.value = Path.Combine( utau_dir, resampler_path.value );
@@ -1274,7 +1276,7 @@ namespace cadencii
             if (resampler_dir != "" && System.IO.File.Exists(resampler_path.value)) {
                 bool found = false;
                 for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
-                    String resampler = AppManager.editorConfig.getResamplerAt( i );
+                    string resampler = AppManager.editorConfig.getResamplerAt( i );
                     if ( resampler == resampler_path.value ) {
                         found = true;
                         break;
@@ -1298,14 +1300,14 @@ namespace cadencii
                     // 登録する
                     // リサンプラー
                     if ( dialog.isResamplerChecked() ) {
-                        String path = dialog.getResamplerPath();
+                        string path = dialog.getResamplerPath();
                         if (System.IO.File.Exists(path)) {
                             AppManager.editorConfig.addResampler( path, false );
                         }
                     }
                     // 歌手
                     if ( dialog.isSingerChecked() ) {
-                        String path = dialog.getSingerPath();
+                        string path = dialog.getSingerPath();
                         if (Directory.Exists(path)) {
                             SingerConfig sc = new SingerConfig();
                             Utility.readUtauSingerConfig( path, sc );
@@ -2537,7 +2539,7 @@ namespace cadencii
         /// <param name="name"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public Object searchMenuItemFromName( String name, ByRef<Object> parent )
+        public Object searchMenuItemFromName( string name, ByRef<Object> parent )
         {
             int count = menuStripMain.Items.Count;
             for ( int i = 0; i < count; i++ ) {
@@ -2559,7 +2561,7 @@ namespace cadencii
         /// <param name="name"></param>
         /// <param name="tree"></param>
         /// <returns></returns>
-        public Object searchMenuItemRecurse( String name, Object tree, ByRef<Object> parent )
+        public Object searchMenuItemRecurse( string name, Object tree, ByRef<Object> parent )
         {
 #if JAVA
             if( tree == null ){
@@ -2592,7 +2594,7 @@ namespace cadencii
             // 該当しなかった
             return null;
 #else
-            String tree_name = "";
+            string tree_name = "";
             System.Windows.Forms.ToolStripMenuItem menu = null;
             if ( tree is System.Windows.Forms.ToolStripItem ) {
                 if ( tree is System.Windows.Forms.ToolStripMenuItem ) {
@@ -2613,7 +2615,7 @@ namespace cadencii
                 int count = menu.DropDownItems.Count;
                 for ( int i = 0; i < count; i++ ) {
                     System.Windows.Forms.ToolStripItem tsi = menu.DropDownItems[i];
-                    String tsi_name = "";
+                    string tsi_name = "";
                     if ( tsi is System.Windows.Forms.ToolStripItem ) {
                         tsi_name = ((System.Windows.Forms.ToolStripItem)tsi).Name;
                     } else {
@@ -2792,8 +2794,8 @@ namespace cadencii
             }
 
             for ( int i = 0; i < count; i++ ) {
-                String path = AppManager.editorConfig.getResamplerAt( i );
-                String name = PortUtil.getFileNameWithoutExtension( path );
+                string path = AppManager.editorConfig.getResamplerAt( i );
+                string name = PortUtil.getFileNameWithoutExtension( path );
                 menuTrackRendererUtau.DropDownItems[i].Text = name;
                 cMenuTrackTabRendererUtau.DropDownItems[i].Text = name;
 
@@ -2909,7 +2911,7 @@ namespace cadencii
             foreach (var item in mPaletteTools) {
                 toolBarTool.Buttons.Add( item );
             }
-            String lang = Messaging.getLanguage();
+            string lang = Messaging.getLanguage();
             bool first = true;
             foreach (var id in PaletteToolServer.loadedTools.Keys) {
                 count++;
@@ -2917,8 +2919,8 @@ namespace cadencii
 #if !JAVA
                 System.Drawing.Bitmap icon = ipt.getIcon();
 #endif
-                String name = ipt.getName( lang );
-                String desc = ipt.getDescription( lang );
+                string name = ipt.getName( lang );
+                string desc = ipt.getDescription( lang );
 
                 // toolStripPaletteTools
                 System.Windows.Forms.ToolBarButton tsb = new System.Windows.Forms.ToolBarButton();
@@ -3081,7 +3083,7 @@ namespace cadencii
         public bool dirtyCheck()
         {
             if ( mEdited ) {
-                String file = AppManager.getFileName();
+                string file = AppManager.getFileName();
                 if ( file == "" ) {
                     file = "Untitled";
                 } else {
@@ -3095,7 +3097,7 @@ namespace cadencii
                     if ( AppManager.getFileName() == "" ) {
                         var dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr2 == System.Windows.Forms.DialogResult.OK ) {
-                            String sf = saveXmlVsqDialog.FileName;
+                            string sf = saveXmlVsqDialog.FileName;
                             AppManager.saveTo( sf );
                             return true;
                         } else {
@@ -3138,7 +3140,7 @@ namespace cadencii
         public void loadWave( Object arg )
         {
             Object[] argArr = (Object[])arg;
-            String file = (String)argArr[0];
+            string file = (string)argArr[0];
             int track = (int)argArr[1];
             waveView.load( track, file );
         }
@@ -3260,8 +3262,8 @@ namespace cadencii
 
             // 後続の音符をリストアップ
             VsqEvent[] items = new VsqEvent[count];
-            String[] original_symbol = new String[count];
-            String[] original_phrase = new String[count];
+            string[] original_symbol = new string[count];
+            string[] original_phrase = new string[count];
             bool[] symbol_protected = new bool[count];
             indx = -1;
             for ( Iterator<int> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
@@ -3285,13 +3287,13 @@ namespace cadencii
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
             AppManager.debugWriteLine( "    AppManager.mInputTextBox.setText(=" + AppManager.mInputTextBox.Text );
 #endif
-            String[] phrase = new String[count];
-            String[] phonetic_symbol = new String[count];
+            string[] phrase = new string[count];
+            string[] phonetic_symbol = new string[count];
             for ( int i = 0; i < count; i++ ) {
                 phrase[i] = original_phrase[i];
                 phonetic_symbol[i] = original_symbol[i];
             }
-            String txt = AppManager.mInputTextBox.Text;
+            string txt = AppManager.mInputTextBox.Text;
             int txtlen = PortUtil.getStringLength( txt );
             if ( txtlen > 0 ) {
                 // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
@@ -3317,10 +3319,10 @@ namespace cadencii
                     phonetic_symbol[0] = AppManager.mInputTextBox.Text;
 
                     // 入力された発音記号のうち、有効なものだけをピックアップ
-                    String[] spl = PortUtil.splitString( phonetic_symbol[0], new char[] { ' ' }, true );
-                    List<String> list = new List<String>();
+                    string[] spl = PortUtil.splitString( phonetic_symbol[0], new char[] { ' ' }, true );
+                    List<string> list = new List<string>();
                     for ( int i = 0; i < spl.Length; i++ ) {
-                        String s = spl[i];
+                        string s = spl[i];
                         if ( VsqPhoneticSymbol.isValidSymbol( s ) ) {
                             list.Add( s );
                         }
@@ -3354,10 +3356,10 @@ namespace cadencii
                             sout.println( "FormMain#executeLyricChangeCommand; word=" + entry.Word + "; symbol=" + entry.getSymbol() + "; rawSymbol=" + entry.getRawSymbol() );
 #endif
                             if ( entry.Word.IndexOf( '-' ) >= 0 ) {
-                                String[] spl_phrase = PortUtil.splitString( entry.Word, '\t' );
+                                string[] spl_phrase = PortUtil.splitString( entry.Word, '\t' );
                                 if ( spl_phrase.Length <= count ) {
                                     // 分節の分割数が，後続の音符数と同じか少ない場合
-                                    String[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
+                                    string[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
                                     for ( int i = 0; i < spl_phrase.Length; i++ ) {
                                         phrase[i] = spl_phrase[i];
                                         phonetic_symbol[i] = spl_symbol[i];
@@ -3389,11 +3391,11 @@ namespace cadencii
 #if JAVA
                         Vector<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #else
-                        List<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
+                        List<string> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #endif
                         List<int> adjustment = new List<int>();
                         for ( int i = 0; i < spl.Count; i++ ) {
-                            String s = spl[i];
+                            string s = spl[i];
                             adjustment.Add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
                         }
                         items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
@@ -3580,11 +3582,11 @@ namespace cadencii
                 if ( PortUtil.getFileNameWithoutExtension( id ).ToLower() == "runonce" ) {
                     continue;
                 }
-                String display = ScriptServer.getDisplayName( id );
+                string display = ScriptServer.getDisplayName( id );
                 // スクリプトのメニューに共通のヘッダー(menuScript)を付ける．
                 // こうしておくと，menuSettingShortcut_Clickで，スクリプトのメニューが
                 // menuScriptの子だと自動で認識される
-                String name = "menuScript" + id.Replace( '.', '_' );
+                string name = "menuScript" + id.Replace( '.', '_' );
                 PaletteToolMenuItem item = new PaletteToolMenuItem( id );
                 item.Text = display;
                 item.Name = name;
@@ -3976,7 +3978,7 @@ namespace cadencii
         {
             mSpecialShortcutHolders.Clear();
 
-            SortedDictionary<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            SortedDictionary<string, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
             #region menuStripMain
             ByRef<Object> parent = new ByRef<Object>( null );
             foreach (var key in dict.Keys) {
@@ -3985,7 +3987,7 @@ namespace cadencii
                 }
                 Object menu = searchMenuItemFromName( key, parent );
                 if ( menu != null ) {
-                    String menu_name = "";
+                    string menu_name = "";
 #if JAVA
                     if( menu instanceof Component ){
                         menu_name = ((Component)menu).getName();
@@ -4013,36 +4015,36 @@ namespace cadencii
             }
             #endregion
 
-            List<ValuePair<String, ToolStripMenuItem[]>> work = new List<ValuePair<String, ToolStripMenuItem[]>>();
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditUndo", new ToolStripMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditRedo", new ToolStripMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCut", new ToolStripMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditCopy", new ToolStripMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditPaste", new ToolStripMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAll", new ToolStripMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditSelectAllEvents", new ToolStripMenuItem[] { cMenuPianoSelectAllEvents } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuEditDelete", new ToolStripMenuItem[] { menuEditDelete } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuVisualGridline", new ToolStripMenuItem[] { cMenuPianoGrid } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuJobLyric", new ToolStripMenuItem[] { cMenuPianoImportLyric } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricExpressionProperty", new ToolStripMenuItem[] { cMenuPianoExpressionProperty } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuLyricVibratoProperty", new ToolStripMenuItem[] { cMenuPianoVibratoProperty } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOn", new ToolStripMenuItem[] { cMenuTrackTabTrackOn } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackAdd", new ToolStripMenuItem[] { cMenuTrackTabAdd } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackCopy", new ToolStripMenuItem[] { cMenuTrackTabCopy } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackDelete", new ToolStripMenuItem[] { cMenuTrackTabDelete } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderCurrent", new ToolStripMenuItem[] { cMenuTrackTabRenderCurrent } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRenderAll", new ToolStripMenuItem[] { cMenuTrackTabRenderAll } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackOverlay", new ToolStripMenuItem[] { cMenuTrackTabOverlay } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID1", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID2", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererAquesTone", new ToolStripMenuItem[] { menuTrackRendererAquesTone } ) );
-            work.Add( new ValuePair<String, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
+            List<ValuePair<string, ToolStripMenuItem[]>> work = new List<ValuePair<string, ToolStripMenuItem[]>>();
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditUndo", new ToolStripMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditRedo", new ToolStripMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditCut", new ToolStripMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditCopy", new ToolStripMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditPaste", new ToolStripMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditSelectAll", new ToolStripMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditSelectAllEvents", new ToolStripMenuItem[] { cMenuPianoSelectAllEvents } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuEditDelete", new ToolStripMenuItem[] { menuEditDelete } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuVisualGridline", new ToolStripMenuItem[] { cMenuPianoGrid } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuJobLyric", new ToolStripMenuItem[] { cMenuPianoImportLyric } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuLyricExpressionProperty", new ToolStripMenuItem[] { cMenuPianoExpressionProperty } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuLyricVibratoProperty", new ToolStripMenuItem[] { cMenuPianoVibratoProperty } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackOn", new ToolStripMenuItem[] { cMenuTrackTabTrackOn } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackAdd", new ToolStripMenuItem[] { cMenuTrackTabAdd } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackCopy", new ToolStripMenuItem[] { cMenuTrackTabCopy } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackDelete", new ToolStripMenuItem[] { cMenuTrackTabDelete } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackRenderCurrent", new ToolStripMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackRenderAll", new ToolStripMenuItem[] { cMenuTrackTabRenderAll } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackOverlay", new ToolStripMenuItem[] { cMenuTrackTabOverlay } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID1", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackRendererVOCALOID2", new ToolStripMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackRendererAquesTone", new ToolStripMenuItem[] { menuTrackRendererAquesTone } ) );
+            work.Add( new ValuePair<string, ToolStripMenuItem[]>( "menuTrackRendererVCNT", new ToolStripMenuItem[] { menuTrackRendererVCNT } ) );
             int c = work.Count;
             for ( int j = 0; j < c; j++ ) {
-                ValuePair<String, ToolStripMenuItem[]> item = work[ j ];
+                ValuePair<string, ToolStripMenuItem[]> item = work[ j ];
                 if ( dict.ContainsKey( item.getKey() ) ) {
                     Keys[] k = dict[item.getKey()];
-                    String s = Utility.getShortcutDisplayString( k );
+                    string s = Utility.getShortcutDisplayString( k );
 #if !JAVA
                     if ( s != "" ) {
                         for ( int i = 0; i < item.getValue().Length; i++ ) {
@@ -4122,7 +4124,7 @@ namespace cadencii
         /// <param name="item"></param>
         /// <param name="item_name"></param>
         /// <param name="default_shortcut"></param>
-        public void applyMenuItemShortcut( SortedDictionary<String, Keys[]> dict, Object item, String item_name )
+        public void applyMenuItemShortcut( SortedDictionary<string, Keys[]> dict, Object item, string item_name )
         {
 #if JAVA
             if( item == null ){
@@ -4305,7 +4307,7 @@ namespace cadencii
 
         public void clearTempWave()
         {
-            String tmppath = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            string tmppath = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if (!Directory.Exists(tmppath)) {
                 return;
             }
@@ -4315,7 +4317,7 @@ namespace cadencii
 
             // このFormMainのインスタンスが使用したデータを消去する
             for ( int i = 1; i <= AppManager.MAX_NUM_TRACK; i++ ) {
-                String file = Path.Combine( tmppath, i + ".wav" );
+                string file = Path.Combine( tmppath, i + ".wav" );
                 if (System.IO.File.Exists(file)) {
                     for ( int error = 0; error < 100; error++ ) {
                         try {
@@ -4344,7 +4346,7 @@ namespace cadencii
                     }
                 }
             }
-            String whd = Path.Combine( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
+            string whd = Path.Combine( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
             if (System.IO.File.Exists(whd)) {
                 try {
                     PortUtil.deleteFile( whd );
@@ -4352,7 +4354,7 @@ namespace cadencii
                     Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
                 }
             }
-            String dat = Path.Combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
+            string dat = Path.Combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
             if (System.IO.File.Exists(dat)) {
                 try {
                     PortUtil.deleteFile( dat );
@@ -4845,8 +4847,8 @@ namespace cadencii
                 Object tsi = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
                 if ( tsi is System.Windows.Forms.ToolBarButton ) {
                     System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)tsi;
-                    if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tsb.Tag != null && tsb.Tag is String ) {
-                        String id = (String)tsb.Tag;
+                    if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tsb.Tag != null && tsb.Tag is string ) {
+                        string id = (string)tsb.Tag;
                         if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsb.Text = ipt.getName( Messaging.getLanguage() );
@@ -4859,8 +4861,8 @@ namespace cadencii
             foreach ( var tsi in cMenuPianoPaletteTool.DropDownItems ) {
                 if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
-                        String id = (String)tsmi.Tag;
+                    if ( tsmi.Tag != null && tsmi.Tag is string ) {
+                        string id = (string)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsmi.Text = ipt.getName( Messaging.getLanguage() );
@@ -4873,8 +4875,8 @@ namespace cadencii
             foreach ( var tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
                 if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
-                        String id = (String)tsmi.Tag;
+                    if ( tsmi.Tag != null && tsmi.Tag is string ) {
+                        string id = (string)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsmi.Text = ipt.getName( Messaging.getLanguage() );
@@ -4887,8 +4889,8 @@ namespace cadencii
             foreach ( var tsi in menuSettingPaletteTool.DropDownItems ) {
                 if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
-                    if ( tsmi.Tag != null && tsmi.Tag is String ) {
-                        String id = (String)tsmi.Tag;
+                    if ( tsmi.Tag != null && tsmi.Tag is string ) {
+                        string id = (string)tsmi.Tag;
                         if ( PaletteToolServer.loadedTools.ContainsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools[ id ];
                             tsmi.Text = ipt.getName( Messaging.getLanguage() );
@@ -4931,15 +4933,15 @@ namespace cadencii
                 mDialogImportLyric.Location = getFormPreferedLocation( mDialogImportLyric );
                 DialogResult dr = AppManager.showModalDialog( mDialogImportLyric, this );
                 if ( dr == DialogResult.OK ) {
-                    String[] phrases = mDialogImportLyric.getLetters();
+                    string[] phrases = mDialogImportLyric.getLetters();
 #if DEBUG
-                    foreach ( String s in phrases ) {
+                    foreach ( string s in phrases ) {
                         sout.println( "FormMain#importLyric; phrases; s=" + s );
                     }
 #endif
                     int min = Math.Min( count, phrases.Length );
-                    List<String> new_phrases = new List<String>();
-                    List<String> new_symbols = new List<String>();
+                    List<string> new_phrases = new List<string>();
+                    List<string> new_symbols = new List<string>();
                     for ( int i = 0; i < phrases.Length; i++ ) {
                         SymbolTableEntry entry = SymbolTable.attatch( phrases[i] );
                         if ( new_phrases.Count + 1 > count ) {
@@ -4951,14 +4953,14 @@ namespace cadencii
                         } else {
                             if ( entry.Word.IndexOf( '-' ) >= 0 ) {
                                 // 分節に分割する必要がある
-                                String[] spl = PortUtil.splitString( entry.Word, '\t' );
+                                string[] spl = PortUtil.splitString( entry.Word, '\t' );
                                 if ( new_phrases.Count + spl.Length > count ) {
                                     // 分節の全部を分割すると制限個数を超えてしまう
                                     // 分割せずにハイフンを付けたまま登録
                                     new_phrases.Add( entry.Word.Replace( "\t", "" ) );
                                     new_symbols.Add( entry.getSymbol() );
                                 } else {
-                                    String[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
+                                    string[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
                                     for ( int j = 0; j < spl.Length; j++ ) {
                                         new_phrases.Add( spl[j] );
                                         new_symbols.Add( spl_symbol[j] );
@@ -5267,7 +5269,7 @@ namespace cadencii
                         curves.Add( t );
                         types.Add( vct );
                     }
-                    List<String> strs = new List<String>();
+                    List<string> strs = new List<string>();
                     for ( int i = 0; i < types.Count; i++ ) {
                         strs.Add( types[ i ].getName() );
                     }
@@ -5302,7 +5304,7 @@ namespace cadencii
                 List<int> clocks = new List<int>();
                 foreach (var item in AppManager.itemSelection.getTempoIterator()) {
                     if ( item.getKey() <= 0 ) {
-                        String msg = _( "Cannot remove first symbol of track!" );
+                        string msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                         statusLabel.setText( msg );
 #else
@@ -5341,7 +5343,7 @@ namespace cadencii
                     count++;
                     barcounts[count] = key;
                     if ( key <= 0 ) {
-                        String msg = "Cannot remove first symbol of track!";
+                        string msg = "Cannot remove first symbol of track!";
 #if JAVA
                         statusLabel.setText( _( msg ) );
 #else
@@ -5366,7 +5368,7 @@ namespace cadencii
 #if DEBUG
                 AppManager.debugWriteLine( "    Curve" );
 #endif
-                String curve;
+                string curve;
                 if ( !trackSelector.getSelectedCurve().isAttachNote() ) {
                     curve = trackSelector.getSelectedCurve().getName();
                     VsqBPList src = vsq_track.getCurve( curve );
@@ -5483,7 +5485,7 @@ namespace cadencii
             if ( copied_curve.Count > 0 ) {
                 int dclock = clock - copy_started_clock;
 
-                SortedDictionary<String, VsqBPList> work = new SortedDictionary<String, VsqBPList>();
+                SortedDictionary<string, VsqBPList> work = new SortedDictionary<string, VsqBPList>();
                 foreach (var curve in copied_curve.Keys) {
                     VsqBPList list = copied_curve[ curve ];
 #if DEBUG
@@ -5534,7 +5536,7 @@ namespace cadencii
                 sout.println( "FormMain#pasteEvent; work.size()=" + work.Count );
 #endif
                 if ( work.Count > 0 ) {
-                    String[] curves = new String[work.Count];
+                    string[] curves = new string[work.Count];
                     VsqBPList[] bplists = new VsqBPList[work.Count];
                     int count = -1;
                     foreach (var s in work.Keys) {
@@ -5982,7 +5984,7 @@ namespace cadencii
                 ib.Location = getFormPreferedLocation( ib );
                 DialogResult dr = AppManager.showModalDialog( ib, this );
                 if( dr == DialogResult.OK ){
-                    String ret = ib.getResult();
+                    string ret = ib.getResult();
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandTrackChangeName( selected, ret ) );
                     AppManager.editHistory.register( vsq.executeCommand( run ) );
@@ -6028,12 +6030,12 @@ namespace cadencii
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             int i = vsq.Track.Count;
-            String name = "Voice" + i;
-            String singer = AppManager.editorConfig.DefaultSingerName;
+            string name = "Voice" + i;
+            string singer = AppManager.editorConfig.DefaultSingerName;
             VsqTrack vsq_track = new VsqTrack( name, singer );
 
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = kind.getVersionString();
+            string renderer = kind.getVersionString();
             List<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
 
             vsq_track.changeRenderer( renderer, singers );
@@ -6196,10 +6198,10 @@ namespace cadencii
                 if ( tsi is System.Windows.Forms.ToolBarButton ) {
                     System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)tsi;
                     Object tag = tsb.Tag;
-                    if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tag != null && tag is String ) {
+                    if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tag != null && tag is string ) {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tag;
+                            string id = (string)tag;
                             tsb.Pushed = (AppManager.mSelectedPaletteTool == id);
                         } else
 #endif // ENABLE_SCRIPT
@@ -6213,7 +6215,7 @@ namespace cadencii
             foreach ( var tsi in cMenuTrackSelectorPaletteTool.DropDownItems ) {
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
-                    String id = tsmi.getPaletteToolID();
+                    string id = tsmi.getPaletteToolID();
                     bool sel = false;
 #if ENABLE_SCRIPT
                     if ( tool == EditTool.PALETTE_TOOL ) {
@@ -6227,7 +6229,7 @@ namespace cadencii
             foreach ( var tsi in cMenuPianoPaletteTool.DropDownItems ) {
                 if ( tsi is PaletteToolMenuItem ) {
                     PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
-                    String id = tsmi.getPaletteToolID();
+                    string id = tsmi.getPaletteToolID();
                     bool sel = false;
 #if ENABLE_SCRIPT
                     if ( tool == EditTool.PALETTE_TOOL ) {
@@ -6310,9 +6312,9 @@ namespace cadencii
                             int x = (int)(timesig * scalex + xoffset);
                             int y = -note * track_height + yoffset;
                             int lyric_width = (int)(length * scalex);
-                            String lyric_jp = item.ID.LyricHandle.L0.Phrase;
-                            String lyric_en = item.ID.LyricHandle.L0.getPhoneticSymbol();
-                            String title = Utility.trimString(lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width);
+                            string lyric_jp = item.ID.LyricHandle.L0.Phrase;
+                            string lyric_en = item.ID.LyricHandle.L0.getPhoneticSymbol();
+                            string title = Utility.trimString(lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width);
                             int accent = item.ID.DEMaccent;
                             int px_vibrato_start = x + lyric_width;
                             int px_vibrato_end = x;
@@ -6396,7 +6398,7 @@ namespace cadencii
                             int raw_width = (int)(length * scalex);
                             DrawObjectType type = DrawObjectType.Note;
                             int width = 0;
-                            String str = "";
+                            string str = "";
                             if (handle.isDynaffType()) {
                                 // 強弱記号
                                 type = DrawObjectType.Dynaff;
@@ -6530,16 +6532,16 @@ namespace cadencii
             menuFileRecent.DropDownItems.Clear();
             if ( AppManager.editorConfig.RecentFiles != null ) {
                 for ( int i = 0; i < AppManager.editorConfig.RecentFiles.Count; i++ ) {
-                    String item = AppManager.editorConfig.RecentFiles[ i ];
+                    string item = AppManager.editorConfig.RecentFiles[ i ];
                     if ( item == null ) {
                         continue;
                     }
                     if ( item != "" ) {
-                        String short_name = PortUtil.getFileName( item );
+                        string short_name = PortUtil.getFileName( item );
                         bool available = System.IO.File.Exists(item);
                         RecentFileMenuItem itm = new RecentFileMenuItem( item );
                         itm.Text = short_name;
-                        String tooltip = "";
+                        string tooltip = "";
                         if ( !available ) {
                             tooltip = _( "[file not found]" ) + " ";
                         }
@@ -6571,7 +6573,7 @@ namespace cadencii
         public void setEdited( bool value )
         {
             mEdited = value;
-            String file = AppManager.getFileName();
+            string file = AppManager.getFileName();
             if ( file == "" ) {
                 file = "Untitled";
             } else {
@@ -6580,7 +6582,7 @@ namespace cadencii
             if ( mEdited ) {
                 file += " *";
             }
-            String title = file + " - " + _APP_NAME;
+            string title = file + " - " + _APP_NAME;
             if ( this.Text != title ) {
                 this.Text = title;
             }
@@ -6612,7 +6614,7 @@ namespace cadencii
         /// <summary>
         /// 入力用のテキストボックスを初期化します
         /// </summary>
-        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, bool phonetic_symbol_edit_mode )
+        public void showInputTextBox( string phrase, string phonetic_symbol, Point position, bool phonetic_symbol_edit_mode )
         {
 #if DEBUG
             AppManager.debugWriteLine( "InitializeInputTextBox" );
@@ -6673,7 +6675,7 @@ namespace cadencii
         /// </summary>
         public void flipInputTextBoxMode()
         {
-            String new_value = AppManager.mInputTextBox.Text;
+            string new_value = AppManager.mInputTextBox.Text;
             if ( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
                 AppManager.mInputTextBox.BackColor = mColorTextboxBackcolor.color;
             } else {
@@ -6738,7 +6740,7 @@ namespace cadencii
         /// xvsqファイルを開きます
         /// </summary>
         /// <returns>ファイルを開くのに成功した場合trueを，それ以外はfalseを返します</returns>
-        public bool openVsqCor( String file )
+        public bool openVsqCor( string file )
         {
             if( AppManager.readVsq( file ) ){
                 return true;
@@ -6756,10 +6758,10 @@ namespace cadencii
             if ( AppManager.editorConfig.UseProjectCache ) {
                 #region キャッシュディレクトリの処理
                 VsqFileEx vsq = AppManager.getVsqFile();
-                String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
-                String dir = PortUtil.getDirectoryName( file );
-                String name = PortUtil.getFileNameWithoutExtension( file );
-                String estimatedCacheDir = Path.Combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
+                string cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
+                string dir = PortUtil.getDirectoryName( file );
+                string name = PortUtil.getFileNameWithoutExtension( file );
+                string estimatedCacheDir = Path.Combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
                 if ( cacheDir == null ) {
                     cacheDir = "";
                 }
@@ -6791,11 +6793,11 @@ namespace cadencii
 
                     // ファイルを移す
                     for ( int i = 1; i < vsq.Track.Count; i++ ) {
-                        String wavFrom = Path.Combine( cacheDir, i + ".wav" );
-                        String xmlFrom = Path.Combine( cacheDir, i + ".xml" );
+                        string wavFrom = Path.Combine( cacheDir, i + ".wav" );
+                        string xmlFrom = Path.Combine( cacheDir, i + ".xml" );
 
-                        String wavTo = Path.Combine( estimatedCacheDir, i + ".wav" );
-                        String xmlTo = Path.Combine( estimatedCacheDir, i + ".xml" );
+                        string wavTo = Path.Combine( estimatedCacheDir, i + ".wav" );
+                        string xmlTo = Path.Combine( estimatedCacheDir, i + ".xml" );
                         if (System.IO.File.Exists(wavFrom)) {
                             try {
                                 PortUtil.moveFile( wavFrom, wavTo );
@@ -6839,7 +6841,7 @@ namespace cadencii
                 // キャッシュ内のwavを、waveViewに読み込む
                 waveView.unloadAll();
                 for ( int i = 1; i < vsq.Track.Count; i++ ) {
-                    String wav = Path.Combine( cacheDir, i + ".wav" );
+                    string wav = Path.Combine( cacheDir, i + ".wav" );
 #if DEBUG
                     sout.println("FormMain#openVsqCor; wav=" + wav + "; isExists=" + System.IO.File.Exists(wav));
 #endif
@@ -6965,7 +6967,7 @@ namespace cadencii
                         if ( width < x ) {
                             break;
                         }
-                        String s = itemi.Numerator + "/" + itemi.Denominator;
+                        string s = itemi.Numerator + "/" + itemi.Denominator;
                         g.setFont( SMALL_FONT );
                         if ( AppManager.itemSelection.isTimesigContains( barcount ) ) {
                             g.setColor( AppManager.getHilightColor() );
@@ -6999,7 +7001,7 @@ namespace cadencii
                         if ( width < x ) {
                             break;
                         }
-                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)itemi.Tempo );
+                        string s = PortUtil.formatDecimal( "#.00", 60e6 / (float)itemi.Tempo );
                         if ( AppManager.itemSelection.isTempoContains( clock ) ) {
                             g.setColor( AppManager.getHilightColor() );
                             g.drawString( s, x + 4, 24 - small_font_offset + 1 );
@@ -7775,7 +7777,7 @@ namespace cadencii
         public void AppManager_WaveViewRealoadRequired( Object sender, WaveViewRealoadRequiredEventArgs arg )
         {
             int track = arg.track;
-            String file = arg.file;
+            string file = arg.file;
             double sec_start = arg.secStart;
             double sec_end = arg.secEnd;
             if ( sec_start <= sec_end ) {
@@ -8150,7 +8152,7 @@ namespace cadencii
                                         sout.println( "FormMain#pictPianoRoll_MouseDoubleClick; (handle==null)=" + (handle == null) );
 #endif
                                         if ( handle != null ) {
-                                            String iconid = handle.IconID;
+                                            string iconid = handle.IconID;
                                             int vibrato_length = handle.getLength();
                                             int note_length = selectedEvent.ID.getLength();
                                             t.VibratoDelay = note_length - vibrato_length;
@@ -10157,11 +10159,11 @@ namespace cadencii
             sout.println( "FormMain#FormMain_FormClosed" );
 #endif
             clearTempWave();
-            String tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            string tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if (!Directory.Exists(tempdir)) {
                 PortUtil.createDirectory( tempdir );
             }
-            String log = Path.Combine( tempdir, "run.log" );
+            string log = Path.Combine( tempdir, "run.log" );
 #if !JAVA
             cadencii.debug.close();
 #endif
@@ -10225,7 +10227,7 @@ namespace cadencii
         public bool handleFormClosing()
         {
             if ( isEdited() ) {
-                String file = AppManager.getFileName();
+                string file = AppManager.getFileName();
                 if ( file.Equals( "" ) ) {
                     file = "Untitled";
                 } else {
@@ -10406,12 +10408,12 @@ namespace cadencii
 #if !JAVA
             // 鍵盤用の音源の準備．Javaはこの機能は削除で．
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
-            String cache_new = Utility.getKeySoundPath();
-            String cache_old = Path.Combine( PortUtil.getApplicationStartupPath(), "cache" );
+            string cache_new = Utility.getKeySoundPath();
+            string cache_old = Path.Combine( PortUtil.getApplicationStartupPath(), "cache" );
             if (Directory.Exists(cache_old)) {
                 bool exists = false;
                 for ( int i = 0; i < 127; i++ ) {
-                    String s = Path.Combine( cache_new, i + ".wav" );
+                    string s = Path.Combine( cache_new, i + ".wav" );
                     if (System.IO.File.Exists(s)) {
                         exists = true;
                         break;
@@ -10421,8 +10423,8 @@ namespace cadencii
                 // 新しいキャッシュが1つも無い場合に、古いディレクトリからコピーする
                 if ( !exists ) {
                     for ( int i = 0; i < 127; i++ ) {
-                        String wav_from = Path.Combine( cache_old, i + ".wav" );
-                        String wav_to = Path.Combine( cache_new, i + ".wav" );
+                        string wav_from = Path.Combine( cache_old, i + ".wav" );
+                        string wav_to = Path.Combine( cache_new, i + ".wav" );
                         if (System.IO.File.Exists(wav_from)) {
                             try {
                                 PortUtil.copyFile( wav_from, wav_to );
@@ -10439,7 +10441,7 @@ namespace cadencii
             // 足りてないキャッシュがひとつでもあればFormGenerateKeySound発動する
             bool cache_is_incomplete = false;
             for ( int i = 0; i < 127; i++ ) {
-                String wav = Path.Combine( cache_new, i + ".wav" );
+                string wav = Path.Combine( cache_new, i + ".wav" );
                 if (!System.IO.File.Exists(wav)) {
                     cache_is_incomplete = true;
                     break;
@@ -10827,11 +10829,11 @@ namespace cadencii
                 }
             }
 
-            String dir = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
+            string dir = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
             saveXmlVsqDialog.SetSelectedFile(dir);
             var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                String file = saveXmlVsqDialog.FileName;
+                string file = saveXmlVsqDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
@@ -10863,7 +10865,7 @@ namespace cadencii
                 foreach (var obj in track.getNoteEventIterator()) {
                     notes++;
                 }
-                mDialogMidiImportAndExport.listTrack.AddRow( new String[] { i + "", track.getName(), notes + "" }, true );
+                mDialogMidiImportAndExport.listTrack.AddRow( new string[] { i + "", track.getName(), notes + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
@@ -10882,13 +10884,13 @@ namespace cadencii
                     return;
                 }
 
-                String dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
+                string dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
                 saveMidiDialog.SetSelectedFile(dir);
                 var dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
 
                 if ( dialog_result == System.Windows.Forms.DialogResult.OK ) {
                     RandomAccessFile fs = null;
-                    String filename = saveMidiDialog.FileName;
+                    string filename = saveMidiDialog.FileName;
                     AppManager.editorConfig.setLastUsedPathOut( filename, ".mid" );
                     try {
                         fs = new RandomAccessFile( filename, "rw" );
@@ -11104,7 +11106,7 @@ namespace cadencii
                 if ( vsq == null ) {
                     return;
                 }
-                String first = AppManager.editorConfig.getLastUsedPathOut( "xml" );
+                string first = AppManager.editorConfig.getLastUsedPathOut( "xml" );
                 dialog = new SaveFileDialog();
                 dialog.SetSelectedFile(first);
                 dialog.Filter = string.Join("|", new[] { _( "MusicXML(*.xml)|*.xml" ), _( "All Files(*.*)|*.*" ) });
@@ -11112,7 +11114,7 @@ namespace cadencii
                 if ( result != System.Windows.Forms.DialogResult.OK ) {
                     return;
                 }
-                String file = dialog.FileName;
+                string file = dialog.FileName;
                 var writer = new MusicXmlWriter();
                 writer.write(vsq, file);
                 AppManager.editorConfig.setLastUsedPathOut( file, ".xml" );
@@ -11136,11 +11138,11 @@ namespace cadencii
         public void menuFileExportParaWave_Click( Object sender, EventArgs e )
         {
             // 出力するディレクトリを選択
-            String dir = "";
+            string dir = "";
             FolderBrowserDialog file_dialog = null;
             try {
                 file_dialog = new FolderBrowserDialog();
-                String initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
+                string initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
                 file_dialog.Description = _( "Choose destination directory" );
                 file_dialog.SelectedPath = initial_dir;
                 DialogResult ret = AppManager.showModalDialog( file_dialog, this );
@@ -11231,9 +11233,9 @@ namespace cadencii
             // 出力先のファイル名を選ぶ
             SaveFileDialog dialog = null;
             var dialog_result = DialogResult.Cancel;
-            String file_name = "";
+            string file_name = "";
             try {
-                String last_path = AppManager.editorConfig.getLastUsedPathOut( "ust" );
+                string last_path = AppManager.editorConfig.getLastUsedPathOut( "ust" );
                 dialog = new SaveFileDialog();
                 dialog.SetSelectedFile(last_path);
                 dialog.Title = _( "Export UTAU (*.ust)" );
@@ -11264,7 +11266,7 @@ namespace cadencii
             // voice dirを設定
             VsqTrack vsq_track = vsq.Track[ selected ];
             VsqEvent singer = vsq_track.getSingerEventAt( 0 );
-            String voice_dir = "";
+            string voice_dir = "";
             if ( singer != null ) {
                 int program = singer.ID.IconHandle.Program;
                 int size = AppManager.editorConfig.UtauSingers.Count;
@@ -11290,9 +11292,9 @@ namespace cadencii
             // 出力先のファイル名を選ぶ
             SaveFileDialog dialog = null;
             var dialog_result = DialogResult.Cancel;
-            String file_name = "";
+            string file_name = "";
             try {
-                String last_path = AppManager.editorConfig.getLastUsedPathOut( "vsq" );
+                string last_path = AppManager.editorConfig.getLastUsedPathOut( "vsq" );
                 dialog = new SaveFileDialog();
                 dialog.SetSelectedFile(last_path);
                 dialog.Title = _( "Export VSQ (*.vsq)" );
@@ -11355,9 +11357,9 @@ namespace cadencii
             // 出力先のファイル名を選ぶ
             SaveFileDialog dialog = null;
             var dialog_result = DialogResult.Cancel;
-            String file_name = "";
+            string file_name = "";
             try {
-                String last_path = AppManager.editorConfig.getLastUsedPathOut( "txt" );
+                string last_path = AppManager.editorConfig.getLastUsedPathOut( "txt" );
                 dialog = new SaveFileDialog();
                 dialog.SetSelectedFile(last_path);
                 dialog.Title = _( "Metatext for vConnect" );
@@ -11388,7 +11390,7 @@ namespace cadencii
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file_name ), "UTF-8" ) );
-                String oto_ini = AppManager.editorConfig.UtauSingers[ 0 ].VOICEIDSTR;
+                string oto_ini = AppManager.editorConfig.UtauSingers[ 0 ].VOICEIDSTR;
                 // 先頭に登録されている歌手変更を検出
                 VsqEvent singer = null;
                 int c = vsq_track.getEventCount();
@@ -11431,10 +11433,10 @@ namespace cadencii
         public void menuFileExportWave_Click( Object sender, EventArgs e )
         {
             var dialog_result = DialogResult.Cancel;
-            String filename = "";
+            string filename = "";
             SaveFileDialog sfd = null;
             try {
-                String last_path = AppManager.editorConfig.getLastUsedPathOut( "wav" );
+                string last_path = AppManager.editorConfig.getLastUsedPathOut( "wav" );
 #if DEBUG
                 sout.println( "FormMain#menuFileExportWave_Click; last_path=" + last_path );
 #endif
@@ -11529,7 +11531,7 @@ namespace cadencii
             mDialogMidiImportAndExport.listTrack.Items.Clear();
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
-            String dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
+            string dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
             openMidiDialog.SetSelectedFile(dir);
             var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
@@ -11539,7 +11541,7 @@ namespace cadencii
             mDialogMidiImportAndExport.Location = getFormPreferedLocation( mDialogMidiImportAndExport );
             MidiFile mf = null;
             try {
-                String filename = openMidiDialog.FileName;
+                string filename = openMidiDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".mid" );
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
@@ -11600,7 +11602,7 @@ namespace cadencii
                     }
                 }
                 mDialogMidiImportAndExport.listTrack.AddRow(
-                    new String[] { i + "", track_name, notes + "" }, true );
+                    new string[] { i + "", track_name, notes + "" }, true );
             }
 
             DialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
@@ -11780,7 +11782,7 @@ namespace cadencii
 
                 // デフォルトの音声合成システムに切り替え
                 RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-                String renderer = kind.getVersionString();
+                string renderer = kind.getVersionString();
                 List<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
                 work_track.changeRenderer( renderer, singers );
 
@@ -11843,7 +11845,7 @@ namespace cadencii
 #if DEBUG
                                 sout.println( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.getLength() );
 #endif
-                                String phrase = "a";
+                                string phrase = "a";
                                 if ( mDialogMidiImportAndExport.isLyric() ) {
                                     for ( int k = 0; k < events_count; k++ ) {
                                         MidiEvent itemk = events[k];
@@ -11927,14 +11929,14 @@ namespace cadencii
             OpenFileDialog dialog = null;
             try {
                 // 読み込むファイルを選ぶ
-                String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
+                string dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
                 dialog = new OpenFileDialog();
                 dialog.SetSelectedFile(dir);
                 var dialog_result = AppManager.showModalDialog( dialog, true, this );
                 if ( dialog_result != DialogResult.OK ) {
                     return;
                 }
-                String file = dialog.FileName;
+                string file = dialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( file, ".ust" );
 
                 // ustを読み込む
@@ -11951,8 +11953,8 @@ namespace cadencii
                 }
 
                 // unknownな歌手とresamplerを何とかする
-                ByRef<String> ref_resampler = new ByRef<String>( ust.getResampler() );
-                ByRef<String> ref_singer = new ByRef<String>( ust.getVoiceDir() );
+                ByRef<string> ref_resampler = new ByRef<string>( ust.getResampler() );
+                ByRef<string> ref_singer = new ByRef<string>( ust.getVoiceDir() );
                 checkUnknownResamplerAndSinger( ref_resampler, ref_singer );
 
                 // 歌手変更を何とかする
@@ -11992,7 +11994,7 @@ namespace cadencii
                 for ( int j = 1; j < vsq.Track.Count; j++ ) {
                     VsqTrack vsq_track = vsq.Track[j];
                     for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
-                        String resampler = AppManager.editorConfig.getResamplerAt( i );
+                        string resampler = AppManager.editorConfig.getResamplerAt( i );
                         if ( resampler == ref_resampler.value ) {
                             VsqFileEx.setTrackResamplerUsed( vsq_track, i );
                             break;
@@ -12039,7 +12041,7 @@ namespace cadencii
 
         public void menuFileImportVsq_Click( Object sender, EventArgs e )
         {
-            String dir = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
+            string dir = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
             openMidiDialog.SetSelectedFile(dir);
             var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
@@ -12047,7 +12049,7 @@ namespace cadencii
                 return;
             }
             VsqFileEx vsq = null;
-            String filename = openMidiDialog.FileName;
+            string filename = openMidiDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( filename, ".vsq" );
             try {
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
@@ -12061,7 +12063,7 @@ namespace cadencii
             }
             mDialogMidiImportAndExport.listTrack.Items.Clear();
             for ( int track = 1; track < vsq.Track.Count; track++ ) {
-                mDialogMidiImportAndExport.listTrack.AddRow( new String[] {
+                mDialogMidiImportAndExport.listTrack.AddRow( new string[] {
                     track + "",
                     vsq.Track[ track ].getName(),
                     vsq.Track[ track ].getEventCount() + "" }, true );
@@ -12192,7 +12194,7 @@ namespace cadencii
                 return;
             }
 
-            String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
+            string dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
             openUstDialog.SetSelectedFile(dir);
             var dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
 
@@ -12201,7 +12203,7 @@ namespace cadencii
             }
 
             try {
-                String filename = openUstDialog.FileName;
+                string filename = openUstDialog.FileName;
                 AppManager.editorConfig.setLastUsedPathIn( filename, ".ust" );
 
                 // ust読み込み
@@ -12218,8 +12220,8 @@ namespace cadencii
                 }
 
                 // unknownな歌手やresamplerを何とかする
-                ByRef<String> ref_resampler = new ByRef<String>( ust.getResampler() );
-                ByRef<String> ref_singer = new ByRef<String>( ust.getVoiceDir() );
+                ByRef<string> ref_resampler = new ByRef<string>( ust.getResampler() );
+                ByRef<string> ref_singer = new ByRef<string>( ust.getVoiceDir() );
                 checkUnknownResamplerAndSinger( ref_resampler, ref_singer );
 
                 // 歌手変更を何とかする
@@ -12259,7 +12261,7 @@ namespace cadencii
                 for ( int j = 1; j < vsq.Track.Count; j++ ) {
                     VsqTrack vsq_track = vsq.Track[j];
                     for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
-                        String resampler = AppManager.editorConfig.getResamplerAt( i );
+                        string resampler = AppManager.editorConfig.getResamplerAt( i );
                         if ( resampler == ref_resampler.value ) {
                             VsqFileEx.setTrackResamplerUsed( vsq_track, i );
                             break;
@@ -12289,10 +12291,10 @@ namespace cadencii
                 return;
             }
 
-            String[] filters = openMidiDialog.Filter.Split('|');
+            string[] filters = openMidiDialog.Filter.Split('|');
             int filter_index = -1;
             string filter = "";
-            foreach ( String f in filters ) {
+            foreach ( string f in filters ) {
                 ++filter_index;
                 if (f.EndsWith(AppManager.editorConfig.LastUsedExtension)) {
                     break;
@@ -12300,10 +12302,10 @@ namespace cadencii
             }
 
             openMidiDialog.FilterIndex = filter_index;
-            String dir = AppManager.editorConfig.getLastUsedPathIn( filter );
+            string dir = AppManager.editorConfig.getLastUsedPathIn( filter );
             openMidiDialog.SetSelectedFile(dir);
             var dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
-            String ext = ".vsq";
+            string ext = ".vsq";
             if ( dialog_result == System.Windows.Forms.DialogResult.OK ) {
 #if DEBUG
                 AppManager.debugWriteLine( "openMidiDialog.Filter=" + openMidiDialog.Filter );
@@ -12323,8 +12325,8 @@ namespace cadencii
                 return;
             }
             try {
-                String filename = openMidiDialog.FileName;
-                String actualReadFile = filename;
+                string filename = openMidiDialog.FileName;
+                string actualReadFile = filename;
                 bool isVsqx = filename.EndsWith( ".vsqx" );
                 if ( isVsqx ) {
                     actualReadFile = PortUtil.createTempFile();
@@ -12517,7 +12519,7 @@ namespace cadencii
             	m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
 
 #endif
-                List<String> resamplers = new List<String>();
+                List<string> resamplers = new List<string>();
                 List<Boolean> with_wine = new List<Boolean>();
                 int size = AppManager.editorConfig.getResamplerCount();
                 for ( int i = 0; i < size; i++ ) {
@@ -12546,14 +12548,14 @@ namespace cadencii
                 mDialogPreference.setWineBuiltin( AppManager.editorConfig.WineTopBuiltin );
                 mDialogPreference.setEnableWideCharacterWorkaround( AppManager.editorConfig.UseWideCharacterWorkaround );
 
-                String old_wine_prefix = AppManager.editorConfig.WinePrefix;
-                String old_wine_top = AppManager.editorConfig.getWineTop();
+                string old_wine_prefix = AppManager.editorConfig.WinePrefix;
+                string old_wine_top = AppManager.editorConfig.getWineTop();
 
                 mDialogPreference.Location = getFormPreferedLocation( mDialogPreference );
 
                 DialogResult dr = AppManager.showModalDialog( mDialogPreference, this );
                 if ( dr == DialogResult.OK ) {
-                    String old_base_font_name = AppManager.editorConfig.BaseFontName;
+                    string old_base_font_name = AppManager.editorConfig.BaseFontName;
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
                     Font new_base_font = mDialogPreference.getBaseFont();
                     if ( !old_base_font_name.Equals( new_base_font.getName() ) ||
@@ -12642,7 +12644,7 @@ namespace cadencii
                     reloadMidiIn();
 #endif
 
-                    List<String> new_resamplers = new List<String>();
+                    List<string> new_resamplers = new List<string>();
                     List<Boolean> new_with_wine = new List<Boolean>();
                     mDialogPreference.copyResamplersConfig( new_resamplers, new_with_wine );
                     AppManager.editorConfig.clearResampler();
@@ -12686,18 +12688,18 @@ namespace cadencii
                     if ( AppManager.editorConfig.UseProjectCache && !mDialogPreference.isUseProjectCache() ) {
                         // プロジェクト用キャッシュを使用していたが，使用しないように変更された場合.
                         // プロジェクト用キャッシュが存在するなら，共用のキャッシュに移動する．
-                        String file = AppManager.getFileName();
+                        string file = AppManager.getFileName();
                         if ( file != null && !file.Equals( "" ) ) {
-                            String dir = PortUtil.getDirectoryName( file );
-                            String name = PortUtil.getFileNameWithoutExtension( file );
-                            String projectCacheDir = Path.Combine( dir, name + ".cadencii" );
-                            String commonCacheDir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+                            string dir = PortUtil.getDirectoryName( file );
+                            string name = PortUtil.getFileNameWithoutExtension( file );
+                            string projectCacheDir = Path.Combine( dir, name + ".cadencii" );
+                            string commonCacheDir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
                             if (Directory.Exists(projectCacheDir)) {
                                 VsqFileEx vsq = AppManager.getVsqFile();
                                 for ( int i = 1; i < vsq.Track.Count; i++ ) {
                                     // wavを移動
-                                    String wavFrom = Path.Combine( projectCacheDir, i + ".wav" );
-                                    String wavTo = Path.Combine( commonCacheDir, i + ".wav" );
+                                    string wavFrom = Path.Combine( projectCacheDir, i + ".wav" );
+                                    string wavTo = Path.Combine( commonCacheDir, i + ".wav" );
                                     if (!System.IO.File.Exists(wavFrom)) {
                                         continue;
                                     }
@@ -12718,8 +12720,8 @@ namespace cadencii
                                     }
 
                                     // xmlを移動
-                                    String xmlFrom = Path.Combine( projectCacheDir, i + ".xml" );
-                                    String xmlTo = Path.Combine( commonCacheDir, i + ".xml" );
+                                    string xmlFrom = Path.Combine( projectCacheDir, i + ".xml" );
+                                    string xmlTo = Path.Combine( commonCacheDir, i + ".xml" );
                                     if (!System.IO.File.Exists(xmlFrom)) {
                                         continue;
                                     }
@@ -12741,7 +12743,7 @@ namespace cadencii
                                 }
 
                                 // projectCacheDirが空なら，ディレクトリごと削除する
-                                String[] files = PortUtil.listFiles( projectCacheDir, "*.*" );
+                                string[] files = PortUtil.listFiles( projectCacheDir, "*.*" );
                                 if ( files.Length <= 0 ) {
                                     try {
                                         PortUtil.deleteDirectory( projectCacheDir );
@@ -12797,23 +12799,23 @@ namespace cadencii
 
         public void menuSettingShortcut_Click( Object sender, EventArgs e )
         {
-            SortedDictionary<String, ValuePair<String, Keys[]>> dict = new SortedDictionary<String, ValuePair<String, Keys[]>>();
-            SortedDictionary<String, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            SortedDictionary<string, ValuePair<string, Keys[]>> dict = new SortedDictionary<string, ValuePair<string, Keys[]>>();
+            SortedDictionary<string, Keys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
 #if DEBUG
             sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
             foreach (var name in configured.Keys){
                 Keys[] keys = configured[ name ];
-                String disp = Utility.getShortcutDisplayString( keys );
+                string disp = Utility.getShortcutDisplayString( keys );
                 sout.println( "    " + name + " -> " + disp );
             }
 #endif
 
             // スクリプトのToolStripMenuITemを蒐集
-            List<String> script_shortcut = new List<String>();
+            List<string> script_shortcut = new List<string>();
             foreach (var tsi in menuScript.DropDownItems) {
                 if (tsi is System.Windows.Forms.ToolStripMenuItem) {
                     var tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
-                    String name = tsmi.Name;
+                    string name = tsmi.Name;
                     script_shortcut.Add( name );
                     if ( !configured.ContainsKey( name ) ) {
                         configured[ name] =  new Keys[] { } ;
@@ -12844,9 +12846,9 @@ namespace cadencii
                 if ( casted_owner_item == null ) {
                     continue;
                 }
-                String parent = "";
+                string parent = "";
                 if ( !casted_owner_item.Name.Equals( menuHidden.Name ) ) {
-                    String s = casted_owner_item.Text;
+                    string s = casted_owner_item.Text;
                     int i = s.IndexOf( "(&" );
                     if ( i > 0 ) {
                         s = s.Substring( 0, i );
@@ -12867,12 +12869,12 @@ namespace cadencii
                 if ( casted_menu == null ) {
                     continue;
                 }
-                String s1 = casted_menu.Text;
+                string s1 = casted_menu.Text;
                 int i1 = s1.IndexOf( "(&" );
                 if ( i1 > 0 ) {
                     s1 = s1.Substring( 0, i1 );
                 }
-                dict[parent + s1] = new ValuePair<String, Keys[]>( name, configured[ name ] );
+                dict[parent + s1] = new ValuePair<string, Keys[]>( name, configured[ name ] );
             }
 
             // 最初に戻る、のショートカットキー
@@ -12880,7 +12882,7 @@ namespace cadencii
             if ( keysGoToFirst == null ) {
                 keysGoToFirst = new Keys[] { };
             }
-            dict[_( "Go to the first" )] = new ValuePair<String, Keys[]>( "SpecialShortcutGoToFirst", keysGoToFirst );
+            dict[_( "Go to the first" )] = new ValuePair<string, Keys[]>( "SpecialShortcutGoToFirst", keysGoToFirst );
 
             FormShortcutKeys form = null;
             try {
@@ -12888,9 +12890,9 @@ namespace cadencii
                 form.Location = getFormPreferedLocation( form );
                 DialogResult dr = AppManager.showModalDialog( form, this );
                 if ( dr == DialogResult.OK ) {
-                    SortedDictionary<String, ValuePair<String, Keys[]>> res = form.getResult();
+                    SortedDictionary<string, ValuePair<string, Keys[]>> res = form.getResult();
                     foreach (var display in res.Keys) {
-                        String name = res[ display ].getKey();
+                        string name = res[ display ].getKey();
                         Keys[] keys = res[ display ].getValue();
                         bool found = false;
                         if ( name.Equals( "SpecialShortcutGoToFirst" ) ) {
@@ -13051,9 +13053,9 @@ namespace cadencii
                 if ( id.LyricHandle.L0.PhoneticSymbolProtected ) {
                     continue;
                 }
-                String phrase = id.LyricHandle.L0.Phrase;
-                String symbolOld = id.LyricHandle.L0.getPhoneticSymbol();
-                String symbolResult = symbolOld;
+                string phrase = id.LyricHandle.L0.Phrase;
+                string symbolOld = id.LyricHandle.L0.getPhoneticSymbol();
+                string symbolResult = symbolOld;
                 SymbolTableEntry entry = SymbolTable.attatch( phrase );
                 if ( entry == null ) {
                     continue;
@@ -13128,7 +13130,7 @@ namespace cadencii
                 dlg.setLocation(p.X, p.Y);
                 int dr = AppManager.showModalDialog( dlg.getUi(), this );
                 if ( dr == 1 ) {
-                    List<ValuePair<String, Boolean>> result = dlg.getResult();
+                    List<ValuePair<string, Boolean>> result = dlg.getResult();
                     SymbolTable.changeOrder( result );
                 }
             } catch ( Exception ex ) {
@@ -13383,7 +13385,7 @@ namespace cadencii
                 dialog.Location = getFormPreferedLocation( dialog );
                 DialogResult ret = AppManager.showModalDialog( dialog, this );
                 if ( ret == DialogResult.OK ) {
-                    String str_result = dialog.getResult();
+                    string str_result = dialog.getResult();
                     int result = old_pre_measure;
                     try {
                         result = int.Parse( str_result );
@@ -14009,7 +14011,7 @@ namespace cadencii
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TempoTable[ index ].Clock == 0 ) {
-                                    String msg = _( "Cannot remove first symbol of track!" );
+                                    string msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                     statusLabel.setText( msg );
 #else
@@ -14165,7 +14167,7 @@ namespace cadencii
                         if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                             #region ツールがEraser
                             if ( vsq.TimesigTable[ index ].Clock == 0 ) {
-                                String msg = _( "Cannot remove first symbol of track!" );
+                                string msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                 statusLabel.setText( msg );
 #else
@@ -14377,7 +14379,7 @@ namespace cadencii
                         } else if ( this.Width < x ) {
                             break;
                         }
-                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable[ i ].Tempo );
+                        string s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable[ i ].Tempo );
                         Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 ) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), new Rectangle( x, 14, (int)size.width, 14 ) ) ) {
                             index = i;
@@ -14434,7 +14436,7 @@ namespace cadencii
                     // クリック位置に拍子が表示されているかどうか検査
                     int index = -1;
                     for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.Count; i++ ) {
-                        String s = AppManager.getVsqFile().TimesigTable[ i ].Numerator + "/" + AppManager.getVsqFile().TimesigTable[ i ].Denominator;
+                        string s = AppManager.getVsqFile().TimesigTable[ i ].Numerator + "/" + AppManager.getVsqFile().TimesigTable[ i ].Denominator;
                         int x = AppManager.xCoordFromClocks( AppManager.getVsqFile().TimesigTable[ i ].Clock );
                         Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 ) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), new Rectangle( x, 28, (int)size.width, 14 ) ) ) {
@@ -14538,7 +14540,7 @@ namespace cadencii
                             if ( index >= 0 && AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TempoTable[ index ].Clock == 0 ) {
-                                    String msg = _( "Cannot remove first symbol of track!" );
+                                    string msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                     statusLabel.setText( msg );
 #else
@@ -14578,7 +14580,7 @@ namespace cadencii
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TimesigTable[ index ].Clock == 0 ) {
-                                    String msg = _( "Cannot remove first symbol of track!" );
+                                    string msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
                                     statusLabel.setText( msg );
 #else
@@ -14777,7 +14779,7 @@ namespace cadencii
 #if JAVA
             String version_str = Utility.getVersion();
 #else
-            String version_str = Utility.getVersion() + "\n\n" +
+            string version_str = Utility.getVersion() + "\n\n" +
                                  Utility.getAssemblyNameAndFileVersion( typeof( cadencii.apputil.Util ) ) + "\n" +
                                  Utility.getAssemblyNameAndFileVersion( typeof( cadencii.media.Wave ) ) + "\n" +
                                  Utility.getAssemblyNameAndFileVersion( typeof( cadencii.vsq.VsqFile ) ) + "\n" +
@@ -14813,8 +14815,8 @@ namespace cadencii
         public void menuHelpManual_Click( Object sender, EventArgs e )
         {
             // 現在のUI言語と同じ版のマニュアルファイルがあるかどうか探す
-            String lang = Messaging.getLanguage();
-            String pdf = Path.Combine( PortUtil.getApplicationStartupPath(), "manual_" + lang + ".pdf" );
+            string lang = Messaging.getLanguage();
+            string pdf = Path.Combine( PortUtil.getApplicationStartupPath(), "manual_" + lang + ".pdf" );
             if (!System.IO.File.Exists(pdf)) {
                 // 無ければ英語版のマニュアルを表示することにする
                 pdf = Path.Combine( PortUtil.getApplicationStartupPath(), "manual_en.pdf" );
@@ -14851,7 +14853,7 @@ namespace cadencii
 
         public void menuHelpLogOpen_Click( Object sender, EventArgs e )
         {
-            String file = Logger.getPath();
+            string file = Logger.getPath();
             if (file == null || (file != null && (!System.IO.File.Exists(file)))) {
                 // ログがまだできてないのでダイアログ出す
                 AppManager.showMessageBox(
@@ -15467,10 +15469,10 @@ namespace cadencii
             sout.println( "FormMain#menuHiddenPrintPoToCSV_Click" );
 #endif
 
-            List<String> keys = new List<String>();
-            String[] langs = Messaging.getRegisteredLanguage();
-            foreach ( String lang in langs ) {
-                foreach ( String key in Messaging.getKeys( lang ) ) {
+            List<string> keys = new List<string>();
+            string[] langs = Messaging.getRegisteredLanguage();
+            foreach ( string lang in langs ) {
+                foreach ( string key in Messaging.getKeys( lang ) ) {
                     if ( !keys.Contains( key ) ) {
                         keys.Add( key );
                     }
@@ -15478,24 +15480,24 @@ namespace cadencii
             }
 
             keys.Sort();
-            String dir = PortUtil.getApplicationStartupPath();
-            String fname = Path.Combine( dir, "cadencii_trans.csv" );
+            string dir = PortUtil.getApplicationStartupPath();
+            string fname = Path.Combine( dir, "cadencii_trans.csv" );
 #if DEBUG
             sout.println( "FormMain#menuHiddenPrintPoToCSV_Click; fname=" + fname );
 #endif
-            String old_lang = Messaging.getLanguage();
+            string old_lang = Messaging.getLanguage();
             BufferedWriter br = null;
             try {
                 br = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( fname ), "UTF-8" ) );
-                String line = "\"en\"";
-                foreach ( String lang in langs ) {
+                string line = "\"en\"";
+                foreach ( string lang in langs ) {
                     line += ",\"" + lang + "\"";
                 }
                 br.write( line );
                 br.newLine();
-                foreach ( String key in keys ) {
+                foreach ( string key in keys ) {
                     line = "\"" + key + "\"";
-                    foreach ( String lang in langs ) {
+                    foreach ( string lang in langs ) {
                         Messaging.setLanguage( lang );
                         line += ",\"" + Messaging.getMessage( key ) + "\"";
                     }
@@ -16238,7 +16240,7 @@ namespace cadencii
             String text = item.getText();
 #else
             System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
-            String text = item.Text;
+            string text = item.Text;
 #endif
 
             // メニューの表示文字列から，どの設定値についてのイベントかを探す
@@ -16391,7 +16393,7 @@ namespace cadencii
         {
             if ( sender is RecentFileMenuItem ) {
                 RecentFileMenuItem item = (RecentFileMenuItem)sender;
-                String filename = item.getFilePath();
+                string filename = item.getFilePath();
                 if( !dirtyCheck() ){
                     return;
                 }
@@ -16418,20 +16420,20 @@ namespace cadencii
 
         public void handleStripPaletteTool_Click( Object sender, EventArgs e )
         {
-            String id = "";  //選択されたツールのID
+            string id = "";  //選択されたツールのID
 #if ENABLE_SCRIPT
             if ( sender is System.Windows.Forms.ToolBarButton ) {
                 System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)sender;
-                if ( tsb.Tag != null && tsb.Tag is String ) {
-                    id = (String)tsb.Tag;
+                if ( tsb.Tag != null && tsb.Tag is string ) {
+                    id = (string)tsb.Tag;
                     AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
                     tsb.Pushed = true;
                 }
             } else if (sender is ToolStripMenuItem) {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
-                if ( tsmi.Tag != null && tsmi.Tag is String ) {
-                    id = (String)tsmi.Tag;
+                if ( tsmi.Tag != null && tsmi.Tag is string ) {
+                    id = (string)tsmi.Tag;
                     AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
                     tsmi.Checked = true;
@@ -16463,8 +16465,8 @@ namespace cadencii
 #else
                 if ( item is System.Windows.Forms.ToolBarButton ) {
                     System.Windows.Forms.ToolBarButton button = (System.Windows.Forms.ToolBarButton)item;
-                    if ( button.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && button.Tag != null && button.Tag is String ) {
-                        if ( ((String)button.Tag).Equals( id ) ) {
+                    if ( button.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && button.Tag != null && button.Tag is string ) {
+                        if ( ((string)button.Tag).Equals( id ) ) {
                             button.Pushed = true;
                         } else {
                             button.Pushed = false;
@@ -16477,7 +16479,7 @@ namespace cadencii
             foreach (var item in cMenuPianoPaletteTool.DropDownItems) {
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
-                    String tagged_id = menu.getPaletteToolID();
+                    string tagged_id = menu.getPaletteToolID();
                     menu.Checked = (id == tagged_id);
                 }
             }
@@ -16488,7 +16490,7 @@ namespace cadencii
             foreach (var item in cMenuTrackSelectorPaletteTool.DropDownItems) {
                 if ( item is PaletteToolMenuItem ) {
                     PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
-                    String tagged_id = menu.getPaletteToolID();
+                    string tagged_id = menu.getPaletteToolID();
                     menu.Checked = (id == tagged_id);
                 }
             }
@@ -16548,11 +16550,11 @@ namespace cadencii
                     return;
                 }
             }
-            String file = AppManager.getFileName();
+            string file = AppManager.getFileName();
             if ( file.Equals( "" ) ) {
-                String last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
+                string last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
                 if ( !last_file.Equals( "" ) ) {
-                    String dir = PortUtil.getDirectoryName( last_file );
+                    string dir = PortUtil.getDirectoryName( last_file );
                     saveXmlVsqDialog.SetSelectedFile(dir);
                 }
                 var dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
@@ -16573,7 +16575,7 @@ namespace cadencii
             if ( !dirtyCheck() ) {
                 return;
             }
-            String dir = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
+            string dir = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
             openXmlVsqDialog.SetSelectedFile(dir);
             var dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
             if ( dialog_result != System.Windows.Forms.DialogResult.OK ) {
@@ -16582,7 +16584,7 @@ namespace cadencii
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false, this );
             }
-            String file = openXmlVsqDialog.FileName;
+            string file = openXmlVsqDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( file, ".xvsq" );
             if( openVsqCor( file ) ){
                 AppManager.showMessageBox(
@@ -16615,7 +16617,7 @@ namespace cadencii
             VsqFileEx vsq = new VsqFileEx( AppManager.editorConfig.DefaultSingerName, 1, 4, 4, 500000 );
 
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = kind.getVersionString();
+            string renderer = kind.getVersionString();
             List<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
             vsq.Track[ 1 ].changeRenderer( renderer, singers );
 
@@ -16747,7 +16749,7 @@ namespace cadencii
             }
 
             bool notfound = false;
-            String text = "";
+            string text = "";
             if ( sender == menuEditUndo ) {
                 text = _( "Undo." );
             } else if ( sender == menuEditRedo ) {
@@ -16984,7 +16986,7 @@ namespace cadencii
 
             var track_copy = (VsqTrack)vsq_track.clone();
             List<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
-            String renderer = kind.getVersionString();
+            string renderer = kind.getVersionString();
             if ( singers == null ) {
                 serr.println( "FormMain#changeRendererCor; singers is null" );
                 return;
@@ -17089,14 +17091,14 @@ namespace cadencii
 
         public void handleBgmAdd_Click( Object sender, EventArgs e )
         {
-            String dir = AppManager.editorConfig.getLastUsedPathIn( "wav" );
+            string dir = AppManager.editorConfig.getLastUsedPathIn( "wav" );
             openWaveDialog.SetSelectedFile(dir);
             var ret = AppManager.showModalDialog( openWaveDialog, true, this );
             if ( ret != System.Windows.Forms.DialogResult.OK ) {
                 return;
             }
 
-            String file = openWaveDialog.FileName;
+            string file = openWaveDialog.FileName;
             AppManager.editorConfig.setLastUsedPathIn( file, ".wav" );
 
             // 既に開かれていたらキャンセル
@@ -17150,7 +17152,7 @@ namespace cadencii
                 return;
             }
             PaletteToolMenuItem tsmi = (PaletteToolMenuItem)sender;
-            String id = tsmi.getPaletteToolID();
+            string id = tsmi.getPaletteToolID();
             if ( !PaletteToolServer.loadedTools.ContainsKey( id ) ) {
                 return;
             }
@@ -17158,12 +17160,12 @@ namespace cadencii
             IPaletteTool ipt = (IPaletteTool)instance;
             if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                 XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
-                String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
+                string dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
                 if (!Directory.Exists(dir)) {
                     PortUtil.createDirectory( dir );
                 }
-                String cfg = id + ".config";
-                String config = Path.Combine( dir, cfg );
+                string cfg = id + ".config";
+                string config = Path.Combine( dir, cfg );
                 FileOutputStream fs = null;
                 try {
                     fs = new FileOutputStream( config );
@@ -17190,15 +17192,15 @@ namespace cadencii
             sout.println( "FormMain#handleScriptMenuItem_Click; sender.GetType()=" + sender.GetType() );
 #endif
             try {
-                String dir = Utility.getScriptPath();
-                String id = "";
+                string dir = Utility.getScriptPath();
+                string id = "";
                 if ( sender is PaletteToolMenuItem ) {
                     id = ((PaletteToolMenuItem)sender).getPaletteToolID();
                 }
 #if DEBUG
                 sout.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
 #endif
-                String script_file = Path.Combine( dir, id );
+                string script_file = Path.Combine( dir, id );
                 if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
                     ScriptServer.reload( id );
                 }
@@ -17429,7 +17431,7 @@ namespace cadencii
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String _( String id )
+        public static string _( string id )
         {
             return Messaging.getMessage( id );
         }

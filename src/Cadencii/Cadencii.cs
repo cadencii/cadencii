@@ -27,6 +27,7 @@ using cadencii.apputil;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -39,7 +40,7 @@ namespace cadencii
         public static FormSplash splash = null;
         static Thread splashThread = null;
 #endif
-        private static String mPathVsq = "";
+        private static string mPathVsq = "";
         private static bool mPrintVersion = false;
 
         /// <summary>
@@ -47,12 +48,12 @@ namespace cadencii
         /// 戻り値は、コマンドライン引数のうちVSQ,またはXVSQファイルとして指定された引数、または空文字です。
         /// </summary>
         /// <param name="arg"></param>
-        private static void parseArguments( String[] arg )
+        private static void parseArguments( string[] arg )
         {
-            String currentparse = "";
+            string currentparse = "";
 
             for ( int i = 0; i < arg.Length; i++ ) {
-                String argi = arg[i];
+                string argi = arg[i];
                 if ( argi.StartsWith( "-" ) ) {
                     currentparse = argi;
                     if ( argi == "--version" ) {
@@ -121,7 +122,7 @@ namespace cadencii
 #else
 
         [STAThread]
-        public static void Main( String[] args )
+        public static void Main( string[] args )
         {
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(Cadencii_UnhandledException);
@@ -135,10 +136,10 @@ namespace cadencii
                 Console.Write(BAssemblyInfo.fileVersion);
                 return;
             }
-            String file = mPathVsq;
+            string file = mPathVsq;
 
             Logger.setEnabled(false);
-            String logfile = PortUtil.createTempFile() + ".txt";
+            string logfile = PortUtil.createTempFile() + ".txt";
 
             Logger.setPath(logfile);
 #if DEBUG
@@ -162,7 +163,7 @@ namespace cadencii
             }
 
             // 開発版の場合の警告ダイアログ
-            String str_minor = BAssemblyInfo.fileVersionMinor;
+            string str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
                 minor = int.Parse(str_minor);
@@ -239,9 +240,9 @@ namespace cadencii
         /// <param name="ex"></param>
         /// <param name="depth_count"></param>
         /// <returns></returns>
-        private static String getExceptionText( Exception ex, int depth_count )
+        private static string getExceptionText( Exception ex, int depth_count )
         {
-            String ret = ex.ToString();
+            string ret = ex.ToString();
             if ( ex.InnerException != null ) {
                 ret += "\n" +
                        "-- InnerException; Depth Level " + depth_count + " -----------------------" +
@@ -250,7 +251,7 @@ namespace cadencii
             return ret;
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

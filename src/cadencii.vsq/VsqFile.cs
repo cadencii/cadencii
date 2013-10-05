@@ -32,6 +32,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -106,7 +107,7 @@ namespace cadencii.vsq
                 if ( ue.getLyric() != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
-                    String psymbol = "a";
+                    string psymbol = "a";
                     SymbolTableEntry entry = SymbolTable.attatch( ue.getLyric() );
                     if ( entry != null ) {
                         psymbol = entry.getSymbol();
@@ -278,7 +279,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }
@@ -311,7 +312,7 @@ namespace cadencii.vsq
 
                 // コントロールカーブをシフト
                 for ( int j = 0; j < VsqTrack.CURVES.Length; j++ ) {
-                    String ct = VsqTrack.CURVES[j];
+                    string ct = VsqTrack.CURVES[j];
                     VsqBPList item = vsq_track.getCurve( ct );
                     if ( item == null ) {
                         continue;
@@ -376,7 +377,7 @@ namespace cadencii.vsq
 
                 // コントロールカーブをシフト
                 for ( int j = 0; j < VsqTrack.CURVES.Length; j++ ) {
-                    String ct = VsqTrack.CURVES[j];
+                    string ct = VsqTrack.CURVES[j];
                     VsqBPList item = vsq_track.getCurve( ct );
                     if ( item == null ) {
                         continue;
@@ -841,8 +842,8 @@ namespace cadencii.vsq
                 #region EVENT_CHANGE_LYRIC
                 int track = (int)command.Args[0];
                 int internal_id = (int)command.Args[1];
-                String phrase = (String)command.Args[2];
-                String phonetic_symbol = (String)command.Args[3];
+                string phrase = (string)command.Args[2];
+                string phonetic_symbol = (string)command.Args[3];
                 bool protect_symbol = (Boolean)command.Args[4];
                 VsqTrack target = this.Track[ track ];
                 for ( Iterator<VsqEvent> itr = target.getEventIterator(); itr.hasNext(); ) {
@@ -902,7 +903,7 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT ) {
                 #region TRACK_CURVE_EDIT
                 int track = (int)command.Args[0];
-                String curve = (String)command.Args[1];
+                string curve = (string)command.Args[1];
                 List<BPPair> com = (List<BPPair>)command.Args[2];
                 VsqCommand inv = null;
                 List<BPPair> edit = new List<BPPair>();
@@ -994,7 +995,7 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2 ) {
                 #region TRACK_CURVE_EDIT2
                 int track = (int)command.Args[0];
-                String curve = (String)command.Args[1];
+                string curve = (string)command.Args[1];
                 List<long> delete = (List<long>)command.Args[2];
                 SortedDictionary<int, VsqBPPair> add = (SortedDictionary<int, VsqBPPair>)command.Args[3];
 
@@ -1008,7 +1009,7 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT2_ALL ) {
                 #region TRACK_CURVE_EDIT2_ALL
                 int track = (int)command.Args[0];
-                List<String> curve = (List<String>)command.Args[1];
+                List<string> curve = (List<string>)command.Args[1];
                 List<List<long>> delete = (List<List<long>>)command.Args[2];
                 List<SortedDictionary<int, VsqBPPair>> add = (List<SortedDictionary<int, VsqBPPair>>)command.Args[3];
 
@@ -1029,7 +1030,7 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE ) {
                 #region TRACK_CURVE_REPLACE
                 int track = (int)command.Args[0];
-                String target_curve = (String)command.Args[1];
+                string target_curve = (string)command.Args[1];
                 VsqBPList bplist = (VsqBPList)command.Args[2];
                 VsqCommand inv = VsqCommand.generateCommandTrackCurveReplace( track, target_curve, Track[ track ].getCurve( target_curve ) );
                 Track[ track ].setCurve( target_curve, bplist );
@@ -1038,7 +1039,7 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_REPLACE_RANGE ) {
                 #region TRACK_CURVE_REPLACE_RANGE
                 int track = (int)command.Args[0];
-                String[] target_curve = (String[])command.Args[1];
+                string[] target_curve = (string[])command.Args[1];
                 VsqBPList[] bplist = (VsqBPList[])command.Args[2];
                 VsqBPList[] inv_bplist = new VsqBPList[bplist.Length];
                 VsqTrack work = Track[ track ];
@@ -1054,14 +1055,14 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CURVE_EDIT_RANGE ) {
                 #region TRACK_CURVE_EDIT_RANGE
                 int track = (int)command.Args[0];
-                List<String> curves = (List<String>)command.Args[1];
+                List<string> curves = (List<string>)command.Args[1];
                 List<List<BPPair>> coms = (List<List<BPPair>>)command.Args[2];
                 List<List<BPPair>> inv_coms = new List<List<BPPair>>();
                 VsqCommand inv = null;
 
                 int count = curves.Count;
                 for ( int k = 0; k < count; k++ ) {
-                    String curve = curves[ k ];
+                    string curve = curves[ k ];
                     List<BPPair> com = coms[ k ];
                     //SortedList<int, int> list = Tracks[track][curve].List;
                     List<BPPair> edit = new List<BPPair>();
@@ -1334,7 +1335,7 @@ namespace cadencii.vsq
             } else if ( type == VsqCommandType.TRACK_CHANGE_NAME ) {
                 #region TRACK_CHANGE_NAME
                 int track = (int)command.Args[0];
-                String new_name = (String)command.Args[1];
+                string new_name = (string)command.Args[1];
                 VsqCommand ret = VsqCommand.generateCommandTrackChangeName( track, Track[ track ].getName() );
                 Track[ track ].setName( new_name );
                 return ret;
@@ -1404,7 +1405,7 @@ namespace cadencii.vsq
         }
 
         private void processTrackCurveEdit( int track,
-                                            String curve,
+                                            string curve,
                                             List<long> delete,
                                             SortedDictionary<int, VsqBPPair> add,
                                             List<long> inv_delete,
@@ -1549,7 +1550,7 @@ namespace cadencii.vsq
                     }
                 }
                 for ( int i = 0; i < VsqTrack.CURVES.Length; i++ ) {
-                    String curve = VsqTrack.CURVES[i];
+                    string curve = VsqTrack.CURVES[i];
                     VsqBPList edit = vsqTrack.getCurve( curve );
                     if ( edit == null ) {
                         continue;
@@ -1865,7 +1866,7 @@ namespace cadencii.vsq
         /// <param name="numerator"></param>
         /// <param name="denominator"></param>
         /// <param name="tempo"></param>
-        public VsqFile( String singer, int pre_measure, int numerator, int denominator, int tempo )
+        public VsqFile( string singer, int pre_measure, int numerator, int denominator, int tempo )
         {
             TotalClocks = pre_measure * 480 * 4 / denominator * numerator;
             //m_tpq = 480;
@@ -1888,7 +1889,7 @@ namespace cadencii.vsq
         /// vsqファイルからのコンストラクタ
         /// </summary>
         /// <param name="_fpath"></param>
-        public VsqFile( String _fpath, String encoding )
+        public VsqFile( string _fpath, string encoding )
 #if JAVA
             throws FileNotFoundException
 #endif
@@ -2051,7 +2052,7 @@ namespace cadencii.vsq
                     max = Math.Max( max, lastItem.Clock + lastItem.ID.getLength() );
                 }
                 for ( int j = 0; j < VsqTrack.CURVES.Length; j++ ) {
-                    String vct = VsqTrack.CURVES[j];
+                    string vct = VsqTrack.CURVES[j];
                     VsqBPList list = track.getCurve( vct );
                     if ( list == null ) {
                         continue;
@@ -2079,7 +2080,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="track"></param>
         /// <param name="fpath"></param>
-        public void printLyricTable( int track, String fpath )
+        public void printLyricTable( int track, string fpath )
         {
             InternalStreamWriter sw = null;
             try {
@@ -2130,14 +2131,14 @@ namespace cadencii.vsq
             }
         }
 
-        public List<MidiEvent> generateMetaTextEvent( int track, String encoding )
+        public List<MidiEvent> generateMetaTextEvent( int track, string encoding )
         {
             return generateMetaTextEvent( track, encoding, calculatePreMeasureInClock() );
         }
 
-        public List<MidiEvent> generateMetaTextEvent( int track, String encoding, int start_clock )
+        public List<MidiEvent> generateMetaTextEvent( int track, string encoding, int start_clock )
         {
-            String _NL = "" + (char)(byte)0x0a;
+            string _NL = "" + (char)(byte)0x0a;
             List<MidiEvent> ret = new List<MidiEvent>();
             TextStream sr = null;
             try {
@@ -2145,7 +2146,7 @@ namespace cadencii.vsq
                 Track[ track ].printMetaText( sr, TotalClocks + 120, start_clock );
                 sr.setPointer( -1 );
                 int line_count = -1;
-                String tmp = "";
+                string tmp = "";
                 if ( sr.ready() ) {
 #if NEW_IMPL
                     List<Byte> buffer = new List<Byte>();
@@ -2286,7 +2287,7 @@ namespace cadencii.vsq
         /// <param name="s"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        private static String substring127Bytes( String s, String encoding )
+        private static string substring127Bytes( string s, string encoding )
         {
             int count = Math.Min( 127, PortUtil.getStringLength( s ) );
             int c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
@@ -2306,13 +2307,13 @@ namespace cadencii.vsq
             return s.Substring( 0, count );
         }
 
-        private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, String encoding )
+        private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, string encoding )
 #if JAVA
             throws IOException
 #endif
         {
             //VsqTrack item = Tracks[track];
-            String _NL = "" + (char)(byte)0x0a;
+            string _NL = "" + (char)(byte)0x0a;
             //ヘッダ
             fs.write( _MTRK, 0, 4 );
             //データ長。とりあえず0
@@ -2341,9 +2342,9 @@ namespace cadencii.vsq
 #if JAVA
             String suffix = "_java";
 #else
-            String suffix = "_win";
+            string suffix = "_win";
 #endif 
-            String path = Path.Combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
+            string path = Path.Combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
             BufferedWriter bw = null;
             try{
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
@@ -2546,7 +2547,7 @@ namespace cadencii.vsq
         public static VsqNrpn generateNoteNRPN( VsqFile vsq, int track, VsqEvent ve, int msPreSend, byte note_loc, bool add_delay_sign )
         {
             int clock = ve.Clock;
-            String renderer = vsq.Track[ track ].getCommon().Version;
+            string renderer = vsq.Track[ track ].getCommon().Version;
 
             double clock_msec = vsq.getSecFromClock( clock ) * 1000.0;
 
@@ -2577,8 +2578,8 @@ namespace cadencii.vsq
             bool add_vib_cc_immediately = false;
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
-                String icon_id = ve.ID.VibratoHandle.IconID;
-                String num = icon_id.Substring( PortUtil.getStringLength( icon_id ) - 4 );
+                string icon_id = ve.ID.VibratoHandle.IconID;
+                string num = icon_id.Substring( PortUtil.getStringLength( icon_id ) - 4 );
                 int vibrato_type = (int)PortUtil.fromHexString( num );
                 int note_length = ve.ID.getLength();
                 int vibrato_delay = ve.ID.VibratoDelay;
@@ -2590,8 +2591,8 @@ namespace cadencii.vsq
                 add_vib_cc_immediately = (bVibratoDelay == 0);
             }
 
-            List<String> spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
-            String s = "";
+            List<string> spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
+            string s = "";
             for ( int j = 0; j < spl.Count; j++ ) {
                 s += spl[j];
             }
@@ -2760,7 +2761,7 @@ namespace cadencii.vsq
             List<VsqNrpn> list = new List<VsqNrpn>();
 
             VsqTrack target = vsq.Track[ track ];
-            String version = target.getCommon().Version;
+            string version = target.getCommon().Version;
 
             int count = target.getEventCount();
             int note_start = 0;
@@ -3002,20 +3003,20 @@ namespace cadencii.vsq
         public static VsqNrpn[] generateVoiceChangeParameterNRPN( VsqFile vsq, int track, int msPreSend )
         {
             int premeasure_clock = vsq.getPreMeasureClocks();
-            String renderer = vsq.Track[ track ].getCommon().Version;
+            string renderer = vsq.Track[ track ].getCommon().Version;
             List<VsqNrpn> res = new List<VsqNrpn>();
 
-            String[] curves;
+            string[] curves;
             if ( renderer.StartsWith( "DSB3" ) ) {
-                curves = new String[] { "BRE", "BRI", "CLE", "POR", "OPE", "GEN" };
+                curves = new string[] { "BRE", "BRI", "CLE", "POR", "OPE", "GEN" };
             } else if ( renderer.StartsWith( "DSB2" ) ) {
-                curves = new String[] { "BRE", "BRI", "CLE", "POR", "GEN", "harmonics",
+                curves = new string[] { "BRE", "BRI", "CLE", "POR", "GEN", "harmonics",
                                         "reso1amp", "reso1bw", "reso1freq", 
                                         "reso2amp", "reso2bw", "reso2freq",
                                         "reso3amp", "reso3bw", "reso3freq",
                                         "reso4amp", "reso4bw", "reso4freq" };
             } else {
-                curves = new String[] { "BRE", "BRI", "CLE", "POR", "GEN" };
+                curves = new string[] { "BRE", "BRI", "CLE", "POR", "GEN" };
             }
 
             for ( int i = 0; i < curves.Length; i++ ) {
@@ -3090,7 +3091,7 @@ namespace cadencii.vsq
         /// このインスタンスをファイルに出力します
         /// </summary>
         /// <param name="file"></param>
-        public void write( String file )
+        public void write( string file )
         {
             write( file, 500, "Shift_JIS" );
         }
@@ -3100,7 +3101,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="file"></param>
         /// <param name="msPreSend">プリセンドタイム(msec)</param>
-        public void write( String file, int msPreSend, String encoding )
+        public void write( string file, int msPreSend, string encoding )
         {
 #if DEBUG
             sout.println( "VsqFile.Write(String)" );
@@ -3218,11 +3219,11 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static String getLinePrefix( int count )
+        public static string getLinePrefix( int count )
         {
             int digits = getHowManyDigits( count );
             int c = (digits - 1) / 4 + 1;
-            String format = "";
+            string format = "";
             for ( int i = 0; i < c; i++ ) {
                 format += "0000";
             }
@@ -3233,11 +3234,11 @@ namespace cadencii.vsq
         {
             int digits = getHowManyDigits( count );
             int c = (digits - 1) / 4 + 1;
-            String format = "";
+            string format = "";
             for ( int i = 0; i < c; i++ ) {
                 format += "0000";
             }
-            String str = "DM:" + PortUtil.formatDecimal( format, count ) + ":";
+            string str = "DM:" + PortUtil.formatDecimal( format, count ) + ":";
             byte[] ret = PortUtil.getEncodedByte( "ASCII", str );
             return ret;
         }

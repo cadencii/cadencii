@@ -23,6 +23,8 @@ using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -33,9 +35,9 @@ namespace cadencii
     public class PaletteToolMenuItem : ToolStripMenuItem
 #endif
     {
-        private String mPaletteToolID;
+        private string mPaletteToolID;
 
-        public PaletteToolMenuItem( String id )
+        public PaletteToolMenuItem( string id )
 #if JAVA
         {
             super();
@@ -46,7 +48,7 @@ namespace cadencii
             mPaletteToolID = id;
         }
 
-        public String getPaletteToolID()
+        public string getPaletteToolID()
         {
             return mPaletteToolID;
         }

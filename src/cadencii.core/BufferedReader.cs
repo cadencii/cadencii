@@ -18,16 +18,17 @@ using System.Text;
 
 namespace cadencii.java.io {
 
+
     public class FileReader{
         public StreamReader m_reader;
 
-        public FileReader( String fileName ){
+        public FileReader( string fileName ){
             m_reader = new StreamReader( fileName );
         }
     }
 
     public class FileInputStream : FileStream, InputStream {
-        public FileInputStream( String fileName )
+        public FileInputStream( string fileName )
             : base( fileName, FileMode.Open, FileAccess.Read ) {
         }
 
@@ -51,7 +52,7 @@ namespace cadencii.java.io {
     public class InputStreamReader {
         public StreamReader m_reader;
 
-        public InputStreamReader( FileInputStream stream, String charsetName ) {
+        public InputStreamReader( FileInputStream stream, string charsetName ) {
             m_reader = new StreamReader( stream, Encoding.GetEncoding( charsetName ) );
         }
     }
@@ -79,7 +80,7 @@ namespace cadencii.java.io {
             return m_reader.Read( cbuf, off, len );
         }
 
-        public String readLine() {
+        public string readLine() {
             return m_reader.ReadLine();
         }
 

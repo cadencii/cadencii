@@ -20,6 +20,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     public interface ITextWriter
@@ -30,8 +31,8 @@ namespace cadencii.vsq
         void close() throws IOException;
         void newLine() throws IOException;
 #else
-        void write( String value );
-        void writeLine( String value );
+        void write( string value );
+        void writeLine( string value );
         void close();
         void newLine();
 #endif

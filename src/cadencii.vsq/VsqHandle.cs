@@ -26,6 +26,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -40,12 +41,12 @@ namespace cadencii.vsq
     {
         public VsqHandleType m_type;
         public int Index;
-        public String IconID = "";
-        public String IDS = "";
+        public string IconID = "";
+        public string IDS = "";
         public Lyric L0;
         public List<Lyric> Trailing = new List<Lyric>();
         public int Original;
-        public String Caption = "";
+        public string Caption = "";
         public int Length;
         public int StartDepth;
         public VibratoBPList DepthBP;
@@ -215,11 +216,11 @@ namespace cadencii.vsq
         /// FileStreamから読み込みながらコンストラクト
         /// </summary>
         /// <param name="sr">読み込み対象</param>
-        public VsqHandle( TextStream sr, int value, ByRef<String> last_line )
+        public VsqHandle( TextStream sr, int value, ByRef<string> last_line )
         {
             this.Index = value;
-            String[] spl;
-            String[] spl2;
+            string[] spl;
+            string[] spl2;
 
             // default値で梅
             m_type = VsqHandleType.Vibrato;
@@ -238,23 +239,23 @@ namespace cadencii.vsq
             Duration = 0;
             Depth = 64;
 
-            String tmpDepthBPX = "";
-            String tmpDepthBPY = "";
-            String tmpDepthBPNum = "";
+            string tmpDepthBPX = "";
+            string tmpDepthBPY = "";
+            string tmpDepthBPNum = "";
 
-            String tmpRateBPX = "";
-            String tmpRateBPY = "";
-            String tmpRateBPNum = "";
+            string tmpRateBPX = "";
+            string tmpRateBPY = "";
+            string tmpRateBPNum = "";
 
-            String tmpDynBPX = "";
-            String tmpDynBPY = "";
-            String tmpDynBPNum = "";
+            string tmpDynBPX = "";
+            string tmpDynBPY = "";
+            string tmpDynBPNum = "";
 
             // "["にぶち当たるまで読込む
             last_line.value = sr.readLine().ToString();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                String search = spl[0];
+                string search = spl[0];
                 if ( search.Equals( "Language" ) ) {
                     m_type = VsqHandleType.Singer;
                     Language = int.Parse( spl[1] );
@@ -308,7 +309,7 @@ namespace cadencii.vsq
                 } else if ( search.Equals( "DynBPY" ) ) {
                     tmpDynBPY = spl[1];
                 } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ) {
-                    String num = search.Substring( 1 );
+                    string num = search.Substring( 1 );
                     ByRef<int> vals = new ByRef<int>( 0 );
                     if ( PortUtil.tryParseInt( num, vals ) ) {
                         Lyric lyric = new Lyric( spl[1] );
@@ -363,9 +364,9 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="_string">ハンドル指定子</param>
         /// <returns>ハンドル番号</returns>
-        public static int HandleIndexFromString( String _string )
+        public static int HandleIndexFromString( string _string )
         {
-            String[] spl = PortUtil.splitString( _string, new char[] { '#' } );
+            string[] spl = PortUtil.splitString( _string, new char[] { '#' } );
             return int.Parse( spl[1] );
         }
 
@@ -378,7 +379,7 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            String result = toString();
+            string result = toString();
             sw.write( result );
             sw.newLine();
         }
@@ -388,7 +389,7 @@ namespace cadencii.vsq
         /// </summary>
         private void print()
         {
-            String result = toString();
+            string result = toString();
             sout.println( result );
         }
 
@@ -396,9 +397,9 @@ namespace cadencii.vsq
         /// インスタンスを文字列に変換します
         /// </summary>
         /// <returns>インスタンスを変換した文字列</returns>
-        public String toString()
+        public string toString()
         {
-            String result = "";
+            string result = "";
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
                 result += "\n" + "L0=" + L0.toString( addQuotationMark );
@@ -483,7 +484,7 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }

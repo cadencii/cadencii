@@ -27,6 +27,8 @@ using cadencii.java.awt;
 using cadencii.media;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii {
 #endif
 
@@ -250,7 +252,7 @@ namespace cadencii {
         /// <param name="file">読み込むWAVEファイルのパス</param>
         /// <param name="sec_from">読み込み区間の開始秒時</param>
         /// <param name="sec_to">読み込み区間の終了秒時</param>
-        public void reloadPartial( int index, String file, double sec_from, double sec_to ) {
+        public void reloadPartial( int index, string file, double sec_from, double sec_to ) {
             if ( index < 0 || mDrawer.Length <= index ) {
                 return;
             }
@@ -267,7 +269,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="index">読込を行わせる波形描画コンテキストのインデックス</param>
         /// <param name="wave_path">読み込むWAVEファイルのパス</param>
-        public void load( int index, String wave_path ) {
+        public void load( int index, string wave_path ) {
             if ( index < 0 || mDrawer.Length <= index ) {
 #if DEBUG
                 sout.println( "WaveView#load; index out of range" );

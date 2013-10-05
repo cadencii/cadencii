@@ -22,6 +22,7 @@ using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
+
 #endif
 
 #if JAVA
@@ -34,13 +35,13 @@ namespace cadencii.media {
         private int m_sample_rate;
         private long m_total_samples = 0;
         private RandomAccessFile m_stream = null;
-        private String m_path = "";
+        private string m_path = "";
         /// <summary>
         /// dataチャンクの開始位置。第1番目のデータが、このアドレスに書き込まれることになる。
         /// </summary>
         private long m_pos_data_chunk;
 
-        public WaveWriter( String path ) 
+        public WaveWriter( string path ) 
 #if JAVA
 
             throws IOException
@@ -51,7 +52,7 @@ namespace cadencii.media {
 #endif
         }
 
-        public WaveWriter( String path, int channel, int bit_per_sample, int sample_rate ) 
+        public WaveWriter( string path, int channel, int bit_per_sample, int sample_rate ) 
 #if JAVA
             throws IOException
 #endif

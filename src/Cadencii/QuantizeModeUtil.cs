@@ -16,11 +16,13 @@ package cadencii;
 #else
 using System;
 
+
+
 namespace cadencii {
 #endif
 
     public class QuantizeModeUtil {
-        public static String getString( QuantizeMode quantize_mode ) {
+        public static string getString( QuantizeMode quantize_mode ) {
             if ( quantize_mode == QuantizeMode.off ) {
                 return "Off";
             } else if ( quantize_mode == QuantizeMode.p4 ) {

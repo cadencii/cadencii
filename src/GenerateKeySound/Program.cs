@@ -20,6 +20,8 @@ using cadencii.java.util;
 using cadencii.media;
 using cadencii.vsq;
 
+
+
 namespace cadencii.generatekeysound {
 
     class Program {
@@ -29,10 +31,10 @@ namespace cadencii.generatekeysound {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             AppManager.init();
-            String singer = "Miku";
+            string singer = "Miku";
             object locker = new object();
             double amp = 1.0;
-            String dir = Path.Combine( Application.StartupPath, "cache" );
+            string dir = Path.Combine( Application.StartupPath, "cache" );
             bool replace = true;
             int search = -1;
             int arguments = 0;
@@ -147,9 +149,9 @@ namespace cadencii.generatekeysound {
         }
 
         private static void run( FormGenerateKeySound.PrepareStartArgument arg ) {
-            String singer = arg.singer;
+            string singer = arg.singer;
             double amp = arg.amplitude;
-            String dir = arg.directory;
+            string dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
             if (!Directory.Exists(dir)) {

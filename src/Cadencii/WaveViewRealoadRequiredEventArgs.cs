@@ -22,7 +22,7 @@ namespace cadencii{
     public class WaveViewRealoadRequiredEventArgs
     {
         public int track;
-        public String file;
+        public string file;
         public double secStart;
         public double secEnd;
     }

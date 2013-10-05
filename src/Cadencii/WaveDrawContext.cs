@@ -32,6 +32,8 @@ using cadencii.java.util;
 using cadencii.vsq;
 using cadencii.apputil;
 
+
+
 namespace cadencii.new_
 {
 
@@ -39,7 +41,7 @@ namespace cadencii.new_
     {
         private short[] mEnvOut = null;
 
-        public void load( String file )
+        public void load( string file )
         {
 
         }
@@ -150,7 +152,7 @@ namespace cadencii
         private sbyte[] mWave;
 #endif
         private int mSampleRate = 44100;
-        private String mName;
+        private string mName;
         private float mLength;
         private PolylineDrawer mDrawer = null;
         private float mMaxAmplitude = 0.0f;
@@ -160,7 +162,7 @@ namespace cadencii
         /// 読み込むWAVEファイルを指定したコンストラクタ。初期化と同時にWAVEファイルの読込みを行います。
         /// </summary>
         /// <param name="file">読み込むWAVEファイルのパス</param>
-        public WaveDrawContext( String file )
+        public WaveDrawContext( string file )
         {
             load( file );
             mDrawer = new PolylineDrawer( null, 1024 );
@@ -200,7 +202,7 @@ namespace cadencii
         /// <param name="file"></param>
         /// <param name="sec_from"></param>
         /// <param name="sec_to"></param>
-        public void reloadPartial( String file, double sec_from, double sec_to )
+        public void reloadPartial( string file, double sec_from, double sec_to )
         {
             if (!System.IO.File.Exists(file)) {
                 return;
@@ -317,7 +319,7 @@ namespace cadencii
         /// WAVEファイルを読み込みます。
         /// </summary>
         /// <param name="file">読み込むWAVEファイルのパス</param>
-        public void load( String file )
+        public void load( string file )
         {
             if (!System.IO.File.Exists(file)) {
 #if JAVA
@@ -390,7 +392,7 @@ namespace cadencii
         /// このWAVE描画コンテキストの名前を取得します。
         /// </summary>
         /// <returns>この描画コンテキストの名前</returns>
-        public String getName()
+        public string getName()
         {
             return mName;
         }
@@ -399,7 +401,7 @@ namespace cadencii
         /// このWAVE描画コンテキストの名前を設定します。
         /// </summary>
         /// <param name="value">この描画コンテキストの名前</param>
-        public void setName( String value )
+        public void setName( string value )
         {
             mName = value;
         }

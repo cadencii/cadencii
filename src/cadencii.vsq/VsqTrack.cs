@@ -26,6 +26,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -38,7 +39,7 @@ namespace cadencii.vsq
     public class VsqTrack : ICloneable
 #endif
     {
-        public static readonly String[] CURVES = new String[] { 
+        public static readonly string[] CURVES = new string[] { 
             "bre", 
             "bri",
             "cle", 
@@ -62,7 +63,7 @@ namespace cadencii.vsq
             "reso4amp", 
             "reso4bw", 
             "reso4freq", };
-        public String Tag;
+        public string Tag;
         public VsqMetaText MetaText;
 
 #if JAVA
@@ -106,7 +107,7 @@ namespace cadencii.vsq
                         }
                     }
                     if ( item.ID.type == VsqIDType.Aicon && item.ID.IconDynamicsHandle != null && item.ID.IconDynamicsHandle.IconID != null ) {
-                        String iconid = item.ID.IconDynamicsHandle.IconID;
+                        string iconid = item.ID.IconDynamicsHandle.IconID;
                         if ( kindDynaff ) {
                             if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                                 return true;
@@ -146,7 +147,7 @@ namespace cadencii.vsq
                     }
                     if ( kindDynaff || kindCrescend || kindDecrescend ) {
                         if ( item.ID.type == VsqIDType.Aicon && item.ID.IconDynamicsHandle != null && item.ID.IconDynamicsHandle.IconID != null ) {
-                            String iconid = item.ID.IconDynamicsHandle.IconID;
+                            string iconid = item.ID.IconDynamicsHandle.IconID;
                             if ( kindDynaff ) {
                                 if ( iconid.StartsWith( IconDynamicsHandle.ICONID_HEAD_DYNAFF ) ) {
                                     pos = i;
@@ -393,7 +394,7 @@ namespace cadencii.vsq
             }
 
             // コントロールカーブをシフト
-            foreach ( String name in CURVES ) {
+            foreach ( string name in CURVES ) {
                 VsqBPList list = getCurve( name );
                 if ( list == null ) {
                     continue;
@@ -465,7 +466,7 @@ namespace cadencii.vsq
             }
 
             for ( int i = 0; i < VsqTrack.CURVES.Length; i++ ) {
-                String curve = VsqTrack.CURVES[i];
+                string curve = VsqTrack.CURVES[i];
                 VsqBPList bplist = getCurve( curve );
                 if ( bplist == null ) {
                     continue;
@@ -583,7 +584,7 @@ namespace cadencii.vsq
         /// このトラックの名前を取得します．
         /// </summary>
         /// <returns></returns>
-        public String getName()
+        public string getName()
         {
             if ( MetaText == null || (MetaText != null && MetaText.Common == null) ) {
                 return "Master Track";
@@ -596,7 +597,7 @@ namespace cadencii.vsq
         /// このトラックの名前を設定します．
         /// </summary>
         /// <param name="value"></param>
-        public void setName( String value )
+        public void setName( string value )
         {
             if ( MetaText != null ) {
                 if ( MetaText.Common == null ) {
@@ -611,7 +612,7 @@ namespace cadencii.vsq
         /// XMLシリアライズ用．このトラックの名前を設定します．
         /// </summary>
         [Obsolete]
-        public String Name
+        public string Name
         {
             get
             {
@@ -828,7 +829,7 @@ namespace cadencii.vsq
         /// このトラックのメタテキストを，指定されたファイルに出力します．
         /// </summary>
         /// <param name="file"></param>
-        public void printMetaText( String file, String encoding = "Shift_JIS" )
+        public void printMetaText( string file, string encoding = "Shift_JIS" )
 #if JAVA
             throws IOException
 #endif
@@ -842,7 +843,7 @@ namespace cadencii.vsq
                 sw = new InternalStreamWriter( file, encoding );
                 tms.setPointer( -1 );
                 while ( tms.ready() ) {
-                    String line = tms.readLine().ToString();
+                    string line = tms.readLine().ToString();
                     sw.write( line );
                     sw.newLine();
                 }
@@ -928,7 +929,7 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="new_renderer"></param>
         /// <param name="singers"></param>
-        public void changeRenderer( String new_renderer, List<VsqID> singers )
+        public void changeRenderer( string new_renderer, List<VsqID> singers )
         {
             VsqID default_id = null;
             int singers_size = singers.Count;
@@ -976,12 +977,12 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public VsqBPList getCurve( String curve )
+        public VsqBPList getCurve( string curve )
         {
             return MetaText.getElement( curve );
         }
 
-        public void setCurve( String curve, VsqBPList value )
+        public void setCurve( string curve, VsqBPList value )
         {
             MetaText.setElement( curve, value );
         }
@@ -1071,7 +1072,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <param name="singer"></param>
-        public VsqTrack( String name, String singer )
+        public VsqTrack( string name, string singer )
         {
             MetaText = new VsqMetaText( name, singer );
         }
@@ -1101,9 +1102,9 @@ namespace cadencii.vsq
             return counter;
         }
 
-        public VsqTrack( List<MidiEvent> midi_event, String encoding )
+        public VsqTrack( List<MidiEvent> midi_event, string encoding )
         {
-            String track_name = "";
+            string track_name = "";
 
             TextStream sw = null;
             try {
@@ -1145,7 +1146,7 @@ namespace cadencii.vsq
                                         buffer.RemoveAt( 0 );
                                     }
 
-                                    String line = PortUtil.getDecodedString( encoding, cpy );
+                                    string line = PortUtil.getDecodedString( encoding, cpy );
 #if DEBUG
 #if JAVA
                                     sout.println( "VsqTrack#.ctor; line=" + line );
@@ -1179,7 +1180,7 @@ namespace cadencii.vsq
                     for ( int j = 0; j < remain; j++ ) {
                         cpy[j] = 0xff & buffer[ j ];
                     }
-                    String line = PortUtil.getDecodedString( encoding, cpy );
+                    string line = PortUtil.getDecodedString( encoding, cpy );
 #if DEBUG
 #if JAVA
                     sout.println( "VsqTrack#.ctor; line=" + line );

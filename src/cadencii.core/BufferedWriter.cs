@@ -18,23 +18,24 @@ using System.Text;
 
 namespace cadencii.java.io {
 
+
     public class FileWriter {
         public StreamWriter m_writer;
 
-        public FileWriter( String fileName ) {
+        public FileWriter( string fileName ) {
             m_writer = new StreamWriter( fileName );
         }
     }
 
     public class FileOutputStream : FileStream, OutputStream {
-        public FileOutputStream( String fileName, bool append )
+        public FileOutputStream( string fileName, bool append )
             : base( fileName, FileMode.Create, FileAccess.Write ) {
             if( append ){
                 base.Seek( base.Length, SeekOrigin.Begin );
             }
         }
 
-        public FileOutputStream( String fileName )
+        public FileOutputStream( string fileName )
             : this( fileName, false ) {
         }
 
@@ -79,7 +80,7 @@ namespace cadencii.java.io {
     public class OutputStreamWriter {
         public StreamWriter m_writer;
 
-        public OutputStreamWriter( FileOutputStream stream, String charsetName ) {
+        public OutputStreamWriter( FileOutputStream stream, string charsetName ) {
             Encoding enc = Encoding.GetEncoding( charsetName );
             if ( charsetName.ToLower().Equals( "utf-8" ) ) {
                 enc = new System.Text.UTF8Encoding( false );
@@ -119,11 +120,11 @@ namespace cadencii.java.io {
             m_writer.Write( (char)c );
         }
 
-        public void write( String s, int off, int len ) {
+        public void write( string s, int off, int len ) {
             m_writer.Write( s.ToCharArray(), off, len );
         }
 
-        public void write( String str ) {
+        public void write( string str ) {
             m_writer.Write( str );
         }
 

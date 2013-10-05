@@ -22,6 +22,8 @@ using System.Windows.Forms;
 using cadencii.windows.forms;
 using cadencii.apputil;
 
+
+
 namespace cadencii
 {
     public class FormWorkerUi : Form
@@ -50,7 +52,7 @@ namespace cadencii
             mFullHeight = this.Height;
         }
 
-        private static String _(String id)
+        private static string _(string id)
         {
             return Messaging.getMessage( id );
         }

@@ -22,6 +22,7 @@ using cadencii.vsq;
 using cadencii.java.awt;
 
 namespace cadencii {
+
 #endif
 
     /// <summary>
@@ -33,7 +34,7 @@ namespace cadencii {
     public class DrawObject : IComparable<DrawObject> {
 #endif
         public Rectangle mRectangleInPixel;
-        public String mText;
+        public string mText;
         public int mAccent;
         public int mDecay;
         public int mVelocity;
@@ -82,7 +83,7 @@ namespace cadencii {
         public DrawObject( DrawObjectType type,
                            VsqFileEx vsq,
                            Rectangle rect, 
-                           String text_,
+                           string text_,
                            int accent_,
                            int decay,
                            int velocity,

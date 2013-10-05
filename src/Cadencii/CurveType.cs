@@ -24,6 +24,7 @@ using cadencii.vsq;
 
 namespace cadencii
 {
+
 #endif
 
     enum CurveTypeImpl
@@ -70,7 +71,7 @@ namespace cadencii
     public struct CurveType : IEquatable<CurveType>, IComparable<CurveType>
 #endif
     {
-        private String mName;
+        private string mName;
         private bool mIsScalar;
         private int mMinimum;
         private int mMaximum;
@@ -298,13 +299,13 @@ namespace cadencii
 #endif
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
 #endif
 
-        public String toString()
+        public string toString()
         {
             return getName();
         }
@@ -314,7 +315,7 @@ namespace cadencii
             return mIndex;
         }
 
-        public String getName()
+        public string getName()
         {
             return mName;
         }

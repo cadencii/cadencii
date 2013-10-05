@@ -22,6 +22,7 @@ using cadencii;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -56,12 +57,12 @@ namespace cadencii.vsq
         /// UTAUスクリプト形式に記録されているエンベロープの表現に基づき，インスタンスを構成します
         /// </summary>
         /// <param name="line">ustに記録されるエンベロープの記述行</param>
-        public UstEnvelope( String line )
+        public UstEnvelope( string line )
         {
             if ( !line.ToLower().StartsWith( "envelope=" ) ) {
                 return;
             }
-            String[] spl = PortUtil.splitString( line, '=' );
+            string[] spl = PortUtil.splitString( line, '=' );
             if ( spl.Length < 2 ) {
                 return;
             }
@@ -111,7 +112,7 @@ namespace cadencii.vsq
         /// このインスタンスの文字列表現を取得します
         /// </summary>
         /// <returns></returns>
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
@@ -121,9 +122,9 @@ namespace cadencii.vsq
         /// このインスタンスの文字列表現を取得します
         /// </summary>
         /// <returns></returns>
-        public String toString()
+        public string toString()
         {
-            String ret = "Envelope=" + p1 + "," + p2 + "," + p3 + "," + v1 + "," + v2 + "," + v3 + "," + v4;
+            string ret = "Envelope=" + p1 + "," + p2 + "," + p3 + "," + v1 + "," + v2 + "," + v3 + "," + v4;
             ret += ",%," + p4 + "," + p5 + "," + v5;
             return ret;
         }

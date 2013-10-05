@@ -36,6 +36,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -380,7 +381,7 @@ namespace cadencii
 #endif
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

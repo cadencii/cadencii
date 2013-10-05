@@ -19,6 +19,7 @@ import javax.swing.*;
 using System;
 
 namespace cadencii.windows.forms {
+
 #endif
 
     public static class Utility {
@@ -119,7 +120,7 @@ namespace cadencii.windows.forms {
             return text + "(&" + new string((char)value, 1) + ")";
         }
 
-        public static System.Windows.Forms.DialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
+        public static System.Windows.Forms.DialogResult showMessageBox( string text, string caption, int optionType, int messageType ) {
             System.Windows.Forms.DialogResult ret = System.Windows.Forms.DialogResult.Cancel;
 #if JAVA
             int r = JOptionPane.showConfirmDialog( null, text, caption, optionType, messageType );

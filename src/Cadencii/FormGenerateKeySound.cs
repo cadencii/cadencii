@@ -33,6 +33,7 @@ using cadencii.vsq;
 using cadencii.windows.forms;
 
 namespace cadencii {
+
 #endif
 
 #if JAVA
@@ -42,13 +43,13 @@ namespace cadencii {
 #endif
     {
 #if !JAVA
-        private delegate void updateTitleDelegate( String title );
+        private delegate void updateTitleDelegate( string title );
 #endif
 
         public class PrepareStartArgument {
-            public String singer = "Miku";
+            public string singer = "Miku";
             public double amplitude = 1.0;
-            public String directory = "";
+            public string directory = "";
             public bool replace = true;
         }
 
@@ -90,7 +91,7 @@ namespace cadencii {
             }
 
             // 取りあえず最初に登録されているresamplerを使うってことで
-            String resampler = AppManager.editorConfig.getResamplerAt( 0 );
+            string resampler = AppManager.editorConfig.getResamplerAt( 0 );
             if ( m_singer_config_utau.Length > 0 &&
                  AppManager.editorConfig.PathWavtool != null && File.Exists( AppManager.editorConfig.PathWavtool ) &&
                  resampler != null && File.Exists( resampler ) ) {
@@ -116,7 +117,7 @@ namespace cadencii {
             if ( comboSingingSynthSystem.SelectedIndex < 0 ) {
                 return;
             }
-            String singer = (String)comboSingingSynthSystem.SelectedItem;
+            string singer = (string)comboSingingSynthSystem.SelectedItem;
             SingerConfig[] list = null;
             if ( singer.Equals( "VOCALOID1" ) ) {
                 list = m_singer_config1;
@@ -137,7 +138,7 @@ namespace cadencii {
             }
         }
 
-        private void updateTitle( String title ) {
+        private void updateTitle( string title ) {
             this.Text = title;
         }
 
@@ -191,7 +192,7 @@ namespace cadencii {
 
         public void btnExecute_Click( Object sender, EventArgs e ) {
             PrepareStartArgument arg = new PrepareStartArgument();
-            arg.singer = (String)comboSinger.SelectedItem;
+            arg.singer = (string)comboSinger.SelectedItem;
             arg.amplitude = 1.0;
             arg.directory = txtDir.Text;
             arg.replace = chkIgnoreExistingWavs.Checked;
@@ -204,9 +205,9 @@ namespace cadencii {
             sout.println( "FormGenerateKeySound#bgWork_DoWork" );
 #endif
             PrepareStartArgument arg = (PrepareStartArgument)e.Argument;
-            String singer = arg.singer;
+            string singer = arg.singer;
             double amp = arg.amplitude;
-            String dir = arg.directory;
+            string dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
             if (!Directory.Exists(dir)) {
@@ -214,7 +215,7 @@ namespace cadencii {
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                String path = Path.Combine( dir, i + ".wav" );
+                string path = Path.Combine( dir, i + ".wav" );
                 sout.println( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !File.Exists( path )) ) {
                     try {
@@ -246,7 +247,7 @@ namespace cadencii {
         }
 
         private void bgWork_ProgressChanged( Object sender, ProgressChangedEventArgs e ) {
-            String title = "Progress: " + e.ProgressPercentage + "%";
+            string title = "Progress: " + e.ProgressPercentage + "%";
 #if JAVA
             updateTitle( title );
 #else
@@ -267,12 +268,12 @@ namespace cadencii {
         #endregion
 
         #region public static methods
-        public static void GenerateSinglePhone( int note, String singer, String file, double amp ) {
-            String renderer = "";
+        public static void GenerateSinglePhone( int note, string singer, string file, double amp ) {
+            string renderer = "";
             SingerConfig[] singers1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
             int c = singers1.Length;
-            String first_found_singer = "";
-            String first_found_renderer = "";
+            string first_found_singer = "";
+            string first_found_renderer = "";
             for ( int i = 0; i < c; i++ ) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = singers1[i].VOICENAME;
@@ -323,7 +324,7 @@ namespace cadencii {
             vsq.Track[ 1 ].addEvent( item );
             vsq.updateTotalClocks();
             int ms_presend = 500;
-            String tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            string tempdir = Path.Combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if (!Directory.Exists(tempdir)) {
                 try {
                     PortUtil.createDirectory( tempdir );

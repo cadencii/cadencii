@@ -28,6 +28,8 @@ using cadencii.windows.forms;
 using cadencii.java.awt;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
 #endif
@@ -39,8 +41,8 @@ namespace cadencii
 #endif
     {
         private int mFeder = 0;
-        private String m_number = "0";
-        private String m_title = "";
+        private string m_number = "0";
+        private string m_title = "";
         private Object m_tag = null;
         private bool mMuted = false;
         private int mPanpot = 0;
@@ -214,12 +216,12 @@ namespace cadencii
             return m_tag;
         }
 
-        public String getTitle()
+        public string getTitle()
         {
             return m_title;
         }
 
-        public void setTitle( String value )
+        public void setTitle( string value )
         {
             m_title = value;
             updateTitle();
@@ -236,12 +238,12 @@ namespace cadencii
             }
         }
 
-        public String getNumber()
+        public string getNumber()
         {
             return m_number;
         }
 
-        public void setNumber( String value )
+        public void setNumber( string value )
         {
             m_number = value;
             updateTitle();

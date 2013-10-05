@@ -7,6 +7,8 @@ using cadencii;
 using cadencii.apputil;
 using cadencii;
 
+
+
 class UtauPluginManager : Form {
     delegate void VoidDelegate();
     
@@ -23,7 +25,7 @@ class UtauPluginManager : Form {
     /// または、付属のツールで次のように処理する
     ///     ParseUtauPluginInvoker.exe ".\ScriptImplement\Utau Plugin Invoker.cs" out.txt
     /// </summary>
-    private static readonly String TEXT = "@@TEXT@@";
+    private static readonly string TEXT = "@@TEXT@@";
     private ListView listPlugins;
     private ColumnHeader headerName;
     private ColumnHeader headerPath;
@@ -377,8 +379,8 @@ class UtauPluginManager : Form {
         }
     }
 
-    public static String GetDisplayName() {
-        String lang = Messaging.getLanguage();
+    public static string GetDisplayName() {
+        string lang = Messaging.getLanguage();
         if ( lang == "ja" ) {
             return "UTAU用プラグインをインストール";
         } else {

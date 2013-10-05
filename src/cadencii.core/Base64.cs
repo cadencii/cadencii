@@ -148,7 +148,7 @@ namespace cadencii {
             return Convert.ToBase64String( value );
         }
 
-        public static byte[] decode( String value ) {
+        public static byte[] decode( string value ) {
             return Convert.FromBase64String( value );
         }
     }

@@ -22,6 +22,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -45,7 +46,7 @@ namespace cadencii.vsq
             m_writer.newLine();
         }
 
-        public void write( String value )
+        public void write( string value )
 #if JAVA
             throws IOException
 #endif
@@ -53,7 +54,7 @@ namespace cadencii.vsq
             m_writer.write( value );
         }
 
-        public void writeLine( String value )
+        public void writeLine( string value )
 #if JAVA
             throws IOException
 #endif

@@ -22,13 +22,14 @@ using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.apputil {
+
 #endif
 
     public class MessageBodyEntry {
-        public String message;
-        public List<String> location = new List<String>();
+        public string message;
+        public List<string> location = new List<string>();
 
-        public MessageBodyEntry( String message_, String[] location_ ) {
+        public MessageBodyEntry( string message_, string[] location_ ) {
             message = message_;
             for ( int i = 0; i < location_.Length; i++ ) {
                 location.Add( location_[i] );

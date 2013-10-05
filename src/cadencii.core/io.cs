@@ -18,6 +18,7 @@ using System.Collections.Generic;
 namespace cadencii.java.io
 {
 
+
     public interface OutputStream
     {
     }
@@ -128,7 +129,7 @@ namespace cadencii.java.io
         /// 指定されたパス名文字列を抽象パス名に変換して、新しい File のインスタンスを生成します。
         /// </summary>
         /// <param name="pathname"></param>
-        public File( String pathname )
+        public File( string pathname )
         {
             m_path = pathname;
         }
@@ -224,7 +225,7 @@ namespace cadencii.java.io
         /// </summary>
         public static File createTempFile( string prefix, string suffix, File directory )
         {
-            String dir = System.IO.Path.GetTempPath();
+            string dir = System.IO.Path.GetTempPath();
             if ( directory != null ) {
                 dir = directory.m_path;
             }
@@ -232,8 +233,8 @@ namespace cadencii.java.io
                 throw new System.IO.IOException();
             }
             while ( true ) {
-                String f = prefix + System.IO.Path.GetRandomFileName() + suffix;
-                String full = System.IO.Path.Combine( dir, f );
+                string f = prefix + System.IO.Path.GetRandomFileName() + suffix;
+                string full = System.IO.Path.Combine( dir, f );
                 if ( !System.IO.File.Exists( full ) ) {
                     System.IO.File.Create( full );
                     return new File( full );
@@ -628,7 +629,7 @@ namespace cadencii.java.io
 
     public interface FilenameFilter
     {
-        bool accept( File dir, String name );
+        bool accept( File dir, string name );
     }
 
     public interface FileFilter

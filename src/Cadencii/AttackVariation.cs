@@ -25,6 +25,7 @@ using System.Drawing.Design;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -34,13 +35,13 @@ namespace cadencii
 #endif
     public class AttackVariation
     {
-        public String mDescription = "";
+        public string mDescription = "";
 
         public AttackVariation() {
             mDescription = "-";
         }
 
-        public AttackVariation( String description ) {
+        public AttackVariation( string description ) {
             this.mDescription = description;
         }
 

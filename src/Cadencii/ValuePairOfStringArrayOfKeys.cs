@@ -21,18 +21,20 @@ using System.Xml.Serialization;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii {
 #endif
 
     public class ValuePairOfStringArrayOfKeys {
-        public String Key;
+        public string Key;
         [XmlArrayItem("Keys")]
         public Keys[] Value;
 
         public ValuePairOfStringArrayOfKeys() {
         }
 
-        public ValuePairOfStringArrayOfKeys( String key, Keys[] value ) {
+        public ValuePairOfStringArrayOfKeys( string key, Keys[] value ) {
             Key = key;
             Value = value;
         }

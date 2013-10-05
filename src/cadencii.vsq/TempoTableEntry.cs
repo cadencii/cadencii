@@ -20,6 +20,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -33,13 +34,13 @@ namespace cadencii.vsq
         public int Tempo;
         public double Time;
 
-        public String toString()
+        public string toString()
         {
             return "{Clock=" + Clock + ", Tempo=" + Tempo + ", Time=" + Time + "}";
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }

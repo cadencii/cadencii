@@ -36,6 +36,8 @@ using cadencii.media;
 using cadencii.vsq;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -117,7 +119,7 @@ namespace cadencii
                 ret = AppManager.MIN_PRE_MEASURE + indx;
             } else {
 #if !JAVA
-                String s = comboPreMeasure.Text;
+                string s = comboPreMeasure.Text;
                 try {
                     ret = int.Parse( s );
                 } catch ( Exception ex ) {
@@ -157,9 +159,9 @@ namespace cadencii
         public int getSampleRate()
         {
             int index = comboSampleRate.SelectedIndex;
-            String s = "44100";
+            string s = "44100";
             if ( index >= 0 ) {
-                s = (String)comboSampleRate.Items[index];
+                s = (string)comboSampleRate.Items[index];
             } else {
 #if !JAVA
                 s = comboSampleRate.Text;
@@ -182,7 +184,7 @@ namespace cadencii
         {
             comboSampleRate.SelectedIndex = 0;
             for ( int i = 0; i < comboSampleRate.Items.Count; i++ ) {
-                String s = (String)comboSampleRate.Items[i];
+                string s = (string)comboSampleRate.Items[i];
                 int rate = 0;
                 try {
                     rate = int.Parse( s );
@@ -239,7 +241,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

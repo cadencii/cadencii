@@ -25,6 +25,8 @@ using cadencii.apputil;
 using cadencii;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -35,7 +37,7 @@ namespace cadencii
     public class FormCompileResult : System.Windows.Forms.Form
     {
 #endif
-        public FormCompileResult( String message, String errors )
+        public FormCompileResult( string message, string errors )
         {
 #if JAVA
             super();
@@ -59,7 +61,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

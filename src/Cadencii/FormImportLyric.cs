@@ -30,6 +30,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -86,18 +87,18 @@ namespace cadencii
         /// <param name="max_notes"></param>
         public void setMaxNotes( int max_notes )
         {
-            String notes = (max_notes > 1) ? " [notes]" : " [note]";
+            string notes = (max_notes > 1) ? " [notes]" : " [note]";
             this.lblNotes.Text = "Max : " + max_notes + notes;
             this.m_max_notes = max_notes;
         }
 
-        public String[] getLetters()
+        public string[] getLetters()
         {
             List<char> _SMALL = new List<char>( new char[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
                                                              'ゃ', 'ゅ', 'ょ',
                                                              'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
                                                              'ャ', 'ュ', 'ョ' } );
-            String tmp = "";
+            string tmp = "";
             for ( int i = 0; i < m_max_notes; i++ ) {
                 if ( i >= txtLyrics.Lines.Length ) {
                     break;
@@ -110,12 +111,12 @@ namespace cadencii
                     Logger.write( typeof( FormImportLyric ) + ".getLetters; ex=" + ex + "\n" );
                 }
             }
-            String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
-            List<String> ret = new List<String>();
+            string[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );
+            List<string> ret = new List<string>();
             for ( int j = 0; j < spl.Length; j++ ) {
-                String s = spl[j];
+                string s = spl[j];
                 char[] list = s.ToCharArray();
-                String t = "";
+                string t = "";
                 int i = -1;
                 while ( i + 1 < list.Length ) {
                     i++;
@@ -148,7 +149,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

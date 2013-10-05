@@ -33,6 +33,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -319,7 +320,7 @@ namespace cadencii
             m_max = m_curve_type.getMaximum();
         }
 
-        private static String _( String message )
+        private static string _( string message )
         {
             return Messaging.getMessage( message );
         }

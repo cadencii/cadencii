@@ -26,6 +26,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -34,14 +35,14 @@ namespace cadencii.vsq
     public class SingerConfig : ICloneable
     {
 #endif
-        public String ID = "";
-        public String FORMAT = "";
+        public string ID = "";
+        public string FORMAT = "";
         /// <summary>
         /// VOCALOIDの場合，音源のディレクトリへのパス．
         /// UTAUの場合，oto.iniが保存されているディレクトリへのパス
         /// </summary>
-        public String VOICEIDSTR = "";
-        public String VOICENAME = "Unknown";
+        public string VOICEIDSTR = "";
+        public string VOICENAME = "Unknown";
         public int Breathiness;
         public int Brightness;
         public int Clearness;
@@ -61,14 +62,14 @@ namespace cadencii.vsq
         public int Resonance4Frequency;
         public int Resonance4BandWidth;
         public int Harmonics;
-        public String VvdPath = "";
+        public string VvdPath = "";
         public int Language;
 
         public SingerConfig()
         {
         }
 
-        public SingerConfig( String voiceName, int language, int program )
+        public SingerConfig( string voiceName, int language, int program )
         {
             VOICENAME = voiceName;
             Language = language;
@@ -113,7 +114,7 @@ namespace cadencii.vsq
         }
 #endif
 
-        public static SingerConfig fromVvd( String file, int language, int program )
+        public static SingerConfig fromVvd( string file, int language, int program )
         {
             SingerConfig sc = new SingerConfig();
             sc.ID = "VOCALOID:VIRTUAL:VOICE";
@@ -139,23 +140,23 @@ namespace cadencii.vsq
                 for ( int i = 0; i < length; i++ ) {
                     idat[i] = dat[i];
                 }
-                String str1 = PortUtil.getDecodedString( "Shift_JIS", idat );
+                string str1 = PortUtil.getDecodedString( "Shift_JIS", idat );
 #if DEBUG
                 sout.println( "SingerConfig.readSingerConfig; str1=" + str1 );
 #endif
-                String crlf = "" + (char)0x0d + "" + (char)0x0a;
-                String[] spl = PortUtil.splitString( str1, new String[] { crlf }, true );
+                string crlf = "" + (char)0x0d + "" + (char)0x0a;
+                string[] spl = PortUtil.splitString( str1, new string[] { crlf }, true );
 
                 int count = spl.Length;
                 for ( int i = 0; i < spl.Length; i++ ) {
-                    String s = spl[i];
+                    string s = spl[i];
                     int first = s.IndexOf( '"' );
                     int first_end = get_quated_string( s, first );
                     int second = s.IndexOf( '"', first_end + 1 );
                     int second_end = get_quated_string( s, second );
                     char[] chs = s.ToCharArray();
-                    String id = new String( chs, first, first_end - first + 1 );
-                    String value = new String( chs, second, second_end - second + 1 );
+                    string id = new string( chs, first, first_end - first + 1 );
+                    string value = new string( chs, second, second_end - second + 1 );
                     id = id.Substring( 1, PortUtil.getStringLength( id ) - 2 );
                     value = value.Substring( 1, PortUtil.getStringLength( value ) - 2 );
                     value = value.Replace( "\\" + "\"", "\"" );
@@ -229,7 +230,7 @@ namespace cadencii.vsq
         /// <param name="s"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        static int get_quated_string( String s, int position )
+        static int get_quated_string( string s, int position )
         {
             if ( position < 0 ) {
                 return -1;
@@ -251,9 +252,9 @@ namespace cadencii.vsq
             return end;
         }
 
-        public String[] ToStringArray()
+        public string[] ToStringArray()
         {
-            List<String> ret = new List<String>();
+            List<string> ret = new List<string>();
             ret.Add( "\"ID\":=:\"" + ID + "\"" );
             ret.Add( "\"FORMAT\":=:\"" + FORMAT + "\"" );
             ret.Add( "\"VOICEIDSTR\":=:\"" + VOICEIDSTR + "\"" );
@@ -267,19 +268,19 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
 #endif
 
-        public String toString()
+        public string toString()
         {
-            String[] r = ToStringArray();
-            String ret = "";
+            string[] r = ToStringArray();
+            string ret = "";
             int count = r.Length;
             for ( int i = 0; i < count; i++ ) {
-                String s = r[i];
+                string s = r[i];
                 ret += s + "\n";
             }
             return ret;

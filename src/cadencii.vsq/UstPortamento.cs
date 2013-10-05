@@ -28,6 +28,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -57,7 +58,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }
@@ -67,15 +68,15 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            String pbw = "";
-            String pby = "";
-            String pbm = "";
+            string pbw = "";
+            string pby = "";
+            string pbm = "";
             int count = Points.Count;
             for ( int i = 0; i < count; i++ ) {
-                String comma = (i == 0 ? "" : ",");
+                string comma = (i == 0 ? "" : ",");
                 pbw += comma + Points[ i ].Step;
                 pby += Points[ i ].Value + ",";
-                String type = "";
+                string type = "";
                 UstPortamentoType ut = Points[ i ].Type;
                 if ( ut == UstPortamentoType.S ) {
                     type = "";
@@ -126,21 +127,21 @@ namespace cadencii.vsq
         PBY=-15.9,-20,-31.5,-26.6
         PBM=,s,r,j,s,s,s,s,s
         */
-        public void parseLine( String line )
+        public void parseLine( string line )
         {
             line = line.ToLower();
-            String[] spl = PortUtil.splitString( line, '=' );
+            string[] spl = PortUtil.splitString( line, '=' );
             if ( spl.Length == 0 ) {
                 return;
             }
-            String[] values = PortUtil.splitString( spl[1], ',' );
+            string[] values = PortUtil.splitString( spl[1], ',' );
             if ( line.StartsWith( "pbs=" ) ) {
-                String v = values[0];
+                string v = values[0];
                 int indx = values[0].IndexOf( ";", 0 );
                 if ( indx >= 0 ) {
                     v = values[0].Substring( 0, indx );
                     if ( values[0].Length > indx + 1 ) {
-                        String unknown = values[0].Substring( indx + 1 );
+                        string unknown = values[0].Substring( indx + 1 );
                         mIsUnknownIntSpecified = true;
                         mUnknownInt = int.Parse( unknown );
                     }
@@ -173,7 +174,7 @@ namespace cadencii.vsq
                         Points.Add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points[ i ];
-                    String search = values[i].ToLower();
+                    string search = values[i].ToLower();
                     if ( search == "s" ) {
                         up.Type = UstPortamentoType.Linear;
                     } else if ( search == "r" ) {

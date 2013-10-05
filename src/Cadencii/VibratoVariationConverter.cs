@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
 #endif
@@ -103,7 +105,7 @@ namespace cadencii
 #if !JAVA
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
         {
-            if ( destinationType == typeof( String ) ) {
+            if ( destinationType == typeof( string ) ) {
                 return true;
             } else {
                 return base.CanConvertTo( context, destinationType );
@@ -114,7 +116,7 @@ namespace cadencii
 #if !JAVA
         public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType )
         {
-            if ( destinationType == typeof( String ) && value is VibratoVariation ) {
+            if ( destinationType == typeof( string ) && value is VibratoVariation ) {
                 return convertTo( (VibratoVariation)value );
             } else {
                 return base.ConvertTo( context, culture, value, destinationType );
@@ -125,7 +127,7 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public String convertTo( Object value )
+        public string convertTo( Object value )
         {
             if( value == null ){
                 return "";
@@ -138,8 +140,8 @@ namespace cadencii
 #if !JAVA
         public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value )
         {
-            if ( value is String ) {
-                return convertFrom( (String)value );
+            if ( value is string ) {
+                return convertFrom( (string)value );
             } else {
                 return base.ConvertFrom( context, culture, value );
             }
@@ -149,7 +151,7 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public VibratoVariation convertFrom( String value )
+        public VibratoVariation convertFrom( string value )
         {
             if ( value.Equals( VibratoVariation.empty.description ) ) {
                 return new VibratoVariation( VibratoVariation.empty.description );
@@ -157,7 +159,7 @@ namespace cadencii
                 if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                     int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                     for ( int i = 0; i < size; i++ ) {
-                        String display_string = AppManager.editorConfig.AutoVibratoCustom[ i ].getDisplayString();
+                        string display_string = AppManager.editorConfig.AutoVibratoCustom[ i ].getDisplayString();
                         if ( value.Equals( display_string ) ) {
                             return new VibratoVariation( display_string );
                         }
@@ -171,7 +173,7 @@ namespace cadencii
                             type = SynthesizerType.VOCALOID1;
                         }
                         foreach (var vconfig in VocaloSysUtil.vibratoConfigIterator( type )) {
-                            String display_string = vconfig.getDisplayString();
+                            string display_string = vconfig.getDisplayString();
                             if ( value.Equals( display_string ) ) {
                                 return new VibratoVariation( display_string );
                             }
@@ -185,7 +187,7 @@ namespace cadencii
 #if !JAVA
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
         {
-            if ( sourceType == typeof( String ) ) {
+            if ( sourceType == typeof( string ) ) {
                 return true;
             } else {
                 return base.CanConvertFrom( context, sourceType );

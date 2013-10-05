@@ -31,6 +31,8 @@ using cadencii.java.util;
 using cadencii.windows.forms;
 using cadencii.java.awt;
 
+
+
 namespace cadencii
 {
 #endif
@@ -48,7 +50,7 @@ namespace cadencii
         /// <param name="apply_singer"></param>
         /// <param name="resampler"></param>
         /// <param name="apply_resampler"></param>
-        public FormCheckUnknownSingerAndResampler( String singer, bool apply_singer, String resampler, bool apply_resampler )
+        public FormCheckUnknownSingerAndResampler( string singer, bool apply_singer, string resampler, bool apply_resampler )
         {
 #if JAVA
             super();
@@ -67,7 +69,7 @@ namespace cadencii
             if ( apply_singer ) {
                 textSingerPath.Text = singer;
                 SingerConfig sc = new SingerConfig();
-                String path_image = Utility.readUtauSingerConfig( singer, sc );
+                string path_image = Utility.readUtauSingerConfig( singer, sc );
 #if DEBUG
                 sout.println( "FormCheckUnknownSingerAndResampler#.ctor;  path_image=" + path_image );
 #endif
@@ -102,7 +104,7 @@ namespace cadencii
         /// 原音のパスを取得します
         /// </summary>
         /// <returns></returns>
-        public String getSingerPath()
+        public string getSingerPath()
         {
             return textSingerPath.Text;
         }
@@ -120,7 +122,7 @@ namespace cadencii
         /// リサンプラーのパスを取得します
         /// </summary>
         /// <returns></returns>
-        public String getResamplerPath()
+        public string getResamplerPath()
         {
             return textResamplerPath.Text;
         }
@@ -134,7 +136,7 @@ namespace cadencii
         {
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

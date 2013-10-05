@@ -28,6 +28,8 @@ using System.Globalization;
 using cadencii;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
 #endif
@@ -51,7 +53,7 @@ namespace cadencii
 #if !JAVA
         public override Object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType )
         {
-            if ( destinationType == typeof( String ) && value is NoteNumberProperty ) {
+            if ( destinationType == typeof( string ) && value is NoteNumberProperty ) {
                 return convertTo( (NoteNumberProperty)value );
             }
             return base.ConvertTo( context, culture, value, destinationType );
@@ -61,7 +63,7 @@ namespace cadencii
 #if !JAVA
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
         {
-            if ( sourceType == typeof( String ) ) {
+            if ( sourceType == typeof( string ) ) {
                 return true;
             }
             return base.CanConvertFrom( context, sourceType );
@@ -71,39 +73,39 @@ namespace cadencii
 #if !JAVA
         public override Object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, Object value )
         {
-            if ( value is String ) {
-                return convertFrom( (String)value );
+            if ( value is string ) {
+                return convertFrom( (string)value );
             } else {
                 return base.ConvertFrom( context, culture, value );
             }
         }
 #endif
 
-        public String convertTo( Object value )
+        public string convertTo( Object value )
         {
             if( value == null ){
                 return "";
             }else if( value is NoteNumberProperty ){
                 NoteNumberProperty nnp = (NoteNumberProperty)value;
-                String ret = getNoteString( nnp.noteNumber );
+                string ret = getNoteString( nnp.noteNumber );
                 return ret;
             }else{
                 return "";
             }
         }
 
-        public NoteNumberProperty convertFrom( String value )
+        public NoteNumberProperty convertFrom( string value )
         {
             NoteNumberProperty obj = new NoteNumberProperty();
             obj.noteNumber = NoteNumberPropertyConverter.parse( value );
             return obj;
         }
 
-        private static String getNoteString( int note )
+        private static string getNoteString( int note )
         {
-            String[] jp = new String[] { "ハ", "嬰ハ", "ニ", "変ホ", "ホ", "ヘ", "嬰へ", "ト", "嬰ト", "イ", "変ロ", "ロ" };
-            String[] jpfixed = new String[] { "ド", "ド#", "レ", "ミb", "ミ", "ファ", "ファ#", "ソ", "ソ#", "ラ", "シb", "シ", };
-            String[] de = { "C", "Cis", "D", "Es", "E", "F", "Fis", "G", "Gis", "A", "Hes", "H" };
+            string[] jp = new string[] { "ハ", "嬰ハ", "ニ", "変ホ", "ホ", "ヘ", "嬰へ", "ト", "嬰ト", "イ", "変ロ", "ロ" };
+            string[] jpfixed = new string[] { "ド", "ド#", "レ", "ミb", "ミ", "ファ", "ファ#", "ソ", "ソ#", "ラ", "シb", "シ", };
+            string[] de = { "C", "Cis", "D", "Es", "E", "F", "Fis", "G", "Gis", "A", "Hes", "H" };
             if ( AppManager.editorConfig != null ) {
                 int odd = note % 12;
                 int order = (note - odd) / 12 - 2;
@@ -125,7 +127,7 @@ namespace cadencii
             return "";
         }
 
-        public static int parse( String value )
+        public static int parse( string value )
         {
             if ( value.Equals( "" ) ) {
                 return 60;

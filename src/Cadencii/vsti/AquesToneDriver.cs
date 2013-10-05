@@ -28,6 +28,8 @@ using cadencii;
 using cadencii.java.io;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
 #endif
@@ -38,7 +40,7 @@ namespace cadencii
     public class AquesToneDriver : AquesToneDriverBase
     {
 #endif
-        private static readonly String[] PHONES = new String[] { 
+        private static readonly string[] PHONES = new string[] { 
             "ア", "イ", "ウ", "エ", "オ",
             "カ", "キ", "ク", "ケ", "コ",
             "サ", "シ", "ス", "セ", "ソ",
@@ -91,7 +93,7 @@ namespace cadencii
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
 
-        public AquesToneDriver( String dllPath ) :
+        public AquesToneDriver( string dllPath ) :
             base( dllPath )
         {
         }
@@ -108,10 +110,10 @@ namespace cadencii
         /// <param name="dynamics">Dynamics</param>
         /// <param name="phrase">歌詞</param>
         /// <returns>Note On のための MIDI イベント列</returns>
-        public MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
+        public MidiEvent[] createNoteOnEvent( int note, int dynamics, string phrase )
         {
             // noteon MIDIイベントを作成
-            String katakana = KanaDeRomanization.hiragana2katakana( KanaDeRomanization.Attach( phrase ) );
+            string katakana = KanaDeRomanization.hiragana2katakana( KanaDeRomanization.Attach( phrase ) );
             int index = -1;
             for ( int i = 0; i < AquesToneDriver.PHONES.Length; i++ ) {
                 if ( katakana.Equals( AquesToneDriver.PHONES[i] ) ) {
@@ -150,12 +152,12 @@ namespace cadencii
             return new ParameterEvent[] { singer };
         }
 
-        protected override String[] getKoeFileContents()
+        protected override string[] getKoeFileContents()
         {
             return PHONES;
         }
 
-        protected override String getKoeConfigKey()
+        protected override string getKoeConfigKey()
         {
             return "FileKoe_00";
         }

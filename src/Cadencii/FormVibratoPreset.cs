@@ -32,6 +32,8 @@ using cadencii;
 using cadencii.java.util;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -200,7 +202,7 @@ namespace cadencii
 
             int old = mSelected.getStartRate();
             int value = old;
-            String s = textRate.Text;
+            string s = textRate.Text;
             try {
                 value = int.Parse( s );
             } catch ( Exception ex ) {
@@ -213,7 +215,7 @@ namespace cadencii
                 value = 127;
             }
             mSelected.setStartRate( value );
-            String nstr = value + "";
+            string nstr = value + "";
             if ( s != nstr ) {
                 textRate.Text = nstr;
 #if JAVA
@@ -234,7 +236,7 @@ namespace cadencii
 
             int old = mSelected.getStartDepth();
             int value = old;
-            String s = textDepth.Text;
+            string s = textDepth.Text;
             try {
                 value = int.Parse( s );
             } catch ( Exception ex ) {
@@ -247,7 +249,7 @@ namespace cadencii
                 value = 127;
             }
             mSelected.setStartDepth( value );
-            String nstr = value + "";
+            string nstr = value + "";
             if ( s != nstr ) {
                 textDepth.Text = nstr;
 #if JAVA
@@ -492,7 +494,7 @@ namespace cadencii
             buttonCancel.Click += new EventHandler( buttonCancel_Click );
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

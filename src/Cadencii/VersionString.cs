@@ -18,6 +18,8 @@ import cadencii.*;
 #else
 using System;
 
+
+
     namespace cadencii
     {
 #endif
@@ -46,16 +48,16 @@ using System;
                 /// <summary>
                 /// コンストラクタに渡された文字列のキャッシュ
                 /// </summary>
-                private String mRawString = "0.0.0";
+                private string mRawString = "0.0.0";
 
                 /// <summary>
                 /// 「メジャー.マイナー.メンテナンス」の記法に基づく文字列をパースし，新しいインスタンスを作成します
                 /// </summary>
                 /// <param name="str"></param>
-                public VersionString( String s )
+                public VersionString( string s )
                 {
                     mRawString = s;
-                    String[] spl = PortUtil.splitString( s, '.' );
+                    string[] spl = PortUtil.splitString( s, '.' );
                     if ( spl.Length >= 1 ) {
                         try {
                             major = int.Parse( spl[0] );
@@ -80,7 +82,7 @@ using System;
                 /// このインスタンス生成時に渡された文字列を取得します
                 /// </summary>
                 /// <returns></returns>
-                public String getRawString()
+                public string getRawString()
                 {
                     return mRawString;
                 }
@@ -89,7 +91,7 @@ using System;
                 /// このインスタンスを文字列で表現したものを取得します
                 /// </summary>
                 /// <returns></returns>
-                public String toString()
+                public string toString()
                 {
                     return major + "." + minor + "." + build;
                 }
@@ -116,7 +118,7 @@ using System;
                 }
 
 #if !JAVA
-                public override String ToString()
+                public override string ToString()
                 {
                     return this.toString();
                 }

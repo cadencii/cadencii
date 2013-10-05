@@ -19,12 +19,14 @@ using System.Windows.Forms;
 using cadencii.windows.forms;
 using cadencii;
 
+
+
 namespace cadencii {
     /// <summary>
     /// 歌詞入力用のテキストボックス
     /// </summary>
     public class LyricTextBox : TextBox {
-        private String m_buf_text;
+        private string m_buf_text;
         private bool m_phonetic_symbol_edit_mode;
 
         /// <summary>
@@ -48,7 +50,7 @@ namespace cadencii {
         /// (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
         /// </summary>
         /// <returns></returns>
-        public String getBufferText() {
+        public string getBufferText() {
             return m_buf_text;
         }
 
@@ -57,7 +59,7 @@ namespace cadencii {
         /// (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
         /// </summary>
         /// <param name="value"></param>
-        public void setBufferText( String value ) {
+        public void setBufferText( string value ) {
             m_buf_text = value;
         }
 

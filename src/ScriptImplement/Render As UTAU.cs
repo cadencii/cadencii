@@ -10,6 +10,8 @@ using cadencii;
 using cadencii.java.util;
 using cadencii;
 
+
+
 public class RenderAsUtau : Form {
     private System.ComponentModel.IContainer components = null;
     public static string Resampler = "";
@@ -186,10 +188,10 @@ public class RenderAsUtau : Form {
                         while ( sr.Peek() >= 0 ) {
                             try {
                                 line = sr.ReadLine();
-                                String[] spl = line.Split( '=' );
-                                String file_name = spl[0]; // あ.wav
-                                String a2 = spl[1]; // ,0,36,64,0,0
-                                String a1 = Path.GetFileNameWithoutExtension( file_name );
+                                string[] spl = line.Split( '=' );
+                                string file_name = spl[0]; // あ.wav
+                                string a2 = spl[1]; // ,0,36,64,0,0
+                                string a1 = Path.GetFileNameWithoutExtension( file_name );
                                 spl = a2.Split( ',' );
                                 OtoArgs oa = new OtoArgs();
                                 oa.Alias = spl[0];

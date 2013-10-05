@@ -28,6 +28,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -998,22 +999,22 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="path_editor"></param>
         /// <param name="path_expdb"></param>
-        public ExpressionConfigSys( String path_editor, String path_expdb )
+        public ExpressionConfigSys( string path_editor, string path_expdb )
         {
             m_vibrato_configs = new List<VibratoHandle>();
             m_attack_configs = new List<NoteHeadHandle>();
             m_dynamics_configs = new List<IconDynamicsHandle>();
 
-            String base_path = PortUtil.getDirectoryName( path_editor );
-            String aiconDB_def = Path.Combine( base_path, "AiconDB.def" );
+            string base_path = PortUtil.getDirectoryName( path_editor );
+            string aiconDB_def = Path.Combine( base_path, "AiconDB.def" );
             if (System.IO.File.Exists(aiconDB_def)) {
-                String folder_name = "";
-                SortedDictionary<String, List<String>> list = new SortedDictionary<String, List<String>>();
+                string folder_name = "";
+                SortedDictionary<string, List<string>> list = new SortedDictionary<string, List<string>>();
                 BufferedReader sr = null;
                 try {
                     sr = new BufferedReader( new InputStreamReader( new FileInputStream( aiconDB_def ), "Shift_JIS" ) );
-                    String line = "";
-                    String current = "";
+                    string line = "";
+                    string current = "";
                     while ( (line = sr.readLine()) != null ) {
                         int index_semicollon = line.IndexOf( ';' );
                         if ( index_semicollon >= 0 ) {
@@ -1025,7 +1026,7 @@ namespace cadencii.vsq
                         } else {
                             int index_eq = line.IndexOf( '=' );
                             if ( index_eq > 0 ) {
-                                String[] spl = PortUtil.splitString( line, '=' );
+                                string[] spl = PortUtil.splitString( line, '=' );
                                 if ( spl.Length != 2 ) {
                                     continue;
                                 }
@@ -1034,12 +1035,12 @@ namespace cadencii.vsq
                                         folder_name = spl[1];
                                     }
                                 } else {
-                                    List<String> add = null;
+                                    List<string> add = null;
                                     if ( list.ContainsKey( current ) ) {
                                         add = list[ current ];
                                         list.Remove( current );
                                     } else {
-                                        add = new List<String>();
+                                        add = new List<string>();
                                     }
                                     add.Add( line );
                                     list[ current] =  add ;
@@ -1060,20 +1061,20 @@ namespace cadencii.vsq
                 }
 
                 if ( !folder_name.Equals( "" ) ) {
-                    String aiconDB_path = Path.Combine( base_path, folder_name );
+                    string aiconDB_path = Path.Combine( base_path, folder_name );
                     if (Directory.Exists(aiconDB_path)) {
                         foreach (var key in list.Keys) {
-                            String section_name = key.Replace( "[", "" ).Replace( "]", "" );
-                            String section_path = Path.Combine( aiconDB_path, section_name );
+                            string section_name = key.Replace( "[", "" ).Replace( "]", "" );
+                            string section_path = Path.Combine( aiconDB_path, section_name );
                             if (Directory.Exists(section_path)) {
                                 foreach (var line in list[ key ]) {
-                                    String[] spl = PortUtil.splitString( line, '=' );
+                                    string[] spl = PortUtil.splitString( line, '=' );
                                     if ( spl.Length != 2 ) {
                                         continue;
                                     }
-                                    String name = spl[0];
-                                    String[] spl2 = PortUtil.splitString( spl[1], ',' );
-                                    String preset = "";
+                                    string name = spl[0];
+                                    string[] spl2 = PortUtil.splitString( spl[1], ',' );
+                                    string preset = "";
                                     if ( name.Equals( "Dynaff" ) ) {
                                         preset = IconDynamicsHandle.ICONID_HEAD_DYNAFF;
                                     } else if ( name.Equals( "Crescendo" ) ) {
@@ -1082,13 +1083,13 @@ namespace cadencii.vsq
                                         preset = IconDynamicsHandle.ICONID_HEAD_DECRESCEND;
                                     }
                                     for ( int i = 0; i < spl2.Length; i++ ) {
-                                        String aic_name = spl2[i];
+                                        string aic_name = spl2[i];
                                         if ( !aic_name.EndsWith( ".aic" ) ) {
                                             aic_name += ".aic";
                                         }
-                                        String aic_path = Path.Combine( section_path, aic_name );
-                                        String ids = spl2[i];
-                                        String icon_id = preset + PortUtil.formatDecimal( "0000", i );
+                                        string aic_path = Path.Combine( section_path, aic_name );
+                                        string ids = spl2[i];
+                                        string icon_id = preset + PortUtil.formatDecimal( "0000", i );
                                         if (System.IO.File.Exists(aic_path)) {
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
                                             handle.setButtonImageFullPath( Path.Combine( section_path, handle.getButton() ) );
@@ -1102,7 +1103,7 @@ namespace cadencii.vsq
                 }
             }
 
-            String expression = Path.Combine( path_expdb, "expression.map" );
+            string expression = Path.Combine( path_expdb, "expression.map" );
             if (!System.IO.File.Exists(expression)) {
                 return;
             }
@@ -1118,16 +1119,16 @@ namespace cadencii.vsq
                         continue;
                     }
 
-                    String ved = Path.Combine( path_expdb, "vexp" + value + ".ved" );
+                    string ved = Path.Combine( path_expdb, "vexp" + value + ".ved" );
                     if (!System.IO.File.Exists(ved)) {
                         continue;
                     }
-                    String vexp_dir = Path.Combine( path_expdb, "vexp" + value );
+                    string vexp_dir = Path.Combine( path_expdb, "vexp" + value );
                     if (!Directory.Exists(vexp_dir)) {
                         continue;
                     }
 
-                    String NL = (char)0x0D + "" + (char)0x0A;
+                    string NL = (char)0x0D + "" + (char)0x0A;
                     RandomAccessFile fs_ved = null;
                     try {
                         fs_ved = new RandomAccessFile( ved, "r" );
@@ -1138,9 +1139,9 @@ namespace cadencii.vsq
                         for ( int j = 0; j < byte_ved.Length; j++ ) {
                             int_ved[j] = 0xff & byte_ved[j];
                         }
-                        String s = PortUtil.getDecodedString( "ASCII", int_ved );
-                        String[] spl = PortUtil.splitString( s, new String[] { NL }, true );
-                        String current_entry = "";
+                        string s = PortUtil.getDecodedString( "ASCII", int_ved );
+                        string[] spl = PortUtil.splitString( s, new string[] { NL }, true );
+                        string current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {
                             if ( spl[j].StartsWith( "[" ) ) {
                                 current_entry = spl[j];
@@ -1149,35 +1150,35 @@ namespace cadencii.vsq
                                 continue;
                             }
                             if ( current_entry.Equals( "[VIBRATO]" ) ) {
-                                String[] spl2 = PortUtil.splitString( spl[j], ',' );
+                                string[] spl2 = PortUtil.splitString( spl[j], ',' );
                                 if ( spl2.Length < 6 ) {
                                     continue;
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
-                                String file = spl2[3].Replace( "\"", "" );
-                                String aic_file = Path.Combine( vexp_dir, file );
+                                string file = spl2[3].Replace( "\"", "" );
+                                string aic_file = Path.Combine( vexp_dir, file );
                                 int index = int.Parse( spl2[0] );
-                                String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
-                                String ids = "";//spl2[2].Replace( "\"", "" );
-                                String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
+                                string icon_id = "$0404" + PortUtil.toHexString( index, 4 );
+                                string ids = "";//spl2[2].Replace( "\"", "" );
+                                string caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
                                 VibratoHandle item = new VibratoHandle( aic_file, ids, icon_id, index );
                                 item.setCaption( caption );
                                 m_vibrato_configs.Add( item );
                             } if ( current_entry.Equals( "[NOTEATTACK]" ) ) {
-                                String[] spl2 = PortUtil.splitString( spl[j], ',' );
+                                string[] spl2 = PortUtil.splitString( spl[j], ',' );
                                 if ( spl2.Length < 6 ) {
                                     continue;
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
-                                String file = spl2[3].Replace( "\"", "" );
-                                String aic_path = Path.Combine( vexp_dir, file );
+                                string file = spl2[3].Replace( "\"", "" );
+                                string aic_path = Path.Combine( vexp_dir, file );
                                 if (!System.IO.File.Exists(aic_path)) {
                                     continue;
                                 }
-                                String ids = "";// spl2[2].Replace( "\"", "" );
-                                String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
+                                string ids = "";// spl2[2].Replace( "\"", "" );
+                                string caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
                                 int index = int.Parse( spl2[0] );
-                                String icon_id = "$0101" + PortUtil.toHexString( index, 4 );
+                                string icon_id = "$0101" + PortUtil.toHexString( index, 4 );
                                 NoteHeadHandle item = new NoteHeadHandle( aic_path, ids, icon_id, index );
                                 item.setCaption( caption );
                                 m_attack_configs.Add( item );

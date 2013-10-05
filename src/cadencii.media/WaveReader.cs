@@ -23,6 +23,7 @@ using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
+
 #endif
 
 #if JAVA
@@ -44,7 +45,7 @@ namespace cadencii.media {
         private Object m_tag = null;
         private double m_offset_seconds = 0.0;
         private int m_sample_per_sec;
-        private String m_file = "";
+        private string m_file = "";
 
         /*
          * 192000
@@ -65,7 +66,7 @@ namespace cadencii.media {
             m_opened = false;
         }
 
-        public WaveReader( String file ) 
+        public WaveReader( string file ) 
 #if JAVA
             throws IOException, FileNotFoundException
 #endif
@@ -74,7 +75,7 @@ namespace cadencii.media {
             m_file = file;
         }
 
-        public String getFilePath() {
+        public string getFilePath() {
             return m_file;
         }
 
@@ -120,7 +121,7 @@ namespace cadencii.media {
         }
 #endif
 
-        public bool open( String file )
+        public bool open( string file )
 #if JAVA
             throws IOException, FileNotFoundException
 #endif

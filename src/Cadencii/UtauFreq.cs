@@ -21,11 +21,13 @@ using System;
 using cadencii;
 using cadencii.java.io;
 
+
+
 namespace cadencii {
 #endif
 
     public class UtauFreq {
-        public String Header;
+        public string Header;
         public int SampleInterval;
         public double AverageFrequency;
         public int NumPoints;
@@ -44,7 +46,7 @@ namespace cadencii {
         /// *.frqファイルからのコンストラクタ
         /// </summary>
         /// <param name="file"></param>
-        public static UtauFreq FromFrq( String file ){
+        public static UtauFreq FromFrq( string file ){
             UtauFreq ret = new UtauFreq();
             FileInputStream fs = null;
             try {
@@ -55,7 +57,7 @@ namespace cadencii {
                 for ( int i = 0; i < 8; i++ ) {
                     ch8[i] = (char)buf0[i];
                 }
-                ret.Header = new String( ch8 );
+                ret.Header = new string( ch8 );
 
                 fs.read( buf0, 0, 4 );
                 ret.SampleInterval = PortUtil.make_int32_le( buf0 );

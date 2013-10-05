@@ -26,6 +26,8 @@ using cadencii;
 using cadencii.java.io;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
 #endif
@@ -43,7 +45,7 @@ namespace cadencii
         /// AquesTone VSTi の DLL パスを指定して初期化する
         /// </summary>
         /// <param name="dllPath">AquesTone VSTi の DLL パス</param>
-        public AquesToneDriverBase( String dllPath )
+        public AquesToneDriverBase( string dllPath )
         {
             path = dllPath;
             loaded = open( 44100, 44100 );
@@ -53,28 +55,28 @@ namespace cadencii
         /// win.ini にて使用されるセクション名を取得する
         /// </summary>
         /// <returns>セクション名の文字列。両端の"[", "]"は含めない</returns>
-        protected abstract String getConfigSectionKey();
+        protected abstract string getConfigSectionKey();
 
         /// <summary>
         /// win.ini にて使用される、Koe ファイルを指定するキー名
         /// </summary>
         /// <returns>キー名の文字列</returns>
-        protected abstract String getKoeConfigKey();
+        protected abstract string getKoeConfigKey();
 
         /// <summary>
         /// Koe ファイルに書き込むファイルの中身を取得する
         /// </summary>
         /// <returns></returns>
-        protected abstract String[] getKoeFileContents();
+        protected abstract string[] getKoeFileContents();
 
         public override bool open( int block_size, int sample_rate )
         {
             int strlen = 260;
             StringBuilder sb = new StringBuilder( strlen );
             win32.GetProfileString( getConfigSectionKey(), getKoeConfigKey(), "", sb, (uint)strlen );
-            String koe_old = sb.ToString();
+            string koe_old = sb.ToString();
 
-            String required = prepareKoeFile();
+            string required = prepareKoeFile();
             bool refresh_winini = false;
             if ( !required.Equals( koe_old ) && !koe_old.Equals( "" ) ) {
                 refresh_winini = true;
@@ -94,13 +96,13 @@ namespace cadencii
             return ret;
         }
 
-        private String prepareKoeFile()
+        private string prepareKoeFile()
         {
-            String ret = PortUtil.createTempFile();
+            string ret = PortUtil.createTempFile();
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
-                foreach ( String s in getKoeFileContents() ) {
+                foreach ( string s in getKoeFileContents() ) {
                     bw.write( s ); bw.newLine();
                 }
             } catch ( Exception ex ) {
@@ -117,7 +119,7 @@ namespace cadencii
             return ret;
         }
 
-        protected void reportError( String s )
+        protected void reportError( string s )
         {
             Logger.writeLine( s );
             serr.println( s );

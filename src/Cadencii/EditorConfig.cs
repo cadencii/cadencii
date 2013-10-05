@@ -38,6 +38,8 @@ using cadencii.xml;
 using cadencii.vsq;
 using cadencii.apputil;
 
+
+
 namespace cadencii
 {
 #endif
@@ -50,14 +52,14 @@ namespace cadencii
         /// <summary>
         /// デフォルトで使用する歌手の名前
         /// </summary>
-        public String DefaultSingerName = "Miku";
+        public string DefaultSingerName = "Miku";
         /// <summary>
         /// デフォルトの横軸方向のスケール
         /// </summary>
         public int DefaultXScale = 65;
-        public String BaseFontName = "MS UI Gothic";
+        public string BaseFontName = "MS UI Gothic";
         public float BaseFontSize = 9.0f;
-        public String ScreenFontName = "MS UI Gothic";
+        public string ScreenFontName = "MS UI Gothic";
         public int WheelOrder = 20;
         public bool CursorFixed = false;
         /// <summary>
@@ -70,7 +72,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public List<String> RecentFiles = new List<String>();
+        public List<string> RecentFiles = new List<string>();
         public int DefaultPMBendDepth = 8;
         public int DefaultPMBendLength = 0;
         public int DefaultPMbPortamentoUse = 3;
@@ -109,16 +111,16 @@ namespace cadencii
         /// <summary>
         /// VOCALOID1用のデフォルトビブラート設定
         /// </summary>
-        public String AutoVibratoType1 = "$04040001";
+        public string AutoVibratoType1 = "$04040001";
         /// <summary>
         /// VOCALOID2用のデフォルトビブラート設定
         /// </summary>
-        public String AutoVibratoType2 = "$04040001";
+        public string AutoVibratoType2 = "$04040001";
         /// <summary>
         /// カスタムのデフォルトビブラート設定
         /// <version>3.3+</version>
         /// </summary>
-        public String AutoVibratoTypeCustom = "$04040001";
+        public string AutoVibratoTypeCustom = "$04040001";
         /// <summary>
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
@@ -151,7 +153,7 @@ namespace cadencii
         /// <summary>
         /// 言語設定
         /// </summary>
-        public String Language = "";
+        public string Language = "";
         /// <summary>
         /// マウスの操作などの許容範囲。プリメジャーにPxToleranceピクセルめり込んだ入力を行っても、エラーにならない。(補正はされる)
         /// </summary>
@@ -170,7 +172,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public List<String> UserDictionaries = new List<String>();
+        public List<string> UserDictionaries = new List<string>();
         /// <summary>
         /// 実行環境
         /// </summary>
@@ -306,7 +308,7 @@ namespace cadencii
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
         /// </summary>
-        public String PathResampler = "";
+        public string PathResampler = "";
         /// <summary>
         /// UTAU互換の合成器の1個目を，wine経由で呼ぶかどうか
         /// version 3.3+
@@ -318,7 +320,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public List<String> PathResamplers = new List<String>();
+        public List<string> PathResamplers = new List<string>();
         /// <summary>
         /// UTAU互換の合成器を，wine経由で呼ぶかどうか
         /// version 3.3+
@@ -330,7 +332,7 @@ namespace cadencii
         /// <summary>
         /// UTAU用のwave切り貼りツール
         /// </summary>
-        public String PathWavtool = "";
+        public string PathWavtool = "";
         /// <summary>
         /// wavtoolをwine経由で呼ぶかどうか
         /// version 3.3+
@@ -347,7 +349,7 @@ namespace cadencii
         /// <summary>
         /// openMidiDialogで最後に選択された拡張子
         /// </summary>
-        public String LastUsedExtension = ".vsq";
+        public string LastUsedExtension = ".vsq";
         /// <summary>
         /// ミキサーダイアログを常に手前に表示するかどうか
         /// 3.3で廃止
@@ -381,7 +383,7 @@ namespace cadencii
         /// <summary>
         /// AquesToneのVSTi dllへのパス
         /// </summary>
-        public String PathAquesTone = "";
+        public string PathAquesTone = "";
         /// <summary>
         /// AquesTone2 の VSTi dll へのパス
         /// </summary>
@@ -556,7 +558,7 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public List<String> LastUsedPathIn = new List<String>();
+        public List<string> LastUsedPathIn = new List<string>();
         /// <summary>
         /// 最後に出力したファイルパスのリスト
         /// リストに入る文字列は，拡張子+タブ文字+パスの形式にする
@@ -566,17 +568,17 @@ namespace cadencii
 #if JAVA
         @XmlGenericType( String.class )
 #endif
-        public List<String> LastUsedPathOut = new List<String>();
+        public List<string> LastUsedPathOut = new List<string>();
         /// <summary>
         /// 使用するWINEPREFIX
         /// version 3.3+
         /// </summary>
-        public String WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
+        public string WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
         /// <summary>
         /// wineのトップディレクトリ
         /// version 3.3+
         /// </summary>
-        public String WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
+        public string WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
         /// <summary>
         /// Cadencii付属のWineを使う場合にtrue，そうでなければWineTopで指定されたWineが利用される
         /// version 3.3+
@@ -650,7 +652,7 @@ namespace cadencii
         #endregion
 
         #region private static method
-        private static String getLastUsedPathCore( List<String> list, String extension )
+        private static string getLastUsedPathCore( List<string> list, string extension )
         {
             if ( extension == null ) return "";
             if ( PortUtil.getStringLength( extension ) <= 0 ) return "";
@@ -662,9 +664,9 @@ namespace cadencii
 
             int c = list.Count;
             for ( int i = 0; i < c; i++ ) {
-                String s = list[ i ];
+                string s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
-                    String[] spl = PortUtil.splitString( s, '\t' );
+                    string[] spl = PortUtil.splitString( s, '\t' );
                     if ( spl.Length >= 2 ) {
                         return spl[1];
                     }
@@ -674,9 +676,9 @@ namespace cadencii
             return "";
         }
 
-        private static void setLastUsedPathCore( List<String> list, String path, String ext_with_dot )
+        private static void setLastUsedPathCore( List<string> list, string path, string ext_with_dot )
         {
-            String extension = ext_with_dot;
+            string extension = ext_with_dot;
             if ( extension == null ) return;
             if ( extension.Equals( "." ) ) return;
             if ( extension.StartsWith( "." ) ) {
@@ -684,9 +686,9 @@ namespace cadencii
             }
 
             int c = list.Count;
-            String entry = extension + "\t" + path;
+            string entry = extension + "\t" + path;
             for ( int i = 0; i < c; i++ ) {
-                String s = list[ i ];
+                string s = list[ i ];
                 if ( s.StartsWith( extension ) ) {
                     list[ i] =  entry ;
                     return;
@@ -714,7 +716,7 @@ namespace cadencii
         /// <summary>
         /// 使用するWineのインストールディレクトリを取得します
         /// </summary>
-        public String getWineTop()
+        public string getWineTop()
         {
             if( WineTopBuiltin ){
                 return getBuiltinWineTop( "Wine.bundle" );
@@ -726,13 +728,13 @@ namespace cadencii
         /// <summary>
         /// 指定した名前のバンドルの，Wineのインストールディレクトリを取得します
         /// </summary>
-        private String getBuiltinWineTop( String bundle_name )
+        private string getBuiltinWineTop( string bundle_name )
         {
-            String appstart = PortUtil.getApplicationStartupPath();
+            string appstart = PortUtil.getApplicationStartupPath();
             // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
-            String parent = PortUtil.getDirectoryName( appstart );
-            String ret = Path.Combine( parent, bundle_name );
+            string parent = PortUtil.getDirectoryName( appstart );
+            string ret = Path.Combine( parent, bundle_name );
             if (!Directory.Exists(ret)) {
                 // ../Wine.bundleが無い場合
                 ret = Path.Combine( appstart, bundle_name );
@@ -742,9 +744,9 @@ namespace cadencii
             return ret;
         }
 
-        public String getBuiltinWineMinimumExecutable()
+        public string getBuiltinWineMinimumExecutable()
         {
-            String ret = getBuiltinWineTop( "WineMinimum.bundle" );
+            string ret = getBuiltinWineTop( "WineMinimum.bundle" );
             ret = Path.Combine( ret, "bin" );
             ret = Path.Combine( ret, "wine" );
             return ret;
@@ -753,9 +755,9 @@ namespace cadencii
         /// <summary>
         /// wineの実行ファイルのパスを取得します
         /// </summary>
-        public String getBuiltinWineExecutable__()
+        public string getBuiltinWineExecutable__()
         {
-            String ret = getBuiltinWineTop( "Wine.bundle" );
+            string ret = getBuiltinWineTop( "Wine.bundle" );
             ret = Path.Combine( ret, "bin" );
             ret = Path.Combine( ret, "wine" );
             return ret;
@@ -824,7 +826,7 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public String getResamplerAt( int index )
+        public string getResamplerAt( int index )
         {
             if ( index == 0 ) {
                 return PathResampler;
@@ -842,7 +844,7 @@ namespace cadencii
         /// </summary>
         /// <param name="index"></param>
         /// <param name="path"></param>
-        public void setResamplerAt( int index, String path )
+        public void setResamplerAt( int index, string path )
         {
             if ( path == null ) {
                 return;
@@ -897,7 +899,7 @@ namespace cadencii
         /// 新しいUTAU互換合成器のパスを登録します
         /// </summary>
         /// <param name="path"></param>
-        public void addResampler( String path, bool with_wine )
+        public void addResampler( string path, bool with_wine )
         {
             int count = getResamplerCount();
             if ( count == 0 ) {
@@ -914,9 +916,9 @@ namespace cadencii
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public String getLastUsedPathIn( String extension )
+        public string getLastUsedPathIn( string extension )
         {
-            String ret = getLastUsedPathCore( LastUsedPathIn, extension );
+            string ret = getLastUsedPathCore( LastUsedPathIn, extension );
             if ( ret.Equals( "" ) ) {
                 return getLastUsedPathCore( LastUsedPathOut, extension );
             }
@@ -930,7 +932,7 @@ namespace cadencii
         /// 最後に出力したファイルのパスを設定します
         /// </summary>
         /// <param name="path"></param>
-        public void setLastUsedPathIn( String path, String ext_with_dot )
+        public void setLastUsedPathIn( string path, string ext_with_dot )
         {
             setLastUsedPathCore( LastUsedPathIn, path, ext_with_dot );
         }
@@ -940,9 +942,9 @@ namespace cadencii
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public String getLastUsedPathOut( String extension )
+        public string getLastUsedPathOut( string extension )
         {
-            String ret = getLastUsedPathCore( LastUsedPathOut, extension );
+            string ret = getLastUsedPathCore( LastUsedPathOut, extension );
             if ( ret.Equals( "" ) ) {
                 ret = getLastUsedPathCore( LastUsedPathIn, extension );
             }
@@ -957,7 +959,7 @@ namespace cadencii
         /// </summary>
         /// <param name="path"></param>
         /// <param name="ext_with_dot">ピリオド付きの拡張子（ex. ".txt"）</param>
-        public void setLastUsedPathOut( String path, String ext_with_dot )
+        public void setLastUsedPathOut( string path, string ext_with_dot )
         {
             setLastUsedPathCore( LastUsedPathOut, path, ext_with_dot );
         }
@@ -986,7 +988,7 @@ namespace cadencii
                         trimlen = len;
                     }
                     if ( trimlen > 0 ) {
-                        String s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
+                        string s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
                         try {
                             index = (int)PortUtil.fromHexString( s );
                             index--;
@@ -1014,7 +1016,7 @@ namespace cadencii
                 ret.setLength( vibrato_clocks );
                 return ret;
             } else {
-                String iconid = type == SynthesizerType.VOCALOID1 ? AutoVibratoType1 : AutoVibratoType2;
+                string iconid = type == SynthesizerType.VOCALOID1 ? AutoVibratoType1 : AutoVibratoType2;
                 VibratoHandle ret = VocaloSysUtil.getDefaultVibratoHandle( iconid,
                                                                            vibrato_clocks,
                                                                            type );
@@ -1032,9 +1034,9 @@ namespace cadencii
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public SortedDictionary<String, Keys[]> getShortcutKeysDictionary( List<ValuePairOfStringArrayOfKeys> defs )
+        public SortedDictionary<string, Keys[]> getShortcutKeysDictionary( List<ValuePairOfStringArrayOfKeys> defs )
         {
-            SortedDictionary<String, Keys[]> ret = new SortedDictionary<String, Keys[]>();
+            SortedDictionary<string, Keys[]> ret = new SortedDictionary<string, Keys[]>();
             for ( int i = 0; i < ShortcutKeys.Count; i++ ) {
                 ret[ ShortcutKeys[ i ].Key] =  ShortcutKeys[ i ].Value ;
             }
@@ -1230,7 +1232,7 @@ namespace cadencii
         /// 「最近使用したファイル」のリストに、アイテムを追加します
         /// </summary>
         /// <param name="new_file"></param>
-        public void pushRecentFiles( String new_file )
+        public void pushRecentFiles( string new_file )
         {
             // NumRecentFilesは0以下かも知れない
             if ( NumRecentFiles <= 0 ) {
@@ -1239,11 +1241,11 @@ namespace cadencii
 
             // RecentFilesはnullかもしれない．
             if ( RecentFiles == null ) {
-                RecentFiles = new List<String>();
+                RecentFiles = new List<string>();
             }
 
             // 重複があれば消す
-            List<String> dict = new List<String>();
+            List<string> dict = new List<string>();
             foreach (var s in RecentFiles) {
                 bool found = false;
                 for ( int i = 0; i < dict.Count; i++ ) {
@@ -1295,7 +1297,7 @@ namespace cadencii
                 SymbolTable st = SymbolTable.getSymbolTable( i );
                 bool found = false;
                 foreach (var s in UserDictionaries) {
-                    String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
+                    string[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
                     if ( st.getName().Equals( spl[0] ) ) {
                         found = true;
                         break;
@@ -1316,7 +1318,7 @@ namespace cadencii
 
             // PathResamplersWithWineの個数があってるかどうかチェック
             if ( PathResamplers == null ) {
-                PathResamplers = new List<String>();
+                PathResamplers = new List<string>();
             }
             if ( ResamplersWithWine == null ) {
                 ResamplersWithWine = new List<Boolean>();

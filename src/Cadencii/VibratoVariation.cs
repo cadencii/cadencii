@@ -23,6 +23,8 @@ import cadencii.componentmodel.*;
 using System;
 using System.ComponentModel;
 
+
+
 namespace cadencii
 {
 #endif
@@ -37,14 +39,14 @@ namespace cadencii
     {
         public static readonly VibratoVariation empty = new VibratoVariation();
 
-        public String description = "";
+        public string description = "";
 
         private VibratoVariation()
         {
             description = "-";
         }
 
-        public VibratoVariation( String description )
+        public VibratoVariation( string description )
         {
             this.description = description;
         }

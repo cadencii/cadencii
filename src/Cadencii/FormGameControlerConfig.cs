@@ -28,6 +28,8 @@ using cadencii;
 using cadencii.java.util;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -175,7 +177,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

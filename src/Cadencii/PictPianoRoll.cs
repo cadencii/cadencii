@@ -35,6 +35,7 @@ using cadencii.vsq;
 using cadencii.windows.forms;
 
 namespace cadencii {
+
 #endif
 
     /// <summary>
@@ -547,7 +548,7 @@ namespace cadencii {
                     if (AppManager.drawOverSynthNameOnPianoroll) {
                         g.setFont(AppManager.baseFont50Bold);
                         g.setColor(new Color(0, 0, 0, 32));
-                        String str = "VOCALOID2";
+                        string str = "VOCALOID2";
                         //FIXME: この分岐無くしたい
                         if (renderer == RendererKind.AQUES_TONE) {
                             str = "AquesTone";
@@ -831,7 +832,7 @@ namespace cadencii {
                                 if (dobj.mIsOverlapped) {
                                     g.setColor(COLOR_R147G147B147);
                                 }
-                                String str = dobj.mText;
+                                string str = dobj.mText;
 #if DEBUG
                                 str += "(" + dobj.mInternalID + ")";
 #endif
@@ -854,7 +855,7 @@ namespace cadencii {
                                     g.setColor(Color.black);
                                 }
                                 g.setFont(AppManager.baseFont10);
-                                String str = dobj.mText;
+                                string str = dobj.mText;
 #if DEBUG
                                 str += "(" + dobj.mInternalID + ")";
 #endif
@@ -1088,7 +1089,7 @@ namespace cadencii {
                             drate = 1.00;
                         }
                         int rate = (int)(drate * 100.0);
-                        String percent = rate + "%";
+                        string percent = rate + "%";
                         Dimension size = Util.measureString(percent, AppManager.baseFont9);
                         int delay_x = (int)((AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() - AppManager.mAddingEventLength + AppManager.mAddingEvent.ID.VibratoDelay) * scalex + xoffset);
                         Rectangle pxArea = new Rectangle(delay_x,
@@ -1551,11 +1552,11 @@ namespace cadencii {
         }
 #endif
 
-        public String getName() {
+        public string getName() {
             return base.Name;
         }
 
-        public void setName( String value ) {
+        public void setName( string value ) {
             base.Name = value;
         }
 

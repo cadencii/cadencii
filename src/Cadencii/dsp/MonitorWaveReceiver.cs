@@ -23,6 +23,8 @@ using cadencii.java.awt;
 using cadencii.java.util;
 using cadencii.media;
 
+
+
 namespace cadencii
 {
 #endif
@@ -75,7 +77,7 @@ namespace cadencii
             return mSingleton;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }

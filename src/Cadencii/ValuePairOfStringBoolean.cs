@@ -17,6 +17,8 @@ package cadencii;
 #else
 using System;
 
+
+
 namespace cadencii{
 #endif
 
@@ -24,7 +26,7 @@ namespace cadencii{
     /// ValuePair&lt;String,Boolean&gt;をXMLシリアライズするためのクラス
     /// </summary>
     public class ValuePairOfStringBoolean{
-        private String _key;
+        private string _key;
         private Boolean _value;
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace cadencii{
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public ValuePairOfStringBoolean( String key, Boolean value ) {
+        public ValuePairOfStringBoolean( string key, Boolean value ) {
             _key = key;
             _value = value;
         }
@@ -53,7 +55,7 @@ namespace cadencii{
         /// キー値を取得します
         /// </summary>
         /// <returns></returns>
-        public String getKey() {
+        public string getKey() {
             return _key;
         }
 
@@ -61,7 +63,7 @@ namespace cadencii{
         /// キー値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setKey( String value ) {
+        public void setKey( string value ) {
             _key = value;
         }
 

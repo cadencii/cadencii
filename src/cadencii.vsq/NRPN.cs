@@ -26,6 +26,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     public class NRPN
@@ -571,12 +572,12 @@ namespace cadencii.vsq
         {
         }
 
-        public static IEnumerable<ValuePair<String, int>> iterator()
+        public static IEnumerable<ValuePair<string, int>> iterator()
         {
             return new NrpnIterator();
         }
 
-        public static String getName( int nrpn )
+        public static string getName( int nrpn )
         {
             foreach (var v in iterator()) {
                 if ( v.getValue() == nrpn ) {
@@ -591,7 +592,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="curve_name"></param>
         /// <returns></returns>
-        public static byte getVoiceChangeParameterID( String curve_name )
+        public static byte getVoiceChangeParameterID( string curve_name )
         {
             byte lsb = 0x31;
             curve_name = curve_name.ToLower();

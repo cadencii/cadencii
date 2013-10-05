@@ -25,6 +25,8 @@ using System.Windows.Forms;
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -45,7 +47,7 @@ namespace cadencii
         /// </summary>
         /// <param name="path_image"></param>
         /// <param name="singer_name"></param>
-        private delegate void AddIconThreadSafeDelegate( String path_image, String singer_name );
+        private delegate void AddIconThreadSafeDelegate( string path_image, string singer_name );
 #endif
 
         bool mouseDowned = false;
@@ -75,11 +77,11 @@ namespace cadencii
         /// </summary>
         /// <param name="path_image"></param>
         /// <param name="singer_name"></param>
-        public void addIconThreadSafe( String path_image, String singer_name )
+        public void addIconThreadSafe( string path_image, string singer_name )
         {
             Delegate deleg = (Delegate)new AddIconThreadSafeDelegate( addIcon );
             if ( deleg != null ) {
-                this.Invoke( deleg, new String[] { path_image, singer_name } );
+                this.Invoke( deleg, new string[] { path_image, singer_name } );
             }
         }
 
@@ -88,7 +90,7 @@ namespace cadencii
         /// </summary>
         /// <param name="path_image">イメージファイルへのパス</param>
         /// <param name="singer_name">歌手の名前</param>
-        public void addIcon( String path_image, String singer_name )
+        public void addIcon( string path_image, string singer_name )
         {
             IconParader p = new IconParader();
             var img = IconParader.createIconImage( path_image, singer_name );

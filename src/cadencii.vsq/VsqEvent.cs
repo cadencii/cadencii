@@ -26,6 +26,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -38,7 +39,7 @@ namespace cadencii.vsq
     public class VsqEvent : IComparable<VsqEvent>, ICloneable
 #endif
     {
-        public String Tag;
+        public string Tag;
         /// <summary>
         /// 内部で使用するインスタンス固有のID
         /// </summary>
@@ -152,7 +153,7 @@ namespace cadencii.vsq
             throws IOException
 #endif
         {
-            List<String> def = new List<String>( new String[]{ "Length",
+            List<string> def = new List<string>( new string[]{ "Length",
                                                                    "Note#",
                                                                    "Dynamics",
                                                                    "PMBendDepth",
@@ -163,7 +164,7 @@ namespace cadencii.vsq
             write( sw, def );
         }
 
-        public void write( ITextWriter writer, List<String> print_targets )
+        public void write( ITextWriter writer, List<string> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -171,7 +172,7 @@ namespace cadencii.vsq
             writeCor( writer, print_targets );
         }
 
-        public void write( BufferedWriter writer, List<String> print_targets )
+        public void write( BufferedWriter writer, List<string> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -179,7 +180,7 @@ namespace cadencii.vsq
             writeCor( new WrappedStreamWriter( writer ), print_targets );
         }
 
-        private void writeCor( ITextWriter writer, List<String> print_targets )
+        private void writeCor( ITextWriter writer, List<string> print_targets )
 #if JAVA
             throws IOException
 #endif
@@ -262,9 +263,9 @@ namespace cadencii.vsq
             }
         }
 
-        public VsqEvent( String line )
+        public VsqEvent( string line )
         {
-            String[] spl = PortUtil.splitString( line, new char[] { '=' } );
+            string[] spl = PortUtil.splitString( line, new char[] { '=' } );
             Clock = int.Parse( spl[0] );
             if ( spl[1].Equals( "EOS" ) ) {
                 ID = VsqID.EOS;

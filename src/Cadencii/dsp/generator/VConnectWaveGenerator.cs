@@ -35,6 +35,7 @@ using cadencii.utau;
 
 namespace cadencii
 {
+
 #endif
 
     /// <summary>
@@ -49,14 +50,14 @@ namespace cadencii
         /// <summary>
         /// シンセサイザの実行ファイル名
         /// </summary>
-        public const String STRAIGHT_SYNTH = "vConnect-STAND.exe";
+        public const string STRAIGHT_SYNTH = "vConnect-STAND.exe";
 
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
         private const int TEMPO = 120;
         private const int MAX_CACHE = 512;
 
-        private static SortedDictionary<String, Double> mCache = new SortedDictionary<String, Double>();
+        private static SortedDictionary<string, Double> mCache = new SortedDictionary<string, Double>();
 
         private double[] mBuffer2L = new double[BUFLEN];
         private double[] mBuffer2R = new double[BUFLEN];
@@ -78,7 +79,7 @@ namespace cadencii
         private List<SingerConfig> mSingerConfigSys;
         private double mProgressPercent = 0.0;
 
-        private SortedDictionary<String, UtauVoiceDB> mVoiceDBConfigs = new SortedDictionary<String, UtauVoiceDB>();
+        private SortedDictionary<string, UtauVoiceDB> mVoiceDBConfigs = new SortedDictionary<string, UtauVoiceDB>();
         private long mVsqLengthSamples;
         private double mStartedDate;
         /// <summary>
@@ -145,7 +146,7 @@ namespace cadencii
             mReceiver = receiver;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             //TODO:
         }
@@ -237,7 +238,7 @@ namespace cadencii
             //mAbortRequired = false;
             double[] bufL = new double[BUFLEN];
             double[] bufR = new double[BUFLEN];
-            String straight_synth = Path.Combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
+            string straight_synth = Path.Combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
             if (!System.IO.File.Exists(straight_synth)) {
 #if DEBUG
                 sout.println( "VConnectWaveGenerator#begin; \"" + straight_synth + "\" does not exists" );
@@ -294,13 +295,13 @@ namespace cadencii
                     return;
                 }
                 VConnectRenderingQueue queue = mQueue[ i ];
-                String tmp_dir = AppManager.getTempWaveDir();
+                string tmp_dir = AppManager.getTempWaveDir();
 
-                String tmp_file = Path.Combine( tmp_dir, "tmp.usq" );
+                string tmp_file = Path.Combine( tmp_dir, "tmp.usq" );
 #if DEBUG
                 sout.println( "VConnectWaveGenerator#begin; tmp_file=" + tmp_file );
 #endif
-                String hash = "";
+                string hash = "";
                 BufferedWriter sw = null;
                 try {
                     sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( tmp_file ), "Shift_JIS" ) );
@@ -395,7 +396,7 @@ namespace cadencii
                         // キャッシュの許容個数を超えたので、古いものを削除
                         bool first = true;
                         double old_date = PortUtil.getCurrentTime();
-                        String old_key = "";
+                        string old_key = "";
                         foreach (var key in mCache.Keys) {
                             double time = mCache[ key ];
                             if ( first ) {
@@ -897,9 +898,9 @@ namespace cadencii
             VsqEvent current = events[ 0 ];
             VsqEvent next = null;
 
-            String singer = singer_event.ID.IconHandle.IDS;
+            string singer = singer_event.ID.IconHandle.IDS;
             int num_singers = mSingerConfigSys.Count;
-            String singer_path = "";
+            string singer_path = "";
             for ( int i = 0; i < num_singers; i++ ) {
                 SingerConfig sc = mSingerConfigSys[ i ];
                 if ( sc.VOICENAME.Equals( singer ) ) {
@@ -911,7 +912,7 @@ namespace cadencii
             if ( singer_path.Equals( "" ) ) {
                 return;
             }
-            String oto_ini = Path.Combine( singer_path, "oto.ini" );
+            string oto_ini = Path.Combine( singer_path, "oto.ini" );
             if (!System.IO.File.Exists(oto_ini)) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
@@ -932,7 +933,7 @@ namespace cadencii
             // eventsのなかから、音源が存在しないものを削除
             for ( int i = count - 1; i >= 0; i-- ) {
                 VsqEvent item = events[ i ];
-                String search = item.ID.LyricHandle.L0.Phrase;
+                string search = item.ID.LyricHandle.L0.Phrase;
                 OtoArgs oa = voicedb.attachFileNameFromLyric(search, item.ID.Note);
                 if ( oa.fileName == null || (oa.fileName != null && oa.fileName.Equals( "" )) ) {
                     events.RemoveAt( i );
@@ -981,7 +982,7 @@ namespace cadencii
         /// 連続した音符を元に，StraightRenderingQueueを作成
         /// </summary>
         /// <param name="list"></param>
-        private void appendQueueCor( VsqFileEx vsq, int track, List<VsqEvent> list, String oto_ini )
+        private void appendQueueCor( VsqFileEx vsq, int track, List<VsqEvent> list, string oto_ini )
         {
             if ( list.Count <= 0 ) {
                 return;
@@ -1064,7 +1065,7 @@ namespace cadencii
         /// <param name="vsq_track">出力対象のトラック</param>
         /// <param name="oto_ini">原音設定ファイルのパス</param>
         /// <param name="end_clock"></param>
-        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock )
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, string oto_ini, int end_clock )
         {
             prepareMetaText( writer, vsq_track, oto_ini, end_clock, true );
         }
@@ -1077,9 +1078,9 @@ namespace cadencii
         /// <param name="oto_ini"></param>
         /// <param name="end_clock"></param>
         /// <param name="world_mode"></param>
-        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, bool world_mode )
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, string oto_ini, int end_clock, bool world_mode )
         {
-            SortedDictionary<String, String> dict_singername_otoini = new SortedDictionary<String, String>();
+            SortedDictionary<string, string> dict_singername_otoini = new SortedDictionary<string, string>();
             dict_singername_otoini[ ""] =  oto_ini ;
             prepareMetaText( writer, vsq_track, dict_singername_otoini, end_clock, world_mode );
         }
@@ -1094,7 +1095,7 @@ namespace cadencii
         private static void prepareMetaText(
             BufferedWriter writer,
             VsqTrack vsq_track,
-            SortedDictionary<String, String> dict_singername_otoini,
+            SortedDictionary<string, string> dict_singername_otoini,
             int end_clock,
             bool world_mode )
         {
@@ -1115,7 +1116,7 @@ namespace cadencii
                 writer.write( "[oto.ini]" );
                 writer.newLine();
                 foreach (var singername in dict_singername_otoini.Keys) {
-                    String oto_ini = dict_singername_otoini[ singername ];
+                    string oto_ini = dict_singername_otoini[ singername ];
                     if ( world_mode ) {
                         writer.write( singername + "\t" + oto_ini );
                         writer.newLine();
@@ -1126,7 +1127,7 @@ namespace cadencii
                     }
                 }
                 List<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-                List<String> print_targets = new List<String>( new String[]{ "Length",
+                List<string> print_targets = new List<string>( new string[]{ "Length",
                                                                              "Note#",
                                                                              "Dynamics",
                                                                              "DEMdecGainRate",
@@ -1151,7 +1152,7 @@ namespace cadencii
                     if ( src == null ) {
                         continue;
                     }
-                    String name = "";
+                    string name = "";
                     if ( curve.equals( CurveType.PIT ) ) {
                         name = "[PitchBendBPList]";
                     } else if ( curve.equals( CurveType.PBS ) ) {
@@ -1178,7 +1179,7 @@ namespace cadencii
 
         public static void clearCache()
         {
-            String tmp_dir = AppManager.getTempWaveDir();
+            string tmp_dir = AppManager.getTempWaveDir();
             foreach (var key in mCache.Keys) {
                 try {
                     PortUtil.deleteFile( Path.Combine( tmp_dir, key + ".wav" ) );

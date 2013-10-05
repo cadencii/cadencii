@@ -21,30 +21,32 @@ using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.utau;
 
+
+
 namespace cadencii {
 #endif
 
     public class RenderQueue {
-        private List<String> _resampler_arg = new List<String>();
-        public List<String> WavtoolArgPrefix = new List<String>();
-        public List<String> WavtoolArgSuffix = new List<String>();
+        private List<string> _resampler_arg = new List<string>();
+        public List<string> WavtoolArgPrefix = new List<string>();
+        public List<string> WavtoolArgSuffix = new List<string>();
         //public String WavtoolArgPrefix;
         //public String WavtoolArgSuffix;
         public OtoArgs Oto;
         //public double secEnd;
         public double secStart;
-        public String FileName;
+        public string FileName;
         public bool ResamplerFinished;
         /// <summary>
         /// MD5ハッシュによるファイル名の生成元となる文字列
         /// </summary>
-        public String hashSource;
+        public string hashSource;
 
         /// <summary>
         /// このキューの引数リストに、引数を1つ追加します
         /// </summary>
         /// <param name="value"></param>
-        public void appendArg( String value ) {
+        public void appendArg( string value ) {
             _resampler_arg.Add( value );
         }
 
@@ -52,8 +54,8 @@ namespace cadencii {
         /// このキューの引数リストに、指定された引数をすべて追加します
         /// </summary>
         /// <param name="args"></param>
-        public void appendArgRange( String[] args ) {
-            foreach ( String s in args ) {
+        public void appendArgRange( string[] args ) {
+            foreach ( string s in args ) {
                 _resampler_arg.Add( s );
             }
         }
@@ -62,7 +64,7 @@ namespace cadencii {
         /// このキューの引数リストを、文字列配列の形式で取得します
         /// </summary>
         /// <returns></returns>
-        public String[] getResamplerArg() {
+        public string[] getResamplerArg() {
             return _resampler_arg.ToArray();
         }
 
@@ -70,8 +72,8 @@ namespace cadencii {
         /// このキューの引数リストを、スペースで繋げた文字列形式で取得します
         /// </summary>
         /// <returns></returns>
-        public String getResamplerArgString() {
-            String ret = "";
+        public string getResamplerArgString() {
+            string ret = "";
             int c = _resampler_arg.Count;
             for ( int i = 0; i < c; i++ ) {
                 ret += _resampler_arg[ i ] + ((i < c - 1) ? " " : "");

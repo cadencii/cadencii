@@ -22,20 +22,21 @@ using System;
 using cadencii.java.awt;
 
 namespace cadencii.apputil {
+
 #endif
 
     public class AuthorListEntry {
-        String m_name = "";
+        string m_name = "";
         int m_style;
-        String m_twtr_id = "";
+        string m_twtr_id = "";
 
-        public AuthorListEntry( String name, String twitter_id, int style ) {
+        public AuthorListEntry( string name, string twitter_id, int style ) {
             m_name = name;
             m_twtr_id = twitter_id;
             m_style = style;
         }
 
-        public AuthorListEntry( String name, int style )
+        public AuthorListEntry( string name, int style )
 #if JAVA
         {
 #else
@@ -49,7 +50,7 @@ namespace cadencii.apputil {
 #endif
         }
 
-        public AuthorListEntry( String name, String twitter_id )
+        public AuthorListEntry( string name, string twitter_id )
 #if JAVA
         {
 #else
@@ -63,7 +64,7 @@ namespace cadencii.apputil {
 #endif
         }
 
-        public AuthorListEntry( String name )
+        public AuthorListEntry( string name )
 #if JAVA
         {
 #else
@@ -83,7 +84,7 @@ namespace cadencii.apputil {
             m_twtr_id = "";
         }
 
-        public String getName() {
+        public string getName() {
             return m_name;
         }
 
@@ -91,7 +92,7 @@ namespace cadencii.apputil {
             return m_style;
         }
 
-        public String getTwitterID() {
+        public string getTwitterID() {
             return m_twtr_id;
         }
     }

@@ -23,6 +23,7 @@ using Microsoft.CSharp;
 
 namespace cadencii.xml {
 
+
     /// <summary>
     /// クラスのstaticメンバーのxmlシリアライズ/デシリアライズを行うclass
     /// </summary>
@@ -130,7 +131,7 @@ namespace cadencii.xml {
             }
         }
 
-        protected virtual Assembly Compile( String code ) {
+        protected virtual Assembly Compile( string code ) {
             CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters();
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );

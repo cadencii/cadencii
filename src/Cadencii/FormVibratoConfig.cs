@@ -31,6 +31,8 @@ using cadencii.vsq;
 using cadencii.windows.forms;
 using cadencii.java.util;
 
+
+
 namespace cadencii
 {
 #endif
@@ -107,7 +109,7 @@ namespace cadencii
             if ( vibrato_handle != null ) {
                 txtVibratoLength.Text = (int)((float)vibrato_handle.getLength() / (float)note_length * 100.0f) + "";
             } else {
-                String s = "";
+                string s = "";
                 if ( default_vibrato_length == DefaultVibratoLengthEnum.L100 ) {
                     s = "100";
                 } else if ( default_vibrato_length == DefaultVibratoLengthEnum.L50 ) {
@@ -152,7 +154,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }
@@ -234,7 +236,7 @@ namespace cadencii
             sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index );
 #endif
             if ( index >= 0 ) {
-                String s = ((VibratoHandle)comboVibratoType.Items[index]).IconID;
+                string s = ((VibratoHandle)comboVibratoType.Items[index]).IconID;
 #if DEBUG
                 sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index + "; iconid=" + s );
 #endif

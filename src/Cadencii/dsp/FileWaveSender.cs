@@ -26,6 +26,7 @@ using cadencii.media;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -59,7 +60,7 @@ namespace cadencii
             return mVersion;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }

@@ -17,6 +17,8 @@ using System.Linq;
 using cadencii;
 using cadencii.java.awt;
 
+
+
 namespace cadencii {
 
     /// <summary>
@@ -99,7 +101,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="value">画面表記</param>
         /// <returns>合成システムの種類。取得できない場合は RendererKind.NULL を返す</returns>
-        public static RendererKind fromString( String value ) {
+        public static RendererKind fromString( string value ) {
             try {
                 return configs_.Where( ( item ) => item.Value.display_ == value ).Select( ( item ) => item.Key ).First();
             } catch ( Exception e ) {
@@ -112,7 +114,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="kind">歌声合成システムの種類</param>
         /// <returns>歌声合成システムを識別する文字列(VOCALOID2=DSB301, VOCALOID1[1.0,1.1]=DSB202, AquesTone=AQT000, Straight x UTAU=STR000, UTAU=UTAU000)</returns>
-        public static String getVersionString( this RendererKind kind )
+        public static string getVersionString( this RendererKind kind )
         {
             Config config;
             if ( configs_.TryGetValue( kind, out config ) ) {

@@ -26,6 +26,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -59,7 +60,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }

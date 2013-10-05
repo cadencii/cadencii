@@ -25,6 +25,8 @@ using cadencii;
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii {
 #endif
 
@@ -83,7 +85,7 @@ namespace cadencii {
 
         private void validateText() {
             bool valid = false;
-            String text = this.Text;
+            string text = this.Text;
             if ( m_value_type == ValueType.Double ) {
                 double dou;
                 try {

@@ -23,6 +23,8 @@ using cadencii;
 using cadencii.apputil;
 using cadencii.vsq;
 
+
+
 namespace cadencii
 {
     /// <summary>
@@ -40,8 +42,8 @@ namespace cadencii
         {
             Assembly ret = null;
 
-            String md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
-            String cached_asm_file = Path.Combine( Utility.getCachedAssemblyPath(), md5 + ".dll" );
+            string md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
+            string cached_asm_file = Path.Combine( Utility.getCachedAssemblyPath(), md5 + ".dll" );
             bool compiled = false;
 
             if ( File.Exists( cached_asm_file ) ) {
@@ -60,7 +62,7 @@ namespace cadencii
             CompilerResults cr = null;
             if ( ret == null ) {
                 CSharpCodeProvider provider = new CSharpCodeProvider();
-                String path = System.Windows.Forms.Application.StartupPath;
+                string path = System.Windows.Forms.Application.StartupPath;
 
                 if ( System.IO.Path.GetFileName( System.Windows.Forms.Application.ExecutablePath ).ToLower().StartsWith( "nunit" ) ) {
                     // nunit の場合は、 StartupPath が nunit のものになってしまうため、
@@ -73,7 +75,7 @@ namespace cadencii
                     }
                 }
 
-                CompilerParameters parameters = new CompilerParameters( new String[] {
+                CompilerParameters parameters = new CompilerParameters( new string[] {
                     Path.Combine( path, "cadencii.vsq.dll" ),
                     Path.Combine( path, "Cadencii.exe" ),
                     Path.Combine( path, "cadencii.media.dll" ),
@@ -143,11 +145,11 @@ namespace cadencii
         /// </summary>
         public static void cleanupUnusedAssemblyCache()
         {
-            String dir = Utility.getCachedAssemblyPath();
-            String[] files = PortUtil.listFiles( dir, ".dll" );
-            foreach ( String file in files ) {
-                String name = PortUtil.getFileName( file );
-                String full = Path.Combine( dir, name );
+            string dir = Utility.getCachedAssemblyPath();
+            string[] files = PortUtil.listFiles( dir, ".dll" );
+            foreach ( string file in files ) {
+                string name = PortUtil.getFileName( file );
+                string full = Path.Combine( dir, name );
                 if ( !usedAssemblyChache.Contains( full ) ) {
                     try {
                         PortUtil.deleteFile( full );
@@ -170,7 +172,7 @@ namespace cadencii
         /// <param name="file">スクリプトを発動するのに使用するコンテナを返します．</param>
         /// <returns></returns>
 #if ENABLE_SCRIPT
-        public ScriptInvoker loadScript( String file )
+        public ScriptInvoker loadScript( string file )
         {
             ScriptInvoker ret = new ScriptInvoker();
             ret.ScriptFile = file;
@@ -204,7 +206,7 @@ namespace cadencii
 
                     MethodInfo get_displayname_delegate = implemented.GetMethod( "GetDisplayName", new Type[] { } );
                     if ( get_displayname_delegate != null && get_displayname_delegate.IsStatic && get_displayname_delegate.IsPublic ) {
-                        if ( get_displayname_delegate.ReturnType.Equals( typeof( String ) ) ) {
+                        if ( get_displayname_delegate.ReturnType.Equals( typeof( string ) ) ) {
                             getDisplayNameDelegate = (ScriptDelegateGetDisplayName)Delegate.CreateDelegate( typeof( ScriptDelegateGetDisplayName ), get_displayname_delegate );
                         }
                     }

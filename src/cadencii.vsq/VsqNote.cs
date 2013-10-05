@@ -20,6 +20,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -237,7 +238,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static String getNoteStringBase( int note )
+        public static string getNoteStringBase( int note )
         {
             int odd = note % 12;
             switch ( odd ) {
@@ -265,7 +266,7 @@ namespace cadencii.vsq
             }
         }
 
-        public static String getNoteString( int note )
+        public static string getNoteString( int note )
         {
             int odd = note % 12;
             int order = (note - odd) / 12 - 2;
@@ -300,13 +301,13 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
 #endif
 
-        public String toString()
+        public string toString()
         {
             return getNoteString( Value );
         }

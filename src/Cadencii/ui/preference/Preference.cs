@@ -27,6 +27,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+
+
     partial class Preference : Form
     {
         private static int columnWidthHeaderProgramChange = 60;
@@ -35,7 +37,7 @@ namespace cadencii
 
         Font m_base_font;
         Font m_screen_font;
-        List<String> m_program_change = null;
+        List<string> m_program_change = null;
         private PlatformEnum m_platform = PlatformEnum.Windows;
         private List<SingerConfig> m_utau_singers = new List<SingerConfig>();
 
@@ -90,11 +92,11 @@ namespace cadencii
             comboResolControlCurve.SelectedIndex = 0;
 
             comboLanguage.Items.Clear();
-            String[] list = Messaging.getRegisteredLanguage();
+            string[] list = Messaging.getRegisteredLanguage();
             int index = 0;
             comboLanguage.Items.Add( "Default" );
             int count = 0;
-            foreach ( String s in list ) {
+            foreach ( string s in list ) {
                 count++;
                 comboLanguage.Items.Add( s );
                 if ( s.Equals( Messaging.getLanguage() ) ) {
@@ -104,7 +106,7 @@ namespace cadencii
             comboLanguage.SelectedIndex = index;
 
             SingerConfig[] dict = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-            m_program_change = new List<String>();
+            m_program_change = new List<string>();
             comboDefualtSinger.Items.Clear();
             foreach ( SingerConfig kvp in dict ) {
                 m_program_change.Add( kvp.VOICENAME );
@@ -172,7 +174,7 @@ namespace cadencii
         /// <summary>
         /// WINEPREFIXの設定値を取得します
         /// </summary>
-        public String getWinePrefix()
+        public string getWinePrefix()
         {
             return textWinePrefix.Text;
         }
@@ -180,7 +182,7 @@ namespace cadencii
         /// <summary>
         /// WINEPREFIXの設定値を設定します
         /// </summary>
-        public void setWinePrefix( String value )
+        public void setWinePrefix( string value )
         {
             textWinePrefix.Text = value;
         }
@@ -188,7 +190,7 @@ namespace cadencii
         /// <summary>
         /// WINETOPの設定値を取得します
         /// </summary>
-        public String getWineTop()
+        public string getWineTop()
         {
             return textWineTop.Text;
         }
@@ -196,7 +198,7 @@ namespace cadencii
         /// <summary>
         /// WINETOPの設定値を設定します
         /// </summary>
-        public void setWineTop( String value )
+        public void setWineTop( string value )
         {
             textWineTop.Text = value;
         }
@@ -247,7 +249,7 @@ namespace cadencii
             int c = comboDefaultSynthesizer.Items.Count;
             int select_indx = 0;
             for ( int i = 0; i < c; i++ ) {
-                String str = (String)comboDefaultSynthesizer.Items[i];
+                string str = (string)comboDefaultSynthesizer.Items[i];
                 RendererKind p = RendererKindUtil.fromString( str );
                 if ( p == value ) {
                     select_indx = i;
@@ -263,9 +265,9 @@ namespace cadencii
         /// <returns></returns>
         public RendererKind getDefaultSynthesizer()
         {
-            String selstr = (String)comboDefaultSynthesizer.SelectedItem;
+            string selstr = (string)comboDefaultSynthesizer.SelectedItem;
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
-                String str = p.getString();
+                string str = p.getString();
                 if ( str.Equals( selstr ) ) {
                     return p;
                 }
@@ -842,13 +844,13 @@ namespace cadencii
             groupUtauCores.Text = _( "UTAU Cores" );
             labelWavtoolPath.Text = _( "Path:" );
             chkWavtoolWithWine.Text = _( "Invoke wavtool with Wine" );
-            listResampler.SetColumnHeaders( new String[] { _( "path" ) } );
+            listResampler.SetColumnHeaders( new string[] { _( "path" ) } );
             labelResamplerWithWine.Text = _( "Check the box to use Wine" );
             checkEnableWideCharacterWorkaround.Text = _( "Enable Workaround for Wide-Character Path" );
             #endregion
 
             #region tabUtausingers
-            listSingers.SetColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
+            listSingers.SetColumnHeaders( new string[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.Text = _( "Add" );
             btnRemove.Text = _( "Remove" );
             btnUp.Text = _( "Up" );
@@ -869,11 +871,11 @@ namespace cadencii
             #endregion
         }
 
-        public String getLanguage()
+        public string getLanguage()
         {
             int index = comboLanguage.SelectedIndex;
             if ( 0 <= index && index < comboLanguage.Items.Count ) {
-                String title = (String)comboLanguage.Items[index];
+                string title = (string)comboLanguage.Items[index];
                 if ( title.Equals( "Default" ) ) {
                     return "";
                 } else {
@@ -938,7 +940,7 @@ namespace cadencii
             chkEnableAutoVibrato.Checked = value;
         }
 
-        public String getAutoVibratoType1()
+        public string getAutoVibratoType1()
         {
             int count = -1;
             int index = comboAutoVibratoType1.SelectedIndex;
@@ -950,7 +952,7 @@ namespace cadencii
             }
         }
 
-        public void setAutoVibratoType1( String value )
+        public void setAutoVibratoType1( string value )
         {
             for ( int i = 0; i < comboAutoVibratoType1.Items.Count; i++ ) {
                 VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType1.Items[i];
@@ -964,7 +966,7 @@ namespace cadencii
             }
         }
 
-        public String getAutoVibratoType2()
+        public string getAutoVibratoType2()
         {
             int count = -1;
             int index = comboAutoVibratoType2.SelectedIndex;
@@ -976,7 +978,7 @@ namespace cadencii
             }
         }
 
-        public void setAutoVibratoType2( String value )
+        public void setAutoVibratoType2( string value )
         {
             for ( int i = 0; i < comboAutoVibratoType2.Items.Count; i++ ) {
                 VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoType2.Items[i];
@@ -990,7 +992,7 @@ namespace cadencii
             }
         }
 
-        public String getAutoVibratoTypeCustom()
+        public string getAutoVibratoTypeCustom()
         {
             int count = -1;
             int index = comboAutoVibratoTypeCustom.SelectedIndex;
@@ -1002,7 +1004,7 @@ namespace cadencii
             }
         }
 
-        public void setAutoVibratoTypeCustom( String icon_id )
+        public void setAutoVibratoTypeCustom( string icon_id )
         {
             for ( int i = 0; i < comboAutoVibratoTypeCustom.Items.Count; i++ ) {
                 VibratoHandle handle = (VibratoHandle)comboAutoVibratoTypeCustom.Items[i];
@@ -1109,7 +1111,7 @@ namespace cadencii
             UpdateFonts( m_base_font.getName() );
         }
 
-        public String getDefaultSingerName()
+        public string getDefaultSingerName()
         {
             if ( comboDefualtSinger.SelectedIndex >= 0 ) {
                 return m_program_change[ comboDefualtSinger.SelectedIndex ];
@@ -1118,7 +1120,7 @@ namespace cadencii
             }
         }
 
-        public void setDefaultSingerName( String value )
+        public void setDefaultSingerName( string value )
         {
             int index = -1;
             for ( int i = 0; i < m_program_change.Count; i++ ) {
@@ -1132,15 +1134,15 @@ namespace cadencii
             }
         }
 
-        public void copyResamplersConfig( List<String> ret, List<Boolean> with_wine )
+        public void copyResamplersConfig( List<string> ret, List<Boolean> with_wine )
         {
             for ( int i = 0; i < listResampler.Items.Count; i++ ) {
-                ret.Add( (String)listResampler.Items[i].SubItems[0].Text );
+                ret.Add( (string)listResampler.Items[i].SubItems[0].Text );
                 with_wine.Add( listResampler.Items[i].Checked );
             }
         }
 
-        public void setResamplersConfig( List<String> path, List<Boolean> with_wine )
+        public void setResamplersConfig( List<string> path, List<Boolean> with_wine )
         {
             int size = listResampler.Items.Count;
             for ( int i = 0; i < size; i++ ) {
@@ -1151,7 +1153,7 @@ namespace cadencii
             }
             for ( int i = 0; i < path.Count; i++ ) {
                 listResampler.AddRow(
-                    new String[] { path[i] }, with_wine[i] );
+                    new string[] { path[i] }, with_wine[i] );
             }
         }
 
@@ -1165,22 +1167,22 @@ namespace cadencii
             return chkWavtoolWithWine.Checked;
         }
 
-        public String getPathWavtool()
+        public string getPathWavtool()
         {
             return txtWavtool.Text;
         }
 
-        public void setPathWavtool( String value )
+        public void setPathWavtool( string value )
         {
             txtWavtool.Text = value;
         }
 
-        public String getPathAquesTone()
+        public string getPathAquesTone()
         {
             return txtAquesTone.Text;
         }
 
-        public void setPathAquesTone( String value )
+        public void setPathAquesTone( string value )
         {
             txtAquesTone.Text = value;
         }
@@ -1253,17 +1255,17 @@ namespace cadencii
             openUtauCore.SetSelectedFile("resampler.exe");
             var dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                String path = openUtauCore.FileName;
+                string path = openUtauCore.FileName;
                 bool check = false;
                 bool is_mac = isMac();
                 if ( is_mac ) {
                     check = isWindowsExecutable( path );
                 }
-                listResampler.AddRow( new String[] { path }, check );
+                listResampler.AddRow( new string[] { path }, check );
                 if ( txtWavtool.Text == "" ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
-                    String wavtool = Path.Combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
+                    string wavtool = Path.Combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if (System.IO.File.Exists(wavtool)) {
                         txtWavtool.Text = wavtool;
                         check = false;
@@ -1291,7 +1293,7 @@ namespace cadencii
                 return;
             }
 
-            String sel = (String)listResampler.Items[index].SubItems[0].Text;
+            string sel = (string)listResampler.Items[index].SubItems[0].Text;
             bool chk = listResampler.Items[index].Checked;
             listResampler.Items[index].SubItems[0].Text = listResampler.Items[index + delta].SubItems[0].Text;
             listResampler.Items[index].Checked = listResampler.Items[index + delta].Checked;
@@ -1330,7 +1332,7 @@ namespace cadencii
             }
             var dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                String path = openUtauCore.FileName;
+                string path = openUtauCore.FileName;
                 txtWavtool.Text = path;
                 bool is_mac = isMac();
                 bool check = false;
@@ -1339,13 +1341,13 @@ namespace cadencii
                 }
                 chkWavtoolWithWine.Checked = check;
                 if ( listResampler.Items.Count == 0 ) {
-                    String resampler = Path.Combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
+                    string resampler = Path.Combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if (System.IO.File.Exists(resampler)) {
                         check = false;
                         if ( is_mac ) {
                             check = isWindowsExecutable( resampler );
                         }
-                        listResampler.AddRow( new String[] { resampler }, check );
+                        listResampler.AddRow( new string[] { resampler }, check );
                     }
                 }
             }
@@ -1363,7 +1365,7 @@ namespace cadencii
             }
             var dr = AppManager.showModalDialog( dialog, true, this );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
-                String path = dialog.FileName;
+                string path = dialog.FileName;
                 text_box.Text = path;
             }
         }
@@ -1371,7 +1373,7 @@ namespace cadencii
         public void btnAdd_Click( Object sender, EventArgs e )
         {
             if ( folderBrowserSingers.ShowDialog( this ) == DialogResult.OK ) {
-                String dir = folderBrowserSingers.SelectedPath;
+                string dir = folderBrowserSingers.SelectedPath;
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
                 sout.println("Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + Directory.Exists(dir));
@@ -1484,7 +1486,7 @@ namespace cadencii
             OpenFileDialog dialog = null;
             try {
                 dialog = new OpenFileDialog();
-                String dir = textWinePrefix.Text;
+                string dir = textWinePrefix.Text;
                 if ( dir != null && dir.Length > 0 ) {
                     dialog.SetSelectedFile(Path.Combine( dir, "a" ));
                 }
@@ -1505,7 +1507,7 @@ namespace cadencii
             OpenFileDialog dialog = null;
             try {
                 dialog = new OpenFileDialog();
-                String dir = textWineTop.Text;
+                string dir = textWineTop.Text;
                 if ( dir != null && dir.Length > 0 ) {
                     dialog.SetSelectedFile(Path.Combine( dir, "a" ));
                 }
@@ -1535,7 +1537,7 @@ namespace cadencii
             return false;
         }
 
-        private bool isWindowsExecutable( String path )
+        private bool isWindowsExecutable( string path )
         {
             if (!System.IO.File.Exists(path)) {
                 return false;
@@ -1645,12 +1647,12 @@ namespace cadencii
             }
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }
 
-        private void UpdateFonts( String font_name )
+        private void UpdateFonts( string font_name )
         {
             if ( font_name == null ) {
                 return;
@@ -1672,7 +1674,7 @@ namespace cadencii
             for ( int i = 0; i < m_utau_singers.Count; i++ ) {
                 m_utau_singers[ i ].Program = i;
                 listSingers.AddRow(
-                    new String[] { 
+                    new string[] { 
                         m_utau_singers[ i ].Program + "",
                         m_utau_singers[ i ].VOICENAME, 
                         m_utau_singers[ i ].VOICEIDSTR } );

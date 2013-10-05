@@ -22,6 +22,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 
@@ -40,16 +41,16 @@ namespace cadencii.vsq
         /// <summary>
         /// キャプション。
         /// </summary>
-        public String Caption;
+        public string Caption;
         /// <summary>
         /// この歌手設定を一意に識別するためのIDです。
         /// </summary>
-        public String IconID;
+        public string IconID;
         /// <summary>
         /// ユーザ・フレンドリー名。
         /// このフィールドの値は、他の歌手設定のユーザ・フレンドリー名と重複する場合があります。
         /// </summary>
-        public String IDS;
+        public string IDS;
         public int Index;
         /// <summary>
         /// ゲートタイム長さ。

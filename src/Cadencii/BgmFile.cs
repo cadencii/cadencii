@@ -17,10 +17,11 @@ package cadencii;
 using System;
 
 namespace cadencii {
+
 #endif
 
     public class BgmFile : ICloneable {
-        public String file;
+        public string file;
         public int feder;
         public int panpot;
         public int mute;

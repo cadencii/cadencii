@@ -26,6 +26,8 @@ using System.ComponentModel;
 using System.Reflection;
 using cadencii.apputil;
 
+
+
 namespace cadencii
 {
 #endif
@@ -87,7 +89,7 @@ namespace cadencii
             }
         }
 
-        public override String DisplayName
+        public override string DisplayName
         {
             get
             {
@@ -96,7 +98,7 @@ namespace cadencii
         }
 #endif
 
-        public String getDisplayName( String name )
+        public string getDisplayName( string name )
         {
             if ( name.Equals( "Clock" ) ) {
                 return _( "Clock" );
@@ -146,7 +148,7 @@ namespace cadencii
             return _( name );
         }
 
-        private static String _( String id ) {
+        private static string _( string id ) {
             return Messaging.getMessage( id );
         }
     }

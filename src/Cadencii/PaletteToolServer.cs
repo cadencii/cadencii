@@ -24,6 +24,7 @@ using cadencii.vsq;
 using cadencii.xml;
 
 namespace cadencii {
+
     /// <summary>
     /// パレットツールを一元管理するクラス
     /// </summary>
@@ -31,20 +32,20 @@ namespace cadencii {
         /// <summary>
         /// 読み込まれたパレットツールのコレクション
         /// </summary>
-        public static SortedDictionary<String, Object> loadedTools = new SortedDictionary<String, Object>();
+        public static SortedDictionary<string, Object> loadedTools = new SortedDictionary<string, Object>();
 
         /// <summary>
         /// パレットツールを読み込みます
         /// </summary>
         public static void init() {
-            String path = Utility.getToolPath();
+            string path = Utility.getToolPath();
             if ( !Directory.Exists( path ) ) {
                 return;
             }
 
             FileInfo[] files = new DirectoryInfo( path ).GetFiles( "*.txt" );
             foreach ( FileInfo file in files ) {
-                String code = "";
+                string code = "";
                 StreamReader sr = null;
                 try {
                     sr = new StreamReader( file.FullName );
@@ -62,7 +63,7 @@ namespace cadencii {
                 }
 
                 Assembly asm = null;
-                List<String> errors = new List<String>();
+                List<string> errors = new List<string>();
                 try {
                     asm = (new PluginLoader()).compileScript( code, errors );
                 } catch ( Exception ex ) {
@@ -84,9 +85,9 @@ namespace cadencii {
                             AppManager.debugWriteLine( "t.FullName=" + t.FullName );
 #endif
                             Object instance = asm.CreateInstance( t.FullName );
-                            String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
-                            String cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
-                            String config = Path.Combine( dir, cfg );
+                            string dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
+                            string cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
+                            string config = Path.Combine( dir, cfg );
                             if ( File.Exists( config ) ) {
                                 XmlStaticMemberSerializer xsms = new XmlStaticMemberSerializer( instance.GetType() );
                                 FileStream fs = null;
@@ -118,7 +119,7 @@ namespace cadencii {
                                     }
                                 }
                             }
-                            String id = Path.GetFileNameWithoutExtension( file.FullName );
+                            string id = Path.GetFileNameWithoutExtension( file.FullName );
                             loadedTools[ id] =  instance ;
                         } catch ( Exception ex ) {
                             serr.println( "PlaetteToolServer#init; ex=" + ex );
@@ -128,7 +129,7 @@ namespace cadencii {
             }
         }
 
-        public static String _( String id ) {
+        public static string _( string id ) {
             return Messaging.getMessage( id );
         }
 
@@ -140,7 +141,7 @@ namespace cadencii {
         /// <param name="vsq_event_intrenal_ids">編集対象のInternalIDのリスト</param>
         /// <param name="button">パレットツールが押し下げられた時のマウスボタンの種類</param>
         /// <returns>パレットツールによって編集が加えられた場合true。そうでなければfalse(パレットツールがエラーを起こした場合も含む)。</returns>
-        public static bool invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
+        public static bool invokePaletteTool( string id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.ContainsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 VsqTrack item = (VsqTrack)vsq.Track[ track ].clone();

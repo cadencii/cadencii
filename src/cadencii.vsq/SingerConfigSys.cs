@@ -27,6 +27,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     public class SingerConfigSys
@@ -41,18 +42,18 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="path_voicedb">音源のデータディレクトリ(ex:"C:\Program Files\VOCALOID2\voicedbdir")</param>
         /// <param name="path_installed_singers">音源のインストールディレクトリ(ex:new String[]{ "C:\Program Files\VOCALOID2\voicedbdir\BXXXXXXXXXXXXXXX", "D:\singers\BNXXXXXXXXXX" })</param>
-        public SingerConfigSys( String path_voicedb, String[] path_installed_singers )
+        public SingerConfigSys( string path_voicedb, string[] path_installed_singers )
         {
             m_installed_singers = new List<SingerConfig>();
             m_singer_configs = new List<SingerConfig>();
-            String map = Path.Combine( path_voicedb, "voice.map" );
+            string map = Path.Combine( path_voicedb, "voice.map" );
             if (!System.IO.File.Exists(map)) {
                 return;
             }
 
             // インストールされている歌手の情報を読み取る。miku.vvd等から。
             for ( int j = 0; j < path_installed_singers.Length; j++ ) {
-                String ipath = path_installed_singers[j];
+                string ipath = path_installed_singers[j];
 #if DEBUG
                 sout.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
 #endif
@@ -60,7 +61,7 @@ namespace cadencii.vsq
                 //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
                 //      これで治っているかどうか要確認
                 if (Directory.Exists(ipath)) {
-                    String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
+                    string[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                     if ( vvds.Length > 0 ) {
                         SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
                         m_installed_singers.Add( installed );
@@ -80,7 +81,7 @@ namespace cadencii.vsq
                         fs.read( dat, 0, 8 );
                         long value = PortUtil.make_int64_le( dat );
                         if ( value >= 1 ) {
-                            String vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
+                            string vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
                             SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
                             m_singer_configs.Add( item );
                         }
@@ -100,7 +101,7 @@ namespace cadencii.vsq
 
             // m_singer_configsの情報から、m_installed_singersの歌唱言語情報を類推する
             foreach (var sc in m_installed_singers) {
-                String searchid = sc.VOICEIDSTR;
+                string searchid = sc.VOICEIDSTR;
                 foreach (var sc2 in m_singer_configs) {
                     if ( sc2.VOICEIDSTR.Equals( searchid ) ) {
                         sc.Language = sc2.Language;

@@ -18,6 +18,8 @@ using cadencii;
 using cadencii.java.awt;
 using cadencii.java.util;
 
+
+
 namespace cadencii
 {
     public class FormBezierPointEditUiImpl : Form, FormBezierPointEditUi
@@ -236,7 +238,7 @@ namespace cadencii
 
         #region helper methods
 
-        private static String _( String message )
+        private static string _( string message )
         {
             return Messaging.getMessage( message );
         }

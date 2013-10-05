@@ -16,10 +16,11 @@ using System;
 
 namespace cadencii.java.io {
 
+
     public class RandomAccessFile : InputStream {
         private System.IO.FileStream m_stream;
 
-        public RandomAccessFile( String name, String mode ) {
+        public RandomAccessFile( string name, string mode ) {
             if( mode == "r" ){
                 m_stream = new System.IO.FileStream( name, System.IO.FileMode.Open, System.IO.FileAccess.Read );
             } else if ( mode == "rw" ) {

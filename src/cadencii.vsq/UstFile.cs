@@ -26,6 +26,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -45,16 +46,16 @@ namespace cadencii.vsq
 
         public Object Tag;
         private float m_tempo = 120.00f;
-        private String m_project_name = "";
-        private String m_voice_dir = "";
-        private String m_out_file = "";
-        private String m_cache_dir = "";
-        private String m_tool1 = "";
-        private String m_tool2 = "";
+        private string m_project_name = "";
+        private string m_voice_dir = "";
+        private string m_out_file = "";
+        private string m_cache_dir = "";
+        private string m_tool1 = "";
+        private string m_tool2 = "";
         private List<UstTrack> m_tracks = new List<UstTrack>();
         private List<TempoTableEntry> m_tempo_table;
 
-        public UstFile( String path )
+        public UstFile( string path )
         {
             BufferedReader sr = null;
             try {
@@ -63,7 +64,7 @@ namespace cadencii.vsq
                 sout.println( "UstFile#.ctor; path=" + path );
                 sout.println( "UstFile#.ctor; (sr==null)=" + (sr == null) );
 #endif
-                String line = sr.readLine();
+                string line = sr.readLine();
 
                 UstTrack track = new UstTrack();
                 int type = 0; //0 => reading "SETTING" section
@@ -89,7 +90,7 @@ namespace cadencii.vsq
                             ue = new UstEvent();
                             type = 1;
                         }
-                        String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
+                        string s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
                             index = int.Parse( s );
                         } catch ( Exception ex ) {
@@ -109,7 +110,7 @@ namespace cadencii.vsq
 #if DEBUG
                         sout.println( "line=" + line );
 #endif
-                        String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
+                        string[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
                         if ( type == 0 ) {
                             // reading "SETTING" section
                             if ( spl[0] == "Tempo" ) {
@@ -168,7 +169,7 @@ namespace cadencii.vsq
                                     } catch ( Exception ex ) {
                                     }
                                 } else if ( spl[0] == "Piches" ) {
-                                    String[] spl2 = PortUtil.splitString( spl[1], ',' );
+                                    string[] spl2 = PortUtil.splitString( spl[1], ',' );
                                     float[] t = new float[spl2.Length];
                                     for ( int i = 0; i < spl2.Length; i++ ) {
                                         float v = 0;
@@ -226,8 +227,8 @@ namespace cadencii.vsq
                                     } catch ( Exception ex ) {
                                     }
                                 } else {
-                                    String name = spl[0];
-                                    String value = spl[1];
+                                    string name = spl[0];
+                                    string value = spl[1];
                                     if ( ue.Properties == null ) {
                                         ue.Properties = new List<UstEventProperty>();
                                     }
@@ -481,37 +482,37 @@ namespace cadencii.vsq
         {
         }
 
-        public void setWavTool( String value )
+        public void setWavTool( string value )
         {
             m_tool1 = value;
         }
 
-        public String getWavTool()
+        public string getWavTool()
         {
             return m_tool1;
         }
 
-        public void setResampler( String value )
+        public void setResampler( string value )
         {
             m_tool2 = value;
         }
 
-        public String getResampler()
+        public string getResampler()
         {
             return m_tool2;
         }
 
-        public void setVoiceDir( String value )
+        public void setVoiceDir( string value )
         {
             m_voice_dir = value;
         }
 
-        public String getVoiceDir()
+        public string getVoiceDir()
         {
             return m_voice_dir;
         }
 
-        public String getProjectName()
+        public string getProjectName()
         {
             return m_project_name;
         }
@@ -604,7 +605,7 @@ namespace cadencii.vsq
             return clock * sec_per_clock;
         }
 
-        public void write( String file )
+        public void write( string file )
         {
             UstFileWriteOptions opt = new UstFileWriteOptions();
             opt.settingCacheDir = true;
@@ -619,7 +620,7 @@ namespace cadencii.vsq
             write( file, opt );
         }
 
-        public void write( String file, bool print_track_end )
+        public void write( string file, bool print_track_end )
         {
             UstFileWriteOptions opt = new UstFileWriteOptions();
             opt.settingCacheDir = true;
@@ -634,7 +635,7 @@ namespace cadencii.vsq
             write( file, opt );
         }
 
-        public void write( String file, UstFileWriteOptions options )
+        public void write( string file, UstFileWriteOptions options )
         {
             InternalStreamWriter sw = null;
             try {

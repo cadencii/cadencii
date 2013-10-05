@@ -16,6 +16,8 @@ package cadencii;
 #else
 using System;
 
+
+
 namespace cadencii.utau {
 #endif
 
@@ -23,8 +25,8 @@ namespace cadencii.utau {
     /// 原音設定の引数．
     /// </summary>
     public struct OtoArgs {
-        public String fileName;
-        public String Alias;
+        public string fileName;
+        public string Alias;
         public float msOffset;
         public float msConsonant;
         public float msBlank;

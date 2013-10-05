@@ -26,6 +26,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -201,10 +202,10 @@ namespace cadencii.vsq
             return Events;
         }
 
-        public VsqBPList getElement( String curve )
+        public VsqBPList getElement( string curve )
         {
             if( curve == null ) return null;
-            String search = curve.Trim().ToLower();
+            string search = curve.Trim().ToLower();
             if ( search == "bre" ) {
                 return this.BRE;
             } else if ( search == "bri" ) {
@@ -256,10 +257,10 @@ namespace cadencii.vsq
             }
         }
 
-        public void setElement( String curve, VsqBPList value )
+        public void setElement( string curve, VsqBPList value )
         {
             if( curve == null ) return;
-            String search = curve.Trim().ToLower();
+            string search = curve.Trim().ToLower();
             if ( search == "bre" ) {
                 this.BRE = value;
             } else if ( search == "bri" ) {
@@ -350,7 +351,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static String getCurveName( int index )
+        public static string getCurveName( int index )
         {
             switch ( index ) {
                 case 0:
@@ -381,7 +382,7 @@ namespace cadencii.vsq
         /// <summary>
         /// Singerプロパティに指定されている
         /// </summary>
-        public String getSinger()
+        public string getSinger()
         {
             if( Events != null ){
                 foreach (var item in Events.iterator()) {
@@ -393,7 +394,7 @@ namespace cadencii.vsq
             return "";
         }
 
-        public void setSinger( String value )
+        public void setSinger( string value )
         {
             if( Events == null ) return;
             foreach (var item in Events.iterator()) {
@@ -520,7 +521,7 @@ namespace cadencii.vsq
             for ( int i = 0; i < handle.Count; i++ ) {
                 handle[ i ].write( sw );
             }
-            String version = Common.Version;
+            string version = Common.Version;
             if ( PIT.size() > 0 ) {
                 PIT.print( sw, start, "[PitchBendBPList]" );
             }
@@ -616,7 +617,7 @@ namespace cadencii.vsq
             while ( i < temp.Count ) {
                 VsqEvent item = temp[i];
                 if ( !item.ID.Equals( VsqID.EOS ) ) {
-                    String ids = "ID#" + PortUtil.formatDecimal( "0000", item.ID.value );
+                    string ids = "ID#" + PortUtil.formatDecimal( "0000", item.ID.value );
                     int clock = temp[i].Clock;
                     while ( i + 1 < temp.Count && clock == temp[i + 1].Clock ) {
                         i++;
@@ -656,7 +657,7 @@ namespace cadencii.vsq
         /// <summary>
         /// 最初のトラック以外の一般のメタテキストを構築。(Masterが作られない)
         /// </summary>
-        public VsqMetaText( String name, String singer )
+        public VsqMetaText( string name, string singer )
 #if JAVA
         {
 #else
@@ -674,7 +675,7 @@ namespace cadencii.vsq
         /// 最初のトラックのメタテキストを構築。(Masterが作られる)
         /// </summary>
         /// <param name="pre_measure"></param>
-        public VsqMetaText( String name, String singer, int pre_measure )
+        public VsqMetaText( string name, string singer, int pre_measure )
 #if JAVA
         {
 #else
@@ -688,7 +689,7 @@ namespace cadencii.vsq
 #endif
         }
 
-        private VsqMetaText( String name, int pre_measure, String singer, bool is_first_track )
+        private VsqMetaText( string name, int pre_measure, string singer, bool is_first_track )
         {
             Common = new VsqCommon( name, 179, 181, 123, 1, 1 );
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );
@@ -763,7 +764,7 @@ namespace cadencii.vsq
             POR = new VsqBPList( "por", 64, 0, 127 );
             OPE = new VsqBPList( "ope", 127, 0, 127 );
 
-            ByRef<String> last_line = new ByRef<String>( sr.readLine() );
+            ByRef<string> last_line = new ByRef<string>( sr.readLine() );
             while ( true ) {
                 #region "TextMemoryStreamから順次読込み"
                 if ( last_line.value.Length == 0 ) {
@@ -778,13 +779,13 @@ namespace cadencii.vsq
                 } else if ( last_line.value == "[EventList]" ) {
                     last_line.value = sr.readLine();
                     while ( !last_line.value.StartsWith( "[" ) ) {
-                        String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
+                        string[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
                         int clock = int.Parse( spl2[0] );
                         int id_number = -1;
                         if ( spl2[1] != "EOS" ) {
-                            String[] ids = PortUtil.splitString( spl2[1], ',' );
+                            string[] ids = PortUtil.splitString( spl2[1], ',' );
                             for ( int i = 0; i < ids.Length; i++ ) {
-                                String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
+                                string[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
                                 id_number = int.Parse( spl3[1] );
                                 t_event_list.Add( new ValuePair<int, int>( clock, id_number ) );
                             }
@@ -844,13 +845,13 @@ namespace cadencii.vsq
                 } else if ( last_line.value == "[OpeningBPList]" ) {
                     last_line.value = OPE.appendFromText( sr );
                 } else {
-                    String buffer = last_line.value;
+                    string buffer = last_line.value;
                     buffer = buffer.Replace( "[", "" );
                     buffer = buffer.Replace( "]", "" );
 #if DEBUG
                     sout.println( "VsqMetaText#.ctor; buffer=" + buffer );
 #endif
-                    String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
+                    string[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
                     int index = int.Parse( spl[1] );
                     if ( last_line.value.StartsWith( "[ID#" ) ) {
                         __id[index] = new VsqID( sr, index, last_line );

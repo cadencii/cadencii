@@ -36,6 +36,7 @@ using cadencii.windows.forms;
 namespace cadencii
 {
     using Graphics = cadencii.java.awt.Graphics2D;
+
 #endif
 
 #if JAVA
@@ -56,7 +57,7 @@ namespace cadencii
 
         private double m_scroll_started;
         private AuthorListEntry[] m_credit;
-        private String m_version;
+        private string m_version;
         private bool m_credit_mode = false;
         private float m_last_t = 0f;
         private float m_last_speed = 0f;
@@ -65,14 +66,14 @@ namespace cadencii
         private int m_button_width_credit = 75;
         private java.awt.Image m_scroll = null;
         private java.awt.Image m_scroll_with_id = null;
-        private String m_app_name = "";
+        private string m_app_name = "";
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
         private bool m_shadow_enablde = false;
         private System.Windows.Forms.Timer timer;
         private bool m_show_twitter_id = false;
 
-        public VersionInfo( String app_name, String version )
+        public VersionInfo( string app_name, string version )
         {
 #if JAVA
             super();
@@ -120,8 +121,8 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            String about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
-            String credit = _( "Credit" );
+            string about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
+            string credit = _( "Credit" );
             Dimension size1 = Util.measureString( about, btnFlip.Font );
             Dimension size2 = Util.measureString( credit, btnFlip.Font );
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
@@ -136,7 +137,7 @@ namespace cadencii
             this.Text = about;
         }
 
-        public static String _( String s )
+        public static string _( string s )
         {
             return Messaging.getMessage( s );
         }
@@ -175,12 +176,12 @@ namespace cadencii
         }
 #endif
 
-        public String getAppName()
+        public string getAppName()
         {
             return m_app_name;
         }
 
-        public void setAppName( String value )
+        public void setAppName( string value )
         {
             m_app_name = value;
         }
@@ -195,7 +196,7 @@ namespace cadencii
         private Image generateAuthorListB( bool show_twitter_id )
         {
             int shadow_shift = 2;
-            String font_name = "Arial";
+            string font_name = "Arial";
             Font font = new Font( font_name, java.awt.Font.PLAIN, FONT_SIZE );
             Dimension size = Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
             int width = this.Width;
@@ -239,11 +240,11 @@ namespace cadencii
             for ( int i = 0; i < m_credit.Length; i++ ) {
                 AuthorListEntry itemi = m_credit[i];
                 Font f2 = new Font( font_name, itemi.getStyle(), FONT_SIZE );
-                String id = show_twitter_id ? itemi.getTwitterID() : "";
+                string id = show_twitter_id ? itemi.getTwitterID() : "";
                 if ( id == null ) {
                     id = "";
                 }
-                String str = itemi.getName() + (id.Equals( "" ) ? "" : (" (" + id + ")"));
+                string str = itemi.getName() + (id.Equals( "" ) ? "" : (" (" + id + ")"));
                 if ( m_shadow_enablde ) {
                     g.setColor( new Color( 0, 0, 0, 40 ) );
                     PortUtil.drawStringEx(
@@ -375,7 +376,7 @@ namespace cadencii
                 g.setColor( m_app_name_color );
                 g.drawString( m_app_name, 20, 60 );
                 g.setFont( new Font( "Arial", 0, FONT_SIZE ) );
-                String[] spl = PortUtil.splitString( m_version, '\n' );
+                string[] spl = PortUtil.splitString( m_version, '\n' );
                 int y = 100;
                 int delta = (int)(FONT_SIZE * 1.1);
                 if( delta == FONT_SIZE ){

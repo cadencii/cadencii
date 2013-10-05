@@ -22,6 +22,8 @@ import cadencii.vsq.*;
 
 #else
 
+//
+
 using System.Collections.Generic;
 
     namespace cadencii
@@ -35,6 +37,7 @@ using System.Collections.Generic;
             using cadencii;
             using cadencii.java.util;
             using cadencii.windows.forms;
+    
 #endif
 
 #endif
@@ -76,9 +79,9 @@ using System.Collections.Generic;
                         try
                         {
                             ui.listDictionariesClear();
-                            String upper_name = ui.listDictionariesGetItemAt( index );
+                            string upper_name = ui.listDictionariesGetItemAt( index );
                             bool upper_enabled = ui.listDictionariesIsRowChecked( index );
-                            String lower_name = ui.listDictionariesGetItemAt( index + 1 );
+                            string lower_name = ui.listDictionariesGetItemAt( index + 1 );
                             bool lower_enabled = ui.listDictionariesIsRowChecked( index + 1 );
 
                             ui.listDictionariesSetItemAt( index + 1, upper_name );
@@ -103,9 +106,9 @@ using System.Collections.Generic;
                         try
                         {
                             ui.listDictionariesClearSelection();
-                            String upper_name = ui.listDictionariesGetItemAt( index - 1 );
+                            string upper_name = ui.listDictionariesGetItemAt( index - 1 );
                             bool upper_enabled = ui.listDictionariesIsRowChecked( index - 1 );
-                            String lower_name = ui.listDictionariesGetItemAt( index );
+                            string lower_name = ui.listDictionariesGetItemAt( index );
                             bool lower_enabled = ui.listDictionariesIsRowChecked( index );
 
                             ui.listDictionariesSetItemAt( index - 1, lower_name );
@@ -132,7 +135,7 @@ using System.Collections.Generic;
                     ui.listDictionariesClear();
                     for ( int i = 0; i < SymbolTable.getCount(); i++ )
                     {
-                        String name = SymbolTable.getSymbolTable( i ).getName();
+                        string name = SymbolTable.getSymbolTable( i ).getName();
                         bool enabled = SymbolTable.getSymbolTable( i ).isEnabled();
                         ui.listDictionariesAddRow( name, enabled );
                     }
@@ -187,18 +190,18 @@ using System.Collections.Generic;
                     ui.buttonDownSetText( _( "Down" ) );
                 }
 
-                public List<ValuePair<String, Boolean>> getResult()
+                public List<ValuePair<string, Boolean>> getResult()
                 {
-                    List<ValuePair<String, Boolean>> ret = new List<ValuePair<String, Boolean>>();
+                    List<ValuePair<string, Boolean>> ret = new List<ValuePair<string, Boolean>>();
                     int count = ui.listDictionariesGetItemCountRow();
 #if DEBUG
                     sout.println( "FormWordDictionary#getResult; count=" + count );
 #endif
                     for ( int i = 0; i < count; i++ )
                     {
-                        String name = ui.listDictionariesGetItemAt( i );
+                        string name = ui.listDictionariesGetItemAt( i );
 
-                        ret.Add( new ValuePair<String, Boolean>(
+                        ret.Add( new ValuePair<string, Boolean>(
                             ui.listDictionariesGetItemAt( i ), ui.listDictionariesIsRowChecked( i ) ) );
                     }
                     return ret;
@@ -209,7 +212,7 @@ using System.Collections.Generic;
 
                 #region private methods
 
-                private static String _( String id )
+                private static string _( string id )
                 {
                     return Messaging.getMessage( id );
                 }

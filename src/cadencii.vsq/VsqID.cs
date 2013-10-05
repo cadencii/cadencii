@@ -25,6 +25,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -157,7 +158,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }
@@ -233,9 +234,9 @@ namespace cadencii.vsq
         /// <param name="sr">読み込み対象</param>
         /// <param name="value"></param>
         /// <param name="last_line">読み込んだ最後の行が返されます</param>
-        public VsqID( TextStream sr, int value, ByRef<String> last_line )
+        public VsqID( TextStream sr, int value, ByRef<string> last_line )
         {
-            String[] spl;
+            string[] spl;
             this.value = value;
             this.type = VsqIDType.Unknown;
             this.IconHandle_index = -2;
@@ -256,7 +257,7 @@ namespace cadencii.vsq
             last_line.value = sr.readLine();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                String search = spl[0];
+                string search = spl[0];
                 if ( search.Equals( "Type" ) ) {
                     if ( spl[1].Equals( "Anote" ) ) {
                         type = VsqIDType.Anote;
@@ -301,9 +302,9 @@ namespace cadencii.vsq
             }
         }
 
-        public String toString()
+        public string toString()
         {
-            String ret = "{Type=" + type;
+            string ret = "{Type=" + type;
             if ( type == VsqIDType.Anote ) {
                 ret += ", Length=" + getLength();
                 ret += ", Note#=" + Note;
@@ -328,7 +329,7 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }

@@ -22,6 +22,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -72,11 +73,11 @@ namespace cadencii.vsq
         /// <summary>
         /// アイコンのボタンに使用される画像ファイルへの相対パス
         /// </summary>
-        protected String button = "";
+        protected string button = "";
         /// <summary>
         /// キャプション
         /// </summary>
-        protected String caption = "";
+        protected string caption = "";
 
         /// <summary>
         /// ゲートタイム長さ
@@ -106,13 +107,13 @@ namespace cadencii.vsq
         protected VibratoBPList depthBP;
         protected VibratoBPList rateBP;
 
-        protected String buttonImageFullPath = "";
+        protected string buttonImageFullPath = "";
 
         protected IconParameter()
         {
         }
 
-        protected IconParameter( String file )
+        protected IconParameter( string file )
         {
             if ( file == null ) {
                 return;
@@ -123,16 +124,16 @@ namespace cadencii.vsq
             BufferedReader sr = null;
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( file ), "Shift_JIS" ) );
-                String line = "";
-                String strDynBPNum = "";
-                String strDynBPX = "";
-                String strDynBPY = "";
-                String strDepthBPNum = "";
-                String strDepthBPX = "";
-                String strDepthBPY = "";
-                String strRateBPNum = "";
-                String strRateBPX = "";
-                String strRateBPY = "";
+                string line = "";
+                string strDynBPNum = "";
+                string strDynBPX = "";
+                string strDynBPY = "";
+                string strDepthBPNum = "";
+                string strDepthBPX = "";
+                string strDepthBPY = "";
+                string strRateBPNum = "";
+                string strRateBPX = "";
+                string strRateBPY = "";
                 while ( (line = sr.readLine()) != null ) {
                     // コメントを除去する
                     int indx_colon = line.IndexOf( ';' );
@@ -144,12 +145,12 @@ namespace cadencii.vsq
                         continue;
                     }
                     // イコールが含まれているかどうか
-                    String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
+                    string[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
                     if ( spl.Length != 2 ) {
                         continue;
                     }
-                    String name = spl[0].Trim();// new char[]{ ' ', '\t' } );
-                    String value = spl[1].Trim();// new char[]{ ' ', '\t' } );
+                    string name = spl[0].Trim();// new char[]{ ' ', '\t' } );
+                    string value = spl[1].Trim();// new char[]{ ' ', '\t' } );
                     if ( name == "Articulation" ) {
                         if ( value == "Vibrato" ) {
                             articulation = ArticulationType.Vibrato;
@@ -262,7 +263,7 @@ namespace cadencii.vsq
         /// <param name="strBPX"></param>
         /// <param name="strBPY"></param>
         /// <returns></returns>
-        private static VibratoBPList getBPListFromText( String strNum, String strBPX, String strBPY )
+        private static VibratoBPList getBPListFromText( string strNum, string strBPX, string strBPY )
         {
             VibratoBPList ret = null;
             if ( strNum == null || (strNum != null && strNum == "") ) {
@@ -275,8 +276,8 @@ namespace cadencii.vsq
                 serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                 num = 0;
             }
-            String[] sx = PortUtil.splitString( strBPX, ',' );
-            String[] sy = PortUtil.splitString( strBPY, ',' );
+            string[] sx = PortUtil.splitString( strBPX, ',' );
+            string[] sy = PortUtil.splitString( strBPY, ',' );
             int actNum = Math.Min( num, Math.Min( sx.Length, sy.Length ) );
             if ( actNum > 0 ) {
                 float[] x = new float[actNum];
@@ -294,17 +295,17 @@ namespace cadencii.vsq
             return ret;
         }
 
-        public String getButton()
+        public string getButton()
         {
             return button;
         }
 
-        public String getButtonImageFullPath()
+        public string getButtonImageFullPath()
         {
             return buttonImageFullPath;
         }
 
-        public void setButtonImageFullPath( String value )
+        public void setButtonImageFullPath( string value )
         {
             buttonImageFullPath = value;
         }

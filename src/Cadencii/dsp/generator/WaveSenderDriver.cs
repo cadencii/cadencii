@@ -23,6 +23,8 @@ using System.Threading;
 using cadencii.java.awt;
 using cadencii.java.util;
 
+
+
 namespace cadencii
 {
 #endif
@@ -96,7 +98,7 @@ namespace cadencii
             return mVersion;
         }
 
-        public override void setConfig( String parameters )
+        public override void setConfig( string parameters )
         {
             // do nothing
         }

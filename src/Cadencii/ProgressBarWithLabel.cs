@@ -21,6 +21,8 @@ import cadencii.ui.*;
 
 using System;
 
+
+
 namespace cadencii
 {
 
@@ -73,7 +75,7 @@ namespace cadencii
         /// ラベルのテキストを設定します
         /// </summary>
         /// <param name="value">設定するテキスト</param>
-        public void setText( String value )
+        public void setText( string value )
         {
             if ( ptrUi == null ) {
                 return;
@@ -85,7 +87,7 @@ namespace cadencii
         /// ラベルのテキストを取得します
         /// </summary>
         /// <returns>ラベルのテキスト</returns>
-        public String getText()
+        public string getText()
         {
             if ( ptrUi == null ) {
                 return "";

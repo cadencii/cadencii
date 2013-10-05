@@ -9,6 +9,8 @@ using cadencii.java.util;
 using cadencii.vsq;
 using cadencii;
 
+
+
 public class Utau_Plugin_Invoker : Form {
     class StartPluginArgs {
         public string exePath = "";
@@ -257,7 +259,7 @@ public class Utau_Plugin_Invoker : Form {
                 before.AppendLine( line );
             }
         }
-        String md5_before = PortUtil.getMD5FromString( before.ToString() );
+        string md5_before = PortUtil.getMD5FromString( before.ToString() );
         // プラグインの実行ファイルを起動
         Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );
         dialog.ShowDialog();
@@ -268,7 +270,7 @@ public class Utau_Plugin_Invoker : Form {
                 after.AppendLine( line );
             }
         }
-        String md5_after = PortUtil.getMD5FromString( after.ToString() );
+        string md5_after = PortUtil.getMD5FromString( after.ToString() );
         if ( md5_before == md5_after ) {
             // 編集されなかったようだ
             return ScriptReturnStatus.NOT_EDITED;
@@ -585,7 +587,7 @@ public class Utau_Plugin_Invoker : Form {
         this.Close();
     }
 
-    public static String GetDisplayName() {
+    public static string GetDisplayName() {
         return s_display_name;
     }
 }

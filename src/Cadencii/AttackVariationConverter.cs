@@ -34,6 +34,7 @@ using cadencii.java.io;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -67,7 +68,7 @@ namespace cadencii
         }
 
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
-            if ( destinationType == typeof( String ) ) {
+            if ( destinationType == typeof( string ) ) {
                 return true;
             } else {
                 return base.CanConvertTo( context, destinationType );
@@ -79,8 +80,8 @@ namespace cadencii
         }
 
         public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
-            if ( value is String ) {
-                String s = (String)value;
+            if ( value is string ) {
+                string s = (string)value;
                 return convertFrom( s );
             } else {
                 return base.ConvertFrom( context, culture, value );
@@ -88,7 +89,7 @@ namespace cadencii
         }
 
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
-            if ( sourceType == typeof( String ) ) {
+            if ( sourceType == typeof( string ) ) {
                 return true;
             } else {
                 return base.CanConvertFrom( context, sourceType );
@@ -99,7 +100,7 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public String convertTo( Object value )
+        public string convertTo( Object value )
         {
             if ( value is AttackVariation ) {
                 return ((AttackVariation)value).mDescription;
@@ -115,7 +116,7 @@ namespace cadencii
 #if JAVA
         @Override
 #endif
-        public AttackVariation convertFrom( String value )
+        public AttackVariation convertFrom( string value )
         {
             if ( value.Equals( new AttackVariation().mDescription ) ) {
                 return new AttackVariation();
@@ -127,9 +128,9 @@ namespace cadencii
                     if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
-                    String svalue = (String)value;
+                    string svalue = (string)value;
                     foreach (var aconfig in VocaloSysUtil.attackConfigIterator( type )) {
-                        String display_string = aconfig.getDisplayString();
+                        string display_string = aconfig.getDisplayString();
                         if ( svalue.Equals( display_string ) ) {
                             return new AttackVariation( display_string );
                         }

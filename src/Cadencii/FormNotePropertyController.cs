@@ -29,6 +29,8 @@ using cadencii.apputil;
 using cadencii;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -89,7 +91,7 @@ namespace cadencii
 
         #region helper methods
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

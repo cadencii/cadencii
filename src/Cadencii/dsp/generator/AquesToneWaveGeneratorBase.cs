@@ -21,6 +21,7 @@ using cadencii.vsq;
 
 namespace cadencii
 {
+
 #if JAVA
     public class AquesToneWaveGeneratorBase implements WaveGenerator
 #else
@@ -86,7 +87,7 @@ namespace cadencii
             return VERSION;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }
@@ -152,7 +153,7 @@ namespace cadencii
             var mDriver = getDriver();
 #if DEBUG
             sout.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
-            String file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
+            string file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
             log = new System.IO.StreamWriter( file );
             log.AutoFlush = true;
 #endif
@@ -269,7 +270,7 @@ namespace cadencii
                     if ( queue.noteoff.Count > 0 ) {
 #if DEBUG
                         for ( int i = 0; i < queue.noteoff.Count; i++ ) {
-                            String str = "";
+                            string str = "";
                             MidiEvent itemi = queue.noteoff[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
@@ -299,7 +300,7 @@ namespace cadencii
                         }
 #if DEBUG
                         for ( int i = 0; i < queue.noteon.Count; i++ ) {
-                            String str = "";
+                            string str = "";
                             MidiEvent itemi = queue.noteon[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
@@ -314,7 +315,7 @@ namespace cadencii
                     if ( queue.pit.Count > 0 && !noteoff_send ) {
 #if DEBUG
                         for ( int i = 0; i < queue.pit.Count; i++ ) {
-                            String str = "";
+                            string str = "";
                             MidiEvent itemi = queue.pit[ i ];
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {

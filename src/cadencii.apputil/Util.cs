@@ -40,6 +40,7 @@ namespace cadencii.apputil
     using HANDLE = System.IntPtr;
     using WCHAR = Char;
     using ULONG = System.UInt32;
+
 #endif
 
 #if JAVA
@@ -48,7 +49,7 @@ namespace cadencii.apputil
     public static partial class Util
     {
 #endif
-        public static readonly String PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
+        public static readonly string PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
         /// <summary>
         /// このクラスのメソッド'applyFontRecurse', 'applyToolStripFontRecurse', 'applyContextMenuFontRecurse'の呼び出しを有効とするかどうか。
         /// デフォルトではtrue
@@ -422,7 +423,7 @@ namespace cadencii.apputil
         /// </summary>
         /// <param name="language_code"></param>
         /// <returns></returns>
-        public static bool isRightToLeftLanguage( String language_code )
+        public static bool isRightToLeftLanguage( string language_code )
         {
             language_code = language_code.ToLower();
             if ( language_code.Equals( "ar" ) ||

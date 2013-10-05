@@ -29,16 +29,17 @@ using cadencii.java.util;
 
 namespace cadencii.apputil
 {
+
 #endif
 
     public class Messaging {
-        private static String s_lang = "";
+        private static string s_lang = "";
         private static List<MessageBody> s_messages = new List<MessageBody>();
 
-        public static String[] getKeys( String lang ) {
+        public static string[] getKeys( string lang ) {
             foreach (var dict in s_messages) {
                 if ( lang.Equals( dict.lang ) ) {
-                    List<String> list = new List<String>();
+                    List<string> list = new List<string>();
                     foreach (var key in dict.list.Keys) {
                         list.Add( key );
                     }
@@ -48,15 +49,15 @@ namespace cadencii.apputil
             return null;
         }
 
-        public static String[] getRegisteredLanguage() {
-            List<String> res = new List<String>();
+        public static string[] getRegisteredLanguage() {
+            List<string> res = new List<string>();
             foreach (var dict in s_messages) {
                 res.Add( dict.lang );
             }
             return res.ToArray();
         }
 
-        public static String getLanguage() {
+        public static string getLanguage() {
             if ( !s_lang.Equals( "" ) ) {
                 return s_lang;
             } else {
@@ -65,7 +66,7 @@ namespace cadencii.apputil
             }
         }
 
-        public static void setLanguage( String value ) {
+        public static void setLanguage( string value ) {
             if ( !value.Equals( "" ) ) {
                 s_lang = value;
             } else {
@@ -84,21 +85,21 @@ namespace cadencii.apputil
         /// 指定されたディレクトリにある言語設定ファイルを全て読込み、メッセージリストに追加します
         /// </summary>
         /// <param name="directory"></param>
-        public static void loadMessages( String directory ) {
+        public static void loadMessages( string directory ) {
             s_messages.Clear();
-            String[] files = PortUtil.listFiles( directory, ".po" );
+            string[] files = PortUtil.listFiles( directory, ".po" );
             for ( int i = 0; i < files.Length; i++ ){
-                String name = PortUtil.getFileName( files[i] );
-                String fname = Path.Combine( directory, name );
+                string name = PortUtil.getFileName( files[i] );
+                string fname = Path.Combine( directory, name );
                 appendFromFile( fname );
             }
         }
 
-        public static void appendFromFile( String file ) {
+        public static void appendFromFile( string file ) {
             s_messages.Add( new MessageBody( PortUtil.getFileNameWithoutExtension( file ), file ) );
         }
 
-        public static MessageBodyEntry getMessageDetail( String id ) {
+        public static MessageBodyEntry getMessageDetail( string id ) {
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }
@@ -107,10 +108,10 @@ namespace cadencii.apputil
                     return mb.getMessageDetail( id );
                 }
             }
-            return new MessageBodyEntry( id, new String[] { } );
+            return new MessageBodyEntry( id, new string[] { } );
         }
 
-        public static String getMessage( String id ) {
+        public static string getMessage( string id ) {
             if ( s_lang.Equals( "" ) ) {
                 s_lang = "en";
             }

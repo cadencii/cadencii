@@ -28,6 +28,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     public class MidiFile
@@ -36,7 +37,7 @@ namespace cadencii.vsq
         private int m_format;
         private int m_time_format;
 
-        public MidiFile( String path )
+        public MidiFile( string path )
 #if JAVA
             throws FileNotFoundException
 #endif
@@ -101,12 +102,12 @@ namespace cadencii.vsq
                 }
                 m_time_format = 480;
 #if DEBUG && MIDI_PRINT_TO_FILE && !JAVA
-                String dbg = Path.Combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
+                string dbg = Path.Combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
                 BufferedWriter sw = null;
                 try {
                     sw = new BufferedWriter( new FileWriter( dbg ) );
-                    const String format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
-                    const String format0 = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2}";
+                    const string format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
+                    const string format0 = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2}";
                     for ( int track = 1; track < m_events.Count; track++ ) {
                         sw.write( "MidiFile..ctor; track=" + track );
                         sw.newLine();
@@ -125,14 +126,14 @@ namespace cadencii.vsq
                                     case 0x06:
                                         data_msb = (byte)(0xff & m_events[ track ][ i ].data[1]);
                                         ushort nrpn = (ushort)(msb << 8 | lsb);
-                                        String name = NRPN.getName( nrpn );
+                                        string name = NRPN.getName( nrpn );
                                         if ( name.Equals( "" ) ) {
                                             name = "* * UNKNOWN * *";
-                                            sw.write( String.Format( format0, m_events[ track ][ i ].clock, nrpn, name, data_msb ) );
+                                            sw.write( string.Format( format0, m_events[ track ][ i ].clock, nrpn, name, data_msb ) );
                                             sw.newLine();
                                         } else {
                                             //if ( !NRPN.is_require_data_lsb( nrpn ) ) {
-                                            sw.write( String.Format( format0, m_events[ track ][ i ].clock, nrpn, name, data_msb ) );
+                                            sw.write( string.Format( format0, m_events[ track ][ i ].clock, nrpn, name, data_msb ) );
                                             sw.newLine();
                                             //}
                                         }
@@ -140,11 +141,11 @@ namespace cadencii.vsq
                                     case 0x26:
                                         data_lsb = (byte)(0xff & m_events[ track ][ i ].data[1]);
                                         ushort nrpn2 = (ushort)(msb << 8 | lsb);
-                                        String name2 = NRPN.getName( nrpn2 );
+                                        string name2 = NRPN.getName( nrpn2 );
                                         if ( name2.Equals( "" ) ) {
                                             name2 = "* * UNKNOWN * *";
                                         }
-                                        sw.write( String.Format( format, m_events[ track ][ i ].clock, nrpn2, name2, data_msb, data_lsb ) );
+                                        sw.write( string.Format( format, m_events[ track ][ i ].clock, nrpn2, name2, data_msb, data_lsb ) );
                                         sw.newLine();
                                         break;
                                 }

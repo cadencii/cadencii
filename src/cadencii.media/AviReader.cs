@@ -23,6 +23,7 @@ using cadencii;
 
 namespace cadencii.media {
 
+
     /// <summary>
     /// Extract bitmaps from AVI files
     /// </summary>
@@ -293,7 +294,7 @@ namespace cadencii.media {
         /// <summary>Exports a frame into a bitmap file</summary>
         /// <param name="position">Position of the frame</param>
         /// <param name="dstFileName">Name ofthe file to store the bitmap</param>
-        public void ExportBitmap( int position, String dstFileName ) {
+        public void ExportBitmap( int position, string dstFileName ) {
             if ( position > countFrames ) {
                 throw new Exception( "Invalid frame position" );
             }

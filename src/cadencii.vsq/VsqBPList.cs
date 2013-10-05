@@ -27,6 +27,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -46,7 +47,7 @@ namespace cadencii.vsq
         private int maxValue = 127;
         private int minValue = 0;
         private long maxId = 0;
-        private String name = "";
+        private string name = "";
 
         const int INIT_BUFLEN = 512;
 
@@ -119,7 +120,7 @@ namespace cadencii.vsq
         /// コンストラクタ。デフォルト値はココで指定する。
         /// </summary>
         /// <param name="default_value"></param>
-        public VsqBPList( String name, int default_value, int minimum, int maximum )
+        public VsqBPList( string name, int default_value, int minimum, int maximum )
         {
             this.name = name;
             defaultValue = default_value;
@@ -184,7 +185,7 @@ namespace cadencii.vsq
         }
 #endif
 
-        public String getName()
+        public string getName()
         {
             if ( name == null ) {
                 name = "";
@@ -192,7 +193,7 @@ namespace cadencii.vsq
             return name;
         }
 
-        public void setName( String value )
+        public void setName( string value )
         {
             if ( value == null ) {
                 name = "";
@@ -202,7 +203,7 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public String Name
+        public string Name
         {
             get
             {
@@ -252,7 +253,7 @@ namespace cadencii.vsq
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Data
+        public string Data
         {
             get
             {
@@ -265,7 +266,7 @@ namespace cadencii.vsq
         }
 #endif
 
-        public String getData()
+        public string getData()
         {
             StringBuilder ret = new StringBuilder();
             for ( int i = 0; i < length; i++ ) {
@@ -278,13 +279,13 @@ namespace cadencii.vsq
             return ret.ToString();
         }
 
-        public void setData( String value )
+        public void setData( string value )
         {
             length = 0;
             maxId = 0;
-            String[] spl = PortUtil.splitString( value, ',' );
+            string[] spl = PortUtil.splitString( value, ',' );
             for ( int i = 0; i < spl.Length; i++ ) {
-                String[] spl2 = PortUtil.splitString( spl[i], '=' );
+                string[] spl2 = PortUtil.splitString( spl[i], '=' );
                 if ( spl2.Length < 2 ) {
                     continue;
                 }
@@ -549,7 +550,7 @@ namespace cadencii.vsq
             }
         }
 
-        private void printCor( ITextWriter writer, int start_clock, String header )
+        private void printCor( ITextWriter writer, int start_clock, string header )
 #if JAVA
             throws IOException
 #endif
@@ -582,7 +583,7 @@ namespace cadencii.vsq
         /// このBPListの内容をテキストファイルに書き出します
         /// </summary>
         /// <param name="writer"></param>
-        public void print( BufferedWriter writer, int start, String header )
+        public void print( BufferedWriter writer, int start, string header )
 #if JAVA
             throws IOException
 #endif
@@ -594,7 +595,7 @@ namespace cadencii.vsq
         /// このBPListの内容をテキストファイルに書き出します
         /// </summary>
         /// <param name="writer"></param>
-        public void print( ITextWriter writer, int start, String header )
+        public void print( ITextWriter writer, int start, string header )
 #if JAVA
             throws IOException
 #endif
@@ -607,7 +608,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public String appendFromText( TextStream reader )
+        public string appendFromText( TextStream reader )
         {
 #if DEBUG
             sout.println( "VsqBPList#appendFromText; start" );

@@ -27,6 +27,7 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
+
 #endif
 
     /// <summary>
@@ -82,7 +83,7 @@ namespace cadencii
             return mVersion;
         }
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( string parameter ) {
             // do nothing (ı _ ı )
         }
 

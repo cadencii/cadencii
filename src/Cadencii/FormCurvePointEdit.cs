@@ -34,6 +34,7 @@ using cadencii.java.util;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -83,7 +84,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private String _( String id )
+        private string _( string id )
         {
             return Messaging.getMessage( id );
         }

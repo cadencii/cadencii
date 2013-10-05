@@ -22,6 +22,7 @@ using cadencii.vsq;
 
 namespace cadencii
 {
+
 #if JAVA
     public class AquesToneWaveGenerator implements WaveGenerator
 #else
@@ -86,7 +87,7 @@ namespace cadencii
                         // Release
                         MidiEventQueue q = list.get( item.Clock );
 
-                        String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
+                        string strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                         int release = 64;
                         try {
                             release = int.Parse( strRelease );

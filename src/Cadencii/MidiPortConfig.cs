@@ -21,7 +21,7 @@ namespace cadencii {
 
     public class MidiPortConfig {
         public int PortNumber;
-        public String PortName;
+        public string PortName;
     }
 
 #if !JAVA

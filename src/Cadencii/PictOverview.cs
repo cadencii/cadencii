@@ -31,6 +31,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+
 #endif
 
     /// <summary>
@@ -781,7 +782,7 @@ namespace cadencii
                 Color pen_color = new java.awt.Color(0, 0, 0, 130);
 
                 int barcountx = 0;
-                String barcountstr = "";
+                string barcountstr = "";
                 for (Iterator<VsqBarLineType> itr = vsq.getBarLineIterator(clock_end * 3 / 2); itr.hasNext(); ) {
                     VsqBarLineType bar = itr.next();
                     if (bar.clock() < clock_start) {

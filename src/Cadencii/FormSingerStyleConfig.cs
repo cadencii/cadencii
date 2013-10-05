@@ -29,6 +29,8 @@ using cadencii;
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -51,7 +53,7 @@ namespace cadencii
 #endif
 
             comboTemplate.Items.Clear();
-            String[] strs = new String[]{
+            string[] strs = new string[]{
                 "[Select a template]",
                 "normal",
                 "accent",
@@ -178,7 +180,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }
@@ -207,7 +209,7 @@ namespace cadencii
         #region event handlers
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendDepth.Value + "";
+            string s = trackBendDepth.Value + "";
             if( s != txtBendDepth.Text ){
                 txtBendDepth.Text = s;
             }
@@ -234,7 +236,7 @@ namespace cadencii
 
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendLength.Value + "";
+            string s = trackBendLength.Value + "";
             if( s != txtBendLength.Text ){
                 txtBendLength.Text = s;
             }
@@ -261,7 +263,7 @@ namespace cadencii
 
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDecay.Value + "";
+            string s = trackDecay.Value + "";
             if( s != txtDecay.Text ){
                 txtDecay.Text = s;
             }
@@ -288,7 +290,7 @@ namespace cadencii
 
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
-            String s = trackAccent.Value + "";
+            string s = trackAccent.Value + "";
             if( s != txtAccent.Text ){
                 txtAccent.Text = s;
             }

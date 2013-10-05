@@ -18,20 +18,21 @@ using System.Collections.Generic;
 namespace cadencii.javax.sound.midi
 {
 
+
     // 本来ならinterface
     public class MidiDevice
     {
         public class Info
         {
-            protected String mName;
-            protected String mVendor;
-            protected String mDescription;
-            protected String mVersion;
+            protected string mName;
+            protected string mVendor;
+            protected string mDescription;
+            protected string mVersion;
 
             /// <summary>
             /// デバイス情報オブジェクトを構築します。
             /// </summary>
-            protected Info( String name, String vendor, String description, String version )
+            protected Info( string name, string vendor, string description, string version )
             {
                 mName = name;
                 mVendor = vendor;
@@ -50,7 +51,7 @@ namespace cadencii.javax.sound.midi
             /// <summary>
             /// デバイスの説明を取得します。
             /// </summary>
-            public String getDescription()
+            public string getDescription()
             {
                 return mDescription;
             }
@@ -58,7 +59,7 @@ namespace cadencii.javax.sound.midi
             /// <summary>
             /// デバイスの名前を取得します。
             /// </summary>          
-            public String getName()
+            public string getName()
             {
                 return mName;
             }
@@ -66,7 +67,7 @@ namespace cadencii.javax.sound.midi
             /// <summary>
             /// デバイスの供給会社の名前を取得します。
             /// </summary> 
-            public String getVendor()
+            public string getVendor()
             {
                 return mVendor;
             }
@@ -74,7 +75,7 @@ namespace cadencii.javax.sound.midi
             /// <summary>
             /// デバイスのバージョンを取得します。
             /// </summary>
-            public String getVersion()
+            public string getVersion()
             {
                 return mVersion;
             }
@@ -82,7 +83,7 @@ namespace cadencii.javax.sound.midi
             /// <summary>
             /// デバイス情報の文字列表現を提供します。
             /// </summary>
-            public String toString()
+            public string toString()
             {
                 return mName;
             }        
@@ -176,7 +177,7 @@ namespace cadencii.javax.sound.midi
             private int mIndex;
             private bool mIsMidiIn;
 
-            public MidiDeviceInfoImpl( String name, String vendor, String description, String version, bool is_midi_in, int index )
+            public MidiDeviceInfoImpl( string name, string vendor, string description, string version, bool is_midi_in, int index )
                 : base( name, vendor, description, version )
             {
                 mIndex = index;

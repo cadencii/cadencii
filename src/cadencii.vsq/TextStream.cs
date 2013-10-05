@@ -26,6 +26,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -56,7 +57,7 @@ namespace cadencii.vsq
             return array[position];
         }
 
-        public String readLine()
+        public string readLine()
         {
             StringBuilder sb = new StringBuilder();
             // '\n'が来るまで読み込み
@@ -113,7 +114,7 @@ namespace cadencii.vsq
             }
         }
 
-        public void write( String str )
+        public void write( string str )
         {
             int len = PortUtil.getStringLength( str );
             int newSize = length + len;
@@ -129,7 +130,7 @@ namespace cadencii.vsq
             length = newSize;
         }
 
-        public void writeLine( String str )
+        public void writeLine( string str )
         {
             write( str );
             newLine();

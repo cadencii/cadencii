@@ -51,8 +51,8 @@ namespace cadencii.vsq
         /// <summary>
         /// この歌詞のフレーズ
         /// </summary>
-        public String Phrase;
-        private List<String> mPhoneticSymbols;
+        public string Phrase;
+        private List<string> mPhoneticSymbols;
         public float UnknownFloat;
         private List<int> mConsonantAdjustments;
         public bool PhoneticSymbolProtected;
@@ -63,7 +63,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }
@@ -100,9 +100,9 @@ namespace cadencii.vsq
         /// Consonant Adjustmentの文字列形式を取得します。
         /// </summary>
         /// <returns></returns>
-        public String getConsonantAdjustment()
+        public string getConsonantAdjustment()
         {
-            String ret = "";
+            string ret = "";
             List<int> arr = getConsonantAdjustmentList();
             int size = arr.Count;
 
@@ -118,9 +118,9 @@ namespace cadencii.vsq
         /// Consonant Adjustmentを文字列形式で設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setConsonantAdjustment( String value )
+        public void setConsonantAdjustment( string value )
         {
-            List<String> spl = new List<String>();
+            List<string> spl = new List<string>();
             spl = new List<string>(value.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries));
 
             int size = spl.Count;
@@ -149,7 +149,7 @@ namespace cadencii.vsq
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String ConsonantAdjustment
+        public string ConsonantAdjustment
         {
             get
             {
@@ -224,7 +224,7 @@ namespace cadencii.vsq
         {
             Lyric result = new Lyric();
             result.Phrase = this.Phrase;
-            result.mPhoneticSymbols = new List<String>();
+            result.mPhoneticSymbols = new List<string>();
             for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
             {
                 result.mPhoneticSymbols.Add( mPhoneticSymbols[i] );
@@ -256,7 +256,7 @@ namespace cadencii.vsq
         {
             UnknownFloat = 1.0f;
             mConsonantAdjustments = new List<int>();
-            mPhoneticSymbols = new List<String>();
+            mPhoneticSymbols = new List<string>();
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="phrase">歌詞</param>
         /// <param name="phonetic_symbol">発音記号</param>
-        public Lyric( String phrase, String phonetic_symbol )
+        public Lyric( string phrase, string phonetic_symbol )
         {
             Phrase = phrase;
             setPhoneticSymbol( phonetic_symbol );
@@ -275,7 +275,7 @@ namespace cadencii.vsq
         /// 文字列(ex."a","a",0.0000,0.0)からのコンストラクタ
         /// </summary>
         /// <param name="line"></param>
-        public Lyric( String line )
+        public Lyric( string line )
         {
             int len = PortUtil.getStringLength( line );
             if ( len == 0 )
@@ -289,8 +289,8 @@ namespace cadencii.vsq
             }
             int indx = -1;
             int dquote_count = 0;
-            String work = "";
-            String consonant_adjustment = "";
+            string work = "";
+            string consonant_adjustment = "";
             for ( int i = 0; i < len; i++ )
             {
 #if JAVA
@@ -329,7 +329,7 @@ namespace cadencii.vsq
                         else if ( indx == 1 )
                         {
                             // symbols
-                            String symbols = "";
+                            string symbols = "";
                             if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) )
                             {
                                 int l = PortUtil.getStringLength( work );
@@ -398,10 +398,10 @@ namespace cadencii.vsq
         /// <summary>
         /// この歌詞の発音記号を取得します。
         /// </summary>
-        public String getPhoneticSymbol()
+        public string getPhoneticSymbol()
         {
-            List<String> symbol = getPhoneticSymbolList();
-            String ret = "";
+            List<string> symbol = getPhoneticSymbolList();
+            string ret = "";
             for ( int i = 0; i < symbol.Count; i++ )
             {
                 ret += (i == 0 ? "" : " ") + symbol[i];
@@ -412,16 +412,16 @@ namespace cadencii.vsq
         /// <summary>
         /// この歌詞の発音記号を設定します。
         /// </summary>
-        public void setPhoneticSymbol( String value )
+        public void setPhoneticSymbol( string value )
         {
-            String s = value.Replace( "  ", " " );
+            string s = value.Replace( "  ", " " );
 
             // 古い発音記号を保持しておく
-            List<String> old_symbol = null;
+            List<string> old_symbol = null;
             if ( mPhoneticSymbols != null )
             {
                 int count = mPhoneticSymbols.Count;
-                old_symbol = new List<String>();
+                old_symbol = new List<string>();
                 for ( int i = 0; i < count; i++ )
                 {
                     old_symbol.Add( mPhoneticSymbols[i] );
@@ -444,10 +444,10 @@ namespace cadencii.vsq
                     vector<string> spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
                     int size = spl.size();
 #else
-            String[] spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
+            string[] spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
             if ( mPhoneticSymbols == null )
             {
-                mPhoneticSymbols = new List<String>();
+                mPhoneticSymbols = new List<string>();
             }
             int size = spl.Length;
 #endif
@@ -481,8 +481,8 @@ namespace cadencii.vsq
                     {
                         break;
                     }
-                    String s0 = mPhoneticSymbols[i];
-                    String s1 = old_symbol[i];
+                    string s0 = mPhoneticSymbols[i];
+                    string s1 = old_symbol[i];
                     bool use_old_value = (old_symbol != null && i < old_symbol.Count) &&
                                             (s0 == s1) &&
                                             (old_adjustment != null && i < old_adjustment.Count);
@@ -502,7 +502,7 @@ namespace cadencii.vsq
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String PhoneticSymbol
+        public string PhoneticSymbol
         {
             get
             {
@@ -515,12 +515,12 @@ namespace cadencii.vsq
         }
 #endif
 
-        public List<String> getPhoneticSymbolList()
+        public List<string> getPhoneticSymbolList()
         {
 #if !__cplusplus
             if ( mPhoneticSymbols == null )
             {
-                mPhoneticSymbols = new List<String>();
+                mPhoneticSymbols = new List<string>();
             }
 #endif
             return mPhoneticSymbols;
@@ -531,14 +531,14 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="add_quatation_mark">クォーテーションマークを付けるかどうか</param>
         /// <returns>変換後の文字列</returns>
-        public String toString( bool add_quatation_mark )
+        public string toString( bool add_quatation_mark )
         {
-            String quot = (add_quatation_mark ? "\"" : "");
-            String result;
-            String phrase = (this.Phrase == null) ? "" : this.Phrase.Replace( "\"", "\"\"" );
+            string quot = (add_quatation_mark ? "\"" : "");
+            string result;
+            string phrase = (this.Phrase == null) ? "" : this.Phrase.Replace( "\"", "\"\"" );
             result = quot + phrase + quot + ",";
-            List<String> symbol = getPhoneticSymbolList();
-            String strSymbol = getPhoneticSymbol();
+            List<string> symbol = getPhoneticSymbolList();
+            string strSymbol = getPhoneticSymbol();
             if ( !add_quatation_mark )
             {
                 if ( strSymbol == null || (strSymbol != null && strSymbol == "") )
@@ -572,7 +572,7 @@ namespace cadencii.vsq
         }
 
 #if CSHARP
-        public override String ToString()
+        public override string ToString()
         {
             return toString( true );
         }

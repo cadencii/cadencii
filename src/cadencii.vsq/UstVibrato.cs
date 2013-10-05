@@ -22,6 +22,7 @@ using cadencii;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -61,10 +62,10 @@ namespace cadencii.vsq
         public float Shift;
         public float Unknown = 100;
 
-        public UstVibrato( String line )
+        public UstVibrato( string line )
         {
             if ( line.ToLower().StartsWith( "vbr=" ) ) {
-                String[] spl = PortUtil.splitString( line, '=' );
+                string[] spl = PortUtil.splitString( line, '=' );
                 spl = PortUtil.splitString( spl[1], ',' );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
                 if ( spl.Length >= 8 ) {
@@ -95,13 +96,13 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
 #endif
 
-        public String toString()
+        public string toString()
         {
             return "VBR=" + Length + "," + Period + "," + Depth + "," + In + "," + Out + "," + Phase + "," + Shift + "," + Unknown;
         }

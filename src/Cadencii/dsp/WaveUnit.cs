@@ -20,6 +20,8 @@ import cadencii.*;
 using System;
 using cadencii.java.awt;
 
+
+
 namespace cadencii
 {
 #endif
@@ -80,7 +82,7 @@ namespace cadencii
         ///     2)    parameter = "\t1\t2\t3"
         /// </summary>
         /// <param name="parameter"></param>
-        public abstract void setConfig( String parameter );
+        public abstract void setConfig( string parameter );
 
         /// <summary>
         /// この波形処理ユニットが属している回路のルートにある波形合成器を設定します
@@ -146,7 +148,7 @@ namespace cadencii
 #if JAVA
             String typename = this.getClass().getSimpleName();
 #else
-            String typename = this.GetType().Name;
+            string typename = this.GetType().Name;
 #endif
             PortUtil.drawStringEx(
                 (Graphics)graphics, typename, mFont,

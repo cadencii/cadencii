@@ -38,6 +38,8 @@ using cadencii.java.util;
 using cadencii.vsq;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -111,7 +113,7 @@ namespace cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             init();
             registerEventHandlers();
-            SortedDictionary<String, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
+            SortedDictionary<string, Keys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
             if ( dict.ContainsKey( "menuVisualIconPalette" ) ) {
                 Keys[] keys = dict[ "menuVisualIconPalette" ];
                 Keys shortcut = Keys.None;
@@ -149,7 +151,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }
@@ -164,7 +166,7 @@ namespace cadencii
         private void init()
         {
             foreach (var handle in VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 )) {
-                String icon_id = handle.IconID;
+                string icon_id = handle.IconID;
 #if JAVA
                 DraggableBButton btn = new DraggableBButton();
 #else
@@ -172,15 +174,15 @@ namespace cadencii
 #endif
                 btn.Name = icon_id;
                 btn.setHandle( handle );
-                String buttonIconPath = handle.getButtonImageFullPath();
+                string buttonIconPath = handle.getButtonImageFullPath();
 
                 bool setimg = System.IO.File.Exists(buttonIconPath);
                 if ( setimg ) {
                     btn.Image = System.Drawing.Image.FromStream( new System.IO.FileStream( buttonIconPath, System.IO.FileMode.Open, System.IO.FileAccess.Read ) );
                 } else {
                     System.Drawing.Image img = null;
-                    String str = "";
-                    String caption = handle.IDS;
+                    string str = "";
+                    string caption = handle.IDS;
                     if ( caption.Equals( "cresc_1" ) ) {
                         img = Properties.Resources.cresc1;
                     } else if ( caption.Equals( "cresc_2" ) ) {

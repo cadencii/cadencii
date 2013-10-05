@@ -27,6 +27,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -62,7 +63,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }
@@ -103,7 +104,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="phrase">歌詞</param>
         /// <param name="phonetic_symbol">発音記号</param>
-        public LyricHandle( String phrase, String phonetic_symbol )
+        public LyricHandle( string phrase, string phonetic_symbol )
         {
             L0 = new Lyric( phrase, phonetic_symbol );
         }

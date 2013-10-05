@@ -22,6 +22,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -31,14 +32,14 @@ namespace cadencii.vsq
     public class UstEventProperty
 #endif
     {
-        public String Name;
-        public String Value;
+        public string Name;
+        public string Value;
 
         public UstEventProperty()
         {
         }
 
-        public UstEventProperty( String name, String value )
+        public UstEventProperty( string name, string value )
         {
             Name = name;
             Value = value;

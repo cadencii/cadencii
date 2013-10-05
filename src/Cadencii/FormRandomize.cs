@@ -26,6 +26,8 @@ using cadencii.vsq;
 using cadencii.apputil;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -63,7 +65,7 @@ namespace cadencii
             applyLanguage();
 
             comboShiftValue.Items.Clear();
-            String[] shift_items = new String[]{
+            string[] shift_items = new string[]{
                 "1(small)",
                 "2",
                 "3(medium)",
@@ -74,7 +76,7 @@ namespace cadencii
             }
             
             comboPitPattern.Items.Clear();
-            String[] pit_pat_items = new String[]{
+            string[] pit_pat_items = new string[]{
                 "Pattern 1",
                 "Pattern 2",
                 "Pattern 3"};
@@ -83,7 +85,7 @@ namespace cadencii
             }
 
             comboPitValue.Items.Clear();
-            String[] pit_value_items = new String[]{
+            string[] pit_value_items = new string[]{
                 "1(small)",
                 "2",
                 "3(medium)",
@@ -187,7 +189,7 @@ namespace cadencii
             lockRequired = false;
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

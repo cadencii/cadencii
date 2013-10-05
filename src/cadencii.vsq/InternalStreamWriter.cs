@@ -21,6 +21,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -32,20 +33,20 @@ namespace cadencii.vsq
     class InternalStreamWriter : ITextWriter
 #endif
     {
-        private String mNL = "\n";
+        private string mNL = "\n";
 #if JAVA
         private BufferedWriter mStream;
 #else
         private System.IO.StreamWriter mStream;
 #endif
 
-        public InternalStreamWriter( String path, String encoding )
+        public InternalStreamWriter( string path, string encoding )
 #if JAVA
             throws java.io.FileNotFoundException,
                    java.io.UnsupportedEncodingException
 #endif
         {
-            mNL = new String( new char[]{ (char)0x0d, (char)0x0a } );
+            mNL = new string( new char[]{ (char)0x0d, (char)0x0a } );
 #if JAVA
             mStream = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), encoding ) );
 #else
@@ -53,7 +54,7 @@ namespace cadencii.vsq
 #endif
         }
 
-        public void write( String s )
+        public void write( string s )
 #if JAVA
             throws java.io.IOException
 #endif
@@ -65,7 +66,7 @@ namespace cadencii.vsq
 #endif
         }
         
-        public void writeLine( String s )
+        public void writeLine( string s )
 #if JAVA
             throws java.io.IOException
 #endif

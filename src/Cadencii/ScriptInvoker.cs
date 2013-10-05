@@ -17,13 +17,15 @@ using cadencii.apputil;
 using cadencii.vsq;
 using cadencii.xml;
 
+
+
 namespace cadencii
 {
     public delegate bool EditVsqScriptDelegate( VsqFile vsq );
     public delegate bool EditVsqScriptDelegateEx( VsqFileEx vsq );
     public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus( VsqFile vsq );
     public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus( VsqFileEx vsq );
-    public delegate String ScriptDelegateGetDisplayName();
+    public delegate string ScriptDelegateGetDisplayName();
 
     /// <summary>
     /// スクリプトの起動とスクリプト設定の保存を行うためのオブジェクトの纏まり．
@@ -41,11 +43,11 @@ namespace cadencii
         /// <summary>
         /// スクリプトが記述されたファイルのパス
         /// </summary>
-        public String ScriptFile;
+        public string ScriptFile;
         /// <summary>
         /// スクリプトをコンパイルしたときのエラーメッセージ
         /// </summary>
-        public String ErrorMessage;
+        public string ErrorMessage;
         /// <summary>
         /// スクリプト設定を保存し/読み込むためのXMLシリアライザ
         /// </summary>

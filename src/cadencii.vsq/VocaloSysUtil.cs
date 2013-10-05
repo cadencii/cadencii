@@ -28,6 +28,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -37,8 +38,8 @@ namespace cadencii.vsq
     {
         private static SortedDictionary<SynthesizerType, SingerConfigSys> s_singer_config_sys = new SortedDictionary<SynthesizerType, SingerConfigSys>();
         private static SortedDictionary<SynthesizerType, ExpressionConfigSys> s_exp_config_sys = new SortedDictionary<SynthesizerType, ExpressionConfigSys>();
-        private static SortedDictionary<SynthesizerType, String> s_path_vsti = new SortedDictionary<SynthesizerType, String>();
-        private static SortedDictionary<SynthesizerType, String> s_path_editor = new SortedDictionary<SynthesizerType, String>();
+        private static SortedDictionary<SynthesizerType, string> s_path_vsti = new SortedDictionary<SynthesizerType, string>();
+        private static SortedDictionary<SynthesizerType, string> s_path_editor = new SortedDictionary<SynthesizerType, string>();
         private static Boolean isInitialized = false;
         /// <summary>
         /// VOCALOID1の、デフォルトのSynthesize Engineバージョン。1.0の場合100, 1.1の場合101。規定では100(1.0)。
@@ -50,8 +51,8 @@ namespace cadencii.vsq
         /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
         /// </summary>
         private static bool dseVersion101Available = false;
-        private static readonly String header1 = "HKLM\\SOFTWARE\\VOCALOID";
-        private static readonly String header2 = "HKLM\\SOFTWARE\\VOCALOID2";
+        private static readonly string header1 = "HKLM\\SOFTWARE\\VOCALOID";
+        private static readonly string header2 = "HKLM\\SOFTWARE\\VOCALOID2";
 
         private VocaloSysUtil()
         {
@@ -98,7 +99,7 @@ namespace cadencii.vsq
             if ( isInitialized ) {
                 return;
             }
-            List<String> reg_list = new List<String>();
+            List<string> reg_list = new List<string>();
             initPrint( "SOFTWARE\\VOCALOID", header1, reg_list );
             initPrint( "SOFTWARE\\VOCALOID2", header2, reg_list );
             init( reg_list, "" );
@@ -108,7 +109,7 @@ namespace cadencii.vsq
         /// <summary>
         /// WINEPREFIXと，その内部のWindows形式の絶対パスを結合し，実際のファイルの絶対パスを取得します
         /// </summary>
-        public static String combineWinePath( String wine_prefix, String full_path )
+        public static string combineWinePath( string wine_prefix, string full_path )
         {
             if( wine_prefix == null ){
                 wine_prefix = "";
@@ -127,8 +128,8 @@ namespace cadencii.vsq
                 return wine_prefix;
             }
             char drive_letter = full_path[0];
-            String drive = new String( new char[]{ drive_letter } ).ToLower();
-            String inner_path = (full_path_len >= 3) ? full_path.Substring( 2 ).Replace( "\\", "/" ) : "";
+            string drive = new string( new char[]{ drive_letter } ).ToLower();
+            string inner_path = (full_path_len >= 3) ? full_path.Substring( 2 ).Replace( "\\", "/" ) : "";
             return Path.Combine( Path.Combine( wine_prefix, "drive_" + drive ), inner_path );
         }
 
@@ -140,7 +141,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="reg_list">レジストリ・エントリのリスト</param>
         /// <param name="wine_prefix">wineを使う場合，WINEPREFIXを指定する．そうでなければ空文字を指定</param>
-        public static void init( List<String> reg_list, String wine_prefix )
+        public static void init( List<string> reg_list, string wine_prefix )
         {
 #if DEBUG
             sout.println( "VocaloSysUtil#init; wine_prefix=" + wine_prefix );
@@ -153,9 +154,9 @@ namespace cadencii.vsq
             }
 
             // reg_listを，VOCALOIDとVOCALOID2の部分に分離する
-            List<String> dir1 = new List<String>();
-            List<String> dir2 = new List<String>();
-            foreach( String s in reg_list ){
+            List<string> dir1 = new List<string>();
+            List<string> dir2 = new List<string>();
+            foreach( string s in reg_list ){
                 if( s.StartsWith( header1 + "\\" ) ||
                     s.StartsWith( header1 + "\t" ) ){
                     dir1.Add( s );
@@ -167,14 +168,14 @@ namespace cadencii.vsq
 
             ExpressionConfigSys exp_config_sys1 = null;
             try {
-                ByRef<String> path_voicedb1 = new ByRef<String>( "" );
-                ByRef<String> path_expdb1 = new ByRef<String>( "" );
-                List<String> installed_singers1 = new List<String>();
+                ByRef<string> path_voicedb1 = new ByRef<string>( "" );
+                ByRef<string> path_expdb1 = new ByRef<string>( "" );
+                List<string> installed_singers1 = new List<string>();
 
                 // テキストファイルにレジストリの内容をプリントアウト
                 bool close = false;
-                ByRef<String> path_vsti = new ByRef<String>( "" );
-                ByRef<String> path_editor = new ByRef<String>( "" );
+                ByRef<string> path_vsti = new ByRef<string>( "" );
+                ByRef<string> path_editor = new ByRef<string>( "" );
                 initExtract( dir1,
                          header1,
                          path_vsti,
@@ -184,11 +185,11 @@ namespace cadencii.vsq
                          installed_singers1 );
                 s_path_vsti[ SynthesizerType.VOCALOID1] =  path_vsti.value ;
                 s_path_editor[ SynthesizerType.VOCALOID1] =  path_editor.value ;
-                String[] act_installed_singers1 = installed_singers1.ToArray();
-                String act_path_voicedb1 = path_voicedb1.value;
-                String act_path_editor1 = path_editor.value;
-                String act_path_expdb1 = path_expdb1.value;
-                String act_vsti1 = path_vsti.value;
+                string[] act_installed_singers1 = installed_singers1.ToArray();
+                string act_path_voicedb1 = path_voicedb1.value;
+                string act_path_editor1 = path_editor.value;
+                string act_path_expdb1 = path_expdb1.value;
+                string act_vsti1 = path_vsti.value;
                 if( wine_prefix.Length > 0 ){
                     for( int i = 0; i < act_installed_singers1.Length; i++ ){
                         act_installed_singers1[i] = combineWinePath( wine_prefix, act_installed_singers1[i] );
@@ -198,7 +199,7 @@ namespace cadencii.vsq
                     act_path_expdb1 = combineWinePath( wine_prefix, act_path_expdb1 );
                     act_vsti1 = combineWinePath( wine_prefix, act_vsti1 );
                 }
-                String expression_map1 = Path.Combine( act_path_expdb1, "expression.map" );
+                string expression_map1 = Path.Combine( act_path_expdb1, "expression.map" );
                 SingerConfigSys singer_config_sys =
                     new SingerConfigSys( act_path_voicedb1, act_installed_singers1 );
                 if (System.IO.File.Exists(expression_map1)) {
@@ -208,8 +209,8 @@ namespace cadencii.vsq
 
                 // DSE1_1.dllがあるかどうか？
                 if ( !act_vsti1.Equals( "" ) ) {
-                    String path_dll = PortUtil.getDirectoryName( act_vsti1 );
-                    String dse1_1 = Path.Combine( path_dll, "DSE1_1.dll" );
+                    string path_dll = PortUtil.getDirectoryName( act_vsti1 );
+                    string dse1_1 = Path.Combine( path_dll, "DSE1_1.dll" );
                     dseVersion101Available = System.IO.File.Exists(dse1_1);
                 } else {
                     dseVersion101Available = false;
@@ -218,20 +219,20 @@ namespace cadencii.vsq
                 // VOCALOID.iniから、DSEVersionを取得
                 if ( act_path_editor1 != null && !act_path_editor1.Equals( "" ) &&
                      System.IO.File.Exists(act_path_editor1)) {
-                    String dir = PortUtil.getDirectoryName( act_path_editor1 );
-                    String ini = Path.Combine( dir, "VOCALOID.ini" );
+                    string dir = PortUtil.getDirectoryName( act_path_editor1 );
+                    string ini = Path.Combine( dir, "VOCALOID.ini" );
                     if (System.IO.File.Exists(ini)) {
                         BufferedReader br = null;
                         try {
                             br = new BufferedReader( new InputStreamReader( new FileInputStream( ini ), "Shift_JIS" ) );
                             while ( br.ready() ) {
-                                String line = br.readLine();
+                                string line = br.readLine();
                                 if ( line == null ) continue;
                                 if ( line.Equals( "" ) ) continue;
                                 if ( line.StartsWith( "DSEVersion" ) ) {
-                                    String[] spl = PortUtil.splitString( line, '=' );
+                                    string[] spl = PortUtil.splitString( line, '=' );
                                     if ( spl.Length >= 2 ) {
-                                        String str_dse_version = spl[1];
+                                        string str_dse_version = spl[1];
                                         try {
                                             defaultDseVersion = int.Parse( str_dse_version );
                                         } catch ( Exception ex ) {
@@ -266,7 +267,7 @@ namespace cadencii.vsq
 #if JAVA
                 ex.printStackTrace();
 #endif
-                SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
+                SingerConfigSys singer_config_sys = new SingerConfigSys( "", new string[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys[ SynthesizerType.VOCALOID1] =  singer_config_sys ;
             }
@@ -277,14 +278,14 @@ namespace cadencii.vsq
 
             ExpressionConfigSys exp_config_sys2 = null;
             try {
-                ByRef<String> path_voicedb2 = new ByRef<String>( "" );
-                ByRef<String> path_expdb2 = new ByRef<String>( "" );
-                List<String> installed_singers2 = new List<String>();
+                ByRef<string> path_voicedb2 = new ByRef<string>( "" );
+                ByRef<string> path_expdb2 = new ByRef<string>( "" );
+                List<string> installed_singers2 = new List<string>();
 
                 // レジストリの中身をファイルに出力
                 bool close = false;
-                ByRef<String> path_vsti = new ByRef<String>( "" );
-                ByRef<String> path_editor = new ByRef<String>( "" );
+                ByRef<string> path_vsti = new ByRef<string>( "" );
+                ByRef<string> path_editor = new ByRef<string>( "" );
                 initExtract( dir2,
                          header2,
                          path_vsti,
@@ -294,11 +295,11 @@ namespace cadencii.vsq
                          installed_singers2 );
                 s_path_vsti[ SynthesizerType.VOCALOID2] =  path_vsti.value ;
                 s_path_editor[ SynthesizerType.VOCALOID2] =  path_editor.value ;
-                String[] act_installed_singers2 = installed_singers2.ToArray();
-                String act_path_expdb2 = path_expdb2.value;
-                String act_path_voicedb2 = path_voicedb2.value;
-                String act_path_editor2 = path_editor.value;
-                String act_vsti2 = path_vsti.value;
+                string[] act_installed_singers2 = installed_singers2.ToArray();
+                string act_path_expdb2 = path_expdb2.value;
+                string act_path_voicedb2 = path_voicedb2.value;
+                string act_path_editor2 = path_editor.value;
+                string act_vsti2 = path_vsti.value;
                 if( wine_prefix.Length > 0 ){
                     for( int i = 0; i < act_installed_singers2.Length; i++ ){
                         act_installed_singers2[i] = combineWinePath( wine_prefix, act_installed_singers2[i] );
@@ -308,7 +309,7 @@ namespace cadencii.vsq
                     act_path_editor2 = combineWinePath( wine_prefix, act_path_editor2 );
                     act_vsti2 = combineWinePath( wine_prefix, act_vsti2 );
                 }
-                String expression_map2 = Path.Combine( act_path_expdb2, "expression.map" );
+                string expression_map2 = Path.Combine( act_path_expdb2, "expression.map" );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( act_path_voicedb2, act_installed_singers2 );
                 if (System.IO.File.Exists(expression_map2)) {
                     exp_config_sys2 = new ExpressionConfigSys( act_path_editor2, act_path_expdb2 );
@@ -319,7 +320,7 @@ namespace cadencii.vsq
 #if JAVA
                 ex.printStackTrace();
 #endif
-                SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
+                SingerConfigSys singer_config_sys = new SingerConfigSys( "", new string[] { } );
                 exp_config_sys2 = null;
                 s_singer_config_sys[ SynthesizerType.VOCALOID2] =  singer_config_sys ;
             }
@@ -341,7 +342,7 @@ namespace cadencii.vsq
         /// <param name="vibrato_length"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static VibratoHandle getDefaultVibratoHandle( String icon_id, int vibrato_length, SynthesizerType type )
+        public static VibratoHandle getDefaultVibratoHandle( string icon_id, int vibrato_length, SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#getDefaultVibratoHandle; not initialized yet" );
@@ -361,17 +362,17 @@ namespace cadencii.vsq
             return empty;
         }
 
-        private static void initExtract( List<String> dir,
-                                     String header,
-                                     ByRef<String> path_vsti,
-                                     ByRef<String> path_voicedb,
-                                     ByRef<String> path_expdb,
-                                     ByRef<String> path_editor,
-                                     List<String> installed_singers )
+        private static void initExtract( List<string> dir,
+                                     string header,
+                                     ByRef<string> path_vsti,
+                                     ByRef<string> path_voicedb,
+                                     ByRef<string> path_expdb,
+                                     ByRef<string> path_editor,
+                                     List<string> installed_singers )
         {
-            List<String> application = new List<String>();
-            List<String> expression = new List<String>();
-            List<String> voice = new List<String>();
+            List<string> application = new List<string>();
+            List<string> expression = new List<string>();
+            List<string> voice = new List<string>();
             path_vsti.value = "";
             path_expdb.value = "";
             path_voicedb.value = "";
@@ -388,7 +389,7 @@ namespace cadencii.vsq
 
             // path_vstiを取得
             foreach (var s in application) {
-                String[] spl = PortUtil.splitString( s, '\t' );
+                string[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length >= 3 && spl[1].Equals( "PATH" ) ) {
                     if ( spl[2].ToLower().EndsWith( ".dll" ) ) {
                         path_vsti.value = spl[2];
@@ -399,9 +400,9 @@ namespace cadencii.vsq
             }
 
             // path_vicedbを取得
-            SortedDictionary<String, String> install_dirs = new SortedDictionary<String, String>();
+            SortedDictionary<string, string> install_dirs = new SortedDictionary<string, string>();
             foreach (var s in voice) {
-                String[] spl = PortUtil.splitString( s, '\t' );
+                string[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length < 2 ) {
                     continue;
                 }
@@ -409,15 +410,15 @@ namespace cadencii.vsq
                 if ( spl[0].Equals( "VOICEDIR" ) ) {
                     path_voicedb.value = spl[1];
                 } else if ( spl.Length >= 3 ) {
-                    String[] spl2 = PortUtil.splitString( spl[0], '\\' );
+                    string[] spl2 = PortUtil.splitString( spl[0], '\\' );
                     if ( spl2.Length == 1 ) {
-                        String id = spl2[0]; // BHXXXXXXXXXXXXみたいなシリアル
+                        string id = spl2[0]; // BHXXXXXXXXXXXXみたいなシリアル
                         if ( !install_dirs.ContainsKey( id ) ) {
                             install_dirs[ id] =  "" ;
                         }
                         if ( spl[1].Equals( "INSTALLDIR" ) ) {
                             // VOCALOID1の場合は、ここには到達しないはず
-                            String installdir = spl[2];
+                            string installdir = spl[2];
                             install_dirs[id] = Path.Combine( installdir, id );
                         }
                     }
@@ -426,7 +427,7 @@ namespace cadencii.vsq
 
             // installed_singersに追加
             foreach (var id in install_dirs.Keys) {
-                String install = install_dirs[ id ];
+                string install = install_dirs[ id ];
                 if ( install.Equals( "" ) ) {
                     install = Path.Combine( path_voicedb.value, id );
                 }
@@ -434,15 +435,15 @@ namespace cadencii.vsq
             }
 
             // path_expdbを取得
-            List<String> exp_ids = new List<String>();
+            List<string> exp_ids = new List<string>();
             // 最初はpath_expdbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
             foreach (var s in expression) {
-                String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
+                string[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
                 if ( spl.Length >= 3 ) {
                     if ( spl[1].Equals( "EXPRESSIONDIR" ) ) {
                         path_expdb.value = spl[2];
                     } else if ( spl.Length >= 3 ) {
-                        String[] spl2 = PortUtil.splitString( spl[0], '\\' );
+                        string[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
                             if ( !exp_ids.Contains( spl2[0] ) ) {
                                 exp_ids.Add( spl2[0] );
@@ -465,7 +466,7 @@ namespace cadencii.vsq
         /// <param name="reg_key_name"></param>
         /// <param name="parent_name"></param>
         /// <param name="list"></param>
-        private static void initPrint( String reg_key_name, String parent_name, List<String> list )
+        private static void initPrint( string reg_key_name, string parent_name, List<string> list )
         {
 #if JAVA
 #else
@@ -476,17 +477,17 @@ namespace cadencii.vsq
                 }
 
                 // 直下のキー内を再帰的にリストアップ
-                String[] subkeys = key.GetSubKeyNames();
-                foreach ( String s in subkeys ) {
+                string[] subkeys = key.GetSubKeyNames();
+                foreach ( string s in subkeys ) {
                     initPrint( reg_key_name + "\\" + s, parent_name + "\\" + s, list );
                 }
 
                 // 直下の値を出力
-                String[] valuenames = key.GetValueNames();
-                foreach ( String s in valuenames ) {
+                string[] valuenames = key.GetValueNames();
+                foreach ( string s in valuenames ) {
                     RegistryValueKind kind = key.GetValueKind( s );
                     if ( kind == RegistryValueKind.String ) {
-                        String str = parent_name + "\t" + s + "\t" + (String)key.GetValue( s, "" );
+                        string str = parent_name + "\t" + s + "\t" + (string)key.GetValue( s, "" );
                         list.Add( str );
                     }
                 }
@@ -558,13 +559,13 @@ namespace cadencii.vsq
         /// <param name="program"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String getOriginalSinger( int language, int program, SynthesizerType type )
+        public static string getOriginalSinger( int language, int program, SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#getOriginalSinger; not initialized yet" );
                 return null;
             }
-            String voiceidstr = "";
+            string voiceidstr = "";
             if ( !s_singer_config_sys.ContainsKey( type ) ) {
                 return "";
             }
@@ -613,7 +614,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String getEditorPath( SynthesizerType type )
+        public static string getEditorPath( SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#getEditorPath; not initialized yet" );
@@ -631,7 +632,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String getDllPathVsti( SynthesizerType type )
+        public static string getDllPathVsti( SynthesizerType type )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#getDllPathVsti; not initialized yet" );
@@ -667,13 +668,13 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name">name of singer</param>
         /// <returns></returns>
-        public static VsqVoiceLanguage getLanguageFromName( String name )
+        public static VsqVoiceLanguage getLanguageFromName( string name )
         {
             if ( !isInitialized ) {
                 serr.println( "VocaloSysUtil#getLanguageFromName; not initialized yet" );
                 return VsqVoiceLanguage.Japanese;
             }
-            String search = name.ToLower();
+            string search = name.ToLower();
             if ( search.Equals( "meiko" ) ||
                 search.Equals( "kaito" ) ||
                 search.Equals( "miku" ) ||

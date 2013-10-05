@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 
+
+
 namespace cadencii {
 #endif
 
@@ -46,7 +48,7 @@ namespace cadencii {
             return mVersion;
         }
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( string parameter ) {
             // do nothing
         }
 

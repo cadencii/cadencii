@@ -27,6 +27,7 @@ using System.ComponentModel;
 
 namespace cadencii
 {
+
 #endif
 
     /// <summary>
@@ -75,12 +76,12 @@ namespace cadencii
         }
 
 #if !JAVA
-        public override String ToString() {
+        public override string ToString() {
             return toString();
         }
 #endif
 
-        public String toString() {
+        public string toString() {
             return "m_base=" + mCenter.getX() + "," + mCenter.getY() + "\n" +
                 "m_control_left=" + controlLeft.getX() + "," + controlLeft.getY() + "\n" +
                 "m_control_right=" + controlRight.getX() + "," + controlRight.getY() + "\n" +

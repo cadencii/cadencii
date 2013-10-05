@@ -27,6 +27,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -61,7 +62,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }
@@ -114,7 +115,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sr">読み込み対象</param>
         /// <param name="last_line">最後に読み込んだ行が返されます</param>
-        public VsqMixer( TextStream sr, ByRef<String> last_line )
+        public VsqMixer( TextStream sr, ByRef<string> last_line )
         {
             MasterFeder = 0;
             MasterPanpot = 0;
@@ -122,8 +123,8 @@ namespace cadencii.vsq
             OutputMode = 0;
             //Tracks = 1;
             int tracks = 0;
-            String[] spl;
-            String buffer = "";
+            string[] spl;
+            string buffer = "";
             last_line.value = sr.readLine();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
@@ -155,10 +156,10 @@ namespace cadencii.vsq
             for ( int i = 0; i < tracks; i++ ) {
                 Slave.Add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             }
-            spl = PortUtil.splitString( buffer, new String[] { "\n" }, true );
-            String[] spl2;
+            spl = PortUtil.splitString( buffer, new string[] { "\n" }, true );
+            string[] spl2;
             for ( int i = 0; i < spl.Length; i++ ) {
-                String ind = "";
+                string ind = "";
                 int index;
                 spl2 = PortUtil.splitString( spl[i], new char[] { '=' } );
                 if ( spl2[0].StartsWith( "Feder" ) ) {

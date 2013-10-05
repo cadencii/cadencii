@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using cadencii.java.util;
 using cadencii.xml;
 
+
+
 namespace cadencii {
 
     public class XmlStaticMemberSerializerEx : XmlStaticMemberSerializer {
@@ -24,7 +26,7 @@ namespace cadencii {
             : base( item ) {
         }
 
-        protected override System.Reflection.Assembly Compile( String code ) {
+        protected override System.Reflection.Assembly Compile( string code ) {
 #if ENABLE_SCRIPT
             List<string> errors = new List<string>();
             return (new PluginLoader()).compileScript( code, errors );

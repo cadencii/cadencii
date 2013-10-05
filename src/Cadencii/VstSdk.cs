@@ -10,6 +10,7 @@ namespace VstSdk {
     using VstIntPtr = System.Int32;
     using VstInt16 = System.Int16;
 
+
     /// <summary>
     /// 定数値のコンテナクラス
     /// </summary>
@@ -994,7 +995,7 @@ namespace VstSdk {
         /// </summary>
         public VstInt16 right;
 
-        public override String ToString() {
+        public override string ToString() {
             return "{top=" + top + ", left=" + left + ", bottom=" + bottom + ", right=" + right + "}";
         }
     }

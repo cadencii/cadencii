@@ -25,6 +25,8 @@ using System;
 using cadencii.java.awt;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -59,7 +61,7 @@ namespace cadencii
             this.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
         }
 
-        public static Image createIconImage( String path_image, String singer_name )
+        public static Image createIconImage( string path_image, string singer_name )
         {
 #if DEBUG
 #if !JAVA

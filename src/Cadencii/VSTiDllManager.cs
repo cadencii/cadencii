@@ -33,6 +33,8 @@ using cadencii.media;
 using cadencii.vsq;
 using cadencii.java.io;
 
+
+
 namespace cadencii {
 #endif
 
@@ -105,7 +107,7 @@ namespace cadencii {
         /// <summary>
         /// Wineでインストールされている（かもしれない）AquesToneのvsti dllのパス．windowsのパス区切り形式で代入すること
         /// </summary>
-        public static String WineAquesToneDll = "C:\\Program Files\\Steinberg\\VSTplugins\\AquesTone.dll";
+        public static string WineAquesToneDll = "C:\\Program Files\\Steinberg\\VSTplugins\\AquesTone.dll";
 
 #if ENABLE_VOCALOID
 #if JAVA
@@ -320,13 +322,13 @@ namespace cadencii {
             restartVocaloidrvDaemon();
 #else
             int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
-            String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
-            String ini = "";
+            string editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
+            string ini = "";
             if( !editor_dir.Equals( "" ) ){
                 ini = Path.Combine( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
             }
-            String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
-            String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
+            string vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
+            string vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
             if ( vocalo2_dll_path != "" &&
                     System.IO.File.Exists(vocalo2_dll_path) &&
                     !AppManager.editorConfig.DoNotUseVocaloid2 ) {
@@ -345,7 +347,7 @@ namespace cadencii {
             }
 
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
-                String dll_path = vocaloidDriver[ i ].path;
+                string dll_path = vocaloidDriver[ i ].path;
                 bool loaded = false;
                 try {
                     if ( dll_path != "" ) {
@@ -418,7 +420,7 @@ namespace cadencii {
         }
 #endif
 
-        public static bool isRendererAvailable( RendererKind renderer, String wine_prefix, String wine_top ) {
+        public static bool isRendererAvailable( RendererKind renderer, string wine_prefix, string wine_top ) {
 #if ENABLE_VOCALOID
             for ( int i = 0; i < vocaloidDriver.Count; i++ ) {
                 if ( renderer == vocaloidDriver[ i ].getRendererKind() && vocaloidDriver[ i ].loaded ) {
@@ -441,7 +443,7 @@ namespace cadencii {
                 bool resampler_exists = false;
                 int size = AppManager.editorConfig.getResamplerCount();
                 for ( int i = 0; i < size; i++ ) {
-                    String path = AppManager.editorConfig.getResamplerAt( i );
+                    string path = AppManager.editorConfig.getResamplerAt( i );
                     if (System.IO.File.Exists(path)) {
                         resampler_exists = true;
                         break;
@@ -455,7 +457,7 @@ namespace cadencii {
                 }
             }
             if ( renderer == RendererKind.VCNT ) {
-                String synth_path = Path.Combine( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
+                string synth_path = Path.Combine( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
                 if (System.IO.File.Exists(synth_path)) {
                     int count = AppManager.editorConfig.UtauSingers.Count;
                     if ( count > 0 ) {

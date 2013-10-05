@@ -64,6 +64,7 @@ using cadencii.java.awt;
 using cadencii.java.util;
 
 namespace cadencii {
+
 #endif
 
 #if JAVA
@@ -246,7 +247,7 @@ namespace cadencii {
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static String getComponentName( Object obj ) {
+        public static string getComponentName( Object obj ) {
             if ( obj == null ) {
                 return "";
             }
@@ -274,8 +275,8 @@ namespace cadencii {
             return MessageFormat.format( patern, args );
         }
 #else
-        public static String formatMessage( String patern, params Object[] args ) {
-            return String.Format( patern, args );
+        public static string formatMessage( string patern, params Object[] args ) {
+            return string.Format( patern, args );
         }
 #endif
 
@@ -303,7 +304,7 @@ namespace cadencii {
 #endif
 
         #region Clipboard
-        public static void setClipboardText( String value ) {
+        public static void setClipboardText( string value ) {
 #if JAVA
             Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
 		    clip.setContents( new StringSelection( value ), null );
@@ -312,7 +313,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getClipboardText() {
+        public static string getClipboardText() {
 #if JAVA
             Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
             Transferable data = clip.getContents( null );
@@ -771,7 +772,7 @@ namespace cadencii {
 #else
         private static System.Drawing.StringFormat mStringFormat = new System.Drawing.StringFormat();
 #endif
-        public static void drawStringEx( Graphics g1, String s, Font font, Rectangle rect, int align, int valign ) {
+        public static void drawStringEx( Graphics g1, string s, Font font, Rectangle rect, int align, int valign ) {
 #if JAVA
             Graphics2D g = (Graphics2D)g1;
             g.setFont( font );
@@ -815,7 +816,7 @@ namespace cadencii {
         #endregion
 
         #region System.IO
-        public static double getFileLastModified( String path ) {
+        public static double getFileLastModified( string path ) {
 #if JAVA
             File f = new File( path );
             if( f.exists() ){
@@ -831,7 +832,7 @@ namespace cadencii {
 #endif
         }
 
-        public static long getFileLength( String fpath ) {
+        public static long getFileLength( string fpath ) {
 #if JAVA
             File f = new File( fpath );
             return f.length();
@@ -840,7 +841,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getExtension( String fpath ) {
+        public static string getExtension( string fpath ) {
 #if JAVA
             String name = (new File( fpath )).getName();
             int index = name.lastIndexOf( '.' );
@@ -854,7 +855,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getFileName( String path ) {
+        public static string getFileName( string path ) {
 #if JAVA
             File f = new File( path );
             return f.getName();
@@ -863,7 +864,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getDirectoryName( String path ) {
+        public static string getDirectoryName( string path ) {
 #if JAVA
             File f = new File( path );
             return f.getParent();
@@ -878,7 +879,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getFileNameWithoutExtension( String path ) {
+        public static string getFileNameWithoutExtension( string path ) {
 #if JAVA
             String file = getFileName( path );
             int index = file.lastIndexOf( "." );
@@ -891,7 +892,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String createTempFile() {
+        public static string createTempFile() {
 #if JAVA
             String ret = "";
             try{
@@ -905,7 +906,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String[] listDirectories( String directory ) {
+        public static string[] listDirectories( string directory ) {
 #if JAVA
             if( directory == null ){
                 return new String[]{};
@@ -928,7 +929,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String[] listFiles( String directory, String extension ) {
+        public static string[] listFiles( string directory, string extension ) {
 #if JAVA
             File f = new File( directory );
             File[] list = f.listFiles();
@@ -951,7 +952,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void deleteFile( String path ) {
+        public static void deleteFile( string path ) {
 #if JAVA
             new File( path ).delete();
 #else
@@ -959,7 +960,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void moveFile( String pathBefore, String pathAfter )
+        public static void moveFile( string pathBefore, string pathAfter )
 #if JAVA
             throws java.io.FileNotFoundException, java.io.IOException
 #endif
@@ -974,7 +975,7 @@ namespace cadencii {
 
 #if !JAVA
         [Obsolete]
-        public static bool isDirectoryExists( String path )
+        public static bool isDirectoryExists( string path )
         {
             return System.IO.Directory.Exists( path );
         }
@@ -982,7 +983,7 @@ namespace cadencii {
 
 #if !JAVA
         [Obsolete]
-        public static bool isFileExists( String path )
+        public static bool isFileExists( string path )
         {
             return System.IO.File.Exists( path );
         }
@@ -1002,7 +1003,7 @@ namespace cadencii {
 #endif
         }*/
 
-        public static String getTempPath() {
+        public static string getTempPath() {
 #if JAVA
             String ret = System.getProperty( "java.io.tmpdir" );
             if( ret == null ){
@@ -1015,7 +1016,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void createDirectory( String path ) {
+        public static void createDirectory( string path ) {
 #if JAVA
             File f = new File( path );
             f.mkdir();
@@ -1024,7 +1025,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void deleteDirectory( String path, bool recurse ) {
+        public static void deleteDirectory( string path, bool recurse ) {
 #if JAVA
             File f = new File( path );
             File[] list = f.listFiles();
@@ -1043,7 +1044,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void deleteDirectory( String path ) {
+        public static void deleteDirectory( string path ) {
 #if JAVA
             (new File( path )).delete();
 #else
@@ -1051,7 +1052,7 @@ namespace cadencii {
 #endif
         }
 
-        public static void copyFile( String file1, String file2 )
+        public static void copyFile( string file1, string file2 )
 #if JAVA
             throws FileNotFoundException, IOException
 #endif
@@ -1069,7 +1070,7 @@ namespace cadencii {
         #endregion
 
         #region Number Formatting
-        public static bool tryParseInt( String s, ByRef<int> value ) {
+        public static bool tryParseInt( string s, ByRef<int> value ) {
             try {
                 value.value = int.Parse( s );
             } catch ( Exception ex ) {
@@ -1078,7 +1079,7 @@ namespace cadencii {
             return true;
         }
 
-        public static bool tryParseFloat( String s, ByRef<float> value ) {
+        public static bool tryParseFloat( string s, ByRef<float> value ) {
             try {
                 value.value = (float)double.Parse( s );
             } catch ( Exception ex ) {
@@ -1095,7 +1096,7 @@ namespace cadencii {
 #endif
         }*/
 
-        public static String formatDecimal( String format, double value ) {
+        public static string formatDecimal( string format, double value ) {
 #if JAVA
             DecimalFormat df = new DecimalFormat( format );
             return df.format( value );
@@ -1104,7 +1105,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String formatDecimal( String format, long value ) {
+        public static string formatDecimal( string format, long value ) {
 #if JAVA
             DecimalFormat df = new DecimalFormat( format );
             return df.format( value );
@@ -1113,8 +1114,8 @@ namespace cadencii {
 #endif
         }
 
-        public static String toHexString( long value, int digits ) {
-            String ret = toHexString( value );
+        public static string toHexString( long value, int digits ) {
+            string ret = toHexString( value );
             int add = digits - getStringLength( ret );
             for ( int i = 0; i < add; i++ ) {
                 ret = "0" + ret;
@@ -1122,7 +1123,7 @@ namespace cadencii {
             return ret;
         }
 
-        public static String toHexString( long value ) {
+        public static string toHexString( long value ) {
 #if JAVA
             return Long.toHexString( value );
 #else
@@ -1130,7 +1131,7 @@ namespace cadencii {
 #endif
         }
 
-        public static long fromHexString( String s ) {
+        public static long fromHexString( string s ) {
 #if JAVA
             return Long.parseLong( s, 16 );
 #else
@@ -1146,7 +1147,7 @@ namespace cadencii {
         /// <param name="s">文字列</param>
         /// <param name="index">位置．先頭が0</param>
         /// <returns></returns>
-        public static char charAt( String s, int index ) {
+        public static char charAt( string s, int index ) {
 #if JAVA
             return s.charAt( index );
 #else
@@ -1157,45 +1158,45 @@ namespace cadencii {
 #if JAVA
         public static String[] splitString( String s, char... separator ) {
 #else
-        public static String[] splitString( String s, params char[] separator ) {
+        public static string[] splitString( string s, params char[] separator ) {
 #endif
             return splitStringCorB( s, separator, int.MaxValue, false );
         }
 
-        public static String[] splitString( String s, char[] separator, int count ) {
+        public static string[] splitString( string s, char[] separator, int count ) {
             return splitStringCorB( s, separator, count, false );
         }
 
-        public static String[] splitString( String s, char[] separator, bool ignore_empty_entries ) {
+        public static string[] splitString( string s, char[] separator, bool ignore_empty_entries ) {
             return splitStringCorB( s, separator, int.MaxValue, ignore_empty_entries );
         }
 
-        public static String[] splitString( String s, String[] separator, bool ignore_empty_entries ) {
+        public static string[] splitString( string s, string[] separator, bool ignore_empty_entries ) {
             return splitStringCorA( s, separator, int.MaxValue, ignore_empty_entries );
         }
 
-        public static String[] splitString( String s, char[] separator, int count, bool ignore_empty_entries ) {
+        public static string[] splitString( string s, char[] separator, int count, bool ignore_empty_entries ) {
             return splitStringCorB( s, separator, count, ignore_empty_entries );
         }
 
-        public static String[] splitString( String s, String[] separator, int count, bool ignore_empty_entries ) {
+        public static string[] splitString( string s, string[] separator, int count, bool ignore_empty_entries ) {
             return splitStringCorA( s, separator, count, ignore_empty_entries );
         }
 
-        private static String[] splitStringCorB( String s, char[] separator, int count, bool ignore_empty_entries ) {
+        private static string[] splitStringCorB( string s, char[] separator, int count, bool ignore_empty_entries ) {
 #if JAVA
             int length = separator.length;
 #else
             int length = separator.Length;
 #endif
-            String[] spl = new String[length];
+            string[] spl = new string[length];
             for ( int i = 0; i < length; i++ ) {
                 spl[i] = separator[i] + "";
             }
             return splitStringCorA( s, spl, count, false );
         }
 
-        private static String[] splitStringCorA( String s, String[] separator, int count, bool ignore_empty_entries ) {
+        private static string[] splitStringCorA( string s, string[] separator, int count, bool ignore_empty_entries ) {
 #if JAVA
             if( separator.length == 0 ){
                 return new String[]{ s };
@@ -1238,7 +1239,7 @@ namespace cadencii {
 #endif
         }
 
-        public static int getStringLength( String s ) {
+        public static int getStringLength( string s ) {
             if ( s == null ) {
                 return 0;
             } else {
@@ -1250,7 +1251,7 @@ namespace cadencii {
             }
         }
 
-        public static int getEncodedByteCount( String encoding, String str ) {
+        public static int getEncodedByteCount( string encoding, string str ) {
             byte[] buf = getEncodedByte( encoding, str );
 #if JAVA
             return buf.length;
@@ -1259,7 +1260,7 @@ namespace cadencii {
 #endif
         }
 
-        public static byte[] getEncodedByte( String encoding, String str ) {
+        public static byte[] getEncodedByte( string encoding, string str ) {
 #if JAVA
             Charset enc = Charset.forName( encoding );
             ByteBuffer bb = enc.encode( str );
@@ -1272,7 +1273,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getDecodedString( String encoding, int[] data, int offset, int length ) {
+        public static string getDecodedString( string encoding, int[] data, int offset, int length ) {
 #if JAVA
             Charset enc = Charset.forName( encoding );
             ByteBuffer bb = ByteBuffer.allocate( length );
@@ -1291,7 +1292,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getDecodedString( String encoding, int[] data ) {
+        public static string getDecodedString( string encoding, int[] data ) {
 #if JAVA
             return getDecodedString( encoding, data, 0, data.length );
 #else
@@ -1366,7 +1367,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getMD5FromString( String str ) {
+        public static string getMD5FromString( string str ) {
 #if JAVA
             MessageDigest digest = null;
             try {
@@ -1387,7 +1388,7 @@ namespace cadencii {
 #endif
         }
 
-        public static String getMD5( String file )
+        public static string getMD5( string file )
 #if JAVA
             throws FileNotFoundException, IOException
 #endif
@@ -1421,7 +1422,7 @@ namespace cadencii {
             }
             return ret;
 #else
-            String ret = "";
+            string ret = "";
             using ( FileStream fs = new FileStream( file, FileMode.Open, FileAccess.Read ) ) {
                 ret = Misc.getmd5( fs );
             }
@@ -1553,7 +1554,7 @@ namespace cadencii {
 #endif
         #endregion
 
-        public static String getApplicationStartupPath() {
+        public static string getApplicationStartupPath() {
 #if JAVA
             return System.getProperty( "user.dir" );
 #else

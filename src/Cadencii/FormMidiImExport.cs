@@ -29,6 +29,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -61,7 +62,7 @@ namespace cadencii
             applyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
-            listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            listTrack.SetColumnHeaders( new string[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             listTrack.Columns[0].Width = columnWidthTrack;
             listTrack.Columns[1].Width = columnWidthName;
             listTrack.Columns[2].Width = columnWidthNotes;
@@ -86,7 +87,7 @@ namespace cadencii
             groupMode.Text = _( "Import Basis" );
             radioGateTime.Text = _( "gate-time" );
             radioPlayTime.Text = _( "play-time" );
-            listTrack.SetColumnHeaders( new String[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
+            listTrack.SetColumnHeaders( new string[] { _( "Track" ), _( "Name" ), _( "Notes" ) } );
             btnCheckAll.Text = _( "Check All" );
             btnUncheckAll.Text = _( "Uncheck All" );
             groupCommonOption.Text = _( "Option" );
@@ -232,7 +233,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

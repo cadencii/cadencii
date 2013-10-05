@@ -25,6 +25,7 @@ using cadencii.media;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -41,12 +42,12 @@ namespace cadencii
         private double[] mBuffer2R = new double[BUFLEN];
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
-        private String mPath;
+        private string mPath;
         private int mChannel;
         private int mBitPerSample;
         private Object mSyncRoot = new Object();
 
-        public FileWaveReceiver( String path, int channel, int bit_per_sample, int sample_rate )
+        public FileWaveReceiver( string path, int channel, int bit_per_sample, int sample_rate )
         {
             mPath = path;
             mChannel = channel;
@@ -66,7 +67,7 @@ namespace cadencii
             // do nothing
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }
@@ -75,7 +76,7 @@ namespace cadencii
         /// 初期化メソッド．
         /// </summary>
         /// <param name="parameter"></param>
-        public void init( String parameter )
+        public void init( string parameter )
         {
         }
 

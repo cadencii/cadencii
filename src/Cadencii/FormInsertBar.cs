@@ -25,6 +25,8 @@ using System.Windows.Forms;
 using cadencii.apputil;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -54,7 +56,7 @@ namespace cadencii
         public void applyLanguage()
         {
             this.Text = _( "Insert Bars" );
-            String th_prefix = _( "_PREFIX_TH_" );
+            string th_prefix = _( "_PREFIX_TH_" );
             if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
                 lblPositionPrefix.Text = "";
             } else {
@@ -93,7 +95,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

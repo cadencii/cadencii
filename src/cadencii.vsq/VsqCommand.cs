@@ -25,6 +25,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -171,7 +172,7 @@ namespace cadencii.vsq
         /// <param name="track"></param>
         /// <param name="new_name"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackChangeName( int track, String new_name )
+        public static VsqCommand generateCommandTrackChangeName( int track, string new_name )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CHANGE_NAME;
@@ -402,13 +403,13 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveReplaceRange( int track, String[] target_curve, VsqBPList[] bplist )
+        public static VsqCommand generateCommandTrackCurveReplaceRange( int track, string[] target_curve, VsqBPList[] bplist )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_REPLACE_RANGE;
             command.Args = new Object[3];
             command.Args[0] = track;
-            String[] arr = new String[target_curve.Length];
+            string[] arr = new string[target_curve.Length];
             for ( int i = 0; i < target_curve.Length; i++ ) {
                 arr[i] = target_curve[i];
             }
@@ -421,7 +422,7 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveReplace( int track, String target_curve, VsqBPList bplist )
+        public static VsqCommand generateCommandTrackCurveReplace( int track, string target_curve, VsqBPList bplist )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_REPLACE;
@@ -456,7 +457,7 @@ namespace cadencii.vsq
         /// <param name="target"></param>
         /// <param name="edit"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, List<BPPair> edit )
+        public static VsqCommand generateCommandTrackCurveEdit( int track, string target, List<BPPair> edit )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT;
@@ -479,7 +480,7 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, List<long> delete, SortedDictionary<int, VsqBPPair> add )
+        public static VsqCommand generateCommandTrackCurveEdit2( int track, string target, List<long> delete, SortedDictionary<int, VsqBPPair> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2;
@@ -501,13 +502,13 @@ namespace cadencii.vsq
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveEditRange( int track, List<String> targets, List<List<BPPair>> edits )
+        public static VsqCommand generateCommandTrackCurveEditRange( int track, List<string> targets, List<List<BPPair>> edits )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT_RANGE;
             command.Args = new Object[3];
             command.Args[0] = track;
-            List<String> cp_targets = new List<String>();
+            List<string> cp_targets = new List<string>();
             int count = targets.Count;
             for ( int i = 0; i < count; i++ ) {
                 cp_targets.Add( targets[ i ] );
@@ -534,13 +535,13 @@ namespace cadencii.vsq
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2All( int track, List<String> target, List<List<long>> delete, List<SortedDictionary<int, VsqBPPair>> add )
+        public static VsqCommand generateCommandTrackCurveEdit2All( int track, List<string> target, List<List<long>> delete, List<SortedDictionary<int, VsqBPPair>> add )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2_ALL;
             command.Args = new Object[4];
             command.Args[0] = track;
-            List<String> cp_target = new List<String>();
+            List<string> cp_target = new List<string>();
             int c = target.Count;
             for ( int i = 0; i < c; i++ ) {
                 cp_target.Add( target[ i ] );
@@ -581,7 +582,7 @@ namespace cadencii.vsq
         /// <param name="phrase"></param>
         /// <param name="phonetic_symbol"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeLyric( int track, int internal_id, String phrase, String phonetic_symbol, bool protect_symbol )
+        public static VsqCommand generateCommandEventChangeLyric( int track, int internal_id, string phrase, string phonetic_symbol, bool protect_symbol )
         {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_LYRIC;

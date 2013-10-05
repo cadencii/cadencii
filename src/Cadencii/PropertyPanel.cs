@@ -32,6 +32,7 @@ using cadencii.vsq;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -89,9 +90,9 @@ namespace cadencii
         private void popGridItemExpandStatusCore( GridItem item )
         {
             if ( item.Expandable ) {
-                String s = getGridItemIdentifier( item );
+                string s = getGridItemIdentifier( item );
                 foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
-                    String key = v.getKey();
+                    string key = v.getKey();
                     if ( key == null ) {
                         key = "";
                     }
@@ -127,10 +128,10 @@ namespace cadencii
         private void pushGridItemExpandStatusCore( GridItem item )
         {
             if ( item.Expandable ) {
-                String s = getGridItemIdentifier( item );
+                string s = getGridItemIdentifier( item );
                 bool found = false;
                 foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
-                    String key = v.getKey();
+                    string key = v.getKey();
                     if ( key == null ) {
                         continue;
                     }
@@ -231,7 +232,7 @@ namespace cadencii
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private String getGridItemIdentifier( GridItem item )
+        private string getGridItemIdentifier( GridItem item )
         {
             if ( item.Parent == null ) {
                 if ( item.PropertyDescriptor != null ) {

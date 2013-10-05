@@ -38,6 +38,7 @@ using cadencii.utau;
 
 namespace cadencii
 {
+
 #endif
 
     /// <summary>
@@ -49,11 +50,11 @@ namespace cadencii
     public class UtauWaveGenerator : WaveUnit, WaveGenerator
     {
 #endif
-        public const String FILEBASE = "temp.wav";
+        public const string FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
-        private static SortedDictionary<String, ValuePair<String, Double>> mCache = new SortedDictionary<String, ValuePair<String, Double>>();
+        private static SortedDictionary<string, ValuePair<string, Double>> mCache = new SortedDictionary<string, ValuePair<string, Double>>();
         private const int BASE_TEMPO = 120;
 
         private List<RenderQueue> mResamplerQueue = new List<RenderQueue>();
@@ -61,14 +62,14 @@ namespace cadencii
         private double[] mRight;
 
         private VsqFileEx mVsq;
-        private String mResampler;
-        private String mWavtool;
-        private String mTempDir;
+        private string mResampler;
+        private string mWavtool;
+        private string mTempDir;
         private bool mResamplerWithWine;
         private bool mWavtoolWithWine;
         //private bool mAbortRequired = false;
         private bool mRunning = false;
-        private String mWine = "";
+        private string mWine = "";
 
         private long mTotalSamples;
         private WaveReceiver mReceiver = null;
@@ -87,7 +88,7 @@ namespace cadencii
         private WorkerState mState;
         private bool mUseWideCharacterWorkaround = false;
         // 作成したジャンクションのリスト
-        private List<String> mJunctions = new List<String>();
+        private List<string> mJunctions = new List<string>();
 #if DEBUG
         /// <summary>
         /// ログを出さない設定の時true
@@ -156,7 +157,7 @@ namespace cadencii
             }
         }*/
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }
@@ -195,11 +196,11 @@ namespace cadencii
             sout.println("UtauWaveGenerator#init; mWavtool=" + mWavtool + "; exists=" + System.IO.File.Exists(mWavtool));
 #endif
             mSampleRate = sample_rate;
-            String id = AppManager.getID();
+            string id = AppManager.getID();
             mTempDir = Path.Combine( AppManager.getCadenciiTempDir(), id );
 #if !JAVA
             if ( mUseWideCharacterWorkaround ) {
-                String junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
+                string junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
                 if (!Directory.Exists(junction_path)) {
                     cadencii.helper.Utils.MountPointCreate( junction_path, mTempDir );
                     mJunctions.Add( junction_path );
@@ -268,9 +269,9 @@ namespace cadencii
         }
 
 #if !JAVA
-        private static String getSystemRoot()
+        private static string getSystemRoot()
         {
-            String system = System.Environment.GetFolderPath( Environment.SpecialFolder.System );
+            string system = System.Environment.GetFolderPath( Environment.SpecialFolder.System );
             return System.IO.Path.GetPathRoot( system );
         }
 #endif
@@ -317,8 +318,8 @@ namespace cadencii
         public static void clearCache()
         {
             foreach (var key in mCache.Keys) {
-                ValuePair<String, Double> value = mCache[ key ];
-                String file = value.getKey();
+                ValuePair<string, Double> value = mCache[ key ];
+                string file = value.getKey();
                 try {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {
@@ -357,15 +358,15 @@ namespace cadencii
                 // 原音設定を読み込み
                 VsqTrack target = mVsq.Track[ mTrack ];
 
-                String file = Path.Combine( mTempDir, FILEBASE );
+                string file = Path.Combine( mTempDir, FILEBASE );
                 if (System.IO.File.Exists(file)) {
                     PortUtil.deleteFile( file );
                 }
-                String file_whd = Path.Combine( mTempDir, FILEBASE + ".whd" );
+                string file_whd = Path.Combine( mTempDir, FILEBASE + ".whd" );
                 if (System.IO.File.Exists(file_whd)) {
                     PortUtil.deleteFile( file_whd );
                 }
-                String file_dat = Path.Combine( mTempDir, FILEBASE + ".dat" );
+                string file_dat = Path.Combine( mTempDir, FILEBASE + ".dat" );
                 if (System.IO.File.Exists(file_dat)) {
                     PortUtil.deleteFile( file_dat );
                 }
@@ -411,14 +412,14 @@ namespace cadencii
                     } else {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
-                    String singer_raw = "";
-                    String singer = "";
+                    string singer_raw = "";
+                    string singer = "";
                     if ( 0 <= program_change && program_change < mConfig.UtauSingers.Count ) {
                         singer_raw = mConfig.UtauSingers[ program_change ].VOICEIDSTR;
                         singer = singer_raw;
 #if !JAVA
                         if ( mUseWideCharacterWorkaround ) {
-                            String junction = Path.Combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
+                            string junction = Path.Combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
                             if (!Directory.Exists(junction)) {
                                 cadencii.helper.Utils.MountPointCreate( junction, singer_raw );
                                 mJunctions.Add( junction );
@@ -486,8 +487,8 @@ namespace cadencii
                         mResamplerQueue.Add( rq );
                         count++;
                     }
-                    String lyric = item.ID.LyricHandle.L0.Phrase;
-                    String note = NoteStringFromNoteNumber( item.ID.Note );
+                    string lyric = item.ID.LyricHandle.L0.Phrase;
+                    string note = NoteStringFromNoteNumber( item.ID.Note );
                     int millisec = (int)((sec_end_act - sec_start_act) * 1000) + 50;
 
                     OtoArgs oa = new OtoArgs();
@@ -505,7 +506,7 @@ namespace cadencii
                     debugWriteLine( "UtauWaveGenerator#run; lyric=" + lyric );
 #endif
                     RenderQueue rq2 = new RenderQueue();
-                    String wavPath = "";
+                    string wavPath = "";
                     if ( oa.fileName != null && oa.fileName.Length > 0 ) {
                         wavPath = Path.Combine( singer, oa.fileName );
                     } else {
@@ -514,8 +515,8 @@ namespace cadencii
 #if DEBUG
                     debugWriteLine( "UtauWaveGenerator#run; wavPath=" + wavPath );
 #endif
-                    String[] resampler_arg_prefix = new String[] { "\"" + wavPath + "\"" };
-                    String[] resampler_arg_suffix = new String[]{
+                    string[] resampler_arg_prefix = new string[] { "\"" + wavPath + "\"" };
+                    string[] resampler_arg_suffix = new string[]{
                         "\"" + note + "\"",
                         "100",
                         "\"" + item.UstEvent.Flags + "\"",
@@ -527,7 +528,7 @@ namespace cadencii
                         item.UstEvent.getModuration() + "" };
 
                     // ピッチを取得
-                    List<String> pitch = new List<String>();
+                    List<string> pitch = new List<string>();
                     bool allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
                     int tempo = BASE_TEMPO;
@@ -555,7 +556,7 @@ namespace cadencii
                     
 #if DEBUG
 #if !JAVA
-                    String logname =
+                    string logname =
                         Path.Combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
                     System.IO.StreamWriter sw3 = new System.IO.StreamWriter( logname );
                     int prevx = 0;
@@ -635,13 +636,13 @@ namespace cadencii
                     //4_あ_C#4_550.wav
                     //String md5_src = "";
                     rq2.hashSource = "";
-                    foreach ( String s in resampler_arg_prefix ) {
+                    foreach ( string s in resampler_arg_prefix ) {
                         rq2.hashSource += s + " ";
                     }
-                    foreach ( String s in resampler_arg_suffix ) {
+                    foreach ( string s in resampler_arg_suffix ) {
                         rq2.hashSource += s + " ";
                     }
-                    foreach ( String s in pitch ) {
+                    foreach ( string s in pitch ) {
                         rq2.hashSource += s + " ";
                     }
                     rq2.hashSource += mResampler;
@@ -649,7 +650,7 @@ namespace cadencii
 //                    String filename =
 //                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
 //#else
-                    String filename =
+                    string filename =
                         Path.Combine( mTempDir, PortUtil.getMD5FromString( mCache.Count + rq2.hashSource ) + ".wav" );
 //#endif
 
@@ -664,10 +665,10 @@ namespace cadencii
                     if ( !exist_in_cache ) {
                         if ( mCache.Count + 1 >= MAX_CACHE ) {
                             double old = PortUtil.getCurrentTime();
-                            String delfile = "";
-                            String delkey = "";
+                            string delfile = "";
+                            string delkey = "";
                             foreach (var key in mCache.Keys) {
-                                ValuePair<String, Double> value = mCache[ key ];
+                                ValuePair<string, Double> value = mCache[ key ];
                                 if ( old < value.getValue() ) {
                                     old = value.getValue();
                                     delfile = value.getKey();
@@ -688,7 +689,7 @@ namespace cadencii
                         filename = mCache[ rq2.hashSource ].getKey();
                     }
 
-                    String str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
+                    string str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
 #if DEBUG
                     double act_t_temp = double.Parse( str_t_temp );
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
@@ -800,7 +801,7 @@ namespace cadencii
                             process.WaitForExit();
 
                             // 合成が済んだのでキャッシュに登録する
-                            mCache[rq.hashSource] = new ValuePair<String, Double>( rq.FileName, PortUtil.getCurrentTime() );
+                            mCache[rq.hashSource] = new ValuePair<string, Double>( rq.FileName, PortUtil.getCurrentTime() );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
 #if DEBUG
@@ -839,10 +840,10 @@ namespace cadencii
 #endif
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
                     //String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
-                    List<String> arg_wavtool = new List<String>();
+                    List<string> arg_wavtool = new List<string>();
                     int size = p.WavtoolArgPrefix.Count;
                     for ( int j = 0; j < size; j++ ) {
-                        String s = p.WavtoolArgPrefix[j];
+                        string s = p.WavtoolArgPrefix[j];
                         if ( j == size - 1 ) {
                             s += (mten >= 0 ? ("+" + mten) : ("-" + (-mten)));
                         }
@@ -1197,7 +1198,7 @@ namespace cadencii
             }
         }
 
-        private void debugWriteLine( String value )
+        private void debugWriteLine( string value )
         {
 #if DEBUG
             if ( !mIsQuiet ) {
@@ -1216,12 +1217,12 @@ namespace cadencii
             mReceiver.end();
 
             // ジャンクションを消す
-            foreach ( String junction in mJunctions ) {
+            foreach ( string junction in mJunctions ) {
                 PortUtil.deleteDirectory( junction );
             }
         }
 
-        private void processWavtool( List<String> arg, String filebase, String temp_dir, String wavtool, bool invoke_with_wine )
+        private void processWavtool( List<string> arg, string filebase, string temp_dir, string wavtool, bool invoke_with_wine )
         {
 #if JAVA
             Vector<String> args = new Vector<String>();
@@ -1262,7 +1263,7 @@ namespace cadencii
             try {
                 process = new Process();
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
-                String argument = "";
+                string argument = "";
                 int size = arg.Count;
                 for ( int i = 0; i < size; i++ ) {
                     argument += arg[i] + (i == size - 1 ? "" : " ");
@@ -1350,10 +1351,10 @@ namespace cadencii
             }
         }
 
-        private static String NoteStringFromNoteNumber( int note_number )
+        private static string NoteStringFromNoteNumber( int note_number )
         {
             int odd = note_number % 12;
-            String head = (new String[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" })[odd];
+            string head = (new string[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" })[odd];
             return head + (note_number / 12 - 1);
         }
     }

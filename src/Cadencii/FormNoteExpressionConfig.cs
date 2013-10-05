@@ -33,6 +33,7 @@ using cadencii.java.util;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -86,7 +87,7 @@ namespace cadencii
             empty.setCaption( "[Non Attack]" );
             comboAttackTemplate.Items.Add( empty );
             comboAttackTemplate.SelectedItem = empty;
-            String icon_id = "";
+            string icon_id = "";
             if ( m_note_head_handle != null ) {
                 icon_id = m_note_head_handle.IconID;
                 txtDuration.Text = m_note_head_handle.getDuration() + "";
@@ -106,7 +107,7 @@ namespace cadencii
             comboAttackTemplate.SelectedIndexChanged += new EventHandler( comboAttackTemplate_SelectedIndexChanged );
 
             comboTemplate.Items.Clear();
-            String[] strs = new String[]{
+            string[] strs = new string[]{
                 "[Select a template]",
                 "normal",
                 "accent",
@@ -244,7 +245,7 @@ namespace cadencii
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }
@@ -304,7 +305,7 @@ namespace cadencii
 
         public void trackBendDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendDepth.Value + "";
+            string s = trackBendDepth.Value + "";
             if( s != txtBendDepth.Text ){
                 txtBendDepth.Text = s;
             }
@@ -331,7 +332,7 @@ namespace cadencii
 
         public void trackBendLength_Scroll( Object sender, EventArgs e )
         {
-            String s = trackBendLength.Value + "";
+            string s = trackBendLength.Value + "";
             if( s != txtBendLength.Text ){
                 txtBendLength.Text = s;
             }
@@ -358,7 +359,7 @@ namespace cadencii
 
         public void trackDecay_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDecay.Value + "";
+            string s = trackDecay.Value + "";
             if( s != txtDecay.Text ){
                 txtDecay.Text = s;
             }
@@ -385,7 +386,7 @@ namespace cadencii
 
         public void trackAccent_Scroll( Object sender, EventArgs e )
         {
-            String s = trackAccent.Value + "";
+            string s = trackAccent.Value + "";
             if( s != txtAccent.Text ){
                 txtAccent.Text = s;
             }
@@ -446,7 +447,7 @@ namespace cadencii
 
         public void trackDuration_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDuration.Value + "";
+            string s = trackDuration.Value + "";
             if( s != txtDuration.Text ){
                 txtDuration.Text = s;
             }
@@ -457,7 +458,7 @@ namespace cadencii
 
         public void trackDepth_Scroll( Object sender, EventArgs e )
         {
-            String s = trackDepth.Value + "";
+            string s = trackDepth.Value + "";
             if( s != txtDepth.Text ){
                 txtDepth.Text = s;
             }

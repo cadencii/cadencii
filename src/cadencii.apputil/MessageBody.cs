@@ -39,55 +39,56 @@ using cadencii.java.util;
 using cadencii.java.io;
 
 namespace cadencii.apputil {
+
 #endif
 
     public class MessageBody
     {
-        public String lang;
-        public String poHeader = "";
-        public SortedDictionary<String, MessageBodyEntry> list = new SortedDictionary<String, MessageBodyEntry>();
+        public string lang;
+        public string poHeader = "";
+        public SortedDictionary<string, MessageBodyEntry> list = new SortedDictionary<string, MessageBodyEntry>();
 
-        public MessageBody( String lang_ ) {
+        public MessageBody( string lang_ ) {
             lang = lang_;
         }
 
-        public MessageBody( String lang, String[] ids, String[] messages ) {
+        public MessageBody( string lang, string[] ids, string[] messages ) {
             this.lang = lang;
-            list = new SortedDictionary<String, MessageBodyEntry>();
+            list = new SortedDictionary<string, MessageBodyEntry>();
             for( int i = 0; i < ids.Length; i++ ) {
-                list[ids[i]] = new MessageBodyEntry( messages[i], new String[] { } );
+                list[ids[i]] = new MessageBodyEntry( messages[i], new string[] { } );
             }
         }
 
-        public MessageBody( String lang_, String file ) {
+        public MessageBody( string lang_, string file ) {
             lang = lang_;
             poHeader = "";
             BufferedReader sr = null;
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( file ), "UTF-8" ) );
-                String line2 = "";
+                string line2 = "";
                 while ( (line2 = sr.readLine()) != null ) {
-                    ByRef<String> msgid = new ByRef<String>( "" );
-                    String first_line = line2;
-                    ByRef<String[]> location = new ByRef<String[]>();
-                    String last_line = readTillMessageEnd( sr, first_line, "msgid", msgid, location );
-                    ByRef<String> msgstr = new ByRef<String>( "" );
-                    ByRef<String[]> location_dumy = new ByRef<String[]>();
+                    ByRef<string> msgid = new ByRef<string>( "" );
+                    string first_line = line2;
+                    ByRef<string[]> location = new ByRef<string[]>();
+                    string last_line = readTillMessageEnd( sr, first_line, "msgid", msgid, location );
+                    ByRef<string> msgstr = new ByRef<string>( "" );
+                    ByRef<string[]> location_dumy = new ByRef<string[]>();
                     last_line = readTillMessageEnd( sr, last_line, "msgstr", msgstr, location_dumy );
                     if ( PortUtil.getStringLength( msgid.value ) > 0 ) {
                         list[msgid.value] = new MessageBodyEntry( msgstr.value, location.value );
                     } else {
                         poHeader = msgstr.value;
-                        String[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
+                        string[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
                         poHeader = "";
                         int count = 0;
                         for ( int i = 0; i < spl.Length; i++ ) {
-                            String line = spl[i];
-                            String[] spl2 = PortUtil.splitString( line, new char[] { ':' }, 2 );
+                            string line = spl[i];
+                            string[] spl2 = PortUtil.splitString( line, new char[] { ':' }, 2 );
                             if ( spl2.Length == 2 ) {
-                                String name = spl2[0].Trim();
-                                String ct = "Content-Type";
-                                String cte = "Content-Transfer-Encoding";
+                                string name = spl2[0].Trim();
+                                string ct = "Content-Type";
+                                string cte = "Content-Transfer-Encoding";
                                 if ( name.ToLower().Equals( ct.ToLower() ) ) {
                                     poHeader += (count == 0 ? "" : "\n") + "Content-Type: text/plain; charset=UTF-8";
                                 } else if ( name.ToLower().Equals( cte.ToLower() ) ) {
@@ -113,9 +114,9 @@ namespace cadencii.apputil {
             }
         }
 
-        public String getMessage( String id ) {
+        public string getMessage( string id ) {
             if ( list.ContainsKey( id ) ) {
-                String ret = list[ id ].message;
+                string ret = list[ id ].message;
                 if ( ret.Equals( "" ) ) {
                     return id;
                 } else {
@@ -125,19 +126,19 @@ namespace cadencii.apputil {
             return id;
         }
 
-        public MessageBodyEntry getMessageDetail( String id ) {
+        public MessageBodyEntry getMessageDetail( string id ) {
             if ( list.ContainsKey( id ) ) {
-                String ret = list[ id ].message;
+                string ret = list[ id ].message;
                 if ( ret.Equals( "" ) ) {
-                    return new MessageBodyEntry( id, new String[] { } );
+                    return new MessageBodyEntry( id, new string[] { } );
                 } else {
                     return list[ id ];
                 }
             }
-            return new MessageBodyEntry( id, new String[] { } );
+            return new MessageBodyEntry( id, new string[] { } );
         }
 
-        public void write( String file ) {
+        public void write( string file ) {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" ) );
@@ -146,9 +147,9 @@ namespace cadencii.apputil {
                     sw.newLine();
                     sw.write( "msgstr \"\"" );
                     sw.newLine();
-                    String[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
+                    string[] spl = PortUtil.splitString( poHeader, new char[] { (char)0x0d, (char)0x0a }, true );
                     for ( int i = 0; i < spl.Length; i++ ){
-                        String line = spl[i];
+                        string line = spl[i];
                         sw.write( "\"" + line + "\\" + "n\"" );
                         sw.newLine();
                     }
@@ -165,10 +166,10 @@ namespace cadencii.apputil {
                     sw.newLine();
                 }
                 foreach (var key in list.Keys) {
-                    String skey = key.Replace( "\n", "\\n\"\n\"" );
+                    string skey = key.Replace( "\n", "\\n\"\n\"" );
                     MessageBodyEntry mbe = list[ key ];
-                    String s = mbe.message;
-                    List<String> location = mbe.location;
+                    string s = mbe.message;
+                    List<string> location = mbe.location;
                     int count = location.Count;
                     for ( int i = 0; i < count; i++ ) {
                         sw.write( "#: " + location[ i ] );
@@ -192,8 +193,8 @@ namespace cadencii.apputil {
             }
         }
 
-        private static void separateEntryAndMessage( String source, ByRef<String> entry, ByRef<String> message ) {
-            String line = source.Trim();
+        private static void separateEntryAndMessage( string source, ByRef<string> entry, ByRef<string> message ) {
+            string line = source.Trim();
             entry.value = "";
             message.value = "";
             if ( PortUtil.getStringLength( line ) <= 0 ) {
@@ -207,19 +208,19 @@ namespace cadencii.apputil {
             message.value = message.value.Substring( 0, PortUtil.getStringLength( message.value ) - 1 );
         }
 
-        private static String readTillMessageEnd( java.io.BufferedReader sr, String first_line, String entry, ByRef<String> msg, ByRef<String[]> locations )
+        private static string readTillMessageEnd( java.io.BufferedReader sr, string first_line, string entry, ByRef<string> msg, ByRef<string[]> locations )
 #if JAVA
             throws IOException
 #endif
         {
             msg.value = "";
-            String line = first_line;
-            List<String> location = new List<String>();
+            string line = first_line;
+            List<string> location = new List<string>();
             bool entry_found = false;
             if ( line.StartsWith( entry ) ) {
                 // 1行目がすでに"entry"の行だった場合
-                ByRef<String> dum = new ByRef<String>( "" );
-                ByRef<String> dum2 = new ByRef<String>( "" );
+                ByRef<string> dum = new ByRef<string>( "" );
+                ByRef<string> dum2 = new ByRef<string>( "" );
                 separateEntryAndMessage( line, dum, dum2 );
                 msg.value += dum2.value;
             } else {
@@ -228,8 +229,8 @@ namespace cadencii.apputil {
                         line = line.Substring( 2 ).Trim();
                         location.Add( line );
                     } else if ( line.StartsWith( entry ) ) {
-                        ByRef<String> dum = new ByRef<String>( "" );
-                        ByRef<String> dum2 = new ByRef<String>( "" );
+                        ByRef<string> dum = new ByRef<string>( "" );
+                        ByRef<string> dum2 = new ByRef<string>( "" );
                         separateEntryAndMessage( line, dum, dum2 );
                         msg.value += dum2.value;
                         break;
@@ -237,7 +238,7 @@ namespace cadencii.apputil {
                 }
             }
             locations.value = location.ToArray();
-            String ret = "";
+            string ret = "";
             while ( (line = sr.readLine()) != null ) {
                 if ( !line.StartsWith( "\"" ) ) {
                     msg.value = msg.value.Replace( "\\\"", "\"" );

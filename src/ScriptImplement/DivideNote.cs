@@ -10,12 +10,14 @@ using cadencii;
 using cadencii.java.util;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii {
 
     public partial class DivideNote : Form, IPaletteTool {
         public static int Numerator = 1;
         public static int Denominator = 32;
-        public static String Modifier = "Control";
+        public static string Modifier = "Control";
 
         private Bitmap m_icon = null;
         private Label lblLength;
@@ -33,7 +35,7 @@ namespace cadencii {
         private Label lblModifierKey;
         private ComboBox comboKeys;
         private static int[] _DENOMI = new int[] { 1, 2, 4, 8, 16, 32, 64, 128 };
-        private static String[] MODIFIER = new String[] { "None", "Control", "Shift", "Alt" };
+        private static string[] MODIFIER = new string[] { "None", "Control", "Shift", "Alt" };
 
         public DivideNote() {
             InitializeComponent();
@@ -48,7 +50,7 @@ namespace cadencii {
             int selected = -1;
             int count = -1;
             for ( int i = 0; i < MODIFIER.Length; i++ ) {
-                String item = MODIFIER[i];
+                string item = MODIFIER[i];
                 comboKeys.Items.Add( item );
                 count++;
                 if ( item.Equals( getModifier() ) ) {
@@ -189,7 +191,7 @@ namespace cadencii {
         public DialogResult openDialog() {
             int num = Numerator;
             int den = Denominator;
-            String key = getModifier();
+            string key = getModifier();
             DialogResult ret = this.ShowDialog();
             if ( ret != DialogResult.OK ) {
                 // 元に戻す
@@ -369,7 +371,7 @@ namespace cadencii {
             if ( index < 0 ) {
                 return;
             }
-            Modifier = (String)comboKeys.Items[index];
+            Modifier = (string)comboKeys.Items[index];
         }
     }
 

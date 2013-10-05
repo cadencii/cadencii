@@ -24,6 +24,7 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -75,10 +76,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sr">読み込み元</param>
         /// <param name="last_line">最後に読み込んだ行が返されます</param>
-        public VsqMaster( TextStream sr, ByRef<String> last_line )
+        public VsqMaster( TextStream sr, ByRef<string> last_line )
         {
             PreMeasure = 0;
-            String[] spl;
+            string[] spl;
             last_line.value = sr.readLine();
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );

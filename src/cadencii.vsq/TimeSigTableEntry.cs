@@ -21,6 +21,7 @@ using cadencii;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -63,7 +64,7 @@ namespace cadencii.vsq
         {
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "{Clock=" + Clock + ", Numerator=" + Numerator + ", Denominator=" + Denominator + ", BarCount=" + BarCount + "}";
         }

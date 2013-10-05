@@ -20,6 +20,8 @@ using System.Linq;
 using cadencii.vsq;
 using cadencii.java.util;
 
+
+
 namespace cadencii
 {
 
@@ -58,7 +60,7 @@ namespace cadencii
         /// <summary>
         /// koe ファイルに記録するデータ。1 行ずつのデータの配列となっている
         /// </summary>
-        private static readonly String[] koeFileContents;
+        private static readonly string[] koeFileContents;
 
         /// <summary>
         /// AquesTone の音素が、koe ファイルの何行目何カラムに保存されているかを保持したマップ
@@ -72,7 +74,7 @@ namespace cadencii
 
         static AquesTone2Driver()
         {
-            koeFileContents = new String[] {
+            koeFileContents = new string[] {
                 "bya", "bye", "byo", "byu", "chi", "cya", "cye", "cyo", "cyu", "dhi", "dhu", "dwu",
                 "gya", "gye", "gyo", "gyu", "hya", "hye", "hyo", "hyu", "kya", "kye", "kyo", "kyu",
                 "mya", "mye", "myo", "myu", "nya nyan", "nye", "nyo", "nyu", "rya", "rye", "ryo",
@@ -102,7 +104,7 @@ namespace cadencii
         /// AquesTone2 DLL のパスを指定してドライバを初期化する
         /// </summary>
         /// <param name="dllPath">AquesTone2 VSTi DLL のパス</param>
-        public AquesTone2Driver( String dllPath )
+        public AquesTone2Driver( string dllPath )
             : base( dllPath )
         {
         }
@@ -123,7 +125,7 @@ namespace cadencii
         /// <param name="dynamics">Dynamics</param>
         /// <param name="phrase">歌詞</param>
         /// <returns>Note On のための MIDI イベント列</returns>
-        public MidiEvent[] createNoteOnEvent( int note, int dynamics, String phrase )
+        public MidiEvent[] createNoteOnEvent( int note, int dynamics, string phrase )
         {
             var matcher = new SyllableMatcher();
             var syllable = matcher.find( phrase );
@@ -176,17 +178,17 @@ namespace cadencii
             return new ParameterEvent[] { };
         }
 
-        protected override String[] getKoeFileContents()
+        protected override string[] getKoeFileContents()
         {
             return koeFileContents;
         }
 
-        protected override String getConfigSectionKey()
+        protected override string getConfigSectionKey()
         {
             return "AquesTone2";
         }
 
-        protected override String getKoeConfigKey()
+        protected override string getKoeConfigKey()
         {
             return "FileKoe";
         }

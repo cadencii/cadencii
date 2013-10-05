@@ -20,6 +20,7 @@ using System.Threading;
 
 namespace cadencii
 {
+
 #endif
 
 
@@ -75,7 +76,7 @@ namespace cadencii
             return VERSION;
         }
 
-        public override void setConfig( String parameter )
+        public override void setConfig( string parameter )
         {
             // do nothing
         }

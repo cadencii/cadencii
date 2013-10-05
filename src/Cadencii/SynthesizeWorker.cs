@@ -38,6 +38,7 @@ using cadencii.java.util;
 
 namespace cadencii
 {
+
 #endif
 
     public class SynthesizeWorker
@@ -60,10 +61,10 @@ namespace cadencii
             List<PatchWorkQueue> queue = (List<PatchWorkQueue>)args[0];
             List<int> tracks = (List<int>)args[1];
             int finished = queue.Count;
-            String temppath = AppManager.getTempWaveDir();
+            string temppath = AppManager.getTempWaveDir();
             for ( int k = 0; k < tracks.Count; k++ ) {
                 int track = tracks[ k ];
-                String wavePath = Path.Combine( temppath, track + ".wav" );
+                string wavePath = Path.Combine( temppath, track + ".wav" );
                 List<int> queueIndex = new List<int>();
 
                 for ( int i = 0; i < queue.Count; i++ ) {
@@ -285,7 +286,7 @@ namespace cadencii
             double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.MasterPanpot );
             double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.MasterPanpot );
             int numTrack = vsq.Track.Count;
-            String tmppath = AppManager.getTempWaveDir();
+            string tmppath = AppManager.getTempWaveDir();
             int track = q.track;
 
             VsqTrack vsq_track = vsq.Track[ track ];
@@ -322,7 +323,7 @@ namespace cadencii
                 if ( numTrack > 2 ) {
                     for ( int i = 1; i < numTrack; i++ ) {
                         if ( i == track ) continue;
-                        String file = Path.Combine( tmppath, i + ".wav" );
+                        string file = Path.Combine( tmppath, i + ".wav" );
                         if ( !File.Exists( file ) ) {
                             // mixするべきファイルが揃っていないのでbailout
                             return;// true;

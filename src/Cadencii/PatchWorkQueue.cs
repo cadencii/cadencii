@@ -23,6 +23,8 @@ import cadencii.apputil.*;
 using System;
 using cadencii.apputil;
 
+
+
 namespace cadencii
 {
 #endif
@@ -47,7 +49,7 @@ namespace cadencii
         /// <summary>
         /// 合成結果を出力するファイル名
         /// </summary>
-        public String file;
+        public string file;
         /// <summary>
         /// トラック全体を合成する場合true，それ以外はfalse
         /// </summary>
@@ -61,9 +63,9 @@ namespace cadencii
         /// このキューの概要を記した文字列を取得します
         /// </summary>
         /// <returns></returns>
-        public String getMessage()
+        public string getMessage()
         {
-            String message = _( "track" ) + "#" + this.track + " ";
+            string message = _( "track" ) + "#" + this.track + " ";
 #if DEBUG
             sout.println( "PatchWorkQueue#getMessage; q.clockStart=" + this.clockStart + "; q.clockEnd=" + this.clockEnd );
 #endif
@@ -93,7 +95,7 @@ namespace cadencii
             return (end - start) * vsq.config.SamplingRate;
         }
 
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }

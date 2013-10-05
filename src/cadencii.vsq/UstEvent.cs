@@ -28,6 +28,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -46,9 +47,9 @@ namespace cadencii.vsq
         /// </summary>
         public const int MIN_INTENSITY = -100;
 
-        public String Tag;
+        public string Tag;
 
-        private String mLyric = "";
+        private string mLyric = "";
         private bool mIsLyricSpec = false;
 
         private int mNote = -1;
@@ -81,7 +82,7 @@ namespace cadencii.vsq
         private UstEnvelope mEnvelope = null;
         private bool mIsEnvelopeSpec = false;
 
-        public String Flags = "";
+        public string Flags = "";
         
         private int mModuration = 100;
         private bool mIsModurationSpec = false;
@@ -104,12 +105,12 @@ namespace cadencii.vsq
         }
 
         #region Lyric
-        public String getLyric()
+        public string getLyric()
         {
             return mLyric;
         }
 
-        public void setLyric( String value )
+        public void setLyric( string value )
         {
             mLyric = value;
             mIsLyricSpec = true;
@@ -121,7 +122,7 @@ namespace cadencii.vsq
         }
 
 #if !JAVA
-        public String Lyric
+        public string Lyric
         {
             get
             {
@@ -750,7 +751,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name )
+        public static string getXmlElementName( string name )
         {
             return name;
         }

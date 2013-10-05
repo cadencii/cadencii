@@ -37,10 +37,10 @@ namespace cadencii {
 #endif
 
     public class BAssemblyInfo {
-        public const String id = "$Id$";
-        public const String fileVersionMeasure = "3";
-        public const String fileVersionMinor = "5";
-        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".4";
+        public const string id = "$Id$";
+        public const string fileVersionMeasure = "3";
+        public const string fileVersionMinor = "5";
+        public const string fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".4";
         public const string downloadUrl = "http://sourceforge.jp/projects/cadencii/releases/59580/" + "Cadencii_v" + fileVersion;
     }
 

@@ -29,6 +29,7 @@ using cadencii.utau;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -82,17 +83,17 @@ namespace cadencii
         public VsqEvent editing;
 #if ENABLE_PROPERTY
         private static int lastVibratoLength = 66;
-        private String m_clock;
+        private string m_clock;
         private BooleanEnum m_symbol_protected;
-        private String m_length;
+        private string m_length;
         private NoteNumberProperty m_note;
         private BooleanEnum m_portamento_up;
         private BooleanEnum m_portamento_down;
         private AttackVariation m_attack;
         private VibratoVariation m_vibrato;
-        private String m_measure;
-        private String m_beat;
-        private String m_tick;
+        private string m_measure;
+        private string m_beat;
+        private string m_tick;
 #if DEBUG
 #if !JAVA
         private DEBUG_GatetimeProperty m_debug_clock = new DEBUG_GatetimeProperty();
@@ -257,12 +258,12 @@ namespace cadencii
         /// <param name="old_value"></param>
         /// <param name="received_string"></param>
         /// <returns></returns>
-        public static int evalReceivedString( int old_value, String received_string )
+        public static int evalReceivedString( int old_value, string received_string )
         {
             int draft = old_value;
             if ( received_string.StartsWith( "+" ) || received_string.StartsWith( "-" ) || received_string.StartsWith( "*" ) || received_string.StartsWith( "/" ) ) {
                 try {
-                    String eq = "x" + received_string;
+                    string eq = "x" + received_string;
 
                     // 「+ 480)*1.1」みたいな書式を許容したいので。「+ 480)*1.1」=>「(x+ 480)*1.1」
                     int num_bla = 0; // "("の個数
@@ -304,7 +305,7 @@ namespace cadencii
         #region Lyric
 #if !JAVA
         [Category( "Lyric" )]
-        public String Phrase
+        public string Phrase
         {
             get
             {
@@ -320,7 +321,7 @@ namespace cadencii
 #if JAVA
         @Category( "Lyric" )
 #endif
-        public void setPhrase( String value )
+        public void setPhrase( string value )
         {
             if ( editing.ID.LyricHandle == null ) {
                 return;
@@ -328,17 +329,17 @@ namespace cadencii
             if ( editing.ID.LyricHandle.L0 == null ) {
                 return;
             }
-            String old = editing.ID.LyricHandle.L0.Phrase;
+            string old = editing.ID.LyricHandle.L0.Phrase;
             if ( !old.Equals( value ) ) {
                 // 歌詞
-                String phrase = value;
+                string phrase = value;
                 if ( AppManager.editorConfig.SelfDeRomanization ) {
                     phrase = KanaDeRomanization.Attach( value );
                 }
                 editing.ID.LyricHandle.L0.Phrase = phrase;
 
                 // 発音記号
-                String phonetic_symbol = "";
+                string phonetic_symbol = "";
                 SymbolTableEntry entry = SymbolTable.attatch( phrase );
                 if ( entry == null ) {
                     phonetic_symbol = "a";
@@ -348,8 +349,8 @@ namespace cadencii
                 editing.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
 
                 // consonant adjustment
-                String[] spl = PortUtil.splitString( phonetic_symbol, new char[] { ' ', ',' }, true );
-                String consonant_adjustment = "";
+                string[] spl = PortUtil.splitString( phonetic_symbol, new char[] { ' ', ',' }, true );
+                string consonant_adjustment = "";
                 for ( int i = 0; i < spl.Length; i++ ) {
                     consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
                 }
@@ -378,7 +379,7 @@ namespace cadencii
 #if JAVA
         @Category( "Lyric" )
 #endif
-        public String getPhrase()
+        public string getPhrase()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
                 return editing.ID.LyricHandle.L0.Phrase;
@@ -388,7 +389,7 @@ namespace cadencii
 
 #if !JAVA
         [Category( "Lyric" )]
-        public String PhoneticSymbol
+        public string PhoneticSymbol
         {
             get
             {
@@ -404,7 +405,7 @@ namespace cadencii
 #if JAVA
         @Category( "Lyric" )
 #endif
-        public void setPhoneticSymbol( String value )
+        public void setPhoneticSymbol( string value )
         {
             if ( editing.ID.LyricHandle == null ) {
                 return;
@@ -418,7 +419,7 @@ namespace cadencii
 #if JAVA
         @Category( "Lyric" )
 #endif
-        public String getPhoneticSymbol()
+        public string getPhoneticSymbol()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
                 return editing.ID.LyricHandle.L0.getPhoneticSymbol();
@@ -428,7 +429,7 @@ namespace cadencii
 
 #if !JAVA
         [Category( "Lyric" )]
-        public String CosonantAdjustment
+        public string CosonantAdjustment
         {
             get
             {
@@ -444,7 +445,7 @@ namespace cadencii
 #if JAVA
         @Category( "Lyric" )
 #endif
-        public void setCosonantAdjustment( String value )
+        public void setCosonantAdjustment( string value )
         {
             if ( editing.ID.LyricHandle == null ) {
                 return;
@@ -452,8 +453,8 @@ namespace cadencii
             if ( editing.ID.LyricHandle.L0 == null ) {
                 return;
             }
-            String[] symbol = PortUtil.splitString( editing.ID.LyricHandle.L0.getPhoneticSymbol(), new char[] { ' ' }, true );
-            String[] adjustment = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
+            string[] symbol = PortUtil.splitString( editing.ID.LyricHandle.L0.getPhoneticSymbol(), new char[] { ' ' }, true );
+            string[] adjustment = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
             if ( adjustment.Length < symbol.Length ) {
 #if JAVA
                 adjustment = new String[symbol.length];
@@ -479,7 +480,7 @@ namespace cadencii
                     iadj[i] = 0;
                 }
             }
-            String consonant_adjustment = "";
+            string consonant_adjustment = "";
             for ( int i = 0; i < iadj.Length; i++ ) {
                 consonant_adjustment += (i == 0 ? "" : " ") + iadj[i];
             }
@@ -489,7 +490,7 @@ namespace cadencii
 #if JAVA
         @Category( "Lyric" )
 #endif
-        public String getCosonantAdjustment()
+        public string getCosonantAdjustment()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
                 return editing.ID.LyricHandle.L0.getConsonantAdjustment();
@@ -539,7 +540,7 @@ namespace cadencii
         #region Note Location
 #if !JAVA
         [Category( "Note Location" )]
-        public String Clock
+        public string Clock
         {
             get
             {
@@ -555,7 +556,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public void setClock( String value )
+        public void setClock( string value )
         {
             int oldvalue = editing.Clock;
             int draft = evalReceivedString( oldvalue, value );
@@ -566,14 +567,14 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public String getClock()
+        public string getClock()
         {
             return m_clock;
         }
 
 #if !JAVA
         [Category( "Note Location" )]
-        public String Measure
+        public string Measure
         {
             get
             {
@@ -589,7 +590,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public void setMeasure( String value )
+        public void setMeasure( string value )
         {
             PositionSpec ret = getPosition();
             int draft = evalReceivedString( ret.measure, value );
@@ -601,14 +602,14 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public String getMeasure()
+        public string getMeasure()
         {
             return m_measure;
         }
 
 #if !JAVA
         [Category( "Note Location" )]
-        public String Beat
+        public string Beat
         {
             get
             {
@@ -624,7 +625,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public void setBeat( String value )
+        public void setBeat( string value )
         {
             PositionSpec ret = getPosition();
             int draft = evalReceivedString( ret.beat, value );
@@ -636,14 +637,14 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public String getBeat()
+        public string getBeat()
         {
             return m_beat;
         }
 
 #if !JAVA
         [Category( "Note Location" )]
-        public String Tick
+        public string Tick
         {
             get
             {
@@ -659,7 +660,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public void setTick( String value )
+        public void setTick( string value )
         {
             PositionSpec ret = getPosition();
             int draft = evalReceivedString( ret.gate, value );
@@ -671,7 +672,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note Location" )
 #endif
-        public String getTick()
+        public string getTick()
         {
             return m_tick;
         }
@@ -680,7 +681,7 @@ namespace cadencii
         #region Note
 #if !JAVA
         [Category( "Note" )]
-        public String Length
+        public string Length
         {
             get
             {
@@ -696,7 +697,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note" )
 #endif
-        public void setLength( String value )
+        public void setLength( string value )
         {
             int oldvalue = editing.ID.getLength();
             int draft = evalReceivedString( oldvalue, value );
@@ -719,7 +720,7 @@ namespace cadencii
 #if JAVA
         @Category( "Note" )
 #endif
-        public String getLength()
+        public string getLength()
         {
             return m_length;
         }
@@ -877,7 +878,7 @@ namespace cadencii
 
 #if !JAVA
         [Category( "UTAU" )]
-        public String Flags
+        public string Flags
         {
             get
             {
@@ -893,7 +894,7 @@ namespace cadencii
 #if JAVA
         @Category( "UTAU" )
 #endif
-        public void setFlags( String value )
+        public void setFlags( string value )
         {
             if ( editing.UstEvent == null ) {
                 editing.UstEvent = new UstEvent();
@@ -904,7 +905,7 @@ namespace cadencii
 #if JAVA
         @Category( "UTAU" )
 #endif
-        public String getFlags()
+        public string getFlags()
         {
             if ( editing.UstEvent == null ) {
                 return "";
@@ -1407,7 +1408,7 @@ namespace cadencii
                 if ( m_attack.mDescription.Equals( new AttackVariation().mDescription ) ) {
                     editing.ID.NoteHeadHandle = null;
                 } else {
-                    String description = m_attack.mDescription;
+                    string description = m_attack.mDescription;
                     int last_depth = 0;
                     int last_duration = 0;
                     if ( editing.ID.NoteHeadHandle != null ) {
@@ -1551,12 +1552,12 @@ namespace cadencii
                 }
 
                 if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
-                    String description = value.description;
+                    string description = value.description;
                     if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                         int size = AppManager.editorConfig.AutoVibratoCustom.Count;
                         for ( int i = 0; i < size; i++ ) {
                             VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom[ i ];
-                            String display_string = handle.getDisplayString();
+                            string display_string = handle.getDisplayString();
                             if ( description == display_string ) {
                                 editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
                                 break;
@@ -1635,7 +1636,7 @@ namespace cadencii
                 if ( editing.ID.VibratoHandle == null ) {
                     VsqFileEx vsq = AppManager.getVsqFile();
                     if ( vsq != null ) {
-                        String iconid = AppManager.editorConfig.AutoVibratoType2;
+                        string iconid = AppManager.editorConfig.AutoVibratoType2;
                         SynthesizerType type = SynthesizerType.VOCALOID2;
                         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track[AppManager.getSelected()] );
                         if ( kind == RendererKind.VOCALOID1 ) {
@@ -1705,7 +1706,7 @@ namespace cadencii
         {
             VsqEvent e = new VsqEvent();
             e.Tag = editing.Tag;
-            String v = VsqFileEx.getEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
+            string v = VsqFileEx.getEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
             int value = 64;
             if ( !v.Equals( "" ) ) {
                 try {
@@ -1735,7 +1736,7 @@ namespace cadencii
     {
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
         {
-            if ( sourceType == typeof( String ) ) {
+            if ( sourceType == typeof( string ) ) {
                 return true;
             }
             return base.CanConvertFrom( context, sourceType );
@@ -1744,9 +1745,9 @@ namespace cadencii
         // String -> DEBUG_GatetimeProperty
         public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value )
         {
-            if ( value is String ) {
-                String s = (String)value;
-                String[] spl = s.Split( ',' );
+            if ( value is string ) {
+                string s = (string)value;
+                string[] spl = s.Split( ',' );
                 if ( spl.Length >= 3 ) {
                     try {
                         int measure = int.Parse( spl[0].Trim() );
@@ -1775,7 +1776,7 @@ namespace cadencii
         // DEBUG_GatetimeProperty -> String
         public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType )
         {
-            if ( value is DEBUG_GatetimeProperty && destinationType == typeof( String ) ) {
+            if ( value is DEBUG_GatetimeProperty && destinationType == typeof( string ) ) {
                 DEBUG_GatetimeProperty gp = (DEBUG_GatetimeProperty)value;
                 return gp.Measure + ", " + gp.Beat + ", " + gp.Gate;
             }
@@ -1786,12 +1787,12 @@ namespace cadencii
     [TypeConverter( typeof( DEBUG_GatetimePropertyConverter ) )]
     public class DEBUG_GatetimeProperty
     {
-        String m = "1";
-        String b = "2";
-        String g = "3";
+        string m = "1";
+        string b = "2";
+        string g = "3";
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public String Measure
+        public string Measure
         {
             get
             {
@@ -1804,7 +1805,7 @@ namespace cadencii
         }
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public String Beat
+        public string Beat
         {
             get
             {
@@ -1817,7 +1818,7 @@ namespace cadencii
         }
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public String Gate
+        public string Gate
         {
             get
             {

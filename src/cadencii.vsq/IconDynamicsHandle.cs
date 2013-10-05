@@ -20,6 +20,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -35,25 +36,25 @@ namespace cadencii.vsq
         /// <summary>
         /// 強弱記号の場合の、IconIDの最初の5文字。
         /// </summary>
-        public const String ICONID_HEAD_DYNAFF = "$0501";
+        public const string ICONID_HEAD_DYNAFF = "$0501";
         /// <summary>
         /// クレッシェンドの場合の、IconIDの最初の5文字。
         /// </summary>
-        public const String ICONID_HEAD_CRESCEND = "$0502";
+        public const string ICONID_HEAD_CRESCEND = "$0502";
         /// <summary>
         /// デクレッシェンドの場合の、IconIDの最初の5文字。
         /// </summary>
-        public const String ICONID_HEAD_DECRESCEND = "$0503";
+        public const string ICONID_HEAD_DECRESCEND = "$0503";
 
         /// <summary>
         /// この強弱記号設定を一意に識別するためのIDです。
         /// </summary>
-        public String IconID = "";
+        public string IconID = "";
         /// <summary>
         /// ユーザ・フレンドリー名です。
         /// このフィールドの値は、他の強弱記号設定のユーザ・フレンドリー名と重複する場合があります。
         /// </summary>
-        public String IDS = "";
+        public string IDS = "";
         /// <summary>
         /// この強弱記号設定が他の強弱記号設定から派生したものである場合、派生元を特定するための番号です。
         /// </summary>
@@ -83,7 +84,7 @@ namespace cadencii.vsq
         /// <param name="ids">フィールドIDSの初期値</param>
         /// <param name="icon_id">フィールドIconIDの初期値</param>
         /// <param name="index">フィールドOriginalの初期値</param>
-        public IconDynamicsHandle( String aic_file, String ids, String icon_id, int index )
+        public IconDynamicsHandle( string aic_file, string ids, string icon_id, int index )
 #if JAVA
         {
 #else
@@ -193,7 +194,7 @@ namespace cadencii.vsq
         /// キャプションを取得します。
         /// </summary>
         /// <returns></returns>
-        public String getCaption()
+        public string getCaption()
         {
             return caption;
         }
@@ -202,7 +203,7 @@ namespace cadencii.vsq
         /// キャプションを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setCaption( String value )
+        public void setCaption( string value )
         {
             caption = value;
         }
@@ -211,7 +212,7 @@ namespace cadencii.vsq
         /// <summary>
         /// XMLシリアライズ用、キャプションです。
         /// </summary>
-        public String Caption
+        public string Caption
         {
             get
             {

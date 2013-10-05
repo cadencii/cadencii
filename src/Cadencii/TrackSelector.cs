@@ -42,6 +42,7 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
+    using PLACEHOLDER_20131005_0257 = System.String;
     using Graphics = cadencii.java.awt.Graphics2D;
 #endif
 
@@ -659,12 +660,12 @@ namespace cadencii
         }
 #endif
 
-        public String getName()
+        public PLACEHOLDER_20131005_0257 getName()
         {
             return base.Name;
         }
 
-        public void setName( String value )
+        public void setName( PLACEHOLDER_20131005_0257 value )
         {
             base.Name = value;
         }
@@ -1585,7 +1586,7 @@ namespace cadencii
                     g.setFont( text_font );
                     g.setColor( brs_string );
                     bool is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
-                    String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
+                    PLACEHOLDER_20131005_0257 name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
                     g.drawString( name, 7, text_font_height / 2 - text_font_offset + 1 );
 
                     for ( int i = 0; i < mViewingCurves.Count; i++ ) {
@@ -1599,7 +1600,7 @@ namespace cadencii
                         g.drawRect( rc.x, rc.y, rc.width, rc.height );
                         int rc_str_x = rc.x + 2;
                         int rc_str_y = rc.y + text_font_height / 2 - text_font_offset + 1;
-                        String n = curve.getName();
+                        PLACEHOLDER_20131005_0257 n = curve.getName();
                         if ( is_utau_mode && curve.equals( CurveType.VEL ) ) {
                             n = "INT";
                         }
@@ -1819,7 +1820,7 @@ namespace cadencii
         /// <param name="flag_is_pre_utterance">先行発音用の文字列を取得する場合にtrue，そうでなければfalseを指定します</param>
         /// <param name="value">先行発音，またはオーバーラップの値</param>
         /// <returns>旗に描くための文字列（Overlap: 0.00など）</returns>
-        private static String getFlagTitle( bool flag_is_pre_utterance, float value )
+        private static PLACEHOLDER_20131005_0257 getFlagTitle( bool flag_is_pre_utterance, float value )
         {
             if ( flag_is_pre_utterance ) {
                 return "Pre Utterance: " + PortUtil.formatDecimal( "0.00", value );
@@ -1832,7 +1833,7 @@ namespace cadencii
         /// 指定した文字列を旗に書いたときの，旗のサイズを計算します
         /// </summary>
         /// <param name="flag_title"></param>
-        private Dimension getFlagBounds( String flag_title )
+        private Dimension getFlagBounds( PLACEHOLDER_20131005_0257 flag_title )
         {
             if ( mTextWidthPerLetter <= 0.0f ) {
 #if JAVA
@@ -1863,8 +1864,8 @@ namespace cadencii
             g.setColor( PortUtil.LawnGreen );
             g.drawLine( px_overlap, HEADER + 1, px_overlap, graph_height + HEADER );
 
-            String s_pre = getFlagTitle( true, preutterance );
-            String s_ovl = getFlagTitle( false, overlap );
+            PLACEHOLDER_20131005_0257 s_pre = getFlagTitle( true, preutterance );
+            PLACEHOLDER_20131005_0257 s_ovl = getFlagTitle( false, overlap );
 #if JAVA
             Font font = AppManager.baseFont9;
             int font_height = AppManager.baseFont9Height;
@@ -2043,7 +2044,7 @@ namespace cadencii
                 }
                 // 先行発音の旗の当たり判定
                 if ( found_flag_was_overlap != null ) {
-                    String title_preutterance = getFlagTitle( true, item.UstEvent.getPreUtterance() );
+                    PLACEHOLDER_20131005_0257 title_preutterance = getFlagTitle( true, item.UstEvent.getPreUtterance() );
                     size = getFlagBounds( title_preutterance );
                     if ( Utility.isInRect( locx, locy, px_preutterance.value, OFFSET_PRE - FLAG_SPACE, size.width, size.height + FLAG_SPACE * 2 ) ) {
                         internal_id.value = item.InternalID;
@@ -2051,7 +2052,7 @@ namespace cadencii
                         return true;
                     }
                     // オーバーラップ用の旗の当たり判定
-                    String title_overlap = getFlagTitle( false, item.UstEvent.getVoiceOverlap() );
+                    PLACEHOLDER_20131005_0257 title_overlap = getFlagTitle( false, item.UstEvent.getVoiceOverlap() );
                     size = getFlagBounds( title_overlap );
                     if ( Utility.isInRect( locx, locy, px_overlap.value, OFFSET_OVL - FLAG_SPACE, size.width, size.height + FLAG_SPACE * 2 ) ) {
                         internal_id.value = item.InternalID;
@@ -2171,7 +2172,7 @@ namespace cadencii
             env_end_sec.value = sec_env_end1;
         }
 
-        private void drawTrackTab( Graphics2D g, Rectangle destRect, String name, bool selected, bool enabled, bool render_required, Color hilight, Color render_button_hilight )
+        private void drawTrackTab( Graphics2D g, Rectangle destRect, PLACEHOLDER_20131005_0257 name, bool selected, bool enabled, bool render_required, Color hilight, Color render_button_hilight )
         {
             int x = destRect.x;
             int panel_width = render_required ? destRect.width - 10 : destRect.width;
@@ -2207,7 +2208,7 @@ namespace cadencii
                         destRect.x + destRect.width - 10, destRect.y + destRect.height - 1 );
             }
             g.clipRect( destRect.x, destRect.y, destRect.width, destRect.height );
-            String title = Utility.trimString( name, AppManager.baseFont8, panel_width );
+            PLACEHOLDER_20131005_0257 title = Utility.trimString( name, AppManager.baseFont8, panel_width );
             g.setFont( AppManager.baseFont8 );
             g.setColor( panel_title );
             g.drawString( title, destRect.x + 2, destRect.y + destRect.height / 2 - AppManager.baseFont8OffsetHeight );
@@ -5235,7 +5236,7 @@ namespace cadencii
                     int dx = mouse.x + AppManager.mMainWindowController.getStartToDrawX() - mMouseDownLocation.x;
                     int dy = mouse.y - mMouseDownLocation.y;
 
-                    String curve = mSelectedCurve.getName();
+                    PLACEHOLDER_20131005_0257 curve = mSelectedCurve.getName();
                     VsqTrack work = (VsqTrack)vsq_track.clone();
                     VsqBPList list = work.getCurve( curve );
                     VsqBPList work_list = (VsqBPList)list.clone();
@@ -5673,7 +5674,7 @@ namespace cadencii
                             if ( !mCMenuSingerPrepared.Equals( renderer ) ) {
                                 prepareSingerMenu( renderer );
                             }
-                            String singer = AppManager.editorConfig.DefaultSingerName;
+                            PLACEHOLDER_20131005_0257 singer = AppManager.editorConfig.DefaultSingerName;
                             int clock = AppManager.clockFromXCoord( e.X );
                             int last_clock = 0;
                             for ( Iterator<VsqEvent> itr = vsq_track.getSingerEventIterator(); itr.hasNext(); ) {
@@ -5725,7 +5726,7 @@ namespace cadencii
             }
             int count = 0;
             foreach (var sc in items) {
-                String tip = "";
+                PLACEHOLDER_20131005_0257 tip = "";
                 if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                     if ( sc != null ) {
                         tip = "Name: " + sc.VOICENAME +
@@ -5797,7 +5798,7 @@ namespace cadencii
             try {
                 TrackSelectorSingerDropdownMenuItem menu =
                     (TrackSelectorSingerDropdownMenuItem)sender;
-                String tip = menu.ToolTipText;
+                PLACEHOLDER_20131005_0257 tip = menu.ToolTipText;
                 int language = menu.Language;
                 int program = menu.Program;
 

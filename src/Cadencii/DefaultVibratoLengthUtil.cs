@@ -18,10 +18,11 @@ package cadencii;
 using System;
 
 namespace cadencii {
+
 #endif
 
     public class DefaultVibratoLengthUtil {
-        public static String toString( DefaultVibratoLengthEnum value ) {
+        public static string toString( DefaultVibratoLengthEnum value ) {
             if ( value == DefaultVibratoLengthEnum.L50 ) {
                 return "50";
             } else if ( value == DefaultVibratoLengthEnum.L66 ) {

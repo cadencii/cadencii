@@ -31,6 +31,8 @@ using cadencii;
 using cadencii.java.util;
 using cadencii.windows.forms;
 
+
+
 namespace cadencii
 {
 #endif
@@ -44,7 +46,7 @@ namespace cadencii
         /// <summary>
         /// カテゴリーのリスト
         /// </summary>
-        private static readonly String[] mCategories = new String[]{
+        private static readonly string[] mCategories = new string[]{
             "menuFile", "menuEdit", "menuVisual", "menuJob", "menuLyric", "menuTrack",
             "menuScript", "menuSetting", "menuHelp", ".other" };
         private static int mColumnWidthCommand = 272;
@@ -52,16 +54,16 @@ namespace cadencii
         private static int mWindowWidth = 541;
         private static int mWindowHeight = 572;
 
-        private SortedDictionary<String, ValuePair<String, Keys[]>> mDict;
-        private SortedDictionary<String, ValuePair<String, Keys[]>> mFirstDict;
-        private List<String> mFieldName = new List<String>();
+        private SortedDictionary<string, ValuePair<string, Keys[]>> mDict;
+        private SortedDictionary<string, ValuePair<string, Keys[]>> mFirstDict;
+        private List<string> mFieldName = new List<string>();
         private FormMain mMainForm = null;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
-        public FormShortcutKeys( SortedDictionary<String, ValuePair<String, Keys[]>> dict, FormMain main_form )
+        public FormShortcutKeys( SortedDictionary<string, ValuePair<string, Keys[]>> dict, FormMain main_form )
         {
 #if JAVA
             super();
@@ -83,7 +85,7 @@ namespace cadencii
             sout.println( "FormShortcutKeys#.ctor; mColumnWidthCommand=" + mColumnWidthCommand + "; mColumnWidthShortcutKey=" + mColumnWidthShortcutKey );
 #endif
             mMainForm = main_form;
-            list.SetColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+            list.SetColumnHeaders( new string[] { _( "Command" ), _( "Shortcut Key" ) } );
             list.Columns[0].Width = mColumnWidthCommand;
             list.Columns[1].Width = mColumnWidthShortcutKey;
 
@@ -92,7 +94,7 @@ namespace cadencii
 
             mDict = dict;
             comboCategory.SelectedIndex = 0;
-            mFirstDict = new SortedDictionary<String, ValuePair<String, Keys[]>>();
+            mFirstDict = new SortedDictionary<string, ValuePair<string, Keys[]>>();
             copyDict( mDict, mFirstDict );
 
             comboEditKey.Items.Clear();
@@ -108,8 +110,8 @@ namespace cadencii
                 changed = false;
                 for( int i = 0; i < size - 1; i++ ){
                     for( int j = i + 1; j < size; j++ ){
-                        String itemi = keys[i] + "";
-                        String itemj = keys[j] + "";
+                        string itemi = keys[i] + "";
+                        string itemj = keys[j] + "";
 #if JAVA
                         if( itemi.compareTo( itemj ) > 0 ){
 #else
@@ -143,13 +145,13 @@ namespace cadencii
             btnRevert.Text = _( "Revert" );
             btnLoadDefault.Text = _( "Load Default" );
 
-            list.SetColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
+            list.SetColumnHeaders( new string[] { _( "Command" ), _( "Shortcut Key" ) } );
 
             labelCategory.Text = _( "Category" );
             int selected = comboCategory.SelectedIndex;
             comboCategory.Items.Clear();
-            foreach ( String category in mCategories ) {
-                String c = category;
+            foreach ( string category in mCategories ) {
+                string c = category;
                 if ( category == "menuFile" ) {
                     c = _( "File" );
                 } else if ( category == "menuEdit" ) {
@@ -184,31 +186,31 @@ namespace cadencii
             labelEditModifier.Text = _( "Modifier:" );
         }
 
-        public SortedDictionary<String, ValuePair<String, Keys[]>> getResult()
+        public SortedDictionary<string, ValuePair<string, Keys[]>> getResult()
         {
-            SortedDictionary<String, ValuePair<String, Keys[]>> ret = new SortedDictionary<String, ValuePair<String, Keys[]>>();
+            SortedDictionary<string, ValuePair<string, Keys[]>> ret = new SortedDictionary<string, ValuePair<string, Keys[]>>();
             copyDict( mDict, ret );
             return ret;
         }
         #endregion
 
         #region helper methods
-        private static String _( String id )
+        private static string _( string id )
         {
             return Messaging.getMessage( id );
         }
 
-        private static void copyDict( SortedDictionary<String, ValuePair<String, Keys[]>> src, SortedDictionary<String, ValuePair<String, Keys[]>> dest )
+        private static void copyDict( SortedDictionary<string, ValuePair<string, Keys[]>> src, SortedDictionary<string, ValuePair<string, Keys[]>> dest )
         {
             dest.Clear();
             foreach (var name in src.Keys) {
-                String key = src[ name ].getKey();
+                string key = src[ name ].getKey();
                 Keys[] values = src[ name ].getValue();
                 List<Keys> cp = new List<Keys>();
                 foreach ( Keys k in values ) {
                     cp.Add( k );
                 }
-                dest[name] = new ValuePair<String, Keys[]>( key, cp.ToArray() );
+                dest[name] = new ValuePair<string, Keys[]>( key, cp.ToArray() );
             }
         }
 
@@ -227,18 +229,18 @@ namespace cadencii
             if ( selected < 0 ) {
                 selected = 0;
             }
-            String category = mCategories[selected];
+            string category = mCategories[selected];
 
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
             foreach (var display in mDict.Keys) {
-                ValuePair<String, Keys[]> item = mDict[ display ];
-                String field_name = item.getKey();
+                ValuePair<string, Keys[]> item = mDict[ display ];
+                string field_name = item.getKey();
                 Keys[] keys = item.getValue();
                 bool add_this_one = false;
                 if ( category == ".other" ) {
                     add_this_one = true;
                     for ( int i = 0; i < mCategories.Length; i++ ) {
-                        String c = mCategories[i];
+                        string c = mCategories[i];
                         if ( c == ".other" ) {
                             continue;
                         }
@@ -253,7 +255,7 @@ namespace cadencii
                     }
                 }
                 if ( add_this_one ) {
-                     list.AddRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
+                     list.AddRow( new string[] { display, Utility.getShortcutDisplayString( keys ) } );
                      mFieldName.Add( field_name );
                 }
             }
@@ -271,8 +273,8 @@ namespace cadencii
             int size = list.Items.Count;
             for ( int i = 0; i < size; i++ ) {
                 //BListViewItem list_item = list.getItemAt( i );
-                String field_name = mFieldName[ i ];
-                String key_display = list.Items[i].SubItems[1].Text;
+                string field_name = mFieldName[ i ];
+                string key_display = list.Items[i].SubItems[1].Text;
                 if ( key_display == "" ){
                     // ショートカットキーが割り当てられていないのでスルー
                     list.Items[i].BackColor = System.Drawing.Color.White;
@@ -281,14 +283,14 @@ namespace cadencii
 
                 bool found = false;
                 foreach (var display1 in mDict.Keys) {
-                    ValuePair<String, Keys[]> item1 = mDict[ display1 ];
-                    String field_name1 = item1.getKey();
+                    ValuePair<string, Keys[]> item1 = mDict[ display1 ];
+                    string field_name1 = item1.getKey();
                     if ( field_name == field_name1 ) {
                         // 自分自身なのでスルー
                         continue;
                     }
                     Keys[] keys1 = item1.getValue();
-                    String key_display1 = Utility.getShortcutDisplayString( keys1 );
+                    string key_display1 = Utility.getShortcutDisplayString( keys1 );
                     if ( key_display == key_display1 ) {
                         // 同じキーが割り当てられてる！！
                         found = true;
@@ -373,7 +375,7 @@ namespace cadencii
             }
             int indx_row = list.SelectedIndices[0];
             Keys key = (Keys)comboEditKey.Items[indx];
-            String display = list.Items[indx_row].SubItems[0].Text;
+            string display = list.Items[indx_row].SubItems[0].Text;
             if ( !mDict.ContainsKey( display ) ) {
                 return;
             }
@@ -404,12 +406,12 @@ namespace cadencii
                 return;
             }
             int indx = list.SelectedIndices[0];
-            String display = list.Items[indx].SubItems[0].Text;
+            string display = list.Items[indx].SubItems[0].Text;
             if( !mDict.ContainsKey( display ) ){
                 return;
             }
             unRegisterHandlers();
-            ValuePair<String, Keys[]> item = mDict[ display ];
+            ValuePair<string, Keys[]> item = mDict[ display ];
             Keys[] keys = item.getValue();
             List<Keys> vkeys = new List<Keys>( keys );
             checkCommand.Checked = vkeys.Contains( Keys.Menu );
@@ -452,7 +454,7 @@ namespace cadencii
         {
             List<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
             for ( int i = 0; i < defaults.Count; i++ ) {
-                String name = defaults[ i ].Key;
+                string name = defaults[ i ].Key;
                 Keys[] keys = defaults[ i ].Value;
                 foreach (var display in mDict.Keys) {
                     if ( name.Equals( mDict[ display ].getKey() ) ) {

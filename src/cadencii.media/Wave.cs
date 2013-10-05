@@ -23,6 +23,7 @@ using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
+
 #endif
 
 #if !JAVA
@@ -825,7 +826,7 @@ namespace cadencii.media {
             }
         }
 
-        public void printToText( String path ) {
+        public void printToText( string path ) {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new FileWriter( path ) );
@@ -916,7 +917,7 @@ namespace cadencii.media {
         /// ファイルに保存
         /// </summary>
         /// <param name="file"></param>
-        public void write( String file ) {
+        public void write( string file ) {
             RandomAccessFile fs = null;
             try {
                 fs = new RandomAccessFile( file, "rw" );
@@ -1215,7 +1216,7 @@ namespace cadencii.media {
             } //else ... TODO: Wave+Append他のbitpersec, channelのとき
         }
 
-        public Wave( String path ) {
+        public Wave( string path ) {
             read( path );
         }
 
@@ -1225,7 +1226,7 @@ namespace cadencii.media {
                 fs.read( buf, 0, 4 );
                 long chunk_size_form = PortUtil.make_uint32_be( buf );
                 fs.read( buf, 0, 4 ); // AIFF
-                String tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
+                string tag = new string( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "AIFF" ) ) {
 #if DEBUG
                     serr.println( "Wave#parseAiffHeader; error; tag=" + tag + " and must be AIFF" );
@@ -1233,7 +1234,7 @@ namespace cadencii.media {
                     return false;
                 }
                 fs.read( buf, 0, 4 ); // COMM
-                tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
+                tag = new string( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "COMM" ) ) {
 #if DEBUG
                     serr.println( "Wave#parseAiffHeader; error; tag=" + tag + " and must be COMM" );
@@ -1266,7 +1267,7 @@ namespace cadencii.media {
                 fs.seek( chunk_loc_comm + (long)chunk_size_comm );
 
                 fs.read( buf, 0, 4 ); // SSND
-                tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
+                tag = new string( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "SSND" ) ) {
 #if DEBUG
                     serr.println( "Wave#parseAiffHeader; error; tag=" + tag + " and must be SSND" );
@@ -1415,7 +1416,7 @@ namespace cadencii.media {
 
                 // move to the top of data chunk
                 fs.read( buf, 0, 4 );
-                String tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
+                string tag = new string( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
 #if DEBUG
                 sout.println( "Wave#parseWaveHeader; tag=" + tag );
 #endif
@@ -1424,7 +1425,7 @@ namespace cadencii.media {
                     long size = PortUtil.make_uint32_le( buf );
                     fs.seek( fs.getFilePointer() + size );
                     fs.read( buf, 0, 4 );
-                    tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
+                    tag = new string( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
 #if DEBUG
                     sout.println( "Wave#parseWaveHeader; tag=" + tag );
 #endif
@@ -1446,7 +1447,7 @@ namespace cadencii.media {
             return true;
         }
 
-        public bool read( String path ) {
+        public bool read( string path ) {
             RandomAccessFile fs = null;
             bool ret = false;
             try {

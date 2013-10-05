@@ -20,6 +20,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -34,17 +35,17 @@ namespace cadencii.vsq
         /// <summary>
         /// 単語（英語の場合、分節位置にハイフンが入る）
         /// </summary>
-        public String Word = "";
+        public string Word = "";
         /// <summary>
         /// 発音記号列．タブ記号を含む形式
         /// </summary>
-        private String m_raw_symbol = "";
+        private string m_raw_symbol = "";
         /// <summary>
         /// 発音記号列．タブ記号を含まない形式
         /// </summary>
-        private String m_symbol = "";
+        private string m_symbol = "";
 
-        public SymbolTableEntry( String word, String symbol )
+        public SymbolTableEntry( string word, string symbol )
         {
             Word = word;
             if ( Word == null ) {
@@ -63,7 +64,7 @@ namespace cadencii.vsq
         /// タブ記号の位置を調べてください．
         /// </summary>
         /// <returns></returns>
-        public String getSymbol()
+        public string getSymbol()
         {
             return m_symbol;
         }
@@ -74,7 +75,7 @@ namespace cadencii.vsq
         /// 空白による区切りは分節中に複数の発音記号がある場合の区切りを表します．
         /// </summary>
         /// <returns></returns>
-        public String getRawSymbol()
+        public string getRawSymbol()
         {
             return m_raw_symbol;
         }
@@ -87,7 +88,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <returns></returns>
         [Obsolete]
-        public String Symbol
+        public string Symbol
         {
             get
             {
@@ -103,7 +104,7 @@ namespace cadencii.vsq
 #if !JAVA
         [Obsolete]
 #endif
-        public String getParsedSymbol()
+        public string getParsedSymbol()
         {
             return getSymbol();
         }

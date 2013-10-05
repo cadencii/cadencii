@@ -36,9 +36,9 @@ namespace cadencii.vsq
     public class VsqCommon : ICloneable
 #endif
     {
-        public String Version;
-        public String Name;
-        public String Color;
+        public string Version;
+        public string Name;
+        public string Color;
         /// <summary>
         /// Dynamicsカーブを表示するモード(Expert)なら1、しない(Standard)なら0。
         /// </summary>
@@ -61,7 +61,7 @@ namespace cadencii.vsq
 
         public Object clone()
         {
-            String[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
+            string[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
             int r = int.Parse( spl[0] );
             int g = int.Parse( spl[1] );
             int b = int.Parse( spl[2] );
@@ -78,7 +78,7 @@ namespace cadencii.vsq
         /// <param name="color">Color値（意味は不明）</param>
         /// <param name="dynamics_mode">DynamicsMode（デフォルトは1）</param>
         /// <param name="play_mode">PlayMode（デフォルトは1）</param>
-        public VsqCommon( String name, int red, int green, int blue, int dynamics_mode, int play_mode )
+        public VsqCommon( string name, int red, int green, int blue, int dynamics_mode, int play_mode )
         {
             this.Version = "DSB301";
             this.Name = name;
@@ -102,7 +102,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sr">読み込むテキストファイル</param>
         /// <param name="last_line">読み込んだ最後の行が返される</param>
-        public VsqCommon( TextStream sr, ByRef<String> last_line )
+        public VsqCommon( TextStream sr, ByRef<string> last_line )
         {
             Version = "";
             Name = "";
@@ -110,10 +110,10 @@ namespace cadencii.vsq
             DynamicsMode = 0;
             PlayMode = 1;
             last_line.value = sr.readLine();
-            String[] spl;
+            string[] spl;
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                String search = spl[0];
+                string search = spl[0];
                 if ( search.Equals( "Version" ) ) {
                     this.Version = spl[1];
                 } else if ( search.Equals( "Name" ) ) {

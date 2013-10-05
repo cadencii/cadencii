@@ -21,6 +21,7 @@ using cadencii;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -28,14 +29,14 @@ namespace cadencii.vsq
     /// </summary>
     public class VsqPhoneticSymbol
     {
-        private static String[] _SYMBOL_VOWEL_JP = new String[]{
+        private static string[] _SYMBOL_VOWEL_JP = new string[]{
             "a",
             "i",
             "M",
             "e",
             "o",
         };
-        private static String[] _SYMBOL_CONSONANT_JP = new String[]{
+        private static string[] _SYMBOL_CONSONANT_JP = new string[]{
             "k",
             "k'",
             "g",
@@ -73,7 +74,7 @@ namespace cadencii.vsq
             "w",
             "N\\",
         };
-        private static String[] _SYMBOL_VOWEL_EN = new String[]{
+        private static string[] _SYMBOL_VOWEL_EN = new string[]{
             "@",
             "V",
             "e",
@@ -97,7 +98,7 @@ namespace cadencii.vsq
             "O@",
             "Q@",
         };
-        private static String[] _SYMBOL_CONSONANT_EN = new String[]{        
+        private static string[] _SYMBOL_CONSONANT_EN = new string[]{        
             "w",
             "j",
             "b",
@@ -138,15 +139,15 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static bool isConsonant( String symbol )
+        public static bool isConsonant( string symbol )
         {
             for ( int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++ ) {
-                String s = _SYMBOL_CONSONANT_JP[i];
+                string s = _SYMBOL_CONSONANT_JP[i];
                 if ( s.Equals( symbol ) ) {
                     return true;
                 }
             }
-            foreach ( String s in _SYMBOL_CONSONANT_EN ) {
+            foreach ( string s in _SYMBOL_CONSONANT_EN ) {
                 if ( s == symbol ) {
                     return true;
                 }
@@ -159,24 +160,24 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static bool isValidSymbol( String symbol )
+        public static bool isValidSymbol( string symbol )
         {
-            foreach ( String s in _SYMBOL_VOWEL_JP ) {
+            foreach ( string s in _SYMBOL_VOWEL_JP ) {
                 if ( s == symbol ) {
                     return true;
                 }
             }
-            foreach ( String s in _SYMBOL_CONSONANT_JP ) {
+            foreach ( string s in _SYMBOL_CONSONANT_JP ) {
                 if ( s == symbol ) {
                     return true;
                 }
             }
-            foreach ( String s in _SYMBOL_VOWEL_EN ) {
+            foreach ( string s in _SYMBOL_VOWEL_EN ) {
                 if ( s == symbol ) {
                     return true;
                 }
             }
-            foreach ( String s in _SYMBOL_CONSONANT_EN ) {
+            foreach ( string s in _SYMBOL_CONSONANT_EN ) {
                 if ( s == symbol ) {
                     return true;
                 }
@@ -185,7 +186,7 @@ namespace cadencii.vsq
             // ブレスの判定
             int strlen = PortUtil.getStringLength( symbol );
             if ( symbol.StartsWith( "br" ) && strlen > 2 ) {
-                String s = symbol.Substring( 2 );
+                string s = symbol.Substring( 2 );
                 try {
                     // br001とかをfalseにするためのチェック
                     int num = int.Parse( s );

@@ -34,6 +34,7 @@ using cadencii.xml;
 
 namespace cadencii
 {
+
 #endif
 
 #if JAVA
@@ -45,12 +46,12 @@ namespace cadencii
     {
         private static XmlSerializer mVsqSerializer;
 
-        public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
-        public const String TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
+        public const string TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
+        public const string TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
         /// <summary>
         /// トラックをUTAUモードで合成するとき，何番目の互換合成器で合成するかどうかを指定する
         /// </summary>
-        public const String TAG_VSQTRACK_RESAMPLER_USED = "org.kbinani.cadencii.ResamplerUsed";
+        public const string TAG_VSQTRACK_RESAMPLER_USED = "org.kbinani.cadencii.ResamplerUsed";
 
         public const string RENDERER_DSB2 = "DSB2";
         public const string RENDERER_DSB3 = "DSB3";
@@ -71,7 +72,7 @@ namespace cadencii
         /// <summary>
         /// キャッシュ用ディレクトリのパス
         /// </summary>
-        public String cacheDir = "";
+        public string cacheDir = "";
 #if !JAVA
         [System.Xml.Serialization.XmlIgnore]
 #endif
@@ -100,7 +101,7 @@ namespace cadencii
         /// <returns></returns>
         public static int getTrackResamplerUsed( VsqTrack vsq_track )
         {
-            String str_indx = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED );
+            string str_indx = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED );
             int ret = 0;
             try {
                 ret = int.Parse( str_indx );
@@ -127,7 +128,7 @@ namespace cadencii
         /// <returns></returns>
         public static RendererKind getTrackRendererKind( VsqTrack vsq_track )
         {
-            String str_kind = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND );
+            string str_kind = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND );
             if ( str_kind != null && !str_kind.Equals( "" ) ) {
 #if JAVA
                 RendererKind[] values = RendererKind.values();
@@ -147,7 +148,7 @@ namespace cadencii
                 // お手上げである。
                 return RendererKind.VOCALOID2;
             }
-            String version = vsq_common.Version;
+            string version = vsq_common.Version;
             if ( version == null ) {
                 // お手上げである。その２
                 return RendererKind.VOCALOID2;
@@ -193,15 +194,15 @@ namespace cadencii
             }
         }
 
-        private static String getTagCor( String tag, String tag_name )
+        private static string getTagCor( string tag, string tag_name )
         {
             if ( tag_name == null ) return "";
             if ( tag_name.Equals( "" ) ) return "";
             if ( tag == null ) return "";
             if ( tag.Equals( "" ) ) return "";
-            String[] spl = PortUtil.splitString( tag, ';' );
-            foreach ( String s in spl ) {
-                String[] spl2 = PortUtil.splitString( s, ':' );
+            string[] spl = PortUtil.splitString( tag, ';' );
+            foreach ( string s in spl ) {
+                string[] spl2 = PortUtil.splitString( s, ':' );
                 if ( spl2.Length == 2 ) {
                     if ( tag_name.Equals( spl2[0] ) ) {
                         return spl2[1];
@@ -211,22 +212,22 @@ namespace cadencii
             return "";
         }
 
-        private static String setTagCor( String old_tag, String name, String value )
+        private static string setTagCor( string old_tag, string name, string value )
         {
             if ( name == null ) return old_tag;
             if ( name.Equals( "" ) ) return old_tag;
-            String v = value.Replace( ":", "" ).Replace( ";", "" );
+            string v = value.Replace( ":", "" ).Replace( ";", "" );
             if ( old_tag == null ) {
                 return name + ":" + value;
             } else {
-                String newtag = "";
-                String[] spl = PortUtil.splitString( old_tag, ';' );
+                string newtag = "";
+                string[] spl = PortUtil.splitString( old_tag, ';' );
                 bool is_first = true;
                 bool added = false;
-                foreach ( String s in spl ) {
-                    String[] spl2 = PortUtil.splitString( s, ':' );
+                foreach ( string s in spl ) {
+                    string[] spl2 = PortUtil.splitString( s, ':' );
                     if ( spl2.Length == 2 ) {
-                        String add = "";
+                        string add = "";
                         if ( name.Equals( spl2[0] ) ) {
                             add = name + ":" + v;
                             added = true;
@@ -246,12 +247,12 @@ namespace cadencii
             }
         }
 
-        public static String getEventTag( VsqEvent item, String name )
+        public static string getEventTag( VsqEvent item, string name )
         {
             return getTagCor( item.Tag, name );
         }
 
-        public static void setEventTag( VsqEvent item, String name, String value )
+        public static void setEventTag( VsqEvent item, string name, string value )
         {
             item.Tag = setTagCor( item.Tag, name, value );
         }
@@ -1324,7 +1325,7 @@ namespace cadencii
             TimesigTable.Clear();
         }
 
-        public VsqFileEx( String singer, int pre_measure, int numerator, int denominator, int tempo )
+        public VsqFileEx( string singer, int pre_measure, int numerator, int denominator, int tempo )
 #if JAVA
         {
 #else
@@ -1362,7 +1363,7 @@ namespace cadencii
             }
         }
 
-        public VsqFileEx( String _fpath, String encoding )
+        public VsqFileEx( string _fpath, string encoding )
 #if JAVA
             throws FileNotFoundException
         {
@@ -1377,7 +1378,7 @@ namespace cadencii
 #endif
             AttachedCurves = new AttachedCurve();
 
-            String xml = Path.Combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
+            string xml = Path.Combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
             for ( int i = 1; i < Track.Count; i++ ) {
                 AttachedCurves.add( new BezierCurves() );
             }
@@ -1396,7 +1397,7 @@ namespace cadencii
             }
         }
 
-        public void writeAsXml( String file )
+        public void writeAsXml( string file )
         {
             FileOutputStream xw = null;
             try {
@@ -1417,7 +1418,7 @@ namespace cadencii
             }
         }
 
-        public static VsqFileEx readFromXml( String file )
+        public static VsqFileEx readFromXml( string file )
         {
             VsqFileEx ret = null;
             FileInputStream fs = null;

@@ -34,7 +34,7 @@ namespace cadencii
 #endif
     {
         public int ToolTipPxWidth;
-        public String ToolTipText;
+        public string ToolTipText;
         public int Language;
         public int Program;
     }

@@ -20,6 +20,7 @@ import cadencii.*;
 using System;
 
 namespace cadencii.media {
+
 #endif
 
     /// <summary>
@@ -94,7 +95,7 @@ namespace cadencii.media {
             bufRight = new double[bBuflen];
         }
 
-        public String getFilePath() {
+        public string getFilePath() {
             return reader.getFilePath();
         }
 

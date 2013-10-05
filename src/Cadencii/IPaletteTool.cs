@@ -19,16 +19,18 @@ using System.Windows.Forms;
 
 using cadencii.vsq;
 
+
+
 namespace cadencii {
 
     public interface IPaletteTool {
         bool edit( VsqTrack track, int[] event_internal_ids, MouseButtons button );
-        String getName( String language );
-        String getDescription( String language );
+        string getName( string language );
+        string getDescription( string language );
         bool hasDialog();
         DialogResult openDialog();
         Bitmap getIcon();
-        void applyLanguage( String language );
+        void applyLanguage( string language );
     }
 
 }

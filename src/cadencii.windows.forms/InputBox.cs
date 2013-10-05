@@ -26,6 +26,7 @@ using cadencii.windows.forms;
 
 namespace cadencii.windows.forms
 {
+
 #endif
 
 #if JAVA
@@ -34,7 +35,7 @@ namespace cadencii.windows.forms
     public class InputBox : Form
 #endif
     {
-        public InputBox( String message )
+        public InputBox( string message )
         {
 #if JAVA
             super();
@@ -46,12 +47,12 @@ namespace cadencii.windows.forms
             lblMessage.Text = message;
         }
 
-        public String getResult()
+        public string getResult()
         {
             return txtInput.Text;
         }
 
-        public void setResult( String value )
+        public void setResult( string value )
         {
             txtInput.Text = value;
         }

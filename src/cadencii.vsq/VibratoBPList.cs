@@ -25,6 +25,7 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
+
 #endif
 
 #if JAVA
@@ -41,7 +42,7 @@ namespace cadencii.vsq
             m_list = new List<VibratoBPPair>();
         }
 
-        public VibratoBPList( String strNum, String strBPX, String strBPY )
+        public VibratoBPList( string strNum, string strBPX, string strBPY )
         {
             int num = 0;
             try {
@@ -50,8 +51,8 @@ namespace cadencii.vsq
                 serr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
                 num = 0;
             }
-            String[] bpx = PortUtil.splitString( strBPX, ',' );
-            String[] bpy = PortUtil.splitString( strBPY, ',' );
+            string[] bpx = PortUtil.splitString( strBPX, ',' );
+            string[] bpy = PortUtil.splitString( strBPY, ',' );
             int actNum = Math.Min( num, Math.Min( bpx.Length, bpy.Length ) );
             if ( actNum > 0 ) {
                 float[] x = new float[actNum];
@@ -185,7 +186,7 @@ namespace cadencii.vsq
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Data
+        public string Data
         {
             get
             {
@@ -198,21 +199,21 @@ namespace cadencii.vsq
         }
 #endif
 
-        public String getData()
+        public string getData()
         {
-            String ret = "";
+            string ret = "";
             for ( int i = 0; i < m_list.Count; i++ ) {
                 ret += (i == 0 ? "" : ",") + m_list[ i ].X + "=" + m_list[ i ].Y;
             }
             return ret;
         }
 
-        public void setData( String value )
+        public void setData( string value )
         {
             m_list.Clear();
-            String[] spl = PortUtil.splitString( value, ',' );
+            string[] spl = PortUtil.splitString( value, ',' );
             for ( int i = 0; i < spl.Length; i++ ) {
-                String[] spl2 = PortUtil.splitString( spl[i], '=' );
+                string[] spl2 = PortUtil.splitString( spl[i], '=' );
                 if ( spl2.Length < 2 ) {
                     continue;
                 }

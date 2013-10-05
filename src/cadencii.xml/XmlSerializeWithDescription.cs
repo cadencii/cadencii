@@ -21,6 +21,7 @@ using System.IO;
 
 namespace cadencii.xml {
 
+
     /// <summary>
     /// フィールド、またはプロパティの概要を格納するattribute
     /// </summary>
@@ -102,7 +103,7 @@ namespace cadencii.xml {
                                 name = "long";
                             } else if ( returntype.Equals( typeof( Single ) ) ) {
                                 name = "float";
-                            } else if ( returntype.Equals( typeof( String ) ) ) {
+                            } else if ( returntype.Equals( typeof( string ) ) ) {
                                 name = "string";
                             } else if ( returntype.IsEnum ) {
                                 name = returntype.Name;
@@ -173,8 +174,8 @@ namespace cadencii.xml {
             } else if ( t.Equals( typeof( Single ) ) ) {
                 m_writer.WriteValue( (Single)obj );
                 return true;
-            } else if ( t.Equals( typeof( String ) ) ) {
-                m_writer.WriteString( (String)obj );
+            } else if ( t.Equals( typeof( string ) ) ) {
+                m_writer.WriteString( (string)obj );
                 return true;
             } else if ( t.IsEnum ) {
                 string val = Enum.GetName( t, obj );

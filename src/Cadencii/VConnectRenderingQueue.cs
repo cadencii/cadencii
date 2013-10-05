@@ -19,6 +19,8 @@ import cadencii.vsq.*;
 using System;
 using cadencii.vsq;
 
+
+
 namespace cadencii {
 #endif
 
@@ -30,7 +32,7 @@ namespace cadencii {
         /// <summary>
         /// 音源のフォルダ
         /// </summary>
-        public String oto_ini;
+        public string oto_ini;
         /// <summary>
         /// このキューのレンダリング結果の、おおよその長さ。正確な長さはレンダリング結果が出るまでは不明。
         /// </summary>
@@ -42,8 +44,8 @@ namespace cadencii {
         public int endClock;
 
 #if DEBUG
-        public String __DEBUG__toString() {
-            String phase = "";
+        public string __DEBUG__toString() {
+            string phase = "";
             for ( int i = 0; i < track.getEventCount(); i++ ) {
                 VsqEvent itemi = track.getEvent( i );
                 if ( itemi.ID.type == VsqIDType.Anote ) {

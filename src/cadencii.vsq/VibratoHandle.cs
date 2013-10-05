@@ -20,6 +20,7 @@ using System;
 
 namespace cadencii.vsq
 {
+
 #endif
 
     /// <summary>
@@ -33,8 +34,8 @@ namespace cadencii.vsq
 #endif
     {
         public int Index;
-        public String IconID = "";
-        public String IDS = "";
+        public string IconID = "";
+        public string IDS = "";
         public int Original;
 
         public VibratoHandle()
@@ -45,7 +46,7 @@ namespace cadencii.vsq
             depthBP = new VibratoBPList();
         }
 
-        public VibratoHandle( String aic_file, String ids, String icon_id, int index )
+        public VibratoHandle( string aic_file, string ids, string icon_id, int index )
 #if JAVA
         {
 #else
@@ -101,13 +102,13 @@ namespace cadencii.vsq
             return true;
         }
 
-        public String toString()
+        public string toString()
         {
             return getDisplayString();
         }
 
 #if !JAVA
-        public override String ToString()
+        public override string ToString()
         {
             return toString();
         }
@@ -123,12 +124,12 @@ namespace cadencii.vsq
             rateBP = value;
         }
 
-        public String getCaption()
+        public string getCaption()
         {
             return caption;
         }
 
-        public void setCaption( String value )
+        public void setCaption( string value )
         {
             caption = value;
         }
@@ -137,7 +138,7 @@ namespace cadencii.vsq
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Caption
+        public string Caption
         {
             get
             {
@@ -275,7 +276,7 @@ namespace cadencii.vsq
         }
 #endif
 
-        public String getDisplayString()
+        public string getDisplayString()
         {
             return caption;
         }
