@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormGameControlerConfig.java
-
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.apputil;
@@ -32,13 +22,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormGameControlerConfig extends BDialog
-#else
     public class FormGameControlerConfig : System.Windows.Forms.Form
-#endif
     {
         private List<int> m_list = new List<int>();
         private List<int> m_povs = new List<int>();
@@ -47,12 +32,7 @@ namespace cadencii
 
         public FormGameControlerConfig()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
 
             timer = new System.Windows.Forms.Timer( this.components );
             registerEventHandlers();
@@ -64,11 +44,7 @@ namespace cadencii
                 m_povs.Add( int.MinValue );
             }
             applyLanguage();
-#if JAVA
-            int num_dev = 0;
-#else
             int num_dev = winmmhelp.JoyGetNumJoyDev();
-#endif
             if ( num_dev > 0 ) {
                 pictButton.Image = Properties.Resources.btn1;
                 progressCount.Maximum = 8;
@@ -88,11 +64,7 @@ namespace cadencii
         #region public methods
         public void applyLanguage()
         {
-#if JAVA
-            int num_dev = 0;
-#else
             int num_dev = winmmhelp.JoyGetNumJoyDev();
-#endif
             if ( num_dev > 0 ) {
                 lblMessage.Text = _( "Push buttons in turn as shown below" );
             } else {
@@ -202,12 +174,7 @@ namespace cadencii
             //int num_btn = vstidrv.JoyGetNumButtons( 0 );
             byte[] btn;
             int pov;
-#if JAVA
-            pov = -1;
-            btn = new byte[]{};
-#else
             winmmhelp.JoyGetStatus( 0, out btn, out pov );
-#endif
 
 #if DEBUG
             AppManager.debugWriteLine( "FormGameControlerConfig+timer_Tick" );
@@ -318,10 +285,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormGameControlerConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormGameControlerConfig.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -464,11 +427,8 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnReset;
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

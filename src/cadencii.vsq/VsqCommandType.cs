@@ -11,12 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-#else
 namespace cadencii.vsq
 {
-#endif
 
     public enum VsqCommandType
     {
@@ -60,6 +56,4 @@ namespace cadencii.vsq
         EVENT_REPLACE_RANGE,
     }
 
-#if !JAVA
 }
-#endif

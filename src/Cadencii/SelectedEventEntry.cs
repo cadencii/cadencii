@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.componentmodel.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.ComponentModel;
 using cadencii.java.util;
@@ -30,13 +20,7 @@ using cadencii.utau;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    class PositionSpec
-#else
     struct PositionSpec
-#endif
     {
         public int measure;
         public int beat;
@@ -50,12 +34,8 @@ namespace cadencii
     /// VsqFileExに登録されているオブジェクトとの間を取り持つ処理を担います。
     /// </summary>
 #if ENABLE_PROPERTY
-#if JAVA
-    public class SelectedEventEntry implements IPropertyDescriptor
-#else
     [TypeConverter( typeof( SelectedEventEntryTypeConverter ) )]
     public class SelectedEventEntry
-#endif
 #else
     public class SelectedEventEntry
 #endif
@@ -63,23 +43,14 @@ namespace cadencii
         /// <summary>
         /// 選択されたアイテムが存在しているトラック番号。
         /// </summary>
-#if JAVA
-        @XmlIgnore
-#endif
         public int track;
         /// <summary>
         /// 選択されたアイテム。
         /// </summary>
-#if JAVA
-        @XmlIgnore
-#endif
         public VsqEvent original;
         /// <summary>
         /// 選択されたアイテムの、編集後の値。
         /// </summary>
-#if JAVA
-        @XmlIgnore
-#endif
         public VsqEvent editing;
 #if ENABLE_PROPERTY
         private static int lastVibratoLength = 66;
@@ -95,9 +66,7 @@ namespace cadencii
         private string m_beat;
         private string m_tick;
 #if DEBUG
-#if !JAVA
         private DEBUG_GatetimeProperty m_debug_clock = new DEBUG_GatetimeProperty();
-#endif
 #endif
 #endif
 
@@ -117,19 +86,6 @@ namespace cadencii
             captureValuesFromEditing();
 #endif
         }
-
-#if ENABLE_PROPERTY
-#if JAVA
-        public SelectedEventEntry()
-        {
-        }
-
-        public PropertyDescriptor getDescriptor()
-        {
-            return new SelectedEventEntryPropertyDescriptor();
-        }
-#endif
-#endif
 
 #if ENABLE_PROPERTY
         /// <summary>
@@ -303,7 +259,6 @@ namespace cadencii
         }
 
         #region Lyric
-#if !JAVA
         [Category( "Lyric" )]
         public string Phrase
         {
@@ -316,11 +271,7 @@ namespace cadencii
                 setPhrase( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public void setPhrase( string value )
         {
             if ( editing.ID.LyricHandle == null ) {
@@ -376,9 +327,6 @@ namespace cadencii
             }
         }
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public string getPhrase()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
@@ -387,7 +335,6 @@ namespace cadencii
             return "";
         }
 
-#if !JAVA
         [Category( "Lyric" )]
         public string PhoneticSymbol
         {
@@ -400,11 +347,7 @@ namespace cadencii
                 setPhoneticSymbol( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public void setPhoneticSymbol( string value )
         {
             if ( editing.ID.LyricHandle == null ) {
@@ -416,9 +359,6 @@ namespace cadencii
             editing.ID.LyricHandle.L0.setPhoneticSymbol( value );
         }
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public string getPhoneticSymbol()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
@@ -427,7 +367,6 @@ namespace cadencii
             return "";
         }
 
-#if !JAVA
         [Category( "Lyric" )]
         public string CosonantAdjustment
         {
@@ -440,11 +379,7 @@ namespace cadencii
                 setCosonantAdjustment( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public void setCosonantAdjustment( string value )
         {
             if ( editing.ID.LyricHandle == null ) {
@@ -456,11 +391,7 @@ namespace cadencii
             string[] symbol = PortUtil.splitString( editing.ID.LyricHandle.L0.getPhoneticSymbol(), new char[] { ' ' }, true );
             string[] adjustment = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
             if ( adjustment.Length < symbol.Length ) {
-#if JAVA
-                adjustment = new String[symbol.length];
-#else
                 Array.Resize( ref adjustment, symbol.Length );
-#endif
             }
             int[] iadj = new int[symbol.Length];
             for ( int i = 0; i < iadj.Length; i++ ) {
@@ -487,9 +418,6 @@ namespace cadencii
             editing.ID.LyricHandle.L0.setConsonantAdjustment( consonant_adjustment );
         }
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public string getCosonantAdjustment()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
@@ -498,7 +426,6 @@ namespace cadencii
             return "";
         }
 
-#if !JAVA
         [Category( "Lyric" )]
         public BooleanEnum Protect
         {
@@ -511,11 +438,7 @@ namespace cadencii
                 setProtect( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public void setProtect( BooleanEnum value )
         {
             m_symbol_protected = value;
@@ -528,9 +451,6 @@ namespace cadencii
             editing.ID.LyricHandle.L0.PhoneticSymbolProtected = (value == BooleanEnum.On) ? true : false;
         }
 
-#if JAVA
-        @Category( "Lyric" )
-#endif
         public BooleanEnum getProtect()
         {
             return m_symbol_protected;
@@ -538,7 +458,6 @@ namespace cadencii
         #endregion
 
         #region Note Location
-#if !JAVA
         [Category( "Note Location" )]
         public string Clock
         {
@@ -551,11 +470,7 @@ namespace cadencii
                 setClock( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public void setClock( string value )
         {
             int oldvalue = editing.Clock;
@@ -564,15 +479,11 @@ namespace cadencii
             m_clock = draft + "";
         }
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public string getClock()
         {
             return m_clock;
         }
 
-#if !JAVA
         [Category( "Note Location" )]
         public string Measure
         {
@@ -585,11 +496,7 @@ namespace cadencii
                 setMeasure( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public void setMeasure( string value )
         {
             PositionSpec ret = getPosition();
@@ -599,15 +506,11 @@ namespace cadencii
             m_clock = clock + "";
         }
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public string getMeasure()
         {
             return m_measure;
         }
 
-#if !JAVA
         [Category( "Note Location" )]
         public string Beat
         {
@@ -620,11 +523,7 @@ namespace cadencii
                 setBeat( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public void setBeat( string value )
         {
             PositionSpec ret = getPosition();
@@ -634,15 +533,11 @@ namespace cadencii
             m_clock = clock + "";
         }
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public string getBeat()
         {
             return m_beat;
         }
 
-#if !JAVA
         [Category( "Note Location" )]
         public string Tick
         {
@@ -655,11 +550,7 @@ namespace cadencii
                 setTick( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public void setTick( string value )
         {
             PositionSpec ret = getPosition();
@@ -669,9 +560,6 @@ namespace cadencii
             m_clock = clock + "";
         }
 
-#if JAVA
-        @Category( "Note Location" )
-#endif
         public string getTick()
         {
             return m_tick;
@@ -679,7 +567,6 @@ namespace cadencii
         #endregion
 
         #region Note
-#if !JAVA
         [Category( "Note" )]
         public string Length
         {
@@ -692,11 +579,7 @@ namespace cadencii
                 setLength( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Note" )
-#endif
         public void setLength( string value )
         {
             int oldvalue = editing.ID.getLength();
@@ -717,15 +600,11 @@ namespace cadencii
             Utility.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
         }
 
-#if JAVA
-        @Category( "Note" )
-#endif
         public string getLength()
         {
             return m_length;
         }
 
-#if !JAVA
         [Category( "Note" )]
         public NoteNumberProperty Note
         {
@@ -738,11 +617,7 @@ namespace cadencii
                 setNote( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Note" )
-#endif
         public void setNote( NoteNumberProperty value )
         {
             if ( value.noteNumber < 0 ) {
@@ -755,9 +630,6 @@ namespace cadencii
             editing.ID.Note = m_note.noteNumber;
         }
 
-#if JAVA
-        @Category( "Note" )
-#endif
         public NoteNumberProperty getNote()
         {
             return m_note;
@@ -765,7 +637,6 @@ namespace cadencii
         #endregion
 
         #region UTAU
-#if !JAVA
         [Category( "UTAU" )]
         public float PreUtterance
         {
@@ -778,11 +649,7 @@ namespace cadencii
                 setPreUtterance( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public void setPreUtterance( float value )
         {
             if ( editing.UstEvent == null ) {
@@ -791,9 +658,6 @@ namespace cadencii
             editing.UstEvent.setPreUtterance( value );
         }
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public float getPreUtterance()
         {
             if ( editing.UstEvent == null ) {
@@ -802,7 +666,6 @@ namespace cadencii
             return editing.UstEvent.getPreUtterance();
         }
 
-#if !JAVA
         [Category( "UTAU" )]
         public float Overlap
         {
@@ -815,11 +678,7 @@ namespace cadencii
                 setOverlap( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public void setOverlap( float value )
         {
             if ( editing.UstEvent == null ) {
@@ -828,9 +687,6 @@ namespace cadencii
             editing.UstEvent.setVoiceOverlap( value );
         }
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public float getOverlap()
         {
             if ( editing.UstEvent == null ) {
@@ -839,7 +695,6 @@ namespace cadencii
             return editing.UstEvent.getVoiceOverlap();
         }
 
-#if !JAVA
         [Category( "UTAU" )]
         public int Moduration
         {
@@ -852,11 +707,7 @@ namespace cadencii
                 setModuration( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public void setModuration( int value )
         {
             if ( editing.UstEvent == null ) {
@@ -865,9 +716,6 @@ namespace cadencii
             editing.UstEvent.setModuration( value );
         }
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public int getModuration()
         {
             if ( editing.UstEvent == null ) {
@@ -876,7 +724,6 @@ namespace cadencii
             return editing.UstEvent.getModuration();
         }
 
-#if !JAVA
         [Category( "UTAU" )]
         public string Flags
         {
@@ -889,11 +736,7 @@ namespace cadencii
                 setFlags( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public void setFlags( string value )
         {
             if ( editing.UstEvent == null ) {
@@ -902,9 +745,6 @@ namespace cadencii
             editing.UstEvent.Flags = value;
         }
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public string getFlags()
         {
             if ( editing.UstEvent == null ) {
@@ -913,7 +753,6 @@ namespace cadencii
             return editing.UstEvent.Flags;
         }
 
-#if !JAVA
         [Category( "UTAU" )]
         public float StartPoint
         {
@@ -926,25 +765,17 @@ namespace cadencii
                 setStartPoint( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public float getStartPoint()
         {
             return getEditingUstEvent().getStartPoint();
         }
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public void setStartPoint( float value )
         {
             getEditingUstEvent().setStartPoint( value );
         }
 
-#if !JAVA
         [Category( "UTAU" )]
         public int Intensity
         {
@@ -957,19 +788,12 @@ namespace cadencii
                 setIntensity( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public int getIntensity()
         {
             return getEditingUstEvent().getIntensity();
         }
 
-#if JAVA
-        @Category( "UTAU" )
-#endif
         public void setIntensity( int value )
         {
             getEditingUstEvent().setIntensity( value );
@@ -977,7 +801,6 @@ namespace cadencii
         #endregion
 
         #region VOCALOID2
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int Accent
         {
@@ -990,11 +813,7 @@ namespace cadencii
                 setAccent( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setAccent( int value )
         {
             int draft = value;
@@ -1006,15 +825,11 @@ namespace cadencii
             editing.ID.DEMaccent = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getAccent()
         {
             return editing.ID.DEMaccent;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int Decay
         {
@@ -1027,11 +842,7 @@ namespace cadencii
                 setDecay( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setDecay( int value )
         {
             int draft = value;
@@ -1043,15 +854,11 @@ namespace cadencii
             editing.ID.DEMdecGainRate = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getDecay()
         {
             return editing.ID.DEMdecGainRate;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public BooleanEnum UpPortamento
         {
@@ -1064,26 +871,18 @@ namespace cadencii
                 setUpPortamento( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setUpPortamento( BooleanEnum value )
         {
             m_portamento_up = value;
             editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public BooleanEnum getUpPortamento()
         {
             return m_portamento_up;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public BooleanEnum DownPortamento
         {
@@ -1096,26 +895,18 @@ namespace cadencii
                 setDownPortamento( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setDownPortamento( BooleanEnum value )
         {
             m_portamento_down = value;
             editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public BooleanEnum getDownPortamento()
         {
             return m_portamento_down;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int BendDepth
         {
@@ -1128,11 +919,7 @@ namespace cadencii
                 setBendDepth( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setBendDepth( int value )
         {
             int draft = value;
@@ -1144,15 +931,11 @@ namespace cadencii
             editing.ID.PMBendDepth = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getBendDepth()
         {
             return editing.ID.PMBendDepth;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int BendLength
         {
@@ -1165,11 +948,7 @@ namespace cadencii
                 setBendLength( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setBendLength( int value )
         {
             int draft = value;
@@ -1181,15 +960,11 @@ namespace cadencii
             editing.ID.PMBendLength = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getBendLength()
         {
             return editing.ID.PMBendLength;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int Velocity
         {
@@ -1202,11 +977,7 @@ namespace cadencii
                 setVelocity( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setVelocity( int value )
         {
             int draft = value;
@@ -1218,15 +989,11 @@ namespace cadencii
             editing.ID.Dynamics = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getVelocity()
         {
             return editing.ID.Dynamics;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int pMeanOnsetFirstNote
         {
@@ -1239,11 +1006,7 @@ namespace cadencii
                 setpMeanOnsetFirstNote( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setpMeanOnsetFirstNote( int value )
         {
             int draft = value;
@@ -1255,15 +1018,11 @@ namespace cadencii
             editing.ID.pMeanOnsetFirstNote = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getpMeanOnsetFirstNote()
         {
             return editing.ID.pMeanOnsetFirstNote;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int vMeanNoteTransition
         {
@@ -1276,11 +1035,7 @@ namespace cadencii
                 setvMeanNoteTransition( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setvMeanNoteTransition( int value )
         {
             int draft = value;
@@ -1292,15 +1047,11 @@ namespace cadencii
             editing.ID.vMeanNoteTransition = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getvMeanNoteTransition()
         {
             return editing.ID.vMeanNoteTransition;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int d4mean
         {
@@ -1313,11 +1064,7 @@ namespace cadencii
                 setd4mean( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setd4mean( int value )
         {
             int draft = value;
@@ -1329,15 +1076,11 @@ namespace cadencii
             editing.ID.d4mean = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getd4mean()
         {
             return editing.ID.d4mean;
         }
 
-#if !JAVA
         [Category( "VOCALOID2" )]
         public int pMeanEndingNote
         {
@@ -1350,11 +1093,7 @@ namespace cadencii
                 setpMeanEndingNote( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public void setpMeanEndingNote( int value )
         {
             int draft = value;
@@ -1366,9 +1105,6 @@ namespace cadencii
             editing.ID.pMeanEndingNote = draft;
         }
 
-#if JAVA
-        @Category( "VOCALOID2" )
-#endif
         public int getpMeanEndingNote()
         {
             return editing.ID.pMeanEndingNote;
@@ -1376,7 +1112,6 @@ namespace cadencii
         #endregion
 
         #region VOCALOID1
-#if !JAVA
         [TypeConverter( typeof( AttackVariationConverter ) ), Category( "VOCALOID1" )]
         public AttackVariation Attack
         {
@@ -1389,11 +1124,7 @@ namespace cadencii
                 setAttack( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID1" )
-#endif
         public void setAttack( AttackVariation value )
         {
             m_attack = value;
@@ -1427,15 +1158,11 @@ namespace cadencii
             }
         }
 
-#if JAVA
-        @Category( "VOCALOID1" )
-#endif
         public AttackVariation getAttack()
         {
             return m_attack;
         }
 
-#if !JAVA
         [Category( "VOCALOID1" )]
         public int AttackDepth
         {
@@ -1448,11 +1175,7 @@ namespace cadencii
                 setAttackDepth( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID1" )
-#endif
         public void setAttackDepth( int value )
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1467,9 +1190,6 @@ namespace cadencii
             editing.ID.NoteHeadHandle.setDepth( draft );
         }
 
-#if JAVA
-        @Category( "VOCALOID1" )
-#endif
         public int getAttackDepth()
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1478,7 +1198,6 @@ namespace cadencii
             return editing.ID.NoteHeadHandle.getDepth();
         }
 
-#if !JAVA
         [Category( "VOCALOID1" )]
         public int AttackDuration
         {
@@ -1491,11 +1210,7 @@ namespace cadencii
                 setAttackDuration( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "VOCALOID1" )
-#endif
         public void setAttackDuration( int value )
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1510,9 +1225,6 @@ namespace cadencii
             editing.ID.NoteHeadHandle.setDuration( draft );
         }
 
-#if JAVA
-        @Category( "VOCALOID1" )
-#endif
         public int getAttackDuration()
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1523,7 +1235,6 @@ namespace cadencii
         #endregion
 
         #region Vibrato
-#if !JAVA
         [Category( "Vibrato" )]
         public VibratoVariation Vibrato
         {
@@ -1536,11 +1247,7 @@ namespace cadencii
                 setVibrato( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Vibrato" )
-#endif
         public void setVibrato( VibratoVariation value )
         {
             if ( value.description.Equals( VibratoVariation.empty.description ) ) {
@@ -1593,15 +1300,11 @@ namespace cadencii
             m_vibrato = value;
         }
 
-#if JAVA
-        @Category( "Vibrato" )
-#endif
         public VibratoVariation getVibrato()
         {
             return m_vibrato;
         }
 
-#if !JAVA
         [Category( "Vibrato" )]
         public int VibratoLength
         {
@@ -1614,11 +1317,7 @@ namespace cadencii
                 setVibratoLength( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "Vibrato" )
-#endif
         public void setVibratoLength( int value )
         {
 #if DEBUG
@@ -1654,9 +1353,6 @@ namespace cadencii
             }
         }
 
-#if JAVA
-        @Category( "Vibrato" )
-#endif
         public int getVibratoLength()
         {
             if ( editing.ID.VibratoHandle == null ) {
@@ -1667,7 +1363,6 @@ namespace cadencii
         #endregion
 
         #region AquesTone
-#if !JAVA
         [Category( "AquesTone" )]
         public int Release
         {
@@ -1680,11 +1375,7 @@ namespace cadencii
                 setRelease( value );
             }
         }
-#endif
 
-#if JAVA
-        @Category( "AquesTone" )
-#endif
         public void setRelease( int value )
         {
             int r = value;
@@ -1699,9 +1390,6 @@ namespace cadencii
             editing.Tag = e.Tag;
         }
 
-#if JAVA
-        @Category( "AquesTone" )
-#endif
         public int getRelease()
         {
             VsqEvent e = new VsqEvent();
@@ -1730,7 +1418,6 @@ namespace cadencii
 #endif
     }
 
-#if !JAVA
 #if DEBUG
     public class DEBUG_GatetimePropertyConverter : ExpandableObjectConverter
     {
@@ -1831,8 +1518,5 @@ namespace cadencii
         }
     }
 #endif
-#endif
 
-#if !JAVA
 }
-#endif

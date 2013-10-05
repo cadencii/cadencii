@@ -11,21 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormSequenceConfig.java
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -40,22 +25,12 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormSequenceConfig extends BDialog
-#else
     class FormSequenceConfig : System.Windows.Forms.Form
-#endif
     {
         public FormSequenceConfig()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             applyLanguage();
 
             // wave channel
@@ -118,14 +93,12 @@ namespace cadencii
             if ( indx >= 0 ) {
                 ret = AppManager.MIN_PRE_MEASURE + indx;
             } else {
-#if !JAVA
                 string s = comboPreMeasure.Text;
                 try {
                     ret = int.Parse( s );
                 } catch ( Exception ex ) {
                     ret = AppManager.MIN_PRE_MEASURE;
                 }
-#endif
             }
             if ( ret < AppManager.MIN_PRE_MEASURE ) {
                 ret = AppManager.MIN_PRE_MEASURE;
@@ -163,9 +136,7 @@ namespace cadencii
             if ( index >= 0 ) {
                 s = (string)comboSampleRate.Items[index];
             } else {
-#if !JAVA
                 s = comboSampleRate.Text;
-#endif
             }
             int ret = 44100;
             try {
@@ -258,10 +229,6 @@ namespace cadencii
         #endregion
 
         #region ui implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormSequenceConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormSequenceConfig.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -477,11 +444,8 @@ namespace cadencii
         private System.Windows.Forms.ComboBox comboPreMeasure;
         private System.Windows.Forms.ComboBox comboSampleRate;
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

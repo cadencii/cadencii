@@ -11,17 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import cadencii.*;
-#else
 using System;
 using System.Drawing;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 折れ線グラフを効率よく描く描画プラクシー。データ点描画の有無、グラフの塗りつぶしの有無を選べる
@@ -73,12 +66,7 @@ namespace cadencii {
         /// <summary>
         /// データ点のバッファ
         /// </summary>
-#if JAVA
-        private int[] mPointsX;
-        private int[] mPointsY;
-#else
         private System.Drawing.Point[] mPoints;
-#endif
         /// <summary>
         /// 自動flushを行う時のmIndexの値。
         /// mIndex + 1 >= mMaxPointsの時、自動でflushが行われる
@@ -99,11 +87,7 @@ namespace cadencii {
         /// <summary>
         /// 描画に使用するグラフィックス
         /// </summary>
-#if JAVA
-        private Graphics2D mGraphics;
-#else
         private System.Drawing.Graphics mGraphics;
-#endif
         /// <summary>
         /// グラフの線とX軸との間隙を塗りつぶすかどうか
         /// </summary>
@@ -112,12 +96,10 @@ namespace cadencii {
         /// グラフの線とX軸との間隙の塗りつぶしに使用する色
         /// </summary>
         private java.awt.Color mFillColor = new java.awt.Color( 255, 0, 0 );
-#if !JAVA
         /// <summary>
         /// グラフの線とX軸との間隙の塗りつぶしに使用するブラシ
         /// </summary>
         private System.Drawing.SolidBrush mFillBrush = null;
-#endif
         /// <summary>
         /// データ点を描画するかどうか
         /// </summary>
@@ -139,12 +121,10 @@ namespace cadencii {
         /// データ点の描画色
         /// </summary>
         private java.awt.Color mDotColor = new java.awt.Color( 0, 0, 0 );
-#if !JAVA
         /// <summary>
         /// データ点の塗りつぶしに使用するブラシ
         /// </summary>
         private System.Drawing.SolidBrush mDotBrush = null;
-#endif
         /// <summary>
         /// 線の描画色
         /// </summary>
@@ -157,12 +137,10 @@ namespace cadencii {
         /// 線の描画幅
         /// </summary>
         private int mLineWidth = 1;
-#if !JAVA
         /// <summary>
         /// 線の描画に使用するペン
         /// </summary>
         private System.Drawing.Pen mLinePen = null;
-#endif
         /// <summary>
         /// 次のappendでデータ点の座標を代入するmPointsのインデックス
         /// </summary>
@@ -186,12 +164,7 @@ namespace cadencii {
         /// <param name="graph_type">グラフのタイプを指定する整数値。<see cref="TYPE_LINEAR"/>または<see cref="TYPE_STEP"/>を指定する</param>
         public LineGraphDrawer( int graph_type ) {
             // データ点のバッファを確保
-#if JAVA
-            mPointsX = new int[BUFLEN];
-            mPointsY = new int[BUFLEN];
-#else
             mPoints = new Point[BUFLEN];
-#endif
 
             // グラフのタイプを特定
             if ( graph_type == TYPE_LINEAR ) {
@@ -432,12 +405,7 @@ namespace cadencii {
                     setPointData( mIndex, mLastX, mBaseLineY );
                     setPointData( mIndex + 1, mFirstX, mBaseLineY );
 
-#if JAVA
-                    mGraphics.setColor( mFillColor );
-                    mGraphics.fillPolygon( mPointsX, mPointsY, BUFLEN );
-#else
                     mGraphics.FillPolygon( getFillBrush(), mPoints );
-#endif
                 }
 
                 // 線を描く
@@ -445,40 +413,18 @@ namespace cadencii {
                     for ( int i = mIndex - 1; i < BUFLEN; i++ ) {
                         setPointData( i, mLastX, mLastY );
                     }
-#if JAVA
-                    mGraphics.setColor( mLineColor );
-                    mGraphics.drawPolyline( mPointsX, mPointsY, BUFLEN );
-#else
                     mGraphics.DrawLines( getLinePen(), mPoints );
-#endif
                 }
 
                 // ドットを描く
                 if ( mDot != DOTMODE_NO ) {
                     // ここでは第mIndex - 1番目のドットまでを描いて、mIndex - 1番目のデータは第0番目にコピーし，次のflushで描く
-#if JAVA
-                    mGraphics.setColor( mDotColor );
-                    Point p = new Point( 0, 0 );
-#endif
                     for ( int i = 0; i < mIndex - 1; i++ ) {
-#if JAVA
-                        p.x = mPointsX[i];
-                        p.y = mPointsY[i];
-#else
                         System.Drawing.Point p = mPoints[i];
-#endif
                         if ( mDotType == DOT_CIRCLE ) {
-#if JAVA
-                            mGraphics.fillOval( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
-#else
                             mGraphics.FillEllipse( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
-#endif
                         } else if ( mDotType == DOT_RECT ) {
-#if JAVA
-                            mGraphics.fillRect( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
-#else
                             mGraphics.FillRectangle( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
-#endif
                         }
                     }
                 }
@@ -497,12 +443,7 @@ namespace cadencii {
                     }
 
                     // 塗りつぶし
-#if JAVA
-                    mGraphics.setColor( mFillColor );
-                    mGraphics.fillPolygon( mPointsX, mPointsY, BUFLEN );
-#else
                     mGraphics.FillPolygon( getFillBrush(), mPoints );
-#endif
                 }
 
                 if ( mLine ) {
@@ -510,59 +451,28 @@ namespace cadencii {
                     for ( int i = mIndex - 1; i < BUFLEN; i++ ) {
                         setPointData( i, mLastX, mLastY );
                     }
-#if JAVA
-                    mGraphics.setColor( mLineColor );
-                    mGraphics.drawPolyline( mPointsX, mPointsY, BUFLEN );
-#else
                     mGraphics.DrawLines( getLinePen(), mPoints );
-#endif
                 }
 
                 if ( mDot != DOTMODE_NO ) {
                     // データ点を描く
-#if JAVA
-                    Color c = mDotColor;
-                    Point p = new Point( 0, 0 );
-#else
                     SolidBrush brs = getDotBrush();
                     Color c = brs.Color;
-#endif
                     for ( int i = 0; i < mIndex; i += 2 ) {
-#if JAVA
-                        p.x = mPointsX[i];
-                        p.y = mPointsY[i];
-                        int px = p.x;
-#else
                         Point p = mPoints[i];
                         int px = p.X;
-#endif
                         int alpha = (mDot == DOTMODE_NEAR) ? getAlpha( px ) : 255;
                         if ( alpha <= 0 ) {
                             continue;
                         }
-#if JAVA
-                        c = new Color( mDotColor.getRed(), mDotColor.getGreen(), mDotColor.getBlue(), alpha );
-                        mGraphics.setColor( c );
-#else
                         brs.Color = Color.FromArgb( alpha, c );
-#endif
                         if ( mDotType == DOT_CIRCLE ) {
-#if JAVA
-                            mGraphics.fillOval( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
-#else
                             mGraphics.FillEllipse( brs, p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
-#endif
                         } else {
-#if JAVA
-                            mGraphics.fillOval( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
-#else
                             mGraphics.FillRectangle( brs, p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
-#endif
                         }
                     }
-#if !JAVA
                     brs.Color = Color.FromArgb( 255, c );
-#endif
                 }
 
                 // 次の描画に備える
@@ -580,23 +490,17 @@ namespace cadencii {
             mIndex = 0;
         }
 
-#if !JAVA
         public void setGraphics( System.Drawing.Graphics g )
         {
             mGraphics = g;
         }
-#endif
 
         /// <summary>
         /// 描画に使用するグラフィックスを指定します
         /// </summary>
         /// <param name="g"></param>
         public void setGraphics( java.awt.Graphics g ){
-#if JAVA
-            mGraphics = (Graphics2D)g;
-#else
             mGraphics = g.nativeGraphics;
-#endif
         }
 
         /// <summary>
@@ -634,7 +538,6 @@ namespace cadencii {
             return ret;
         }
 
-#if !JAVA
         private SolidBrush getFillBrush() {
             if ( mFillBrush == null ) {
                 mFillBrush = new SolidBrush( mFillColor.color );
@@ -659,21 +562,13 @@ namespace cadencii {
             mLinePen.Width = mLineWidth;
             return mLinePen;
         }
-#endif
 
         private void setPointData( int index, int x, int y ) {
-#if JAVA
-            mPointsX[index] = x;
-            mPointsY[index] = y;
-#else
             mPoints[index].X = x;
             mPoints[index].Y = y;
-#endif
         }
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

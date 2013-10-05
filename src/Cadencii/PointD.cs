@@ -11,28 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.awt.*;
-import java.io.*;
-
-#else
-
 using System;
 using cadencii.java.awt;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class PointD implements Serializable
-#else
     [Serializable]
     public struct PointD
-#endif
     {
         private double m_x;
         private double m_y;
@@ -47,13 +33,6 @@ namespace cadencii
             m_x = x;
             m_y = y;
         }
-
-#if JAVA
-        public PointD() {
-            m_x = 0;
-            m_y = 0;
-        }
-#endif
 
         public Point toPoint() {
             return new Point( (int)m_x, (int)m_y );
@@ -79,7 +58,6 @@ namespace cadencii
             m_y = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -103,9 +81,6 @@ namespace cadencii
                 setY( value );
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

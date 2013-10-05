@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * windows.cs
  * Copyright © 2008-2011 kbinani
@@ -2313,4 +2312,3 @@ namespace cadencii {
         public string szTypeName;
     }
 }
-#endif

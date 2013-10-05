@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
 
     public class SelectedRegion {
         private int m_begin;
@@ -46,6 +42,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

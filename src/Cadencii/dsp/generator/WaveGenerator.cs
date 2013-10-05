@@ -11,16 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
 using System;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 音声波形の生成器のためのインターフェース．
@@ -102,6 +95,4 @@ namespace cadencii {
         void setMainWindow( FormMain main_window );
     }
 
-#if !JAVA
 }
-#endif

@@ -11,15 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.vsq.*;
-#else
 using cadencii.vsq;
 
 namespace cadencii {
-#endif
 
     public class SelectedTempoEntry {
         public TempoTableEntry original;
@@ -31,6 +25,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

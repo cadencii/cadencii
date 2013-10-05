@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
@@ -24,7 +18,6 @@ using cadencii.java.io;
 
 
 namespace cadencii {
-#endif
 
     public class UtauFreq {
         public string Header;
@@ -100,9 +93,6 @@ namespace cadencii {
         }
 
         public void Write( FileOutputStream fs ) 
-#if JAVA
-            throws IOException
-#endif
         {
             byte[] buf0 = new byte[8];
             char[] ch8 = Header.ToCharArray();
@@ -136,6 +126,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

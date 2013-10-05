@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * RawAvi2Writer.cs
  * Copyright © 2007-2011 kbinani
@@ -568,4 +567,3 @@ namespace cadencii.media {
         
     }
 }
-#endif

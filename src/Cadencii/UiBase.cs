@@ -1,5 +1,3 @@
-#if !__UiBase_h__
-#define __UiBase_h__
 /*
  * UiBase.cs
  * Copyright © 2011 kbinani
@@ -13,20 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
     namespace cadencii
     {
 
 #if __cplusplus
 #else
             using System;
-#endif
-
 #endif
 
 #if __cplusplus
@@ -42,8 +32,4 @@ package cadencii;
 #endif
             };
 
-#if !JAVA
     }
-#endif
-
-#endif

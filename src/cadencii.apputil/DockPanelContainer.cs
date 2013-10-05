@@ -11,7 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 using System;
 using System.Windows.Forms;
 
@@ -21,4 +20,3 @@ namespace cadencii.apputil {
     }
 
 }
-#endif

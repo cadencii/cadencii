@@ -11,17 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormBezierPointEdit.java
-
-import java.awt.*;
-import java.util.*;
-import cadencii.ui.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -34,13 +23,7 @@ using cadencii.windows.forms;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class FormBezierPointEditController extends ControllerBase implements FormBezierPointEditUiListener
-#else
     public class FormBezierPointEditController : ControllerBase, FormBezierPointEditUiListener
-#endif
     {
         private BezierPoint m_point;
         private int m_min;
@@ -367,6 +350,4 @@ namespace cadencii
         #endregion
     }
 
-#if !JAVA
 }
-#endif

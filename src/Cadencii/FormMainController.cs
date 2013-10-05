@@ -11,25 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
 
     namespace cadencii
     {
 
-#endif
 
             /// <summary>
             /// メイン画面のコントローラ
             /// </summary>
-#if JAVA
-            public class FormMainController extends ControllerBase implements FormMainUiListener
-#else
             public class FormMainController : ControllerBase, FormMainUiListener
-#endif
             {
                 /// <summary>
                 /// x方向の表示倍率(pixel/clock)
@@ -183,6 +173,4 @@ package cadencii;
                 }
             }
 
-#if !JAVA
     }
-#endif

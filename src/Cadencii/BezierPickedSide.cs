@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
  
     /// <summary>
     /// ベジエ曲線のデータ点や制御点を選択したとき，どの種類の点を選択したかを表現するための列挙型
@@ -35,6 +31,4 @@ namespace cadencii {
         LEFT,
     }
 
-#if !JAVA
 }
-#endif

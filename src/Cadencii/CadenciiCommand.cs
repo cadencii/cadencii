@@ -11,31 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.vsq.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii.java.util;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// Undo/Redoを実現するためのコマンド。
     /// Boare.Lib.Vsq.VsqFileレベルのコマンドは、Type=VsqCommandとして取り扱う。
     /// Boare.Cadencii.VsqFileExレベルのコマンドは、Argsに処理内容を格納して取り扱う。
     /// </summary>
-#if JAVA
-    public class CadenciiCommand implements ICommand{
-#else
     [Serializable]
     public class CadenciiCommand : ICommand {
-#endif
         public CadenciiCommandType type;
         public VsqCommand vsqCommand;
         private ICommand mParent;
@@ -65,6 +54,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

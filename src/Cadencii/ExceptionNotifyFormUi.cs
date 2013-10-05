@@ -11,22 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
     namespace cadencii
     {
 
-#endif
-
-#if JAVA
-            public interface ExceptionNotifyFormUi extends UiBase
-#else
             public interface ExceptionNotifyFormUi : UiBase
-#endif
             {
                 /// <summary>
                 /// ウィンドウのタイトルを設定する
@@ -62,6 +50,4 @@ package cadencii;
                 void close();
             }
 
-#if !JAVA
     }
-#endif

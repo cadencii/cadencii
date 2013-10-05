@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -29,18 +20,9 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class UstPortamento implements Cloneable, Serializable
-#else
     [Serializable]
     public class UstPortamento : ICloneable
-#endif
     {
-#if JAVA
-        @XmlGenericType( UstPortamentoPoint.class )
-#endif
         public List<UstPortamentoPoint> Points = new List<UstPortamentoPoint>();
         public int Start;
         /// <summary>
@@ -64,9 +46,6 @@ namespace cadencii.vsq
         }
 
         public void print( ITextWriter sw )
-#if JAVA
-            throws IOException
-#endif
         {
             string pbw = "";
             string pby = "";
@@ -114,12 +93,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         /*
         PBW=50,50,46,48,56,50,50,50,50
@@ -192,6 +169,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,19 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.xml.*;
-import cadencii.windows.forms.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -42,7 +29,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// Cadenciiの環境設定
@@ -69,9 +55,6 @@ namespace cadencii
         /// <summary>
         /// 最近使用したファイルのリスト
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
         public List<string> RecentFiles = new List<string>();
         public int DefaultPMBendDepth = 8;
         public int DefaultPMBendLength = 0;
@@ -91,17 +74,13 @@ namespace cadencii
         /// デフォルトビブラートのRate
         /// バージョン3.3で廃止
         /// </summary>
-#if !JAVA
         [Obsolete]
-#endif
         private int __revoked__DefaultVibratoRate = 64;
         /// <summary>
         /// デフォルトビブラートのDepth
         /// バージョン3.3で廃止
         /// </summary>
-#if !JAVA
         [Obsolete]
-#endif
         private int __revoked__DefaultVibratoDepth = 64;
         /// <summary>
         /// ビブラートの自動追加を行うかどうかを決める音符長さの閾値．単位はclock
@@ -125,9 +104,6 @@ namespace cadencii
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
         /// </summary>
-#if JAVA
-        @XmlGenericType( VibratoHandle.class )
-#endif
         public List<VibratoHandle> AutoVibratoCustom = new List<VibratoHandle>();
         /// <summary>
         /// ビブラートの自動追加を行うかどうか
@@ -169,9 +145,6 @@ namespace cadencii
         /// <summary>
         /// ユーザー辞書のOn/Offと順序
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
         public List<string> UserDictionaries = new List<string>();
         /// <summary>
         /// 実行環境
@@ -301,9 +274,6 @@ namespace cadencii
 
         public bool ViewAtcualPitch = false;
         private bool __revoked__InvokeUtauCoreWithWine = false;
-#if JAVA
-        @XmlGenericType( SingerConfig.class )
-#endif
         public List<SingerConfig> UtauSingers = new List<SingerConfig>();
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
@@ -317,17 +287,11 @@ namespace cadencii
         /// <summary>
         /// UTAU互換の合成器のパス(2個目以降)
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
         public List<string> PathResamplers = new List<string>();
         /// <summary>
         /// UTAU互換の合成器を，wine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
-#if JAVA
-        @XmlGenericType( Boolean.class )
-#endif
         public List<Boolean> ResamplersWithWine = new List<Boolean>();
         /// <summary>
         /// UTAU用のwave切り貼りツール
@@ -355,9 +319,6 @@ namespace cadencii
         /// 3.3で廃止
         /// </summary>
         private bool __revoked__MixerTopMost = true;
-#if JAVA
-        @XmlGenericType( ValuePairOfStringArrayOfKeys.class )
-#endif
         public List<ValuePairOfStringArrayOfKeys> ShortcutKeys = new List<ValuePairOfStringArrayOfKeys>();
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
         /// <summary>
@@ -555,9 +516,6 @@ namespace cadencii
         /// 拡張子はピリオドを含めない
         /// <remarks>version 3.3+</remarks>
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
         public List<string> LastUsedPathIn = new List<string>();
         /// <summary>
         /// 最後に出力したファイルパスのリスト
@@ -565,9 +523,6 @@ namespace cadencii
         /// 拡張子はピリオドを含めない
         /// <remarks>version 3.3+</remarks>
         /// </summary>
-#if JAVA
-        @XmlGenericType( String.class )
-#endif
         public List<string> LastUsedPathOut = new List<string>();
         /// <summary>
         /// 使用するWINEPREFIX
@@ -609,11 +564,7 @@ namespace cadencii
         public const int MIN_PIANOROLL_SCALEY = -4;
 
         #region static fields
-#if JAVA
-        private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
-#else
         private static cadencii.xml.XmlSerializer s_serializer = new cadencii.xml.XmlSerializer( typeof( EditorConfig ) );
-#endif
         #endregion
 
         /// <summary>
@@ -627,14 +578,12 @@ namespace cadencii
         /// </summary>
         public EditorConfig()
         {
-#if !JAVA
             // デフォルトのフォントを，システムのメニューフォントと同じにする
             System.Drawing.Font f = System.Windows.Forms.SystemInformation.MenuFont;
             if ( f != null ) {
                 this.BaseFontName = f.Name;
                 this.ScreenFontName = f.Name;
             }
-#endif
 
             // 言語設定を，システムのデフォルトの言語を用いる
             this.Language = Messaging.getRuntimeLanguageName();
@@ -1069,7 +1018,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
         /// <summary>
         /// ピアノロール上でマウスホバーイベントが発生するまでの時間(millisec)
@@ -1085,7 +1033,6 @@ namespace cadencii
                 setMouseHoverTime( value );
             }
         }
-#endif
 
         public QuantizeMode getPositionQuantize()
         {
@@ -1105,7 +1052,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
         public QuantizeMode PositionQuantize
         {
@@ -1118,7 +1064,6 @@ namespace cadencii
                 setPositionQuantize( value );
             }
         }
-#endif
 
         public bool isPositionQuantizeTriplet()
         {
@@ -1138,7 +1083,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
         public bool PositionQuantizeTriplet
         {
@@ -1151,7 +1095,6 @@ namespace cadencii
                 setPositionQuantizeTriplet( value );
             }
         }
-#endif
 
         public QuantizeMode getLengthQuantize()
         {
@@ -1171,7 +1114,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public QuantizeMode LengthQuantize
         {
             get
@@ -1183,7 +1125,6 @@ namespace cadencii
                 setLengthQuantize( value );
             }
         }
-#endif
 
         public bool isLengthQuantizeTriplet()
         {
@@ -1213,7 +1154,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         // XMLシリアライズ用
         public bool LengthQuantizeTriplet
         {
@@ -1226,7 +1166,6 @@ namespace cadencii
                 setLengthQuantizeTriplet( value );
             }
         }
-#endif
 
         /// <summary>
         /// 「最近使用したファイル」のリストに、アイテムを追加します
@@ -1345,6 +1284,4 @@ namespace cadencii
         #endregion
     }
 
-#if !JAVA
 }
-#endif

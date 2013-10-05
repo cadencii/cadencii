@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormAskKeySoundGeneration.java
-
-import cadencii.*;
-import cadencii.windows.forms.*;
-import cadencii.apputil.*;
-
-#else
-
 using System;
 using cadencii.windows.forms;
 using cadencii.apputil;
@@ -31,13 +19,8 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormAskKeySoundGenerationController extends ControllerBase implements FormAskKeySoundGenerationUiListener
-#else
     public class FormAskKeySoundGenerationController : ControllerBase, FormAskKeySoundGenerationUiListener
-#endif
     {
         private FormAskKeySoundGenerationUi mUi = null;
 
@@ -80,6 +63,4 @@ namespace cadencii
         #endregion
     }
 
-#if !JAVA
 }
-#endif

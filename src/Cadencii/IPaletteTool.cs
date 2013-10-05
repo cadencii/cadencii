@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * IPaletteTool.cs
  * Copyright © 2009-2011 kbinani
@@ -34,4 +33,3 @@ namespace cadencii {
     }
 
 }
-#endif

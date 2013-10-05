@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -24,9 +18,6 @@ using cadencii.java.io;
 
 namespace cadencii.media {
 
-#endif
-
-#if !JAVA
     /// <summary>
     /// Parameters of first formanto detection algorithm
     /// </summary>
@@ -60,13 +51,8 @@ namespace cadencii.media {
             }
         }
     }
-#endif
 
-#if JAVA
-    public class Wave
-#else
     public class Wave : IDisposable
-#endif
  {
         public enum Channel {
             Right,
@@ -87,7 +73,6 @@ namespace cadencii.media {
         private short[] L16;
         private short[] R16;
 
-#if !JAVA
 #if DEBUG
         private static bool s_test = false;
         public static bool TestEnabled {
@@ -99,9 +84,7 @@ namespace cadencii.media {
             }
         }
 #endif
-#endif
 
-#if !JAVA
         public unsafe double TEST_GetF0( uint time, double[] window_function ) {
             int window_size = window_function.Length;
             double[] formanto = GetFormanto( time, window_function );
@@ -162,15 +145,11 @@ namespace cadencii.media {
 #endif
             return 0;
         }
-#endif
 
-#if !JAVA
         public double GetF0( uint time, double[] window_function ) {
             return GetF0( time, window_function, new FormantoDetectionArguments() );
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 第timeサンプルにおけるフォルマントを取得する
         /// </summary>
@@ -362,9 +341,7 @@ namespace cadencii.media {
                 return 0;
             }
         }
-#endif
 
-#if !JAVA
         private static double GetFormantoGetEvaluationValue( List<double> peaks, double t ) {
             double ret = 0.0;
             for ( int i = 0; i < peaks.Count; i++ ) {
@@ -374,9 +351,7 @@ namespace cadencii.media {
             }
             return ret / t;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 第timeサンプルにおけるフォルマントを取得する
         /// </summary>
@@ -402,9 +377,7 @@ namespace cadencii.media {
             }
             return wv;
         }
-#endif
 
-#if !JAVA
         public double GetVolume( int start_sample, double[] window_function ) {
             int window_size = window_function.Length;
             double[] conv = new double[window_size];
@@ -415,9 +388,7 @@ namespace cadencii.media {
             }
             return ret / (double)window_size;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定したサンプル位置における音量を計算します
         /// </summary>
@@ -435,9 +406,7 @@ namespace cadencii.media {
             }
             return ret / (double)window_size;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 音量の時間変化を取得します
         /// </summary>
@@ -480,7 +449,6 @@ namespace cadencii.media {
             }
             return ret;
         }
-#endif
 
         public void getNormalizedWave( int start_index, double[] conv ) {
             int count = conv.Length;
@@ -866,22 +834,16 @@ namespace cadencii.media {
             }
         }
 
-#if !JAVA
         public void Dispose() {
             dispose();
         }
-#endif
 
         public void dispose() {
             L8 = null;
             R8 = null;
             L16 = null;
             R16 = null;
-#if JAVA
-            System.gc();
-#else
             GC.Collect();
-#endif
         }
 
         /// <summary>
@@ -1032,9 +994,6 @@ namespace cadencii.media {
         }
 
         private static void writeByteArray( RandomAccessFile fs, byte[] dat, int limit )
-#if JAVA
-            throws IOException
-#endif
  {
             fs.write( dat, 0, (dat.Length > limit) ? limit : dat.Length );
             if ( dat.Length < limit ) {
@@ -1560,6 +1519,4 @@ namespace cadencii.media {
         }
     }
 
-#if !JAVA
 }
-#endif

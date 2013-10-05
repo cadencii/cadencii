@@ -11,27 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.apputil;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Iterator;
-import java.util.TreeMap;
-import java.util.Vector;
-
-import cadencii.ByRef;
-import cadencii.PortUtil;
-import cadencii.str;
-
-#else
-
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -39,8 +18,6 @@ using cadencii.java.util;
 using cadencii.java.io;
 
 namespace cadencii.apputil {
-
-#endif
 
     public class MessageBody
     {
@@ -209,9 +186,6 @@ namespace cadencii.apputil {
         }
 
         private static string readTillMessageEnd( java.io.BufferedReader sr, string first_line, string entry, ByRef<string> msg, ByRef<string[]> locations )
-#if JAVA
-            throws IOException
-#endif
         {
             msg.value = "";
             string line = first_line;
@@ -257,6 +231,4 @@ namespace cadencii.apputil {
         }
     }
 
-#if !JAVA
 }
-#endif

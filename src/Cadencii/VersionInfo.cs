@@ -11,21 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/VersionInfo.java
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import cadencii.*;
-import cadencii.windows.forms.*;
-import cadencii.apputil.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -37,21 +22,11 @@ namespace cadencii
 {
     using Graphics = cadencii.java.awt.Graphics2D;
 
-#endif
-
-#if JAVA
-    public class VersionInfo extends BDialog {
-#else
     public class VersionInfo : Form
     {
-#endif
         const float m_speed = 35f;
         const int m_height = 380;
-#if JAVA
-        const int FONT_SIZE = 12;
-#else
         const int FONT_SIZE = 10;
-#endif
 
         private readonly Color m_background = Color.white;
 
@@ -75,17 +50,11 @@ namespace cadencii
 
         public VersionInfo( string app_name, string version )
         {
-#if JAVA
-            super();
-            initialize();
-            timer = new BTimer();
-#else
             InitializeComponent();
             if ( this.components == null ) {
                 this.components = new System.ComponentModel.Container();
             }
             timer = new Timer( this.components );
-#endif
             m_version = version;
             m_app_name = app_name;
 
@@ -94,11 +63,9 @@ namespace cadencii
             setResources();
             applyLanguage();
 
-#if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );
             this.SetStyle( ControlStyles.AllPaintingInWmPaint, true );
-#endif
 
             m_credit = new AuthorListEntry[] { };
             lblVstLogo.ForeColor = m_version_color.color;
@@ -169,12 +136,10 @@ namespace cadencii
             m_app_name_color = value;
         }
 
-#if !JAVA
         public void setCredit( java.awt.Image value )
         {
             m_scroll = value;
         }
-#endif
 
         public string getAppName()
         {
@@ -217,11 +182,7 @@ namespace cadencii
                     g,
                     m_app_name,
                     f,
-#if JAVA
-                    new Rectangle( shadow_shift, shadow_shift + height, width, height ),
-#else
                     new Rectangle( shadow_shift, shadow_shift, width, height ),
-#endif
                     align,
                     valign );
             }
@@ -230,11 +191,7 @@ namespace cadencii
                 g,
                 m_app_name,
                 f,
-#if JAVA
-                new Rectangle( 0, height, width, height ),
-#else
                 new Rectangle( 0, 0, width, height ),
-#endif
                 align,
                 valign );
             for ( int i = 0; i < m_credit.Length; i++ ) {
@@ -251,11 +208,7 @@ namespace cadencii
                         g,
                         str,
                         font,
-#if JAVA
-                        new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift + height, width, height ),
-#else
                         new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift, width, height ),
-#endif
                         align,
                         valign );
                 }
@@ -264,11 +217,7 @@ namespace cadencii
                     g,
                     str,
                     f2,
-#if JAVA
-                    new Rectangle( 0, 40 + (int)(i * height * 1.1) + height, width, height ),
-#else
                     new Rectangle( 0, 40 + (int)(i * height * 1.1), width, height ),
-#endif
                     align,
                     valign );
             }
@@ -330,13 +279,7 @@ namespace cadencii
         public void VersionInfo_Paint( Object sender, PaintEventArgs e )
         {
             try {
-#if JAVA
-                e.Graphics.setColor( Color.white );
-                e.Graphics.fillRect( 0, 0, this.getWidth(), this.getHeight() );
-                paintCor( e.Graphics );
-#else
                 paintCor( new Graphics2D( e.Graphics ) );
-#endif
             } catch ( Exception ex ) {
 #if DEBUG
                 serr.println( "VersionInfo_Paint; ex=" + ex );
@@ -399,13 +342,9 @@ namespace cadencii
 
         private void VersionInfo_FontChanged( Object sender, EventArgs e )
         {
-#if JAVA
-            Util.applyFontRecurse( this, getFont() );
-#else
             for ( int i = 0; i < this.Controls.Count; i++ ) {
                 Util.applyFontRecurse( this.Controls[i], new java.awt.Font( this.Font ) );
             }
-#endif
         }
 
         public void chkTwitterID_CheckedChanged( Object sender, EventArgs e )
@@ -431,10 +370,6 @@ namespace cadencii
         }
 
         #region ui implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/VersionInfo.java
-        //INCLUDE-SECTION METHOD ./ui/java/VersionInfo.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -553,10 +488,7 @@ namespace cadencii
         private PictureBox pictVstLogo;
         private Label lblVstLogo;
         private CheckBox chkTwitterID;
-#endif
         #endregion
     }
 
-#if !JAVA
 }
-#endif

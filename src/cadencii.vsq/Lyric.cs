@@ -11,21 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#elif __cplusplus
-
-namespace org{ namespace kbinani{ namespace vsq{
-
-#else
-
 using System;
 using System.Collections.Generic;
 
@@ -34,19 +19,11 @@ using cadencii;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// VsqHandleに格納される歌詞の情報を扱うクラス。
     /// </summary>
-#if JAVA
-    public class Lyric implements Serializable
-#elif __cplusplus
-    class Lyric
-#else
     [Serializable]
     public class Lyric
-#endif
     {
         /// <summary>
         /// この歌詞のフレーズ
@@ -166,9 +143,6 @@ namespace cadencii.vsq
         /// Consonant Adjustmentを、整数配列で取得します。
         /// </summary>
         /// <returns></returns>
-#if JAVA
-        @XmlIgnore
-#endif
         public List<int> getConsonantAdjustmentList()
         {
 #if !__cplusplus
@@ -196,9 +170,6 @@ namespace cadencii.vsq
         /// Consonant Adjustmentを、整数配列形式で設定します。
         /// </summary>
         /// <param name="value"></param>
-#if JAVA
-        @XmlIgnore
-#endif
         public void setConsonantAdjustmentList( List<int> value )
         {
 #if !__cplusplus
@@ -243,14 +214,10 @@ namespace cadencii.vsq
         }
 #endif
 
-#if JAVA
-#elif __cplusplus
-#else
         public Object Clone()
         {
             return clone();
         }
-#endif
 
         public Lyric()
         {
@@ -293,11 +260,7 @@ namespace cadencii.vsq
             string consonant_adjustment = "";
             for ( int i = 0; i < len; i++ )
             {
-#if JAVA
-                        char c = line.charAt( i );
-#else
                 char c = line[i];
-#endif
                 if ( c == ',' )
                 {
                     if ( dquote_count % 2 == 0 )
@@ -579,10 +542,4 @@ namespace cadencii.vsq
 #endif
     }
 
-#if !JAVA
-#if __cplusplus
-}   }   }
-#else
 }
-    #endif
-#endif

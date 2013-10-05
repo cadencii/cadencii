@@ -11,21 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#elif __cplusplus
-
-namespace org{
-namespace kbinani{
-namespace cadencii{
-
-#else
-
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// FormWorkerに登録されている1個のジョブについての状態を表現します
@@ -67,9 +54,4 @@ namespace cadencii
         double getJobAmount();
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

@@ -11,16 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.util.*;
-#else
 using System;
 
 namespace cadencii.media
 {
-#endif
 
     /// <summary>
     /// サンプリング周波数を変換するコア機能を提供
@@ -105,23 +99,12 @@ namespace cadencii.media
         /// <param name="sample_rate_from"></param>
         /// <param name="sample_rate_to"></param>
         public RateConvertContext( int sample_rate_from, int sample_rate_to )
-#if JAVA
-            throws Exception
-#endif
         {
             if ( sample_rate_from <= 0 ) {
-#if JAVA
-                throw new Exception();
-#else
                 throw new ArgumentOutOfRangeException( "sample_rate_from" );
-#endif
             }
             if ( sample_rate_to <= 0 ) {
-#if JAVA
-                throw new Exception();
-#else
                 throw new ArgumentOutOfRangeException( "sample_rate_to" );
-#endif
             }
             bRate = sample_rate_from;
             aRate = sample_rate_to;
@@ -131,7 +114,6 @@ namespace cadencii.media
             aEnd = -1;
         }
 
-#if !JAVA
         /// <summary>
         /// デストラクタ
         /// </summary>
@@ -139,7 +121,6 @@ namespace cadencii.media
         {
             dispose();
         }
-#endif
 
         public int getSampleRateFrom()
         {
@@ -349,28 +330,12 @@ namespace cadencii.media
                         if ( context.bBufLeft == null ) {
                             context.bBufLeft = new double[num];
                         } else if ( context.bBufLeft.Length < num ) {
-#if JAVA
-#if JAVA_1_5
-                            context.bBufLeft = new double[num];
-#else
-                            context.bBufLeft = Arrays.copyOf( context.bBufLeft, num );
-#endif
-#else
                             Array.Resize( ref context.bBufLeft, num );
-#endif
                         }
                         if ( context.bBufRight == null ) {
                             context.bBufRight = new double[num];
                         } else if ( context.bBufRight.Length < num ) {
-#if JAVA
-#if JAVA_1_5
-                            context.bBufRight = new double[num];
-#else
-                            context.bBufRight = Arrays.copyOf( context.bBufRight, num );
-#endif
-#else
                             Array.Resize( ref context.bBufRight, num );
-#endif
                         }
                         for ( int j = 0; j < num; j++ ) {
                             int indx = (int)(context.bBufBase + j - context.bCount);
@@ -389,7 +354,6 @@ namespace cadencii.media
     }
 
 #if DEBUG
-#if !JAVA
     /// <summary>
     /// RateConvertContextをテストするクラス
     /// </summary>
@@ -459,8 +423,5 @@ namespace cadencii.media
         }
     }
 #endif
-#endif
 
-#if !JAVA
 }
-#endif

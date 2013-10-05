@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * Rebar.cs
  * Copyright © Anthony Baraff
@@ -829,5 +828,3 @@ namespace cadencii.windows.forms {
 
     internal delegate void NativeRebarEventHandler( object sender, NativeRebarEventArgs e );
 }
-#endif
-

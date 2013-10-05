@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.windows.forms.*;
-import cadencii.xml.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -29,7 +20,6 @@ using cadencii.windows.forms;
 using cadencii.xml;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// プロパティウィンドウの状態を表すクラス
@@ -46,9 +36,6 @@ namespace cadencii {
         /// <summary>
         /// プロパティの表示項目の展開・縮小状態を格納したリスト
         /// </summary>
-#if JAVA
-        @XmlGenericType( ValuePairOfStringBoolean.class )
-#endif
         public List<ValuePairOfStringBoolean> ExpandStatus = new List<ValuePairOfStringBoolean>();
         /// <summary>
         /// 音階の表現形式
@@ -64,6 +51,4 @@ namespace cadencii {
         public int DockWidth = 240;
     }
 
-#if !JAVA
 }
-#endif

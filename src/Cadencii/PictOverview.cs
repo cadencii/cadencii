@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import java.awt.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*; 
-#else
 using System;
 using System.Threading;
 using System.Windows.Forms;
@@ -32,17 +23,11 @@ using cadencii.windows.forms;
 namespace cadencii
 {
 
-#endif
-
     /// <summary>
     /// ナビゲーションバーを描画するコンポーネント
     /// </summary>
-#if JAVA
-    public class PictOverview extends BPictureBox implements IImageCachedComponentDrawer {
-#else
     public class PictOverview : PictureBox, IImageCachedComponentDrawer
     {
-#endif
         enum OverviewMouseDownMode
         {
             NONE,
@@ -57,9 +42,7 @@ namespace cadencii
         const int OVERVIEW_SCALE_COUNT_MAX = 7;
         const int OVERVIEW_SCALE_COUNT_MIN = 3;
 
-#if !JAVA
         private Graphics mGraphics;
-#endif
         private ImageCachedComponentDrawer mDrawer;
         private int mOffsetX;
         private BasicStroke mStrokeDefault = null;
@@ -118,10 +101,8 @@ namespace cadencii
 
         public PictOverview()
         {
-#if !JAVA
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
-#endif
             mDrawerSyncRoot = new Object();
             mDrawer = new ImageCachedComponentDrawer( 100, FormMain._OVERVIEW_HEIGHT );
             registerEventHandlers();
@@ -141,17 +122,10 @@ namespace cadencii
         {
             if ( mOverviewUpdateThread != null ) {
                 try {
-#if JAVA
-                    mOverviewUpdateThread.stop();
-                    while( mOverviewUpdateThread.isAlive() ){
-                        Thread.sleep( 0 );
-                    }
-#else
                     mOverviewUpdateThread.Abort();
                     while ( mOverviewUpdateThread != null && mOverviewUpdateThread.IsAlive ) {
                         System.Windows.Forms.Application.DoEvents();
                     }
-#endif
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".overviewStopThread; ex=" + ex + "\n" );
                 }
@@ -165,17 +139,10 @@ namespace cadencii
             mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
             if ( mOverviewUpdateThread != null ) {
                 try {
-#if JAVA
-                    mOverviewUpdateThread.stop();
-                    while( mOverviewUpdateThread.isAlive() ){
-                        Thread.sleep( 0 );
-                    }
-#else
                     mOverviewUpdateThread.Abort();
                     while ( mOverviewUpdateThread.IsAlive ) {
                         System.Windows.Forms.Application.DoEvents();
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "FormMain#btnLeft_MouseDown; ex=" + ex );
                     Logger.write( typeof( FormMain ) + ".btnLeft_MouseDown; ex=" + ex + "\n" );
@@ -183,13 +150,8 @@ namespace cadencii
                 mOverviewUpdateThread = null;
             }
             mOverviewDirection = -1;
-#if JAVA
-            mOverviewUpdateThread = new UpdateOverviewProc();
-            mOverviewUpdateThread.start();
-#else
             mOverviewUpdateThread = new Thread( new ThreadStart( this.updateOverview ) );
             mOverviewUpdateThread.Start();
-#endif
         }
 
         public void btnLeft_MouseUp( Object sender, MouseEventArgs e )
@@ -203,15 +165,9 @@ namespace cadencii
             mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
             if ( mOverviewUpdateThread != null ) {
                 try {
-#if JAVA
-                    while( mOverviewUpdateThread.isAlive() ){
-                        Thread.sleep( 0 );
-                    }
-#else
                     while ( mOverviewUpdateThread.IsAlive ) {
                         System.Windows.Forms.Application.DoEvents();
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "FormMain#btnRight_MouseDown; ex=" + ex );
                     Logger.write( typeof( FormMain ) + ".btnRight_MouseDown; ex=" + ex + "\n" );
@@ -219,13 +175,8 @@ namespace cadencii
                 mOverviewUpdateThread = null;
             }
             mOverviewDirection = 1;
-#if JAVA
-            mOverviewUpdateThread = new UpdateOverviewProc();
-            mOverviewUpdateThread.start();
-#else
             mOverviewUpdateThread = new Thread( new ThreadStart( this.updateOverview ) );
             mOverviewUpdateThread.Start();
-#endif
         }
 
         public void btnRight_MouseUp( Object sender, MouseEventArgs e )
@@ -337,13 +288,8 @@ namespace cadencii
             updateCachedImage( required_width );
         }
 
-#if JAVA
-        public class UpdateOverviewProc extends Thread{
-        public void run(){
-#else
         public void updateOverview()
         {
-#endif
             bool д = true;
 #if DEBUG
             int count = 0;
@@ -353,16 +299,7 @@ namespace cadencii
                 count++;
                 sout.println( "FormMain#updateOverview; count=" + count );
 #endif
-#if JAVA
-                try{
-                    Thread.sleep( 100 );
-                }catch( InterruptedException ex ){
-                    Logger.write( FormMain.class + "; ex=" + ex + "\n" );
-                    break;
-                }
-#else
                 Thread.Sleep( 100 );
-#endif
                 int key_width = AppManager.keyWidth;
                 double dt = PortUtil.getCurrentTime() - mOverviewBtnDowned;
                 int draft = (int)(mOverviewStartToDrawClockInitialValue + mOverviewDirection * dt * OVERVIEW_SCROLL_SPEED / mOverviewPixelPerClock);
@@ -374,18 +311,11 @@ namespace cadencii
                     draft = 0;
                 }
                 mOverviewStartToDrawClock = draft;
-#if JAVA
-                if ( this == null ) {
-#else
                 if ( this == null || (this != null && this.IsDisposed) ) {
-#endif
                     break;
                 }
                 this.Invoke( new EventHandler( invalidatePictOverview ) );
             }
-#if JAVA
-        }
-#endif
         }
 
         private void invalidatePictOverview( Object sender, EventArgs e )
@@ -599,11 +529,7 @@ namespace cadencii
             if ( mMainForm == null ) {
                 return;
             }
-#if JAVA
-            Graphics2D g = (Graphics2D)g1;
-#else
             Graphics2D g = new Graphics2D( g1.nativeGraphics );
-#endif
             int doffset = (int)(mOverviewStartToDrawClock * mOverviewPixelPerClock);
             mDrawer.draw( doffset, g );
 
@@ -822,7 +748,6 @@ namespace cadencii
             mOffsetX = value;
         }
 
-#if !JAVA
         protected override void OnPaint( PaintEventArgs pevent )
         {
             base.OnPaint( pevent );
@@ -832,9 +757,6 @@ namespace cadencii
             mGraphics.nativeGraphics = pevent.Graphics;
             paint( mGraphics );
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

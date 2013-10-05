@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormCompileResult.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.apputil;
 using cadencii;
@@ -29,22 +20,12 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormCompileResult extends BDialog {
-#else
     public class FormCompileResult : System.Windows.Forms.Form
     {
-#endif
         public FormCompileResult( string message, string errors )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -84,10 +65,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormCompileResult.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormCompileResult.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -173,10 +150,7 @@ namespace cadencii
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnOK;
 
-#endif
         #endregion
     }
 
-#if !JAVA
 }
-#endif

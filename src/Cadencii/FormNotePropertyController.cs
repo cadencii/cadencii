@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import javax.swing.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-import cadencii.ui.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -33,13 +21,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormNotePropertyController implements FormNotePropertyUiListener
-#else
     public class FormNotePropertyController : FormNotePropertyUiListener
-#endif
     {
         private bool mPreviousAlwaysOnTop;
         private FormNotePropertyUi ui;
@@ -130,6 +113,4 @@ namespace cadencii
 
     }
 
-#if !JAVA
 }
-#endif

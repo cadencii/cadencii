@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.media;
-
-import cadencii.*;
-
-#else
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -26,22 +18,14 @@ using cadencii;
 
 namespace cadencii.media
 {
-#endif
 
-#if JAVA
-    public class MidiInDevice implements javax.sound.midi.Receiver
-#else
     public class MidiInDevice : IDisposable 
-#endif
     {
-#if JAVA
-#else
         delegate void MidiInProcDelegate( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 );
 
         private volatile MidiInProcDelegate m_delegate;
         private volatile IntPtr m_delegate_pointer;
         private uint m_hmidiin = 0;
-#endif
         private int m_port_number;
         private bool mReceiveSystemCommonMessage = false;
         private bool mReceiveSystemRealtimeMessage = false;
@@ -51,45 +35,9 @@ namespace cadencii.media
 
         public MidiInDevice( int port_number ) {
             m_port_number = port_number;
-#if JAVA
-            javax.sound.midi.MidiDevice.Info[] info = javax.sound.midi.MidiSystem.getMidiDeviceInfo();
-            if( port_number < 0 || info.length <= port_number ){
-                System.err.println( "MidiInDevice#.ctor; invalid port-number" );
-                return;
-            }
-            javax.sound.midi.Transmitter trans = null;
-            javax.sound.midi.MidiDevice device = null;
-            try{
-                device = javax.sound.midi.MidiSystem.getMidiDevice( info[port_number] );
-            }catch( Exception ex ){
-                ex.printStackTrace();
-                device = null;
-            }
-            if( device == null ) return;
-            int max = device.getMaxTransmitters();
-            if( max != -1 && max <= 0 ){
-                System.err.println( "MidiInDevice#.ctor; cannot connect to device" );
-                return;
-            }
-            if( !device.isOpen() ){
-                try{
-                    device.open();
-                }catch( Exception ex ){
-                    ex.printStackTrace();
-                    return;
-                }
-            }
-            try{
-                trans = device.getTransmitter();
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-            trans.setReceiver( this );
-#else
             m_delegate = new MidiInProcDelegate( MidiInProc );
             m_delegate_pointer = Marshal.GetFunctionPointerForDelegate( m_delegate );
             win32.midiInOpen( ref m_hmidiin, port_number, m_delegate_pointer, 0, win32.CALLBACK_FUNCTION );
-#endif
         }
 
         public bool isReceiveSystemRealtimeMessage() {
@@ -110,7 +58,6 @@ namespace cadencii.media
 
         public void start() {
             mIsActive = true;
-#if !JAVA
             if ( m_hmidiin > 0 ) {
                 try {
                     win32.midiInStart( m_hmidiin );
@@ -119,12 +66,10 @@ namespace cadencii.media
                     debug.push_log( "    ex=" + ex );
                 }
             }
-#endif
         }
 
         public void stop() {
             mIsActive = false;
-#if !JAVA
             if ( m_hmidiin > 0 ) {
                 try {
                     win32.midiInReset( m_hmidiin );
@@ -133,12 +78,10 @@ namespace cadencii.media
                     debug.push_log( "    ex=" + ex );
                 }
             }
-#endif
         }
 
         public void close() {
             mIsActive = false;
-#if !JAVA
             if ( m_hmidiin > 0 ) {
                 try {
                     win32.midiInClose( m_hmidiin );
@@ -148,20 +91,14 @@ namespace cadencii.media
                 }
             }
             m_hmidiin = 0;
-#endif
         }
 
-#if !JAVA
         public void Dispose() {
             close();
         }
-#endif
 
 /*
         public static int getNumDevs() {
-#if JAVA
-            return javax.sound.midi.MidiSystem.getMidiDeviceInfo().length;
-#else
             try {
                 int i = (int)win32.midiInGetNumDevs();
                 return i;
@@ -170,7 +107,6 @@ namespace cadencii.media
                 debug.push_log( "    ex=" + ex );
             }
             return 0;
-#endif
         }
 */
         /*public static MIDIINCAPS[] GetMidiInDevices() {
@@ -192,36 +128,6 @@ namespace cadencii.media
             return ret.ToArray();
         }*/
 
-#if JAVA
-        public void send( javax.sound.midi.MidiMessage message, long time )
-        {
-            if( !mIsActive ) return;
-            int status = message.getStatus();
-            if( status >= 0xf8 ){
-                if( !mReceiveSystemRealtimeMessage ){
-                    return;
-                }
-            }
-            if( status >= 0xf1 ){
-                if( !mReceiveSystemCommonMessage ){
-                    return;
-                }
-            }
-#if DEBUG
-            if( !mIsActive ){
-                sout.println( "MidiInDevice#send; return because mIsActive==false" );
-            }
-#endif
-            try{
-                midiReceivedEvent.raise( this, message );
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-            sout.println( "MidiInDevice#send; message.getStatus()=0x" + PortUtil.toHexString( message.getStatus(), 2 ) );
-        }
-#endif
-
-#if !JAVA
         public void MidiInProc( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 ) {
             try {
                 switch ( wMsg ) {
@@ -312,9 +218,6 @@ namespace cadencii.media
                 debug.push_log( "    ex=" + ex );
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

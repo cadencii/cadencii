@@ -12,16 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.*;
-import cadencii.componentmodel.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -32,15 +22,9 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class NoteNumberPropertyConverter extends TypeConverter<NoteNumberProperty>
-#else
     public class NoteNumberPropertyConverter : TypeConverter
-#endif
     {
-#if !JAVA
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
         {
             if ( destinationType == typeof( NoteNumberProperty ) ) {
@@ -48,9 +32,7 @@ namespace cadencii
             }
             return base.CanConvertTo( context, destinationType );
         }
-#endif
 
-#if !JAVA
         public override Object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType )
         {
             if ( destinationType == typeof( string ) && value is NoteNumberProperty ) {
@@ -58,9 +40,7 @@ namespace cadencii
             }
             return base.ConvertTo( context, culture, value, destinationType );
         }
-#endif
 
-#if !JAVA
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
         {
             if ( sourceType == typeof( string ) ) {
@@ -68,9 +48,7 @@ namespace cadencii
             }
             return base.CanConvertFrom( context, sourceType );
         }
-#endif
 
-#if !JAVA
         public override Object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, Object value )
         {
             if ( value is string ) {
@@ -79,7 +57,6 @@ namespace cadencii
                 return base.ConvertFrom( context, culture, value );
             }
         }
-#endif
 
         public string convertTo( Object value )
         {
@@ -305,7 +282,5 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif
 #endif

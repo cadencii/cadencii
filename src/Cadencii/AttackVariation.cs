@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -26,13 +18,7 @@ using System.Drawing.Design;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    @TypeConverterAnnotation( AttackVariationConverter.class )
-#else
     [TypeConverter( typeof( AttackVariationConverter ) )]
-#endif
     public class AttackVariation
     {
         public string mDescription = "";
@@ -53,13 +39,10 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public override bool Equals( Object obj ) {
             return equals( obj );
         }
-#endif
 
-#if !JAVA
         public override int GetHashCode() {
             if ( mDescription == null ) {
                 return "".GetHashCode();
@@ -67,10 +50,7 @@ namespace cadencii
                 return mDescription.GetHashCode();
             }
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

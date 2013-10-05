@@ -11,30 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#elif __cplusplus
-namespace org{ namespace kbinani{ namespace vsq{
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// ゲートタイムと、何らかのパラメータ値とのペアを表します。主にVsqBPListで使用します。
     /// </summary>
-#if JAVA
-    public class BPPair implements Comparable<BPPair>, Serializable
-#elif __cplusplus
-    class BPPair
-#else
     [Serializable]
     public class BPPair : IComparable<BPPair>
-#endif
     {
         public int Clock;
         public int Value;
@@ -64,14 +50,10 @@ namespace cadencii.vsq
         }
 #endif
 
-#if JAVA
-#elif __cplusplus
-#else
         public int CompareTo( BPPair item )
         {
             return compareTo( item );
         }
-#endif
 
         /// <summary>
         /// 指定されたゲートタイムとパラメータ値を使って、新しいインスタンスを初期化します。
@@ -89,9 +71,4 @@ namespace cadencii.vsq
 #endif
     };
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

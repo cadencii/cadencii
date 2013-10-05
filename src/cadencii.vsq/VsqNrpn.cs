@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-import java.util.*;
-import cadencii.*;
-
-#else
-
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,13 +18,8 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class VsqNrpn implements Comparable<VsqNrpn>
-#else
     public class VsqNrpn : IComparable<VsqNrpn>
-#endif
     {
         public int Clock;
         public int Nrpn;
@@ -106,13 +92,8 @@ namespace cadencii.vsq
                             for ( int j = 0; j < work_size - 1; j++ ) {
                                 VsqNrpn itemj = work[j];
                                 VsqNrpn itemjn = work[j + 1];
-#if JAVA
-                                int nrpn_msb0 = (itemj.Nrpn >>> 8) & 0xff;
-                                int nrpn_msb1 = (itemjn.Nrpn >>> 8) & 0xff;
-#else
                                 int nrpn_msb0 = (itemj.Nrpn >> 8) & 0xff;
                                 int nrpn_msb1 = (itemjn.Nrpn >> 8) & 0xff;
-#endif
                                 if ( nrpn_msb1 > nrpn_msb0 ) {
                                     VsqNrpn buf = itemj;
                                     work[j] = itemjn;
@@ -192,12 +173,10 @@ namespace cadencii.vsq
             return Clock - item.Clock;
         }
 
-#if !JAVA
         public int CompareTo( VsqNrpn item )
         {
             return compareTo( item );
         }
-#endif
 
         public void append( int nrpn, byte data_msb )
         {
@@ -224,6 +203,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * cp932.cs
  * Copyright © 2008-2011 kbinani
@@ -9596,4 +9595,3 @@ namespace cadencii {
     };
 
 }
-#endif

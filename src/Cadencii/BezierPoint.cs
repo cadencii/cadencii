@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.io.*;
-import cadencii.xml.*;
-
-#else
-
 using System;
 using System.Drawing;
 using System.Xml.Serialization;
@@ -28,58 +19,34 @@ using System.ComponentModel;
 namespace cadencii
 {
 
-#endif
-
     /// <summary>
     /// ベジエ曲線を構成するデータ点。
     /// </summary>
-#if JAVA
-    public class BezierPoint implements Comparable<BezierPoint>, Cloneable, Serializable
-#else
     [Serializable]
     public class BezierPoint : IComparable<BezierPoint>, ICloneable
-#endif
     {
-#if JAVA
-        @XmlIgnore
-#else
         [XmlIgnore]
-#endif
         public PointD controlLeft;
-#if JAVA
-        @XmlIgnore
-#else
         [XmlIgnore]
-#endif
         public PointD controlRight;
 
-#if !JAVA
         [NonSerialized]
-#endif
         private int mID;
         private PointD mCenter;
         private BezierControlType mTypeLeft;
         private BezierControlType mTypeRight;
 
-#if JAVA
-        @XmlIgnore
-#endif
         public int getID() {
             return mID;
         }
 
-#if JAVA
-        @XmlIgnore
-#endif
         public void setID( int value ) {
             mID = value;
         }
 
-#if !JAVA
         public override string ToString() {
             return toString();
         }
-#endif
 
         public string toString() {
             return "m_base=" + mCenter.getX() + "," + mCenter.getY() + "\n" +
@@ -89,21 +56,11 @@ namespace cadencii
                 "m_type_right=" + mTypeRight + "\n";
         }
 
-#if JAVA
-        public BezierPoint(){
-        }
-#else
         private BezierPoint() {
         }
-#endif
 
-#if JAVA
-        public BezierPoint( PointD p1 ){
-            this( p1.getX(), p1.getY() );
-#else
         public BezierPoint( PointD p1 )
             : this( p1.getX(), p1.getY() ) {
-#endif
         }
 
         public BezierPoint( double x, double y ) {
@@ -133,17 +90,13 @@ namespace cadencii
             return result;
         }
 
-#if !JAVA
         public Object Clone() {
             return clone();
         }
-#endif
 
-#if !JAVA
         public int CompareTo( BezierPoint item ) {
             return compareTo( item );
         }
-#endif
 
         public int compareTo( BezierPoint item ) {
             double thisx = this.getBase().getX();
@@ -163,7 +116,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
@@ -175,7 +127,6 @@ namespace cadencii
                 setBase( value );
             }
         }
-#endif
 
         public PointD getBase() {
             return mCenter;
@@ -215,7 +166,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
@@ -227,7 +177,6 @@ namespace cadencii
                 setControlLeft( value );
             }
         }
-#endif
 
         public PointD getControlLeft() {
             if ( mTypeLeft != BezierControlType.None ) {
@@ -241,7 +190,6 @@ namespace cadencii
             controlLeft = new PointD( value.getX() - mCenter.getX(), value.getY() - mCenter.getY() );
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerialize用
         /// </summary>
@@ -253,7 +201,6 @@ namespace cadencii
                 setControlRight( value );
             }
         }
-#endif
 
         public PointD getControlRight() {
             if ( mTypeRight != BezierControlType.None ) {
@@ -267,7 +214,6 @@ namespace cadencii
             controlRight = new PointD( value.getX() - mCenter.getX(), value.getY() - mCenter.getY() );
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerializer用
         /// </summary>
@@ -279,7 +225,6 @@ namespace cadencii
                 setControlLeftType( value );
             }
         }
-#endif
 
         public BezierControlType getControlLeftType() {
             return mTypeLeft;
@@ -292,7 +237,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XmlSerializer用
         /// </summary>
@@ -304,7 +248,6 @@ namespace cadencii
                 setControlRightType( value );
             }
         }
-#endif
 
         public BezierControlType getControlRightType() {
             return mTypeRight;
@@ -318,6 +261,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

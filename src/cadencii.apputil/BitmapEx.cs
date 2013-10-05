@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * BitmapEx.cs
  * Copyright © 2008-2011 kbinani
@@ -158,4 +157,3 @@ namespace cadencii.apputil {
     }
 
 }
-#endif

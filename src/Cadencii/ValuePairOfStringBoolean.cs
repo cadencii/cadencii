@@ -11,16 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
-
-
 namespace cadencii{
-#endif
 
     /// <summary>
     /// ValuePair&lt;String,Boolean&gt;をXMLシリアライズするためのクラス
@@ -33,12 +26,7 @@ namespace cadencii{
         /// デフォルトのコンストラクタ．
         /// Key="", Value=falseで初期化されます．
         /// </summary>
-#if JAVA
-        public ValuePairOfStringBoolean() {
-            this( "", false );
-#else
         public ValuePairOfStringBoolean() : this( "", false ) {
-#endif
         }
 
         /// <summary>
@@ -84,6 +72,4 @@ namespace cadencii{
         }
     }
 
-#if !JAVA
 }
-#endif

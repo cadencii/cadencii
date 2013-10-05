@@ -11,18 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
-
-#endif
 
     public class ClockResolutionUtility {
         private ClockResolutionUtility() {
@@ -84,6 +77,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,15 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-#else
 using cadencii.java.awt;
 
 namespace cadencii {
-#endif
 
     public struct RgbColor {
         public int R;
@@ -32,18 +26,9 @@ namespace cadencii {
             B = b;
         }
 
-#if JAVA
-        public RgbColor() {
-            // XmlSrializeのために必要
-            this( 0, 0, 0 );
-        }
-#endif
-
         public Color getColor() {
             return new Color( R, G, B );
         }
     }
 
-#if !JAVA
 }
-#endif

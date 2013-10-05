@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,17 +20,11 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// ハンドルを取り扱います。ハンドルにはLyricHandle、VibratoHandle、IconHandleおよびNoteHeadHandleがある
     /// </summary>
-#if JAVA
-    public class VsqHandle implements Serializable
-#else
     [Serializable]
     public class VsqHandle
-#endif
     {
         public VsqHandleType m_type;
         public int Index;
@@ -197,17 +184,11 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sw">書き込み対象</param>
         public void write( ITextWriter sw )
-#if JAVA
-            throws IOException
-#endif
         {
             sw.writeLine( this.toString() );
         }
 
         public void write( BufferedWriter sw )
-#if JAVA
-            throws IOException
-#endif
         {
             write( new WrappedStreamWriter( sw ) );
         }
@@ -375,9 +356,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sw">出力先</param>
         public void print( BufferedWriter sw )
-#if JAVA
-            throws IOException
-#endif
         {
             string result = toString();
             sw.write( result );
@@ -483,15 +461,11 @@ namespace cadencii.vsq
             return result;
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

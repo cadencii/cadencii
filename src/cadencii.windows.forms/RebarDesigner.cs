@@ -1,4 +1,3 @@
-#if !JAVA
 #if !MONO
 /*
  * RebarDesigner.cs
@@ -139,5 +138,4 @@ namespace cadencii.windows.forms {
 
     }
 }
-#endif
 #endif

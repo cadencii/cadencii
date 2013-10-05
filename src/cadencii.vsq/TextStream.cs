@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Text;
 using cadencii;
@@ -27,14 +20,8 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class TextStream implements ITextWriter {
-#else
     public class TextStream : ITextWriter, IDisposable
     {
-#endif
         const int INIT_BUFLEN = 512;
 
         private char[] array = new char[INIT_BUFLEN];
@@ -67,11 +54,7 @@ namespace cadencii.vsq
                 if ( c == '\n' ) {
                     break;
                 }
-#if JAVA
-                sb.append( c );
-#else
                 sb.Append( c );
-#endif
             }
             return sb.ToString();
         }
@@ -98,19 +81,7 @@ namespace cadencii.vsq
                     }
                     newLength = array.Length * order;
                 }
-#if JAVA
-#if JAVA_1_5
-                char[] buf = new char[newLength];
-                for( int i = 0; i < array.length; i++ ){
-                    buf[i] = array[i];
-                }
-                array = buf;
-#else
-                array = Arrays.copyOf( array, newLength );
-#endif
-#else
                 Array.Resize( ref array, newLength );
-#endif
             }
         }
 
@@ -121,11 +92,7 @@ namespace cadencii.vsq
             int offset = length;
             ensureCapacity( newSize );
             for ( int i = 0; i < len; i++ ) {
-#if JAVA
-                array[offset + i] = str.charAt( i );
-#else
                 array[offset + i] = str[i];
-#endif
             }
             length = newSize;
         }
@@ -151,14 +118,10 @@ namespace cadencii.vsq
             length = 0;
         }
 
-#if !JAVA
         public void Dispose()
         {
             close();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

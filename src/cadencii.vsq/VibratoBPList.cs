@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -26,14 +19,8 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class VibratoBPList implements Cloneable, Serializable
-#else
     [Serializable]
     public class VibratoBPList : ICloneable
-#endif
     {
         private List<VibratoBPPair> m_list;
 
@@ -78,23 +65,12 @@ namespace cadencii.vsq
         }
 
         public VibratoBPList( float[] x, int[] y )
-#if JAVA
-            throws NullPointerException
-#endif
         {
             if ( x == null ) {
-#if JAVA
-                throw new NullPointerException( "x" );
-#else
                 throw new ArgumentNullException( "x" );
-#endif
             }
             if ( y == null ) {
-#if JAVA
-                throw new NullPointerException( "y" );
-#else
                 throw new ArgumentNullException( "y" );
-#endif
             }
             int len = Math.Min( x.Length, y.Length );
             m_list = new List<VibratoBPPair>( len );
@@ -160,12 +136,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public int getCount()
         {
@@ -182,7 +156,6 @@ namespace cadencii.vsq
             m_list[ index] =  value ;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -197,7 +170,6 @@ namespace cadencii.vsq
                 setData( value );
             }
         }
-#endif
 
         public string getData()
         {
@@ -227,6 +199,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

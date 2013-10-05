@@ -11,9 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-//INCLUDE ./EditedStateChangedEventHandler.java
-#else
 using System;
 
 namespace cadencii
@@ -22,4 +19,3 @@ namespace cadencii
     public delegate void EditedStateChangedEventHandler( Object sender, bool edited );
 
 }
-#endif

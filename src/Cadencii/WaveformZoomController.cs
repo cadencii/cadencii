@@ -11,27 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.awt.*;
-
-import cadencii.ui.*;
-
-#else
-
 using cadencii.java.awt;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class WaveformZoomController extends ControllerBase implements WaveformZoomUiListener
-#else
     class WaveformZoomController : ControllerBase, WaveformZoomUiListener
-#endif
     {
         /// <summary>
         /// 波形表示部の拡大ボタン上でマウスが下りた状態かどうか
@@ -213,11 +198,7 @@ namespace cadencii
 
             mWaveViewButtonAutoMaximizeMouseDowned = false;
             mWaveViewButtonZoomMouseDowned = false;
-#if JAVA
-            mFormMain.refreshScreen();
-#else
             mUi.repaint();
-#endif
         }
 
         /// <summary>
@@ -234,10 +215,4 @@ namespace cadencii
         }
     }
 
-#if JAVA
-
-#else
-
 }
-
-#endif

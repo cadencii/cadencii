@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * VersionInfo.Designer.cs
  * Copyright © 2008-2011 kbinani
@@ -135,4 +134,3 @@ namespace cadencii.apputil {
         private System.Windows.Forms.Button btnSaveAuthorList;
     }
 }
-#endif

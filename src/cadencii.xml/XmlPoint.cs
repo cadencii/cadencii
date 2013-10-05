@@ -11,25 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.xml;
-
-import java.awt.*;
-#else
 using System.Xml.Serialization;
 using cadencii.java.awt;
 
 namespace cadencii.xml {
-#endif
 
     public class XmlPoint {
-#if !JAVA
         [XmlIgnore]
-#endif
         public int x;
-#if !JAVA
         [XmlIgnore]
-#endif
         public int y;
 
         public XmlPoint() {
@@ -65,7 +55,6 @@ namespace cadencii.xml {
             y = value;
         }
 
-#if !JAVA
         public int X {
             get {
                 return getX();
@@ -84,10 +73,6 @@ namespace cadencii.xml {
             }
         }
 
-#endif
-
     }
 
-#if !JAVA
 }
-#endif

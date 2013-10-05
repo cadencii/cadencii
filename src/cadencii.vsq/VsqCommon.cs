@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
@@ -24,17 +18,11 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// vsqファイルのメタテキストの[Common]セクションに記録される内容を取り扱う
     /// </summary>
-#if JAVA
-    public class VsqCommon implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqCommon : ICloneable
-#endif
     {
         public string Version;
         public string Name;
@@ -52,12 +40,10 @@ namespace cadencii.vsq
         /// </summary>
         public int LastPlayMode = cadencii.vsq.PlayMode.PlayWithSynth;
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public Object clone()
         {
@@ -87,14 +73,9 @@ namespace cadencii.vsq
             this.PlayMode = play_mode;
         }
 
-#if JAVA
-        public VsqCommon(){
-            this(  "Miku", 179, 181, 123, 1, 1 );
-#else
         public VsqCommon()
             : this( "Miku", 179, 181, 123, 1, 1 )
         {
-#endif
         }
 
         /// <summary>
@@ -137,9 +118,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sw">出力先</param>
         public void write( ITextWriter sw )
-#if JAVA
-            throws java.io.IOException
-#endif
         {
             sw.writeLine( "[Common]" );
             sw.writeLine( "Version=" + Version );
@@ -150,6 +128,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

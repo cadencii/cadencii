@@ -11,14 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
 namespace cadencii {
-
-#endif
 
     public class BgmFile : ICloneable {
         public string file;
@@ -39,13 +34,9 @@ namespace cadencii {
             return ret;
         }
 
-#if !JAVA
         public Object Clone() {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

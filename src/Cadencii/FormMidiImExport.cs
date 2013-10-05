@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormMidiImExport.java
-
-import java.awt.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -29,15 +19,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-
-#endif
-
-#if JAVA
-    public class FormMidiImExport extends BDialog {
-#else
     public class FormMidiImExport : Form
     {
-#endif
         public enum FormMidiMode
         {
             IMPORT,
@@ -53,12 +36,7 @@ namespace cadencii
 
         public FormMidiImExport()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             applyLanguage();
             setMode( FormMidiMode.EXPORT );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -343,10 +321,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormMidiImExport.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormMidiImExport.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -693,11 +667,8 @@ namespace cadencii
         private NumberTextBox txtOffset;
         private Label lblOffsetUnit;
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

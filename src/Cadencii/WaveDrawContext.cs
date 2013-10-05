@@ -11,19 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using cadencii.media;
 using cadencii;
@@ -123,34 +110,23 @@ namespace cadencii.new_
         {
         }
 
-#if !JAVA
         public void Dispose()
         {
             dispose();
         }
-#endif
     }
 
 }
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// WAVEファイルのデータをグラフィクスに書き込む操作を行うクラス
     /// </summary>
-#if JAVA
-    public class WaveDrawContext
-#else
     public class WaveDrawContext : IDisposable
-#endif
     {
-#if JAVA
-        private byte[] mWave;
-#else
         private sbyte[] mWave;
-#endif
         private int mSampleRate = 44100;
         private string mName;
         private float mLength;
@@ -173,11 +149,7 @@ namespace cadencii
         /// </summary>
         public WaveDrawContext()
         {
-#if JAVA
-            mWave = new byte[0];
-#else
             mWave = new sbyte[0];
-#endif
             mLength = 0.0f;
             mDrawer = new PolylineDrawer( null, 1024 );
         }
@@ -188,11 +160,7 @@ namespace cadencii
         public void unload()
         {
             mDrawer.clear();
-#if JAVA
-            mWave = new byte[0];
-#else
             mWave = new sbyte[0];
-#endif
             mLength = 0.0f;
         }
 
@@ -237,19 +205,7 @@ namespace cadencii
                 // バッファが足りなければ確保
                 int oldLength = mWave.Length;
                 if ( oldLength < saTo ) {
-#if JAVA
-#if JAVA_1_5
-                    byte[] old = mWave;
-                    mWave = new byte[saTo];
-                    for( int i = 0; i < oldLength; i++ ){
-                        mWave[i] = old[i];
-                    }
-#else
-                    mWave = Arrays.copyOf( mWave, saTo );
-#endif
-#else
                     Array.Resize( ref mWave, saTo );
-#endif
                     saFrom = oldLength;
                 }
 
@@ -260,11 +216,7 @@ namespace cadencii
                     for ( int i = 0; i < mWave.Length; i++ ) {
                         double vold = mWave[i] / 127.0 * mMaxAmplitude;
                         double vnew = vold * ampall;
-#if JAVA
-                        mWave[i] = (byte)(vnew * 127);
-#else
                         mWave[i] = (sbyte)(vnew * 127);
-#endif
                     }
 
                 }
@@ -282,11 +234,7 @@ namespace cadencii
 
                     for ( int i = 0; i < delta; i++ ) {
                         double d = (left[i] + right[i]) * 0.5 * amp;
-#if JAVA
-                        byte b = (byte)(d * 127);
-#else
                         sbyte b = (sbyte)(d * 127);
-#endif
                         mWave[pos + i] = b;
                     }
 
@@ -322,11 +270,7 @@ namespace cadencii
         public void load( string file )
         {
             if (!System.IO.File.Exists(file)) {
-#if JAVA
-                mWave = new byte[0];
-#else
                 mWave = new sbyte[0];
-#endif
                 mLength = 0.0f;
                 return;
             }
@@ -335,11 +279,7 @@ namespace cadencii
             try {
                 wr = new Wave( file );
                 int len = (int)wr.getTotalSamples();
-#if JAVA
-                mWave = new byte[len];
-#else
                 mWave = new sbyte[len];
-#endif
                 mSampleRate = (int)wr.getSampleRate();
                 mLength = wr.getTotalSamples() / (float)wr.getSampleRate();
                 int count = (int)wr.getTotalSamples();
@@ -359,16 +299,9 @@ namespace cadencii
                 double amp = (max > 0.0) ? (1.0 / max) : 0.0;
                 for ( int i = 0; i < count; i++ ) {
                     double b = wr.getDouble( i ) * amp;
-#if JAVA
-                    mWave[i] = (byte)(127 * b);
-#else
                     mWave[i] = (sbyte)(127 * b);
-#endif
                 }
             } catch ( Exception ex ) {
-#if JAVA
-                ex.printStackTrace();
-#endif
             } finally {
                 if ( wr != null ) {
                     try {
@@ -378,11 +311,7 @@ namespace cadencii
                 }
             }
             if ( mWave == null ) {
-#if JAVA
-                mWave = new byte[0];
-#else
                 mWave = new sbyte[0];
-#endif
                 mSampleRate = 44100;
                 mLength = 0.0f;
             }
@@ -415,7 +344,6 @@ namespace cadencii
             return mLength;
         }
 
-#if !JAVA
         /// <summary>
         /// デストラクタ。disposeメソッドを呼び出します。
         /// </summary>
@@ -423,9 +351,7 @@ namespace cadencii
         {
             dispose();
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// このWAVE描画コンテキストが使用しているリソースを開放します。
         /// </summary>
@@ -433,7 +359,6 @@ namespace cadencii
         {
             dispose();
         }
-#endif
 
         /// <summary>
         /// このWAVE描画コンテキストが使用しているリソースを開放します。
@@ -441,11 +366,7 @@ namespace cadencii
         public void dispose()
         {
             mWave = null;
-#if JAVA
-            System.gc();
-#else
             GC.Collect();
-#endif
         }
 
         /// <summary>
@@ -663,6 +584,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

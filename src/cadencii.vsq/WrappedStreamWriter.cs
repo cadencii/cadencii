@@ -11,11 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
@@ -23,14 +18,8 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class WrappedStreamWriter implements ITextWriter {
-#else
     public class WrappedStreamWriter : ITextWriter
     {
-#endif
         BufferedWriter m_writer;
 
         public WrappedStreamWriter( BufferedWriter stream_writer )
@@ -39,39 +28,25 @@ namespace cadencii.vsq
         }
 
         public void newLine()
-#if JAVA
-            throws java.io.IOException
-#endif
         {
             m_writer.newLine();
         }
 
         public void write( string value )
-#if JAVA
-            throws IOException
-#endif
         {
             m_writer.write( value );
         }
 
         public void writeLine( string value )
-#if JAVA
-            throws IOException
-#endif
         {
             m_writer.write( value );
             m_writer.newLine();
         }
 
         public void close()
-#if JAVA
-            throws IOException
-#endif
         {
             m_writer.close();
         }
     }
 
-#if !JAVA
 }
-#endif

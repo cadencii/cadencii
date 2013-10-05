@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * RebarBand.cs
  * Copyright © Anthony Baraff
@@ -1315,4 +1314,3 @@ namespace cadencii.windows.forms {
         }
     }
 }
-#endif

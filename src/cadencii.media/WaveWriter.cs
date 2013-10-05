@@ -11,25 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
 
-#endif
-
-#if JAVA
-    public class WaveWriter implements IWaveReceiver {
-#else
     public class WaveWriter : IDisposable, IWaveReceiver {
-#endif
         private int m_channel = 1;
         private int m_bit_per_sample;
         private int m_sample_rate;
@@ -42,20 +30,10 @@ namespace cadencii.media {
         private long m_pos_data_chunk;
 
         public WaveWriter( string path ) 
-#if JAVA
-
-            throws IOException
-        {
-            this ( path, 2, 16, 44100 );
-#else
             : this( path, 2, 16, 44100 ) {
-#endif
         }
 
         public WaveWriter( string path, int channel, int bit_per_sample, int sample_rate ) 
-#if JAVA
-            throws IOException
-#endif
         {
             m_path = path;
 #if DEBUG
@@ -77,9 +55,6 @@ namespace cadencii.media {
         /// <param name="L"></param>
         /// <param name="R"></param>
         public void replace( long pos, int length, double[] L, double[] R ) 
-#if JAVA
-            throws IOException
-#endif
         {
             long lastPos = m_stream.getFilePointer();
             long posFile = pos * m_channel * m_bit_per_sample / 8 + m_pos_data_chunk;
@@ -133,19 +108,14 @@ namespace cadencii.media {
             m_stream.seek( lastPos );
         }
 
-#if !JAVA
         public void Dispose() {
             close();
         }
-#endif
 
         /// <summary>
         /// Writes header of WAVE file
         /// </summary>
         private void writeHeader()
-#if JAVA
-            throws IOException
-#endif
         {
             // RIFF
             m_stream.writeByte( 0x52 ); // loc=0x00
@@ -257,9 +227,6 @@ namespace cadencii.media {
         }
 
         public void append( float[] L )
-#if JAVA
-            throws IOException
-#endif
         {
             int total = L.Length;
             if ( m_bit_per_sample == 8 ) {
@@ -293,9 +260,6 @@ namespace cadencii.media {
         }
 
         public void append( double[] L ) 
-#if JAVA
-            throws IOException
-#endif
         {
             int total = L.Length;
             if ( m_bit_per_sample == 8 ) {
@@ -329,9 +293,6 @@ namespace cadencii.media {
         }
 
         public void append( float[] L, float[] R ) 
-#if JAVA
-            throws IOException
-#endif
         {
             int total = Math.Min( L.Length, R.Length );
             if ( m_bit_per_sample == 8 ) {
@@ -365,9 +326,6 @@ namespace cadencii.media {
         }
 
         public void append( double[] L, double[] R ) 
-#if JAVA
-            throws IOException
-#endif
         {
             int length = Math.Min( L.Length, R.Length );
             append( L, R, length );
@@ -409,9 +367,6 @@ namespace cadencii.media {
         }
 
         public void append( byte[] L, byte[] R ) 
-#if JAVA
-            throws IOException
-#endif
         {
             int total = Math.Min( L.Length, R.Length );
             if ( m_bit_per_sample == 8 ) {
@@ -445,9 +400,6 @@ namespace cadencii.media {
         }
 
         public void append( short[] L, short[] R ) 
-#if JAVA
-            throws IOException
-#endif
         {
             int total = Math.Min( L.Length, R.Length );
             if ( m_bit_per_sample == 8 ) {
@@ -481,9 +433,6 @@ namespace cadencii.media {
         }
 
         private static void writeByteArray( RandomAccessFile fs, byte[] dat, int limit )
-#if JAVA
-            throws IOException
-#endif
         {
             fs.write( dat, 0, (dat.Length > limit) ? limit : dat.Length );
             if ( dat.Length < limit ) {
@@ -494,6 +443,4 @@ namespace cadencii.media {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,15 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
 namespace cadencii {
-
-#endif
 
     public class DefaultVibratoLengthUtil {
         public static string toString( DefaultVibratoLengthEnum value ) {
@@ -35,6 +29,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

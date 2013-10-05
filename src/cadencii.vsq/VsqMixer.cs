@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -28,17 +19,11 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// vsqファイルのメタテキストの[Mixer]セクションに記録される内容を取り扱う
     /// </summary>
-#if JAVA
-    public class VsqMixer implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqMixer : ICloneable
-#endif
     {
         public const int FEDER_MIN = -898;
         public const int FEDER_MAX = 55;
@@ -51,9 +36,6 @@ namespace cadencii.vsq
         /// <summary>
         /// vsqファイルの各トラックのfader, panpot, muteおよびoutputmode値を保持します
         /// </summary>
-#if JAVA
-        @XmlGenericType( VsqMixerEntry.class )
-#endif
         public List<VsqMixerEntry> Slave = new List<VsqMixerEntry>();
 
         /// <summary>
@@ -77,12 +59,10 @@ namespace cadencii.vsq
             return res;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         /// <summary>
         /// 各パラメータを指定したコンストラクタ
@@ -100,14 +80,9 @@ namespace cadencii.vsq
             Slave = new List<VsqMixerEntry>();
         }
 
-#if JAVA
-        public VsqMixer(){
-            this( 0, 0, 0, 0 );
-#else
         public VsqMixer()
             : this( 0, 0, 0, 0 )
         {
-#endif
         }
 
         /// <summary>
@@ -188,9 +163,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sw">出力対象</param>
         public void write( ITextWriter sw )
-#if JAVA
-            throws java.io.IOException
-#endif
         {
             sw.writeLine( "[Mixer]" );
             sw.writeLine( "MasterFeder=" + MasterFeder );
@@ -209,6 +181,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

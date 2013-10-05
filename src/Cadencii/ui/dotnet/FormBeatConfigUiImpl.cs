@@ -519,6 +519,4 @@ namespace cadencii
         #endregion
     }
 
-#if !JAVA
 }
-#endif

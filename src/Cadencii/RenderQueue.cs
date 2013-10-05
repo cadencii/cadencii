@@ -11,11 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
@@ -24,7 +19,6 @@ using cadencii.utau;
 
 
 namespace cadencii {
-#endif
 
     public class RenderQueue {
         private List<string> _resampler_arg = new List<string>();
@@ -82,6 +76,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

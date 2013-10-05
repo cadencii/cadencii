@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormNoteExpressionConfig.java
-
-import java.awt.event.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -33,26 +21,14 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-
-#endif
-
-#if JAVA
-    public class FormNoteExpressionConfig extends BDialog {
-#else
     public class FormNoteExpressionConfig : Form
     {
-#endif
         bool m_apply_current_track = false;
         NoteHeadHandle m_note_head_handle = null;
 
         public FormNoteExpressionConfig( SynthesizerType type, NoteHeadHandle note_head_handle )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -63,21 +39,11 @@ namespace cadencii
             }
 
             if ( type == SynthesizerType.VOCALOID1 ) {
-#if JAVA
-                getContentPane().remove( groupDynamicsControl );
-                getContentPane().remove( panelVocaloid2Template );
-                getContentPane().remove( groupPitchControl );
-#else
                 flowLayoutPanel.Controls.Remove( groupDynamicsControl );
                 flowLayoutPanel.Controls.Remove( panelVocaloid2Template );
                 flowLayoutPanel.Controls.Remove( groupPitchControl );
-#endif
             } else {
-#if JAVA
-                getContentPane().remove( groupAttack );
-#else
                 flowLayoutPanel.Controls.Remove( groupAttack );
-#endif
             }
 
             //comboAttackTemplateを更新
@@ -119,17 +85,9 @@ namespace cadencii
                 comboTemplate.Items.Add( strs[i] );
             }
 
-#if JAVA
-            if( type == SynthesizerType.VOCALOID1 ){
-                this.setSize( this.getWidth(), 238 );
-            }else{
-                this.setSize( this.getWidth(), 400 );
-            }
-#else
             Size current_size = this.ClientSize;
             this.ClientSize = new Size( current_size.Width, flowLayoutPanel.ClientSize.Height + flowLayoutPanel.Top * 2 );
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
-#endif
         }
 
         #region public methods
@@ -162,9 +120,7 @@ namespace cadencii
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
 
-#if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
-#endif
             this.Text = _( "Expression control property" );
         }
 
@@ -486,9 +442,6 @@ namespace cadencii
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDuration_TextChanged; ex=" + ex + "\n" );
-#if JAVA
-                ex.printStackTrace();
-#endif
             }
         }
 
@@ -511,9 +464,6 @@ namespace cadencii
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDepth_TextChanged; ex=" + ex + "\n" );
-#if JAVA
-                ex.printStackTrace();
-#endif
             }
         }
 
@@ -524,12 +474,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormNoteExpressionConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormNoteExpressionConfig.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -1080,11 +1024,8 @@ namespace cadencii
         private ComboBox comboAttackTemplate;
         private Label lblAttackTemplate;
         #endregion
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

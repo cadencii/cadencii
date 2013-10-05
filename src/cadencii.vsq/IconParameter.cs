@@ -11,19 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-
-#endif
 
     /// <summary>
     /// アイコン設定ファイルである*.AICファイルを読み取ることで作成されるアイコン設定を表します。
@@ -32,12 +24,8 @@ namespace cadencii.vsq
     /// <see cref="T:org.kbinani.vsq.NoteHeadHandle"/>
     /// <see cref="T:org.kbinani.vsq.VibratoHandle"/>
     /// </summary>
-#if JAVA
-    public class IconParameter implements Serializable
-#else
     [Serializable]
     public class IconParameter
-#endif
     {
         /// <summary>
         /// アイコン設定の種類を表します。
@@ -311,6 +299,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

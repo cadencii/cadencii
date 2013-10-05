@@ -11,15 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-#else
 using cadencii.java.awt;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// ImageCachedComponentDrawerを使って描画するコンポーネントが実装しておかなければならないインターフェース
@@ -34,6 +28,4 @@ namespace cadencii {
         void draw( Graphics2D g, int width, int height );
     }
 
-#if !JAVA
 }
-#endif

@@ -11,28 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.vsq.*;
-import java.awt.*;
-#else
 using System;
 using cadencii.vsq;
 using cadencii.java.awt;
 
 namespace cadencii {
 
-#endif
-
     /// <summary>
     /// 画面に描画するアイテムを表します
     /// </summary>
-#if JAVA
-    public class DrawObject implements Comparable<DrawObject>{
-#else
     public class DrawObject : IComparable<DrawObject> {
-#endif
         public Rectangle mRectangleInPixel;
         public string mText;
         public int mAccent;
@@ -145,13 +133,9 @@ namespace cadencii {
             return mRectangleInPixel.x - item.mRectangleInPixel.x;
         }
 
-#if !JAVA
         public int CompareTo( DrawObject item ){
             return compareTo( item );
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

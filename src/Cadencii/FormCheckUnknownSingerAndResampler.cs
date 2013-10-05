@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormCheckUnknownSingerAndResampler.java
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.apputil;
 using cadencii.vsq;
@@ -35,13 +23,8 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormCheckUnknownSingerAndResampler extends BDialog
-#else
     public class FormCheckUnknownSingerAndResampler : System.Windows.Forms.Form
-#endif
     {
         /// <summary>
         /// コンストラクタ．
@@ -52,12 +35,7 @@ namespace cadencii
         /// <param name="apply_resampler"></param>
         public FormCheckUnknownSingerAndResampler( string singer, bool apply_singer, string resampler, bool apply_resampler )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
 
@@ -150,12 +128,6 @@ namespace cadencii
         }
         #endregion
 
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormCheckUnknownSingerAndResampler.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormCheckUnknownSingerAndResampler.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -333,9 +305,6 @@ namespace cadencii
         private IconParader pictureSinger;
 
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

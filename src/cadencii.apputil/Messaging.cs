@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.apputil;
-
-import cadencii.*;
-import java.util.Vector;
-import java.util.Iterator;
-
-#else
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -29,9 +19,6 @@ using cadencii.java.util;
 
 namespace cadencii.apputil
 {
-
-#endif
-
     public class Messaging {
         private static string s_lang = "";
         private static List<MessageBody> s_messages = new List<MessageBody>();
@@ -134,6 +121,4 @@ namespace cadencii.apputil
         }
     }
 
-#if !JAVA
 }
-#endif

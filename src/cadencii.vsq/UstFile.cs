@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,14 +20,8 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class UstFile implements Cloneable {
-#else
     public class UstFile : ICloneable
     {
-#endif
         /// <summary>
         /// [#PREV]が指定されているUstEventのIndex
         /// </summary>
@@ -265,17 +252,9 @@ namespace cadencii.vsq
         }
 
         public UstFile( VsqFile vsq, int track_index )
-#if JAVA
-            {
-#else
             :
-#endif
  this( vsq, track_index, new SortedDictionary<int, int>() )
-#if JAVA
-            ;
-#else
         {
-#endif
         }
 
         /// <summary>
@@ -709,14 +688,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

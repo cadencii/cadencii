@@ -11,17 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-
-#else
-
 using System.Collections.Generic;
 
     namespace cadencii
@@ -33,8 +22,6 @@ using System.Collections.Generic;
             using cadencii.vsq;
             using cadencii.java.util;
             using System.Windows.Forms;
-#endif
-
 #endif
 
             /// <summary>
@@ -57,9 +44,6 @@ using System.Collections.Generic;
                 /// <param name="obj">シリアライズするオブジェクト</param>
                 /// <returns>シリアライズされた文字列</returns>
                 private String getSerializedText( Object obj )
-#if JAVA
-                    throws IOException
-#endif
                 {
                     String str = "";
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -67,11 +51,7 @@ using System.Collections.Generic;
                     objectOutputStream.writeObject( obj );
 
                     byte[] arr = outputStream.toByteArray();
-#if JAVA
-                    str = CLIP_PREFIX + ":" + obj.getClass().getName() + ":" + Base64.encode( arr );
-#else
                     str = CLIP_PREFIX + ":" + obj.GetType().FullName + ":" + Base64.encode( arr );
-#endif
                     return str;
                 }
 
@@ -208,11 +188,7 @@ using System.Collections.Generic;
 #if DEBUG
                         sout.println( "ClipboardModel#getCopiedItems; typename=" + typename );
 #endif
-#if JAVA
-                        if ( typename.Equals( ClipboardEntry.class.getName() ) ) {
-#else
                         if ( typename.Equals( typeof( ClipboardEntry ).FullName ) ) {
-#endif
                             try {
                                 ce = (ClipboardEntry)getDeserializedObjectFromText( clip );
                             } catch ( Exception ex ) {
@@ -309,6 +285,4 @@ using System.Collections.Generic;
                 }
             }
 
-#if !JAVA
     }
-#endif

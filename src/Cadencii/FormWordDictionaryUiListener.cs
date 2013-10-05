@@ -1,5 +1,3 @@
-#if !__FormWordDictionaryUiListener__
-#define __FormWordDictionaryUiListener__
 /*
  * FormWordDictionaryUiListener.cs
  * Copyright © 2011 kbinani
@@ -13,16 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
 
     namespace cadencii
     {
-
-#endif
 
 #if __cplusplus
             class FormWordDictionaryUiListener
@@ -49,8 +40,4 @@ package cadencii;
                 void buttonCancelClick();
             };
 
-#if !JAVA
     }
-#endif
-
-#endif

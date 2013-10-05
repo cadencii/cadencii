@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
 
     /// <summary>
     /// ドッキング可能なパネルの状態を表す列挙型
@@ -35,6 +31,4 @@ namespace cadencii {
         Docked,
     }
 
-#if !JAVA
 }
-#endif

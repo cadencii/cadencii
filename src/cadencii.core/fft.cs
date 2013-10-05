@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * fft.cs
  * Copyright © 2008-2011 kbinani
@@ -3254,4 +3253,3 @@ namespace cadencii {
     }
 
 }
-#endif

@@ -11,12 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-#else
 namespace cadencii.vsq
 {
-#endif
 
     public enum SynthesizerType
     {
@@ -24,6 +20,4 @@ namespace cadencii.vsq
         VOCALOID2,
     }
 
-#if !JAVA
 }
-#endif

@@ -12,7 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 #if DEBUG
 //#define TEST
 #endif
@@ -90,11 +89,7 @@ namespace cadencii
             /*if ( rendering ) {
                 g_cancelRequired = true;
                 while ( rendering ) {
-#if JAVA
-                    Thread.sleep( 0 );
-#else
                     System.Windows.Forms.Application.DoEvents();
-#endif
                 }
             }*/
             base.close();
@@ -597,5 +592,4 @@ namespace cadencii
     }
 
 }
-#endif // !JAVA
 #endif // ENABLE_VOCALOID

@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.awt.image.*;
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii;
@@ -30,16 +21,11 @@ using cadencii.windows.forms;
 
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// トラック16個分の波形描画コンテキストを保持し、それらの描画を行うコンポーネントです。
     /// </summary>
-#if JAVA
-    public class WaveView extends BPanel
-#else
     public class WaveView : UserControl
-#endif
     {
         /// <summary>
         /// 波形描画用のコンテキスト
@@ -76,22 +62,12 @@ namespace cadencii {
         /// コンストラクタ
         /// </summary>
         public WaveView()
-#if JAVA
-        {
-#else
             :
-#endif
             base()
-#if JAVA
-            ;
-#else
         {
-#endif
-#if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
             this.SetStyle( ControlStyles.UserPaint, true );
             this.DoubleBuffered = true;
-#endif
         }
 
         /// <summary>
@@ -285,7 +261,6 @@ namespace cadencii {
             mDrawer[index].load( wave_path );
         }
 
-#if !JAVA
         /// <summary>
         /// オーバーライドされます。
         /// <seealso cref="M:System.Windows.Forms.Control.OnPaint"/>
@@ -299,9 +274,6 @@ namespace cadencii {
             mGraphics.nativeGraphics = e.Graphics;
             paint( mGraphics );
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

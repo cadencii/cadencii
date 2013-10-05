@@ -12,15 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 using System.Reflection;
@@ -30,15 +21,9 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class SelectedEventEntryPropertyDescriptor extends PropertyDescriptor 
-#else
     public class SelectedEventEntryPropertyDescriptor : PropertyDescriptor 
-#endif
     {
-#if !JAVA
         private Type m_type;
 
         public SelectedEventEntryPropertyDescriptor( MemberDescriptor md )
@@ -96,7 +81,6 @@ namespace cadencii
                 return getDisplayName( base.Name );
             }
         }
-#endif
 
         public string getDisplayName( string name )
         {
@@ -153,7 +137,5 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif
 #endif

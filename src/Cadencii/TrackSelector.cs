@@ -11,20 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/TrackSelector.java
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 #define COMPONENT_ENABLE_LOCATION
 //#define MONITOR_FPS
 //#define OLD_IMPL_MOUSE_TRACER
@@ -44,16 +30,11 @@ namespace cadencii
 {
     using PLACEHOLDER_20131005_0257 = System.String;
     using Graphics = cadencii.java.awt.Graphics2D;
-#endif
 
     /// <summary>
     /// コントロールカーブ，トラックの一覧，歌手変更イベントなどを表示するコンポーネント．
     /// </summary>
-#if JAVA
-    public class TrackSelector extends BPanel
-#else
     public class TrackSelector : UserControl
-#endif
     {
         #region constants and internal enums
         private enum MouseDownMode
@@ -422,32 +403,14 @@ namespace cadencii
         /// </summary>
         public event EventHandler PreferredMinHeightChanged;
 
-#if JAVA
-        /**
-         * デザイナで使用するコンストラクタ．
-         * 実際にはTrackSelector( FormMain )を使用すること
-         */
-        public TrackSelector()
-        {
-            this( null );
-        }
-#endif
-
         /// <summary>
         /// コンストラクタ．
         /// </summary>
         public TrackSelector( FormMain main_window )
         {
-#if JAVA
-            super();
-            initialize();
-            getCmenuCurve();
-            getCmenuSinger();
-#else
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             InitializeComponent();
-#endif
             mMainWindow = main_window;
             registerEventHandlers();
             setResources();
@@ -581,7 +544,6 @@ namespace cadencii
             return CurveType.Empty;
         }
 
-#if !JAVA
         #region java.awt.Component
         public void setBounds( int x, int y, int width, int height )
         {
@@ -798,7 +760,6 @@ namespace cadencii
             base.Font = font.font;
         }
         #endregion
-#endif
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
@@ -814,16 +775,6 @@ namespace cadencii
             return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
 
-#if JAVA
-        Object tag = null;
-        public Object getTag(){
-            return tag;
-        }
-
-        public void setTag( Object value ){
-            tag = value;
-        }
-#else
         public Object getTag()
         {
             return base.Tag;
@@ -833,7 +784,6 @@ namespace cadencii
         {
             base.Tag = value;
         }
-#endif
         #endregion
 
         private LineGraphDrawer getGraphDrawer()
@@ -960,15 +910,9 @@ namespace cadencii
             if ( !old.equals( mSelectedCurve ) ) {
                 mLastSelectedCurve = old;
                 try {
-#if JAVA
-                    selectedCurveChangedEvent.raise( this, mSelectedCurve );
-#elif QT_VERSION
-                    selectedCurveChanged( this, mSelectedCurve );
-#else
                     if ( SelectedCurveChanged != null ) {
                         SelectedCurveChanged.Invoke( this, mSelectedCurve );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "TrackSelector#setSelectedCurve; ex=" + ex );
                 }
@@ -1051,7 +995,6 @@ namespace cadencii
             mCurveVisible = value;
         }
 
-#if !JAVA
         private Graphics2D getGraphics()
         {
             if ( mGraphics == null ) {
@@ -1070,7 +1013,6 @@ namespace cadencii
             g.nativeGraphics = e.Graphics;
             paint( g );
         }
-#endif
 
         /// <summary>
         /// x軸方向の表示倍率。pixel/clock
@@ -1124,9 +1066,6 @@ namespace cadencii
         /// <param name="graphics"></param>
         public void paint( Graphics graphics )
         {
-#if JAVA
-            super.paint( graphics );
-#endif
             int width = getWidth();
             int height = getHeight();
             int graph_height = getGraphHeight();
@@ -1342,10 +1281,8 @@ namespace cadencii
                             }
                             if ( mSelectedCurve.equals( CurveType.PIT ) ) {
                                 #region PBSの値に応じて，メモリを記入する
-#if !JAVA
                                 System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
                                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                                 Color nrml = new Color( 0, 0, 0, 190 );
                                 Color dash = new Color( 0, 0, 0, 128 );
                                 Stroke nrml_stroke = new BasicStroke();
@@ -1416,9 +1353,7 @@ namespace cadencii
                                     g.setColor( pen );
                                     g.drawLine( x10, y, x20, y );
                                 }
-#if !JAVA
                                 g.nativeGraphics.SmoothingMode = old;
-#endif
                                 #endregion
                             }
                             drawAttachedCurve( g, vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).get( mSelectedCurve ) );
@@ -1459,13 +1394,9 @@ namespace cadencii
                                 int yini = pt.y;
                                 g.setColor( Color.ORANGE );
                                 g.setStroke( getStroke2px() );
-#if !JAVA
                                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                                 g.drawLine( xini, yini, AppManager.xCoordFromClocks( clock_at_mouse ), yCoordFromValue( value ) );
-#if !JAVA
                                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
                                 g.setStroke( getStrokeDefault() );
                             }
 #endif
@@ -1569,15 +1500,9 @@ namespace cadencii
 
                 if ( mCurveVisible ) {
                     #region カーブの種類一覧
-#if JAVA
-                    Font text_font = AppManager.baseFont8;
-                    int text_font_height = AppManager.baseFont8Height;
-                    int text_font_offset = AppManager.baseFont8OffsetHeight;
-#else
                     Font text_font = AppManager.baseFont9;
                     int text_font_height = AppManager.baseFont9Height;
                     int text_font_offset = AppManager.baseFont9OffsetHeight;
-#endif
                     Color font_color_normal = Color.black;
                     g.setColor( new Color( 212, 212, 212 ) );
                     g.fillRect( 0, 0, key_width, size.height - 2 * OFFSET_TRACK_TAB );
@@ -1659,9 +1584,6 @@ namespace cadencii
                 }
             } catch ( Exception ex ) {
                 serr.println( "TrackSelector#paint; ex= " + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
             }
         }
 
@@ -1836,11 +1758,7 @@ namespace cadencii
         private Dimension getFlagBounds( PLACEHOLDER_20131005_0257 flag_title )
         {
             if ( mTextWidthPerLetter <= 0.0f ) {
-#if JAVA
-                Font font = AppManager.baseFont9;
-#else
                 Font font = AppManager.baseFont10;
-#endif
                 Dimension s = Util.measureString( flag_title + " ", font );
                 mTextWidthPerLetter = s.width / (float)flag_title.Length;
                 mTextHeight = s.height;
@@ -1866,15 +1784,9 @@ namespace cadencii
 
             PLACEHOLDER_20131005_0257 s_pre = getFlagTitle( true, preutterance );
             PLACEHOLDER_20131005_0257 s_ovl = getFlagTitle( false, overlap );
-#if JAVA
-            Font font = AppManager.baseFont9;
-            int font_height = AppManager.baseFont9Height;
-            int font_offset = AppManager.baseFont9OffsetHeight;
-#else
             Font font = AppManager.baseFont10;
             int font_height = AppManager.baseFont10Height;
             int font_offset = AppManager.baseFont10OffsetHeight;
-#endif
             Dimension pre_bounds = getFlagBounds( s_pre );
             Dimension ovl_bounds = getFlagBounds( s_ovl );
 
@@ -2254,11 +2166,7 @@ namespace cadencii
         /// </summary>
         public void doInvalidate()
         {
-#if JAVA
-            this.mMainWindow.refreshScreen();
-#else
             this.Invalidate();
-#endif
         }
 
         /// <summary>
@@ -3192,15 +3100,9 @@ namespace cadencii
             }
             int stdx = AppManager.mMainWindowController.getStartToDrawX();
             if ( (e.X + stdx != mMouseDownLocation.x || e.Y != mMouseDownLocation.y) ) {
-#if JAVA
-                if( mMouseHoverThread != null && mMouseHoverThread.isAlive() ){
-                    mMouseHoverThread.stop();
-                }
-#else
                 if ( mMouseHoverThread != null && mMouseHoverThread.IsAlive ) {
                     mMouseHoverThread.Abort();
                 }
-#endif
                 if ( mMouseDownMode == MouseDownMode.VEL_WAIT_HOVER ) {
                     mMouseDownMode = MouseDownMode.VEL_EDIT;
                 }
@@ -3377,9 +3279,6 @@ namespace cadencii
                 float draft_overlap = mPreOverlapOriginal.UstEvent.getVoiceOverlap() + (float)(dsec * 1000);
                 mPreOverlapEditing.UstEvent.setVoiceOverlap( draft_overlap );
             }
-#if JAVA
-            repaint();
-#endif
         }
 
         /// <summary>
@@ -3493,9 +3392,7 @@ namespace cadencii
             mMouseMoved = false;
             mMouseDowned = true;
             if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
-#if !JAVA
                 System.Media.SystemSounds.Asterisk.Play();
-#endif
                 return;
             }
             int stdx = AppManager.mMainWindowController.getStartToDrawX();
@@ -3525,13 +3422,9 @@ namespace cadencii
                                     if ( AppManager.getSelected() != new_selected ) {
                                         AppManager.setSelected( i + 1 );
                                         try {
-#if JAVA
-                                            selectedTrackChangedEvent.raise( this, (i + 1) );
-#else
                                             if ( SelectedTrackChanged != null ) {
                                                 SelectedTrackChanged.Invoke( this, i + 1 );
                                             }
-#endif
                                         } catch ( Exception ex ) {
                                             serr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                         }
@@ -3540,13 +3433,9 @@ namespace cadencii
                                     } else if ( x + selecter_width - PX_WIDTH_RENDER <= e.X && e.X < e.X + selecter_width ) {
                                         if ( AppManager.getRenderRequired( AppManager.getSelected() ) && !AppManager.isPlaying() ) {
                                             try {
-#if JAVA
-                                                renderRequiredEvent.raise( this, AppManager.getSelected() );
-#else
                                                 if ( RenderRequired != null ) {
                                                     RenderRequired.Invoke( this, AppManager.getSelected() );
                                                 }
-#endif
                                             } catch ( Exception ex ) {
                                                 serr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                             }
@@ -3735,13 +3624,8 @@ namespace cadencii
                                 mMouseTracer.appendFirst( x, e.Y );
                                 mPencilMoved = false;
 
-#if JAVA
-                                mMouseHoverThread = new MouseHoverEventGeneratorProc();
-                                mMouseHoverThread.start();
-#else
                                 mMouseHoverThread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
                                 mMouseHoverThread.Start();
-#endif
                                 #endregion
                             }
                             #endregion
@@ -3879,13 +3763,8 @@ namespace cadencii
                                                                                         (VsqEvent)ve.clone(),
                                                                                         (VsqEvent)ve.clone() );
                                     }
-#if JAVA
-                                    mMouseHoverThread = new MouseHoverEventGeneratorProc();
-                                    mMouseHoverThread.start();
-#else
                                     mMouseHoverThread = new Thread( new ThreadStart( MouseHoverEventGenerator ) );
                                     mMouseHoverThread.Start();
-#endif
                                     Invalidate();
                                     return;
                                 }
@@ -4347,15 +4226,9 @@ namespace cadencii
                 mLastSelectedCurve = mSelectedCurve;
                 mSelectedCurve = curve;
                 try {
-#if JAVA
-                    selectedCurveChangedEvent.raise( this, curve );
-#elif QT_VERSION
-                    selectedCurveChanged( this, curve );
-#else
                     if ( SelectedCurveChanged != null ) {
                         SelectedCurveChanged.Invoke( this, curve );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "TrackSelector#changeCurve; ex=" + ex );
                 }
@@ -4429,15 +4302,9 @@ namespace cadencii
 #endif
             mMouseDowned = false;
             if ( mMouseHoverThread != null ) {
-#if JAVA
-                if( mMouseHoverThread.isAlive() ){
-                    mMouseHoverThread.stop();
-                }
-#else
                 if ( mMouseHoverThread.IsAlive ) {
                     mMouseHoverThread.Abort();
                 }
-#endif
             }
 
             if ( !mCurveVisible ) {
@@ -5094,9 +4961,7 @@ namespace cadencii
                             }
                         }
                         if ( contains_first_singer ) {
-#if !JAVA
                             System.Media.SystemSounds.Asterisk.Play();
-#endif
                         } else {
                             if ( !is_valid ) {
                                 int tmin = clocks[0];
@@ -5107,9 +4972,7 @@ namespace cadencii
                                 for ( int j = 0; j < count; j++ ) {
                                     clocks[j] += dclock;
                                 }
-#if !JAVA
                                 System.Media.SystemSounds.Asterisk.Play();
-#endif
                             }
                             bool changed = false;
                             for ( int j = 0; j < ids.Length; j++ ) {
@@ -5459,15 +5322,9 @@ namespace cadencii
 
         public void TrackSelector_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
-#if JAVA
-            if( mMouseHoverThread != null && mMouseHoverThread.isAlive() ){
-                mMouseHoverThread.stop();
-            }
-#else
             if ( mMouseHoverThread != null && mMouseHoverThread.IsAlive ) {
                 mMouseHoverThread.Abort();
             }
-#endif
 
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
@@ -5794,7 +5651,6 @@ namespace cadencii
 
         public void cmenusinger_MouseHover( Object sender, EventArgs e )
         {
-#if !JAVA
             try {
                 TrackSelectorSingerDropdownMenuItem menu =
                     (TrackSelectorSingerDropdownMenuItem)sender;
@@ -5829,7 +5685,6 @@ namespace cadencii
                 sout.println( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
                 AppManager.debugWriteLine( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
             }
-#endif
         }
 
         public void cmenusinger_Click( Object sender, EventArgs e )
@@ -5860,7 +5715,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         private void toolTip_Draw( Object sender, System.Windows.Forms.DrawToolTipEventArgs e )
         {
             if ( !(sender is System.Windows.Forms.ToolTip) ) {
@@ -5889,7 +5743,6 @@ namespace cadencii
             e.DrawBorder();
             e.DrawText( System.Windows.Forms.TextFormatFlags.VerticalCenter | System.Windows.Forms.TextFormatFlags.Left | System.Windows.Forms.TextFormatFlags.NoFullWidthCharacterBreak );
         }
-#endif
 
         public void TrackSelector_KeyDown( Object sender, KeyEventArgs e )
         {
@@ -5920,10 +5773,7 @@ namespace cadencii
 
         private void registerEventHandlers()
         {
-#if JAVA
-#else
             this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
-#endif
             this.cmenuCurveVelocity.Click += new EventHandler( cmenuCurveCommon_Click );
             this.cmenuCurveAccent.Click += new EventHandler( cmenuCurveCommon_Click );
             this.cmenuCurveDecay.Click += new EventHandler( cmenuCurveCommon_Click );
@@ -5968,12 +5818,6 @@ namespace cadencii
         {
         }
 
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/TrackSelector.java
-        //INCLUDE-SECTION METHOD ./ui/java/TrackSelector.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -6391,9 +6235,6 @@ namespace cadencii
         private ToolStripMenuItem cmenuCurveEnvelope;
 
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

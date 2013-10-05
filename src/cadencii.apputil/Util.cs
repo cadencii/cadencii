@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.apputil;
-
-import java.awt.*;
-import javax.swing.*;
-import java.awt.image.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -41,14 +33,8 @@ namespace cadencii.apputil
     using WCHAR = Char;
     using ULONG = System.UInt32;
 
-#endif
-
-#if JAVA
-    public class Util{
-#else
     public static partial class Util
     {
-#endif
         public static readonly string PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
         /// <summary>
         /// このクラスのメソッド'applyFontRecurse', 'applyToolStripFontRecurse', 'applyContextMenuFontRecurse'の呼び出しを有効とするかどうか。
@@ -109,9 +95,6 @@ namespace cadencii.apputil
 
         public static bool createJunction( String mount_point_path, String target )
         {
-#if JAVA
-            return true;
-#else
             unsafe {
                 /*union
                 {
@@ -234,18 +217,9 @@ namespace cadencii.apputil
                 win32.CloseHandle( hFile );
                 return true;
             }
-#endif
         }
 #endif
 
-#if JAVA
-        public static void applyContextMenuFontRecurse( MenuElement item, Font font ){
-            if ( !isApplyFontRecurseEnabled ) {
-                return;
-            }
-            applyToolStripFontRecurse( item, font );
-        }
-#else
         public static void applyContextMenuFontRecurse( ContextMenuStrip item, cadencii.java.awt.Font font )
         {
             if ( !isApplyFontRecurseEnabled )
@@ -258,21 +232,7 @@ namespace cadencii.apputil
                 applyToolStripFontRecurse( tsi, font );
             }
         }
-#endif
 
-#if JAVA
-        public static void applyToolStripFontRecurse( MenuElement item, Font font ){
-            if ( !isApplyFontRecurseEnabled ) {
-                return;
-            }
-            if( item instanceof Component ){
-                ((Component)item).setFont( font );
-            }
-            for( MenuElement element : item.getSubElements() ){
-                applyToolStripFontRecurse( element, font );
-            }
-        }
-#else
         public static void applyToolStripFontRecurse( ToolStripItem item, cadencii.java.awt.Font font )
         {
             if ( !isApplyFontRecurseEnabled )
@@ -297,7 +257,6 @@ namespace cadencii.apputil
                 }
             }
         }
-#endif
 
         /// <summary>
         /// 指定したフォントを描画するとき、描画指定したy座標と、描かれる文字の中心線のズレを調べます
@@ -314,11 +273,7 @@ namespace cadencii.apputil
             }
             java.awt.Image b = null;
             java.awt.Graphics2D g = null;
-#if JAVA
-            java.awt.image.BufferedImage b2 = null;
-#else
             BitmapEx b2 = null;
-#endif
             try
             {
                 int string_desty = size.height * 2; // 文字列が書き込まれるy座標
@@ -333,11 +288,7 @@ namespace cadencii.apputil
                 g.setColor( java.awt.Color.black );
                 g.drawString( PANGRAM, size.width, string_desty );
 
-#if JAVA
-                b2 = b;
-#else
                 b2 = new BitmapEx( b.image );
-#endif
                 // 上端に最初に現れる色つきピクセルを探す
                 int firsty = 0;
                 bool found = false;
@@ -345,12 +296,7 @@ namespace cadencii.apputil
                 {
                     for ( int x = 0; x < w; x++ )
                     {
-#if JAVA
-                        int ic = b2.getRGB( x, y );
-                        Color c = new Color( ic );
-#else
                         java.awt.Color c = new cadencii.java.awt.Color( b2.GetPixel( x, y ) );
-#endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
                         {
                             found = true;
@@ -371,12 +317,7 @@ namespace cadencii.apputil
                 {
                     for ( int x = 0; x < w; x++ )
                     {
-#if JAVA
-                        int ic = b2.getRGB( x, y );
-                        Color c = new Color( ic );
-#else
                         java.awt.Color c = new cadencii.java.awt.Color( b2.GetPixel( x, y ) );
-#endif
                         if ( c.getRed() != 255 || c.getGreen() != 255 || c.getBlue() != 255 )
                         {
                             found = true;
@@ -399,8 +340,6 @@ namespace cadencii.apputil
             }
             finally
             {
-#if JAVA
-#else
                 if ( b != null && b.image != null )
                 {
                     b.image.Dispose();
@@ -413,7 +352,6 @@ namespace cadencii.apputil
                 {
                     b2.Dispose();
                 }
-#endif
             }
             return ret;
         }
@@ -440,7 +378,6 @@ namespace cadencii.apputil
             }
         }
 
-#if !JAVA
         /// <summary>
         /// 指定したディレクトリに作成可能な、一時ファイル名を取得します
         /// </summary>
@@ -458,9 +395,7 @@ namespace cadencii.apputil
             }
             return "";
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定したディレクトリに作成可能な、一時ファイル名を取得します
         /// </summary>
@@ -479,9 +414,7 @@ namespace cadencii.apputil
             }
             return "";
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定した画像ファイルから新しいBitmapオブジェクトを作成します
         /// </summary>
@@ -498,9 +431,7 @@ namespace cadencii.apputil
             fs.Close();
             return ret;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 指定した画像ファイルから新しいImageオブジェクトを作成します
         /// </summary>
@@ -517,9 +448,7 @@ namespace cadencii.apputil
             fs.Close();
             return ret;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// ImageFormatから，デフォルトの拡張子を取得します
         /// </summary>
@@ -548,9 +477,7 @@ namespace cadencii.apputil
 
             }
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// System.Drawimg.Imaging.ImageFormatで使用可能なフォーマットの一覧を取得します
         /// </summary>
@@ -575,9 +502,7 @@ namespace cadencii.apputil
             }
             return ret.ToArray();
         }
-#endif
 
-#if !JAVA
         public static void RgbToHsv( int r, int g, int b, out double h, out double s, out double v )
         {
             RgbToHsv( r / 255.0, g / 255.0, b / 255.0, out h, out s, out v );
@@ -698,7 +623,6 @@ namespace cadencii.apputil
                 }
             }
         }
-#endif
 
         /// <summary>
         /// 指定された文字列を指定されたフォントで描画したときのサイズを計測します。
@@ -706,18 +630,6 @@ namespace cadencii.apputil
         /// <param name="text"></param>
         /// <param name="font"></param>
         /// <returns></returns>
-#if JAVA
-        public static Dimension measureString( String text, Font font ){
-            BufferedImage dumy = new BufferedImage( 1, 1, BufferedImage.TYPE_INT_BGR );
-            Graphics2D g = dumy.createGraphics();
-            g.setFont( font );
-            FontMetrics fm = g.getFontMetrics();
-            Dimension ret = new Dimension( fm.stringWidth( text ), fm.getHeight() );
-            g = null;
-            dumy = null;
-            return ret;
-        }
-#else
         public static java.awt.Dimension measureString( string text, java.awt.Font font )
         {
             using ( Bitmap dumy = new Bitmap( 1, 1 ) )
@@ -736,7 +648,6 @@ namespace cadencii.apputil
                 return new java.awt.Dimension((int)tmp.Width, (int)tmp.Height);
             }
         }
-#endif
 
         /// <summary>
         /// 指定したコントロールと、その子コントロールのフォントを再帰的に変更します
@@ -760,7 +671,6 @@ namespace cadencii.apputil
             applyFontRecurse(c, font.font);
         }
 
-#if !JAVA
         /// <summary>
         ///
         /// </summary>
@@ -795,9 +705,6 @@ namespace cadencii.apputil
                 }
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

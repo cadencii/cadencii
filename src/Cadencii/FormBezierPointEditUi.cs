@@ -11,24 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
 using System;
 using cadencii;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public interface FormBezierPointEditUi extends UiBase
-#else
     public interface FormBezierPointEditUi : UiBase
-#endif
     {
         [PureVirtualFunction]
         string getDataPointClockText();
@@ -137,6 +126,4 @@ namespace cadencii
         void close();
     }
 
-#if !JAVA
 }
-#endif

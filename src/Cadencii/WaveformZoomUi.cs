@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
     namespace cadencii
     {
 
@@ -25,7 +19,6 @@ package cadencii;
             using cadencii;
 #else
             using namespace org::kbinani::cadencii;
-#endif
 #endif
 
 #if __cplusplus
@@ -59,10 +52,4 @@ package cadencii;
 #endif
             };
 
-#if JAVA
-
-#else
-
     }
-
-#endif

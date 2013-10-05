@@ -12,17 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import javax.swing.*;
-import java.awt.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -33,13 +22,7 @@ using cadencii.vsq;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class PropertyPanel extends BPanel
-#else
     public class PropertyPanel : UserControl
-#endif
     {
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
         private List<SelectedEventEntry> m_items;
@@ -48,12 +31,7 @@ namespace cadencii
 
         public PropertyPanel()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             m_items = new List<SelectedEventEntry>();
@@ -72,7 +50,6 @@ namespace cadencii
 
         private void popGridItemExpandStatus()
         {
-#if !JAVA
             if ( propertyGrid.SelectedGridItem == null ) {
                 return;
             }
@@ -83,10 +60,8 @@ namespace cadencii
             }
 
             popGridItemExpandStatusCore( root );
-#endif
         }
 
-#if !JAVA
         private void popGridItemExpandStatusCore( GridItem item )
         {
             if ( item.Expandable ) {
@@ -106,11 +81,9 @@ namespace cadencii
                 popGridItemExpandStatusCore( child );
             }
         }
-#endif
 
         private void pushGridItemExpandStatus()
         {
-#if !JAVA
             if ( propertyGrid.SelectedGridItem == null ) {
                 return;
             }
@@ -121,10 +94,8 @@ namespace cadencii
             }
 
             pushGridItemExpandStatusCore( root );
-#endif
         }
 
-#if !JAVA
         private void pushGridItemExpandStatusCore( GridItem item )
         {
             if ( item.Expandable ) {
@@ -148,7 +119,6 @@ namespace cadencii
                 pushGridItemExpandStatusCore( child );
             }
         }
-#endif
 
         public void updateValue( int track )
         {
@@ -165,22 +135,14 @@ namespace cadencii
                 objs[i] = item;
             }
 
-#if JAVA
-            propertyGrid.setSelectedObjects( objs );
-#else
             propertyGrid.SelectedObjects = objs;
-#endif
             popGridItemExpandStatus();
             setEditing( false );
         }
 
         public void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
         {
-#if JAVA
-            Object[] selobj = propertyGrid.getSelectedObjects();
-#else
             Object[] selobj = propertyGrid.SelectedObjects;
-#endif
             int len = selobj.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
@@ -188,29 +150,16 @@ namespace cadencii
                 items[i] = proxy.editing;
             }
             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );
-#if JAVA
-            try{
-                commandExecuteRequiredEvent.raise( this, run );
-            }catch( Exception ex ){
-                serr.println( PropertyPanel.class + ".propertyGridPropertyValueChanged; ex=" + ex );
-            }
-#else
             if ( CommandExecuteRequired != null ) {
                 CommandExecuteRequired( this, run );
             }
-#endif
             for ( int i = 0; i < len; i++ ) {
                 AppManager.itemSelection.addEvent( items[i].InternalID );
             }
-#if JAVA
-            propertyGrid.repaint();//.Refresh();
-#else
             propertyGrid.Refresh();
-#endif
             setEditing( false );
         }
 
-#if !JAVA
         /// <summary>
         /// itemが属しているGridItemツリーの基点にある親を探します
         /// </summary>
@@ -224,9 +173,7 @@ namespace cadencii
                 return findRootGridItem( item.Parent );
             }
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// itemが属しているGridItemツリーの中で，itemを特定するための文字列を取得します
         /// </summary>
@@ -248,14 +195,11 @@ namespace cadencii
                 }
             }
         }
-#endif
 
-#if !JAVA
         private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e )
         {
             setEditing( true );
         }
-#endif
 
         public void propertyGrid_Enter( Object sender, EventArgs e )
         {
@@ -279,28 +223,6 @@ namespace cadencii
         {
         }
 
-#if JAVA
-        private BPropertyGrid propertyGrid;
-
-        private void initialize(){
-            if( propertyGrid == null ){
-                propertyGrid = new BPropertyGrid();
-                VsqEvent ve = new VsqEvent();
-                ve.ID = new VsqID();
-                propertyGrid.setSelectedObjects( 
-                    new SelectedEventEntry[]{ new SelectedEventEntry( 0, ve, ve ) } );
-                propertyGrid.setSelectedObjects( new Object[]{} );
-                propertyGrid.setColumnWidth( 154 );
-            }
-            GridBagLayout lm = new GridBagLayout();
-            this.setLayout( lm );
-            GridBagConstraints gc = new GridBagConstraints();
-            gc.fill = GridBagConstraints.BOTH;
-            gc.weightx = 1.0D;
-            gc.weighty = 1.0D;
-            this.add( propertyGrid, gc );
-        }
-#else
         #region UI Impl for C#
         /// <summary> 
         /// 必要なデザイナ変数です。
@@ -355,10 +277,7 @@ namespace cadencii
 
         private System.Windows.Forms.PropertyGrid propertyGrid;
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif
 #endif

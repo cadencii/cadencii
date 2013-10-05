@@ -11,24 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class NoteHeadHandle extends IconParameter implements Cloneable, Serializable
-#else
     [Serializable]
     public class NoteHeadHandle : IconParameter, ICloneable
-#endif
     {
         public int Index;
         public string IconID = "";
@@ -40,17 +29,9 @@ namespace cadencii.vsq
         }
 
         public NoteHeadHandle( string aic_file, string ids, string icon_id, int index )
-#if JAVA
-        {
-#else
             :
-#endif
  base( aic_file )
-#if JAVA
-            ;
-#else
         {
-#endif
             IDS = ids;
             IconID = icon_id;
             Index = index;
@@ -61,14 +42,11 @@ namespace cadencii.vsq
             return getDisplayString();
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -83,7 +61,6 @@ namespace cadencii.vsq
                 setDepth( value );
             }
         }
-#endif
 
         public int getDepth()
         {
@@ -95,7 +72,6 @@ namespace cadencii.vsq
             depth = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -110,7 +86,6 @@ namespace cadencii.vsq
                 setDuration( value );
             }
         }
-#endif
 
         public int getDuration()
         {
@@ -122,7 +97,6 @@ namespace cadencii.vsq
             duration = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -137,7 +111,6 @@ namespace cadencii.vsq
                 setCaption( value );
             }
         }
-#endif
 
         public string getCaption()
         {
@@ -149,7 +122,6 @@ namespace cadencii.vsq
             caption = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -164,7 +136,6 @@ namespace cadencii.vsq
                 setLength( value );
             }
         }
-#endif
 
         public int getLength()
         {
@@ -181,12 +152,10 @@ namespace cadencii.vsq
             return IDS + caption;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public Object clone()
         {
@@ -218,6 +187,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

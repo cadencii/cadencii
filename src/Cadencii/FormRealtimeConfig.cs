@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormRealtimeConfig.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii;
 using cadencii.windows.forms;
@@ -27,28 +18,17 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormRealtimeConfig extends BDialog {
-#else
     public class FormRealtimeConfig : System.Windows.Forms.Form
     {
-#endif
         private bool m_game_ctrl_enabled = false;
         private double m_last_event_processed;
         private System.Windows.Forms.Timer timer;
 
         public FormRealtimeConfig()
         {
-#if JAVA
-            super();
-            initialize();
-            timer = new BTimer();
-#else
             InitializeComponent();
             timer = new System.Windows.Forms.Timer( this.components );
-#endif
             timer.Interval = 10;
             registerEventHandlers();
             setResources();
@@ -65,12 +45,7 @@ namespace cadencii
         #region event handlers
         public void FormRealtimeConfig_Load( Object sender, EventArgs e )
         {
-#if JAVA
-            System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
-            int num_joydev = 0;
-#else
             int num_joydev = winmmhelp.JoyGetNumJoyDev();
-#endif
             m_game_ctrl_enabled = (num_joydev > 0);
             if ( m_game_ctrl_enabled ) {
                 timer.Start();
@@ -79,7 +54,6 @@ namespace cadencii
 
         public void timer_Tick( Object sender, EventArgs e )
         {
-#if !JAVA
             try {
                 double now = PortUtil.getCurrentTime();
                 double dt_ms = (now - m_last_event_processed) * 1000.0;
@@ -150,7 +124,6 @@ namespace cadencii
                 }
             } catch ( Exception ex ) {
             }
-#endif
         }
 
         public void btnStart_Click( Object sender, EventArgs e )
@@ -180,12 +153,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormRealtimeConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormRealtimeConfig.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -325,10 +292,7 @@ namespace cadencii
         private System.Windows.Forms.Label lblSpeed;
         private System.Windows.Forms.NumericUpDown numSpeed;
         #endregion
-#endif
         #endregion
     }
 
-#if !JAVA
 }
-#endif

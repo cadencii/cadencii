@@ -11,14 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 2つのタイムラインを比較するのに必要な機能を実装するためのインターフェース．
@@ -34,6 +29,4 @@ namespace cadencii {
         bool equals( Object obj1, Object obj2 );
     }
 
-#if !JAVA
 }
-#endif

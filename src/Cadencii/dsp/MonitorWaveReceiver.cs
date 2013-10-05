@@ -11,33 +11,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.media.*;
-#else
 using System;
 using cadencii.java.awt;
 using cadencii.java.util;
 using cadencii.media;
 
-
-
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// スピーカへの出力を行う波形受信器
     /// </summary>
-#if JAVA
-    public class MonitorWaveReceiver extends WaveUnit implements WaveReceiver {
-#else
     public class MonitorWaveReceiver : WaveUnit, WaveReceiver
     {
-#endif
         private const int BUFLEN = 1024;
 
         private static MonitorWaveReceiver mSingleton = null;
@@ -122,6 +108,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

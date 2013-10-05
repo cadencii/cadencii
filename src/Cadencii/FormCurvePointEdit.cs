@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormCurvePointEdit.java
-
-import java.util.*;
-import java.awt.event.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -35,14 +23,8 @@ using cadencii.java.util;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class FormCurvePointEdit extends BDialog {
-#else
     public class FormCurvePointEdit : Form
     {
-#endif
         private long m_editing_id = -1;
         private CurveType m_curve;
         private bool m_changed = false;
@@ -50,12 +32,7 @@ namespace cadencii
 
         public FormCurvePointEdit( FormMain main_window, long editing_id, CurveType curve )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             mMainWindow = main_window;
             registerEventHandlers();
             setResources();
@@ -291,10 +268,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormCurvePointEdit.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormCurvePointEdit.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -509,11 +482,8 @@ namespace cadencii
         private System.Windows.Forms.Button btnUndo;
         private System.Windows.Forms.Button btnRedo;
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

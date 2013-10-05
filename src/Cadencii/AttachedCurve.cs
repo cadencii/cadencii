@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
-
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -29,16 +19,10 @@ using cadencii.java.io;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class AttachedCurve implements Cloneable{
-#else
     public class AttachedCurve : ICloneable {
-#endif
         private List<BezierCurves> mCurves = new List<BezierCurves>();
 
-#if !JAVA
         /// <summary>
         /// XML保存用
         /// </summary>
@@ -50,11 +34,7 @@ namespace cadencii
                 setCurves( value );
             }
         }
-#endif
 
-#if JAVA
-        @XmlGenericType( BezierCurves.class )
-#endif
         public List<BezierCurves> getCurves() {
             return mCurves;
         }
@@ -93,13 +73,9 @@ namespace cadencii
             return ret;
         }
 
-#if !JAVA
         public Object Clone() {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -11,22 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.ui.*;
-
-#else
-
 using System;
-
-
 
 namespace cadencii
 {
-
-#endif
 
     /// <summary>
     /// 実行内容を表示するためのラベル付きのプログレスバー
@@ -36,14 +24,12 @@ namespace cadencii
         private ProgressBarWithLabelUi ptrUi = null;
         private Object ptrArgument = null;
 
-#if !JAVA
         ~ProgressBarWithLabel()
         {
 #if __cplusplus
             mman.del( ptrUi );
 #endif
         }
-#endif
 
         public void setWidth( int value )
         {
@@ -118,6 +104,4 @@ namespace cadencii
         }
     };
 
-#if !JAVA
 }
-#endif

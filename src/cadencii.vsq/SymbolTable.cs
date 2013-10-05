@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,16 +22,11 @@ using cadencii.java.util;
         namespace vsq
         {
         
-#endif
 
             /// <summary>
             /// 歌詞から発音記号列を引き当てるための辞書を表現するクラス
             /// </summary>
-#if JAVA
-            public class SymbolTable implements Cloneable
-#else
             public class SymbolTable : ICloneable
-#endif
             {
                 /// <summary>
                 /// 辞書本体
@@ -248,12 +236,10 @@ using cadencii.java.util;
                 /// この辞書のディープ・コピーを取得します
                 /// </summary>
                 /// <returns></returns>
-#if !JAVA
                 public object Clone()
                 {
                     return clone();
                 }
-#endif
 
                 /// <summary>
                 /// この辞書のディープ・コピーを取得します
@@ -388,7 +374,5 @@ using cadencii.java.util;
                 }
             }
 
-#if !JAVA
         }
     }
-#endif

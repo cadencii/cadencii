@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.media.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.util;
@@ -26,14 +19,8 @@ using cadencii.media;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class FileWaveReceiver extends WaveUnit implements WaveReceiver {
-#else
     public class FileWaveReceiver : WaveUnit, WaveReceiver
     {
-#endif
         private const int BUFLEN = 1024;
         private WaveWriter mAdapter = null;
         private double[] mBufferL = new double[BUFLEN];
@@ -55,10 +42,6 @@ namespace cadencii
             try{
                 mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
             }catch( Exception ex ){
-#if JAVA
-                ex.printStackTrace();
-                mAdapter = null;
-#endif
             }
         }
 
@@ -121,6 +104,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

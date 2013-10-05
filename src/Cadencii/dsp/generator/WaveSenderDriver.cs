@@ -11,34 +11,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Threading;
 using cadencii.java.awt;
 using cadencii.java.util;
 
-
-
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// WaveSenderをWaveGeneratorとして使うためのドライバー．
     /// WaveSenderは受動的波形生成器なので，自分では波形を作らない．
     /// </summary>
-#if JAVA
-    public class WaveSenderDriver extends WaveUnit implements WaveGenerator {
-#else
     public class WaveSenderDriver : WaveUnit, WaveGenerator
     {
-#endif
         private const int BUFLEN = 1024;
 
         private WaveSender mWaveSender = null;
@@ -81,14 +67,7 @@ namespace cadencii
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                    }
-#else
                     Thread.Sleep( 100 );
-#endif
                 }
             }
         }*/
@@ -154,6 +133,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

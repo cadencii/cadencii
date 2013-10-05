@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,17 +20,11 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// vsqファイルのメタテキスト内に記述されるイベント。
     /// </summary>
-#if JAVA
-    public class VsqEvent implements Comparable<VsqEvent>, Cloneable, Serializable
-#else
     [Serializable]
     public class VsqEvent : IComparable<VsqEvent>, ICloneable
-#endif
     {
         public string Tag;
         /// <summary>
@@ -149,9 +136,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sw">出力先</param>
         public void write( ITextWriter sw )
-#if JAVA
-            throws IOException
-#endif
         {
             List<string> def = new List<string>( new string[]{ "Length",
                                                                    "Note#",
@@ -165,25 +149,16 @@ namespace cadencii.vsq
         }
 
         public void write( ITextWriter writer, List<string> print_targets )
-#if JAVA
-            throws IOException
-#endif
         {
             writeCor( writer, print_targets );
         }
 
         public void write( BufferedWriter writer, List<string> print_targets )
-#if JAVA
-            throws IOException
-#endif
         {
             writeCor( new WrappedStreamWriter( writer ), print_targets );
         }
 
         private void writeCor( ITextWriter writer, List<string> print_targets )
-#if JAVA
-            throws IOException
-#endif
         {
             writer.writeLine( "[ID#" + PortUtil.formatDecimal( "0000", ID.value ) + "]" );
             writer.writeLine( "Type=" + ID.type );
@@ -231,30 +206,22 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
-#if !JAVA
         public int CompareTo( VsqEvent item )
         {
             return compareTo( item );
         }
-#endif
 
         public int compareTo( VsqEvent item )
         {
             int ret = this.Clock - item.Clock;
             if ( ret == 0 ) {
                 if ( this.ID != null && item.ID != null ) {
-#if JAVA
-                    return this.ID.type.ordinal() - item.ID.type.ordinal();
-#else
                     return (int)this.ID.type - (int)item.ID.type;
-#endif
                 } else {
                     return ret;
                 }
@@ -272,14 +239,9 @@ namespace cadencii.vsq
             }
         }
 
-#if JAVA
-        public VsqEvent(){
-            this( 0, new VsqID() );
-#else
         public VsqEvent()
             : this( 0, new VsqID() )
         {
-#endif
         }
 
         public VsqEvent( int clock, VsqID id /*, int internal_id*/ )
@@ -291,6 +253,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

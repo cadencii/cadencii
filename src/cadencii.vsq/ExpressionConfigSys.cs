@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#elif __cplusplus
-namespace org { namespace kbinani { namespace vsq {
-#else
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -28,8 +19,6 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-
-#endif
 
     /// <summary>
     /// VOCALOID1またはVOCALOID2の、表情ライブラリの設定値を表します。
@@ -1211,9 +1200,4 @@ namespace cadencii.vsq
 
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * Util.cs
  * Copyright © 2007-2011 kbinani
@@ -221,4 +220,3 @@ namespace cadencii.media {
     }
 
 }
-#endif

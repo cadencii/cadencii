@@ -11,27 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// 音階を表現するためのクラス
     /// </summary>
-#if JAVA
-    public class VsqNote implements Serializable
-#else
     [Serializable]
     public class VsqNote
-#endif
     {
         /// <summary>
         /// このインスタンスが表す音階のノート値
@@ -300,12 +289,10 @@ namespace cadencii.vsq
             }
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
         public string toString()
         {
@@ -313,6 +300,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

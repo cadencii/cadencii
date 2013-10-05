@@ -11,26 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class UstVibrato implements Cloneable, Serializable
-#else
     [Serializable]
     public class UstVibrato : ICloneable
-#endif
     {
         /// <summary>
         /// 音符の長さに対する、パーセントで表したビブラートの長さ。
@@ -95,12 +83,10 @@ namespace cadencii.vsq
             Length = value;
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
         public string toString()
         {
@@ -121,14 +107,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

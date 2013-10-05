@@ -11,15 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
     public struct VsqBarLineType
     {
@@ -54,11 +49,6 @@ namespace cadencii.vsq
             return m_is_separator;
         }
 
-#if JAVA
-        public VsqBarLineType(){
-        }
-#endif
-
         public VsqBarLineType( int clock, bool is_separator, int denominator, int numerator, int bar_count )
         {
             m_clock = clock;
@@ -69,6 +59,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,16 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.windows.forms;
-
-import javax.swing.*;
-#else
 using System;
 
 namespace cadencii.windows.forms {
-
-#endif
 
     public static class Utility {
         public const int MSGBOX_DEFAULT_OPTION = -1;
@@ -122,20 +115,6 @@ namespace cadencii.windows.forms {
 
         public static System.Windows.Forms.DialogResult showMessageBox( string text, string caption, int optionType, int messageType ) {
             System.Windows.Forms.DialogResult ret = System.Windows.Forms.DialogResult.Cancel;
-#if JAVA
-            int r = JOptionPane.showConfirmDialog( null, text, caption, optionType, messageType );
-            if ( r == JOptionPane.YES_OPTION ){
-                ret = BDialogResult.YES;
-            } else if ( r == JOptionPane.NO_OPTION ){
-                ret = BDialogResult.NO;
-            } else if ( r == JOptionPane.CANCEL_OPTION ){
-                ret = BDialogResult.CANCEL;
-            } else if ( r == JOptionPane.OK_OPTION ){
-                ret = BDialogResult.OK;
-            } else if ( r == JOptionPane.CLOSED_OPTION ){
-                ret = BDialogResult.CANCEL;
-            }
-#else
             System.Windows.Forms.MessageBoxButtons btn = System.Windows.Forms.MessageBoxButtons.OK;
             if ( optionType == MSGBOX_YES_NO_CANCEL_OPTION ) {
                 btn = System.Windows.Forms.MessageBoxButtons.YesNoCancel;
@@ -170,12 +149,9 @@ namespace cadencii.windows.forms {
             } else if ( dr == System.Windows.Forms.DialogResult.No ) {
                 ret = System.Windows.Forms.DialogResult.No;
             }
-#endif
             return ret;
         }
 
     }
 
-#if !JAVA
 }
-#endif

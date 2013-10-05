@@ -11,27 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#elif __cplusplus
-
-namespace org{
-namespace kbinani{
-namespace cadencii{
-
-#else
-
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class WorkerStateImp implements WorkerState
-#else
     public class WorkerStateImp : WorkerState
-#endif
     {
         private bool mCancelRequested;
 
@@ -69,9 +52,4 @@ namespace cadencii
         }
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

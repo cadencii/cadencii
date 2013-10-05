@@ -11,15 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// UstFileクラスのwriteメソッドで出力する際の詳細オプションを表します
@@ -64,6 +59,4 @@ namespace cadencii.vsq
         public bool settingTool2;
     }
 
-#if !JAVA
 }
-#endif

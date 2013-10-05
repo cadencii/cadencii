@@ -22,11 +22,7 @@ using cadencii.vsq;
 namespace cadencii
 {
 
-#if JAVA
-    public class AquesToneWaveGeneratorBase implements WaveGenerator
-#else
     public abstract class AquesToneWaveGeneratorBase : WaveUnit, WaveGenerator
-#endif
     {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;

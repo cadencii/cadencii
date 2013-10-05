@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * VFW.cs
  * Copyright © 2007-2011 kbinani
@@ -383,4 +382,3 @@ namespace cadencii.media {
         public Int32 bfOffBits;
     }
 }
-#endif

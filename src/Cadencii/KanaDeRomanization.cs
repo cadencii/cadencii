@@ -11,18 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
 
 
 namespace cadencii {
-#endif
 
     public class KanaDeRomanization {
         const int _MAX_MATCH = 4;
@@ -760,6 +754,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

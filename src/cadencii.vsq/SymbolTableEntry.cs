@@ -11,27 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// SymbolTableの要素を表すクラス。
     /// </summary>
-#if JAVA
-    public class SymbolTableEntry implements Cloneable {
-#else
     public class SymbolTableEntry : ICloneable
     {
-#endif
         /// <summary>
         /// 単語（英語の場合、分節位置にハイフンが入る）
         /// </summary>
@@ -80,7 +69,6 @@ namespace cadencii.vsq
             return m_raw_symbol;
         }
 
-#if !JAVA
         /// <summary>
         /// 発音記号列を取得します．発音記号列は空白' 'またはタブ'\t'で区切られています．
         /// タブによる区切りは英単語の分節の分割位置を表し，
@@ -95,15 +83,12 @@ namespace cadencii.vsq
                 return getSymbol();
             }
         }
-#endif
 
         /// <summary>
         /// このオブジェクトのSymbolフィールドのタブ文字を空白に置き換えた文字列を取得します．
         /// </summary>
         /// <returns></returns>
-#if !JAVA
         [Obsolete]
-#endif
         public string getParsedSymbol()
         {
             return getSymbol();
@@ -122,14 +107,10 @@ namespace cadencii.vsq
         /// このオブジェクトのディープ・コピーを取得します
         /// </summary>
         /// <returns></returns>
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

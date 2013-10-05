@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-
-#else
-
 using System.Collections.Generic;
 
     namespace cadencii{
@@ -30,8 +20,6 @@ using System.Collections.Generic;
             using System;
             using cadencii.java.util;
             using cadencii.vsq;
-#endif
-
 #endif
 
             /// <summary>
@@ -628,16 +616,10 @@ using System.Collections.Generic;
                 {
                     try
                     {
-#if JAVA
-                        selectedEventChangedEvent.raise( typeof( ItemSelectionModel ), ret );
-#elif QT_VERSION
-                        selectedEventChanged( this, ret );
-#else
                         if ( SelectedEventChanged != null )
                         {
                             SelectedEventChanged.Invoke( typeof( ItemSelectionModel ), ret );
                         }
-#endif
                     }
                     catch ( Exception ex )
                     {
@@ -648,6 +630,4 @@ using System.Collections.Generic;
 
             }
 
-#if !JAVA
     }
-#endif

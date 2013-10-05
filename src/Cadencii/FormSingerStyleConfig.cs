@@ -11,17 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormSingerStyleConfig.java
-
-import java.awt.*;
-import java.awt.event.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -33,24 +22,14 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormSingerStyleConfig extends BDialog {
-#else
     class FormSingerStyleConfig : Form
     {
-#endif
         bool m_apply_current_track = false;
 
         public FormSingerStyleConfig()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
 
             comboTemplate.Items.Clear();
             string[] strs = new string[]{
@@ -97,9 +76,7 @@ namespace cadencii
             btnApply.Text = _( "Apply to current track" );
             btnApply.Mnemonic(Keys.C);
 
-#if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;
-#endif
             this.Text = _( "Default Singer Style" );
         }
 
@@ -356,12 +333,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormSingerStyleConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormSingerStyleConfig.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -759,11 +730,8 @@ namespace cadencii
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.ComboBox comboTemplate;
         #endregion
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

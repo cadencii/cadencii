@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormGenerateKeySound.java
-
-import java.util.*;
-import cadencii.componentmodel.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-import cadencii.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.IO;
@@ -34,17 +22,9 @@ using cadencii.windows.forms;
 
 namespace cadencii {
 
-#endif
-
-#if JAVA
-    public class FormGenerateKeySound extends BDialog
-#else
     public class FormGenerateKeySound : Form
-#endif
     {
-#if !JAVA
         private delegate void updateTitleDelegate( string title );
-#endif
 
         public class PrepareStartArgument {
             public string singer = "Miku";
@@ -67,16 +47,10 @@ namespace cadencii {
         private bool m_close_when_finished = false;
 
         public FormGenerateKeySound( bool close_when_finished ) {
-#if JAVA
-            super();
-            initialize();
-            bgWork = new BBackgroundWorker();
-#else
             InitializeComponent();
             bgWork = new System.ComponentModel.BackgroundWorker();
             bgWork.WorkerReportsProgress = true;
             bgWork.WorkerSupportsCancellation = true;
-#endif
             folderBrowser = new FolderBrowserDialog();
             
             m_close_when_finished = close_when_finished;
@@ -174,16 +148,7 @@ namespace cadencii {
             if ( bgWork.IsBusy ) {
                 m_cancel_required = true;
                 while ( m_cancel_required ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 0 );
-                    } catch ( InterruptedException ex ) {
-                        Logger.write( FormGenerateKeySound.class + ".btnCancel_Click; ex=" + ex + "\n" );
-                        break;
-                    }
-#else
                     Application.DoEvents();
-#endif
                 }
             } else {
                 this.Close();
@@ -248,11 +213,7 @@ namespace cadencii {
 
         private void bgWork_ProgressChanged( Object sender, ProgressChangedEventArgs e ) {
             string title = "Progress: " + e.ProgressPercentage + "%";
-#if JAVA
-            updateTitle( title );
-#else
             this.Invoke( new updateTitleDelegate( this.updateTitle ), new Object[] { title } );
-#endif
         }
 
         public void Program_FormClosed( Object sender, FormClosedEventArgs e ) {
@@ -367,10 +328,6 @@ namespace cadencii {
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormGenerateKeySound.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormGenerateKeySound.java
-#else
         private void InitializeComponent() {
             this.btnExecute = new Button();
             this.btnCancel = new Button();
@@ -510,11 +467,8 @@ namespace cadencii {
         private System.Windows.Forms.Button btnBrowse;
         private Label lblDir;
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

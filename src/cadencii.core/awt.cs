@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * awt.cs
  * Copyright © 2009-2011 kbinani
@@ -427,11 +426,9 @@ namespace cadencii.java.awt {
             height = r.height;
         }
 
-#if !JAVA
         public override string ToString() {
             return "{x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "}";
         }
-#endif
     }
 
     [Serializable]
@@ -654,4 +651,3 @@ namespace cadencii.java.awt.geom
         }
     }
 }
-#endif

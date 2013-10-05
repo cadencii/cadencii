@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,14 +20,8 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class SingerConfig implements Cloneable {
-#else
     public class SingerConfig : ICloneable
     {
-#endif
         public string ID = "";
         public string FORMAT = "";
         /// <summary>
@@ -107,12 +94,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public static SingerConfig fromVvd( string file, int language, int program )
         {
@@ -267,12 +252,10 @@ namespace cadencii.vsq
             return ret.ToArray();
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
         public string toString()
         {
@@ -287,6 +270,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

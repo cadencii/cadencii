@@ -1,5 +1,3 @@
-#if !__FormAskKeySoundGenerationUiListener__
-#define __FormAskKeySoundGenerationUiListener__
 /*
  * FormAskKeySoundGenerationUiListener.cs
  * Copyright © 2011 kbinani
@@ -13,11 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
 
     namespace cadencii
     {
@@ -27,8 +20,6 @@ package cadencii;
             using cadencii.windows.forms;
             using cadencii.apputil;
 #endif // CSHARP
-
-#endif
 
 #if __cplusplus
             class FormAskKeySoundGenerationUiListener
@@ -46,12 +37,5 @@ package cadencii;
                 void buttonOkClickedSlot();
             };
 
-#if JAVA
-
-#else
 
     }
-
-#endif
-
-#endif

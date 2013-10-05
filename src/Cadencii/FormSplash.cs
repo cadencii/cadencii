@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * FormSplash.cs
  * Copyright © 2010-2011 kbinani
@@ -12,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import javax.imageio.*;
-import cadencii.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.java.awt;
@@ -29,26 +20,18 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// 起動時に表示されるスプラッシュウィンドウ
     /// </summary>
-#if JAVA
-    public class FormSplash extends BDialog {
-#else
     public class FormSplash : Form
     {
-#endif
-
-#if !JAVA
         /// <summary>
         /// addIconメソッドを呼び出すときに使うデリゲート
         /// </summary>
         /// <param name="path_image"></param>
         /// <param name="singer_name"></param>
         private delegate void AddIconThreadSafeDelegate( string path_image, string singer_name );
-#endif
 
         bool mouseDowned = false;
         private FlowLayoutPanel panelIcon;
@@ -61,12 +44,7 @@ namespace cadencii
         /// </summary>
         public FormSplash()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
         }
@@ -98,12 +76,8 @@ namespace cadencii
             p.MouseDown += new MouseEventHandler( handleMouseDown );
             p.MouseUp += new MouseEventHandler( handleMouseUp );
             p.MouseMove += new MouseEventHandler( handleMouseMove );
-#if JAVA
-            panelIcon.add( p );
-#else
             panelIcon.BringToFront();
             panelIcon.Controls.Add( p );
-#endif
         }
 
         #endregion
@@ -111,23 +85,17 @@ namespace cadencii
         #region helper methods
         private void setResources()
         {
-#if !JAVA
             this.BackgroundImage = Properties.Resources.splash;
-#endif
         }
 
         private void registerEventHandlers()
         {
-#if JAVA
-            sout.println( "//TODO: fixme: FormSplash#registerEventHandlers" );
-#else
             this.MouseDown += new System.Windows.Forms.MouseEventHandler( handleMouseDown );
             this.MouseUp += new System.Windows.Forms.MouseEventHandler( handleMouseUp );
             this.MouseMove += new System.Windows.Forms.MouseEventHandler( handleMouseMove );
             panelIcon.MouseDown += new MouseEventHandler( handleMouseDown );
             panelIcon.MouseUp += new MouseEventHandler( handleMouseUp );
             panelIcon.MouseMove += new MouseEventHandler( handleMouseMove );
-#endif
         }
         #endregion
 
@@ -170,11 +138,6 @@ namespace cadencii
         #endregion
 
         #region ui implementation
-#if JAVA
-        private void initialize(){
-            setSize( 500, 335 );
-        }
-#else
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -207,12 +170,8 @@ namespace cadencii
             this.ResumeLayout( false );
 
         }
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif
-#endif

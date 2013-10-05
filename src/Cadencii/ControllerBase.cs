@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.apputil.*;
-
-#else
 
     namespace cadencii
     {
@@ -26,7 +19,6 @@ import cadencii.apputil.*;
             using cadencii.apputil;
 #endif // CSHARP
 
-#endif
 
             /// <summary>
             /// コントローラーの基底となる抽象クラス．
@@ -50,7 +42,4 @@ import cadencii.apputil.*;
 
             };
 
-#if JAVA
-#else
     }
-#endif

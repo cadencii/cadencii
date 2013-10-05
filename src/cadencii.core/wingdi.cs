@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * wingdi.cs
  * Copyright © 2008-2011 kbinani
@@ -165,4 +164,3 @@ namespace cadencii {
     }
 
 }
-#endif

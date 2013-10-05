@@ -1,4 +1,3 @@
-#if !JAVA
 #define VST_2_4_EXTENSIONS
 
 using System;
@@ -1002,4 +1001,3 @@ namespace VstSdk {
     #endregion
 
 }
-#endif

@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
@@ -29,18 +19,10 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class BezierChain implements Cloneable, Serializable
-#else
     [Serializable]
     public class BezierChain : IDisposable, ICloneable
-#endif
     {
-#if JAVA
-        @XmlGenericType( BezierPoint.class )
-#endif
         public List<BezierPoint> points;
         public double Default;
         public int id;
@@ -133,9 +115,6 @@ namespace cadencii
         }
 
         public BezierChain extractPartialBezier( double t_start, double t_end )
-#if JAVA
-            throws Exception
-#endif
         {
             if ( this.size() <= 1 ) {
                 throw new Exception( "chain must has two or more bezier points" );
@@ -337,14 +316,12 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         [OnDeserialized]
         private void onDeserialized( StreamingContext sc ) {
             for ( int i = 0; i < points.Count; i++ ) {
                 points[ i ].setID( i );
             }
         }
-#endif
 
         public void Dispose() {
             if ( points != null ) {
@@ -393,11 +370,9 @@ namespace cadencii
             return result;
         }
 
-#if !JAVA
         public Object Clone() {
             return clone();
         }
-#endif
 
         public BezierChain( Color curve ) {
             points = new List<BezierPoint>();
@@ -408,17 +383,6 @@ namespace cadencii
             points = new List<BezierPoint>();
             mColor = Color.black;
         }
-
-#if !JAVA
-        /*public Color Color {
-            get {
-                return getColor();
-            }
-            set {
-                setColor( value );
-            }
-        }*/
-#endif
 
         public Color getColor() {
             return mColor;
@@ -517,6 +481,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

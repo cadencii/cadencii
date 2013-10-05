@@ -11,21 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.io.*;
-import cadencii.*;
-import cadencii.vsq.*;
-#else
 using System;
 using cadencii;
 using cadencii.vsq;
 
 namespace cadencii
 {
-
-#endif
 
     enum CurveTypeImpl
     {
@@ -64,12 +55,8 @@ namespace cadencii
     /// <summary>
     /// vsqファイルで編集可能なカーブ・プロパティの種類
     /// </summary>
-#if JAVA
-    public class CurveType implements Serializable, Comparable<CurveType>
-#else
     [Serializable]
     public struct CurveType : IEquatable<CurveType>, IComparable<CurveType>
-#endif
     {
         private string mName;
         private bool mIsScalar;
@@ -274,11 +261,7 @@ namespace cadencii
         {
             if ( mIndex < 0 ) {
                 if ( item.mIndex < 0 ) {
-#if JAVA
-                    return mType.compareTo( item.mType );
-#else
                     return mType.CompareTo( item.mType );
-#endif
                 } else {
                     return 1;
                 }
@@ -291,19 +274,15 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public int CompareTo( CurveType item )
         {
             return compareTo( item );
         }
-#endif
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
         public string toString()
         {
@@ -350,14 +329,10 @@ namespace cadencii
             return (mType == other.mType) && (mIsScalar == other.mIsScalar);
         }
 
-#if !JAVA
         public bool Equals( CurveType obj )
         {
             return this.equals( obj );
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

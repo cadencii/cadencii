@@ -11,11 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
 
     namespace cadencii
     {
@@ -26,18 +21,11 @@ package cadencii;
 #else
             using System;
 #endif
-#endif
 
             /// <summary>
             /// FormAskKeySoundGenerationフォームのビューが実装すべきメソッドを規定します．
             /// </summary>
-#if JAVA
-            public interface FormAskKeySoundGenerationUi extends UiBase
-#elif __cplusplus
-            class FormAskKeySoundGenerationUi : UiBase
-#else
             public interface FormAskKeySoundGenerationUi : UiBase
-#endif
             {
                 [PureVirtualFunction]
                 void setAlwaysPerformThisCheck( bool value );
@@ -81,7 +69,5 @@ package cadencii;
                 void setNoButtonText( string value );
             };
 
-#if !JAVA
 
     }
-#endif

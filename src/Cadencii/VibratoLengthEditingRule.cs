@@ -11,14 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 音符長さが変更されるとき、ビブラート長さがどのように影響を受けるかを決定する列挙子
@@ -38,6 +33,4 @@ namespace cadencii {
         PERCENTAGE,
     }
 
-#if !JAVA
 }
-#endif

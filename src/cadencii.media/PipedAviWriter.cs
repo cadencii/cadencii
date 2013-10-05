@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * PipedAviWriter.cs
  * Copyright © 2008-2011 kbinani
@@ -249,5 +248,4 @@ namespace cadencii.media {
     }
 
 }
-#endif
 #endif

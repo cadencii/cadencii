@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
 
     /// <summary>
     /// VsqFileExクラスのための編集コマンドの種類を表す列挙型
@@ -67,6 +63,4 @@ namespace cadencii {
         CHANGE_SEQUENCE_CONFIG,
     }
 
-#if !JAVA
 }
-#endif

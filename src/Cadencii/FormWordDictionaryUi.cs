@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
     namespace cadencii
     {
 #if __cplusplus
@@ -24,15 +18,7 @@ package cadencii;
             using namespace org::kbinani::cadencii;
 #endif
 
-#endif
-
-#if JAVA
-            public interface FormWordDictionaryUi extends UiBase
-#elif __cplusplus
-            class FormWordDictionaryUi : UiBase
-#else
             public interface FormWordDictionaryUi : UiBase
-#endif
             {
 #if __cplusplus
     public:
@@ -198,6 +184,4 @@ package cadencii;
                 void buttonDownSetText( string value );
             };
 
-#if !JAVA
     }
-#endif

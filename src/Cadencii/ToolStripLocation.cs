@@ -11,19 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import cadencii.*;
-import cadencii.xml.*;
-#else
 using cadencii;
 using cadencii.java.awt;
 using cadencii.xml;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// toolStrip*の位置を保存します
@@ -48,6 +40,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,20 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
 namespace cadencii {
-#endif
 
-#if JAVA
-    public class math {
-#else
     public partial class math {
-#endif
         private const double _PI2 = 2.0 * Math.PI;
         private const double _PI4 = 4.0 * Math.PI;
         private const double _PI6 = 6.0 * Math.PI;
@@ -74,9 +65,6 @@ namespace cadencii {
         }
 
         public static double window_func( WindowFunctionType type, double x )
-#if JAVA
-            throws Exception
-#endif
         {
             if ( type == WindowFunctionType.Akaike ) {
                 return wnd_akaike( x );
@@ -110,11 +98,7 @@ namespace cadencii {
             return 0.0;
         }
 
-#if JAVA
-        public static double window_func( WindowFunctionType type, double x, double... param ) 
-#else
         public static double window_func( WindowFunctionType type, double x, params double[] param ) 
-#endif
         {
 
             if ( type == WindowFunctionType.Akaike ) {
@@ -359,6 +343,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

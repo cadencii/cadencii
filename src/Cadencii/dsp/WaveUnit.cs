@@ -11,20 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import cadencii.*;
-#else
 using System;
 using cadencii.java.awt;
 
-
-
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// インターフェースWaveReceiver, WaveSender, WaveGeneratorを持つクラスの基底クラス．
@@ -145,11 +136,7 @@ namespace cadencii
             paintBackground( graphics, mStroke, x, y, width, height, Color.black, PortUtil.Pink );
 
             // デバイス名を書く
-#if JAVA
-            String typename = this.getClass().getSimpleName();
-#else
             string typename = this.GetType().Name;
-#endif
             PortUtil.drawStringEx(
                 (Graphics)graphics, typename, mFont,
                 new Rectangle( x, y, width, height ),
@@ -173,6 +160,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

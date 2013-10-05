@@ -11,27 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 using System.Threading;
 
 namespace cadencii
 {
 
-#endif
-
-
     /// <summary>
     /// 無音の波形を送信するWaveGenerator
     /// </summary>
-#if JAVA
-    public class EmptyWaveGenerator extends WaveUnit implements WaveGenerator
-#else
     public class EmptyWaveGenerator : WaveUnit, WaveGenerator
-#endif
     {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
@@ -118,19 +107,10 @@ namespace cadencii
             if ( mRunning ) {
                 mAbortRequested = true;
                 while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                    }
-#else
                     Thread.Sleep( 100 );
-#endif
                 }
             }
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormTempoConfig.java
-
-import java.awt.event.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -30,22 +20,12 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormTempoConfig extends BDialog {
-#else
     class FormTempoConfig : System.Windows.Forms.Form
     {
-#endif
         public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -125,10 +105,6 @@ namespace cadencii
         #endregion
 
         #region ui implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormTempoConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormTempoConfig.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -345,11 +321,8 @@ namespace cadencii
         private NumericUpDownEx numBeat;
         private System.Windows.Forms.Label lblTempoRange;
         private NumericUpDownEx numTempo;
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

@@ -11,9 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-//INCLUDE ./LyricTextBox.java
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
@@ -81,4 +78,3 @@ namespace cadencii {
     }
 
 }
-#endif

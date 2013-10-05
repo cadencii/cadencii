@@ -11,19 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
 namespace cadencii {
-#endif
 
     public class FormMidiImExportConfig {
         public bool LastPremeasureCheckStatus = true;
         public bool LastMetatextCheckStatus = true;
     }
 
-#if !JAVA
 }
-#endif

@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -27,9 +20,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-
-#endif
-
     public class SingerConfigSys
     {
         public const int MAX_SINGERS = 0x4000;
@@ -173,6 +163,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

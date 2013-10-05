@@ -11,9 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-//INCLUDE ./XmlSerializer.java
-#else
 using System;
 using System.IO;
 using cadencii.xml;
@@ -64,4 +61,3 @@ namespace cadencii.xml {
     }
 
 }
-#endif

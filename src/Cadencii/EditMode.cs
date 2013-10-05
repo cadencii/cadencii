@@ -11,13 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// ピアノロール画面の編集モード
@@ -85,6 +81,4 @@ namespace cadencii {
         STEP_SEQUENCER,
     }
 
-#if !JAVA
 }
-#endif

@@ -11,20 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// AtatchedCurveをXMLシリアライズするためのクラス
@@ -59,105 +50,30 @@ namespace cadencii {
             CurveType.PIT,
             CurveType.PBS, };
 
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Dynamics;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Brethiness;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Brightness;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Clearness;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Opening;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> GenderFactor;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> PortamentoTiming;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> VibratoRate;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> VibratoDepth;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Harmonics;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> FX2Depth;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso1Freq;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso1BW;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso1Amp;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso2Freq;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso2BW;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso2Amp;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso3Freq;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso3BW;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso3Amp;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso4Freq;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso4BW;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> Reso4Amp;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> PitchBend;
-#if JAVA
-        @XmlGenericType( BezierChain.class )
-#endif
         public List<BezierChain> PitchBendSensitivity;
 
         public BezierCurves()
@@ -610,12 +526,10 @@ namespace cadencii {
             return ret;
         }
 
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
 
         public int getNextId( CurveType curve_type )
         {
@@ -748,6 +662,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

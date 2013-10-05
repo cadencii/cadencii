@@ -13,12 +13,6 @@
  */
 #define USE_PLAYSOUND_DLL
 
-#if JAVA
-package cadencii.media;
-
-import javax.sound.sampled.*;
-import cadencii.*;
-#else
 using System;
 using System.Runtime.InteropServices;
 using cadencii;
@@ -27,16 +21,8 @@ namespace cadencii.media {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
-#endif
 
     public class PlaySound {
-#if JAVA
-        private static final int UNIT_BUFFER = 512;
-        private static SourceDataLine m_line;
-        private static AudioFormat m_format;
-        private static DataLine.Info m_info;
-        private static byte[] m_buffer;
-#else
 #if USE_PLAYSOUND_DLL
         [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundInit();
@@ -98,107 +84,55 @@ namespace cadencii.media {
             impl.PlaySound.SoundUnprepare();
         }
 #endif
-#endif
 
         private static bool _is_initialized = false;
 
         public static void setResolution( int value ) {
-#if JAVA
-            //TODO: fixme PlaySound#setResolution
-#else
             try {
                 SoundSetResolution( value );
             } catch ( Exception ex ) {
                 serr.println( "PlaySound#setResolution; ex=" + ex );
             }
-#endif
         }
 
         public static void init() {
             if ( _is_initialized ) {
                 return;
             }
-#if JAVA
-            m_buffer = new byte[UNIT_BUFFER * 4];
-            _is_initialized = true;
-#else
             try {
                 SoundInit();
                 _is_initialized = true;
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#init; ex=" + ex );
             }
-#endif
         }
 
         public static void kill() {
-#if JAVA
-            //TODO: fixme PlaySound#kill
-#else
             try {
                 SoundKill();
             } catch( Exception ex ){
                 sout.println( "PlaySound#kill; ex=" + ex );
             }
-#endif
         }
 
         public static double getPosition() {
-#if JAVA
-            if( m_line == null ){
-                return 0.0;
-            }else{
-                return m_line.getMicrosecondPosition() * 1e-6;
-            }
-#else
             try {
                 return SoundGetPosition();
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#getPosition; ex=" + ex );
                 return 0.0;
             }
-#endif
         }
 
         public static void waitForExit() {
-#if JAVA
-            if( m_line == null ){
-                return;
-            }
-            m_line.drain();
-#else
             try {
                 SoundWaitForExit();
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#waitForExit; ex=" + ex );
             }
-#endif
         }
 
         public static void append( double[] left, double[] right, int length ) {
-#if JAVA
-            if( m_line == null ){
-                return;
-            }
-            int remain = left.length;
-            int off = 0;
-            while( remain > 0 ){
-                int thislen = remain > UNIT_BUFFER ? UNIT_BUFFER : remain;
-                int c = 0;
-                for( int i = 0; i < thislen; i++ ){
-                    short l = (short)(left[i + off] * 32767.0);
-                    m_buffer[c] = (byte)(0xff & l);
-                    m_buffer[c + 1] = (byte)(0xff & (l >>> 8));
-                    short r = (short)(right[i + off] * 32767.0);
-                    m_buffer[c + 2] = (byte)(0xff & r);
-                    m_buffer[c + 3] = (byte)(0xff & (r >>> 8));
-                    c += 4;
-                }
-                m_line.write( m_buffer, 0, thislen * 4 );
-                off += thislen;
-                remain -= thislen;
-            }
-#else
             try {
                 IntPtr l = Marshal.UnsafeAddrOfPinnedArrayElement( left, 0 );
                 IntPtr r = Marshal.UnsafeAddrOfPinnedArrayElement( right, 0 );
@@ -206,7 +140,6 @@ namespace cadencii.media {
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#append; ex=" + ex );
             }
-#endif
         }
 
         /// <summary>
@@ -214,17 +147,6 @@ namespace cadencii.media {
         /// </summary>
         /// <param name="sample_rate"></param>
         public static void prepare( int sample_rate ) {
-#if JAVA
-            m_format = new AudioFormat( sample_rate, 16, 2, true, false );
-            m_info = new DataLine.Info( SourceDataLine.class, m_format );
-            try{
-                m_line = (SourceDataLine)AudioSystem.getLine( m_info );
-                m_line.open( m_format );
-                m_line.start();
-            }catch( Exception ex ){
-                m_line = null;
-            }
-#else
             try {
                 int ret = SoundPrepare( sample_rate );
 #if DEBUG
@@ -233,48 +155,28 @@ namespace cadencii.media {
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#prepare; ex=" + ex );
             }
-#endif
         }
 
         /// <summary>
         /// 再生をとめる。
         /// </summary>
         public static void exit() {
-#if JAVA
-            m_line.stop();
-            m_line.close();
-            m_info = new DataLine.Info( SourceDataLine.class, m_format );
-            try{
-                m_line = (SourceDataLine)AudioSystem.getLine( m_info );
-                m_line.open( m_format );
-                m_line.start();
-            }catch( Exception ex ){
-                serr.println( "PlaySound#reset; ex=" + ex );
-                m_line = null;
-            }
-#else
             try {
                 SoundExit();
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#exit; ex=" + ex );
             }
-#endif
         }
 
         public static void unprepare() {
-#if JAVA
-            //TODO: fixme PlaySound#unprepare
-#else
             try {
                 SoundUnprepare();
             } catch ( Exception ex ) {
                 sout.println( "PlaySound#unprepare; ex=" + ex );
             }
-#endif
         }
     }
 
-#if !JAVA
 }
 
 namespace cadencii.media.impl {
@@ -560,4 +462,3 @@ namespace cadencii.media.impl {
 
     }
 }
-#endif

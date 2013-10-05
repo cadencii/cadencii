@@ -239,14 +239,5 @@ namespace cadencii
         #endregion
     }
 
-#if JAVA
-
-#elif __cplusplus
-
-} } }
-
-#else
 
 }
-
-#endif

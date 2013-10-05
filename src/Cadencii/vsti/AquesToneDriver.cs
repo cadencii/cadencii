@@ -12,14 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using System.Text;
 using System.Linq;
@@ -32,14 +24,9 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class AquesToneDriver {
-#else
     public class AquesToneDriver : AquesToneDriverBase
     {
-#endif
         private static readonly string[] PHONES = new string[] { 
             "ア", "イ", "ウ", "エ", "オ",
             "カ", "キ", "ク", "ケ", "コ",
@@ -187,7 +174,5 @@ namespace cadencii
 #endif
     }
 
-#if !JAVA
 }
-#endif
 #endif

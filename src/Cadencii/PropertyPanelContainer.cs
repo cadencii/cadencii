@@ -12,16 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/PropertyPanelContainer.java
-import javax.swing.*;
-import java.awt.*;
-import cadencii.*;
-import cadencii.windows.forms.*;
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.java.awt;
@@ -29,57 +19,39 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class PropertyPanelContainer extends BPanel
-#else
     public class PropertyPanelContainer : UserControl
-#endif
     {
         public const int _TITLE_HEIGHT = 29;
         public event StateChangeRequiredEventHandler StateChangeRequired;
 
         public PropertyPanelContainer()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
         }
 
-#if !JAVA
         public void addComponent( Control c )
         {
             panelMain.Controls.Add( c );
             c.Dock = DockStyle.Fill;
         }
-#endif
 
-#if !JAVA
         public void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e )
         {
             handleRestoreWindow();
         }
-#endif
 
-#if !JAVA
         public void btnClose_Click( Object sender, EventArgs e )
         {
             handleClose();
         }
-#endif
 
-#if !JAVA
         public void btnWindow_Click( Object sender, EventArgs e )
         {
             handleRestoreWindow();
         }
-#endif
 
         private void handleClose()
         {
@@ -93,20 +65,11 @@ namespace cadencii
 
         private void invokeStateChangeRequiredEvent( PanelState state )
         {
-#if JAVA
-            try{
-                stateChangeRequiredEvent.raise( this, state );
-            }catch( Exception ex ){
-                serr.println( "PropertyPanelContainer#invokeStateChangeRequiredEvent; ex=" + ex );
-            }
-#else
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, state );
             }
-#endif
         }
 
-#if !JAVA
         /// <summary>
         /// javaは自動レイアウトなのでいらない
         /// </summary>
@@ -122,7 +85,6 @@ namespace cadencii
             panelMain.Width = this.Width;
             panelMain.Height = this.Height - _TITLE_HEIGHT;
         }
-#endif
 
         private void registerEventHandlers()
         {
@@ -134,18 +96,10 @@ namespace cadencii
 
         private void setResources()
         {
-#if !JAVA
             this.btnClose.Image = Properties.Resources.cross_small;
             this.btnWindow.Image = Properties.Resources.chevron_small_collapse;
-#endif
         }
 
-#if JAVA
-        #region ui impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/PropertyPanelContainer.java
-        //INCLUDE-SECTION METHOD ./ui/java/PropertyPanelContainer.java
-        #endregion
-#else
         #region ui impl for C#
         /// <summary> 
         /// 必要なデザイナ変数です。
@@ -239,10 +193,7 @@ namespace cadencii
         private Button btnWindow;
         private System.Windows.Forms.Panel panelTitle;
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif
 #endif

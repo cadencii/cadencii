@@ -11,29 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// UTAUスクリプト形式で使用されるエンベロープのデータ点を表現します
     /// </summary>
-#if JAVA
-    public class UstEnvelope implements Cloneable, Serializable
-#else
     [Serializable]
     public class UstEnvelope : ICloneable
-#endif
     {
         public int p1 = 0;
         public int p2 = 5;
@@ -96,7 +84,6 @@ namespace cadencii.vsq
             return new UstEnvelope( toString() );
         }
 
-#if !JAVA
         /// <summary>
         /// このインスタンスのディープコピーを作成します
         /// </summary>
@@ -105,9 +92,7 @@ namespace cadencii.vsq
         {
             return clone();
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// このインスタンスの文字列表現を取得します
         /// </summary>
@@ -116,7 +101,6 @@ namespace cadencii.vsq
         {
             return toString();
         }
-#endif
 
         /// <summary>
         /// このインスタンスの文字列表現を取得します
@@ -135,6 +119,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

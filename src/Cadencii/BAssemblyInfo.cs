@@ -11,10 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -34,7 +30,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion( cadencii.BAssemblyInfo.fileVersion )]
 
 namespace cadencii {
-#endif
 
     public class BAssemblyInfo {
         public const string id = "$Id$";
@@ -44,6 +39,4 @@ namespace cadencii {
         public const string downloadUrl = "http://sourceforge.jp/projects/cadencii/releases/59580/" + "Cadencii_v" + fileVersion;
     }
 
-#if !JAVA
 }
-#endif

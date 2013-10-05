@@ -11,20 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-#endif
 
 #if DEBUG
     class TestTempoVector
@@ -59,12 +51,8 @@ namespace cadencii.vsq
     /// <summary>
     /// テンポ情報を格納したテーブル．
     /// </summary>
-#if JAVA
-    public class TempoVector extends Vector<TempoTableEntry> implements Serializable
-#else
     [Serializable]
     public class TempoVector : List<TempoTableEntry>
-#endif
     {
         /// <summary>
         /// 4分音符1拍あたりのゲートタイム
@@ -78,16 +66,9 @@ namespace cadencii.vsq
         /// <summary>
         /// コンストラクタ
         /// </summary>
-#if JAVA
-        public TempoVector()
-        {
-            super();
-        }
-#else
         public TempoVector() : base()
         {
         }
-#endif
 
         /// <summary>
         /// 指定した時刻におけるゲートタイムを取得します
@@ -207,6 +188,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

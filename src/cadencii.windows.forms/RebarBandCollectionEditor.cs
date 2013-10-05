@@ -1,4 +1,3 @@
-#if !JAVA
 #if !MONO
 /*
  * RebarBandCollectionEditor.cs
@@ -40,5 +39,4 @@ namespace cadencii.windows.forms {
 
     }
 }
-#endif
 #endif

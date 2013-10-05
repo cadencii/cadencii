@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
 
     /// <summary>
     /// スクリプトの編集・実行結果を表すための列挙型
@@ -35,6 +31,4 @@ namespace cadencii {
         ERROR,
     }
 
-#if !JAVA
 }
-#endif

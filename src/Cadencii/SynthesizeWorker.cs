@@ -11,24 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-
-#elif __cplusplus
-
-namespace org{
-namespace kbinani{
-namespace cadencii{
-
-#else
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -38,9 +20,6 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-
-#endif
-
     public class SynthesizeWorker
     {
         private WaveGenerator mGenerator = null;
@@ -136,9 +115,6 @@ namespace cadencii
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                             serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                                ex.printStackTrace();
-#endif
                         } finally {
                             if ( wr != null ) {
                                 try {
@@ -146,9 +122,6 @@ namespace cadencii
                                 } catch ( Exception ex2 ) {
                                     Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                                     serr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
-#if JAVA
-                                        ex2.printStackTrace();
-#endif
                                 }
                             }
                         }
@@ -158,9 +131,6 @@ namespace cadencii
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                             serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                                ex.printStackTrace();
-#endif
                         }
                     }
 
@@ -234,9 +204,6 @@ namespace cadencii
                 } catch ( Exception ex ) {
                     Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                     serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                        ex.printStackTrace();
-#endif
                 } finally {
                     if ( writer != null ) {
                         try {
@@ -244,9 +211,6 @@ namespace cadencii
                         } catch ( Exception ex2 ) {
                             Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                             serr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
-#if JAVA
-                            ex2.printStackTrace();
-#endif
                         }
                     }
                 }
@@ -392,9 +356,4 @@ namespace cadencii
         }
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

@@ -12,14 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using System.Text;
 using cadencii;
@@ -30,14 +22,9 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public abstract class AquesToneDriverBase {
-#else
     public abstract class AquesToneDriverBase : VSTiDriverBase
     {
-#endif
 
 #if ENABLE_AQUESTONE
 
@@ -128,7 +115,5 @@ namespace cadencii
 #endif
     }
 
-#if !JAVA
 }
-#endif
 #endif

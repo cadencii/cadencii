@@ -11,22 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.ui.*;
-
-#elif __cplusplus
-
-namespace org{
-namespace kbinani{
-namespace cadencii{
-
-#else
-
 using System;
 using System.Threading;
 using System.ComponentModel;
@@ -34,11 +18,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using cadencii.java.util;
 
-
-
 namespace cadencii
 {
-#endif
 
     class FormWorkerJobArgument
     {
@@ -49,9 +30,6 @@ namespace cadencii
         public WorkerState state;
     }
 
-#if JAVA
-#elif __cplusplus
-#else
     class FormWorkerJobStateImp : WorkerState
     {
         private BackgroundWorker mWorker;
@@ -98,96 +76,17 @@ namespace cadencii
             // do nothing
         }
     }
-#endif
-
-#if JAVA
-    class FormWorkerThread extends Thread
-    {
-        private BDelegate mDelegate = null;
-        private FormWorkerJobArgument mArgument = null;
-        private ProgressBarWithLabel mProgressBar;
-        private double mJobAmount;
-        private int mIndex;
-        private FormWorker mControl;
-
-        public FormWorkerThread( Object invoker, String method_name, FormWorkerJobArgument arg, ProgressBarWithLabel progress_bar, double job_amount, int index, FormWorker worker )
-        {
-            try{
-                mDelegate = new BDelegate( invoker, method_name, Void.TYPE, WorkerState.class, Object.class );
-            }catch( Exception ex ){
-                Logger.write( FormWorkerThread.class + "..ctor; ex=" + ex + "\n" );
-                mDelegate = null;
-            }
-            mArgument = arg;
-            mProgressBar = progress_bar;
-            mJobAmount = job_amount;
-            mControl = worker;
-            mIndex = index;
-            mArgument.state = new WorkerState(){
-                private bool mCancelRequested = false;
-                private double mProcessedJob = 0.0;
-
-                public void reportProgress(double processed_job) {
-                    mProcessedJob = processed_job;
-                    int prog = (int)(processed_job / mJobAmount * 100.0);
-                    if( prog < 0 ) prog = 0;
-                    if( 100 < prog ) prog = 100;
-                    mProgressBar.setProgress( prog );
-                    mControl.workerProgressChanged( mIndex, prog );
-                }
-
-                public void reportComplete() {
-                    mControl.workerCompleted( mIndex );
-                }
-
-                public bool isCancelRequested() {
-                    return mCancelRequested;
-                }
-
-                public void requestCancel() {
-                    mCancelRequested = true;
-                }
-
-                public double getProcessedAmount() {
-                    return mProcessedJob;
-                }
-
-                public double getJobAmount() {
-                    return mJobAmount;
-                }
-            };
-        }
-
-        public void run()
-        {
-            if( mDelegate == null ) return;
-            try{
-                mDelegate.invoke( mArgument.state, mArgument.arguments );
-            }catch( Exception ex ){
-            }
-        }
-    }
-#endif
 
     /// <summary>
     /// 複数のジョブを順に実行し，その進捗状況を表示するダイアログを表示します
     /// </summary>
-#if JAVA
-    public class FormWorker implements IFormWorkerControl
-#else
     public class FormWorker : IFormWorkerControl
-#endif
     {
         private FormWorkerUi ptrUi = null;
         private List<ProgressBarWithLabel> mLabels;
         private mman mMemManager;
         private List<FormWorkerJobArgument> mArguments;
-#if JAVA
-        private Vector<FormWorkerThread> mThreads;
-#elif __cplusplus
-#else
         private List<BackgroundWorker> mThreads;
-#endif
 
         /// <summary>
         /// コンストラクタ
@@ -201,12 +100,7 @@ namespace cadencii
             mArguments = new List<FormWorkerJobArgument>();
 #endif
 
-#if JAVA
-            mThreads = new Vector<FormWorkerThread>();
-#elif __cplusplus
-#else
             mThreads = new List<BackgroundWorker>();
-#endif
         }
 
         /// <summary>
@@ -262,15 +156,6 @@ namespace cadencii
             arg.name = method_name;
             arg.arguments = argument;
             arg.index = index;
-#if JAVA
-            FormWorkerThread worker =
-                new FormWorkerThread(
-                    obj, method_name, arg,
-                    label, job_amount, index, this );
-            vec.add( mThreads, worker );
-#elif __cplusplus
-            // TODO:
-#else
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.DoWork += new DoWorkEventHandler( worker_DoWork );
@@ -279,7 +164,6 @@ namespace cadencii
             mThreads.Add( worker );
 
             arg.state = new FormWorkerJobStateImp( worker, job_amount );
-#endif
             mArguments.Add( arg );
         }
 
@@ -347,17 +231,9 @@ namespace cadencii
         private void startWorker( int index )
         {
             FormWorkerJobArgument arg = mArguments[index];
-#if JAVA
-            vec.get( mThreads, index ).start();
-#elif __cplusplus
-#else
             mThreads[index].RunWorkerAsync( arg );
-#endif
         }
 
-#if JAVA
-#elif __cplusplus
-#else
         private void worker_ProgressChanged( object sender, ProgressChangedEventArgs e )
         {
             int size = mThreads.Count;
@@ -410,12 +286,6 @@ namespace cadencii
                 }
             }
         }
-#endif
     }
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

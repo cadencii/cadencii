@@ -11,19 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.vsq.*;
-#else
-
 using System;
 using System.Text;
 using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// WaveUnitの設定項目1個分を表現する
@@ -63,9 +56,6 @@ namespace cadencii
         /// </summary>
         /// <param name="value">設定項目のキー</param>
         public void setKey( string value )
-#if JAVA
-            throws Exception
-#endif
         {
             if( value == null ) {
                 throw new Exception( "key must not be null" );
@@ -97,9 +87,6 @@ namespace cadencii
         /// </summary>
         /// <param name="value">設定項目の値</param>
         public void setValue( string value )
-#if JAVA
-            throws Exception
-#endif
         {
             if( value == null ) {
                 value = "";
@@ -157,6 +144,4 @@ namespace cadencii
 #endif
     }
 
-#if !JAVA
 }
-#endif

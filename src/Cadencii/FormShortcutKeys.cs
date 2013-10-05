@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormShortcutKeys.java
-
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -35,14 +23,9 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormShortcutKeys extends BDialog {
-#else
     public class FormShortcutKeys : Form
     {
-#endif
         /// <summary>
         /// カテゴリーのリスト
         /// </summary>
@@ -65,15 +48,8 @@ namespace cadencii
         /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
         public FormShortcutKeys( SortedDictionary<string, ValuePair<string, Keys[]>> dict, FormMain main_form )
         {
-#if JAVA
-            super();
-#endif
             try {
-#if JAVA
-                initialize();
-#else
                 InitializeComponent();
-#endif
             } catch ( Exception ex ) {
 #if DEBUG
                 serr.println( "FormShortcutKeys#.ctor; ex=" + ex );
@@ -112,11 +88,7 @@ namespace cadencii
                     for( int j = i + 1; j < size; j++ ){
                         string itemi = keys[i] + "";
                         string itemj = keys[j] + "";
-#if JAVA
-                        if( itemi.compareTo( itemj ) > 0 ){
-#else
                         if( itemi.CompareTo( itemj ) > 0 ){
-#endif
                             Keys t = keys[i];
                             keys[i] = keys[j];
                             keys[j] = t;
@@ -487,12 +459,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormShortcutKeys.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormShortcutKeys.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -767,11 +733,8 @@ namespace cadencii
         private System.Windows.Forms.CheckBox checkOption;
 
         #endregion
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

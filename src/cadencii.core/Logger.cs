@@ -11,30 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.FileWriter;
-
-#else
-
 using System;
 using System.IO;
 
 namespace cadencii {
 
-#endif
-
     public class Logger {
-#if JAVA
-        private static BufferedWriter log = null;
-#else
         private static StreamWriter log = null;
-#endif
         private static string path = "";
         private static bool is_enabled = false;
 
@@ -60,12 +43,8 @@ namespace cadencii {
                     //path = "C:\\log.txt";
                 }
                 try {
-#if JAVA
-                    log = new BufferedWriter( new FileWriter( path ) );
-#else
                     log = new StreamWriter( path );
                     log.AutoFlush = true;
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "Logger#write; ex=" + ex );
                 }
@@ -75,12 +54,7 @@ namespace cadencii {
                 return;
             }
             try {
-#if JAVA
-                log.write( s );
-                log.flush();
-#else
                 log.Write( s );
-#endif
             } catch ( Exception ex ) {
                 serr.println( "Logger#write; ex=" + ex );
             }
@@ -99,11 +73,7 @@ namespace cadencii {
             bool append = false;
             if ( log != null && !path.Equals( file ) ) {
                 try {
-#if JAVA
-                    log.close();
-#else
                     log.Close();
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "Logger#setPath; ex=" + ex );
                 }
@@ -126,12 +96,8 @@ namespace cadencii {
 
             if ( is_enabled ) {
                 try {
-#if JAVA
-                log = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path, append ), "UTF-8" ) );
-#else
                     log = new StreamWriter( path, append );
                     log.AutoFlush = true;
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "Logger#setPath; ex=" + ex );
                 }
@@ -139,6 +105,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,16 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.apputil;
-
-import java.awt.*;
-#else
 using System;
 using cadencii.java.awt;
 
 namespace cadencii.apputil {
-#endif
 
     /// <summary>
     /// 折れ線を効率よく描画するための描画プラクシーです。
@@ -31,15 +25,10 @@ namespace cadencii.apputil {
         /// 保持する座標データの長さ
         /// </summary>
         int length = 1024;
-#if JAVA
-        int[] xPoints;
-        int[] yPoints;
-#else
         /// <summary>
         /// 座標データ
         /// </summary>
         System.Drawing.Point[] points;
-#endif
         /// <summary>
         /// 次に書き込むべき、座標データ配列のインデックス
         /// </summary>
@@ -60,12 +49,7 @@ namespace cadencii.apputil {
             if ( length < 2 ) {
                 length = 1024;
             }
-#if JAVA
-            xPoints = new int[length];
-            yPoints = new int[length];
-#else
             points = new System.Drawing.Point[length];
-#endif
             pos = 0;
         }
 
@@ -98,13 +82,8 @@ namespace cadencii.apputil {
         /// <param name="x"></param>
         /// <param name="y"></param>
         public void append( int x, int y ) {
-#if JAVA
-            xPoints[pos] = x;
-            yPoints[pos] = y;
-#else
             points[pos].X = x;
             points[pos].Y = y;
-#endif
             pos++;
             if ( length <= pos ) {
                 flush();
@@ -118,14 +97,6 @@ namespace cadencii.apputil {
             if ( pos <= 1 ){
                 return;
             }
-#if JAVA
-            int lastx = xPoints[pos - 1];
-            int lasty = yPoints[pos - 1];
-            g.drawPolyline( xPoints, yPoints, pos );
-            xPoints[0] = lastx;
-            yPoints[0] = lasty;
-            pos = 1;
-#else
             int lastx = points[pos - 1].X;
             int lasty = points[pos - 1].Y;
             if ( pos != length ) {
@@ -138,10 +109,7 @@ namespace cadencii.apputil {
             points[0].X = lastx;
             points[0].Y = lasty;
             pos = 1;
-#endif
         }
     }
 
-#if !JAVA
 }
-#endif

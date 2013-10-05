@@ -11,14 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-#else
 using System;
 
 namespace cadencii {
-#endif
 
     public enum ClockResolution {
         L1,
@@ -35,6 +30,4 @@ namespace cadencii {
         Free,
     }
 
-#if !JAVA
 }
-#endif

@@ -11,19 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.awt.image.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.awt;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 高さが一定で，横方向に長く，横方向にスクロールして使用するタイプで，描画ループが重いコンポーネントを，比較的高速に描画します．
@@ -102,15 +94,7 @@ namespace cadencii {
                             }
                         }
                     }
-#if JAVA
-                    BufferedImage[] old = mCache;
-                    mCache = new BufferedImage[num];
-                    for( int i = 0; i < old.Length && i < mCache.Length; i++ ){
-                        mCache[i] = old[i];
-                    }
-#else
                     Array.Resize( ref mCache, num );
-#endif
                 }
 
                 // 画像がnullの場合新しく作成
@@ -157,6 +141,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,19 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.apputil;
-
-import java.awt.Font;
-
-#else
 using System;
 using cadencii.java.awt;
 
 namespace cadencii.apputil {
-
-#endif
 
     public class AuthorListEntry {
         string m_name = "";
@@ -37,46 +28,16 @@ namespace cadencii.apputil {
         }
 
         public AuthorListEntry( string name, int style )
-#if JAVA
-        {
-#else
-            :
-#endif
-            this( name, "", style )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+            : this( name, "", style )
+        {}
 
         public AuthorListEntry( string name, string twitter_id )
-#if JAVA
-        {
-#else
-            :
-#endif
-            this( name, twitter_id, Font.PLAIN )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+            : this( name, twitter_id, Font.PLAIN )
+        {}
 
         public AuthorListEntry( string name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            this( name, "", Font.PLAIN )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+            : this( name, "", Font.PLAIN )
+        {}
 
         public AuthorListEntry() {
             m_name = "";
@@ -97,6 +58,4 @@ namespace cadencii.apputil {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,27 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.vsq.*;
-#else
 using System;
 using cadencii.vsq;
 using cadencii.java.util;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 強弱記号を比較するための，比較用コンテキスト
     /// </summary>
-#if JAVA
-    public class DynaffComparisonContext implements IComparisonContext {
-#else
     public class DynaffComparisonContext : IComparisonContext {
-#endif
         VsqTrack track1 = null;
         VsqTrack track2 = null;
         Iterator<int> it1 = null;
@@ -91,6 +80,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

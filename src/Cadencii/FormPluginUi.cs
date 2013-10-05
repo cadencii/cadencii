@@ -12,23 +12,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if ENABLE_AQUESTONE
-#if JAVA
-package cadencii;
-
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
 namespace cadencii {
-#endif
 
-#if JAVA
-    public class FormPluginUi extends BForm{
-#else
     public class FormPluginUi : Form {
-#endif
         private System.ComponentModel.IContainer components;
         public IntPtr childWnd = IntPtr.Zero;
         private double lastDrawn = 0.0;
@@ -38,9 +28,7 @@ namespace cadencii {
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler( FormPluginUi_FormClosing );
-#if !JAVA
             this.Icon = Properties.Resources._switch;
-#endif
         }
 
         public void FormPluginUi_FormClosing( Object sender, FormClosingEventArgs e ) {
@@ -79,7 +67,5 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif
 #endif

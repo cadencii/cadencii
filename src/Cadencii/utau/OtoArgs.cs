@@ -11,15 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 using System;
 
 
 
 namespace cadencii.utau {
-#endif
 
     /// <summary>
     /// 原音設定の引数．
@@ -34,11 +30,6 @@ namespace cadencii.utau {
         public float msOverlap;
 
         public bool equals( OtoArgs obj ) {
-#if JAVA
-            if ( obj == null ) {
-                return false;
-            }
-#endif
             if ( this.fileName != null && this.fileName.Equals( obj.fileName ) &&
                  this.Alias != null && this.Alias.Equals( obj.Alias ) &&
                  this.msOffset == obj.msOffset &&
@@ -58,6 +49,4 @@ namespace cadencii.utau {
         }
     }
 
-#if !JAVA
 }
-#endif

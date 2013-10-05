@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Text;
 using cadencii;
@@ -25,17 +19,11 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// vsqファイルのメタテキストの[Master]に記録される内容を取り扱う
     /// </summary>
-#if JAVA
-    public class VsqMaster implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqMaster : ICloneable
-#endif
     {
         public int PreMeasure;
 
@@ -45,21 +33,14 @@ namespace cadencii.vsq
             return res;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
-#if JAVA
-        public VsqMaster(){
-            this( 1 );
-#else
         public VsqMaster()
             : this( 1 )
         {
-#endif
         }
 
         /// <summary>
@@ -98,15 +79,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sw">出力先</param>
         public void write( ITextWriter sw )
-#if JAVA
-            throws java.io.IOException
-#endif
         {
             sw.writeLine( "[Master]" );
             sw.writeLine( "PreMeasure=" + PreMeasure );
         }
     }
 
-#if !JAVA
 }
-#endif

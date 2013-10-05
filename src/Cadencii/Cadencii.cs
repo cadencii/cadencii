@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-import cadencii.*;
-import cadencii.apputil.*;
-
-#else
-
 using System;
 using System.Threading;
 using System.Windows.Forms;
@@ -27,19 +20,10 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-
-#endif
-
-#if JAVA
-    public class Cadencii implements Thread.UncaughtExceptionHandler
-#else
     public class Cadencii
-#endif
     {
-#if !JAVA
         public static FormSplash splash = null;
         static Thread splashThread = null;
-#endif
         private static string mPathVsq = "";
         private static bool mPrintVersion = false;
 
@@ -75,51 +59,6 @@ namespace cadencii
             controller.setReportTarget( ex );
             controller.getUi().showDialog( null );
         }
-
-#if JAVA
-        public static void main( String[] args )
-#if DEBUG
-            throws Exception
-#endif
-        {
-            Thread.setDefaultUncaughtExceptionHandler( new Cadencii() );
-
-            // 引数を解釈
-            parseArguments( args );
-            if( mPrintVersion ){
-                System.out.print( BAssemblyInfo.fileVersion );
-                return;
-            }
-            String file = mPathVsq;
-            if ( !str.compare( mPathResource, "" ) ) {
-                Resources.setBasePath( mPathResource );
-            }
-            try{
-            	Messaging.loadMessages();
-            }catch( Exception ex ){
-                Logger.write( Cadencii.class + ".main; ex=" + ex + "\n" );
-                serr.println( "Cadencii.main; ex=" + ex );
-            }
-            AppManager.init();
-            AppManager.mMainWindowController = new FormMainController();
-            AppManager.mMainWindow = new FormMain( AppManager.mMainWindowController, file );
-            AppManager.mMainWindow.setVisible( true );
-#if DEBUG
-            throw new Exception( "foo" );
-#endif
-        }
-
-        @Override
-        public void uncaughtException( Thread arg0, Throwable arg1 )
-        {
-            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
-            if( arg1 != null && arg1 instanceof Exception ){
-                ex = (Exception)arg1;
-            }
-            handleUnhandledException( ex );
-        }
-
-#else
 
         [STAThread]
         public static void Main( string[] args )
@@ -284,9 +223,6 @@ namespace cadencii
 
             AppManager.mMainWindow.Load -= mainWindow_Load;
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormRandomize.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.vsq;
 using cadencii.apputil;
@@ -30,14 +20,9 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormRandomize extends BDialog {
-#else
     public class FormRandomize : System.Windows.Forms.Form
     {
-#endif
         private static bool lastPositionRandomizeEnabled = true;
         private static int lastPositionRandomizeValue = 3;
         private static bool lastPitRandomizeEnabled = true;
@@ -55,12 +40,7 @@ namespace cadencii
 
         public FormRandomize()
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             applyLanguage();
 
@@ -339,10 +319,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormRandomize.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormRandomize.java
-#else
         #region UI impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -732,11 +708,8 @@ namespace cadencii
         private System.Windows.Forms.Button btnOK;
 
         #endregion
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

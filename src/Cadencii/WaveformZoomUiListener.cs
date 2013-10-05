@@ -11,20 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.awt.*;
-
-#else
-
     namespace cadencii
     {
 #if CSHARP
             using System;
             using cadencii.java.awt;
-#endif
 #endif
 
 #if __cplusplus
@@ -58,10 +49,5 @@ import java.awt.*;
 #endif
             };
 
-#if JAVA
-
-#else
 
     }
-
-#endif

@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * UpdateProgressEventHandler.cs
  * Copyright © 2009-2011 kbinani
@@ -25,4 +24,3 @@ namespace cadencii
     public delegate void UpdateProgressEventHandler( Object sender, int value );
 
 }
-#endif

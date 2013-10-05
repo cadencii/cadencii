@@ -11,29 +11,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// コントロールカーブの編集時などに，マウスの軌跡をトレースする処理をカプセル化？する
     /// </summary>
     public class MouseTracer {
-#if JAVA
-        class MouseTracerIterator implements Iterator<Point> {
-#else
         class MouseTracerIterator : IEnumerable<Point>, IEnumerator<Point> {
-#endif
             private MouseTracer mTracer;
             private int mIndex;
 
@@ -231,19 +220,10 @@ namespace cadencii {
                 mTrace = new int[new_length];
             } else {
                 if ( mTrace.Length < new_length ) {
-#if JAVA
-                    int[] newarray = new int[new_length];
-                    System.arraycopy( mTrace, 0, newarray, 0, mTrace.length );
-                    mTrace = null;
-                    mTrace = newarray;
-#else
                     Array.Resize( ref mTrace, new_length );
-#endif
                 }
             }
         }
     }
 
-#if !JAVA
 }
-#endif

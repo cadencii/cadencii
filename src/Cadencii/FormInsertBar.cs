@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormInsertBar.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -29,22 +20,12 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormInsertBar extends BDialog {
-#else
     public class FormInsertBar : Form
     {
-#endif
         public FormInsertBar( int max_position )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -68,9 +49,7 @@ namespace cadencii
             lblBar.Text = _( "bar" );
             btnOK.Text = _( "OK" );
             btnCancel.Text = _( "Cancel" );
-#if !JAVA
             lblPositionPrefix.Left = numPosition.Left - lblPositionPrefix.Width;
-#endif
         }
 
         public int getLength()
@@ -124,10 +103,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormInsertBar.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormInsertBar.java
-#else
         private System.ComponentModel.IContainer components = null;
         private NumericUpDownEx numPosition;
         private NumericUpDownEx numLength;
@@ -297,11 +272,8 @@ namespace cadencii
 
         }
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

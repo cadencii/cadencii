@@ -11,23 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii {
-#endif
 
-#if JAVA
-    public class EditedZone implements Cloneable {
-#else
     public class EditedZone : ICloneable {
-#endif
         private List<EditedZoneUnit> mSeries = new List<EditedZoneUnit>();
 
         public EditedZone(){
@@ -194,13 +184,9 @@ namespace cadencii {
             mSeries.Sort();
         }
 
-#if !JAVA
         public Object Clone(){
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -11,27 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// ビブラートハンドル
     /// </summary>
-#if JAVA
-    public class VibratoHandle extends IconParameter implements Cloneable, Serializable
-#else
     [Serializable]
     public class VibratoHandle : IconParameter, ICloneable
-#endif
     {
         public int Index;
         public string IconID = "";
@@ -47,17 +36,9 @@ namespace cadencii.vsq
         }
 
         public VibratoHandle( string aic_file, string ids, string icon_id, int index )
-#if JAVA
-        {
-#else
             :
-#endif
  base( aic_file )
-#if JAVA
-            ;
-#else
         {
-#endif
             IDS = ids;
             IconID = icon_id;
             Index = index;
@@ -107,12 +88,10 @@ namespace cadencii.vsq
             return getDisplayString();
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
         public VibratoBPList getRateBP()
         {
@@ -134,7 +113,6 @@ namespace cadencii.vsq
             caption = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -149,9 +127,7 @@ namespace cadencii.vsq
                 setCaption( value );
             }
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -166,7 +142,6 @@ namespace cadencii.vsq
                 setRateBP( value );
             }
         }
-#endif
 
         public int getStartRate()
         {
@@ -178,7 +153,6 @@ namespace cadencii.vsq
             startRate = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -193,7 +167,6 @@ namespace cadencii.vsq
                 setStartRate( value );
             }
         }
-#endif
 
         public VibratoBPList getDepthBP()
         {
@@ -205,7 +178,6 @@ namespace cadencii.vsq
             depthBP = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -220,7 +192,6 @@ namespace cadencii.vsq
                 setDepthBP( value );
             }
         }
-#endif
 
         public int getStartDepth()
         {
@@ -232,7 +203,6 @@ namespace cadencii.vsq
             startDepth = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -247,7 +217,6 @@ namespace cadencii.vsq
                 setStartDepth( value );
             }
         }
-#endif
 
         public int getLength()
         {
@@ -259,7 +228,6 @@ namespace cadencii.vsq
             length = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -274,19 +242,16 @@ namespace cadencii.vsq
                 setLength( value );
             }
         }
-#endif
 
         public string getDisplayString()
         {
             return caption;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public Object clone()
         {
@@ -326,6 +291,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

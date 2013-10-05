@@ -11,11 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
 
     namespace cadencii
     {
@@ -25,15 +20,7 @@ package cadencii;
             using namespace org::kbinani::cadencii;
 #endif
 
-#endif
-
-#if JAVA
-            public interface FormBeatConfigUi extends UiBase
-#elif __cplusplus
-            class FormBeatConfigUi : UiBase
-#else
             public interface FormBeatConfigUi : UiBase
-#endif
             {
                 [PureVirtualFunction]
                 void setFont( string fontName, float fontSize );
@@ -163,6 +150,4 @@ package cadencii;
                 int getValueNumeratorNum();
             };
 
-#if !JAVA
     }
-#endif

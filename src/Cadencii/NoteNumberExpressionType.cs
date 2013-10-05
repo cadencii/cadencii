@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
 
     /// <summary>
     /// 音程を表現するときの表現形式を表す列挙型
@@ -43,6 +39,4 @@ namespace cadencii {
         Deutsche,
     }
 
-#if !JAVA
 }
-#endif

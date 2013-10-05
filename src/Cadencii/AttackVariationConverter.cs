@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -35,15 +23,8 @@ using cadencii.java.io;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class AttackVariationConverter extends TypeConverter
-#else
     public class AttackVariationConverter : TypeConverter
-#endif
     {
-#if !JAVA
         public override bool GetStandardValuesSupported( ITypeDescriptorContext context ) {
             return isStandardValuesSupported();
         }
@@ -95,27 +76,16 @@ namespace cadencii
                 return base.CanConvertFrom( context, sourceType );
             }
         }
-#endif
 
-#if JAVA
-        @Override
-#endif
         public string convertTo( Object value )
         {
             if ( value is AttackVariation ) {
                 return ((AttackVariation)value).mDescription;
             } else {
-#if JAVA
-                return super.convertTo( value );
-#else
                 return "";
-#endif
             }
         }
 
-#if JAVA
-        @Override
-#endif
         public AttackVariation convertFrom( string value )
         {
             if ( value.Equals( new AttackVariation().mDescription ) ) {
@@ -140,9 +110,6 @@ namespace cadencii
             }
         }
 
-#if JAVA
-        @Override
-#endif
         public List<Object> getStandardValues()
         {
             SynthesizerType type = SynthesizerType.VOCALOID2;
@@ -161,9 +128,6 @@ namespace cadencii
             return list;//new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );
         }
 
-#if JAVA
-        @Override
-#endif
         public bool isStandardValuesSupported()
         {
             return true;
@@ -171,6 +135,4 @@ namespace cadencii
 
     }
 
-#if !JAVA
 }
-#endif

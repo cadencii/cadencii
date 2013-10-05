@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.*;
-import cadencii.apputil.*;
-
-#else
-
 using System;
 using cadencii.apputil;
 
@@ -27,7 +18,6 @@ using cadencii.apputil;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// 合成の範囲やトラック番号を指示するためのクラス
@@ -101,6 +91,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

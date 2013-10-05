@@ -11,19 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-import cadencii.ui.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-
-#else
-
-//
-
 using System.Collections.Generic;
 
     namespace cadencii
@@ -40,13 +27,7 @@ using System.Collections.Generic;
     
 #endif
 
-#endif
-
-#if JAVA
-            public class FormWordDictionaryController extends ControllerBase implements FormWordDictionaryUiListener
-#else
             public class FormWordDictionaryController : ControllerBase, FormWordDictionaryUiListener
-#endif
             {
                 private FormWordDictionaryUiImpl ui;
                 private static int mColumnWidth = 256;
@@ -220,6 +201,4 @@ using System.Collections.Generic;
                 #endregion
             }
 
-#if !JAVA
     }
-#endif

@@ -11,19 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
-import java.awt.geom.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -35,17 +22,10 @@ using cadencii.vsq;
 using cadencii.windows.forms;
 
 namespace cadencii {
-
-#endif
-
     /// <summary>
     /// ピアノロール用のコンポーネント
     /// </summary>
-#if JAVA
-    public class PictPianoRoll extends BPanel {
-#else
     public class PictPianoRoll : PictureBox {
-#endif
         private readonly Color COLOR_R192G192B192 = new Color( 192, 192, 192 );
         private readonly Color COLOR_A098R000G000B000 = new Color( 0, 0, 0, 98 );
         private readonly Color COLOR_R106G108B108 = new Color( 106, 108, 108 );
@@ -114,77 +94,7 @@ namespace cadencii {
         private FormMain mMainForm = null;
 
         public PictPianoRoll()
-        {
-#if JAVA
-            super();
-            final int action = DnDConstants.ACTION_COPY;
-            new DropTarget(
-                this,
-                action,
-                new DropTargetListener(){
-                    public void drop( DropTargetDropEvent e ) { 
-                        e.acceptDrop( action );
-            
-                        Transferable tr = e.getTransferable(); 
-            
-                        IconDynamicsHandle data = null;
-                        try{
-                            String icon_id = null;
-                            if ( e.isDataFlavorSupported( DataFlavor.stringFlavor ) ) { 
-                                String s = (String)tr.getTransferData( DataFlavor.stringFlavor );
-                                String prefix = ClipboardModel.CLIP_PREFIX + ":";
-                                if( str.startsWith( s, prefix ) ){
-                                    icon_id = str.sub( s, str.length( prefix ) );
-                                }
-                            }
-            
-                            if( mMainForm != null ){
-                                for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
-                                    IconDynamicsHandle handle = itr.next();
-                                    String id = handle.IconID;
-                                    if( str.compare( id, icon_id ) ){
-                                        data = (IconDynamicsHandle)handle.clone();
-                                        break;
-                                    }
-                                }
-                                Point p = pointToScreen( e.getLocation() );                            
-                                mMainForm.handleDragDrop( data, p.x, p.y );
-                            }
-                        }catch( Exception ex ){
-                            ex.printStackTrace();
-                        }finally{
-                            e.dropComplete( (data != null) );
-                        }
-                    }
-            
-                    //@Override
-                    public void dragOver( DropTargetDragEvent dtde ){ 
-                        if( mMainForm != null ){
-                            Point p = pointToScreen( dtde.getLocation() );
-                            mMainForm.handleDragOver( p.x, p.y );
-                        }
-                    }
-
-                    //@Override
-                    public void dragExit(DropTargetEvent dte) {
-                        if( mMainForm != null ){
-                            mMainForm.handleDragExit();
-                        }
-                    }
-
-                    //@Override
-                    public void dragEnter(DropTargetDragEvent dtde) {
-                        if( mMainForm != null ){
-                            mMainForm.handleDragEnter();
-                        }
-                    }
-
-                    //@Override
-                    public void dropActionChanged(DropTargetDragEvent dtde) {
-                    }
-                } );
-#endif
-        }
+        {}
 
         /// <summary>
         /// メイン画面への参照を設定します
@@ -195,33 +105,19 @@ namespace cadencii {
             mMainForm = form;
         }
 
-#if !JAVA
         protected override void OnMouseDown( MouseEventArgs e )
         {
             base.OnMouseDown( e );
             this.Focus();
         }
-#endif
 
-#if !JAVA
         protected override void OnPaint( PaintEventArgs pe ) {
             base.OnPaint( pe );
             paint( new Graphics2D( pe.Graphics ) );
         }
-#endif
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-#if JAVA
-        Object tag = null;
-        public Object getTag(){
-            return tag;
-        }
-
-        public void setTag( Object value ){
-            tag = value;
-        }
-#else
         public Object getTag() {
             return base.Tag;
         }
@@ -229,7 +125,6 @@ namespace cadencii {
         public void setTag( Object value ) {
             base.Tag = value;
         }
-#endif
         #endregion
 
         /// <summary>
@@ -339,12 +234,8 @@ namespace cadencii {
                         VsqEvent original = AppManager.itemSelection.getLastEvent().original;
                         int event_x = (int)(original.Clock * scalex + xoffset);
                         int event_y = -original.ID.Note * track_height + yoffset;
-#if JAVA
-                    AppManager.mInputTextBox.setLocation( pointToScreen( new Point( event_x + 4, event_y + 2 ) ) );
-#else
                         AppManager.mInputTextBox.Left = event_x + 4;
                         AppManager.mInputTextBox.Top = event_y + 2;
-#endif
                     }
 
                     RendererKind renderer = RendererKind.VOCALOID2;
@@ -713,9 +604,7 @@ namespace cadencii {
                                         int cl_end = cl_start + dobj.mLength;
 
                                         commonDrawer.clear();
-#if !JAVA
                                         //g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                                         Color color_normal_picthbend = PortUtil.DarkOrchid;
                                         Color color_thin_pitchbend = new Color(color_normal_picthbend.getRed(), color_normal_picthbend.getGreen(), color_normal_picthbend.getBlue(), 128);
                                         int viblength = dobj.mLength - dobj.mVibDelay;
@@ -798,9 +687,7 @@ namespace cadencii {
                                             }
                                         }
                                         commonDrawer.flush();
-#if !JAVA
                                         g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
                                         g.setStroke(getStrokeDefault());
                                     }
                                     #endregion
@@ -860,10 +747,8 @@ namespace cadencii {
                                 str += "(" + dobj.mInternalID + ")";
 #endif
                                 g.drawString(str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1);
-#if !JAVA
                                 System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
                                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                                 if (dobj.mType == DrawObjectType.Crescend) {
                                     g.drawLine(xend - 2, y + 4, x + 3, y + half_track_height);
                                     g.drawLine(x + 3, y + half_track_height, xend - 2, y + track_height - 3);
@@ -871,9 +756,7 @@ namespace cadencii {
                                     g.drawLine(x + 3, y + 4, xend - 2, y + half_track_height);
                                     g.drawLine(xend - 2, y + half_track_height, x + 3, y + track_height - 3);
                                 }
-#if !JAVA
                                 g.nativeGraphics.SmoothingMode = old;
-#endif
                                 #endregion
                             }
                         }
@@ -1191,9 +1074,7 @@ namespace cadencii {
                         Color pen = new Color(0, 0, 0, 200);
                         g.setColor(new Color(0, 0, 0, 100));
                         g.fillRect(tx, ty, twidth, theight);
-#if !JAVA
                         g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
                         g.setColor(pen);
                         if (vtop && twidth > 1 && ty < height) {
                             g.drawLine(tx, ty, tx + twidth - 1, ty);
@@ -1210,9 +1091,7 @@ namespace cadencii {
                     }
                     #endregion
 
-#if !JAVA
                     g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
 
                     #region コントロールカーブのオーバーレイ表示
                     if (AppManager.mCurveOnPianoroll) {
@@ -1397,10 +1276,8 @@ namespace cadencii {
 #if DEBUG
             g.setColor( Color.red );
 #endif
-#if !JAVA
             System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;
             g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
             int lx = 0;
             for ( ; itr.hasNext(); ) {
                 PointD p = itr.next();
@@ -1413,9 +1290,7 @@ namespace cadencii {
                 lx = x;
             }
             drawer.flush();
-#if !JAVA
             g.nativeGraphics.SmoothingMode = sm;
-#endif
         }
 
         private void drawVibratoLine( Graphics g, int origin_x, int origin_y, int vibrato_length ) {
@@ -1449,7 +1324,6 @@ namespace cadencii {
             g.setClip( old );
         }
 
-#if !JAVA
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {
@@ -1677,9 +1551,6 @@ namespace cadencii {
             base.Font = font.font;
         }
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

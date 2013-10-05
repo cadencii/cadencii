@@ -11,19 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.apputil;
-
-import java.util.Vector;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.apputil {
-
-#endif
 
     public class MessageBodyEntry {
         public string message;
@@ -37,6 +29,4 @@ namespace cadencii.apputil {
         }
     }
 
-#if !JAVA
 }
-#endif

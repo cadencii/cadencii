@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -29,14 +20,8 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class UstEvent implements Cloneable, Serializable
-#else
     [Serializable]
     public class UstEvent : ICloneable
-#endif
     {
         /// <summary>
         /// 音量の最大値
@@ -95,9 +80,6 @@ namespace cadencii.vsq
         private int mLength = 0;
         private bool mIsLengthSpec = false;
 
-#if JAVA
-        @XmlGenericType( UstEventProperty.class )
-#endif
         public List<UstEventProperty> Properties = new List<UstEventProperty>();
 
         public UstEvent()
@@ -121,7 +103,6 @@ namespace cadencii.vsq
             return mIsLyricSpec;
         }
 
-#if !JAVA
         public string Lyric
         {
             get
@@ -133,7 +114,6 @@ namespace cadencii.vsq
                 setLyric( value );
             }
         }
-#endif
         #endregion
 
         #region Note
@@ -153,7 +133,6 @@ namespace cadencii.vsq
             return mIsNoteSpec;
         }
 
-#if !JAVA
         public int Note
         {
             get
@@ -165,7 +144,6 @@ namespace cadencii.vsq
                 setNote( value );
             }
         }
-#endif
         #endregion
 
         #region Intensity
@@ -185,7 +163,6 @@ namespace cadencii.vsq
             return mIsIntensitySpec;
         }
 
-#if !JAVA
         public int Intensity
         {
             get
@@ -197,7 +174,6 @@ namespace cadencii.vsq
                 setIntensity( value );
             }
         }
-#endif
         #endregion
 
         #region PBType
@@ -217,7 +193,6 @@ namespace cadencii.vsq
             return mIsPBTypeSpec;
         }
 
-#if !JAVA
         public int PBType
         {
             get
@@ -229,7 +204,6 @@ namespace cadencii.vsq
                 setPBType( value );
             }
         }
-#endif
         #endregion
 
         #region Pitches
@@ -249,7 +223,6 @@ namespace cadencii.vsq
             return mIsPitchesSpec;
         }
 
-#if !JAVA
         public float[] Pitches
         {
             get
@@ -261,7 +234,6 @@ namespace cadencii.vsq
                 setPitches( value );
             }
         }
-#endif
         #endregion
 
         #region Tempo
@@ -281,7 +253,6 @@ namespace cadencii.vsq
             return mIsTempoSpec;
         }
 
-#if !JAVA
         public float Tempo
         {
             get
@@ -293,7 +264,6 @@ namespace cadencii.vsq
                 setTempo( value );
             }
         }
-#endif
         #endregion
 
         #region Vibrato
@@ -313,7 +283,6 @@ namespace cadencii.vsq
             return mIsVibratoSpec;
         }
 
-#if !JAVA
         public UstVibrato Vibrato
         {
             get
@@ -325,7 +294,6 @@ namespace cadencii.vsq
                 setVibrato( value );
             }
         }
-#endif
         #endregion
 
         #region Portamento
@@ -345,7 +313,6 @@ namespace cadencii.vsq
             return mIsPortamentoSpec;
         }
 
-#if !JAVA
         public UstPortamento Portamento
         {
             get
@@ -357,7 +324,6 @@ namespace cadencii.vsq
                 setPortamento( value );
             }
         }
-#endif
         #endregion
 
         #region PreUtterance
@@ -377,7 +343,6 @@ namespace cadencii.vsq
             return mIsPreUtteranceSpec;
         }
 
-#if !JAVA
         public float PreUtterance
         {
             get
@@ -389,7 +354,6 @@ namespace cadencii.vsq
                 setPreUtterance( value );
             }
         }
-#endif
         #endregion
 
         #region VoiceOverlap
@@ -409,7 +373,6 @@ namespace cadencii.vsq
             return mIsVoiceOverlapSpec;
         }
 
-#if !JAVA
         public float VoiceOverlap
         {
             get
@@ -421,7 +384,6 @@ namespace cadencii.vsq
                 setVoiceOverlap( value );
             }
         }
-#endif
         #endregion
 
         #region Envelope
@@ -441,7 +403,6 @@ namespace cadencii.vsq
             return mIsEnvelopeSpec;
         }
 
-#if !JAVA
         public UstEnvelope Envelope
         {
             get
@@ -453,7 +414,6 @@ namespace cadencii.vsq
                 setEnvelope( value );
             }
         }
-#endif
         #endregion
 
         #region Moduration
@@ -473,7 +433,6 @@ namespace cadencii.vsq
             return mIsModurationSpec;
         }
 
-#if !JAVA
         public int Moduration
         {
             get
@@ -485,7 +444,6 @@ namespace cadencii.vsq
                 setModuration( value );
             }
         }
-#endif
         #endregion
 
         #region StartPoint
@@ -518,7 +476,6 @@ namespace cadencii.vsq
             return mIsStartPointSpec;
         }
 
-#if !JAVA
         public float StartPoint
         {
             get
@@ -530,7 +487,6 @@ namespace cadencii.vsq
                 setStartPoint( value );
             }
         }
-#endif
         #endregion
 
         #region Length
@@ -563,7 +519,6 @@ namespace cadencii.vsq
             mIsLengthSpec = true;
         }
 
-#if !JAVA
         /// <summary>
         /// XML用
         /// </summary>
@@ -578,7 +533,6 @@ namespace cadencii.vsq
                 setLength( value );
             }
         }
-#endif
         #endregion
 
         public Object clone()
@@ -629,17 +583,12 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public void print( ITextWriter sw )
-#if JAVA
-            throws IOException
-#endif
         {
             if ( this.Index == UstFile.PREV_INDEX ) {
                 sw.write( "[#PREV]" );
@@ -757,6 +706,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

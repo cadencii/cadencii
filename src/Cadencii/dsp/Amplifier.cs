@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-
-#else
 
 using System;
 using cadencii.java.util;
@@ -28,16 +19,11 @@ using cadencii.java.awt;
 namespace cadencii
 {
 
-#endif
 
     /// <summary>
     /// 増幅器の実装
     /// </summary>
-#if JAVA
-    public class Amplifier extends WaveUnit implements WaveSender, WaveReceiver
-#else
     public class Amplifier : WaveUnit, WaveSender, WaveReceiver
-#endif
     {
         private const int _BUFLEN = 1024;
         private double[] mBufferL = new double[_BUFLEN];
@@ -221,6 +207,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

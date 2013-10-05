@@ -12,53 +12,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    @TypeConverterAnnotation( NoteNumberPropertyConverter.class )
-    public class NoteNumberProperty
-#else
     [TypeConverter( typeof( NoteNumberPropertyConverter ) )]
     public class NoteNumberProperty
-#endif
     {
         public int noteNumber = 60;
 
-#if !JAVA
         public override int GetHashCode()
         {
             return hashCode();
         }
-#endif
 
         public int hashCode()
         {
-#if JAVA
-            return Integer.valueOf( noteNumber ).hashCode();
-#else
             return noteNumber.GetHashCode();
-#endif
         }
 
-#if !JAVA
         public override bool Equals( Object obj )
         {
             return equals( obj );
         }
-#endif
 
         public bool equals( Object obj )
         {
@@ -74,7 +52,5 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif
 #endif

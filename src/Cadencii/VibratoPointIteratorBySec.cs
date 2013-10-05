@@ -11,18 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.vsq.*;
-#else
 using System;
 using cadencii.vsq;
 using cadencii.java.util;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// ビブラート用のデータ点のリストを取得します。返却されるリストは、{秒, ビブラートの振幅(ノートナンバー単位)}の値ペアとなっています
@@ -149,6 +142,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

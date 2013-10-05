@@ -11,28 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.awt;
 using cadencii.java.util;
 
-
-
 namespace cadencii {
-#endif
 
-#if JAVA
-    public class Mixer extends WaveUnit implements WaveSender, WaveReceiver {
-#else
     public class Mixer : WaveUnit, WaveSender, WaveReceiver {
-#endif
         private const int BUFLEN = 1024;
 
         private WaveReceiver mReceiver = null;
@@ -146,6 +132,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

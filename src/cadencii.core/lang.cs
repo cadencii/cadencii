@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * lang.cs
  * Copyright © 2009-2011 kbinani
@@ -21,4 +20,3 @@ namespace cadencii.java.lang
     }
 
 }
-#endif

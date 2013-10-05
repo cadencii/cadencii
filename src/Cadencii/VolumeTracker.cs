@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/VolumeTracker.java
-
-import java.awt.event.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii;
@@ -32,13 +22,8 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class VolumeTracker extends JPanel implements IAmplifierView
-#else
     public class VolumeTracker : UserControl, IAmplifierView
-#endif
     {
         private int mFeder = 0;
         private string m_number = "0";
@@ -51,11 +36,7 @@ namespace cadencii
         #region Constants
         public const int WIDTH = 85;
         public const int HEIGHT = 284;
-#if JAVA
-        private static final int[][] _KEY = {
-#else
         private static readonly int[,] _KEY = {
-#endif
             {55, 26}, 
             {51, 27},
             {47, 28},
@@ -154,17 +135,10 @@ namespace cadencii
 
         public VolumeTracker()
         {
-#if JAVA
-		    super();
-		    initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
-#if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
-#endif
             setMuted( false );
             setSolo( false );
         }
@@ -199,11 +173,7 @@ namespace cadencii
 
         public void setLocation( int x, int y )
         {
-#if JAVA
-            super.setLocation( x, y );
-#else
             base.Location = new System.Drawing.Point( x, y );
-#endif
         }
 
         public void setTag( Object value )
@@ -305,15 +275,9 @@ namespace cadencii
             mFeder = value;
             if ( old != mFeder ) {
                 try {
-#if JAVA
-                    federChangedEvent.raise( mTrack, mFeder );
-#elif QT_VERSION
-                    federChanged( mTrack, mFeder );
-#else
                     if ( FederChanged != null ) {
                         FederChanged.Invoke( mTrack, mFeder );
                     }
-#endif
                 } catch ( Exception ex ) {
                     serr.println( "VolumeTracker#setFeder; ex=" + ex );
                 }
@@ -324,33 +288,16 @@ namespace cadencii
 
         private static int getFederFromYCoord( int y )
         {
-#if JAVA
-            int feder = _KEY[0][0];
-            int min_diff = Math.abs( _KEY[0][1] - y );
-#else
             int feder = _KEY[0, 0];
             int min_diff = Math.Abs( _KEY[0, 1] - y );
-#endif
             int index = 0;
-#if JAVA
-            int len = _KEY.length;
-#else
             int len = _KEY.GetUpperBound( 0 ) + 1;
-#endif
             for ( int i = 1; i < len; i++ ) {
-#if JAVA
-                int diff = Math.abs( _KEY[i][1] - y );
-#else
                 int diff = Math.Abs( _KEY[i, 1] - y );
-#endif
                 if ( diff < min_diff ) {
                     index = i;
                     min_diff = diff;
-#if JAVA
-                    feder = _KEY[i][0];
-#else
                     feder = _KEY[i, 0];
-#endif
                 }
             }
             return feder;
@@ -358,33 +305,16 @@ namespace cadencii
 
         private static int getYCoordFromFeder( int feder )
         {
-#if JAVA
-            int y = _KEY[0][1];
-            int min_diff = Math.Abs( _KEY[0][0] - feder );
-#else
             int y = _KEY[0, 1];
             int min_diff = Math.Abs( _KEY[0, 0] - feder );
-#endif
             int index = 0;
-#if JAVA
-            int len = _KEY.length;
-#else
             int len = _KEY.GetUpperBound( 0 ) + 1;
-#endif
             for ( int i = 1; i < len; i++ ) {
-#if JAVA
-                int diff = Math.Abs( _KEY[i][0] - feder );
-#else
                 int diff = Math.Abs( _KEY[i, 0] - feder );
-#endif
                 if ( diff < min_diff ) {
                     index = i;
                     min_diff = diff;
-#if JAVA
-                    y = _KEY[i][1];
-#else
                     y = _KEY[i, 1];
-#endif
                 }
             }
             return y;
@@ -403,10 +333,8 @@ namespace cadencii
 
         public void VolumeTracker_Resize( Object sender, EventArgs e )
         {
-#if !JAVA
             this.Width = WIDTH;
             this.Height = HEIGHT;
-#endif
         }
 
         public void trackFeder_ValueChanged( Object sender, EventArgs e )
@@ -414,15 +342,9 @@ namespace cadencii
             mFeder = getFederFromYCoord( 151 - (trackFeder.Value - 26) );
             txtFeder.Text = (mFeder / 10.0) + "";
             try {
-#if JAVA
-                federChangedEvent.raise( mTrack, mFeder );
-#elif QT_VERSION
-                federChanged( mTrack, mFeder );
-#else
                 if ( FederChanged != null ) {
                     FederChanged.Invoke( mTrack, mFeder );
                 }
-#endif
             } catch ( Exception ex ) {
                 serr.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
             }
@@ -433,15 +355,9 @@ namespace cadencii
             mPanpot = trackPanpot.Value;
             txtPanpot.Text = mPanpot + "";
             try {
-#if JAVA
-                panpotChangedEvent.raise( mTrack, mPanpot );
-#elif QT_VERSION
-                panpotChanged( mTrack, mPanpot );
-#else
                 if ( PanpotChanged != null ) {
                     PanpotChanged.Invoke( mTrack, mPanpot );
                 }
-#endif
             } catch ( Exception ex ) {
                 serr.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
             }
@@ -494,15 +410,9 @@ namespace cadencii
         public void chkSolo_Click( Object sender, EventArgs e )
         {
             try {
-#if JAVA
-                soloButtonClickEvent.raise( this, e );
-#elif QT_VERSION
-                soloButtonClick( this, e );
-#else
                 if ( SoloButtonClick != null ) {
                     SoloButtonClick.Invoke( this, e );
                 }
-#endif
             } catch ( Exception ex ) {
                 serr.println( "VolumeTracker#chkSolo_Click; ex=" + ex );
             }
@@ -512,15 +422,9 @@ namespace cadencii
         {
             mMuted = chkMute.Checked;
             try {
-#if JAVA
-                muteButtonClickEvent.raise( this, e );
-#elif QT_VERSION
-                muteButtonClick( this, e );
-#else
                 if ( MuteButtonClick != null ) {
                     MuteButtonClick.Invoke( this, e );
                 }
-#endif
             } catch ( Exception ex ) {
                 serr.println( "VolumeTracker#chkMute_Click; ex=" + ex );
             }
@@ -535,22 +439,14 @@ namespace cadencii
             txtFeder.KeyDown += new KeyEventHandler( txtFeder_KeyDown );
             chkSolo.Click += new EventHandler( chkSolo_Click );
             chkMute.Click += new EventHandler( chkMute_Click );
-#if !JAVA
             txtFeder.Enter += new EventHandler( txtFeder_Enter );
             txtPanpot.Enter += new EventHandler( txtPanpot_Enter );
-#endif
         }
 
         private void setResources()
         {
         }
 
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/VolumeTracker.java
-        //INCLUDE-SECTION METHOD ./ui/java/VolumeTracker.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary> 
         /// 必要なデザイナ変数です。
@@ -709,9 +605,6 @@ namespace cadencii
         private System.Windows.Forms.CheckBox chkSolo;
 
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

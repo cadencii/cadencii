@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import java.io.*;
-import java.awt.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-import cadencii.xml.*;
-import cadencii.apputil.*;
-#else
 using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
@@ -40,8 +28,6 @@ using cadencii.java.awt;
 
 namespace cadencii
 {
-
-#endif
 
     public class Utility
     {
@@ -80,13 +66,6 @@ namespace cadencii
         /// </summary>
         public static string normalizePath( string path )
         {
-#if JAVA
-            if( path.indexOf( "~" ) >= 0 ){
-                String usr = System.getProperty( "user.name" );
-                String tild = "/Users/" + usr;
-                path = path.replace( "~", tild );
-            }
-#endif
             path = path.Replace( "\\", "\\\\\\\\" );
             return path;
         }
@@ -97,11 +76,9 @@ namespace cadencii
         /// <returns></returns>
         public static string getExecutingUtau()
         {
-#if !JAVA
             foreach ( System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName( "utau" ) ) {
                 return p.MainModule.FileName;
             }
-#endif
             return "";
         }
 
@@ -806,11 +783,7 @@ namespace cadencii
                 if ( m1 < 0 ) {
                     break;
                 }
-#if JAVA
-                int eq_mi_1 = (int)equ.charAt( m1 - 1 );
-#else
                 int eq_mi_1 = equ[m1 - 1];
-#endif
                 if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
                     equ = equ.Substring( 0, m1 - 0 ) + equ.Substring( m1 + 2 ); // -- を 取る
                 } else {
@@ -828,11 +801,7 @@ namespace cadencii
                 if ( m1 < 0 ) {
                     break;
                 }
-#if JAVA
-                int eq_mi_1 = (int)equ.charAt( m1 - 1 );
-#else
                 int eq_mi_1 = equ[m1 - 1];
-#endif
                 if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
                     m0 = m1 + 1;
                 } else {
@@ -886,21 +855,13 @@ namespace cadencii
                     int check0 = 0; // strが数値（数字）かどうかチェック（str="-3.7" なら 数値なので 0 とする）
                     for ( int i = 0; i < PortUtil.getStringLength( str2 ); i++ ) {
                         if ( i == 0 ) {
-#if JAVA
-                            int str0 = (int)str2.charAt( 0 );
-#else
                             int str0 = str2[0];
-#endif
                             if ( (str0 < 48 || str0 > 57) && str0 != 46 && str0 != 43 && str0 != 45 ) {
                                 check0 = 1;
                                 break;
                             }
                         } else {
-#if JAVA
-                            int stri = (int)str2.charAt( i );
-#else
                             int stri = str2[i];
-#endif
                             if ( (stri < 48 || stri > 57) && stri != 46 ) {
                                 check0 = 1;
                                 break;
@@ -1353,15 +1314,7 @@ namespace cadencii
             } else if ( key.Equals( Keys.D9 ) ) {
                 return "9";
             } else if ( key.Equals( Keys.Menu ) ) {
-#if JAVA
-                return new String( new char[]{ '\u2318' } );
-#else
                 return new string( '\x2318', 1 );
-#endif
-#if JAVA_MAC
-            } else if ( key.Equals( Keys.Back ) ){
-                return "⌫";
-#endif
             } else {
                 return key.ToString();
             }
@@ -1372,38 +1325,7 @@ namespace cadencii
         /// Gets the path for application data
         /// </summary>
         public static string getApplicationDataPath() {
-#if JAVA
-            String osname =  System.getProperty( "os.name" );
-            String appdata = "./";
-            if ( osname.indexOf( "Windows" ) >= 0 ) {
-                appdata = System.getenv( "LOCALAPPDATA" );
-                if ( appdata == null ) {
-                    appdata = System.getenv( "APPDATA" );
-                    if ( appdata != null ) {
-                        String roaming = "Roaming";
-                        int indx = appdata.indexOf( roaming );
-                        if( indx > 0 ){
-                            appdata = appdata.substring( 0, indx ) + "Local" + appdata.substring( indx + roaming.length() );
-                        }
-                    }
-                }
-            } else {
-                String home = System.getenv( "HOME" );
-                if ( home != null && osname != null ) {
-                    if ( osname.indexOf( "nix") >= 0 || osname.indexOf( "nux" ) >= 0 ) {
-                        // for Unix-like system which have desktop
-                        // based on freedesktop.org spec
-                        appdata = fsys.combine( fsys.combine( home, ".local" ), "share" );
-                    } else {
-                        // for MacOSX
-                        appdata = fsys.combine( fsys.combine( home, "Library" ), "Preferences" );
-                    }
-                }
-            }
-            String dir = fsys.combine( appdata, "Boare" );
-#else
             string dir = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
-#endif
             if (!Directory.Exists(dir)) {
                 PortUtil.createDirectory( dir );
             }
@@ -1518,39 +1440,27 @@ namespace cadencii
                 Boolean v = directives[ k ];
                 suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
             }
-#if JAVA
-            suffix += "\n";
-            suffix += "wine:" + Config.getWineVersion();
-#endif
             return BAssemblyInfo.fileVersion + " " + suffix;
         }
 
-#if !JAVA
         public static string getAssemblyConfigurationAttribute() {
             Assembly a = Assembly.GetAssembly( typeof( AppManager ) );
             AssemblyConfigurationAttribute attr = (AssemblyConfigurationAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyConfigurationAttribute ) );
             return attr.Configuration;
         }
-#endif
 
-#if !JAVA
         public static string getAssemblyFileVersion( Type t ) {
             Assembly a = Assembly.GetAssembly( t );
             AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
             return afva.Version;
         }
-#endif
 
-#if !JAVA
         public static string getAssemblyNameAndFileVersion( Type t ) {
             Assembly a = Assembly.GetAssembly( t );
             AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
             return a.GetName().Name + " v" + afva.Version;
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

@@ -12,18 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-
-#else
 
 using System;
 using System.Windows.Forms;
@@ -55,13 +43,8 @@ namespace cadencii {
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class VocaloidWaveGenerator extends WaveUnit implements WaveGenerator
-#else
     public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming
-#endif
     {
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
@@ -78,9 +61,7 @@ namespace cadencii
         private WaveReceiver mReceiver = null;
         private int mTrimRemain = 0;
         private bool mRunning = false;
-#if !JAVA
         private VocaloidDriver mDriver = null;
-#endif
         /// <summary>
         /// 波形処理ラインのサンプリング周波数
         /// </summary>
@@ -256,7 +237,6 @@ namespace cadencii
                 trim_sec = split.getSecFromClock( split.getPreMeasureClocks() );
             }
             split.updateTotalClocks();
-#if !JAVA
             // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
             for ( int i = 0; i < VSTiDllManager.vocaloidDriver.Count; i++ ) {
@@ -275,7 +255,6 @@ namespace cadencii
                 exitBegin();
                 return;
             }
-#endif
 
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
@@ -284,11 +263,7 @@ namespace cadencii
 #endif
             VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, mTrack, ms_present );
 #if DEBUG
-#if JAVA
-            String suffix = "_java";
-#else
             string suffix = "_win";
-#endif
             string path = Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
             BufferedWriter bw = null;
             try {
@@ -304,9 +279,6 @@ namespace cadencii
                     bw.newLine();
                 }
             } catch ( Exception ex ) {
-#if JAVA
-                ex.printStackTrace();
-#endif
             } finally {
                 if ( bw != null ) {
                     try {
@@ -340,26 +312,6 @@ namespace cadencii
 
             // アボート要求フラグを初期化
             //mAbortRequired = false;
-#if JAVA
-            int ver = (s_working_renderer == RendererKind.VOCALOID2) ? 2 : 1;
-            VocaloidDaemon vd = VSTiDllManager.vocaloidrvDaemon[ver - 1];
-            if( vd == null ){
-                exitBegin();
-                return;
-            }
-            // 停止処理用のファイルが残っていたら消去する
-            String stp = fsys.combine( vd.getTempPathUnixName(), "stop" );
-#if DEBUG
-            sout.println( "VocaloidWaveGenerator#begin; stp=" + stp + "; isFileExists=" + fsys.isFileExists( stp ) );
-#endif
-            if( fsys.isFileExists( stp ) ){
-                try{
-                    PortUtil.deleteFile( stp );
-                }catch( Exception ex ){
-                    ex.printStackTrace();
-                }
-            }
-#else
             // 使いたいドライバーが使用中だった場合、ドライバーにアボート要求を送る。
             // アボートが終了するか、このインスタンス自身にアボート要求が来るまで待つ。
             if ( mDriver.isRendering() ) {
@@ -370,15 +322,12 @@ namespace cadencii
                     Thread.Sleep( 100 );
                 }
             }
-#endif
 
             // ここにきて初めて再生中フラグが立つ
             mRunning = true;
 
-#if !JAVA
             // 古いイベントをクリア
             mDriver.clearSendEvents();
-#endif
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
             int tempo_count = split.TempoTable.Count;
@@ -397,10 +346,9 @@ namespace cadencii
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
-#if !JAVA
+
             // 送る
             mDriver.sendEvent( masterEventsSrc, masterClocksSrc, 0 );
-#endif
 
             // 次に、合成対象トラックの音符イベントを作成
             int numEvents = nrpn.Length;
@@ -417,191 +365,12 @@ namespace cadencii
                 bodyClocksSrc[i] = c;
                 last_clock = c;
             }
-#if !JAVA
+
             // 送る
             mDriver.sendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
-#endif
 
             // 合成を開始
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
-#if JAVA
-            try{
-                BufferedOutputStream out = vd.outputStream;// process.getOutputStream();
-                BufferedInputStream in = vd.inputStream;
-                // もしかしたら前回レンダリング時のが残っているかもしれないので，取り除く
-                int avail = in.available();
-#if DEBUG
-                sout.println( "VocaloidWaveGenerator#begin; read trailing data of stdout; avail=" + avail );
-#endif
-                for( int i = 0; i < avail; i++ ){
-                    in.read();
-                }
-                // コマンドを送信
-                // マスタートラック
-#if DEBUG
-                sout.println( "VocaloidWaveGenerator#begin; send master" );
-                RandomAccessFile fos_master =
-                    new RandomAccessFile(
-                        fsys.combine(
-                            PortUtil.getApplicationStartupPath(),
-                            "src_master.bin" ), "rw" ); 
-#endif
-                out.write( 0x01 );
-                out.write( 0x04 );
-                byte[] buf = PortUtil.getbytes_uint32_le( tempo_count );
-                out.write( buf, 0, 4 );
-                out.flush();
-                count = 0;
-#if DEBUG
-                fos_master.write( 0x01 );
-                fos_master.write( 0x04 );
-                fos_master.write( buf, 0, 4 );
-                int cnt = 0;
-#endif
-                for( int i = 0; i < tempo_count; i++ ){
-                    buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
-                    out.write( buf, 0, 4 );
-                    out.write( masterEventsSrc, count, 3 );
-#if DEBUG
-                    fos_master.write( buf, 0, 4 );
-                    fos_master.write( masterEventsSrc, count, 3 );
-#endif
-#if DEBUG
-                    for( int j = 0; j < buf.length; j++ ){
-                        if( buf[j] == -1 ){
-                            sout.println( "VocaloidWaveGenerator#begin; byte value become -1 at " + cnt );
-                        }
-                        cnt++;
-                    }
-                    for( int j = count; j < count + 3; j++ ){
-                        if( masterEventsSrc[j] == -1 ){
-                            sout.println( "VocaloidWaveGenerator#begin; byte value become -1 at " + cnt );
-                        }
-                        cnt++;
-                    }
-#endif
-                    count += 3;
-                }
-                out.flush();
-#if DEBUG
-                fos_master.close();
-#endif
-                // 本体トラック
-#if DEBUG
-                sout.println( "VocaloidWaveGenerator#begin; send body" );
-                RandomAccessFile fos_body =
-                    new RandomAccessFile(
-                        fsys.combine(
-                            PortUtil.getApplicationStartupPath(),
-                            "src_body.bin" ), "rw" ); 
-#endif
-                out.write( 0x02 );
-                out.write( 0x04 );
-                buf = PortUtil.getbytes_uint32_le( numEvents );
-                out.write( buf, 0, 4 );
-                out.flush();
-#if DEBUG
-                fos_body.write( 0x02 );
-                fos_body.write( 0x04 );
-                fos_body.write( buf, 0, 4 );
-#endif
-                count = 0;
-                for( int i = 0; i < numEvents; i++ ){
-                    buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
-                    out.write( buf, 0, 4 );
-                    out.write( bodyEventsSrc, count, 3 );
-#if DEBUG
-                    fos_body.write( buf, 0, 4 );
-                    fos_body.write( bodyEventsSrc, count , 3 );
-#endif
-                    count += 3;
-                }
-                out.flush();
-#if DEBUG
-                fos_body.close();
-#endif
-                // 合成開始コマンド
-#if DEBUG
-                sout.println( "VocaloidWaveGenerator#begin; send synth command" );
-#endif
-                long act_total_samples = mTotalSamples + mTrimRemain;
-                out.write( 0x03 );
-                out.write( 0x08 );
-                buf = PortUtil.getbytes_int64_le( act_total_samples );
-                out.write( buf, 0, 8 );
-#if DEBUG
-                RandomAccessFile fos_synth =
-                    new RandomAccessFile(
-                        fsys.combine(
-                            PortUtil.getApplicationStartupPath(),
-                            "src_synth.bin" ), "rw" ); 
-                fos_synth.write( 0x03 );
-                fos_synth.write( 0x08 );
-                fos_synth.write( buf, 0, 8 );
-                fos_synth.close();
-#endif
-                out.flush();
-                long remain = act_total_samples;
-                final int BUFLEN = 1024;
-                double[] l = new double[BUFLEN];
-                double[] r = new double[BUFLEN];
-#if DEBUG
-                long total_read_bytes = 0;
-#endif
-                while( remain > 0 ){
-                    if( state.isCancelRequested() ){
-                        break;
-                    }
-                    int amount = remain > BUFLEN ? BUFLEN : (int)remain;
-                    for( int i = 0; i < amount; i++ ){
-                        // 4バイト以上のデータが読み込めるようになるまで待機
-                        while( in.available() < 4 && !state.isCancelRequested() ){
-                            Thread.sleep( 100 );
-                        }
-                        if( state.isCancelRequested() ){
-                            break;
-                        }
-                        int lh = in.read();
-                        int ll = in.read();
-                        int rh = in.read();
-                        int rl = in.read();
-#if DEBUG
-                        total_read_bytes += 4;
-#endif
-                        short il = (short)(0xffff & ((0xff & lh) << 8) | (0xff & ll));
-                        short ir = (short)(0xffff & ((0xff & rh) << 8) | (0xff & rl));
-                        l[i] = il / 32768.0;
-                        r[i] = ir / 32768.0;
-                    }
-                    if( state.isCancelRequested() ){
-                        break;
-                    }
-                    waveIncomingImpl( l, r, amount, state );
-                    remain -= amount;
-                }
-
-#if DEBUG
-                sout.println( "VocaloidWaveGenerator#begin; total_read_bytes=" + total_read_bytes );
-#endif
-                if( state.isCancelRequested() ){
-                    // デーモンに合成処理の停止を要求
-                    String monitor_dir = vd.getTempPathUnixName();
-                    String stop = fsys.combine( monitor_dir, "stop" );
-                    (new FileOutputStream( stop )).close();
-                }
-                
-                // 途中でアボートした場合に備え，取り残しのstdoutを読み取っておく
-                remain = in.available();
-#if DEBUG
-                sout.println( "VocaloidWaveGenerator#begin; read trailing stdout; remain=" + remain );
-#endif
-                for( long i = 0; i < remain; i++ ){
-                    in.read();
-                }
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-#else // JAVA
 #if DEBUG
             // master
             RandomAccessFile fos_master =
@@ -658,7 +427,6 @@ namespace cadencii
                 mDriverSampleRate,
                 this,
                 state );
-#endif // !JAVA
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。
@@ -674,7 +442,5 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif
 #endif

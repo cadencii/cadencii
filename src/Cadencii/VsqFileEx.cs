@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.xml.*;
-
-#else
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -35,14 +23,8 @@ using cadencii.xml;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class VsqFileEx extends VsqFile implements Cloneable, ICommandRunnable, Serializable
-#else
     [Serializable]
     public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable
-#endif
     {
         private static XmlSerializer mVsqSerializer;
 
@@ -65,17 +47,12 @@ namespace cadencii
         public const string RENDERER_NULL = "NUL0";
 
         public AttachedCurve AttachedCurves;
-#if JAVA
-        @XmlGenericType( BgmFile.class )
-#endif
         public List<BgmFile> BgmFiles = new List<BgmFile>();
         /// <summary>
         /// キャッシュ用ディレクトリのパス
         /// </summary>
         public string cacheDir = "";
-#if !JAVA
         [System.Xml.Serialization.XmlIgnore]
-#endif
         public EditorStatus editorStatus = new EditorStatus();
         /// <summary>
         /// シーケンスの設定
@@ -83,16 +60,10 @@ namespace cadencii
         /// </summary>
         public SequenceConfig config = new SequenceConfig();
 
-#if JAVA
-        static {
-            mVsqSerializer = new XmlSerializer( VsqFileEx.class );
-        }
-#else
         static VsqFileEx()
         {
             mVsqSerializer = new XmlSerializer( typeof( VsqFileEx ) );
         }
-#endif
 
         /// <summary>
         /// 指定したトラックに対して使用する，UTAU互換合成器の番号を取得します
@@ -130,11 +101,7 @@ namespace cadencii
         {
             string str_kind = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND );
             if ( str_kind != null && !str_kind.Equals( "" ) ) {
-#if JAVA
-                RendererKind[] values = RendererKind.values();
-#else
                 RendererKind[] values = (RendererKind[])Enum.GetValues( typeof( RendererKind ) );
-#endif
                 foreach ( RendererKind kind in values ) {
                     if ( str_kind.Equals( kind + "" ) ) {
                         return kind;
@@ -292,11 +259,7 @@ namespace cadencii
         /// </summary>
         /// <param name="clock_start">削除を行う範囲の開始クロック</param>
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
-#if JAVA
-        public void removePart( int clock_start, int clock_end )
-#else
         public new void removePart( int clock_start, int clock_end )
-#endif
         {
             base.removePart( clock_start, clock_end );
             List<BezierCurves> curves = AttachedCurves.getCurves();
@@ -715,19 +678,13 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public new Object Clone()
         {
             return clone();
         }
-#endif
 
-#if JAVA
-        public Object clone() {
-#else
         public new Object clone()
         {
-#endif
             VsqFileEx ret = new VsqFileEx( "Miku", 1, 4, 4, 500000 );
             ret.Track = new List<VsqTrack>();
             int c = Track.Count;
@@ -1309,34 +1266,18 @@ namespace cadencii
         }
 
         public VsqFileEx()
-#if JAVA
-        {
-#else
             :
-#endif
  this( "Miku", 1, 4, 4, 500000 )
-#if JAVA
-            ;
-#else
         {
-#endif
             Track.Clear();
             TempoTable.Clear();
             TimesigTable.Clear();
         }
 
         public VsqFileEx( string singer, int pre_measure, int numerator, int denominator, int tempo )
-#if JAVA
-        {
-#else
             :
-#endif
  base( singer, pre_measure, numerator, denominator, tempo )
-#if JAVA
-            ;
-#else
         {
-#endif
             AttachedCurves = new AttachedCurve();
             int count = Track.Count;
             for ( int i = 1; i < count; i++ ) {
@@ -1345,17 +1286,9 @@ namespace cadencii
         }
 
         public VsqFileEx( UstFile ust )
-#if JAVA
-        {
-#else
             :
-#endif
  base( ust )
-#if JAVA
-            ;
-#else
         {
-#endif
             AttachedCurves = new AttachedCurve();
             int count = Track.Count;
             for ( int i = 1; i < count; i++ ) {
@@ -1364,18 +1297,9 @@ namespace cadencii
         }
 
         public VsqFileEx( string _fpath, string encoding )
-#if JAVA
-            throws FileNotFoundException
-        {
-#else
             :
-#endif
  base( _fpath, encoding )
-#if JAVA
-            ;
-#else
         {
-#endif
             AttachedCurves = new AttachedCurve();
 
             string xml = Path.Combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
@@ -1428,9 +1352,6 @@ namespace cadencii
             } catch ( Exception ex ) {
                 serr.println( "VsqFileEx#readFromXml; ex=" + ex );
                 Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex + "\n" );
-#if JAVA
-                ex.printStackTrace();
-#endif
             } finally {
                 if ( fs != null ) {
                     try {
@@ -1438,9 +1359,6 @@ namespace cadencii
                     } catch ( Exception ex2 ) {
                         serr.println( "VsqFileEx#readFromXml; ex2=" + ex2 );
                         Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex2 + "\n" );
-#if JAVA
-                        ex2.printStackTrace();
-#endif
                     }
                 }
             }
@@ -1497,6 +1415,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,32 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.Serializable;
-#elif __cplusplus
-namespace org { namespace kbinani { namespace vsq {
-#else
 using System;
 
 namespace cadencii.vsq
 {
-
-#endif
-
-
     /// <summary>
     /// 歌手設定を表します。
     /// </summary>
-#if JAVA
-    public class IconHandle implements Cloneable, Serializable
-#elif __cplusplus
-    class IconHandle
-#else
     [Serializable]
     public class IconHandle : ICloneable
-#endif
     {
         /// <summary>
         /// キャプション。
@@ -126,9 +109,6 @@ namespace cadencii.vsq
         }
 #endif
 
-#if JAVA
-#elif __cplusplus
-#else
         /// <summary>
         /// このインスタンスのコピーを作成します。
         /// </summary>
@@ -137,7 +117,6 @@ namespace cadencii.vsq
         {
             return clone();
         }
-#endif
 
 #if __cplusplus
     };
@@ -145,9 +124,4 @@ namespace cadencii.vsq
     }
 #endif
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

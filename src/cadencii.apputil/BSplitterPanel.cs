@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * BSplitterPanel.cs
  * Copyright © 2008-2011 kbinani
@@ -95,4 +94,3 @@ namespace cadencii.apputil {
     }
 
 }
-#endif

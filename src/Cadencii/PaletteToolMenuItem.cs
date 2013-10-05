@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.windows.forms.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
@@ -27,24 +19,14 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class PaletteToolMenuItem extends BMenuItem
-#else
     public class PaletteToolMenuItem : ToolStripMenuItem
-#endif
     {
         private string mPaletteToolID;
 
         public PaletteToolMenuItem( string id )
-#if JAVA
-        {
-            super();
-#else
             : base()
         {
-#endif
             mPaletteToolID = id;
         }
 
@@ -54,6 +36,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

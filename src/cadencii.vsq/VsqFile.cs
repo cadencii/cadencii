@@ -12,16 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #define NEW_IMPL
-#if JAVA
-
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 
 using System;
 using System.Collections.Generic;
@@ -33,35 +23,20 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// VSQファイルの内容を保持するクラス
     /// </summary>
-#if JAVA
-    public class VsqFile implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqFile : ICloneable
-#endif
     {
         /// <summary>
         /// トラックのリスト．最初のトラックはMasterTrackであり，通常の音符が格納されるトラックはインデックス1以降となる
         /// </summary>
-#if JAVA
-        @XmlGenericType( VsqTrack.class )
-#endif
         public List<VsqTrack> Track;
         /// <summary>
         /// テンポ情報を保持したテーブル
         /// </summary>
-#if JAVA
-        @XmlGenericType( TempoTableEntry.class )
-#endif
         public TempoVector TempoTable;
-#if JAVA
-        @XmlGenericType( TimeSigTableEntry.class )
-#endif
         public TimesigVector TimesigTable;
         protected const int m_tpq = 480;
         /// <summary>
@@ -82,22 +57,14 @@ namespace cadencii.vsq
         /// </summary>
         public const int MAX_TRACKS = 16;
 
-#if JAVA
-        public VsqFile( UstFile ust )
-        {
-            this( "Miku", 1, 4, 4, ust.getBaseTempo() );
-#else
         public VsqFile( UstFile ust )
             : this( "Miku", 1, 4, 4, ust.getBaseTempo() )
         {
-#endif
 #if DEBUG
-#if !JAVA
             System.IO.StreamWriter sw = new System.IO.StreamWriter( Path.Combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor.log" ) );
             int max = int.MinValue;
             int min = int.MaxValue;
             int lastc = 0;
-#endif
 #endif
             int clock_count = 0;
             VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
@@ -149,12 +116,10 @@ namespace cadencii.vsq
                             abs_pitch.add( clock, pvalue );
                             last_clock = clock;
 #if DEBUG
-#if !JAVA
                             max = Math.Max( max, pvalue );
                             min = Math.Min( min, pvalue );
                             lastc = clock;
                             sw.WriteLine( clock + "\t" + pvalue );
-#endif
 #endif
                         }
                     }
@@ -167,9 +132,7 @@ namespace cadencii.vsq
             }
 
 #if DEBUG
-#if !JAVA
             sw.Close();
-#endif
 #endif
 
             // 音符の先頭位置のピッチが必ず指定された状態にする
@@ -231,9 +194,6 @@ namespace cadencii.vsq
             updateTotalClocks();
             updateTimesigInfo();
 #if DEBUG
-#if !JAVA
-
-
             sw = new System.IO.StreamWriter( Path.Combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
 
             max = int.MinValue;
@@ -260,7 +220,6 @@ namespace cadencii.vsq
             }
 
             sw.Close();
-#endif
 #endif
             reflectPitch( this, 1, pitch );
 #if DEBUG
@@ -1596,23 +1555,17 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         private VsqFile()
         {
         }
 
-#if JAVA
-        private class BarLineIterator implements Iterator{
-#else
         private class BarLineIterator : Iterator<VsqBarLineType>
         {
-#endif
             private List<TimeSigTableEntry> m_list;
             private int m_end_clock;
             private int i;
@@ -1890,9 +1843,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="_fpath"></param>
         public VsqFile( string _fpath, string encoding )
-#if JAVA
-            throws FileNotFoundException
-#endif
         {
             TempoTable = new TempoVector();
             TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
@@ -2308,9 +2258,6 @@ namespace cadencii.vsq
         }
 
         private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, string encoding )
-#if JAVA
-            throws IOException
-#endif
         {
             //VsqTrack item = Tracks[track];
             string _NL = "" + (char)(byte)0x0a;
@@ -2339,11 +2286,7 @@ namespace cadencii.vsq
             int last = 0;
             VsqNrpn[] data = generateNRPN( vsq, track, msPreSend );
 #if DEBUG
-#if JAVA
-            String suffix = "_java";
-#else
             string suffix = "_win";
-#endif 
             string path = Path.Combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
             BufferedWriter bw = null;
             try{
@@ -2354,9 +2297,6 @@ namespace cadencii.vsq
                     bw.newLine();
                 }
             }catch( Exception ex ){
-#if JAVA
-                ex.printStackTrace();
-#endif // JAVA
             }finally{
                 if( bw != null ){
                     try{
@@ -3273,9 +3213,6 @@ namespace cadencii.vsq
         /// <param name="fs"></param>
         /// <param name="item"></param>
         public static void writeCharArray( RandomAccessFile fs, char[] item )
-#if JAVA
-            throws IOException
-#endif
         {
             for ( int i = 0; i < item.Length; i++ ) {
                 fs.write( (byte)item[i] );
@@ -3287,9 +3224,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="data"></param>
         public static void writeUnsignedShort( RandomAccessFile fs, int data )
-#if JAVA
-            throws IOException
-#endif
         {
             byte[] dat = PortUtil.getbytes_uint16_be( data );
             fs.write( dat, 0, dat.Length );
@@ -3300,9 +3234,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="data"></param>
         public static void writeUnsignedInt( RandomAccessFile fs, long data )
-#if JAVA
-            throws IOException
-#endif
         {
             byte[] dat = PortUtil.getbytes_uint32_be( data );
             fs.write( dat, 0, dat.Length );
@@ -3354,15 +3285,10 @@ namespace cadencii.vsq
         /// <param name="fs"></param>
         /// <param name="number"></param>
         public static void writeFlexibleLengthUnsignedLong( RandomAccessFile fs, long number )
-#if JAVA
-            throws IOException
-#endif
         {
             byte[] bytes = getBytesFlexibleLengthUnsignedLong( number );
             fs.write( bytes, 0, bytes.Length );
         }
     }
 
-#if !JAVA
 }
-#endif

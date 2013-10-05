@@ -11,37 +11,23 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// midiイベント。メタイベントは、メタイベントのデータ長をData[1]に格納せず、生のデータをDataに格納するので、注意が必要
     /// </summary>
-#if JAVA
-    public class MidiEvent implements Comparable<MidiEvent> {
-#else
     public struct MidiEvent : IComparable<MidiEvent>
     {
-#endif
         public long clock;
         public int firstByte;
         public int[] data;
 
         private static void writeDeltaClock( RandomAccessFile stream, long number )
-#if JAVA
-            throws IOException
-#endif
         {
             bool[] bits = new bool[64];
             long val = 0x1;
@@ -76,9 +62,6 @@ namespace cadencii.vsq
         }
 
         private static long readDeltaClock( RandomAccessFile stream )
-#if JAVA
-            throws IOException
-#endif
         {
             long ret = 0;
             while ( true ) {
@@ -96,9 +79,6 @@ namespace cadencii.vsq
         }
 
         public static MidiEvent read( RandomAccessFile stream, ByRef<long> last_clock, ByRef<int> last_status_byte )
-#if JAVA
-            throws IOException, Exception
-#endif
         {
             long delta_clock = readDeltaClock( stream );
             last_clock.value += delta_clock;
@@ -209,9 +189,6 @@ namespace cadencii.vsq
         }
 
         public void writeData( RandomAccessFile stream )
-#if JAVA
-            throws IOException
-#endif
         {
             stream.write( firstByte );
             if ( firstByte == 0xff ) {
@@ -268,12 +245,10 @@ namespace cadencii.vsq
             }
         }
 
-#if !JAVA
         public int CompareTo( MidiEvent item )
         {
             return compareTo( item );
         }
-#endif
 
         public static MidiEvent generateTimeSigEvent( int clock, int numerator, int denominator )
         {
@@ -303,6 +278,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

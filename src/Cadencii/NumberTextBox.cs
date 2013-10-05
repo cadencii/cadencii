@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import javax.swing.event.DocumentEvent;
-import cadencii.*;
-import cadencii.windows.forms.*;
-#else
 #define COMPONENT_ENABLE_LOCATION
 using System;
 using cadencii;
@@ -28,13 +20,8 @@ using cadencii.windows.forms;
 
 
 namespace cadencii {
-#endif
 
-#if JAVA
-    public class NumberTextBox extends BTextBox {
-#else
     public class NumberTextBox : System.Windows.Forms.TextBox {
-#endif
         public enum ValueType {
             Double,
             Float,
@@ -47,7 +34,6 @@ namespace cadencii {
         private Color m_backcolor_normal = Color.white;
         private Color m_backcolor_invalid = new Color( 240, 128, 128 );
 
-#if !JAVA
         /// <summary>
         /// IDEでのデザイン用
         /// </summary>
@@ -59,7 +45,6 @@ namespace cadencii {
                 setType( value );
             }
         }
-#endif
 
         public ValueType getType() {
             return m_value_type;
@@ -69,19 +54,11 @@ namespace cadencii {
             m_value_type = value;
         }
 
-#if JAVA
-        public void update( DocumentEvent e ){
-            super.updates( e );
-            validateText();
-        }
-#endif
 
-#if !JAVA
         protected override void OnTextChanged( EventArgs e ) {
             base.OnTextChanged( e );
             validateText();
         }
-#endif
 
         private void validateText() {
             bool valid = false;
@@ -122,6 +99,4 @@ namespace cadencii {
 
     }
 
-#if !JAVA
 }
-#endif

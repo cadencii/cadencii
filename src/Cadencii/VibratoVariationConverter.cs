@@ -12,17 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.componentmodel.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -33,39 +22,24 @@ using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class VibratoVariationConverter extends TypeConverter<VibratoVariation>
-#else
     public class VibratoVariationConverter : TypeConverter
-#endif
     {
-#if !JAVA
         public override bool GetStandardValuesSupported( ITypeDescriptorContext context )
         {
             return isStandardValuesSupported();
         }
-#endif
 
-#if JAVA
-        @Override
-#endif
         public bool isStandardValuesSupported()
         {
             return true;
         }
 
-#if !JAVA
         public override StandardValuesCollection GetStandardValues( ITypeDescriptorContext context )
         {
             return new StandardValuesCollection( getStandardValues().ToArray() );
         }
-#endif
 
-#if JAVA
-        @Override
-#endif
         public List<VibratoVariation> getStandardValues()
         {
             // ビブラート種類の候補値を列挙
@@ -102,7 +76,6 @@ namespace cadencii
             return list;
         }
 
-#if !JAVA
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
         {
             if ( destinationType == typeof( string ) ) {
@@ -111,9 +84,7 @@ namespace cadencii
                 return base.CanConvertTo( context, destinationType );
             }
         }
-#endif
 
-#if !JAVA
         public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType )
         {
             if ( destinationType == typeof( string ) && value is VibratoVariation ) {
@@ -122,11 +93,7 @@ namespace cadencii
                 return base.ConvertTo( context, culture, value, destinationType );
             }
         }
-#endif
 
-#if JAVA
-        @Override
-#endif
         public string convertTo( Object value )
         {
             if( value == null ){
@@ -137,7 +104,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value )
         {
             if ( value is string ) {
@@ -146,11 +112,7 @@ namespace cadencii
                 return base.ConvertFrom( context, culture, value );
             }
         }
-#endif
 
-#if JAVA
-        @Override
-#endif
         public VibratoVariation convertFrom( string value )
         {
             if ( value.Equals( VibratoVariation.empty.description ) ) {
@@ -184,7 +146,6 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
         {
             if ( sourceType == typeof( string ) ) {
@@ -193,10 +154,7 @@ namespace cadencii
                 return base.CanConvertFrom( context, sourceType );
             }
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif
 #endif

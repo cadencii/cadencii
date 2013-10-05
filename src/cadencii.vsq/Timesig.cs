@@ -11,22 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-#else
 namespace cadencii.vsq
 {
-#endif
 
     public struct Timesig
     {
         public int numerator;
         public int denominator;
 
-#if JAVA
-        public Timesig(){
-        }
-#endif
 
         public Timesig( int numerator, int denominator )
         {
@@ -41,6 +33,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

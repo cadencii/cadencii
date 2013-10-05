@@ -11,27 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-
-#endif
-
     /// <summary>
     /// 強弱記号設定を表します。
     /// </summary>
-#if JAVA
-    public class IconDynamicsHandle extends IconParameter implements Cloneable, Serializable
-#else
     [Serializable]
     public class IconDynamicsHandle : IconParameter, ICloneable
-#endif
     {
         /// <summary>
         /// 強弱記号の場合の、IconIDの最初の5文字。
@@ -64,18 +52,8 @@ namespace cadencii.vsq
         /// デフォルトの設定で、新しい強弱記号設定のインスタンスを初期化します。
         /// </summary>
         public IconDynamicsHandle()
-#if JAVA
-        {
-#else
-            :
-#endif
- base()
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+            : base()
+        {}
 
         /// <summary>
         /// 指定されたパラメータを使って、新しい強弱記号設定のインスタンスを初期化します。
@@ -85,17 +63,8 @@ namespace cadencii.vsq
         /// <param name="icon_id">フィールドIconIDの初期値</param>
         /// <param name="index">フィールドOriginalの初期値</param>
         public IconDynamicsHandle( string aic_file, string ids, string icon_id, int index )
-#if JAVA
+            : base( aic_file )
         {
-#else
-            :
-#endif
- base( aic_file )
-#if JAVA
-            ;
-#else
-        {
-#endif
             IDS = ids;
             IconID = icon_id;
             Original = index;
@@ -144,12 +113,10 @@ namespace cadencii.vsq
         /// このインスタンスのコピーを作成します。
         /// </summary>
         /// <returns></returns>
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
 
         /// <summary>
         /// このインスタンスのコピーを作成します。
@@ -208,7 +175,6 @@ namespace cadencii.vsq
             caption = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、キャプションです。
         /// </summary>
@@ -223,7 +189,6 @@ namespace cadencii.vsq
                 setCaption( value );
             }
         }
-#endif
 
         /// <summary>
         /// ゲートタイム長さを取得します。
@@ -243,7 +208,6 @@ namespace cadencii.vsq
             length = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、ゲートタイム長さです。
         /// </summary>
@@ -258,7 +222,6 @@ namespace cadencii.vsq
                 setLength( value );
             }
         }
-#endif
 
         /// <summary>
         /// DYNの開始値を取得します。
@@ -278,7 +241,6 @@ namespace cadencii.vsq
             startDyn = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、DYNの開始値です。
         /// </summary>
@@ -293,7 +255,6 @@ namespace cadencii.vsq
                 setStartDyn( value );
             }
         }
-#endif
 
         /// <summary>
         /// DYNの終了値を取得します。
@@ -313,7 +274,6 @@ namespace cadencii.vsq
             endDyn = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、DYNの終了値です。
         /// </summary>
@@ -328,7 +288,6 @@ namespace cadencii.vsq
                 setEndDyn( value );
             }
         }
-#endif
 
         /// <summary>
         /// DYNカーブを表すリストを取得します。
@@ -348,7 +307,6 @@ namespace cadencii.vsq
             dynBP = value;
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用、DYNカーブを表すリストです。
         /// </summary>
@@ -363,10 +321,7 @@ namespace cadencii.vsq
                 setDynBP( value );
             }
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

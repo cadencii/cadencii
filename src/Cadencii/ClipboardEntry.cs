@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.vsq;
@@ -26,14 +18,8 @@ using cadencii.java.util;
 
 namespace cadencii {
 
-#endif
-
-#if JAVA
-    public class ClipboardEntry implements Serializable {
-#else
     [Serializable]
     public class ClipboardEntry {
-#endif
         public List<VsqEvent> events;
         /// <summary>
         /// コピーorカットで複製されたテンポ
@@ -57,6 +43,4 @@ namespace cadencii {
         public int copyStartedClock;
     }
 
-#if !JAVA
 }
-#endif

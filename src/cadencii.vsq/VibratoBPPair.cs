@@ -11,23 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class VibratoBPPair implements Comparable<VibratoBPPair>, Serializable
-#else
     [Serializable]
     public struct VibratoBPPair : IComparable<VibratoBPPair>
-#endif
     {
         public float X;
         public int Y;
@@ -49,14 +39,10 @@ namespace cadencii.vsq
             return 0;
         }
 
-#if !JAVA
         public int CompareTo( VibratoBPPair item )
         {
             return compareTo( item );
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

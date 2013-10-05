@@ -11,24 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class TempoTableEntry implements Comparable<TempoTableEntry>, Cloneable, Serializable
-#else
     [Serializable]
     public class TempoTableEntry : IComparable<TempoTableEntry>, ICloneable
-#endif
     {
         public int Clock;
         public int Tempo;
@@ -39,24 +28,20 @@ namespace cadencii.vsq
             return "{Clock=" + Clock + ", Tempo=" + Tempo + ", Time=" + Time + "}";
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
         public Object clone()
         {
             return new TempoTableEntry( Clock, Tempo, Time );
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public TempoTableEntry( int clock, int _tempo, double _time )
         {
@@ -74,12 +59,10 @@ namespace cadencii.vsq
             return this.Clock - entry.Clock;
         }
 
-#if !JAVA
         public int CompareTo( TempoTableEntry entry )
         {
             return compareTo( entry );
         }
-#endif
 
         public bool Equals( TempoTableEntry entry )
         {
@@ -91,6 +74,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using System.Threading;
 using System.IO;
@@ -36,66 +24,11 @@ using cadencii.java.io;
 
 
 namespace cadencii {
-#endif
-
-#if JAVA
-    class VocaloidDaemon
-    {
-        public BufferedOutputStream outputStream;
-        public BufferedInputStream inputStream;
-        private Process mProcess;
-        // 一時ディレクトリの実際のパス
-        private String mTempPathUnixName;
-
-        public VocaloidDaemon( Process p, String temp_path_unix_name )
-        {
-            if( p == null ){
-                return;
-            }
-            mProcess = p;
-            outputStream = new BufferedOutputStream( mProcess.getOutputStream() );
-            inputStream = new BufferedInputStream( mProcess.getInputStream() );
-            mTempPathUnixName = temp_path_unix_name;
-        }
-        
-        public String getTempPathUnixName()
-        {
-            return mTempPathUnixName;
-        }
-        
-        public void terminate()
-        {
-            if( fsys.isDirectoryExists( mTempPathUnixName ) ){
-                String stop = fsys.combine( mTempPathUnixName, "stop" );
-                if( fsys.isFileExists( stop ) ){
-                    try{
-                        PortUtil.deleteFile( stop );
-                    }catch( Exception ex ){
-                        ex.printStackTrace();
-                    }
-                }
-                try{
-                    PortUtil.deleteDirectory( mTempPathUnixName );
-                }catch( Exception ex ){
-                    ex.printStackTrace();
-                }
-            }
-            if( mProcess == null ){
-                return;
-            }
-            mProcess.destroy();
-        }
-    }
-#endif
 
     /// <summary>
     /// VSTiのDLLを管理するクラス
     /// </summary>
-#if JAVA
-    public class VSTiDllManager {
-#else
     public static class VSTiDllManager {
-#endif
         //public static int SAMPLE_RATE = 44100;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
@@ -110,14 +43,7 @@ namespace cadencii {
         public static string WineAquesToneDll = "C:\\Program Files\\Steinberg\\VSTplugins\\AquesTone.dll";
 
 #if ENABLE_VOCALOID
-#if JAVA
-        /// <summary>
-        /// vocaloidrv.exeのプロセス
-        /// </summary>
-        public static VocaloidDaemon[] vocaloidrvDaemon = null;
-#else
         public static List<VocaloidDriver> vocaloidDriver = new List<VocaloidDriver>();
-#endif
 #endif
 
 #if ENABLE_AQUESTONE
@@ -157,170 +83,8 @@ namespace cadencii {
             return new EmptyWaveGenerator();
         }
 
-#if JAVA
-        /// <summary>
-        /// createtempdir.exeユーティリティを呼び出して，wine内の一時ディレクトリに
-        /// 新しいディレクトリを作成します．drive_cから直接作ってもいいけど，
-        /// 一時ディレクトリがどこかはwindowsでGetTempPathを呼ばない限り分からないので．
-        /// </summary>
-        private static String createTempPath()
-        {
-            Vector<String> list = AppManager.getWineProxyArgument();
-            list.add( fsys.combine( PortUtil.getApplicationStartupPath(), "createtempdir.exe" ) );
-            try{
-                Process p = Runtime.getRuntime().exec( list.toArray( new String[0] ) );
-                p.waitFor();
-                InputStream i = p.getInputStream();
-                int avail = i.available();
-                char[] c = new char[avail];
-                for( int j = 0; j < avail; j++ ){
-                    c[j] = (char)i.read();
-                }
-                String ret = new String( c );
-                return ret;
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-            return "";
-        }
-#endif
-
-#if JAVA
-        public static void restartVocaloidrvDaemon()
-        {
-#if ENABLE_VOCALOID
-        if( vocaloidrvDaemon == null ){
-                vocaloidrvDaemon = new VocaloidDaemon[MAX_VOCALO_VERSION];
-            }
-            for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
-                VocaloidDaemon vd = vocaloidrvDaemon[i];
-                if( vd == null ){
-                    continue;
-                }
-                vd.terminate();
-            }
-            Thread t = new Thread( new Runnable(){
-                @Override
-                public void run(){
-                    for( int ver = 1; ver <= vocaloidrvDaemon.length; ver++ ){
-                        // /bin/sh vocaloidrv.sh WINEPREFIX WINETOP vocaloidrv.exe midi_master.bin midi_body.bin TOTAL_SAMPLES
-                        Vector<String> list = AppManager.getWineProxyArgument();
-                        String vocaloidrv_exe =
-                            Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" ) );
-                        list.add( vocaloidrv_exe );
-                        
-                        SynthesizerType st = (ver == 1) ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
-                        String dll =
-                            Utility.normalizePath( VocaloSysUtil.getDllPathVsti( st ) );
-                        list.add( dll );
-                        list.add( "-e" );
-                        String tmp = createTempPath();
-                        list.add( Utility.normalizePath( tmp ) );
-#if DEBUG
-                        sout.println( "VocaloidWaveGenerator#begin; list=" );
-                        for( String s : list ){
-                            sout.println( "    " + s );
-                        }
-#endif
-                        try{
-                            Process p = Runtime.getRuntime().exec( list.toArray( new String[0] ) );
-                            String tmp_unix = 
-                                VocaloSysUtil.combineWinePath(
-                                    Utility.normalizePath( AppManager.editorConfig.WinePrefix ),
-                                    tmp );
-                            vocaloidrvDaemon[ver - 1] = new VocaloidDaemon( p, tmp_unix );
-                            final InputStream iserr = p.getErrorStream();
-                            Thread t2 = new Thread( new Runnable(){
-                                @Override
-                                public void run()
-                                {
-                                    try{
-                                        final int BUFLEN = 1024;
-                                        byte[] buffer = new byte[BUFLEN];
-#if DEBUG
-                                        byte[] line = new byte[BUFLEN];
-                                        int pos = 0;
-#endif
-                                        while( true ){
-                                            while( iserr.available() < BUFLEN ){
-                                                Thread.sleep( 100 );
-                                            }
-                                            int i = iserr.read( buffer );
-#if DEBUG
-                                            if( pos + i >= line.length ){
-                                                byte[] tmp = line;
-                                                line = new byte[tmp.length + BUFLEN];
-                                                for( int j = 0; j < tmp.length; j++ ){
-                                                    line[j] = tmp[j];
-                                                }
-                                            }
-                                            for( int j = 0; j < i; j++ ){
-                                                line[pos + j] = buffer[j];
-                                            }
-                                            pos += i;
-                                            // lineのどこかに0x0d, 0x0aが入っているか探す
-                                            int indx_nl = 0;
-                                            while( indx_nl >= 0 ){
-                                                indx_nl = -1;
-                                                for( int j = 0; j < pos; j++ ){
-                                                    int code = (0xff & line[j]);
-                                                    if( code == 0x0d || code == 0x0a ){
-                                                        indx_nl = j;
-                                                        // 次の文字も0x0d, 0x0aなら，無視するようにする
-                                                        if( j + 1 < pos ){
-                                                            int coden = (0xff & line[j + 1]);
-                                                            if( coden == 0x0d || coden == 0x0a ){
-                                                                for( int k = j + 1; k < pos - 1; k++ ){
-                                                                    line[k] = line[k + 1];
-                                                                }
-                                                                pos--;
-                                                            }
-                                                        }
-                                                        break;
-                                                    }
-                                                }
-                                                if( indx_nl >= 0 ){
-                                                    // 0からindx_nl - 1までをプリントアウトする
-                                                    String sl = new String( line, 0, indx_nl );
-                                                    if( !sl.startsWith( "fixme:font:" ) &&
-                                                        !sl.startsWith( "Font metrics:" ) &&
-                                                        !sl.startsWith( "err:font:" ) ){ 
-                                                        System.err.println( sl );
-                                                    }
-                                                    for( int j = indx_nl + 1; j < pos; j++ ){
-                                                        line[j - indx_nl - 1] = line[j];
-                                                    }
-                                                    pos -= (indx_nl + 1);
-                                                }
-                                            }
-#endif
-                                            if( i < BUFLEN ){
-                                                break;
-                                            }
-                                        }
-                                    }catch( Exception ex2 ){
-                                        ex2.printStackTrace();
-                                    }
-                                }
-                            } );
-                            t2.start(); //*/
-                        }catch( Exception ex ){
-                            ex.printStackTrace();
-                            vocaloidrvDaemon[ver - 1] = null;
-                        }
-                    }
-                }
-            } );
-            t.start();
-#endif // ENABLE_VOCALOID
-        }
-#endif // JAVA
-
         public static void init() {
 #if ENABLE_VOCALOID
-#if JAVA
-            restartVocaloidrvDaemon();
-#else
             int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
             string editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
             string ini = "";
@@ -361,7 +125,6 @@ namespace cadencii {
                     serr.println( "VSTiProxy#initCor; ex=" + ex );
                 }
             }
-#endif // JAVA
 #endif // ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
@@ -499,6 +262,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

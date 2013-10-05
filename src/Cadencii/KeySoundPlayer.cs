@@ -11,12 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-import cadencii.media.*;
-#else
 using System;
 using System.IO;
 using cadencii.media;
@@ -25,7 +19,6 @@ using cadencii;
 
 
 namespace cadencii {
-#endif
 
     public class KeySoundPlayer {
         /// <summary>
@@ -88,6 +81,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

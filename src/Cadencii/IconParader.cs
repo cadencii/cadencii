@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import javax.imageio.*;
-import cadencii.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.java.awt;
 using cadencii.windows.forms;
@@ -29,28 +19,21 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// 起動時のスプラッシュウィンドウに表示されるアイコンパレードの、1個のアイコンを表現します
     /// </summary>
-#if JAVA
-    public class IconParader extends BPictureBox
-#else
     public class IconParader : System.Windows.Forms.PictureBox
-#endif
     {
         const int RADIUS = 6; // 角の丸み
         const int DIAMETER = 2 * RADIUS;
         public const int ICON_WIDTH = 48;
         public const int ICON_HEIGHT = 48;
 
-#if !JAVA
         private System.Drawing.Drawing2D.GraphicsPath graphicsPath = null;
         private System.Drawing.Region region = null;
         private System.Drawing.Region invRegion = null;
         private System.Drawing.SolidBrush brush = null;
-#endif
 
         public IconParader()
         {
@@ -64,20 +47,10 @@ namespace cadencii
         public static Image createIconImage( string path_image, string singer_name )
         {
 #if DEBUG
-#if !JAVA
             sout.println( "IconParader#createIconImage; path_image=" + path_image );
-#endif
 #endif
             Image ret = null;
             if (System.IO.File.Exists(path_image)) {
-#if JAVA
-                try{
-                    ret = ImageIO.read( new File( path_image ) );
-                }catch( Exception ex ){
-                    ret = null;
-                    System.out.println( "IconParader#createIconImage; ex=" + ex );
-                }
-#else
                 System.IO.FileStream fs = null;
                 try {
                     fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
@@ -95,7 +68,6 @@ namespace cadencii
                         }
                     }
                 }
-#endif
             }
 
             if ( ret == null ) {
@@ -106,11 +78,7 @@ namespace cadencii
                 bmp.image = new System.Drawing.Bitmap(ICON_WIDTH, ICON_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                 Graphics2D g = new Graphics2D(System.Drawing.Graphics.FromImage(bmp.image));
                 g.clearRect( 0, 0, ICON_WIDTH, ICON_HEIGHT );
-#if JAVA
-                Font font = new Font( "Arial", 0, 10 );
-#else
                 Font font = new Font( System.Windows.Forms.SystemInformation.MenuFont );
-#endif
                 PortUtil.drawStringEx(
                     (Graphics)g, singer_name, font, new Rectangle( 1, 1, ICON_WIDTH - 2, ICON_HEIGHT - 2 ),
                     PortUtil.STRING_ALIGN_NEAR, PortUtil.STRING_ALIGN_NEAR );
@@ -127,9 +95,7 @@ namespace cadencii
             Graphics g = null;
             try {
                 g = new Graphics2D(System.Drawing.Graphics.FromImage(bmp.image));
-#if !JAVA
                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-#endif
                 if ( img != null ) {
                     int img_width = img.getWidth( null );
                     int img_height = img.getHeight( null );
@@ -151,35 +117,22 @@ namespace cadencii
                         y = (int)((ICON_HEIGHT - act_height) / 2.0);
                         h = (int)act_height;
                     }
-#if JAVA
-                    g.drawImage( img, x, y, w, h, null );
-#else
                     System.Drawing.Rectangle destRect = new System.Drawing.Rectangle( x, y, w, h );
                     System.Drawing.Rectangle srcRect = new System.Drawing.Rectangle( 0, 0, img_width, img_height );
                     g.nativeGraphics.DrawImage( img.image, destRect, srcRect, System.Drawing.GraphicsUnit.Pixel );
-#endif
                 }
-#if !JAVA
                 g.nativeGraphics.FillRegion( getBrush(), getInvRegion() );
                 g.nativeGraphics.DrawPath( System.Drawing.Pens.DarkGray, getGraphicsPath() );
-#endif
             } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "IconParader#setImage; ex=" + ex );
-#else
                 Logger.write( typeof( IconParader ) + ".setImage; ex=" + ex + "\n" );
-#endif
             } finally {
-#if !JAVA
                 if ( g != null ) {
                     g.nativeGraphics.Dispose();
                 }
-#endif
             }
             base.Image = bmp.image;
         }
 
-#if !JAVA
         /// <summary>
         /// アイコンの4隅を塗りつぶすためのブラシを取得します
         /// </summary>
@@ -195,9 +148,7 @@ namespace cadencii
             }
             return brush;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 角の丸い枠線を表すGraphicsPathを取得します
         /// </summary>
@@ -229,9 +180,7 @@ namespace cadencii
             }
             return graphicsPath;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// 角の丸いアイコンの画像領域を取得します
         /// </summary>
@@ -243,9 +192,7 @@ namespace cadencii
             }
             return region;
         }
-#endif
 
-#if !JAVA
         /// <summary>
         /// アイコンの画像領域以外の領域(4隅)を取得します
         /// </summary>
@@ -258,9 +205,6 @@ namespace cadencii
             }
             return invRegion;
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

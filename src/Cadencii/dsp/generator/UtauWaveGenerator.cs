@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-
-#else
-
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -39,17 +27,11 @@ using cadencii.utau;
 namespace cadencii
 {
 
-#endif
-
     /// <summary>
     /// UTAUの合成器(または互換合成器)を用いて波形を合成する波形生成器
     /// </summary>
-#if JAVA
-    public class UtauWaveGenerator extends WaveUnit implements WaveGenerator {
-#else
     public class UtauWaveGenerator : WaveUnit, WaveGenerator
     {
-#endif
         public const string FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
         private const int BUFLEN = 1024;
@@ -145,14 +127,7 @@ namespace cadencii
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                    }
-#else
                     Thread.Sleep( 100 );
-#endif
                 }
             }
         }*/
@@ -198,7 +173,6 @@ namespace cadencii
             mSampleRate = sample_rate;
             string id = AppManager.getID();
             mTempDir = Path.Combine( AppManager.getCadenciiTempDir(), id );
-#if !JAVA
             if ( mUseWideCharacterWorkaround ) {
                 string junction_path = System.IO.Path.Combine( getSystemRoot(), "cadencii_" + id + "_temp" );
                 if (!Directory.Exists(junction_path)) {
@@ -207,7 +181,6 @@ namespace cadencii
                 }
                 mTempDir = junction_path;
             }
-#endif
 #if DEBUG
             sout.println("UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + Directory.Exists(mTempDir));
 #endif
@@ -268,20 +241,17 @@ namespace cadencii
             mTrimRemainSeconds = trim_sec;
         }
 
-#if !JAVA
         private static string getSystemRoot()
         {
             string system = System.Environment.GetFolderPath( Environment.SpecialFolder.System );
             return System.IO.Path.GetPathRoot( system );
         }
-#endif
 
         /*private static String getShortPathName( String path )
         {
 #if DEBUG
             String before = path;
 #endif
-#if !JAVA
             if ( path == null ) {
                 return "";
             }
@@ -295,7 +265,6 @@ namespace cadencii
                     path = sb_path.ToString();
                 }
             }
-#endif
 #if DEBUG
             sout.println( "UtauWaveGenerator#getShortPathName; before=" + before + "; after=" + path );
 #endif
@@ -339,10 +308,8 @@ namespace cadencii
             StreamWriter log = null;
 #endif
 #if DEBUG
-#if !JAVA
             System.IO.StreamWriter sw = new System.IO.StreamWriter( "UtauWaveGenerator.begin(long).log" );
             System.IO.StreamWriter sw2 = new System.IO.StreamWriter( "UtauWaveGenerator.begin(long).notes.log" );
-#endif
 #endif
             try {
                 double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * mSampleRate;
@@ -390,10 +357,8 @@ namespace cadencii
                 foreach (var itemi in target.getNoteEventIterator()) {
                     events.Add( itemi );
 #if DEBUG
-#if !JAVA
                     sw2.WriteLine( itemi.Clock + "\t" + itemi.ID.Note * 100 );
                     sw2.WriteLine( (itemi.Clock + itemi.ID.getLength()) + "\t" + itemi.ID.Note * 100 );
-#endif
 #endif
                 }
 
@@ -417,7 +382,6 @@ namespace cadencii
                     if ( 0 <= program_change && program_change < mConfig.UtauSingers.Count ) {
                         singer_raw = mConfig.UtauSingers[ program_change ].VOICEIDSTR;
                         singer = singer_raw;
-#if !JAVA
                         if ( mUseWideCharacterWorkaround ) {
                             string junction = Path.Combine( getSystemRoot(), "cadencii_" + AppManager.getID() + "_singer_" + program_change );
                             if (!Directory.Exists(junction)) {
@@ -426,7 +390,6 @@ namespace cadencii
                             }
                             singer = junction;
                         }
-#endif
                     }
 #if DEBUG
                     sout.println( "UtauWaveGenerator#begin; singer=" + singer + "; singer_raw=" + singer_raw );
@@ -555,14 +518,12 @@ namespace cadencii
                     }
                     
 #if DEBUG
-#if !JAVA
                     string logname =
                         Path.Combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
                     System.IO.StreamWriter sw3 = new System.IO.StreamWriter( logname );
                     int prevx = 0;
                     float max = -100;
                     float min = 12800;
-#endif
 #endif
                     while ( sec <= sec_end ) {
                         // clockでの音符の音の高さを調べる
@@ -604,14 +565,12 @@ namespace cadencii
                         }
                         totalcount++;
 #if DEBUG
-#if !JAVA
                         float ty = (float)pvalue + base_note * 100;
                         max = Math.Max( max, ty );
                         min = Math.Min( min, ty );
                         prevx = clock;
                         sw3.WriteLine( clock + "\t" + ty );
                         sw.WriteLine( clock + "\t" + pvalue + "\t" + dst_note + "\t" + base_note + "\t" + target.getPitchAt( clock ) );
-#endif
 #endif
                         if ( pvalue != 0.0 ) {
                             allzero = false;
@@ -621,7 +580,6 @@ namespace cadencii
                         sec += delta_sec;
                     }
 #if DEBUG
-#if !JAVA
                     int delta = 20;
                     sw3.WriteLine( prevx + "\t" + (min - delta) );
                     sw3.WriteLine( (item.Clock + item.ID.getLength()) + "\t" + (min - delta) );
@@ -630,7 +588,6 @@ namespace cadencii
                     sw3.WriteLine( item.Clock + "\t" + (min - delta) );
                     sw3.WriteLine( item.Clock + "\t" + (max + delta) );
                     sw3.Close();
-#endif
 #endif
 
                     //4_あ_C#4_550.wav
@@ -750,39 +707,6 @@ namespace cadencii
                         bat.WriteLine( "\"" + mResampler + "\" " + rq.getResamplerArgString() );
 #endif
 
-#if JAVA
-                        Vector<String> list = new Vector<String>();
-                        if( mResamplerWithWine ){
-                            list.add( mWine );
-                        }
-                        list.add( mResampler );
-                        for( String s : rq.getResamplerArg() ){
-                            if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ){
-                                s = str.sub( s, 1, s.length() -2 );
-                            }
-                            list.add( s );
-                        }
-#if DEBUG
-                        sout.println( "UtauWaveGenerator#run; args=" );
-                        for( String s : list ){
-                            sout.println( "UtauWaveGenerator#run; " + s );
-                        }
-#endif
-                        ProcessBuilder pb = new ProcessBuilder( list );
-                        Process process = pb.start();
-                        bool д = true;
-                        for( ; д; ){
-                            try{
-                                int ecode = process.exitValue();
-                            }catch( Exception ex ){
-                                //ex.printStackTrace();
-                                Logger.write( UtauWaveGenerator.class + ".begin; ex=" + ex + "\n" );
-                                continue;
-                            }
-                            break;
-                        }
-                        //process.waitFor();
-#else
                         Process process = null;
                         try {
                             process = new Process();
@@ -812,7 +736,6 @@ namespace cadencii
                                 process.Dispose();
                             }
                         }
-#endif
                     }
                     if ( state.isCancelRequested() ) {
                         break;
@@ -1140,11 +1063,7 @@ namespace cadencii
                         }
                         mLeft = null;
                         mRight = null;
-#if JAVA
-                        System.gc();
-#else
                         GC.Collect();
-#endif
 #if DEBUG
                         debugWriteLine( "UtauWaveGenerator#run; ...done(calling WaveIncoming)" );
 #endif
@@ -1173,9 +1092,6 @@ namespace cadencii
             } catch ( Exception ex ) {
                 serr.println( "UtauWaveGenerator.begin; ex=" + ex );
                 Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
-#if JAVA
-                ex.printStackTrace();
-#endif
             } finally {
 #if MAKEBAT_SP
                 if ( bat != null ) {
@@ -1188,10 +1104,8 @@ namespace cadencii
                 }
 #endif
 #if DEBUG
-#if !JAVA
                 sw.Close();
                 sw2.Close();
-#endif
 #endif
                 exitBegin();
                 state.reportComplete();
@@ -1224,41 +1138,6 @@ namespace cadencii
 
         private void processWavtool( List<string> arg, string filebase, string temp_dir, string wavtool, bool invoke_with_wine )
         {
-#if JAVA
-            Vector<String> args = new Vector<String>();
-#if DEBUG
-            sout.println( "UtauWaveGenerator#processWavtool; wavtool=" + wavtool + "; invoke_with_wine=" + invoke_with_wine );
-#endif
-            if( invoke_with_wine ){
-                args.add( mWine );
-            }
-            args.add( wavtool.replace( "\\", "/" ) );
-            int size = vec.size( arg );
-            for( int i = 0; i < size; i++ ){
-                vec.add( args, vec.get( arg, i ) );
-            }
-#if DEBUG
-            sout.println( "UtauWaveGenerator#processWavtool; arg=" );
-#endif
-            size = vec.size( args );
-            for( int i = 0; i < size; i++ ){
-                String s = vec.get( args, i );
-                if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ){
-                    s = str.sub( s, 1, s.length() - 2 );
-                }
-#if DEBUG
-                sout.println( "    " + s );
-#endif
-                vec.set( args, i, s );
-            }
-            ProcessBuilder pb = new ProcessBuilder( args );
-            try{
-                Process process = pb.start();
-                process.waitFor();
-            }catch( Exception ex ){
-                Logger.write( UtauWaveGenerator.class + ".processWavtool; ex=" + ex + "\n" );
-            }
-#else
             Process process = null;
             try {
                 process = new Process();
@@ -1291,7 +1170,6 @@ namespace cadencii
                     process.Dispose();
                 }
             }
-#endif
         }
 
         private void waveIncoming( double[] l, double[] r, int length, int sample_rate )
@@ -1359,6 +1237,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

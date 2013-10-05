@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * IAviWriter.cs
  * Copyright © 2009-2011 kbinani
@@ -33,4 +32,3 @@ namespace cadencii.media {
     }
 
 }
-#endif

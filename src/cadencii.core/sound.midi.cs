@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * sound.midi.cs
  * Copyright © 2011 kbinani
@@ -324,4 +323,3 @@ namespace cadencii.javax.sound.midi
     }
 
 }
-#endif

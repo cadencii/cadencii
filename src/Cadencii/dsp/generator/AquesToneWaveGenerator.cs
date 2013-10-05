@@ -23,11 +23,7 @@ using cadencii.vsq;
 namespace cadencii
 {
 
-#if JAVA
-    public class AquesToneWaveGenerator implements WaveGenerator
-#else
     public class AquesToneWaveGenerator : AquesToneWaveGeneratorBase
-#endif
     {
         private AquesToneDriver mDriver;
 

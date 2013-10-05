@@ -11,29 +11,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
-
-
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// 信号を分岐する装置
     /// </summary>
-#if JAVA
-    public class Separator extends WaveUnit implements WaveReceiver
-#else
     public class Separator : WaveUnit, WaveReceiver
-#endif
     {
         const int _BUFLEN = 1024;
         private List<WaveReceiver> mReceivers = new List<WaveReceiver>();
@@ -101,6 +89,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormVibratoConfig.java
-
-import java.awt.event.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii;
@@ -35,14 +23,9 @@ using cadencii.java.util;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormVibratoConfig extends BDialog{
-#else
     public class FormVibratoConfig : System.Windows.Forms.Form
     {
-#endif
         private VibratoHandle m_vibrato;
         private int m_note_length;
 
@@ -61,12 +44,7 @@ namespace cadencii
             SynthesizerType type, 
             bool use_original )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
 
 #if DEBUG
             AppManager.debugWriteLine( "FormVibratoConfig.ctor(Vsqhandle,int,DefaultVibratoLength)" );
@@ -323,12 +301,6 @@ namespace cadencii
         }
         #endregion
 
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormVibratoConfig.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormVibratoConfig.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -528,9 +500,6 @@ namespace cadencii
         private System.Windows.Forms.RadioButton radioVocaloid1;
         private System.Windows.Forms.RadioButton radioUserDefined;
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -11,18 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.vsq.*;
-#else
 using System;
 using cadencii.vsq;
 
-
-
 namespace cadencii {
-#endif
 
     public class VConnectRenderingQueue {
         /// <summary>
@@ -57,6 +49,4 @@ namespace cadencii {
 #endif
     }
 
-#if !JAVA
 }
-#endif

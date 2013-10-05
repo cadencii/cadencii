@@ -11,7 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 #define RGB24
 using System;
 using System.Runtime.InteropServices;
@@ -222,4 +221,3 @@ namespace cadencii.apputil {
     }
 
 }
-#endif

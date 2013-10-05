@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * XmlStaticMemberSerializerEx.cs
  * Copyright © 2010-2011 kbinani
@@ -45,4 +44,3 @@ namespace cadencii {
     }
 
 }
-#endif

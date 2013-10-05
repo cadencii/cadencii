@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.event.*;
-import cadencii.ui.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using cadencii.apputil;
 using cadencii;
@@ -28,13 +20,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormBeatConfigController extends ControllerBase implements FormBeatConfigUiListener
-#else
     public class FormBeatConfigController : ControllerBase, FormBeatConfigUiListener
-#endif
     {
         private FormBeatConfigUi mUi;
 
@@ -218,6 +205,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

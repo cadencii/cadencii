@@ -11,23 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormIconPalette.java
-
-import java.util.*;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
-import java.io.*;
-import javax.swing.*;
-import javax.imageio.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Linq;
@@ -38,43 +21,12 @@ using cadencii.java.util;
 using cadencii.vsq;
 using cadencii.windows.forms;
 
-
-
 namespace cadencii
 {
-#endif
 
     class DraggableBButton : Button
     {
         private IconDynamicsHandle mHandle = null;
-#if JAVA
-        public DraggableBButton()
-        {
-            super();
-            int drag_action = DnDConstants.ACTION_COPY;
-            new DragSource().createDefaultDragGestureRecognizer(
-                this, 
-                drag_action, 
-                new DragGestureListener(){
-                    //@Override
-                    public void dragGestureRecognized( DragGestureEvent e ) {
-                        // 1) cursor
-                        Cursor dragCursor = DragSource.DefaultCopyDrop;
-    
-                        // 2) transfer data
-                        // タグにはIconDynamicsHandleが格納されている
-                        if( mHandle == null ){
-                            return;
-                        }
-                        String icon_id = mHandle.IconID;
-                        StringSelection transferable = new StringSelection( ClipboardModel.CLIP_PREFIX + ":" + icon_id );
-    
-                        // 3) start drag
-                        e.startDrag( dragCursor, transferable );
-                    }
-                } );
-        }
-#endif
 
         public IconDynamicsHandle getHandle()
         {
@@ -87,11 +39,7 @@ namespace cadencii
         }
     }
 
-#if JAVA
-    public class FormIconPalette extends BForm
-#else
     public class FormIconPalette : Form
-#endif
     {
         private List<Button> dynaffButtons = new List<Button>();
         private List<Button> crescendButtons = new List<Button>();
@@ -102,12 +50,7 @@ namespace cadencii
 
         public FormIconPalette( FormMain main_window )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             mMainWindow = main_window;
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -167,11 +110,7 @@ namespace cadencii
         {
             foreach (var handle in VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 )) {
                 string icon_id = handle.IconID;
-#if JAVA
                 DraggableBButton btn = new DraggableBButton();
-#else
-                DraggableBButton btn = new DraggableBButton();
-#endif
                 btn.Name = icon_id;
                 btn.setHandle( handle );
                 string buttonIconPath = handle.getButtonImageFullPath();
@@ -248,25 +187,9 @@ namespace cadencii
                 } else {
                     continue;
                 }
-#if JAVA
-                LayoutManager lm = jPanel.getLayout();
-                GridBagLayout gbl = null;
-                if( lm != null && lm instanceof GridBagLayout ){
-                    gbl = (GridBagLayout)lm;
-                }else{
-                    gbl = new GridBagLayout();
-                    jPanel.setLayout( gbl );
-                }
-                GridBagConstraints g = new GridBagConstraints();
-                g.gridx = iw;
-                g.gridy = ih;
-                gbl.setConstraints( btn, g );
-                jPanel.add( btn );
-#else
                 btn.Location = new System.Drawing.Point( iw * buttonWidth, ih * buttonWidth );
                 this.Controls.Add( btn );
                 btn.BringToFront();
-#endif
             }
 
             // ウィンドウのサイズを固定化する
@@ -284,17 +207,8 @@ namespace cadencii
                 height += buttonWidth;
             }
             width = Math.Max( width, buttonWidth * decrescendButtons.Count );
-#if JAVA
-            pack();
-            Insets i = getInsets();
-            Dimension size = new Dimension( width + i.left + i.right, height + i.top + i.bottom );
-            setPreferredSize( size );
-            setSize( size );
-            setResizable( false );
-#else
             this.ClientSize = new System.Drawing.Size( width, height );
             var size = this.Size;
-#endif
             this.MaximumSize = new System.Drawing.Size(size.Width, size.Height);
             this.MinimumSize = new System.Drawing.Size(size.Width, size.Height);
         }
@@ -341,19 +255,11 @@ namespace cadencii
             item.ID.setLength( length );
             AppManager.mAddingEvent = item;
 
-#if JAVA
-            //TODO: fixme FormIconPalette#handleCommonMouseDown
-#else
             btn.DoDragDrop( handle, System.Windows.Forms.DragDropEffects.All );
-#endif
         }
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormIconPalette.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormIconPalette.java
-#else
         private void InitializeComponent()
         {
             this.menuBar = new MenuStrip();
@@ -409,11 +315,8 @@ namespace cadencii
         private ToolStripMenuItem menuWindow;
         private ToolStripMenuItem menuWindowHide;
 
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

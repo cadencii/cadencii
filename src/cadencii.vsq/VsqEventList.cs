@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,21 +19,12 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// 固有ID付きのVsqEventのリストを取り扱う
     /// </summary>
-#if JAVA
-    public class VsqEventList implements Serializable
-#else
     [Serializable]
     public class VsqEventList
-#endif
     {
-#if JAVA
-        @XmlGenericType( VsqEvent.class )
-#endif
         public List<VsqEvent> Events;
         private List<int> m_ids;
 
@@ -197,6 +180,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

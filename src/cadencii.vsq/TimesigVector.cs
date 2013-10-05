@@ -11,30 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-
-#else
-
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class TimesigVector extends Vector<TimeSigTableEntry> implements Serializable
-#else
     [Serializable]
     public class TimesigVector : List<TimeSigTableEntry>
-#endif
     {
         /// <summary>
         /// TimeSigTableの[*].Clockの部分を更新します
@@ -162,6 +147,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

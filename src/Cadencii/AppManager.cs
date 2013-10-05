@@ -12,24 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 //#define ENABLE_OBSOLUTE_COMMAND
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
-import javax.swing.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-import cadencii.xml.*;
-import cadencii.media.*;
-import cadencii.ui.*;
-
-#else
-
 using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
@@ -51,28 +33,6 @@ using cadencii.utau;
 
 namespace cadencii
 {
-#endif
-
-#if JAVA
-    class GeneratorRunner extends Thread
-    {
-        private WaveGenerator mGenerator = null;
-        private long mSamples;
-        private WorkerState mState;
-
-        public GeneratorRunner( WaveGenerator generator, long samples, WorkerState state )
-        {
-            mGenerator = generator;
-            mSamples = samples;
-            mState = state;
-        }
-
-        public void run()
-        {
-            mGenerator.begin( mSamples, mState );
-        }
-    }
-#endif
 
     class RunGeneratorQueue
     {
@@ -97,11 +57,7 @@ namespace cadencii
         /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
         /// </summary>
         public const int DYNAFF_ITEM_WIDTH = 40;
-#if JAVA
-        public const int FONT_SIZE8 = 14;
-#else
         public const int FONT_SIZE8 = 8;
-#endif
         public const int FONT_SIZE9 = FONT_SIZE8 + 1;
         public const int FONT_SIZE10 = FONT_SIZE8 + 2;
         public const int FONT_SIZE50 = FONT_SIZE8 + 42;
@@ -122,11 +78,7 @@ namespace cadencii
         /// <summary>
         /// AttachedCurve用のシリアライザ
         /// </summary>
-#if JAVA
-        public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( AttachedCurve.class );
-#else
         public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
-#endif
         /// <summary>
         /// 画面描画に使用する共用のフォントオブジェクト
         /// </summary>
@@ -696,9 +648,6 @@ namespace cadencii
                 } catch ( Exception ex ) {
                     Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
                     serr.println( "AppManager.previewStart; ex=" + ex );
-#if JAVA
-                    ex.printStackTrace();
-#endif
                 }
             }
 
@@ -844,20 +793,13 @@ namespace cadencii
                 arg.file = wavePath;
                 arg.secStart = secStart;
                 arg.secEnd = secEnd;
-#if JAVA
-                waveViewReloadRequiredEvent.raise( AppManager.class, arg );
-#else
                 if ( WaveViewReloadRequired != null ) {
                     WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
                 }
 #endif
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex + "\n" );
                 sout.println( typeof( AppManager ) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
             }
         }
 
@@ -1241,16 +1183,7 @@ namespace cadencii
                 if ( g != null ) {
                     mWaveGeneratorState.requestCancel();
                     while ( mWaveGenerator.isRunning() ) {
-#if JAVA
-                        try{
-                            Thread.sleep( 100 );
-                        }catch( Exception ex ){
-                        }
-#elif __cplusplus
-                        TODO
-#else
                         Thread.Sleep( 100 );
-#endif
                     }
                 }
                 mWaveGenerator = null;
@@ -1268,16 +1201,7 @@ namespace cadencii
                 if ( g != null ) {
                     mWaveGeneratorState.requestCancel();
                     while ( g.isRunning() ) {
-#if JAVA
-                        try{
-                            Thread.sleep( 100 );
-                        }catch( Exception ex ){
-                        }
-#elif __cplusplus
-                        TODO
-#else
                         Thread.Sleep( 100 );
-#endif
                     }
                 }
                 mWaveGenerator = generator;
@@ -1297,48 +1221,22 @@ namespace cadencii
                 Thread t = mPreviewThread;
                 if ( t != null ) {
 #if DEBUG
-#if JAVA
-                    sout.println( "AppManager#runGenerator; mPreviewThread.getState()=" + t.getState() );
-#else
                     sout.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + t.ThreadState );
 #endif
-#endif
-#if JAVA
-                    if( t.getState() != Thread.State.TERMINATED ){
-#else
                     if ( t.ThreadState != ThreadState.Stopped ) {
-#endif
                         WaveGenerator g = mWaveGenerator;
                         if ( g != null ) {
                             mWaveGeneratorState.requestCancel();
                             while ( mWaveGenerator.isRunning() ) {
-#if JAVA
-                                try{
-                                    Thread.sleep( 100 );
-                                }catch( Exception ex ){
-                                }
-#elif __cplusplus
-                                TODO
-#else
                                 Thread.Sleep( 100 );
-#endif
                             }
                         }
 #if DEBUG
                         sout.println( "AppManager#runGenerator; waiting stop..." );
 #endif
-#if JAVA
-                        while( t.getState() != Thread.State.TERMINATED ){
-                            try{
-                                Thread.sleep( 100 );
-                            }catch( Exception ex ){
-                            }
-                        }
-#else
                         while ( t.ThreadState != ThreadState.Stopped ) {
                             Thread.Sleep( 100 );
                         }
-#endif
 #if DEBUG
                         sout.println( "AppManager#runGenerator; waiting stop... done" );
 #endif
@@ -1346,17 +1244,12 @@ namespace cadencii
                 }
 
                 mWaveGeneratorState.reset();
-#if JAVA
-                mPreviewThread = new GeneratorRunner( mWaveGenerator, samples, mWaveGeneratorState );
-                mPreviewThread.start();
-#else
                 RunGeneratorQueue q = new RunGeneratorQueue();
                 q.generator = mWaveGenerator;
                 q.samples = samples;
                 mPreviewThread = new Thread(
                     new ParameterizedThreadStart( runGeneratorCore ) );
                 mPreviewThread.Start( q );
-#endif
             }
         }
 
@@ -1554,9 +1447,6 @@ namespace cadencii
                         PortUtil.deleteFile( xml );
                     }catch( Exception ex ){
                         Logger.write( typeof( AppManager ) + ".serializeRendererStatus; ex=" + ex + "\n" );
-#if JAVA
-                        ex.printStackTrace();
-#endif
                     }
                 }
             }
@@ -1656,11 +1546,7 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-#if JAVA
-        public static int showModalDialog( UiBase dialog, Component parent_form )
-#else
         public static int showModalDialog( UiBase dialog, System.Windows.Forms.Form parent_form )
-#endif
         {
             beginShowDialog();
             int ret = dialog.showDialog( parent_form );
@@ -1689,11 +1575,7 @@ namespace cadencii
         /// <param name="open_mode"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-#if JAVA
-        public static int showModalDialog( BFileChooser dialog, bool open_mode, Object main_form )
-#else
         public static DialogResult showModalDialog( FileDialog dialog, bool open_mode, Form main_form )
-#endif
         {
             beginShowDialog();
             DialogResult ret = dialog.ShowDialog( main_form );
@@ -1813,15 +1695,9 @@ namespace cadencii
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             editHistory.register( mVsq.executeCommand( run ) );
             try {
-#if JAVA
-                editedStateChangedEvent.raise( typeof( AppManager ), true );
-#elif QT_VERSION
-                editedStateChanged( this, true );
-#else
                 if ( EditedStateChanged != null ) {
                     EditedStateChanged.Invoke( typeof( AppManager ), true );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
                 serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
@@ -1838,15 +1714,9 @@ namespace cadencii
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             editHistory.register( mVsq.executeCommand( run ) );
             try {
-#if JAVA
-                editedStateChangedEvent.raise( typeof( AppManager ), true );
-#elif QT_VERSION
-                editedStateChanged( this, true );
-#else
                 if ( EditedStateChanged != null ) {
                     EditedStateChanged.Invoke( typeof( AppManager ), true );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
                 serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
@@ -1872,15 +1742,9 @@ namespace cadencii
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             editHistory.register( mVsq.executeCommand( run ) );
             try {
-#if JAVA
-                editedStateChangedEvent.raise( typeof( AppManager ), true );
-#elif QT_VERSION
-                editedStateChanged( this, true );
-#else
                 if ( EditedStateChanged != null ) {
                     EditedStateChanged.Invoke( typeof( AppManager ), true );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
                 serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
@@ -2100,15 +1964,9 @@ namespace cadencii
                 ICommand inv = mVsq.executeCommand( run );
                 if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
                     try {
-#if JAVA
-                        updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );
-#elif QT_VERSION
-                        updateBgmStatusRequired( this, null );
-#else
                         if ( UpdateBgmStatusRequired != null ) {
                             UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                         }
-#endif
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".redo; ex=" + ex + "\n" );
                         serr.println( typeof( AppManager ) + ".redo; ex=" + ex );
@@ -2165,16 +2023,9 @@ namespace cadencii
             mSelectedTool = value;
             if ( old != mSelectedTool ) {
                 try {
-#if JAVA
-                    selectedToolChangedEvent.raise( typeof( AppManager ), new EventArgs() );
-#elif QT_VERSION
-                    selectedToolChanged( this, null );
-#else
                     if ( SelectedToolChanged != null ) {
                         SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
                     }
-#endif
-
                 } catch ( Exception ex ) {
                     serr.println( "AppManager#setSelectedTool; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
@@ -2306,9 +2157,6 @@ namespace cadencii
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
-#if JAVA
-                            ex.printStackTrace();
-#endif
                         }
                     } else if ( !mPlaying ) {
                         try {
@@ -2322,9 +2170,6 @@ namespace cadencii
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
-#if JAVA
-                            ex.printStackTrace();
-#endif
                         }
                     }
                 }
@@ -2347,7 +2192,6 @@ namespace cadencii
                 //String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
                 mVsq.writeAsXml( file );
                 //mVsq.write( file2 );
-#if !JAVA
                 if ( hide ) {
                     try {
                         System.IO.File.SetAttributes( file, System.IO.FileAttributes.Hidden );
@@ -2357,7 +2201,6 @@ namespace cadencii
                         Logger.write( typeof( AppManager ) + ".saveToCor; ex=" + ex + "\n" );
                     }
                 }
-#endif
             }
         }
 
@@ -2492,7 +2335,6 @@ namespace cadencii
             mSelected = value;
         }
 
-#if !JAVA
         [Obsolete]
         public static int Selected
         {
@@ -2501,7 +2343,6 @@ namespace cadencii
                 return getSelected();
             }
         }
-#endif
 
         /// <summary>
         /// xvsqファイルを読込みます．キャッシュディレクトリの更新は行われません
@@ -2517,9 +2358,6 @@ namespace cadencii
                 newvsq = VsqFileEx.readFromXml( file );
             } catch ( Exception ex ) {
                 serr.println( "AppManager#readVsq; ex=" + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
                 Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
                 return true;
             }
@@ -2543,15 +2381,9 @@ namespace cadencii
                 mSelected = -1;
             }
             try {
-#if JAVA
-                updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );
-#elif QT_VERSION
-                updateBgmStatusRequired( this, null );
-#else
                 if ( UpdateBgmStatusRequired != null ) {
                     UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
                 serr.println( typeof( AppManager ) + ".readVsq; ex=" + ex );
@@ -2568,7 +2400,6 @@ namespace cadencii
             return mVsq;
         }
 
-#if !JAVA
         [Obsolete]
         public static VsqFileEx VsqFile
         {
@@ -2577,7 +2408,6 @@ namespace cadencii
                 return getVsqFile();
             }
         }
-#endif
 #endif
 
         public static void setVsqFile( VsqFileEx vsq )
@@ -2597,15 +2427,9 @@ namespace cadencii
             mAutoBackupTimer.Stop();
             setCurrentClock( mVsq.getPreMeasureClocks() );
             try {
-#if JAVA
-                updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );
-#elif QT_VERSION
-                updateBgmStatusRequired( this, null );
-#else
                 if ( UpdateBgmStatusRequired != null ) {
                     UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
                 }
-#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".setVsqFile; ex=" + ex + "\n" );
                 serr.println( typeof( AppManager ) + ".setVsqFile; ex=" + ex );
@@ -2618,7 +2442,6 @@ namespace cadencii
             clipboard = new ClipboardModel();
             itemSelection = new ItemSelectionModel();
             editHistory = new EditHistoryModel();
-#if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
             int c = editorConfig.UtauSingers.Count;
             for ( int i = 0; i < c; i++ ) {
@@ -2642,85 +2465,12 @@ namespace cadencii
                     }
                 }
             }
-#endif
 
-#if JAVA
-            // getvocaloidinfo.exeを呼ぶ
-            String tmp = PortUtil.createTempFile();
-            String prefix = Utility.normalizePath( editorConfig.WinePrefix );
-#if JAVA_MAC
-            // wine経由でユーティリティを呼ぶ
-            String vocaloidrv_sh = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" );
-            String winetop = Utility.normalizePath( editorConfig.WineTop );
-            String getvocaloidinfo =
-                fsys.combine( PortUtil.getApplicationStartupPath(), "getvocaloidinfo.exe" );
-#if DEBUG
-            sout.println( "AppManager#init; isFileExists(getvocaloidinfo)=" + fsys.isFileExists( getvocaloidinfo ) );
-            sout.println( "AppManager#init; isFileExists(vocaloidrv_sh)=" + fsys.isFileExists( vocaloidrv_sh ) );
-            sout.println( "AppManager#init; isDirectoryExists(winetop)=" + fsys.isDirectoryExists( winetop ) );
-            sout.println( "AppManager#init; isDirectoryExists(prefix)=" + fsys.isDirectoryExists( prefix ) );
-#endif // DEBUG
-            try{
-                Process p = Runtime.getRuntime().exec(
-                    new String[]{
-                        "/bin/sh",
-                        vocaloidrv_sh,
-                        prefix,
-                        winetop,
-                        getvocaloidinfo,
-                        tmp,
-                     } );
-                while( true ){
-                    try{
-                        p.exitValue();
-                    }catch( Exception ex0 ){
-                        continue;
-                    }
-                    break;
-                }
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-#else // JAVA_MAC
-            //TODO:
-#endif // JAVA_MAC
-
-            // 戻りのテキストファイルを読み込む
-            Vector<String> reg_list = new Vector<String>();
-            BufferedReader br = null;
-            try{
-                br = new BufferedReader( new InputStreamReader( new FileInputStream( tmp ), "Shift_JIS" ) );
-                String line = "";
-                while( (line = br.readLine()) != null ){
-#if DEBUG
-                    sout.println( "AppManager#init; line=" + line );
-#endif // DEBUG
-                    reg_list.add( line );
-                }
-            }catch( Exception ex ){
-            }finally{
-                if( br != null ){
-                    try{
-                        br.close();
-                    }catch( Exception ex2 ){
-                    }
-                }
-            }
-#if !DEBUG
-            try{
-                PortUtil.deleteFile( tmp );
-            }catch( Exception ex ){
-            }
-#endif // !DEBUG
-            VocaloSysUtil.init( reg_list, prefix );
-#else // JAVA
             VocaloSysUtil.init();
-#endif // JAVA
 
             editorConfig.check();
             keyWidth = editorConfig.KeyWidth;
             VSTiDllManager.init();
-#if !JAVA
             // アイコンパレード, VOCALOID1
             SingerConfigSys singer_config_sys1 = VocaloSysUtil.getSingerConfigSys( SynthesizerType.VOCALOID1 );
             if ( singer_config_sys1 != null ) {
@@ -2772,7 +2522,6 @@ namespace cadencii
                     }
                 }
             }
-#endif
 
             PlaySound.init();
             mLocker = new Object();
@@ -2789,9 +2538,6 @@ namespace cadencii
             // 拡張辞書
             SymbolTable.loadAllDictionaries( Path.Combine( PortUtil.getApplicationStartupPath(), "udic" ) );
             //VSTiProxy.CurrentUser = "";
-#if JAVA
-            Util.isApplyFontRecurseEnabled = false;
-#endif
 
             // 辞書の設定を適用
             try {
@@ -2918,10 +2664,6 @@ namespace cadencii
                 fs = new FileInputStream( file );
                 ret = (EditorConfig)EditorConfig.getSerializer().deserialize( fs );
             } catch ( Exception ex ) {
-#if JAVA
-                serr.println( "EditorConfig#deserialize; ex=" + ex );
-                ex.printStackTrace();
-#endif
                 Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
@@ -2976,12 +2718,10 @@ namespace cadencii
             }
             editorConfig.KeyWidth = keyWidth;
 
-#if !JAVA
             // chevronの幅を保存
             if ( Rebar.CHEVRON_WIDTH > 0 ) {
                 editorConfig.ChevronWidth = Rebar.CHEVRON_WIDTH;
             }
-#endif
 
             // シリアライズして保存
             string file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
@@ -2993,9 +2733,6 @@ namespace cadencii
             } catch ( Exception ex ) {
                 serr.println( "AppManager#saveConfig; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".saveConfig; ex=" + ex + "\n" );
-#if JAVA
-                ex.printStackTrace();
-#endif
             }
         }
 
@@ -3045,11 +2782,7 @@ namespace cadencii
                         if ( c == '.' ) {
                             num_period++;
                         } else {
-#if JAVA
-                            if ( Character.isDigit( c ) ) {
-#else
                             if ( !char.IsNumber( c ) ) {
-#endif
                                 register = false;
                                 break;
                             }
@@ -3260,6 +2993,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

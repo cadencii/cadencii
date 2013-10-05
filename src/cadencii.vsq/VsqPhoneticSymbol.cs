@@ -11,18 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import cadencii.*;
-#else
 using System;
 using cadencii;
 
 namespace cadencii.vsq
 {
-
-#endif
 
     /// <summary>
     /// VSQで使用される発音記号の種類や有効性を判定するユーティリティ群です。
@@ -200,6 +193,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,12 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-#else
 namespace cadencii.vsq
 {
-#endif
 
     public struct VsqBPPairSearchContext
     {
@@ -25,6 +21,4 @@ namespace cadencii.vsq
         public VsqBPPair point;
     }
 
-#if !JAVA
 }
-#endif

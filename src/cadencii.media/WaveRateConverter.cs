@@ -11,17 +11,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 
 namespace cadencii.media {
-
-#endif
 
     /// <summary>
     /// サンプリングレートを変換しながらWaveファイルを読み込むくためのクラス。
@@ -118,9 +110,6 @@ namespace cadencii.media {
         }
 
         public void read( long index, int length, double[] left, double[] right )
-#if JAVA
-            throws IOException
-#endif
         {
             if ( reader == null ) {
                 return;
@@ -177,9 +166,6 @@ namespace cadencii.media {
         }
 
         public void close() 
-#if JAVA
-            throws IOException
-#endif
         {
             if ( reader == null ) {
                 return;
@@ -189,6 +175,4 @@ namespace cadencii.media {
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.media.*;
-#else
 using System;
 using cadencii.java.awt;
 using cadencii.java.util;
@@ -27,13 +19,7 @@ using cadencii.media;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class FileWaveSender extends WaveUnit implements WaveSender
-#else
     public class FileWaveSender : WaveUnit, WaveSender
-#endif
     {
 #if DEBUG
         private static int mNumInstance = 0;
@@ -110,6 +96,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

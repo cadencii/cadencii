@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.xml.*;
-
-#elif __cplusplus
-namespace org { namespace kbinani { namespace vsq {
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
@@ -28,25 +18,14 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
-#if JAVA
-    public class LyricHandle implements Cloneable, Serializable
-#elif __cplusplus
-    class LyricHandle
-#else
     [Serializable]
     public class LyricHandle : ICloneable
-#endif
     {
         public Lyric L0;
         public int Index;
 #if __cplusplus
         public: vector<Lyric> Trailing;
 #else
-#if JAVA
-        @XmlGenericType( Lyric.class )
-#endif
         public List<Lyric> Trailing = new List<Lyric>();
 #endif
 
@@ -73,11 +52,7 @@ namespace cadencii.vsq
             if ( index == 0 ) {
                 return L0;
             } else {
-#if JAVA
-                return Trailing.get( index - 1 );
-#else
                 return Trailing[index - 1];
-#endif
             }
         }
 
@@ -86,11 +61,7 @@ namespace cadencii.vsq
             if ( index == 0 ) {
                 L0 = value;
             } else {
-#if JAVA
-                Trailing.set( index - 1, value );
-#else
                 Trailing[index - 1] = value;
-#endif
             }
         }
 
@@ -124,14 +95,10 @@ namespace cadencii.vsq
         }
 #endif
 
-#if JAVA
-#elif __cplusplus
-#else
         public object Clone()
         {
             return clone();
         }
-#endif
 
 #if __cplusplus
     };
@@ -139,9 +106,4 @@ namespace cadencii.vsq
     }
 #endif
 
-#if JAVA
-#elif __cplusplus
-} } }
-#else
 }
-#endif

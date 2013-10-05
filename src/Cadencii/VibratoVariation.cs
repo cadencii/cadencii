@@ -12,14 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.componentmodel.*;
-
-#else
-
 using System;
 using System.ComponentModel;
 
@@ -27,15 +19,9 @@ using System.ComponentModel;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    @TypeConverterAnnotation( VibratoVariationConverter.class )
-    public class VibratoVariation
-#else
     [TypeConverter( typeof( VibratoVariationConverter ) )]
     public class VibratoVariation
-#endif
     {
         public static readonly VibratoVariation empty = new VibratoVariation();
 
@@ -60,14 +46,11 @@ namespace cadencii
             }
         }
 
-#if !JAVA
         public override bool Equals( Object obj )
         {
             return equals( obj );
         }
-#endif
 
-#if !JAVA
         public override int GetHashCode()
         {
             if ( description == null ) {
@@ -76,23 +59,18 @@ namespace cadencii
                 return description.GetHashCode();
             }
         }
-#endif
 
         public Object clone()
         {
             return new VibratoVariation( this.description );
         }
 
-#if !JAVA
         public Object Clone()
         {
             return clone();
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif
 #endif

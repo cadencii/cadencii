@@ -11,26 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
     /// <summary>
     /// VsqMixerのSlave要素に格納される各エントリ
     /// </summary>
-#if JAVA
-    public class VsqMixerEntry implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqMixerEntry : ICloneable
-#endif
     {
         public int Feder;
         public int Panpot;
@@ -43,12 +33,10 @@ namespace cadencii.vsq
             return res;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         /// <summary>
         /// 各パラメータを指定したコンストラクタ
@@ -65,17 +53,10 @@ namespace cadencii.vsq
             this.Solo = solo;
         }
 
-#if JAVA
-        public VsqMixerEntry(){
-            this( 0, 0, 0, 0 );
-#else
         public VsqMixerEntry()
             : this( 0, 0, 0, 0 )
         {
-#endif
         }
     }
 
-#if !JAVA
 }
-#endif

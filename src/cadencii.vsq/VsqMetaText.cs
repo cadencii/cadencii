@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,17 +20,11 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// vsqのメタテキストの中身を処理するためのクラス
     /// </summary>
-#if JAVA
-    public class VsqMetaText implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqMetaText : ICloneable
-#endif
     {
         public VsqCommon Common;
         public VsqMaster master;
@@ -190,12 +177,10 @@ namespace cadencii.vsq
             return res;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         public VsqEventList getEventList()
         {
@@ -501,9 +486,6 @@ namespace cadencii.vsq
         /// <param name="sw"></param>
         /// <param name="encode"></param>
         public void print( ITextWriter sw, int eos, int start )
-#if JAVA
-            throws IOException
-#endif
         {
             if ( Common != null ) {
                 Common.write( sw );
@@ -602,9 +584,6 @@ namespace cadencii.vsq
         }
 
         private List<VsqHandle> writeEventListCor( ITextWriter writer, int eos )
-#if JAVA
-            throws IOException
-#endif
         {
             List<VsqHandle> handles = buildHandleList();
             writer.writeLine( "[EventList]" );
@@ -632,17 +611,11 @@ namespace cadencii.vsq
         }
 
         public List<VsqHandle> writeEventList( ITextWriter sw, int eos )
-#if JAVA
-            throws IOException
-#endif
         {
             return writeEventListCor( sw, eos );
         }
 
         public List<VsqHandle> writeEventList( BufferedWriter stream_writer, int eos )
-#if JAVA
-            throws IOException
-#endif
         {
             return writeEventListCor( new WrappedStreamWriter( stream_writer ), eos );
         }
@@ -658,17 +631,9 @@ namespace cadencii.vsq
         /// 最初のトラック以外の一般のメタテキストを構築。(Masterが作られない)
         /// </summary>
         public VsqMetaText( string name, string singer )
-#if JAVA
-        {
-#else
             :
-#endif
  this( name, 0, singer, false )
-#if JAVA
-            ;
-#else
         {
-#endif
         }
 
         /// <summary>
@@ -676,17 +641,9 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="pre_measure"></param>
         public VsqMetaText( string name, string singer, int pre_measure )
-#if JAVA
-        {
-#else
             :
-#endif
  this( name, pre_measure, singer, true )
-#if JAVA
-            ;
-#else
         {
-#endif
         }
 
         private VsqMetaText( string name, int pre_measure, string singer, bool is_first_track )
@@ -908,6 +865,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

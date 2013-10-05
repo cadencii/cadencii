@@ -11,18 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormVibratoPreset.java
-
-import java.awt.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -36,13 +24,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormVibratoPreset extends BDialog
-#else
     public class FormVibratoPreset : Form
-#endif
     {
         /// <summary>
         /// プレビューの各グラフにおいて，上下に追加するマージンの高さ(ピクセル)
@@ -89,12 +72,7 @@ namespace cadencii
         /// <param name="handles"></param>
         public FormVibratoPreset( List<VibratoHandle> handles )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             this.Size = new System.Drawing.Size( mPreviousWidth, mPreviousHeight );
@@ -218,11 +196,7 @@ namespace cadencii
             string nstr = value + "";
             if ( s != nstr ) {
                 textRate.Text = nstr;
-#if JAVA
-                textRate.setCaretPosition( nstr.length() );
-#else
                 textRate.SelectionStart = textRate.Text.Length;
-#endif
             }
 
             repaintPictures();
@@ -252,11 +226,7 @@ namespace cadencii
             string nstr = value + "";
             if ( s != nstr ) {
                 textDepth.Text = nstr;
-#if JAVA
-                textDepth.setCaretPosition( nstr.length() );
-#else
                 textDepth.SelectionStart = textDepth.Text.Length;
-#endif
             }
 
             repaintPictures();
@@ -323,14 +293,8 @@ namespace cadencii
             // 背景を描画
             int raw_width = pictureResulting.Width;
             int raw_height = pictureResulting.Height;
-#if JAVA
-            Graphics g = e.Graphics;
-            g.setColor( PortUtil.LightGray );
-            g.fillRect( 0, 0, raw_width, raw_height );
-#else
             System.Drawing.Graphics g = e.Graphics;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, raw_width, raw_height );
-#endif
 
             // 選択中のハンドルを取得
             VibratoHandle handle = mSelected;
@@ -401,14 +365,8 @@ namespace cadencii
             // 背景を描画
             int width = pictureRate.Width;
             int height = pictureRate.Height;
-#if JAVA
-            Graphics g = e.Graphics;
-            g.setColor( PortUtil.LightGray );
-            g.fillRect( 0, 0, width, height );
-#else
             System.Drawing.Graphics g = e.Graphics;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, width, height );
-#endif
 
             // 選択中のハンドルを取得
             VibratoHandle handle = mSelected;
@@ -432,14 +390,8 @@ namespace cadencii
             // 背景を描画
             int width = pictureDepth.Width;
             int height = pictureDepth.Height;
-#if JAVA
-            Graphics g = e.Graphics;
-            g.setColor( PortUtil.LightGray );
-            g.fillRect( 0, 0, width, height );
-#else
             System.Drawing.Graphics g = e.Graphics;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, width, height );
-#endif
 
             // 選択中のハンドルを取得
             VibratoHandle handle = mSelected;
@@ -460,12 +412,10 @@ namespace cadencii
 
         public void FormVibratoPreset_Resize( Object sender, EventArgs e )
         {
-#if !JAVA
             if ( this.WindowState == System.Windows.Forms.FormWindowState.Normal ) {
                 mPreviousWidth = this.Width;
                 mPreviousHeight = this.Height;
             }
-#endif
             repaintPictures();
         }
         #endregion
@@ -652,12 +602,6 @@ namespace cadencii
         }
         #endregion
 
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormVibratoPreset.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormVibratoPreset.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -1062,9 +1006,6 @@ namespace cadencii
         private ListBox listPresets;
         private System.Windows.Forms.Button buttonDown;
         #endregion
-#endif
     }
 
-#if !JAVA
 }
-#endif

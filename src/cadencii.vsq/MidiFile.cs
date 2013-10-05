@@ -12,13 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #define MIDI_PRINT_TO_FILE
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -29,8 +22,6 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     public class MidiFile
     {
         private List<List<MidiEvent>> m_events;
@@ -38,9 +29,6 @@ namespace cadencii.vsq
         private int m_time_format;
 
         public MidiFile( string path )
-#if JAVA
-            throws FileNotFoundException
-#endif
         {
             RandomAccessFile stream = new RandomAccessFile( path, "r" );
             try {
@@ -101,7 +89,7 @@ namespace cadencii.vsq
                     m_events.Add( track_events );
                 }
                 m_time_format = 480;
-#if DEBUG && MIDI_PRINT_TO_FILE && !JAVA
+#if DEBUG && MIDI_PRINT_TO_FILE
                 string dbg = Path.Combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
                 BufferedWriter sw = null;
                 try {
@@ -207,6 +195,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

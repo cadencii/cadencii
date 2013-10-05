@@ -11,19 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
 using System;
 using cadencii;
 
 namespace cadencii
 {
-
-#endif
 
     public interface FormBezierPointEditUiListener
     {
@@ -58,6 +50,4 @@ namespace cadencii
         void buttonsMouseMove();
     }
 
-#if !JAVA
 }
-#endif

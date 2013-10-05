@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,8 +21,6 @@ using cadencii.java.io;
 
 namespace cadencii.vsq
 {
-
-#endif
 
     /// <summary>
     /// VOCALOID / VOCALOID2システムについての情報を取得するユーティリティ。
@@ -89,7 +80,6 @@ namespace cadencii.vsq
             return defaultDseVersion;
         }
 
-#if !JAVA
         /// <summary>
         /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します．
         /// C#はこっちを呼べばOK
@@ -104,7 +94,6 @@ namespace cadencii.vsq
             initPrint( "SOFTWARE\\VOCALOID2", header2, reg_list );
             init( reg_list, "" );
         }
-#endif
 
         /// <summary>
         /// WINEPREFIXと，その内部のWindows形式の絶対パスを結合し，実際のファイルの絶対パスを取得します
@@ -114,12 +103,6 @@ namespace cadencii.vsq
             if( wine_prefix == null ){
                 wine_prefix = "";
             }
-#if JAVA
-            if( wine_prefix.indexOf( "~" ) >= 0 ){
-                String usr = System.getProperty( "user.name" );
-                wine_prefix = wine_prefix.replace( "~", "/Users/" + usr );
-            }
-#endif
             if( full_path == null ){
                 return wine_prefix;
             }
@@ -237,9 +220,6 @@ namespace cadencii.vsq
                                             defaultDseVersion = int.Parse( str_dse_version );
                                         } catch ( Exception ex ) {
                                             serr.println( "VocaloSysUtil#init; ex=" + ex );
-#if JAVA
-                                            ex.printStackTrace();
-#endif
                                             defaultDseVersion = 100;
                                         }
                                     }
@@ -248,9 +228,6 @@ namespace cadencii.vsq
                             }
                         } catch ( Exception ex ) {
                             serr.println( "VocaloSysUtil#init; ex=" + ex );
-#if JAVA
-                            ex.printStackTrace();
-#endif
                         } finally {
                             if ( br != null ) {
                                 try {
@@ -264,9 +241,6 @@ namespace cadencii.vsq
                 }
             } catch ( Exception ex ) {
                 serr.println( "VocaloSysUtil#init; ex=" + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new string[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys[ SynthesizerType.VOCALOID1] =  singer_config_sys ;
@@ -317,9 +291,6 @@ namespace cadencii.vsq
                 s_singer_config_sys[ SynthesizerType.VOCALOID2] =  singer_config_sys ;
             } catch ( Exception ex ) {
                 serr.println( "VocaloSysUtil..cctor; ex=" + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new string[] { } );
                 exp_config_sys2 = null;
                 s_singer_config_sys[ SynthesizerType.VOCALOID2] =  singer_config_sys ;
@@ -468,8 +439,6 @@ namespace cadencii.vsq
         /// <param name="list"></param>
         private static void initPrint( string reg_key_name, string parent_name, List<string> list )
         {
-#if JAVA
-#else
             try {
                 RegistryKey key = Registry.LocalMachine.OpenSubKey( reg_key_name, false );
                 if ( key == null ) {
@@ -495,7 +464,6 @@ namespace cadencii.vsq
             } catch ( Exception ex ) {
                 serr.println( "VocaloSysUtil#initPrint; ex=" + ex );
             }
-#endif
         }
 
         /// <summary>
@@ -739,6 +707,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

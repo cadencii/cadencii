@@ -11,17 +11,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 
 namespace cadencii.media
 {
-#endif
 
     /// <summary>
     /// 接頭辞b: 単位が変換前のサンプル数になっている変数
@@ -65,6 +58,4 @@ namespace cadencii.media
         }
     }
 
-#if !JAVA
 }
-#endif

@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.util.*;
-import java.io.*;
-import cadencii.*;
-#else
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -28,17 +21,11 @@ using cadencii.java.util;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// コントロールカーブのデータ点リスト
     /// </summary>
-#if JAVA
-    public class VsqBPList implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqBPList : ICloneable
-#endif
     {
         private int[] clocks;
         private VsqBPPair[] items;
@@ -103,17 +90,9 @@ namespace cadencii.vsq
         }
 
         public VsqBPList()
-#if JAVA
-        {
-#else
             :
-#endif
  this( "", 0, 0, 64 )
-#if JAVA
-            ;
-#else
         {
-#endif
         }
 
         /// <summary>
@@ -148,30 +127,11 @@ namespace cadencii.vsq
                     }
                     newLength = clocks.Length * order;
                 }
-#if JAVA
-#if JAVA_1_5
-                int[] buf_c = new int[newLength];
-                for( int i = 0; i < clocks.length; i++ ){
-                    buf_c[i] = clocks[i];
-                }
-                clocks = buf_c;
-                VsqBPPair[] buf_v = new VsqBPPair[newLength];
-                for( int i = 0; i < items.length; i++ ){
-                    buf_v[i] = items[i];
-                }
-                items = buf_v;
-#else
-                clocks = Arrays.copyOf( clocks, newLength );
-                items = Arrays.copyOf( items, newLength );
-#endif
-#else
                 Array.Resize( ref clocks, newLength );
                 Array.Resize( ref items, newLength );
-#endif
             }
         }
 
-#if !JAVA
         public int Default
         {
             get
@@ -183,7 +143,6 @@ namespace cadencii.vsq
                 setDefault( value );
             }
         }
-#endif
 
         public string getName()
         {
@@ -202,7 +161,6 @@ namespace cadencii.vsq
             }
         }
 
-#if !JAVA
         public string Name
         {
             get
@@ -214,7 +172,6 @@ namespace cadencii.vsq
                 setName( value );
             }
         }
-#endif
 
         public long getMaxID()
         {
@@ -249,7 +206,6 @@ namespace cadencii.vsq
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
@@ -264,17 +220,12 @@ namespace cadencii.vsq
                 setData( value );
             }
         }
-#endif
 
         public string getData()
         {
             StringBuilder ret = new StringBuilder();
             for ( int i = 0; i < length; i++ ) {
-#if JAVA
-                ret.append( (i == 0 ? "" : ",") + clocks[i] + "=" + items[i].value );
-#else
                 ret.Append( (i == 0 ? "" : ",") + clocks[i] + "=" + items[i].value );
-#endif
             }
             return ret.ToString();
         }
@@ -315,25 +266,18 @@ namespace cadencii.vsq
             res.ensureBufferLength( length );
             for ( int i = 0; i < length; i++ ) {
                 res.clocks[i] = clocks[i];
-#if JAVA
-                res.items[i] = (VsqBPPair)items[i].clone();
-#else
                 res.items[i] = items[i];
-#endif
             }
             res.length = length;
             res.maxId = maxId;
             return res;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
-#if !JAVA
         public int Maximum
         {
             get
@@ -345,7 +289,6 @@ namespace cadencii.vsq
                 setMaximum( value );
             }
         }
-#endif
 
         /// <summary>
         /// このリストに設定された最大値を取得します。
@@ -360,7 +303,6 @@ namespace cadencii.vsq
             maxValue = value;
         }
 
-#if !JAVA
         public int Minimum
         {
             get
@@ -372,7 +314,6 @@ namespace cadencii.vsq
                 setMinimum( value );
             }
         }
-#endif
 
         /// <summary>
         /// このリストに設定された最小値を取得します
@@ -440,11 +381,7 @@ namespace cadencii.vsq
                 length++;
                 ensureBufferLength( length );
                 clocks[length - 1] = new_clock;
-#if JAVA
-                Arrays.sort( clocks, 0, length );
-#else
                 Array.Sort( clocks, 0, length );
-#endif
                 index_new = findIndexFromClock( new_clock );
                 item.value = new_value;
                 for ( int i = length - 1; i > index_new; i-- ) {
@@ -551,9 +488,6 @@ namespace cadencii.vsq
         }
 
         private void printCor( ITextWriter writer, int start_clock, string header )
-#if JAVA
-            throws IOException
-#endif
         {
             writer.writeLine( header );
             int lastvalue = defaultValue;
@@ -584,9 +518,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="writer"></param>
         public void print( BufferedWriter writer, int start, string header )
-#if JAVA
-            throws IOException
-#endif
         {
             printCor( new WrappedStreamWriter( writer ), start, header );
         }
@@ -596,9 +527,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="writer"></param>
         public void print( ITextWriter writer, int start, string header )
-#if JAVA
-            throws IOException
-#endif
         {
             printCor( writer, start, header );
         }
@@ -650,11 +578,7 @@ namespace cadencii.vsq
                     minus = -1;
                     continue;
                 }
-#if JAVA
-                if( Character.isDigit( ch ) ){
-#else
                 if ( Char.IsNumber( ch ) ) {
-#endif
                     int num = 0;
                     if ( ch == '1' ) {
                         num = 1;
@@ -703,22 +627,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public int findIndexFromClock( int value )
         {
-#if JAVA
-            // caution: length of array 'clocks' is equal to or larger than the value of 'length' field.
-            // 配列clocksの長さは、フィールドlengthの値と等しいか、大きい。
-#if JAVA_1_5
-            for( int i = 0; i < length; i++ ){
-                if( clocks[i] == value ){
-                    return i;
-                }
-            }
-            return -1;
-#else
-            return Arrays.binarySearch( clocks, 0, length, value );
-#endif
-#else
             return Array.BinarySearch( clocks, 0, length, value );
-#endif
             //return Array.IndexOf( clocks, value, 0, length );
         }
 
@@ -733,12 +642,8 @@ namespace cadencii.vsq
             ensureBufferLength( length + 1 );
             clocks[length] = clock;
             maxId++;
-#if JAVA
-            items[length] = new VsqBPPair( value, maxId );
-#else
             items[length].value = value;
             items[length].id = maxId;
-#endif
             length++;
         }
 
@@ -755,11 +660,7 @@ namespace cadencii.vsq
                 length++;
                 ensureBufferLength( length );
                 clocks[length - 1] = clock;
-#if JAVA
-                Arrays.sort( clocks, 0, length );
-#else
                 Array.Sort( clocks, 0, length );
-#endif
                 index = findIndexFromClock( clock );
                 maxId++;
                 for ( int i = length - 1; i > index; i-- ) {
@@ -783,11 +684,7 @@ namespace cadencii.vsq
                 length++;
                 ensureBufferLength( length );
                 clocks[length - 1] = clock;
-#if JAVA
-                Arrays.sort( clocks, 0, length );
-#else
                 Array.Sort( clocks, 0, length );
-#endif
                 index = findIndexFromClock( clock );
                 for ( int i = length - 1; i > index; i-- ) {
                     items[i] = items[i - 1];
@@ -839,7 +736,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif
-

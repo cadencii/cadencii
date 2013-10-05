@@ -11,23 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-#else
 using System;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class VsqBPPair implements Cloneable, Serializable
-#else
     [Serializable]
     public struct VsqBPPair
-#endif
     {
         public int value;
         public long id;
@@ -38,13 +28,6 @@ namespace cadencii.vsq
             id = id_;
         }
 
-#if JAVA
-        public Object clone(){
-            return new VsqBPPair( value, id );
-        }
-#endif
     }
 
-#if !JAVA
 }
-#endif

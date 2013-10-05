@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormImportLyric.java
-
-import java.util.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii.apputil;
@@ -31,24 +21,13 @@ using cadencii.windows.forms;
 namespace cadencii
 {
 
-#endif
-
-#if JAVA
-    public class FormImportLyric extends BDialog {
-#else
     class FormImportLyric : System.Windows.Forms.Form
     {
-#endif
         private int m_max_notes = 1;
 
         public FormImportLyric( int max_notes )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -57,21 +36,12 @@ namespace cadencii
         }
 
         #region public methods
-#if JAVA
-        public void setVisible( bool value ){
-            super.setVisible( value );
-#else
         public void __setVisible( bool value )
         {
             base.Visible = value;
-#endif
-#if JAVA
-            //TODO: FormImportLyric#setVisible
-#else
             this.txtLyrics.HideSelection = false;
             this.txtLyrics.SelectAll();
             this.txtLyrics.Focus();
-#endif
         }
 
         public void applyLanguage()
@@ -178,10 +148,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        //INCLUDE-SECTION FIELD ./ui/java/FormImportLyric.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormImportLyric.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -279,11 +245,8 @@ namespace cadencii
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lblNotes;
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

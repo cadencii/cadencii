@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormTrackProperty.java
-
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Windows.Forms;
 using cadencii.apputil;
@@ -30,24 +21,14 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-#endif
 
-#if JAVA
-    public class FormTrackProperty extends BDialog {
-#else
     public class FormTrackProperty : Form
     {
-#endif
         private int m_master_tuning;
 
         public FormTrackProperty( int master_tuning_in_cent )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -112,12 +93,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormTrackProperty.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormTrackProperty.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -219,11 +194,8 @@ namespace cadencii
         private Label lblMasterTuning;
         private TextBox txtMasterTuning;
         #endregion
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

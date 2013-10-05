@@ -11,16 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-import cadencii.media.*;
-import cadencii.vsq.*;
-#else
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -36,16 +26,10 @@ using cadencii.utau;
 namespace cadencii
 {
 
-#endif
-
     /// <summary>
     /// vConnect-STANDを使って音声合成を行う波形生成器
     /// </summary>
-#if JAVA
-    public class VConnectWaveGenerator extends WaveUnit implements WaveGenerator
-#else
     public class VConnectWaveGenerator : WaveUnit, WaveGenerator
-#endif
     {
         /// <summary>
         /// シンセサイザの実行ファイル名
@@ -124,14 +108,7 @@ namespace cadencii
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                    }
-#else
                     Thread.Sleep( 100 );
-#endif
                 }
             }
         }*/
@@ -309,9 +286,6 @@ namespace cadencii
                 } catch ( Exception ex ) {
 #if DEBUG
                     sout.println( "VConnectWaveGenerator#begin; ex=" + ex );
-#if JAVA
-                    ex.printStackTrace();
-#endif
 #endif
                 } finally {
                     if ( sw != null ) {
@@ -338,30 +312,6 @@ namespace cadencii
                 }
                 tmp_file = Path.Combine( tmp_dir, hash );
                 if (!mCache.ContainsKey(hash) || !System.IO.File.Exists(tmp_file + ".wav")) {
-#if JAVA
-                    String[] args = new String[]{ 
-                        straight_synth.replace( "\\", "\\" + "\\" ), 
-                        tmp_file.replace( "\\", "\\" + "\\" ) + ".usq",
-                        tmp_file.replace( "\\", "\\" + "\\" ) + ".wav" };
-#if DEBUG
-                    sout.println( "VConnectWaveGenerator#begin; args=" );
-                    for( String s : args ){
-                        sout.println( "VConnectWaveGenerator#begin; " + s );
-                    }
-#endif
-                    ProcessBuilder pb = new ProcessBuilder( args );
-                    pb.redirectErrorStream( true );
-                    try{
-                        Process process = pb.start();
-                        InputStream stream = process.getInputStream();
-                        while( stream.read() >= 0 && !state.isCancelRequested() );
-                    }catch( Exception ex ){
-                        System.err.println( "VConnectWaveGenerator#begin; ex=" + ex );
-#if DEBUG
-                        ex.printStackTrace();
-#endif
-                    }
-#else // JAVA
                     Process process = null;
                     try {
                         process = new Process();
@@ -383,7 +333,6 @@ namespace cadencii
                             process.Dispose();
                         }
                     }
-#endif // JAVA
 
 #if !DEBUG
                     try {
@@ -479,13 +428,8 @@ namespace cadencii
                             if ( wr != null ) {
                                 // 必要ならキャッシュを追加
                                 if ( cached_data_l.Length < overlapped ) {
-#if JAVA
-                                    cached_data_l = new double[overlapped];
-                                    cached_data_r = new double[overlapped];
-#else
                                     Array.Resize( ref cached_data_l, overlapped );
                                     Array.Resize( ref cached_data_r, overlapped );
-#endif
                                 }
                                 // 長さが変わる
                                 cached_data_length = overlapped;
@@ -662,13 +606,8 @@ namespace cadencii
                                     int old_cache_length = cached_data_length;
                                     int new_cache_len = (int)((queue.startSample + rendered_length) - next_wave_start);
                                     if ( cached_data_l.Length < new_cache_len ) {
-#if JAVA
-                                        cached_data_l = new double[new_cache_len];
-                                        cached_data_r = new double[new_cache_len];
-#else
                                         Array.Resize( ref cached_data_l, new_cache_len );
                                         Array.Resize( ref cached_data_r, new_cache_len );
-#endif
                                     }
                                     cached_data_length = new_cache_len;
 
@@ -733,13 +672,8 @@ namespace cadencii
                                     remain = (int)(queue.startSample + rendered_length - next_wave_start);
                                     // キャッシュが足りなければ更新
                                     if ( cached_data_l.Length < remain ) {
-#if JAVA
-                                        cached_data_l = new double[remain];
-                                        cached_data_r = new double[remain];
-#else
                                         Array.Resize( ref cached_data_l, remain );
                                         Array.Resize( ref cached_data_r, remain );
-#endif
                                     }
                                     cached_data_length = remain;
                                     // レンダリング結果を読み込む
@@ -1190,6 +1124,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

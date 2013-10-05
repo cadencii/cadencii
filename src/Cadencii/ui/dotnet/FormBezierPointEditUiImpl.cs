@@ -670,6 +670,4 @@ namespace cadencii
 
     }
 
-#if !JAVA
 }
-#endif

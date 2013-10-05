@@ -11,16 +11,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-#else
-
     namespace cadencii
     {
-
-#endif
 
             /// <summary>
             /// メイン画面の実装クラスが持つべきメソッドを定義するインターフェース
@@ -34,6 +26,4 @@ package cadencii;
                 void focusPianoRoll();
             }
 
-#if !JAVA
     }
-#endif

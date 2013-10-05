@@ -11,26 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.media;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
 
 namespace cadencii.media {
 
-#endif
-
-#if JAVA
-    public class WaveReader {
-#else
     public class WaveReader : IDisposable {
-#endif
         private int m_channel;
         private int m_byte_per_sample;
         private bool m_opened;
@@ -67,9 +54,6 @@ namespace cadencii.media {
         }
 
         public WaveReader( string file ) 
-#if JAVA
-            throws IOException, FileNotFoundException
-#endif
  {
             bool ret = open( file );
             m_file = file;
@@ -115,16 +99,11 @@ namespace cadencii.media {
             m_amplify_right = value;
         }
 
-#if !JAVA
         public void Dispose() {
             close();
         }
-#endif
 
         public bool open( string file )
-#if JAVA
-            throws IOException, FileNotFoundException
-#endif
         {
 #if DEBUG
             sout.println( "WaveReader#open; file=" + file );
@@ -236,9 +215,6 @@ namespace cadencii.media {
         }
 
         public void read( long start, int length, double[] left, double[] right ) 
-#if JAVA
-            throws IOException
-#endif
         {
             for ( int i = 0; i < length; i++ ) {
                 left[i] = 0.0;
@@ -366,9 +342,6 @@ namespace cadencii.media {
         }
 
         public void read( long start, int length, ByRef<float[]> left, ByRef<float[]> right ) 
-#if JAVA
-            throws IOException
-#endif
         {
             left.value = new float[length];
             right.value = new float[length];
@@ -473,7 +446,6 @@ namespace cadencii.media {
             }
         }
 
-#if !JAVA
         public unsafe void read( long start, int length, ref IntPtr ptr_left, ref IntPtr ptr_right ) {
             float* left = (float*)ptr_left.ToPointer();
             float* right = (float*)ptr_right.ToPointer();
@@ -577,12 +549,8 @@ namespace cadencii.media {
                 }
             }
         }
-#endif
 
         public void close()
-#if JAVA
-            throws IOException
-#endif
         {
 #if DEBUG
             sout.println( "WaveReader#close; m_file=" + m_file );
@@ -594,13 +562,9 @@ namespace cadencii.media {
             }
         }
 
-#if !JAVA
         ~WaveReader() {
             close();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

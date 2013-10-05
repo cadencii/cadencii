@@ -11,11 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-#else
 namespace cadencii {
-#endif
 
     /// <summary>
     /// ブール値をOn，Offで表現するための列挙型
@@ -31,6 +27,4 @@ namespace cadencii {
         On,
     }
 
-#if !JAVA
 }
-#endif

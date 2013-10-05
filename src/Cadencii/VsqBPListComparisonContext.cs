@@ -11,25 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.vsq.*;
-#else
 using System;
 using cadencii.vsq;
 
 namespace cadencii {
-#endif
 
     /// <summary>
     /// VsqBPListを比較するための，比較用コンテキスト
     /// </summary>
-#if JAVA
-    public class VsqBPListComparisonContext implements IComparisonContext {
-#else
     public class VsqBPListComparisonContext : IComparisonContext {
-#endif
         public class WrappedVsqBPPair {
             public VsqBPPair body;
             public int clock;
@@ -108,6 +98,4 @@ namespace cadencii {
         }
     }
 
-#if !JAVA
 }
-#endif

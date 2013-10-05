@@ -11,20 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.vsq.*;
-#else
-
 using System.Collections.Generic;
 using System.Text;
 using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
     /// <summary>
     /// WaveUnitの設定と，他のWaveUnitとの接続関係の情報を保持する
@@ -36,32 +28,19 @@ namespace cadencii
         /// <summary>
         /// WaveUnitの設定値のキーと値の組のリストを保持する
         /// </summary>
-#if JAVA
-        public Vector<WaveUnitConfigElement> Elements;
-#else
         public List<WaveUnitConfigElement> Elements;
-#endif
 
         public WaveUnitConfig()
         {
-#if JAVA
-            this.Elements = new Vector<WaveUnitConfigElement>();
-#else
             this.Elements = new List<WaveUnitConfigElement>();
-#endif
         }
 
         public string getConfigString()
         {
             StringBuilder sb = new StringBuilder();
             foreach( WaveUnitConfigElement item in this.Elements ) {
-#if JAVA
-                sb.append( SEPARATOR );
-                sb.append( item.toString() );
-#else
                 sb.Append( SEPARATOR );
                 sb.Append( item.toString() );
-#endif
             }
             return sb.ToString();
         }
@@ -72,9 +51,6 @@ namespace cadencii
         /// <param name="key">キー</param>
         /// <param name="value">値</param>
         public void putElement( string key, string value )
-#if JAVA
-            throws Exception
-#endif
         {
             foreach( WaveUnitConfigElement item in this.Elements ) {
                 if( key == item.getKey() ) {
@@ -104,6 +80,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

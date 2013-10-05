@@ -12,20 +12,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii;
-
-import cadencii.*;
-
-#else
-
 using System;
 using System.Threading;
 
 namespace cadencii
 {
-#endif
 
     public class TestFormWorker
     {
@@ -57,14 +48,7 @@ namespace cadencii
                     return;
                 }
                 receiver.reportProgress( proc );
-#if JAVA
-                try{
-                    Thread.sleep( wait_ms );
-                }catch( Exception ex ){
-                }
-#else
                 Thread.Sleep( wait_ms );
-#endif
                 proc += wait_ms;
             }
             receiver.reportComplete();
@@ -72,8 +56,6 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif
 
 #endif // DEBUG

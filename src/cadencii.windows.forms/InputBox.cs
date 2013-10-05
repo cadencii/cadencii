@@ -11,15 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.windows.forms;
-
-//INCLUDE-SECTION IMPORT ./InputBox.java
-
-import cadencii.*;
-
-#else
-
 using System;
 using System.Windows.Forms;
 using cadencii.windows.forms;
@@ -27,22 +18,11 @@ using cadencii.windows.forms;
 namespace cadencii.windows.forms
 {
 
-#endif
-
-#if JAVA
-    public class InputBox extends BDialog
-#else
     public class InputBox : Form
-#endif
     {
         public InputBox( string message )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             lblMessage.Text = message;
         }
@@ -76,10 +56,6 @@ namespace cadencii.windows.forms
             btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
-#if JAVA
-        //INCLUDE-SECTION FIELD ./InputBox.java
-        //INCLUDE-SECTION METHOD ./InputBox.java
-#else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -175,9 +151,6 @@ namespace cadencii.windows.forms
         private Button btnCancel;
         private TextBox txtInput;
         private Button btnOk;
-#endif
     }
 
-#if !JAVA
 }
-#endif

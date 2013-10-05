@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-
-package cadencii.vsq;
-
-import java.util.*;
-import cadencii.*;
-
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -26,14 +18,9 @@ using cadencii.java.util;
 
 namespace cadencii.vsq
 {
-#endif
 
-#if JAVA
-    public class UstTrack implements Cloneable {
-#else
     public class UstTrack : ICloneable
     {
-#endif
         public Object Tag;
         private List<UstEvent> m_events;
 
@@ -97,14 +84,10 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
     }
 
-#if !JAVA
 }
-#endif

@@ -11,13 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import java.util.*;
-import cadencii.*;
-#else
 using System;
 using System.Collections.Generic;
 using cadencii;
@@ -27,17 +20,11 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// Stores the data of a vsq track.
     /// </summary>
-#if JAVA
-    public class VsqTrack implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqTrack : ICloneable
-#endif
     {
         public static readonly string[] CURVES = new string[] { 
             "bre", 
@@ -66,12 +53,8 @@ namespace cadencii.vsq
         public string Tag;
         public VsqMetaText MetaText;
 
-#if JAVA
-        private class IndexIterator implements Iterator<Integer> {
-#else
         private class IndexIterator : Iterator<int>
         {
-#endif
             VsqEventList list;
             int pos;
             bool kindSinger = false;
@@ -183,12 +166,8 @@ namespace cadencii.vsq
         /// <summary>
         /// 歌手変更イベントの反復子
         /// </summary>
-#if JAVA
-        protected class SingerEventIterator implements Iterator{
-#else
         protected class SingerEventIterator : Iterator<VsqEvent>
         {
-#endif
             VsqEventList source;
             int lastIndex;
             int start;
@@ -246,12 +225,8 @@ namespace cadencii.vsq
             }
         }
 
-#if JAVA
-        private class NoteEventIterator implements Iterator{
-#else
         private class NoteEventEnumerator : IEnumerable<VsqEvent>, IEnumerator<VsqEvent>
         {
-#endif
             VsqEventList m_list;
             int m_pos;
 
@@ -291,12 +266,8 @@ namespace cadencii.vsq
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this; }
         }
 
-#if JAVA
-        private class DynamicsEventIterator implements Iterator{
-#else
         private class DynamicsEventIterator : Iterator<VsqEvent>
         {
-#endif
             VsqEventList m_list;
             int m_pos;
 
@@ -338,12 +309,8 @@ namespace cadencii.vsq
             }
         }
 
-#if JAVA
-        private class EventIterator implements Iterator{
-#else
         private class EventIterator : Iterator<VsqEvent>
         {
-#endif
             private VsqEventList m_list;
             private int m_pos;
 
@@ -607,7 +574,6 @@ namespace cadencii.vsq
             }
         }
 
-#if !JAVA
         /// <summary>
         /// XMLシリアライズ用．このトラックの名前を設定します．
         /// </summary>
@@ -623,7 +589,6 @@ namespace cadencii.vsq
                 setName( value );
             }
         }
-#endif
 
         /// <summary>
         /// このトラックの，指定したゲートタイムにおけるピッチベンドを取得します．単位はCentです．
@@ -818,9 +783,6 @@ namespace cadencii.vsq
         /// <param name="eos"></param>
         /// <param name="start"></param>
         public void printMetaText( ITextWriter sw, int eos, int start )
-#if JAVA
-            throws IOException
-#endif
         {
             MetaText.print( sw, eos, start );
         }
@@ -830,9 +792,6 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="file"></param>
         public void printMetaText( string file, string encoding = "Shift_JIS" )
-#if JAVA
-            throws IOException
-#endif
         {
             TextStream tms = new TextStream();
             int count = MetaText.getEventList().getCount();
@@ -1047,12 +1006,10 @@ namespace cadencii.vsq
             return res;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         /// <summary>
         /// Master Trackを構築
@@ -1077,14 +1034,9 @@ namespace cadencii.vsq
             MetaText = new VsqMetaText( name, singer );
         }
 
-#if JAVA
-        public VsqTrack(){
-            this( "Voice1", "Miku" );
-#else
         public VsqTrack()
             : this( "Voice1", "Miku" )
         {
-#endif
         }
 
         /// <summary>
@@ -1134,11 +1086,6 @@ namespace cadencii.vsq
                                 }
 
                                 int index_0x0a = buffer.IndexOf( 0x0a );
-#if DEBUG
-#if JAVA
-                                sout.println( "VsqTrack#.ctor; index_0x0a=" + index_0x0a );
-#endif
-#endif
                                 while ( index_0x0a >= 0 ) {
                                     int[] cpy = new int[index_0x0a];
                                     for ( int j = 0; j < index_0x0a; j++ ) {
@@ -1147,11 +1094,6 @@ namespace cadencii.vsq
                                     }
 
                                     string line = PortUtil.getDecodedString( encoding, cpy );
-#if DEBUG
-#if JAVA
-                                    sout.println( "VsqTrack#.ctor; line=" + line );
-#endif
-#endif
                                     sw.writeLine( line );
                                     buffer.RemoveAt( 0 );
                                     index_0x0a = buffer.IndexOf( 0x0a );
@@ -1181,11 +1123,6 @@ namespace cadencii.vsq
                         cpy[j] = 0xff & buffer[ j ];
                     }
                     string line = PortUtil.getDecodedString( encoding, cpy );
-#if DEBUG
-#if JAVA
-                    sout.println( "VsqTrack#.ctor; line=" + line );
-#endif
-#endif
                     sw.writeLine( line );
                 }
                 // <=
@@ -1206,6 +1143,4 @@ namespace cadencii.vsq
         }
     }
 
-#if !JAVA
 }
-#endif

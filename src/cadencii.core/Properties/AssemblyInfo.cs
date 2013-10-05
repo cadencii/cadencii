@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * AssemblyInfo.cs
  * Copyright © 2008-2011 kbinani
@@ -24,4 +23,3 @@
 [assembly: System.Runtime.InteropServices.Guid( "9ea2c6a6-558e-4c38-9961-096e964d085e" )]
 [assembly: System.Reflection.AssemblyVersion( "1.0.0.0" )]
 [assembly: System.Reflection.AssemblyFileVersion( "1.0.0" )]
-#endif

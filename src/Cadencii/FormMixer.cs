@@ -11,19 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-//INCLUDE-SECTION IMPORT ./ui/java/FormMixer.java
-
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
-import cadencii.*;
-import cadencii.apputil.*;
-import cadencii.vsq.*;
-import cadencii.windows.forms.*;
-#else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -36,18 +23,8 @@ using cadencii.windows.forms;
 
 namespace cadencii
 {
-
-#endif
-
-#if JAVA
-    public class FormMixer extends BForm
-#else
     public class FormMixer : Form
-#endif
     {
-#if JAVA
-        final int SCROLL_HEIGHT = 15;
-#endif
         private FormMain m_parent;
         private List<VolumeTracker> m_tracker = null;
         private bool mPreviousAlwaysOnTop;
@@ -62,12 +39,7 @@ namespace cadencii
 
         public FormMixer( FormMain parent )
         {
-#if JAVA
-            super();
-            initialize();
-#else
             InitializeComponent();
-#endif
             registerEventHandlers();
             setResources();
             volumeMaster.setFeder( 0 );
@@ -79,10 +51,8 @@ namespace cadencii
             volumeMaster.setTitle( "" );
             applyLanguage();
             m_parent = parent;
-#if !JAVA
             this.TopMost = true;
             this.SetStyle( ControlStyles.DoubleBuffer, true );
-#endif
         }
 
         #region public methods
@@ -214,13 +184,6 @@ namespace cadencii
             // イベントハンドラをいったん解除する
             unregisterEventHandlers();
 
-#if JAVA
-            // panelに追加済みのものをいったん除去する
-            for( int i = 0; i < m_tracker.size(); i++ ){
-                panelSlaves.remove( m_tracker.get( i ) );
-            }
-#endif
-
             // trackerの総数が変化したかどうか
             bool num_changed = (m_tracker.Count != num);
             
@@ -229,10 +192,8 @@ namespace cadencii
                 int remain = num - m_tracker.Count;
                 for ( int i = 0; i < remain; i++ ) {
                     VolumeTracker item = new VolumeTracker();
-#if !JAVA
                     item.BorderStyle = BorderStyle.FixedSingle;
                     item.Size = volumeMaster.Size;
-#endif
                     m_tracker.Add( item );
                 }
             } else if ( m_tracker.Count > num ) {
@@ -241,9 +202,7 @@ namespace cadencii
                     int indx = m_tracker.Count - 1;
                     VolumeTracker tr = m_tracker[ indx ];
                     m_tracker.RemoveAt( indx );
-#if !JAVA
                     tr.Dispose();
-#endif
                 }
             }
 
@@ -261,7 +220,6 @@ namespace cadencii
             // panelSlaves上に一度に表示可能なVolumeTrackerの個数
             int panel_capacity = max_num - 1;
 
-#if !JAVA
             if ( panel_capacity >= num_vtracker_on_panel ) {
                 // volumeMaster以外の全てのVolumeTrackerを，画面上に同時表示可能
                 hScroll.Minimum = 0;
@@ -278,7 +236,6 @@ namespace cadencii
                 hScroll.Size = new Size( (VolumeTracker.WIDTH + 1) * panel_capacity, 15 );
             }
             hScroll.Location = new System.Drawing.Point( 0, VolumeTracker.HEIGHT );
-#endif
 
             int j = -1;
             foreach (var vme in vsq.Mixer.Slave) {
@@ -297,9 +254,6 @@ namespace cadencii
                 tracker.setSolo( (vme.Solo == 1) );
                 tracker.setTrack( j + 1 );
                 tracker.setSoloButtonVisible( true );
-#if JAVA
-                tracker.setPreferredSize( new Dimension( VolumeTracker.WIDTH, VolumeTracker.HEIGHT ) );
-#endif
                 addToPanelSlaves( tracker, j );
             }
             int count = AppManager.getBgmCount();
@@ -317,9 +271,6 @@ namespace cadencii
                 tracker.setSolo( false );
                 tracker.setTrack( -i - 1 );
                 tracker.setSoloButtonVisible( false );
-#if JAVA
-                tracker.setPreferredSize( new Dimension( VolumeTracker.WIDTH, VolumeTracker.HEIGHT ) );
-#endif
                 addToPanelSlaves( tracker, j );
             }
 #if DEBUG
@@ -336,20 +287,6 @@ namespace cadencii
 
             // ウィンドウのサイズを更新（必要なら）
             if( num_changed ){
-#if JAVA
-                this.setResizable( true );
-                scrollSlaves.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
-                JPanel c = getJContentPane();
-                Dimension size = c.getSize();
-                Rectangle rc = new Rectangle();
-                rc = c.getBounds( rc );
-                int xdiff = this.getWidth() - rc.width;
-                int ydiff = this.getHeight() - rc.height;
-                int w = screen_num * (VolumeTracker.WIDTH + 1) + 3;
-                int h = VolumeTracker.HEIGHT + SCROLL_HEIGHT;
-                pack();
-                this.setResizable( false );
-#else
                 panelSlaves.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
                 volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
                 this.MaximumSize = Size.Empty;
@@ -359,7 +296,6 @@ namespace cadencii
                 this.MaximumSize = this.Size;
                 this.Invalidate();
                 //m_parent.requestFocusInWindow(); // <-要る？
-#endif
             }
         }
         #endregion
@@ -367,18 +303,7 @@ namespace cadencii
         #region helper methods
         private void addToPanelSlaves( VolumeTracker item, int ix )
         {
-#if JAVA
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.gridx = ix;
-            gbc.gridy = 0;
-            gbc.weightx = 1.0D;
-            gbc.weighty = 1.0D;
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.VERTICAL;
-            panelSlaves.add( item, gbc );
-#else
             panelSlaves.Controls.Add( item );
-#endif
         }
 
         private static string _( string id )
@@ -441,66 +366,30 @@ namespace cadencii
 
         private void invokePanpotChangedEvent( int track, int panpot )
         {
-#if JAVA
-            try{
-                panpotChangedEvent.raise( track, panpot );
-            }catch( Exception ex ){
-            }
-#elif QT_VERSION
-            panpotChanged( track, panpot );
-#else
             if ( PanpotChanged != null ) {
                 PanpotChanged.Invoke( track, panpot );
             }
-#endif
         }
 
         private void invokeFederChangedEvent( int track, int feder )
         {
-#if JAVA
-            try{
-                federChangedEvent.raise( track, feder );
-            }catch( Exception ex ){
-            }
-#elif QT_VERSION
-            federChanged( track, feder );
-#else
             if ( FederChanged != null ) {
                 FederChanged.Invoke( track, feder );
             }
-#endif
         }
 
         private void invokeSoloChangedEvent( int track, bool solo )
         {
-#if JAVA
-            try{
-                soloChangedEvent.raise( track, solo );
-            }catch( Exception ex ){
-            }
-#elif QT_VERSION
-            soloChanged( track, solo );
-#else
             if ( SoloChanged != null ) {
                 SoloChanged.Invoke( track, solo );
             }
-#endif
         }
 
         private void invokeMuteChangedEvent( int track, bool mute )
         {
-#if JAVA
-            try{
-                muteChangedEvent.raise( track, mute );
-            }catch( Exception ex ){
-            }
-#elif QT_VERSION
-            muteChanged( track, mute );
-#else
             if ( MuteChanged != null ) {
                 MuteChanged.Invoke( track, mute );
             }
-#endif
         }
         #endregion
 
@@ -567,12 +456,9 @@ namespace cadencii
         public void FormMixer_FormClosing( Object sender, FormClosingEventArgs e )
         {
             this.Visible = false;
-#if !JAVA
             e.Cancel = true;
-#endif
         }
 
-#if !JAVA
         public void veScrollBar_ValueChanged( Object sender, EventArgs e )
         {
             int stdx = hScroll.Value;
@@ -581,7 +467,6 @@ namespace cadencii
             }
             this.Invalidate();
         }
-#endif
 
         public void volumeMaster_FederChanged( int track, int feder )
         {
@@ -615,12 +500,6 @@ namespace cadencii
         #endregion
 
         #region UI implementation
-#if JAVA
-        #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ./ui/java/FormMixer.java
-        //INCLUDE-SECTION METHOD ./ui/java/FormMixer.java
-        #endregion
-#else
         #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -741,11 +620,8 @@ namespace cadencii
         private UserControl panelSlaves;
         private HScrollBar hScroll;
         #endregion
-#endif
         #endregion
 
     }
 
-#if !JAVA
 }
-#endif

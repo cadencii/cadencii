@@ -11,29 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import java.util.*;
-import cadencii.*;
-import cadencii.vsq.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using cadencii.java.util;
 using cadencii.vsq;
 
 namespace cadencii
 {
-#endif
 
     public class RenderedStatus
     {
         public VsqTrack track;
-#if JAVA
-        @XmlGenericType( TempoTableEntry.class )
-#endif
         public TempoVector tempo;
         public SequenceConfig config;
 
@@ -60,6 +47,4 @@ namespace cadencii
         }
     }
 
-#if !JAVA
 }
-#endif

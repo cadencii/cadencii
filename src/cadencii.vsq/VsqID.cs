@@ -11,14 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii.vsq;
-
-import java.io.*;
-import cadencii.*;
-import cadencii.xml.*;
-
-#else
 using System;
 using cadencii;
 using cadencii.java.io;
@@ -26,17 +18,11 @@ using cadencii.java.io;
 namespace cadencii.vsq
 {
 
-#endif
-
     /// <summary>
     /// メタテキストに埋め込まれるIDを表すクラス。
     /// </summary>
-#if JAVA
-    public class VsqID implements Cloneable, Serializable
-#else
     [Serializable]
     public class VsqID : ICloneable
-#endif
     {
         /// <summary>
         /// ミリ秒で表した、音符の最大長さ
@@ -44,24 +30,11 @@ namespace cadencii.vsq
         public const int MAX_NOTE_MILLISEC_LENGTH = 16383;
         private const int RISE_PORTAMENTO_FLAG = 0x1;
         private const int FALL_PORTAMENTO_FLAG = 0x2;
-#if JAVA
-        @XmlIgnore
-        public int value;
-        @XmlIgnore
-        public int IconHandle_index;
-        @XmlIgnore
-        public int LyricHandle_index;
-        @XmlIgnore
-        public int VibratoHandle_index;
-        @XmlIgnore
-        public int NoteHeadHandle_index;
-#else
         internal int value;
         internal int IconHandle_index;
         internal int LyricHandle_index;
         internal int VibratoHandle_index;
         internal int NoteHeadHandle_index;
-#endif
         public VsqIDType type;
         public IconHandle IconHandle;
         private int length;
@@ -138,7 +111,6 @@ namespace cadencii.vsq
             length = value;
         }
 
-#if !JAVA
         public int Length
         {
             get
@@ -150,7 +122,6 @@ namespace cadencii.vsq
                 setLength( value );
             }
         }
-#endif
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
@@ -202,12 +173,10 @@ namespace cadencii.vsq
             return result;
         }
 
-#if !JAVA
         public object Clone()
         {
             return clone();
         }
-#endif
 
         /// <summary>
         /// IDの番号（ID#****の****）を指定したコンストラクタ。
@@ -218,14 +187,9 @@ namespace cadencii.vsq
             value = a_value;
         }
 
-#if JAVA
-        public VsqID(){
-            this( 0 );
-#else
         public VsqID()
             : this( 0 )
         {
-#endif
         }
 
         /// <summary>
@@ -328,15 +292,11 @@ namespace cadencii.vsq
             return ret;
         }
 
-#if !JAVA
         public override string ToString()
         {
             return toString();
         }
-#endif
 
     }
 
-#if !JAVA
 }
-#endif

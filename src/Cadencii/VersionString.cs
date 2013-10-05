@@ -11,27 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if JAVA
-package cadencii;
-
-import cadencii.*;
-#else
 using System;
-
-
 
     namespace cadencii
     {
-#endif
 
             /// <summary>
             /// メジャー，マイナー，およびメンテナンス番号によるバージョン番号を表すクラス
             /// </summary>
-#if JAVA
-            class VersionString implements Comparable<VersionString>
-#else
             class VersionString : IComparable<VersionString>
-#endif
             {
                 /// <summary>
                 /// メジャーバージョンを表す
@@ -117,7 +105,6 @@ using System;
                     }
                 }
 
-#if !JAVA
                 public override string ToString()
                 {
                     return this.toString();
@@ -127,9 +114,6 @@ using System;
                 {
                     return this.compareTo( item );
                 }
-#endif
             }
 
-#if !JAVA
     }
-#endif
