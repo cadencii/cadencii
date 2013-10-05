@@ -50,18 +50,18 @@ namespace cadencii
         /// </summary>
         public bool EndMarkerEnabled = false;
 
-        public bool equals( SequenceConfig item )
+        public bool equals(SequenceConfig item)
         {
-            if ( item == null ) {
+            if (item == null) {
                 return false;
             }
-            if ( this.SamplingRate != item.SamplingRate ) {
+            if (this.SamplingRate != item.SamplingRate) {
                 return false;
             }
-            if ( this.WaveFileOutputFromMasterTrack != item.WaveFileOutputFromMasterTrack ) {
+            if (this.WaveFileOutputFromMasterTrack != item.WaveFileOutputFromMasterTrack) {
                 return false;
             }
-            if ( this.WaveFileOutputChannel != item.WaveFileOutputChannel ) {
+            if (this.WaveFileOutputChannel != item.WaveFileOutputChannel) {
                 return false;
             }
             return true;

@@ -24,7 +24,7 @@ namespace cadencii
     {
         private string mPaletteToolID;
 
-        public PaletteToolMenuItem( string id )
+        public PaletteToolMenuItem(string id)
             : base()
         {
             mPaletteToolID = id;

@@ -16,11 +16,13 @@ using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate List<MidiQueue> MidiQueueDoneEventHandler( MidiQueue sender );
+    public delegate List<MidiQueue> MidiQueueDoneEventHandler(MidiQueue sender);
 
-    public class MidiQueue : IComparable<MidiQueue> {
+    public class MidiQueue : IComparable<MidiQueue>
+    {
         public MidiQueueDoneEventHandler Done;
         public int Track;
         public int Clock;
@@ -29,12 +31,13 @@ namespace cadencii {
         public byte Note;
         public byte Velocity;
 
-        public int CompareTo( MidiQueue item ) {
-            if ( item == null ) {
+        public int CompareTo(MidiQueue item)
+        {
+            if (item == null) {
                 return 1;
             } else {
                 int ret = Clock - item.Clock;
-                if ( ret == 0 ) {
+                if (ret == 0) {
                     return (int)(Velocity - item.Velocity);
                 } else {
                     return ret;

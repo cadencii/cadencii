@@ -11,12 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// 音程を表現するときの表現形式を表す列挙型
     /// </summary>
-    public enum NoteNumberExpressionType {
+    public enum NoteNumberExpressionType
+    {
         /// <summary>
         /// 数値で表現(ex. 61)
         /// </summary>

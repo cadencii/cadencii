@@ -15,32 +15,35 @@ using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class EditedZoneCommand {
+    public class EditedZoneCommand
+    {
         public List<EditedZoneUnit> mAdd;
         public List<EditedZoneUnit> mRemove;
 
-        public EditedZoneCommand( int addStart, int addEnd )
+        public EditedZoneCommand(int addStart, int addEnd)
             :
-            this( new EditedZoneUnit[] { new EditedZoneUnit( addStart, addEnd ) }, new EditedZoneUnit[] { } )
+            this(new EditedZoneUnit[] { new EditedZoneUnit(addStart, addEnd) }, new EditedZoneUnit[] { })
         {
         }
 
-        public EditedZoneCommand( EditedZoneUnit[] add, EditedZoneUnit[] remove ) {
+        public EditedZoneCommand(EditedZoneUnit[] add, EditedZoneUnit[] remove)
+        {
             this.mAdd = new List<EditedZoneUnit>();
-            for ( int i = 0; i < add.Length; i++ ) {
-                this.mAdd.Add( (EditedZoneUnit)add[i].clone() );
+            for (int i = 0; i < add.Length; i++) {
+                this.mAdd.Add((EditedZoneUnit)add[i].clone());
             }
             this.mRemove = new List<EditedZoneUnit>();
-            for ( int i = 0; i < remove.Length; i++ ) {
-                this.mRemove.Add( (EditedZoneUnit)remove[i].clone() );
+            for (int i = 0; i < remove.Length; i++) {
+                this.mRemove.Add((EditedZoneUnit)remove[i].clone());
             }
         }
 
-        public EditedZoneCommand( List<EditedZoneUnit> add, List<EditedZoneUnit> remove )
+        public EditedZoneCommand(List<EditedZoneUnit> add, List<EditedZoneUnit> remove)
             :
-            this( add.ToArray(), remove.ToArray() )
+            this(add.ToArray(), remove.ToArray())
         {
         }
     }

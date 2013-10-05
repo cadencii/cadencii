@@ -48,7 +48,7 @@ namespace cadencii.vsq
 
         private float[] mPitches = null;
         private bool mIsPitchesSpec = false;
-        
+
         private float mTempo = -1;
         private bool mIsTempoSpec = false;
 
@@ -63,20 +63,20 @@ namespace cadencii.vsq
 
         private float mVoiceOverlap = 0;
         private bool mIsVoiceOverlapSpec = false;
-        
+
         private UstEnvelope mEnvelope = null;
         private bool mIsEnvelopeSpec = false;
 
         public string Flags = "";
-        
+
         private int mModuration = 100;
         private bool mIsModurationSpec = false;
-        
+
         public int Index;
 
         private float mStartPoint;
         private bool mIsStartPointSpec = false;
-        
+
         private int mLength = 0;
         private bool mIsLengthSpec = false;
 
@@ -92,7 +92,7 @@ namespace cadencii.vsq
             return mLyric;
         }
 
-        public void setLyric( string value )
+        public void setLyric(string value)
         {
             mLyric = value;
             mIsLyricSpec = true;
@@ -111,7 +111,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setLyric( value );
+                setLyric(value);
             }
         }
         #endregion
@@ -122,7 +122,7 @@ namespace cadencii.vsq
             return mNote;
         }
 
-        public void setNote( int value )
+        public void setNote(int value)
         {
             mNote = value;
             mIsNoteSpec = true;
@@ -141,7 +141,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setNote( value );
+                setNote(value);
             }
         }
         #endregion
@@ -152,7 +152,7 @@ namespace cadencii.vsq
             return mIntensity;
         }
 
-        public void setIntensity( int value )
+        public void setIntensity(int value)
         {
             mIntensity = value;
             mIsIntensitySpec = true;
@@ -171,7 +171,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setIntensity( value );
+                setIntensity(value);
             }
         }
         #endregion
@@ -182,7 +182,7 @@ namespace cadencii.vsq
             return mPBType;
         }
 
-        public void setPBType( int value )
+        public void setPBType(int value)
         {
             mPBType = value;
             mIsPBTypeSpec = true;
@@ -201,7 +201,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setPBType( value );
+                setPBType(value);
             }
         }
         #endregion
@@ -212,7 +212,7 @@ namespace cadencii.vsq
             return mPitches;
         }
 
-        public void setPitches( float[] value )
+        public void setPitches(float[] value)
         {
             mPitches = value;
             mIsPitchesSpec = true;
@@ -231,7 +231,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setPitches( value );
+                setPitches(value);
             }
         }
         #endregion
@@ -242,7 +242,7 @@ namespace cadencii.vsq
             return mTempo;
         }
 
-        public void setTempo( float value )
+        public void setTempo(float value)
         {
             mTempo = value;
             mIsTempoSpec = true;
@@ -261,7 +261,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setTempo( value );
+                setTempo(value);
             }
         }
         #endregion
@@ -272,7 +272,7 @@ namespace cadencii.vsq
             return mVibrato;
         }
 
-        public void setVibrato( UstVibrato value )
+        public void setVibrato(UstVibrato value)
         {
             mVibrato = value;
             mIsVibratoSpec = true;
@@ -291,7 +291,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setVibrato( value );
+                setVibrato(value);
             }
         }
         #endregion
@@ -302,7 +302,7 @@ namespace cadencii.vsq
             return mPortamento;
         }
 
-        public void setPortamento( UstPortamento value )
+        public void setPortamento(UstPortamento value)
         {
             mPortamento = value;
             mIsPortamentoSpec = true;
@@ -321,7 +321,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setPortamento( value );
+                setPortamento(value);
             }
         }
         #endregion
@@ -332,7 +332,7 @@ namespace cadencii.vsq
             return mPreUtterance;
         }
 
-        public void setPreUtterance( float value )
+        public void setPreUtterance(float value)
         {
             mPreUtterance = value;
             mIsPreUtteranceSpec = true;
@@ -351,7 +351,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setPreUtterance( value );
+                setPreUtterance(value);
             }
         }
         #endregion
@@ -362,7 +362,7 @@ namespace cadencii.vsq
             return mVoiceOverlap;
         }
 
-        public void setVoiceOverlap( float value )
+        public void setVoiceOverlap(float value)
         {
             mVoiceOverlap = value;
             mIsVoiceOverlapSpec = true;
@@ -381,7 +381,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setVoiceOverlap( value );
+                setVoiceOverlap(value);
             }
         }
         #endregion
@@ -392,7 +392,7 @@ namespace cadencii.vsq
             return mEnvelope;
         }
 
-        public void setEnvelope( UstEnvelope value )
+        public void setEnvelope(UstEnvelope value)
         {
             mEnvelope = value;
             mIsEnvelopeSpec = true;
@@ -411,7 +411,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setEnvelope( value );
+                setEnvelope(value);
             }
         }
         #endregion
@@ -422,7 +422,7 @@ namespace cadencii.vsq
             return mModuration;
         }
 
-        public void setModuration( int value )
+        public void setModuration(int value)
         {
             mModuration = value;
             mIsModurationSpec = true;
@@ -441,7 +441,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setModuration( value );
+                setModuration(value);
             }
         }
         #endregion
@@ -460,7 +460,7 @@ namespace cadencii.vsq
         /// StartPoinの値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setStartPoint( float value )
+        public void setStartPoint(float value)
         {
             mStartPoint = value;
             mIsStartPointSpec = true;
@@ -484,7 +484,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartPoint( value );
+                setStartPoint(value);
             }
         }
         #endregion
@@ -513,7 +513,7 @@ namespace cadencii.vsq
         /// このイベントの長さを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value )
+        public void setLength(int value)
         {
             mLength = value;
             mIsLengthSpec = true;
@@ -530,7 +530,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
         #endregion
@@ -548,24 +548,24 @@ namespace cadencii.vsq
             ret.mIsIntensitySpec = mIsIntensitySpec;
             ret.mPBType = mPBType;
             ret.mIsPBTypeSpec = mIsPBTypeSpec;
-            if ( mPitches != null ) {
+            if (mPitches != null) {
                 ret.mPitches = new float[mPitches.Length];
-                for ( int i = 0; i < mPitches.Length; i++ ) {
+                for (int i = 0; i < mPitches.Length; i++) {
                     ret.mPitches[i] = mPitches[i];
                 }
             }
             ret.mIsPitchesSpec = mIsPitchesSpec;
             ret.mTempo = mTempo;
             ret.mIsTempoSpec = mIsTempoSpec;
-            if ( mVibrato != null ) {
+            if (mVibrato != null) {
                 ret.mVibrato = (UstVibrato)mVibrato.clone();
             }
             ret.mIsVibratoSpec = mIsVibratoSpec;
-            if ( mPortamento != null ) {
+            if (mPortamento != null) {
                 ret.mPortamento = (UstPortamento)mPortamento.clone();
             }
             ret.mIsPortamentoSpec = mIsPortamentoSpec;
-            if ( mEnvelope != null ) {
+            if (mEnvelope != null) {
                 ret.mEnvelope = (UstEnvelope)mEnvelope.clone();
             }
             ret.mIsEnvelopeSpec = mIsEnvelopeSpec;
@@ -588,87 +588,87 @@ namespace cadencii.vsq
             return clone();
         }
 
-        public void print( ITextWriter sw )
+        public void print(ITextWriter sw)
         {
-            if ( this.Index == UstFile.PREV_INDEX ) {
-                sw.write( "[#PREV]" );
+            if (this.Index == UstFile.PREV_INDEX) {
+                sw.write("[#PREV]");
                 sw.newLine();
-            } else if ( this.Index == UstFile.NEXT_INDEX ) {
-                sw.write( "[#NEXT]" );
+            } else if (this.Index == UstFile.NEXT_INDEX) {
+                sw.write("[#NEXT]");
                 sw.newLine();
             } else {
-                sw.write( "[#" + PortUtil.formatDecimal( "0000", Index ) + "]" );
+                sw.write("[#" + PortUtil.formatDecimal("0000", Index) + "]");
                 sw.newLine();
             }
-            if ( isLengthSpecified() ) {
-                sw.write( "Length=" + mLength );
+            if (isLengthSpecified()) {
+                sw.write("Length=" + mLength);
                 sw.newLine();
             }
-            if ( isLyricSpecified() ) {
-                sw.write( "Lyric=" + getLyric() );
+            if (isLyricSpecified()) {
+                sw.write("Lyric=" + getLyric());
                 sw.newLine();
             }
-            if ( isNoteSpecified() ) {
-                sw.write( "NoteNum=" + getNote() );
+            if (isNoteSpecified()) {
+                sw.write("NoteNum=" + getNote());
                 sw.newLine();
             }
-            if ( isIntensitySpecified() ) {
-                sw.write( "Intensity=" + getIntensity() );
+            if (isIntensitySpecified()) {
+                sw.write("Intensity=" + getIntensity());
                 sw.newLine();
             }
-            if ( isPitchesSpecified() && mPitches != null ) {
-                sw.write( "PBType=" + getPBType() );
+            if (isPitchesSpecified() && mPitches != null) {
+                sw.write("PBType=" + getPBType());
                 sw.newLine();
-                sw.write( "Piches=" );
-                for ( int i = 0; i < mPitches.Length; i++ ) {
-                    if ( i == 0 ) {
-                        sw.write( mPitches[i] + "" );
+                sw.write("Piches=");
+                for (int i = 0; i < mPitches.Length; i++) {
+                    if (i == 0) {
+                        sw.write(mPitches[i] + "");
                     } else {
-                        sw.write( "," + mPitches[i] );
+                        sw.write("," + mPitches[i]);
                     }
                 }
                 sw.newLine();
             }
-            if ( isTempoSpecified() ) {
-                sw.write( "Tempo=" + getTempo() );
+            if (isTempoSpecified()) {
+                sw.write("Tempo=" + getTempo());
                 sw.newLine();
             }
-            if ( isVibratoSpecified() && mVibrato != null ) {
-                sw.write( mVibrato.ToString() );
+            if (isVibratoSpecified() && mVibrato != null) {
+                sw.write(mVibrato.ToString());
                 sw.newLine();
             }
-            if ( isPortamentoSpecified() && mPortamento != null ) {
-                mPortamento.print( sw );
+            if (isPortamentoSpecified() && mPortamento != null) {
+                mPortamento.print(sw);
             }
-            if ( isPreUtteranceSpecified() ) {
-                sw.write( "PreUtterance=" + getPreUtterance() );
+            if (isPreUtteranceSpecified()) {
+                sw.write("PreUtterance=" + getPreUtterance());
                 sw.newLine();
             }
-            if ( isVoiceOverlapSpecified() ) {
-                sw.write( "VoiceOverlap=" + getVoiceOverlap() );
+            if (isVoiceOverlapSpecified()) {
+                sw.write("VoiceOverlap=" + getVoiceOverlap());
                 sw.newLine();
             }
-            if ( isEnvelopeSpecified() && mEnvelope != null ) {
-                sw.write( mEnvelope.ToString() );
+            if (isEnvelopeSpecified() && mEnvelope != null) {
+                sw.write(mEnvelope.ToString());
                 sw.newLine();
             }
-            if ( Flags != "" ) {
-                sw.write( "Flags=" + Flags );
+            if (Flags != "") {
+                sw.write("Flags=" + Flags);
                 sw.newLine();
             }
-            if ( isModurationSpecified() ) {
-                sw.write( "Moduration=" + getModuration() );
+            if (isModurationSpecified()) {
+                sw.write("Moduration=" + getModuration());
                 sw.newLine();
             }
-            if ( isStartPointSpecified() ) {
-                sw.write( "StartPoint=" + getStartPoint() );
+            if (isStartPointSpecified()) {
+                sw.write("StartPoint=" + getStartPoint());
                 sw.newLine();
             }
-            if ( Properties != null ) {
+            if (Properties != null) {
                 int size = Properties.Count;
-                for ( int i = 0; i < size; i++ ) {
+                for (int i = 0; i < size; i++) {
                     UstEventProperty itemi = Properties[i];
-                    sw.write( itemi.Name + "=" + itemi.Value );
+                    sw.write(itemi.Name + "=" + itemi.Value);
                     sw.newLine();
                 }
             }
@@ -679,18 +679,18 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equalsForSynth( UstEvent item )
+        public bool equalsForSynth(UstEvent item)
         {
-            if ( item == null ) {
+            if (item == null) {
                 return false;
             }
             bool ret = true;
             // モジュレーション・先行発声・スタート位置・オーバーラップのみチェック．
             // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
-            if ( this.getModuration() != item.getModuration() ) ret = false;
-            else if ( this.getPreUtterance() != item.getPreUtterance() ) ret = false;
-            else if ( this.getStartPoint() != item.getStartPoint() ) ret = false;
-            else if ( this.getVoiceOverlap() != item.getVoiceOverlap() ) ret = false;
+            if (this.getModuration() != item.getModuration()) ret = false;
+            else if (this.getPreUtterance() != item.getPreUtterance()) ret = false;
+            else if (this.getStartPoint() != item.getStartPoint()) ret = false;
+            else if (this.getVoiceOverlap() != item.getVoiceOverlap()) ret = false;
             return ret;
         }
 
@@ -700,7 +700,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getXmlElementName( string name )
+        public static string getXmlElementName(string name)
         {
             return name;
         }

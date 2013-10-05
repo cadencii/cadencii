@@ -13,14 +13,18 @@
  */
 using System;
 
-namespace cadencii {
-    public static class Base64 {
-        public static string encode( byte[] value ) {
-            return Convert.ToBase64String( value );
+namespace cadencii
+{
+    public static class Base64
+    {
+        public static string encode(byte[] value)
+        {
+            return Convert.ToBase64String(value);
         }
 
-        public static byte[] decode( string value ) {
-            return Convert.FromBase64String( value );
+        public static byte[] decode(string value)
+        {
+            return Convert.FromBase64String(value);
         }
     }
 }

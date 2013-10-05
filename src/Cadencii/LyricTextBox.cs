@@ -18,11 +18,13 @@ using cadencii;
 
 
 
-namespace cadencii {
+namespace cadencii
+{
     /// <summary>
     /// 歌詞入力用のテキストボックス
     /// </summary>
-    public class LyricTextBox : TextBox {
+    public class LyricTextBox : TextBox
+    {
         private string m_buf_text;
         private bool m_phonetic_symbol_edit_mode;
 
@@ -30,7 +32,8 @@ namespace cadencii {
         /// 発音記号を編集するモードかどうかを表すブール値を取得します
         /// </summary>
         /// <returns></returns>
-        public bool isPhoneticSymbolEditMode() {
+        public bool isPhoneticSymbolEditMode()
+        {
             return m_phonetic_symbol_edit_mode;
         }
 
@@ -38,7 +41,8 @@ namespace cadencii {
         /// 発音記号を編集するモードかどうかを表すブール値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setPhoneticSymbolEditMode( bool value ) {
+        public void setPhoneticSymbolEditMode(bool value)
+        {
             m_phonetic_symbol_edit_mode = value;
         }
 
@@ -47,7 +51,8 @@ namespace cadencii {
         /// (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
         /// </summary>
         /// <returns></returns>
-        public string getBufferText() {
+        public string getBufferText()
+        {
             return m_buf_text;
         }
 
@@ -56,7 +61,8 @@ namespace cadencii {
         /// (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
         /// </summary>
         /// <param name="value"></param>
-        public void setBufferText( string value ) {
+        public void setBufferText(string value)
+        {
             m_buf_text = value;
         }
 
@@ -65,13 +71,14 @@ namespace cadencii {
         /// </summary>
         /// <param name="keyData">キーの値の一つ</param>
         /// <returns>指定されているキーが入力キーである場合は true．それ以外の場合は false．</returns>
-        protected override bool IsInputKey( Keys keyData ) {
-            switch ( keyData ) {
+        protected override bool IsInputKey(Keys keyData)
+        {
+            switch (keyData) {
                 case Keys.Tab:
                 case Keys.Tab | Keys.Shift:
-                    break;
+                break;
                 default:
-                    return base.IsInputKey( keyData );
+                return base.IsInputKey(keyData);
             }
             return true;
         }

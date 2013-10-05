@@ -15,14 +15,16 @@
 using System;
 using System.Windows.Forms.Design;
 
-namespace cadencii.windows.forms {
+namespace cadencii.windows.forms
+{
 
     /// <summary>
     /// Summary description for BandDesigner.
     /// </summary>
     public class BandDesigner//: System.Windows.Forms.Design
     {
-        public BandDesigner() {
+        public BandDesigner()
+        {
             //
             // TODO: Add constructor logic here
             //

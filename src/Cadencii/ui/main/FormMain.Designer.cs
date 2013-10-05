@@ -12,12 +12,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -1416,7 +1416,7 @@ namespace cadencii
             // menuHiddenVisualForwardParameter
             // 
             this.menuHiddenVisualForwardParameter.Name = "menuHiddenVisualForwardParameter";
-            this.menuHiddenVisualForwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            this.menuHiddenVisualForwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
             | System.Windows.Forms.Keys.Next)));
             this.menuHiddenVisualForwardParameter.Size = new System.Drawing.Size(304, 22);
             this.menuHiddenVisualForwardParameter.Text = "Next Control Curve";
@@ -1425,7 +1425,7 @@ namespace cadencii
             // menuHiddenVisualBackwardParameter
             // 
             this.menuHiddenVisualBackwardParameter.Name = "menuHiddenVisualBackwardParameter";
-            this.menuHiddenVisualBackwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            this.menuHiddenVisualBackwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
             | System.Windows.Forms.Keys.PageUp)));
             this.menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size(304, 22);
             this.menuHiddenVisualBackwardParameter.Text = "Previous Control Curve";
@@ -2188,7 +2188,7 @@ namespace cadencii
             // 
             // vScroll
             // 
-            this.vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.vScroll.Location = new System.Drawing.Point(405, 94);
             this.vScroll.Name = "vScroll";
@@ -2197,7 +2197,7 @@ namespace cadencii
             // 
             // picturePositionIndicator
             // 
-            this.picturePositionIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.picturePositionIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.picturePositionIndicator.BackColor = System.Drawing.Color.DarkGray;
             this.picturePositionIndicator.Location = new System.Drawing.Point(0, 46);
@@ -2281,8 +2281,8 @@ namespace cadencii
             // 
             // 
             // 
-            this.splitContainerProperty.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitContainerProperty.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainerProperty.Panel1.BorderColor = System.Drawing.Color.Black;
             this.splitContainerProperty.Panel1.Location = new System.Drawing.Point(0, 0);
@@ -2294,8 +2294,8 @@ namespace cadencii
             // 
             // 
             // 
-            this.splitContainerProperty.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitContainerProperty.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainerProperty.Panel2.BorderColor = System.Drawing.Color.Black;
             this.splitContainerProperty.Panel2.Location = new System.Drawing.Point(46, 0);
@@ -2322,8 +2322,8 @@ namespace cadencii
             // 
             // 
             // 
-            this.splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer2.Panel1.BorderColor = System.Drawing.Color.Black;
             this.splitContainer2.Panel1.Location = new System.Drawing.Point(0, 0);
@@ -2335,7 +2335,7 @@ namespace cadencii
             // 
             // 
             // 
-            this.splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer2.Panel2.BorderColor = System.Drawing.Color.Black;
             this.splitContainer2.Panel2.Location = new System.Drawing.Point(0, 29);
@@ -2363,8 +2363,8 @@ namespace cadencii
             // 
             // 
             // 
-            this.splitContainer1.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitContainer1.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.Panel1.BorderColor = System.Drawing.Color.Black;
             this.splitContainer1.Panel1.Location = new System.Drawing.Point(0, 0);
@@ -2376,7 +2376,7 @@ namespace cadencii
             // 
             // 
             // 
-            this.splitContainer1.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.splitContainer1.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.Panel2.BorderColor = System.Drawing.Color.Black;
             this.splitContainer1.Panel2.Location = new System.Drawing.Point(0, 54);
@@ -2531,7 +2531,7 @@ namespace cadencii
             // 
             // panelOverview
             // 
-            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelOverview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))));
             this.panelOverview.Location = new System.Drawing.Point(0, 1);
@@ -2543,8 +2543,8 @@ namespace cadencii
             // 
             // pictPianoRoll
             // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.pictPianoRoll.Location = new System.Drawing.Point(0, 94);
@@ -2556,7 +2556,7 @@ namespace cadencii
             // 
             // hScroll
             // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.hScroll.Location = new System.Drawing.Point(65, 263);
             this.hScroll.Name = "hScroll";

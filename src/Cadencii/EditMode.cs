@@ -13,12 +13,14 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// ピアノロール画面の編集モード
     /// </summary>
-    public enum EditMode {
+    public enum EditMode
+    {
         /// <summary>
         /// 何も編集して無い状態
         /// </summary>

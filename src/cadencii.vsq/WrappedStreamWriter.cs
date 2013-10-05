@@ -22,7 +22,7 @@ namespace cadencii.vsq
     {
         BufferedWriter m_writer;
 
-        public WrappedStreamWriter( BufferedWriter stream_writer )
+        public WrappedStreamWriter(BufferedWriter stream_writer)
         {
             m_writer = stream_writer;
         }
@@ -32,14 +32,14 @@ namespace cadencii.vsq
             m_writer.newLine();
         }
 
-        public void write( string value )
+        public void write(string value)
         {
-            m_writer.write( value );
+            m_writer.write(value);
         }
 
-        public void writeLine( string value )
+        public void writeLine(string value)
         {
-            m_writer.write( value );
+            m_writer.write(value);
             m_writer.newLine();
         }
 

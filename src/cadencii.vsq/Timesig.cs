@@ -20,7 +20,7 @@ namespace cadencii.vsq
         public int denominator;
 
 
-        public Timesig( int numerator, int denominator )
+        public Timesig(int numerator, int denominator)
         {
             this.numerator = numerator;
             this.denominator = denominator;

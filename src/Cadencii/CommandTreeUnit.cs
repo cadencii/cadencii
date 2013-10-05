@@ -17,10 +17,12 @@ using cadencii.vsq;
 using cadencii;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
     [Serializable]
-    public class CommandTreeUnit {
+    public class CommandTreeUnit
+    {
         public CadenciiCommand Command = null;
         public CadenciiCommand Parent = null;
         public List<CadenciiCommand> Children = null;

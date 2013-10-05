@@ -29,19 +29,19 @@ namespace cadencii
         /// </summary>
         /// <param name="track"></param>
         /// <param name="tempo"></param>
-        public RenderedStatus( VsqTrack track, TempoVector tempo, SequenceConfig config )
+        public RenderedStatus(VsqTrack track, TempoVector tempo, SequenceConfig config)
         {
             this.track = track;
             this.tempo = new TempoVector();
             foreach (var entry in tempo) {
-                this.tempo.Add( (TempoTableEntry)entry.clone() );
+                this.tempo.Add((TempoTableEntry)entry.clone());
             }
             this.config = config;
         }
 
         public RenderedStatus()
         {
-            track = new VsqTrack( 0, 0, 0 );
+            track = new VsqTrack(0, 0, 0);
             tempo = new TempoVector();
             config = new SequenceConfig();
         }

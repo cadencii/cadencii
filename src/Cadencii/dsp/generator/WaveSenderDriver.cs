@@ -55,7 +55,7 @@ namespace cadencii
 
         public double getProgress()
         {
-            if ( mTotalSamples <= 0 ) {
+            if (mTotalSamples <= 0) {
                 return 0.0;
             } else {
                 return mTotalAppend / (double)mTotalSamples;
@@ -77,7 +77,7 @@ namespace cadencii
             return mVersion;
         }
 
-        public override void setConfig( string parameters )
+        public override void setConfig(string parameters)
         {
             // do nothing
         }
@@ -89,22 +89,22 @@ namespace cadencii
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        public void init(VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate)
         {
             mSampleRate = sample_rate;
 #if DEBUG
-            sout.println( "WaveSenderDriver#init; sample_rate=" + sample_rate );
+            sout.println("WaveSenderDriver#init; sample_rate=" + sample_rate);
 #endif
         }
 
-        public void setSender( WaveSender wave_sender )
+        public void setSender(WaveSender wave_sender)
         {
             mWaveSender = wave_sender;
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;
@@ -115,15 +115,15 @@ namespace cadencii
             return mTotalAppend;
         }
 
-        public void begin( long length, WorkerState state )
+        public void begin(long length, WorkerState state)
         {
             mRunning = true;
             mTotalSamples = length;
             long remain = length;
-            while ( remain > 0 && !state.isCancelRequested() ) {
+            while (remain > 0 && !state.isCancelRequested()) {
                 int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
-                mWaveSender.pull( mBufferL, mBufferR, amount );
-                mReceiver.push( mBufferL, mBufferR, amount );
+                mWaveSender.pull(mBufferL, mBufferR, amount);
+                mReceiver.push(mBufferL, mBufferR, amount);
                 remain -= amount;
                 mTotalAppend += amount;
             }

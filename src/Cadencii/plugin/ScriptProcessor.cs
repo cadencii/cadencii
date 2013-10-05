@@ -25,29 +25,30 @@ namespace cadencii
 
         protected abstract string getSuffix();
 
-        public string process( string code )
+        public string process(string code)
         {
             var targetCode = getPrefix() + code + getSuffix();
             return targetCode
-                .Replace( "Boare.Lib.Vsq", "cadencii.vsq" )
-                .Replace( "Boare.Lib.AppUtil", "cadencii.apputil" )
-                .Replace( "Boare.Lib.Media", "cadencii.media" )
-                .Replace( "Boare.Cadencii", "cadencii" )
-                .Replace( "org.kbinani.vsq", "cadencii.vsq" )
-                .Replace( "org.kbinani.apputil", "cadencii.apputil" )
-                .Replace( "org.kbinani.cadencii", "cadencii" )
-                .Replace( "org.kbinani.java", "cadencii.java" )
-                .Replace( "org.kbinani", "cadencii" )
-                .Replace( "bocoreex", "cadencii.javax" )
-                .Replace( "bocoree", "cadencii.java" )
-                .Replace( "InputBox", typeof( cadencii.windows.forms.InputBox ).FullName )
+                .Replace("Boare.Lib.Vsq", "cadencii.vsq")
+                .Replace("Boare.Lib.AppUtil", "cadencii.apputil")
+                .Replace("Boare.Lib.Media", "cadencii.media")
+                .Replace("Boare.Cadencii", "cadencii")
+                .Replace("org.kbinani.vsq", "cadencii.vsq")
+                .Replace("org.kbinani.apputil", "cadencii.apputil")
+                .Replace("org.kbinani.cadencii", "cadencii")
+                .Replace("org.kbinani.java", "cadencii.java")
+                .Replace("org.kbinani", "cadencii")
+                .Replace("bocoreex", "cadencii.javax")
+                .Replace("bocoree", "cadencii.java")
+                .Replace("InputBox", typeof(cadencii.windows.forms.InputBox).FullName)
                 ;
         }
     }
 
     class ScriptProcessorVersion1 : ScriptProcessor
     {
-        protected override string getPrefix() {
+        protected override string getPrefix()
+        {
             return
                 "using System;" +
                 "using System.IO;" +
@@ -71,9 +72,10 @@ namespace cadencii
 
     class ScriptProcessorVersion2 : ScriptProcessor
     {
-        protected override string getPrefix() {
+        protected override string getPrefix()
+        {
             return
-                "using System;" + 
+                "using System;" +
                 "using System.IO;" +
                 "using org.kbinani.vsq;" +
                 "using org.kbinani.cadencii;" +

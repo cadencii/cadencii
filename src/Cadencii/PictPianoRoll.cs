@@ -21,27 +21,29 @@ using cadencii.java.util;
 using cadencii.vsq;
 using cadencii.windows.forms;
 
-namespace cadencii {
+namespace cadencii
+{
     /// <summary>
     /// ピアノロール用のコンポーネント
     /// </summary>
-    public class PictPianoRoll : PictureBox {
-        private readonly Color COLOR_R192G192B192 = new Color( 192, 192, 192 );
-        private readonly Color COLOR_A098R000G000B000 = new Color( 0, 0, 0, 98 );
-        private readonly Color COLOR_R106G108B108 = new Color( 106, 108, 108 );
-        private readonly Color COLOR_R180G180B180 = new Color( 180, 180, 180 );
-        private readonly Color COLOR_R212G212B212 = new Color( 212, 212, 212 );
-        private readonly Color COLOR_R125G123B124 = new Color( 125, 123, 124 );
-        private readonly Color COLOR_R240G240B240 = new Color( 240, 240, 240 );
-        private readonly Color COLOR_R072G077B098 = new Color( 72, 77, 98 );
-        private readonly Color COLOR_R153G153B153 = new Color( 153, 153, 153 );
-        private readonly Color COLOR_R147G147B147 = new Color( 147, 147, 147 );
-        private readonly Color COLOR_LINE_LU = new Color( 106, 52, 255, 128 );
-        private readonly Color COLOR_LINE_RD = new Color( 40, 47, 255, 204 );
-        private readonly Color COLOR_R051G051B000 = new Color( 51, 51, 0 );
-        private readonly Color COLOR_ADDING_NOTE_BORDER = new Color( 0, 0, 0, 136 );
-        private readonly Color COLOR_ADDING_NOTE_FILL = new Color( 255, 0, 0, 136 );
-        
+    public class PictPianoRoll : PictureBox
+    {
+        private readonly Color COLOR_R192G192B192 = new Color(192, 192, 192);
+        private readonly Color COLOR_A098R000G000B000 = new Color(0, 0, 0, 98);
+        private readonly Color COLOR_R106G108B108 = new Color(106, 108, 108);
+        private readonly Color COLOR_R180G180B180 = new Color(180, 180, 180);
+        private readonly Color COLOR_R212G212B212 = new Color(212, 212, 212);
+        private readonly Color COLOR_R125G123B124 = new Color(125, 123, 124);
+        private readonly Color COLOR_R240G240B240 = new Color(240, 240, 240);
+        private readonly Color COLOR_R072G077B098 = new Color(72, 77, 98);
+        private readonly Color COLOR_R153G153B153 = new Color(153, 153, 153);
+        private readonly Color COLOR_R147G147B147 = new Color(147, 147, 147);
+        private readonly Color COLOR_LINE_LU = new Color(106, 52, 255, 128);
+        private readonly Color COLOR_LINE_RD = new Color(40, 47, 255, 204);
+        private readonly Color COLOR_R051G051B000 = new Color(51, 51, 0);
+        private readonly Color COLOR_ADDING_NOTE_BORDER = new Color(0, 0, 0, 136);
+        private readonly Color COLOR_ADDING_NOTE_FILL = new Color(255, 0, 0, 136);
+
         public readonly Color[] COLORS_HIDDEN = new Color[]{
             new Color( 181, 162, 123 ),
             new Color( 179, 181, 123 ),
@@ -59,10 +61,10 @@ namespace cadencii {
             new Color( 181, 123, 127 ),
             new Color( 181, 140, 123 ),
             new Color( 181, 126, 123 ) };
-        private readonly Color COLOR_NOTE_FILL = new Color( 181, 220, 86 );
+        private readonly Color COLOR_NOTE_FILL = new Color(181, 220, 86);
         private readonly Color COLOR_DYNAFF_FILL = PortUtil.Pink;
-        private readonly Color COLOR_DYNAFF_FILL_HIGHLIGHT = new Color( 66, 193, 169 );
-        private readonly Font FONT_9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
+        private readonly Color COLOR_DYNAFF_FILL_HIGHLIGHT = new Color(66, 193, 169);
+        private readonly Font FONT_9PT = new Font("SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9);
         /// <summary>
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
@@ -94,35 +96,38 @@ namespace cadencii {
         private FormMain mMainForm = null;
 
         public PictPianoRoll()
-        {}
+        { }
 
         /// <summary>
         /// メイン画面への参照を設定します
         /// </summary>
         /// <param name="form"></param>
-        public void setMainForm( FormMain form )
+        public void setMainForm(FormMain form)
         {
             mMainForm = form;
         }
 
-        protected override void OnMouseDown( MouseEventArgs e )
+        protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown( e );
+            base.OnMouseDown(e);
             this.Focus();
         }
 
-        protected override void OnPaint( PaintEventArgs pe ) {
-            base.OnPaint( pe );
-            paint( new Graphics2D( pe.Graphics ) );
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            base.OnPaint(pe);
+            paint(new Graphics2D(pe.Graphics));
         }
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public Object getTag() {
+        public Object getTag()
+        {
             return base.Tag;
         }
 
-        public void setTag( Object value ) {
+        public void setTag(Object value)
+        {
             base.Tag = value;
         }
         #endregion
@@ -131,9 +136,10 @@ namespace cadencii {
         /// 幅が2ピクセルのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStroke2px() {
-            if ( mStroke2px == null ) {
-                mStroke2px = new BasicStroke( 2.0f );
+        private BasicStroke getStroke2px()
+        {
+            if (mStroke2px == null) {
+                mStroke2px = new BasicStroke(2.0f);
             }
             return mStroke2px;
         }
@@ -142,8 +148,9 @@ namespace cadencii {
         /// デフォルトのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDefault() {
-            if ( mStrokeDefault == null ) {
+        private BasicStroke getStrokeDefault()
+        {
+            if (mStrokeDefault == null) {
                 mStrokeDefault = new BasicStroke();
             }
             return mStrokeDefault;
@@ -153,9 +160,10 @@ namespace cadencii {
         /// 3ドット間隔の破線を表すストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDashed() {
-            if ( mStrokeDashed == null ) {
-                mStrokeDashed = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
+        private BasicStroke getStrokeDashed()
+        {
+            if (mStrokeDashed == null) {
+                mStrokeDashed = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f);
             }
             return mStrokeDashed;
         }
@@ -165,12 +173,13 @@ namespace cadencii {
         /// </summary>
         /// <param name="g"></param>
         /// <returns></returns>
-        private PolylineDrawer getCommonPolylineDrawer( Graphics2D g ) {
-            if ( mCommonPolylineDrawer == null ) {
-                mCommonPolylineDrawer = new PolylineDrawer( g, 1024 );
+        private PolylineDrawer getCommonPolylineDrawer(Graphics2D g)
+        {
+            if (mCommonPolylineDrawer == null) {
+                mCommonPolylineDrawer = new PolylineDrawer(g, 1024);
             } else {
                 mCommonPolylineDrawer.clear();
-                mCommonPolylineDrawer.setGraphics( g );
+                mCommonPolylineDrawer.setGraphics(g);
             }
             return mCommonPolylineDrawer;
         }
@@ -179,8 +188,9 @@ namespace cadencii {
         /// 描画ルーチン
         /// </summary>
         /// <param name="g1"></param>
-        public void paint( Graphics g1 ) {
-            if ( mMainForm == null ) {
+        public void paint(Graphics g1)
+        {
+            if (mMainForm == null) {
                 return;
             }
 
@@ -1220,16 +1230,17 @@ namespace cadencii {
         /// </summary>
         /// <param name="g"></param>
         /// <param name="accent"></param>
-        private void drawAccentLine( Graphics g, Point origin, int accent ) {
+        private void drawAccentLine(Graphics g, Point origin, int accent)
+        {
             int x0 = origin.x + 1;
             int y0 = origin.y + 10;
             int height = 4 + accent * 4 / 100;
             //SmoothingMode sm = g.SmoothingMode;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.setColor( Color.black );
-            g.drawPolyline( new int[] { x0, x0 + 2, x0 + 8, x0 + 13, x0 + 16, x0 + 20 },
+            g.setColor(Color.black);
+            g.drawPolyline(new int[] { x0, x0 + 2, x0 + 8, x0 + 13, x0 + 16, x0 + 20 },
                             new int[] { y0, y0, y0 - height, y0, y0, y0 - 4 },
-                            6 );
+                            6);
             //g.SmoothingMode = sm;
         }
 
@@ -1244,23 +1255,24 @@ namespace cadencii {
         /// <param name="note">描画する音符のノートナンバー</param>
         /// <param name="clock_start">ビブラートが始まるクロック位置</param>
         /// <param name="clock_width">ビブラートのクロック長さ</param>
-        private void drawVibratoPitchbend( PolylineDrawer drawer,
+        private void drawVibratoPitchbend(PolylineDrawer drawer,
                                            VibratoBPList rate,
                                            int start_rate,
                                            VibratoBPList depth,
                                            int start_depth,
                                            int note,
                                            int x_start,
-                                           int px_width ) {
-            if ( rate == null || depth == null ) {
+                                           int px_width)
+        {
+            if (rate == null || depth == null) {
                 return;
             }
-            int y0 = AppManager.yCoordFromNote( note - 0.5f );
+            int y0 = AppManager.yCoordFromNote(note - 0.5f);
             float px_track_height = (int)(AppManager.mMainWindowController.getScaleY() * 100);
             VsqFileEx vsq = AppManager.getVsqFile();
-            int clock_start = AppManager.clockFromXCoord( x_start );
-            int clock_end = AppManager.clockFromXCoord( x_start + px_width );
-            int tempo = vsq.getTempoAt( clock_start );
+            int clock_start = AppManager.clockFromXCoord(x_start);
+            int clock_end = AppManager.clockFromXCoord(x_start + px_width);
+            int tempo = vsq.getTempoAt(clock_start);
 
             drawer.clear();
             var itr = new VibratoPointIteratorBySec(vsq,
@@ -1272,36 +1284,37 @@ namespace cadencii {
                                                     clock_end - clock_start,
                                                     (float)(tempo * 1e-6 / 480.0));
             Graphics2D g = drawer.getGraphics();
-            g.setColor( Color.blue );
+            g.setColor(Color.blue);
 #if DEBUG
-            g.setColor( Color.red );
+            g.setColor(Color.red);
 #endif
             System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;
             g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             int lx = 0;
-            for ( ; itr.hasNext(); ) {
+            for (; itr.hasNext(); ) {
                 PointD p = itr.next();
-                int x = AppManager.xCoordFromClocks( vsq.getClockFromSec( p.getX() ) );
+                int x = AppManager.xCoordFromClocks(vsq.getClockFromSec(p.getX()));
                 int y = (int)(p.getY() * px_track_height + y0);
-                if ( x - lx > 0 ) {
+                if (x - lx > 0) {
                     continue;
                 }
-                drawer.append( x, y );
+                drawer.append(x, y);
                 lx = x;
             }
             drawer.flush();
             g.nativeGraphics.SmoothingMode = sm;
         }
 
-        private void drawVibratoLine( Graphics g, int origin_x, int origin_y, int vibrato_length ) {
+        private void drawVibratoLine(Graphics g, int origin_x, int origin_y, int vibrato_length)
+        {
             int x0 = origin_x + 1;
             int y0 = origin_y + 10;
             int clipx = origin_x + 1;
             int clip_length = vibrato_length;
-            if ( clipx < AppManager.keyWidth ) {
+            if (clipx < AppManager.keyWidth) {
                 clipx = AppManager.keyWidth;
                 clip_length = origin_x + 1 + vibrato_length - AppManager.keyWidth;
-                if ( clip_length <= 0 ) {
+                if (clip_length <= 0) {
                     return;
                 }
             }
@@ -1312,37 +1325,42 @@ namespace cadencii {
             int[] _BASE_X = new int[] { x0 - _UWID, x0 + 2 - _UWID, x0 + 4 - _UWID, x0 + 7 - _UWID, x0 + 9 - _UWID, x0 + 10 - _UWID };
             int[] _BASE_Y = new int[] { y0 - 4, y0 - 7, y0 - 7, y0 - 1, y0 - 1, y0 - 4 };
             Shape old = g.getClip();
-            g.clipRect( clipx, origin_y + 10 - 8, clip_length, 10 );
-            g.setColor( Color.black );
-            for ( int i = 0; i < count; i++ ) {
-                for ( int j = 0; j < _BASE_X.Length; j++ ) {
+            g.clipRect(clipx, origin_y + 10 - 8, clip_length, 10);
+            g.setColor(Color.black);
+            for (int i = 0; i < count; i++) {
+                for (int j = 0; j < _BASE_X.Length; j++) {
                     _BASE_X[j] += _UWID;
                 }
-                g.drawPolyline( _BASE_X, _BASE_Y, _BASE_X.Length );
+                g.drawPolyline(_BASE_X, _BASE_Y, _BASE_X.Length);
             }
             //g.SmoothingMode = sm;
-            g.setClip( old );
+            g.setClip(old);
         }
 
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public java.awt.Dimension getMinimumSize() {
-            return new cadencii.java.awt.Dimension( base.MinimumSize.Width, base.MinimumSize.Height );
+        public java.awt.Dimension getMinimumSize()
+        {
+            return new cadencii.java.awt.Dimension(base.MinimumSize.Width, base.MinimumSize.Height);
         }
 
-        public void setMinimumSize( java.awt.Dimension value ) {
-            base.MinimumSize = new System.Drawing.Size( value.width, value.height );
+        public void setMinimumSize(java.awt.Dimension value)
+        {
+            base.MinimumSize = new System.Drawing.Size(value.width, value.height);
         }
 
-        public java.awt.Dimension getMaximumSize() {
-            return new cadencii.java.awt.Dimension( base.MaximumSize.Width, base.MaximumSize.Height );
+        public java.awt.Dimension getMaximumSize()
+        {
+            return new cadencii.java.awt.Dimension(base.MaximumSize.Width, base.MaximumSize.Height);
         }
 
-        public void setMaximumSize( java.awt.Dimension value ) {
-            base.MaximumSize = new System.Drawing.Size( value.width, value.height );
+        public void setMaximumSize(java.awt.Dimension value)
+        {
+            base.MaximumSize = new System.Drawing.Size(value.width, value.height);
         }
 
-        public void invalidate() {
+        public void invalidate()
+        {
             base.Invalidate();
         }
 
@@ -1396,11 +1414,13 @@ namespace cadencii {
         }
 #endif
 
-        public bool isVisible() {
+        public bool isVisible()
+        {
             return base.Visible;
         }
 
-        public void setVisible( bool value ) {
+        public void setVisible(bool value)
+        {
             base.Visible = value;
         }
 
@@ -1421,16 +1441,19 @@ namespace cadencii {
             return base.OwnerItem;
         }
 #else
-        public Object getParent() {
+        public Object getParent()
+        {
             return base.Parent;
         }
 #endif
 
-        public string getName() {
+        public string getName()
+        {
             return base.Name;
         }
 
-        public void setName( string value ) {
+        public void setName(string value)
+        {
             base.Name = value;
         }
 
@@ -1462,9 +1485,10 @@ namespace cadencii {
         }
 #endif
 
-        public cadencii.java.awt.Rectangle getBounds() {
+        public cadencii.java.awt.Rectangle getBounds()
+        {
             System.Drawing.Rectangle r = base.Bounds;
-            return new cadencii.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
+            return new cadencii.java.awt.Rectangle(r.X, r.Y, r.Width, r.Height);
         }
 
 #if COMPONENT_ENABLE_X
@@ -1479,47 +1503,58 @@ namespace cadencii {
         }
 #endif
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return base.Width;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return base.Height;
         }
 
-        public cadencii.java.awt.Dimension getSize() {
-            return new cadencii.java.awt.Dimension( base.Size.Width, base.Size.Height );
+        public cadencii.java.awt.Dimension getSize()
+        {
+            return new cadencii.java.awt.Dimension(base.Size.Width, base.Size.Height);
         }
 
-        public void setSize( int width, int height ) {
-            base.Size = new System.Drawing.Size( width, height );
+        public void setSize(int width, int height)
+        {
+            base.Size = new System.Drawing.Size(width, height);
         }
 
-        public void setSize( cadencii.java.awt.Dimension d ) {
-            setSize( d.width, d.height );
+        public void setSize(cadencii.java.awt.Dimension d)
+        {
+            setSize(d.width, d.height);
         }
 
-        public void setBackground( cadencii.java.awt.Color color ) {
-            base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
+        public void setBackground(cadencii.java.awt.Color color)
+        {
+            base.BackColor = System.Drawing.Color.FromArgb(color.getRed(), color.getGreen(), color.getBlue());
         }
 
-        public cadencii.java.awt.Color getBackground() {
-            return new cadencii.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
+        public cadencii.java.awt.Color getBackground()
+        {
+            return new cadencii.java.awt.Color(base.BackColor.R, base.BackColor.G, base.BackColor.B);
         }
 
-        public void setForeground( cadencii.java.awt.Color color ) {
+        public void setForeground(cadencii.java.awt.Color color)
+        {
             base.ForeColor = color.color;
         }
 
-        public cadencii.java.awt.Color getForeground() {
-            return new cadencii.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
+        public cadencii.java.awt.Color getForeground()
+        {
+            return new cadencii.java.awt.Color(base.ForeColor.R, base.ForeColor.G, base.ForeColor.B);
         }
 
-        public bool isEnabled() {
+        public bool isEnabled()
+        {
             return base.Enabled;
         }
 
-        public void setEnabled( bool value ) {
+        public void setEnabled(bool value)
+        {
             base.Enabled = value;
         }
 
@@ -1533,19 +1568,22 @@ namespace cadencii {
         }
 #endif
 
-        public void setPreferredSize( cadencii.java.awt.Dimension size ) {
-            base.Size = new System.Drawing.Size( size.width, size.height );
+        public void setPreferredSize(cadencii.java.awt.Dimension size)
+        {
+            base.Size = new System.Drawing.Size(size.width, size.height);
         }
 
-        public cadencii.java.awt.Font getFont() {
-            return new cadencii.java.awt.Font( base.Font );
+        public cadencii.java.awt.Font getFont()
+        {
+            return new cadencii.java.awt.Font(base.Font);
         }
 
-        public void setFont( cadencii.java.awt.Font font ) {
-            if ( font == null ) {
+        public void setFont(cadencii.java.awt.Font font)
+        {
+            if (font == null) {
                 return;
             }
-            if ( font.font == null ) {
+            if (font.font == null) {
                 return;
             }
             base.Font = font.font;

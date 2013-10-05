@@ -32,20 +32,20 @@ namespace cadencii
         /// 戻り値は、コマンドライン引数のうちVSQ,またはXVSQファイルとして指定された引数、または空文字です。
         /// </summary>
         /// <param name="arg"></param>
-        private static void parseArguments( string[] arg )
+        private static void parseArguments(string[] arg)
         {
             string currentparse = "";
 
-            for ( int i = 0; i < arg.Length; i++ ) {
+            for (int i = 0; i < arg.Length; i++) {
                 string argi = arg[i];
-                if ( argi.StartsWith( "-" ) ) {
+                if (argi.StartsWith("-")) {
                     currentparse = argi;
-                    if ( argi == "--version" ) {
+                    if (argi == "--version") {
                         mPrintVersion = true;
                         currentparse = "";
                     }
                 } else {
-                    if ( currentparse == "" ) {
+                    if (currentparse == "") {
                         mPathVsq = argi;
                     }
                     currentparse = "";
@@ -53,15 +53,15 @@ namespace cadencii
             }
         }
 
-        private static void handleUnhandledException( Exception ex )
+        private static void handleUnhandledException(Exception ex)
         {
             ExceptionNotifyFormController controller = new ExceptionNotifyFormController();
-            controller.setReportTarget( ex );
-            controller.getUi().showDialog( null );
+            controller.setReportTarget(ex);
+            controller.getUi().showDialog(null);
         }
 
         [STAThread]
-        public static void Main( string[] args )
+        public static void Main(string[] args)
         {
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(Cadencii_UnhandledException);
@@ -159,18 +159,18 @@ namespace cadencii
 #endif
         }
 
-        private static void Cadencii_UnhandledException( object sender, UnhandledExceptionEventArgs e )
+        private static void Cadencii_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Exception ex = new Exception( "unknown exception handled at 'Cadencii::Cadencii_UnhandledException" );
-            if ( e.ExceptionObject != null && e.ExceptionObject is Exception ) {
+            Exception ex = new Exception("unknown exception handled at 'Cadencii::Cadencii_UnhandledException");
+            if (e.ExceptionObject != null && e.ExceptionObject is Exception) {
                 ex = (Exception)e.ExceptionObject;
             }
-            handleUnhandledException( ex );
+            handleUnhandledException(ex);
         }
 
-        private static void Application_ThreadException( object sender, ThreadExceptionEventArgs e )
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            handleUnhandledException( e.Exception );
+            handleUnhandledException(e.Exception);
         }
 
         /// <summary>
@@ -179,26 +179,26 @@ namespace cadencii
         /// <param name="ex"></param>
         /// <param name="depth_count"></param>
         /// <returns></returns>
-        private static string getExceptionText( Exception ex, int depth_count )
+        private static string getExceptionText(Exception ex, int depth_count)
         {
             string ret = ex.ToString();
-            if ( ex.InnerException != null ) {
+            if (ex.InnerException != null) {
                 ret += "\n" +
                        "-- InnerException; Depth Level " + depth_count + " -----------------------" +
-                       getExceptionText( ex.InnerException, depth_count + 1 );
+                       getExceptionText(ex.InnerException, depth_count + 1);
             }
             return ret;
         }
 
-        private static string _( string id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         static void showSplash()
         {
             splash = new FormSplash();
-            splash.ShowDialog( null );
+            splash.ShowDialog(null);
         }
 
         static void closeSplash()
@@ -206,9 +206,9 @@ namespace cadencii
             splash.Close();
         }
 
-        public static void mainWindow_Load( Object sender, EventArgs e )
+        public static void mainWindow_Load(Object sender, EventArgs e)
         {
-            if ( splash != null ) {
+            if (splash != null) {
                 splash.Invoke(new Action(closeSplash));
             }
             splash = null;
@@ -217,8 +217,8 @@ namespace cadencii
             // これを回避するため、UI インスタンスの初回生成をココで行う。
             // AquesTone2 DLL のリロード時にも同様の処理が必要だが、これは VSTiDllManager.getAquesTone2Driver にて行う。
             var driver = VSTiDllManager.getAquesTone2Driver();
-            if ( driver != null ) {
-                driver.getUi( AppManager.mMainWindow );
+            if (driver != null) {
+                driver.getUi(AppManager.mMainWindow);
             }
 
             AppManager.mMainWindow.Load -= mainWindow_Load;

@@ -32,10 +32,10 @@ namespace cadencii
         /// AquesTone VSTi の DLL パスを指定して初期化する
         /// </summary>
         /// <param name="dllPath">AquesTone VSTi の DLL パス</param>
-        public AquesToneDriverBase( string dllPath )
+        public AquesToneDriverBase(string dllPath)
         {
             path = dllPath;
-            loaded = open( 44100, 44100 );
+            loaded = open(44100, 44100);
         }
 
         /// <summary>
@@ -56,29 +56,29 @@ namespace cadencii
         /// <returns></returns>
         protected abstract string[] getKoeFileContents();
 
-        public override bool open( int block_size, int sample_rate )
+        public override bool open(int block_size, int sample_rate)
         {
             int strlen = 260;
-            StringBuilder sb = new StringBuilder( strlen );
-            win32.GetProfileString( getConfigSectionKey(), getKoeConfigKey(), "", sb, (uint)strlen );
+            StringBuilder sb = new StringBuilder(strlen);
+            win32.GetProfileString(getConfigSectionKey(), getKoeConfigKey(), "", sb, (uint)strlen);
             string koe_old = sb.ToString();
 
             string required = prepareKoeFile();
             bool refresh_winini = false;
-            if ( !required.Equals( koe_old ) && !koe_old.Equals( "" ) ) {
+            if (!required.Equals(koe_old) && !koe_old.Equals("")) {
                 refresh_winini = true;
             }
-            win32.WriteProfileString( getConfigSectionKey(), getKoeConfigKey(), required );
+            win32.WriteProfileString(getConfigSectionKey(), getKoeConfigKey(), required);
             bool ret = false;
             try {
-                ret = base.open( block_size, sample_rate );
-            } catch ( Exception ex ) {
+                ret = base.open(block_size, sample_rate);
+            } catch (Exception ex) {
                 ret = false;
-                reportError( GetType() + ".open; ex=" + ex );
+                reportError(GetType() + ".open; ex=" + ex);
             }
 
-            if ( refresh_winini ) {
-                win32.WriteProfileString( getConfigSectionKey(), getKoeConfigKey(), koe_old );
+            if (refresh_winini) {
+                win32.WriteProfileString(getConfigSectionKey(), getKoeConfigKey(), koe_old);
             }
             return ret;
         }
@@ -88,28 +88,28 @@ namespace cadencii
             string ret = PortUtil.createTempFile();
             BufferedWriter bw = null;
             try {
-                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );
-                foreach ( string s in getKoeFileContents() ) {
-                    bw.write( s ); bw.newLine();
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ret), "Shift_JIS"));
+                foreach (string s in getKoeFileContents()) {
+                    bw.write(s); bw.newLine();
                 }
-            } catch ( Exception ex ) {
-                reportError( GetType() + ".getKoeFilePath; ex=" + ex );
+            } catch (Exception ex) {
+                reportError(GetType() + ".getKoeFilePath; ex=" + ex);
             } finally {
-                if ( bw != null ) {
+                if (bw != null) {
                     try {
                         bw.close();
-                    } catch ( Exception ex2 ) {
-                        reportError( GetType() + ".getKoeFilePath; ex=" + ex2 );
+                    } catch (Exception ex2) {
+                        reportError(GetType() + ".getKoeFilePath; ex=" + ex2);
                     }
                 }
             }
             return ret;
         }
 
-        protected void reportError( string s )
+        protected void reportError(string s)
         {
-            Logger.writeLine( s );
-            serr.println( s );
+            Logger.writeLine(s);
+            serr.println(s);
         }
 
 #endif

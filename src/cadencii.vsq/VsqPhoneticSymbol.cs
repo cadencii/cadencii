@@ -132,16 +132,16 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static bool isConsonant( string symbol )
+        public static bool isConsonant(string symbol)
         {
-            for ( int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++ ) {
+            for (int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++) {
                 string s = _SYMBOL_CONSONANT_JP[i];
-                if ( s.Equals( symbol ) ) {
+                if (s.Equals(symbol)) {
                     return true;
                 }
             }
-            foreach ( string s in _SYMBOL_CONSONANT_EN ) {
-                if ( s == symbol ) {
+            foreach (string s in _SYMBOL_CONSONANT_EN) {
+                if (s == symbol) {
                     return true;
                 }
             }
@@ -153,40 +153,40 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static bool isValidSymbol( string symbol )
+        public static bool isValidSymbol(string symbol)
         {
-            foreach ( string s in _SYMBOL_VOWEL_JP ) {
-                if ( s == symbol ) {
+            foreach (string s in _SYMBOL_VOWEL_JP) {
+                if (s == symbol) {
                     return true;
                 }
             }
-            foreach ( string s in _SYMBOL_CONSONANT_JP ) {
-                if ( s == symbol ) {
+            foreach (string s in _SYMBOL_CONSONANT_JP) {
+                if (s == symbol) {
                     return true;
                 }
             }
-            foreach ( string s in _SYMBOL_VOWEL_EN ) {
-                if ( s == symbol ) {
+            foreach (string s in _SYMBOL_VOWEL_EN) {
+                if (s == symbol) {
                     return true;
                 }
             }
-            foreach ( string s in _SYMBOL_CONSONANT_EN ) {
-                if ( s == symbol ) {
+            foreach (string s in _SYMBOL_CONSONANT_EN) {
+                if (s == symbol) {
                     return true;
                 }
             }
 
             // ブレスの判定
-            int strlen = PortUtil.getStringLength( symbol );
-            if ( symbol.StartsWith( "br" ) && strlen > 2 ) {
-                string s = symbol.Substring( 2 );
+            int strlen = PortUtil.getStringLength(symbol);
+            if (symbol.StartsWith("br") && strlen > 2) {
+                string s = symbol.Substring(2);
                 try {
                     // br001とかをfalseにするためのチェック
-                    int num = int.Parse( s );
-                    if ( s.Equals( "" + num ) ) {
+                    int num = int.Parse(s);
+                    if (s.Equals("" + num)) {
                         return true;
                     }
-                } catch ( Exception ex ) {
+                } catch (Exception ex) {
                 }
             }
             return false;

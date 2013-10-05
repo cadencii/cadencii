@@ -18,9 +18,11 @@ using cadencii.utau;
 
 
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class RenderQueue {
+    public class RenderQueue
+    {
         private List<string> _resampler_arg = new List<string>();
         public List<string> WavtoolArgPrefix = new List<string>();
         public List<string> WavtoolArgSuffix = new List<string>();
@@ -40,17 +42,19 @@ namespace cadencii {
         /// このキューの引数リストに、引数を1つ追加します
         /// </summary>
         /// <param name="value"></param>
-        public void appendArg( string value ) {
-            _resampler_arg.Add( value );
+        public void appendArg(string value)
+        {
+            _resampler_arg.Add(value);
         }
 
         /// <summary>
         /// このキューの引数リストに、指定された引数をすべて追加します
         /// </summary>
         /// <param name="args"></param>
-        public void appendArgRange( string[] args ) {
-            foreach ( string s in args ) {
-                _resampler_arg.Add( s );
+        public void appendArgRange(string[] args)
+        {
+            foreach (string s in args) {
+                _resampler_arg.Add(s);
             }
         }
 
@@ -58,7 +62,8 @@ namespace cadencii {
         /// このキューの引数リストを、文字列配列の形式で取得します
         /// </summary>
         /// <returns></returns>
-        public string[] getResamplerArg() {
+        public string[] getResamplerArg()
+        {
             return _resampler_arg.ToArray();
         }
 
@@ -66,11 +71,12 @@ namespace cadencii {
         /// このキューの引数リストを、スペースで繋げた文字列形式で取得します
         /// </summary>
         /// <returns></returns>
-        public string getResamplerArgString() {
+        public string getResamplerArgString()
+        {
             string ret = "";
             int c = _resampler_arg.Count;
-            for ( int i = 0; i < c; i++ ) {
-                ret += _resampler_arg[ i ] + ((i < c - 1) ? " " : "");
+            for (int i = 0; i < c; i++) {
+                ret += _resampler_arg[i] + ((i < c - 1) ? " " : "");
             }
             return ret;
         }

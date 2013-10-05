@@ -11,12 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// 編集ツールを表す列挙型
     /// </summary>
-    public enum EditTool {
+    public enum EditTool
+    {
         /// <summary>
         /// 矢印ツール
         /// </summary>

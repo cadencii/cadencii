@@ -8,7 +8,7 @@ namespace cadencii
     public class ExceptionNotifyFormUiImplTest : ExceptionNotifyFormUiImpl
     {
         public ExceptionNotifyFormUiImplTest()
-            : base( new ExceptionNotifyFormController() )
+            : base(new ExceptionNotifyFormController())
         {
         }
 
@@ -16,24 +16,24 @@ namespace cadencii
         public void testSetCancelButtonText()
         {
             string expected = "キャンセル";
-            this.setCancelButtonText( expected );
-            Assert.AreEqual( expected, base.buttonCancel.Text );
+            this.setCancelButtonText(expected);
+            Assert.AreEqual(expected, base.buttonCancel.Text);
         }
 
         [Test]
         public void testSetSendButtonText()
         {
             string expected = "送信";
-            this.setSendButtonText( expected );
-            Assert.AreEqual( expected, base.buttonSend.Text );
+            this.setSendButtonText(expected);
+            Assert.AreEqual(expected, base.buttonSend.Text);
         }
 
         [Test]
         public void testSetTitle()
         {
             string expected = "たいとる";
-            this.setTitle( expected );
-            Assert.AreEqual( expected, base.Text );
+            this.setTitle(expected);
+            Assert.AreEqual(expected, base.Text);
         }
     }
 }

@@ -11,16 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-    namespace cadencii
+namespace cadencii
+{
+
+    public interface FormMainUiListener
     {
-
-            public interface FormMainUiListener
-            {
-                /// <summary>
-                /// ナビゲーションパネルがフォーカスを得たときに呼ばれる
-                /// </summary>
-                [PureVirtualFunction]
-                void navigationPanelGotFocus();
-            }
-
+        /// <summary>
+        /// ナビゲーションパネルがフォーカスを得たときに呼ばれる
+        /// </summary>
+        [PureVirtualFunction]
+        void navigationPanelGotFocus();
     }
+
+}

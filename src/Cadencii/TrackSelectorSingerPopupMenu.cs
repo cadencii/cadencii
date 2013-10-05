@@ -22,8 +22,8 @@ namespace cadencii
         public int Clock;
         public int InternalID;
 
-        public TrackSelectorSingerPopupMenu( System.ComponentModel.IContainer cont )
-            : base( cont )
+        public TrackSelectorSingerPopupMenu(System.ComponentModel.IContainer cont)
+            : base(cont)
         {
         }
     }

@@ -15,37 +15,45 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace cadencii.java.io {
+namespace cadencii.java.io
+{
 
 
-    public class FileWriter {
+    public class FileWriter
+    {
         public StreamWriter m_writer;
 
-        public FileWriter( string fileName ) {
-            m_writer = new StreamWriter( fileName );
+        public FileWriter(string fileName)
+        {
+            m_writer = new StreamWriter(fileName);
         }
     }
 
-    public class FileOutputStream : FileStream, OutputStream {
-        public FileOutputStream( string fileName, bool append )
-            : base( fileName, FileMode.Create, FileAccess.Write ) {
-            if( append ){
-                base.Seek( base.Length, SeekOrigin.Begin );
+    public class FileOutputStream : FileStream, OutputStream
+    {
+        public FileOutputStream(string fileName, bool append)
+            : base(fileName, FileMode.Create, FileAccess.Write)
+        {
+            if (append) {
+                base.Seek(base.Length, SeekOrigin.Begin);
             }
         }
 
-        public FileOutputStream( string fileName )
-            : this( fileName, false ) {
+        public FileOutputStream(string fileName)
+            : this(fileName, false)
+        {
         }
 
-        public void close() {
+        public void close()
+        {
             base.Close();
         }
 
         /// <summary>
         /// 出力ストリームをフラッシュして、バッファリングされていたすべての出力バイトを強制的にストリームに書き込みます。
         /// </summary>
-        public void flush() {
+        public void flush()
+        {
             base.Flush();
         }
 
@@ -53,8 +61,9 @@ namespace cadencii.java.io {
         /// b.length バイトのデータを出力ストリームに書き込みます。
         /// </summary>
         /// <param name="b"></param>
-        public void write( byte[] b ) {
-            base.Write( b, 0, b.Length );
+        public void write(byte[] b)
+        {
+            base.Write(b, 0, b.Length);
         }
 
         /// <summary>
@@ -63,72 +72,87 @@ namespace cadencii.java.io {
         /// <param name="b"></param>
         /// <param name="off"></param>
         /// <param name="len"></param>
-        public void write( byte[] b, int off, int len ) {
-            base.Write( b, off, len );
+        public void write(byte[] b, int off, int len)
+        {
+            base.Write(b, off, len);
         }
 
         /// <summary>
         /// 指定された byte を出力ストリームに書き込みます。
         /// </summary>
         /// <param name="b"></param>
-        public void write( int b ) {
-            base.WriteByte( (byte)b );
+        public void write(int b)
+        {
+            base.WriteByte((byte)b);
         }
     }
-          
-    public class OutputStreamWriter {
+
+    public class OutputStreamWriter
+    {
         public StreamWriter m_writer;
 
-        public OutputStreamWriter( FileOutputStream stream, string charsetName ) {
-            Encoding enc = Encoding.GetEncoding( charsetName );
-            if ( charsetName.ToLower().Equals( "utf-8" ) ) {
-                enc = new System.Text.UTF8Encoding( false );
+        public OutputStreamWriter(FileOutputStream stream, string charsetName)
+        {
+            Encoding enc = Encoding.GetEncoding(charsetName);
+            if (charsetName.ToLower().Equals("utf-8")) {
+                enc = new System.Text.UTF8Encoding(false);
             }
-            m_writer = new StreamWriter( stream, enc );
+            m_writer = new StreamWriter(stream, enc);
         }
     }
 
-    public class BufferedWriter {
+    public class BufferedWriter
+    {
         private StreamWriter m_writer;
 
-        public BufferedWriter( FileWriter writer ) {
+        public BufferedWriter(FileWriter writer)
+        {
             m_writer = writer.m_writer;
         }
 
-        public BufferedWriter( OutputStreamWriter writer ) {
+        public BufferedWriter(OutputStreamWriter writer)
+        {
             m_writer = writer.m_writer;
         }
 
-        public void close() {
+        public void close()
+        {
             m_writer.Close();
         }
 
-        public void flush() {
+        public void flush()
+        {
             m_writer.Flush();
         }
 
-        public void newLine() {
+        public void newLine()
+        {
             m_writer.WriteLine();
         }
 
-        public void write( char[] cbuf, int off, int len ) {
-            m_writer.Write( cbuf, off, len );
+        public void write(char[] cbuf, int off, int len)
+        {
+            m_writer.Write(cbuf, off, len);
         }
 
-        public void write( int c ) {
-            m_writer.Write( (char)c );
+        public void write(int c)
+        {
+            m_writer.Write((char)c);
         }
 
-        public void write( string s, int off, int len ) {
-            m_writer.Write( s.ToCharArray(), off, len );
+        public void write(string s, int off, int len)
+        {
+            m_writer.Write(s.ToCharArray(), off, len);
         }
 
-        public void write( string str ) {
-            m_writer.Write( str );
+        public void write(string str)
+        {
+            m_writer.Write(str);
         }
 
-        public void write( char[] cbuf ) {
-            m_writer.Write( cbuf );
+        public void write(char[] cbuf)
+        {
+            m_writer.Write(cbuf);
         }
 
     }

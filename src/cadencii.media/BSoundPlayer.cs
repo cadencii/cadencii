@@ -11,26 +11,33 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii.media {
+namespace cadencii.media
+{
 
-    public class BSoundPlayer : System.Media.SoundPlayer {
-        public BSoundPlayer( string sound_location )
-            : base( sound_location ) {
+    public class BSoundPlayer : System.Media.SoundPlayer
+    {
+        public BSoundPlayer(string sound_location)
+            : base(sound_location)
+        {
         }
 
         public BSoundPlayer()
-            : base() {
+            : base()
+        {
         }
 
-        public void play() {
+        public void play()
+        {
             base.Play();
         }
 
-        public string getSoundLocation() {
+        public string getSoundLocation()
+        {
             return base.SoundLocation;
         }
 
-        public void setSoundLocation( string value ) {
+        public void setSoundLocation(string value)
+        {
             base.SoundLocation = value;
         }
     }

@@ -13,15 +13,18 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class DefaultVibratoLengthUtil {
-        public static string toString( DefaultVibratoLengthEnum value ) {
-            if ( value == DefaultVibratoLengthEnum.L50 ) {
+    public class DefaultVibratoLengthUtil
+    {
+        public static string toString(DefaultVibratoLengthEnum value)
+        {
+            if (value == DefaultVibratoLengthEnum.L50) {
                 return "50";
-            } else if ( value == DefaultVibratoLengthEnum.L66 ) {
+            } else if (value == DefaultVibratoLengthEnum.L66) {
                 return "66";
-            } else if ( value == DefaultVibratoLengthEnum.L75 ) {
+            } else if (value == DefaultVibratoLengthEnum.L75) {
                 return "75";
             } else {
                 return "100";

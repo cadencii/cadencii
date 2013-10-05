@@ -24,19 +24,19 @@ namespace cadencii
         {
         }
 
-        public void add( object obj )
+        public void add(object obj)
         {
         }
 
-        public void addArr( object obj )
+        public void addArr(object obj)
         {
         }
 
-        public static void del( object obj )
+        public static void del(object obj)
         {
         }
 
-        public static void delArr( object obj )
+        public static void delArr(object obj)
         {
         }
     }

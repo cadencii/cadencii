@@ -23,28 +23,28 @@ namespace cadencii.vsq
         private string mNL = "\n";
         private System.IO.StreamWriter mStream;
 
-        public InternalStreamWriter( string path, string encoding )
+        public InternalStreamWriter(string path, string encoding)
         {
-            mNL = new string( new char[]{ (char)0x0d, (char)0x0a } );
-            mStream = new System.IO.StreamWriter( path, false, System.Text.Encoding.GetEncoding( encoding ) );
+            mNL = new string(new char[] { (char)0x0d, (char)0x0a });
+            mStream = new System.IO.StreamWriter(path, false, System.Text.Encoding.GetEncoding(encoding));
         }
 
-        public void write( string s )
+        public void write(string s)
         {
-            mStream.Write( s );
+            mStream.Write(s);
         }
-        
-        public void writeLine( string s )
+
+        public void writeLine(string s)
         {
-            write( s );
+            write(s);
             newLine();
         }
-        
+
         public void newLine()
         {
-            write( mNL );
+            write(mNL);
         }
-        
+
         public void close()
         {
             mStream.Close();

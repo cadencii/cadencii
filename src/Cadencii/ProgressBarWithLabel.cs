@@ -28,19 +28,19 @@ namespace cadencii
         {
         }
 
-        public void setWidth( int value )
+        public void setWidth(int value)
         {
-            if ( ptrUi == null ) return;
-            ptrUi.setWidth( value );
+            if (ptrUi == null) return;
+            ptrUi.setWidth(value);
         }
 
         /// <summary>
         /// UIのセットアップを行います
         /// </summary>
         /// <param name="ui"></param>
-        public void setupUi( ProgressBarWithLabelUi ui )
+        public void setupUi(ProgressBarWithLabelUi ui)
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 ptrUi = ui;
             }
         }
@@ -58,12 +58,12 @@ namespace cadencii
         /// ラベルのテキストを設定します
         /// </summary>
         /// <param name="value">設定するテキスト</param>
-        public void setText( string value )
+        public void setText(string value)
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 return;
             }
-            ptrUi.setText( value );
+            ptrUi.setText(value);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace cadencii
         /// <returns>ラベルのテキスト</returns>
         public string getText()
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 return "";
             }
             return ptrUi.getText();
@@ -82,10 +82,10 @@ namespace cadencii
         /// 進捗状況をパーセントで設定します
         /// </summary>
         /// <param name="value">設定する値</param>
-        public void setProgress( int value )
+        public void setProgress(int value)
         {
-            if ( ptrUi == null ) return;
-            ptrUi.setProgress( value );
+            if (ptrUi == null) return;
+            ptrUi.setProgress(value);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace cadencii
         /// <returns>進捗状況を表すパーセント値</returns>
         public int getProgress()
         {
-            if ( ptrUi == null ) {
+            if (ptrUi == null) {
                 return 0;
             }
             return ptrUi.getProgress();

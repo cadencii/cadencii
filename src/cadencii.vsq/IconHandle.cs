@@ -66,7 +66,7 @@ namespace cadencii.vsq
         /// ゲートタイム長さを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value )
+        public void setLength(int value)
         {
             Length = value;
         }
@@ -76,12 +76,12 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item">比較対象の歌手変更。</param>
         /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
-        public bool equals( IconHandle item )
+        public bool equals(IconHandle item)
         {
-            if ( item == null ) {
+            if (item == null) {
                 return false;
             } else {
-                return IconID.Equals( item.IconID );
+                return IconID.Equals(item.IconID);
             }
         }
 
@@ -97,7 +97,7 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Index = Index;
             ret.Language = Language;
-            ret.setLength( Length );
+            ret.setLength(Length);
             ret.Original = Original;
             ret.Program = Program;
             return ret;

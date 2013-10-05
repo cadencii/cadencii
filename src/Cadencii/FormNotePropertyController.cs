@@ -28,10 +28,10 @@ namespace cadencii
         private FormNotePropertyUi ui;
         private PropertyWindowListener propertyWindowListener;
 
-        public FormNotePropertyController( PropertyWindowListener propertyWindowListener )
+        public FormNotePropertyController(PropertyWindowListener propertyWindowListener)
         {
             this.propertyWindowListener = propertyWindowListener;
-            this.ui = (FormNotePropertyUi)new FormNotePropertyUiImpl( this );
+            this.ui = (FormNotePropertyUi)new FormNotePropertyUiImpl(this);
             applyLanguage();
         }
 
@@ -49,19 +49,19 @@ namespace cadencii
         /// <summary>
         /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
         /// </summary>
-        public void setPreviousAlwaysOnTop( bool value )
+        public void setPreviousAlwaysOnTop(bool value)
         {
             mPreviousAlwaysOnTop = value;
         }
 
         public void applyLanguage()
         {
-            this.ui.setTitle( _( "Note Property" ) );
+            this.ui.setTitle(_("Note Property"));
         }
 
-        public void applyShortcut( Keys value )
+        public void applyShortcut(Keys value)
         {
-            this.ui.setMenuCloseAccelerator( value );
+            this.ui.setMenuCloseAccelerator(value);
         }
 
         public FormNotePropertyUi getUi()
@@ -74,9 +74,9 @@ namespace cadencii
 
         #region helper methods
 
-        private static string _( string id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         #endregion
@@ -86,7 +86,7 @@ namespace cadencii
 
         public void onLoad()
         {
-            this.ui.setAlwaysOnTop( true );
+            this.ui.setAlwaysOnTop(true);
         }
 
         public void menuCloseClick()

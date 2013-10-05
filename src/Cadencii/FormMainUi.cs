@@ -11,19 +11,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-    namespace cadencii
+namespace cadencii
+{
+
+    /// <summary>
+    /// メイン画面の実装クラスが持つべきメソッドを定義するインターフェース
+    /// </summary>
+    public interface FormMainUi
     {
-
-            /// <summary>
-            /// メイン画面の実装クラスが持つべきメソッドを定義するインターフェース
-            /// </summary>
-            public interface FormMainUi
-            {
-                /// <summary>
-                /// ピアノロールの部品にフォーカスを持たせる
-                /// </summary>
-                [PureVirtualFunction]
-                void focusPianoRoll();
-            }
-
+        /// <summary>
+        /// ピアノロールの部品にフォーカスを持たせる
+        /// </summary>
+        [PureVirtualFunction]
+        void focusPianoRoll();
     }
+
+}

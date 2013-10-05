@@ -17,8 +17,8 @@ namespace cadencii.vsq
 {
     public interface ITextWriter
     {
-        void write( string value );
-        void writeLine( string value );
+        void write(string value);
+        void writeLine(string value);
         void close();
         void newLine();
     }

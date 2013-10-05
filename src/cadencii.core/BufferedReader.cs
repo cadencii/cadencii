@@ -15,75 +15,94 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace cadencii.java.io {
+namespace cadencii.java.io
+{
 
 
-    public class FileReader{
+    public class FileReader
+    {
         public StreamReader m_reader;
 
-        public FileReader( string fileName ){
-            m_reader = new StreamReader( fileName );
+        public FileReader(string fileName)
+        {
+            m_reader = new StreamReader(fileName);
         }
     }
 
-    public class FileInputStream : FileStream, InputStream {
-        public FileInputStream( string fileName )
-            : base( fileName, FileMode.Open, FileAccess.Read ) {
+    public class FileInputStream : FileStream, InputStream
+    {
+        public FileInputStream(string fileName)
+            : base(fileName, FileMode.Open, FileAccess.Read)
+        {
         }
 
-        public void close() {
+        public void close()
+        {
             base.Close();
         }
 
-        public int read( byte[] b, int off, int len ) {
-            return base.Read( b, off, len );
+        public int read(byte[] b, int off, int len)
+        {
+            return base.Read(b, off, len);
         }
 
-        public int read( byte[] b ) {
-            return read( b, 0, b.Length );
+        public int read(byte[] b)
+        {
+            return read(b, 0, b.Length);
         }
 
-        public int read() {
+        public int read()
+        {
             return base.ReadByte();
         }
     }
 
-    public class InputStreamReader {
+    public class InputStreamReader
+    {
         public StreamReader m_reader;
 
-        public InputStreamReader( FileInputStream stream, string charsetName ) {
-            m_reader = new StreamReader( stream, Encoding.GetEncoding( charsetName ) );
+        public InputStreamReader(FileInputStream stream, string charsetName)
+        {
+            m_reader = new StreamReader(stream, Encoding.GetEncoding(charsetName));
         }
     }
 
-    public class BufferedReader {
+    public class BufferedReader
+    {
         private StreamReader m_reader;
 
-        public BufferedReader( FileReader reader ) {
+        public BufferedReader(FileReader reader)
+        {
             m_reader = reader.m_reader;
         }
 
-        public BufferedReader( InputStreamReader reader ) {
+        public BufferedReader(InputStreamReader reader)
+        {
             m_reader = reader.m_reader;
         }
 
-        public void close() {
+        public void close()
+        {
             m_reader.Close();
         }
 
-        public int read() {
+        public int read()
+        {
             return m_reader.Read();
         }
 
-        public int read( char[] cbuf, int off, int len ) {
-            return m_reader.Read( cbuf, off, len );
+        public int read(char[] cbuf, int off, int len)
+        {
+            return m_reader.Read(cbuf, off, len);
         }
 
-        public string readLine() {
+        public string readLine()
+        {
             return m_reader.ReadLine();
         }
 
-        public bool ready() {
+        public bool ready()
+        {
             return m_reader.Peek() >= 0;
         }
     }

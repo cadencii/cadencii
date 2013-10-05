@@ -13,9 +13,11 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class MidiPortConfig {
+    public class MidiPortConfig
+    {
         public int PortNumber;
         public string PortName;
     }

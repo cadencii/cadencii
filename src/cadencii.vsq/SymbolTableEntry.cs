@@ -34,17 +34,17 @@ namespace cadencii.vsq
         /// </summary>
         private string m_symbol = "";
 
-        public SymbolTableEntry( string word, string symbol )
+        public SymbolTableEntry(string word, string symbol)
         {
             Word = word;
-            if ( Word == null ) {
+            if (Word == null) {
                 Word = "";
             }
             m_raw_symbol = symbol;
-            if ( m_raw_symbol == null ) {
+            if (m_raw_symbol == null) {
                 m_raw_symbol = "";
             }
-            m_symbol = m_raw_symbol.Replace( '\t', ' ' );
+            m_symbol = m_raw_symbol.Replace('\t', ' ');
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public Object clone()
         {
-            return new SymbolTableEntry( Word, m_raw_symbol );
+            return new SymbolTableEntry(Word, m_raw_symbol);
         }
 
         /// <summary>

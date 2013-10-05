@@ -15,12 +15,14 @@ using System;
 using cadencii.vsq;
 using cadencii.java.awt;
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// 画面に描画するアイテムを表します
     /// </summary>
-    public class DrawObject : IComparable<DrawObject> {
+    public class DrawObject : IComparable<DrawObject>
+    {
         public Rectangle mRectangleInPixel;
         public string mText;
         public int mAccent;
@@ -68,16 +70,16 @@ namespace cadencii {
         /// </summary>
         public int mIntensity = 100;
 
-        public DrawObject( DrawObjectType type,
+        public DrawObject(DrawObjectType type,
                            VsqFileEx vsq,
-                           Rectangle rect, 
+                           Rectangle rect,
                            string text_,
                            int accent_,
                            int decay,
                            int velocity,
                            int internal_id,
                            int vibrato_delay,
-                           bool overwrapped, 
+                           bool overwrapped,
                            bool symbol_protected,
                            VibratoBPList vib_rate,
                            VibratoBPList vib_depth,
@@ -90,7 +92,8 @@ namespace cadencii {
                            bool is_valid_for_utau,
                            bool is_valid_for_straight,
                            int vib_delay,
-                           int intensity ) {
+                           int intensity)
+        {
             this.mType = type;
             mRectangleInPixel = rect;
             mText = text_;
@@ -112,15 +115,15 @@ namespace cadencii {
             this.mVibDelay = vib_delay;
 
             int viblength = length - vib_delay;
-            if ( viblength > 0 && vib_rate != null && vib_depth != null ) {
+            if (viblength > 0 && vib_rate != null && vib_depth != null) {
                 VibratoPointIteratorByClock itr =
-                    new VibratoPointIteratorByClock( vsq.TempoTable,
+                    new VibratoPointIteratorByClock(vsq.TempoTable,
                                                      vib_rate, vib_start_rate,
                                                      vib_depth, vib_start_depth,
-                                                     clock + vib_delay, viblength );
+                                                     clock + vib_delay, viblength);
                 mVibratoPit = new float[viblength];
-                for ( int i = 0; i < viblength; i++ ) {
-                    if ( !itr.hasNext() ) {
+                for (int i = 0; i < viblength; i++) {
+                    if (!itr.hasNext()) {
                         break;
                     }
                     double v = itr.next();
@@ -129,12 +132,14 @@ namespace cadencii {
             }
         }
 
-        public int compareTo( DrawObject item ) {
+        public int compareTo(DrawObject item)
+        {
             return mRectangleInPixel.x - item.mRectangleInPixel.x;
         }
 
-        public int CompareTo( DrawObject item ){
-            return compareTo( item );
+        public int CompareTo(DrawObject item)
+        {
+            return compareTo(item);
         }
     }
 

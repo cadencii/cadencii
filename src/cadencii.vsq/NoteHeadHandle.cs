@@ -28,9 +28,9 @@ namespace cadencii.vsq
         {
         }
 
-        public NoteHeadHandle( string aic_file, string ids, string icon_id, int index )
+        public NoteHeadHandle(string aic_file, string ids, string icon_id, int index)
             :
- base( aic_file )
+ base(aic_file)
         {
             IDS = ids;
             IconID = icon_id;
@@ -58,7 +58,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setDepth( value );
+                setDepth(value);
             }
         }
 
@@ -67,7 +67,7 @@ namespace cadencii.vsq
             return depth;
         }
 
-        public void setDepth( int value )
+        public void setDepth(int value)
         {
             depth = value;
         }
@@ -83,7 +83,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setDuration( value );
+                setDuration(value);
             }
         }
 
@@ -92,7 +92,7 @@ namespace cadencii.vsq
             return duration;
         }
 
-        public void setDuration( int value )
+        public void setDuration(int value)
         {
             duration = value;
         }
@@ -108,7 +108,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setCaption( value );
+                setCaption(value);
             }
         }
 
@@ -117,7 +117,7 @@ namespace cadencii.vsq
             return caption;
         }
 
-        public void setCaption( string value )
+        public void setCaption(string value)
         {
             caption = value;
         }
@@ -133,7 +133,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
 
@@ -142,7 +142,7 @@ namespace cadencii.vsq
             return length;
         }
 
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
@@ -164,10 +164,10 @@ namespace cadencii.vsq
             result.IconID = IconID;
             result.IDS = IDS;
             result.Original = Original;
-            result.setCaption( getCaption() );
-            result.setLength( getLength() );
-            result.setDuration( getDuration() );
-            result.setDepth( getDepth() );
+            result.setCaption(getCaption());
+            result.setLength(getLength());
+            result.setDuration(getDuration());
+            result.setDepth(getDepth());
             return result;
         }
 
@@ -180,7 +180,7 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Original = Original;
             ret.Caption = getCaption();
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.Duration = getDuration();
             ret.Depth = getDepth();
             return ret;

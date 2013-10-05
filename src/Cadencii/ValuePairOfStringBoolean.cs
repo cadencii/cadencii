@@ -13,12 +13,14 @@
  */
 using System;
 
-namespace cadencii{
+namespace cadencii
+{
 
     /// <summary>
     /// ValuePair&lt;String,Boolean&gt;をXMLシリアライズするためのクラス
     /// </summary>
-    public class ValuePairOfStringBoolean{
+    public class ValuePairOfStringBoolean
+    {
         private string _key;
         private Boolean _value;
 
@@ -26,7 +28,9 @@ namespace cadencii{
         /// デフォルトのコンストラクタ．
         /// Key="", Value=falseで初期化されます．
         /// </summary>
-        public ValuePairOfStringBoolean() : this( "", false ) {
+        public ValuePairOfStringBoolean()
+            : this("", false)
+        {
         }
 
         /// <summary>
@@ -34,7 +38,8 @@ namespace cadencii{
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public ValuePairOfStringBoolean( string key, Boolean value ) {
+        public ValuePairOfStringBoolean(string key, Boolean value)
+        {
             _key = key;
             _value = value;
         }
@@ -43,7 +48,8 @@ namespace cadencii{
         /// キー値を取得します
         /// </summary>
         /// <returns></returns>
-        public string getKey() {
+        public string getKey()
+        {
             return _key;
         }
 
@@ -51,7 +57,8 @@ namespace cadencii{
         /// キー値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setKey( string value ) {
+        public void setKey(string value)
+        {
             _key = value;
         }
 
@@ -59,7 +66,8 @@ namespace cadencii{
         /// 値を取得します
         /// </summary>
         /// <returns></returns>
-        public Boolean getValue() {
+        public Boolean getValue()
+        {
             return _value;
         }
 
@@ -67,7 +75,8 @@ namespace cadencii{
         /// 値を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setValue( Boolean value ) {
+        public void setValue(Boolean value)
+        {
             _value = value;
         }
     }

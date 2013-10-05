@@ -35,9 +35,9 @@ namespace cadencii.vsq
             depthBP = new VibratoBPList();
         }
 
-        public VibratoHandle( string aic_file, string ids, string icon_id, int index )
+        public VibratoHandle(string aic_file, string ids, string icon_id, int index)
             :
- base( aic_file )
+ base(aic_file)
         {
             IDS = ids;
             IconID = icon_id;
@@ -49,34 +49,34 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equals( VibratoHandle item )
+        public bool equals(VibratoHandle item)
         {
-            if ( item == null ) {
+            if (item == null) {
                 return false;
             }
-            if ( startRate != item.startRate ) {
+            if (startRate != item.startRate) {
                 return false;
             }
-            if ( startDepth != item.startDepth ) {
+            if (startDepth != item.startDepth) {
                 return false;
             }
-            if ( IconID != item.IconID ) {
+            if (IconID != item.IconID) {
                 return false;
             }
-            if ( (item.depthBP == null) != (this.depthBP == null) ) {
+            if ((item.depthBP == null) != (this.depthBP == null)) {
                 // どちらかがnullで，どちらかがnullでない場合，一致するのは考えられない
                 return false;
             }
-            if ( (item.rateBP == null) != (this.rateBP == null) ) {
+            if ((item.rateBP == null) != (this.rateBP == null)) {
                 return false;
             }
-            if ( this.depthBP != null ) {
-                if ( !this.depthBP.equals( item.depthBP ) ) {
+            if (this.depthBP != null) {
+                if (!this.depthBP.equals(item.depthBP)) {
                     return false;
                 }
             }
-            if ( this.rateBP != null ) {
-                if ( !this.rateBP.equals( item.rateBP ) ) {
+            if (this.rateBP != null) {
+                if (!this.rateBP.equals(item.rateBP)) {
                     return false;
                 }
             }
@@ -98,7 +98,7 @@ namespace cadencii.vsq
             return rateBP;
         }
 
-        public void setRateBP( VibratoBPList value )
+        public void setRateBP(VibratoBPList value)
         {
             rateBP = value;
         }
@@ -108,7 +108,7 @@ namespace cadencii.vsq
             return caption;
         }
 
-        public void setCaption( string value )
+        public void setCaption(string value)
         {
             caption = value;
         }
@@ -124,7 +124,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setCaption( value );
+                setCaption(value);
             }
         }
 
@@ -139,7 +139,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setRateBP( value );
+                setRateBP(value);
             }
         }
 
@@ -148,7 +148,7 @@ namespace cadencii.vsq
             return startRate;
         }
 
-        public void setStartRate( int value )
+        public void setStartRate(int value)
         {
             startRate = value;
         }
@@ -164,7 +164,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartRate( value );
+                setStartRate(value);
             }
         }
 
@@ -173,7 +173,7 @@ namespace cadencii.vsq
             return depthBP;
         }
 
-        public void setDepthBP( VibratoBPList value )
+        public void setDepthBP(VibratoBPList value)
         {
             depthBP = value;
         }
@@ -189,7 +189,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setDepthBP( value );
+                setDepthBP(value);
             }
         }
 
@@ -198,7 +198,7 @@ namespace cadencii.vsq
             return startDepth;
         }
 
-        public void setStartDepth( int value )
+        public void setStartDepth(int value)
         {
             startDepth = value;
         }
@@ -214,7 +214,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartDepth( value );
+                setStartDepth(value);
             }
         }
 
@@ -223,7 +223,7 @@ namespace cadencii.vsq
             return length;
         }
 
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
@@ -239,7 +239,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
 
@@ -260,15 +260,15 @@ namespace cadencii.vsq
             result.IconID = IconID;
             result.IDS = this.IDS;
             result.Original = this.Original;
-            result.setCaption( caption );
-            result.setLength( getLength() );
-            result.setStartDepth( startDepth );
-            if ( depthBP != null ) {
-                result.setDepthBP( (VibratoBPList)depthBP.clone() );
+            result.setCaption(caption);
+            result.setLength(getLength());
+            result.setStartDepth(startDepth);
+            if (depthBP != null) {
+                result.setDepthBP((VibratoBPList)depthBP.clone());
             }
-            result.setStartRate( startRate );
-            if ( rateBP != null ) {
-                result.setRateBP( (VibratoBPList)rateBP.clone() );
+            result.setStartRate(startRate);
+            if (rateBP != null) {
+                result.setRateBP((VibratoBPList)rateBP.clone());
             }
             return result;
         }
@@ -282,7 +282,7 @@ namespace cadencii.vsq
             ret.IDS = IDS;
             ret.Original = Original;
             ret.Caption = caption;
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.StartDepth = startDepth;
             ret.StartRate = startRate;
             ret.DepthBP = (VibratoBPList)depthBP.clone();

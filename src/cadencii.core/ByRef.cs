@@ -13,15 +13,19 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class ByRef<T> {
+    public class ByRef<T>
+    {
         public T value;
 
-        public ByRef() {
+        public ByRef()
+        {
         }
 
-        public ByRef( T value_ ) {
+        public ByRef(T value_)
+        {
             value = value_;
         }
     }

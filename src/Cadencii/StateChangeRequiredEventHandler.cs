@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void StateChangeRequiredEventHandler( Object sender, PanelState state );
+    public delegate void StateChangeRequiredEventHandler(Object sender, PanelState state);
 
 }

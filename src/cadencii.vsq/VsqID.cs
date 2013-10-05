@@ -55,7 +55,7 @@ namespace cadencii.vsq
         public int pMeanEndingNote = 0x0c;
         public IconDynamicsHandle IconDynamicsHandle;
 
-        public static VsqID EOS = new VsqID( -1 );
+        public static VsqID EOS = new VsqID(-1);
 
         /// <summary>
         /// 下行形でポルタメントを付加するかどうかを取得する
@@ -70,12 +70,12 @@ namespace cadencii.vsq
         /// 下行形でポルタメントを付加するかどうかを設定する
         /// </summary>
         /// <param name="value">下行形でポルタメントを付加するかどうか</param>
-        public void setFallPortamento( bool value )
+        public void setFallPortamento(bool value)
         {
-            if ( value ) {
+            if (value) {
                 PMbPortamentoUse |= FALL_PORTAMENTO_FLAG;
             } else {
-                PMbPortamentoUse &= ~FALL_PORTAMENTO_FLAG; 
+                PMbPortamentoUse &= ~FALL_PORTAMENTO_FLAG;
             }
         }
 
@@ -92,9 +92,9 @@ namespace cadencii.vsq
         /// 上行形でポルタメントを付加するかどうかを設定する
         /// </summary>
         /// <param name="value">上行形でポルタメントを付加するかどうか</param>
-        public void setRisePortamento( bool value )
+        public void setRisePortamento(bool value)
         {
-            if ( value ) {
+            if (value) {
                 PMbPortamentoUse |= RISE_PORTAMENTO_FLAG;
             } else {
                 PMbPortamentoUse &= ~RISE_PORTAMENTO_FLAG;
@@ -106,7 +106,7 @@ namespace cadencii.vsq
             return length;
         }
 
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
@@ -119,7 +119,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
 
@@ -129,7 +129,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getXmlElementName( string name )
+        public static string getXmlElementName(string name)
         {
             return name;
         }
@@ -140,12 +140,12 @@ namespace cadencii.vsq
         /// <returns>このインスタンスの簡易コピー</returns>
         public Object clone()
         {
-            VsqID result = new VsqID( this.value );
+            VsqID result = new VsqID(this.value);
             result.type = this.type;
-            if ( this.IconHandle != null ) {
+            if (this.IconHandle != null) {
                 result.IconHandle = (IconHandle)IconHandle.clone();
             }
-            result.setLength( getLength() );
+            result.setLength(getLength());
             result.Note = this.Note;
             result.Dynamics = this.Dynamics;
             result.PMBendDepth = this.PMBendDepth;
@@ -157,17 +157,17 @@ namespace cadencii.vsq
             result.pMeanOnsetFirstNote = this.pMeanOnsetFirstNote;
             result.vMeanNoteTransition = this.vMeanNoteTransition;
             result.pMeanEndingNote = this.pMeanEndingNote;
-            if ( this.LyricHandle != null ) {
+            if (this.LyricHandle != null) {
                 result.LyricHandle = (LyricHandle)this.LyricHandle.clone();
             }
-            if ( this.VibratoHandle != null ) {
+            if (this.VibratoHandle != null) {
                 result.VibratoHandle = (VibratoHandle)this.VibratoHandle.clone();
             }
             result.VibratoDelay = this.VibratoDelay;
-            if ( NoteHeadHandle != null ) {
+            if (NoteHeadHandle != null) {
                 result.NoteHeadHandle = (NoteHeadHandle)NoteHeadHandle.clone();
             }
-            if ( IconDynamicsHandle != null ) {
+            if (IconDynamicsHandle != null) {
                 result.IconDynamicsHandle = (IconDynamicsHandle)IconDynamicsHandle.clone();
             }
             return result;
@@ -182,13 +182,13 @@ namespace cadencii.vsq
         /// IDの番号（ID#****の****）を指定したコンストラクタ。
         /// </summary>
         /// <param name="a_value">IDの番号</param>
-        public VsqID( int a_value )
+        public VsqID(int a_value)
         {
             value = a_value;
         }
 
         public VsqID()
-            : this( 0 )
+            : this(0)
         {
         }
 
@@ -198,7 +198,7 @@ namespace cadencii.vsq
         /// <param name="sr">読み込み対象</param>
         /// <param name="value"></param>
         /// <param name="last_line">読み込んだ最後の行が返されます</param>
-        public VsqID( TextStream sr, int value, ByRef<string> last_line )
+        public VsqID(TextStream sr, int value, ByRef<string> last_line)
         {
             string[] spl;
             this.value = value;
@@ -207,7 +207,7 @@ namespace cadencii.vsq
             this.LyricHandle_index = -1;
             this.VibratoHandle_index = -1;
             this.NoteHeadHandle_index = -1;
-            this.setLength( 0 );
+            this.setLength(0);
             this.Note = 0;
             this.Dynamics = 64;
             this.PMBendDepth = 8;
@@ -219,47 +219,47 @@ namespace cadencii.vsq
             //this.VibratoHandle_index = -2;
             this.VibratoDelay = 0;
             last_line.value = sr.readLine();
-            while ( !last_line.value.StartsWith( "[" ) ) {
-                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
+            while (!last_line.value.StartsWith("[")) {
+                spl = PortUtil.splitString(last_line.value, new char[] { '=' });
                 string search = spl[0];
-                if ( search.Equals( "Type" ) ) {
-                    if ( spl[1].Equals( "Anote" ) ) {
+                if (search.Equals("Type")) {
+                    if (spl[1].Equals("Anote")) {
                         type = VsqIDType.Anote;
-                    } else if ( spl[1].Equals( "Singer" ) ) {
+                    } else if (spl[1].Equals("Singer")) {
                         type = VsqIDType.Singer;
-                    } else if ( spl[1].Equals( "Aicon" ) ) {
+                    } else if (spl[1].Equals("Aicon")) {
                         type = VsqIDType.Aicon;
                     } else {
                         type = VsqIDType.Unknown;
                     }
-                } else if ( search.Equals( "Length" ) ) {
-                    this.setLength( int.Parse( spl[1] ) );
-                } else if ( search.Equals( "Note#" ) ) {
-                    this.Note = int.Parse( spl[1] );
-                } else if ( search.Equals( "Dynamics" ) ) {
-                    this.Dynamics = int.Parse( spl[1] );
-                } else if ( search.Equals( "PMBendDepth" ) ) {
-                    this.PMBendDepth = int.Parse( spl[1] );
-                } else if ( search.Equals( "PMBendLength" ) ) {
-                    this.PMBendLength = int.Parse( spl[1] );
-                } else if ( search.Equals( "DEMdecGainRate" ) ) {
-                    this.DEMdecGainRate = int.Parse( spl[1] );
-                } else if ( search.Equals( "DEMaccent" ) ) {
-                    this.DEMaccent = int.Parse( spl[1] );
-                } else if ( search.Equals( "LyricHandle" ) ) {
-                    this.LyricHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
-                } else if ( search.Equals( "IconHandle" ) ) {
-                    this.IconHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
-                } else if ( search.Equals( "VibratoHandle" ) ) {
-                    this.VibratoHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
-                } else if ( search.Equals( "VibratoDelay" ) ) {
-                    this.VibratoDelay = int.Parse( spl[1] );
-                } else if ( search.Equals( "PMbPortamentoUse" ) ) {
-                    PMbPortamentoUse = int.Parse( spl[1] );
-                } else if ( search.Equals( "NoteHeadHandle" ) ) {
-                    NoteHeadHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
+                } else if (search.Equals("Length")) {
+                    this.setLength(int.Parse(spl[1]));
+                } else if (search.Equals("Note#")) {
+                    this.Note = int.Parse(spl[1]);
+                } else if (search.Equals("Dynamics")) {
+                    this.Dynamics = int.Parse(spl[1]);
+                } else if (search.Equals("PMBendDepth")) {
+                    this.PMBendDepth = int.Parse(spl[1]);
+                } else if (search.Equals("PMBendLength")) {
+                    this.PMBendLength = int.Parse(spl[1]);
+                } else if (search.Equals("DEMdecGainRate")) {
+                    this.DEMdecGainRate = int.Parse(spl[1]);
+                } else if (search.Equals("DEMaccent")) {
+                    this.DEMaccent = int.Parse(spl[1]);
+                } else if (search.Equals("LyricHandle")) {
+                    this.LyricHandle_index = VsqHandle.HandleIndexFromString(spl[1]);
+                } else if (search.Equals("IconHandle")) {
+                    this.IconHandle_index = VsqHandle.HandleIndexFromString(spl[1]);
+                } else if (search.Equals("VibratoHandle")) {
+                    this.VibratoHandle_index = VsqHandle.HandleIndexFromString(spl[1]);
+                } else if (search.Equals("VibratoDelay")) {
+                    this.VibratoDelay = int.Parse(spl[1]);
+                } else if (search.Equals("PMbPortamentoUse")) {
+                    PMbPortamentoUse = int.Parse(spl[1]);
+                } else if (search.Equals("NoteHeadHandle")) {
+                    NoteHeadHandle_index = VsqHandle.HandleIndexFromString(spl[1]);
                 }
-                if ( !sr.ready() ) {
+                if (!sr.ready()) {
                     break;
                 }
                 last_line.value = sr.readLine();
@@ -269,7 +269,7 @@ namespace cadencii.vsq
         public string toString()
         {
             string ret = "{Type=" + type;
-            if ( type == VsqIDType.Anote ) {
+            if (type == VsqIDType.Anote) {
                 ret += ", Length=" + getLength();
                 ret += ", Note#=" + Note;
                 ret += ", Dynamics=" + Dynamics;
@@ -278,15 +278,15 @@ namespace cadencii.vsq
                 ret += ", PMbPortamentoUse=" + PMbPortamentoUse;
                 ret += ", DEMdecGainRate=" + DEMdecGainRate;
                 ret += ", DEMaccent=" + DEMaccent;
-                if ( LyricHandle != null ) {
-                    ret += ", LyricHandle=h#" + PortUtil.formatDecimal( "0000", LyricHandle_index );
+                if (LyricHandle != null) {
+                    ret += ", LyricHandle=h#" + PortUtil.formatDecimal("0000", LyricHandle_index);
                 }
-                if ( VibratoHandle != null ) {
-                    ret += ", VibratoHandle=h#" + PortUtil.formatDecimal( "0000", VibratoHandle_index );
+                if (VibratoHandle != null) {
+                    ret += ", VibratoHandle=h#" + PortUtil.formatDecimal("0000", VibratoHandle_index);
                     ret += ", VibratoDelay=" + VibratoDelay;
                 }
-            } else if ( type == VsqIDType.Singer ) {
-                ret += ", IconHandle=h#" + PortUtil.formatDecimal( "0000", IconHandle_index );
+            } else if (type == VsqIDType.Singer) {
+                ret += ", IconHandle=h#" + PortUtil.formatDecimal("0000", IconHandle_index);
             }
             ret += "}";
             return ret;

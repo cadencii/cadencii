@@ -19,9 +19,9 @@ using cadencii;
 namespace cadencii.media
 {
 
-    public class MidiInDevice : IDisposable 
+    public class MidiInDevice : IDisposable
     {
-        delegate void MidiInProcDelegate( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 );
+        delegate void MidiInProcDelegate(uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2);
 
         private volatile MidiInProcDelegate m_delegate;
         private volatile IntPtr m_delegate_pointer;
@@ -33,82 +33,91 @@ namespace cadencii.media
 
         public event MidiReceivedEventHandler MidiReceived;
 
-        public MidiInDevice( int port_number ) {
+        public MidiInDevice(int port_number)
+        {
             m_port_number = port_number;
-            m_delegate = new MidiInProcDelegate( MidiInProc );
-            m_delegate_pointer = Marshal.GetFunctionPointerForDelegate( m_delegate );
-            win32.midiInOpen( ref m_hmidiin, port_number, m_delegate_pointer, 0, win32.CALLBACK_FUNCTION );
+            m_delegate = new MidiInProcDelegate(MidiInProc);
+            m_delegate_pointer = Marshal.GetFunctionPointerForDelegate(m_delegate);
+            win32.midiInOpen(ref m_hmidiin, port_number, m_delegate_pointer, 0, win32.CALLBACK_FUNCTION);
         }
 
-        public bool isReceiveSystemRealtimeMessage() {
+        public bool isReceiveSystemRealtimeMessage()
+        {
             return mReceiveSystemRealtimeMessage;
         }
 
-        public void setReceiveSystemRealtimeMessage( bool value ) {
+        public void setReceiveSystemRealtimeMessage(bool value)
+        {
             mReceiveSystemRealtimeMessage = value;
         }
 
-        public bool isReceiveSystemCommonMessage() {
+        public bool isReceiveSystemCommonMessage()
+        {
             return mReceiveSystemCommonMessage;
         }
 
-        public void setReceiveSystemCommonMessage( bool value ) {
+        public void setReceiveSystemCommonMessage(bool value)
+        {
             mReceiveSystemCommonMessage = value;
         }
 
-        public void start() {
+        public void start()
+        {
             mIsActive = true;
-            if ( m_hmidiin > 0 ) {
+            if (m_hmidiin > 0) {
                 try {
-                    win32.midiInStart( m_hmidiin );
-                } catch ( Exception ex ) {
-                    debug.push_log( "MidiInDevice.Start" );
-                    debug.push_log( "    ex=" + ex );
+                    win32.midiInStart(m_hmidiin);
+                } catch (Exception ex) {
+                    debug.push_log("MidiInDevice.Start");
+                    debug.push_log("    ex=" + ex);
                 }
             }
         }
 
-        public void stop() {
+        public void stop()
+        {
             mIsActive = false;
-            if ( m_hmidiin > 0 ) {
+            if (m_hmidiin > 0) {
                 try {
-                    win32.midiInReset( m_hmidiin );
-                } catch ( Exception ex ) {
-                    debug.push_log( "MidiInDevice.Stop" );
-                    debug.push_log( "    ex=" + ex );
+                    win32.midiInReset(m_hmidiin);
+                } catch (Exception ex) {
+                    debug.push_log("MidiInDevice.Stop");
+                    debug.push_log("    ex=" + ex);
                 }
             }
         }
 
-        public void close() {
+        public void close()
+        {
             mIsActive = false;
-            if ( m_hmidiin > 0 ) {
+            if (m_hmidiin > 0) {
                 try {
-                    win32.midiInClose( m_hmidiin );
-                } catch ( Exception ex ) {
-                    debug.push_log( "MidiInDevice.Close" );
-                    debug.push_log( "    ex=" + ex );
+                    win32.midiInClose(m_hmidiin);
+                } catch (Exception ex) {
+                    debug.push_log("MidiInDevice.Close");
+                    debug.push_log("    ex=" + ex);
                 }
             }
             m_hmidiin = 0;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             close();
         }
 
-/*
-        public static int getNumDevs() {
-            try {
-                int i = (int)win32.midiInGetNumDevs();
-                return i;
-            } catch ( Exception ex ) {
-                debug.push_log( "MidiInDevice.GetNumDevs" );
-                debug.push_log( "    ex=" + ex );
-            }
-            return 0;
-        }
-*/
+        /*
+                public static int getNumDevs() {
+                    try {
+                        int i = (int)win32.midiInGetNumDevs();
+                        return i;
+                    } catch ( Exception ex ) {
+                        debug.push_log( "MidiInDevice.GetNumDevs" );
+                        debug.push_log( "    ex=" + ex );
+                    }
+                    return 0;
+                }
+        */
         /*public static MIDIINCAPS[] GetMidiInDevices() {
             List<MIDIINCAPS> ret = new List<MIDIINCAPS>();
             uint num = 0;
@@ -128,9 +137,10 @@ namespace cadencii.media
             return ret.ToArray();
         }*/
 
-        public void MidiInProc( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 ) {
+        public void MidiInProc(uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2)
+        {
             try {
-                switch ( wMsg ) {
+                switch (wMsg) {
                     case win32.MM_MIM_OPEN: {
                         return;
                     }
@@ -140,62 +150,62 @@ namespace cadencii.media
                     case win32.MM_MIM_DATA: {
                         int receive = dwParam1;
                         double now = PortUtil.getCurrentTime();
-                        switch ( receive & 0xF0 ) {
+                        switch (receive & 0xF0) {
                             case 0x80:
                             case 0x90:
                             case 0xa0:
                             case 0xb0:
                             case 0xe0: {
-                                if ( MidiReceived != null ) {
-                                    javax.sound.midi.MidiMessage msg = 
-                                        new cadencii.javax.sound.midi.MidiMessage( 
+                                if (MidiReceived != null) {
+                                    javax.sound.midi.MidiMessage msg =
+                                        new cadencii.javax.sound.midi.MidiMessage(
                                             new byte[] { (byte)(receive & 0xff),
                                                          (byte)((receive & 0xffff) >> 8),
-                                                         (byte)((receive & ((2 << 24) - 1)) >> 16) } );
-                                    MidiReceived.Invoke( this, msg );
+                                                         (byte)((receive & ((2 << 24) - 1)) >> 16) });
+                                    MidiReceived.Invoke(this, msg);
                                 }
                                 break;
                             }
                             case 0xc0:
                             case 0xd0: {
-                                if ( MidiReceived != null ) {
+                                if (MidiReceived != null) {
                                     javax.sound.midi.MidiMessage msg =
                                         new cadencii.javax.sound.midi.MidiMessage(
                                             new byte[] { (byte)( receive & 0xff ),
-                                                         (byte)((receive & 0xffff) >> 8) } );
-                                    MidiReceived.Invoke( this, msg );
+                                                         (byte)((receive & 0xffff) >> 8) });
+                                    MidiReceived.Invoke(this, msg);
                                 }
                                 break;
                             }
                             case 0xf0: {
-                                if ( mReceiveSystemCommonMessage ) {
+                                if (mReceiveSystemCommonMessage) {
                                     byte b0 = (byte)(receive & 0xff);
                                     byte b1 = (byte)((receive >> 8) & 0xff);
                                     byte b2 = (byte)((receive >> 16) & 0xff);
                                     byte b3 = (byte)((receive >> 24) & 0xff);
-                                    if ( b0 == 0xf1 ) {
+                                    if (b0 == 0xf1) {
                                         // MTC quater frame message
-                                        if ( MidiReceived != null ) {
+                                        if (MidiReceived != null) {
                                             javax.sound.midi.MidiMessage msg =
-                                                new cadencii.javax.sound.midi.MidiMessage( new byte[] { b0, b1, b2 } );
-                                            MidiReceived.Invoke( this, msg );
+                                                new cadencii.javax.sound.midi.MidiMessage(new byte[] { b0, b1, b2 });
+                                            MidiReceived.Invoke(this, msg);
                                         }
-                                    } else if ( b0 == 0xf2 ) {
+                                    } else if (b0 == 0xf2) {
                                         // song position pointer
 #if DEBUG
-                                        sout.println( "MidiInDevice#MidiInProc; 0xf2; b0=" + PortUtil.toHexString( b0, 2 ) + "; b1=" + PortUtil.toHexString( b1, 2 ) + "; b2=" + PortUtil.toHexString( b2, 2 ) );
+                                        sout.println("MidiInDevice#MidiInProc; 0xf2; b0=" + PortUtil.toHexString(b0, 2) + "; b1=" + PortUtil.toHexString(b1, 2) + "; b2=" + PortUtil.toHexString(b2, 2));
 #endif
                                     }
                                 }
-                                if ( mReceiveSystemRealtimeMessage && MidiReceived != null ) {
+                                if (mReceiveSystemRealtimeMessage && MidiReceived != null) {
                                     byte b0 = (byte)(receive & 0xff);
                                     byte b1 = (byte)((receive >> 8) & 0xff);
                                     byte b2 = (byte)((receive >> 16) & 0xff);
                                     byte b3 = (byte)((receive >> 24) & 0xff);
-                                    if ( b0 == 0xfa ) {
-                                        MidiReceived.Invoke( this, new javax.sound.midi.MidiMessage( new byte[] { b0 } ) );
-                                    } else if ( b0 == 0xfc ) {
-                                        MidiReceived.Invoke( this, new javax.sound.midi.MidiMessage( new byte[] { b0 } ) );
+                                    if (b0 == 0xfa) {
+                                        MidiReceived.Invoke(this, new javax.sound.midi.MidiMessage(new byte[] { b0 }));
+                                    } else if (b0 == 0xfc) {
+                                        MidiReceived.Invoke(this, new javax.sound.midi.MidiMessage(new byte[] { b0 }));
                                     }
                                 }
                                 break;
@@ -213,9 +223,9 @@ namespace cadencii.media
                         return;
                     }
                 }
-            } catch ( Exception ex ) {
-                debug.push_log( "MidiInDevice.MidiInProc" );
-                debug.push_log( "    ex=" + ex );
+            } catch (Exception ex) {
+                debug.push_log("MidiInDevice.MidiInProc");
+                debug.push_log("    ex=" + ex);
             }
         }
     }

@@ -13,9 +13,11 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class FormMidiImExportConfig {
+    public class FormMidiImExportConfig
+    {
         public bool LastPremeasureCheckStatus = true;
         public bool LastMetatextCheckStatus = true;
     }

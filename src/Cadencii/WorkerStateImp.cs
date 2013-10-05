@@ -37,7 +37,7 @@ namespace cadencii
         {
         }
 
-        public void reportProgress( double prog )
+        public void reportProgress(double prog)
         {
         }
 

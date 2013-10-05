@@ -29,7 +29,7 @@ namespace cadencii.vsq
 
         public Object clone()
         {
-            VsqMixerEntry res = new VsqMixerEntry( Feder, Panpot, Mute, Solo );
+            VsqMixerEntry res = new VsqMixerEntry(Feder, Panpot, Mute, Solo);
             return res;
         }
 
@@ -45,7 +45,7 @@ namespace cadencii.vsq
         /// <param name="panpot">Panpot値</param>
         /// <param name="mute">Mute値</param>
         /// <param name="solo">Solo値</param>
-        public VsqMixerEntry( int feder, int panpot, int mute, int solo )
+        public VsqMixerEntry(int feder, int panpot, int mute, int solo)
         {
             this.Feder = feder;
             this.Panpot = panpot;
@@ -54,7 +54,7 @@ namespace cadencii.vsq
         }
 
         public VsqMixerEntry()
-            : this( 0, 0, 0, 0 )
+            : this(0, 0, 0, 0)
         {
         }
     }

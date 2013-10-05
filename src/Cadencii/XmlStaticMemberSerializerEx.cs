@@ -18,28 +18,34 @@ using cadencii.xml;
 
 
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class XmlStaticMemberSerializerEx : XmlStaticMemberSerializer {
-        public XmlStaticMemberSerializerEx( Type item )
-            : base( item ) {
+    public class XmlStaticMemberSerializerEx : XmlStaticMemberSerializer
+    {
+        public XmlStaticMemberSerializerEx(Type item)
+            : base(item)
+        {
         }
 
-        protected override System.Reflection.Assembly Compile( string code ) {
+        protected override System.Reflection.Assembly Compile(string code)
+        {
 #if ENABLE_SCRIPT
             List<string> errors = new List<string>();
-            return (new PluginLoader()).compileScript( code, errors );
+            return (new PluginLoader()).compileScript(code, errors);
 #else
             return null;
 #endif
         }
 
-        public void deserialize( System.IO.Stream stream ) {
-            base.Deserialize( stream );
+        public void deserialize(System.IO.Stream stream)
+        {
+            base.Deserialize(stream);
         }
 
-        public void serialize( System.IO.Stream stream, Object dumy_null_argument ) {
-            base.Serialize( stream );
+        public void serialize(System.IO.Stream stream, Object dumy_null_argument)
+        {
+            base.Serialize(stream);
         }
     }
 

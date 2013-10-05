@@ -25,7 +25,7 @@ namespace cadencii
         private FormAskKeySoundGenerationUi mUi = null;
 
         #region public methods
-        public void setupUi( FormAskKeySoundGenerationUi ui )
+        public void setupUi(FormAskKeySoundGenerationUi ui)
         {
             mUi = ui;
             applyLanguage();
@@ -38,27 +38,27 @@ namespace cadencii
 
         public void applyLanguage()
         {
-            mUi.setMessageLabelText( _( "It seems some key-board sounds are missing. Do you want to re-generate them now?" ) );
-            mUi.setAlwaysPerformThisCheckCheckboxText( _( "Always perform this check when starting Cadencii." ) );
-            mUi.setYesButtonText( _( "Yes" ) );
-            mUi.setNoButtonText( _( "No" ) );
+            mUi.setMessageLabelText(_("It seems some key-board sounds are missing. Do you want to re-generate them now?"));
+            mUi.setAlwaysPerformThisCheckCheckboxText(_("Always perform this check when starting Cadencii."));
+            mUi.setYesButtonText(_("Yes"));
+            mUi.setNoButtonText(_("No"));
         }
 
         public void buttonCancelClickedSlot()
         {
-            mUi.close( true );
+            mUi.close(true);
         }
 
         public void buttonOkClickedSlot()
         {
-            mUi.close( false );
+            mUi.close(false);
         }
         #endregion
 
         #region private methods
-        private static string _( string message )
+        private static string _(string message)
         {
-            return Messaging.getMessage( message );
+            return Messaging.getMessage(message);
         }
         #endregion
     }

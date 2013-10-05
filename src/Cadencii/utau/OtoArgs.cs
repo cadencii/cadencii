@@ -15,12 +15,14 @@ using System;
 
 
 
-namespace cadencii.utau {
+namespace cadencii.utau
+{
 
     /// <summary>
     /// 原音設定の引数．
     /// </summary>
-    public struct OtoArgs {
+    public struct OtoArgs
+    {
         public string fileName;
         public string Alias;
         public float msOffset;
@@ -29,14 +31,15 @@ namespace cadencii.utau {
         public float msPreUtterance;
         public float msOverlap;
 
-        public bool equals( OtoArgs obj ) {
-            if ( this.fileName != null && this.fileName.Equals( obj.fileName ) &&
-                 this.Alias != null && this.Alias.Equals( obj.Alias ) &&
+        public bool equals(OtoArgs obj)
+        {
+            if (this.fileName != null && this.fileName.Equals(obj.fileName) &&
+                 this.Alias != null && this.Alias.Equals(obj.Alias) &&
                  this.msOffset == obj.msOffset &&
                  this.msConsonant == obj.msConsonant &&
                  this.msBlank == obj.msBlank &&
                  this.msPreUtterance == obj.msPreUtterance &&
-                 this.msOverlap == obj.msOverlap ) {
+                 this.msOverlap == obj.msOverlap) {
                 return true;
             } else {
                 return false;

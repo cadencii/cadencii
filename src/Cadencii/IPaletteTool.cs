@@ -20,16 +20,18 @@ using cadencii.vsq;
 
 
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public interface IPaletteTool {
-        bool edit( VsqTrack track, int[] event_internal_ids, MouseButtons button );
-        string getName( string language );
-        string getDescription( string language );
+    public interface IPaletteTool
+    {
+        bool edit(VsqTrack track, int[] event_internal_ids, MouseButtons button);
+        string getName(string language);
+        string getDescription(string language);
         bool hasDialog();
         DialogResult openDialog();
         Bitmap getIcon();
-        void applyLanguage( string language );
+        void applyLanguage(string language);
     }
 
 }

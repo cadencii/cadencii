@@ -22,26 +22,26 @@ namespace cadencii.vsq
         public float X;
         public int Y;
 
-        public VibratoBPPair( float x, int y )
+        public VibratoBPPair(float x, int y)
         {
             X = x;
             Y = y;
         }
 
-        public int compareTo( VibratoBPPair item )
+        public int compareTo(VibratoBPPair item)
         {
             float v = X - item.X;
-            if ( v > 0.0f ) {
+            if (v > 0.0f) {
                 return 1;
-            } else if ( v < 0.0f ) {
+            } else if (v < 0.0f) {
                 return -1;
             }
             return 0;
         }
 
-        public int CompareTo( VibratoBPPair item )
+        public int CompareTo(VibratoBPPair item)
         {
-            return compareTo( item );
+            return compareTo(item);
         }
     }
 

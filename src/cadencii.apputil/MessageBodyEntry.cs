@@ -15,16 +15,19 @@ using System;
 using System.Collections.Generic;
 using cadencii.java.util;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
-    public class MessageBodyEntry {
+    public class MessageBodyEntry
+    {
         public string message;
         public List<string> location = new List<string>();
 
-        public MessageBodyEntry( string message_, string[] location_ ) {
+        public MessageBodyEntry(string message_, string[] location_)
+        {
             message = message_;
-            for ( int i = 0; i < location_.Length; i++ ) {
-                location.Add( location_[i] );
+            for (int i = 0; i < location_.Length; i++) {
+                location.Add(location_[i]);
             }
         }
     }

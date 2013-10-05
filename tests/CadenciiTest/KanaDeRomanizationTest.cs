@@ -12,12 +12,12 @@ namespace cadencii.test
         [Test]
         public void test_hiragana2katakana()
         {
-            Assert.AreEqual( "ア", KanaDeRomanization.hiragana2katakana( "あ" ) );
-            Assert.AreEqual( "ア", KanaDeRomanization.hiragana2katakana( "ア" ) );
-            Assert.AreEqual( "ガ", KanaDeRomanization.hiragana2katakana( "かﾞ" ) );
-            Assert.AreEqual( "ガ", KanaDeRomanization.hiragana2katakana( "カ゛" ) );
-            Assert.AreEqual( "パ", KanaDeRomanization.hiragana2katakana( "は゜" ) );
-            Assert.AreEqual( "パ", KanaDeRomanization.hiragana2katakana( "ハﾟ" ) );
+            Assert.AreEqual("ア", KanaDeRomanization.hiragana2katakana("あ"));
+            Assert.AreEqual("ア", KanaDeRomanization.hiragana2katakana("ア"));
+            Assert.AreEqual("ガ", KanaDeRomanization.hiragana2katakana("かﾞ"));
+            Assert.AreEqual("ガ", KanaDeRomanization.hiragana2katakana("カ゛"));
+            Assert.AreEqual("パ", KanaDeRomanization.hiragana2katakana("は゜"));
+            Assert.AreEqual("パ", KanaDeRomanization.hiragana2katakana("ハﾟ"));
         }
     }
 }

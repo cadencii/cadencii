@@ -162,7 +162,7 @@ namespace cadencii.vsq
         /// 音階のノート値からのコンストラクタ。
         /// </summary>
         /// <param name="note">この音階を初期化するためのノート値</param>
-        public VsqNote( int note )
+        public VsqNote(int note)
         {
             Value = note;
         }
@@ -172,7 +172,7 @@ namespace cadencii.vsq
         /// </summary>
         public bool isWhiteKey()
         {
-            return isNoteWhiteKey( Value );
+            return isNoteWhiteKey(Value);
         }
 
         /// <summary>
@@ -180,13 +180,13 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static bool isNoteWhiteKey( int note )
+        public static bool isNoteWhiteKey(int note)
         {
-            if ( 0 <= note && note <= 127 ) {
+            if (0 <= note && note <= 127) {
                 return _KEY_TYPE[note];
             } else {
                 int odd = note % 12;
-                switch ( odd ) {
+                switch (odd) {
                     case 1:
                     case 3:
                     case 6:
@@ -204,7 +204,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int getNoteAlter( int note )
+        public static int getNoteAlter(int note)
         {
             return ALTER[note % 12];
         }
@@ -215,7 +215,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int getNoteOctave( int note )
+        public static int getNoteOctave(int note)
         {
             int odd = note % 12;
             return (note - odd) / 12 - 2;
@@ -227,10 +227,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static string getNoteStringBase( int note )
+        public static string getNoteStringBase(int note)
         {
             int odd = note % 12;
-            switch ( odd ) {
+            switch (odd) {
                 case 0:
                 case 1:
                 return "C";
@@ -255,11 +255,11 @@ namespace cadencii.vsq
             }
         }
 
-        public static string getNoteString( int note )
+        public static string getNoteString(int note)
         {
             int odd = note % 12;
             int order = (note - odd) / 12 - 2;
-            switch ( odd ) {
+            switch (odd) {
                 case 0:
                 return "C" + order;
                 case 1:
@@ -296,7 +296,7 @@ namespace cadencii.vsq
 
         public string toString()
         {
-            return getNoteString( Value );
+            return getNoteString(Value);
         }
     }
 

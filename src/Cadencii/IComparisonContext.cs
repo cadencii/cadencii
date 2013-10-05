@@ -13,20 +13,22 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// 2つのタイムラインを比較するのに必要な機能を実装するためのインターフェース．
     /// </summary>
-    public interface IComparisonContext {
+    public interface IComparisonContext
+    {
         int getNextIndex1();
         int getNextIndex2();
-        Object getElementAt1( int index );
-        Object getElementAt2( int index );
+        Object getElementAt1(int index);
+        Object getElementAt2(int index);
         bool hasNext1();
         bool hasNext2();
-        int getClockFrom( Object obj );
-        bool equals( Object obj1, Object obj2 );
+        int getClockFrom(Object obj);
+        bool equals(Object obj1, Object obj2);
     }
 
 }

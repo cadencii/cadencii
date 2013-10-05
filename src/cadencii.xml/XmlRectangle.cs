@@ -14,9 +14,11 @@
 using System.Xml.Serialization;
 using cadencii.java.awt;
 
-namespace cadencii.xml{
+namespace cadencii.xml
+{
 
-    public class XmlRectangle{
+    public class XmlRectangle
+    {
         [XmlIgnore]
         public int x;
         [XmlIgnore]
@@ -30,89 +32,112 @@ namespace cadencii.xml{
         {
         }
 
-        public XmlRectangle( int x_, int y_, int width_, int height_ ){
+        public XmlRectangle(int x_, int y_, int width_, int height_)
+        {
             x = x_;
             y = y_;
             width = width_;
             height = height_;
         }
 
-        public XmlRectangle( Rectangle rc ) {
+        public XmlRectangle(Rectangle rc)
+        {
             x = rc.x;
             y = rc.y;
             width = rc.width;
             height = rc.height;
         }
 
-        public Rectangle toRectangle() {
-            return new Rectangle( x, y, width, height );
+        public Rectangle toRectangle()
+        {
+            return new Rectangle(x, y, width, height);
         }
 
-        public int getX() {
+        public int getX()
+        {
             return x;
         }
 
-        public void setX( int value ) {
+        public void setX(int value)
+        {
             x = value;
         }
 
-        public int getY() {
+        public int getY()
+        {
             return y;
         }
 
-        public void setY( int value ) {
+        public void setY(int value)
+        {
             y = value;
         }
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return width;
         }
 
-        public void setWidth( int value ) {
+        public void setWidth(int value)
+        {
             width = value;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return height;
         }
 
-        public void setHeight( int value ) {
+        public void setHeight(int value)
+        {
             height = value;
         }
 
-        public int X{
-            get{
+        public int X
+        {
+            get
+            {
                 return getX();
             }
-            set{
-                setX( value );
+            set
+            {
+                setX(value);
             }
         }
 
-        public int Y{
-            get{
+        public int Y
+        {
+            get
+            {
                 return getY();
             }
-            set{
-                setY( value );
+            set
+            {
+                setY(value);
             }
         }
 
-        public int Width{
-            get{
+        public int Width
+        {
+            get
+            {
                 return getWidth();
             }
-            set{
-                setWidth( value );
+            set
+            {
+                setWidth(value);
             }
         }
 
-        public int Height{
-            get{
+        public int Height
+        {
+            get
+            {
                 return getHeight();
             }
-            set{
-                setHeight( value );
+            set
+            {
+                setHeight(value);
             }
         }
 

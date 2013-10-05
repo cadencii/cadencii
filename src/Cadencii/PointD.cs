@@ -23,62 +23,74 @@ namespace cadencii
         private double m_x;
         private double m_y;
 
-        public PointD( PointD item )
+        public PointD(PointD item)
         {
             m_x = item.getX();
             m_y = item.getY();
         }
 
-        public PointD( double x, double y ) {
+        public PointD(double x, double y)
+        {
             m_x = x;
             m_y = y;
         }
 
-        public Point toPoint() {
-            return new Point( (int)m_x, (int)m_y );
+        public Point toPoint()
+        {
+            return new Point((int)m_x, (int)m_y);
         }
 
         /*public System.Drawing.PointF toPointF() {
             return new System.Drawing.PointF( (float)m_x, (float)m_y );
         }*/
 
-        public double getX() {
+        public double getX()
+        {
             return m_x;
         }
 
-        public void setX( double value ) {
+        public void setX(double value)
+        {
             m_x = value;
         }
 
-        public double getY() {
+        public double getY()
+        {
             return m_y;
         }
 
-        public void setY( double value ) {
+        public void setY(double value)
+        {
             m_y = value;
         }
 
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public double X {
-            get {
+        public double X
+        {
+            get
+            {
                 return getX();
             }
-            set {
-                setX( value );
+            set
+            {
+                setX(value);
             }
         }
 
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public double Y {
-            get {
+        public double Y
+        {
+            get
+            {
                 return getY();
             }
-            set {
-                setY( value );
+            set
+            {
+                setY(value);
             }
         }
     }

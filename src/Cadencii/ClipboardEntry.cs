@@ -16,10 +16,12 @@ using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
     [Serializable]
-    public class ClipboardEntry {
+    public class ClipboardEntry
+    {
         public List<VsqEvent> events;
         /// <summary>
         /// コピーorカットで複製されたテンポ

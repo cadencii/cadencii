@@ -17,28 +17,28 @@ using System.Collections.Generic;
 
 namespace cadencii.vsq
 {
-	class NrpnIterator : IEnumerable<ValuePair<string, int>>
+    class NrpnIterator : IEnumerable<ValuePair<string, int>>
     {
         private List<ValuePair<string, int>> nrpns = new List<ValuePair<string, int>>();
-        
+
         public NrpnIterator()
         {
-            Type t = typeof( NRPN );
-            foreach ( FieldInfo fi in t.GetFields() ) {
-                if ( fi.FieldType.Equals( typeof( int ) ) ) {
-                    nrpns.Add( new ValuePair<string, int>( fi.Name, (int)fi.GetValue( t ) ) );
+            Type t = typeof(NRPN);
+            foreach (FieldInfo fi in t.GetFields()) {
+                if (fi.FieldType.Equals(typeof(int))) {
+                    nrpns.Add(new ValuePair<string, int>(fi.Name, (int)fi.GetValue(t)));
                 }
             }
         }
 
-		public IEnumerator<ValuePair<string, int>> GetEnumerator()
-		{
-			return nrpns.GetEnumerator();
-		}
+        public IEnumerator<ValuePair<string, int>> GetEnumerator()
+        {
+            return nrpns.GetEnumerator();
+        }
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return nrpns.GetEnumerator();
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return nrpns.GetEnumerator();
+        }
     }
 }

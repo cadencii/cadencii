@@ -19,12 +19,14 @@ using cadencii.java.io;
 using cadencii.windows.forms;
 using cadencii.xml;
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// プロパティウィンドウの状態を表すクラス
     /// </summary>
-    public class PropertyPanelState {
+    public class PropertyPanelState
+    {
         /// <summary>
         /// プロパティパネルの状態を表す
         /// </summary>
@@ -32,7 +34,7 @@ namespace cadencii {
         /// <summary>
         /// プロパティウィンドウの位置と大きさ
         /// </summary>
-        public XmlRectangle Bounds = new XmlRectangle( 0, 0, 200, 300 );
+        public XmlRectangle Bounds = new XmlRectangle(0, 0, 200, 300);
         /// <summary>
         /// プロパティの表示項目の展開・縮小状態を格納したリスト
         /// </summary>

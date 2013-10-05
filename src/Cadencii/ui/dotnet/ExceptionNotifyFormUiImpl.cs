@@ -25,7 +25,7 @@ namespace cadencii
     {
         protected ExceptionNotifyFormUiListener uiListener;
 
-        public ExceptionNotifyFormUiImpl( ExceptionNotifyFormUiListener listener )
+        public ExceptionNotifyFormUiImpl(ExceptionNotifyFormUiListener listener)
         {
             InitializeComponent();
             this.uiListener = listener;
@@ -33,43 +33,43 @@ namespace cadencii
 
         #region ExceptionNotifyFormUiの実装
 
-        public int showDialog( object parent_form )
+        public int showDialog(object parent_form)
         {
             DialogResult ret;
-            if ( parent_form == null || (parent_form != null && !(parent_form is Form)) ) {
+            if (parent_form == null || (parent_form != null && !(parent_form is Form))) {
                 ret = base.ShowDialog();
             } else {
                 Form form = (Form)parent_form;
-                ret = base.ShowDialog( form );
+                ret = base.ShowDialog(form);
             }
-            if ( ret == DialogResult.OK || ret == DialogResult.Yes ) {
+            if (ret == DialogResult.OK || ret == DialogResult.Yes) {
                 return 1;
             } else {
                 return 0;
             }
         }
 
-        public void setTitle( string value )
+        public void setTitle(string value)
         {
             this.Text = value;
         }
 
-        public void setSendButtonText( string value )
+        public void setSendButtonText(string value)
         {
             buttonSend.Text = value;
         }
 
-        public void setCancelButtonText( string value )
+        public void setCancelButtonText(string value)
         {
             buttonCancel.Text = value;
         }
 
-        public void setExceptionMessage( string value )
+        public void setExceptionMessage(string value)
         {
             textMessage.Text = value;
         }
 
-        public void setDescription( string value )
+        public void setDescription(string value)
         {
             labelDescription.Text = value;
         }
@@ -81,12 +81,12 @@ namespace cadencii
 
         #endregion
 
-        private void buttonSend_Click( object sender, EventArgs e )
+        private void buttonSend_Click(object sender, EventArgs e)
         {
             uiListener.sendButtonClick();
         }
 
-        private void buttonCancel_Click( object sender, EventArgs e )
+        private void buttonCancel_Click(object sender, EventArgs e)
         {
             uiListener.cancelButtonClick();
         }

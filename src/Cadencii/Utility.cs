@@ -64,9 +64,9 @@ namespace cadencii
         /// <summary>
         /// vocaloid.shに渡すために，パス文字列を正規化します
         /// </summary>
-        public static string normalizePath( string path )
+        public static string normalizePath(string path)
         {
-            path = path.Replace( "\\", "\\\\\\\\" );
+            path = path.Replace("\\", "\\\\\\\\");
             return path;
         }
 
@@ -76,7 +76,7 @@ namespace cadencii
         /// <returns></returns>
         public static string getExecutingUtau()
         {
-            foreach ( System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName( "utau" ) ) {
+            foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName("utau")) {
                 return p.MainModule.FileName;
             }
             return "";
@@ -89,25 +89,26 @@ namespace cadencii
         /// <param name="program"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public static VsqID getSingerID( RendererKind renderer_kind, int program, int language )
+        public static VsqID getSingerID(RendererKind renderer_kind, int program, int language)
         {
             VsqID item = null;
-            if ( renderer_kind == RendererKind.VOCALOID1 ) {
-                item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID1 );
-            } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
-                item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID2 );
-            } else if ( renderer_kind == RendererKind.UTAU || renderer_kind == RendererKind.VCNT ) {
-                item = AppManager.getSingerIDUtau( language, program );
-            } else if ( renderer_kind == RendererKind.AQUES_TONE ) {
-                item = AppManager.getSingerIDAquesTone( program );
-            } else if ( renderer_kind == RendererKind.AQUES_TONE2 ) {
-                item = AppManager.getSingerIDAquesTone2( program );
+            if (renderer_kind == RendererKind.VOCALOID1) {
+                item = VocaloSysUtil.getSingerID(language, program, SynthesizerType.VOCALOID1);
+            } else if (renderer_kind == RendererKind.VOCALOID2) {
+                item = VocaloSysUtil.getSingerID(language, program, SynthesizerType.VOCALOID2);
+            } else if (renderer_kind == RendererKind.UTAU || renderer_kind == RendererKind.VCNT) {
+                item = AppManager.getSingerIDUtau(language, program);
+            } else if (renderer_kind == RendererKind.AQUES_TONE) {
+                item = AppManager.getSingerIDAquesTone(program);
+            } else if (renderer_kind == RendererKind.AQUES_TONE2) {
+                item = AppManager.getSingerIDAquesTone2(program);
             }
             return item;
         }
 
-        public static int[] getRandomizePitPattern1() {
-            if ( RANDOMIZE_PIT_PATTERN1 == null ) {
+        public static int[] getRandomizePitPattern1()
+        {
+            if (RANDOMIZE_PIT_PATTERN1 == null) {
                 RANDOMIZE_PIT_PATTERN1 = new int[] {
                     1310, 1310, 1309, 1309, 1308, 1308, 1308, 1307, 1307, 1306, 1306, 1305, 1305, 1305, 1304, 1304, 1303, 1303, 1303, 1302, 1302, 1301, 1301, 1300, 1300,
                     1300, 1299, 1299, 1298, 1298, 1297, 1297, 1297, 1296, 1296, 1295, 1295, 1294, 1294, 1294, 1293, 1293, 1292, 1292, 1292, 1291, 1291, 1290, 1290, 1289,
@@ -276,8 +277,9 @@ namespace cadencii
             return RANDOMIZE_PIT_PATTERN1;
         }
 
-        public static int[] getRandomizePitPattern2() {
-            if ( RANDOMIZE_PIT_PATTERN2 == null ) {
+        public static int[] getRandomizePitPattern2()
+        {
+            if (RANDOMIZE_PIT_PATTERN2 == null) {
                 RANDOMIZE_PIT_PATTERN2 = new int[] {
             -788, -796, -797, -799, -802, -803, -806, -807, -810, -812, -813, -816, -817, -820, -822, -824, -825, -827, -829, -831, -834, -836, -835, -835, -834,
             -834, -834, -833, -833, -833, -832, -832, -832, -831, -831, -831, -830, -830, -830, -829, -829, -829, -828, -828, -827, -827, -827, -826, -826, -826,
@@ -419,8 +421,9 @@ namespace cadencii
             return RANDOMIZE_PIT_PATTERN2;
         }
 
-        public static int[] getRandomizePitPattern3() {
-            if ( RANDOMIZE_PIT_PATTERN3 == null ) {
+        public static int[] getRandomizePitPattern3()
+        {
+            if (RANDOMIZE_PIT_PATTERN3 == null) {
                 RANDOMIZE_PIT_PATTERN3 = new int[] {
                     881, 880, 879, 878, 875, 872, 869, 867, 864, 862, 859, 856, 853, 851, 848, 845, 843, 840, 838, 834, 829, 825, 822, 817, 813,
                     810, 806, 802, 797, 796, 793, 792, 789, 787, 786, 783, 782, 779, 777, 776, 773, 772, 769, 768, 766, 763, 762, 759, 758, 756,
@@ -591,8 +594,9 @@ namespace cadencii
         /// <param name="p"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static bool isInRect( Point p, Rectangle rc ) {
-            return isInRect( p.x, p.y, rc );
+        public static bool isInRect(Point p, Rectangle rc)
+        {
+            return isInRect(p.x, p.y, rc);
         }
 
         /// <summary>
@@ -602,8 +606,9 @@ namespace cadencii
         /// <param name="y"></param>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public static bool isInRect( int x, int y, Rectangle rc ) {
-            return isInRect( x, y, rc.x, rc.y, rc.width, rc.height );
+        public static bool isInRect(int x, int y, Rectangle rc)
+        {
+            return isInRect(x, y, rc.x, rc.y, rc.width, rc.height);
         }
 
         /// <summary>
@@ -616,11 +621,12 @@ namespace cadencii
         /// <param name="rc_width"></param>
         /// <param name="rc_height"></param>
         /// <returns></returns>
-        public static bool isInRect( int x, int y, int rc_x, int rc_y, int rc_width, int rc_height ) {
-            if ( rc_x <= x ) {
-                if ( x <= rc_x + rc_width ) {
-                    if ( rc_y <= y ) {
-                        if ( y <= rc_y + rc_height ) {
+        public static bool isInRect(int x, int y, int rc_x, int rc_y, int rc_width, int rc_height)
+        {
+            if (rc_x <= x) {
+                if (x <= rc_x + rc_width) {
+                    if (rc_y <= y) {
+                        if (y <= rc_y + rc_height) {
                             return true;
                         }
                     }
@@ -634,60 +640,61 @@ namespace cadencii
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static string readUtauSingerConfig( string directory, SingerConfig sc ) {
+        public static string readUtauSingerConfig(string directory, SingerConfig sc)
+        {
             sc.VOICEIDSTR = directory;
 
             // character.txt読込み
-            string character = Path.Combine( directory, "character.txt" );
+            string character = Path.Combine(directory, "character.txt");
             string name = null;
             string image = "";
             int mode = 0;
             if (System.IO.File.Exists(character)) {
                 // 読み込みを試みるエンコーディングのリスト
-                foreach ( string encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
+                foreach (string encoding in AppManager.TEXT_ENCODINGS_IN_UTAU) {
                     BufferedReader sr2 = null;
                     try {
-                        sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), encoding ) );
+                        sr2 = new BufferedReader(new InputStreamReader(new FileInputStream(character), encoding));
                         string line = "";
-                        while ( (line = sr2.readLine()) != null ) {
-                            string[] spl = PortUtil.splitString( line, '=' );
-                            if ( spl.Length > 1 ) {
+                        while ((line = sr2.readLine()) != null) {
+                            string[] spl = PortUtil.splitString(line, '=');
+                            if (spl.Length > 1) {
                                 string s = spl[0].ToLower();
-                                if ( s == "name" ) {
+                                if (s == "name") {
                                     name = spl[1];
                                     mode |= 1;
-                                } else if ( s == "image" ) {
-                                    image = Path.Combine( directory, spl[1] );
+                                } else if (s == "image") {
+                                    image = Path.Combine(directory, spl[1]);
                                     mode |= 2;
                                 }
-                                if ( mode == 3 ) {
+                                if (mode == 3) {
                                     break;
                                 }
                             }
                         }
-                    } catch ( Exception ex ) {
-                        serr.println( "Utility#readUtausingerConfig; ex=" + ex );
-                        Logger.write( typeof( Utility ) + ".readUtausingerConfig; ex=" + ex + "\n" );
+                    } catch (Exception ex) {
+                        serr.println("Utility#readUtausingerConfig; ex=" + ex);
+                        Logger.write(typeof(Utility) + ".readUtausingerConfig; ex=" + ex + "\n");
                     } finally {
-                        if ( sr2 != null ) {
+                        if (sr2 != null) {
                             try {
                                 sr2.close();
-                            } catch ( Exception ex2 ) {
-                                serr.println( "Utility#readUtausingerConfig; ex2=" + ex2 );
-                                Logger.write( typeof( Utility ) + ".readUtausingerConfig; ex= " + ex2 + "\n" );
+                            } catch (Exception ex2) {
+                                serr.println("Utility#readUtausingerConfig; ex2=" + ex2);
+                                Logger.write(typeof(Utility) + ".readUtausingerConfig; ex= " + ex2 + "\n");
                             }
                         }
                     }
-                    if ( name != null ) {
+                    if (name != null) {
 #if DEBUG
-                        sout.println( "Utility#readUtausingerConfig; name=" + name + "; encoding=" + encoding );
+                        sout.println("Utility#readUtausingerConfig; name=" + name + "; encoding=" + encoding);
 #endif
                         break;
                     }
                 }
             }
-            if ( name == null ){
-                name = PortUtil.getFileNameWithoutExtension( directory );
+            if (name == null) {
+                name = PortUtil.getFileNameWithoutExtension(directory);
             }
             sc.VOICENAME = name;
             return image;
@@ -699,66 +706,67 @@ namespace cadencii
         /// <param name="vsq_event"></param>
         /// <param name="new_length"></param>
         /// <param name="rule"></param>
-        public static void editLengthOfVsqEvent( VsqEvent vsq_event, int new_length, VibratoLengthEditingRule rule ) {
+        public static void editLengthOfVsqEvent(VsqEvent vsq_event, int new_length, VibratoLengthEditingRule rule)
+        {
 #if DEBUG
-            sout.println( "Utility#editLengthOfVsqEvent; rule=" + rule );
+            sout.println("Utility#editLengthOfVsqEvent; rule=" + rule);
 #endif
-            if ( vsq_event.ID.VibratoHandle != null ) {
+            if (vsq_event.ID.VibratoHandle != null) {
                 int oldlength = vsq_event.ID.getLength();
                 int new_delay = vsq_event.ID.VibratoDelay; // ここではディレイが独立変数
 
-                if ( rule == VibratoLengthEditingRule.DELAY ) {
+                if (rule == VibratoLengthEditingRule.DELAY) {
                     // ディレイが保存される
                     // 特に何もしない
-                } else if ( rule == VibratoLengthEditingRule.LENGTH ) {
+                } else if (rule == VibratoLengthEditingRule.LENGTH) {
                     // ビブラート長さが保存される
                     new_delay = new_length - vsq_event.ID.VibratoHandle.getLength();
-                    if ( new_delay < 0 ) {
+                    if (new_delay < 0) {
                         new_delay = 0;
                     }
-                } else if ( rule == VibratoLengthEditingRule.PERCENTAGE ) {
+                } else if (rule == VibratoLengthEditingRule.PERCENTAGE) {
                     // ビブラート長の割合が保存される
                     double old_percentage = vsq_event.ID.VibratoDelay / (double)oldlength * 100.0;
                     new_delay = (int)(new_length * old_percentage / 100.0);
-                    if ( new_delay < 0 ) {
+                    if (new_delay < 0) {
                         new_delay = 0;
                     }
                 }
 
-                if ( new_delay >= new_length ) {
+                if (new_delay >= new_length) {
                     // ディレイが音符より長い場合。ビブラートは削除される
                     vsq_event.ID.VibratoDelay = new_length;
                     vsq_event.ID.VibratoHandle = null;
                 } else {
                     vsq_event.ID.VibratoDelay = new_delay;
-                    vsq_event.ID.VibratoHandle.setLength( new_length - new_delay );
+                    vsq_event.ID.VibratoHandle.setLength(new_length - new_delay);
                 }
             }
 
-            if ( vsq_event.ID.type == VsqIDType.Anote ) {
+            if (vsq_event.ID.type == VsqIDType.Anote) {
                 // 音符
-                vsq_event.ID.setLength( new_length );
-            } else if ( vsq_event.ID.type == VsqIDType.Singer ) {
+                vsq_event.ID.setLength(new_length);
+            } else if (vsq_event.ID.type == VsqIDType.Singer) {
                 // 歌手変更
-                vsq_event.ID.setLength( 1 );
-            } else if ( vsq_event.ID.type == VsqIDType.Aicon ) {
+                vsq_event.ID.setLength(1);
+            } else if (vsq_event.ID.type == VsqIDType.Aicon) {
                 // 強弱記号、クレッシェンド、デクレッシェンド
-                if ( vsq_event.ID.IconDynamicsHandle != null ) {
-                    if ( vsq_event.ID.IconDynamicsHandle.isDynaffType() ) {
+                if (vsq_event.ID.IconDynamicsHandle != null) {
+                    if (vsq_event.ID.IconDynamicsHandle.isDynaffType()) {
                         // 強弱記号
-                        vsq_event.ID.IconDynamicsHandle.setLength( 1 );
-                        vsq_event.ID.setLength( 1 );
+                        vsq_event.ID.IconDynamicsHandle.setLength(1);
+                        vsq_event.ID.setLength(1);
                     } else {
                         // クレッシェンド、デクレッシェンド
-                        vsq_event.ID.IconDynamicsHandle.setLength( new_length );
-                        vsq_event.ID.setLength( new_length );
+                        vsq_event.ID.IconDynamicsHandle.setLength(new_length);
+                        vsq_event.ID.setLength(new_length);
                     }
                 } else {
-                    vsq_event.ID.setLength( new_length );
+                    vsq_event.ID.setLength(new_length);
                 }
             } else {
                 // 不明
-                vsq_event.ID.setLength( new_length );
+                vsq_event.ID.setLength(new_length);
             }
         }
 
@@ -769,158 +777,160 @@ namespace cadencii
         /// <param name="x"></param>
         /// <param name="equation"></param>
         /// <returns></returns>
-        public static double eval( double x, string equation ) {
+        public static double eval(double x, string equation)
+        {
             string equ = "(" + equation + ")"; // ( )でくくる
-            equ = equ.Replace( "Math.PI", Math.PI + "" ); // πを数値に置換
-            equ = equ.Replace( "Math.E", Math.E + "" ); // eを数値に置換
-            equ = equ.Replace( "exp", "ezp" ); // exp を ezp に置換しておく
-            equ = equ.Replace( "x", x + "" ); // xを数字に置換
-            equ = equ.Replace( "ezp", "exp" ); // ezp を exp に戻す
+            equ = equ.Replace("Math.PI", Math.PI + ""); // πを数値に置換
+            equ = equ.Replace("Math.E", Math.E + ""); // eを数値に置換
+            equ = equ.Replace("exp", "ezp"); // exp を ezp に置換しておく
+            equ = equ.Replace("x", x + ""); // xを数字に置換
+            equ = equ.Replace("ezp", "exp"); // ezp を exp に戻す
 
             int m0 = 0; // -- の処理-------（注釈：x を数値に置換したので、x が負値のとき  --3.1 のようになっている）
-            while ( true ) {
-                int m1 = equ.IndexOf( "--", m0 );
-                if ( m1 < 0 ) {
+            while (true) {
+                int m1 = equ.IndexOf("--", m0);
+                if (m1 < 0) {
                     break;
                 }
                 int eq_mi_1 = equ[m1 - 1];
-                if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
-                    equ = equ.Substring( 0, m1 - 0 ) + equ.Substring( m1 + 2 ); // -- を 取る
+                if (m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44) {
+                    equ = equ.Substring(0, m1 - 0) + equ.Substring(m1 + 2); // -- を 取る
                 } else {
-                    equ = equ.Substring( 0, m1 - 0 ) + "+" + equ.Substring( m1 + 2 ); // -- を + に置換
+                    equ = equ.Substring(0, m1 - 0) + "+" + equ.Substring(m1 + 2); // -- を + に置換
                 }
                 m0 = m1;
-                if ( m0 > PortUtil.getStringLength( equ ) - 1 ) {
+                if (m0 > PortUtil.getStringLength(equ) - 1) {
                     break;
                 }
             }
 
             m0 = 0; // - の処理-------
-            while ( true ) {
-                int m1 = equ.IndexOf( "-", m0 );
-                if ( m1 < 0 ) {
+            while (true) {
+                int m1 = equ.IndexOf("-", m0);
+                if (m1 < 0) {
                     break;
                 }
                 int eq_mi_1 = equ[m1 - 1];
-                if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
+                if (m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44) {
                     m0 = m1 + 1;
                 } else {
-                    equ = equ.Substring( 0, m1 - 0 ) + "+(-1)*" + equ.Substring( m1 + 1 ); // -a、-Math.sin(A) などを +(-1)*a、 +(-1)*Math.sin(A) などに置き換える
+                    equ = equ.Substring(0, m1 - 0) + "+(-1)*" + equ.Substring(m1 + 1); // -a、-Math.sin(A) などを +(-1)*a、 +(-1)*Math.sin(A) などに置き換える
                     m0 = m1 + 6;
                 }
-                if ( m0 > PortUtil.getStringLength( equ ) - 1 ) {
+                if (m0 > PortUtil.getStringLength(equ) - 1) {
                     break;
                 }
             }
-            double valResult = double.Parse( evalMy0( equ ) );
+            double valResult = double.Parse(evalMy0(equ));
             return valResult;
         }
 
         //----------------------------------------------------------------------------------
-        private static string evalMy0( string equation ) {
+        private static string evalMy0(string equation)
+        {
             string equ = equation;
-            while ( true ) {
+            while (true) {
                 // 最内側の（ ） から計算する（注釈：最内側（ ）内には、Math.…() のようなものはない）
-                int n1 = equ.IndexOf( ")" );
-                if ( n1 < 0 ) {
+                int n1 = equ.IndexOf(")");
+                if (n1 < 0) {
                     break;
                 } // ) の検索
-                int n2 = equ.LastIndexOf( "(", n1 - 1 ); // ( に対応する ) の検索
-                if ( n2 < 0 ) {
+                int n2 = equ.LastIndexOf("(", n1 - 1); // ( に対応する ) の検索
+                if (n2 < 0) {
                     break;
                 }
-                string str2 = equ.Substring( n2 + 1, n1 - n2 - 1 ); // ( )内の文字
-                int ne0 = str2.IndexOf( "," ); // ( )内の , の検索
+                string str2 = equ.Substring(n2 + 1, n1 - n2 - 1); // ( )内の文字
+                int ne0 = str2.IndexOf(","); // ( )内の , の検索
                 double val = 0;
 
-                if ( ne0 >= 0 ) {
+                if (ne0 >= 0) {
                     // ( )内に , があるので、 Math.log(A,B) or Math.Pow(A,B) の処理
-                    if ( equ.Substring( n2 - 3, n2 - n2 + 3 ) == "log" ) {
+                    if (equ.Substring(n2 - 3, n2 - n2 + 3) == "log") {
                         // Math.log(A,B) のとき
-                        string strA = str2.Substring( 0, ne0 - 0 ); // Math.log(A,B)の A の文字
-                        double valA = double.Parse( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
-                        string strB = str2.Substring( ne0 + 1 ); // Math.log(A,B)の B の文字
-                        double valB = double.Parse( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
-                        val = Math.Log( valB ) / Math.Log( valA );
-                        equ = equ.Replace( "Math.Log(" + strA + "," + strB + ")", "" + val );
-                    } else if ( equ.Substring( n2 - 3, n2 - n2 + 3 ) == "pow" ) { // Math.Pow(A,B) のとき
-                        string strA = str2.Substring( 0, ne0 - 0 ); // Math.Pow(A,B)の A の文字
-                        double valA = double.Parse( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
-                        string strB = str2.Substring( ne0 + 1 ); // Math.Pow(A,B)の B の文字
-                        double valB = double.Parse( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
-                        val = Math.Pow( valA, valB );
-                        equ = equ.Replace( "Math.Pow(" + strA + "," + strB + ")", "" + val );
+                        string strA = str2.Substring(0, ne0 - 0); // Math.log(A,B)の A の文字
+                        double valA = double.Parse(evalMy0("(" + strA + ")")); // （注：再帰である）
+                        string strB = str2.Substring(ne0 + 1); // Math.log(A,B)の B の文字
+                        double valB = double.Parse(evalMy0("(" + strB + ")")); //（注：再帰である）
+                        val = Math.Log(valB) / Math.Log(valA);
+                        equ = equ.Replace("Math.Log(" + strA + "," + strB + ")", "" + val);
+                    } else if (equ.Substring(n2 - 3, n2 - n2 + 3) == "pow") { // Math.Pow(A,B) のとき
+                        string strA = str2.Substring(0, ne0 - 0); // Math.Pow(A,B)の A の文字
+                        double valA = double.Parse(evalMy0("(" + strA + ")")); // （注：再帰である）
+                        string strB = str2.Substring(ne0 + 1); // Math.Pow(A,B)の B の文字
+                        double valB = double.Parse(evalMy0("(" + strB + ")")); //（注：再帰である）
+                        val = Math.Pow(valA, valB);
+                        equ = equ.Replace("Math.Pow(" + strA + "," + strB + ")", "" + val);
                     }
                 } else {
                     int check0 = 0; // strが数値（数字）かどうかチェック（str="-3.7" なら 数値なので 0 とする）
-                    for ( int i = 0; i < PortUtil.getStringLength( str2 ); i++ ) {
-                        if ( i == 0 ) {
+                    for (int i = 0; i < PortUtil.getStringLength(str2); i++) {
+                        if (i == 0) {
                             int str0 = str2[0];
-                            if ( (str0 < 48 || str0 > 57) && str0 != 46 && str0 != 43 && str0 != 45 ) {
+                            if ((str0 < 48 || str0 > 57) && str0 != 46 && str0 != 43 && str0 != 45) {
                                 check0 = 1;
                                 break;
                             }
                         } else {
                             int stri = str2[i];
-                            if ( (stri < 48 || stri > 57) && stri != 46 ) {
+                            if ((stri < 48 || stri > 57) && stri != 46) {
                                 check0 = 1;
                                 break;
                             }
                         }
                     }
 
-                    if ( check0 == 1 ) {
-                        val = evalMy1( str2 ); // ( ) の処理をし数値をもとめる
+                    if (check0 == 1) {
+                        val = evalMy1(str2); // ( ) の処理をし数値をもとめる
                     } else {
-                        val = double.Parse( str2 ); // 文字を数値に変換
+                        val = double.Parse(str2); // 文字を数値に変換
                     }
-                    if ( n2 - 8 >= 0 ) {
-                        string str1 = equ.Substring( n2 - 8, n2 - (n2 - 8) );
-                        if ( str1 == "Math.Sin" ) {
-                            val = Math.Sin( val );
-                            equ = equ.Replace( "Math.Sin(" + str2 + ")", "" + val );
+                    if (n2 - 8 >= 0) {
+                        string str1 = equ.Substring(n2 - 8, n2 - (n2 - 8));
+                        if (str1 == "Math.Sin") {
+                            val = Math.Sin(val);
+                            equ = equ.Replace("Math.Sin(" + str2 + ")", "" + val);
                             n2 -= 8;
-                        } else if ( str1 == "Math.Cos" ) {
-                            val = Math.Cos( val );
-                            equ = equ.Replace( "Math.Cos(" + str2 + ")", "" + val );
+                        } else if (str1 == "Math.Cos") {
+                            val = Math.Cos(val);
+                            equ = equ.Replace("Math.Cos(" + str2 + ")", "" + val);
                             n2 -= 8;
-                        } else if ( str1 == "Math.Tan" ) {
-                            val = Math.Tan( val );
-                            equ = equ.Replace( "Math.Tan(" + str2 + ")", "" + val );
+                        } else if (str1 == "Math.Tan") {
+                            val = Math.Tan(val);
+                            equ = equ.Replace("Math.Tan(" + str2 + ")", "" + val);
                             n2 -= 8;
-                        } else if ( str1 == "ath.Asin" ) {
-                            val = Math.Asin( val );
-                            equ = equ.Replace( "Math.Asin(" + str2 + ")", "" + val );
+                        } else if (str1 == "ath.Asin") {
+                            val = Math.Asin(val);
+                            equ = equ.Replace("Math.Asin(" + str2 + ")", "" + val);
                             n2 -= 9;
-                        } else if ( str1 == "ath.Acos" ) {
-                            val = Math.Acos( val );
-                            equ = equ.Replace( "Math.Acos(" + str2 + ")", "" + val );
+                        } else if (str1 == "ath.Acos") {
+                            val = Math.Acos(val);
+                            equ = equ.Replace("Math.Acos(" + str2 + ")", "" + val);
                             n2 -= 9;
-                        } else if ( str1 == "ath.Atan" ) {
-                            val = Math.Atan( val );
-                            equ = equ.Replace( "Math.Atan(" + str2 + ")", "" + val );
+                        } else if (str1 == "ath.Atan") {
+                            val = Math.Atan(val);
+                            equ = equ.Replace("Math.Atan(" + str2 + ")", "" + val);
                             n2 -= 9;
-                        } else if ( str1 == "Math.Log" ) {
-                            val = Math.Log( val );
-                            equ = equ.Replace( "Math.Log(" + str2 + ")", "" + val );
+                        } else if (str1 == "Math.Log") {
+                            val = Math.Log(val);
+                            equ = equ.Replace("Math.Log(" + str2 + ")", "" + val);
                             n2 -= 8;
-                        } else if ( str1 == "Math.Exp" ) {
-                            val = Math.Exp( val );
-                            equ = equ.Replace( "Math.Exp(" + str2 + ")", "" + val );
+                        } else if (str1 == "Math.Exp") {
+                            val = Math.Exp(val);
+                            equ = equ.Replace("Math.Exp(" + str2 + ")", "" + val);
                             n2 -= 8;
-                        } else if ( str1 == "Math.Abs" ) {
-                            val = Math.Abs( val );
-                            equ = equ.Replace( "Math.Abs(" + str2 + ")", "" + val );
+                        } else if (str1 == "Math.Abs") {
+                            val = Math.Abs(val);
+                            equ = equ.Replace("Math.Abs(" + str2 + ")", "" + val);
                             n2 -= 8;
-                        } else if ( str1 == "ath.Sqrt" ) {
-                            val = Math.Sqrt( val );
-                            equ = equ.Replace( "Math.Sqrt(" + str2 + ")", "" + val );
+                        } else if (str1 == "ath.Sqrt") {
+                            val = Math.Sqrt(val);
+                            equ = equ.Replace("Math.Sqrt(" + str2 + ")", "" + val);
                             n2 -= 9;
                         } else {
-                            equ = equ.Replace( "(" + str2 + ")", "" + val );
+                            equ = equ.Replace("(" + str2 + ")", "" + val);
                         } // ( ) を取る
                     } else {
-                        equ = equ.Replace( "(" + str2 + ")", "" + val ); // ( ) を取る
+                        equ = equ.Replace("(" + str2 + ")", "" + val); // ( ) を取る
                     }
                 }
             }
@@ -928,80 +938,83 @@ namespace cadencii
         }
 
         //　* と / のみからなる数式の いくつかの和、差からなる式の処理----------------
-        private static double evalMy1( string equation ) {
+        private static double evalMy1(string equation)
+        {
             double val = 0;
-            while ( true ) {
+            while (true) {
                 string equ0 = "";
-                int n0 = equation.IndexOf( "+" );
-                if ( n0 < 0 ) {
+                int n0 = equation.IndexOf("+");
+                if (n0 < 0) {
                     equ0 = equation;
                 } else {
-                    equ0 = equation.Substring( 0, n0 - 0 );
+                    equ0 = equation.Substring(0, n0 - 0);
                 } // 最初の + より前の項
-                val += evalMy2( equ0 );
-                if ( n0 < 0 ) {
+                val += evalMy2(equ0);
+                if (n0 < 0) {
                     break;
                 } else {
-                    equation = equation.Substring( n0 + 1 );
+                    equation = equation.Substring(n0 + 1);
                 } // 最初の + より以降の項
             }
             return val;
         }
 
         //　* と / のみからなる数式についての処理-----------------------------------
-        private static double evalMy2( string equation ) {
+        private static double evalMy2(string equation)
+        {
             double val0 = 1;
-            while ( true ) {
+            while (true) {
                 string equ0 = "";
-                int n0 = equation.IndexOf( "*" );
-                if ( n0 < 0 ) {
+                int n0 = equation.IndexOf("*");
+                if (n0 < 0) {
                     equ0 = equation;
                 } else {
-                    equ0 = equation.Substring( 0, n0 );
+                    equ0 = equation.Substring(0, n0);
                 } // 最初の * より前の項
 
                 int kai = 0;
                 double val1 = 1;
-                while ( true ) { // / を含んだ項の計算
+                while (true) { // / を含んだ項の計算
                     string equ1 = "";
-                    int n1 = equ0.IndexOf( "/" );
-                    if ( n1 < 0 ) {
+                    int n1 = equ0.IndexOf("/");
+                    if (n1 < 0) {
                         equ1 = equ0;
                     } else {
-                        equ1 = equ0.Substring( 0, n1 - 0 );
+                        equ1 = equ0.Substring(0, n1 - 0);
                     } // 最初の / より前の項
-                    if ( kai == 0 ) {
-                        val1 = double.Parse( equ1 );
+                    if (kai == 0) {
+                        val1 = double.Parse(equ1);
                     } else {
-                        val1 /= double.Parse( equ1 );
+                        val1 /= double.Parse(equ1);
                     }
-                    if ( n1 < 0 ) {
+                    if (n1 < 0) {
                         break;
                     } else {
                         kai++;
-                        equ0 = equ0.Substring( n1 + 1 );
+                        equ0 = equ0.Substring(n1 + 1);
                     } // 最初の / より以降の項
                 }
                 val0 *= val1;
-                if ( n0 < 0 ) {
+                if (n0 < 0) {
                     break;
                 } else {
-                    equation = equation.Substring( n0 + 1 );
+                    equation = equation.Substring(n0 + 1);
                 } // 最初の * より以降の項
             }
             return val0;
         }
 
-        public static EditedZoneUnit[] detectRenderedStatusDifference( RenderedStatus status1, RenderedStatus status2 ) {
-            EditedZoneUnit[] areaTempo = detectTempotableDifference( status1.tempo, status2.tempo );
-            EditedZoneUnit[] areaTrack = detectTrackDifference( status1.track, status2.track );
+        public static EditedZoneUnit[] detectRenderedStatusDifference(RenderedStatus status1, RenderedStatus status2)
+        {
+            EditedZoneUnit[] areaTempo = detectTempotableDifference(status1.tempo, status2.tempo);
+            EditedZoneUnit[] areaTrack = detectTrackDifference(status1.track, status2.track);
             EditedZone zone = new EditedZone();
-            if ( status1.config.SamplingRate != status2.config.SamplingRate ||
-                 status1.config.WaveFileOutputChannel != status2.config.WaveFileOutputChannel ) {
-                zone.add( 0, int.MaxValue );
+            if (status1.config.SamplingRate != status2.config.SamplingRate ||
+                 status1.config.WaveFileOutputChannel != status2.config.WaveFileOutputChannel) {
+                zone.add(0, int.MaxValue);
             }
-            zone.add( areaTempo );
-            zone.add( areaTrack );
+            zone.add(areaTempo);
+            zone.add(areaTrack);
             EditedZoneUnit[] ret = new EditedZoneUnit[zone.size()];
             int i = -1;
             foreach (var unit in zone.iterator()) {
@@ -1011,27 +1024,28 @@ namespace cadencii
             return ret;
         }
 
-        public static EditedZoneUnit[] detectTempotableDifference( TempoVector tempo1, TempoVector tempo2 ) {
-            int len = Math.Min( tempo1.Count, tempo2.Count );
+        public static EditedZoneUnit[] detectTempotableDifference(TempoVector tempo1, TempoVector tempo2)
+        {
+            int len = Math.Min(tempo1.Count, tempo2.Count);
             int clockDifferenceStarted = int.MaxValue;
-            for ( int i = 0; i < len; i++ ) {
-                TempoTableEntry item1 = tempo1[ i ];
-                TempoTableEntry item2 = tempo2[ i ];
-                if ( item1.Clock != item2.Clock || item1.Tempo != item2.Tempo ) {
-                    clockDifferenceStarted = Math.Min( item1.Clock, item2.Clock );
+            for (int i = 0; i < len; i++) {
+                TempoTableEntry item1 = tempo1[i];
+                TempoTableEntry item2 = tempo2[i];
+                if (item1.Clock != item2.Clock || item1.Tempo != item2.Tempo) {
+                    clockDifferenceStarted = Math.Min(item1.Clock, item2.Clock);
                     break;
                 }
             }
-            if ( clockDifferenceStarted == int.MaxValue ) {
-                if ( len < tempo1.Count ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo1[ len ].Clock );
+            if (clockDifferenceStarted == int.MaxValue) {
+                if (len < tempo1.Count) {
+                    clockDifferenceStarted = Math.Min(clockDifferenceStarted, tempo1[len].Clock);
                 }
-                if ( len < tempo2.Count ) {
-                    clockDifferenceStarted = Math.Min( clockDifferenceStarted, tempo2[ len ].Clock );
+                if (len < tempo2.Count) {
+                    clockDifferenceStarted = Math.Min(clockDifferenceStarted, tempo2[len].Clock);
                 }
             }
-            if ( clockDifferenceStarted != int.MaxValue ) {
-                return new EditedZoneUnit[] { new EditedZoneUnit( clockDifferenceStarted, int.MaxValue ) };
+            if (clockDifferenceStarted != int.MaxValue) {
+                return new EditedZoneUnit[] { new EditedZoneUnit(clockDifferenceStarted, int.MaxValue) };
             } else {
                 return new EditedZoneUnit[] { };
             }
@@ -1043,51 +1057,52 @@ namespace cadencii
         /// <param name="track1"></param>
         /// <param name="track2"></param>
         /// <returns></returns>
-        public static EditedZoneUnit[] detectTrackDifference( VsqTrack track1, VsqTrack track2 ) {
+        public static EditedZoneUnit[] detectTrackDifference(VsqTrack track1, VsqTrack track2)
+        {
             EditedZone ret = new EditedZone();
 
-            if ( VsqFileEx.getTrackRendererKind( track1 ) != VsqFileEx.getTrackRendererKind( track2 ) ) {
-                return new EditedZoneUnit[] { new EditedZoneUnit( 0, int.MaxValue ) };
+            if (VsqFileEx.getTrackRendererKind(track1) != VsqFileEx.getTrackRendererKind(track2)) {
+                return new EditedZoneUnit[] { new EditedZoneUnit(0, int.MaxValue) };
             }
 
             // resamplerの利用状況を比較
-            int index1 = VsqFileEx.getTrackResamplerUsed( track1 );
-            int index2 = VsqFileEx.getTrackResamplerUsed( track2 );
-            if ( index1 != index2 ) {
-                return new EditedZoneUnit[] { new EditedZoneUnit( 0, int.MaxValue ) };
+            int index1 = VsqFileEx.getTrackResamplerUsed(track1);
+            int index2 = VsqFileEx.getTrackResamplerUsed(track2);
+            if (index1 != index2) {
+                return new EditedZoneUnit[] { new EditedZoneUnit(0, int.MaxValue) };
             }
 
             int numEvent1 = track1.getEventCount();
             int numEvent2 = track2.getEventCount();
 
             // track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
-            compareEvent( track1, track2, ret );
+            compareEvent(track1, track2, ret);
 
             // track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
-            compareEvent( track2, track1, ret );
+            compareEvent(track2, track1, ret);
 
             // 歌手変更の違いを検出
-            compareList( ret, new SingerEventComparisonContext( track1, track2 ) );
+            compareList(ret, new SingerEventComparisonContext(track1, track2));
 
             // 強弱記号の違いを検出
-            compareList( ret, new DynaffComparisonContext( track1, track2 ) );
+            compareList(ret, new DynaffComparisonContext(track1, track2));
 
             // VsqBPListの違いを検出
-            foreach ( CurveType curve in CURVE_USAGE ) {
-                VsqBPList list1 = track1.getCurve( curve.getName() );
-                if ( list1 == null ) {
+            foreach (CurveType curve in CURVE_USAGE) {
+                VsqBPList list1 = track1.getCurve(curve.getName());
+                if (list1 == null) {
                     continue;
                 }
-                VsqBPList list2 = track2.getCurve( curve.getName() );
-                if ( list2 == null ) {
+                VsqBPList list2 = track2.getCurve(curve.getName());
+                if (list2 == null) {
                     continue;
                 }
-                compareList( ret, new VsqBPListComparisonContext( list1, list2 ) );
+                compareList(ret, new VsqBPListComparisonContext(list1, list2));
             }
 
             List<EditedZoneUnit> list3 = new List<EditedZoneUnit>();
             foreach (var unit in ret.iterator()) {
-                list3.Add( unit );
+                list3.Add(unit);
             }
             return list3.ToArray();
         }
@@ -1098,35 +1113,35 @@ namespace cadencii
         /// <param name="track1"></param>
         /// <param name="track2"></param>
         /// <param name="ret"></param>
-        private static void compareEvent( VsqTrack track1, VsqTrack track2, EditedZone ret )
+        private static void compareEvent(VsqTrack track1, VsqTrack track2, EditedZone ret)
         {
-            RendererKind kind = VsqFileEx.getTrackRendererKind( track1 );
+            RendererKind kind = VsqFileEx.getTrackRendererKind(track1);
             int iterator_kind = IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND;
-            for ( Iterator<int> itr1 = track1.indexIterator( iterator_kind ); itr1.hasNext(); ) {
+            for (Iterator<int> itr1 = track1.indexIterator(iterator_kind); itr1.hasNext(); ) {
                 int i = itr1.next();
-                VsqEvent item1 = track1.getEvent( i );
+                VsqEvent item1 = track1.getEvent(i);
                 bool found = false;
-                for ( Iterator<int> itr2 = track2.indexIterator( iterator_kind ); itr2.hasNext(); ) {
+                for (Iterator<int> itr2 = track2.indexIterator(iterator_kind); itr2.hasNext(); ) {
                     int j = itr2.next();
-                    VsqEvent item2 = track2.getEvent( j );
+                    VsqEvent item2 = track2.getEvent(j);
                     // item1とitem2が同じかどうか判定する
-                    if ( item1.equals( item2 ) ) {
+                    if (item1.equals(item2)) {
                         // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
-                        if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
+                        if (kind == RendererKind.VCNT || kind == RendererKind.UTAU) {
                             // 歌詞は UstEvent からは判断できないので
-                            if ( item1.UstEvent.equalsForSynth( item2.UstEvent ) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase ) {
+                            if (item1.UstEvent.equalsForSynth(item2.UstEvent) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase) {
                                 found = true;
                                 break;
                             }
-                        } else { 
+                        } else {
                             // vsq 使用の場合はこちらのみで大丈夫．
                             found = true;
                             break;
                         }
                     }
                 }
-                if ( !found ) {
-                    ret.add( item1.Clock, item1.Clock + item1.ID.getLength() );
+                if (!found) {
+                    ret.add(item1.Clock, item1.Clock + item1.ID.getLength());
                 }
             }
         }
@@ -1136,12 +1151,13 @@ namespace cadencii
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static EditedZoneUnit[] compareList( IComparisonContext context ) {
+        public static EditedZoneUnit[] compareList(IComparisonContext context)
+        {
             EditedZone zone = new EditedZone();
-            compareList( zone, context );
+            compareList(zone, context);
             List<EditedZoneUnit> ret = new List<EditedZoneUnit>();
             foreach (var unit in zone.iterator()) {
-                ret.Add( unit );
+                ret.Add(unit);
             }
             return ret.ToArray();
         }
@@ -1151,93 +1167,94 @@ namespace cadencii
         /// </summary>
         /// <param name="zone"></param>
         /// <param name="context"></param>
-        public static void compareList( EditedZone zone, IComparisonContext context ) {
-            if ( context.hasNext1() && context.hasNext2() ) {
+        public static void compareList(EditedZone zone, IComparisonContext context)
+        {
+            if (context.hasNext1() && context.hasNext2()) {
                 int i1 = context.getNextIndex1();
                 int i2 = context.getNextIndex2();
-                Object last1 = context.getElementAt1( i1 );
-                Object last2 = context.getElementAt2( i2 );
+                Object last1 = context.getElementAt1(i1);
+                Object last2 = context.getElementAt2(i2);
                 int clock = 0; // 評価区間の開始ゲートタイム
-                while ( true ) {
-                    Object item1 = context.getElementAt1( i1 );
-                    Object item2 = context.getElementAt2( i2 );
-                    int clock1 = context.getClockFrom( item1 );
-                    int clock2 = context.getClockFrom( item2 );
+                while (true) {
+                    Object item1 = context.getElementAt1(i1);
+                    Object item2 = context.getElementAt2(i2);
+                    int clock1 = context.getClockFrom(item1);
+                    int clock2 = context.getClockFrom(item2);
 
-                    if ( clock1 == clock2 ) {
+                    if (clock1 == clock2) {
                         // 検査中のゲートタイムが同じ場合
-                        if ( clock < clock1 ) {
-                            if ( !context.equals( last1, last2 ) ) {
-                                zone.add( clock, clock1 );
+                        if (clock < clock1) {
+                            if (!context.equals(last1, last2)) {
+                                zone.add(clock, clock1);
                             }
                         }
 
                         // 次のイベントをどう決めるか？
-                        if ( context.hasNext1() ) {
+                        if (context.hasNext1()) {
                             i1 = context.getNextIndex1();
                             last1 = item1;
-                        } else if ( context.hasNext2() ) {
+                        } else if (context.hasNext2()) {
                             i2 = context.getNextIndex2();
                             last2 = item2;
                         } else {
-                            if ( !context.equals( item1, item2 ) ) {
-                                zone.add( clock1, int.MaxValue );
+                            if (!context.equals(item1, item2)) {
+                                zone.add(clock1, int.MaxValue);
                             }
                             break;
                         }
                         clock = clock1;
-                    } else if ( clock1 < clock2 ) {
-                        if ( clock < clock1 ) {
-                            if ( !context.equals( last1, last2 ) ) {
-                                zone.add( clock, clock1 );
+                    } else if (clock1 < clock2) {
+                        if (clock < clock1) {
+                            if (!context.equals(last1, last2)) {
+                                zone.add(clock, clock1);
                             }
                         }
                         last1 = item1;
-                        if ( context.hasNext1() ) {
+                        if (context.hasNext1()) {
                             i1 = context.getNextIndex1();
                         } else {
-                            if ( !context.equals( item1, last2 ) ) {
-                                zone.add( clock1, clock2 );
+                            if (!context.equals(item1, last2)) {
+                                zone.add(clock1, clock2);
                             }
                             last2 = item2;
-                            while ( context.hasNext2() ) {
+                            while (context.hasNext2()) {
                                 i2 = context.getNextIndex2();
-                                item2 = context.getElementAt2( i2 );
-                                if ( !context.equals( last1, last2 ) ) {
-                                    zone.add( context.getClockFrom( last2 ), context.getClockFrom( item2 ) );
+                                item2 = context.getElementAt2(i2);
+                                if (!context.equals(last1, last2)) {
+                                    zone.add(context.getClockFrom(last2), context.getClockFrom(item2));
                                 }
                                 last2 = item2;
                             }
-                            if ( !context.equals( last1, item2 ) ) {
-                                zone.add( context.getClockFrom( item2 ), int.MaxValue );
+                            if (!context.equals(last1, item2)) {
+                                zone.add(context.getClockFrom(item2), int.MaxValue);
                             }
                             break;
                         }
                         clock = clock1;
-                    } else if ( clock2 < clock1 ) {
-                        if ( clock < clock2 ) {
-                            if ( !context.equals( last1, last2 ) ) {
-                                zone.add( clock, clock2 );
+                    } else if (clock2 < clock1) {
+                        if (clock < clock2) {
+                            if (!context.equals(last1, last2)) {
+                                zone.add(clock, clock2);
                             }
                         }
                         last2 = item2;
-                        if ( context.hasNext2() ) {
+                        if (context.hasNext2()) {
                             i2 = context.getNextIndex2();
                         } else {
-                            if ( !context.equals( last1, item2 ) ) {
-                                zone.add( clock2, clock1 );
+                            if (!context.equals(last1, item2)) {
+                                zone.add(clock2, clock1);
                             }
                             last1 = item1;
-                            while ( context.hasNext1() ) {
+                            while (context.hasNext1()) {
                                 i1 = context.getNextIndex1();
-                                item1 = context.getElementAt1( i1 );
-                                if ( !context.equals( last1, last2 ) ) {
-                                    zone.add( context.getClockFrom( last1 ), context.getClockFrom( item1 ) );
+                                item1 = context.getElementAt1(i1);
+                                if (!context.equals(last1, last2)) {
+                                    zone.add(context.getClockFrom(last1), context.getClockFrom(item1));
                                 }
                                 last1 = item1;
                             }
-                            if ( !context.equals( last2, item1 ) ) {
-                                zone.add( context.getClockFrom( item1 ), int.MaxValue );
+                            if (!context.equals(last2, item1)) {
+                                zone.add(context.getClockFrom(item1), int.MaxValue);
                             }
                             break;
                         }
@@ -1247,7 +1264,8 @@ namespace cadencii
             }
         }
 
-        public static string getShortcutDisplayString( Keys[] keys ) {
+        public static string getShortcutDisplayString(Keys[] keys)
+        {
             string ret = "";
 #if JAVA_MAC
             String plus = "";
@@ -1262,59 +1280,60 @@ namespace cadencii
             string option = "Alt";
             string command = "Meta";
 #endif
-            List<Keys> list = new List<Keys>( keys );
-            if ( list.Contains( Keys.Control ) ) {
+            List<Keys> list = new List<Keys>(keys);
+            if (list.Contains(Keys.Control)) {
                 ret += ((ret == "") ? "" : plus) + ctrl;
             }
-            if ( list.Contains( Keys.Alt ) ) {
+            if (list.Contains(Keys.Alt)) {
                 ret += ((ret == "") ? "" : plus) + option;
             }
-            if ( list.Contains( Keys.Shift ) ) {
+            if (list.Contains(Keys.Shift)) {
                 ret += ((ret == "") ? "" : plus) + shift;
             }
-            if ( list.Contains( Keys.Menu ) ) {
+            if (list.Contains(Keys.Menu)) {
                 ret += ((ret == "") ? "" : plus) + command;
             }
             List<Keys> list2 = new List<Keys>();
-            foreach ( Keys key in keys ) {
-                if ( key != Keys.Control && key != Keys.Shift && key != Keys.Alt && key != Keys.Menu ) {
-                    list2.Add( key );
+            foreach (Keys key in keys) {
+                if (key != Keys.Control && key != Keys.Shift && key != Keys.Alt && key != Keys.Menu) {
+                    list2.Add(key);
                 }
             }
             list2.Sort();
-            for ( int i = 0; i < list2.Count; i++ ) {
-                ret += ((ret == "") ? "" : plus) + getKeyDisplayString( list2[ i ] );
+            for (int i = 0; i < list2.Count; i++) {
+                ret += ((ret == "") ? "" : plus) + getKeyDisplayString(list2[i]);
             }
             return ret;
         }
 
-        private static string getKeyDisplayString( Keys key ) {
-            if ( key.Equals( Keys.PageDown ) ) {
+        private static string getKeyDisplayString(Keys key)
+        {
+            if (key.Equals(Keys.PageDown)) {
                 return "PgDn";
-            } else if ( key.Equals( Keys.PageUp ) ) {
+            } else if (key.Equals(Keys.PageUp)) {
                 return "PgUp";
-            } else if ( key.Equals( Keys.D0 ) ) {
+            } else if (key.Equals(Keys.D0)) {
                 return "0";
-            } else if ( key.Equals( Keys.D1 ) ) {
+            } else if (key.Equals(Keys.D1)) {
                 return "1";
-            } else if ( key.Equals( Keys.D2 ) ) {
+            } else if (key.Equals(Keys.D2)) {
                 return "2";
-            } else if ( key.Equals( Keys.D3 ) ) {
+            } else if (key.Equals(Keys.D3)) {
                 return "3";
-            } else if ( key.Equals( Keys.D4 ) ) {
+            } else if (key.Equals(Keys.D4)) {
                 return "4";
-            } else if ( key.Equals( Keys.D5 ) ) {
+            } else if (key.Equals(Keys.D5)) {
                 return "5";
-            } else if ( key.Equals( Keys.D6 ) ) {
+            } else if (key.Equals(Keys.D6)) {
                 return "6";
-            } else if ( key.Equals( Keys.D7 ) ) {
+            } else if (key.Equals(Keys.D7)) {
                 return "7";
-            } else if ( key.Equals( Keys.D8 ) ) {
+            } else if (key.Equals(Keys.D8)) {
                 return "8";
-            } else if ( key.Equals( Keys.D9 ) ) {
+            } else if (key.Equals(Keys.D9)) {
                 return "9";
-            } else if ( key.Equals( Keys.Menu ) ) {
-                return new string( '\x2318', 1 );
+            } else if (key.Equals(Keys.Menu)) {
+                return new string('\x2318', 1);
             } else {
                 return key.ToString();
             }
@@ -1324,18 +1343,19 @@ namespace cadencii
         /// アプリケーションデータの保存位置を取得します
         /// Gets the path for application data
         /// </summary>
-        public static string getApplicationDataPath() {
-            string dir = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+        public static string getApplicationDataPath()
+        {
+            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Boare");
             if (!Directory.Exists(dir)) {
-                PortUtil.createDirectory( dir );
+                PortUtil.createDirectory(dir);
             }
 
-            string dir2 = Path.Combine( dir, CONFIG_DIR_NAME );
+            string dir2 = Path.Combine(dir, CONFIG_DIR_NAME);
             if (!Directory.Exists(dir2)) {
-                PortUtil.createDirectory( dir2 );
+                PortUtil.createDirectory(dir2);
             }
-            sout.println( "Cadencii accesses ApplicationData at" + dir2 + "\n" );//Keep this line for debuging.
-	    
+            sout.println("Cadencii accesses ApplicationData at" + dir2 + "\n");//Keep this line for debuging.
+
             return dir2;
         }
 
@@ -1343,17 +1363,19 @@ namespace cadencii
         /// 設定ファイルを保存するディレクトリへのパスを取得します
         /// </summary>
         /// <returns></returns>
-        public static string getConfigPath() {
+        public static string getConfigPath()
+        {
             string dir2 = getApplicationDataPath();
-            string dir3 = Path.Combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
+            string dir3 = Path.Combine(dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor);
             if (!Directory.Exists(dir3)) {
-                PortUtil.createDirectory( dir3 );
+                PortUtil.createDirectory(dir3);
             }
             return dir3;
         }
 
-        private static string _( string id ) {
-            return Messaging.getMessage( id );
+        private static string _(string id)
+        {
+            return Messaging.getMessage(id);
         }
 
         /// <summary>
@@ -1364,18 +1386,19 @@ namespace cadencii
         /// <param name="font"></param>
         /// <param name="width"></param>
         /// <returns></returns>
-        public static string trimString( string item, Font font, int width ) {
+        public static string trimString(string item, Font font, int width)
+        {
             string edited = item;
-            int delete_count = PortUtil.getStringLength( item );
+            int delete_count = PortUtil.getStringLength(item);
             bool д = true;
-            for ( ; д; ) {
-                Dimension measured = Util.measureString( edited, font );
-                if ( measured.width <= width ) {
+            for (; д; ) {
+                Dimension measured = Util.measureString(edited, font);
+                if (measured.width <= width) {
                     return edited;
                 }
                 delete_count -= 1;
-                if ( delete_count > 0 ) {
-                    edited = item.Substring( 0, delete_count ) + "...";
+                if (delete_count > 0) {
+                    edited = item.Substring(0, delete_count) + "...";
                 } else {
                     return edited;
                 }
@@ -1387,10 +1410,11 @@ namespace cadencii
         /// スクリプトが格納されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static string getScriptPath() {
-            string dir = Path.Combine( PortUtil.getApplicationStartupPath(), "script" );
+        public static string getScriptPath()
+        {
+            string dir = Path.Combine(PortUtil.getApplicationStartupPath(), "script");
             if (!Directory.Exists(dir)) {
-                PortUtil.createDirectory( dir );
+                PortUtil.createDirectory(dir);
             }
             return dir;
         }
@@ -1399,10 +1423,11 @@ namespace cadencii
         /// キャッシュされたアセンブリが保存されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static string getCachedAssemblyPath() {
-            string dir = Path.Combine( Utility.getApplicationDataPath(), "cachedAssembly" );
+        public static string getCachedAssemblyPath()
+        {
+            string dir = Path.Combine(Utility.getApplicationDataPath(), "cachedAssembly");
             if (!Directory.Exists(dir)) {
-                PortUtil.createDirectory( dir );
+                PortUtil.createDirectory(dir);
             }
             return dir;
         }
@@ -1411,10 +1436,11 @@ namespace cadencii
         /// パレットツールが格納されているディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static string getToolPath() {
-            string dir = Path.Combine( PortUtil.getApplicationStartupPath(), "tool" );
+        public static string getToolPath()
+        {
+            string dir = Path.Combine(PortUtil.getApplicationStartupPath(), "tool");
             if (!Directory.Exists(dir)) {
-                PortUtil.createDirectory( dir );
+                PortUtil.createDirectory(dir);
             }
             return dir;
         }
@@ -1423,41 +1449,46 @@ namespace cadencii
         /// 鍵盤用の音源が保存されているディレクトリへのパスを返します。
         /// </summary>
         /// <returns></returns>
-        public static string getKeySoundPath() {
+        public static string getKeySoundPath()
+        {
             string data_path = getApplicationDataPath();
-            string ret = Path.Combine( data_path, "cache" );
+            string ret = Path.Combine(data_path, "cache");
             if (!Directory.Exists(ret)) {
-                PortUtil.createDirectory( ret );
+                PortUtil.createDirectory(ret);
             }
             return ret;
         }
 
-        public static string getVersion() {
+        public static string getVersion()
+        {
             string suffix = "";
             SortedDictionary<string, Boolean> directives = Config.getDirectives();
             suffix += "\n\n";
-            foreach (var k in directives.Keys){
-                Boolean v = directives[ k ];
-                suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
+            foreach (var k in directives.Keys) {
+                Boolean v = directives[k];
+                suffix += k + ": " + (v ? "enabled" : "disabled") + "\n";
             }
             return BAssemblyInfo.fileVersion + " " + suffix;
         }
 
-        public static string getAssemblyConfigurationAttribute() {
-            Assembly a = Assembly.GetAssembly( typeof( AppManager ) );
-            AssemblyConfigurationAttribute attr = (AssemblyConfigurationAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyConfigurationAttribute ) );
+        public static string getAssemblyConfigurationAttribute()
+        {
+            Assembly a = Assembly.GetAssembly(typeof(AppManager));
+            AssemblyConfigurationAttribute attr = (AssemblyConfigurationAttribute)Attribute.GetCustomAttribute(a, typeof(AssemblyConfigurationAttribute));
             return attr.Configuration;
         }
 
-        public static string getAssemblyFileVersion( Type t ) {
-            Assembly a = Assembly.GetAssembly( t );
-            AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
+        public static string getAssemblyFileVersion(Type t)
+        {
+            Assembly a = Assembly.GetAssembly(t);
+            AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(a, typeof(AssemblyFileVersionAttribute));
             return afva.Version;
         }
 
-        public static string getAssemblyNameAndFileVersion( Type t ) {
-            Assembly a = Assembly.GetAssembly( t );
-            AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute( a, typeof( AssemblyFileVersionAttribute ) );
+        public static string getAssemblyNameAndFileVersion(Type t)
+        {
+            Assembly a = Assembly.GetAssembly(t);
+            AssemblyFileVersionAttribute afva = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(a, typeof(AssemblyFileVersionAttribute));
             return a.GetName().Name + " v" + afva.Version;
         }
 

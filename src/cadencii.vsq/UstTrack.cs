@@ -34,34 +34,34 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="index">検索するindex値</param>
         /// <returns>見つからなかったらnullを返す</returns>
-        public UstEvent findEventFromIndex( int index )
+        public UstEvent findEventFromIndex(int index)
         {
-            foreach ( UstEvent ue in m_events ) {
-                if ( ue.Index == index ) {
+            foreach (UstEvent ue in m_events) {
+                if (ue.Index == index) {
                     return ue;
                 }
             }
             return null;
         }
 
-        public UstEvent getEvent( int index )
+        public UstEvent getEvent(int index)
         {
-            return m_events[ index ];
+            return m_events[index];
         }
 
-        public void setEvent( int index, UstEvent item )
+        public void setEvent(int index, UstEvent item)
         {
-            m_events[ index] =  item ;
+            m_events[index] = item;
         }
 
-        public void addEvent( UstEvent item )
+        public void addEvent(UstEvent item)
         {
-            m_events.Add( item );
+            m_events.Add(item);
         }
 
-        public void removeEventAt( int index )
+        public void removeEventAt(int index)
         {
-            m_events.RemoveAt( index );
+            m_events.RemoveAt(index);
         }
 
         public int getEventCount()
@@ -78,8 +78,8 @@ namespace cadencii.vsq
         {
             UstTrack ret = new UstTrack();
             int c = m_events.Count;
-            for ( int i = 0; i < c; i++ ) {
-                ret.m_events.Add( (UstEvent)m_events[i].clone() );
+            for (int i = 0; i < c; i++) {
+                ret.m_events.Add((UstEvent)m_events[i].clone());
             }
             return ret;
         }

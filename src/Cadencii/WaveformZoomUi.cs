@@ -11,21 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-    namespace cadencii
+namespace cadencii
+{
+
+    using System;
+    using cadencii;
+
+    public interface WaveformZoomUi
     {
+        int getWidth();
 
-            using System;
-            using cadencii;
+        int getHeight();
 
-            public interface WaveformZoomUi
-            {
-                int getWidth();
+        void setListener(WaveformZoomUiListener listener);
 
-                int getHeight();
+        void repaint();
+    };
 
-                void setListener( WaveformZoomUiListener listener );
-
-                void repaint();
-            };
-
-    }
+}

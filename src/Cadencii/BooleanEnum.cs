@@ -11,12 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// ブール値をOn，Offで表現するための列挙型
     /// </summary>
-    public enum BooleanEnum {
+    public enum BooleanEnum
+    {
         /// <summary>
         /// ブール値falseを表す
         /// </summary>

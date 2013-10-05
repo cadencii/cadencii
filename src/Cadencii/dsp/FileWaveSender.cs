@@ -33,7 +33,7 @@ namespace cadencii
         private WaveReader mReader = null;
         private Object mSyncRoot = new Object();
 
-        public FileWaveSender( WaveReader reader )
+        public FileWaveSender(WaveReader reader)
         {
             mReader = reader;
 #if DEBUG
@@ -46,29 +46,29 @@ namespace cadencii
             return mVersion;
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
 
-        public void setSender( WaveSender s )
+        public void setSender(WaveSender s)
         {
             // do nothing
         }
 
-        public void pull( double[] l, double[] r, int length )
+        public void pull(double[] l, double[] r, int length)
         {
-            lock ( mSyncRoot ) {
-                if ( mConverter == null ) {
+            lock (mSyncRoot) {
+                if (mConverter == null) {
                     int rate = mRoot.getSampleRate();
-                    mConverter = new WaveRateConverter( mReader, rate );
+                    mConverter = new WaveRateConverter(mReader, rate);
                 }
                 try {
-                    mConverter.read( mPosition, length, l, r );
+                    mConverter.read(mPosition, length, l, r);
                     mPosition += length;
-                } catch ( Exception ex ) {
-                    serr.println( "FileWaveSender#pull; ex=" + ex );
-                    Logger.write( typeof( FileWaveSender ) + ".pull; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("FileWaveSender#pull; ex=" + ex);
+                    Logger.write(typeof(FileWaveSender) + ".pull; ex=" + ex + "\n");
                 }
             }
         }
@@ -77,20 +77,20 @@ namespace cadencii
         {
 #if DEBUG
             mNumInstance--;
-            sout.println( "FileWaveSender#end; mNumInstance=" + mNumInstance );
+            sout.println("FileWaveSender#end; mNumInstance=" + mNumInstance);
 #endif
-            lock ( mSyncRoot ) {
+            lock (mSyncRoot) {
                 try {
-                    if( mConverter != null ){
+                    if (mConverter != null) {
                         mConverter.close();
-                    }else{
-                        if( mReader != null ){
+                    } else {
+                        if (mReader != null) {
                             mReader.close();
                         }
                     }
-                } catch ( Exception ex ) {
-                    sout.println( "FileWaveSender#end; ex=" + ex );
-                    Logger.write( typeof( FileWaveSender ) + ".end; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    sout.println("FileWaveSender#end; ex=" + ex);
+                    Logger.write(typeof(FileWaveSender) + ".end; ex=" + ex + "\n");
                 }
             }
         }

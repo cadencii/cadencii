@@ -41,7 +41,7 @@ namespace cadencii.vsq
             int clock,
             int numerator,
             int denominator,
-            int bar_count )
+            int bar_count)
         {
             Clock = clock;
             Numerator = numerator;
@@ -60,7 +60,7 @@ namespace cadencii.vsq
 
         public Object clone()
         {
-            return new TimeSigTableEntry( Clock, Numerator, Denominator, BarCount );
+            return new TimeSigTableEntry(Clock, Numerator, Denominator, BarCount);
         }
 
         public object Clone()
@@ -68,14 +68,14 @@ namespace cadencii.vsq
             return clone();
         }
 
-        public int compareTo( TimeSigTableEntry item )
+        public int compareTo(TimeSigTableEntry item)
         {
             return this.BarCount - item.BarCount;
         }
 
-        public int CompareTo( TimeSigTableEntry item )
+        public int CompareTo(TimeSigTableEntry item)
         {
-            return compareTo( item );
+            return compareTo(item);
         }
     }
 

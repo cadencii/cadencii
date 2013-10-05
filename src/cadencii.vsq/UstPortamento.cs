@@ -40,42 +40,42 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getXmlElementName( string name )
+        public static string getXmlElementName(string name)
         {
             return name;
         }
 
-        public void print( ITextWriter sw )
+        public void print(ITextWriter sw)
         {
             string pbw = "";
             string pby = "";
             string pbm = "";
             int count = Points.Count;
-            for ( int i = 0; i < count; i++ ) {
+            for (int i = 0; i < count; i++) {
                 string comma = (i == 0 ? "" : ",");
-                pbw += comma + Points[ i ].Step;
-                pby += Points[ i ].Value + ",";
+                pbw += comma + Points[i].Step;
+                pby += Points[i].Value + ",";
                 string type = "";
-                UstPortamentoType ut = Points[ i ].Type;
-                if ( ut == UstPortamentoType.S ) {
+                UstPortamentoType ut = Points[i].Type;
+                if (ut == UstPortamentoType.S) {
                     type = "";
-                } else if ( ut == UstPortamentoType.Linear ) {
+                } else if (ut == UstPortamentoType.Linear) {
                     type = "s";
-                } else if ( ut == UstPortamentoType.R ) {
+                } else if (ut == UstPortamentoType.R) {
                     type = "r";
-                } else if ( ut == UstPortamentoType.J ) {
+                } else if (ut == UstPortamentoType.J) {
                     type = "j";
                 }
                 pbm += comma + type;
             }
-            sw.write( "PBW=" + pbw );
+            sw.write("PBW=" + pbw);
             sw.newLine();
-            sw.write( "PBS=" + Start + (mIsUnknownIntSpecified ? (";" + mUnknownInt) : "") );
+            sw.write("PBS=" + Start + (mIsUnknownIntSpecified ? (";" + mUnknownInt) : ""));
             sw.newLine();
-            if ( Points.Count >= 2 ) {
-                sw.write( "PBY=" + pby );
+            if (Points.Count >= 2) {
+                sw.write("PBY=" + pby);
                 sw.newLine();
-                sw.write( "PBM=" + pbm );
+                sw.write("PBM=" + pbm);
                 sw.newLine();
             }
         }
@@ -84,8 +84,8 @@ namespace cadencii.vsq
         {
             UstPortamento ret = new UstPortamento();
             int count = Points.Count;
-            for ( int i = 0; i < count; i++ ) {
-                ret.Points.Add( Points[ i ] );
+            for (int i = 0; i < count; i++) {
+                ret.Points.Add(Points[i]);
             }
             ret.Start = Start;
             ret.mIsUnknownIntSpecified = mIsUnknownIntSpecified;
@@ -104,66 +104,66 @@ namespace cadencii.vsq
         PBY=-15.9,-20,-31.5,-26.6
         PBM=,s,r,j,s,s,s,s,s
         */
-        public void parseLine( string line )
+        public void parseLine(string line)
         {
             line = line.ToLower();
-            string[] spl = PortUtil.splitString( line, '=' );
-            if ( spl.Length == 0 ) {
+            string[] spl = PortUtil.splitString(line, '=');
+            if (spl.Length == 0) {
                 return;
             }
-            string[] values = PortUtil.splitString( spl[1], ',' );
-            if ( line.StartsWith( "pbs=" ) ) {
+            string[] values = PortUtil.splitString(spl[1], ',');
+            if (line.StartsWith("pbs=")) {
                 string v = values[0];
-                int indx = values[0].IndexOf( ";", 0 );
-                if ( indx >= 0 ) {
-                    v = values[0].Substring( 0, indx );
-                    if ( values[0].Length > indx + 1 ) {
-                        string unknown = values[0].Substring( indx + 1 );
+                int indx = values[0].IndexOf(";", 0);
+                if (indx >= 0) {
+                    v = values[0].Substring(0, indx);
+                    if (values[0].Length > indx + 1) {
+                        string unknown = values[0].Substring(indx + 1);
                         mIsUnknownIntSpecified = true;
-                        mUnknownInt = int.Parse( unknown );
+                        mUnknownInt = int.Parse(unknown);
                     }
                 }
-                Start = int.Parse( v );
-            } else if ( line.StartsWith( "pbw=" ) ) {
-                for ( int i = 0; i < values.Length; i++ ) {
-                    if ( i >= Points.Count ) {
-                        Points.Add( new UstPortamentoPoint() );
+                Start = int.Parse(v);
+            } else if (line.StartsWith("pbw=")) {
+                for (int i = 0; i < values.Length; i++) {
+                    if (i >= Points.Count) {
+                        Points.Add(new UstPortamentoPoint());
                     }
-                    UstPortamentoPoint up = Points[ i ];
-                    up.Step = int.Parse( values[i] );
-                    Points[ i] =  up ;
+                    UstPortamentoPoint up = Points[i];
+                    up.Step = int.Parse(values[i]);
+                    Points[i] = up;
                 }
-            } else if ( line.StartsWith( "pby=" ) ) {
-                for ( int i = 0; i < values.Length; i++ ) {
-                    if ( values[i].Length <= 0 ) {
+            } else if (line.StartsWith("pby=")) {
+                for (int i = 0; i < values.Length; i++) {
+                    if (values[i].Length <= 0) {
                         continue;
                     }
-                    if ( i >= Points.Count ) {
-                        Points.Add( new UstPortamentoPoint() );
+                    if (i >= Points.Count) {
+                        Points.Add(new UstPortamentoPoint());
                     }
-                    UstPortamentoPoint up = Points[ i ];
-                    up.Value = (float)double.Parse( values[i] );
-                    Points[ i] =  up ;
+                    UstPortamentoPoint up = Points[i];
+                    up.Value = (float)double.Parse(values[i]);
+                    Points[i] = up;
                 }
-            } else if ( line.StartsWith( "pbm=" ) ) {
-                for ( int i = 0; i < values.Length; i++ ) {
-                    if ( i >= Points.Count ) {
-                        Points.Add( new UstPortamentoPoint() );
+            } else if (line.StartsWith("pbm=")) {
+                for (int i = 0; i < values.Length; i++) {
+                    if (i >= Points.Count) {
+                        Points.Add(new UstPortamentoPoint());
                     }
-                    UstPortamentoPoint up = Points[ i ];
+                    UstPortamentoPoint up = Points[i];
                     string search = values[i].ToLower();
-                    if ( search == "s" ) {
+                    if (search == "s") {
                         up.Type = UstPortamentoType.Linear;
-                    } else if ( search == "r" ) {
+                    } else if (search == "r") {
                         up.Type = UstPortamentoType.R;
-                    } else if ( search == "j" ) {
+                    } else if (search == "j") {
                         up.Type = UstPortamentoType.J;
                     } else {
                         up.Type = UstPortamentoType.S;
                     }
-                    Points[ i] =  up ;
+                    Points[i] = up;
                 }
-            } else if ( line.StartsWith( "pbs=" ) ) {
+            } else if (line.StartsWith("pbs=")) {
 
             }
         }

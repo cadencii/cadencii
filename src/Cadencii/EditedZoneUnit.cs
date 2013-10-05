@@ -13,33 +13,41 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit> {
+    public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit>
+    {
         public int mStart;
         public int mEnd;
 
-        private EditedZoneUnit(){
+        private EditedZoneUnit()
+        {
         }
 
-        public EditedZoneUnit( int start, int end ){
+        public EditedZoneUnit(int start, int end)
+        {
             this.mStart = start;
             this.mEnd = end;
         }
 
-        public int compareTo( EditedZoneUnit item ) {
+        public int compareTo(EditedZoneUnit item)
+        {
             return this.mStart - item.mStart;
         }
 
-        public int CompareTo( EditedZoneUnit item ) {
-            return compareTo( item );
+        public int CompareTo(EditedZoneUnit item)
+        {
+            return compareTo(item);
         }
 
-        public Object clone() {
-            return new EditedZoneUnit( mStart, mEnd );
+        public Object clone()
+        {
+            return new EditedZoneUnit(mStart, mEnd);
         }
 
-        public Object Clone(){
+        public Object Clone()
+        {
             return clone();
         }
     }

@@ -61,10 +61,10 @@ namespace cadencii
             "スィ", "ティ", "ズィ", "ディ",
             "トゥ", "ドゥ", "デュ", "テュ",
         };
-        private static readonly SingerConfig female_f1 = new SingerConfig( "Female_F1", 0, 0 );
-        private static readonly SingerConfig auto_f1 = new SingerConfig( "Auto_F1", 1, 1 );
-        private static readonly SingerConfig male_hk = new SingerConfig( "Male_HK", 2, 2 );
-        private static readonly SingerConfig auto_hk = new SingerConfig( "Auto_HK", 3, 3 );
+        private static readonly SingerConfig female_f1 = new SingerConfig("Female_F1", 0, 0);
+        private static readonly SingerConfig auto_f1 = new SingerConfig("Auto_F1", 1, 1);
+        private static readonly SingerConfig male_hk = new SingerConfig("Male_HK", 2, 2);
+        private static readonly SingerConfig auto_hk = new SingerConfig("Auto_HK", 3, 3);
 
         private static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
@@ -80,8 +80,8 @@ namespace cadencii
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
 
-        public AquesToneDriver( string dllPath ) :
-            base( dllPath )
+        public AquesToneDriver(string dllPath) :
+            base(dllPath)
         {
         }
 
@@ -97,19 +97,19 @@ namespace cadencii
         /// <param name="dynamics">Dynamics</param>
         /// <param name="phrase">歌詞</param>
         /// <returns>Note On のための MIDI イベント列</returns>
-        public MidiEvent[] createNoteOnEvent( int note, int dynamics, string phrase )
+        public MidiEvent[] createNoteOnEvent(int note, int dynamics, string phrase)
         {
             // noteon MIDIイベントを作成
-            string katakana = KanaDeRomanization.hiragana2katakana( KanaDeRomanization.Attach( phrase ) );
+            string katakana = KanaDeRomanization.hiragana2katakana(KanaDeRomanization.Attach(phrase));
             int index = -1;
-            for ( int i = 0; i < AquesToneDriver.PHONES.Length; i++ ) {
-                if ( katakana.Equals( AquesToneDriver.PHONES[i] ) ) {
+            for (int i = 0; i < AquesToneDriver.PHONES.Length; i++) {
+                if (katakana.Equals(AquesToneDriver.PHONES[i])) {
                     index = i;
                     break;
                 }
             }
 
-            if ( index < 0 ) {
+            if (index < 0) {
                 return new MidiEvent[] { };
             } else {
                 // index行目に移動するコマンドを贈る
@@ -128,9 +128,9 @@ namespace cadencii
         /// </summary>
         /// <param name="program">プログラムチェンジ</param>
         /// <returns>イベント</returns>
-        public ParameterEvent[] createSingerEvent( int program )
+        public ParameterEvent[] createSingerEvent(int program)
         {
-            if ( 0 > program || program >= SINGERS.Length ) {
+            if (0 > program || program >= SINGERS.Length) {
                 program = 0;
             }
             var singer = new ParameterEvent();
@@ -159,9 +159,9 @@ namespace cadencii
         /// </summary>
         /// <param name="program_change">プログラムチェンジ</param>
         /// <returns>歌手設定。該当する歌手設定がなければ null を返す</returns>
-        public static SingerConfig getSingerConfig( int program_change )
+        public static SingerConfig getSingerConfig(int program_change)
         {
-            return SINGERS.FirstOrDefault( ( singer_config ) => singer_config.Program == program_change );
+            return SINGERS.FirstOrDefault((singer_config) => singer_config.Program == program_change);
         }
 
         /// <summary>

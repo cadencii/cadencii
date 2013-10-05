@@ -54,7 +54,7 @@ namespace cadencii
 
         public static MonitorWaveReceiver prepareInstance()
         {
-            if ( mSingleton == null ) {
+            if (mSingleton == null) {
                 mSingleton = new MonitorWaveReceiver();
             }
             mSingleton.end();
@@ -63,7 +63,7 @@ namespace cadencii
             return mSingleton;
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
@@ -73,26 +73,26 @@ namespace cadencii
             return mVersion;
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;
         }
 
-        public void push( double[] l, double[] r, int length )
+        public void push(double[] l, double[] r, int length)
         {
-            if ( mFirstCall ) {
+            if (mFirstCall) {
                 mSampleRate = mRoot.getSampleRate();
                 PlaySound.init();
-                PlaySound.prepare( mSampleRate );
+                PlaySound.prepare(mSampleRate);
                 mFirstCall = false;
             }
-            PlaySound.append( l, r, length );
+            PlaySound.append(l, r, length);
             mPosition += length;
-            if ( mReceiver != null ) {
-                mReceiver.push( l, r, length );
+            if (mReceiver != null) {
+                mReceiver.push(l, r, length);
             }
         }
 
@@ -102,7 +102,7 @@ namespace cadencii
             //pushが終了していても，たいていの場合再生されずにキャッシュが残っているので．
             //PlaySound.exit();
             PlaySound.waitForExit();
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
         }

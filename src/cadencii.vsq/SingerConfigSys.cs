@@ -32,29 +32,29 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="path_voicedb">音源のデータディレクトリ(ex:"C:\Program Files\VOCALOID2\voicedbdir")</param>
         /// <param name="path_installed_singers">音源のインストールディレクトリ(ex:new String[]{ "C:\Program Files\VOCALOID2\voicedbdir\BXXXXXXXXXXXXXXX", "D:\singers\BNXXXXXXXXXX" })</param>
-        public SingerConfigSys( string path_voicedb, string[] path_installed_singers )
+        public SingerConfigSys(string path_voicedb, string[] path_installed_singers)
         {
             m_installed_singers = new List<SingerConfig>();
             m_singer_configs = new List<SingerConfig>();
-            string map = Path.Combine( path_voicedb, "voice.map" );
+            string map = Path.Combine(path_voicedb, "voice.map");
             if (!System.IO.File.Exists(map)) {
                 return;
             }
 
             // インストールされている歌手の情報を読み取る。miku.vvd等から。
-            for ( int j = 0; j < path_installed_singers.Length; j++ ) {
+            for (int j = 0; j < path_installed_singers.Length; j++) {
                 string ipath = path_installed_singers[j];
 #if DEBUG
-                sout.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
+                sout.println("SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j]);
 #endif
                 //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
                 //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
                 //      これで治っているかどうか要確認
                 if (Directory.Exists(ipath)) {
-                    string[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
-                    if ( vvds.Length > 0 ) {
-                        SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
-                        m_installed_singers.Add( installed );
+                    string[] vvds = PortUtil.listFiles(ipath, "*.vvd");
+                    if (vvds.Length > 0) {
+                        SingerConfig installed = SingerConfig.fromVvd(vvds[0], 0, 0);
+                        m_installed_singers.Add(installed);
                         break;
                     }
                 }
@@ -63,28 +63,28 @@ namespace cadencii.vsq
             // voice.mapから、プログラムチェンジ、バンクセレクトと音源との紐付け情報を読み出す。
             RandomAccessFile fs = null;
             try {
-                fs = new RandomAccessFile( map, "r" );
+                fs = new RandomAccessFile(map, "r");
                 byte[] dat = new byte[8];
-                fs.seek( 0x20 );
-                for ( int language = 0; language < 0x80; language++ ) {
-                    for ( int program = 0; program < 0x80; program++ ) {
-                        fs.read( dat, 0, 8 );
-                        long value = PortUtil.make_int64_le( dat );
-                        if ( value >= 1 ) {
-                            string vvd = Path.Combine( path_voicedb, "vvoice" + value + ".vvd" );
-                            SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
-                            m_singer_configs.Add( item );
+                fs.seek(0x20);
+                for (int language = 0; language < 0x80; language++) {
+                    for (int program = 0; program < 0x80; program++) {
+                        fs.read(dat, 0, 8);
+                        long value = PortUtil.make_int64_le(dat);
+                        if (value >= 1) {
+                            string vvd = Path.Combine(path_voicedb, "vvoice" + value + ".vvd");
+                            SingerConfig item = SingerConfig.fromVvd(vvd, language, program);
+                            m_singer_configs.Add(item);
                         }
                     }
                 }
-            } catch ( Exception ex ) {
-                serr.println( "SingerConfigSys#.ctor; ex=" + ex );
+            } catch (Exception ex) {
+                serr.println("SingerConfigSys#.ctor; ex=" + ex);
             } finally {
-                if ( fs != null ) {
+                if (fs != null) {
                     try {
                         fs.close();
-                    } catch ( Exception ex2 ) {
-                        serr.println( "SingerConfigSys#.ctor; ex2=" + ex2 );
+                    } catch (Exception ex2) {
+                        serr.println("SingerConfigSys#.ctor; ex2=" + ex2);
                     }
                 }
             }
@@ -93,7 +93,7 @@ namespace cadencii.vsq
             foreach (var sc in m_installed_singers) {
                 string searchid = sc.VOICEIDSTR;
                 foreach (var sc2 in m_singer_configs) {
-                    if ( sc2.VOICEIDSTR.Equals( searchid ) ) {
+                    if (sc2.VOICEIDSTR.Equals(searchid)) {
                         sc.Language = sc2.Language;
                         break;
                     }
@@ -111,27 +111,27 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>        
-        public VsqID getSingerID( int language, int program )
+        public VsqID getSingerID(int language, int program)
         {
-            VsqID ret = new VsqID( 0 );
+            VsqID ret = new VsqID(0);
             ret.type = VsqIDType.Singer;
             SingerConfig sc = null;
-            for ( int i = 0; i < m_singer_configs.Count; i++ ) {
-                SingerConfig itemi = m_singer_configs[ i ];
-                if ( itemi.Language == language && itemi.Program == program ) {
+            for (int i = 0; i < m_singer_configs.Count; i++) {
+                SingerConfig itemi = m_singer_configs[i];
+                if (itemi.Language == language && itemi.Program == program) {
                     sc = itemi;
                     break;
                 }
             }
-            if ( sc == null ) {
+            if (sc == null) {
                 sc = new SingerConfig();
             }
             ret.IconHandle = new IconHandle();
-            ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( sc.Language, 2 ) + PortUtil.toHexString( sc.Program, 2 );
+            ret.IconHandle.IconID = "$0701" + PortUtil.toHexString(sc.Language, 2) + PortUtil.toHexString(sc.Program, 2);
             ret.IconHandle.IDS = sc.VOICENAME;
             ret.IconHandle.Index = 0;
             ret.IconHandle.Language = sc.Language;
-            ret.IconHandle.setLength( 1 );
+            ret.IconHandle.setLength(1);
             ret.IconHandle.Original = sc.Language << 8 | sc.Program;
             ret.IconHandle.Program = sc.Program;
             ret.IconHandle.Caption = "";
@@ -143,10 +143,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>
-        public SingerConfig getSingerInfo( int language, int program )
+        public SingerConfig getSingerInfo(int language, int program)
         {
             foreach (var item in m_installed_singers) {
-                if ( item.Language == language && item.Program == program ) {
+                if (item.Language == language && item.Program == program) {
                     return item;
                 }
             }

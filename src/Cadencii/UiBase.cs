@@ -11,14 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-    namespace cadencii
+namespace cadencii
+{
+
+    using System;
+
+    public interface UiBase
     {
+        int showDialog(Object parent_form);
+    };
 
-            using System;
-
-            public interface UiBase
-            {
-                int showDialog( Object parent_form );
-            };
-
-    }
+}

@@ -15,19 +15,19 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-    namespace cadencii
+namespace cadencii
+{
+
+    public class serr
     {
-
-        public class serr
+        private serr()
         {
-            private serr()
-            {
-            }
+        }
 
-            public static void println( string s )
-            {
-                Console.Error.WriteLine( s );
-            }
-        };
+        public static void println(string s)
+        {
+            Console.Error.WriteLine(s);
+        }
+    };
 
-    }
+}

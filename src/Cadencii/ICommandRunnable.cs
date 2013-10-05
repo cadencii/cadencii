@@ -11,10 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
-    public interface ICommandRunnable {
-        ICommand executeCommand( ICommand command );
+    public interface ICommandRunnable
+    {
+        ICommand executeCommand(ICommand command);
     }
 
 }

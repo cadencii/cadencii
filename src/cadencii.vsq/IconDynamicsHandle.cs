@@ -53,7 +53,7 @@ namespace cadencii.vsq
         /// </summary>
         public IconDynamicsHandle()
             : base()
-        {}
+        { }
 
         /// <summary>
         /// 指定されたパラメータを使って、新しい強弱記号設定のインスタンスを初期化します。
@@ -62,8 +62,8 @@ namespace cadencii.vsq
         /// <param name="ids">フィールドIDSの初期値</param>
         /// <param name="icon_id">フィールドIconIDの初期値</param>
         /// <param name="index">フィールドOriginalの初期値</param>
-        public IconDynamicsHandle( string aic_file, string ids, string icon_id, int index )
-            : base( aic_file )
+        public IconDynamicsHandle(string aic_file, string ids, string icon_id, int index)
+            : base(aic_file)
         {
             IDS = ids;
             IconID = icon_id;
@@ -76,8 +76,8 @@ namespace cadencii.vsq
         /// <returns></returns>
         public bool isDynaffType()
         {
-            if ( IconID != null ) {
-                return IconID.StartsWith( ICONID_HEAD_DYNAFF );
+            if (IconID != null) {
+                return IconID.StartsWith(ICONID_HEAD_DYNAFF);
             } else {
                 return false;
             }
@@ -89,8 +89,8 @@ namespace cadencii.vsq
         /// <returns></returns>
         public bool isCrescendType()
         {
-            if ( IconID != null ) {
-                return IconID.StartsWith( ICONID_HEAD_CRESCEND );
+            if (IconID != null) {
+                return IconID.StartsWith(ICONID_HEAD_CRESCEND);
             } else {
                 return false;
             }
@@ -102,8 +102,8 @@ namespace cadencii.vsq
         /// <returns></returns>
         public bool isDecrescendType()
         {
-            if ( IconID != null ) {
-                return IconID.StartsWith( ICONID_HEAD_DECRESCEND );
+            if (IconID != null) {
+                return IconID.StartsWith(ICONID_HEAD_DECRESCEND);
             } else {
                 return false;
             }
@@ -128,13 +128,13 @@ namespace cadencii.vsq
             ret.IconID = IconID;
             ret.IDS = IDS;
             ret.Original = Original;
-            ret.setCaption( getCaption() );
-            ret.setStartDyn( getStartDyn() );
-            ret.setEndDyn( getEndDyn() );
-            if ( dynBP != null ) {
-                ret.setDynBP( (VibratoBPList)dynBP.clone() );
+            ret.setCaption(getCaption());
+            ret.setStartDyn(getStartDyn());
+            ret.setEndDyn(getEndDyn());
+            if (dynBP != null) {
+                ret.setDynBP((VibratoBPList)dynBP.clone());
             }
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             return ret;
         }
 
@@ -152,7 +152,7 @@ namespace cadencii.vsq
             ret.Caption = getCaption();
             ret.DynBP = getDynBP();
             ret.EndDyn = getEndDyn();
-            ret.setLength( getLength() );
+            ret.setLength(getLength());
             ret.StartDyn = getStartDyn();
             return ret;
         }
@@ -170,7 +170,7 @@ namespace cadencii.vsq
         /// キャプションを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setCaption( string value )
+        public void setCaption(string value)
         {
             caption = value;
         }
@@ -186,7 +186,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setCaption( value );
+                setCaption(value);
             }
         }
 
@@ -203,7 +203,7 @@ namespace cadencii.vsq
         /// ゲートタイム長さを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value )
+        public void setLength(int value)
         {
             length = value;
         }
@@ -219,7 +219,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setLength( value );
+                setLength(value);
             }
         }
 
@@ -236,7 +236,7 @@ namespace cadencii.vsq
         /// DYNの開始値を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setStartDyn( int value )
+        public void setStartDyn(int value)
         {
             startDyn = value;
         }
@@ -252,7 +252,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setStartDyn( value );
+                setStartDyn(value);
             }
         }
 
@@ -269,7 +269,7 @@ namespace cadencii.vsq
         /// DYNの終了値を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setEndDyn( int value )
+        public void setEndDyn(int value)
         {
             endDyn = value;
         }
@@ -285,7 +285,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setEndDyn( value );
+                setEndDyn(value);
             }
         }
 
@@ -302,7 +302,7 @@ namespace cadencii.vsq
         /// DYNカーブを表すリストを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setDynBP( VibratoBPList value )
+        public void setDynBP(VibratoBPList value)
         {
             dynBP = value;
         }
@@ -318,7 +318,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setDynBP( value );
+                setDynBP(value);
             }
         }
 

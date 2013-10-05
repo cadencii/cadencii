@@ -12,28 +12,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-    namespace cadencii
+namespace cadencii
+{
+
+    public interface FormWordDictionaryUiListener
     {
+        [PureVirtualFunction]
+        void formClosing();
 
-            public interface FormWordDictionaryUiListener
-            {
-                [PureVirtualFunction]
-                void formClosing();
+        [PureVirtualFunction]
+        void formLoad();
 
-                [PureVirtualFunction]
-                void formLoad();
+        [PureVirtualFunction]
+        void buttonOkClick();
 
-                [PureVirtualFunction]
-                void buttonOkClick();
+        [PureVirtualFunction]
+        void buttonUpClick();
 
-                [PureVirtualFunction]
-                void buttonUpClick();
+        [PureVirtualFunction]
+        void buttonDownClick();
 
-                [PureVirtualFunction]
-                void buttonDownClick();
+        [PureVirtualFunction]
+        void buttonCancelClick();
+    };
 
-                [PureVirtualFunction]
-                void buttonCancelClick();
-            };
-
-    }
+}

@@ -13,13 +13,16 @@
  */
 using cadencii.vsq;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class SelectedTimesigEntry {
+    public class SelectedTimesigEntry
+    {
         public TimeSigTableEntry original;
         public TimeSigTableEntry editing;
 
-        public SelectedTimesigEntry( TimeSigTableEntry original_, TimeSigTableEntry editing_ ) {
+        public SelectedTimesigEntry(TimeSigTableEntry original_, TimeSigTableEntry editing_)
+        {
             original = original_;
             editing = editing_;
         }

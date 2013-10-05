@@ -25,19 +25,21 @@ using cadencii.media;
 using cadencii.vsq;
 
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// ドライバーからの波形を受け取るためのインターフェース
     /// </summary>
-    public interface IWaveIncoming {
+    public interface IWaveIncoming
+    {
         /// <summary>
         /// ドライバから波形を受け取るためのコールバック関数
         /// </summary>
         /// <param name="l">左チャンネルの波形データ</param>
         /// <param name="r">右チャンネルの波形データ</param>
         /// <param name="length">波形データの長さ。配列の長さよりも短い場合がある</param>
-        void waveIncomingImpl( double[] l, double[] r, int length, WorkerState state );
+        void waveIncomingImpl(double[] l, double[] r, int length, WorkerState state);
     }
 }
 
@@ -93,14 +95,14 @@ namespace cadencii
 
         public double getProgress()
         {
-            if ( mTotalSamples > 0 ) {
+            if (mTotalSamples > 0) {
                 return mTotalAppend / (double)mTotalSamples;
             } else {
                 return 0.0;
             }
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
@@ -113,7 +115,7 @@ namespace cadencii
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
         /// <param name="sample_rate">波形処理ラインのサンプリング周波数</param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        public void init(VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate)
         {
             mVsq = vsq;
             mTrack = track;
@@ -121,13 +123,13 @@ namespace cadencii
             mEndClock = end_clock;
             mSampleRate = sample_rate;
             mDriverSampleRate = 44100;
-            try{
-                mContext = new RateConvertContext( mDriverSampleRate, mSampleRate );
-            }catch( Exception ex ){
-                try{
+            try {
+                mContext = new RateConvertContext(mDriverSampleRate, mSampleRate);
+            } catch (Exception ex) {
+                try {
                     // 苦肉の策
-                    mContext = new RateConvertContext( mDriverSampleRate, mDriverSampleRate );
-                }catch( Exception ex2 ){
+                    mContext = new RateConvertContext(mDriverSampleRate, mDriverSampleRate);
+                } catch (Exception ex2) {
                 }
             }
         }
@@ -137,9 +139,9 @@ namespace cadencii
             return VERSION;
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;
@@ -151,12 +153,12 @@ namespace cadencii
         /// <param name="l"></param>
         /// <param name="r"></param>
         /// <param name="length"></param>
-        public void waveIncomingImpl( double[] l, double[] r, int length, WorkerState state )
+        public void waveIncomingImpl(double[] l, double[] r, int length, WorkerState state)
         {
             int offset = 0;
-            if ( mTrimRemain > 0 ) {
+            if (mTrimRemain > 0) {
                 // トリムしなくちゃいけない分がまだ残っている場合。トリム処理を行う。
-                if ( length <= mTrimRemain ) {
+                if (length <= mTrimRemain) {
                     // 受け取った波形の長さをもってしても、トリム分が0にならない場合
                     mTrimRemain -= length;
                     return;
@@ -168,19 +170,19 @@ namespace cadencii
                 }
             }
             int remain = length - offset;
-            while ( remain > 0 ) {
-                if ( state.isCancelRequested() ) {
+            while (remain > 0) {
+                if (state.isCancelRequested()) {
                     return;
                 }
                 int amount = (remain > BUFLEN) ? BUFLEN : remain;
-                for ( int i = 0; i < amount; i++ ) {
+                for (int i = 0; i < amount; i++) {
                     mBufferL[i] = l[i + offset];
                     mBufferR[i] = r[i + offset];
                 }
-                while ( RateConvertContext.convert( mContext, mBufferL, mBufferR, amount ) ) {
-                    mReceiver.push( mContext.bufferLeft, mContext.bufferRight, mContext.length );
+                while (RateConvertContext.convert(mContext, mBufferL, mBufferR, amount)) {
+                    mReceiver.push(mContext.bufferLeft, mContext.bufferRight, mContext.length);
                     mTotalAppend += mContext.length;
-                    state.reportProgress( mTotalAppend );
+                    state.reportProgress(mTotalAppend);
                 }
                 remain -= amount;
                 offset += amount;
@@ -197,61 +199,61 @@ namespace cadencii
             mRunning = false;
         }
 
-        public void begin( long total_samples, WorkerState state )
+        public void begin(long total_samples, WorkerState state)
         {
             // 渡されたVSQの、合成に不要な部分を削除する
             VsqFileEx split = (VsqFileEx)mVsq.clone();
-            VsqTrack vsq_track = split.Track[ mTrack ];
+            VsqTrack vsq_track = split.Track[mTrack];
             split.updateTotalClocks();
-            if ( mEndClock < mVsq.TotalClocks ) {
-                split.removePart( mEndClock, split.TotalClocks + 480 );
+            if (mEndClock < mVsq.TotalClocks) {
+                split.removePart(mEndClock, split.TotalClocks + 480);
             }
-            double start_sec = mVsq.getSecFromClock( mStartClock );
-            double end_sec = mVsq.getSecFromClock( mEndClock );
+            double start_sec = mVsq.getSecFromClock(mStartClock);
+            double end_sec = mVsq.getSecFromClock(mEndClock);
 
             // トラックの合成エンジンの種類
-            RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind( vsq_track );
+            RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind(vsq_track);
 
             // VOCALOIDのドライバの場合，末尾に余分な音符を入れる
-            int extra_note_clock = (int)mVsq.getClockFromSec( (float)end_sec + 10.0f );
-            int extra_note_clock_end = (int)mVsq.getClockFromSec( (float)end_sec + 10.0f + 3.1f ); //ブロックサイズが1秒分で、バッファの個数が3だから +3.1f。0.1fは安全のため。
-            VsqEvent extra_note = new VsqEvent( extra_note_clock, new VsqID( 0 ) );
+            int extra_note_clock = (int)mVsq.getClockFromSec((float)end_sec + 10.0f);
+            int extra_note_clock_end = (int)mVsq.getClockFromSec((float)end_sec + 10.0f + 3.1f); //ブロックサイズが1秒分で、バッファの個数が3だから +3.1f。0.1fは安全のため。
+            VsqEvent extra_note = new VsqEvent(extra_note_clock, new VsqID(0));
             extra_note.ID.type = VsqIDType.Anote;
             extra_note.ID.Note = 60;
-            extra_note.ID.setLength( extra_note_clock_end - extra_note_clock );
+            extra_note.ID.setLength(extra_note_clock_end - extra_note_clock);
             extra_note.ID.VibratoHandle = null;
-            extra_note.ID.LyricHandle = new LyricHandle( "a", "a" );
-            vsq_track.addEvent( extra_note );
-            
+            extra_note.ID.LyricHandle = new LyricHandle("a", "a");
+            vsq_track.addEvent(extra_note);
+
             // VSTiが渡してくる波形のうち、先頭からtrim_sec秒分だけ省かないといけない
             // プリセンドタイムがあるので、無条件に合成開始位置以前のデータを削除すると駄目なので。
             double trim_sec = 0.0;
-            if ( mStartClock < split.getPreMeasureClocks() ) {
+            if (mStartClock < split.getPreMeasureClocks()) {
                 // 合成開始位置が、プリメジャーよりも早い位置にある場合。
                 // VSTiにはクロック0からのデータを渡し、クロック0から合成開始位置までをこのインスタンスでトリム処理する
-                trim_sec = split.getSecFromClock( mStartClock );
+                trim_sec = split.getSecFromClock(mStartClock);
             } else {
                 // 合成開始位置が、プリメジャー以降にある場合。
                 // プリメジャーの終了位置から合成開始位置までのデータを削除する
-                split.removePart( mVsq.getPreMeasureClocks(), mStartClock );
-                trim_sec = split.getSecFromClock( split.getPreMeasureClocks() );
+                split.removePart(mVsq.getPreMeasureClocks(), mStartClock);
+                trim_sec = split.getSecFromClock(split.getPreMeasureClocks());
             }
             split.updateTotalClocks();
             // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
-            for ( int i = 0; i < VSTiDllManager.vocaloidDriver.Count; i++ ) {
-                if ( VSTiDllManager.vocaloidDriver[ i ].getRendererKind() == s_working_renderer ) {
-                    mDriver = VSTiDllManager.vocaloidDriver[ i ];
+            for (int i = 0; i < VSTiDllManager.vocaloidDriver.Count; i++) {
+                if (VSTiDllManager.vocaloidDriver[i].getRendererKind() == s_working_renderer) {
+                    mDriver = VSTiDllManager.vocaloidDriver[i];
                     break;
                 }
             }
             // ドライバー見つからなかったらbail out
-            if ( mDriver == null ) {
+            if (mDriver == null) {
                 exitBegin();
                 return;
             }
             // ドライバーが読み込み完了していなかったらbail out
-            if ( !mDriver.loaded ) {
+            if (!mDriver.loaded) {
                 exitBegin();
                 return;
             }
@@ -259,67 +261,67 @@ namespace cadencii
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
 #if DEBUG
-            sout.println( "VocaloidWaveGenerator#begin; ms_present=" + ms_present );
+            sout.println("VocaloidWaveGenerator#begin; ms_present=" + ms_present);
 #endif
-            VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, mTrack, ms_present );
+            VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN(split, mTrack, ms_present);
 #if DEBUG
             string suffix = "_win";
-            string path = Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
+            string path = Path.Combine(PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt");
             BufferedWriter bw = null;
             try {
-                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
-                for ( int i = 0; i < vsq_nrpn.Length; i++ ) {
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "UTF-8"));
+                for (int i = 0; i < vsq_nrpn.Length; i++) {
                     VsqNrpn item = vsq_nrpn[i];
-                    string name = NRPN.getName( item.Nrpn );
+                    string name = NRPN.getName(item.Nrpn);
                     int len = name.Length;
-                    for( int j = len; j < 35; j++ ){
+                    for (int j = len; j < 35; j++) {
                         name += " ";
                     }
-                    bw.write( "     " + item.Clock.ToString("D8") + " 0x" + item.Nrpn.ToString("X4") + " " + name + " 0x" + item.DataMsb.ToString("X2") + " 0x" + item.DataLsb.ToString("X2") );
+                    bw.write("     " + item.Clock.ToString("D8") + " 0x" + item.Nrpn.ToString("X4") + " " + name + " 0x" + item.DataMsb.ToString("X2") + " 0x" + item.DataLsb.ToString("X2"));
                     bw.newLine();
                 }
-            } catch ( Exception ex ) {
+            } catch (Exception ex) {
             } finally {
-                if ( bw != null ) {
+                if (bw != null) {
                     try {
                         bw.close();
-                    } catch ( Exception ex2 ) {
+                    } catch (Exception ex2) {
                     }
                 }
                 bw = null;
             }
 #endif
-            NrpnData[] nrpn = VsqNrpn.convert( vsq_nrpn );
+            NrpnData[] nrpn = VsqNrpn.convert(vsq_nrpn);
 
             // 最初のテンポ指定を検索
             // VOCALOID VSTiが返してくる波形にはなぜかずれがある。このズレは最初のテンポで決まるので。
             float first_tempo = 125.0f;
-            if ( split.TempoTable.Count > 0 ) {
-                first_tempo = (float)(60e6 / (double)split.TempoTable[ 0 ].Tempo);
+            if (split.TempoTable.Count > 0) {
+                first_tempo = (float)(60e6 / (double)split.TempoTable[0].Tempo);
             }
             // ずれるサンプル数
-            int errorSamples = VSTiDllManager.getErrorSamples( first_tempo );
+            int errorSamples = VSTiDllManager.getErrorSamples(first_tempo);
             // 今後トリムする予定のサンプル数と、
             mTrimRemain = errorSamples + (int)(trim_sec * mDriverSampleRate);
 #if DEBUG
-            sout.println( "VocaloidWaveGenerator#begin; trim_sec=" + trim_sec + "; mTrimRemain=" + mTrimRemain );
+            sout.println("VocaloidWaveGenerator#begin; trim_sec=" + trim_sec + "; mTrimRemain=" + mTrimRemain);
 #endif
             // 合計合成する予定のサンプル数を決める
             mTotalSamples = (long)((end_sec - start_sec) * mDriverSampleRate) + errorSamples;
 #if DEBUG
-            sout.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
+            sout.println("VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples);
 #endif
 
             // アボート要求フラグを初期化
             //mAbortRequired = false;
             // 使いたいドライバーが使用中だった場合、ドライバーにアボート要求を送る。
             // アボートが終了するか、このインスタンス自身にアボート要求が来るまで待つ。
-            if ( mDriver.isRendering() ) {
+            if (mDriver.isRendering()) {
                 // ドライバーにアボート要求
                 //mDriver.abortRendering();
-                while ( mDriver.isRendering() && !state.isCancelRequested() ) {
+                while (mDriver.isRendering() && !state.isCancelRequested()) {
                     // 待つ
-                    Thread.Sleep( 100 );
+                    Thread.Sleep(100);
                 }
             }
 
@@ -334,9 +336,9 @@ namespace cadencii
             byte[] masterEventsSrc = new byte[tempo_count * 3];
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
-            for ( int i = 0; i < tempo_count; i++ ) {
+            for (int i = 0; i < tempo_count; i++) {
                 count += 3;
-                TempoTableEntry itemi = split.TempoTable[ i ];
+                TempoTableEntry itemi = split.TempoTable[i];
                 masterClocksSrc[i] = itemi.Clock;
                 byte b0 = (byte)(0xff & (itemi.Tempo >> 16));
                 long u0 = (long)(itemi.Tempo - (b0 << 16));
@@ -348,7 +350,7 @@ namespace cadencii
             }
 
             // 送る
-            mDriver.sendEvent( masterEventsSrc, masterClocksSrc, 0 );
+            mDriver.sendEvent(masterEventsSrc, masterClocksSrc, 0);
 
             // 次に、合成対象トラックの音符イベントを作成
             int numEvents = nrpn.Length;
@@ -356,7 +358,7 @@ namespace cadencii
             int[] bodyClocksSrc = new int[numEvents];
             count = -3;
             int last_clock = 0;
-            for ( int i = 0; i < numEvents; i++ ) {
+            for (int i = 0; i < numEvents; i++) {
                 int c = nrpn[i].getClock();
                 count += 3;
                 bodyEventsSrc[count] = (byte)0xb0;
@@ -367,7 +369,7 @@ namespace cadencii
             }
 
             // 送る
-            mDriver.sendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
+            mDriver.sendEvent(bodyEventsSrc, bodyClocksSrc, 1);
 
             // 合成を開始
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
@@ -377,16 +379,16 @@ namespace cadencii
                 new RandomAccessFile(
                     Path.Combine(
                         PortUtil.getApplicationStartupPath(),
-                        "src_master.bin" ), "rw" ); 
-            fos_master.write( 0x01 );
-            fos_master.write( 0x04 );
-            byte[] buf = PortUtil.getbytes_uint32_le( tempo_count );
-            fos_master.write( buf, 0, 4 );
+                        "src_master.bin"), "rw");
+            fos_master.write(0x01);
+            fos_master.write(0x04);
+            byte[] buf = PortUtil.getbytes_uint32_le(tempo_count);
+            fos_master.write(buf, 0, 4);
             count = 0;
-            for( int i = 0; i < tempo_count; i++ ){
-                buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
-                fos_master.write( buf, 0, 4 );
-                fos_master.write( masterEventsSrc, count, 3 );
+            for (int i = 0; i < tempo_count; i++) {
+                buf = PortUtil.getbytes_uint32_le(masterClocksSrc[i]);
+                fos_master.write(buf, 0, 4);
+                fos_master.write(masterEventsSrc, count, 3);
                 count += 3;
             }
             fos_master.close();
@@ -395,30 +397,30 @@ namespace cadencii
                 new RandomAccessFile(
                     Path.Combine(
                         PortUtil.getApplicationStartupPath(),
-                        "src_body.bin" ), "rw" ); 
-            buf = PortUtil.getbytes_uint32_le( numEvents );
-            fos_body.write( 0x02 );
-            fos_body.write( 0x04 );
-            fos_body.write( buf, 0, 4 );
+                        "src_body.bin"), "rw");
+            buf = PortUtil.getbytes_uint32_le(numEvents);
+            fos_body.write(0x02);
+            fos_body.write(0x04);
+            fos_body.write(buf, 0, 4);
             count = 0;
-            for( int i = 0; i < numEvents; i++ ){
-                buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
-                fos_body.write( buf, 0, 4 );
-                fos_body.write( bodyEventsSrc, count , 3 );
+            for (int i = 0; i < numEvents; i++) {
+                buf = PortUtil.getbytes_uint32_le(bodyClocksSrc[i]);
+                fos_body.write(buf, 0, 4);
+                fos_body.write(bodyEventsSrc, count, 3);
                 count += 3;
             }
             fos_body.close();
             // synth
             long act_total_samples = mTotalSamples + mTrimRemain;
-            buf = PortUtil.getbytes_int64_le( act_total_samples );
+            buf = PortUtil.getbytes_int64_le(act_total_samples);
             RandomAccessFile fos_synth =
                 new RandomAccessFile(
                     Path.Combine(
                         PortUtil.getApplicationStartupPath(),
-                        "src_synth.bin" ), "rw" ); 
-            fos_synth.write( 0x03 );
-            fos_synth.write( 0x08 );
-            fos_synth.write( buf, 0, 8 );
+                        "src_synth.bin"), "rw");
+            fos_synth.write(0x03);
+            fos_synth.write(0x08);
+            fos_synth.write(buf, 0, 8);
             fos_synth.close();
 #endif
             mDriver.startRendering(
@@ -426,12 +428,12 @@ namespace cadencii
                 false,
                 mDriverSampleRate,
                 this,
-                state );
+                state);
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。
             exitBegin();
-            if ( state.isCancelRequested() == false ) {
+            if (state.isCancelRequested() == false) {
                 state.reportComplete();
             }
         }

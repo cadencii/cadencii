@@ -13,9 +13,11 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public enum ClockResolution {
+    public enum ClockResolution
+    {
         L1,
         L2,
         L4,

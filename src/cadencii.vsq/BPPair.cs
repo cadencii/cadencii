@@ -30,25 +30,20 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public int compareTo( BPPair item )
+        public int compareTo(BPPair item)
         {
-            if ( Clock > item.Clock )
-            {
+            if (Clock > item.Clock) {
                 return 1;
-            }
-            else if ( Clock < item.Clock )
-            {
+            } else if (Clock < item.Clock) {
                 return -1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
 
-        public int CompareTo( BPPair item )
+        public int CompareTo(BPPair item)
         {
-            return compareTo( item );
+            return compareTo(item);
         }
 
         /// <summary>
@@ -56,7 +51,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="clock_"></param>
         /// <param name="value_"></param>
-        public BPPair( int clock_, int value_ )
+        public BPPair(int clock_, int value_)
         {
             Clock = clock_;
             Value = value_;

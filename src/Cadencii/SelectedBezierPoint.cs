@@ -11,20 +11,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
-    public class SelectedBezierPoint {
+    public class SelectedBezierPoint
+    {
         public int chainID = -1;
         public int pointID = -1;
         public BezierPickedSide picked;
         public BezierPoint original;
 
-        public SelectedBezierPoint() {
+        public SelectedBezierPoint()
+        {
             chainID = -1;
             pointID = -1;
         }
 
-        public SelectedBezierPoint( int chain_id, int point_id, BezierPickedSide picked_side_, BezierPoint original_ ) {
+        public SelectedBezierPoint(int chain_id, int point_id, BezierPickedSide picked_side_, BezierPoint original_)
+        {
             chainID = chain_id;
             pointID = point_id;
             picked = picked_side_;

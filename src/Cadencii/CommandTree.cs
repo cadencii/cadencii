@@ -13,7 +13,8 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
 #if TREECOM
     /// <summary>

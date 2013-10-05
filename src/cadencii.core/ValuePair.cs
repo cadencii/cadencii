@@ -13,59 +13,75 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class ValuePair<K, V> : IComparable<ValuePair<K, V>> where K : IComparable {
+    public class ValuePair<K, V> : IComparable<ValuePair<K, V>> where K : IComparable
+    {
         private K m_key;
         private V m_value;
 
-        public ValuePair() {
+        public ValuePair()
+        {
         }
 
-        public ValuePair( K key_, V value_ ) {
+        public ValuePair(K key_, V value_)
+        {
             m_key = key_;
             m_value = value_;
         }
 
-        public int compareTo( ValuePair<K, V> item ) {
-            return m_key.CompareTo( item.m_key );
+        public int compareTo(ValuePair<K, V> item)
+        {
+            return m_key.CompareTo(item.m_key);
         }
 
-        public int CompareTo( ValuePair<K, V> item ){
-            return compareTo( item );
+        public int CompareTo(ValuePair<K, V> item)
+        {
+            return compareTo(item);
         }
 
-        public K getKey() {
+        public K getKey()
+        {
             return m_key;
         }
 
-        public void setKey( K value ) {
+        public void setKey(K value)
+        {
             m_key = value;
         }
 
-        public V getValue() {
+        public V getValue()
+        {
             return m_value;
         }
 
-        public void setValue( V v ) {
+        public void setValue(V v)
+        {
             m_value = v;
         }
 
-        public K Key {
-            get {
+        public K Key
+        {
+            get
+            {
                 return getKey();
             }
-            set {
-                setKey( value );
+            set
+            {
+                setKey(value);
             }
         }
 
-        public V Value {
-            get {
+        public V Value
+        {
+            get
+            {
                 return getValue();
             }
-            set {
-                setValue( value );
+            set
+            {
+                setValue(value);
             }
         }
     }

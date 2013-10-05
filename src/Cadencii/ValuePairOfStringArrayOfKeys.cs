@@ -16,17 +16,21 @@ using System.Xml.Serialization;
 using System.Windows.Forms;
 using cadencii.windows.forms;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class ValuePairOfStringArrayOfKeys {
+    public class ValuePairOfStringArrayOfKeys
+    {
         public string Key;
         [XmlArrayItem("Keys")]
         public Keys[] Value;
 
-        public ValuePairOfStringArrayOfKeys() {
+        public ValuePairOfStringArrayOfKeys()
+        {
         }
 
-        public ValuePairOfStringArrayOfKeys( string key, Keys[] value ) {
+        public ValuePairOfStringArrayOfKeys(string key, Keys[] value)
+        {
             Key = key;
             Value = value;
         }

@@ -33,7 +33,7 @@ namespace cadencii.vsq
             return position;
         }
 
-        public void setPointer( int value )
+        public void setPointer(int value)
         {
             position = value;
         }
@@ -49,57 +49,57 @@ namespace cadencii.vsq
             StringBuilder sb = new StringBuilder();
             // '\n'が来るまで読み込み
             position++;
-            for ( ; position < length; position++ ) {
+            for (; position < length; position++) {
                 char c = array[position];
-                if ( c == '\n' ) {
+                if (c == '\n') {
                     break;
                 }
-                sb.Append( c );
+                sb.Append(c);
             }
             return sb.ToString();
         }
 
         public bool ready()
         {
-            if ( 0 <= position + 1 && position + 1 < length ) {
+            if (0 <= position + 1 && position + 1 < length) {
                 return true;
             } else {
                 return false;
             }
         }
 
-        private void ensureCapacity( int length )
+        private void ensureCapacity(int length)
         {
-            if ( length > array.Length ) {
+            if (length > array.Length) {
                 int newLength = length;
-                if ( this.length <= 0 ) {
+                if (this.length <= 0) {
                     newLength = (length * 3) >> 1;
                 } else {
                     int order = length / array.Length;
-                    if ( order <= 1 ) {
+                    if (order <= 1) {
                         order = 2;
                     }
                     newLength = array.Length * order;
                 }
-                Array.Resize( ref array, newLength );
+                Array.Resize(ref array, newLength);
             }
         }
 
-        public void write( string str )
+        public void write(string str)
         {
-            int len = PortUtil.getStringLength( str );
+            int len = PortUtil.getStringLength(str);
             int newSize = length + len;
             int offset = length;
-            ensureCapacity( newSize );
-            for ( int i = 0; i < len; i++ ) {
+            ensureCapacity(newSize);
+            for (int i = 0; i < len; i++) {
                 array[offset + i] = str[i];
             }
             length = newSize;
         }
 
-        public void writeLine( string str )
+        public void writeLine(string str)
         {
-            write( str );
+            write(str);
             newLine();
         }
 
@@ -107,7 +107,7 @@ namespace cadencii.vsq
         {
             int new_size = length + 1;
             int offset = length;
-            ensureCapacity( new_size );
+            ensureCapacity(new_size);
             array[offset] = '\n';
             length = new_size;
         }

@@ -37,18 +37,18 @@ namespace cadencii
         private double mJobAmount;
         private double mProcessed;
 
-        public FormWorkerJobStateImp( BackgroundWorker worker, double job_amount )
+        public FormWorkerJobStateImp(BackgroundWorker worker, double job_amount)
         {
             mWorker = worker;
             mIsCancelRequested = false;
             mJobAmount = job_amount;
         }
 
-        public void reportProgress( double processed_job )
+        public void reportProgress(double processed_job)
         {
             mProcessed = processed_job;
             int percent = (int)(mProcessed / mJobAmount * 100.0);
-            mWorker.ReportProgress( percent );
+            mWorker.ReportProgress(percent);
         }
 
         public double getProcessedAmount()
@@ -106,15 +106,15 @@ namespace cadencii
         public void startJob()
         {
             int size = mLabels.Count;
-            if ( size <= 0 ) return;
-            startWorker( 0 );
+            if (size <= 0) return;
+            startWorker(0);
         }
 
         /// <summary>
         /// ビューのセットアップを行います
         /// </summary>
         /// <param name="value"></param>
-        public void setupUi( FormWorkerUi value )
+        public void setupUi(FormWorkerUi value)
         {
             ptrUi = value;
             ptrUi.applyLanguage();
@@ -132,20 +132,20 @@ namespace cadencii
         /// <param name="job_description">ジョブの概要</param>
         /// <param name="job_amount">ジョブの処理量を表す，何らかの量．</param>
         /// <param name="argument">メソッドの第二引数</param>
-        public void addJob( Object obj, string method_name, string job_description, double job_amount, Object argument )
+        public void addJob(Object obj, string method_name, string job_description, double job_amount, Object argument)
         {
             // プログレスバーのUIを作成
             ProgressBarWithLabelUi ui = new ProgressBarWithLabelUi();
             ProgressBarWithLabel label = new ProgressBarWithLabel();
-            label.setupUi( ui );
-            label.setText( job_description );
+            label.setupUi(ui);
+            label.setText(job_description);
             // フォームのビューにUIを追加
-            ptrUi.addProgressBar( ui );
+            ptrUi.addProgressBar(ui);
 
             // ラベルのリストに登録
             int index = mLabels.Count;
-            mLabels.Add( label );
-            mMemManager.add( label );
+            mLabels.Add(label);
+            mMemManager.add(label);
 
             // スレッドを作成して起動(platform依存)
             FormWorkerJobArgument arg = new FormWorkerJobArgument();
@@ -155,13 +155,13 @@ namespace cadencii
             arg.index = index;
             BackgroundWorker worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
-            worker.DoWork += new DoWorkEventHandler( worker_DoWork );
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler( worker_RunWorkerCompleted );
-            worker.ProgressChanged += new ProgressChangedEventHandler( worker_ProgressChanged );
-            mThreads.Add( worker );
+            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);
+            worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
+            mThreads.Add(worker);
 
-            arg.state = new FormWorkerJobStateImp( worker, job_amount );
-            mArguments.Add( arg );
+            arg.state = new FormWorkerJobStateImp(worker, job_amount);
+            mArguments.Add(arg);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace cadencii
         public void cancelJobSlot()
         {
             int size = mArguments.Count;
-            for ( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 FormWorkerJobArgument arg = mArguments[i];
                 arg.state.requestCancel();
             }
@@ -185,101 +185,101 @@ namespace cadencii
             return ptrUi;
         }
 
-        public void workerProgressChanged( int index, int percentage )
+        public void workerProgressChanged(int index, int percentage)
         {
             ProgressBarWithLabel label = mLabels[index];
-            if ( label != null ) {
-                label.setProgress( percentage );
+            if (label != null) {
+                label.setProgress(percentage);
             }
             int size = mArguments.Count;
             double total = 0.0;
             double processed = 0.0;
-            for ( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 FormWorkerJobArgument arg = mArguments[i];
                 total += arg.state.getJobAmount();
-                if ( i < index ) {
+                if (i < index) {
                     processed += arg.state.getJobAmount();
-                } else if ( i == index ) {
+                } else if (i == index) {
                     processed += arg.state.getProcessedAmount();
                 }
             }
-            ptrUi.setTotalProgress( (int)(processed / total * 100.0) );
+            ptrUi.setTotalProgress((int)(processed / total * 100.0));
             ptrUi.Refresh();
         }
 
-        public void workerCompleted( int index )
+        public void workerCompleted(int index)
         {
 #if DEBUG
-            sout.println( "FormWorker#workerCompleted; index=" + index );
+            sout.println("FormWorker#workerCompleted; index=" + index);
 #endif
             ProgressBarWithLabel label = mLabels[index];
-            ptrUi.removeProgressBar( label.getUi() );
-            mman.del( label );
+            ptrUi.removeProgressBar(label.getUi());
+            mman.del(label);
             mLabels[index] = null;
             int size = mLabels.Count;
             index++;
-            if ( index < size ) {
-                startWorker( index );
+            if (index < size) {
+                startWorker(index);
             } else {
-                ptrUi.close( false );//.setDialogResult( BDialogResult.OK );//.close();
+                ptrUi.close(false);//.setDialogResult( BDialogResult.OK );//.close();
             }
         }
 
-        private void startWorker( int index )
+        private void startWorker(int index)
         {
             FormWorkerJobArgument arg = mArguments[index];
-            mThreads[index].RunWorkerAsync( arg );
+            mThreads[index].RunWorkerAsync(arg);
         }
 
-        private void worker_ProgressChanged( object sender, ProgressChangedEventArgs e )
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             int size = mThreads.Count;
-            for ( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 BackgroundWorker w = mThreads[i];
-                if ( w == null ) continue;
-                if ( w == sender ) {
-                    workerProgressChanged( i, e.ProgressPercentage );
+                if (w == null) continue;
+                if (w == sender) {
+                    workerProgressChanged(i, e.ProgressPercentage);
                     break;
                 }
             }
         }
 
-        private void worker_RunWorkerCompleted( object sender, RunWorkerCompletedEventArgs e )
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             int size = mThreads.Count;
-            for ( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 BackgroundWorker w = mThreads[i];
-                if ( w == null ) continue;
-                if ( w == sender ) {
+                if (w == null) continue;
+                if (w == sender) {
                     WorkerState state = mArguments[i].state;
-                    if ( state.isCancelRequested() == false ) {
-                        workerCompleted( i );
+                    if (state.isCancelRequested() == false) {
+                        workerCompleted(i);
                     }
                     break;
                 }
             }
         }
 
-        private void worker_DoWork( object sender, DoWorkEventArgs e )
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             FormWorkerJobArgument o = (FormWorkerJobArgument)e.Argument;
             MethodInfo mi = null;
             try {
                 Type type = null;
-                if ( o.invoker is Type ) {
+                if (o.invoker is Type) {
                     type = (Type)o.invoker;
                 } else {
                     type = o.invoker.GetType();
                 }
-                mi = type.GetMethod( o.name, new Type[] { typeof( WorkerState ), typeof( Object ) } );
-            } catch ( Exception ex ) {
-                serr.println( typeof( FormWorker ) + ".startWork; ex=" + ex );
+                mi = type.GetMethod(o.name, new Type[] { typeof(WorkerState), typeof(Object) });
+            } catch (Exception ex) {
+                serr.println(typeof(FormWorker) + ".startWork; ex=" + ex);
             }
-            if ( mi != null ) {
+            if (mi != null) {
                 try {
-                    mi.Invoke( o.invoker, new object[] { o.state, o.arguments } );
-                } catch ( Exception ex ) {
-                    serr.println( typeof( FormWorker ) + ".startWork; ex=" + ex );
+                    mi.Invoke(o.invoker, new object[] { o.state, o.arguments });
+                } catch (Exception ex) {
+                    serr.println(typeof(FormWorker) + ".startWork; ex=" + ex);
                 }
             }
         }

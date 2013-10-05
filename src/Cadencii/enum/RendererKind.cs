@@ -13,7 +13,8 @@
  */
 using System;
 
-namespace cadencii{
+namespace cadencii
+{
 
     /// <summary>
     /// 歌声合成システムの種類

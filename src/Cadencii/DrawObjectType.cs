@@ -11,9 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
-    public enum DrawObjectType {
+    public enum DrawObjectType
+    {
         Note,
         Dynaff,
         Crescend,

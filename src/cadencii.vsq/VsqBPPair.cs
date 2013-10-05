@@ -22,7 +22,7 @@ namespace cadencii.vsq
         public int value;
         public long id;
 
-        public VsqBPPair( int value_, long id_ )
+        public VsqBPPair(int value_, long id_)
         {
             value = value_;
             id = id_;

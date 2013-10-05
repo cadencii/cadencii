@@ -93,7 +93,7 @@ namespace cadencii.vconnect
         {
             if (argument == null) { return; }
             var parameter = argument as ConvertParameter;
-            if (parameter == null) { return;}
+            if (parameter == null) { return; }
             string source = parameter.source_;
             string destination = parameter.destination_;
 

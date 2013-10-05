@@ -49,7 +49,7 @@ namespace cadencii.vsq
             return m_is_separator;
         }
 
-        public VsqBarLineType( int clock, bool is_separator, int denominator, int numerator, int bar_count )
+        public VsqBarLineType(int clock, bool is_separator, int denominator, int numerator, int bar_count)
         {
             m_clock = clock;
             m_is_separator = is_separator;

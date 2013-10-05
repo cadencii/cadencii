@@ -13,9 +13,11 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public enum DefaultVibratoLengthEnum {
+    public enum DefaultVibratoLengthEnum
+    {
         L50,
         L66,
         L75,

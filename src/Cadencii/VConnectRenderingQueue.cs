@@ -14,9 +14,11 @@
 using System;
 using cadencii.vsq;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class VConnectRenderingQueue {
+    public class VConnectRenderingQueue
+    {
         /// <summary>
         /// このキューのレンダリング結果のwavを、曲頭から何フレーム目にmixしたらよいかを表す
         /// </summary>
@@ -36,11 +38,12 @@ namespace cadencii {
         public int endClock;
 
 #if DEBUG
-        public string __DEBUG__toString() {
+        public string __DEBUG__toString()
+        {
             string phase = "";
-            for ( int i = 0; i < track.getEventCount(); i++ ) {
-                VsqEvent itemi = track.getEvent( i );
-                if ( itemi.ID.type == VsqIDType.Anote ) {
+            for (int i = 0; i < track.getEventCount(); i++) {
+                VsqEvent itemi = track.getEvent(i);
+                if (itemi.ID.type == VsqIDType.Anote) {
                     phase += itemi.ID.LyricHandle.L0.Phrase;
                 }
             }

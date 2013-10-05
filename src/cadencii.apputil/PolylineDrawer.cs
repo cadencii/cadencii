@@ -14,13 +14,15 @@
 using System;
 using cadencii.java.awt;
 
-namespace cadencii.apputil {
+namespace cadencii.apputil
+{
 
     /// <summary>
     /// 折れ線を効率よく描画するための描画プラクシーです。
     /// あらかじめ指定された個数の座標データを保持しておき、必要になったらdrawPolyline[java], DrawLines[C#]でまとめて描画する仕組みになっています。
     /// </summary>
-    public class PolylineDrawer {
+    public class PolylineDrawer
+    {
         /// <summary>
         /// 保持する座標データの長さ
         /// </summary>
@@ -43,10 +45,11 @@ namespace cadencii.apputil {
         /// </summary>
         /// <param name="g">描画に使用するグラフィクスオブジェクト。nullでもかまわない</param>
         /// <param name="buffer_length">座標バッファの個数(2より小さい値を指定した場合、替わりに「1024」が使用される)</param>
-        public PolylineDrawer( Graphics2D g, int buffer_length ) {
+        public PolylineDrawer(Graphics2D g, int buffer_length)
+        {
             this.g = g;
             length = buffer_length;
-            if ( length < 2 ) {
+            if (length < 2) {
                 length = 1024;
             }
             points = new System.Drawing.Point[length];
@@ -56,7 +59,8 @@ namespace cadencii.apputil {
         /// <summary>
         /// 保持している座標データをクリアします。
         /// </summary>
-        public void clear() {
+        public void clear()
+        {
             pos = 0;
         }
 
@@ -64,7 +68,8 @@ namespace cadencii.apputil {
         /// 描画に使用するグラフィクスオブジェクトを指定します。
         /// </summary>
         /// <param name="g"></param>
-        public void setGraphics( Graphics2D g ) {
+        public void setGraphics(Graphics2D g)
+        {
             this.g = g;
         }
 
@@ -72,7 +77,8 @@ namespace cadencii.apputil {
         /// 描画に使用するグラフィクスオブジェクトを取得します。
         /// </summary>
         /// <returns></returns>
-        public Graphics2D getGraphics() {
+        public Graphics2D getGraphics()
+        {
             return this.g;
         }
 
@@ -81,11 +87,12 @@ namespace cadencii.apputil {
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void append( int x, int y ) {
+        public void append(int x, int y)
+        {
             points[pos].X = x;
             points[pos].Y = y;
             pos++;
-            if ( length <= pos ) {
+            if (length <= pos) {
                 flush();
             }
         }
@@ -93,19 +100,20 @@ namespace cadencii.apputil {
         /// <summary>
         /// 現在保持している座標データを、強制的に描画します。
         /// </summary>
-        public void flush() {
-            if ( pos <= 1 ){
+        public void flush()
+        {
+            if (pos <= 1) {
                 return;
             }
             int lastx = points[pos - 1].X;
             int lasty = points[pos - 1].Y;
-            if ( pos != length ) {
-                for ( int i = pos; i < length; i++ ) {
+            if (pos != length) {
+                for (int i = pos; i < length; i++) {
                     points[i].X = lastx;
                     points[i].Y = lasty;
                 }
             }
-            g.nativeGraphics.DrawLines( g.stroke.pen, points );
+            g.nativeGraphics.DrawLines(g.stroke.pen, points);
             points[0].X = lastx;
             points[0].Y = lasty;
             pos = 1;

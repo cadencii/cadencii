@@ -11,10 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii.media {
+namespace cadencii.media
+{
 
-    public interface IWaveReceiver {
-        void append( double[] left, double[] right, int length );
+    public interface IWaveReceiver
+    {
+        void append(double[] left, double[] right, int length);
         int getSampleRate();
         void close();
     }

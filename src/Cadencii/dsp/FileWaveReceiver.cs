@@ -34,23 +34,23 @@ namespace cadencii
         private int mBitPerSample;
         private Object mSyncRoot = new Object();
 
-        public FileWaveReceiver( string path, int channel, int bit_per_sample, int sample_rate )
+        public FileWaveReceiver(string path, int channel, int bit_per_sample, int sample_rate)
         {
             mPath = path;
             mChannel = channel;
             mBitPerSample = bit_per_sample;
-            try{
-                mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
-            }catch( Exception ex ){
+            try {
+                mAdapter = new WaveWriter(mPath, mChannel, mBitPerSample, sample_rate);
+            } catch (Exception ex) {
             }
         }
 
-        public override void setGlobalConfig( EditorConfig config )
+        public override void setGlobalConfig(EditorConfig config)
         {
             // do nothing
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
@@ -59,7 +59,7 @@ namespace cadencii
         /// 初期化メソッド．
         /// </summary>
         /// <param name="parameter"></param>
-        public void init( string parameter )
+        public void init(string parameter)
         {
         }
 
@@ -70,34 +70,34 @@ namespace cadencii
 
         public void end()
         {
-            lock ( mSyncRoot ) {
+            lock (mSyncRoot) {
 #if DEBUG
-                if ( mAdapter == null ) {
-                    sout.println( "FileWaveReceiver#end; warning; 'end' when mAdapter is null" );
+                if (mAdapter == null) {
+                    sout.println("FileWaveReceiver#end; warning; 'end' when mAdapter is null");
                 }
 #endif
-                if ( mAdapter != null ) {
+                if (mAdapter != null) {
                     mAdapter.close();
                 }
-                if ( mReceiver != null ) {
+                if (mReceiver != null) {
                     mReceiver.end();
                 }
             }
         }
 
-        public void push( double[] l, double[] r, int length )
+        public void push(double[] l, double[] r, int length)
         {
-            lock ( mSyncRoot ) {
-                mAdapter.append( l, r, length );
-                if ( mReceiver != null ) {
-                    mReceiver.push( l, r, length );
+            lock (mSyncRoot) {
+                mAdapter.append(l, r, length);
+                if (mReceiver != null) {
+                    mReceiver.push(l, r, length);
                 }
             }
         }
 
-        public void setReceiver( WaveReceiver r )
+        public void setReceiver(WaveReceiver r)
         {
-            if ( mReceiver != null ) {
+            if (mReceiver != null) {
                 mReceiver.end();
             }
             mReceiver = r;

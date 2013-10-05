@@ -18,33 +18,38 @@ using System.Drawing.Design;
 namespace cadencii
 {
 
-    [TypeConverter( typeof( AttackVariationConverter ) )]
+    [TypeConverter(typeof(AttackVariationConverter))]
     public class AttackVariation
     {
         public string mDescription = "";
 
-        public AttackVariation() {
+        public AttackVariation()
+        {
             mDescription = "-";
         }
 
-        public AttackVariation( string description ) {
+        public AttackVariation(string description)
+        {
             this.mDescription = description;
         }
 
-        public bool equals( Object obj ) {
-            if ( obj != null && obj is AttackVariation ) {
-                return ((AttackVariation)obj).mDescription.Equals( mDescription );
+        public bool equals(Object obj)
+        {
+            if (obj != null && obj is AttackVariation) {
+                return ((AttackVariation)obj).mDescription.Equals(mDescription);
             } else {
-                return base.Equals( obj );
+                return base.Equals(obj);
             }
         }
 
-        public override bool Equals( Object obj ) {
-            return equals( obj );
+        public override bool Equals(Object obj)
+        {
+            return equals(obj);
         }
 
-        public override int GetHashCode() {
-            if ( mDescription == null ) {
+        public override int GetHashCode()
+        {
+            if (mDescription == null) {
                 return "".GetHashCode();
             } else {
                 return mDescription.GetHashCode();

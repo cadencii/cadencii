@@ -55,39 +55,39 @@ namespace cadencii
         /// <returns></returns>
         public string getMessage()
         {
-            string message = _( "track" ) + "#" + this.track + " ";
+            string message = _("track") + "#" + this.track + " ";
 #if DEBUG
-            sout.println( "PatchWorkQueue#getMessage; q.clockStart=" + this.clockStart + "; q.clockEnd=" + this.clockEnd );
+            sout.println("PatchWorkQueue#getMessage; q.clockStart=" + this.clockStart + "; q.clockEnd=" + this.clockEnd);
 #endif
-            double start = this.vsq.getSecFromClock( this.clockStart );
+            double start = this.vsq.getSecFromClock(this.clockStart);
             double cend = this.clockEnd;
-            if ( this.clockEnd == int.MaxValue ) {
+            if (this.clockEnd == int.MaxValue) {
                 cend = this.vsq.TotalClocks + 240;
             }
-            double end = this.vsq.getSecFromClock( cend );
-            int istart = (int)Math.Floor( start );
-            int iend = (int)Math.Floor( end );
+            double end = this.vsq.getSecFromClock(cend);
+            int istart = (int)Math.Floor(start);
+            int iend = (int)Math.Floor(end);
             message += istart + "." + ((int)((start - istart) * 100)).ToString("D2") + " " + _("sec");
             message += " - ";
-            message += iend + "." + ((int)((end - iend) * 100)).ToString("D2") + " " + _( "sec" );
+            message += iend + "." + ((int)((end - iend) * 100)).ToString("D2") + " " + _("sec");
 
             return message;
         }
 
         public double getJobAmount()
         {
-            double start = this.vsq.getSecFromClock( this.clockStart );
+            double start = this.vsq.getSecFromClock(this.clockStart);
             double cend = this.clockEnd;
-            if ( this.clockEnd == int.MaxValue ) {
+            if (this.clockEnd == int.MaxValue) {
                 cend = this.vsq.TotalClocks + 240;
             }
-            double end = this.vsq.getSecFromClock( cend );
+            double end = this.vsq.getSecFromClock(cend);
             return (end - start) * vsq.config.SamplingRate;
         }
 
-        private static string _( string id )
+        private static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
     }
 

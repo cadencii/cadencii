@@ -15,8 +15,9 @@
 using System;
 using cadencii;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void SelectedEventChangedEventHandler( Object sender, bool foo );
+    public delegate void SelectedEventChangedEventHandler(Object sender, bool foo);
 
 }

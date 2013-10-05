@@ -11,12 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// ドッキング可能なパネルの状態を表す列挙型
     /// </summary>
-    public enum PanelState {
+    public enum PanelState
+    {
         /// <summary>
         /// 非表示状態
         /// </summary>

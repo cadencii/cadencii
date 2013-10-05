@@ -35,7 +35,7 @@ namespace cadencii.vsq
 
         public Object clone()
         {
-            return new TempoTableEntry( Clock, Tempo, Time );
+            return new TempoTableEntry(Clock, Tempo, Time);
         }
 
         public object Clone()
@@ -43,7 +43,7 @@ namespace cadencii.vsq
             return clone();
         }
 
-        public TempoTableEntry( int clock, int _tempo, double _time )
+        public TempoTableEntry(int clock, int _tempo, double _time)
         {
             this.Clock = clock;
             this.Tempo = _tempo;
@@ -54,19 +54,19 @@ namespace cadencii.vsq
         {
         }
 
-        public int compareTo( TempoTableEntry entry )
+        public int compareTo(TempoTableEntry entry)
         {
             return this.Clock - entry.Clock;
         }
 
-        public int CompareTo( TempoTableEntry entry )
+        public int CompareTo(TempoTableEntry entry)
         {
-            return compareTo( entry );
+            return compareTo(entry);
         }
 
-        public bool Equals( TempoTableEntry entry )
+        public bool Equals(TempoTableEntry entry)
         {
-            if ( this.Clock == entry.Clock ) {
+            if (this.Clock == entry.Clock) {
                 return true;
             } else {
                 return false;

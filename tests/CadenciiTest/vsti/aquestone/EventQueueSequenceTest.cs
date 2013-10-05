@@ -16,14 +16,14 @@ namespace cadencii.test.dsp.generator
             var sequence = new EventQueueSequence();
 
             {
-                Assert.False( sequence.keyIterator().Count() == 0 );
+                Assert.False(sequence.keyIterator().Count() == 0);
             }
 
             {
-                var queue = sequence.get( 0 );
+                var queue = sequence.get(0);
                 var iterator = sequence.keyIterator();
-                Assert.True( iterator.Count() == 1 );
-                Assert.AreEqual( 0, iterator.First() );
+                Assert.True(iterator.Count() == 1);
+                Assert.AreEqual(0, iterator.First());
             }
         }
     }

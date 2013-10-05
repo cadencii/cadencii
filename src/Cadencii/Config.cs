@@ -24,12 +24,12 @@ namespace cadencii
 
         static Config()
         {
-            mDirectives[ "script"] =  true ;
-            mDirectives[ "vocaloid"] =  true ;
-            mDirectives[ "aquestone"] =  true ;
-            mDirectives[ "midi"] =  true ;
-            mDirectives[ "debug"] =  false ;
-            mDirectives[ "property"] =  true ;
+            mDirectives["script"] = true;
+            mDirectives["vocaloid"] = true;
+            mDirectives["aquestone"] = true;
+            mDirectives["midi"] = true;
+            mDirectives["debug"] = false;
+            mDirectives["property"] = true;
         }
 
         public static string getWineVersion()
@@ -40,8 +40,8 @@ namespace cadencii
         public static SortedDictionary<string, Boolean> getDirectives()
         {
             SortedDictionary<string, Boolean> ret = new SortedDictionary<string, Boolean>();
-            foreach (var key in mDirectives.Keys){
-                ret[ key] =  mDirectives[ key ] ;
+            foreach (var key in mDirectives.Keys) {
+                ret[key] = mDirectives[key];
             }
             return ret;
         }

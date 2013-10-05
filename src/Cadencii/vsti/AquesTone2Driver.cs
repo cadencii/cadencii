@@ -50,7 +50,7 @@ namespace cadencii
             /// </summary>
             /// <param name="lineIndex">行番号</param>
             /// <param name="columnIndex">カラム番号</param>
-            public SyllablePosition( int lineIndex, int columnIndex )
+            public SyllablePosition(int lineIndex, int columnIndex)
             {
                 this.lineIndex = lineIndex;
                 this.columnIndex = columnIndex;
@@ -68,7 +68,7 @@ namespace cadencii
         /// </summary>
         private static readonly Dictionary<string, SyllablePosition> syllableMap;
 
-        private static readonly SingerConfig lina_ = new SingerConfig( "Lina", 0, 0 );
+        private static readonly SingerConfig lina_ = new SingerConfig("Lina", 0, 0);
 
         private static readonly List<SingerConfig> singers_ = new List<SingerConfig>() { lina_ };
 
@@ -87,15 +87,15 @@ namespace cadencii
                 "ya", "ye", "yo", "yu", "za", "ze", "zo", "zu","a", "e", "i", "n", "o wo", "u" };
 
             syllableMap = new Dictionary<string, SyllablePosition>();
-            for( int i = 0; i < koeFileContents.Length; ++i) {
+            for (int i = 0; i < koeFileContents.Length; ++i) {
                 string line = koeFileContents[i];
-                if ( line.Contains( " " ) ) {
-                    string[] splitted = line.Split( new char[] { ' ' } );
-                    for ( int j = 0; j < splitted.Length; ++j ) {
-                        syllableMap.Add( splitted[j], new SyllablePosition( i, j ) );
+                if (line.Contains(" ")) {
+                    string[] splitted = line.Split(new char[] { ' ' });
+                    for (int j = 0; j < splitted.Length; ++j) {
+                        syllableMap.Add(splitted[j], new SyllablePosition(i, j));
                     }
                 } else {
-                    syllableMap.Add( line, new SyllablePosition( i, 0 ) );
+                    syllableMap.Add(line, new SyllablePosition(i, 0));
                 }
             }
         }
@@ -104,8 +104,8 @@ namespace cadencii
         /// AquesTone2 DLL のパスを指定してドライバを初期化する
         /// </summary>
         /// <param name="dllPath">AquesTone2 VSTi DLL のパス</param>
-        public AquesTone2Driver( string dllPath )
-            : base( dllPath )
+        public AquesTone2Driver(string dllPath)
+            : base(dllPath)
         {
         }
 
@@ -125,11 +125,11 @@ namespace cadencii
         /// <param name="dynamics">Dynamics</param>
         /// <param name="phrase">歌詞</param>
         /// <returns>Note On のための MIDI イベント列</returns>
-        public MidiEvent[] createNoteOnEvent( int note, int dynamics, string phrase )
+        public MidiEvent[] createNoteOnEvent(int note, int dynamics, string phrase)
         {
             var matcher = new SyllableMatcher();
-            var syllable = matcher.find( phrase );
-            if ( syllableMap.ContainsKey( syllable ) ) {
+            var syllable = matcher.find(phrase);
+            if (syllableMap.ContainsKey(syllable)) {
                 var position = syllableMap[syllable];
                 int lineIndex = position.lineIndex;
                 int columnIndex = position.columnIndex;
@@ -140,27 +140,27 @@ namespace cadencii
                     MidiEvent moveLine = new MidiEvent();
                     moveLine.firstByte = 0xB0;
                     moveLine.data = new[] { 0x31, lineIndex };
-                    result.Add( moveLine );
+                    result.Add(moveLine);
                 }
-                for ( int i = 1; i <= columnIndex; ++i ) {
+                for (int i = 1; i <= columnIndex; ++i) {
                     {
                         MidiEvent dummyNoteOn = new MidiEvent();
                         dummyNoteOn.firstByte = 0x90;
                         dummyNoteOn.data = new int[] { note, 0x40 };
-                        result.Add( dummyNoteOn );
+                        result.Add(dummyNoteOn);
                     }
                     {
                         MidiEvent dummyNoteOff = new MidiEvent();
                         dummyNoteOff.firstByte = 0x80;
                         dummyNoteOff.data = new int[] { note, 0x40 };
-                        result.Add( dummyNoteOff );
+                        result.Add(dummyNoteOff);
                     }
                 }
                 {
                     MidiEvent noteOn = new MidiEvent();
                     noteOn.firstByte = 0x90;
                     noteOn.data = new int[] { note, dynamics };
-                    result.Add( noteOn );
+                    result.Add(noteOn);
                 }
                 return result.ToArray();
             } else {
@@ -173,7 +173,7 @@ namespace cadencii
         /// </summary>
         /// <param name="program">プログラムチェンジ</param>
         /// <returns>イベント</returns>
-        private ParameterEvent[] createSingerEvent( int program )
+        private ParameterEvent[] createSingerEvent(int program)
         {
             return new ParameterEvent[] { };
         }
@@ -198,9 +198,9 @@ namespace cadencii
         /// </summary>
         /// <param name="program_change">プログラムチェンジ</param>
         /// <returns>歌手設定。該当する歌手設定がなければ null を返す</returns>
-        public static SingerConfig getSingerConfig( int program_change )
+        public static SingerConfig getSingerConfig(int program_change)
         {
-            return singers_.FirstOrDefault( ( singer_config ) => singer_config.Program == program_change );
+            return singers_.FirstOrDefault((singer_config) => singer_config.Program == program_change);
         }
 
         /// <summary>

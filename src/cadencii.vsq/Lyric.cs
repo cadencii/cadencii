@@ -40,7 +40,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getXmlElementName( string name )
+        public static string getXmlElementName(string name)
         {
             return name;
         }
@@ -52,11 +52,11 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equalsForSynth( Lyric item )
+        public bool equalsForSynth(Lyric item)
         {
-            if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
-            if ( this.getPhoneticSymbol() != item.getPhoneticSymbol() ) return false;
-            if ( this.getConsonantAdjustment() != item.getConsonantAdjustment() ) return false;
+            if (this.PhoneticSymbolProtected != item.PhoneticSymbolProtected) return false;
+            if (this.getPhoneticSymbol() != item.getPhoneticSymbol()) return false;
+            if (this.getConsonantAdjustment() != item.getConsonantAdjustment()) return false;
             return true;
         }
 
@@ -65,11 +65,11 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equals( Lyric item )
+        public bool equals(Lyric item)
         {
-            if ( !equalsForSynth( item ) ) return false;
-            if ( this.Phrase != item.Phrase ) return false;
-            if ( this.UnknownFloat != item.UnknownFloat ) return false;
+            if (!equalsForSynth(item)) return false;
+            if (this.Phrase != item.Phrase) return false;
+            if (this.UnknownFloat != item.UnknownFloat) return false;
             return true;
         }
 
@@ -83,8 +83,7 @@ namespace cadencii.vsq
             List<int> arr = getConsonantAdjustmentList();
             int size = arr.Count;
 
-            for ( int i = 0; i < size; i++ )
-            {
+            for (int i = 0; i < size; i++) {
                 int v = arr[i];
                 ret += (i == 0 ? "" : " ") + v;
             }
@@ -95,27 +94,23 @@ namespace cadencii.vsq
         /// Consonant Adjustmentを文字列形式で設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setConsonantAdjustment( string value )
+        public void setConsonantAdjustment(string value)
         {
             List<string> spl = new List<string>();
             spl = new List<string>(value.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries));
 
             int size = spl.Count;
             List<int> arr = new List<int>();
-            for ( int i = 0; i < size; i++ )
-            {
+            for (int i = 0; i < size; i++) {
                 int v = 64;
-                try
-                {
-                    v = int.Parse( spl[i] );
+                try {
+                    v = int.Parse(spl[i]);
+                } catch (Exception ex) {
+                    serr.println("Lyric#setCosonantAdjustment; ex=" + ex);
                 }
-                catch ( Exception ex )
-                {
-                    serr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
-                }
-                arr.Add( v );
+                arr.Add(v);
             }
-            setConsonantAdjustmentList( arr );
+            setConsonantAdjustmentList(arr);
         }
 
         /// <summary>
@@ -129,7 +124,7 @@ namespace cadencii.vsq
             }
             set
             {
-                setConsonantAdjustment( value );
+                setConsonantAdjustment(value);
             }
         }
 
@@ -139,21 +134,18 @@ namespace cadencii.vsq
         /// <returns></returns>
         public List<int> getConsonantAdjustmentList()
         {
-            if ( mConsonantAdjustments != null )
-            {
+            if (mConsonantAdjustments != null) {
                 return mConsonantAdjustments;
             }
-            if ( mPhoneticSymbols == null )
-            {
+            if (mPhoneticSymbols == null) {
                 mConsonantAdjustments = new List<int>();
                 return mConsonantAdjustments;
             }
 
             mConsonantAdjustments.Clear();
-            for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
-            {
-                int v = VsqPhoneticSymbol.isConsonant( mPhoneticSymbols[i] ) ? 64 : 0;
-                mConsonantAdjustments.Add( v );
+            for (int i = 0; i < mPhoneticSymbols.Count; i++) {
+                int v = VsqPhoneticSymbol.isConsonant(mPhoneticSymbols[i]) ? 64 : 0;
+                mConsonantAdjustments.Add(v);
             }
             return mConsonantAdjustments;
         }
@@ -162,17 +154,15 @@ namespace cadencii.vsq
         /// Consonant Adjustmentを、整数配列形式で設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setConsonantAdjustmentList( List<int> value )
+        public void setConsonantAdjustmentList(List<int> value)
         {
-            if ( value == null )
-            {
+            if (value == null) {
                 return;
             }
             mConsonantAdjustments.Clear();
-            for ( int i = 0; i < value.Count; i++ )
-            {
+            for (int i = 0; i < value.Count; i++) {
                 int v = value[i];
-                mConsonantAdjustments.Add( v );
+                mConsonantAdjustments.Add(v);
             }
         }
 
@@ -185,17 +175,14 @@ namespace cadencii.vsq
             Lyric result = new Lyric();
             result.Phrase = this.Phrase;
             result.mPhoneticSymbols = new List<string>();
-            for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
-            {
-                result.mPhoneticSymbols.Add( mPhoneticSymbols[i] );
+            for (int i = 0; i < mPhoneticSymbols.Count; i++) {
+                result.mPhoneticSymbols.Add(mPhoneticSymbols[i]);
             }
             result.UnknownFloat = this.UnknownFloat;
-            if ( mConsonantAdjustments != null )
-            {
+            if (mConsonantAdjustments != null) {
                 result.mConsonantAdjustments = new List<int>();
-                for ( int i = 0; i < mConsonantAdjustments.Count; i++ )
-                {
-                    result.mConsonantAdjustments.Add( mConsonantAdjustments[i] );
+                for (int i = 0; i < mConsonantAdjustments.Count; i++) {
+                    result.mConsonantAdjustments.Add(mConsonantAdjustments[i]);
                 }
             }
             result.PhoneticSymbolProtected = PhoneticSymbolProtected;
@@ -219,10 +206,10 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="phrase">歌詞</param>
         /// <param name="phonetic_symbol">発音記号</param>
-        public Lyric( string phrase, string phonetic_symbol )
+        public Lyric(string phrase, string phonetic_symbol)
         {
             Phrase = phrase;
-            setPhoneticSymbol( phonetic_symbol );
+            setPhoneticSymbol(phonetic_symbol);
             UnknownFloat = 1.0f;
         }
 
@@ -230,120 +217,86 @@ namespace cadencii.vsq
         /// 文字列(ex."a","a",0.0000,0.0)からのコンストラクタ
         /// </summary>
         /// <param name="line"></param>
-        public Lyric( string line )
+        public Lyric(string line)
         {
-            int len = PortUtil.getStringLength( line );
-            if ( len == 0 )
-            {
+            int len = PortUtil.getStringLength(line);
+            if (len == 0) {
                 Phrase = "a";
-                setPhoneticSymbol( "a" );
+                setPhoneticSymbol("a");
                 UnknownFloat = 1.0f;
                 PhoneticSymbolProtected = false;
-                setConsonantAdjustment( "0" );
+                setConsonantAdjustment("0");
                 return;
             }
             int indx = -1;
             int dquote_count = 0;
             string work = "";
             string consonant_adjustment = "";
-            for ( int i = 0; i < len; i++ )
-            {
+            for (int i = 0; i < len; i++) {
                 char c = line[i];
-                if ( c == ',' )
-                {
-                    if ( dquote_count % 2 == 0 )
-                    {
+                if (c == ',') {
+                    if (dquote_count % 2 == 0) {
                         // ,の左側に偶数個の"がある場合→,は区切り文字
                         indx++;
-                        if ( indx == 0 )
-                        {
+                        if (indx == 0) {
                             // Phrase
-                            work = work.Replace( "\"\"", "\"" );  // "は""として保存される
-                            if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) )
-                            {
+                            work = work.Replace("\"\"", "\"");  // "は""として保存される
+                            if (work.StartsWith("\"") && work.EndsWith("\"")) {
                                 int l = work.Length;
-                                if ( l > 2 )
-                                {
-                                    Phrase = work.Substring( 1, l - 2 );
-                                }
-                                else
-                                {
+                                if (l > 2) {
+                                    Phrase = work.Substring(1, l - 2);
+                                } else {
                                     Phrase = "a";
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 Phrase = work;
                             }
                             work = "";
-                        }
-                        else if ( indx == 1 )
-                        {
+                        } else if (indx == 1) {
                             // symbols
                             string symbols = "";
-                            if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) )
-                            {
-                                int l = PortUtil.getStringLength( work );
-                                if ( l > 2 )
-                                {
-                                    symbols = work.Substring( 1, l - 2 );
-                                }
-                                else
-                                {
+                            if (work.StartsWith("\"") && work.EndsWith("\"")) {
+                                int l = PortUtil.getStringLength(work);
+                                if (l > 2) {
+                                    symbols = work.Substring(1, l - 2);
+                                } else {
                                     symbols = "a";
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 symbols = work;
                             }
-                            setPhoneticSymbol( symbols );
+                            setPhoneticSymbol(symbols);
                             work = "";
-                        }
-                        else if ( indx == 2 )
-                        {
+                        } else if (indx == 2) {
                             // UnknownFloat
-                            UnknownFloat = (float)double.Parse( work );
+                            UnknownFloat = (float)double.Parse(work);
                             work = "";
-                        }
-                        else
-                        {
-                            if ( indx - 3 < mPhoneticSymbols.Count )
-                            {
+                        } else {
+                            if (indx - 3 < mPhoneticSymbols.Count) {
                                 // consonant adjustment
-                                if ( indx - 3 == 0 )
-                                {
+                                if (indx - 3 == 0) {
                                     consonant_adjustment += work;
-                                }
-                                else
-                                {
+                                } else {
                                     consonant_adjustment += "," + work;
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 // protected
                                 PhoneticSymbolProtected = (work == "1");
                             }
                             work = "";
                         }
-                    }
-                    else
-                    {
+                    } else {
                         // ,の左側に奇数個の"がある場合→,は歌詞等の一部
                         work += "" + c;
                     }
-                }
-                else
-                {
+                } else {
                     work += "" + c;
-                    if ( c == '"' )
-                    {
+                    if (c == '"') {
                         dquote_count++;
                     }
                 }
             }
-            setConsonantAdjustment( consonant_adjustment );
+            setConsonantAdjustment(consonant_adjustment);
         }
 
         /// <summary>
@@ -353,8 +306,7 @@ namespace cadencii.vsq
         {
             List<string> symbol = getPhoneticSymbolList();
             string ret = "";
-            for ( int i = 0; i < symbol.Count; i++ )
-            {
+            for (int i = 0; i < symbol.Count; i++) {
                 ret += (i == 0 ? "" : " ") + symbol[i];
             }
             return ret;
@@ -363,68 +315,56 @@ namespace cadencii.vsq
         /// <summary>
         /// この歌詞の発音記号を設定します。
         /// </summary>
-        public void setPhoneticSymbol( string value )
+        public void setPhoneticSymbol(string value)
         {
-            string s = value.Replace( "  ", " " );
+            string s = value.Replace("  ", " ");
 
             // 古い発音記号を保持しておく
             List<string> old_symbol = null;
-            if ( mPhoneticSymbols != null )
-            {
+            if (mPhoneticSymbols != null) {
                 int count = mPhoneticSymbols.Count;
                 old_symbol = new List<string>();
-                for ( int i = 0; i < count; i++ )
-                {
-                    old_symbol.Add( mPhoneticSymbols[i] );
+                for (int i = 0; i < count; i++) {
+                    old_symbol.Add(mPhoneticSymbols[i]);
                 }
             }
 
             // 古いconsonant adjustmentを保持しておく
             List<int> old_adjustment = null;
-            if ( mConsonantAdjustments != null )
-            {
+            if (mConsonantAdjustments != null) {
                 old_adjustment = new List<int>();
                 int count = mConsonantAdjustments.Count;
-                for ( int i = 0; i < count; i++ )
-                {
-                    old_adjustment.Add( mConsonantAdjustments[i] );
+                for (int i = 0; i < count; i++) {
+                    old_adjustment.Add(mConsonantAdjustments[i]);
                 }
             }
 
-            string[] spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
-            if ( mPhoneticSymbols == null )
-            {
+            string[] spl = PortUtil.splitString(s, new char[] { ' ' }, 16, true);
+            if (mPhoneticSymbols == null) {
                 mPhoneticSymbols = new List<string>();
             }
             int size = spl.Length;
             mPhoneticSymbols.Clear();
-            for ( int i = 0; i < size; i++ )
-            {
-                mPhoneticSymbols.Add( spl[i] );
+            for (int i = 0; i < size; i++) {
+                mPhoneticSymbols.Add(spl[i]);
             }
-            for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
-            {
-                mPhoneticSymbols[i] = mPhoneticSymbols[i].Replace( "\\" + "\\", "\\" );
+            for (int i = 0; i < mPhoneticSymbols.Count; i++) {
+                mPhoneticSymbols[i] = mPhoneticSymbols[i].Replace("\\" + "\\", "\\");
             }
 
             // consonant adjustmentを更新
-            if ( mConsonantAdjustments == null ||
-                (mConsonantAdjustments != null && mConsonantAdjustments.Count != mPhoneticSymbols.Count) )
-            {
+            if (mConsonantAdjustments == null ||
+                (mConsonantAdjustments != null && mConsonantAdjustments.Count != mPhoneticSymbols.Count)) {
                 mConsonantAdjustments = new List<int>();
-                for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
-                {
-                    mConsonantAdjustments.Add( 0 );
+                for (int i = 0; i < mPhoneticSymbols.Count; i++) {
+                    mConsonantAdjustments.Add(0);
                 }
             }
 
             // 古い発音記号と同じなら、古い値を使う
-            if ( old_symbol != null )
-            {
-                for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
-                {
-                    if ( i >= old_symbol.Count )
-                    {
+            if (old_symbol != null) {
+                for (int i = 0; i < mPhoneticSymbols.Count; i++) {
+                    if (i >= old_symbol.Count) {
                         break;
                     }
                     string s0 = mPhoneticSymbols[i];
@@ -432,13 +372,10 @@ namespace cadencii.vsq
                     bool use_old_value = (old_symbol != null && i < old_symbol.Count) &&
                                             (s0 == s1) &&
                                             (old_adjustment != null && i < old_adjustment.Count);
-                    if ( use_old_value )
-                    {
-                        mConsonantAdjustments[i] = VsqPhoneticSymbol.isConsonant( mPhoneticSymbols[i] ) ? old_adjustment[i] : 0;
-                    }
-                    else
-                    {
-                        mConsonantAdjustments[i] = VsqPhoneticSymbol.isConsonant( mPhoneticSymbols[i] ) ? 64 : 0;
+                    if (use_old_value) {
+                        mConsonantAdjustments[i] = VsqPhoneticSymbol.isConsonant(mPhoneticSymbols[i]) ? old_adjustment[i] : 0;
+                    } else {
+                        mConsonantAdjustments[i] = VsqPhoneticSymbol.isConsonant(mPhoneticSymbols[i]) ? 64 : 0;
                     }
                 }
             }
@@ -455,14 +392,13 @@ namespace cadencii.vsq
             }
             set
             {
-                setPhoneticSymbol( value );
+                setPhoneticSymbol(value);
             }
         }
 
         public List<string> getPhoneticSymbolList()
         {
-            if ( mPhoneticSymbols == null )
-            {
+            if (mPhoneticSymbols == null) {
                 mPhoneticSymbols = new List<string>();
             }
             return mPhoneticSymbols;
@@ -473,41 +409,33 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="add_quatation_mark">クォーテーションマークを付けるかどうか</param>
         /// <returns>変換後の文字列</returns>
-        public string toString( bool add_quatation_mark )
+        public string toString(bool add_quatation_mark)
         {
             string quot = (add_quatation_mark ? "\"" : "");
             string result;
-            string phrase = (this.Phrase == null) ? "" : this.Phrase.Replace( "\"", "\"\"" );
+            string phrase = (this.Phrase == null) ? "" : this.Phrase.Replace("\"", "\"\"");
             result = quot + phrase + quot + ",";
             List<string> symbol = getPhoneticSymbolList();
             string strSymbol = getPhoneticSymbol();
-            if ( !add_quatation_mark )
-            {
-                if ( strSymbol == null || (strSymbol != null && strSymbol == "") )
-                {
+            if (!add_quatation_mark) {
+                if (strSymbol == null || (strSymbol != null && strSymbol == "")) {
                     strSymbol = "u:";
                 }
             }
-            result += quot + strSymbol + quot + "," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
-            result = result.Replace( "\\" + "\\", "\\" );
-            if ( mConsonantAdjustments == null )
-            {
+            result += quot + strSymbol + quot + "," + PortUtil.formatDecimal("0.000000", UnknownFloat);
+            result = result.Replace("\\" + "\\", "\\");
+            if (mConsonantAdjustments == null) {
                 mConsonantAdjustments = new List<int>();
-                for ( int i = 0; i < symbol.Count; i++ )
-                {
-                    mConsonantAdjustments.Add( VsqPhoneticSymbol.isConsonant( symbol[i] ) ? 64 : 0 );
+                for (int i = 0; i < symbol.Count; i++) {
+                    mConsonantAdjustments.Add(VsqPhoneticSymbol.isConsonant(symbol[i]) ? 64 : 0);
                 }
             }
-            for ( int i = 0; i < mConsonantAdjustments.Count; i++ )
-            {
+            for (int i = 0; i < mConsonantAdjustments.Count; i++) {
                 result += "," + mConsonantAdjustments[i];
             }
-            if ( PhoneticSymbolProtected )
-            {
+            if (PhoneticSymbolProtected) {
                 result += ",1";
-            }
-            else
-            {
+            } else {
                 result += ",0";
             }
             return result;
@@ -515,7 +443,7 @@ namespace cadencii.vsq
 
         public override string ToString()
         {
-            return toString( true );
+            return toString(true);
         }
     }
 

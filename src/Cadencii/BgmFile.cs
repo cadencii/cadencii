@@ -13,9 +13,11 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public class BgmFile : ICloneable {
+    public class BgmFile : ICloneable
+    {
         public string file;
         public int feder;
         public int panpot;
@@ -23,7 +25,8 @@ namespace cadencii {
         public bool startAfterPremeasure = true;
         public double readOffsetSeconds = 0.0;
 
-        public Object clone() {
+        public Object clone()
+        {
             BgmFile ret = new BgmFile();
             ret.feder = feder;
             ret.file = file;
@@ -34,7 +37,8 @@ namespace cadencii {
             return ret;
         }
 
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
     }

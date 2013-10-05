@@ -35,7 +35,7 @@ namespace cadencii
             registerEventHandlers();
             setResources();
             m_items = new List<SelectedEventEntry>();
-            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            Util.applyFontRecurse(this, AppManager.editorConfig.getBaseFont());
         }
 
         public bool isEditing()
@@ -43,84 +43,84 @@ namespace cadencii
             return m_editing;
         }
 
-        public void setEditing( bool value )
+        public void setEditing(bool value)
         {
             m_editing = value;
         }
 
         private void popGridItemExpandStatus()
         {
-            if ( propertyGrid.SelectedGridItem == null ) {
+            if (propertyGrid.SelectedGridItem == null) {
                 return;
             }
 
-            GridItem root = findRootGridItem( propertyGrid.SelectedGridItem );
-            if ( root == null ) {
+            GridItem root = findRootGridItem(propertyGrid.SelectedGridItem);
+            if (root == null) {
                 return;
             }
 
-            popGridItemExpandStatusCore( root );
+            popGridItemExpandStatusCore(root);
         }
 
-        private void popGridItemExpandStatusCore( GridItem item )
+        private void popGridItemExpandStatusCore(GridItem item)
         {
-            if ( item.Expandable ) {
-                string s = getGridItemIdentifier( item );
+            if (item.Expandable) {
+                string s = getGridItemIdentifier(item);
                 foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     string key = v.getKey();
-                    if ( key == null ) {
+                    if (key == null) {
                         key = "";
                     }
-                    if ( key.Equals( s ) ) {
+                    if (key.Equals(s)) {
                         item.Expanded = v.getValue();
                         break;
                     }
                 }
             }
-            foreach ( GridItem child in item.GridItems ) {
-                popGridItemExpandStatusCore( child );
+            foreach (GridItem child in item.GridItems) {
+                popGridItemExpandStatusCore(child);
             }
         }
 
         private void pushGridItemExpandStatus()
         {
-            if ( propertyGrid.SelectedGridItem == null ) {
+            if (propertyGrid.SelectedGridItem == null) {
                 return;
             }
 
-            GridItem root = findRootGridItem( propertyGrid.SelectedGridItem );
-            if ( root == null ) {
+            GridItem root = findRootGridItem(propertyGrid.SelectedGridItem);
+            if (root == null) {
                 return;
             }
 
-            pushGridItemExpandStatusCore( root );
+            pushGridItemExpandStatusCore(root);
         }
 
-        private void pushGridItemExpandStatusCore( GridItem item )
+        private void pushGridItemExpandStatusCore(GridItem item)
         {
-            if ( item.Expandable ) {
-                string s = getGridItemIdentifier( item );
+            if (item.Expandable) {
+                string s = getGridItemIdentifier(item);
                 bool found = false;
                 foreach (var v in AppManager.editorConfig.PropertyWindowStatus.ExpandStatus) {
                     string key = v.getKey();
-                    if ( key == null ) {
+                    if (key == null) {
                         continue;
                     }
-                    if ( v.getKey().Equals( s ) ) {
+                    if (v.getKey().Equals(s)) {
                         found = true;
-                        v.setValue( item.Expanded );
+                        v.setValue(item.Expanded);
                     }
                 }
-                if ( !found ) {
-                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.Add( new ValuePairOfStringBoolean( s, item.Expanded ) );
+                if (!found) {
+                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.Add(new ValuePairOfStringBoolean(s, item.Expanded));
                 }
             }
-            foreach ( GridItem child in item.GridItems ) {
-                pushGridItemExpandStatusCore( child );
+            foreach (GridItem child in item.GridItems) {
+                pushGridItemExpandStatusCore(child);
             }
         }
 
-        public void updateValue( int track )
+        public void updateValue(int track)
         {
             m_track = track;
             m_items.Clear();
@@ -137,27 +137,27 @@ namespace cadencii
 
             propertyGrid.SelectedObjects = objs;
             popGridItemExpandStatus();
-            setEditing( false );
+            setEditing(false);
         }
 
-        public void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
+        public void propertyGrid_PropertyValueChanged(Object s, PropertyValueChangedEventArgs e)
         {
             Object[] selobj = propertyGrid.SelectedObjects;
             int len = selobj.Length;
             VsqEvent[] items = new VsqEvent[len];
-            for ( int i = 0; i < len; i++ ) {
+            for (int i = 0; i < len; i++) {
                 SelectedEventEntry proxy = (SelectedEventEntry)selobj[i];
                 items[i] = proxy.editing;
             }
-            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );
-            if ( CommandExecuteRequired != null ) {
-                CommandExecuteRequired( this, run );
+            CadenciiCommand run = new CadenciiCommand(VsqCommand.generateCommandEventReplaceRange(m_track, items));
+            if (CommandExecuteRequired != null) {
+                CommandExecuteRequired(this, run);
             }
-            for ( int i = 0; i < len; i++ ) {
-                AppManager.itemSelection.addEvent( items[i].InternalID );
+            for (int i = 0; i < len; i++) {
+                AppManager.itemSelection.addEvent(items[i].InternalID);
             }
             propertyGrid.Refresh();
-            setEditing( false );
+            setEditing(false);
         }
 
         /// <summary>
@@ -165,12 +165,12 @@ namespace cadencii
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private GridItem findRootGridItem( GridItem item )
+        private GridItem findRootGridItem(GridItem item)
         {
-            if ( item.Parent == null ) {
+            if (item.Parent == null) {
                 return item;
             } else {
-                return findRootGridItem( item.Parent );
+                return findRootGridItem(item.Parent);
             }
         }
 
@@ -179,44 +179,44 @@ namespace cadencii
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private string getGridItemIdentifier( GridItem item )
+        private string getGridItemIdentifier(GridItem item)
         {
-            if ( item.Parent == null ) {
-                if ( item.PropertyDescriptor != null ) {
+            if (item.Parent == null) {
+                if (item.PropertyDescriptor != null) {
                     return item.PropertyDescriptor.Name;
                 } else {
                     return item.Label;
                 }
             } else {
-                if ( item.PropertyDescriptor != null ) {
-                    return getGridItemIdentifier( item.Parent ) + "@" + item.PropertyDescriptor.Name;
+                if (item.PropertyDescriptor != null) {
+                    return getGridItemIdentifier(item.Parent) + "@" + item.PropertyDescriptor.Name;
                 } else {
-                    return getGridItemIdentifier( item.Parent ) + "@" + item.Label;
+                    return getGridItemIdentifier(item.Parent) + "@" + item.Label;
                 }
             }
         }
 
-        private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e )
+        private void propertyGrid_SelectedGridItemChanged(Object sender, SelectedGridItemChangedEventArgs e)
         {
-            setEditing( true );
+            setEditing(true);
         }
 
-        public void propertyGrid_Enter( Object sender, EventArgs e )
+        public void propertyGrid_Enter(Object sender, EventArgs e)
         {
-            setEditing( true );
+            setEditing(true);
         }
 
-        public void propertyGrid_Leave( Object sender, EventArgs e )
+        public void propertyGrid_Leave(Object sender, EventArgs e)
         {
-            setEditing( false );
+            setEditing(false);
         }
 
         private void registerEventHandlers()
         {
-            propertyGrid.SelectedGridItemChanged += new SelectedGridItemChangedEventHandler( propertyGrid_SelectedGridItemChanged );
-            propertyGrid.Leave += new EventHandler( propertyGrid_Leave );
-            propertyGrid.Enter += new EventHandler( propertyGrid_Enter );
-            propertyGrid.PropertyValueChanged += new PropertyValueChangedEventHandler( propertyGrid_PropertyValueChanged );
+            propertyGrid.SelectedGridItemChanged += new SelectedGridItemChangedEventHandler(propertyGrid_SelectedGridItemChanged);
+            propertyGrid.Leave += new EventHandler(propertyGrid_Leave);
+            propertyGrid.Enter += new EventHandler(propertyGrid_Enter);
+            propertyGrid.PropertyValueChanged += new PropertyValueChangedEventHandler(propertyGrid_PropertyValueChanged);
         }
 
         private void setResources()
@@ -233,12 +233,12 @@ namespace cadencii
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if ( disposing && (components != null) ) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region コンポーネント デザイナで生成されたコード
@@ -256,20 +256,20 @@ namespace cadencii
             // 
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.HelpVisible = false;
-            this.propertyGrid.Location = new System.Drawing.Point( 0, 0 );
+            this.propertyGrid.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.propertyGrid.Size = new System.Drawing.Size( 191, 298 );
+            this.propertyGrid.Size = new System.Drawing.Size(191, 298);
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.ToolbarVisible = false;
             // 
             // PropertyPanel
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Controls.Add( this.propertyGrid );
+            this.Controls.Add(this.propertyGrid);
             this.Name = "PropertyPanel";
-            this.Size = new System.Drawing.Size( 191, 298 );
-            this.ResumeLayout( false );
+            this.Size = new System.Drawing.Size(191, 298);
+            this.ResumeLayout(false);
 
         }
 

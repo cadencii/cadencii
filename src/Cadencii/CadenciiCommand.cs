@@ -16,7 +16,8 @@ using System.Collections.Generic;
 using cadencii.vsq;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// Undo/Redoを実現するためのコマンド。
@@ -24,32 +25,38 @@ namespace cadencii {
     /// Boare.Cadencii.VsqFileExレベルのコマンドは、Argsに処理内容を格納して取り扱う。
     /// </summary>
     [Serializable]
-    public class CadenciiCommand : ICommand {
+    public class CadenciiCommand : ICommand
+    {
         public CadenciiCommandType type;
         public VsqCommand vsqCommand;
         private ICommand mParent;
         public Object[] args;
         private List<ICommand> mChild = new List<ICommand>();
 
-        public CadenciiCommand( VsqCommand command ) {
+        public CadenciiCommand(VsqCommand command)
+        {
             type = CadenciiCommandType.VSQ_COMMAND;
             vsqCommand = command;
             mChild = new List<ICommand>();
         }
 
-        public CadenciiCommand() {
+        public CadenciiCommand()
+        {
             mChild = new List<ICommand>();
         }
 
-        public ICommand getParent() {
+        public ICommand getParent()
+        {
             return mParent;
         }
 
-        public void setParent( ICommand value ) {
+        public void setParent(ICommand value)
+        {
             mParent = value;
         }
 
-        public List<ICommand> getChild() {
+        public List<ICommand> getChild()
+        {
             return mChild;
         }
     }

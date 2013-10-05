@@ -26,7 +26,7 @@ namespace cadencii.vsq
         {
         }
 
-        public UstEventProperty( string name, string value )
+        public UstEventProperty(string name, string value)
         {
             Name = name;
             Value = value;

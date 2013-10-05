@@ -36,23 +36,23 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getXmlElementName( string name )
+        public static string getXmlElementName(string name)
         {
             return name;
         }
 
-        public Lyric getLyricAt( int index )
+        public Lyric getLyricAt(int index)
         {
-            if ( index == 0 ) {
+            if (index == 0) {
                 return L0;
             } else {
                 return Trailing[index - 1];
             }
         }
 
-        public void setLyricAt( int index, Lyric value )
+        public void setLyricAt(int index, Lyric value)
         {
-            if ( index == 0 ) {
+            if (index == 0) {
                 L0 = value;
             } else {
                 Trailing[index - 1] = value;
@@ -69,9 +69,9 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="phrase">歌詞</param>
         /// <param name="phonetic_symbol">発音記号</param>
-        public LyricHandle( string phrase, string phonetic_symbol )
+        public LyricHandle(string phrase, string phonetic_symbol)
         {
-            L0 = new Lyric( phrase, phonetic_symbol );
+            L0 = new Lyric(phrase, phonetic_symbol);
         }
 
         public Object clone()
@@ -80,9 +80,9 @@ namespace cadencii.vsq
             ret.Index = Index;
             ret.L0 = (Lyric)L0.clone();
             int c = Trailing.Count;
-            for ( int i = 0; i < c; i++ ) {
-                Lyric buf = (Lyric)Trailing[ i ].clone();
-                ret.Trailing.Add( buf );
+            for (int i = 0; i < c; i++) {
+                Lyric buf = (Lyric)Trailing[i].clone();
+                ret.Trailing.Add(buf);
             }
             return ret;
         }

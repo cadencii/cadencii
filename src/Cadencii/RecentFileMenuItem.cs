@@ -24,7 +24,7 @@ namespace cadencii
     {
         private string mFilePath;
 
-        public RecentFileMenuItem( string file_path )
+        public RecentFileMenuItem(string file_path)
             : base()
         {
             mFilePath = file_path;

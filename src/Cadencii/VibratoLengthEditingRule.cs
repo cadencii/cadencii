@@ -13,12 +13,14 @@
  */
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// 音符長さが変更されるとき、ビブラート長さがどのように影響を受けるかを決定する列挙子
     /// </summary>
-    public enum VibratoLengthEditingRule {
+    public enum VibratoLengthEditingRule
+    {
         /// <summary>
         /// 音符頭からビブラート開始位置までのディレイが保存される
         /// </summary>

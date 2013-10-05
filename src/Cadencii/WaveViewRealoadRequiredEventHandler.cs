@@ -16,6 +16,6 @@ using System;
 namespace cadencii
 {
 
-    public delegate void WaveViewRealoadRequiredEventHandler( Object sender, WaveViewRealoadRequiredEventArgs arg );
+    public delegate void WaveViewRealoadRequiredEventHandler(Object sender, WaveViewRealoadRequiredEventArgs arg);
 
 }

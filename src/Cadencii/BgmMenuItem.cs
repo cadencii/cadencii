@@ -23,7 +23,7 @@ namespace cadencii
     {
         private int mBgmIndex;
 
-        public BgmMenuItem( int bgm_index )
+        public BgmMenuItem(int bgm_index)
             : base()
         {
             mBgmIndex = bgm_index;

@@ -50,21 +50,21 @@ namespace cadencii.vsq
         public float Shift;
         public float Unknown = 100;
 
-        public UstVibrato( string line )
+        public UstVibrato(string line)
         {
-            if ( line.ToLower().StartsWith( "vbr=" ) ) {
-                string[] spl = PortUtil.splitString( line, '=' );
-                spl = PortUtil.splitString( spl[1], ',' );
+            if (line.ToLower().StartsWith("vbr=")) {
+                string[] spl = PortUtil.splitString(line, '=');
+                spl = PortUtil.splitString(spl[1], ',');
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
-                if ( spl.Length >= 8 ) {
-                    Length = (float)double.Parse( spl[0] );
-                    Period = (float)double.Parse( spl[1] );
-                    Depth = (float)double.Parse( spl[2] );
-                    In = (float)double.Parse( spl[3] );
-                    Out = (float)double.Parse( spl[4] );
-                    Phase = (float)double.Parse( spl[5] );
-                    Shift = (float)double.Parse( spl[6] );
-                    Unknown = (float)double.Parse( spl[7] );
+                if (spl.Length >= 8) {
+                    Length = (float)double.Parse(spl[0]);
+                    Period = (float)double.Parse(spl[1]);
+                    Depth = (float)double.Parse(spl[2]);
+                    In = (float)double.Parse(spl[3]);
+                    Out = (float)double.Parse(spl[4]);
+                    Phase = (float)double.Parse(spl[5]);
+                    Shift = (float)double.Parse(spl[6]);
+                    Unknown = (float)double.Parse(spl[7]);
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace cadencii.vsq
             return Length;
         }
 
-        public void setLength( float value )
+        public void setLength(float value)
         {
             Length = value;
         }
@@ -96,7 +96,7 @@ namespace cadencii.vsq
         public Object clone()
         {
             UstVibrato ret = new UstVibrato();
-            ret.setLength( Length );
+            ret.setLength(Length);
             ret.Period = Period;
             ret.Depth = Depth;
             ret.In = In;

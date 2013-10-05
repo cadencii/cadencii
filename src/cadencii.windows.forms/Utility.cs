@@ -13,9 +13,11 @@
  */
 using System;
 
-namespace cadencii.windows.forms {
+namespace cadencii.windows.forms
+{
 
-    public static class Utility {
+    public static class Utility
+    {
         public const int MSGBOX_DEFAULT_OPTION = -1;
         public const int MSGBOX_YES_NO_OPTION = 0;
         public const int MSGBOX_YES_NO_CANCEL_OPTION = 1;
@@ -113,40 +115,41 @@ namespace cadencii.windows.forms {
             return text + "(&" + new string((char)value, 1) + ")";
         }
 
-        public static System.Windows.Forms.DialogResult showMessageBox( string text, string caption, int optionType, int messageType ) {
+        public static System.Windows.Forms.DialogResult showMessageBox(string text, string caption, int optionType, int messageType)
+        {
             System.Windows.Forms.DialogResult ret = System.Windows.Forms.DialogResult.Cancel;
             System.Windows.Forms.MessageBoxButtons btn = System.Windows.Forms.MessageBoxButtons.OK;
-            if ( optionType == MSGBOX_YES_NO_CANCEL_OPTION ) {
+            if (optionType == MSGBOX_YES_NO_CANCEL_OPTION) {
                 btn = System.Windows.Forms.MessageBoxButtons.YesNoCancel;
-            } else if ( optionType == MSGBOX_YES_NO_OPTION ) {
+            } else if (optionType == MSGBOX_YES_NO_OPTION) {
                 btn = System.Windows.Forms.MessageBoxButtons.YesNo;
-            } else if ( optionType == MSGBOX_OK_CANCEL_OPTION ) {
+            } else if (optionType == MSGBOX_OK_CANCEL_OPTION) {
                 btn = System.Windows.Forms.MessageBoxButtons.OKCancel;
             } else {
                 btn = System.Windows.Forms.MessageBoxButtons.OK;
             }
 
             System.Windows.Forms.MessageBoxIcon icon = System.Windows.Forms.MessageBoxIcon.None;
-            if ( messageType == MSGBOX_ERROR_MESSAGE ) {
+            if (messageType == MSGBOX_ERROR_MESSAGE) {
                 icon = System.Windows.Forms.MessageBoxIcon.Error;
-            } else if ( messageType == MSGBOX_INFORMATION_MESSAGE ) {
+            } else if (messageType == MSGBOX_INFORMATION_MESSAGE) {
                 icon = System.Windows.Forms.MessageBoxIcon.Information;
-            } else if ( messageType == MSGBOX_PLAIN_MESSAGE ) {
+            } else if (messageType == MSGBOX_PLAIN_MESSAGE) {
                 icon = System.Windows.Forms.MessageBoxIcon.None;
-            } else if ( messageType == MSGBOX_QUESTION_MESSAGE ) {
+            } else if (messageType == MSGBOX_QUESTION_MESSAGE) {
                 icon = System.Windows.Forms.MessageBoxIcon.Question;
-            } else if ( messageType == MSGBOX_WARNING_MESSAGE ) {
+            } else if (messageType == MSGBOX_WARNING_MESSAGE) {
                 icon = System.Windows.Forms.MessageBoxIcon.Warning;
             }
 
-            System.Windows.Forms.DialogResult dr = System.Windows.Forms.MessageBox.Show( text, caption, btn, icon );
-            if ( dr == System.Windows.Forms.DialogResult.OK ) {
+            System.Windows.Forms.DialogResult dr = System.Windows.Forms.MessageBox.Show(text, caption, btn, icon);
+            if (dr == System.Windows.Forms.DialogResult.OK) {
                 ret = System.Windows.Forms.DialogResult.OK;
-            } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {
+            } else if (dr == System.Windows.Forms.DialogResult.Cancel) {
                 ret = System.Windows.Forms.DialogResult.Cancel;
-            } else if ( dr == System.Windows.Forms.DialogResult.Yes ) {
+            } else if (dr == System.Windows.Forms.DialogResult.Yes) {
                 ret = System.Windows.Forms.DialogResult.Yes;
-            } else if ( dr == System.Windows.Forms.DialogResult.No ) {
+            } else if (dr == System.Windows.Forms.DialogResult.No) {
                 ret = System.Windows.Forms.DialogResult.No;
             }
             return ret;

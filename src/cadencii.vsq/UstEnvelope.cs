@@ -45,33 +45,33 @@ namespace cadencii.vsq
         /// UTAUスクリプト形式に記録されているエンベロープの表現に基づき，インスタンスを構成します
         /// </summary>
         /// <param name="line">ustに記録されるエンベロープの記述行</param>
-        public UstEnvelope( string line )
+        public UstEnvelope(string line)
         {
-            if ( !line.ToLower().StartsWith( "envelope=" ) ) {
+            if (!line.ToLower().StartsWith("envelope=")) {
                 return;
             }
-            string[] spl = PortUtil.splitString( line, '=' );
-            if ( spl.Length < 2 ) {
+            string[] spl = PortUtil.splitString(line, '=');
+            if (spl.Length < 2) {
                 return;
             }
-            spl = PortUtil.splitString( spl[1], ',' );
-            if ( spl.Length < 7 ) {
+            spl = PortUtil.splitString(spl[1], ',');
+            if (spl.Length < 7) {
                 return;
             }
             try {
-                p1 = (int)double.Parse( spl[0] );
-                p2 = (int)double.Parse( spl[1] );
-                p3 = (int)double.Parse( spl[2] );
-                v1 = (int)double.Parse( spl[3] );
-                v2 = (int)double.Parse( spl[4] );
-                v3 = (int)double.Parse( spl[5] );
-                v4 = (int)double.Parse( spl[6] );
-                if ( spl.Length == 11 ) {
-                    p4 = (int)double.Parse( spl[8] );
-                    p5 = (int)double.Parse( spl[9] );
-                    v5 = (int)double.Parse( spl[10] );
+                p1 = (int)double.Parse(spl[0]);
+                p2 = (int)double.Parse(spl[1]);
+                p3 = (int)double.Parse(spl[2]);
+                v1 = (int)double.Parse(spl[3]);
+                v2 = (int)double.Parse(spl[4]);
+                v3 = (int)double.Parse(spl[5]);
+                v4 = (int)double.Parse(spl[6]);
+                if (spl.Length == 11) {
+                    p4 = (int)double.Parse(spl[8]);
+                    p5 = (int)double.Parse(spl[9]);
+                    v5 = (int)double.Parse(spl[10]);
                 }
-            } catch ( Exception ex ) {
+            } catch (Exception ex) {
             }
         }
 
@@ -81,7 +81,7 @@ namespace cadencii.vsq
         /// <returns></returns>
         public Object clone()
         {
-            return new UstEnvelope( toString() );
+            return new UstEnvelope(toString());
         }
 
         /// <summary>

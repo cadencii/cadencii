@@ -14,8 +14,9 @@
 
 using System;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public delegate void RenderRequiredEventHandler( Object sender, int tracks );
+    public delegate void RenderRequiredEventHandler(Object sender, int tracks);
 
 }

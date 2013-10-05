@@ -20,19 +20,23 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 
-namespace cadencii.windows.forms {
+namespace cadencii.windows.forms
+{
     /// <summary>
     /// Summary description for BandCollectionEditor.
     /// </summary>
-    public class BandCollectionEditor : System.ComponentModel.Design.CollectionEditor {
-        public BandCollectionEditor( System.Type type )
-            : base( type ) {
+    public class BandCollectionEditor : System.ComponentModel.Design.CollectionEditor
+    {
+        public BandCollectionEditor(System.Type type)
+            : base(type)
+        {
         }
 
-        protected override object SetItems( object editValue, object[] value ) {
-            foreach ( RebarBand band in value ) {
-                if ( !band.Created )
-                    ((RebarBandCollection)editValue).Add( band );
+        protected override object SetItems(object editValue, object[] value)
+        {
+            foreach (RebarBand band in value) {
+                if (!band.Created)
+                    ((RebarBandCollection)editValue).Add(band);
             }
             return editValue;
         }

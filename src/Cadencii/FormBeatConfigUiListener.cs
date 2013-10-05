@@ -12,19 +12,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-    namespace cadencii
+namespace cadencii
+{
+
+    public interface FormBeatConfigUiListener
     {
+        [PureVirtualFunction]
+        void buttonCancelClickedSlot();
 
-            public interface FormBeatConfigUiListener
-            {
-                [PureVirtualFunction]
-                void buttonCancelClickedSlot();
+        [PureVirtualFunction]
+        void buttonOkClickedSlot();
 
-                [PureVirtualFunction]
-                void buttonOkClickedSlot();
+        [PureVirtualFunction]
+        void checkboxEndCheckedChangedSlot();
+    };
 
-                [PureVirtualFunction]
-                void checkboxEndCheckedChangedSlot();
-            };
-
-    }
+}

@@ -20,7 +20,7 @@ namespace cadencii.vsq
         byte m_parameter;
         public byte Value;
 
-        public NrpnData( int clock_, byte parameter, byte value )
+        public NrpnData(int clock_, byte parameter, byte value)
         {
             m_clock = clock_;
             m_parameter = parameter;

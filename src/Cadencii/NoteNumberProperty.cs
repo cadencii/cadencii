@@ -18,7 +18,7 @@ using System.ComponentModel;
 namespace cadencii
 {
 
-    [TypeConverter( typeof( NoteNumberPropertyConverter ) )]
+    [TypeConverter(typeof(NoteNumberPropertyConverter))]
     public class NoteNumberProperty
     {
         public int noteNumber = 60;
@@ -33,21 +33,21 @@ namespace cadencii
             return noteNumber.GetHashCode();
         }
 
-        public override bool Equals( Object obj )
+        public override bool Equals(Object obj)
         {
-            return equals( obj );
+            return equals(obj);
         }
 
-        public bool equals( Object obj )
+        public bool equals(Object obj)
         {
-            if ( obj is NoteNumberProperty ) {
-                if ( noteNumber == ((NoteNumberProperty)obj).noteNumber ) {
+            if (obj is NoteNumberProperty) {
+                if (noteNumber == ((NoteNumberProperty)obj).noteNumber) {
                     return true;
                 } else {
                     return false;
                 }
             } else {
-                return base.Equals( obj );
+                return base.Equals(obj);
             }
         }
     }

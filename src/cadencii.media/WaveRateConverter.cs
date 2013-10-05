@@ -13,7 +13,8 @@
  */
 using System;
 
-namespace cadencii.media {
+namespace cadencii.media
+{
 
     /// <summary>
     /// サンプリングレートを変換しながらWaveファイルを読み込むくためのクラス。
@@ -21,7 +22,8 @@ namespace cadencii.media {
     /// 接頭辞b: 単位が変換後のサンプル数になっている変数
     /// 接頭辞sec: 単位が秒になっている変数
     /// </summary>
-    public class WaveRateConverter {
+    public class WaveRateConverter
+    {
         /// <summary>
         /// Waveデータの読み込み元
         /// </summary>
@@ -63,23 +65,24 @@ namespace cadencii.media {
 
         const int MAX_BUFLEN = 1024;
 
-        public WaveRateConverter( WaveReader wave_reader, int rate ) {
+        public WaveRateConverter(WaveReader wave_reader, int rate)
+        {
             reader = wave_reader;
             aRate = rate;
             bRate = reader.getSampleRate();
 #if DEBUG
-            sout.println( "WaveRateConverter#.ctor; aRate=" + aRate + "; bRate=" + bRate );
+            sout.println("WaveRateConverter#.ctor; aRate=" + aRate + "; bRate=" + bRate);
             //sout.println( "type eny key to exit..." );
             //Console.Read();
 #endif
-            int gcd = (int)math.gcd( aRate, bRate );
+            int gcd = (int)math.gcd(aRate, bRate);
             bUnit = bRate / gcd;
             aUnit = aRate / gcd;
             aTotalSamples = (long)(aRate * (double)reader.getTotalSamples() / (double)bRate);
 
             // バッファの長さはbUnitの倍数にする（補間が楽なので）
             int numUnit = MAX_BUFLEN / bUnit;
-            if ( numUnit <= 0 ) {
+            if (numUnit <= 0) {
                 numUnit = 1;
             }
             bBuflen = numUnit * bUnit;
@@ -87,55 +90,59 @@ namespace cadencii.media {
             bufRight = new double[bBuflen];
         }
 
-        public string getFilePath() {
+        public string getFilePath()
+        {
             return reader.getFilePath();
         }
 
-        public Object getTag() {
-            if ( reader == null ) {
+        public Object getTag()
+        {
+            if (reader == null) {
                 return null;
             } else {
                 return reader.getTag();
             }
         }
 
-        public void setTag( Object value ) {
-            if ( reader != null ) {
-                reader.setTag( value );
+        public void setTag(Object value)
+        {
+            if (reader != null) {
+                reader.setTag(value);
             }
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return aTotalSamples;
         }
 
-        public void read( long index, int length, double[] left, double[] right )
+        public void read(long index, int length, double[] left, double[] right)
         {
-            if ( reader == null ) {
+            if (reader == null) {
                 return;
             }
-            if ( bRate == aRate ) {
-                reader.read( index, length, left, right );
+            if (bRate == aRate) {
+                reader.read(index, length, left, right);
             } else {
                 double secStart = index / (double)aRate;
                 double secEnd = (index + length) / (double)aRate;
                 // bIndexStartサンプルから、bIndexEndサンプルまでを読み込めばOK
                 int aProcessed = 0;
-                while ( aProcessed < length ) {
+                while (aProcessed < length) {
                     int bIndexStart = (int)((double)bRate * (double)(index + aProcessed) / (double)aRate);
                     int bIndexEnd = (int)((double)bRate * (double)(index + length) / (double)aRate) + 1;
                     int bRemain = bIndexEnd - bIndexStart;
                     bRemain = (bRemain > bBuflen) ? bBuflen : bRemain;
-                    reader.read( bIndexStart, bRemain, bufLeft, bufRight );
+                    reader.read(bIndexStart, bRemain, bufLeft, bufRight);
                     // bufLeft[i]のとき bIndex = bIndexStart + bProcessed + i;
                     // left[aProcessed], right[aProcessed]から処理を開始
-                    while ( true ) {
+                    while (true) {
                         int bIndexRequired = (int)((double)bRate * (double)(index + aProcessed) / (double)aRate);
                         int bIndexLocal = bIndexRequired - bIndexStart;
-                        if ( bIndexLocal < 0 ) {
+                        if (bIndexLocal < 0) {
                             break;
                         }
-                        if ( bIndexLocal + 1 >= bBuflen ) {
+                        if (bIndexLocal + 1 >= bBuflen) {
                             break;
                         }
                         double sec0 = bIndexRequired / (double)bRate;
@@ -157,7 +164,7 @@ namespace cadencii.media {
                         right[aProcessed] = y;
 
                         aProcessed++;
-                        if ( aProcessed >= length ) {
+                        if (aProcessed >= length) {
                             break;
                         }
                     }
@@ -165,9 +172,9 @@ namespace cadencii.media {
             }
         }
 
-        public void close() 
+        public void close()
         {
-            if ( reader == null ) {
+            if (reader == null) {
                 return;
             }
             reader.close();

@@ -4,7 +4,8 @@ using System.Text;
 
 using cadencii;
 
-static class Script {
+static class Script
+{
     /*private static EditorManager s_manager;
 
     public static EditorManager Manager {

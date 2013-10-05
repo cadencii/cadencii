@@ -37,12 +37,12 @@ namespace cadencii
         /// </summary>
         /// <param name="clock">時刻(clock 単位)</param>
         /// <returns>指定した時刻での MidiEventQueue</returns>
-        public MidiEventQueue get( int clock )
+        public MidiEventQueue get(int clock)
         {
-            if ( !sequence.ContainsKey( clock ) ) {
+            if (!sequence.ContainsKey(clock)) {
                 sequence[clock] = new MidiEventQueue();
             }
-            return sequence[ clock ];
+            return sequence[clock];
         }
 
         /// <summary>

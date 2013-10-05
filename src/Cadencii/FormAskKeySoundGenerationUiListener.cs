@@ -12,21 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-    namespace cadencii
+namespace cadencii
+{
+
+    using System;
+    using cadencii.windows.forms;
+    using cadencii.apputil;
+
+    public interface FormAskKeySoundGenerationUiListener
     {
+        [PureVirtualFunction]
+        void buttonCancelClickedSlot();
 
-            using System;
-            using cadencii.windows.forms;
-            using cadencii.apputil;
-
-            public interface FormAskKeySoundGenerationUiListener
-            {
-                [PureVirtualFunction]
-                void buttonCancelClickedSlot();
-
-                [PureVirtualFunction]
-                void buttonOkClickedSlot();
-            };
+        [PureVirtualFunction]
+        void buttonOkClickedSlot();
+    };
 
 
-    }
+}

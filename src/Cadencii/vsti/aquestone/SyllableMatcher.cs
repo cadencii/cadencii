@@ -65,12 +65,12 @@ namespace cadencii
         /// </summary>
         /// <param name="phrase">歌詞文字列</param>
         /// <returns>AquesTone2 の音素</returns>
-        public string find( string phrase )
+        public string find(string phrase)
         {
-            string hiragana = KanaDeRomanization.Attach( phrase );
-            string kana = KanaDeRomanization.hiragana2katakana( hiragana );
-            if ( map.ContainsKey( kana ) ) {
-                return map[ kana ];
+            string hiragana = KanaDeRomanization.Attach(phrase);
+            string kana = KanaDeRomanization.hiragana2katakana(hiragana);
+            if (map.ContainsKey(kana)) {
+                return map[kana];
             } else {
                 return "";
             }

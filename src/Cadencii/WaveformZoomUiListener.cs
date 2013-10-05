@@ -11,21 +11,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-    namespace cadencii
+namespace cadencii
+{
+    using System;
+    using cadencii.java.awt;
+
+    public interface WaveformZoomUiListener
     {
-            using System;
-            using cadencii.java.awt;
+        void receivePaintSignal(Graphics g);
 
-            public interface WaveformZoomUiListener
-            {
-                void receivePaintSignal( Graphics g );
+        void receiveMouseDownSignal(int x, int y);
 
-                void receiveMouseDownSignal( int x, int y );
+        void receiveMouseMoveSignal(int x, int y);
 
-                void receiveMouseMoveSignal( int x, int y );
-
-                void receiveMouseUpSignal( int x, int y );
-            };
+        void receiveMouseUpSignal(int x, int y);
+    };
 
 
-    }
+}

@@ -20,60 +20,73 @@ using cadencii.java.io;
 namespace cadencii
 {
 
-    public class AttachedCurve : ICloneable {
+    public class AttachedCurve : ICloneable
+    {
         private List<BezierCurves> mCurves = new List<BezierCurves>();
 
         /// <summary>
         /// XML保存用
         /// </summary>
-        public List<BezierCurves> Curves {
-            get {
+        public List<BezierCurves> Curves
+        {
+            get
+            {
                 return getCurves();
             }
-            set {
-                setCurves( value );
+            set
+            {
+                setCurves(value);
             }
         }
 
-        public List<BezierCurves> getCurves() {
+        public List<BezierCurves> getCurves()
+        {
             return mCurves;
         }
 
-        public void setCurves( List<BezierCurves> value ) {
+        public void setCurves(List<BezierCurves> value)
+        {
             mCurves = value;
         }
 
-        public BezierCurves get( int index ) {
-            return mCurves[ index ];
+        public BezierCurves get(int index)
+        {
+            return mCurves[index];
         }
 
-        public void set( int index, BezierCurves value ) {
-            mCurves[ index] =  value ;
+        public void set(int index, BezierCurves value)
+        {
+            mCurves[index] = value;
         }
 
-        public void add( BezierCurves item ) {
-            mCurves.Add( item );
+        public void add(BezierCurves item)
+        {
+            mCurves.Add(item);
         }
 
-        public void removeElementAt( int index ) {
-            mCurves.RemoveAt( index );
+        public void removeElementAt(int index)
+        {
+            mCurves.RemoveAt(index);
         }
 
-        public void insertElementAt( int position, BezierCurves attached_curve ) {
-            mCurves.Insert( position, attached_curve );
+        public void insertElementAt(int position, BezierCurves attached_curve)
+        {
+            mCurves.Insert(position, attached_curve);
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             AttachedCurve ret = new AttachedCurve();
             ret.mCurves.Clear();
             int c = mCurves.Count;
-            for ( int i = 0; i < c; i++ ) {
-                ret.mCurves.Add( (BezierCurves)mCurves[ i ].clone() );
+            for (int i = 0; i < c; i++) {
+                ret.mCurves.Add((BezierCurves)mCurves[i].clone());
             }
             return ret;
         }
 
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
     }

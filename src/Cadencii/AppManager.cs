@@ -78,27 +78,27 @@ namespace cadencii
         /// <summary>
         /// AttachedCurve用のシリアライザ
         /// </summary>
-        public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
+        public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer(typeof(AttachedCurve));
         /// <summary>
         /// 画面描画に使用する共用のフォントオブジェクト
         /// </summary>
-        public static Font baseFont8 = new Font( "Dialog", Font.PLAIN, FONT_SIZE8 );
+        public static Font baseFont8 = new Font("Dialog", Font.PLAIN, FONT_SIZE8);
         /// <summary>
         /// 画面描画に使用する共用のフォントオブジェクト
         /// </summary>
-        public static Font baseFont9 = new Font( "Dialog", Font.PLAIN, FONT_SIZE9 );
+        public static Font baseFont9 = new Font("Dialog", Font.PLAIN, FONT_SIZE9);
         /// <summary>
         /// 画面描画に使用する共用のフォントオブジェクト
         /// </summary>
-        public static Font baseFont10 = new Font( "Dialog", Font.PLAIN, FONT_SIZE10 );
+        public static Font baseFont10 = new Font("Dialog", Font.PLAIN, FONT_SIZE10);
         /// <summary>
         /// 画面描画に使用する共用のフォントオブジェクト
         /// </summary>
-        public static Font baseFont10Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE10 );
+        public static Font baseFont10Bold = new Font("Dialog", Font.BOLD, FONT_SIZE10);
         /// <summary>
         /// 画面描画に使用する共用のフォントオブジェクト
         /// </summary>
-        public static Font baseFont50Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE50 );
+        public static Font baseFont50Bold = new Font("Dialog", Font.BOLD, FONT_SIZE50);
         /// <summary>
         /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット。
         /// たとえば，文字列の中心軸がy_centerを通るように描画したい場合は，
@@ -232,7 +232,7 @@ namespace cadencii
         /// <summary>
         /// ショートカットキーとして受付可能なキーのリスト
         /// </summary>
-        public static readonly List<Keys> SHORTCUT_ACCEPTABLE = new List<Keys>( new Keys[] {
+        public static readonly List<Keys> SHORTCUT_ACCEPTABLE = new List<Keys>(new Keys[] {
             Keys.A,
             Keys.B,
             Keys.Back,
@@ -314,7 +314,7 @@ namespace cadencii
             Keys.Delete,
             Keys.Home,
             Keys.End,
-        } );
+        });
         /// <summary>
         /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
         /// </summary>
@@ -322,7 +322,7 @@ namespace cadencii
         /// <summary>
         /// よく使うボーダー線の色
         /// </summary>
-        public static readonly Color COLOR_BORDER = new Color( 118, 123, 138 );
+        public static readonly Color COLOR_BORDER = new Color(118, 123, 138);
         #endregion
 
         #region Private Static Fields
@@ -372,7 +372,7 @@ namespace cadencii
         /// <summary>
         /// Ctrlキーを押しながらのマウスドラッグ操作による選択が行われた範囲(単位：クロック)
         /// </summary>
-        public static SelectedRegion mWholeSelectedInterval = new SelectedRegion( 0 );
+        public static SelectedRegion mWholeSelectedInterval = new SelectedRegion(0);
         /// <summary>
         /// コントロールカーブ上で現在選択されている範囲（x:クロック、y:各コントロールカーブの単位に同じ）。マウスが動いているときのみ使用
         /// </summary>
@@ -380,7 +380,7 @@ namespace cadencii
         /// <summary>
         /// コントロールカーブ上で選択された範囲（単位：クロック）
         /// </summary>
-        public static SelectedRegion mCurveSelectedInterval = new SelectedRegion( 0 );
+        public static SelectedRegion mCurveSelectedInterval = new SelectedRegion(0);
         /// <summary>
         /// 選択範囲が有効かどうか。
         /// </summary>
@@ -472,7 +472,7 @@ namespace cadencii
         /// <summary>
         /// RenderingStatusをXMLシリアライズするためのシリアライザ
         /// </summary>
-        public static XmlSerializer mRenderingStatusSerializer = new XmlSerializer( typeof( RenderedStatus ) );
+        public static XmlSerializer mRenderingStatusSerializer = new XmlSerializer(typeof(RenderedStatus));
         /// <summary>
         /// wavを出力するための一時ディレクトリのパス。
         /// </summary>
@@ -586,18 +586,18 @@ namespace cadencii
         public static List<string> getWineProxyArgument()
         {
             List<string> ret = new List<string>();
-            ret.Add( "/bin/sh" );
+            ret.Add("/bin/sh");
             string vocaloidrv_sh =
-                Utility.normalizePath( Path.Combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
-            ret.Add( vocaloidrv_sh );
+                Utility.normalizePath(Path.Combine(PortUtil.getApplicationStartupPath(), "vocaloidrv.sh"));
+            ret.Add(vocaloidrv_sh);
 
             string wine_prefix =
-                Utility.normalizePath( editorConfig.WinePrefix );
-            ret.Add( wine_prefix );
+                Utility.normalizePath(editorConfig.WinePrefix);
+            ret.Add(wine_prefix);
 
             string wine_top =
-                Utility.normalizePath( editorConfig.WineTop );
-            ret.Add( wine_top );
+                Utility.normalizePath(editorConfig.WineTop);
+            ret.Add(wine_top);
             return ret;
         }
 
@@ -605,123 +605,123 @@ namespace cadencii
         /// プレビュー再生を開始します．
         /// 合成処理などが途中でキャンセルされた場合にtrue，それ以外の場合にfalseを返します
         /// </summary>
-        private static bool previewStart( FormMain form )
+        private static bool previewStart(FormMain form)
         {
             int selected = mSelected;
-            RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track[ selected ] );
+            RendererKind renderer = VsqFileEx.getTrackRendererKind(mVsq.Track[selected]);
             int clock = mCurrentClock;
-            mDirectPlayShift = (float)mVsq.getSecFromClock( clock );
+            mDirectPlayShift = (float)mVsq.getSecFromClock(clock);
             // リアルタイム再生で無い場合
             string tmppath = getTempWaveDir();
 
             int track_count = mVsq.Track.Count;
 
             List<int> tracks = new List<int>();
-            for ( int track = 1; track < track_count; track++ ) {
-                tracks.Add( track );
+            for (int track = 1; track < track_count; track++) {
+                tracks.Add(track);
             }
 
-            if ( patchWorkToFreeze( form, tracks ) ) {
+            if (patchWorkToFreeze(form, tracks)) {
                 // キャンセルされた
 #if DEBUG
-                sout.println( "AppManager#previewStart; patchWorkToFreeze returns true" );
+                sout.println("AppManager#previewStart; patchWorkToFreeze returns true");
 #endif
                 return true;
             }
 
             WaveSenderDriver driver = new WaveSenderDriver();
             List<Amplifier> waves = new List<Amplifier>();
-            for ( int i = 0; i < tracks.Count; i++ ) {
-                int track = tracks[ i ];
-                string file = Path.Combine( tmppath, track + ".wav" );
+            for (int i = 0; i < tracks.Count; i++) {
+                int track = tracks[i];
+                string file = Path.Combine(tmppath, track + ".wav");
                 WaveReader wr = null;
                 try {
-                    wr = new WaveReader( file );
-                    wr.setOffsetSeconds( mDirectPlayShift );
+                    wr = new WaveReader(file);
+                    wr.setOffsetSeconds(mDirectPlayShift);
                     Amplifier a = new Amplifier();
-                    FileWaveSender f = new FileWaveSender( wr );
-                    a.setSender( f );
-                    a.setAmplifierView( mMixerWindow.getVolumeTracker( track ) );
-                    waves.Add( a );
-                    a.setRoot( driver );
-                    f.setRoot( driver );
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
-                    serr.println( "AppManager.previewStart; ex=" + ex );
+                    FileWaveSender f = new FileWaveSender(wr);
+                    a.setSender(f);
+                    a.setAmplifierView(mMixerWindow.getVolumeTracker(track));
+                    waves.Add(a);
+                    a.setRoot(driver);
+                    f.setRoot(driver);
+                } catch (Exception ex) {
+                    Logger.write(typeof(AppManager) + ".previewStart; ex=" + ex + "\n");
+                    serr.println("AppManager.previewStart; ex=" + ex);
                 }
             }
 
             // clock以降に音符があるかどうかを調べる
             int count = 0;
             foreach (var ve in mVsq.Track[selected].getNoteEventIterator()) {
-                if ( ve.Clock >= clock ) {
+                if (ve.Clock >= clock) {
                     count++;
                     break;
                 }
             }
 
             int bgm_count = getBgmCount();
-            double pre_measure_sec = mVsq.getSecFromClock( mVsq.getPreMeasureClocks() );
-            for ( int i = 0; i < bgm_count; i++ ) {
-                BgmFile bgm = getBgm( i );
+            double pre_measure_sec = mVsq.getSecFromClock(mVsq.getPreMeasureClocks());
+            for (int i = 0; i < bgm_count; i++) {
+                BgmFile bgm = getBgm(i);
                 WaveReader wr = null;
                 try {
-                    wr = new WaveReader( bgm.file );
+                    wr = new WaveReader(bgm.file);
                     double offset = bgm.readOffsetSeconds + mDirectPlayShift;
-                    if ( bgm.startAfterPremeasure ) {
+                    if (bgm.startAfterPremeasure) {
                         offset -= pre_measure_sec;
                     }
-                    wr.setOffsetSeconds( offset );
+                    wr.setOffsetSeconds(offset);
 #if DEBUG
-                    sout.println( "AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset );
+                    sout.println("AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset);
 
 #endif
                     Amplifier a = new Amplifier();
-                    FileWaveSender f = new FileWaveSender( wr );
-                    a.setSender( f );
-                    a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
-                    waves.Add( a );
-                    a.setRoot( driver );
-                    f.setRoot( driver );
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
-                    serr.println( "AppManager.previewStart; ex=" + ex );
+                    FileWaveSender f = new FileWaveSender(wr);
+                    a.setSender(f);
+                    a.setAmplifierView(AppManager.mMixerWindow.getVolumeTrackerBgm(i));
+                    waves.Add(a);
+                    a.setRoot(driver);
+                    f.setRoot(driver);
+                } catch (Exception ex) {
+                    Logger.write(typeof(AppManager) + ".previewStart; ex=" + ex + "\n");
+                    serr.println("AppManager.previewStart; ex=" + ex);
                 }
             }
 
             // 最初のsenderをドライバにする
-            driver.setSender( waves[ 0 ] );
+            driver.setSender(waves[0]);
             Mixer m = new Mixer();
-            m.setRoot( driver );
-            driver.setReceiver( m );
+            m.setRoot(driver);
+            driver.setReceiver(m);
             stopGenerator();
-            setGenerator( driver );
+            setGenerator(driver);
             Amplifier amp = new Amplifier();
-            amp.setRoot( driver );
-            amp.setAmplifierView( mMixerWindow.getVolumeTrackerMaster() );
-            m.setReceiver( amp );
+            amp.setRoot(driver);
+            amp.setAmplifierView(mMixerWindow.getVolumeTrackerMaster());
+            m.setReceiver(amp);
             MonitorWaveReceiver monitor = MonitorWaveReceiver.prepareInstance();
-            monitor.setRoot( driver );
-            amp.setReceiver( monitor );
-            for ( int i = 1; i < waves.Count; i++ ) {
-                m.addSender( waves[ i ] );
+            monitor.setRoot(driver);
+            amp.setReceiver(monitor);
+            for (int i = 1; i < waves.Count; i++) {
+                m.addSender(waves[i]);
             }
 
             int end_clock = mVsq.TotalClocks;
-            if ( mVsq.config.EndMarkerEnabled ) {
+            if (mVsq.config.EndMarkerEnabled) {
                 end_clock = mVsq.config.EndMarker;
             }
             mPreviewEndingClock = end_clock;
-            double end_sec = mVsq.getSecFromClock( end_clock );
+            double end_sec = mVsq.getSecFromClock(end_clock);
             int sample_rate = mVsq.config.SamplingRate;
             long samples = (long)((end_sec - mDirectPlayShift) * sample_rate);
-            driver.init( mVsq, mSelected, 0, end_clock, sample_rate );
+            driver.init(mVsq, mSelected, 0, end_clock, sample_rate);
 #if DEBUG
-            sout.println( "AppManager.previewStart; calling runGenerator..." );
+            sout.println("AppManager.previewStart; calling runGenerator...");
 #endif
-            runGenerator( samples );
+            runGenerator(samples);
 #if DEBUG
-            sout.println( "AppManager.previewStart; calling runGenerator... done" );
+            sout.println("AppManager.previewStart; calling runGenerator... done");
 #endif
             return false;
         }
@@ -744,45 +744,45 @@ namespace cadencii
         /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
         /// </summary>
         /// <param name="tracks"></param>
-        public static bool patchWorkToFreeze( FormMain main_window, List<int> tracks )
+        public static bool patchWorkToFreeze(FormMain main_window, List<int> tracks)
         {
             mVsq.updateTotalClocks();
-            List<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
+            List<PatchWorkQueue> queue = patchWorkCreateQueue(tracks);
 #if DEBUG
-            sout.println( "AppManager#patchWorkToFreeze; queue.size()=" + queue.Count );
+            sout.println("AppManager#patchWorkToFreeze; queue.size()=" + queue.Count);
 #endif
 
             FormWorker fw = new FormWorker();
-            fw.setupUi( new FormWorkerUi( fw ) );
-            fw.getUi().setTitle( _( "Synthesize" ) );
-            fw.getUi().setText( _( "now synthesizing..." ) );
+            fw.setupUi(new FormWorkerUi(fw));
+            fw.getUi().setTitle(_("Synthesize"));
+            fw.getUi().setText(_("now synthesizing..."));
 
             double total = 0;
-            SynthesizeWorker worker = new SynthesizeWorker( main_window );
-            foreach( PatchWorkQueue q in queue ){
+            SynthesizeWorker worker = new SynthesizeWorker(main_window);
+            foreach (PatchWorkQueue q in queue) {
                 // ジョブを追加
                 double job_amount = q.getJobAmount();
-                fw.addJob( worker, "processQueue", q.getMessage(), job_amount, q );
+                fw.addJob(worker, "processQueue", q.getMessage(), job_amount, q);
                 total += job_amount;
             }
 
             // パッチワークをするジョブを追加
-            fw.addJob( worker, "patchWork", _( "patchwork" ), total, new Object[] { queue, tracks } );
+            fw.addJob(worker, "patchWork", _("patchwork"), total, new Object[] { queue, tracks });
 
             // ジョブを開始
             fw.startJob();
 
             // ダイアログを表示する
             beginShowDialog();
-            bool ret = fw.getUi().showDialogTo( main_window );
+            bool ret = fw.getUi().showDialogTo(main_window);
 #if DEBUG
-            sout.println( "AppManager#patchWorkToFreeze; showDialog returns " + ret );
+            sout.println("AppManager#patchWorkToFreeze; showDialog returns " + ret);
 #endif
             endShowDialog();
             return ret;
         }
 
-        public static void invokeWaveViewReloadRequiredEvent( int track, string wavePath, double secStart, double secEnd )
+        public static void invokeWaveViewReloadRequiredEvent(int track, string wavePath, double secStart, double secEnd)
         {
             try {
 #if QT_VERSION
@@ -793,13 +793,13 @@ namespace cadencii
                 arg.file = wavePath;
                 arg.secStart = secStart;
                 arg.secEnd = secEnd;
-                if ( WaveViewReloadRequired != null ) {
-                    WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
+                if (WaveViewReloadRequired != null) {
+                    WaveViewReloadRequired.Invoke(typeof(AppManager), arg);
                 }
 #endif
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex + "\n" );
-                sout.println( typeof( AppManager ) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex + "\n");
+                sout.println(typeof(AppManager) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex);
             }
         }
 
@@ -808,7 +808,7 @@ namespace cadencii
         /// </summary>
         /// <param name="tracks">リストを作成するトラック番号の一覧</param>
         /// <returns></returns>
-        public static List<PatchWorkQueue> patchWorkCreateQueue( List<int> tracks )
+        public static List<PatchWorkQueue> patchWorkCreateQueue(List<int> tracks)
         {
             mVsq.updateTotalClocks();
             string temppath = getTempWaveDir();
@@ -818,13 +818,13 @@ namespace cadencii
             List<PatchWorkQueue> queue = new List<PatchWorkQueue>();
             int[] startIndex = new int[tracks.Count + 1]; // startList, endList, trackList, filesの内，第startIndex[j]からが，第tracks[j]トラックについてのレンダリング要求かを表す.
 
-            for ( int k = 0; k < tracks.Count; k++ ) {
+            for (int k = 0; k < tracks.Count; k++) {
                 startIndex[k] = queue.Count;
-                int track = tracks[ k ];
-                VsqTrack vsq_track = mVsq.Track[ track ];
-                string wavePath = Path.Combine( temppath, track + ".wav" );
+                int track = tracks[k];
+                VsqTrack vsq_track = mVsq.Track[track];
+                string wavePath = Path.Combine(temppath, track + ".wav");
 
-                if ( mLastRenderedStatus[track - 1] == null ) {
+                if (mLastRenderedStatus[track - 1] == null) {
                     // この場合は全部レンダリングする必要がある
                     PatchWorkQueue q = new PatchWorkQueue();
                     q.track = track;
@@ -832,30 +832,30 @@ namespace cadencii
                     q.clockEnd = totalClocks + 240;
                     q.file = wavePath;
                     q.vsq = mVsq;
-                    queue.Add( q );
+                    queue.Add(q);
                     continue;
                 }
 
                 // 部分レンダリング
                 EditedZoneUnit[] areas =
-                    Utility.detectRenderedStatusDifference( mLastRenderedStatus[track - 1],
+                    Utility.detectRenderedStatusDifference(mLastRenderedStatus[track - 1],
                                                             new RenderedStatus(
                                                                 (VsqTrack)vsq_track.clone(),
                                                                 mVsq.TempoTable,
-                                                                (SequenceConfig)mVsq.config.clone() ) );
+                                                                (SequenceConfig)mVsq.config.clone()));
 
                 // areasとかぶっている音符がどれかを判定する
                 EditedZone zone = new EditedZone();
-                zone.add( areas );
-                checkSerializedEvents( zone, vsq_track, mVsq.TempoTable, areas );
-                checkSerializedEvents( zone, mLastRenderedStatus[track - 1].track, mLastRenderedStatus[track - 1].tempo, areas );
+                zone.add(areas);
+                checkSerializedEvents(zone, vsq_track, mVsq.TempoTable, areas);
+                checkSerializedEvents(zone, mLastRenderedStatus[track - 1].track, mLastRenderedStatus[track - 1].tempo, areas);
 
                 // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
                 // 編集範囲を無音部分まで延長する。
-                if ( System.IO.File.Exists( wavePath ) ) {
+                if (System.IO.File.Exists(wavePath)) {
                     WaveReader wr = null;
                     try {
-                        wr = new WaveReader( wavePath );
+                        wr = new WaveReader(wavePath);
                         int sampleRate = wr.getSampleRate();
                         int buflen = 1024;
                         double[] left = new double[buflen];
@@ -864,7 +864,7 @@ namespace cadencii
                         // まずzoneから編集範囲を抽出
                         List<EditedZoneUnit> areasList = new List<EditedZoneUnit>();
                         foreach (var e in zone.iterator()) {
-                            areasList.Add( (EditedZoneUnit)e.clone() );
+                            areasList.Add((EditedZoneUnit)e.clone());
                         }
 
                         foreach (var e in areasList) {
@@ -874,37 +874,37 @@ namespace cadencii
                             // 前方に1クロックずつ検索する。
                             int end = e.mStart;
                             int start = end - 1;
-                            double secEnd = mVsq.getSecFromClock( end );
+                            double secEnd = mVsq.getSecFromClock(end);
                             long saEnd = (long)(secEnd * sampleRate);
                             double secStart = 0.0;
                             long saStart = 0;
-                            while ( true ) {
+                            while (true) {
                                 start = end - 1;
-                                if ( start < 0 ) {
+                                if (start < 0) {
                                     start = 0;
                                     break;
                                 }
-                                secStart = mVsq.getSecFromClock( start );
+                                secStart = mVsq.getSecFromClock(start);
                                 saStart = (long)(secStart * sampleRate);
                                 int samples = (int)(saEnd - saStart);
                                 long pos = saStart;
                                 bool allzero = true;
-                                while ( samples > 0 ) {
+                                while (samples > 0) {
                                     int delta = samples > buflen ? buflen : samples;
-                                    wr.read( pos, delta, left, right );
-                                    for ( int i = 0; i < delta; i++ ) {
-                                        if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                    wr.read(pos, delta, left, right);
+                                    for (int i = 0; i < delta; i++) {
+                                        if (left[i] != 0.0 || right[i] != 0.0) {
                                             allzero = false;
                                             break;
                                         }
                                     }
                                     pos += delta;
                                     samples -= delta;
-                                    if ( !allzero ) {
+                                    if (!allzero) {
                                         break;
                                     }
                                 }
-                                if ( allzero ) {
+                                if (allzero) {
                                     break;
                                 }
                                 secEnd = secStart;
@@ -915,32 +915,32 @@ namespace cadencii
                             exStart = end;
 
                             // 後方に1クロックずつ検索する
-                            if ( e.mEnd < int.MaxValue ) {
+                            if (e.mEnd < int.MaxValue) {
                                 start = e.mEnd;
-                                secStart = mVsq.getSecFromClock( start );
-                                while ( true ) {
+                                secStart = mVsq.getSecFromClock(start);
+                                while (true) {
                                     end = start + 1;
-                                    secEnd = mVsq.getSecFromClock( end );
+                                    secEnd = mVsq.getSecFromClock(end);
                                     saEnd = (long)(secEnd * sampleRate);
                                     int samples = (int)(saEnd - saStart);
                                     long pos = saStart;
                                     bool allzero = true;
-                                    while ( samples > 0 ) {
+                                    while (samples > 0) {
                                         int delta = samples > buflen ? buflen : samples;
-                                        wr.read( pos, delta, left, right );
-                                        for ( int i = 0; i < delta; i++ ) {
-                                            if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                        wr.read(pos, delta, left, right);
+                                        for (int i = 0; i < delta; i++) {
+                                            if (left[i] != 0.0 || right[i] != 0.0) {
                                                 allzero = false;
                                                 break;
                                             }
                                         }
                                         pos += delta;
                                         samples -= delta;
-                                        if ( !allzero ) {
+                                        if (!allzero) {
                                             break;
                                         }
                                     }
-                                    if ( allzero ) {
+                                    if (allzero) {
                                         break;
                                     }
                                     secStart = secEnd;
@@ -951,26 +951,26 @@ namespace cadencii
                                 exEnd = start;
                             }
 #if DEBUG
-                            if ( e.mStart != exStart ) {
-                                sout.println( "FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart );
+                            if (e.mStart != exStart) {
+                                sout.println("FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart);
                             }
-                            if ( e.mEnd != exEnd ) {
-                                sout.println( "FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd );
+                            if (e.mEnd != exEnd) {
+                                sout.println("FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd);
                             }
 #endif
 
-                            zone.add( exStart, exEnd );
+                            zone.add(exStart, exEnd);
                         }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                    } catch (Exception ex) {
+                        Logger.write(typeof(FormMain) + ".patchWorkToFreeze; ex=" + ex + "\n");
+                        serr.println("FormMain#patchWorkToFreeze; ex=" + ex);
                     } finally {
-                        if ( wr != null ) {
+                        if (wr != null) {
                             try {
                                 wr.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                            } catch (Exception ex2) {
+                                Logger.write(typeof(FormMain) + ".patchWorkToFreeze; ex=" + ex2 + "\n");
+                                serr.println("FormMain#patchWorkToFreeze; ex2=" + ex2);
                             }
                         }
                     }
@@ -979,7 +979,7 @@ namespace cadencii
                 // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
                 int j = -1;
 #if DEBUG
-                sout.println( "AppManager#patchWorkCreateQueue; track#" + track );
+                sout.println("AppManager#patchWorkCreateQueue; track#" + track);
 #endif
                 foreach (var unit in zone.iterator()) {
                     j++;
@@ -988,19 +988,19 @@ namespace cadencii
                     q.clockStart = unit.mStart;
                     q.clockEnd = unit.mEnd;
 #if DEBUG
-                    sout.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
+                    sout.println("    start=" + unit.mStart + "; end=" + unit.mEnd);
 #endif
-                    q.file = Path.Combine( temppath, track + "_" + j + ".wav" );
+                    q.file = Path.Combine(temppath, track + "_" + j + ".wav");
                     q.vsq = mVsq;
-                    queue.Add( q );
+                    queue.Add(q);
                 }
             }
             startIndex[tracks.Count] = queue.Count;
 
-            if ( queue.Count <= 0 ) {
+            if (queue.Count <= 0) {
                 // パッチワークする必要なし
-                for ( int i = 0; i < tracks.Count; i++ ) {
-                    setRenderRequired( tracks[ i ], false );
+                for (int i = 0; i < tracks.Count; i++) {
+                    setRenderRequired(tracks[i], false);
                 }
             }
 
@@ -1015,12 +1015,12 @@ namespace cadencii
         /// <param name="vsq_track"></param>
         /// <param name="tempo_vector"></param>
         /// <param name="areas"></param>
-        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, TempoVector tempo_vector, EditedZoneUnit[] areas )
+        private static void checkSerializedEvents(EditedZone zone, VsqTrack vsq_track, TempoVector tempo_vector, EditedZoneUnit[] areas)
         {
-            if ( vsq_track == null || zone == null || areas == null ) {
+            if (vsq_track == null || zone == null || areas == null) {
                 return;
             }
-            if ( areas.Length == 0 ) {
+            if (areas.Length == 0) {
                 return;
             }
 
@@ -1029,22 +1029,22 @@ namespace cadencii
             List<int> clockEndList = new List<int>();
             List<int> internalIdList = new List<int>();
             int size = vsq_track.getEventCount();
-            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
-            for ( int i = 0; i < size; i++ ) {
-                VsqEvent item = vsq_track.getEvent( i );
+            RendererKind kind = VsqFileEx.getTrackRendererKind(vsq_track);
+            for (int i = 0; i < size; i++) {
+                VsqEvent item = vsq_track.getEvent(i);
                 int clock_start = item.Clock;
                 int clock_end = item.Clock + item.ID.getLength();
                 int internal_id = item.InternalID;
-                if ( item.ID.type == VsqIDType.Anote ) {
-                    if ( kind == RendererKind.UTAU ) {
+                if (item.ID.type == VsqIDType.Anote) {
+                    if (kind == RendererKind.UTAU) {
                         // 秒単位の先行発音
                         double sec_pre_utterance = item.UstEvent.getPreUtterance() / 1000.0;
                         // 先行発音を考慮した，音符の開始秒
-                        double sec_at_clock_start_act = tempo_vector.getSecFromClock( clock_start ) - sec_pre_utterance;
+                        double sec_at_clock_start_act = tempo_vector.getSecFromClock(clock_start) - sec_pre_utterance;
                         // 上記をクロック数に変換した物
-                        int clock_start_draft = (int)tempo_vector.getClockFromSec( sec_at_clock_start_act );
+                        int clock_start_draft = (int)tempo_vector.getClockFromSec(sec_at_clock_start_act);
                         // くり上がりがあるかもしれないので検査
-                        while ( sec_at_clock_start_act < tempo_vector.getSecFromClock( clock_start_draft ) && 0 < clock_start_draft ) {
+                        while (sec_at_clock_start_act < tempo_vector.getSecFromClock(clock_start_draft) && 0 < clock_start_draft) {
                             clock_start_draft--;
                         }
                         clock_start = clock_start_draft;
@@ -1054,41 +1054,41 @@ namespace cadencii
                 }
 
                 // リストに追加
-                clockStartList.Add( clock_start );
-                clockEndList.Add( clock_end );
-                internalIdList.Add( internal_id );
+                clockStartList.Add(clock_start);
+                clockEndList.Add(clock_end);
+                internalIdList.Add(internal_id);
             }
 
             SortedDictionary<int, int> ids = new SortedDictionary<int, int>();
             //for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
-            for( int indx = 0; indx < size; indx++ ){
-                int internal_id = internalIdList[ indx ];
-                if ( internal_id == -1 ) {
+            for (int indx = 0; indx < size; indx++) {
+                int internal_id = internalIdList[indx];
+                if (internal_id == -1) {
                     continue;
                 }
-                int clockStart = clockStartList[ indx ];// item.Clock;
-                int clockEnd = clockEndList[ indx ];// clockStart + item.ID.getLength();
-                for ( int i = 0; i < areas.Length; i++ ) {
+                int clockStart = clockStartList[indx];// item.Clock;
+                int clockEnd = clockEndList[indx];// clockStart + item.ID.getLength();
+                for (int i = 0; i < areas.Length; i++) {
                     EditedZoneUnit area = areas[i];
-                    if ( clockStart < area.mEnd && area.mEnd <= clockEnd ) {
-                        if ( !ids.ContainsKey( internal_id ) ) {
-                            ids[ internal_id] =  indx ;
-                            zone.add( clockStart, clockEnd );
+                    if (clockStart < area.mEnd && area.mEnd <= clockEnd) {
+                        if (!ids.ContainsKey(internal_id)) {
+                            ids[internal_id] = indx;
+                            zone.add(clockStart, clockEnd);
                         }
-                    } else if ( clockStart <= area.mStart && area.mStart < clockEnd ) {
-                        if ( !ids.ContainsKey( internal_id ) ) {
-                            ids[ internal_id] =  indx ;
-                            zone.add( clockStart, clockEnd );
+                    } else if (clockStart <= area.mStart && area.mStart < clockEnd) {
+                        if (!ids.ContainsKey(internal_id)) {
+                            ids[internal_id] = indx;
+                            zone.add(clockStart, clockEnd);
                         }
-                    } else if ( area.mStart <= clockStart && clockEnd < area.mEnd ) {
-                        if ( !ids.ContainsKey( internal_id ) ) {
-                            ids[ internal_id] =  indx ;
-                            zone.add( clockStart, clockEnd );
+                    } else if (area.mStart <= clockStart && clockEnd < area.mEnd) {
+                        if (!ids.ContainsKey(internal_id)) {
+                            ids[internal_id] = indx;
+                            zone.add(clockStart, clockEnd);
                         }
-                    } else if ( clockStart <= area.mStart && area.mEnd < clockEnd ) {
-                        if ( !ids.ContainsKey( internal_id ) ) {
-                            ids[ internal_id] =  indx ;
-                            zone.add( clockStart, clockEnd );
+                    } else if (clockStart <= area.mStart && area.mEnd < clockEnd) {
+                        if (!ids.ContainsKey(internal_id)) {
+                            ids[internal_id] = indx;
+                            zone.add(clockStart, clockEnd);
                         }
                     }
                 }
@@ -1097,28 +1097,28 @@ namespace cadencii
             // idsに登録された音符のうち、前後がつながっているものを列挙する。
             bool changed = true;
             int numEvents = vsq_track.getEventCount();
-            while ( changed ) {
+            while (changed) {
                 changed = false;
                 foreach (var id in ids.Keys) {
-                    int indx = ids[ id ]; // InternalIDがidのアイテムの禁書目録
+                    int indx = ids[id]; // InternalIDがidのアイテムの禁書目録
                     //VsqEvent item = vsq_track.getEvent( indx );
 
                     // アイテムを遡り、連続していれば追加する
-                    int clock = clockStartList[ indx ];// item.Clock;
-                    for ( int i = indx - 1; i >= 0; i-- ) {
+                    int clock = clockStartList[indx];// item.Clock;
+                    for (int i = indx - 1; i >= 0; i--) {
                         //VsqEvent search = vsq_track.getEvent( i );
-                        int internal_id = internalIdList[ i ];
-                        if ( internal_id == -1 ) {
+                        int internal_id = internalIdList[i];
+                        if (internal_id == -1) {
                             continue;
                         }
-                        int searchClock = clockStartList[ i ];// search.Clock;
+                        int searchClock = clockStartList[i];// search.Clock;
                         //int searchLength = search.ID.getLength();
-                        int searchClockEnd = clockEndList[ i ];//
+                        int searchClockEnd = clockEndList[i];//
                         // 一個前の音符の終了位置が，この音符の開始位置と同じが後ろにある場合 -> 重なり有りと判定
-                        if ( clock <= searchClockEnd ) {
-                            if ( !ids.ContainsKey( internal_id ) ) {
-                                ids[ internal_id] =  i ;
-                                zone.add( searchClock, searchClockEnd );
+                        if (clock <= searchClockEnd) {
+                            if (!ids.ContainsKey(internal_id)) {
+                                ids[internal_id] = i;
+                                zone.add(searchClock, searchClockEnd);
                                 changed = true;
                             }
                             clock = searchClock;
@@ -1128,20 +1128,20 @@ namespace cadencii
                     }
 
                     // アイテムを辿り、連続していれば追加する
-                    clock = clockEndList[ indx ];// item.Clock + item.ID.getLength();
-                    for ( int i = indx + 1; i < numEvents; i++ ) {
+                    clock = clockEndList[indx];// item.Clock + item.ID.getLength();
+                    for (int i = indx + 1; i < numEvents; i++) {
                         //VsqEvent search = vsq_track.getEvent( i );
-                        int internal_id = internalIdList[ i ];
-                        if ( internal_id == -1 ) {
+                        int internal_id = internalIdList[i];
+                        if (internal_id == -1) {
                             continue;
                         }
-                        int searchClock = clockStartList[ i ];// search.Clock;
-                        int searchClockEnd = clockEndList[ i ];// search.ID.getLength();
+                        int searchClock = clockStartList[i];// search.Clock;
+                        int searchClockEnd = clockEndList[i];// search.ID.getLength();
                         // 一行後ろの音符の開始位置が，この音符の終了位置と同じが後ろにある場合 -> 重なり有りと判定
-                        if ( searchClock <= clock ) {
-                            if ( !ids.ContainsKey( internal_id ) ) {
-                                ids[ internal_id] =  i ;
-                                zone.add( searchClock, searchClockEnd );
+                        if (searchClock <= clock) {
+                            if (!ids.ContainsKey(internal_id)) {
+                                ids[internal_id] = i;
+                                zone.add(searchClock, searchClockEnd);
                                 changed = true;
                             }
                             clock = searchClockEnd;
@@ -1150,7 +1150,7 @@ namespace cadencii
                         }
                     }
 
-                    if ( changed ) {
+                    if (changed) {
                         break;
                     }
                 }
@@ -1164,9 +1164,9 @@ namespace cadencii
         public static bool isGeneratorRunning()
         {
             bool ret = false;
-            lock ( mLocker ) {
+            lock (mLocker) {
                 WaveGenerator g = mWaveGenerator;
-                if ( g != null ) {
+                if (g != null) {
                     ret = g.isRunning();
                 }
             }
@@ -1178,12 +1178,12 @@ namespace cadencii
         /// </summary>
         public static void stopGenerator()
         {
-            lock ( mLocker ) {
+            lock (mLocker) {
                 WaveGenerator g = mWaveGenerator;
-                if ( g != null ) {
+                if (g != null) {
                     mWaveGeneratorState.requestCancel();
-                    while ( mWaveGenerator.isRunning() ) {
-                        Thread.Sleep( 100 );
+                    while (mWaveGenerator.isRunning()) {
+                        Thread.Sleep(100);
                     }
                 }
                 mWaveGenerator = null;
@@ -1194,14 +1194,14 @@ namespace cadencii
         /// 波形生成器を設定します
         /// </summary>
         /// <param name="generator"></param>
-        public static void setGenerator( WaveGenerator generator )
+        public static void setGenerator(WaveGenerator generator)
         {
-            lock ( mLocker ) {
+            lock (mLocker) {
                 WaveGenerator g = mWaveGenerator;
-                if ( g != null ) {
+                if (g != null) {
                     mWaveGeneratorState.requestCancel();
-                    while ( g.isRunning() ) {
-                        Thread.Sleep( 100 );
+                    while (g.isRunning()) {
+                        Thread.Sleep(100);
                     }
                 }
                 mWaveGenerator = generator;
@@ -1212,33 +1212,33 @@ namespace cadencii
         /// 波形生成器を別スレッドで実行します
         /// </summary>
         /// <param name="samples">合成するサンプル数．波形合成器のbeginメソッドに渡される</param>
-        public static void runGenerator( long samples )
+        public static void runGenerator(long samples)
         {
-            lock ( mLocker ) {
+            lock (mLocker) {
 #if DEBUG
-                sout.println( "AppManager#runGenerator; (mPreviewThread==null)=" + (mPreviewThread == null) );
+                sout.println("AppManager#runGenerator; (mPreviewThread==null)=" + (mPreviewThread == null));
 #endif
                 Thread t = mPreviewThread;
-                if ( t != null ) {
+                if (t != null) {
 #if DEBUG
-                    sout.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + t.ThreadState );
+                    sout.println("AppManager#runGenerator; mPreviewThread.ThreadState=" + t.ThreadState);
 #endif
-                    if ( t.ThreadState != ThreadState.Stopped ) {
+                    if (t.ThreadState != ThreadState.Stopped) {
                         WaveGenerator g = mWaveGenerator;
-                        if ( g != null ) {
+                        if (g != null) {
                             mWaveGeneratorState.requestCancel();
-                            while ( mWaveGenerator.isRunning() ) {
-                                Thread.Sleep( 100 );
+                            while (mWaveGenerator.isRunning()) {
+                                Thread.Sleep(100);
                             }
                         }
 #if DEBUG
-                        sout.println( "AppManager#runGenerator; waiting stop..." );
+                        sout.println("AppManager#runGenerator; waiting stop...");
 #endif
-                        while ( t.ThreadState != ThreadState.Stopped ) {
-                            Thread.Sleep( 100 );
+                        while (t.ThreadState != ThreadState.Stopped) {
+                            Thread.Sleep(100);
                         }
 #if DEBUG
-                        sout.println( "AppManager#runGenerator; waiting stop... done" );
+                        sout.println("AppManager#runGenerator; waiting stop... done");
 #endif
                     }
                 }
@@ -1248,21 +1248,21 @@ namespace cadencii
                 q.generator = mWaveGenerator;
                 q.samples = samples;
                 mPreviewThread = new Thread(
-                    new ParameterizedThreadStart( runGeneratorCore ) );
-                mPreviewThread.Start( q );
+                    new ParameterizedThreadStart(runGeneratorCore));
+                mPreviewThread.Start(q);
             }
         }
 
-        private static void runGeneratorCore( Object argument )
+        private static void runGeneratorCore(Object argument)
         {
             RunGeneratorQueue q = (RunGeneratorQueue)argument;
             WaveGenerator g = q.generator;
             long samples = q.samples;
             try {
-                g.begin( samples, mWaveGeneratorState );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".runGeneratorCore; ex=" + ex + "\n" );
-                sout.println( "AppManager#runGeneratorCore; ex=" + ex );
+                g.begin(samples, mWaveGeneratorState);
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".runGeneratorCore; ex=" + ex + "\n");
+                sout.println("AppManager#runGeneratorCore; ex=" + ex);
             }
         }
 
@@ -1271,9 +1271,9 @@ namespace cadencii
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int yCoordFromNote( float note )
+        public static int yCoordFromNote(float note)
         {
-            return yCoordFromNote( note, mMainWindowController.getStartToDrawY() );
+            return yCoordFromNote(note, mMainWindowController.getStartToDrawY());
         }
 
         /// <summary>
@@ -1282,7 +1282,7 @@ namespace cadencii
         /// <param name="note"></param>
         /// <param name="start_to_draw_y"></param>
         /// <returns></returns>
-        public static int yCoordFromNote( float note, int start_to_draw_y )
+        public static int yCoordFromNote(float note, int start_to_draw_y)
         {
             return (int)(-1 * (note - 127.0f) * (int)(mMainWindowController.getScaleY() * 100)) - start_to_draw_y;
         }
@@ -1292,9 +1292,9 @@ namespace cadencii
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static int noteFromYCoord( int y )
+        public static int noteFromYCoord(int y)
         {
-            return 127 - (int)noteFromYCoordCore( y );
+            return 127 - (int)noteFromYCoordCore(y);
         }
 
         /// <summary>
@@ -1302,12 +1302,12 @@ namespace cadencii
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static double noteFromYCoordDoublePrecision( int y )
+        public static double noteFromYCoordDoublePrecision(int y)
         {
-            return 127.0 - noteFromYCoordCore( y );
+            return 127.0 - noteFromYCoordCore(y);
         }
 
-        private static double noteFromYCoordCore( int y )
+        private static double noteFromYCoordCore(int y)
         {
             return (double)(mMainWindowController.getStartToDrawY() + y) / (double)((int)(mMainWindowController.getScaleY() * 100));
         }
@@ -1317,38 +1317,38 @@ namespace cadencii
         /// </summary>
         /// <param name="kind">音声合成システムの種類</param>
         /// <returns>歌手のリスト</returns>
-        public static List<VsqID> getSingerListFromRendererKind( RendererKind kind )
+        public static List<VsqID> getSingerListFromRendererKind(RendererKind kind)
         {
             List<VsqID> singers = null;
-            if ( kind == RendererKind.AQUES_TONE ) {
+            if (kind == RendererKind.AQUES_TONE) {
                 singers = new List<VsqID>();
 #if ENABLE_AQUESTONE
-                singers.AddRange( AquesToneDriver.Singers.Select( ( config ) => getSingerIDAquesTone( config.Program ) ) );
+                singers.AddRange(AquesToneDriver.Singers.Select((config) => getSingerIDAquesTone(config.Program)));
 #endif
-            } else if ( kind == RendererKind.AQUES_TONE2 ) {
+            } else if (kind == RendererKind.AQUES_TONE2) {
                 singers = new List<VsqID>();
 #if ENABLE_AQUESTONE
-                singers.AddRange( AquesTone2Driver.Singers.Select( ( config ) => getSingerIDAquesTone2( config.Program ) ) );
+                singers.AddRange(AquesTone2Driver.Singers.Select((config) => getSingerIDAquesTone2(config.Program)));
 #endif
-            } else if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
+            } else if (kind == RendererKind.VCNT || kind == RendererKind.UTAU) {
                 List<SingerConfig> list = editorConfig.UtauSingers;
                 singers = new List<VsqID>();
                 foreach (var sc in list) {
-                    singers.Add( getSingerIDUtau( sc.Language, sc.Program ) );
+                    singers.Add(getSingerIDUtau(sc.Language, sc.Program));
                 }
-            } else if ( kind == RendererKind.VOCALOID1 ) {
-                SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
+            } else if (kind == RendererKind.VOCALOID1) {
+                SingerConfig[] configs = VocaloSysUtil.getSingerConfigs(SynthesizerType.VOCALOID1);
                 singers = new List<VsqID>();
-                for ( int i = 0; i < configs.Length; i++ ) {
+                for (int i = 0; i < configs.Length; i++) {
                     SingerConfig sc = configs[i];
-                    singers.Add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) );
+                    singers.Add(VocaloSysUtil.getSingerID(sc.Language, sc.Program, SynthesizerType.VOCALOID1));
                 }
-            } else if ( kind == RendererKind.VOCALOID2 ) {
+            } else if (kind == RendererKind.VOCALOID2) {
                 singers = new List<VsqID>();
-                SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-                for ( int i = 0; i < configs.Length; i++ ) {
+                SingerConfig[] configs = VocaloSysUtil.getSingerConfigs(SynthesizerType.VOCALOID2);
+                for (int i = 0; i < configs.Length; i++) {
                     SingerConfig sc = configs[i];
-                    singers.Add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID2 ) );
+                    singers.Add(VocaloSysUtil.getSingerID(sc.Language, sc.Program, SynthesizerType.VOCALOID2));
                 }
             }
             return singers;
@@ -1359,21 +1359,21 @@ namespace cadencii
         /// </summary>
         /// <param name="vsq_track"></param>
         /// <param name="item"></param>
-        public static void applyUtauParameter( VsqTrack vsq_track, VsqEvent item )
+        public static void applyUtauParameter(VsqTrack vsq_track, VsqEvent item)
         {
-            VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
+            VsqEvent singer = vsq_track.getSingerEventAt(item.Clock);
             if (singer == null) {
                 return;
             }
-            SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-            if ( sc != null && mUtauVoiceDB.ContainsKey( sc.VOICEIDSTR ) ) {
+            SingerConfig sc = getSingerInfoUtau(singer.ID.IconHandle.Language, singer.ID.IconHandle.Program);
+            if (sc != null && mUtauVoiceDB.ContainsKey(sc.VOICEIDSTR)) {
                 UtauVoiceDB db = mUtauVoiceDB[sc.VOICEIDSTR];
-                OtoArgs oa = db.attachFileNameFromLyric( item.ID.LyricHandle.L0.Phrase, item.ID.Note );
-                if ( item.UstEvent == null ) {
+                OtoArgs oa = db.attachFileNameFromLyric(item.ID.LyricHandle.L0.Phrase, item.ID.Note);
+                if (item.UstEvent == null) {
                     item.UstEvent = new UstEvent();
                 }
-                item.UstEvent.setVoiceOverlap( oa.msOverlap );
-                item.UstEvent.setPreUtterance( oa.msPreUtterance );
+                item.UstEvent.setVoiceOverlap(oa.msOverlap);
+                item.UstEvent.setPreUtterance(oa.msPreUtterance);
             }
         }
 
@@ -1382,29 +1382,29 @@ namespace cadencii
         /// </summary>
         /// <param name="directory">読み込むxmlが保存されたディレクトリ</param>
         /// <param name="track">読み込みを行うトラックの番号</param>
-        public static void deserializeRenderingStatus( string directory, int track )
+        public static void deserializeRenderingStatus(string directory, int track)
         {
-            string xml = Path.Combine( directory, track + ".xml" );
+            string xml = Path.Combine(directory, track + ".xml");
             RenderedStatus status = null;
             if (System.IO.File.Exists(xml)) {
                 FileInputStream fs = null;
                 try {
-                    fs = new FileInputStream( xml );
-                    Object obj = mRenderingStatusSerializer.deserialize( fs );
-                    if ( obj != null && obj is RenderedStatus ) {
+                    fs = new FileInputStream(xml);
+                    Object obj = mRenderingStatusSerializer.deserialize(fs);
+                    if (obj != null && obj is RenderedStatus) {
                         status = (RenderedStatus)obj;
                     }
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    Logger.write(typeof(AppManager) + ".deserializeRederingStatus; ex=" + ex + "\n");
                     status = null;
-                    serr.println( "AppManager#deserializeRederingStatus; ex=" + ex );
+                    serr.println("AppManager#deserializeRederingStatus; ex=" + ex);
                 } finally {
-                    if ( fs != null ) {
+                    if (fs != null) {
                         try {
                             fs.close();
-                        } catch ( Exception ex2 ) {
-                            Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex2 + "\n" );
-                            serr.println( "AppManager#deserializeRederingStatus; ex2=" + ex2 );
+                        } catch (Exception ex2) {
+                            Logger.write(typeof(AppManager) + ".deserializeRederingStatus; ex=" + ex2 + "\n");
+                            serr.println("AppManager#deserializeRederingStatus; ex2=" + ex2);
                         }
                     }
                 }
@@ -1417,36 +1417,36 @@ namespace cadencii
         /// </summary>
         /// <param name="temppath"></param>
         /// <param name="track"></param>
-        public static void serializeRenderingStatus( string temppath, int track )
+        public static void serializeRenderingStatus(string temppath, int track)
         {
             FileOutputStream fs = null;
             bool failed = true;
-            string xml = Path.Combine( temppath, track + ".xml" );
+            string xml = Path.Combine(temppath, track + ".xml");
             try {
-                fs = new FileOutputStream( xml );
-                mRenderingStatusSerializer.serialize( fs, mLastRenderedStatus[track - 1] );
+                fs = new FileOutputStream(xml);
+                mRenderingStatusSerializer.serialize(fs, mLastRenderedStatus[track - 1]);
                 failed = false;
-            } catch ( Exception ex ) {
-                serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".serializeRenderingStauts; ex=" + ex + "\n" );
+            } catch (Exception ex) {
+                serr.println("FormMain#patchWorkToFreeze; ex=" + ex);
+                Logger.write(typeof(AppManager) + ".serializeRenderingStauts; ex=" + ex + "\n");
             } finally {
-                if ( fs != null ) {
+                if (fs != null) {
                     try {
                         fs.close();
-                    } catch ( Exception ex2 ) {
-                        serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                        Logger.write( typeof( AppManager ) + ".serializeRenderingStatus; ex=" + ex2 + "\n" );
+                    } catch (Exception ex2) {
+                        serr.println("FormMain#patchWorkToFreeze; ex2=" + ex2);
+                        Logger.write(typeof(AppManager) + ".serializeRenderingStatus; ex=" + ex2 + "\n");
                     }
                 }
             }
 
             // シリアライズに失敗した場合，該当するxmlを削除する
-            if( failed ){
+            if (failed) {
                 if (System.IO.File.Exists(xml)) {
-                    try{
-                        PortUtil.deleteFile( xml );
-                    }catch( Exception ex ){
-                        Logger.write( typeof( AppManager ) + ".serializeRendererStatus; ex=" + ex + "\n" );
+                    try {
+                        PortUtil.deleteFile(xml);
+                    } catch (Exception ex) {
+                        Logger.write(typeof(AppManager) + ".serializeRendererStatus; ex=" + ex + "\n");
                     }
                 }
             }
@@ -1457,9 +1457,9 @@ namespace cadencii
         /// </summary>
         /// <param name="clocks"></param>
         /// <returns></returns>
-        public static int xCoordFromClocks( double clocks )
+        public static int xCoordFromClocks(double clocks)
         {
-            return xCoordFromClocks( clocks, mMainWindowController.getScaleX(), mMainWindowController.getStartToDrawX() );
+            return xCoordFromClocks(clocks, mMainWindowController.getScaleX(), mMainWindowController.getStartToDrawX());
         }
 
         /// <summary>
@@ -1467,7 +1467,7 @@ namespace cadencii
         /// </summary>
         /// <param name="clocks"></param>
         /// <returns></returns>
-        public static int xCoordFromClocks( double clocks, float scalex, int start_to_draw_x )
+        public static int xCoordFromClocks(double clocks, float scalex, int start_to_draw_x)
         {
             return (int)(keyWidth + clocks * scalex - start_to_draw_x) + keyOffset;
         }
@@ -1477,7 +1477,7 @@ namespace cadencii
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static int clockFromXCoord( int x )
+        public static int clockFromXCoord(int x)
         {
             return (int)((x + mMainWindowController.getStartToDrawX() - keyOffset - keyWidth) * mMainWindowController.getScaleXInv());
         }
@@ -1493,37 +1493,37 @@ namespace cadencii
             return mCurveSelectedIntervalEnabled;
         }
 
-        public static void setWholeSelectedIntervalEnabled( bool value )
+        public static void setWholeSelectedIntervalEnabled(bool value)
         {
             mWholeSelectedIntervalEnabled = value;
-            if ( value ) {
+            if (value) {
                 mCurveSelectedIntervalEnabled = false;
             }
         }
 
-        public static void setCurveSelectedIntervalEnabled( bool value )
+        public static void setCurveSelectedIntervalEnabled(bool value)
         {
             mCurveSelectedIntervalEnabled = value;
-            if ( value ) {
+            if (value) {
                 mWholeSelectedIntervalEnabled = false;
             }
         }
         #endregion
 
         #region MessageBoxのラッパー
-        public static DialogResult showMessageBox( string text )
+        public static DialogResult showMessageBox(string text)
         {
-            return showMessageBox( text, "", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox(text, "", cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE);
         }
 
-        public static DialogResult showMessageBox( string text, string caption )
+        public static DialogResult showMessageBox(string text, string caption)
         {
-            return showMessageBox( text, caption, cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox(text, caption, cadencii.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE);
         }
 
-        public static DialogResult showMessageBox( string text, string caption, int optionType )
+        public static DialogResult showMessageBox(string text, string caption, int optionType)
         {
-            return showMessageBox( text, caption, optionType, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
+            return showMessageBox(text, caption, optionType, cadencii.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE);
         }
 
         /// <summary>
@@ -1532,10 +1532,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-        public static DialogResult showModalDialog( Form dialog, Form parent_form )
+        public static DialogResult showModalDialog(Form dialog, Form parent_form)
         {
             beginShowDialog();
-            DialogResult ret = dialog.ShowDialog( parent_form );
+            DialogResult ret = dialog.ShowDialog(parent_form);
             endShowDialog();
             return ret;
         }
@@ -1546,10 +1546,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-        public static int showModalDialog( UiBase dialog, System.Windows.Forms.Form parent_form )
+        public static int showModalDialog(UiBase dialog, System.Windows.Forms.Form parent_form)
         {
             beginShowDialog();
-            int ret = dialog.showDialog( parent_form );
+            int ret = dialog.showDialog(parent_form);
             endShowDialog();
             return ret;
         }
@@ -1560,10 +1560,10 @@ namespace cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-        public static DialogResult showModalDialog( FolderBrowserDialog dialog, Form main_form )
+        public static DialogResult showModalDialog(FolderBrowserDialog dialog, Form main_form)
         {
             beginShowDialog();
-            DialogResult ret = dialog.ShowDialog( main_form );
+            DialogResult ret = dialog.ShowDialog(main_form);
             endShowDialog();
             return ret;
         }
@@ -1575,10 +1575,10 @@ namespace cadencii
         /// <param name="open_mode"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
-        public static DialogResult showModalDialog( FileDialog dialog, bool open_mode, Form main_form )
+        public static DialogResult showModalDialog(FileDialog dialog, bool open_mode, Form main_form)
         {
             beginShowDialog();
-            DialogResult ret = dialog.ShowDialog( main_form );
+            DialogResult ret = dialog.ShowDialog(main_form);
             endShowDialog();
             return ret;
         }
@@ -1599,26 +1599,26 @@ namespace cadencii
         {
             mShowingDialog = true;
 #if ENABLE_PROPERTY
-            if ( propertyWindow != null ) {
+            if (propertyWindow != null) {
                 bool previous = propertyWindow.getUi().isAlwaysOnTop();
-                propertyWindow.setPreviousAlwaysOnTop( previous );
-                if ( previous ) {
-                    propertyWindow.getUi().setAlwaysOnTop( false );
+                propertyWindow.setPreviousAlwaysOnTop(previous);
+                if (previous) {
+                    propertyWindow.getUi().setAlwaysOnTop(false);
                 }
             }
 #endif
-            if ( mMixerWindow != null ) {
+            if (mMixerWindow != null) {
                 bool previous = mMixerWindow.TopMost;
-                mMixerWindow.setPreviousAlwaysOnTop( previous );
-                if ( previous ) {
+                mMixerWindow.setPreviousAlwaysOnTop(previous);
+                if (previous) {
                     mMixerWindow.TopMost = false;
                 }
             }
 
-            if ( iconPalette != null ) {
+            if (iconPalette != null) {
                 bool previous = iconPalette.TopMost;
-                iconPalette.setPreviousAlwaysOnTop( previous );
-                if ( previous ) {
+                iconPalette.setPreviousAlwaysOnTop(previous);
+                if (previous) {
                     iconPalette.TopMost = false;
                 }
             }
@@ -1630,33 +1630,33 @@ namespace cadencii
         private static void endShowDialog()
         {
 #if ENABLE_PROPERTY
-            if ( propertyWindow != null ) {
-                propertyWindow.getUi().setAlwaysOnTop( propertyWindow.getPreviousAlwaysOnTop() );
+            if (propertyWindow != null) {
+                propertyWindow.getUi().setAlwaysOnTop(propertyWindow.getPreviousAlwaysOnTop());
             }
 #endif
-            if ( mMixerWindow != null ) {
+            if (mMixerWindow != null) {
                 mMixerWindow.TopMost = mMixerWindow.getPreviousAlwaysOnTop();
             }
 
-            if ( iconPalette != null ) {
+            if (iconPalette != null) {
                 iconPalette.TopMost = iconPalette.getPreviousAlwaysOnTop();
             }
 
             try {
-                if ( MainWindowFocusRequired != null ) {
-                    MainWindowFocusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                if (MainWindowFocusRequired != null) {
+                    MainWindowFocusRequired.Invoke(typeof(AppManager), new EventArgs());
                 }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".endShowDialog; ex=" + ex + "\n" );
-                sout.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".endShowDialog; ex=" + ex + "\n");
+                sout.println(typeof(AppManager) + ".endShowDialog; ex=" + ex);
             }
             mShowingDialog = false;
         }
 
-        public static DialogResult showMessageBox( string text, string caption, int optionType, int messageType )
+        public static DialogResult showMessageBox(string text, string caption, int optionType, int messageType)
         {
             beginShowDialog();
-            DialogResult ret = cadencii.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
+            DialogResult ret = cadencii.windows.forms.Utility.showMessageBox(text, caption, optionType, messageType);
             endShowDialog();
             return ret;
         }
@@ -1665,89 +1665,89 @@ namespace cadencii
         #region BGM 関連
         public static int getBgmCount()
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return 0;
             } else {
                 return mVsq.BgmFiles.Count;
             }
         }
 
-        public static BgmFile getBgm( int index )
+        public static BgmFile getBgm(int index)
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return null;
             }
-            return mVsq.BgmFiles[ index ];
+            return mVsq.BgmFiles[index];
         }
 
-        public static void removeBgm( int index )
+        public static void removeBgm(int index)
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return;
             }
             List<BgmFile> list = new List<BgmFile>();
             int count = mVsq.BgmFiles.Count;
-            for ( int i = 0; i < count; i++ ) {
-                if ( i != index ) {
-                    list.Add( (BgmFile)mVsq.BgmFiles[ i ].clone() );
+            for (int i = 0; i < count; i++) {
+                if (i != index) {
+                    list.Add((BgmFile)mVsq.BgmFiles[i].clone());
                 }
             }
-            CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            editHistory.register( mVsq.executeCommand( run ) );
+            CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate(list);
+            editHistory.register(mVsq.executeCommand(run));
             try {
-                if ( EditedStateChanged != null ) {
-                    EditedStateChanged.Invoke( typeof( AppManager ), true );
+                if (EditedStateChanged != null) {
+                    EditedStateChanged.Invoke(typeof(AppManager), true);
                 }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
-                serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".removeBgm; ex=" + ex + "\n");
+                serr.println(typeof(AppManager) + ".removeBgm; ex=" + ex);
             }
             mMixerWindow.updateStatus();
         }
 
         public static void clearBgm()
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return;
             }
             List<BgmFile> list = new List<BgmFile>();
-            CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            editHistory.register( mVsq.executeCommand( run ) );
+            CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate(list);
+            editHistory.register(mVsq.executeCommand(run));
             try {
-                if ( EditedStateChanged != null ) {
-                    EditedStateChanged.Invoke( typeof( AppManager ), true );
+                if (EditedStateChanged != null) {
+                    EditedStateChanged.Invoke(typeof(AppManager), true);
                 }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
-                serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".removeBgm; ex=" + ex + "\n");
+                serr.println(typeof(AppManager) + ".removeBgm; ex=" + ex);
             }
             mMixerWindow.updateStatus();
         }
 
-        public static void addBgm( string file )
+        public static void addBgm(string file)
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return;
             }
             List<BgmFile> list = new List<BgmFile>();
             int count = mVsq.BgmFiles.Count;
-            for ( int i = 0; i < count; i++ ) {
-                list.Add( (BgmFile)mVsq.BgmFiles[ i ].clone() );
+            for (int i = 0; i < count; i++) {
+                list.Add((BgmFile)mVsq.BgmFiles[i].clone());
             }
             BgmFile item = new BgmFile();
             item.file = file;
             item.feder = 0;
             item.panpot = 0;
-            list.Add( item );
-            CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
-            editHistory.register( mVsq.executeCommand( run ) );
+            list.Add(item);
+            CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate(list);
+            editHistory.register(mVsq.executeCommand(run));
             try {
-                if ( EditedStateChanged != null ) {
-                    EditedStateChanged.Invoke( typeof( AppManager ), true );
+                if (EditedStateChanged != null) {
+                    EditedStateChanged.Invoke(typeof(AppManager), true);
                 }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
-                serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".removeBgm; ex=" + ex + "\n");
+                serr.println(typeof(AppManager) + ".removeBgm; ex=" + ex);
             }
             mMixerWindow.updateStatus();
         }
@@ -1756,10 +1756,10 @@ namespace cadencii
         #region 自動保存
         public static void updateAutoBackupTimerStatus()
         {
-            if ( !mFile.Equals( "" ) && editorConfig.AutoBackupIntervalMinutes > 0 ) {
+            if (!mFile.Equals("") && editorConfig.AutoBackupIntervalMinutes > 0) {
                 double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                 int draft = (int)millisec;
-                if ( millisec > int.MaxValue ) {
+                if (millisec > int.MaxValue) {
                     draft = int.MaxValue;
                 }
                 mAutoBackupTimer.Interval = draft;
@@ -1769,51 +1769,51 @@ namespace cadencii
             }
         }
 
-        public static void handleAutoBackupTimerTick( Object sender, EventArgs e )
+        public static void handleAutoBackupTimerTick(Object sender, EventArgs e)
         {
 #if DEBUG
-            sout.println( "AppManager::handleAutoBackupTimerTick" );
+            sout.println("AppManager::handleAutoBackupTimerTick");
 #endif
             if (!mFile.Equals("") && System.IO.File.Exists(mFile)) {
-                string path = PortUtil.getDirectoryName( mFile );
-                string backup = Path.Combine( path, "~$" + PortUtil.getFileName( mFile ) );
-                string file2 = Path.Combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
+                string path = PortUtil.getDirectoryName(mFile);
+                string backup = Path.Combine(path, "~$" + PortUtil.getFileName(mFile));
+                string file2 = Path.Combine(path, PortUtil.getFileNameWithoutExtension(backup) + ".vsq");
                 if (System.IO.File.Exists(backup)) {
                     try {
-                        PortUtil.deleteFile( backup );
-                    } catch ( Exception ex ) {
-                        serr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
-                        Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
+                        PortUtil.deleteFile(backup);
+                    } catch (Exception ex) {
+                        serr.println("AppManager::handleAutoBackupTimerTick; ex=" + ex);
+                        Logger.write(typeof(AppManager) + ".handleAutoBackupTimerTick; ex=" + ex + "\n");
                     }
                 }
                 if (System.IO.File.Exists(file2)) {
                     try {
-                        PortUtil.deleteFile( file2 );
-                    } catch ( Exception ex ) {
-                        serr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
-                        Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
+                        PortUtil.deleteFile(file2);
+                    } catch (Exception ex) {
+                        serr.println("AppManager::handleAutoBackupTimerTick; ex=" + ex);
+                        Logger.write(typeof(AppManager) + ".handleAutoBackupTimerTick; ex=" + ex + "\n");
                     }
                 }
-                saveToCor( backup );
+                saveToCor(backup);
             }
         }
         #endregion
 
-        public static void debugWriteLine( string message )
+        public static void debugWriteLine(string message)
         {
 #if DEBUG
             try {
-                if ( mDebugLog == null ) {
-                    string log_file = Path.Combine( PortUtil.getApplicationStartupPath(), "log.txt" );
-                    mDebugLog = new BufferedWriter( new FileWriter( log_file ) );
+                if (mDebugLog == null) {
+                    string log_file = Path.Combine(PortUtil.getApplicationStartupPath(), "log.txt");
+                    mDebugLog = new BufferedWriter(new FileWriter(log_file));
                 }
-                mDebugLog.write( message );
+                mDebugLog.write(message);
                 mDebugLog.newLine();
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#debugWriteLine; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".debugWriteLine; ex=" + ex + "\n" );
+            } catch (Exception ex) {
+                serr.println("AppManager#debugWriteLine; ex=" + ex);
+                Logger.write(typeof(AppManager) + ".debugWriteLine; ex=" + ex + "\n");
             }
-            sout.println( message );
+            sout.println(message);
 #endif
         }
 
@@ -1830,9 +1830,9 @@ namespace cadencii
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static string _( string id )
+        public static string _(string id)
         {
-            return Messaging.getMessage( id );
+            return Messaging.getMessage(id);
         }
 
         /// <summary>
@@ -1840,11 +1840,11 @@ namespace cadencii
         /// このメソッドでは、キャッシュディレクトリの変更に伴う他の処理は実行されません。
         /// </summary>
         /// <param name="value"></param>
-        public static void setTempWaveDir( string value )
+        public static void setTempWaveDir(string value)
         {
 #if DEBUG
-            sout.println( "AppManager#setTempWaveDir; before: \"" + mTempWaveDir + "\"" );
-            sout.println( "                           after:  \"" + value + "\"" );
+            sout.println("AppManager#setTempWaveDir; before: \"" + mTempWaveDir + "\"");
+            sout.println("                           after:  \"" + value + "\"");
 #endif
             mTempWaveDir = value;
         }
@@ -1864,9 +1864,9 @@ namespace cadencii
         /// <returns></returns>
         public static string getCadenciiTempDir()
         {
-            string temp = Path.Combine( PortUtil.getTempPath(), TEMPDIR_NAME );
+            string temp = Path.Combine(PortUtil.getTempPath(), TEMPDIR_NAME);
             if (!Directory.Exists(temp)) {
-                PortUtil.createDirectory( temp );
+                PortUtil.createDirectory(temp);
             }
             return temp;
         }
@@ -1884,18 +1884,18 @@ namespace cadencii
         /// ベジエ曲線を編集するモードかどうかを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public static void setCurveMode( bool value )
+        public static void setCurveMode(bool value)
         {
             bool old = mIsCurveMode;
             mIsCurveMode = value;
-            if ( old != mIsCurveMode ) {
+            if (old != mIsCurveMode) {
                 try {
-                    if ( SelectedToolChanged != null ) {
-                        SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
+                    if (SelectedToolChanged != null) {
+                        SelectedToolChanged.Invoke(typeof(AppManager), new EventArgs());
                     }
-                } catch ( Exception ex ) {
-                    serr.println( "AppManager#setCurveMode; ex=" + ex );
-                    Logger.write( typeof( AppManager ) + ".setCurveMode; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("AppManager#setCurveMode; ex=" + ex);
+                    Logger.write(typeof(AppManager) + ".setCurveMode; ex=" + ex + "\n");
                 }
             }
         }
@@ -1906,36 +1906,36 @@ namespace cadencii
         /// </summary>
         public static void undo()
         {
-            if ( editHistory.hasUndoHistory() ) {
+            if (editHistory.hasUndoHistory()) {
                 List<ValuePair<int, int>> before_ids = new List<ValuePair<int, int>>();
                 foreach (var item in itemSelection.getEventIterator()) {
-                    before_ids.Add( new ValuePair<int, int>( item.track, item.original.InternalID ) );
+                    before_ids.Add(new ValuePair<int, int>(item.track, item.original.InternalID));
                 }
 
                 ICommand run_src = editHistory.getUndo();
                 CadenciiCommand run = (CadenciiCommand)run_src;
-                if ( run.vsqCommand != null ) {
-                    if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
+                if (run.vsqCommand != null) {
+                    if (run.vsqCommand.Type == VsqCommandType.TRACK_DELETE) {
                         int track = (int)run.vsqCommand.Args[0];
-                        if ( track == getSelected() && track >= 2 ) {
-                            setSelected( track - 1 );
+                        if (track == getSelected() && track >= 2) {
+                            setSelected(track - 1);
                         }
                     }
                 }
-                ICommand inv = mVsq.executeCommand( run );
-                if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
+                ICommand inv = mVsq.executeCommand(run);
+                if (run.type == CadenciiCommandType.BGM_UPDATE) {
                     try {
-                        if ( UpdateBgmStatusRequired != null ) {
-                            UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                        if (UpdateBgmStatusRequired != null) {
+                            UpdateBgmStatusRequired.Invoke(typeof(AppManager), new EventArgs());
                         }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( AppManager ) + ".undo; ex=" + ex + "\n" );
-                        serr.println( typeof( AppManager ) + ".undo; ex=" + ex );
+                    } catch (Exception ex) {
+                        Logger.write(typeof(AppManager) + ".undo; ex=" + ex + "\n");
+                        serr.println(typeof(AppManager) + ".undo; ex=" + ex);
                     }
                 }
-                editHistory.registerAfterUndo( inv );
+                editHistory.registerAfterUndo(inv);
 
-                cleanupDeadSelection( before_ids );
+                cleanupDeadSelection(before_ids);
                 itemSelection.updateSelectedEventInstance();
             }
         }
@@ -1945,36 +1945,36 @@ namespace cadencii
         /// </summary>
         public static void redo()
         {
-            if ( editHistory.hasRedoHistory() ) {
+            if (editHistory.hasRedoHistory()) {
                 List<ValuePair<int, int>> before_ids = new List<ValuePair<int, int>>();
                 foreach (var item in itemSelection.getEventIterator()) {
-                    before_ids.Add( new ValuePair<int, int>( item.track, item.original.InternalID ) );
+                    before_ids.Add(new ValuePair<int, int>(item.track, item.original.InternalID));
                 }
 
                 ICommand run_src = editHistory.getRedo();
                 CadenciiCommand run = (CadenciiCommand)run_src;
-                if ( run.vsqCommand != null ) {
-                    if ( run.vsqCommand.Type == VsqCommandType.TRACK_DELETE ) {
+                if (run.vsqCommand != null) {
+                    if (run.vsqCommand.Type == VsqCommandType.TRACK_DELETE) {
                         int track = (int)run.args[0];
-                        if ( track == getSelected() && track >= 2 ) {
-                            setSelected( track - 1 );
+                        if (track == getSelected() && track >= 2) {
+                            setSelected(track - 1);
                         }
                     }
                 }
-                ICommand inv = mVsq.executeCommand( run );
-                if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
+                ICommand inv = mVsq.executeCommand(run);
+                if (run.type == CadenciiCommandType.BGM_UPDATE) {
                     try {
-                        if ( UpdateBgmStatusRequired != null ) {
-                            UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                        if (UpdateBgmStatusRequired != null) {
+                            UpdateBgmStatusRequired.Invoke(typeof(AppManager), new EventArgs());
                         }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( AppManager ) + ".redo; ex=" + ex + "\n" );
-                        serr.println( typeof( AppManager ) + ".redo; ex=" + ex );
+                    } catch (Exception ex) {
+                        Logger.write(typeof(AppManager) + ".redo; ex=" + ex + "\n");
+                        serr.println(typeof(AppManager) + ".redo; ex=" + ex);
                     }
                 }
-                editHistory.registerAfterRedo( inv );
+                editHistory.registerAfterRedo(inv);
 
-                cleanupDeadSelection( before_ids );
+                cleanupDeadSelection(before_ids);
                 itemSelection.updateSelectedEventInstance();
             }
         }
@@ -1982,23 +1982,23 @@ namespace cadencii
         /// <summary>
         /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
         /// </summary>
-        public static void cleanupDeadSelection( List<ValuePair<int, int>> before_ids )
+        public static void cleanupDeadSelection(List<ValuePair<int, int>> before_ids)
         {
             int size = mVsq.Track.Count;
             foreach (var specif in before_ids) {
                 bool found = false;
                 int track = specif.getKey();
                 int internal_id = specif.getValue();
-                if ( 1 <= track && track < size ) {
+                if (1 <= track && track < size) {
                     foreach (var item in mVsq.Track[track].getNoteEventIterator()) {
-                        if ( item.InternalID == internal_id ) {
+                        if (item.InternalID == internal_id) {
                             found = true;
                             break;
                         }
                     }
                 }
-                if ( !found ) {
-                    AppManager.itemSelection.removeEvent( internal_id );
+                if (!found) {
+                    AppManager.itemSelection.removeEvent(internal_id);
                 }
             }
         }
@@ -2017,18 +2017,18 @@ namespace cadencii
         /// 現在選択されているツールを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public static void setSelectedTool( EditTool value )
+        public static void setSelectedTool(EditTool value)
         {
             EditTool old = mSelectedTool;
             mSelectedTool = value;
-            if ( old != mSelectedTool ) {
+            if (old != mSelectedTool) {
                 try {
-                    if ( SelectedToolChanged != null ) {
-                        SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
+                    if (SelectedToolChanged != null) {
+                        SelectedToolChanged.Invoke(typeof(AppManager), new EventArgs());
                     }
-                } catch ( Exception ex ) {
-                    serr.println( "AppManager#setSelectedTool; ex=" + ex );
-                    Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("AppManager#setSelectedTool; ex=" + ex);
+                    Logger.write(typeof(AppManager) + ".setSelectedTool; ex=" + ex + "\n");
                 }
             }
         }
@@ -2038,22 +2038,22 @@ namespace cadencii
             return mOverlay;
         }
 
-        public static void setOverlay( bool value )
+        public static void setOverlay(bool value)
         {
             mOverlay = value;
         }
 
-        public static bool getRenderRequired( int track )
+        public static bool getRenderRequired(int track)
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return false;
             }
             return mVsq.editorStatus.renderRequired[track - 1];
         }
 
-        public static void setRenderRequired( int track, bool value )
+        public static void setRenderRequired(int track, bool value)
         {
-            if ( mVsq == null ) {
+            if (mVsq == null) {
                 return;
             }
             mVsq.editorStatus.renderRequired[track - 1] = value;
@@ -2071,7 +2071,7 @@ namespace cadencii
         /// 現在の編集モードを設定します．
         /// </summary>
         /// <param name="value"></param>
-        public static void setEditMode( EditMode value )
+        public static void setEditMode(EditMode value)
         {
             mEditMode = value;
         }
@@ -2088,17 +2088,17 @@ namespace cadencii
         /// グリッドを表示するか否かを設定します
         /// </summary>
         /// <param name="value"></param>
-        public static void setGridVisible( bool value )
+        public static void setGridVisible(bool value)
         {
-            if ( value != mGridVisible ) {
+            if (value != mGridVisible) {
                 mGridVisible = value;
                 try {
-                    if ( GridVisibleChanged != null ) {
-                        GridVisibleChanged.Invoke( typeof( AppManager ), new EventArgs() );
+                    if (GridVisibleChanged != null) {
+                        GridVisibleChanged.Invoke(typeof(AppManager), new EventArgs());
                     }
-                } catch ( Exception ex ) {
-                    serr.println( "AppManager#setGridVisible; ex=" + ex );
-                    Logger.write( typeof( AppManager ) + ".setGridVisible; ex=" + ex + "\n" );
+                } catch (Exception ex) {
+                    serr.println("AppManager#setGridVisible; ex=" + ex);
+                    Logger.write(typeof(AppManager) + ".setGridVisible; ex=" + ex + "\n");
                 }
             }
         }
@@ -2115,7 +2115,7 @@ namespace cadencii
         /// 現在のプレビューがリピートモードかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public static void setRepeatMode( bool value )
+        public static void setRepeatMode(bool value)
         {
             mRepeatMode = value;
         }
@@ -2133,43 +2133,43 @@ namespace cadencii
         /// </summary>
         /// <param name="value"></param>
         /// <param name="form"></param>
-        public static void setPlaying( bool value, FormMain form )
+        public static void setPlaying(bool value, FormMain form)
         {
 #if DEBUG
-            sout.println( "AppManager#setPlaying; value=" + value );
+            sout.println("AppManager#setPlaying; value=" + value);
 #endif
-            lock ( mLockerPlayingProperty ) {
+            lock (mLockerPlayingProperty) {
                 bool previous = mPlaying;
                 mPlaying = value;
-                if ( previous != mPlaying ) {
-                    if ( mPlaying ) {
+                if (previous != mPlaying) {
+                    if (mPlaying) {
                         try {
-                            if( previewStart( form ) ){
+                            if (previewStart(form)) {
 #if DEBUG
-                                sout.println( "AppManager#setPlaying; previewStart returns true" );
+                                sout.println("AppManager#setPlaying; previewStart returns true");
 #endif
                                 mPlaying = false;
                                 return;
                             }
-                            if ( PreviewStarted != null ) {
-                                PreviewStarted.Invoke( typeof( AppManager ), new EventArgs() );
+                            if (PreviewStarted != null) {
+                                PreviewStarted.Invoke(typeof(AppManager), new EventArgs());
                             }
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#setPlaying; ex=" + ex );
-                            Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
+                        } catch (Exception ex) {
+                            serr.println("AppManager#setPlaying; ex=" + ex);
+                            Logger.write(typeof(AppManager) + ".setPlaying; ex=" + ex + "\n");
                         }
-                    } else if ( !mPlaying ) {
+                    } else if (!mPlaying) {
                         try {
                             previewStop();
 #if DEBUG
-                            sout.println( "AppManager#setPlaying; raise previewAbortedEvent" );
+                            sout.println("AppManager#setPlaying; raise previewAbortedEvent");
 #endif
-                            if ( PreviewAborted != null ) {
-                                PreviewAborted.Invoke( typeof( AppManager ), new EventArgs() );
+                            if (PreviewAborted != null) {
+                                PreviewAborted.Invoke(typeof(AppManager), new EventArgs());
                             }
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#setPlaying; ex=" + ex );
-                            Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
+                        } catch (Exception ex) {
+                            serr.println("AppManager#setPlaying; ex=" + ex);
+                            Logger.write(typeof(AppManager) + ".setPlaying; ex=" + ex + "\n");
                         }
                     }
                 }
@@ -2184,116 +2184,116 @@ namespace cadencii
             return mFile;
         }
 
-        private static void saveToCor( string file )
+        private static void saveToCor(string file)
         {
             bool hide = false;
-            if ( mVsq != null ) {
-                string path = PortUtil.getDirectoryName( file );
+            if (mVsq != null) {
+                string path = PortUtil.getDirectoryName(file);
                 //String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
-                mVsq.writeAsXml( file );
+                mVsq.writeAsXml(file);
                 //mVsq.write( file2 );
-                if ( hide ) {
+                if (hide) {
                     try {
-                        System.IO.File.SetAttributes( file, System.IO.FileAttributes.Hidden );
+                        System.IO.File.SetAttributes(file, System.IO.FileAttributes.Hidden);
                         //System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
-                    } catch ( Exception ex ) {
-                        serr.println( "AppManager#saveToCor; ex=" + ex );
-                        Logger.write( typeof( AppManager ) + ".saveToCor; ex=" + ex + "\n" );
+                    } catch (Exception ex) {
+                        serr.println("AppManager#saveToCor; ex=" + ex);
+                        Logger.write(typeof(AppManager) + ".saveToCor; ex=" + ex + "\n");
                     }
                 }
             }
         }
 
-        public static void saveTo( string file )
+        public static void saveTo(string file)
         {
-            if ( mVsq != null ) {
-                if ( editorConfig.UseProjectCache ) {
+            if (mVsq != null) {
+                if (editorConfig.UseProjectCache) {
                     // キャッシュディレクトリの処理
-                    string dir = PortUtil.getDirectoryName( file );
-                    string name = PortUtil.getFileNameWithoutExtension( file );
-                    string cacheDir = Path.Combine( dir, name + ".cadencii" );
+                    string dir = PortUtil.getDirectoryName(file);
+                    string name = PortUtil.getFileNameWithoutExtension(file);
+                    string cacheDir = Path.Combine(dir, name + ".cadencii");
 
                     if (!Directory.Exists(cacheDir)) {
                         try {
-                            PortUtil.createDirectory( cacheDir );
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#saveTo; ex=" + ex );
-                            showMessageBox( PortUtil.formatMessage( _( "failed creating cache directory, '{0}'." ), cacheDir ),
-                                            _( "Info." ),
+                            PortUtil.createDirectory(cacheDir);
+                        } catch (Exception ex) {
+                            serr.println("AppManager#saveTo; ex=" + ex);
+                            showMessageBox(PortUtil.formatMessage(_("failed creating cache directory, '{0}'."), cacheDir),
+                                            _("Info."),
                                             PortUtil.OK_OPTION,
-                                            cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                            Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
+                                            cadencii.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE);
+                            Logger.write(typeof(AppManager) + ".saveTo; ex=" + ex + "\n");
                             return;
                         }
                     }
 
                     string currentCacheDir = getTempWaveDir();
-                    if ( !currentCacheDir.Equals( cacheDir ) ) {
-                        for ( int i = 1; i < mVsq.Track.Count; i++ ) {
-                            string wavFrom = Path.Combine( currentCacheDir, i + ".wav" );
-                            string wavTo = Path.Combine( cacheDir, i + ".wav" );
+                    if (!currentCacheDir.Equals(cacheDir)) {
+                        for (int i = 1; i < mVsq.Track.Count; i++) {
+                            string wavFrom = Path.Combine(currentCacheDir, i + ".wav");
+                            string wavTo = Path.Combine(cacheDir, i + ".wav");
                             if (System.IO.File.Exists(wavFrom)) {
                                 if (System.IO.File.Exists(wavTo)) {
                                     try {
-                                        PortUtil.deleteFile( wavTo );
-                                    } catch ( Exception ex ) {
-                                        serr.println( "AppManager#saveTo; ex=" + ex );
-                                        Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
+                                        PortUtil.deleteFile(wavTo);
+                                    } catch (Exception ex) {
+                                        serr.println("AppManager#saveTo; ex=" + ex);
+                                        Logger.write(typeof(AppManager) + ".saveTo; ex=" + ex + "\n");
                                     }
                                 }
                                 try {
-                                    PortUtil.moveFile( wavFrom, wavTo );
-                                } catch ( Exception ex ) {
-                                    serr.println( "AppManager#saveTo; ex=" + ex );
-                                    showMessageBox( PortUtil.formatMessage( _( "failed copying WAVE cache file, '{0}'." ), wavFrom ),
-                                                    _( "Error" ),
+                                    PortUtil.moveFile(wavFrom, wavTo);
+                                } catch (Exception ex) {
+                                    serr.println("AppManager#saveTo; ex=" + ex);
+                                    showMessageBox(PortUtil.formatMessage(_("failed copying WAVE cache file, '{0}'."), wavFrom),
+                                                    _("Error"),
                                                     PortUtil.OK_OPTION,
-                                                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
-                                    Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
+                                                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE);
+                                    Logger.write(typeof(AppManager) + ".saveTo; ex=" + ex + "\n");
                                     break;
                                 }
                             }
 
-                            string xmlFrom = Path.Combine( currentCacheDir, i + ".xml" );
-                            string xmlTo = Path.Combine( cacheDir, i + ".xml" );
+                            string xmlFrom = Path.Combine(currentCacheDir, i + ".xml");
+                            string xmlTo = Path.Combine(cacheDir, i + ".xml");
                             if (System.IO.File.Exists(xmlFrom)) {
                                 if (System.IO.File.Exists(xmlTo)) {
                                     try {
-                                        PortUtil.deleteFile( xmlTo );
-                                    } catch ( Exception ex ) {
-                                        serr.println( "AppManager#saveTo; ex=" + ex );
-                                        Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
+                                        PortUtil.deleteFile(xmlTo);
+                                    } catch (Exception ex) {
+                                        serr.println("AppManager#saveTo; ex=" + ex);
+                                        Logger.write(typeof(AppManager) + ".saveTo; ex=" + ex + "\n");
                                     }
                                 }
                                 try {
-                                    PortUtil.moveFile( xmlFrom, xmlTo );
-                                } catch ( Exception ex ) {
-                                    serr.println( "AppManager#saveTo; ex=" + ex );
-                                    showMessageBox( PortUtil.formatMessage( _( "failed copying XML cache file, '{0}'." ), xmlFrom ),
-                                                    _( "Error" ),
+                                    PortUtil.moveFile(xmlFrom, xmlTo);
+                                } catch (Exception ex) {
+                                    serr.println("AppManager#saveTo; ex=" + ex);
+                                    showMessageBox(PortUtil.formatMessage(_("failed copying XML cache file, '{0}'."), xmlFrom),
+                                                    _("Error"),
                                                     PortUtil.OK_OPTION,
-                                                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
-                                    Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
+                                                    cadencii.windows.forms.Utility.MSGBOX_WARNING_MESSAGE);
+                                    Logger.write(typeof(AppManager) + ".saveTo; ex=" + ex + "\n");
                                     break;
                                 }
                             }
                         }
 
-                        setTempWaveDir( cacheDir );
+                        setTempWaveDir(cacheDir);
                     }
                     mVsq.cacheDir = cacheDir;
                 }
             }
 
-            saveToCor( file );
+            saveToCor(file);
 
-            if ( mVsq != null ) {
+            if (mVsq != null) {
                 mFile = file;
-                editorConfig.pushRecentFiles( mFile );
-                if ( !mAutoBackupTimer.Enabled && editorConfig.AutoBackupIntervalMinutes > 0 ) {
+                editorConfig.pushRecentFiles(mFile);
+                if (!mAutoBackupTimer.Enabled && editorConfig.AutoBackupIntervalMinutes > 0) {
                     double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                     int draft = (int)millisec;
-                    if ( millisec > int.MaxValue ) {
+                    if (millisec > int.MaxValue) {
                         draft = int.MaxValue;
                     }
                     mAutoBackupTimer.Interval = draft;
@@ -2313,7 +2313,7 @@ namespace cadencii
         /// <summary>
         /// 現在の演奏マーカーの位置を設定します。
         /// </summary>
-        public static void setCurrentClock( int value )
+        public static void setCurrentClock(int value)
         {
             mCurrentClock = value;
         }
@@ -2324,13 +2324,13 @@ namespace cadencii
         public static int getSelected()
         {
             int tracks = mVsq.Track.Count;
-            if ( tracks <= mSelected ) {
+            if (tracks <= mSelected) {
                 mSelected = tracks - 1;
             }
             return mSelected;
         }
 
-        public static void setSelected( int value )
+        public static void setSelected(int value)
         {
             mSelected = value;
         }
@@ -2349,24 +2349,24 @@ namespace cadencii
         /// </summary>
         /// <param name="file"></param>
         /// <returns>ファイルの読み込みに成功した場合にtrueを，それ以外の場合はfalseを返します</returns>
-        public static bool readVsq( string file )
+        public static bool readVsq(string file)
         {
             mSelected = 1;
             mFile = file;
             VsqFileEx newvsq = null;
             try {
-                newvsq = VsqFileEx.readFromXml( file );
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#readVsq; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
+                newvsq = VsqFileEx.readFromXml(file);
+            } catch (Exception ex) {
+                serr.println("AppManager#readVsq; ex=" + ex);
+                Logger.write(typeof(AppManager) + ".readVsq; ex=" + ex + "\n");
                 return true;
             }
-            if ( newvsq == null ) {
+            if (newvsq == null) {
                 return true;
             }
             mVsq = newvsq;
-            for ( int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++ ) {
-                if ( i < mVsq.Track.Count - 1 ) {
+            for (int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++) {
+                if (i < mVsq.Track.Count - 1) {
                     mVsq.editorStatus.renderRequired[i] = true;
                 } else {
                     mVsq.editorStatus.renderRequired[i] = false;
@@ -2375,18 +2375,18 @@ namespace cadencii
             //mStartMarker = mVsq.getPreMeasureClocks();
             //int bar = mVsq.getPreMeasure() + 1;
             //mEndMarker = mVsq.getClockFromBarCount( bar );
-            if ( mVsq.Track.Count >= 1 ) {
+            if (mVsq.Track.Count >= 1) {
                 mSelected = 1;
             } else {
                 mSelected = -1;
             }
             try {
-                if ( UpdateBgmStatusRequired != null ) {
-                    UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                if (UpdateBgmStatusRequired != null) {
+                    UpdateBgmStatusRequired.Invoke(typeof(AppManager), new EventArgs());
                 }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
-                serr.println( typeof( AppManager ) + ".readVsq; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".readVsq; ex=" + ex + "\n");
+                serr.println(typeof(AppManager) + ".readVsq; ex=" + ex);
             }
             return false;
         }
@@ -2410,11 +2410,11 @@ namespace cadencii
         }
 #endif
 
-        public static void setVsqFile( VsqFileEx vsq )
+        public static void setVsqFile(VsqFileEx vsq)
         {
             mVsq = vsq;
-            for ( int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++ ) {
-                if ( i < mVsq.Track.Count - 1 ) {
+            for (int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++) {
+                if (i < mVsq.Track.Count - 1) {
                     mVsq.editorStatus.renderRequired[i] = true;
                 } else {
                     mVsq.editorStatus.renderRequired[i] = false;
@@ -2425,14 +2425,14 @@ namespace cadencii
             //int bar = mVsq.getPreMeasure() + 1;
             //mEndMarker = mVsq.getClockFromBarCount( bar );
             mAutoBackupTimer.Stop();
-            setCurrentClock( mVsq.getPreMeasureClocks() );
+            setCurrentClock(mVsq.getPreMeasureClocks());
             try {
-                if ( UpdateBgmStatusRequired != null ) {
-                    UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                if (UpdateBgmStatusRequired != null) {
+                    UpdateBgmStatusRequired.Invoke(typeof(AppManager), new EventArgs());
                 }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".setVsqFile; ex=" + ex + "\n" );
-                serr.println( typeof( AppManager ) + ".setVsqFile; ex=" + ex );
+            } catch (Exception ex) {
+                Logger.write(typeof(AppManager) + ".setVsqFile; ex=" + ex + "\n");
+                serr.println(typeof(AppManager) + ".setVsqFile; ex=" + ex);
             }
         }
 
@@ -2444,24 +2444,24 @@ namespace cadencii
             editHistory = new EditHistoryModel();
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
             int c = editorConfig.UtauSingers.Count;
-            for ( int i = 0; i < c; i++ ) {
-                SingerConfig sc = editorConfig.UtauSingers[ i ];
-                if ( sc == null ) {
+            for (int i = 0; i < c; i++) {
+                SingerConfig sc = editorConfig.UtauSingers[i];
+                if (sc == null) {
                     continue;
                 }
                 string dir = sc.VOICEIDSTR;
                 SingerConfig sc_temp = new SingerConfig();
-                string path_image = Utility.readUtauSingerConfig( dir, sc_temp );
+                string path_image = Utility.readUtauSingerConfig(dir, sc_temp);
 
 #if DEBUG
-                sout.println( "AppManager#init; path_image=" + path_image );
+                sout.println("AppManager#init; path_image=" + path_image);
 #endif
-                if ( Cadencii.splash != null ) {
+                if (Cadencii.splash != null) {
                     try {
-                        Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
-                    } catch ( Exception ex ) {
-                        serr.println( "AppManager#init; ex=" + ex );
-                        Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
+                        Cadencii.splash.addIconThreadSafe(path_image, sc.VOICENAME);
+                    } catch (Exception ex) {
+                        serr.println("AppManager#init; ex=" + ex);
+                        Logger.write(typeof(AppManager) + ".init; ex=" + ex + "\n");
                     }
                 }
             }
@@ -2472,52 +2472,52 @@ namespace cadencii
             keyWidth = editorConfig.KeyWidth;
             VSTiDllManager.init();
             // アイコンパレード, VOCALOID1
-            SingerConfigSys singer_config_sys1 = VocaloSysUtil.getSingerConfigSys( SynthesizerType.VOCALOID1 );
-            if ( singer_config_sys1 != null ) {
-                foreach ( SingerConfig sc in singer_config_sys1.getInstalledSingers() ) {
-                    if ( sc == null ) {
+            SingerConfigSys singer_config_sys1 = VocaloSysUtil.getSingerConfigSys(SynthesizerType.VOCALOID1);
+            if (singer_config_sys1 != null) {
+                foreach (SingerConfig sc in singer_config_sys1.getInstalledSingers()) {
+                    if (sc == null) {
                         continue;
                     }
                     string name = sc.VOICENAME.ToLower();
                     string path_image = Path.Combine(
                                             Path.Combine(
-                                                PortUtil.getApplicationStartupPath(), "resources" ),
-                                            name + ".png" );
+                                                PortUtil.getApplicationStartupPath(), "resources"),
+                                            name + ".png");
 #if DEBUG
-                    sout.println( "AppManager#init; path_image=" + path_image );
+                    sout.println("AppManager#init; path_image=" + path_image);
 #endif
-                    if ( Cadencii.splash != null ) {
+                    if (Cadencii.splash != null) {
                         try {
-                            Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#init; ex=" + ex );
-                            Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
+                            Cadencii.splash.addIconThreadSafe(path_image, sc.VOICENAME);
+                        } catch (Exception ex) {
+                            serr.println("AppManager#init; ex=" + ex);
+                            Logger.write(typeof(AppManager) + ".init; ex=" + ex + "\n");
                         }
                     }
                 }
             }
 
             // アイコンパレード、VOCALOID2
-            SingerConfigSys singer_config_sys2 = VocaloSysUtil.getSingerConfigSys( SynthesizerType.VOCALOID2 );
-            if ( singer_config_sys2 != null ) {
-                foreach ( SingerConfig sc in singer_config_sys2.getInstalledSingers() ) {
-                    if ( sc == null ) {
+            SingerConfigSys singer_config_sys2 = VocaloSysUtil.getSingerConfigSys(SynthesizerType.VOCALOID2);
+            if (singer_config_sys2 != null) {
+                foreach (SingerConfig sc in singer_config_sys2.getInstalledSingers()) {
+                    if (sc == null) {
                         continue;
                     }
                     string name = sc.VOICENAME.ToLower();
                     string path_image = Path.Combine(
                                             Path.Combine(
-                                                PortUtil.getApplicationStartupPath(), "resources" ),
-                                            name + ".png" );
+                                                PortUtil.getApplicationStartupPath(), "resources"),
+                                            name + ".png");
 #if DEBUG
-                    sout.println( "AppManager#init; path_image=" + path_image );
+                    sout.println("AppManager#init; path_image=" + path_image);
 #endif
-                    if ( Cadencii.splash != null ) {
+                    if (Cadencii.splash != null) {
                         try {
-                            Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#init; ex=" + ex );
-                            Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
+                            Cadencii.splash.addIconThreadSafe(path_image, sc.VOICENAME);
+                        } catch (Exception ex) {
+                            serr.println("AppManager#init; ex=" + ex);
+                            Logger.write(typeof(AppManager) + ".init; ex=" + ex + "\n");
                         }
                     }
                 }
@@ -2529,71 +2529,71 @@ namespace cadencii
             SymbolTable.loadSystemDictionaries();
             // 日本語辞書
             SymbolTable.loadDictionary(
-                Path.Combine( Path.Combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ),
-                "DEFAULT_JP" );
+                Path.Combine(Path.Combine(PortUtil.getApplicationStartupPath(), "resources"), "dict_ja.txt"),
+                "DEFAULT_JP");
             // 英語辞書
             SymbolTable.loadDictionary(
-                Path.Combine( Path.Combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
-                "DEFAULT_EN" );
+                Path.Combine(Path.Combine(PortUtil.getApplicationStartupPath(), "resources"), "dict_en.txt"),
+                "DEFAULT_EN");
             // 拡張辞書
-            SymbolTable.loadAllDictionaries( Path.Combine( PortUtil.getApplicationStartupPath(), "udic" ) );
+            SymbolTable.loadAllDictionaries(Path.Combine(PortUtil.getApplicationStartupPath(), "udic"));
             //VSTiProxy.CurrentUser = "";
 
             // 辞書の設定を適用
             try {
                 // 現在辞書リストに読込済みの辞書を列挙
                 List<ValuePair<string, Boolean>> current = new List<ValuePair<string, Boolean>>();
-                for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
-                    current.Add( new ValuePair<string, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
+                for (int i = 0; i < SymbolTable.getCount(); i++) {
+                    current.Add(new ValuePair<string, Boolean>(SymbolTable.getSymbolTable(i).getName(), false));
                 }
                 // editorConfig.UserDictionariesの設定値をコピー
                 List<ValuePair<string, Boolean>> config_data = new List<ValuePair<string, Boolean>>();
                 int count = editorConfig.UserDictionaries.Count;
-                for ( int i = 0; i < count; i++ ) {
-                    string[] spl = PortUtil.splitString( editorConfig.UserDictionaries[ i ], new char[] { '\t' }, 2 );
-                    config_data.Add( new ValuePair<string, Boolean>( spl[0], (spl[1].Equals( "T" ) ? true : false) ) );
+                for (int i = 0; i < count; i++) {
+                    string[] spl = PortUtil.splitString(editorConfig.UserDictionaries[i], new char[] { '\t' }, 2);
+                    config_data.Add(new ValuePair<string, Boolean>(spl[0], (spl[1].Equals("T") ? true : false)));
 #if DEBUG
-                    AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
+                    AppManager.debugWriteLine("    " + spl[0] + "," + spl[1]);
 #endif
                 }
                 // 辞書リストとeditorConfigの設定を比較する
                 // currentの方には、editorConfigと共通するものについてのみsetValue(true)とする
                 List<ValuePair<string, Boolean>> common = new List<ValuePair<string, Boolean>>();
-                for ( int i = 0; i < config_data.Count; i++ ) {
-                    for ( int j = 0; j < current.Count; j++ ) {
-                        if ( config_data[ i ].getKey().Equals( current[ j ].getKey() ) ) {
+                for (int i = 0; i < config_data.Count; i++) {
+                    for (int j = 0; j < current.Count; j++) {
+                        if (config_data[i].getKey().Equals(current[j].getKey())) {
                             // editorConfig.UserDictionariesにもKeyが含まれていたらtrue
-                            current[ j ].setValue( true );
-                            common.Add( new ValuePair<string, Boolean>( config_data[ i ].getKey(), config_data[ i ].getValue() ) );
+                            current[j].setValue(true);
+                            common.Add(new ValuePair<string, Boolean>(config_data[i].getKey(), config_data[i].getValue()));
                             break;
                         }
                     }
                 }
                 // editorConfig.UserDictionariesに登録されていないが、辞書リストには読み込まれている場合。
                 // この場合は、デフォルトでENABLEとし、優先順位を最後尾とする。
-                for ( int i = 0; i < current.Count; i++ ) {
-                    if ( !current[ i ].getValue() ) {
-                        common.Add( new ValuePair<string, Boolean>( current[ i ].getKey(), true ) );
+                for (int i = 0; i < current.Count; i++) {
+                    if (!current[i].getValue()) {
+                        common.Add(new ValuePair<string, Boolean>(current[i].getKey(), true));
                     }
                 }
-                SymbolTable.changeOrder( common );
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#init; ex=" + ex );
+                SymbolTable.changeOrder(common);
+            } catch (Exception ex) {
+                serr.println("AppManager#init; ex=" + ex);
             }
 
 #if !TREECOM
-            mID = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
-            mTempWaveDir = Path.Combine( getCadenciiTempDir(), mID );
+            mID = PortUtil.getMD5FromString((long)PortUtil.getCurrentTime() + "").Replace("_", "");
+            mTempWaveDir = Path.Combine(getCadenciiTempDir(), mID);
             if (!Directory.Exists(mTempWaveDir)) {
-                PortUtil.createDirectory( mTempWaveDir );
+                PortUtil.createDirectory(mTempWaveDir);
             }
-            string log = Path.Combine( getTempWaveDir(), "run.log" );
+            string log = Path.Combine(getTempWaveDir(), "run.log");
 #endif
 
             reloadUtauVoiceDB();
 
             mAutoBackupTimer = new System.Windows.Forms.Timer();
-            mAutoBackupTimer.Tick += new EventHandler( handleAutoBackupTimerTick );
+            mAutoBackupTimer.Tick += new EventHandler(handleAutoBackupTimerTick);
         }
 
         /// <summary>
@@ -2607,14 +2607,14 @@ namespace cadencii
                 // 通常のUTAU音源
                 UtauVoiceDB db = null;
                 try {
-                    db = new UtauVoiceDB( config );
-                } catch ( Exception ex ) {
-                    serr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
+                    db = new UtauVoiceDB(config);
+                } catch (Exception ex) {
+                    serr.println("AppManager#reloadUtauVoiceDB; ex=" + ex);
                     db = null;
-                    Logger.write( typeof( AppManager ) + ".reloadUtauVoiceDB; ex=" + ex + "\n" );
+                    Logger.write(typeof(AppManager) + ".reloadUtauVoiceDB; ex=" + ex + "\n");
                 }
-                if ( db != null ) {
-                    mUtauVoiceDB[ config.VOICEIDSTR] =  db ;
+                if (db != null) {
+                    mUtauVoiceDB[config.VOICEIDSTR] = db;
                 }
             }
         }
@@ -2625,7 +2625,7 @@ namespace cadencii
         /// <returns></returns>
         public static int getPositionQuantizeClock()
         {
-            return QuantizeModeUtil.getQuantizeClock( editorConfig.getPositionQuantize(), editorConfig.isPositionQuantizeTriplet() );
+            return QuantizeModeUtil.getQuantizeClock(editorConfig.getPositionQuantize(), editorConfig.isPositionQuantizeTriplet());
         }
 
         /// <summary>
@@ -2634,71 +2634,71 @@ namespace cadencii
         /// <returns></returns>
         public static int getLengthQuantizeClock()
         {
-            return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
+            return QuantizeModeUtil.getQuantizeClock(editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet());
         }
 
-        public static void serializeEditorConfig( EditorConfig instance, string file )
+        public static void serializeEditorConfig(EditorConfig instance, string file)
         {
             FileOutputStream fs = null;
             try {
-                fs = new FileOutputStream( file );
-                EditorConfig.getSerializer().serialize( fs, instance );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex + "\n" );
+                fs = new FileOutputStream(file);
+                EditorConfig.getSerializer().serialize(fs, instance);
+            } catch (Exception ex) {
+                Logger.write(typeof(EditorConfig) + ".serialize; ex=" + ex + "\n");
             } finally {
-                if ( fs != null ) {
+                if (fs != null) {
                     try {
                         fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex2 + "\n" );
+                    } catch (Exception ex2) {
+                        Logger.write(typeof(EditorConfig) + ".serialize; ex=" + ex2 + "\n");
                     }
                 }
             }
         }
 
-        public static EditorConfig deserializeEditorConfig( string file )
+        public static EditorConfig deserializeEditorConfig(string file)
         {
             EditorConfig ret = null;
             FileInputStream fs = null;
             try {
-                fs = new FileInputStream( file );
-                ret = (EditorConfig)EditorConfig.getSerializer().deserialize( fs );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
+                fs = new FileInputStream(file);
+                ret = (EditorConfig)EditorConfig.getSerializer().deserialize(fs);
+            } catch (Exception ex) {
+                Logger.write(typeof(EditorConfig) + ".deserialize; ex=" + ex + "\n");
             } finally {
-                if ( fs != null ) {
+                if (fs != null) {
                     try {
                         fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex2 + "\n" );
+                    } catch (Exception ex2) {
+                        Logger.write(typeof(EditorConfig) + ".deserialize; ex=" + ex2 + "\n");
                     }
                 }
             }
 
-            if ( ret == null ) {
+            if (ret == null) {
                 return null;
             }
 
-            if ( mMainWindow != null ) {
+            if (mMainWindow != null) {
                 List<ValuePairOfStringArrayOfKeys> defs = mMainWindow.getDefaultShortcutKeys();
-                for ( int j = 0; j < defs.Count; j++ ) {
+                for (int j = 0; j < defs.Count; j++) {
                     bool found = false;
-                    for ( int i = 0; i < ret.ShortcutKeys.Count; i++ ) {
-                        if ( defs[ j ].Key.Equals( ret.ShortcutKeys[ i ].Key ) ) {
+                    for (int i = 0; i < ret.ShortcutKeys.Count; i++) {
+                        if (defs[j].Key.Equals(ret.ShortcutKeys[i].Key)) {
                             found = true;
                             break;
                         }
                     }
-                    if ( !found ) {
-                        ret.ShortcutKeys.Add( defs[ j ] );
+                    if (!found) {
+                        ret.ShortcutKeys.Add(defs[j]);
                     }
                 }
             }
 
             // バッファーサイズを正規化
-            if ( ret.BufferSizeMilliSeconds < EditorConfig.MIN_BUFFER_MILLIXEC ) {
+            if (ret.BufferSizeMilliSeconds < EditorConfig.MIN_BUFFER_MILLIXEC) {
                 ret.BufferSizeMilliSeconds = EditorConfig.MIN_BUFFER_MILLIXEC;
-            } else if ( EditorConfig.MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds ) {
+            } else if (EditorConfig.MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds) {
                 ret.BufferSizeMilliSeconds = EditorConfig.MAX_BUFFER_MILLISEC;
             }
             return ret;
@@ -2712,27 +2712,27 @@ namespace cadencii
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.Clear();
             int count = SymbolTable.getCount();
-            for ( int i = 0; i < count; i++ ) {
-                SymbolTable table = SymbolTable.getSymbolTable( i );
-                editorConfig.UserDictionaries.Add( table.getName() + "\t" + (table.isEnabled() ? "T" : "F") );
+            for (int i = 0; i < count; i++) {
+                SymbolTable table = SymbolTable.getSymbolTable(i);
+                editorConfig.UserDictionaries.Add(table.getName() + "\t" + (table.isEnabled() ? "T" : "F"));
             }
             editorConfig.KeyWidth = keyWidth;
 
             // chevronの幅を保存
-            if ( Rebar.CHEVRON_WIDTH > 0 ) {
+            if (Rebar.CHEVRON_WIDTH > 0) {
                 editorConfig.ChevronWidth = Rebar.CHEVRON_WIDTH;
             }
 
             // シリアライズして保存
-            string file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            string file = Path.Combine(Utility.getConfigPath(), CONFIG_FILE_NAME);
 #if DEBUG
-            sout.println( "AppManager#saveConfig; file=" + file );
+            sout.println("AppManager#saveConfig; file=" + file);
 #endif
             try {
-                serializeEditorConfig( editorConfig, file );
-            } catch ( Exception ex ) {
-                serr.println( "AppManager#saveConfig; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".saveConfig; ex=" + ex + "\n" );
+                serializeEditorConfig(editorConfig, file);
+            } catch (Exception ex) {
+                serr.println("AppManager#saveConfig; ex=" + ex);
+                Logger.write(typeof(AppManager) + ".saveConfig; ex=" + ex + "\n");
             }
         }
 
@@ -2744,55 +2744,55 @@ namespace cadencii
         {
             string appdata = Utility.getApplicationDataPath();
 #if DEBUG
-            sout.println( "AppManager#loadConfig; appdata=" + appdata );
+            sout.println("AppManager#loadConfig; appdata=" + appdata);
 #endif
-            if ( appdata.Equals( "" ) ) {
+            if (appdata.Equals("")) {
                 editorConfig = new EditorConfig();
                 return;
             }
 
             // バージョン番号付きのファイル
-            string config_file = Path.Combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            string config_file = Path.Combine(Utility.getConfigPath(), CONFIG_FILE_NAME);
 #if DEBUG
-            sout.println( "AppManager#loadConfig; config_file=" + config_file );
+            sout.println("AppManager#loadConfig; config_file=" + config_file);
 #endif
             EditorConfig ret = null;
             if (System.IO.File.Exists(config_file)) {
                 // このバージョン用の設定ファイルがあればそれを利用
                 try {
-                    ret = deserializeEditorConfig( config_file );
-                } catch ( Exception ex ) {
-                    serr.println( "AppManager#loadConfig; ex=" + ex );
+                    ret = deserializeEditorConfig(config_file);
+                } catch (Exception ex) {
+                    serr.println("AppManager#loadConfig; ex=" + ex);
                     ret = null;
-                    Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
+                    Logger.write(typeof(AppManager) + ".loadConfig; ex=" + ex + "\n");
                 }
             } else {
                 // このバージョン用の設定ファイルがなかった場合
                 // まず，古いバージョン用の設定ファイルがないかどうか順に調べる
-                string[] dirs0 = PortUtil.listDirectories( appdata );
+                string[] dirs0 = PortUtil.listDirectories(appdata);
                 // 数字と，2個以下のピリオドからなるディレクトリ名のみを抽出
                 List<VersionString> dirs = new List<VersionString>();
-                foreach ( string s0 in dirs0 ) {
-                    string s = PortUtil.getFileName( s0 );
-                    int length = PortUtil.getStringLength( s );
+                foreach (string s0 in dirs0) {
+                    string s = PortUtil.getFileName(s0);
+                    int length = PortUtil.getStringLength(s);
                     bool register = true;
                     int num_period = 0;
-                    for ( int i = 0; i < length; i++ ) {
-                        char c = PortUtil.charAt( s, i );
-                        if ( c == '.' ) {
+                    for (int i = 0; i < length; i++) {
+                        char c = PortUtil.charAt(s, i);
+                        if (c == '.') {
                             num_period++;
                         } else {
-                            if ( !char.IsNumber( c ) ) {
+                            if (!char.IsNumber(c)) {
                                 register = false;
                                 break;
                             }
                         }
                     }
-                    if ( register && num_period <= 2 ) {
+                    if (register && num_period <= 2) {
                         try {
-                            VersionString vs = new VersionString( s );
-                            dirs.Add( vs );
-                        } catch ( Exception ex ) {
+                            VersionString vs = new VersionString(s);
+                            dirs.Add(vs);
+                        } catch (Exception ex) {
                         }
                     }
                 }
@@ -2800,37 +2800,37 @@ namespace cadencii
                 // 並べ替える
                 bool changed = true;
                 int size = dirs.Count;
-                while ( changed ) {
+                while (changed) {
                     changed = false;
-                    for ( int i = 0; i < size - 1; i++ ) {
-                        VersionString item1 = dirs[ i ];
-                        VersionString item2 = dirs[ i + 1 ];
-                        if ( item1.compareTo( item2 ) > 0 ) {
-                            dirs[ i] =  item2 ;
-                            dirs[ i + 1] =  item1 ;
+                    for (int i = 0; i < size - 1; i++) {
+                        VersionString item1 = dirs[i];
+                        VersionString item2 = dirs[i + 1];
+                        if (item1.compareTo(item2) > 0) {
+                            dirs[i] = item2;
+                            dirs[i + 1] = item1;
                             changed = true;
                         }
                     }
                 }
 
                 // バージョン番号付きの設定ファイルを新しい順に読み込みを試みる
-                VersionString vs_this = new VersionString( BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
-                for ( int i = size - 1; i >= 0; i-- ) {
-                    VersionString vs = dirs[ i ];
-                    if ( vs_this.compareTo( vs ) < 0 ) {
+                VersionString vs_this = new VersionString(BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor);
+                for (int i = size - 1; i >= 0; i--) {
+                    VersionString vs = dirs[i];
+                    if (vs_this.compareTo(vs) < 0) {
                         // 自分自身のバージョンより新しいものは
                         // 読み込んではいけない
                         continue;
                     }
-                    config_file = Path.Combine( Path.Combine( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
+                    config_file = Path.Combine(Path.Combine(appdata, vs.getRawString()), CONFIG_FILE_NAME);
                     if (System.IO.File.Exists(config_file)) {
                         try {
-                            ret = deserializeEditorConfig( config_file );
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
+                            ret = deserializeEditorConfig(config_file);
+                        } catch (Exception ex) {
+                            Logger.write(typeof(AppManager) + ".loadConfig; ex=" + ex + "\n");
                             ret = null;
                         }
-                        if ( ret != null ) {
+                        if (ret != null) {
                             break;
                         }
                     }
@@ -2838,15 +2838,15 @@ namespace cadencii
 
                 // それでも読み込めなかった場合，旧来のデフォルトの位置にある
                 // 設定ファイルを読みに行く
-                if ( ret == null ) {
-                    config_file = Path.Combine( appdata, CONFIG_FILE_NAME );
+                if (ret == null) {
+                    config_file = Path.Combine(appdata, CONFIG_FILE_NAME);
                     if (System.IO.File.Exists(config_file)) {
                         try {
-                            ret = deserializeEditorConfig( config_file );
-                        } catch ( Exception ex ) {
-                            serr.println( "AppManager#locdConfig; ex=" + ex );
+                            ret = deserializeEditorConfig(config_file);
+                        } catch (Exception ex) {
+                            serr.println("AppManager#locdConfig; ex=" + ex);
                             ret = null;
-                            Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
+                            Logger.write(typeof(AppManager) + ".loadConfig; ex=" + ex + "\n");
                         }
                     }
                 }
@@ -2854,7 +2854,7 @@ namespace cadencii
 
             // 設定ファイルの読み込みが悉く失敗した場合，
             // デフォルトの設定とする．
-            if ( ret == null ) {
+            if (ret == null) {
                 ret = new EditorConfig();
             }
             editorConfig = ret;
@@ -2862,19 +2862,19 @@ namespace cadencii
             keyWidth = editorConfig.KeyWidth;
         }
 
-        public static VsqID getSingerIDUtau( int language, int program )
+        public static VsqID getSingerIDUtau(int language, int program)
         {
-            VsqID ret = new VsqID( 0 );
+            VsqID ret = new VsqID(0);
             ret.type = VsqIDType.Singer;
             int index = language << 7 | program;
-            if ( 0 <= index && index < editorConfig.UtauSingers.Count ) {
-                SingerConfig sc = editorConfig.UtauSingers[ index ];
+            if (0 <= index && index < editorConfig.UtauSingers.Count) {
+                SingerConfig sc = editorConfig.UtauSingers[index];
                 ret.IconHandle = new IconHandle();
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( language, 2 ) + PortUtil.toHexString( program, 2 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString(language, 2) + PortUtil.toHexString(program, 2);
                 ret.IconHandle.IDS = sc.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = language;
-                ret.IconHandle.setLength( 1 );
+                ret.IconHandle.setLength(1);
                 ret.IconHandle.Original = language << 8 | program;
                 ret.IconHandle.Program = program;
                 ret.IconHandle.Caption = "";
@@ -2883,18 +2883,18 @@ namespace cadencii
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 4 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString(0, 4);
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
                 return ret;
             }
         }
 
-        public static SingerConfig getSingerInfoUtau( int language, int program )
+        public static SingerConfig getSingerInfoUtau(int language, int program)
         {
             int index = language << 7 | program;
-            if ( 0 <= index && index < editorConfig.UtauSingers.Count ) {
-                return editorConfig.UtauSingers[ index ];
+            if (0 <= index && index < editorConfig.UtauSingers.Count) {
+                return editorConfig.UtauSingers[index];
             } else {
                 return null;
             }
@@ -2905,31 +2905,31 @@ namespace cadencii
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>
-        public static SingerConfig getSingerInfoAquesTone( int program_change )
+        public static SingerConfig getSingerInfoAquesTone(int program_change)
         {
 #if ENABLE_AQUESTONE
-            return AquesToneDriver.getSingerConfig( program_change );
+            return AquesToneDriver.getSingerConfig(program_change);
 #else
             return null;
 #endif
         }
 
-        private static VsqID createAquesToneSingerID( int program, Func<int, SingerConfig> get_singer_config )
+        private static VsqID createAquesToneSingerID(int program, Func<int, SingerConfig> get_singer_config)
         {
-            VsqID ret = new VsqID( 0 );
+            VsqID ret = new VsqID(0);
             ret.type = VsqIDType.Singer;
             SingerConfig config = null;
-            if ( get_singer_config != null ) {
-                config = get_singer_config( program );
+            if (get_singer_config != null) {
+                config = get_singer_config(program);
             }
-            if ( config != null ) {
+            if (config != null) {
                 int lang = 0;
                 ret.IconHandle = new IconHandle();
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( lang, 2 ) + PortUtil.toHexString( program, 2 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString(lang, 2) + PortUtil.toHexString(program, 2);
                 ret.IconHandle.IDS = config.VOICENAME;
                 ret.IconHandle.Index = 0;
                 ret.IconHandle.Language = lang;
-                ret.IconHandle.setLength( 1 );
+                ret.IconHandle.setLength(1);
                 ret.IconHandle.Original = lang << 8 | program;
                 ret.IconHandle.Program = program;
                 ret.IconHandle.Caption = "";
@@ -2937,14 +2937,14 @@ namespace cadencii
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.Program = 0;
                 ret.IconHandle.Language = 0;
-                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( 0, 2 ) + PortUtil.toHexString( 0, 2 );
+                ret.IconHandle.IconID = "$0701" + PortUtil.toHexString(0, 2) + PortUtil.toHexString(0, 2);
                 ret.IconHandle.IDS = "Unknown";
                 ret.type = VsqIDType.Singer;
             }
             return ret;
         }
 
-        public static VsqID getSingerIDAquesTone( int program )
+        public static VsqID getSingerIDAquesTone(int program)
         {
 #if ENABLE_AQUESTONE
             return createAquesToneSingerID(program, AquesToneDriver.getSingerConfig);
@@ -2953,10 +2953,10 @@ namespace cadencii
 #endif
         }
 
-        public static VsqID getSingerIDAquesTone2( int program )
+        public static VsqID getSingerIDAquesTone2(int program)
         {
 #if ENABLE_AQUESTONE
-            return createAquesToneSingerID( program, AquesTone2Driver.getSingerConfig );
+            return createAquesToneSingerID(program, AquesTone2Driver.getSingerConfig);
 #else
             return createAquesToneSingerID( program, null );
 #endif
@@ -2967,7 +2967,7 @@ namespace cadencii
             return mHilightBrush;
         }
 
-        public static void setHilightColor( Color value )
+        public static void setHilightColor(Color value)
         {
             mHilightBrush = value;
         }

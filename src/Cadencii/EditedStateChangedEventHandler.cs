@@ -16,6 +16,6 @@ using System;
 namespace cadencii
 {
 
-    public delegate void EditedStateChangedEventHandler( Object sender, bool edited );
+    public delegate void EditedStateChangedEventHandler(Object sender, bool edited);
 
 }

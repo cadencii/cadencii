@@ -44,7 +44,7 @@ namespace cadencii
         /// <returns>設定項目のキー</returns>
         public string getKey()
         {
-            if( this.key == null ) {
+            if (this.key == null) {
                 return "";
             } else {
                 return this.key;
@@ -55,16 +55,16 @@ namespace cadencii
         /// 設定項目のキーを設定する
         /// </summary>
         /// <param name="value">設定項目のキー</param>
-        public void setKey( string value )
+        public void setKey(string value)
         {
-            if( value == null ) {
-                throw new Exception( "key must not be null" );
+            if (value == null) {
+                throw new Exception("key must not be null");
             }
-            if( value.Length == 0 ) {
-                throw new Exception( "key must not be empty" );
+            if (value.Length == 0) {
+                throw new Exception("key must not be empty");
             }
-            if( value.IndexOf( SEPARATOR, 0 ) >= 0 ) {
-                throw new Exception( "key must not contain \":\"" );
+            if (value.IndexOf(SEPARATOR, 0) >= 0) {
+                throw new Exception("key must not contain \":\"");
             }
             this.key = value;
         }
@@ -75,7 +75,7 @@ namespace cadencii
         /// <returns>設定項目の値</returns>
         public string getValue()
         {
-            if( this.value == null ) {
+            if (this.value == null) {
                 return "";
             } else {
                 return this.value;
@@ -86,13 +86,13 @@ namespace cadencii
         /// 設定項目の値を設定する
         /// </summary>
         /// <param name="value">設定項目の値</param>
-        public void setValue( string value )
+        public void setValue(string value)
         {
-            if( value == null ) {
+            if (value == null) {
                 value = "";
             }
-            if( value.IndexOf( SEPARATOR, 0 ) >= 0 ) {
-                throw new Exception( "value must not contain \":\"" );
+            if (value.IndexOf(SEPARATOR, 0) >= 0) {
+                throw new Exception("value must not contain \":\"");
             }
             this.value = value;
         }
@@ -114,7 +114,7 @@ namespace cadencii
             }
             set
             {
-                setKey( value );
+                setKey(value);
             }
         }
 
@@ -126,7 +126,7 @@ namespace cadencii
             }
             set
             {
-                setValue( value );
+                setValue(value);
             }
         }
 

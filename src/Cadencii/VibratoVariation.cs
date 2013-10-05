@@ -20,7 +20,7 @@ using System.ComponentModel;
 namespace cadencii
 {
 
-    [TypeConverter( typeof( VibratoVariationConverter ) )]
+    [TypeConverter(typeof(VibratoVariationConverter))]
     public class VibratoVariation
     {
         public static readonly VibratoVariation empty = new VibratoVariation();
@@ -32,28 +32,28 @@ namespace cadencii
             description = "-";
         }
 
-        public VibratoVariation( string description )
+        public VibratoVariation(string description)
         {
             this.description = description;
         }
 
-        public bool equals( Object obj )
+        public bool equals(Object obj)
         {
-            if ( obj != null && obj is VibratoVariation ) {
-                return ((VibratoVariation)obj).description.Equals( description );
+            if (obj != null && obj is VibratoVariation) {
+                return ((VibratoVariation)obj).description.Equals(description);
             } else {
-                return base.Equals( obj );
+                return base.Equals(obj);
             }
         }
 
-        public override bool Equals( Object obj )
+        public override bool Equals(Object obj)
         {
-            return equals( obj );
+            return equals(obj);
         }
 
         public override int GetHashCode()
         {
-            if ( description == null ) {
+            if (description == null) {
                 return "".GetHashCode();
             } else {
                 return description.GetHashCode();
@@ -62,7 +62,7 @@ namespace cadencii
 
         public Object clone()
         {
-            return new VibratoVariation( this.description );
+            return new VibratoVariation(this.description);
         }
 
         public Object Clone()

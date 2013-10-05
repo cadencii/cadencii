@@ -27,25 +27,25 @@ namespace cadencii
 
         public NumericUpDownEx()
         {
-            this.GotFocus += new EventHandler( NumericUpDownEx_GotFocus );
+            this.GotFocus += new EventHandler(NumericUpDownEx_GotFocus);
         }
 
-        private void NumericUpDownEx_GotFocus( Object sender, EventArgs e )
+        private void NumericUpDownEx_GotFocus(Object sender, EventArgs e)
         {
-            this.Select( 0, 10 );
+            this.Select(0, 10);
         }
 
-        protected override void OnMouseWheel( MouseEventArgs e )
+        protected override void OnMouseWheel(MouseEventArgs e)
         {
             decimal new_val;
-            if ( e.Delta > 0 ) {
+            if (e.Delta > 0) {
                 new_val = this.Value + this.Increment;
-            } else if ( e.Delta < 0 ) {
+            } else if (e.Delta < 0) {
                 new_val = this.Value - this.Increment;
             } else {
                 return;
             }
-            if ( this.Minimum <= new_val && new_val <= this.Maximum ) {
+            if (this.Minimum <= new_val && new_val <= this.Maximum) {
                 this.Value = new_val;
             }
         }

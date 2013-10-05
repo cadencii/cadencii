@@ -47,11 +47,11 @@ namespace cadencii.vsq
 
         public Object clone()
         {
-            string[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
-            int r = int.Parse( spl[0] );
-            int g = int.Parse( spl[1] );
-            int b = int.Parse( spl[2] );
-            VsqCommon res = new VsqCommon( Name, r, g, b, DynamicsMode, PlayMode );
+            string[] spl = PortUtil.splitString(Color, new char[] { ',' }, 3);
+            int r = int.Parse(spl[0]);
+            int g = int.Parse(spl[1]);
+            int b = int.Parse(spl[2]);
+            VsqCommon res = new VsqCommon(Name, r, g, b, DynamicsMode, PlayMode);
             res.Version = Version;
             res.LastPlayMode = LastPlayMode;
             return res;
@@ -64,7 +64,7 @@ namespace cadencii.vsq
         /// <param name="color">Color値（意味は不明）</param>
         /// <param name="dynamics_mode">DynamicsMode（デフォルトは1）</param>
         /// <param name="play_mode">PlayMode（デフォルトは1）</param>
-        public VsqCommon( string name, int red, int green, int blue, int dynamics_mode, int play_mode )
+        public VsqCommon(string name, int red, int green, int blue, int dynamics_mode, int play_mode)
         {
             this.Version = "DSB301";
             this.Name = name;
@@ -74,7 +74,7 @@ namespace cadencii.vsq
         }
 
         public VsqCommon()
-            : this( "Miku", 179, 181, 123, 1, 1 )
+            : this("Miku", 179, 181, 123, 1, 1)
         {
         }
 
@@ -83,7 +83,7 @@ namespace cadencii.vsq
         /// </summary>
         /// <param name="sr">読み込むテキストファイル</param>
         /// <param name="last_line">読み込んだ最後の行が返される</param>
-        public VsqCommon( TextStream sr, ByRef<string> last_line )
+        public VsqCommon(TextStream sr, ByRef<string> last_line)
         {
             Version = "";
             Name = "";
@@ -92,21 +92,21 @@ namespace cadencii.vsq
             PlayMode = 1;
             last_line.value = sr.readLine();
             string[] spl;
-            while ( !last_line.value.StartsWith( "[" ) ) {
-                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
+            while (!last_line.value.StartsWith("[")) {
+                spl = PortUtil.splitString(last_line.value, new char[] { '=' });
                 string search = spl[0];
-                if ( search.Equals( "Version" ) ) {
+                if (search.Equals("Version")) {
                     this.Version = spl[1];
-                } else if ( search.Equals( "Name" ) ) {
+                } else if (search.Equals("Name")) {
                     this.Name = spl[1];
-                } else if ( search.Equals( "Color" ) ) {
+                } else if (search.Equals("Color")) {
                     this.Color = spl[1];
-                } else if ( search.Equals( "DynamicsMode" ) ) {
-                    this.DynamicsMode = int.Parse( spl[1] );
-                } else if ( search.Equals( "PlayMode" ) ) {
-                    this.PlayMode = int.Parse( spl[1] );
+                } else if (search.Equals("DynamicsMode")) {
+                    this.DynamicsMode = int.Parse(spl[1]);
+                } else if (search.Equals("PlayMode")) {
+                    this.PlayMode = int.Parse(spl[1]);
                 }
-                if ( !sr.ready() ) {
+                if (!sr.ready()) {
                     break;
                 }
                 last_line.value = sr.readLine();
@@ -117,14 +117,14 @@ namespace cadencii.vsq
         /// インスタンスの内容をテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void write( ITextWriter sw )
+        public void write(ITextWriter sw)
         {
-            sw.writeLine( "[Common]" );
-            sw.writeLine( "Version=" + Version );
-            sw.writeLine( "Name=" + Name );
-            sw.writeLine( "Color=" + Color );
-            sw.writeLine( "DynamicsMode=" + DynamicsMode );
-            sw.writeLine( "PlayMode=" + PlayMode );
+            sw.writeLine("[Common]");
+            sw.writeLine("Version=" + Version);
+            sw.writeLine("Name=" + Name);
+            sw.writeLine("Color=" + Color);
+            sw.writeLine("DynamicsMode=" + DynamicsMode);
+            sw.writeLine("PlayMode=" + PlayMode);
         }
     }
 

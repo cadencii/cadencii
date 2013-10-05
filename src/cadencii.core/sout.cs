@@ -24,9 +24,9 @@ namespace cadencii
         {
         }
 
-        public static void println( string s )
+        public static void println(string s)
         {
-            Console.Out.WriteLine( s );
+            Console.Out.WriteLine(s);
         }
     };
 

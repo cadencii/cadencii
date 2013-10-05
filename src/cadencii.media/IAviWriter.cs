@@ -14,19 +14,24 @@
 using System;
 using System.Drawing;
 
-namespace cadencii.media {
+namespace cadencii.media
+{
 
-    public interface IAviWriter {
-        void AddFrame( Bitmap frame );
+    public interface IAviWriter
+    {
+        void AddFrame(Bitmap frame);
         void Close();
-        bool Open( string file, uint scale, uint rate, int width, int height, IntPtr hwnd );
-        Size Size {
+        bool Open(string file, uint scale, uint rate, int width, int height, IntPtr hwnd);
+        Size Size
+        {
             get;
         }
-        uint Scale {
+        uint Scale
+        {
             get;
         }
-        uint Rate {
+        uint Rate
+        {
             get;
         }
     }

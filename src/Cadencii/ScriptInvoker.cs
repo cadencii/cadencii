@@ -21,17 +21,18 @@ using cadencii.xml;
 
 namespace cadencii
 {
-    public delegate bool EditVsqScriptDelegate( VsqFile vsq );
-    public delegate bool EditVsqScriptDelegateEx( VsqFileEx vsq );
-    public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus( VsqFile vsq );
-    public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus( VsqFileEx vsq );
+    public delegate bool EditVsqScriptDelegate(VsqFile vsq);
+    public delegate bool EditVsqScriptDelegateEx(VsqFileEx vsq);
+    public delegate ScriptReturnStatus EditVsqScriptDelegateWithStatus(VsqFile vsq);
+    public delegate ScriptReturnStatus EditVsqScriptDelegateExWithStatus(VsqFileEx vsq);
     public delegate string ScriptDelegateGetDisplayName();
 
     /// <summary>
     /// スクリプトの起動とスクリプト設定の保存を行うためのオブジェクトの纏まり．
     /// FormMain.menuScript.DropDownItems[*].DropDownItems[0]のTagに代入される．
     /// </summary>
-    public class ScriptInvoker {
+    public class ScriptInvoker
+    {
         /// <summary>
         /// スクリプトを起動するためのデリゲート
         /// </summary>

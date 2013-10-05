@@ -23,8 +23,8 @@ namespace cadencii
         /// workerスレッドから呼び出し元に進捗を通知します
         /// </summary>
         /// <param name="processed_job">ジョブの処理済み量</param>
-        void reportProgress( double processed_job );
-        
+        void reportProgress(double processed_job);
+
         /// <summary>
         /// workerスレッドから呼び出し元に，workerスレッドの処理が完了したことを通知します
         /// </summary>
@@ -35,7 +35,7 @@ namespace cadencii
         /// </summary>
         /// <returns></returns>
         bool isCancelRequested();
-        
+
         /// <summary>
         /// 呼び出し元が，workerスレッドにキャンセル要求を出すためのメソッド
         /// </summary>

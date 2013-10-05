@@ -15,9 +15,11 @@ using System.Collections.Generic;
 using cadencii;
 using cadencii.java.util;
 
-namespace cadencii {
+namespace cadencii
+{
 
-    public interface ICommand {
+    public interface ICommand
+    {
         /// <summary>
         /// 子コマンドのリスト
         /// </summary>
@@ -27,7 +29,7 @@ namespace cadencii {
         /// 親コマンドへの参照
         /// </summary>
         ICommand getParent();
-        void setParent( ICommand value );
+        void setParent(ICommand value);
     }
 
 }

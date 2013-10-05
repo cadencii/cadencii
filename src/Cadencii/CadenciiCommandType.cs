@@ -11,12 +11,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace cadencii {
+namespace cadencii
+{
 
     /// <summary>
     /// VsqFileExクラスのための編集コマンドの種類を表す列挙型
     /// </summary>
-    public enum CadenciiCommandType {
+    public enum CadenciiCommandType
+    {
         /// <summary>
         /// org.kbinani.vsqネイティブの編集コマンド
         /// </summary>

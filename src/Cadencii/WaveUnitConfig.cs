@@ -38,9 +38,9 @@ namespace cadencii
         public string getConfigString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach( WaveUnitConfigElement item in this.Elements ) {
-                sb.Append( SEPARATOR );
-                sb.Append( item.toString() );
+            foreach (WaveUnitConfigElement item in this.Elements) {
+                sb.Append(SEPARATOR);
+                sb.Append(item.toString());
             }
             return sb.ToString();
         }
@@ -50,18 +50,18 @@ namespace cadencii
         /// </summary>
         /// <param name="key">キー</param>
         /// <param name="value">値</param>
-        public void putElement( string key, string value )
+        public void putElement(string key, string value)
         {
-            foreach( WaveUnitConfigElement item in this.Elements ) {
-                if( key == item.getKey() ) {
-                    item.setValue( value );
+            foreach (WaveUnitConfigElement item in this.Elements) {
+                if (key == item.getKey()) {
+                    item.setValue(value);
                     return;
                 }
             }
             WaveUnitConfigElement newItem = new WaveUnitConfigElement();
-            newItem.setKey( key );
-            newItem.setValue( value );
-            this.Elements.Add( newItem );
+            newItem.setKey(key);
+            newItem.setValue(value);
+            this.Elements.Add(newItem);
         }
 
         /// <summary>
@@ -69,10 +69,10 @@ namespace cadencii
         /// </summary>
         /// <param name="key">キー</param>
         /// <returns>値．存在しないキーを指定した場合空文字を返す</returns>
-        public string getElement( string key )
+        public string getElement(string key)
         {
-            foreach( WaveUnitConfigElement item in this.Elements ) {
-                if( key == item.getKey() ) {
+            foreach (WaveUnitConfigElement item in this.Elements) {
+                if (key == item.getKey()) {
                     return item.getValue();
                 }
             }

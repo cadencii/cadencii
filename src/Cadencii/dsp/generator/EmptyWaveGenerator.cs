@@ -53,7 +53,7 @@ namespace cadencii
 
         public double getProgress()
         {
-            if ( mTotalSamples <= 0 ) {
+            if (mTotalSamples <= 0) {
                 return 0.0;
             } else {
                 return mTotalAppend / (double)mTotalSamples;
@@ -65,26 +65,26 @@ namespace cadencii
             return VERSION;
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig(string parameter)
         {
             // do nothing
         }
 
-        public void begin( long samples, WorkerState state )
+        public void begin(long samples, WorkerState state)
         {
-            if ( mReceiver == null ) return;
+            if (mReceiver == null) return;
             mRunning = true;
             mTotalSamples = samples;
             double[] l = new double[BUFLEN];
             double[] r = new double[BUFLEN];
-            for ( int i = 0; i < BUFLEN; i++ ) {
+            for (int i = 0; i < BUFLEN; i++) {
                 l[i] = 0.0;
                 r[i] = 0.0;
             }
             long remain = samples;
-            while ( remain > 0 && !mAbortRequested ) {
+            while (remain > 0 && !mAbortRequested) {
                 int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
-                mReceiver.push( l, r, amount );
+                mReceiver.push(l, r, amount);
                 remain -= amount;
                 mTotalAppend += amount;
             }
@@ -92,22 +92,22 @@ namespace cadencii
             mReceiver.end();
         }
 
-        public void setReceiver( WaveReceiver receiver )
+        public void setReceiver(WaveReceiver receiver)
         {
             mReceiver = receiver;
         }
 
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        public void init(VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate)
         {
             mSampleRate = sample_rate;
         }
 
         public void stop()
         {
-            if ( mRunning ) {
+            if (mRunning) {
                 mAbortRequested = true;
-                while ( mRunning ) {
-                    Thread.Sleep( 100 );
+                while (mRunning) {
+                    Thread.Sleep(100);
                 }
             }
         }

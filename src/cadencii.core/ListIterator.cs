@@ -14,39 +14,45 @@
 using System;
 using System.Collections.Generic;
 
-namespace cadencii.java.util {
+namespace cadencii.java.util
+{
 
-    public class ListIterator<T> : Iterator<T> {
+    public class ListIterator<T> : Iterator<T>
+    {
         private List<T> m_list;
         private int m_pos;
 
-        public ListIterator( List<T> list ) {
+        public ListIterator(List<T> list)
+        {
             m_list = new List<T>();
             int c = list.Count;
-            for( int i = 0; i < c; i++ ){
-                m_list.Add( list[ i ] );
+            for (int i = 0; i < c; i++) {
+                m_list.Add(list[i]);
             }
             m_pos = -1;
         }
 
-        public Boolean hasNext() {
-            if ( m_list != null && 0 <= m_pos + 1 && m_pos + 1 < m_list.Count ) {
+        public Boolean hasNext()
+        {
+            if (m_list != null && 0 <= m_pos + 1 && m_pos + 1 < m_list.Count) {
                 return true;
             } else {
                 return false;
             }
         }
 
-        public T next() {
-            if ( m_list == null ) {
-                return default( T );
+        public T next()
+        {
+            if (m_list == null) {
+                return default(T);
             }
             m_pos++;
             return m_list[m_pos];
         }
 
-        public void remove() {
-            m_list.RemoveAt( m_pos );
+        public void remove()
+        {
+            m_list.RemoveAt(m_pos);
         }
     }
 
