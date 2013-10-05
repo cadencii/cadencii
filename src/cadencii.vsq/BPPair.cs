@@ -44,11 +44,7 @@ namespace cadencii.vsq
             {
                 return 0;
             }
-#if __cplusplus
-        };
-#else
         }
-#endif
 
         public int CompareTo( BPPair item )
         {
@@ -64,11 +60,7 @@ namespace cadencii.vsq
         {
             Clock = clock_;
             Value = value_;
-#if __cplusplus
-        };
-#else
         }
-#endif
     };
 
 }

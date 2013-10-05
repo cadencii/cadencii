@@ -93,12 +93,9 @@ namespace cadencii
         /// </summary>
         public FormWorker()
         {
-#if __cplusplus
-#else
             mLabels = new List<ProgressBarWithLabel>();
             mMemManager = new mman();
             mArguments = new List<FormWorkerJobArgument>();
-#endif
 
             mThreads = new List<BackgroundWorker>();
         }

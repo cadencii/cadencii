@@ -14,12 +14,6 @@
 
     namespace cadencii
     {
-
-#if __cplusplus
-            using namespace std;
-            using namespace org::kbinani::cadencii;
-#endif
-
             public interface FormBeatConfigUi : UiBase
             {
                 [PureVirtualFunction]

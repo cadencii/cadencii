@@ -15,15 +15,8 @@
     namespace cadencii
     {
 
-#if __cplusplus
-            class FormBeatConfigUiListener
-#else
             public interface FormBeatConfigUiListener
-#endif
             {
-#if __cplusplus
-            public:
-#endif
                 [PureVirtualFunction]
                 void buttonCancelClickedSlot();
 

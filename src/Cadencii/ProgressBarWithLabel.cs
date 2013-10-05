@@ -26,9 +26,6 @@ namespace cadencii
 
         ~ProgressBarWithLabel()
         {
-#if __cplusplus
-            mman.del( ptrUi );
-#endif
         }
 
         public void setWidth( int value )

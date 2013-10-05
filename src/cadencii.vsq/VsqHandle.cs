@@ -135,18 +135,9 @@ namespace cadencii.vsq
 
         public static VsqHandle castFromLyricHandle( LyricHandle handle )
         {
-#if __cplusplus
-            VsqHandle ret;
-#else
             VsqHandle ret = new VsqHandle();
-#endif
-#if __cplusplus
-            ret.m_type = org::kbinani::vsq::Lyric;
-            ret.L0 = handle.L0;
-#else
             ret.m_type = VsqHandleType.Lyric;
             ret.L0 = (Lyric)handle.L0.clone();
-#endif
             ret.Trailing = handle.Trailing;
             ret.Index = handle.Index;
             return ret;
@@ -158,16 +149,8 @@ namespace cadencii.vsq
         /// <returns></returns>
         public static VsqHandle castFromIconHandle( IconHandle handle )
         {
-#if __cplusplus
-            VsqHandle ret;
-#else
             VsqHandle ret = new VsqHandle();
-#endif
-#if __cplusplus
-            ret.m_type = org::kbinani::vsq::Singer;
-#else
             ret.m_type = VsqHandleType.Singer;
-#endif
             ret.Caption = handle.Caption;
             ret.IconID = handle.IconID;
             ret.IDS = handle.IDS;

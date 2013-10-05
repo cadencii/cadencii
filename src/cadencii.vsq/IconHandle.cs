@@ -78,18 +78,13 @@ namespace cadencii.vsq
         /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
         public bool equals( IconHandle item )
         {
-#if __cplusplus
-            return IconID == item.IconID;
-#else
             if ( item == null ) {
                 return false;
             } else {
                 return IconID.Equals( item.IconID );
             }
-#endif
         }
 
-#if !__cplusplus
         /// <summary>
         /// このインスタンスのコピーを作成します。
         /// </summary>
@@ -107,7 +102,6 @@ namespace cadencii.vsq
             ret.Program = Program;
             return ret;
         }
-#endif
 
         /// <summary>
         /// このインスタンスのコピーを作成します。
@@ -118,10 +112,6 @@ namespace cadencii.vsq
             return clone();
         }
 
-#if __cplusplus
-    };
-#else
     }
-#endif
 
 }

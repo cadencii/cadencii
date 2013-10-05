@@ -16,13 +16,10 @@ using System.Collections.Generic;
     namespace cadencii
     {
 
-#if __cplusplus
-#else
             using System;
             using cadencii.vsq;
             using cadencii.java.util;
             using System.Windows.Forms;
-#endif
 
             /// <summary>
             /// クリップボードを管理するクラスです．

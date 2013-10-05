@@ -14,21 +14,13 @@
 namespace cadencii.vsq
 {
 
-#if __cplusplus
-    enum VsqHandleType
-#else
     public enum VsqHandleType
-#endif
     {
         Lyric,
         Vibrato,
         Singer,
         NoteHeadHandle,
         DynamicsHandle,
-#if __cplusplus
-    };
-#else
     }
-#endif
 
 }

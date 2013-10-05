@@ -15,12 +15,9 @@ using System.Collections.Generic;
 
     namespace cadencii{
 
-#if __cplusplus
-#else
             using System;
             using cadencii.java.util;
             using cadencii.vsq;
-#endif
 
             /// <summary>
             /// アイテムの選択状態を管理するクラスです．

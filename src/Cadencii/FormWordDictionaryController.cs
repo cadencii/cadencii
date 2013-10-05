@@ -15,8 +15,6 @@ using System.Collections.Generic;
 
     namespace cadencii
     {
-#if __cplusplus
-#else
             using System;
             using System.Windows.Forms;
             using cadencii.apputil;
@@ -25,8 +23,6 @@ using System.Collections.Generic;
             using cadencii.java.util;
             using cadencii.windows.forms;
     
-#endif
-
             public class FormWordDictionaryController : ControllerBase, FormWordDictionaryUiListener
             {
                 private FormWordDictionaryUiImpl ui;

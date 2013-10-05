@@ -13,16 +13,8 @@
  */
     namespace cadencii
     {
-#if __cplusplus
-            using namespace std;
-            using namespace org::kbinani::cadencii;
-#endif
-
             public interface FormWordDictionaryUi : UiBase
             {
-#if __cplusplus
-    public:
-#endif
                 /// <summary>
                 /// ウィンドウのタイトル文字列を設定します
                 /// </summary>

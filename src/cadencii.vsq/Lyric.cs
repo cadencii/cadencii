@@ -101,11 +101,7 @@ namespace cadencii.vsq
             spl = new List<string>(value.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries));
 
             int size = spl.Count;
-#if __cplusplus
-            vector<Integer> arr;
-#else
             List<int> arr = new List<int>();
-#endif
             for ( int i = 0; i < size; i++ )
             {
                 int v = 64;
@@ -145,7 +141,6 @@ namespace cadencii.vsq
         /// <returns></returns>
         public List<int> getConsonantAdjustmentList()
         {
-#if !__cplusplus
             if ( mConsonantAdjustments != null )
             {
                 return mConsonantAdjustments;
@@ -155,7 +150,6 @@ namespace cadencii.vsq
                 mConsonantAdjustments = new List<int>();
                 return mConsonantAdjustments;
             }
-#endif
 
             mConsonantAdjustments.Clear();
             for ( int i = 0; i < mPhoneticSymbols.Count; i++ )
@@ -172,12 +166,10 @@ namespace cadencii.vsq
         /// <param name="value"></param>
         public void setConsonantAdjustmentList( List<int> value )
         {
-#if !__cplusplus
             if ( value == null )
             {
                 return;
             }
-#endif
             mConsonantAdjustments.Clear();
             for ( int i = 0; i < value.Count; i++ )
             {
@@ -186,7 +178,6 @@ namespace cadencii.vsq
             }
         }
 
-#if !__cplusplus
         /// <summary>
         /// このオブジェクトの簡易コピーを取得します。
         /// </summary>
@@ -212,7 +203,6 @@ namespace cadencii.vsq
             result.PhoneticSymbolProtected = PhoneticSymbolProtected;
             return result;
         }
-#endif
 
         public Object Clone()
         {
@@ -403,17 +393,12 @@ namespace cadencii.vsq
                 }
             }
 
-#if __cplusplus
-                    vector<string> spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
-                    int size = spl.size();
-#else
             string[] spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
             if ( mPhoneticSymbols == null )
             {
                 mPhoneticSymbols = new List<string>();
             }
             int size = spl.Length;
-#endif
             mPhoneticSymbols.Clear();
             for ( int i = 0; i < size; i++ )
             {
@@ -480,12 +465,10 @@ namespace cadencii.vsq
 
         public List<string> getPhoneticSymbolList()
         {
-#if !__cplusplus
             if ( mPhoneticSymbols == null )
             {
                 mPhoneticSymbols = new List<string>();
             }
-#endif
             return mPhoneticSymbols;
         }
 

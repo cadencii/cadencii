@@ -21,15 +21,8 @@
             using cadencii.apputil;
 #endif // CSHARP
 
-#if __cplusplus
-            class FormAskKeySoundGenerationUiListener
-#else
             public interface FormAskKeySoundGenerationUiListener
-#endif
             {
-#if __cplusplus
-            public:
-#endif
                 [PureVirtualFunction]
                 void buttonCancelClickedSlot();
 

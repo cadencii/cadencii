@@ -15,12 +15,7 @@
     namespace cadencii
     {
 
-#if __cplusplus
-            using namespace std;
-            using namespace org::kbinani::cadencii;
-#else
             using System;
-#endif
 
             /// <summary>
             /// FormAskKeySoundGenerationフォームのビューが実装すべきメソッドを規定します．

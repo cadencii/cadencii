@@ -23,17 +23,11 @@ namespace cadencii.vsq
     {
         public Lyric L0;
         public int Index;
-#if __cplusplus
-        public: vector<Lyric> Trailing;
-#else
         public List<Lyric> Trailing = new List<Lyric>();
-#endif
 
         public LyricHandle()
         {
-#if !__cplusplus
             L0 = new Lyric();
-#endif
         }
 
         /// <summary>
@@ -80,7 +74,6 @@ namespace cadencii.vsq
             L0 = new Lyric( phrase, phonetic_symbol );
         }
 
-#if !__cplusplus
         public Object clone()
         {
             LyricHandle ret = new LyricHandle();
@@ -93,17 +86,12 @@ namespace cadencii.vsq
             }
             return ret;
         }
-#endif
 
         public object Clone()
         {
             return clone();
         }
 
-#if __cplusplus
-    };
-#else
     }
-#endif
 
 }

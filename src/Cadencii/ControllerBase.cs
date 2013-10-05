@@ -23,11 +23,7 @@
             /// <summary>
             /// コントローラーの基底となる抽象クラス．
             /// </summary>
-#if __cplusplus
-            class ControllerBase
-#else
             public abstract class ControllerBase
-#endif
             {
 
                 /// <summary>

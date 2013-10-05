@@ -21,35 +21,15 @@
             using namespace org::kbinani::cadencii;
 #endif
 
-#if __cplusplus
-            class WaveformZoomUi
-#else
             public interface WaveformZoomUi
-#endif
             {
-#if __cplusplus
-                virtual int getWidth(){}
-#else
                 int getWidth();
-#endif
 
-#if __cplusplus
-                virtual int getHeight(){}
-#else
                 int getHeight();
-#endif
 
-#if __cplusplus
-                virtual void setListener( WaveformZoomUiListener listener ){}
-#else
                 void setListener( WaveformZoomUiListener listener );
-#endif
 
-#if __cplusplus
-                virtual void repaint(){}
-#else
                 void repaint();
-#endif
             };
 
     }

@@ -15,11 +15,7 @@
     namespace cadencii
     {
 
-#if __cplusplus
-            class FormWordDictionaryUiListener
-#else
             public interface FormWordDictionaryUiListener
-#endif
             {
                 [PureVirtualFunction]
                 void formClosing();

@@ -14,22 +14,11 @@
     namespace cadencii
     {
 
-#if __cplusplus
-#else
             using System;
-#endif
 
-#if __cplusplus
-            class UiBase
-#else
             public interface UiBase
-#endif
             {
-#if __cplusplus
-                virtual int showDialog( QObject *parent_form );
-#else
                 int showDialog( Object parent_form );
-#endif
             };
 
     }
