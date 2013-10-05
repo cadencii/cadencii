@@ -1387,9 +1387,9 @@ namespace cadencii
             string xml = Path.Combine(directory, track + ".xml");
             RenderedStatus status = null;
             if (System.IO.File.Exists(xml)) {
-                FileInputStream fs = null;
+                FileStream fs = null;
                 try {
-                    fs = new FileInputStream(xml);
+                    fs = new FileStream(xml, FileMode.Open, FileAccess.Read);
                     Object obj = mRenderingStatusSerializer.deserialize(fs);
                     if (obj != null && obj is RenderedStatus) {
                         status = (RenderedStatus)obj;
@@ -1401,7 +1401,7 @@ namespace cadencii
                 } finally {
                     if (fs != null) {
                         try {
-                            fs.close();
+                            fs.Close();
                         } catch (Exception ex2) {
                             Logger.write(typeof(AppManager) + ".deserializeRederingStatus; ex=" + ex2 + "\n");
                             serr.println("AppManager#deserializeRederingStatus; ex2=" + ex2);
@@ -2658,16 +2658,16 @@ namespace cadencii
         public static EditorConfig deserializeEditorConfig(string file)
         {
             EditorConfig ret = null;
-            FileInputStream fs = null;
+            FileStream fs = null;
             try {
-                fs = new FileInputStream(file);
+                fs = new FileStream(file, FileMode.Open, FileAccess.Read);
                 ret = (EditorConfig)EditorConfig.getSerializer().deserialize(fs);
             } catch (Exception ex) {
                 Logger.write(typeof(EditorConfig) + ".deserialize; ex=" + ex + "\n");
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                         Logger.write(typeof(EditorConfig) + ".deserialize; ex=" + ex2 + "\n");
                     }

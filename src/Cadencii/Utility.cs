@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using System.Text;
 using Microsoft.CSharp;
 using cadencii.apputil;
 using cadencii.java.io;
@@ -652,11 +653,11 @@ namespace cadencii
             if (System.IO.File.Exists(character)) {
                 // 読み込みを試みるエンコーディングのリスト
                 foreach (string encoding in AppManager.TEXT_ENCODINGS_IN_UTAU) {
-                    BufferedReader sr2 = null;
+                    StreamReader sr2 = null;
                     try {
-                        sr2 = new BufferedReader(new InputStreamReader(new FileInputStream(character), encoding));
+                        sr2 = new StreamReader(character, Encoding.GetEncoding(encoding));
                         string line = "";
-                        while ((line = sr2.readLine()) != null) {
+                        while ((line = sr2.ReadLine()) != null) {
                             string[] spl = PortUtil.splitString(line, '=');
                             if (spl.Length > 1) {
                                 string s = spl[0].ToLower();
@@ -678,7 +679,7 @@ namespace cadencii
                     } finally {
                         if (sr2 != null) {
                             try {
-                                sr2.close();
+                                sr2.Close();
                             } catch (Exception ex2) {
                                 serr.println("Utility#readUtausingerConfig; ex2=" + ex2);
                                 Logger.write(typeof(Utility) + ".readUtausingerConfig; ex= " + ex2 + "\n");

@@ -46,11 +46,11 @@ namespace cadencii.apputil
         {
             lang = lang_;
             poHeader = "";
-            BufferedReader sr = null;
+            StreamReader sr = null;
             try {
-                sr = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                sr = new StreamReader(file, Encoding.GetEncoding("UTF-8"));
                 string line2 = "";
-                while ((line2 = sr.readLine()) != null) {
+                while ((line2 = sr.ReadLine()) != null) {
                     ByRef<string> msgid = new ByRef<string>("");
                     string first_line = line2;
                     ByRef<string[]> location = new ByRef<string[]>();
@@ -90,7 +90,7 @@ namespace cadencii.apputil
             } finally {
                 if (sr != null) {
                     try {
-                        sr.close();
+                        sr.Close();
                     } catch (Exception ex2) {
                     }
                 }
@@ -185,7 +185,7 @@ namespace cadencii.apputil
             message.value = message.value.Substring(0, PortUtil.getStringLength(message.value) - 1);
         }
 
-        private static string readTillMessageEnd(java.io.BufferedReader sr, string first_line, string entry, ByRef<string> msg, ByRef<string[]> locations)
+        private static string readTillMessageEnd(StreamReader sr, string first_line, string entry, ByRef<string> msg, ByRef<string[]> locations)
         {
             msg.value = "";
             string line = first_line;
@@ -198,7 +198,7 @@ namespace cadencii.apputil
                 separateEntryAndMessage(line, dum, dum2);
                 msg.value += dum2.value;
             } else {
-                while ((line = sr.readLine()) != null) {
+                while ((line = sr.ReadLine()) != null) {
                     if (line.StartsWith("#:")) {
                         line = line.Substring(2).Trim();
                         location.Add(line);
@@ -213,7 +213,7 @@ namespace cadencii.apputil
             }
             locations.value = location.ToArray();
             string ret = "";
-            while ((line = sr.readLine()) != null) {
+            while ((line = sr.ReadLine()) != null) {
                 if (!line.StartsWith("\"")) {
                     msg.value = msg.value.Replace("\\\"", "\"");
                     msg.value = msg.value.Replace("\\n", "\n");

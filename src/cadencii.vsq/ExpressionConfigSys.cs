@@ -14,6 +14,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 using cadencii.java.io;
 using cadencii.java.util;
 
@@ -939,12 +940,12 @@ namespace cadencii.vsq
             if (System.IO.File.Exists(aiconDB_def)) {
                 string folder_name = "";
                 SortedDictionary<string, List<string>> list = new SortedDictionary<string, List<string>>();
-                BufferedReader sr = null;
+                StreamReader sr = null;
                 try {
-                    sr = new BufferedReader(new InputStreamReader(new FileInputStream(aiconDB_def), "Shift_JIS"));
+                    sr = new StreamReader(aiconDB_def, Encoding.GetEncoding("Shift_JIS"));
                     string line = "";
                     string current = "";
-                    while ((line = sr.readLine()) != null) {
+                    while ((line = sr.ReadLine()) != null) {
                         int index_semicollon = line.IndexOf(';');
                         if (index_semicollon >= 0) {
                             line = line.Substring(0, index_semicollon);
@@ -982,7 +983,7 @@ namespace cadencii.vsq
                 } finally {
                     if (sr != null) {
                         try {
-                            sr.close();
+                            sr.Close();
                         } catch (Exception ex2) {
                             serr.println("ExpressionConfigSys#.ctor; ex2=" + ex2);
                         }

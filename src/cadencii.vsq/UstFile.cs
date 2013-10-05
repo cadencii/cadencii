@@ -13,6 +13,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using cadencii;
 using cadencii.java.util;
 using cadencii.java.io;
@@ -44,14 +46,14 @@ namespace cadencii.vsq
 
         public UstFile(string path)
         {
-            BufferedReader sr = null;
+            StreamReader sr = null;
             try {
-                sr = new BufferedReader(new InputStreamReader(new FileInputStream(path), "Shift_JIS"));
+                sr = new StreamReader(path, Encoding.GetEncoding("Shift_JIS"));
 #if DEBUG
                 sout.println("UstFile#.ctor; path=" + path);
                 sout.println("UstFile#.ctor; (sr==null)=" + (sr == null));
 #endif
-                string line = sr.readLine();
+                string line = sr.ReadLine();
 
                 UstTrack track = new UstTrack();
                 int type = 0; //0 => reading "SETTING" section
@@ -89,7 +91,7 @@ namespace cadencii.vsq
 #if DEBUG
                     sout.println("UstFile#.ctor; index=" + index);
 #endif
-                    line = sr.readLine(); // "[#" 直下の行
+                    line = sr.ReadLine(); // "[#" 直下の行
                     if (line == null) {
                         break;
                     }
@@ -223,10 +225,10 @@ namespace cadencii.vsq
                                 }
                             }
                         }
-                        if (!sr.ready()) {
+                        line = sr.ReadLine();
+                        if (line == null) {
                             break;
                         }
-                        line = sr.readLine();
                     }
                     if (type == 0) {
                         type = 1;
@@ -244,7 +246,7 @@ namespace cadencii.vsq
             } finally {
                 if (sr != null) {
                     try {
-                        sr.close();
+                        sr.Close();
                     } catch (Exception ex2) {
                     }
                 }

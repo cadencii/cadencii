@@ -71,7 +71,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Base64.cs" />
-    <Compile Include="BufferedReader.cs" />
     <Compile Include="ByRef.cs" />
     <Compile Include="cp932.cs" />
     <Compile Include="cp932reader.cs" />

@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Microsoft.Win32;
 using cadencii;
 using cadencii.java.util;
@@ -205,11 +206,11 @@ namespace cadencii.vsq
                     string dir = PortUtil.getDirectoryName(act_path_editor1);
                     string ini = Path.Combine(dir, "VOCALOID.ini");
                     if (System.IO.File.Exists(ini)) {
-                        BufferedReader br = null;
+                        StreamReader br = null;
                         try {
-                            br = new BufferedReader(new InputStreamReader(new FileInputStream(ini), "Shift_JIS"));
-                            while (br.ready()) {
-                                string line = br.readLine();
+                            br = new StreamReader(ini, Encoding.GetEncoding("Shift_JIS"));
+                            string line;
+                            while ((line = br.ReadLine()) != null) {
                                 if (line == null) continue;
                                 if (line.Equals("")) continue;
                                 if (line.StartsWith("DSEVersion")) {
@@ -231,7 +232,7 @@ namespace cadencii.vsq
                         } finally {
                             if (br != null) {
                                 try {
-                                    br.close();
+                                    br.Close();
                                 } catch (Exception ex2) {
                                     serr.println("VocaloSysUtil#init; ex2=" + ex2);
                                 }

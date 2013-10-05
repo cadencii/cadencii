@@ -12,6 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.IO;
+using System.Text;
 using cadencii.java.io;
 
 namespace cadencii.vsq
@@ -109,9 +111,9 @@ namespace cadencii.vsq
             if (file == "") {
                 return;
             }
-            BufferedReader sr = null;
+            StreamReader sr = null;
             try {
-                sr = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Shift_JIS"));
+                sr = new StreamReader(file, Encoding.GetEncoding("Shift_JIS"));
                 string line = "";
                 string strDynBPNum = "";
                 string strDynBPX = "";
@@ -122,7 +124,7 @@ namespace cadencii.vsq
                 string strRateBPNum = "";
                 string strRateBPX = "";
                 string strRateBPY = "";
-                while ((line = sr.readLine()) != null) {
+                while ((line = sr.ReadLine()) != null) {
                     // コメントを除去する
                     int indx_colon = line.IndexOf(';');
                     if (indx_colon >= 0) {
@@ -237,7 +239,7 @@ namespace cadencii.vsq
             } finally {
                 if (sr != null) {
                     try {
-                        sr.close();
+                        sr.Close();
                     } catch (Exception ex2) {
                     }
                 }

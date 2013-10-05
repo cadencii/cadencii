@@ -1345,9 +1345,9 @@ namespace cadencii
         public static VsqFileEx readFromXml(string file)
         {
             VsqFileEx ret = null;
-            FileInputStream fs = null;
+            FileStream fs = null;
             try {
-                fs = new FileInputStream(file);
+                fs = new FileStream(file, FileMode.Open, FileAccess.Read);
                 ret = (VsqFileEx)mVsqSerializer.deserialize(fs);
             } catch (Exception ex) {
                 serr.println("VsqFileEx#readFromXml; ex=" + ex);
@@ -1355,7 +1355,7 @@ namespace cadencii
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                         serr.println("VsqFileEx#readFromXml; ex2=" + ex2);
                         Logger.write(typeof(VsqFileEx) + ".readFromXml; ex=" + ex2 + "\n");

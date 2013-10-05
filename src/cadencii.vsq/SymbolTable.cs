@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using cadencii.java.io;
 using cadencii.java.util;
 
@@ -307,15 +308,14 @@ namespace cadencii
                     return;
                 }
                 mName = PortUtil.getFileName(path);
-                BufferedReader sr = null;
+                StreamReader sr = null;
                 try {
-                    sr = new BufferedReader(new InputStreamReader(new FileInputStream(path), encoding));
+                    sr = new StreamReader(path, Encoding.GetEncoding(encoding));
                     if (sr == null) {
                         return;
                     }
                     string line;
-                    while (sr.ready()) {
-                        line = sr.readLine();
+                    while ((line = sr.ReadLine()) != null) {
                         if (line.StartsWith("//")) {
                             continue;
                         }
@@ -350,7 +350,7 @@ namespace cadencii
                 } finally {
                     if (sr != null) {
                         try {
-                            sr.close();
+                            sr.Close();
                         } catch (Exception ex2) {
                             serr.println("SymbolTable#.ctor; ex=" + ex2);
                         }

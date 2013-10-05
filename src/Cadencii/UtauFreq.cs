@@ -46,33 +46,33 @@ namespace cadencii
         public static UtauFreq FromFrq(string file)
         {
             UtauFreq ret = new UtauFreq();
-            FileInputStream fs = null;
+            FileStream fs = null;
             try {
-                fs = new FileInputStream(file);
+                fs = new FileStream(file, FileMode.Open, FileAccess.Read);
                 byte[] buf0 = new byte[8];
-                fs.read(buf0, 0, 8);
+                fs.Read(buf0, 0, 8);
                 char[] ch8 = new char[8];
                 for (int i = 0; i < 8; i++) {
                     ch8[i] = (char)buf0[i];
                 }
                 ret.Header = new string(ch8);
 
-                fs.read(buf0, 0, 4);
+                fs.Read(buf0, 0, 4);
                 ret.SampleInterval = PortUtil.make_int32_le(buf0);
 
-                fs.read(buf0, 0, 8);
+                fs.Read(buf0, 0, 8);
                 ret.AverageFrequency = PortUtil.make_double_le(buf0);
 
                 for (int i = 0; i < 4; i++) {
-                    int len2 = fs.read(buf0, 0, 4);
+                    int len2 = fs.Read(buf0, 0, 4);
                     int i1 = PortUtil.make_int32_le(buf0);
                 }
-                fs.read(buf0, 0, 4);
+                fs.Read(buf0, 0, 4);
                 ret.NumPoints = PortUtil.make_int32_le(buf0);
                 ret.Frequency = new double[ret.NumPoints];
                 ret.Volume = new double[ret.NumPoints];
                 byte[] buf = new byte[16];
-                int len = fs.read(buf, 0, 16);
+                int len = fs.Read(buf, 0, 16);
                 int index = 0;
                 while (len > 0) {
                     double d1 = PortUtil.make_double_le(buf);
@@ -82,14 +82,14 @@ namespace cadencii
                     double d2 = PortUtil.make_double_le(buf);
                     ret.Frequency[index] = d1;
                     ret.Volume[index] = d2;
-                    len = fs.read(buf, 0, 16);
+                    len = fs.Read(buf, 0, 16);
                     index++;
                 }
             } catch (Exception ex) {
             } finally {
                 if (fs != null) {
                     try {
-                        fs.close();
+                        fs.Close();
                     } catch (Exception ex2) {
                     }
                 }
