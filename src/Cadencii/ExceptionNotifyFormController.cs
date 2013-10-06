@@ -56,7 +56,7 @@ namespace cadencii
 #if DEBUG
             sout.println("ExceptionNotifyFormController::sendButtonClick");
 #endif
-            string url = "http://www.kbinani.info/cadenciiProblemReport.php";
+            string url = "http://www.cadencii.info/error_report.php";
             try {
                 System.Text.Encoding enc = System.Text.Encoding.GetEncoding("UTF-8");
                 string postData = "message=" + System.Web.HttpUtility.UrlEncode(this.exceptionMessage, enc);

@@ -255,7 +255,7 @@ namespace cadencii
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
         public const int _PX_ACCENT_HEADER = 21;
-        public const string RECENT_UPDATE_INFO_URL = "https://raw.github.com/cadencii/cadencii/master/update_info/recent.xml";
+        public const string RECENT_UPDATE_INFO_URL = "http://www.cadencii.info/recent.php";
         /// <summary>
         /// splitContainer2.Panel2の最小サイズ
         /// </summary>
