@@ -785,9 +785,6 @@ namespace cadencii
         public static void invokeWaveViewReloadRequiredEvent(int track, string wavePath, double secStart, double secEnd)
         {
             try {
-#if QT_VERSION
-                waveViewReloadRequired( this, track, wavePath, secStart, secEnd );
-#else
                 WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
                 arg.track = track;
                 arg.file = wavePath;
@@ -796,7 +793,6 @@ namespace cadencii
                 if (WaveViewReloadRequired != null) {
                     WaveViewReloadRequired.Invoke(typeof(AppManager), arg);
                 }
-#endif
             } catch (Exception ex) {
                 Logger.write(typeof(AppManager) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex + "\n");
                 sout.println(typeof(AppManager) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex);
