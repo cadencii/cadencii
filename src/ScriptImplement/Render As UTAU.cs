@@ -19,7 +19,6 @@ public class RenderAsUtau : Form
     public static string WavTool = "";
     public static string Singer = "";
     public static string LastWave = "";
-    public static bool InvokeWithWine = false;
     private Label lblResampler;
     private TextBox txtSinger;
     private Button btnSinger;
@@ -37,7 +36,6 @@ public class RenderAsUtau : Form
     private GroupBox groupSinger;
     private Label lblName;
     private static SaveFileDialog saveFileDialog;
-    private CheckBox chkInvokeWithWine;
     private Label lblDirectory;
     private Button btnCancel;
 
@@ -78,7 +76,6 @@ public class RenderAsUtau : Form
         txtWavtool.Text = WavTool;
         txtSinger.Text = Singer;
         folderBrowserDialog.SelectedPath = Singer;
-        chkInvokeWithWine.Checked = InvokeWithWine;
         saveFileDialog = new SaveFileDialog();
         if (LastWave != "") {
             try {
@@ -120,7 +117,6 @@ public class RenderAsUtau : Form
             btnSinger.Text = "探す";
             btnResampler.Text = "探す";
             btnWavtool.Text = "探す";
-            chkInvokeWithWine.Text = "wine経由でUTAUコアを起動";
             lblDirectory.Text = "音源フォルダ";
         }
     }
@@ -267,7 +263,7 @@ public class RenderAsUtau : Form
                     string arg = "\"" + Path.Combine(Singer, lyric + ".wav") + "\" \"" + filename + "\" \"" + note + "\" " + time_percent + " " + flags + " " + oa.msOffset + " " + millisec + " " + oa.msConsonant + " " + oa.msBlank + " " + velocity + " " + moduration;
 
                     using (System.Diagnostics.Process p = new System.Diagnostics.Process()) {
-                        p.StartInfo.FileName = (InvokeWithWine ? "wine \"" : "\"") + Resampler + "\"";
+                        p.StartInfo.FileName = "\"" + Resampler + "\"";
                         p.StartInfo.Arguments = arg;
                         p.StartInfo.WorkingDirectory = temp_dir;
                         p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -315,7 +311,7 @@ public class RenderAsUtau : Form
                     }
 
                     using (System.Diagnostics.Process p = new System.Diagnostics.Process()) {
-                        p.StartInfo.FileName = (InvokeWithWine ? "wine \"" : "\"") + WavTool + "\"";
+                        p.StartInfo.FileName = "\"" + WavTool + "\"";
                         p.StartInfo.Arguments = arg;
                         p.StartInfo.WorkingDirectory = temp_dir;
                         p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -392,7 +388,6 @@ public class RenderAsUtau : Form
         this.txtSinger = new System.Windows.Forms.TextBox();
         this.btnSinger = new System.Windows.Forms.Button();
         this.groupConfig = new System.Windows.Forms.GroupBox();
-        this.chkInvokeWithWine = new System.Windows.Forms.CheckBox();
         this.btnWavtool = new System.Windows.Forms.Button();
         this.btnResampler = new System.Windows.Forms.Button();
         this.txtWavtool = new System.Windows.Forms.TextBox();
@@ -441,7 +436,6 @@ public class RenderAsUtau : Form
         // 
         // groupConfig
         // 
-        this.groupConfig.Controls.Add(this.chkInvokeWithWine);
         this.groupConfig.Controls.Add(this.btnWavtool);
         this.groupConfig.Controls.Add(this.btnResampler);
         this.groupConfig.Controls.Add(this.txtWavtool);
@@ -454,17 +448,6 @@ public class RenderAsUtau : Form
         this.groupConfig.TabIndex = 4;
         this.groupConfig.TabStop = false;
         this.groupConfig.Text = "Configuration";
-        // 
-        // chkInvokeWithWine
-        // 
-        this.chkInvokeWithWine.AutoSize = true;
-        this.chkInvokeWithWine.Location = new System.Drawing.Point(13, 76);
-        this.chkInvokeWithWine.Name = "chkInvokeWithWine";
-        this.chkInvokeWithWine.Size = new System.Drawing.Size(110, 16);
-        this.chkInvokeWithWine.TabIndex = 8;
-        this.chkInvokeWithWine.Text = "Invoke with Wine";
-        this.chkInvokeWithWine.UseVisualStyleBackColor = true;
-        this.chkInvokeWithWine.CheckedChanged += new System.EventHandler(this.chkInvokeWithWine_CheckedChanged);
         // 
         // btnWavtool
         // 
@@ -665,10 +648,5 @@ public class RenderAsUtau : Form
         Singer = txtSinger.Text;
         CheckOkButtonAvailable();
         UpdateProfile();
-    }
-
-    private void chkInvokeWithWine_CheckedChanged(object sender, EventArgs e)
-    {
-        InvokeWithWine = chkInvokeWithWine.Checked;
     }
 }

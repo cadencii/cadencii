@@ -273,35 +273,19 @@ namespace cadencii
         public MidiPortConfig MidiInPort = new MidiPortConfig();
 
         public bool ViewAtcualPitch = false;
-        private bool __revoked__InvokeUtauCoreWithWine = false;
         public List<SingerConfig> UtauSingers = new List<SingerConfig>();
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
         /// </summary>
         public string PathResampler = "";
         /// <summary>
-        /// UTAU互換の合成器の1個目を，wine経由で呼ぶかどうか
-        /// version 3.3+
-        /// </summary>
-        public bool ResamplerWithWine = false;
-        /// <summary>
         /// UTAU互換の合成器のパス(2個目以降)
         /// </summary>
         public List<string> PathResamplers = new List<string>();
         /// <summary>
-        /// UTAU互換の合成器を，wine経由で呼ぶかどうか
-        /// version 3.3+
-        /// </summary>
-        public List<Boolean> ResamplersWithWine = new List<Boolean>();
-        /// <summary>
         /// UTAU用のwave切り貼りツール
         /// </summary>
         public string PathWavtool = "";
-        /// <summary>
-        /// wavtoolをwine経由で呼ぶかどうか
-        /// version 3.3+
-        /// </summary>
-        public bool WavtoolWithWine = false;
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
         /// </summary>
@@ -525,21 +509,6 @@ namespace cadencii
         /// </summary>
         public List<string> LastUsedPathOut = new List<string>();
         /// <summary>
-        /// 使用するWINEPREFIX
-        /// version 3.3+
-        /// </summary>
-        public string WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
-        /// <summary>
-        /// wineのトップディレクトリ
-        /// version 3.3+
-        /// </summary>
-        public string WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
-        /// <summary>
-        /// Cadencii付属のWineを使う場合にtrue，そうでなければWineTopで指定されたWineが利用される
-        /// version 3.3+
-        /// </summary>
-        public bool WineTopBuiltin = true;
-        /// <summary>
         /// UTAUのresampler用に，ジャンクション機能を使うかどうか
         /// version 3.3+
         /// </summary>
@@ -663,56 +632,6 @@ namespace cadencii
         }
 
         /// <summary>
-        /// 使用するWineのインストールディレクトリを取得します
-        /// </summary>
-        public string getWineTop()
-        {
-            if (WineTopBuiltin) {
-                return getBuiltinWineTop("Wine.bundle");
-            } else {
-                return WineTop;
-            }
-        }
-
-        /// <summary>
-        /// 指定した名前のバンドルの，Wineのインストールディレクトリを取得します
-        /// </summary>
-        private string getBuiltinWineTop(string bundle_name)
-        {
-            string appstart = PortUtil.getApplicationStartupPath();
-            // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
-            // まず../Wine.bundleがあるかどうかチェック
-            string parent = PortUtil.getDirectoryName(appstart);
-            string ret = Path.Combine(parent, bundle_name);
-            if (!Directory.Exists(ret)) {
-                // ../Wine.bundleが無い場合
-                ret = Path.Combine(appstart, bundle_name);
-            }
-            ret = Path.Combine(ret, "Contents");
-            ret = Path.Combine(ret, "SharedSupport");
-            return ret;
-        }
-
-        public string getBuiltinWineMinimumExecutable()
-        {
-            string ret = getBuiltinWineTop("WineMinimum.bundle");
-            ret = Path.Combine(ret, "bin");
-            ret = Path.Combine(ret, "wine");
-            return ret;
-        }
-
-        /// <summary>
-        /// wineの実行ファイルのパスを取得します
-        /// </summary>
-        public string getBuiltinWineExecutable__()
-        {
-            string ret = getBuiltinWineTop("Wine.bundle");
-            ret = Path.Combine(ret, "bin");
-            ret = Path.Combine(ret, "wine");
-            return ret;
-        }
-
-        /// <summary>
         /// 登録されているUTAU互換合成器の個数を調べます
         /// </summary>
         /// <returns></returns>
@@ -732,42 +651,6 @@ namespace cadencii
         {
             PathResamplers.Clear();
             PathResampler = "";
-            ResamplersWithWine.Clear();
-        }
-
-        /// <summary>
-        /// 第index番目に登録されているresamplerをwine経由で呼ぶかどうかを表す値を取得します
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public bool isResamplerWithWineAt(int index)
-        {
-            if (index == 0) {
-                return ResamplerWithWine;
-            } else {
-                index--;
-                if (0 <= index && index < ResamplersWithWine.Count) {
-                    return ResamplersWithWine[index];
-                }
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 第index番目に登録されているresamplerをwine経由で呼ぶかどうかを設定します
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="with_wine"></param>
-        public void setResamplerWithWineAt(int index, bool with_wine)
-        {
-            if (index == 0) {
-                ResamplerWithWine = with_wine;
-            } else {
-                index--;
-                if (0 <= index && index < ResamplersWithWine.Count) {
-                    ResamplersWithWine[index] = with_wine;
-                }
-            }
         }
 
         /// <summary>
@@ -821,13 +704,10 @@ namespace cadencii
             if (index == 0) {
                 if (size > 0) {
                     PathResampler = PathResamplers[0];
-                    ResamplerWithWine = ResamplersWithWine[0];
                     for (int i = 0; i < size - 1; i++) {
                         PathResamplers[i] = PathResamplers[i + 1];
-                        ResamplersWithWine[i] = ResamplersWithWine[i + 1];
                     }
                     PathResamplers.RemoveAt(size - 1);
-                    ResamplersWithWine.RemoveAt(size - 1);
                 } else {
                     PathResampler = "";
                 }
@@ -836,10 +716,8 @@ namespace cadencii
                 if (0 <= index && index < size) {
                     for (int i = 0; i < size - 1; i++) {
                         PathResamplers[i] = PathResamplers[i + 1];
-                        ResamplersWithWine[i] = ResamplersWithWine[i + 1];
                     }
                     PathResamplers.RemoveAt(size - 1);
-                    ResamplersWithWine.RemoveAt(size - 1);
                 }
             }
         }
@@ -848,15 +726,13 @@ namespace cadencii
         /// 新しいUTAU互換合成器のパスを登録します
         /// </summary>
         /// <param name="path"></param>
-        public void addResampler(string path, bool with_wine)
+        public void addResampler(string path)
         {
             int count = getResamplerCount();
             if (count == 0) {
                 PathResampler = path;
-                ResamplerWithWine = with_wine;
             } else {
                 PathResamplers.Add(path);
-                ResamplersWithWine.Add(with_wine);
             }
         }
 
@@ -1227,7 +1103,6 @@ namespace cadencii
         #region private method
         /// <summary>
         /// このインスタンスの整合性をチェックします．
-        /// PathResamplersとPathResamplersWithWineの個数があってるかどうかなどのチェックを行う
         /// </summary>
         public void check()
         {
@@ -1255,24 +1130,8 @@ namespace cadencii
                 draft_key_width = AppManager.MAX_KEY_WIDTH;
             }
 
-            // PathResamplersWithWineの個数があってるかどうかチェック
             if (PathResamplers == null) {
                 PathResamplers = new List<string>();
-            }
-            if (ResamplersWithWine == null) {
-                ResamplersWithWine = new List<Boolean>();
-            }
-            if (PathResamplers.Count != ResamplersWithWine.Count) {
-                int delta = ResamplersWithWine.Count - PathResamplers.Count;
-                if (delta > 0) {
-                    for (int i = 0; i < delta; i++) {
-                        ResamplersWithWine.RemoveAt(ResamplersWithWine.Count - 1);
-                    }
-                } else if (delta < 0) {
-                    for (int i = 0; i < -delta; i++) {
-                        ResamplersWithWine.Add(false);
-                    }
-                }
             }
 
             // SynthEngineの違いを識別しないように変更．VOALOID1に縮約する

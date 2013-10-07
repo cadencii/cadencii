@@ -47,11 +47,8 @@ namespace cadencii
         private string mResampler;
         private string mWavtool;
         private string mTempDir;
-        private bool mResamplerWithWine;
-        private bool mWavtoolWithWine;
         //private bool mAbortRequired = false;
         private bool mRunning = false;
-        private string mWine = "";
 
         private long mTotalSamples;
         private WaveReceiver mReceiver = null;
@@ -184,16 +181,6 @@ namespace cadencii
 #if DEBUG
             sout.println("UtauWaveGenerator#init; mTempDir=" + mTempDir + "; exists=" + Directory.Exists(mTempDir));
 #endif
-            var platform = System.Environment.OSVersion.Platform;
-            bool non_windows_platform = (platform == PlatformID.MacOSX || platform == PlatformID.Unix);
-            mResamplerWithWine = non_windows_platform
-                ? mConfig.isResamplerWithWineAt(resampler_index)
-                : false;
-            mWavtoolWithWine = non_windows_platform
-                ? mConfig.WavtoolWithWine
-                : false;
-            mWine = mConfig.getBuiltinWineMinimumExecutable();
-
             mVsq = (VsqFileEx)vsq.clone();
             mVsq.updateTotalClocks();
 
@@ -710,7 +697,7 @@ namespace cadencii
                         Process process = null;
                         try {
                             process = new Process();
-                            process.StartInfo.FileName = (mResamplerWithWine ? "wine \"" : "\"") + mResampler + "\"";
+                            process.StartInfo.FileName = "\"" + mResampler + "\"";
                             process.StartInfo.Arguments = rq.getResamplerArgString();
 #if DEBUG
                             sout.println("UtauWaveGenerator#begin; FileName=" + process.StartInfo.FileName);
@@ -779,7 +766,7 @@ namespace cadencii
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
 #endif
-                    processWavtool(arg_wavtool, file, mTempDir, mWavtool, mWavtoolWithWine);
+                    processWavtool(arg_wavtool, file, mTempDir, mWavtool);
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
                     int sample_end = (int)(sec_fin * mSampleRate);
@@ -1136,12 +1123,12 @@ namespace cadencii
             }
         }
 
-        private void processWavtool(List<string> arg, string filebase, string temp_dir, string wavtool, bool invoke_with_wine)
+        private void processWavtool(List<string> arg, string filebase, string temp_dir, string wavtool)
         {
             Process process = null;
             try {
                 process = new Process();
-                process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
+                process.StartInfo.FileName = "\"" + wavtool + "\"";
                 string argument = "";
                 int size = arg.Count;
                 for (int i = 0; i < size; i++) {
@@ -1156,7 +1143,6 @@ namespace cadencii
                 process.StartInfo.WorkingDirectory = temp_dir;
                 process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 #if DEBUG
-                sout.println("UtauWaveGenerator#processWavTool; invoke_with_wine=" + invoke_with_wine);
                 sout.println("UtauWaveGenerator#processWavTool; .FileName=" + process.StartInfo.FileName);
                 sout.println("UtauWaveGenerator#processWavtool; .Arguments=" + process.StartInfo.Arguments);
 #endif

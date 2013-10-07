@@ -170,18 +170,8 @@ namespace cadencii
             this.chkPlayPreviewWhenRightClick = new System.Windows.Forms.CheckBox();
             this.chkKeepLyricInputMode = new System.Windows.Forms.CheckBox();
             this.tabPlatform = new System.Windows.Forms.TabPage();
-            this.groupWine = new System.Windows.Forms.GroupBox();
-            this.radioWineCustom = new System.Windows.Forms.RadioButton();
-            this.radioWineBuiltin = new System.Windows.Forms.RadioButton();
-            this.labelWineTop = new System.Windows.Forms.Label();
-            this.buttonWineTop = new System.Windows.Forms.Button();
-            this.textWineTop = new System.Windows.Forms.TextBox();
-            this.labelWinePrefix = new System.Windows.Forms.Label();
-            this.buttonWinePrefix = new System.Windows.Forms.Button();
-            this.textWinePrefix = new System.Windows.Forms.TextBox();
             this.groupUtauCores = new System.Windows.Forms.GroupBox();
             this.checkEnableWideCharacterWorkaround = new System.Windows.Forms.CheckBox();
-            this.labelResamplerWithWine = new System.Windows.Forms.Label();
             this.labelWavtoolPath = new System.Windows.Forms.Label();
             this.buttonResamplerUp = new System.Windows.Forms.Button();
             this.buttonResamplerDown = new System.Windows.Forms.Button();
@@ -190,7 +180,6 @@ namespace cadencii
             this.listResampler = new System.Windows.Forms.ListView();
             this.columnHeaderPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblResampler = new System.Windows.Forms.Label();
-            this.chkWavtoolWithWine = new System.Windows.Forms.CheckBox();
             this.btnWavtool = new System.Windows.Forms.Button();
             this.lblWavtool = new System.Windows.Forms.Label();
             this.txtWavtool = new System.Windows.Forms.TextBox();
@@ -210,6 +199,7 @@ namespace cadencii
             this.groupDefaultSynthesizer = new System.Windows.Forms.GroupBox();
             this.comboDefaultSynthesizer = new System.Windows.Forms.ComboBox();
             this.groupSynthesizerDll = new System.Windows.Forms.GroupBox();
+            this.chkLoadAquesTone2 = new System.Windows.Forms.CheckBox();
             this.chkLoadAquesTone = new System.Windows.Forms.CheckBox();
             this.chkLoadVocaloid2 = new System.Windows.Forms.CheckBox();
             this.chkLoadVocaloid1 = new System.Windows.Forms.CheckBox();
@@ -226,7 +216,6 @@ namespace cadencii
             this.lblVOCALOID1 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.chkLoadAquesTone2 = new System.Windows.Forms.CheckBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
@@ -246,7 +235,6 @@ namespace cadencii
             this.groupPianoroll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
             this.tabPlatform.SuspendLayout();
-            this.groupWine.SuspendLayout();
             this.groupUtauCores.SuspendLayout();
             this.tabUtausingers.SuspendLayout();
             this.tabFile.SuspendLayout();
@@ -259,8 +247,8 @@ namespace cadencii
             // 
             // tabPreference
             // 
-            this.tabPreference.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.tabPreference.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabPreference.Controls.Add(this.tabSequence);
             this.tabPreference.Controls.Add(this.tabAnother);
@@ -1157,7 +1145,7 @@ namespace cadencii
             // 
             // comboMtcMidiInPortNumber
             // 
-            this.comboMtcMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.comboMtcMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboMtcMidiInPortNumber.FormattingEnabled = true;
             this.comboMtcMidiInPortNumber.Location = new System.Drawing.Point(176, 101);
@@ -1185,7 +1173,7 @@ namespace cadencii
             // 
             // comboMidiInPortNumber
             // 
-            this.comboMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.comboMidiInPortNumber.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboMidiInPortNumber.FormattingEnabled = true;
             this.comboMidiInPortNumber.Location = new System.Drawing.Point(176, 74);
@@ -1380,7 +1368,6 @@ namespace cadencii
             // 
             // tabPlatform
             // 
-            this.tabPlatform.Controls.Add(this.groupWine);
             this.tabPlatform.Controls.Add(this.groupUtauCores);
             this.tabPlatform.Location = new System.Drawing.Point(4, 40);
             this.tabPlatform.Name = "tabPlatform";
@@ -1390,103 +1377,9 @@ namespace cadencii
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
             // 
-            // groupWine
-            // 
-            this.groupWine.Controls.Add(this.radioWineCustom);
-            this.groupWine.Controls.Add(this.radioWineBuiltin);
-            this.groupWine.Controls.Add(this.labelWineTop);
-            this.groupWine.Controls.Add(this.buttonWineTop);
-            this.groupWine.Controls.Add(this.textWineTop);
-            this.groupWine.Controls.Add(this.labelWinePrefix);
-            this.groupWine.Controls.Add(this.buttonWinePrefix);
-            this.groupWine.Controls.Add(this.textWinePrefix);
-            this.groupWine.Location = new System.Drawing.Point(23, 333);
-            this.groupWine.Name = "groupWine";
-            this.groupWine.Size = new System.Drawing.Size(407, 124);
-            this.groupWine.TabIndex = 109;
-            this.groupWine.TabStop = false;
-            this.groupWine.Text = "Wine";
-            // 
-            // radioWineCustom
-            // 
-            this.radioWineCustom.AutoSize = true;
-            this.radioWineCustom.Location = new System.Drawing.Point(46, 94);
-            this.radioWineCustom.Name = "radioWineCustom";
-            this.radioWineCustom.Size = new System.Drawing.Size(60, 16);
-            this.radioWineCustom.TabIndex = 125;
-            this.radioWineCustom.Text = "custom";
-            this.radioWineCustom.UseVisualStyleBackColor = true;
-            // 
-            // radioWineBuiltin
-            // 
-            this.radioWineBuiltin.AutoSize = true;
-            this.radioWineBuiltin.Location = new System.Drawing.Point(46, 72);
-            this.radioWineBuiltin.Name = "radioWineBuiltin";
-            this.radioWineBuiltin.Size = new System.Drawing.Size(60, 16);
-            this.radioWineBuiltin.TabIndex = 124;
-            this.radioWineBuiltin.Text = "built-in";
-            this.radioWineBuiltin.UseVisualStyleBackColor = true;
-            // 
-            // labelWineTop
-            // 
-            this.labelWineTop.AutoSize = true;
-            this.labelWineTop.Location = new System.Drawing.Point(18, 54);
-            this.labelWineTop.Name = "labelWineTop";
-            this.labelWineTop.Size = new System.Drawing.Size(54, 12);
-            this.labelWineTop.TabIndex = 123;
-            this.labelWineTop.Text = "WINETOP";
-            // 
-            // buttonWineTop
-            // 
-            this.buttonWineTop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonWineTop.Location = new System.Drawing.Point(326, 91);
-            this.buttonWineTop.Name = "buttonWineTop";
-            this.buttonWineTop.Size = new System.Drawing.Size(75, 23);
-            this.buttonWineTop.TabIndex = 122;
-            this.buttonWineTop.Text = "Browse";
-            this.buttonWineTop.UseVisualStyleBackColor = true;
-            // 
-            // textWineTop
-            // 
-            this.textWineTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textWineTop.Location = new System.Drawing.Point(112, 93);
-            this.textWineTop.Name = "textWineTop";
-            this.textWineTop.Size = new System.Drawing.Size(208, 19);
-            this.textWineTop.TabIndex = 121;
-            // 
-            // labelWinePrefix
-            // 
-            this.labelWinePrefix.AutoSize = true;
-            this.labelWinePrefix.Location = new System.Drawing.Point(17, 25);
-            this.labelWinePrefix.Name = "labelWinePrefix";
-            this.labelWinePrefix.Size = new System.Drawing.Size(71, 12);
-            this.labelWinePrefix.TabIndex = 120;
-            this.labelWinePrefix.Text = "WINEPREFIX";
-            // 
-            // buttonWinePrefix
-            // 
-            this.buttonWinePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonWinePrefix.Location = new System.Drawing.Point(326, 20);
-            this.buttonWinePrefix.Name = "buttonWinePrefix";
-            this.buttonWinePrefix.Size = new System.Drawing.Size(75, 23);
-            this.buttonWinePrefix.TabIndex = 112;
-            this.buttonWinePrefix.Text = "Browse";
-            this.buttonWinePrefix.UseVisualStyleBackColor = true;
-            // 
-            // textWinePrefix
-            // 
-            this.textWinePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textWinePrefix.Location = new System.Drawing.Point(100, 22);
-            this.textWinePrefix.Name = "textWinePrefix";
-            this.textWinePrefix.Size = new System.Drawing.Size(220, 19);
-            this.textWinePrefix.TabIndex = 111;
-            // 
             // groupUtauCores
             // 
             this.groupUtauCores.Controls.Add(this.checkEnableWideCharacterWorkaround);
-            this.groupUtauCores.Controls.Add(this.labelResamplerWithWine);
             this.groupUtauCores.Controls.Add(this.labelWavtoolPath);
             this.groupUtauCores.Controls.Add(this.buttonResamplerUp);
             this.groupUtauCores.Controls.Add(this.buttonResamplerDown);
@@ -1494,13 +1387,12 @@ namespace cadencii
             this.groupUtauCores.Controls.Add(this.buttonResamplerAdd);
             this.groupUtauCores.Controls.Add(this.listResampler);
             this.groupUtauCores.Controls.Add(this.lblResampler);
-            this.groupUtauCores.Controls.Add(this.chkWavtoolWithWine);
             this.groupUtauCores.Controls.Add(this.btnWavtool);
             this.groupUtauCores.Controls.Add(this.lblWavtool);
             this.groupUtauCores.Controls.Add(this.txtWavtool);
             this.groupUtauCores.Location = new System.Drawing.Point(23, 9);
             this.groupUtauCores.Name = "groupUtauCores";
-            this.groupUtauCores.Size = new System.Drawing.Size(407, 318);
+            this.groupUtauCores.Size = new System.Drawing.Size(407, 289);
             this.groupUtauCores.TabIndex = 108;
             this.groupUtauCores.TabStop = false;
             this.groupUtauCores.Text = "UTAU Cores";
@@ -1508,21 +1400,12 @@ namespace cadencii
             // checkEnableWideCharacterWorkaround
             // 
             this.checkEnableWideCharacterWorkaround.AutoSize = true;
-            this.checkEnableWideCharacterWorkaround.Location = new System.Drawing.Point(19, 287);
+            this.checkEnableWideCharacterWorkaround.Location = new System.Drawing.Point(19, 260);
             this.checkEnableWideCharacterWorkaround.Name = "checkEnableWideCharacterWorkaround";
             this.checkEnableWideCharacterWorkaround.Size = new System.Drawing.Size(205, 16);
             this.checkEnableWideCharacterWorkaround.TabIndex = 122;
             this.checkEnableWideCharacterWorkaround.Text = "Enable Wide-Character Workaround";
             this.checkEnableWideCharacterWorkaround.UseVisualStyleBackColor = true;
-            // 
-            // labelResamplerWithWine
-            // 
-            this.labelResamplerWithWine.AutoSize = true;
-            this.labelResamplerWithWine.Location = new System.Drawing.Point(49, 266);
-            this.labelResamplerWithWine.Name = "labelResamplerWithWine";
-            this.labelResamplerWithWine.Size = new System.Drawing.Size(143, 12);
-            this.labelResamplerWithWine.TabIndex = 121;
-            this.labelResamplerWithWine.Text = "Check the box to use Wine";
             // 
             // labelWavtoolPath
             // 
@@ -1536,7 +1419,7 @@ namespace cadencii
             // buttonResamplerUp
             // 
             this.buttonResamplerUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerUp.Location = new System.Drawing.Point(326, 211);
+            this.buttonResamplerUp.Location = new System.Drawing.Point(326, 184);
             this.buttonResamplerUp.Name = "buttonResamplerUp";
             this.buttonResamplerUp.Size = new System.Drawing.Size(75, 23);
             this.buttonResamplerUp.TabIndex = 119;
@@ -1546,7 +1429,7 @@ namespace cadencii
             // buttonResamplerDown
             // 
             this.buttonResamplerDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerDown.Location = new System.Drawing.Point(326, 240);
+            this.buttonResamplerDown.Location = new System.Drawing.Point(326, 213);
             this.buttonResamplerDown.Name = "buttonResamplerDown";
             this.buttonResamplerDown.Size = new System.Drawing.Size(75, 23);
             this.buttonResamplerDown.TabIndex = 118;
@@ -1556,7 +1439,7 @@ namespace cadencii
             // buttonResamplerRemove
             // 
             this.buttonResamplerRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerRemove.Location = new System.Drawing.Point(326, 158);
+            this.buttonResamplerRemove.Location = new System.Drawing.Point(326, 131);
             this.buttonResamplerRemove.Name = "buttonResamplerRemove";
             this.buttonResamplerRemove.Size = new System.Drawing.Size(75, 23);
             this.buttonResamplerRemove.TabIndex = 117;
@@ -1566,7 +1449,7 @@ namespace cadencii
             // buttonResamplerAdd
             // 
             this.buttonResamplerAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerAdd.Location = new System.Drawing.Point(326, 129);
+            this.buttonResamplerAdd.Location = new System.Drawing.Point(326, 102);
             this.buttonResamplerAdd.Name = "buttonResamplerAdd";
             this.buttonResamplerAdd.Size = new System.Drawing.Size(75, 23);
             this.buttonResamplerAdd.TabIndex = 116;
@@ -1575,14 +1458,13 @@ namespace cadencii
             // 
             // listResampler
             // 
-            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listResampler.CheckBoxes = true;
             this.listResampler.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderPath});
             this.listResampler.FullRowSelect = true;
             this.listResampler.HideSelection = false;
-            this.listResampler.Location = new System.Drawing.Point(46, 129);
+            this.listResampler.Location = new System.Drawing.Point(46, 102);
             this.listResampler.MultiSelect = false;
             this.listResampler.Name = "listResampler";
             this.listResampler.ShowGroups = false;
@@ -1599,21 +1481,11 @@ namespace cadencii
             // lblResampler
             // 
             this.lblResampler.AutoSize = true;
-            this.lblResampler.Location = new System.Drawing.Point(17, 109);
+            this.lblResampler.Location = new System.Drawing.Point(17, 82);
             this.lblResampler.Name = "lblResampler";
             this.lblResampler.Size = new System.Drawing.Size(55, 12);
             this.lblResampler.TabIndex = 111;
             this.lblResampler.Text = "resampler";
-            // 
-            // chkWavtoolWithWine
-            // 
-            this.chkWavtoolWithWine.AutoSize = true;
-            this.chkWavtoolWithWine.Location = new System.Drawing.Point(46, 79);
-            this.chkWavtoolWithWine.Name = "chkWavtoolWithWine";
-            this.chkWavtoolWithWine.Size = new System.Drawing.Size(153, 16);
-            this.chkWavtoolWithWine.TabIndex = 113;
-            this.chkWavtoolWithWine.Text = "Invoke wavtool with Wine";
-            this.chkWavtoolWithWine.UseVisualStyleBackColor = true;
             // 
             // btnWavtool
             // 
@@ -1636,7 +1508,7 @@ namespace cadencii
             // 
             // txtWavtool
             // 
-            this.txtWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWavtool.Location = new System.Drawing.Point(100, 46);
             this.txtWavtool.Name = "txtWavtool";
@@ -1701,8 +1573,8 @@ namespace cadencii
             // 
             // listSingers
             // 
-            this.listSingers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.listSingers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
             listViewGroup1.Header = "ListViewGroup";
@@ -1980,6 +1852,16 @@ namespace cadencii
             this.groupSynthesizerDll.TabStop = false;
             this.groupSynthesizerDll.Text = "Synthesizer DLL Usage";
             // 
+            // chkLoadAquesTone2
+            // 
+            this.chkLoadAquesTone2.AutoSize = true;
+            this.chkLoadAquesTone2.Location = new System.Drawing.Point(18, 88);
+            this.chkLoadAquesTone2.Name = "chkLoadAquesTone2";
+            this.chkLoadAquesTone2.Size = new System.Drawing.Size(87, 16);
+            this.chkLoadAquesTone2.TabIndex = 117;
+            this.chkLoadAquesTone2.Text = "AquesTone2";
+            this.chkLoadAquesTone2.UseVisualStyleBackColor = true;
+            // 
             // chkLoadAquesTone
             // 
             this.chkLoadAquesTone.AutoSize = true;
@@ -2137,16 +2019,6 @@ namespace cadencii
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // chkLoadAquesTone2
-            //
-            this.chkLoadAquesTone2.AutoSize = true;
-            this.chkLoadAquesTone2.Location = new System.Drawing.Point(18, 88);
-            this.chkLoadAquesTone2.Name = "chkLoadAquesTone2";
-            this.chkLoadAquesTone2.Size = new System.Drawing.Size(87, 16);
-            this.chkLoadAquesTone2.TabIndex = 117;
-            this.chkLoadAquesTone2.Text = "AquesTone2";
-            this.chkLoadAquesTone2.UseVisualStyleBackColor = true;
-            //
             // Preference
             // 
             this.AcceptButton = this.btnOK;
@@ -2193,8 +2065,6 @@ namespace cadencii
             this.groupPianoroll.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
             this.tabPlatform.ResumeLayout(false);
-            this.groupWine.ResumeLayout(false);
-            this.groupWine.PerformLayout();
             this.groupUtauCores.ResumeLayout(false);
             this.groupUtauCores.PerformLayout();
             this.tabUtausingers.ResumeLayout(false);
@@ -2293,7 +2163,6 @@ namespace cadencii
         private System.Windows.Forms.ListView listSingers;
         private System.Windows.Forms.GroupBox groupUtauCores;
         private System.Windows.Forms.Label lblResampler;
-        private System.Windows.Forms.CheckBox chkWavtoolWithWine;
         private System.Windows.Forms.Button btnWavtool;
         private System.Windows.Forms.Label lblWavtool;
         private System.Windows.Forms.TextBox txtWavtool;
@@ -2351,16 +2220,6 @@ namespace cadencii
         private System.Windows.Forms.Button buttonResamplerDown;
         private System.Windows.Forms.Label labelWavtoolPath;
         private System.Windows.Forms.ColumnHeader columnHeaderPath;
-        private System.Windows.Forms.Label labelResamplerWithWine;
-        private System.Windows.Forms.GroupBox groupWine;
-        private System.Windows.Forms.Label labelWinePrefix;
-        private System.Windows.Forms.Button buttonWinePrefix;
-        private System.Windows.Forms.TextBox textWinePrefix;
-        private System.Windows.Forms.Label labelWineTop;
-        private System.Windows.Forms.Button buttonWineTop;
-        private System.Windows.Forms.TextBox textWineTop;
-        private System.Windows.Forms.RadioButton radioWineCustom;
-        private System.Windows.Forms.RadioButton radioWineBuiltin;
         private System.Windows.Forms.CheckBox checkEnableWideCharacterWorkaround;
         private System.Windows.Forms.Button btnAquesTone2;
         private System.Windows.Forms.Label lblAquesTone2;

@@ -32,11 +32,6 @@ namespace cadencii
             mDirectives["property"] = true;
         }
 
-        public static string getWineVersion()
-        {
-            return "1.1.2";
-        }
-
         public static SortedDictionary<string, Boolean> getDirectives()
         {
             SortedDictionary<string, Boolean> ret = new SortedDictionary<string, Boolean>();

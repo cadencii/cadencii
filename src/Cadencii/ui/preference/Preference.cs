@@ -172,55 +172,6 @@ namespace cadencii
         }
 
         /// <summary>
-        /// WINEPREFIXの設定値を取得します
-        /// </summary>
-        public string getWinePrefix()
-        {
-            return textWinePrefix.Text;
-        }
-
-        /// <summary>
-        /// WINEPREFIXの設定値を設定します
-        /// </summary>
-        public void setWinePrefix(string value)
-        {
-            textWinePrefix.Text = value;
-        }
-
-        /// <summary>
-        /// WINETOPの設定値を取得します
-        /// </summary>
-        public string getWineTop()
-        {
-            return textWineTop.Text;
-        }
-
-        /// <summary>
-        /// WINETOPの設定値を設定します
-        /// </summary>
-        public void setWineTop(string value)
-        {
-            textWineTop.Text = value;
-        }
-
-        /// <summary>
-        /// Cadencii付属のWineを使うかどうかを表す設定値を取得します
-        /// </summary>
-        public bool isWineBuiltin()
-        {
-            return radioWineBuiltin.Checked;
-        }
-
-        /// <summary>
-        /// Cadencii付属のWineを使うかどうかを表す設定値を設定します
-        /// </summary>        
-        public void setWineBuiltin(bool value)
-        {
-            radioWineBuiltin.Checked = value;
-            radioWineCustom.Checked = !value;
-        }
-
-        /// <summary>
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか，を表す値を取得します
         /// </summary>
         /// <returns></returns>
@@ -843,9 +794,7 @@ namespace cadencii
             #region tabPlatform
             groupUtauCores.Text = _("UTAU Cores");
             labelWavtoolPath.Text = _("Path:");
-            chkWavtoolWithWine.Text = _("Invoke wavtool with Wine");
             listResampler.SetColumnHeaders(new string[] { _("path") });
-            labelResamplerWithWine.Text = _("Check the box to use Wine");
             checkEnableWideCharacterWorkaround.Text = _("Enable Workaround for Wide-Character Path");
             #endregion
 
@@ -1134,15 +1083,14 @@ namespace cadencii
             }
         }
 
-        public void copyResamplersConfig(List<string> ret, List<Boolean> with_wine)
+        public void copyResamplersConfig(List<string> ret)
         {
             for (int i = 0; i < listResampler.Items.Count; i++) {
                 ret.Add((string)listResampler.Items[i].SubItems[0].Text);
-                with_wine.Add(listResampler.Items[i].Checked);
             }
         }
 
-        public void setResamplersConfig(List<string> path, List<Boolean> with_wine)
+        public void setResamplersConfig(List<string> path)
         {
             int size = listResampler.Items.Count;
             for (int i = 0; i < size; i++) {
@@ -1152,19 +1100,8 @@ namespace cadencii
                 return;
             }
             for (int i = 0; i < path.Count; i++) {
-                listResampler.AddRow(
-                    new string[] { path[i] }, with_wine[i]);
+                listResampler.AddRow(new string[] { path[i] });
             }
-        }
-
-        public void setWavtoolWithWine(bool value)
-        {
-            chkWavtoolWithWine.Checked = value;
-        }
-
-        public bool isWavtoolWithWine()
-        {
-            return chkWavtoolWithWine.Checked;
         }
 
         public string getPathWavtool()
@@ -1256,23 +1193,13 @@ namespace cadencii
             var dr = AppManager.showModalDialog(openUtauCore, true, this);
             if (dr == System.Windows.Forms.DialogResult.OK) {
                 string path = openUtauCore.FileName;
-                bool check = false;
-                bool is_mac = isMac();
-                if (is_mac) {
-                    check = isWindowsExecutable(path);
-                }
-                listResampler.AddRow(new string[] { path }, check);
+                listResampler.AddRow(new string[] { path });
                 if (txtWavtool.Text == "") {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
                     string wavtool = Path.Combine(PortUtil.getDirectoryName(path), "wavtool.exe");
                     if (System.IO.File.Exists(wavtool)) {
                         txtWavtool.Text = wavtool;
-                        check = false;
-                        if (is_mac) {
-                            check = isWindowsExecutable(wavtool);
-                        }
-                        chkWavtoolWithWine.Checked = check;
                     }
                 }
             }
@@ -1334,20 +1261,10 @@ namespace cadencii
             if (dr == System.Windows.Forms.DialogResult.OK) {
                 string path = openUtauCore.FileName;
                 txtWavtool.Text = path;
-                bool is_mac = isMac();
-                bool check = false;
-                if (is_mac) {
-                    check = isWindowsExecutable(path);
-                }
-                chkWavtoolWithWine.Checked = check;
                 if (listResampler.Items.Count == 0) {
                     string resampler = Path.Combine(PortUtil.getDirectoryName(path), "resampler.exe");
                     if (System.IO.File.Exists(resampler)) {
-                        check = false;
-                        if (is_mac) {
-                            check = isWindowsExecutable(resampler);
-                        }
-                        listResampler.AddRow(new string[] { resampler }, check);
+                        listResampler.AddRow(new string[] { resampler });
                     }
                 }
             }
@@ -1480,89 +1397,9 @@ namespace cadencii
             lblAutoVibratoType2.Enabled = v;
             lblAutoVibratoTypeCustom.Enabled = ud;
         }
-
-        public void buttonWinePrefix_Click(Object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = null;
-            try {
-                dialog = new OpenFileDialog();
-                string dir = textWinePrefix.Text;
-                if (dir != null && dir.Length > 0) {
-                    dialog.SetSelectedFile(Path.Combine(dir, "a"));
-                }
-                if (AppManager.showModalDialog(dialog, true, this) == DialogResult.OK) {
-                    dir = dialog.FileName;
-                    if (System.IO.File.Exists(dir)) {
-                        // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
-                        dir = PortUtil.getDirectoryName(dir);
-                    }
-                    textWinePrefix.Text = dir;
-                }
-            } catch (Exception ex) {
-            }
-        }
-
-        public void buttonWineTop_Click(Object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = null;
-            try {
-                dialog = new OpenFileDialog();
-                string dir = textWineTop.Text;
-                if (dir != null && dir.Length > 0) {
-                    dialog.SetSelectedFile(Path.Combine(dir, "a"));
-                }
-                if (AppManager.showModalDialog(dialog, true, this) == DialogResult.OK) {
-                    dir = dialog.FileName;
-                    if (System.IO.File.Exists(dir)) {
-                        // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
-                        dir = PortUtil.getDirectoryName(dir);
-                    }
-                    textWineTop.Text = dir;
-                }
-            } catch (Exception ex) {
-            }
-        }
-
-        public void radioWineBuiltin_CheckedChanged(Object sender, EventArgs e)
-        {
-            bool enable = !radioWineBuiltin.Checked;
-            textWineTop.Enabled = enable;
-            buttonWineTop.Enabled = enable;
-        }
         #endregion
 
         #region helper methods
-        private bool isMac()
-        {
-            return false;
-        }
-
-        private bool isWindowsExecutable(string path)
-        {
-            if (!System.IO.File.Exists(path)) {
-                return false;
-            }
-            Stream fs = null;
-            try {
-                fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                int r0 = fs.ReadByte(); // 'M'
-                int r1 = fs.ReadByte(); // 'Z'
-                if ('M' == (char)r0 && 'Z' == (char)r1) {
-                    return true;
-                }
-            } catch (Exception ex) {
-                serr.println("Preference#isWindowsExecutable; ex=" + ex);
-            } finally {
-                if (fs != null) {
-                    try {
-                        fs.Close();
-                    } catch (Exception ex2) {
-                    }
-                }
-            }
-            return false;
-        }
-
         /// <summary>
         /// カスタムビブラートの選択肢の欄を更新します
         /// </summary>
@@ -1710,9 +1547,6 @@ namespace cadencii
             this.FormClosing += new FormClosingEventHandler(Preference_FormClosing);
             btnCancel.Click += new EventHandler(btnCancel_Click);
             radioVocaloidEditorCompatible.CheckedChanged += new EventHandler(commonChangeAutoVibratoType);
-            buttonWinePrefix.Click += new EventHandler(buttonWinePrefix_Click);
-            buttonWineTop.Click += new EventHandler(buttonWineTop_Click);
-            radioWineBuiltin.CheckedChanged += new EventHandler(radioWineBuiltin_CheckedChanged);
         }
 
         private void setResources()

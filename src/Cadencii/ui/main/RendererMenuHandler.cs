@@ -52,10 +52,8 @@ namespace cadencii
         /// <param name="config">エディタの設定情報</param>
         public void updateRendererAvailability(EditorConfig config)
         {
-            string wine_prefix = config.WinePrefix;
-            string wine_top = config.WineTop;
             Image icon = null;
-            if (!VSTiDllManager.isRendererAvailable(kind_, wine_prefix, wine_top)) {
+            if (!VSTiDllManager.isRendererAvailable(kind_)) {
                 icon = Properties.Resources.slash;
             }
             if (track_menu_ != null) { track_menu_.Image = icon; }

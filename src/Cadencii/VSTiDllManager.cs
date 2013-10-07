@@ -39,10 +39,6 @@ namespace cadencii
         /// 使用するボカロの最大バージョン．2までリリースされているので今は2
         /// </summary>
         const int MAX_VOCALO_VERSION = 2;
-        /// <summary>
-        /// Wineでインストールされている（かもしれない）AquesToneのvsti dllのパス．windowsのパス区切り形式で代入すること
-        /// </summary>
-        public static string WineAquesToneDll = "C:\\Program Files\\Steinberg\\VSTplugins\\AquesTone.dll";
 
 #if ENABLE_VOCALOID
         public static List<VocaloidDriver> vocaloidDriver = new List<VocaloidDriver>();
@@ -188,7 +184,7 @@ namespace cadencii
         }
 #endif
 
-        public static bool isRendererAvailable(RendererKind renderer, string wine_prefix, string wine_top)
+        public static bool isRendererAvailable(RendererKind renderer)
         {
 #if ENABLE_VOCALOID
             for (int i = 0; i < vocaloidDriver.Count; i++) {

@@ -1143,7 +1143,7 @@ namespace cadencii
                     if (dialog.isResamplerChecked()) {
                         string path = dialog.getResamplerPath();
                         if (System.IO.File.Exists(path)) {
-                            AppManager.editorConfig.addResampler(path, false);
+                            AppManager.editorConfig.addResampler(path);
                         }
                     }
                     // 歌手
@@ -11861,15 +11861,12 @@ namespace cadencii
 
 #endif
                 List<string> resamplers = new List<string>();
-                List<Boolean> with_wine = new List<Boolean>();
                 int size = AppManager.editorConfig.getResamplerCount();
                 for (int i = 0; i < size; i++) {
                     resamplers.Add(AppManager.editorConfig.getResamplerAt(i));
-                    with_wine.Add(AppManager.editorConfig.isResamplerWithWineAt(i));
                 }
-                mDialogPreference.setResamplersConfig(resamplers, with_wine);
+                mDialogPreference.setResamplersConfig(resamplers);
                 mDialogPreference.setPathWavtool(AppManager.editorConfig.PathWavtool);
-                mDialogPreference.setWavtoolWithWine(AppManager.editorConfig.WavtoolWithWine);
                 mDialogPreference.setUtausingers(AppManager.editorConfig.UtauSingers);
                 mDialogPreference.setSelfDeRomantization(AppManager.editorConfig.SelfDeRomanization);
                 mDialogPreference.setAutoBackupIntervalMinutes(AppManager.editorConfig.AutoBackupIntervalMinutes);
@@ -11884,13 +11881,7 @@ namespace cadencii
                 mDialogPreference.setBufferSize(AppManager.editorConfig.BufferSizeMilliSeconds);
                 mDialogPreference.setDefaultSynthesizer(AppManager.editorConfig.DefaultSynthesizer);
                 mDialogPreference.setUseUserDefinedAutoVibratoType(AppManager.editorConfig.UseUserDefinedAutoVibratoType);
-                mDialogPreference.setWinePrefix(AppManager.editorConfig.WinePrefix);
-                mDialogPreference.setWineTop(AppManager.editorConfig.WineTop);
-                mDialogPreference.setWineBuiltin(AppManager.editorConfig.WineTopBuiltin);
                 mDialogPreference.setEnableWideCharacterWorkaround(AppManager.editorConfig.UseWideCharacterWorkaround);
-
-                string old_wine_prefix = AppManager.editorConfig.WinePrefix;
-                string old_wine_top = AppManager.editorConfig.getWineTop();
 
                 mDialogPreference.Location = getFormPreferedLocation(mDialogPreference);
 
@@ -11986,14 +11977,12 @@ namespace cadencii
 #endif
 
                     List<string> new_resamplers = new List<string>();
-                    List<Boolean> new_with_wine = new List<Boolean>();
-                    mDialogPreference.copyResamplersConfig(new_resamplers, new_with_wine);
+                    mDialogPreference.copyResamplersConfig(new_resamplers);
                     AppManager.editorConfig.clearResampler();
                     for (int i = 0; i < new_resamplers.Count; i++) {
-                        AppManager.editorConfig.addResampler(new_resamplers[i], new_with_wine[i]);
+                        AppManager.editorConfig.addResampler(new_resamplers[i]);
                     }
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
-                    AppManager.editorConfig.WavtoolWithWine = mDialogPreference.isWavtoolWithWine();
 
                     AppManager.editorConfig.UtauSingers.Clear();
                     foreach (var sc in mDialogPreference.getUtausingers()) {
@@ -12105,9 +12094,6 @@ namespace cadencii
                     AppManager.editorConfig.BufferSizeMilliSeconds = mDialogPreference.getBufferSize();
                     AppManager.editorConfig.DefaultSynthesizer = mDialogPreference.getDefaultSynthesizer();
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType = mDialogPreference.isUseUserDefinedAutoVibratoType();
-                    AppManager.editorConfig.WinePrefix = mDialogPreference.getWinePrefix();
-                    AppManager.editorConfig.WineTop = mDialogPreference.getWineTop();
-                    AppManager.editorConfig.WineTopBuiltin = mDialogPreference.isWineBuiltin();
                     AppManager.editorConfig.UseWideCharacterWorkaround = mDialogPreference.isEnableWideCharacterWorkaround();
 
                     trackSelector.prepareSingerMenu(VsqFileEx.getTrackRendererKind(AppManager.getVsqFile().Track[AppManager.getSelected()]));

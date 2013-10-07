@@ -93,28 +93,7 @@ namespace cadencii.vsq
             List<string> reg_list = new List<string>();
             initPrint("SOFTWARE\\VOCALOID", header1, reg_list);
             initPrint("SOFTWARE\\VOCALOID2", header2, reg_list);
-            init(reg_list, "");
-        }
-
-        /// <summary>
-        /// WINEPREFIXと，その内部のWindows形式の絶対パスを結合し，実際のファイルの絶対パスを取得します
-        /// </summary>
-        public static string combineWinePath(string wine_prefix, string full_path)
-        {
-            if (wine_prefix == null) {
-                wine_prefix = "";
-            }
-            if (full_path == null) {
-                return wine_prefix;
-            }
-            int full_path_len = full_path.Length;
-            if (full_path_len <= 0) {
-                return wine_prefix;
-            }
-            char drive_letter = full_path[0];
-            string drive = new string(new char[] { drive_letter }).ToLower();
-            string inner_path = (full_path_len >= 3) ? full_path.Substring(2).Replace("\\", "/") : "";
-            return Path.Combine(Path.Combine(wine_prefix, "drive_" + drive), inner_path);
+            init(reg_list);
         }
 
         /// <summary>
@@ -124,12 +103,8 @@ namespace cadencii.vsq
         /// のような文字列です．
         /// </summary>
         /// <param name="reg_list">レジストリ・エントリのリスト</param>
-        /// <param name="wine_prefix">wineを使う場合，WINEPREFIXを指定する．そうでなければ空文字を指定</param>
-        public static void init(List<string> reg_list, string wine_prefix)
+        public static void init(List<string> reg_list)
         {
-#if DEBUG
-            sout.println("VocaloSysUtil#init; wine_prefix=" + wine_prefix);
-#endif
             if (reg_list == null) {
                 return;
             }
@@ -174,15 +149,6 @@ namespace cadencii.vsq
                 string act_path_editor1 = path_editor.value;
                 string act_path_expdb1 = path_expdb1.value;
                 string act_vsti1 = path_vsti.value;
-                if (wine_prefix.Length > 0) {
-                    for (int i = 0; i < act_installed_singers1.Length; i++) {
-                        act_installed_singers1[i] = combineWinePath(wine_prefix, act_installed_singers1[i]);
-                    }
-                    act_path_voicedb1 = combineWinePath(wine_prefix, act_path_voicedb1);
-                    act_path_editor1 = combineWinePath(wine_prefix, act_path_editor1);
-                    act_path_expdb1 = combineWinePath(wine_prefix, act_path_expdb1);
-                    act_vsti1 = combineWinePath(wine_prefix, act_vsti1);
-                }
                 string expression_map1 = Path.Combine(act_path_expdb1, "expression.map");
                 SingerConfigSys singer_config_sys =
                     new SingerConfigSys(act_path_voicedb1, act_installed_singers1);
@@ -275,15 +241,6 @@ namespace cadencii.vsq
                 string act_path_voicedb2 = path_voicedb2.value;
                 string act_path_editor2 = path_editor.value;
                 string act_vsti2 = path_vsti.value;
-                if (wine_prefix.Length > 0) {
-                    for (int i = 0; i < act_installed_singers2.Length; i++) {
-                        act_installed_singers2[i] = combineWinePath(wine_prefix, act_installed_singers2[i]);
-                    }
-                    act_path_expdb2 = combineWinePath(wine_prefix, act_path_expdb2);
-                    act_path_voicedb2 = combineWinePath(wine_prefix, act_path_voicedb2);
-                    act_path_editor2 = combineWinePath(wine_prefix, act_path_editor2);
-                    act_vsti2 = combineWinePath(wine_prefix, act_vsti2);
-                }
                 string expression_map2 = Path.Combine(act_path_expdb2, "expression.map");
                 SingerConfigSys singer_config_sys = new SingerConfigSys(act_path_voicedb2, act_installed_singers2);
                 if (System.IO.File.Exists(expression_map2)) {

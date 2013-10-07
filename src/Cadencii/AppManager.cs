@@ -580,28 +580,6 @@ namespace cadencii
         }
 
         /// <summary>
-        /// voacloidrv.shからwineを呼ぶために，ProcessBuilderに渡す
-        /// 引数リストの最初の部分を取得します
-        /// </summary>
-        public static List<string> getWineProxyArgument()
-        {
-            List<string> ret = new List<string>();
-            ret.Add("/bin/sh");
-            string vocaloidrv_sh =
-                Utility.normalizePath(Path.Combine(PortUtil.getApplicationStartupPath(), "vocaloidrv.sh"));
-            ret.Add(vocaloidrv_sh);
-
-            string wine_prefix =
-                Utility.normalizePath(editorConfig.WinePrefix);
-            ret.Add(wine_prefix);
-
-            string wine_top =
-                Utility.normalizePath(editorConfig.WineTop);
-            ret.Add(wine_top);
-            return ret;
-        }
-
-        /// <summary>
         /// プレビュー再生を開始します．
         /// 合成処理などが途中でキャンセルされた場合にtrue，それ以外の場合にfalseを返します
         /// </summary>
