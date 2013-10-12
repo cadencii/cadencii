@@ -53,6 +53,7 @@
     <Compile Include="Cadencii\utau\OtoTest.cs" />
     <Compile Include="Cadencii\utau\PrefixMapTest.cs" />
     <Compile Include="Cadencii\utau\UtauVoiceDBTest.cs" />
+    <Compile Include="dsp\BusBufferTest.cs" />
     <Compile Include="dsp\generator\AquesTone2WaveGeneratorTest.cs" />
     <Compile Include="enum\RendererKindUtilTest.cs" />
     <Compile Include="ExceptionNotifyFormControllerTest.cs">
