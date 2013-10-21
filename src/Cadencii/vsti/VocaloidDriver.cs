@@ -12,9 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if DEBUG
-//#define TEST
-#endif
 using System;
 using System.Collections.Generic;
 using cadencii.java.util;
@@ -27,72 +24,39 @@ namespace cadencii
 
     public unsafe class VocaloidDriver : VSTiDriverBase
     {
-        const int TRUE = 1;
-        const int FALSE = 0;
-
         const int TIME_FORMAT = 480;
-        const int DEF_TEMPO = 500000;           // デフォルトのテンポ．
+        /// <summary>
+        /// デフォルトのテンポ．
+        /// </summary>
+        const int DEF_TEMPO = 500000;
 
-        List<List<MidiEvent>> s_track_events;
-        List<MidiEvent> g_pEvents;
-        int g_pCurrentEvent;
-        /// <summary>
-        /// s_track_events[0]のmidiイベントを受信済みかどうかを表すフラグ
-        /// </summary>
-        bool g_midiPrepared0;
-        /// <summary>
-        /// s_track_events[1]のmidiイベントを受信済みかどうかを表すフラグ
-        /// </summary>
-        bool g_midiPrepared1;
-        int g_tcCurrent;
-        int g_tcPrevious;
-        int g_saProcessed;
-        int g_saTotalSamples;
-        List<TempoInfo> g_tempoList;
-        int g_numTempoList;
-        //bool g_cancelRequired;
-        double g_progress;
+        private List<List<MidiEvent>> event_list_;
+        private List<TempoInfo> tempo_list_;
+        private double progress_;
         /// <summary>
         /// StartRenderingメソッドが回っている最中にtrue
         /// </summary>
-        bool rendering = false;
-        //int dseVersion;
-        private Object locker = new Object();
-        RendererKind kind;
+        private bool is_rendering_ = false;
+        private object mutex_ = new object();
+        private readonly RendererKind kind_;
 
         public VocaloidDriver(RendererKind kind)
         {
-            this.kind = kind;
+            this.kind_ = kind;
         }
 
         public void clearSendEvents()
         {
-            lock (locker) {
-                for (int i = 0; i < s_track_events.Count; i++) {
-                    s_track_events[i].Clear();
+            lock (mutex_) {
+                for (int i = 0; i < event_list_.Count; i++) {
+                    event_list_[i].Clear();
                 }
             }
         }
 
         public override RendererKind getRendererKind()
         {
-            return kind;
-        }
-
-        /*public int getDseVersion()
-        {
-            return dseVersion;
-        }*/
-
-        public override void close()
-        {
-            /*if ( rendering ) {
-                g_cancelRequired = true;
-                while ( rendering ) {
-                    System.Windows.Forms.Application.DoEvents();
-                }
-            }*/
-            base.close();
+            return kind_;
         }
 
         /// <summary>
@@ -102,15 +66,15 @@ namespace cadencii
         {
             double ret = 0.0;
             int index = -1;
-            int c = g_tempoList.Count;
+            int c = tempo_list_.Count;
             for (int i = 0; i < c; i++) {
-                if (timeCode <= g_tempoList[i].Clock) {
+                if (timeCode <= tempo_list_[i].Clock) {
                     break;
                 }
                 index = i;
             }
             if (index >= 0) {
-                TempoInfo item = g_tempoList[index];
+                TempoInfo item = tempo_list_[index];
                 ret = item.TotalSec + (timeCode - item.Clock) * (double)item.Tempo / (1000.0 * TIME_FORMAT);
             } else {
                 ret = timeCode * (double)DEF_TEMPO / (1000.0 * TIME_FORMAT);
@@ -121,54 +85,38 @@ namespace cadencii
         public override bool open(int block_size, int sample_rate)
         {
             bool ret = base.open(block_size, sample_rate);
-#if DEBUG
-            sout.println("VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString(dllHandle.ToInt32()).ToUpper());
-#endif
-            g_pEvents = new List<MidiEvent>();
-            g_midiPrepared0 = false;
-            g_midiPrepared1 = false;
-            g_tcCurrent = 0;
-            g_tcPrevious = 0;
-            g_saProcessed = 0;
-            g_saTotalSamples = 0;
-            g_tempoList = new List<TempoInfo>();
-            g_numTempoList = 0;
-            //g_cancelRequired = false;
-            g_progress = 0.0;
-            s_track_events = new List<List<MidiEvent>>();
-            s_track_events.Add(new List<MidiEvent>());
-            s_track_events.Add(new List<MidiEvent>());
+            tempo_list_ = new List<TempoInfo>();
+            progress_ = 0.0;
+            event_list_ = new List<List<MidiEvent>>();
+            event_list_.Add(new List<MidiEvent>());
+            event_list_.Add(new List<MidiEvent>());
             return ret;
         }
 
-        public int sendEvent(byte[] src, int[] deltaFrames/*, int numEvents*/, int targetTrack)
+        public void sendEvent(byte[] src, int[] deltaFrames, int targetTrack)
         {
-            lock (locker) {
+            lock (mutex_) {
                 int count;
                 int numEvents = deltaFrames.Length;
                 if (targetTrack == 0) {
-                    if (g_tempoList == null) {
-                        g_tempoList = new List<TempoInfo>();
+                    if (tempo_list_ == null) {
+                        tempo_list_ = new List<TempoInfo>();
                     } else {
-                        g_tempoList.Clear();
+                        tempo_list_.Clear();
                     }
                     if (numEvents <= 0) {
-                        g_numTempoList = 1;
                         TempoInfo ti = new TempoInfo();
                         ti.Clock = 0;
                         ti.Tempo = DEF_TEMPO;
                         ti.TotalSec = 0.0;
-                        g_tempoList.Add(ti);
+                        tempo_list_.Add(ti);
                     } else {
-                        if (deltaFrames[0] == 0) {
-                            g_numTempoList = numEvents;
-                        } else {
-                            g_numTempoList = numEvents + 1;
+                        if (deltaFrames[0] != 0) {
                             TempoInfo ti = new TempoInfo();
                             ti.Clock = 0;
                             ti.Tempo = DEF_TEMPO;
                             ti.TotalSec = 0.0;
-                            g_tempoList.Add(ti);
+                            tempo_list_.Add(ti);
                         }
                         int prev_tempo = DEF_TEMPO;
                         int prev_clock = 0;
@@ -182,7 +130,7 @@ namespace cadencii
                             ti.Clock = deltaFrames[i];
                             ti.Tempo = tempo;
                             ti.TotalSec = total;
-                            g_tempoList.Add(ti);
+                            tempo_list_.Add(ti);
                             prev_tempo = tempo;
                             prev_clock = deltaFrames[i];
                         }
@@ -191,20 +139,11 @@ namespace cadencii
 
                 // 与えられたイベント情報をs_track_eventsに収納
                 count = -3;
-                int pPrev = 0;
-                s_track_events[targetTrack].Clear();
-#if VOCALO_DRIVER_PRINT_EVENTS
-                sout.println( "VocaloidDriver#SendEvent" );
-                byte msb = 0x0;
-                byte lsb = 0x0;
-#endif
+                event_list_[targetTrack].Clear();
                 for (int i = 0; i < numEvents; i++) {
                     count += 3;
                     MidiEvent pEvent = new MidiEvent();
-                    //pEvent = &(new MIDI_EVENT());
-                    //pEvent->pNext = NULL;
                     pEvent.clock = (uint)deltaFrames[i];
-                    //pEvent.dwOffset = 0;
                     if (targetTrack == 0) {
                         pEvent.firstByte = 0xff;
                         pEvent.data = new int[5];
@@ -214,30 +153,15 @@ namespace cadencii
                         pEvent.data[3] = src[count + 1];
                         pEvent.data[4] = src[count + 2];
                     } else {
-#if VOCALO_DRIVER_PRINT_EVENTS
-                    if ( src[count + 1] == 0x63 ) {
-                        msb = src[count + 2];
-                    } else if ( src[count + 1] == 0x62 ) {
-                        lsb = src[count + 2];
-                    } else {
-                        String str = (src[count + 1] == 0x06) ? ("0x" + PortUtil.toHexString( src[count + 2], 2 )) : "    ";
-                        str += (src[count + 1] == 0x26) ? (" 0x" + PortUtil.toHexString( src[count + 2], 2 )) : "";
-
-                        int nrpn = msb << 8 | lsb;
-                        sout.println( "VocaloidDriver#SendEvent; NRPN: 0x" + PortUtil.toHexString( nrpn, 4 ) + " " + str );
-                    }
-#endif
                         pEvent.firstByte = src[count];
                         pEvent.data = new int[3];
                         pEvent.data[0] = src[count + 1];
                         pEvent.data[1] = src[count + 2];
                         pEvent.data[2] = 0x00;
                     }
-                    s_track_events[targetTrack].Add(pEvent);
+                    event_list_[targetTrack].Add(pEvent);
                 }
             }
-
-            return TRUE;
         }
 
         /// <summary>
@@ -248,20 +172,16 @@ namespace cadencii
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int startRendering(long total_samples, bool mode_infinite, int sample_rate, IWaveIncoming runner, WorkerState state)
+        public void startRendering(long total_samples, bool mode_infinite, int sample_rate, IWaveIncoming runner, WorkerState state)
         {
-#if DEBUG
-            sout.println("VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate);
-#endif
-            lock (locker) {
-                rendering = true;
-                //g_cancelRequired = false;
-                g_progress = 0.0;
+            lock (mutex_) {
+                is_rendering_ = true;
+                progress_ = 0.0;
                 sampleRate = sample_rate;
 
-                List<MidiEvent> lpEvents = merge_events(s_track_events[0], s_track_events[1]);
+                List<MidiEvent> lpEvents = merge_events(event_list_[0], event_list_[1]);
                 int current_count = -1;
-                MidiEvent current = new MidiEvent();// = lpEvents;
+                MidiEvent current = new MidiEvent();
 
                 MemoryManager mman = null;
                 float* left_ch;
@@ -278,12 +198,6 @@ namespace cadencii
                     double[] buffer_l = new double[sampleRate];
                     double[] buffer_r = new double[sampleRate];
 
-#if TEST
-                    org.kbinani.debug.push_log( "    calling initial dispatch..." );
-#endif
-#if DEBUG
-                    sout.println("VocaloidDriver#startRendering; sampleRate=" + sampleRate);
-#endif
                     aEffect.Dispatch(AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate);
                     aEffect.Dispatch(AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0);
 
@@ -294,9 +208,6 @@ namespace cadencii
                     for (int i = 0; i < 3; i++) {
                         aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), sampleRate);
                     }
-#if TEST
-                    org.kbinani.debug.push_log( "    ...done" );
-#endif
 
                     int delay = 0;
                     int duration = 0;
@@ -311,49 +222,45 @@ namespace cadencii
 
                     int total_processed = 0;
                     int total_processed2 = 0;
-#if TEST
-                    org.kbinani.debug.push_log( "    getting dwDelay..." );
-#endif
+
                     dwDelay = 0;
-                    List<MidiEvent> list = s_track_events[1];
+                    List<MidiEvent> list = event_list_[1];
                     int list_size = list.Count;
                     for (int i = 0; i < list_size; i++) {
                         MidiEvent work = list[i];
                         if ((work.firstByte & 0xf0) == 0xb0) {
                             switch (work.data[0]) {
-                                case 0x63:
-                                addr_msb = work.data[1];
-                                addr_lsb = 0;
-                                break;
-                                case 0x62:
-                                addr_lsb = work.data[1];
-                                break;
-                                case 0x06:
-                                data_msb = work.data[1];
-                                break;
-                                case 0x26:
-                                data_lsb = work.data[1];
-                                if (addr_msb == 0x50 && addr_lsb == 0x01) {
-                                    dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
+                                case 0x63: {
+                                    addr_msb = work.data[1];
+                                    addr_lsb = 0;
+                                    break;
                                 }
-                                break;
+                                case 0x62: {
+                                    addr_lsb = work.data[1];
+                                    break;
+                                }
+                                case 0x06: {
+                                    data_msb = work.data[1];
+                                    break;
+                                }
+                                case 0x26: {
+                                    data_lsb = work.data[1];
+                                    if (addr_msb == 0x50 && addr_lsb == 0x01) {
+                                        dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
+                                    }
+                                    break;
+                                }
                             }
                         }
                         if (dwDelay > 0) {
                             break;
                         }
                     }
-#if TEST
-                    org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
-#endif
 
                     while (!state.isCancelRequested()) {
                         int process_event_count = current_count;
                         int nEvents = 0;
 
-#if TEST
-                        org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
-#endif
                         if (current_count < 0) {
                             current_count = 0;
                             current = lpEvents[current_count];
@@ -398,11 +305,7 @@ namespace cadencii
 
                         double msNow = msec_from_clock(dwNow);
                         dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
-#if TEST
-                    org.kbinani.debug.push_log( "dwNow=" + dwNow );
-                    org.kbinani.debug.push_log( "dwPrev=" + dwPrev );
-                    org.kbinani.debug.push_log( "dwDelta=" + dwDelta );
-#endif
+
                         VstEvents* pVSTEvents = (VstEvents*)mman.malloc(sizeof(VstEvent) + nEvents * sizeof(VstEvent*)).ToPointer();
                         pVSTEvents->numEvents = 0;
                         pVSTEvents->reserved = (VstIntPtr)0;
@@ -438,25 +341,12 @@ namespace cadencii
                                 break;
                             }
                             process_event_count++;
-                            //pProcessEvent = lpEvents[process_event_count];
                         }
-#if TEST
-                        org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
-#endif
                         aEffect.Dispatch(AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr(pVSTEvents), 0);
-#if TEST
-                        org.kbinani.debug.push_log( "...done" );
-#endif
 
                         while (dwDelta > 0 && !state.isCancelRequested()) {
                             int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
-#if TEST
-                            org.kbinani.debug.push_log( "calling ProcessReplacing..." );
-#endif
                             aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), dwFrames);
-#if TEST
-                            org.kbinani.debug.push_log( "...done" );
-#endif
 
                             int iOffset = dwDelay - dwDeltaDelay;
                             if (iOffset > (int)dwFrames) {
@@ -479,7 +369,7 @@ namespace cadencii
 
                         dwPrev = dwNow;
                         dwNow = (int)current.clock;
-                        g_progress = total_processed / (double)total_samples * 100.0;
+                        progress_ = total_processed / (double)total_samples * 100.0;
                     }
 
                     double msLast = msec_from_clock(dwNow);
@@ -489,13 +379,7 @@ namespace cadencii
                     }
                     while (dwDelta > 0 && !state.isCancelRequested()) {
                         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
-#if TEST
-                        org.kbinani.debug.push_log( "calling ProcessReplacing..." );
-#endif
                         aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), dwFrames);
-#if TEST
-                        org.kbinani.debug.push_log( "...done" );
-#endif
 
                         for (int i = 0; i < (int)dwFrames; i++) {
                             buffer_l[i] = out_buffer[0][i];
@@ -507,10 +391,6 @@ namespace cadencii
                         dwDelta -= dwFrames;
                         total_processed += dwFrames;
                     }
-
-#if TEST
-                    sout.println( "vstidrv::StartRendering; total_processed=" + total_processed );
-#endif
 
                     if (mode_infinite) {
                         for (int i = 0; i < sampleRate; i++) {
@@ -525,9 +405,6 @@ namespace cadencii
 
                     aEffect.Dispatch(AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0);
                     lpEvents.Clear();
-#if DEBUG
-                    sout.println("VocaloidDriver#startRendering; done; total_processed=" + total_processed + "; total_processed2=" + total_processed2);
-#endif
                 } catch (Exception ex) {
                     serr.println("VocaloidDriver#startRendering; ex=" + ex);
                 } finally {
@@ -539,30 +416,22 @@ namespace cadencii
                         }
                     }
                 }
-                rendering = false;
-                g_saProcessed = 0;
-                for (int i = 0; i < s_track_events.Count; i++) {
-                    s_track_events[i].Clear();
+                is_rendering_ = false;
+                for (int i = 0; i < event_list_.Count; i++) {
+                    event_list_[i].Clear();
                 }
-                g_tempoList.Clear();
-                //g_cancelRequired = false;
+                tempo_list_.Clear();
             }
-            return 1;
         }
 
         public bool isRendering()
         {
-            return rendering;
+            return is_rendering_;
         }
-
-        /*public void abortRendering()
-        {
-            g_cancelRequired = true;
-        }*/
 
         public double getProgress()
         {
-            return g_progress;
+            return progress_;
         }
 
         private List<MidiEvent> merge_events(List<MidiEvent> x0, List<MidiEvent> y0)
