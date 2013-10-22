@@ -299,6 +299,7 @@
     <Compile Include="vsti\aquestone\ParameterEvent.cs" />
     <Compile Include="vsti\aquestone\SyllableMatcher.cs" />
     <Compile Include="vsti\VocaloidDriver.cs" />
+    <Compile Include="vsti\vocaloid\VocaloidVstDriver.cs" />
     <Compile Include="vsti\VSTiDriverBase.cs" />
     <Compile Include="WaveformZoomController.cs" />
     <Compile Include="WaveformZoomUi.cs">

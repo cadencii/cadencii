@@ -247,7 +247,7 @@ namespace cadencii
             }
         }
 
-        public virtual void send(MidiEvent[] events)
+        public virtual void send(MidiEvent[] events, int delta_clocks = 0)
         {
             if (events.Length == 0) return;
             unsafe {
@@ -266,7 +266,7 @@ namespace cadencii
                         VstMidiEvent* pMidiEvent;
                         pMidiEvent = (VstMidiEvent*)mman.malloc((int)(sizeof(VstMidiEvent) + (pProcessEvent.data.Length + 1) * sizeof(byte))).ToPointer();
                         pMidiEvent->byteSize = sizeof(VstMidiEvent);
-                        pMidiEvent->deltaFrames = 0;
+                        pMidiEvent->deltaFrames = delta_clocks;
                         pMidiEvent->detune = 0;
                         pMidiEvent->flags = 1;
                         pMidiEvent->noteLength = 0;
