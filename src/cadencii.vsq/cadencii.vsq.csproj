@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="io\VsqxReader.cs" />
     <Compile Include="io\VsqxWriter.cs" />
+    <Compile Include="ITempoMaster.cs" />
     <Compile Include="ITextWriter.cs" />
     <Compile Include="Lyric.cs" />
     <Compile Include="LyricHandle.cs" />

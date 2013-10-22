@@ -52,7 +52,7 @@ namespace cadencii.vsq
     /// テンポ情報を格納したテーブル．
     /// </summary>
     [Serializable]
-    public class TempoVector : List<TempoTableEntry>
+    public class TempoVector : List<TempoTableEntry>, ITempoMaster
     {
         /// <summary>
         /// 4分音符1拍あたりのゲートタイム
