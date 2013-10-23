@@ -15,12 +15,13 @@ using System;
 using System.Collections.Generic;
 using VstSdk;
 using cadencii.vsq;
+using cadencii.dsp.v2.generator;
 
 namespace cadencii.vsti.vocaloid
 {
-    unsafe class VocaloidVstDriver : VSTiDriverBase
+    unsafe class VocaloidVstDriver : VSTiDriverBase, IWaveGenerator
     {
-        public delegate bool RenderCallback(float[] left, float[] right, int samples);
+        public event RenderCallback Rendered;
 
         private readonly RendererKind kind_;
         private readonly MemoryManager allocator_ = new MemoryManager();
@@ -37,7 +38,7 @@ namespace cadencii.vsti.vocaloid
             return kind_;
         }
 
-        public void render(IEnumerable<MidiEvent> sequence, ITempoMaster tempo, int sample_rate, RenderCallback callback)
+        public void render(IEnumerable<MidiEvent> sequence, ITempoMaster tempo, int sample_rate)
         {
             long clock = 0;
             long processed = 0;
@@ -56,7 +57,7 @@ namespace cadencii.vsti.vocaloid
                     send(event_buffer.ToArray(), process_samples);
                     while (process_samples > 0) {
                         int amount = Math.Min(process_samples, blockSize);
-                        if (!dispatchProcessReplacing(amount, callback)) {
+                        if (!dispatchProcessReplacing(amount)) {
                             return;
                         }
                         process_samples -= amount;
@@ -68,10 +69,10 @@ namespace cadencii.vsti.vocaloid
                 }
             }
 
-            while (dispatchProcessReplacing(blockSize, callback)) ;
+            while (dispatchProcessReplacing(blockSize)) ;
         }
 
-        private bool dispatchProcessReplacing(int amount, RenderCallback callback)
+        private bool dispatchProcessReplacing(int amount)
         {
             if (left_buffer_ == null) {
                 left_buffer_ = new float[blockSize];
@@ -80,7 +81,11 @@ namespace cadencii.vsti.vocaloid
                 right_buffer_ = new float[blockSize];
             }
             process(left_buffer_, right_buffer_, amount);
-            return callback(left_buffer_, right_buffer_, amount);
+            if (Rendered == null) {
+                return false;
+            } else {
+                return Rendered(left_buffer_, right_buffer_, amount);
+            }
         }
     }
 }
