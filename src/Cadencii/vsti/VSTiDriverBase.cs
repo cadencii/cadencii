@@ -47,7 +47,7 @@ namespace cadencii
 
     public abstract class VSTiDriverBase
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [UnmanagedFunctionPointer(CallingConvention.Winapi)]
         protected delegate IntPtr PVSTMAIN([MarshalAs(UnmanagedType.FunctionPtr)]audioMasterCallback audioMaster);
 
         public bool loaded = false;
@@ -237,25 +237,25 @@ namespace cadencii
                 int remain = length;
                 int offset = 0;
                 unsafe {
-                float* left_ch = (float*)bufferLeft.ToPointer();
-                float* right_ch = (float*)bufferRight.ToPointer();
+                    float* left_ch = (float*)bufferLeft.ToPointer();
+                    float* right_ch = (float*)bufferRight.ToPointer();
                     for (int i = 0; i < BUFLEN; ++i) {
                         left_ch[i] = 0;
                         right_ch[i] = 0;
                     }
-                float** out_buffer = (float**)buffers.ToPointer();
-                out_buffer[0] = left_ch;
-                out_buffer[1] = right_ch;
-                while (remain > 0) {
-                    int proc = (remain > BUFLEN) ? BUFLEN : remain;
-                    aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), proc);
-                    for (int i = 0; i < proc; i++) {
+                    float** out_buffer = (float**)buffers.ToPointer();
+                    out_buffer[0] = left_ch;
+                    out_buffer[1] = right_ch;
+                    while (remain > 0) {
+                        int proc = (remain > BUFLEN) ? BUFLEN : remain;
+                        aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), proc);
+                        for (int i = 0; i < proc; i++) {
                             left[i + offset] = convert<T>(left_ch[i]);
                             right[i + offset] = convert<T>(right_ch[i]);
+                        }
+                        remain -= proc;
+                        offset += proc;
                     }
-                    remain -= proc;
-                    offset += proc;
-                }
                 }
             } catch (Exception ex) {
                 serr.println("vstidrv#process; ex=" + ex);
