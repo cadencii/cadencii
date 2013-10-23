@@ -217,18 +217,32 @@ namespace cadencii
             }
         }
 
-        public unsafe void process(double[] left, double[] right, int length)
+        public void process(double[] left, double[] right, int length)
+        {
+            process<double>(left, right, length);
+        }
+
+        public void process(float[] left, float[] right, int length)
+        {
+            process<float>(left, right, length);
+        }
+
+        private void process<T>(T[] left, T[] right, int length)
         {
             if (left == null || right == null) {
                 return;
             }
-            //int length = Math.Min( left.Length, right.Length );
             try {
                 initBuffer();
                 int remain = length;
                 int offset = 0;
+                unsafe {
                 float* left_ch = (float*)bufferLeft.ToPointer();
                 float* right_ch = (float*)bufferRight.ToPointer();
+                    for (int i = 0; i < BUFLEN; ++i) {
+                        left_ch[i] = 0;
+                        right_ch[i] = 0;
+                    }
                 float** out_buffer = (float**)buffers.ToPointer();
                 out_buffer[0] = left_ch;
                 out_buffer[1] = right_ch;
@@ -236,15 +250,22 @@ namespace cadencii
                     int proc = (remain > BUFLEN) ? BUFLEN : remain;
                     aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), proc);
                     for (int i = 0; i < proc; i++) {
-                        left[i + offset] = left_ch[i];
-                        right[i + offset] = right_ch[i];
+                            left[i + offset] = convert<T>(left_ch[i]);
+                            right[i + offset] = convert<T>(right_ch[i]);
                     }
                     remain -= proc;
                     offset += proc;
                 }
+                }
             } catch (Exception ex) {
                 serr.println("vstidrv#process; ex=" + ex);
             }
+        }
+
+        private static T convert<T>(float value)
+        {
+            object o = value;
+            return (T)o;
         }
 
         public virtual void send(MidiEvent[] events, int delta_clocks = 0)

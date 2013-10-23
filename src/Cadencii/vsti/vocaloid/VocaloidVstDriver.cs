@@ -26,7 +26,6 @@ namespace cadencii.vsti.vocaloid
         private readonly MemoryManager allocator_ = new MemoryManager();
         private float[] left_buffer_;
         private float[] right_buffer_;
-        private float*[] output_;
 
         public VocaloidVstDriver(RendererKind kind)
         {
@@ -54,9 +53,7 @@ namespace cadencii.vsti.vocaloid
                     event_buffer.Add(item);
                 } else {
                     int process_samples = (int)((long)(tempo.getSecFromClock(clock) * sampleRate) - processed);
-
                     send(event_buffer.ToArray(), process_samples);
-
                     while (process_samples > 0) {
                         int amount = Math.Min(process_samples, blockSize);
                         if (!dispatchProcessReplacing(amount, callback)) {
@@ -65,7 +62,6 @@ namespace cadencii.vsti.vocaloid
                         process_samples -= amount;
                         processed += amount;
                     }
-
                     event_buffer.Clear();
                     event_buffer.Add(item);
                     clock = item.clock;
@@ -77,23 +73,14 @@ namespace cadencii.vsti.vocaloid
 
         private bool dispatchProcessReplacing(int amount, RenderCallback callback)
         {
-            if (output_ == null) {
-                output_ = new float*[2];
-            }
             if (left_buffer_ == null) {
                 left_buffer_ = new float[blockSize];
             }
             if (right_buffer_ == null) {
                 right_buffer_ = new float[blockSize];
             }
-            fixed (float* left = &left_buffer_[0])
-            fixed (float* right = &right_buffer_[0])
-            fixed (float** output_ptr = &output_[0]) {
-                output_ptr[0] = left;
-                output_ptr[1] = right;
-                aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(output_ptr), amount);
-                return callback(left_buffer_, right_buffer_, amount);
-            }
+            process(left_buffer_, right_buffer_, amount);
+            return callback(left_buffer_, right_buffer_, amount);
         }
     }
 }
