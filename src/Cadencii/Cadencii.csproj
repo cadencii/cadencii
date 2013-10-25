@@ -153,9 +153,17 @@
     <Compile Include="dsp\v1\WaveReceiver.cs" />
     <Compile Include="dsp\v1\WaveSender.cs" />
     <Compile Include="dsp\v1\WaveUnit.cs" />
+    <Compile Include="dsp\v2\AudioOutDevice.cs" />
+    <Compile Include="dsp\v2\AudioUnit.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="dsp\v2\AudioUnitRunner.cs" />
     <Compile Include="dsp\v2\BusBuffer.cs" />
+    <Compile Include="dsp\v2\generator\GeneratorUnit.cs" />
     <Compile Include="dsp\v2\generator\IWaveGenerator.cs" />
     <Compile Include="dsp\v2\generator\RenderCallback.cs" />
+    <Compile Include="dsp\v2\Mixer.cs" />
+    <Compile Include="dsp\v2\MonitorAudioOutDevice.cs" />
     <Compile Include="dsp\v2\RingBuffer.cs" />
     <Compile Include="EditedStateChangedEventHandler.cs">
       <SubType>Code</SubType>

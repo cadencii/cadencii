@@ -51,6 +51,12 @@ namespace cadencii.dsp.v2
         /// </summary>
         public int Channel { get { return channel_; } }
 
+        public float this[int channel, int index]
+        {
+            get { return buffer_[index * channel_ + channel]; }
+            set { buffer_[index * channel_ + channel] = value; }
+        }
+
         /// <summary>
         /// Fill buffer with 0.0f.
         /// </summary>
@@ -75,8 +81,8 @@ namespace cadencii.dsp.v2
         public void mixFrom(BusBuffer source, int source_offset, int offset, int length)
         {
             Debug.Assert(Channel == source.Channel);
-            Debug.Assert(0 <= source_offset && source_offset + length < source.Length);
-            Debug.Assert(0 <= offset && offset + length < Length);
+            Debug.Assert(0 <= source_offset && source_offset + length <= source.Length);
+            Debug.Assert(0 <= offset && offset + length <= Length);
             int channel = source.Channel;
             int actual_soruce_offset = channel * source_offset;
             int actual_offset = channel * offset;
@@ -84,6 +90,11 @@ namespace cadencii.dsp.v2
             for (int i = 0; i < actual_length; ++i) {
                 buffer_[actual_offset + i] += source.buffer_[actual_soruce_offset + i];
             }
+        }
+
+        internal float[] getRawBuffer()
+        {
+            return buffer_;
         }
     }
 }
