@@ -22,8 +22,7 @@ namespace cadencii.dsp.v2.generator
         const int BUFFER_LENGTH = 1 << BUFFER_LENGTH_ORDER;
         const int CHANNELS = 2;
 
-        protected IWaveGenerator generator_ = null;
-
+        private IWaveGenerator generator_ = null;
         private RingBuffer<float> left_ = new RingBuffer<float>(BUFFER_LENGTH_ORDER);
         private RingBuffer<float> right_ = new RingBuffer<float>(BUFFER_LENGTH_ORDER);
         private object worker_mutex_ = new object();

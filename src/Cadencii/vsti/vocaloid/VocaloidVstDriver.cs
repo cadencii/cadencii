@@ -20,7 +20,7 @@ using cadencii.vsq;
 
 namespace cadencii.vsti.vocaloid
 {
-    unsafe class VocaloidVstDriver : VSTiDriverBase, IWaveGenerator
+    unsafe class VocaloidVstDriver : VSTiDriverBase, IWaveGenerator, ISingingSynthesizer
     {
         public event RenderCallback Rendered;
 

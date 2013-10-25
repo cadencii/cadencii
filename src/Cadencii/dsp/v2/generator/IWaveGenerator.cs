@@ -11,15 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-using cadencii.vsq;
-
 namespace cadencii.dsp.v2.generator
 {
     public interface IWaveGenerator
     {
         event RenderCallback Rendered;
-        void beginSession(VsqFile sequence, int track_index, int sample_rate);
         void start();
-        void endSession();
     }
 }

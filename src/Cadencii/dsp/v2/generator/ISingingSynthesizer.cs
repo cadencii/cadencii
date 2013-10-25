@@ -1,5 +1,5 @@
 /*
- * VocaloidSynthesizer.cs
+ * ISingingSynthesizer.cs
  * Copyright © 2013 kbinani
  *
  * This file is part of cadencii.
@@ -15,17 +15,9 @@ using cadencii.vsq;
 
 namespace cadencii.dsp.v2.generator
 {
-    class VocaloidSynthesizer : GeneratorUnit
+    public interface ISingingSynthesizer : IWaveGenerator
     {
-        public VocaloidSynthesizer(IWaveGenerator generator, VsqFile sequence, int track_index, int sample_rate)
-            : base(generator)
-        {
-            generator_.beginSession(sequence, track_index, sample_rate);
-        }
-
-        protected override void terminated()
-        {
-            generator_.endSession();
-        }
+        void beginSession(VsqFile sequence, int track_index, int sample_rate);
+        void endSession();
     }
 }
