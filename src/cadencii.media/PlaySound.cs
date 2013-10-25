@@ -33,6 +33,8 @@ namespace cadencii.media
         [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundAppend(IntPtr left, IntPtr right, int length);
         [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void SoundAppendInterleaved(IntPtr stream, int length);
+        [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void SoundExit();
         [DllImport("cadencii.media.helper.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern double SoundGetPosition();
@@ -148,6 +150,14 @@ namespace cadencii.media
             } catch (Exception ex) {
                 sout.println("PlaySound#append; ex=" + ex);
             }
+        }
+
+        public static void appendInterleaved(float[] stream, int length)
+        {
+            try {
+                IntPtr p = Marshal.UnsafeAddrOfPinnedArrayElement(stream, 0);
+                SoundAppendInterleaved(p, length);
+            } catch {}
         }
 
         /// <summary>

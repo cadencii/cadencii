@@ -27,6 +27,83 @@ static bool abort_required;
 static int block_size = 4410; // ブロックサイズ
 static int block_size_used; // SoundPrepareで初期化されたブロックサイズ
 
+typedef DWORD (GetWaveDataFunc) (void * stream, int index);
+
+static DWORD GetWaveDataFromLRChannel(void * stream, int index)
+{
+    double * left = ((double **)stream)[0];
+    double * right = ((double **)stream)[1];
+    return MAKELONG((WORD)(left[index] * 32768.0), (WORD)(right[index] * 32768.0));
+}
+
+static DWORD GetWaveDataFromLRInterleavedStream(void * data, int index)
+{
+    float * stream = reinterpret_cast<float *>(data);
+    int const CHANNEL = 2;
+    int const LEFT = 0;
+    int const RIGHT = 1;
+    int const actual_index = index * CHANNEL;
+    float const left = stream[actual_index + LEFT];
+    float const right = stream[actual_index + RIGHT];
+    return MAKELONG((WORD)(left * 32768.0), (WORD)(right * 32768.0));
+}
+
+static void SoundAppendImpl(void * stream, int length, GetWaveDataFunc * func)
+{
+    if ( NULL == wave_out ) {
+        return;
+    }
+    int const CHANNELS = 2;
+    int const LEFT = 0;
+    int const RIGHT = 1;
+
+    EnterCriticalSection( &locker );
+    int appended = 0; // 転送したデータの個数
+    while ( appended < length ) {
+        // このループ内では、バッファに1個づつデータを転送する
+
+        // バッファが使用中の場合、使用終了となるのを待ち受ける
+        int act_buffer_index = buffer_index % NUM_BUF;
+        while ( !wave_done[act_buffer_index] && !abort_required ) {
+            Sleep( 0 );
+        }
+
+        int t_length = block_size_used - buffer_loc; // 転送するデータの個数
+        if ( t_length > length - appended ) {
+            t_length = length - appended;
+        }
+        int index = 0;
+        int const stream_offset = appended * CHANNELS;
+        for (int i = 0; i < t_length && !abort_required; ++i) {
+            wave[act_buffer_index][buffer_loc + i] = func(stream, appended + i);
+        }
+        appended += t_length;
+        buffer_loc += t_length;
+        if ( buffer_loc == block_size_used ) {
+            // バッファがいっぱいになったようだ
+            buffer_index++;
+            buffer_loc = 0;
+            if ( buffer_index >= NUM_BUF ) {
+                // 最初のNUM_BUF個のバッファは、すべてのバッファに転送が終わるまで
+                // waveOutWriteしないようにしているので、ここでwaveOutWriteする。
+                if ( buffer_index == NUM_BUF ) {
+                    for ( int i = 0; i < NUM_BUF; i++ ) {
+                        if( abort_required ) break;
+                        wave_done[i] = false;
+                        waveOutWrite( wave_out, &wave_header[i], sizeof( WAVEHDR ) );
+                    }
+                } else {
+                    wave_done[act_buffer_index] = false;
+                    if( !abort_required ){
+                        waveOutWrite( wave_out, &wave_header[act_buffer_index], sizeof( WAVEHDR ) );
+                    }
+                }
+            }
+        }
+    }
+    LeaveCriticalSection( &locker );
+}
+
 CADENCII_MEDIA_HELPER_API(void, SoundUnprepare)() {
     if ( NULL == wave_out ) {
         return;
@@ -139,53 +216,17 @@ CADENCII_MEDIA_HELPER_API(void, SoundSetResolution)( int resolution ){
     block_size = resolution;
 }
 
-CADENCII_MEDIA_HELPER_API(void, SoundAppend)( double *left, double *right, int length ) {
-    if ( NULL == wave_out ) {
-        return;
-    }
-    EnterCriticalSection( &locker );
-    int appended = 0; // 転送したデータの個数
-    while ( appended < length ) {
-        // このループ内では、バッファに1個づつデータを転送する
+CADENCII_MEDIA_HELPER_API(void, SoundAppend)(double * left, double *right, int length)
+{
+    double * stream[2];
+    stream[0] = left;
+    stream[1] = right;
+    SoundAppendImpl(stream, length, &GetWaveDataFromLRChannel);
+}
 
-        // バッファが使用中の場合、使用終了となるのを待ち受ける
-        int act_buffer_index = buffer_index % NUM_BUF;
-        while ( !wave_done[act_buffer_index] && !abort_required ) {
-            Sleep( 0 );
-        }
-
-        int t_length = block_size_used - buffer_loc; // 転送するデータの個数
-        if ( t_length > length - appended ) {
-            t_length = length - appended;
-        }
-        for ( int i = 0; i < t_length && !abort_required; i++ ) {
-            wave[act_buffer_index][buffer_loc + i] = MAKELONG( (WORD)(left[appended + i] * 32768.0), (WORD)(right[appended + i] * 32768.0) );
-        }
-        appended += t_length;
-        buffer_loc += t_length;
-        if ( buffer_loc == block_size_used ) {
-            // バッファがいっぱいになったようだ
-            buffer_index++;
-            buffer_loc = 0;
-            if ( buffer_index >= NUM_BUF ) {
-                // 最初のNUM_BUF個のバッファは、すべてのバッファに転送が終わるまで
-                // waveOutWriteしないようにしているので、ここでwaveOutWriteする。
-                if ( buffer_index == NUM_BUF ) {
-                    for ( int i = 0; i < NUM_BUF; i++ ) {
-                        if( abort_required ) break;
-                        wave_done[i] = false;
-                        waveOutWrite( wave_out, &wave_header[i], sizeof( WAVEHDR ) );
-                    }
-                } else {
-                    wave_done[act_buffer_index] = false;
-                    if( !abort_required ){
-                        waveOutWrite( wave_out, &wave_header[act_buffer_index], sizeof( WAVEHDR ) );
-                    }
-                }
-            }
-        }
-    }
-    LeaveCriticalSection( &locker );
+CADENCII_MEDIA_HELPER_API(void, SoundAppendInterleaved)(float * stream, int length)
+{
+    SoundAppendImpl(stream, length, &GetWaveDataFromLRInterleavedStream);
 }
 
 /// <summary>

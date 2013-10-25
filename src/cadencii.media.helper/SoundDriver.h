@@ -25,6 +25,7 @@
 CADENCII_MEDIA_HELPER_API(void, SoundInit)();
 CADENCII_MEDIA_HELPER_API(int, SoundPrepare)(int sample_rate);
 CADENCII_MEDIA_HELPER_API(void, SoundAppend)(double *left, double *right, int length);
+CADENCII_MEDIA_HELPER_API(void, SoundAppendInterleaved)(float * stream, int length);
 CADENCII_MEDIA_HELPER_API(void, SoundExit)();
 CADENCII_MEDIA_HELPER_API(double, SoundGetPosition)();
 CADENCII_MEDIA_HELPER_API(bool, SoundIsBusy)();
