@@ -13,9 +13,10 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VstSdk;
-using cadencii.vsq;
 using cadencii.dsp.v2.generator;
+using cadencii.vsq;
 
 namespace cadencii.vsti.vocaloid
 {
@@ -27,6 +28,9 @@ namespace cadencii.vsti.vocaloid
         private readonly MemoryManager allocator_ = new MemoryManager();
         private float[] left_buffer_;
         private float[] right_buffer_;
+        private IEnumerable<MidiEvent> sequence_;
+        private ITempoMaster tempo_master_;
+        private int sample_rate_;
 
         public VocaloidVstDriver(RendererKind kind)
         {
@@ -38,22 +42,43 @@ namespace cadencii.vsti.vocaloid
             return kind_;
         }
 
-        public void render(IEnumerable<MidiEvent> sequence, ITempoMaster tempo, int sample_rate)
+        public void beginSession(VsqFile sequence, int track_index, int sample_rate)
+        {
+            VsqNrpn[] vocaloid_nrpn = VsqFile.generateNRPN(sequence, track_index, 500);
+            NrpnData[] midi_nrpn = VsqNrpn.convert(vocaloid_nrpn);
+            sequence_ = midi_nrpn.Select(nrpn => {
+                MidiEvent item = new MidiEvent();
+                item.clock = nrpn.getClock();
+                item.firstByte = 0xB0;
+                item.data = new int[3] { nrpn.getParameter(), nrpn.Value, 0 };
+                return item;
+            }).ToList();
+            tempo_master_ = sequence.TempoTable;
+            sample_rate_ = sample_rate;
+        }
+
+        public void endSession()
+        {
+            sequence_ = null;
+            tempo_master_ = null;
+        }
+
+        public void start()
         {
             long clock = 0;
             long processed = 0;
 
-            blockSize = sample_rate;
+            blockSize = sample_rate_;
 
-            setSampleRate(sample_rate);
+            setSampleRate(sample_rate_);
             aEffect.Dispatch(AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0);
 
             List<MidiEvent> event_buffer = new List<MidiEvent>();
-            foreach (var item in sequence) {
+            foreach (var item in sequence_) {
                 if (item.clock == clock) {
                     event_buffer.Add(item);
                 } else {
-                    int process_samples = (int)((long)(tempo.getSecFromClock(clock) * sampleRate) - processed);
+                    int process_samples = (int)((long)(tempo_master_.getSecFromClock(clock) * sampleRate) - processed);
                     send(event_buffer.ToArray(), process_samples);
                     while (process_samples > 0) {
                         int amount = Math.Min(process_samples, blockSize);

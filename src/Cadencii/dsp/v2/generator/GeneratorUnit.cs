@@ -16,29 +16,44 @@ using System.Threading;
 
 namespace cadencii.dsp.v2.generator
 {
-    public class GeneratorUnit : AudioUnit
+    public abstract class GeneratorUnit : AudioUnit
     {
         const int BUFFER_LENGTH_ORDER = 15;
         const int BUFFER_LENGTH = 1 << BUFFER_LENGTH_ORDER;
         const int CHANNELS = 2;
 
+        protected IWaveGenerator generator_ = null;
+
         private RingBuffer<float> left_ = new RingBuffer<float>(BUFFER_LENGTH_ORDER);
         private RingBuffer<float> right_ = new RingBuffer<float>(BUFFER_LENGTH_ORDER);
         private object worker_mutex_ = new object();
-        private IWaveGenerator generator_ = null;
         private Thread worker_;
+        private bool started_ = false;
 
         public GeneratorUnit(IWaveGenerator generator)
             : base(CHANNELS, BUFFER_LENGTH)
         {
             generator_ = generator;
+        }
+
+        protected abstract void terminated();
+
+        private void start()
+        {
             generator_.Rendered += generatorCallback;
             worker_ = new Thread(generator_.start);
             worker_.Start();
+            started_ = true;
         }
 
         public override void render(BusBuffer dest, int samples)
         {
+            lock (worker_mutex_) {
+                if (!started_) {
+                    start();
+                }
+            }
+
             int offset = 0;
             int remain = samples;
             while (remain > 0) {
@@ -67,6 +82,7 @@ namespace cadencii.dsp.v2.generator
                 int amount = 0;
                 lock (worker_mutex_) {
                     if (stopRequired()) {
+                        terminated();
                         return false;
                     }
                     amount = Math.Min(remain, left_.Capacity);
