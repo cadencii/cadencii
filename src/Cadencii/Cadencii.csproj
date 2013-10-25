@@ -156,6 +156,7 @@
     <Compile Include="dsp\v2\BusBuffer.cs" />
     <Compile Include="dsp\v2\generator\IWaveGenerator.cs" />
     <Compile Include="dsp\v2\generator\RenderCallback.cs" />
+    <Compile Include="dsp\v2\RingBuffer.cs" />
     <Compile Include="EditedStateChangedEventHandler.cs">
       <SubType>Code</SubType>
     </Compile>
